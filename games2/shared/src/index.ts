@@ -181,6 +181,33 @@ export const ISO_DX = 32;
 export const ISO_DY = 15;
 // Vertical face pixels per elevation level (maps2 LEVEL_PX).
 export const LEVEL_PX = 16;
+
+/** THE PROJECTION IS PER WORLD, not per engine. tiles2 draws a 30px top diamond
+ * on a dy=15 lattice with a 16px storey; tiles3 draws on dy=14 with a MEASURED
+ * 15px storey, and the two cannot share one constant — a maps3 world rendered
+ * at dy=15 shears by one row per grid step and every boundary leaks a 1px wall
+ * band (tiles3.ts DY). So a world carries its own geometry and the constants
+ * above are the DEFAULT: an absent `ParsedWorld.iso` means today's numbers, so
+ * every world@1/world@2 world projects byte-identically. */
+export interface IsoGeometry {
+  /** Half tile width — screen px per grid step in x−y. */
+  dx: number;
+  /** Screen px per grid step in x+y. */
+  dy: number;
+  /** Screen px per elevation level — the STACKING pitch. */
+  lh: number;
+}
+export const ISO_GEOMETRY: IsoGeometry = { dx: ISO_DX, dy: ISO_DY, lh: LEVEL_PX };
+/** tiles3 geometry. `lh` is 15 because that is what the x-over-x wall art
+ * MEASURES (tiles3 `measureStoreyPitch`, asserted at 15 in tiles3.test.ts) —
+ * the doc's 17 and render3's 16 fallback are both wrong, and a pitch one row
+ * too large exposes a bright stripe of each lower floor at every storey. The
+ * client re-measures off the loaded art and warns if this disagrees. */
+export const ISO_GEOMETRY_MAPS3: IsoGeometry = { dx: 32, dy: 14, lh: 15 };
+/** A world's projection, defaulting to today's numbers. */
+export function isoOf(world?: { iso?: IsoGeometry } | null): IsoGeometry {
+  return world?.iso ?? ISO_GEOMETRY;
+}
 // Top-diamond height in px (apex→bottom); tiles2 top is 30px on a 64px tile.
 export const DIAMOND_H = 30;
 
@@ -329,10 +356,24 @@ const SCREEN_SPEED_REF = ISO_DX;
 
 /** Convert a screen-space input vector (arrows as the player sees them) into a
  * world-space velocity direction, scaled for uniform on-screen speed. The
- * result's magnitude is the speed multiplier (not normalized to 1). */
-export function screenToWorldVector(ix: number, iy: number): { x: number; y: number } {
-  const wx = ix / ISO_DX + iy / ISO_DY;
-  const wy = iy / ISO_DY - ix / ISO_DX;
+ * result's magnitude is the speed multiplier (not normalized to 1).
+ *
+ * `iso` DEFAULTS TO THE SHARED RATIO ON EVERY WORLD, and movement integration
+ * never passes anything else. Client prediction and the authoritative server
+ * integrate the same inputs through `stepMovement`, so an input rotation that
+ * one side derives from the world doc and the other does not is a desync, not a
+ * look — and the server carries no per-world projection today. The parameter
+ * exists so a caller that owns BOTH sides (a viewer, a tool, a future
+ * geometry-aware room) can ask for a world's real calibration; the difference
+ * at dy 14 vs 15 is a 7% screen-vertical walk speed and no direction change on
+ * the grid-axis-locked diagonals. */
+export function screenToWorldVector(
+  ix: number,
+  iy: number,
+  iso: IsoGeometry = ISO_GEOMETRY,
+): { x: number; y: number } {
+  const wx = ix / iso.dx + iy / iso.dy;
+  const wy = iy / iso.dy - ix / iso.dx;
   const len = Math.hypot(wx, wy);
   if (len < 1e-9) return { x: 0, y: 0 };
   let ux = wx / len;
@@ -354,7 +395,7 @@ export function screenToWorldVector(ix: number, iy: number): { x: number; y: num
     }
   }
   // Projected screen-speed factor of this unit world vector.
-  const screenLen = Math.hypot((ux - uy) * ISO_DX, (ux + uy) * ISO_DY);
+  const screenLen = Math.hypot((ux - uy) * iso.dx, (ux + uy) * iso.dy);
   const k = SCREEN_SPEED_REF / screenLen;
   return { x: ux * k, y: uy * k };
 }
@@ -618,6 +659,10 @@ export interface ParsedWorld {
   /** maps3: freely placed, off-grid set dressing (see WorldScenery). Not
    * `props`: those are grid-aligned tile PNGs that block their cell. */
   scenery?: WorldScenery[];
+  /** THE WORLD'S OWN PROJECTION. Set by parseWorld3 only — absent on
+   * world@1/world@2, which is what keeps their parse byte-identical (their
+   * digest is pinned in server/test/world3.test.ts). Read it with `isoOf`. */
+  iso?: IsoGeometry;
 }
 
 /** A placed decoration: its cell (col,row) + tall (64×128) tile PNG path.

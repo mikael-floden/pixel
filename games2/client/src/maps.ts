@@ -25,17 +25,45 @@ export interface World {
   props?: WorldProp[];
   /** maps2 world@2: elevated walkable slabs (roofs, bridge decks). */
   decks?: Deck[];
+  /** maps3: the world's own projection (see geometryFor). Absent on v1/v2. */
+  iso?: IsoGeometry;
+  /** maps3: the grounds the world declares liquid. */
+  liquids?: string[];
+  /** maps3: per-cell wall-BODY override, keyed row*width+col. */
+  wallSides?: Record<number, string>;
+  /** maps3: off-grid set dressing (scenery3 draws it). */
+  scenery?: { piece: string; x: number; y: number; hflip?: boolean; lit?: boolean }[];
 }
 
-import { ISO_DX, ISO_DY, LEVEL_PX, WorldCell, WorldProp, Deck, parseWorld } from "@nangijala/shared";
+import { ISO_DX, ISO_DY, LEVEL_PX, isoOf, WorldCell, WorldProp, Deck, parseWorld } from "@nangijala/shared";
+import type { IsoGeometry } from "@nangijala/shared";
 import { gameUrl, resolveStagingBase, fetchSoon } from "./staging";
 
 export type { WorldProp, Deck };
+
+/** True when this world is a `pixel-maps3/world@1` world: cells name a ground
+ * TYPE and no art, and the art is resolved at draw time (tiles3). The `iso`
+ * field is the marker because parseWorld3 is the only producer of it. */
+export function isMaps3World(world: World): boolean {
+  return !!world.iso;
+}
 
 // maps2/tiles2 geometry: top diamond 30px×64px, grid steps dx=32/dy=15, one
 // elevation level = 16px face (LEVEL_PX). dx/dy live in shared/ (ISO_DX/ISO_DY)
 // because screen-relative input math on the server must use the same ratio.
 export const MAP_GEOMETRY = { tile: 64, dx: ISO_DX, dy: ISO_DY, lh: LEVEL_PX, margin: 8 };
+
+/** THE GEOMETRY A WORLD DRAWS AT. `MAP_GEOMETRY` is the DEFAULT (tiles2's
+ * 32/15/16); a maps3 world publishes its own `iso` (32/14/15) through
+ * `parseWorld3`, and every projection in the client reads THIS rather than the
+ * module constant. A world@1/world@2 world has no `iso`, so it gets exactly the
+ * object above and its pixels cannot move. */
+export type MapGeometry = typeof MAP_GEOMETRY;
+export function geometryFor(world?: { iso?: IsoGeometry } | null): MapGeometry {
+  const g = isoOf(world);
+  if (g.dx === MAP_GEOMETRY.dx && g.dy === MAP_GEOMETRY.dy && g.lh === MAP_GEOMETRY.lh) return MAP_GEOMETRY;
+  return { ...MAP_GEOMETRY, dx: g.dx, dy: g.dy, lh: g.lh };
+}
 
 // The default world when the player hasn't picked one — the_island2, the world
 // closest to the real game (maintainer 2026-07-23). It's the preselected pick on
@@ -45,8 +73,39 @@ export const MAP_GEOMETRY = { tile: 64, dx: ISO_DX, dy: ISO_DY, lh: LEVEL_PX, ma
 // built by scripts/build-worlds.mjs).
 export const DEFAULT_WORLD = "the_island2";
 
+/* -- WHICH TREE A WORLD LIVES IN ------------------------------------------- */
+// `maps2/worlds` holds world@1/world@2; `maps2/worlds3` holds
+// pixel-maps3/world@1 (semantics only — tiles3 resolves its art at draw time).
+// Both parse through the same `parseWorld`, so the tree is the ONLY difference
+// the client has to carry, and it carries it here so every world-file URL in
+// the client comes from one place.
+const WORLD_ROOT_DEFAULT = "maps2/worlds";
+
+// Name -> tree, learned from worlds.json / the staging policy at boot. A name
+// nobody registered answers with the DEFAULT root, which is byte-for-byte the
+// URL this module built before worlds3 existed — so a stale caller, a probe or
+// a remembered v2 world is unaffected.
+const worldRoots = new Map<string, string>();
+
+/** Record a world's tree. Called by loadWorldsList/stagingWorlds as the picker
+ *  learns them; harmless to call twice with the same value. */
+export function setWorldRoot(name: string, root: string | null | undefined): void {
+  if (root && /^maps2\/worlds3?$/.test(root)) worldRoots.set(name, root);
+}
+
+export function worldRoot(name: string): string {
+  return worldRoots.get(name) ?? WORLD_ROOT_DEFAULT;
+}
+
+/** Served URL for one file of one world. Goes through gameUrl at the call
+ *  sites (this returns the IMAGE-relative form, which gameUrl maps to the CDN
+ *  when a staging world is active). */
+export function worldFileUrl(name: string, file: string): string {
+  return `/assets/${worldRoot(name)}/${name.replace(/[^a-z0-9_-]/gi, "")}/${file}`;
+}
+
 export function worldUrl(name: string): string {
-  return `/assets/maps2/worlds/${name.replace(/[^a-z0-9_-]/gi, "")}/world.json`;
+  return worldFileUrl(name, "world.json");
 }
 
 export async function loadWorld(name: string = DEFAULT_WORLD): Promise<World | null> {
@@ -72,7 +131,7 @@ export async function loadWorld(name: string = DEFAULT_WORLD): Promise<World | n
 export type PlaceLookup = { at(cx: number, cy: number): string | null; ids: string[] };
 
 export async function loadPlaces(name: string = DEFAULT_WORLD): Promise<PlaceLookup | null> {
-  const url = gameUrl(`/assets/maps2/worlds/${name.replace(/[^a-z0-9_-]/gi, "")}/places.json`);
+  const url = gameUrl(worldFileUrl(name, "places.json"));
   try {
     const res = await fetch(url);
     if (!res.ok) return null;
@@ -107,6 +166,9 @@ export interface WorldInfo {
   /** Not in this image at all — joined via the staging path (staging.ts
    * client-side, WorldRoom's GitHub fallback server-side). */
   staging?: boolean;
+  /** The tree this world's files live in: "maps2/worlds" (world@1/@2, the
+   * default and therefore omitted) or "maps2/worlds3" (pixel-maps3). */
+  root?: string;
 }
 
 /** The list of playable worlds for the selector, DEFAULT_WORLD first. Falls back
@@ -118,6 +180,10 @@ export async function loadWorldsList(): Promise<WorldInfo[]> {
     if (res.ok) {
       const list = (await res.json()) as WorldInfo[];
       if (Array.isArray(list) && list.length) {
+        // Register every entry's tree BEFORE any filtering — worldUrl() and the
+        // sidecar fetches read this map, and a world dropped from the offered
+        // list can still be re-entered from `ml-last-choice`.
+        for (const w of list) setWorldRoot(w.name, w.root);
         // DEV MAPS are shipped so they WORK (the server reads world.json off
         // disk — a map the image lacks cannot be joined at all) but they are
         // not the game. An end user is offered only `userWorlds`; a signed-in
@@ -156,16 +222,26 @@ async function stagingWorlds(have: Set<string>): Promise<WorldInfo[]> {
     if (!base) return [];
     const res = await fetchSoon(`${base}games2/config/publish.json`, 2500);
     if (!res.ok) return [];
-    const policy = (await res.json()) as { devWorlds?: string[] };
-    return (policy.devWorlds ?? [])
-      .filter((n) => typeof n === "string" && /^[a-z0-9_-]+$/i.test(n) && !have.has(n))
-      .map((n) => ({
-        name: n,
-        label: n.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-        dev: true,
-        staging: true,
-        preview: null,
-      }));
+    // TWO LISTS, ONE PER TREE. `devWorlds` names maps2/worlds entries,
+    // `devWorlds3` names maps2/worlds3 (pixel-maps3) ones — kept apart because
+    // the name alone cannot say which directory holds the world, and both the
+    // client's fetches and shipset's policy check need to know.
+    const policy = (await res.json()) as { devWorlds?: string[]; devWorlds3?: string[] };
+    const from = (names: unknown, root: string): WorldInfo[] =>
+      (Array.isArray(names) ? names : [])
+        .filter((n): n is string => typeof n === "string" && /^[a-z0-9_-]+$/i.test(n) && !have.has(n))
+        .map((n) => {
+          setWorldRoot(n, root);
+          return {
+            name: n,
+            label: n.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+            dev: true,
+            staging: true,
+            preview: null,
+            root,
+          };
+        });
+    return [...from(policy.devWorlds, "maps2/worlds"), ...from(policy.devWorlds3, "maps2/worlds3")];
   } catch {
     return [];
   }
@@ -335,7 +411,7 @@ export function drawOrder(world: World): { x: number; y: number; cell: Cell }[] 
 }
 
 export function canvasSize(world: World): { w: number; h: number; ox: number; oy: number; maxLevel: number } {
-  const { dx, dy, lh, margin, tile } = MAP_GEOMETRY;
+  const { dx, dy, lh, margin, tile } = geometryFor(world);
   let maxLevel = 0;
   for (const row of world.rows) for (const c of row) if (c.l > maxLevel) maxLevel = c.l;
   return {

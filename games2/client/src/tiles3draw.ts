@@ -1,0 +1,943 @@
+/* TILES 3.0 DRAW LAYER — the ordered blits a resolved cell paints, and the two
+ * PIXEL operations the resolver deliberately only names.
+ *
+ * `tiles3.ts` answers "what draws on this cell" and stops at the edge of
+ * pixels: it reports a boundary as (Wang index, mask frame, plate A, plate B)
+ * and a `conform` plate as "64x64 art that is not plate geometry yet". Both
+ * need a raster. This module owns exactly those two rasters, the texture KEYS
+ * everything lands under, and the translation from a resolved window to a list
+ * of draw operations a streaming renderer can execute per cell.
+ *
+ * THE SPEC is `maps2/pipeline/render3.py` (`composed_boundary`,
+ * `conformed_plate`) plus `tiles/patterns/index.json`, which publishes the
+ * compose recipe and the seam the renderer must not skip. Where render3 and the
+ * pattern library disagree the disagreement is named at the line it affects.
+ *
+ * NO SCENE STATE, NO PHASER IMPORT, NO DOM TYPES. Everything this module needs
+ * from the host is declared structurally below (`TextureManagerLike`,
+ * `CanvasLike`), so a Phaser `TextureManager` and an `HTMLCanvasElement` both
+ * satisfy it by shape and the whole module is provable under node with a
+ * ~30-line fake. The pixel core (`composeBoundary`, `conformPlate`) touches no
+ * host at all: it is `Pixels` in, `Pixels` out.
+ *
+ * WHAT IT DRAWS IS WHAT tiles3.ts RESOLVES, and render3 has moved on since the
+ * parity fixture that pins the resolver: it now dresses a wall CAP and a LIQUID
+ * with the maintainer's set through `top_face_only(surface())`, it has SLOPE
+ * tiles (tiles/slopes), its fade band is a probabilistic Chebyshev scan from
+ * ring 1 where the resolver's is an axis scan from ring 2, its storey course is
+ * keyed on the wall's side rather than the cell's ground, and its DETAIL_FREQ
+ * is 1/56 against the resolver's 1/48. Every one of those is a RESOLUTION
+ * decision and belongs in tiles3.ts and its fixture, not here: this module
+ * paints whatever comes out. When the resolver catches up, nothing in this file
+ * changes — a new art kind arrives as another `PlateArt` and composes the same.
+ *
+ * THE CACHE LAW (CLAUDE.md, absolute). Every key here is derived from the
+ * CONTENT that went into the texture — the ground pair, the mask frame, the
+ * plate identities, the palette colour — never from a cell coordinate and never
+ * from a mutable name. Two cells with the same inputs share one texture; a
+ * changed input mints a NEW key and cannot overwrite the old one. That is also
+ * what makes eviction safe: an evicted key rebuilt later is byte-identical, so
+ * a page holding the old texture and a page rebuilding it can never disagree.
+ */
+
+import {
+  DX,
+  DY,
+  TILE,
+  TOP_Y,
+  PLATE_H,
+  hexRGB,
+  type PatternsDoc,
+  type Tiles3Boundary,
+  type Tiles3Cell,
+  type Tiles3DeckCell,
+  type Tiles3Window,
+  type TileArt,
+} from "./tiles3";
+
+/* -- pixels ----------------------------------------------------------------- */
+
+/** A decoded RGBA raster, row-major, 4 bytes per pixel — the currency of the
+ *  pixel core. Same layout as `ImageData` and as `imagelib.mjs`'s `imgRGBA`, so
+ *  either side can be handed straight in. */
+export interface Pixels {
+  w: number;
+  h: number;
+  data: Uint8ClampedArray;
+}
+
+export function newPixels(w: number, h: number): Pixels {
+  return { w, h, data: new Uint8ClampedArray(w * h * 4) };
+}
+
+/** Python's `numpy.rint`: HALF TO EVEN. NOT `Math.round`, and the difference is
+ *  visible: at the seam's tone 0.82 the channel values 25/75/125/175/225 land
+ *  exactly on .5, where rint gives the even neighbour and Math.round gives the
+ *  larger one. The wiki's own compose gate discriminates on precisely those
+ *  values (wiki/tools/check-transcompose.mjs), so a Math.round here would make
+ *  every game screenshot argue with the wiki's preview of the same tile. */
+export function rint(v: number): number {
+  const f = Math.floor(v);
+  const d = v - f;
+  if (d > 0.5) return f + 1;
+  if (d < 0.5) return f;
+  return f % 2 === 0 ? f : f + 1;
+}
+
+/* -- the pattern library ---------------------------------------------------- */
+
+/** `tiles/patterns/*` as the draw layer needs it: the silhouette that IS every
+ *  plate's and every composed tile's alpha, the Wang mask sheet, and the seam
+ *  (border) sheet. All three are strictly binary alpha — measured 0 partial
+ *  pixels in all of masks.webp (289,728 set), borders.webp (29,032) and
+ *  silhouette.webp (2,012) — so the sampling threshold cannot matter and both
+ *  of the producers' thresholds (`> 127` in render3, `> 0` in
+ *  transition_patterns.border_of) give the same bits. */
+export interface PatternSheets {
+  /** Frame size, from the index — 64x46. */
+  fw: number;
+  fh: number;
+  /** Frames per sheet row — 16, one per Wang index. */
+  cols: number;
+  /** The silhouette's alpha byte per pixel, `fw*fh` long. Copied verbatim into
+   *  a composed tile's alpha: render3 assigns the CHANNEL, not a threshold. */
+  sil: Uint8Array;
+  /** True where the composed tile takes side_b. `frame` is the FLAT frame index
+   *  `pattern.row * cols + wangIndex` that `Tiles3.maskFrame()` returns. */
+  maskBit(frame: number, x: number, y: number): boolean;
+  /** True on the 1px seam. Empty on frames 0 and 15 of every pattern, so a
+   *  field of one ground carries no marks and never reads as a grid. */
+  borderBit(frame: number, x: number, y: number): boolean;
+  /** `border.tone` — each side darkened to this much of ITS OWN colour. */
+  tone: number;
+  /** The library's top face (`transition_render.top_face` over the
+   *  silhouette), and its complement inside the silhouette: the wall. A
+   *  conformed plate fills the wall from the ground's palette. */
+  libTop: Uint8Array;
+  libWall: Uint8Array;
+}
+
+/** The three sheets a draw layer must have, as repo-relative paths, straight
+ *  out of the patterns index — never spelled out here, because the index is
+ *  what a republish changes. */
+export function patternSheetPaths(doc: PatternsDoc): { silhouette: string; masks: string; border: string } {
+  const d = doc as unknown as {
+    silhouette?: { file?: string };
+    masks?: { file?: string };
+    border?: { file?: string };
+  };
+  return {
+    silhouette: d.silhouette?.file ?? "tiles/patterns/silhouette.webp",
+    masks: d.masks?.file ?? "tiles/patterns/masks.webp",
+    border: d.border?.file ?? "tiles/patterns/borders.webp",
+  };
+}
+
+/** THE TOP FACE FROM A SILHOUETTE, not from a rhombus equation — the port of
+ *  `transition_render.top_face`. The wall is a vertical extrusion of constant
+ *  depth, so per column the top face is everything above the last WALL_D rows.
+ *  The equation this replaces was a pixel short at every extreme and counted a
+ *  whole ring of genuine top face as wall. */
+export const WALL_D = 17;
+
+export function topFaceMask(w: number, h: number, alpha: (i: number) => boolean): Uint8Array {
+  const out = new Uint8Array(w * h);
+  for (let x = 0; x < w; x++) {
+    let lo = -1;
+    let hi = -1;
+    for (let y = 0; y < h; y++) {
+      if (!alpha(y * w + x)) continue;
+      if (lo < 0) lo = y;
+      hi = y;
+    }
+    if (lo < 0) continue;
+    /* `m[ys.min() : ys.max()-WALL_D+1]` — a numpy slice, so the last row kept
+     * is ys.max()-WALL_D and an empty range is empty, not inverted. */
+    for (let y = lo; y <= hi - WALL_D; y++) if (alpha(y * w + x)) out[y * w + x] = 1;
+  }
+  return out;
+}
+
+/** Build the sheets from three decoded rasters. `masks` and `border` are the
+ *  whole 1024x828 sheets; frames are cut by index. */
+export function patternSheets(doc: PatternsDoc, silhouette: Pixels, masks: Pixels, border: Pixels): PatternSheets {
+  const d = doc as unknown as {
+    masks?: { frame_w?: number; frame_h?: number; cols?: number };
+    border?: { tone?: number };
+  };
+  const fw = d.masks?.frame_w ?? TILE;
+  const fh = d.masks?.frame_h ?? PLATE_H;
+  const cols = d.masks?.cols ?? 16;
+  const tone = d.border?.tone ?? 0.82;
+  if (silhouette.w !== fw || silhouette.h !== fh)
+    throw new Error(`tiles3draw: silhouette is ${silhouette.w}x${silhouette.h}, the index declares ${fw}x${fh}`);
+  const sil = new Uint8Array(fw * fh);
+  for (let i = 0; i < fw * fh; i++) sil[i] = silhouette.data[i * 4 + 3];
+  const libTop = topFaceMask(fw, fh, (i) => sil[i] > 0);
+  const libWall = new Uint8Array(fw * fh);
+  for (let i = 0; i < fw * fh; i++) libWall[i] = sil[i] > 0 && !libTop[i] ? 1 : 0;
+  const bit = (sheet: Pixels, frame: number, x: number, y: number): boolean => {
+    const r0 = Math.floor(frame / cols) * fh;
+    const c0 = (frame % cols) * fw;
+    const px = c0 + x;
+    const py = r0 + y;
+    if (px < 0 || py < 0 || px >= sheet.w || py >= sheet.h) return false;
+    return sheet.data[(py * sheet.w + px) * 4 + 3] > 127;
+  };
+  return {
+    fw,
+    fh,
+    cols,
+    sil,
+    tone,
+    libTop,
+    libWall,
+    maskBit: (frame, x, y) => bit(masks, frame, x, y),
+    borderBit: (frame, x, y) => bit(border, frame, x, y),
+  };
+}
+
+/* -- 1. THE COMPOSED BOUNDARY ----------------------------------------------- */
+
+/** THE ONE GENUINELY NEW THING IN V3. In world@1 a boundary between two grounds
+ *  was a pre-baked transition tile — one blit, one file per pair. Here it is
+ *  COMPOSED, which is why 18 boundary shapes x 16 Wang masks over per-ground
+ *  plates cover all 105 pairs with no per-pair art at all:
+ *
+ *      out.rgb   = mask ? plateB : plateA      (render3.composed_boundary)
+ *      out.alpha = the published silhouette
+ *      then every SEAM pixel is darkened to `tone` of what it already is.
+ *
+ *  THE SEAM IS NOT OPTIONAL, and it is the one place render3 and the tiles
+ *  library disagree: `composed_boundary` draws the two-line version and never
+ *  reads borders.webp, while the library that publishes the sheet states the
+ *  rule in the file itself — "THE SEAM, 1px on each side, and it is NOT
+ *  optional - a transition without it is a 0-100 hard cut, which is not what
+ *  the generator drew" (tiles/patterns/index.json, maintainer verdict
+ *  2026-08-27), and the wiki draws it that way in the preview the maintainer
+ *  reviews from. The library wins: the game must draw what he approved, and a
+ *  render3 still-render is not what players look at. Pass `seam: false` to get
+ *  render3's literal output for a pixel diff against it.
+ *
+ *  ONE MASK SERVES BOTH SIDES because the seam DARKENS what is already there —
+ *  each side comes out a darker shade of ITS OWN ground, never a blend. The
+ *  border frames are symmetric under the polarity flip (0 of 423,936 px differ,
+ *  measured across all 18 patterns), so a consumer that flips the mask frame
+ *  must NOT flip the border.
+ *
+ *  Both plates must already be plate geometry (fw x fh). A raw 64x64 review
+ *  tile substituted here puts 928 of 2012 px in the wrong alpha, silently —
+ *  run it through `conformPlate` first, which is what `PlateArt.kind ===
+ *  "conform"` is telling the loader. */
+export function composeBoundary(
+  sheets: PatternSheets,
+  frame: number,
+  plateA: Pixels,
+  plateB: Pixels,
+  opts?: { seam?: boolean },
+): Pixels {
+  const { fw, fh, sil, tone } = sheets;
+  for (const [name, p] of [
+    ["a", plateA],
+    ["b", plateB],
+  ] as const)
+    if (p.w !== fw || p.h !== fh)
+      throw new Error(`tiles3draw: plate ${name} is ${p.w}x${p.h}, composition needs ${fw}x${fh} plate geometry`);
+  const seam = opts?.seam !== false;
+  const out = newPixels(fw, fh);
+  const o = out.data;
+  for (let y = 0; y < fh; y++) {
+    for (let x = 0; x < fw; x++) {
+      const i = y * fw + x;
+      const a = sil[i];
+      /* RGB IS ZERO OUTSIDE THE SILHOUETTE. render3 leaves whatever the plates
+       * held there; it is invisible either way (alpha 0), and a canvas texture
+       * round-trips premultiplied and would zero it anyway — so zeroing here is
+       * what the GPU sees, stated. */
+      if (a === 0) continue;
+      const src = sheets.maskBit(frame, x, y) ? plateB.data : plateA.data;
+      let r = src[i * 4];
+      let g = src[i * 4 + 1];
+      let b = src[i * 4 + 2];
+      if (seam && sheets.borderBit(frame, x, y)) {
+        r = rint(r * tone);
+        g = rint(g * tone);
+        b = rint(b * tone);
+      }
+      o[i * 4] = r;
+      o[i * 4 + 1] = g;
+      o[i * 4 + 2] = b;
+      o[i * 4 + 3] = a;
+    }
+  }
+  return out;
+}
+
+/* -- 2. CONFORMING 64x64 ART INTO PLATE GEOMETRY ---------------------------- */
+
+/** A fixed 64x46 window ANCHORED AT THE ART'S TOP ROW — the port of
+ *  `transition_post._crop_to_art`. Not the alpha bbox: a tile whose lowest row
+ *  happens to be empty would come out 45 rows and the composer indexes base and
+ *  mask with one mask, so a single row of disagreement is an index error. Rows
+ *  past the source are transparent, which is correct for the row a short tile
+ *  is missing. */
+export function cropToArt(src: Pixels, fw: number, fh: number): Pixels {
+  let ymin = -1;
+  for (let y = 0; y < src.h && ymin < 0; y++)
+    for (let x = 0; x < src.w; x++)
+      if (src.data[(y * src.w + x) * 4 + 3] > 0) {
+        ymin = y;
+        break;
+      }
+  const out = newPixels(fw, fh);
+  if (ymin < 0) return out;
+  for (let y = 0; y < fh; y++) {
+    const sy = ymin + y;
+    if (sy >= src.h) break;
+    for (let x = 0; x < fw && x < src.w; x++) {
+      const si = (sy * src.w + x) * 4;
+      const di = (y * fw + x) * 4;
+      out.data[di] = src.data[si];
+      out.data[di + 1] = src.data[si + 1];
+      out.data[di + 2] = src.data[si + 2];
+      out.data[di + 3] = src.data[si + 3];
+    }
+  }
+  return out;
+}
+
+/** THE LAWFUL CONFORMER — `transition_patterns.plate()` followed by
+ *  `render3.conformed_plate`'s wall fill, in one pass.
+ *
+ *  WHY IT EXISTS: `tiles/plates` is built only from APPROVED REVIEW CELLS, but
+ *  104 of the 340 members in live/tuning/base_tile_sets.json point at art from
+ *  tiles/tops and tiles/base_candidates, for which no plate exists. Using that
+ *  art verbatim is NOT the fix — a review tile is 64x64 with its own ragged
+ *  silhouette, a plate is 64x46 with the library's byte-exact one, and straight
+ *  composition puts 928 of 2012 px in the wrong alpha (tiles agent, measured).
+ *
+ *  THE STEPS, each of which is load-bearing:
+ *   1. crop to the fixed window at the art's top row (`cropToArt`);
+ *   2. per column, extend the art's own colour UP from the first top-face row
+ *      and DOWN from the last opaque row, so every silhouette pixel outside the
+ *      source's ragged edge has a real colour instead of landing on nothing;
+ *   3. the library's top face is ONE ROW DEEPER than a review tile's, and that
+ *      row is taken from the source's own SURFACE, not from what it drew there
+ *      — which is its BRIM, the overhang belonging to the side material. Left
+ *      alone it ships the neighbour's colour inside the ground: 234,789 px,
+ *      6.9% of all top-face pixels, and after tiling it reads as a DIAMOND
+ *      WIREFRAME over any textured field;
+ *   4. a column with no art at all is filled from the NEAREST column that has
+ *      some, ties going LEFT (Python's `min` keeps the first minimum in
+ *      ascending order). Skipping it and setting alpha anyway ships an opaque
+ *      black stripe;
+ *   5. alpha := the published silhouette, wall := the ground's palette wall
+ *      colour, rgb := 0 outside the silhouette.
+ *
+ *  Verified by its author over a review tile: reproduces the published plate
+ *  byte for byte, 0 px differing, alpha == the silhouette, 2012 opaque. */
+export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readonly [number, number, number]): Pixels {
+  const { fw, fh, sil, libTop, libWall } = sheets;
+  const a = cropToArt(src, fw, fh);
+  const out = newPixels(fw, fh);
+  out.data.set(a.data);
+  const opaque = (i: number): boolean => a.data[i * 4 + 3] > 0;
+  const top = topFaceMask(fw, fh, opaque);
+  const empty: number[] = [];
+  const copyRGB = (di: number, si: number) => {
+    out.data[di * 4] = a.data[si * 4];
+    out.data[di * 4 + 1] = a.data[si * 4 + 1];
+    out.data[di * 4 + 2] = a.data[si * 4 + 2];
+  };
+  for (let x = 0; x < fw; x++) {
+    let tLo = -1;
+    let tHi = -1;
+    let cLo = -1;
+    let cHi = -1;
+    for (let y = 0; y < fh; y++) {
+      const i = y * fw + x;
+      if (top[i]) {
+        if (tLo < 0) tLo = y;
+        tHi = y;
+      }
+      if (opaque(i)) {
+        if (cLo < 0) cLo = y;
+        cHi = y;
+      }
+    }
+    if (tLo < 0 || cLo < 0) {
+      empty.push(x);
+      continue;
+    }
+    for (let y = 0; y < tLo; y++) copyRGB(y * fw + x, tLo * fw + x);
+    for (let y = cHi + 1; y < fh; y++) copyRGB(y * fw + x, cHi * fw + x);
+    for (let y = tHi + 1; y < fh; y++) if (libTop[y * fw + x]) copyRGB(y * fw + x, tHi * fw + x);
+  }
+  if (empty.length) {
+    const isEmpty = new Set(empty);
+    for (const x of empty) {
+      let srcX = -1;
+      let best = Infinity;
+      for (let c = 0; c < fw; c++) {
+        if (isEmpty.has(c)) continue;
+        const d = Math.abs(c - x);
+        if (d < best) {
+          best = d;
+          srcX = c;
+        }
+      }
+      if (srcX < 0) continue;
+      for (let y = 0; y < fh; y++) {
+        const di = (y * fw + x) * 4;
+        const si = (y * fw + srcX) * 4;
+        out.data[di] = out.data[si];
+        out.data[di + 1] = out.data[si + 1];
+        out.data[di + 2] = out.data[si + 2];
+      }
+    }
+  }
+  for (let i = 0; i < fw * fh; i++) {
+    if (libWall[i]) {
+      out.data[i * 4] = wallRGB[0];
+      out.data[i * 4 + 1] = wallRGB[1];
+      out.data[i * 4 + 2] = wallRGB[2];
+    }
+    if (sil[i] > 0) {
+      out.data[i * 4 + 3] = 255;
+    } else {
+      out.data[i * 4] = 0;
+      out.data[i * 4 + 1] = 0;
+      out.data[i * 4 + 2] = 0;
+      out.data[i * 4 + 3] = 0;
+    }
+  }
+  return out;
+}
+
+/** A liquid's flat-colour diamond — render3's `flat_tile` for the four liquid
+ *  grounds, which never show a wall. 64x64 with the diamond hung from TOP_Y, so
+ *  it pastes at the same offset a review tile does. */
+export function liquidDiamond(rgb: readonly [number, number, number]): Pixels {
+  const out = newPixels(TILE, TILE);
+  for (let y = 0; y < 2 * DY; y++) {
+    const half = Math.trunc(DX * (1 - Math.abs(y - DY) / DY));
+    for (let x = DX - half; x < DX + half; x++) {
+      const i = ((TOP_Y + y) * TILE + x) * 4;
+      out.data[i] = rgb[0];
+      out.data[i + 1] = rgb[1];
+      out.data[i + 2] = rgb[2];
+      out.data[i + 3] = 255;
+    }
+  }
+  return out;
+}
+
+/* -- keys ------------------------------------------------------------------- */
+
+/** Texture key for a repo-relative art file. THE SAME `t2:<path>` NAMESPACE the
+ *  world@1/world@2 renderer already uses (client/src/maps.ts `pathTileKey`),
+ *  deliberately: a tiles3 plate and a tiles2 tile are both identified by their
+ *  path, a path can never collide across the two, and every existing draw site
+ *  that resolves a texture by path keeps working with no branch on schema.
+ *  Kept as its own function rather than an import so this module stays free of
+ *  the DOM-typed graph maps.ts pulls in — the two definitions are one line and
+ *  the parity is asserted in the gate. */
+export function artKey(path: string): string {
+  return "t2:" + path;
+}
+
+/** Repo-relative path -> served URL. `/assets/<path>` is what the game image
+ *  publishes; `gameUrl` (staging.ts) rewrites it to the CDN for a staged world
+ *  and `withV` pins it to the build sha. Both are injected rather than imported
+ *  for the same reason `artKey` is inlined; `windowArtLoads` takes them and
+ *  WorldScene passes the real pair. */
+export function assetPath(path: string): string {
+  return "/assets/" + path.replace(/^\/+/, "");
+}
+
+/** Any resolved surface that names a file: a `PlateArt`, or the non-liquid arm
+ *  of a `FieldArt`. A liquid is painted and never comes through here. */
+export interface PlateLike {
+  kind: string;
+  path: string;
+}
+
+/** THE CONTENT IDENTITY OF ONE PLATE — what actually went into its pixels, and
+ *  therefore what a composed texture's key must carry. A published plate or a
+ *  clean plate is fully identified by its path; a CONFORMED plate is identified
+ *  by its path AND its ground, because the ground supplies the wall colour and
+ *  the same art conformed for two grounds is two different rasters. */
+export function plateSourceId(art: PlateLike, ground: string): string {
+  return art.kind === "conform" ? `c:${ground}:${art.path}` : `p:${art.path}`;
+}
+
+/** Where a plate's DRAWABLE texture lands. A published/clean plate is drawn
+ *  straight from its loaded file, so it keeps the plain art key and is never
+ *  copied; a conformed plate is a derived raster and gets its own. */
+export function plateKey(art: PlateLike, ground: string): string {
+  return art.kind === "conform" ? `t3c:${ground}|${art.path}` : artKey(art.path);
+}
+
+/** The composed boundary's key: mask frame + both plate identities + the pass.
+ *  NOT THE CELL. Measured on the_game: 6,266 boundaries share 2,248
+ *  compositions (2.79x), and a 64x64-cell streaming window's 192 share 123
+ *  (1.56x) — a per-cell key would rasterise every one of them from scratch, and
+ *  a cell coordinate in a key is the cache bug this repo does not survive.
+ *
+ *  SIDES ARE NOT SORTED HERE. `Tiles3Boundary` already carries them in the
+ *  library's canonical `side_order`, so which ground is side_b is decided
+ *  upstream; sorting the key would let two callers agree on a key while drawing
+ *  the boundary opposite ways round. */
+export function boundaryKey(frame: number, idA: string, idB: string, seam = true): string {
+  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}`;
+}
+
+/** A painted liquid diamond, keyed by the colour that IS its content. */
+export function liquidKey(rgb: readonly [number, number, number]): string {
+  return `t3l:${rgb[0]},${rgb[1]},${rgb[2]}`;
+}
+
+/** The boundary key for a resolved boundary, or null when the pattern library
+ *  has no frame for it (`maskFrame` null — an unpublished pattern). A caller
+ *  that gets null draws nothing there and the two flats meet hard, which is the
+ *  pre-3.0 look, not a hole. */
+export function boundaryKeyFor(b: Tiles3Boundary, seam = true): string | null {
+  if (b.maskFrame === null) return null;
+  return boundaryKey(b.maskFrame, plateSourceId(b.plateA, b.a), plateSourceId(b.plateB, b.b), seam);
+}
+
+/* -- the load list ---------------------------------------------------------- */
+
+/** One art file to load, and the key it must land under. */
+export interface Tiles3Load {
+  /** Texture key — `artKey(path)`. */
+  key: string;
+  /** Repo-relative path, for diagnostics and for the atlas index. */
+  path: string;
+  /** The URL to fetch, already routed through staging + the version pin. */
+  url: string;
+}
+
+export interface UrlRoute {
+  /** staging.ts `gameUrl` — identity for every normal player, the CDN base for
+   *  a staged world. */
+  gameUrl?: (url: string) => string;
+  /** assetver.ts `withV` — the deploy sha pin. */
+  withV?: (url: string) => string;
+}
+
+const routeUrl = (path: string, r?: UrlRoute): string => {
+  const g = r?.gameUrl ?? ((u: string) => u);
+  const v = r?.withV ?? ((u: string) => u);
+  return v(g(assetPath(path)));
+};
+
+/** EVERY ART FILE A WINDOW OF CELLS NEEDS, and the key each lands under —
+ *  the whole load list for a streaming renderer, deduplicated.
+ *
+ *  It includes the SOURCE art of a `conform` plate (the conformed raster is
+ *  derived from it at build time, so the file itself must be resident) and the
+ *  source plates of every boundary. It does NOT include the three pattern
+ *  sheets: those are world-independent and load once at boot — see
+ *  `patternSheetLoads`. A liquid cell contributes nothing; its diamond is
+ *  painted, not fetched. */
+export function windowArtLoads(win: Tiles3Window, route?: UrlRoute): Tiles3Load[] {
+  const out = new Map<string, Tiles3Load>();
+  const add = (path: string | undefined | null) => {
+    if (!path || out.has(path)) return;
+    out.set(path, { key: artKey(path), path, url: routeUrl(path, route) });
+  };
+  for (const c of win.cells) {
+    if (c.art && c.art.kind !== "liquid") add(c.art.path);
+    if (c.wall) for (const s of c.wall.stack) add(s.tile.path);
+  }
+  for (const b of win.boundaries) {
+    add(b.plateA.path);
+    add(b.plateB.path);
+  }
+  for (const d of win.decks) for (const s of d.stack) add(s.tile.path);
+  return [...out.values()];
+}
+
+/** The pattern library's three sheets, which every composed boundary needs and
+ *  no world varies. Load once at boot, before the first boundary composes. */
+export function patternSheetLoads(doc: PatternsDoc, route?: UrlRoute): Tiles3Load[] {
+  const p = patternSheetPaths(doc);
+  return [p.silhouette, p.masks, p.border].map((path) => ({
+    key: artKey(path),
+    path,
+    url: routeUrl(path, route),
+  }));
+}
+
+/* -- draw operations -------------------------------------------------------- */
+
+/** One blit. `sx/sy/sw/sh` is the SOURCE crop — a fade is the top
+ *  `TOP_Y + 2*DY + 2` rows of a 64x64 file and nothing below — and `x/y` is the
+ *  destination in the frame's own pixel space (`Frame.canvas`), which a
+ *  streaming renderer offsets by its own window origin. */
+export interface Tiles3Blit {
+  key: string;
+  x: number;
+  y: number;
+  sx: number;
+  sy: number;
+  sw: number;
+  sh: number;
+  /** What produced this op — for the depth sort, the occluder pass and QA. */
+  role: "surface" | "wall" | "boundary" | "deck";
+}
+
+/** The ops for one resolved cell, in render3's own order: a field cell is ONE
+ *  op; a wall cell is its stack, lowest exposed storey first and the cap last,
+ *  so the courses build a solid block under the top. A liquid's diamond is a
+ *  painted texture keyed by its colour (`liquidKey`), which is why nothing
+ *  downstream needs a special case for it. */
+export function cellOps(cell: Tiles3Cell): Tiles3Blit[] {
+  if (cell.kind === "field") {
+    const art = cell.art;
+    if (!art) return [];
+    const key = art.kind === "liquid" ? liquidKey(art.topRGB) : plateKey(art, cell.ground);
+    return [{ key, x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: art.w, sh: art.h, role: "surface" }];
+  }
+  const w = cell.wall;
+  if (!w) return [];
+  return w.stack.map((s) => tileBlit(s.tile, cell.sx, s.y, "wall"));
+}
+
+/** A deck's slab: same-over-same courses down to its underside, cap on top. */
+export function deckOps(d: Tiles3DeckCell): Tiles3Blit[] {
+  return d.stack.map((s) => tileBlit(s.tile, d.sx, s.y, "deck"));
+}
+
+/** The composed boundary, on the corner lattice over the flats. Null when the
+ *  pattern is unpublished — see `boundaryKeyFor`. */
+export function boundaryOp(b: Tiles3Boundary, seam = true): Tiles3Blit | null {
+  const key = boundaryKeyFor(b, seam);
+  if (!key) return null;
+  return { key, x: b.sx, y: b.sy, sx: 0, sy: 0, sw: b.w, sh: b.h, role: "boundary" };
+}
+
+function tileBlit(t: TileArt, x: number, y: number, role: Tiles3Blit["role"]): Tiles3Blit {
+  /* A wall or deck course that names no file is a painted liquid diamond — the
+   * resolver's `flat_tile` for a liquid ground, which always carries `topRGB`.
+   * The grey is render3's own fallback for a ground with neither a palette top
+   * nor a base colour, and reaching it means ground_types is incomplete. */
+  const key = t.path ? artKey(t.path) : liquidKey(t.topRGB ?? [128, 128, 128]);
+  return { key, x, y, sx: 0, sy: 0, sw: t.w, sh: t.h, role };
+}
+
+/** THE WHOLE WINDOW in render3's pass order: every cell (already painter-sorted
+ *  back to front by the resolver), then the boundaries on the lattice above
+ *  them, then the decks. Scenery is not terrain and is not here.
+ *
+ *  This is the convenience path for an atlas build or a gate. A STREAMING
+ *  renderer should call `cellOps` per cell instead: this allocates one array
+ *  per cell and the whole-world sweep behind it is ~1s (measured, 512x512),
+ *  which is fine for a bake and not for a frame. */
+export function windowOps(win: Tiles3Window, seam = true): Tiles3Blit[] {
+  const out: Tiles3Blit[] = [];
+  for (const c of win.cells) for (const op of cellOps(c)) out.push(op);
+  for (const b of win.boundaries) {
+    const op = boundaryOp(b, seam);
+    if (op) out.push(op);
+  }
+  for (const d of win.decks) for (const op of deckOps(d)) out.push(op);
+  return out;
+}
+
+/* -- the texture factory ---------------------------------------------------- */
+
+/** Phaser's `Textures.FilterMode.NEAREST`, which is **1** — `LINEAR` is 0, so a
+ *  plausible-looking 0 here silently sets the exact filter this constant exists
+ *  to avoid (phaser/src/textures/const.js; the gate re-reads that file rather
+ *  than trusting this line). Inlined rather than imported so the module stays
+ *  Phaser-free and node-provable.
+ *
+ *  IT MUST BE SET EXPLICITLY ON EVERY CANVAS TEXTURE. `addCanvas` does NOT
+ *  inherit the game's `pixelArt` setting the way a loaded image does, and
+ *  LINEAR smears pixel art into a soft halo at any fractional camera zoom. This
+ *  repo has paid for that twice — see `ringTextureFor` and `initCoverSurfaces`
+ *  in WorldScene.ts, both of which carry the same note. */
+export const NEAREST = 1;
+
+export interface ImageDataLike {
+  readonly width: number;
+  readonly height: number;
+  readonly data: Uint8ClampedArray;
+}
+export interface Ctx2DLike {
+  createImageData(w: number, h: number): ImageDataLike;
+  putImageData(d: ImageDataLike, x: number, y: number): void;
+  getImageData(x: number, y: number, w: number, h: number): ImageDataLike;
+  drawImage(src: unknown, dx: number, dy: number): void;
+}
+/** Structurally satisfied by `HTMLCanvasElement`. */
+export interface CanvasLike {
+  width: number;
+  height: number;
+  getContext(id: "2d", opts?: unknown): Ctx2DLike | null;
+}
+/** Structurally satisfied by `Phaser.Textures.TextureManager`. */
+export interface TextureManagerLike {
+  exists(key: string): boolean;
+  get(key: string): { getSourceImage(): unknown } | undefined;
+  addCanvas(key: string, source: CanvasLike): { setFilter(mode: number): unknown } | null;
+  remove(key: string): unknown;
+}
+
+export interface Tiles3TexturesOpts {
+  textures: TextureManagerLike;
+  sheets: PatternSheets;
+  /** `tiles/ground_types.json .grounds` — the palette wall colour a conformed
+   *  plate fills with. */
+  groundTypes: Record<string, { palette?: { wall?: string; top?: string }; base_color?: string }>;
+  /** Defaults to `document.createElement("canvas")`. Injected so the whole
+   *  factory is provable under node. */
+  canvas?: (w: number, h: number) => CanvasLike;
+  /** Draw render3's literal two-line boundary instead of the library's seamed
+   *  one. For a pixel diff against render3 only — see `composeBoundary`. */
+  seam?: boolean;
+  /** Cap on live COMPOSED textures (boundaries + conformed plates + diamonds);
+   *  0 or absent means unbounded. Eviction is least-recently-used and is safe
+   *  ONLY because every key is content-derived: a rebuilt key is byte-identical
+   *  to the one dropped. Measured on the_game so a cap can be chosen honestly:
+   *  a 64x64-cell window peaks at 405 distinct compositions, a 96x96 one at
+   *  831, and the whole 512x512 world holds 2,248 — at 64x46 RGBA (11,776 B a
+   *  tile) that is 4.5 MB, 9.3 MB and 25.2 MB of canvas.
+   *
+   *  THE TRAP: eviction calls `textures.remove`, which pulls the texture out
+   *  from under any Sprite still pointing at it. Safe for a renderer that blits
+   *  into a RenderTexture and drops the reference; NOT safe while a live
+   *  GameObject holds the key. Leave it unbounded unless you know which. */
+  limit?: number;
+}
+
+export interface Tiles3TexturesStats {
+  /** Compositions actually rasterised. */
+  built: number;
+  /** Requests served by an already-registered texture. */
+  reused: number;
+  /** Live composed textures right now. */
+  live: number;
+  /** Textures dropped by the LRU. */
+  evicted: number;
+  /** Requests that could not build because a source texture was not loaded. */
+  missing: number;
+}
+
+/**
+ * THE COMPOSED-TEXTURE FACTORY. Give it a key's inputs; it returns the key,
+ * having built and registered the texture the first time and done nothing every
+ * time after. It holds no scene, no camera and no world — only its own cache —
+ * so the same instance serves the streaming renderer, the occluder pass and an
+ * atlas bake.
+ */
+export class Tiles3Textures {
+  readonly stats: Tiles3TexturesStats = { built: 0, reused: 0, live: 0, evicted: 0, missing: 0 };
+
+  private o: Tiles3TexturesOpts;
+  /** key -> nothing; a Map because insertion order IS the LRU order. */
+  private mine = new Map<string, true>();
+  private pix = new Map<string, Pixels | null>();
+
+  constructor(opts: Tiles3TexturesOpts) {
+    this.o = opts;
+  }
+
+  /** The composed boundary for one resolved boundary, registered and keyed.
+   *  Null when the pattern has no frame or a source plate has not loaded — the
+   *  caller draws no boundary there and the flats meet hard, which is the
+   *  pre-3.0 look and never a hole. */
+  boundary(b: Tiles3Boundary): string | null {
+    const key = boundaryKeyFor(b, this.o.seam !== false);
+    if (!key) return null;
+    return this.ensure(key, () => {
+      const a = this.platePixels(b.plateA, b.a);
+      const bb = this.platePixels(b.plateB, b.b);
+      if (!a || !bb) return null;
+      return composeBoundary(this.o.sheets, b.maskFrame as number, a, bb, { seam: this.o.seam !== false });
+    });
+  }
+
+  /** The drawable texture key for a resolved plate: the plain art key for a
+   *  published or clean plate (nothing is built), the conformed raster's own
+   *  key otherwise. */
+  plate(art: PlateLike, ground: string): string | null {
+    const key = plateKey(art, ground);
+    if (art.kind !== "conform") return this.o.textures.exists(key) ? key : null;
+    return this.ensure(key, () => {
+      const src = this.sourcePixels(artKey(art.path));
+      if (!src) return null;
+      return conformPlate(this.o.sheets, src, this.wallRGB(ground));
+    });
+  }
+
+  /** A liquid's painted diamond. */
+  liquid(rgb: readonly [number, number, number]): string {
+    const key = liquidKey(rgb);
+    return this.ensure(key, () => liquidDiamond(rgb)) ?? key;
+  }
+
+  /** THE STREAMING ENTRY POINT: one cell in, DRAWABLE blits out. Every op it
+   *  returns has a registered texture — a composed one built on the spot, a
+   *  plain one already loaded — so the renderer draws the list as it stands and
+   *  never has to test a key. An op whose art has not loaded is DROPPED rather
+   *  than substituted: a hole this frame is a hole, and the next window fills
+   *  it; a fallback tile is a wrong picture that nothing ever corrects. */
+  opsForCell(cell: Tiles3Cell): Tiles3Blit[] {
+    const out: Tiles3Blit[] = [];
+    for (const op of cellOps(cell)) {
+      const art = cell.kind === "field" ? cell.art : undefined;
+      let key: string | null;
+      if (art && art.kind === "liquid") key = this.liquid(art.topRGB);
+      else if (art && art.kind === "conform") key = this.plate(art, cell.ground);
+      else key = this.o.textures.exists(op.key) ? op.key : null;
+      if (key) out.push(key === op.key ? op : { ...op, key });
+    }
+    return out;
+  }
+
+  /** The composed boundary as a drawable blit, or null. */
+  opsForBoundary(b: Tiles3Boundary): Tiles3Blit | null {
+    const op = boundaryOp(b, this.o.seam !== false);
+    if (!op) return null;
+    return this.boundary(b) ? op : null;
+  }
+
+  /** A deck's slab. Its courses are plain x-over-x art; nothing composes. */
+  opsForDeck(d: Tiles3DeckCell): Tiles3Blit[] {
+    return deckOps(d).filter((op) => this.o.textures.exists(op.key));
+  }
+
+  /** Drop every composed texture whose key is not in `keep`. The owner calls
+   *  this between streaming windows, when it knows no GameObject holds one. */
+  evictExcept(keep: Set<string>): number {
+    let n = 0;
+    for (const key of [...this.mine.keys()]) {
+      if (keep.has(key)) continue;
+      this.drop(key);
+      n++;
+    }
+    return n;
+  }
+
+  /** Forget cached source pixels (not the textures). Call when the art behind a
+   *  key is replaced — a live base_tile_sets push, an atlas swap. */
+  clearSources(): void {
+    this.pix.clear();
+  }
+
+  private ensure(key: string, build: () => Pixels | null): string | null {
+    if (this.o.textures.exists(key)) {
+      if (this.mine.has(key)) {
+        this.mine.delete(key);
+        this.mine.set(key, true); // LRU touch
+      }
+      this.stats.reused++;
+      return key;
+    }
+    const px = build();
+    if (!px) {
+      this.stats.missing++;
+      return null;
+    }
+    const cv = (this.o.canvas ?? domCanvas)(px.w, px.h);
+    cv.width = px.w;
+    cv.height = px.h;
+    const ctx = cv.getContext("2d");
+    if (!ctx) {
+      this.stats.missing++;
+      return null;
+    }
+    const id = ctx.createImageData(px.w, px.h);
+    id.data.set(px.data);
+    ctx.putImageData(id, 0, 0);
+    this.o.textures.addCanvas(key, cv)?.setFilter(NEAREST);
+    this.mine.set(key, true);
+    this.stats.built++;
+    this.stats.live = this.mine.size;
+    const limit = this.o.limit ?? 0;
+    if (limit > 0) {
+      while (this.mine.size > limit) {
+        const oldest = this.mine.keys().next().value as string | undefined;
+        if (oldest === undefined || oldest === key) break;
+        this.drop(oldest);
+      }
+    }
+    return key;
+  }
+
+  private drop(key: string): void {
+    this.mine.delete(key);
+    this.o.textures.remove(key);
+    this.stats.evicted++;
+    this.stats.live = this.mine.size;
+  }
+
+  /** A resolved plate as pixels, conforming when the resolver asked for it.
+   *
+   *  A NULL IS NEVER CACHED. Null means "the art is not resident YET", and a
+   *  streaming renderer asks again the moment the batch lands — caching it
+   *  would make every plate that missed its first frame miss forever, and the
+   *  boundaries built from it would be permanently absent from the map with no
+   *  error anywhere. Only real pixels are memoised. */
+  private platePixels(art: PlateLike, ground: string): Pixels | null {
+    const key = plateKey(art, ground);
+    const hit = this.pix.get(key);
+    if (hit) return hit;
+    let out: Pixels | null = null;
+    if (art.kind === "conform") {
+      const src = this.sourcePixels(artKey(art.path));
+      out = src ? conformPlate(this.o.sheets, src, this.wallRGB(ground)) : null;
+    } else {
+      out = this.sourcePixels(artKey(art.path));
+    }
+    if (out) this.pix.set(key, out);
+    return out;
+  }
+
+  /** Decoded pixels behind a loaded texture. A texture whose source is already
+   *  a canvas (every atlas-sliced tile is) is read from its own context; an
+   *  <img> is drawn into a scratch canvas first. */
+  private sourcePixels(key: string): Pixels | null {
+    const hit = this.pix.get(key);
+    if (hit) return hit; // see platePixels: a null is "not loaded yet", never a cache entry
+    let out: Pixels | null = null;
+    const src = this.o.textures.get(key)?.getSourceImage() as
+      | (CanvasLike & { naturalWidth?: number; naturalHeight?: number })
+      | undefined;
+    if (src) {
+      const w = src.naturalWidth || src.width;
+      const h = src.naturalHeight || src.height;
+      if (w > 0 && h > 0) {
+        let ctx: Ctx2DLike | null = typeof src.getContext === "function" ? src.getContext("2d") : null;
+        if (!ctx) {
+          const cv = (this.o.canvas ?? domCanvas)(w, h);
+          cv.width = w;
+          cv.height = h;
+          ctx = cv.getContext("2d");
+          ctx?.drawImage(src, 0, 0);
+        }
+        const id = ctx?.getImageData(0, 0, w, h);
+        if (id) out = { w, h, data: new Uint8ClampedArray(id.data) };
+      }
+    }
+    if (out) this.pix.set(key, out);
+    return out;
+  }
+
+  private wallRGB(ground: string): [number, number, number] {
+    const g = this.o.groundTypes[ground];
+    return hexRGB(g?.palette?.wall ?? g?.base_color ?? "#808080");
+  }
+}
+
+function domCanvas(w: number, h: number): CanvasLike {
+  const d = (globalThis as { document?: { createElement(tag: string): CanvasLike } }).document;
+  if (!d) throw new Error("tiles3draw: no document — pass a canvas factory");
+  const c = d.createElement("canvas");
+  c.width = w;
+  c.height = h;
+  return c;
+}

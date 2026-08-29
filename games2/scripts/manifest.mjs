@@ -50,6 +50,10 @@ const OUTPUTS = ["characters.json", "worlds.json", "monsters.json", "npcs.json"]
 const INPUTS = [
   join(ASSETS_ROOT, "characters2"),
   join(ASSETS_ROOT, "maps2", "worlds"),
+  // The SECOND world tree (pixel-maps3). build-worlds.mjs scans it, so a world
+  // added or edited there has to invalidate this cache too — otherwise the new
+  // world simply never reaches worlds.json until someone runs manifest:force.
+  join(ASSETS_ROOT, "maps2", "worlds3"),
   join(ASSETS_ROOT, "monsters"),
   ...BUILDERS.map((b) => join(SCRIPT_DIR, b)),
   ...BUILDER_DEPS.map((b) => join(SCRIPT_DIR, b)),

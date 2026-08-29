@@ -1,6 +1,6 @@
 import Phaser from "phaser";
-import { ISO_DX, ISO_DY, surfaceFor } from "@nangijala/shared";
-import { World, MAP_GEOMETRY } from "./maps";
+import { surfaceFor } from "@nangijala/shared";
+import { World, MAP_GEOMETRY, geometryFor } from "./maps";
 
 /**
  * Serious night lighting: a fullscreen MULTIPLY shader that reconstructs each
@@ -1464,7 +1464,10 @@ export function buildGlowStamps(
   anchorOnce = false, // demo: art is drawn ONCE at ground level — every source
   // stamps at its art position instead of repeating down a stacked column
 ): GlowStamp[] {
-  const { dx, dy, lh } = MAP_GEOMETRY;
+  // THE WORLD'S OWN PROJECTION, not the module constant — a maps3 world draws
+  // on dy=14/lh=15 and a stamp placed at 15/16 lands a level off by the far
+  // side of the map.
+  const { dx, dy, lh } = geometryFor(world);
   const ANIM: Record<string, number> = { static: 0, pulse: 1, flicker: 2 };
   const out: GlowStamp[] = [];
   const u0 = Math.floor((win.x0 - iso.ox) / dx) - 1;
@@ -1522,6 +1525,10 @@ export class NightLights {
   private scene: Phaser.Scene;
   private world: World;
   private iso: { ox: number; oy: number };
+  /** THE WORLD'S PROJECTION (maps.ts geometryFor). Every iso term in this file
+   *  reads it: the light field, the mist inverse projection and the shader's
+   *  own uIso uniforms all have to agree with what the ground RT drew. */
+  private geo = MAP_GEOMETRY;
   private maxLevel: number;
   /** Per-world level→byte pack scale for the heightmaps (set in buildHeightmap).
    *  16 for worlds ≤15 levels (byte-identical to the historical encoding), less
@@ -1648,6 +1655,7 @@ export class NightLights {
     this.scene = scene;
     this.world = world;
     this.iso = iso;
+    this.geo = geometryFor(world);
     this.maxLevel = maxLevel;
     this.emission = emission;
   }
@@ -1659,8 +1667,8 @@ export class NightLights {
     // on real phone GPUs).
     this.mistBase = new Phaser.Display.BaseShader("mist-field", MIST_FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
-      uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
-      uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
+      uIsoA: { type: "4f", value: { x: 0, y: 0, z: this.geo.dx, w: this.geo.dy } },
+      uIsoB: { type: "4f", value: { x: this.geo.lh, y: 1, z: 1, w: 0 } },
       uAmbient: { type: "3f", value: { x: 1, y: 1, z: 1 } },
       uMist: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
@@ -1671,8 +1679,8 @@ export class NightLights {
     // Elevation depth-fog shader (declared uniforms only — the uSun lesson).
     this.depthFogBase = new Phaser.Display.BaseShader("depthfog-field", DEPTHFOG_FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
-      uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
-      uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
+      uIsoA: { type: "4f", value: { x: 0, y: 0, z: this.geo.dx, w: this.geo.dy } },
+      uIsoB: { type: "4f", value: { x: this.geo.lh, y: 1, z: 1, w: 0 } },
       uAmbient: { type: "3f", value: { x: 1, y: 1, z: 1 } },
       uPlayerZ: { type: "1f", value: 0 },
       uPlayerXY: { type: "2f", value: { x: 0, y: 0 } },
@@ -1689,8 +1697,8 @@ export class NightLights {
     });
     this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
-      uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
-      uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
+      uIsoA: { type: "4f", value: { x: 0, y: 0, z: this.geo.dx, w: this.geo.dy } },
+      uIsoB: { type: "4f", value: { x: this.geo.lh, y: 1, z: 1, w: 0 } },
       uAmbient: { type: "3f", value: { x: 0.16, y: 0.2, z: 0.36 } },
       // The OUTDOOR half of the same grade — see the `amb` mix in FRAG.
       uAmbientOut: { type: "3f", value: { x: 0.16, y: 0.2, z: 0.36 } },
@@ -2490,7 +2498,7 @@ export class NightLights {
     const gAtSoft = soft2(this.gArr);
     const t = this.scene.game.loop.getDuration();
     // Directional-sun + cloud twins (see the shader): shade the ambient term.
-    const geo = MAP_GEOMETRY;
+    const geo = this.geo;
     const wxT = this.iso.ox + (col - row) * geo.dx + geo.dx;
     const wyT = this.iso.oy + (col + row) * geo.dy + geo.dy - z * geo.lh;
     const sunF = this.sunFactorAt(col, row, z) * this.cloudFactorAt(wxT, wyT);
@@ -2595,7 +2603,7 @@ export class NightLights {
     // in a mushroom/crystal halo must carry its glow — the field lights the
     // ground but the lit copy is tinted by THIS function only.
     if (this.curStamps.length) {
-      const { dx, dy, lh } = MAP_GEOMETRY;
+      const { dx, dy, lh } = this.geo;
       const wx = this.iso.ox + (col - row) * dx + dx;
       const wy = this.iso.oy + (col + row) * dy + dy - z * lh;
       for (const g of this.curStamps) {
@@ -2875,8 +2883,8 @@ export class NightLights {
   mistAt(wx: number, wy: number, mist = this.curMist): number {
     if (mist <= 0.001 || !this.tArr) return 0;
     // ground-plane inverse projection (level-0 cell; probes sample flats)
-    const u = (wx - this.iso.ox) / ISO_DX - 1;
-    const v = (wy - (this.iso.oy + 8)) / ISO_DY;
+    const u = (wx - this.iso.ox) / this.geo.dx - 1;
+    const v = (wy - (this.iso.oy + 8)) / this.geo.dy;
     const col = Math.floor((u + v) / 2);
     const row = Math.floor((v - u) / 2);
     if (col < 0 || row < 0 || col >= this.world.width || row >= this.world.height) return 0;

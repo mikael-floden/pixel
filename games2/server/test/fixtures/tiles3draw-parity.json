@@ -1,0 +1,930 @@
+{
+ "schema": "games2/tiles3draw-parity@1",
+ "generator": "games2/scripts/tiles3draw-fixture.py",
+ "spec": [
+  "maps2/pipeline/render3.py",
+  "tiles/patterns/index.json"
+ ],
+ "sheets": {
+  "silhouette": {
+   "path": "tiles/patterns/silhouette.webp",
+   "sha": "8883cbf8d17bef9991a10d2d1ee13463d7c9dca0d3e38f9d503b7945523e4fef"
+  },
+  "masks": {
+   "path": "tiles/patterns/masks.webp",
+   "sha": "1d6b9c52a2c8e43db320ec398e588b493a8653487b9b1e7bbb92fcbefa4602c9"
+  },
+  "border": {
+   "path": "tiles/patterns/borders.webp",
+   "sha": "9d67ce2c14d945b2240b092a52e6701fb650bd5183f31306344f8c417137c377"
+  }
+ },
+ "constants": {
+  "frame_w": 64,
+  "frame_h": 46,
+  "cols": 16,
+  "tone": 0.82,
+  "wall_d": 17,
+  "silhouette_opaque": 2012
+ },
+ "conform": [
+  {
+   "ground": "black_rock",
+   "path": "tiles/tops/black_rock/sheet_00_subtle_12334/post/tile_05.d4c1d5e2.webp",
+   "sha": "3175d2fd31390790d238e6a875e720a37a34477e20514e80d1fc0f43e35eaf3b",
+   "opaque": 2012,
+   "src_sha": "3f69022c25843902179c531d1b6cd108b9278e2c360e0f5b833fd71579bcd866",
+   "wall": "#212122"
+  },
+  {
+   "ground": "black_rock",
+   "path": "tiles/tops/black_rock/sheet_00_subtle_12334/post/tile_06.042183f1.webp",
+   "sha": "7de66982adc022ec88241bdb45e1be99c6f4c8e079a8699e5d07fa9e28a1830d",
+   "opaque": 2012,
+   "src_sha": "256007959b08912091f9ec8d1aad8adb2a7d88deb1826a5814ea07f121aad83b",
+   "wall": "#212122"
+  },
+  {
+   "ground": "brown_paving_stone",
+   "path": "tiles/tops/brown_paving_stone/sheet_04_detail_54925/post/tile_05.36000560.webp",
+   "sha": "997a8081024b4032b53ab58ef0100c891d4e84d79e83de1d07b3a779c7928cb4",
+   "opaque": 2012,
+   "src_sha": "ee98c03e032fed8bca20a1fb852a2bd6d39cd0f9c14de483a7ac2151ce9819cd",
+   "wall": "#5c544b"
+  },
+  {
+   "ground": "brown_paving_stone",
+   "path": "tiles/tops/brown_paving_stone/sheet_05_detail_28659/post/tile_15.e9e13e95.webp",
+   "sha": "30d7be7042419274995c6d7badab8574a62edf9440d3fb5071e9c24a3a6e90ef",
+   "opaque": 2012,
+   "src_sha": "c8ebbcca798c01bf555517558219471522e3a57027e2e326a0073507884cfac1",
+   "wall": "#5c544b"
+  },
+  {
+   "ground": "dark_mud",
+   "path": "tiles/tops/dark_mud/sheet_00_subtle_10237/post/tile_02.3f1b7f30.webp",
+   "sha": "4a9156389b16f8ad0aaf0380d43925edd7b9935b1005eeb1eff28b7d6591c783",
+   "opaque": 2012,
+   "src_sha": "1b920808502ce6397678ff0cb1c1fcfdf68fff60de2114ef22e0cdc7a6be639f",
+   "wall": "#3b2f28"
+  },
+  {
+   "ground": "dark_mud",
+   "path": "tiles/tops/dark_mud/sheet_00_subtle_10237/post/tile_03.995c7187.webp",
+   "sha": "61bdec47560b1c030e569805cc4152942bbe3b9d99298d24b210933f81d27ec9",
+   "opaque": 2012,
+   "src_sha": "1126fa895019b6736070bbbc013243bb84715c69dc69cdf58b76afa95ff3048d",
+   "wall": "#3b2f28"
+  },
+  {
+   "ground": "dark_mud",
+   "path": "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_01.c5823413.webp",
+   "sha": "3526e6b17004e529b3b3a21a65f86e36987ef5c248470580840fcac0fdecd156",
+   "opaque": 2012,
+   "src_sha": "be90544092c69f321ca7ee4e98e2be807c239995ddbc100dda61467291711168",
+   "wall": "#3b2f28"
+  },
+  {
+   "ground": "grass",
+   "path": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a14_s5.webp",
+   "sha": "bcb413b6e29626addefae62c4f486b0ad9ba49edd8975133e6513dbe40572abe",
+   "opaque": 2012,
+   "src_sha": "7fce7a5395acdbbc77289d458b58a2ddb8de522eff6f8b99b2c6ed1d76b88462",
+   "wall": "#14644e"
+  },
+  {
+   "ground": "grass",
+   "path": "tiles/base_candidates/grass/grass__to__grey_stone__a30_s1.webp",
+   "sha": "b24195083b47ccc52540df7549d3254ef10652b09e2c7a126f4835b49e7baf39",
+   "opaque": 2012,
+   "src_sha": "23e74b7cbf4409e417aaf86862ae666732232f6229231b60df2ca8a9d291e437",
+   "wall": "#14644e"
+  },
+  {
+   "ground": "grass",
+   "path": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+   "sha": "f885352d2b9652eaebd2442739e54e32d6f77198e11c8587930324a320dc94e1",
+   "opaque": 2012,
+   "src_sha": "698f9c7db65fea6cd7d43f3cb5b90f87d352fc5ee734f2cd2f672177d0aff3dd",
+   "wall": "#14644e"
+  },
+  {
+   "ground": "grey_paving_stone",
+   "path": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_00.e67e8fcf.webp",
+   "sha": "f6b57972ef6470543166c1c7efff0eef97275211b0136fdc0b15d75d5378d35d",
+   "opaque": 2012,
+   "src_sha": "8f624c367fabbc290cded51d785499915b6c0e1831cecba24385e6aa741303fa",
+   "wall": "#8a8a8a"
+  },
+  {
+   "ground": "grey_paving_stone",
+   "path": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_02.f4b13a9f.webp",
+   "sha": "d29b983bd9ed5a9c4601c924c3e29f4a0d67bb094922ac2c5ccc22d8eea26658",
+   "opaque": 2012,
+   "src_sha": "801b916a78de1db1d1822fd62c07cf265e441510c5a77de8de6ec9710069206b",
+   "wall": "#8a8a8a"
+  },
+  {
+   "ground": "grey_paving_stone",
+   "path": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_03.c6929ccf.webp",
+   "sha": "4f460f82f5493af38610de932f9571c6e619e5b500adb726cd2233f84d73a20b",
+   "opaque": 2012,
+   "src_sha": "655a526caedbe7344c393f3dfc0ea4f16076e2a35cc5ac54890a1c3eed7a3f96",
+   "wall": "#8a8a8a"
+  },
+  {
+   "ground": "grey_stone",
+   "path": "tiles/tops/grey_stone/sheet_00_subtle_11961/post/tile_01.32efce9a.webp",
+   "sha": "f73f76b99c05d4b1fddd7fd6dcd1b1c2bed2bc99b32aa51e3060457b16bc12b6",
+   "opaque": 2012,
+   "src_sha": "190bb1db167bb3d48c1f34e60133d1afe167af3760510cfdb9670bde72b48fa6",
+   "wall": "#45474b"
+  },
+  {
+   "ground": "grey_stone",
+   "path": "tiles/tops/grey_stone/sheet_00_subtle_11961/post/tile_06.daf6be4a.webp",
+   "sha": "b27c7b52a226f8fb659928c4bfc583ca8dab58f2f84246dc23481f1dde634b79",
+   "opaque": 2012,
+   "src_sha": "cfef5d4733d494ab113c15b35c899741e52ded30a81157a57b38d078876de041",
+   "wall": "#45474b"
+  },
+  {
+   "ground": "grey_stone",
+   "path": "tiles/tops/grey_stone/sheet_01_subtle_27653/post/tile_00.93c8e759.webp",
+   "sha": "7e94074892c3e3f8ffd10f28350c2debd23f184bc42fe5a1873c3e6c2e0d284a",
+   "opaque": 2012,
+   "src_sha": "cb921d23f1fc9f24116771e09f557c6b4ded7ce645dad668785e7e68e7021fc2",
+   "wall": "#45474b"
+  },
+  {
+   "ground": "ice",
+   "path": "tiles/base_candidates/ice/grass__to__ice__a03_s5.webp",
+   "sha": "6d15f212394fc38770af88b8a663b7907f38ab9f1a728e7f416e2d51a4ed7ada",
+   "opaque": 2012,
+   "src_sha": "0a9837d0c084db39b1a35a8bb38bfaca88087e11d6edbb8654830127c117b23c",
+   "wall": "#6eacb2"
+  },
+  {
+   "ground": "ice",
+   "path": "tiles/base_candidates/ice/grass__to__ice__a05_s1.webp",
+   "sha": "f719781dfd3e0a15805ec2a5216569dd54b9d8252f9d718a543e725ce537ff74",
+   "opaque": 2012,
+   "src_sha": "3cd2e1b4c54f95c75f88703381656ede09e021f306d6ec1807c67d97ff02d350",
+   "wall": "#6eacb2"
+  },
+  {
+   "ground": "ice",
+   "path": "tiles/base_candidates/ice/grass__to__ice__a12_s4.webp",
+   "sha": "2a4a36576cbe5e17064b0d3718c7578ae70bf21b74993dd3eaab12dec65e0e1b",
+   "opaque": 2012,
+   "src_sha": "088f6bb17f7a22c8addcd4b226b541d12f636762e0bf57b6f2c6f3619f7dcd01",
+   "wall": "#6eacb2"
+  },
+  {
+   "ground": "lava",
+   "path": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_01.7edf62df.webp",
+   "sha": "b1be7f2506b38ba4703ac2dba7afef69edcad7ff92870dba5efc9dd5f0931226",
+   "opaque": 2012,
+   "src_sha": "da60e05b40ae235cbd4f07bbdd3efb53c2218dbdfa3cda950227dd1f1946dc9a",
+   "wall": "#a73211"
+  },
+  {
+   "ground": "lava",
+   "path": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_02.3ad0c679.webp",
+   "sha": "daabf583be93dd75eac3e12b773dbc14b63243ece7ee4389fb9b429988eafdf6",
+   "opaque": 2012,
+   "src_sha": "3edef10586d085737ac4dec4d288b2131f0e52f42c84c4cd7a4643ec5b3dc019",
+   "wall": "#a73211"
+  },
+  {
+   "ground": "lava",
+   "path": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_03.28e13b4e.webp",
+   "sha": "181ef12e774a33c5ef8a505e4441fb084f991c94a3a2c842fae1f0d4e4d6d9ba",
+   "opaque": 2012,
+   "src_sha": "56fea4a4cb8a1940d5acf192122f39224eb52bb66c66a7a18551f09d1041b099",
+   "wall": "#a73211"
+  },
+  {
+   "ground": "light_beach",
+   "path": "tiles/tops/light_beach/sheet_00_subtle_69153/post/tile_12.0bf22de6.webp",
+   "sha": "1154658a2b094a8b1a07141f2842d750d953050ff67abdfe276383cd1f5b0294",
+   "opaque": 2012,
+   "src_sha": "d0af4abebc5a426abf37bb70d9d10a3a5956a2fc731f3f34f94740dbaeed48ae",
+   "wall": "#ab9274"
+  },
+  {
+   "ground": "light_beach",
+   "path": "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_01.4248f79d.webp",
+   "sha": "90dc5c242f506059d1a535e7b79e16ab3727ef35738f58ed4a3991ab34ecb7dd",
+   "opaque": 2012,
+   "src_sha": "93e8656dceef334edd457004707dababf6cb46bdbbd7f7f6fd716026c4f10389",
+   "wall": "#ab9274"
+  },
+  {
+   "ground": "light_beach",
+   "path": "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_05.c4d23240.webp",
+   "sha": "9d09dab73106f14b81987684f389618e1824f771b134c07eb39c6ef31f6dec9e",
+   "opaque": 2012,
+   "src_sha": "406433058f0fd5e5f35dc4ba84cc0a4409ecce9469e518b59949f62518f28f95",
+   "wall": "#ab9274"
+  },
+  {
+   "ground": "light_soil",
+   "path": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a15_s2.webp",
+   "sha": "0710e17e3b4282fe21b33452bdcac971b708ad81f7ab424bd68cdcd1249e2702",
+   "opaque": 2012,
+   "src_sha": "fe1ad4195778e063edf2014f740b346b97107324905ed35b70a31e6557e2634e",
+   "wall": "#9d784b"
+  },
+  {
+   "ground": "light_soil",
+   "path": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s4.webp",
+   "sha": "1a48fcc7cc0ea8fac257c30cb43a57ea13316bb671d92c44ddd6b99d8a8a931d",
+   "opaque": 2012,
+   "src_sha": "e53912e80314f1c1348110d78202fa047f321aa40baa087c5667bb65a71ac931",
+   "wall": "#9d784b"
+  },
+  {
+   "ground": "light_soil",
+   "path": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s5.webp",
+   "sha": "69f9760838cded1002832c2a22149c456c90c20b755f631d938ade131d0fc956",
+   "opaque": 2012,
+   "src_sha": "7f80d53e2ca2775a5e2f455efb765bda3ff2f388c580ad7e28dfd46e15602476",
+   "wall": "#9d784b"
+  },
+  {
+   "ground": "parquet_floor",
+   "path": "tiles/tops/parquet_floor/sheet_00_subtle_80398/post/tile_05.65a0ec0b.webp",
+   "sha": "c3a7b67341ad6ad5c20b1b5e020bdd3eadedfb658cb5d786e37e4f5a6fdce59e",
+   "opaque": 2012,
+   "src_sha": "684c66d16b587bb3639b115988b49d767d82a4587c526a858a4076039ccca832",
+   "wall": "#684934"
+  },
+  {
+   "ground": "parquet_floor",
+   "path": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_00.317106f6.webp",
+   "sha": "6c11483b3c7805f02d84b5217f9283603cd23d131a5cbab228b1220ac6063894",
+   "opaque": 2012,
+   "src_sha": "2ad434a4e79e5e173a34f0d62951ba3b5588f035443616f1a8c3bf50e9d57116",
+   "wall": "#684934"
+  },
+  {
+   "ground": "parquet_floor",
+   "path": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_01.8e8886a6.webp",
+   "sha": "b6165c3633c4307a2d98e372e696952ba993b770a060c1ac1f0e79becc0d7a40",
+   "opaque": 2012,
+   "src_sha": "79478ae79d309a01650b267df010660a990f29929f58eb0b41c56782983fa756",
+   "wall": "#684934"
+  },
+  {
+   "ground": "slime",
+   "path": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_00.fab2d647.webp",
+   "sha": "8614b430f1d8fcdb4e9510ea5e90f0dc6739aa22ab1ee4a8daca29e881ee56e2",
+   "opaque": 2012,
+   "src_sha": "f2b1f1a68a44f0c13443773ab99b984e72b0d2c4a6a399d7d93a0c412a5b6f0a",
+   "wall": "#5b882d"
+  },
+  {
+   "ground": "slime",
+   "path": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_07.2ed3c5fa.webp",
+   "sha": "53fa0541e652e031deaf50445dd914637432d985d8fe3177c6211231bbd8d9a5",
+   "opaque": 2012,
+   "src_sha": "e5b1f8b422f164e37871e374b4b2642572f3703e5f59eec14d48ac67cacebf0b",
+   "wall": "#5b882d"
+  },
+  {
+   "ground": "slime",
+   "path": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_08.2c145646.webp",
+   "sha": "a82ed3c8fa3c4b872471fe4ba01e89541763d5d1d2833332cd99b17864cdcdc4",
+   "opaque": 2012,
+   "src_sha": "5c3567be4a054ff4d6ff26906fd703767703865a52a27445721df1093b6f9b97",
+   "wall": "#5b882d"
+  },
+  {
+   "ground": "snow",
+   "path": "tiles/base_candidates/snow/light_soil__to__snow__a24_s6.webp",
+   "sha": "a3eb0f3bda19809d82a72d862212740a13225ada70001da1435e60276b68c835",
+   "opaque": 2012,
+   "src_sha": "d86001757c429cf6cccf5bf149c9e8baa384f9e283a159a788a48b1580b3ccf6",
+   "wall": "#c7d4d9"
+  },
+  {
+   "ground": "snow",
+   "path": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_12.5ccd1495.webp",
+   "sha": "58a7d8a454e5e4e2439e16332e326c1e8734dc9e9d782c2fcaf6c1471f182b2b",
+   "opaque": 2012,
+   "src_sha": "f3131b0ab4c417795be939f704ec415319b3feb4d58ff0a5c6cbaf6aef24f544",
+   "wall": "#c7d4d9"
+  },
+  {
+   "ground": "snow",
+   "path": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_13.af7d65e2.webp",
+   "sha": "cf8bc9dcb3d47448ea98e7e036e7f4983ed3b3c9a35208501f51e7c27ac25971",
+   "opaque": 2012,
+   "src_sha": "01970032dc5b33d530e554e30b6f2f31754b1da01b7f98ef399b0b563398f842",
+   "wall": "#c7d4d9"
+  }
+ ],
+ "boundary": [
+  {
+   "pattern": "a18_s4",
+   "index": 1,
+   "frame": 145,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/deep_water/clean.webp",
+    "ground": "deep_water",
+    "src_sha": "2d2b680b65c2a27499bb26bd5e7cf4fcab2150cdf2b7efe4e22ac1af54b3c2d4"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+    "ground": "grass",
+    "src_sha": "698f9c7db65fea6cd7d43f3cb5b90f87d352fc5ee734f2cd2f672177d0aff3dd"
+   },
+   "sha_noseam": "b7520421546f6ebe2976cb72e924e233124780124f8d23a00a1ab65cd5372b1b",
+   "sha": "b31c0ea5ee47516f18dd366233b8db247d52909cf9211a7b87877be807f3d8c0",
+   "seam_px": 146
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 14,
+   "frame": 158,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/deep_water/clean.webp",
+    "ground": "deep_water",
+    "src_sha": "2d2b680b65c2a27499bb26bd5e7cf4fcab2150cdf2b7efe4e22ac1af54b3c2d4"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+    "ground": "grass",
+    "src_sha": "698f9c7db65fea6cd7d43f3cb5b90f87d352fc5ee734f2cd2f672177d0aff3dd"
+   },
+   "sha_noseam": "b78772e36b03f9b03ab797a61d43162682792ad832ee5a737aba3fd183ef3bd3",
+   "sha": "d55530a26a1a3866b623cbf05fb9399dffea60f3617b9cbf3f190a7b984f3913",
+   "seam_px": 146
+  },
+  {
+   "pattern": "a00_s3",
+   "index": 3,
+   "frame": 3,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/deep_water/clean.webp",
+    "ground": "deep_water",
+    "src_sha": "2d2b680b65c2a27499bb26bd5e7cf4fcab2150cdf2b7efe4e22ac1af54b3c2d4"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+    "ground": "grass",
+    "src_sha": "698f9c7db65fea6cd7d43f3cb5b90f87d352fc5ee734f2cd2f672177d0aff3dd"
+   },
+   "sha_noseam": "0595a2221ccb625eb4e284267aee56f41ee532940b8b23bb7d87ddc16ea92495",
+   "sha": "1cbe4767d94db84d6c1523aba63018e8fa33904b3d83566e355f1d5ac8b7f266",
+   "seam_px": 97
+  },
+  {
+   "pattern": "a30_s1",
+   "index": 6,
+   "frame": 278,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/deep_water/clean.webp",
+    "ground": "deep_water",
+    "src_sha": "2d2b680b65c2a27499bb26bd5e7cf4fcab2150cdf2b7efe4e22ac1af54b3c2d4"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+    "ground": "grass",
+    "src_sha": "698f9c7db65fea6cd7d43f3cb5b90f87d352fc5ee734f2cd2f672177d0aff3dd"
+   },
+   "sha_noseam": "e6112ba94f204f24b19b5e3f647ea3f5fcb6730b36fdfb4bdac5d037264a0909",
+   "sha": "91bb9962b34090ba12f61ab2fd69e472870158a8b1dc6eb7e5bfdbdc7371ad92",
+   "seam_px": 198
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 15,
+   "frame": 159,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/deep_water/clean.webp",
+    "ground": "deep_water",
+    "src_sha": "2d2b680b65c2a27499bb26bd5e7cf4fcab2150cdf2b7efe4e22ac1af54b3c2d4"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+    "ground": "grass",
+    "src_sha": "698f9c7db65fea6cd7d43f3cb5b90f87d352fc5ee734f2cd2f672177d0aff3dd"
+   },
+   "sha_noseam": "f885352d2b9652eaebd2442739e54e32d6f77198e11c8587930324a320dc94e1",
+   "sha": "f885352d2b9652eaebd2442739e54e32d6f77198e11c8587930324a320dc94e1",
+   "seam_px": 0
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 2,
+   "frame": 146,
+   "a": {
+    "kind": "conform",
+    "path": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_13.af7d65e2.webp",
+    "ground": "snow",
+    "src_sha": "01970032dc5b33d530e554e30b6f2f31754b1da01b7f98ef399b0b563398f842"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/black_rock/clean.webp",
+    "ground": "black_rock",
+    "src_sha": "45cc520c52a47d2ff026eaf9819670b52fd3106dfedd7366c43687ca30b8017c"
+   },
+   "sha_noseam": "c96375a0d238bd35828b2efa977b0035b041f9e0ec23fb34384a90df0ce0f2b2",
+   "sha": "1ef11379099232e7a7462195b399103199ca182c59c1349600aaa43c4cb866a4",
+   "seam_px": 67
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 13,
+   "frame": 157,
+   "a": {
+    "kind": "conform",
+    "path": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_13.af7d65e2.webp",
+    "ground": "snow",
+    "src_sha": "01970032dc5b33d530e554e30b6f2f31754b1da01b7f98ef399b0b563398f842"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/black_rock/clean.webp",
+    "ground": "black_rock",
+    "src_sha": "45cc520c52a47d2ff026eaf9819670b52fd3106dfedd7366c43687ca30b8017c"
+   },
+   "sha_noseam": "ed41c5619edc2094aba52fccca6eead9d87290546539c778b8d966e603912c1f",
+   "sha": "c3182b712fcd4c0f02b916a7b30611a11acfb5e6c0bb058612a35389fea27809",
+   "seam_px": 67
+  },
+  {
+   "pattern": "a00_s3",
+   "index": 3,
+   "frame": 3,
+   "a": {
+    "kind": "conform",
+    "path": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_13.af7d65e2.webp",
+    "ground": "snow",
+    "src_sha": "01970032dc5b33d530e554e30b6f2f31754b1da01b7f98ef399b0b563398f842"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/black_rock/clean.webp",
+    "ground": "black_rock",
+    "src_sha": "45cc520c52a47d2ff026eaf9819670b52fd3106dfedd7366c43687ca30b8017c"
+   },
+   "sha_noseam": "e9b6b22acaa1c4eb53c1fc14860a98e8a29857103720dec609739db444a9d401",
+   "sha": "b2639b8d38b839228a942c331d936a96972b9b841d479c8c0f4e98472769aa5c",
+   "seam_px": 97
+  },
+  {
+   "pattern": "a30_s1",
+   "index": 6,
+   "frame": 278,
+   "a": {
+    "kind": "conform",
+    "path": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_13.af7d65e2.webp",
+    "ground": "snow",
+    "src_sha": "01970032dc5b33d530e554e30b6f2f31754b1da01b7f98ef399b0b563398f842"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/black_rock/clean.webp",
+    "ground": "black_rock",
+    "src_sha": "45cc520c52a47d2ff026eaf9819670b52fd3106dfedd7366c43687ca30b8017c"
+   },
+   "sha_noseam": "694ed13d1d24f8b4cd06a35719824ed00f4754b9cad727017d67d54369c6f1ea",
+   "sha": "5ffb8a184495961776a3646c76734d0aa9c168b9a7064107c42270217aa3fc6c",
+   "seam_px": 198
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 15,
+   "frame": 159,
+   "a": {
+    "kind": "conform",
+    "path": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_13.af7d65e2.webp",
+    "ground": "snow",
+    "src_sha": "01970032dc5b33d530e554e30b6f2f31754b1da01b7f98ef399b0b563398f842"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/black_rock/clean.webp",
+    "ground": "black_rock",
+    "src_sha": "45cc520c52a47d2ff026eaf9819670b52fd3106dfedd7366c43687ca30b8017c"
+   },
+   "sha_noseam": "07d15567860c9ee0710fd5668d61c4b6403497841a54620325d51eb60bb740b8",
+   "sha": "07d15567860c9ee0710fd5668d61c4b6403497841a54620325d51eb60bb740b8",
+   "seam_px": 0
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 3,
+   "frame": 147,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/lava/clean.webp",
+    "ground": "lava",
+    "src_sha": "199e4158056c6985c53764aecc82fe753ee6e54dfa16f12f5d036abed9fc4e99"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_01.8e8886a6.webp",
+    "ground": "parquet_floor",
+    "src_sha": "79478ae79d309a01650b267df010660a990f29929f58eb0b41c56782983fa756"
+   },
+   "sha_noseam": "6749aa38c20579bb8589f1dc1683847d86d5c4017a25cd838289a06e246d0b83",
+   "sha": "56ebf20ef760cf756a7a19131db1cfb1997f59658f68454bd976166e1469a2ec",
+   "seam_px": 113
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 12,
+   "frame": 156,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/lava/clean.webp",
+    "ground": "lava",
+    "src_sha": "199e4158056c6985c53764aecc82fe753ee6e54dfa16f12f5d036abed9fc4e99"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_01.8e8886a6.webp",
+    "ground": "parquet_floor",
+    "src_sha": "79478ae79d309a01650b267df010660a990f29929f58eb0b41c56782983fa756"
+   },
+   "sha_noseam": "740adb1ddb0cf502d2d1a7eb789da62d89472baa1b5eaf055cf6419d7fbe4111",
+   "sha": "2e64a451fce3cde0187dbc9448749d8b28960489ec9ce16d0350213510a06034",
+   "seam_px": 113
+  },
+  {
+   "pattern": "a00_s3",
+   "index": 3,
+   "frame": 3,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/lava/clean.webp",
+    "ground": "lava",
+    "src_sha": "199e4158056c6985c53764aecc82fe753ee6e54dfa16f12f5d036abed9fc4e99"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_01.8e8886a6.webp",
+    "ground": "parquet_floor",
+    "src_sha": "79478ae79d309a01650b267df010660a990f29929f58eb0b41c56782983fa756"
+   },
+   "sha_noseam": "ab18e76eed6d5b4500a35423b269836a748b28fa5c671560ecdf1606ba8b3231",
+   "sha": "a4afb6f569860d8026719c37d8c1646b25f868678241393c198e1e2b4964c9d5",
+   "seam_px": 97
+  },
+  {
+   "pattern": "a30_s1",
+   "index": 6,
+   "frame": 278,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/lava/clean.webp",
+    "ground": "lava",
+    "src_sha": "199e4158056c6985c53764aecc82fe753ee6e54dfa16f12f5d036abed9fc4e99"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_01.8e8886a6.webp",
+    "ground": "parquet_floor",
+    "src_sha": "79478ae79d309a01650b267df010660a990f29929f58eb0b41c56782983fa756"
+   },
+   "sha_noseam": "1cfad6873cdf1a75186ce94f8183ee2607916677f620a90258cf1c39109ed151",
+   "sha": "3e5c38d86cd0dee9d62d6244aeaba14c6e005ffdb6ae6f141e090b5e80108b63",
+   "seam_px": 198
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 15,
+   "frame": 159,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/lava/clean.webp",
+    "ground": "lava",
+    "src_sha": "199e4158056c6985c53764aecc82fe753ee6e54dfa16f12f5d036abed9fc4e99"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_01.8e8886a6.webp",
+    "ground": "parquet_floor",
+    "src_sha": "79478ae79d309a01650b267df010660a990f29929f58eb0b41c56782983fa756"
+   },
+   "sha_noseam": "b6165c3633c4307a2d98e372e696952ba993b770a060c1ac1f0e79becc0d7a40",
+   "sha": "b6165c3633c4307a2d98e372e696952ba993b770a060c1ac1f0e79becc0d7a40",
+   "seam_px": 0
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 4,
+   "frame": 148,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/grass/clean.webp",
+    "ground": "grass",
+    "src_sha": "e5d73aa936ff3d69b0a6b8b078b9fa65721272f1e5551629c7f78c94c27a853f"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/brown_paving_stone/clean.webp",
+    "ground": "brown_paving_stone",
+    "src_sha": "b9cca99ea4bda8bedaf876e64f21b5989ad83788a6e7911484e398a2b7c47fd0"
+   },
+   "sha_noseam": "a7cf300dff6e0efe891c82ba00d72e31b4c61fe8ef613fe750cf2cee6704d2ea",
+   "sha": "4080d5cbfd6533d200f4246903c44142b4442c7afd3e8bc4c17208f20d4e29b7",
+   "seam_px": 67
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 11,
+   "frame": 155,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/grass/clean.webp",
+    "ground": "grass",
+    "src_sha": "e5d73aa936ff3d69b0a6b8b078b9fa65721272f1e5551629c7f78c94c27a853f"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/brown_paving_stone/clean.webp",
+    "ground": "brown_paving_stone",
+    "src_sha": "b9cca99ea4bda8bedaf876e64f21b5989ad83788a6e7911484e398a2b7c47fd0"
+   },
+   "sha_noseam": "c3bcdc3bafba9979ea7439717708c427fa5d14e52af8f4f556eb8beecb0507e2",
+   "sha": "104e3d23a736de0b8da00c5a640e77577a187ba85206f8537c308e75b7e02d0e",
+   "seam_px": 67
+  },
+  {
+   "pattern": "a00_s3",
+   "index": 3,
+   "frame": 3,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/grass/clean.webp",
+    "ground": "grass",
+    "src_sha": "e5d73aa936ff3d69b0a6b8b078b9fa65721272f1e5551629c7f78c94c27a853f"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/brown_paving_stone/clean.webp",
+    "ground": "brown_paving_stone",
+    "src_sha": "b9cca99ea4bda8bedaf876e64f21b5989ad83788a6e7911484e398a2b7c47fd0"
+   },
+   "sha_noseam": "72db1bec0bc9c0e108a7654a56f6a003ab3deac8682276c05b822a0bdcb9dc7b",
+   "sha": "133e4f4c7dcca3ec37005b43f1050f9115de770e107cedca7a8b3b71ebc8f8bf",
+   "seam_px": 97
+  },
+  {
+   "pattern": "a30_s1",
+   "index": 6,
+   "frame": 278,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/grass/clean.webp",
+    "ground": "grass",
+    "src_sha": "e5d73aa936ff3d69b0a6b8b078b9fa65721272f1e5551629c7f78c94c27a853f"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/brown_paving_stone/clean.webp",
+    "ground": "brown_paving_stone",
+    "src_sha": "b9cca99ea4bda8bedaf876e64f21b5989ad83788a6e7911484e398a2b7c47fd0"
+   },
+   "sha_noseam": "76ada7c887123c10b7561fcfa53ce164b00eb7af22b2fb7ff611dd49e0d64ac4",
+   "sha": "ed763cb895b021e813afb565af4a7a739e180bed90d3e8f7f8f1cd14749200f1",
+   "seam_px": 198
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 15,
+   "frame": 159,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/grass/clean.webp",
+    "ground": "grass",
+    "src_sha": "e5d73aa936ff3d69b0a6b8b078b9fa65721272f1e5551629c7f78c94c27a853f"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/brown_paving_stone/clean.webp",
+    "ground": "brown_paving_stone",
+    "src_sha": "b9cca99ea4bda8bedaf876e64f21b5989ad83788a6e7911484e398a2b7c47fd0"
+   },
+   "sha_noseam": "3fe198d667050bbfb4cad902aab988efec3791a9ad5f27329050866ae247bdb3",
+   "sha": "3fe198d667050bbfb4cad902aab988efec3791a9ad5f27329050866ae247bdb3",
+   "seam_px": 0
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 5,
+   "frame": 149,
+   "a": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s5.webp",
+    "ground": "light_soil",
+    "src_sha": "7f80d53e2ca2775a5e2f455efb765bda3ff2f388c580ad7e28dfd46e15602476"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+    "ground": "grass",
+    "src_sha": "698f9c7db65fea6cd7d43f3cb5b90f87d352fc5ee734f2cd2f672177d0aff3dd"
+   },
+   "sha_noseam": "294eb450fb32acb25aea7639e73c1450c2716fc39360b2dadfe66bae18637002",
+   "sha": "f8a51be48f665b3f5a3a39270835f9127ce28b8a004de8e2bb574808315c92cc",
+   "seam_px": 113
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 10,
+   "frame": 154,
+   "a": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s5.webp",
+    "ground": "light_soil",
+    "src_sha": "7f80d53e2ca2775a5e2f455efb765bda3ff2f388c580ad7e28dfd46e15602476"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+    "ground": "grass",
+    "src_sha": "698f9c7db65fea6cd7d43f3cb5b90f87d352fc5ee734f2cd2f672177d0aff3dd"
+   },
+   "sha_noseam": "1cb2dc5fc2862191d8bdbb3c4ef66d2e24312b5b11d6db30045aafcc1dd613df",
+   "sha": "938610e869f71d09f1898611f2faeb81abd5625a1fae2451d68a8e63bcc06b87",
+   "seam_px": 113
+  },
+  {
+   "pattern": "a00_s3",
+   "index": 3,
+   "frame": 3,
+   "a": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s5.webp",
+    "ground": "light_soil",
+    "src_sha": "7f80d53e2ca2775a5e2f455efb765bda3ff2f388c580ad7e28dfd46e15602476"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+    "ground": "grass",
+    "src_sha": "698f9c7db65fea6cd7d43f3cb5b90f87d352fc5ee734f2cd2f672177d0aff3dd"
+   },
+   "sha_noseam": "91b457941aacb734970f78fe5b3b4b0c59c5552cbe27dff86989e01d0c9445ea",
+   "sha": "03b7accb23ee0e01a42b198ed55efb0bb19fb2fc11ce9f7d4051e584ae764c2c",
+   "seam_px": 97
+  },
+  {
+   "pattern": "a30_s1",
+   "index": 6,
+   "frame": 278,
+   "a": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s5.webp",
+    "ground": "light_soil",
+    "src_sha": "7f80d53e2ca2775a5e2f455efb765bda3ff2f388c580ad7e28dfd46e15602476"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+    "ground": "grass",
+    "src_sha": "698f9c7db65fea6cd7d43f3cb5b90f87d352fc5ee734f2cd2f672177d0aff3dd"
+   },
+   "sha_noseam": "d2e7ada2ed2b7afbdb007fd7e9fd082dbce3d3743fe8d5ccfb3b4ce723c2ac98",
+   "sha": "d8609207118612b757ac42d0dbc5e182b3ab8fbabe1c47f91d9bae450009785d",
+   "seam_px": 198
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 15,
+   "frame": 159,
+   "a": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s5.webp",
+    "ground": "light_soil",
+    "src_sha": "7f80d53e2ca2775a5e2f455efb765bda3ff2f388c580ad7e28dfd46e15602476"
+   },
+   "b": {
+    "kind": "conform",
+    "path": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+    "ground": "grass",
+    "src_sha": "698f9c7db65fea6cd7d43f3cb5b90f87d352fc5ee734f2cd2f672177d0aff3dd"
+   },
+   "sha_noseam": "f885352d2b9652eaebd2442739e54e32d6f77198e11c8587930324a320dc94e1",
+   "sha": "f885352d2b9652eaebd2442739e54e32d6f77198e11c8587930324a320dc94e1",
+   "seam_px": 0
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 6,
+   "frame": 150,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/water/clean.webp",
+    "ground": "water",
+    "src_sha": "f47463f6add42e3e0c1b1cf16ebce22bd6f89c2b68864164c05c741d7fa81ddc"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/ice/clean.webp",
+    "ground": "ice",
+    "src_sha": "51e0228a11756d63d7dbe4746d8ce3641b2f5b0d7a04291133568187186ee458"
+   },
+   "sha_noseam": "9badb35b9d7e76555994890554bf35012742ae5750084ab990865eebbe08345d",
+   "sha": "9e948cfd2b99f6a874828b95b8c4d674a181a2c77a34062f01759e6b382cc2a5",
+   "seam_px": 134
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 9,
+   "frame": 153,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/water/clean.webp",
+    "ground": "water",
+    "src_sha": "f47463f6add42e3e0c1b1cf16ebce22bd6f89c2b68864164c05c741d7fa81ddc"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/ice/clean.webp",
+    "ground": "ice",
+    "src_sha": "51e0228a11756d63d7dbe4746d8ce3641b2f5b0d7a04291133568187186ee458"
+   },
+   "sha_noseam": "0b80cf9e8d904b38af42a68062fae0a2037b3eb20c0b67855f1256371f9f172b",
+   "sha": "cdd688b73bca52c82b65231a7c9a8e73c47da19f4b9f3ee0f4a7c02012654f5f",
+   "seam_px": 134
+  },
+  {
+   "pattern": "a00_s3",
+   "index": 3,
+   "frame": 3,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/water/clean.webp",
+    "ground": "water",
+    "src_sha": "f47463f6add42e3e0c1b1cf16ebce22bd6f89c2b68864164c05c741d7fa81ddc"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/ice/clean.webp",
+    "ground": "ice",
+    "src_sha": "51e0228a11756d63d7dbe4746d8ce3641b2f5b0d7a04291133568187186ee458"
+   },
+   "sha_noseam": "2ac0223798dccd327ad9c6dedff67159d39746fcec5af719a88db9c3d0e25758",
+   "sha": "38d34973cedf6bbca1cc3a67fed89be8b5cecc8ff198c988f7e178847cecb997",
+   "seam_px": 97
+  },
+  {
+   "pattern": "a30_s1",
+   "index": 6,
+   "frame": 278,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/water/clean.webp",
+    "ground": "water",
+    "src_sha": "f47463f6add42e3e0c1b1cf16ebce22bd6f89c2b68864164c05c741d7fa81ddc"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/ice/clean.webp",
+    "ground": "ice",
+    "src_sha": "51e0228a11756d63d7dbe4746d8ce3641b2f5b0d7a04291133568187186ee458"
+   },
+   "sha_noseam": "96cea28c36c170fcdaea78aa0268447d96b02f91a7276c497d19cafde1b8d87b",
+   "sha": "92cb56f6f876f1fc2f0a6f388786fa68b3b6cff4af90e801810e8419324ec7d9",
+   "seam_px": 198
+  },
+  {
+   "pattern": "a18_s4",
+   "index": 15,
+   "frame": 159,
+   "a": {
+    "kind": "clean",
+    "path": "tiles/plates/water/clean.webp",
+    "ground": "water",
+    "src_sha": "f47463f6add42e3e0c1b1cf16ebce22bd6f89c2b68864164c05c741d7fa81ddc"
+   },
+   "b": {
+    "kind": "clean",
+    "path": "tiles/plates/ice/clean.webp",
+    "ground": "ice",
+    "src_sha": "51e0228a11756d63d7dbe4746d8ce3641b2f5b0d7a04291133568187186ee458"
+   },
+   "sha_noseam": "646be7633327fe7d1f7620536c111872f1e89ace1ec3f199dcb5733dd60dd44d",
+   "sha": "646be7633327fe7d1f7620536c111872f1e89ace1ec3f199dcb5733dd60dd44d",
+   "seam_px": 0
+  }
+ ]
+}

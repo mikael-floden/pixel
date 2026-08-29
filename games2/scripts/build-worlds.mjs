@@ -1,8 +1,16 @@
-// Emit the list of PLAYABLE maps2 worlds the client offers in the selector.
-// A world is playable once the maps agent writes maps2/worlds/<name>/world.json;
-// this scans for those and records a little metadata (grid size, spawn, whether
-// a preview/minimap image exists) → client/public/worlds.json. Regenerated at
-// manifest time (npm run manifest), so new worlds appear on the next build.
+// Emit the list of PLAYABLE worlds the client offers in the selector.
+// A world is playable once the maps agent writes world.json under one of the
+// two world trees (maps2/worlds for world@1/@2, maps2/worlds3 for
+// pixel-maps3/world@1); this scans both and records a little metadata (grid
+// size, spawn, schema, which tree, whether a preview/minimap image exists) →
+// client/public/worlds.json. Regenerated at manifest time (npm run manifest),
+// so new worlds appear on the next build.
+//
+// IN THE IMAGE THIS RUNS AGAINST THE CURATED ROOT (ASSETS_ROOT=/assets, the
+// shipset emit), which holds `userWorlds` only — so production's worlds.json
+// lists the published worlds and nothing else, whichever tree they came from.
+// The dev worlds an admin can reach come from config/publish.json via the
+// staging CDN instead (maps.ts stagingWorlds).
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,7 +20,18 @@ import { IMG_EXTS } from "./imagelib.mjs";
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const GAME_ROOT = join(SCRIPT_DIR, "..");
 const ASSETS_ROOT = process.env.ASSETS_ROOT || join(SCRIPT_DIR, "..", "..");
-const WORLDS_DIR = join(ASSETS_ROOT, "maps2", "worlds");
+// THE TWO WORLD TREES. `maps2/worlds` holds world@1/world@2 (baked tile paths);
+// `maps2/worlds3` holds pixel-maps3/world@1 (a ground NAME per cell, no art —
+// tiles3 resolves what draws at draw time). Both parse through the same
+// `parseWorld`, so a picker entry is the same shape either way; the tree is
+// recorded as `root` so the client knows where the world's files live.
+//
+// ORDER IS LOAD-BEARING TWICE OVER: `maps2/worlds` is scanned first, so every
+// existing entry keeps its exact fields (the default root is OMITTED, making
+// those rows byte-identical to before worlds3 existed), and a name present in
+// both trees resolves to the v2 one.
+const WORLD_ROOT_DEFAULT = "maps2/worlds";
+const WORLD_ROOTS = [WORLD_ROOT_DEFAULT, "maps2/worlds3"];
 const OUT = join(GAME_ROOT, "client", "public", "worlds.json");
 
 // Thumbnail stems the maps agent may render, and the extensions to try for
@@ -41,9 +60,19 @@ function firstExisting(dir, names) {
 }
 
 function scan() {
-  if (!existsSync(WORLDS_DIR)) return [];
   const out = [];
+  const seen = new Set();
+  for (const root of WORLD_ROOTS) scanRoot(root, out, seen);
+  // Stable order, with ring_test (the default) first.
+  out.sort((a, b) => (a.name === "ring_test" ? -1 : b.name === "ring_test" ? 1 : a.name.localeCompare(b.name)));
+  return out;
+}
+
+function scanRoot(root, out, seen) {
+  const WORLDS_DIR = join(ASSETS_ROOT, ...root.split("/"));
+  if (!existsSync(WORLDS_DIR)) return;
   for (const name of readdirSync(WORLDS_DIR)) {
+    if (seen.has(name)) continue;
     const dir = join(WORLDS_DIR, name);
     if (!statSync(dir).isDirectory()) continue;
     const worldJson = join(dir, "world.json");
@@ -64,22 +93,24 @@ function scan() {
       dir,
       THUMB_STEMS.flatMap((stem) => THUMB_EXTS.map((e) => `${stem}.${e}`)),
     );
+    seen.add(name);
     out.push({
       name,
       label: label(name),
       ...meta,
-      preview: img ? `maps2/worlds/${name}/${img}` : null,
+      preview: img ? `${root}/${name}/${img}` : null,
       // DEV MAP? Everything outside config/publish.json's `userWorlds` ships so
       // it WORKS (the server reads world.json off disk, so an absent map cannot
       // be joined at all) but is hidden from the picker unless you are signed in
       // as admin — see loadWorldsList. A product gate, not a security boundary:
       // the repo is public. The point is the game never OFFERS these.
       ...(USER_WORLDS.length && !USER_WORLDS.includes(name) ? { dev: true } : {}),
+      // Only a NON-default tree is recorded, so every maps2/worlds row stays
+      // exactly the object it was; the client reads `root` and falls back to
+      // maps2/worlds when it is absent (maps.ts worldRoot).
+      ...(root === WORLD_ROOT_DEFAULT ? {} : { root }),
     });
   }
-  // Stable order, with ring_test (the default) first.
-  out.sort((a, b) => (a.name === "ring_test" ? -1 : b.name === "ring_test" ? 1 : a.name.localeCompare(b.name)));
-  return out;
 }
 
 const worlds = scan();

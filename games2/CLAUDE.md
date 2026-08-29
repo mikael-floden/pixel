@@ -73,6 +73,160 @@ monster art in; measured 89.5 → 105.4 MB).
   image lacks hits the network. Required: the server is authoritative
   (collision + spawn zones), so browser CORS alone can never make an unshipped
   map joinable.
+
+**TWO WORLD TREES.** `maps2/worlds` holds world@1/world@2 (baked tile paths);
+`maps2/worlds3` holds `pixel-maps3/world@1` (a ground NAME per cell, no art —
+tiles3 resolves what draws at draw time). `parseWorld` dispatches on the doc's
+own schema, so everything downstream of the read is identical; the ONLY
+difference is which directory a name lives in, and exactly three places carry
+it. **`maps2/worlds` is probed first everywhere**, which is what keeps every
+existing world's disk reads and network requests unchanged.
+
+- `scripts/build-worlds.mjs` scans both and records `root` on an entry — OMITTED
+  for `maps2/worlds`, so those rows are byte-identical to before worlds3
+  existed. In the image this runs against the CURATED root, so production's
+  worlds.json still lists `userWorlds` only.
+- `client/src/maps.ts` — `worldRoot`/`setWorldRoot`/`worldFileUrl` are the ONE
+  place the client builds a world-file URL (world.json, spawns, npcs, places).
+  A name nobody registered answers with `maps2/worlds`; only the two known
+  trees can be registered (a root arrives over the network).
+  `enterStaging(world, root)` takes it as a parameter rather than importing it
+  — maps.ts already imports `gameUrl` from staging.ts.
+- `WorldRoom.worldRootFor` resolves a name's tree ONCE per process: DISK across
+  both trees before any network, so a shipped world still never touches GitHub;
+  the staging fetch that resolves the root is the same one `stagingCache`
+  serves to the read behind it, so a v3 world costs ONE extra 404 per process
+  and a v2 world costs none. Every file of a world reads from ITS tree.
+- `config/publish.json` `devWorlds3` names the maps3 staging worlds
+  (`the_game`). Nothing about them ships: the ship-set closure walks
+  `userWorlds` only — verified, the digest and all 21,338 paths are unchanged,
+  with 0 `tiles/` and 0 `maps2/worlds3/` entries. `shipset.mjs` reads the key
+  in `--check-policy` and NOWHERE ELSE, and an absent tree there is "not
+  checked out", not a typo (the deploy's test job sparse-checks-out
+  `/maps2/worlds/` alone).
+- **The tiles3 ART needs no new plumbing**: the resolver names repo-relative
+  files (`tiles/plates`, `tiles/patterns`, `tiles/tops`, `tiles/fades`,
+  `tiles/base_candidates`, `tiles/review`, the index JSONs) served at
+  `/assets/tiles/…`, which `gameUrl`'s existing `/assets/` rule maps onto the
+  CDN — as it does `/assets/live/tuning/base_tile_sets.json`. `tiles` is
+  already in both asset-domain lists, so **dev serves it from the working tree
+  and prod 404s it**, which is exactly right: 240 MB of tiles3 art must never
+  enter the image while tiles2 is what the real game renders.
+- HOW TO PLAY IT: sign in as admin, pick **The Game** in the world picker (dev
+  rows are admin-only; `npm run dev` shows it unconditionally). Gate:
+  `server/test/worldserve.test.ts` — both trees, disk and network, the request
+  log, `gameUrl`'s identity, and a real Colyseus join landing on the maps3
+  spawn.
+- KNOWN GAP, not this unit: `shared/parseSpawns` accepts
+  `pixel-maps2/spawns@1` only, and the_game's spawns.json says
+  `pixel-maps3/spawns@1` with a BYTE-IDENTICAL zone shape — so it joins with
+  82 zones and zero monsters until that schema is accepted.
+
+**RENDERING A MAPS3 WORLD.** `WorldScene` has a SECOND art source, not a second
+renderer: the streaming RenderTexture, depth sort, occluders, painter order,
+decks, indoor cut and the night shader are geometry and compositing and do not
+care where the picture came from. Four modules, all pure and Phaser-free:
+`client/src/tiles3.ts` (what draws on this cell), `tiles3draw.ts` (the two pixel
+ops + the composed-texture factory), `tiles3runtime.ts` (the same resolution ONE
+CELL AT A TIME, plus the streaming loader), `scenery3.ts` (off-grid set
+dressing). `this.maps3` gates every branch; `this.maps2` is false on a v3 world
+by construction, so no existing branch changed.
+
+- **THE PROJECTION IS PER WORLD.** tiles2 is dx 32 / dy 15 / storey 16; tiles3
+  is 32 / 14 / **15**, the last MEASURED off the x-over-x wall art
+  (`measureStoreyPitch` — the doc says 17, render3 falls back to 16, and a
+  pitch one row too large exposes a bright stripe of each lower floor at every
+  storey). `parseWorld3` publishes it as `ParsedWorld.iso`; `maps.ts
+  geometryFor` turns it into the scene's `this.geom` and returns the
+  `MAP_GEOMETRY` object ITSELF when it matches, so a world@1/@2 world cannot
+  move a pixel. `nightlight.ts` reads the same geometry. **INPUT ROTATION
+  DELIBERATELY DOES NOT**: `screenToWorldVector` takes the geometry but every
+  movement call keeps the default, because client prediction and the
+  authoritative server integrate the same inputs and the server carries no
+  per-world projection — a per-world rotation there is a desync, not a look.
+- **THE COORDINATE BRIDGE** is two constants: tiles3's frame is this scene's
+  projection with `ox = iso.ox + DX` and `oy = iso.oy + TOP_Y`. Get either
+  wrong and nothing looks broken — the map simply shears a row per grid step.
+- **PER CELL, NEVER THE SWEEP.** `Tiles3.resolveWindow` is ~420ms on the_game
+  and allocates per cell. `Tiles3World` takes the same decisions one cell at a
+  time out of the resolver's public primitives, and
+  `server/test/tiles3runtime.test.ts` proves the two return deeply equal cells,
+  boundaries and deck cells over the parity fixture's windows — that equality
+  is the whole licence for the fast path. Measured: 38ms for the whole-world
+  region flood fill once at load, 32ms per ground redraw (which runs on the RT's
+  own latch, every GROUND_MARGIN/2 of camera drift, not per frame).
+- **REGIONS ARE WHOLE-WORLD**, computed once. A region id is `<ground>@<lexicographic
+  minimum cell>`, so a window-local component gets a different id, a different
+  set and different art every time the camera moves — the ground would visibly
+  reshuffle as you walk.
+- **PAINTER ORDER IS THREE PASSES**: every cell, then the composed boundaries on
+  the corner lattice, then the deck slabs. Interleaving is wrong and looks
+  nearly right: three of the four cells a boundary blends are drawn AFTER it,
+  and would paint their own plates back over the transition.
+- **TWO PHASER TRAPS, both silent, both paid for here.**
+  `textures.get(key)` returns the built-in `__MISSING` 32x32 checker for an
+  unknown key, NOT undefined — handed to the composer an unloaded 64x46 plate
+  arrives as 32x32 and kills the frame, so the scene passes an adapter whose
+  `get` answers through `exists`. And terrain gets its **own `LoaderPlugin`**:
+  `this.load` is one FIFO queue and `loadDeferredAnims` pushes ~1,700 action
+  frames onto it the moment the avatar is in — measured, 95 plate files sat at
+  position 1,719 and the ground never filled in while every counter said it had
+  been requested. The dedicated loader also carries `crossOrigin =
+  "anonymous"`, which a staging join depends on: a composed boundary reads its
+  plates back with `getImageData`, and a cross-origin image loaded without the
+  attribute taints the canvas and makes every boundary in the world vanish.
+- **A NOT-YET-LOADED PLATE IS NEVER CACHED AS NULL** (`tiles3draw` platePixels /
+  sourcePixels). Null means "not resident yet"; caching it makes every plate
+  that missed its first frame miss forever.
+- Diagnostics: `window.__ml.tiles3()` reports what resolved, what drew, what is
+  still loading and what composed — a gate cannot tell a correct dark frame
+  from a black one by pixels, so the counters are the instrument.
+  `window.__ml.t3at(col,row)` is the same question for ONE cell: the resolver's
+  verdict plus the blits the texture factory can hand the RT right now, so a
+  cell that resolved but has no picture reads as zero blits rather than as a
+  resolution failure. Pixels cannot separate "the fade drew" from "the plate
+  under it drew"; the counters cannot separate "composed" from "on screen".
+- **Gate: `scripts/verify-tiles3.mjs`** (needs the dev stack). the_game LOADS at
+  512x512 — the size is asserted FIRST because the silent fallback is a green
+  160x160 plain that still boots and still joins — then five grounds are sampled
+  as real pixels (three of them in ONE screenshot, which is what a uniformly
+  coloured frame cannot survive), a ring-2 fade cell and a composed boundary are
+  resolved AND composed, a 7-storey capped cliff draws every storey, scenery
+  reaches the window, the player walks on open grass and a level-6 escarpment
+  stops them, and the_island2 is re-joined in the same run and still renders off
+  its atlas. Every coordinate is derived from the world doc and carries its
+  derivation; every threshold was falsified against a deliberately wrong cell.
+  **COLOUR IS COMPARED UNLIT.** The night shader multiplies, and the light is
+  PER CELL: measured at pinned Day on the_game it is 1.0 in the open and exactly
+  0.55 on the east-coast cells standing in the level-6 cliff's own sun shadow.
+  Comparing a ground lit at 1.0 with one lit at 0.55 as raw pixels compares
+  nothing, so every sample is divided by `__ml.lightAtCell` first — measured, not
+  asserted, because the gate is about terrain, not about lighting tuning.
+  **SCENERY CONVERGES ONLY WHILE THE CAMERA MOVES**, which is why that section
+  walks there instead of flying `lookAt`: the first rebuild over a fresh window
+  can only request the piece manifests, the second only their art, and nothing
+  schedules a rebuild when a MANIFEST lands (a texture batch does). A parked
+  camera can sit on a half-populated window; measured, 1 sprite where a moving
+  one reaches 91.
+- **THE RESOLVER'S REGION RULE IS STALE AGAINST render3, and it is visible.**
+  `tiles3.computeRegions` uses 4-connected COMPONENTS (proven against the parity
+  fixture); render3 now keys a region on a 24-cell CHUNK, having found that
+  components make a whole island one region. Measured on the_game: 332
+  components against 851 chunks, and ONE component paints 54.6% of all grass and
+  99.5% of all snow — so most of the map draws a single set per ground and the
+  maintainer's other tuned sets never appear. Fixing it is a RESOLUTION change
+  (tiles3.ts + its fixture), not a wiring one, which is why this run did not
+  make it.
+- KNOWN GAPS, stated: no FADE GUARD in the game (it is a pixel test over art the
+  pool has not fetched yet — measured, 2 of 10 pools keep a tile render3 drops,
+  which is a wrong tile inside a 1-cell band, never a hole;
+  `Tiles3.stats.unguardedFadePools` counts it); scenery draws STILLS only (no
+  idle animation) and registers no occluderMeta, so a body sorts against a tree
+  by painter depth alone; `buildIndoorDebris` is world@2-only, so a maps3 indoor
+  transition is instant rather than eased; the resolver is proven against the
+  parity fixture, and render3 has since grown slopes, set-dressed wall caps and
+  a Chebyshev fade band, all of which are RESOLUTION decisions and belong in
+  tiles3.ts and its fixture.
 - Both bases are INJECTABLE (`ml-staging-base`, `STAGING_WORLD_BASE`) — the
   sandbox denies headless-browser egress, so the gate points at a local
   fixture origin.

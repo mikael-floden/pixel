@@ -6,7 +6,7 @@ import { enterStaging, mergeStagingEntries, gameUrl } from "./staging";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
-import { loadWorld, loadWorldsList } from "./maps";
+import { loadWorld, loadWorldsList, worldRoot } from "./maps";
 import { fetchAtlasIndex } from "./tileatlas";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
 import { setLoadingProgress, showLoading } from "./loading";
@@ -243,7 +243,10 @@ async function boot() {
   // If activation fails, loadWorld below returns null and the scene falls
   // back to plain ground — same degradation as any missing world.
   if (!worlds.some((w) => w.name === worldName && !w.staging)) {
-    const ok = await enterStaging(worldName);
+    // The tree comes from the picker entry we just registered (maps.ts
+    // worldRoot); an unknown world answers with the default tree, which is what
+    // this call passed before worlds3 existed.
+    const ok = await enterStaging(worldName, worldRoot(worldName));
     if (ok && monsterManifest) {
       // The image's manifests were built from the CURATED root, so a dev
       // world's monsters/NPCs may be missing from them. The committed repo

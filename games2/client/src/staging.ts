@@ -100,11 +100,16 @@ export async function resolveStagingBase(): Promise<string | null> {
  * fetching the world's own world.json — activating on a dead base would turn
  * one broken join into a page of broken art.
  */
-export async function enterStaging(world: string): Promise<boolean> {
+export async function enterStaging(world: string, root = "maps2/worlds"): Promise<boolean> {
   const b = await resolveStagingBase();
   if (!b) return false;
   try {
-    const probe = await fetchSoon(`${b}maps2/worlds/${world.replace(/[^a-z0-9_-]/gi, "")}/world.json`, 5000);
+    // `root` is the world's tree (maps2/worlds or maps2/worlds3) — passed in by
+    // the caller rather than imported from maps.ts, which imports gameUrl from
+    // here. Anything else falls back to the default tree, so an unknown value
+    // probes exactly the path this function probed before worlds3 existed.
+    const dir = /^maps2\/worlds3?$/.test(root) ? root : "maps2/worlds";
+    const probe = await fetchSoon(`${b}${dir}/${world.replace(/[^a-z0-9_-]/gi, "")}/world.json`, 5000);
     if (!probe.ok) return false;
   } catch {
     return false;
@@ -120,6 +125,15 @@ export async function enterStaging(world: string): Promise<boolean> {
  * Active: /assets/<path> is the repo path itself; the generated bundle files
  * (/atlases, /monsters.json, /npcs.json) live under games2/client/public in
  * the repo, because that is where their builders write and git tracks them.
+ *
+ * THE `/assets/<path>` RULE ALREADY COVERS TILES 3.0, and that is why no
+ * tiles3 case appears below: the resolver names REPO-RELATIVE files
+ * ("tiles/plates/…", "tiles/patterns/…", "tiles/review/…") which are served at
+ * "/assets/tiles/…", so the same slice maps them onto the repo. Same for
+ * "/assets/live/tuning/base_tile_sets.json" and a maps3 world's own
+ * "/assets/maps2/worlds3/<name>/…". The image ships none of the tiles3 art
+ * (config/publish.json ships `userWorlds` only), so on a staging join every one
+ * of those bytes comes from the CDN and production carries zero of them.
  */
 export function gameUrl(url: string): string {
   if (base === null) return url;

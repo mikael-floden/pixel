@@ -9,6 +9,7 @@
  * When characters2 generates the other seven rotations they appear here with
  * no client change. */
 import { gameUrl } from "./staging";
+import { worldFileUrl } from "./maps";
 
 export interface NpcDef {
   id: string;
@@ -59,7 +60,7 @@ export interface NpcPlacement {
 /** A world's NPC placement, or [] when it ships none (most demo worlds). */
 export async function loadNpcPlacement(world: string): Promise<NpcPlacement[]> {
   try {
-    const res = await fetch(gameUrl(`/assets/maps2/worlds/${world}/npcs.json`));
+    const res = await fetch(gameUrl(worldFileUrl(world, "npcs.json")));
     if (!res.ok) return [];
     const j = await res.json();
     return Array.isArray(j?.npcs) ? (j.npcs as NpcPlacement[]) : [];

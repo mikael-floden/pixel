@@ -388,12 +388,30 @@ if (process.argv.includes("--check-policy")) {
   const problems = [];
   if (!worldNames.length) problems.push("policy publishes no worlds");
   // Dev worlds are not shipped, but a typo here silently empties the admin
-  // picker's staging list — same class of failure, same check.
-  for (const n of [...worldNames, ...(policy.devWorlds ?? [])]) {
-
-    const wj = join(ASSETS_ROOT, "maps2", "worlds", n, "world.json");
-    if (!existsSync(wj)) problems.push(`published world "${n}" has no world.json`);
-    else if (!readJson(wj, `world ${n}`)) problems.push(`published world "${n}" has unparseable world.json`);
+  // picker's staging list — same class of failure, same check. `devWorlds3`
+  // names the SECOND world tree (maps2/worlds3, pixel-maps3/world@1); it is
+  // checked here and NOWHERE ELSE in this file — the ship-set closure above
+  // walks `userWorlds` only, so neither a worlds3 world nor a byte of tiles/
+  // enters the image.
+  for (const [root, names] of [
+    ["worlds", [...worldNames, ...(policy.devWorlds ?? [])]],
+    ["worlds3", policy.devWorlds3 ?? []],
+  ]) {
+    // AN ABSENT TREE IS "NOT CHECKED OUT HERE", NOT A TYPO — the same rule
+    // --check applies to a missing domain, for the same reason: the deploy's
+    // test job sparse-checks-out `/maps2/worlds/` and nothing else, so failing
+    // on an absent maps2/worlds3 would turn the pipeline red while the image
+    // (which builds from the full context) is perfectly fine.
+    if (!names.length) continue;
+    if (!existsSync(join(ASSETS_ROOT, "maps2", root))) {
+      console.log(`[shipset] maps2/${root} not checked out — ${names.length} name(s) unverified`);
+      continue;
+    }
+    for (const n of names) {
+      const wj = join(ASSETS_ROOT, "maps2", root, n, "world.json");
+      if (!existsSync(wj)) problems.push(`world "${n}" has no maps2/${root}/${n}/world.json`);
+      else if (!readJson(wj, `world ${n}`)) problems.push(`world "${n}" has unparseable world.json`);
+    }
   }
   for (const key of ["playableCharacters", "scenery", "alwaysShip", "entityDomains"])
     if (policy[key] && !Array.isArray(policy[key])) problems.push(`policy.${key} must be an array`);

@@ -1886,23 +1886,84 @@ async function fetchStagingJson(rel: string): Promise<unknown | null> {
   return doc;
 }
 
-/** The raw world.json for a name: disk (the shipped image / dev working tree)
- * first, staging fetch second. Null = the world truly does not exist. */
-async function readWorldDoc(name: string, file: string): Promise<unknown | null> {
+// THE TWO WORLD TREES. `maps2/worlds` holds world@1/world@2 (baked tile
+// paths); `maps2/worlds3` holds pixel-maps3/world@1 (semantics only, art
+// resolved at draw time). Both parse through the SAME `parseWorld` into the
+// same ParsedWorld, so nothing downstream of here knows the difference — only
+// the directory a name lives in differs, and that is what this list settles.
+//
+// ORDER IS LOAD-BEARING: `maps2/worlds` is probed first, so every existing
+// world resolves on its first candidate and issues exactly the disk reads and
+// network requests it did before worlds3 existed.
+const WORLD_ROOTS = ["maps2/worlds", "maps2/worlds3"] as const;
+
+/** Which tree holds `name`, resolved ONCE per world and cached for the process.
+ *
+ * DISK FIRST, ACROSS BOTH TREES, BEFORE ANY NETWORK — the shipped-world rule is
+ * unchanged: a world the image carries never touches GitHub. Only a name absent
+ * from both trees on disk falls through to the staging fetch, and the world.json
+ * it fetches lands in `stagingCache`, so the readWorldDoc call right behind it
+ * is served from memory rather than issuing a second request.
+ *
+ * Unresolvable names return the FIRST root, which reproduces the old
+ * "missing world" path exactly (loadWorldGrid gets null and opens a plain). */
+const worldRootCache = new Map<string, string>();
+export async function worldRootFor(name: string): Promise<string> {
+  const hit = worldRootCache.get(name);
+  if (hit) return hit;
+  let root: string | null = null;
+  for (const r of WORLD_ROOTS) {
+    if (existsSync(join(assetsRoot(), ...r.split("/"), name, "world.json"))) {
+      root = r;
+      break;
+    }
+  }
+  if (!root)
+    for (const r of WORLD_ROOTS) {
+      if (await fetchStagingJson(`${r}/${name}/world.json`)) {
+        root = r;
+        break;
+      }
+    }
+  root ??= WORLD_ROOTS[0];
+  worldRootCache.set(name, root);
+  return root;
+}
+
+/** The raw world.json/spawns.json for a name: disk (the shipped image / dev
+ * working tree) first, staging fetch second. Null = the world truly does not
+ * exist. Every file of one world is read from the SAME tree — resolving the
+ * root per file would let a v3 world's spawns.json be searched for under
+ * maps2/worlds, which is one pointless 404 per sidecar. */
+export async function readWorldDoc(name: string, file: string): Promise<unknown | null> {
+  const root = await worldRootFor(name);
   try {
-    const path = join(assetsRoot(), "maps2", "worlds", name, file);
+    const path = join(assetsRoot(), ...root.split("/"), name, file);
     if (existsSync(path)) return JSON.parse(readFileSync(path, "utf8"));
   } catch {
     return null; // a CORRUPT local file is not rescued by GitHub — surface it as missing
   }
-  return fetchStagingJson(`maps2/worlds/${name}/${file}`);
+  return fetchStagingJson(`${root}/${name}/${file}`);
 }
 
-/** Load a named maps2 world (maps2/worlds/<name>/world.json) into a collision
- * grid + spawn + extent, or an open world if it isn't present/parseable.
+/** Test seam: the world-root and staging caches are process-lifetime by design
+ * (a room create per world per process is the real frequency). A gate that
+ * asserts the RESOLUTION itself has to start from cold.
+ *
+ * worldRootFor/readWorldDoc/loadWorldGrid are exported for the same reason —
+ * server/test/worldserve.test.ts proves the REAL server path, not a copy. */
+export function resetWorldSourceCaches(): void {
+  worldRootCache.clear();
+  stagingCache.clear();
+}
+
+/** Load a named world (maps2/worlds or maps2/worlds3 — see WORLD_ROOTS) into a
+ * collision grid + spawn + extent, or an open world if it isn't
+ * present/parseable. `parseWorld` dispatches on the doc's own schema, so a
+ * pixel-maps3 world produces the same grid a world@1 one does.
  * Async since the staging path (2026-08-15): a world absent from disk may
  * stream from the repo — see readWorldDoc. */
-async function loadWorldGrid(name: string): Promise<LoadedWorld> {
+export async function loadWorldGrid(name: string): Promise<LoadedWorld> {
   const open: LoadedWorld = { terrain: null, spawn: null, worldW: WORLD_WIDTH, worldH: WORLD_HEIGHT };
   try {
     const doc = await readWorldDoc(name, "world.json");

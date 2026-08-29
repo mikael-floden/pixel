@@ -36,6 +36,22 @@
     "ring_test",
     "trans_demo"
   ],
+  "devWorlds3": ["the_game"],
+  "$comment_devWorlds3": [
+    "STAGING worlds in the SECOND world tree, maps2/worlds3/<name>/world.json",
+    "(pixel-maps3/world@1 — a ground NAME per cell, no baked tile art; tiles3",
+    "resolves what draws at draw time). Same staging contract as devWorlds and",
+    "the same zero bytes in the image; a separate key because the name alone",
+    "cannot say which directory holds the world, and the client's fetches, the",
+    "server's readWorldDoc and shipset's policy check all have to know.",
+    "",
+    "Joining one also streams the tiles3 ART TREES (tiles/plates, tiles/patterns,",
+    "tiles/tops, tiles/fades, tiles/base_candidates, tiles/review + the index",
+    "JSONs) from the CDN through the same gameUrl chokepoint: they are served at",
+    "/assets/tiles/... and the image ships none of them, which is the point —",
+    "tiles/ is 240 MB and tiles2 is still what the real game renders."
+  ],
+
   "$comment_devWorlds": [
     "STAGING worlds: renderer test beds and generator fixtures. NOT in the",
     "image at all — an admin who joins one streams it from the repo (client:",

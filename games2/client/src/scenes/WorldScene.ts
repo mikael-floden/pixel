@@ -112,6 +112,8 @@ import { applyUiZoom } from "../uiscale";
 import {
   World,
   MAP_GEOMETRY,
+  geometryFor,
+  isMaps3World,
   tileKey,
   tileUrl,
   distinctTiles,
@@ -129,8 +131,61 @@ import {
   DEFAULT_WORLD,
   Deck,
   loadPlaces,
+  worldFileUrl,
 } from "../maps";
-import type { PlaceLookup } from "../maps";
+import type { MapGeometry, PlaceLookup } from "../maps";
+// ---- TILES 3.0 (maps3 worlds) -------------------------------------------
+// The resolver (what draws on this cell), the draw layer (the two pixel ops +
+// the texture factory), the streaming per-cell runtime, and scenery. All four
+// are pure and Phaser-free; this scene is the only thing that knows about both
+// them and Phaser.
+import {
+  Tiles3,
+  DX as T3_DX,
+  TOP_Y as T3_TOP_Y,
+  measureStoreyPitch,
+  type Frame as T3Frame,
+  type PatternsDoc,
+} from "../tiles3";
+import {
+  Tiles3Textures,
+  patternSheets,
+  patternSheetPaths,
+  artKey as t3ArtKey,
+  type PatternSheets,
+  type Pixels as T3Pixels,
+  type TextureManagerLike,
+  type UrlRoute,
+} from "../tiles3draw";
+import {
+  Tiles3Loader,
+  Tiles3World,
+  TILES3_DOCS,
+  cellArtPaths,
+  cellBlits,
+  boundaryArtPaths,
+  deckArtPaths,
+  docUrl,
+  faceKey as t3FaceKey,
+  sheetPaths,
+  surfaceKey as t3SurfaceKey,
+  tiles3DataFrom,
+  viewFromParsed,
+  type Tiles3DocKey,
+} from "../tiles3runtime";
+import {
+  SceneryIndex,
+  SceneryPieces,
+  buildPlacements,
+  fitSprite,
+  alphaBBox,
+  artKey as sceneryArtKey,
+  artUrl as sceneryArtUrl,
+  roofedCells,
+  southSprite,
+  stateFor,
+  type SceneryFit,
+} from "../scenery3";
 
 // Fallback loop rates when a state has no measured gaitFps. The jump clip is
 // NOT here: it plays once and its rate is derived per character in
@@ -1164,7 +1219,39 @@ export class WorldScene extends Phaser.Scene {
   private worldW = WORLD_WIDTH; // this world's extent in world units (grid×CELL_WU)
   private worldH = WORLD_HEIGHT;
   private maps2 = false; // true when the world uses maps2 explicit tile paths
+  // MAPS3 (pixel-maps3/world@1): cells name a ground TYPE and no art at all —
+  // tiles3 resolves what draws, per cell, at draw time. Mutually exclusive with
+  // maps2 by construction (isMaps2World tests for baked paths, which a v3 world
+  // has none of), so every existing `if (this.maps2)` branch is untouched.
+  private maps3 = false;
+  // THE PROJECTION IS PER WORLD. `MAP_GEOMETRY` is the default (tiles2's
+  // 32/15/16) and is the exact object a world@1/world@2 world gets, so their
+  // pixels cannot move; a maps3 world draws on 32/14/15 (shared
+  // ISO_GEOMETRY_MAPS3, the second number MEASURED off the wall art). Every
+  // projection in this scene reads THIS, never the module constant.
+  private geom: MapGeometry = MAP_GEOMETRY;
   private iso = { ox: 0, oy: 0, w: WORLD_WIDTH, h: WORLD_HEIGHT };
+  // ---- TILES 3.0 RUNTIME (maps3 only; every field stays null otherwise) ----
+  private t3: Tiles3World | null = null; // per-cell resolution over the whole doc
+  private t3tex: Tiles3Textures | null = null; // the composed-texture factory
+  private t3load: Tiles3Loader | null = null; // streaming art, one request per path
+  private t3sheets: PatternSheets | null = null; // silhouette + masks + borders
+  private t3route: UrlRoute = {}; // staging + version pin, injected into both modules
+  private t3tm: TextureManagerLike = this.t3TextureManager(); // see t3TextureManager
+  private t3loader: Phaser.Loader.LoaderPlugin | null = null; // see tiles3Loader
+  // What the last ground pass resolved and drew, plus how long it took. The
+  // pass runs on the ground RT's own latch (every GROUND_MARGIN/2 of camera
+  // drift), never per frame — `ms` is what makes that budget checkable.
+  private t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: 0, ms: 0 };
+  private t3pitchChecked = false;
+  private t3regionMs = 0;
+  private t3Failed = new Set<string>(); // see t3Try — one line per distinct resolver failure
+  private scenery: SceneryIndex | null = null; // placements bucketed by screen anchor
+  private sceneryPieces: SceneryPieces | null = null; // lazy per-piece manifests
+  private sceneryImgs: Phaser.GameObjects.Image[] = [];
+  private sceneryFit = new Map<string, SceneryFit | null>(); // per piece+state, measured once
+  private sceneryAsked = new Set<string>();
+  private sceneryQueue: [string, string][] = [];
   // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
   private terrain: TerrainGrid | null = null;
   // ---- INDOOR MODE (see the constants block above) ------------------------
@@ -1528,6 +1615,8 @@ export class WorldScene extends Phaser.Scene {
     this.world = (this.registry.get("world") as World | null) ?? null;
     this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
     this.maps2 = !!this.world && isMaps2World(this.world);
+    this.maps3 = !!this.world && isMaps3World(this.world);
+    this.geom = geometryFor(this.world);
     // The maps agent's named interiors, fetched alongside the world. Async and
     // deliberately un-awaited: a world with no places.json is normal, and the
     // music must not wait on a file that may never arrive. Until it lands,
@@ -1635,7 +1724,10 @@ export class WorldScene extends Phaser.Scene {
         // atlas cannot provide — see tileatlas.ts. Same `t2:` texture keys
         // either way; the renderer cannot tell which path ran.
         this.tileAtlas = queueTileLoads(this, this.world, this.worldName, this.game.registry.get("atlasIndex") ?? null);
-      } else {
+      } else if (!this.maps3) {
+        // The legacy category+variant worlds. A MAPS3 world must not fall in
+        // here: its `t` is a ground TYPE, not a tile category, so every one of
+        // these would be a 404 for art that does not exist and never did.
         for (const { t, v } of distinctTiles(this.world)) {
           this.load.image(tileKey(t, v), withV(tileUrl(t, v)));
         }
@@ -1643,6 +1735,29 @@ export class WorldScene extends Phaser.Scene {
       // maps2 worlds get their glow from tiles2/emission.json
       // (per-MATERIAL params + per-TILE-PATH sources — see loadTiles2Emission).
       if (this.maps2) this.load.json("tiles2-emission", withV("/assets/tiles2/emission.json"));
+      if (this.maps3) {
+        // MAPS3 SHIPS NO TILE ART IN THE WORLD, so there is no per-cell load
+        // list to queue here — only the DOCUMENTS the resolver reads, and the
+        // three pattern sheets every composed boundary blends through. The art
+        // itself streams per camera window (Tiles3Loader), because the whole
+        // library is 240 MB and a window needs a few hundred files of it.
+        //
+        // ~8 MB of JSON, of which tiles/review/manifest.json is 5.6 MB: it is
+        // the x-over-y matrix and it is the ONLY source of wall art, so a maps3
+        // world cannot draw a cliff without it. Acceptable because maps3 is a
+        // dev world streamed from the CDN; if it ever ships, the matrix wants a
+        // published subset keyed by the grounds a world actually uses.
+        this.t3route = { gameUrl, withV };
+        for (const [k, path] of Object.entries(TILES3_DOCS))
+          this.load.json(`t3doc:${k}`, docUrl(path, this.t3route));
+        // The three sheets ride the dedicated loader for the same reason the
+        // plates do — and because their pixels are READ BACK, so they need the
+        // crossOrigin attribute a staging join depends on.
+        const l = this.tiles3Loader();
+        for (const path of sheetPaths({} as PatternsDoc)) l.image(t3ArtKey(path), docUrl(path, this.t3route));
+        l.once("complete", () => this.repaintWorld());
+        l.start();
+      }
       // placeCampfire guards on textures.exists, so a miss means no bonfire
       // rather than a broken scene.
       this.load.spritesheet(CAMPFIRE_KEY, withV(CAMPFIRE_URL), {
@@ -1663,8 +1778,13 @@ export class WorldScene extends Phaser.Scene {
     // the ground RT and occluder passes resolve tiles via textures.exists and
     // silently skip missing keys, so this must run ahead of them.
     this.tileAtlas?.finalize(this);
-    if (this.world) this.setupStreamingGround();
-    else this.drawGround();
+    if (this.world) {
+      this.setupStreamingGround();
+      // MAPS3 resolves its art at draw time, so the runtime has to exist before
+      // the first redrawGround — and after setupStreamingGround, whose `iso` is
+      // what the resolver's frame is built on.
+      if (this.maps3) this.initTiles3();
+    } else this.drawGround();
     this.placeCampfire();
     // The world's people (maps2 npcs.json). AFTER the world/projection exist —
     // projectFlat is meaningless in init(), and the registry's "world" key is
@@ -2163,7 +2283,7 @@ export class WorldScene extends Phaser.Scene {
       // look", 2026-08-13).
       debrisAt: (c: number, r: number) => {
         if (!this.indoorDebris || !this.world) return null;
-        const { dx, dy, lh } = MAP_GEOMETRY;
+        const { dx, dy, lh } = this.geom;
         const bx = this.iso.ox + (c - r) * dx;
         const by = this.iso.oy + (c + r) * dy;
         return this.indoorDebris
@@ -2212,12 +2332,82 @@ export class WorldScene extends Phaser.Scene {
           fringe: s?.fringe.size ?? 0,
           cell: [this.indoorAtCol, this.indoorAtRow],
           elev: this.indoorAtElev,
-          renderedLvl: av ? +(av.elev / MAP_GEOMETRY.lh).toFixed(2) : null,
+          renderedLvl: av ? +(av.elev / this.geom.lh).toFixed(2) : null,
           swimming: av?.swimming ?? null,
           flips: this.indoorFlips,
           computes: this.indoorComputes,
           sinceFlipMs: Number.isFinite(this.indoorFlipAt) ? Math.round(this.time.now - this.indoorFlipAt) : null,
           torchF: +this.curTorchF.toFixed(3),
+        };
+      },
+      // MAPS3: what the tiles3 pipeline actually resolved and drew this frame.
+      // A gate cannot tell a black screen from a correct one by pixels alone —
+      // an unlit outdoors is black too — so the counters are the instrument.
+      tiles3: () => ({
+        on: this.maps3,
+        ready: !!this.t3,
+        sheets: !!this.t3sheets,
+        textures: !!this.t3tex,
+        geom: { dx: this.geom.dx, dy: this.geom.dy, lh: this.geom.lh },
+        drew: { ...this.t3stats },
+        regionMs: this.t3regionMs,
+        art: this.t3load ? { ...this.t3load.stats } : null,
+        composed: this.t3tex ? { ...this.t3tex.stats } : null,
+        resolver: this.t3 ? { ...this.t3.tiles.stats } : null,
+        failures: [...this.t3Failed],
+        placements: this.scenery?.placements.length ?? 0,
+        pieces: this.sceneryPieces ? { ...this.sceneryPieces.stats } : null,
+        occluders: this.occluders.length,
+      }),
+      /** MAPS3, ONE CELL: what tiles3 resolves at (col,row) and what it can
+       *  actually blit there right now.
+       *
+       *  The aggregate counters above cannot separate "this cell resolved to
+       *  nothing" from "the window is empty", and a screenshot cannot separate
+       *  "the fade tile drew" from "the plate under it drew" — the two are the
+       *  same ground in nearly the same colour. So the per-cell verdict is
+       *  published raw, and `verify-tiles3.mjs` pins it at coordinates derived
+       *  from the world doc's own geometry.
+       *
+       *  READ-ONLY in the only sense that matters: everything here is taken
+       *  through the SAME resolver and the SAME texture factory the ground pass
+       *  uses, so a cell whose art has not streamed in yet reads as zero blits
+       *  rather than as a resolution failure — and nothing is composed that the
+       *  next redraw would not compose anyway. */
+      t3at: (col: number, row: number) => {
+        const t3 = this.t3;
+        if (!t3 || !this.world) return null;
+        const tex = this.ensureTiles3Textures();
+        const cell = this.t3Try(`probe cell ${col},${row}`, () => t3.cell(col, row), null);
+        const b = this.t3Try(`probe boundary ${col},${row}`, () => t3.boundary(col, row), null);
+        const bop = b && tex ? tex.opsForBoundary(b) : null;
+        return {
+          cell: cell && {
+            ground: cell.ground,
+            level: cell.level,
+            region: cell.region,
+            kind: cell.kind,
+            // `path` is absent on a liquid's art (it is a colour, not a file).
+            art: cell.art
+              ? { kind: cell.art.kind, path: (cell.art as { path?: string }).path ?? null }
+              : null,
+            fade: cell.fade
+              ? { other: cell.fade.other, dist: cell.fade.dist, file: cell.fade.file }
+              : null,
+            wall: cell.wall
+              ? {
+                  side: cell.wall.side,
+                  frontLow: cell.wall.frontLow,
+                  capped: cell.wall.capped,
+                  storeys: cell.wall.stack.length,
+                }
+              : null,
+            sx: cell.sx,
+            sy: cell.sy,
+          },
+          blits: cell && tex ? cellBlits(tex, this.t3tm, cell).map((o) => ({ role: o.role, key: o.key })) : [],
+          boundary: b && { index: b.index, a: b.a, b: b.b, maskFrame: b.maskFrame, drawn: !!bop },
+          decks: this.t3Try(`probe decks ${col},${row}`, () => t3.decks(col, row), []).length,
         };
       },
       // world@2 decks: parsed summary + cells indexed for the ground/occluder loop.
@@ -2478,7 +2668,7 @@ export class WorldScene extends Phaser.Scene {
           strength: this.night?.fogStrength ?? 0,
           testZ: this.night?.fogTestZ ?? null,
           testXY: this.night?.fogTestXY ?? null,
-          playerZ: av ? +Math.max(0, av.elev / MAP_GEOMETRY.lh).toFixed(2) : 0,
+          playerZ: av ? +Math.max(0, av.elev / this.geom.lh).toFixed(2) : 0,
         };
       },
       // Local avatar's lit-copy light sample. `l` is what SHIPS: the light at
@@ -2488,7 +2678,7 @@ export class WorldScene extends Phaser.Scene {
       litInfo: () => {
         const av = this.avatars.get(this.room?.sessionId ?? "");
         if (!av || !this.night) return null;
-        const rendLvl = Math.max(0, av.elev / MAP_GEOMETRY.lh); // sunk while swimming
+        const rendLvl = Math.max(0, av.elev / this.geom.lh); // sunk while swimming
         const litLvl = this.litLevelOf(av); // where lighting SHIPS (surface when swimming)
         const baseLvl = this.terrain ? levelAtWorld(this.terrain, av.fx, av.fy) : 0;
         return {
@@ -2515,7 +2705,7 @@ export class WorldScene extends Phaser.Scene {
         return {
           coverY: av.coverY ?? null,
           depth: +av.sprite.depth.toFixed(1),
-          elev: +(av.elev / MAP_GEOMETRY.lh).toFixed(2),
+          elev: +(av.elev / this.geom.lh).toFixed(2),
           litVisible: av.lit ? av.lit.visible : null,
           litCropped: av.lit ? !!av.lit.isCropped : null,
           // The WHITE OCCLUSION OUTLINE over the covered part (syncCoverOutline).
@@ -2894,7 +3084,7 @@ export class WorldScene extends Phaser.Scene {
       // + camera zoom — lets probes locate baked-lip rows in screenshots.
       cellScreen: (col: number, row: number) => {
         if (!this.world) return null;
-        const { dx, dy, lh } = MAP_GEOMETRY;
+        const { dx, dy, lh } = this.geom;
         const cam = this.cameras.main;
         const cell = this.world.rows[row]?.[col];
         if (!cell) return null;
@@ -2948,7 +3138,7 @@ export class WorldScene extends Phaser.Scene {
           return null;
         }
         this.camDetached = true;
-        const { dx, dy, lh } = MAP_GEOMETRY;
+        const { dx, dy, lh } = this.geom;
         const cell = this.world?.rows[row]?.[col];
         const wx = this.iso.ox + (col - row) * dx + dx;
         const wy = this.iso.oy + (col + row) * dy + dy - (cell?.l ?? 0) * lh;
@@ -2975,7 +3165,7 @@ export class WorldScene extends Phaser.Scene {
       // the apex), spanning 2*dy — gate on the real diamond rows, not the image
       // box, or padding rows read as phantom cover. Sorted front-most first.
       shadowCover: (gx: number, gy: number) => {
-        const dy = MAP_GEOMETRY.dy;
+        const dy = this.geom.dy;
         return this.occluderMeta
           .filter((o) => gx >= o.x0 && gx <= o.x1 && gy >= o.y0 + dy - 2 && gy <= o.y0 + dy * 3 + 2)
           .map((o) => ({ col: o.col, row: o.row, top: o.top, depth: Math.round(o.depth), y0: Math.round(o.y0) }))
@@ -3642,7 +3832,7 @@ export class WorldScene extends Phaser.Scene {
     this.liveShadowUnsub = onLiveTuning(() => {
       this.monsters.forEach((mv) => {
         const t = monsterShadow(mv.kind) ?? undefined;
-        const K = MAP_GEOMETRY.dy / MAP_GEOMETRY.dx;
+        const K = this.geom.dy / this.geom.dx;
         const def = this.monsterManifest?.monsters.find((d) => d.id === mv.kind);
         mv.tuned = t;
         if (t) {
@@ -3773,7 +3963,7 @@ export class WorldScene extends Phaser.Scene {
     // manifest scan there would be 24 finds × 160 monsters × 60fps.
     const label = def?.name || m.kind;
     const f0 = this.projectFlat(m.x, m.y);
-    const elev0 = (m.elev ?? f0.lvl) * MAP_GEOMETRY.lh;
+    const elev0 = (m.elev ?? f0.lvl) * this.geom.lh;
     const p0 = { x: f0.x, y: f0.y - elev0 };
     const walk = def ? monsterWalkKey(def) : "jump";
     const initKey = monsterSheetKey(m.kind, walk, DEFAULT_DIRECTION);
@@ -3808,10 +3998,10 @@ export class WorldScene extends Phaser.Scene {
     // all facings — they feed the off-screen cull margin, which must not
     // shrink when the monster turns its long side on.
     const shadowW = tuned
-      ? Math.ceil(2 * Math.max(tuned.rx, tuned.ry / (MAP_GEOMETRY.dy / MAP_GEOMETRY.dx)))
+      ? Math.ceil(2 * Math.max(tuned.rx, tuned.ry / (this.geom.dy / this.geom.dx)))
       : (def?.shadowW ?? Math.round((def?.frameW ?? 48) * 0.54));
     const shadowH = tuned
-      ? Math.ceil(2 * Math.max(tuned.ry, tuned.rx * (MAP_GEOMETRY.dy / MAP_GEOMETRY.dx)))
+      ? Math.ceil(2 * Math.max(tuned.ry, tuned.rx * (this.geom.dy / this.geom.dx)))
       : (def?.shadowH ?? Math.max(6, Math.round(shadowW * 0.385)));
     const e0 = tuned ? shadowScreenEllipse(tuned.rx, tuned.ry, DEFAULT_DIRECTION) : null;
     const shadow = this.add
@@ -3887,7 +4077,7 @@ export class WorldScene extends Phaser.Scene {
    * KIND the first time one drops. */
   private addDrop(id: string, g: any) {
     const p = this.projectFlat(g.x, g.y);
-    const y = p.y - Math.max(g.elev ?? 0, p.lvl) * MAP_GEOMETRY.lh;
+    const y = p.y - Math.max(g.elev ?? 0, p.lvl) * this.geom.lh;
     if (this.time.now > this.joinQuietUntil) {
       const spG = this.worldSpatial(p.x, y);
       gameAudio.event("item.drop", { pan: spG.pan, dist: spG.dist });
@@ -4898,7 +5088,7 @@ export class WorldScene extends Phaser.Scene {
           if (r <= 0) return;
           // A world-space circle projected point by point — correct in iso
           // (an ellipse on screen) and following the ground under it.
-          const lift = (sm.elev ?? 0) * MAP_GEOMETRY.lh;
+          const lift = (sm.elev ?? 0) * this.geom.lh;
           const pts: { x: number; y: number }[] = [];
           for (let i = 0; i < 28; i++) {
             const a = (i / 28) * Math.PI * 2;
@@ -4974,8 +5164,8 @@ export class WorldScene extends Phaser.Scene {
       let ox: number;
       let oy: number;
       if (this.world) {
-        const dDiff = (sx * CELL_WU) / MAP_GEOMETRY.dx; // Δ(x−y)
-        const dSum = (sy * CELL_WU) / MAP_GEOMETRY.dy; // Δ(x+y)
+        const dDiff = (sx * CELL_WU) / this.geom.dx; // Δ(x−y)
+        const dSum = (sy * CELL_WU) / this.geom.dy; // Δ(x+y)
         ox = (dSum + dDiff) / 2;
         oy = (dSum - dDiff) / 2;
       } else {
@@ -5653,7 +5843,7 @@ export class WorldScene extends Phaser.Scene {
     const fx = (p.x + 0.5) * CELL_WU;
     const fy = (p.y + 0.5) * CELL_WU;
     const g = this.projectFlat(fx, fy);
-    const elev = (p.elev ?? g.lvl) * MAP_GEOMETRY.lh;
+    const elev = (p.elev ?? g.lvl) * this.geom.lh;
     const shadow = this.add
       .image(g.x, g.y - elev, SHADOW_TEX)
       .setOrigin(0.5, 0.5)
@@ -5993,7 +6183,7 @@ export class WorldScene extends Phaser.Scene {
     // My own surface height, in LEVELS — the same px→level basis the lit copy
     // and torch use. A deck only counts as a roof when it is above ME, so
     // walking ACROSS a bridge (deck == my own surface) is never "in a cave".
-    const myLevel = Math.max(0, me.elev / MAP_GEOMETRY.lh);
+    const myLevel = Math.max(0, me.elev / this.geom.lh);
     for (let r = cr - R; r <= cr + R; r++) {
       if (r < 0 || r >= g.height) continue;
       for (let c = cc - R; c <= cc + R; c++) {
@@ -6245,7 +6435,7 @@ export class WorldScene extends Phaser.Scene {
       const key = `chess-board:${b.sprite}`;
       const place = () => {
         const p2 = this.projectFlat((b.col + 0.5) * CELL_WU, (b.row + 0.5) * CELL_WU);
-        const img = this.add.image(p2.x, p2.y - p2.lvl * MAP_GEOMETRY.lh + MAP_GEOMETRY.dy / 2, key)
+        const img = this.add.image(p2.x, p2.y - p2.lvl * this.geom.lh + this.geom.dy / 2, key)
           .setOrigin(0.5, 1);
         img.setScale(27 / img.height);
         img.setDepth(p2.y + 0.4);
@@ -6281,7 +6471,7 @@ export class WorldScene extends Phaser.Scene {
       this.textures.addCanvas(key, cnv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
     }
     const p = this.projectFlat((b.col + 0.5) * CELL_WU, (b.row + 0.5) * CELL_WU);
-    const img = this.add.image(p.x, p.y - p.lvl * MAP_GEOMETRY.lh, key).setDepth(p.y + 0.4);
+    const img = this.add.image(p.x, p.y - p.lvl * this.geom.lh, key).setDepth(p.y + 0.4);
     this.chessDecor.set(id, img);
   }
 
@@ -6369,7 +6559,7 @@ export class WorldScene extends Phaser.Scene {
     const uid: string = player.character || this.manifest.characters[0]?.uid || PLACEHOLDER_TEX;
     const key = frameKey(uid, "idle", DEFAULT_DIRECTION, 0);
     const f0 = this.projectFlat(player.x, player.y);
-    const elev0 = f0.lvl * MAP_GEOMETRY.lh;
+    const elev0 = f0.lvl * this.geom.lh;
     const p0 = { x: f0.x, y: f0.y - elev0 };
     // Fall back to the built-in wanderer whenever the character's art is absent
     // (empty roster, a deleted character, or art still loading). Tint it per
@@ -6706,7 +6896,7 @@ export class WorldScene extends Phaser.Scene {
       }
       // world@2: lift by the SURFACE level (deck when standing on it, else base),
       // not the cell's base level — so a player on the roof/bridge draws up there.
-      const targetElev = surfLevel * MAP_GEOMETRY.lh - (swimming ? swimDrop : 0);
+      const targetElev = surfLevel * this.geom.lh - (swimming ? swimDrop : 0);
       // JUMP OUT of the water, don't teleport: reaching land from a swim means
       // the feet must rise ~swimDrop back to the surface. Ease that rise over a
       // short arc + a hop so it reads as leaping out instead of snapping up.
@@ -6778,7 +6968,7 @@ export class WorldScene extends Phaser.Scene {
         if (dt > 0.001) {
           const dsx = av.lx - px0; // = Δ(x−y)·dx/CELL_WU (dx == CELL_WU → 1:1)
           const dsy = av.lyFlat - py0; // = Δ(x+y)·dy/CELL_WU
-          const dSum = dsy * (CELL_WU / MAP_GEOMETRY.dy); // Δ(x+y)
+          const dSum = dsy * (CELL_WU / this.geom.dy); // Δ(x+y)
           const v = this.world
             ? Math.hypot((dsx + dSum) / 2, (dSum - dsx) / 2) / dt
             : Math.hypot(dsx, dsy) / dt;
@@ -6816,7 +7006,7 @@ export class WorldScene extends Phaser.Scene {
       // lagoon would read as instantly/never submerged), so a ledge drop
       // submerges progressively then floats.
       av.swimT = swimDrop > 0
-        ? Math.max(0, Math.min(1, (surfLevel * MAP_GEOMETRY.lh - av.elev) / swimDrop))
+        ? Math.max(0, Math.min(1, (surfLevel * this.geom.lh - av.elev) / swimDrop))
         : swimming ? 1 : 0;
 
       // Jump hop: a short parabola driven by the synced `jumping` flag —
@@ -6964,7 +7154,7 @@ export class WorldScene extends Phaser.Scene {
         mv.fx = m.x;
         mv.fy = m.y;
         const g = this.projectFlat(m.x, m.y);
-        const targetElev = (m.elev ?? g.lvl) * MAP_GEOMETRY.lh;
+        const targetElev = (m.elev ?? g.lvl) * this.geom.lh;
         // Is any of this body's art inside the view? The anchor is at the FEET,
         // so the sprite occupies [y-h, y] and the shadow — which can be WIDER
         // than the sprite (a mammoth's ellipse spans ~190px) — straddles it.
@@ -7055,7 +7245,7 @@ export class WorldScene extends Phaser.Scene {
             const dsx = mv.lx - px0;
             const dsy = mv.lyFlat - py0;
             const scr = Math.hypot(dsx, dsy);
-            const dSum = dsy * (CELL_WU / MAP_GEOMETRY.dy);
+            const dSum = dsy * (CELL_WU / this.geom.dy);
             const v = this.world
               ? Math.hypot((dsx + dSum) / 2, (dSum - dsx) / 2) / dt
               : scr / dt;
@@ -7075,7 +7265,7 @@ export class WorldScene extends Phaser.Scene {
             { elev: mv.elev, fallV: mv.fallV, falling: mv.falling },
             targetElev,
             dt,
-            MAP_GEOMETRY.lh,
+            this.geom.lh,
           );
           mv.elev = s.elev;
           mv.fallV = s.fallV;
@@ -7463,7 +7653,7 @@ export class WorldScene extends Phaser.Scene {
       // (so the fog eases as it climbs/falls) + its cell (col,row) for the
       // horizontal distance term.
       const meAv = this.avatars.get(this.room?.sessionId ?? "");
-      const playerZ = meAv ? Math.max(0, meAv.elev / MAP_GEOMETRY.lh) : 0;
+      const playerZ = meAv ? Math.max(0, meAv.elev / this.geom.lh) : 0;
       const playerCol = meAv ? meAv.fx / CELL_WU : 0;
       const playerRow = meAv ? meAv.fy / CELL_WU : 0;
       // A source holding a REAL light slot hands its ground POOL stamp back —
@@ -7939,7 +8129,7 @@ export class WorldScene extends Phaser.Scene {
    * a lower l, reached only after the occluding face). */
   private isWaterAtScreen(wx: number, wy: number): boolean {
     if (!this.world) return false;
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile } = this.geom;
     const u = (wx - this.iso.ox - tile / 2) / dx;
     for (let l = this.maxLevel; l >= 0; l--) {
       const v = (wy - this.iso.oy - dy + l * lh) / dy;
@@ -7962,7 +8152,7 @@ export class WorldScene extends Phaser.Scene {
    * through this to avoid landing on cliff walls or in the water. */
   private landableAtScreen(wx: number, wy: number): boolean {
     if (!this.world) return false;
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile } = this.geom;
     const u = (wx - this.iso.ox - tile / 2) / dx;
     for (let l = this.maxLevel; l >= 0; l--) {
       const v = (wy - this.iso.oy - dy + l * lh) / dy;
@@ -8008,7 +8198,7 @@ export class WorldScene extends Phaser.Scene {
     altPx: number,
   ): { l: [number, number, number]; fog: number; fogCol: [number, number, number]; col: number; row: number; L: number; cellL: number; lift: number; shadowDepth: number; z: number } | null {
     if (!this.world || !this.night) return null;
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile } = this.geom;
     const u = (gx - this.iso.ox - tile / 2) / dx;
     // Front-most drawn surface under the ground point, falling back to the
     // level-0 projection when nothing is hit (off-map / over a gap).
@@ -8103,7 +8293,7 @@ export class WorldScene extends Phaser.Scene {
       lvl,
     });
     if (!this.world) return clampW(wx, wy, 0); // plain-ground fallback: screen == flat world
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile } = this.geom;
     const u = (wx - this.iso.ox - tile / 2) / dx;
     // A TAP MUST RESOLVE AGAINST WHAT IS ON SCREEN, and indoors that is the
     // CUT-AWAY: nothing above `indoorTop` is drawn and the roof slab is not
@@ -8182,7 +8372,7 @@ export class WorldScene extends Phaser.Scene {
   private nearestGroundTo(wx: number, wy: number): { x: number; y: number; lvl: number } | null {
     const g = this.terrain;
     if (!g || !this.world) return null;
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile } = this.geom;
     const u = (wx - this.iso.ox - tile / 2) / dx;
     const v = (wy - this.iso.oy - dy) / dy; // the LEVEL-0 reading of this pixel
     const c0 = Math.floor((u + v) / 2);
@@ -8243,7 +8433,7 @@ export class WorldScene extends Phaser.Scene {
       const pr = this.projectFlat(e.x, e.y);
       // Lift the beacon onto the tapped surface — a deck target sits at its
       // deck level (projectFlat returns the lower BASE level).
-      this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, this.trip.goalLevel ?? 0) * MAP_GEOMETRY.lh);
+      this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, this.trip.goalLevel ?? 0) * this.geom.lh);
     }
     this.dropHold();
   }
@@ -8360,7 +8550,7 @@ export class WorldScene extends Phaser.Scene {
       : this.projectFlat(end.x, end.y);
     // Sit the beacon ON the tapped surface: a deck target lifts to its deck
     // level (projectFlat returns the BASE level, which is lower).
-    const my = pick ? pick.wy : p.y - Math.max(p.lvl, goalLevel ?? 0) * MAP_GEOMETRY.lh;
+    const my = pick ? pick.wy : p.y - Math.max(p.lvl, goalLevel ?? 0) * this.geom.lh;
     // Remembered so the per-frame follow below cannot drag it off that pixel
     // either — the route may be re-planned many times during one gesture.
     this.tapMarkerAt = pick ? { x: pick.wx, y: pick.wy } : null;
@@ -8764,7 +8954,7 @@ export class WorldScene extends Phaser.Scene {
    * 0 = its own surface). So float swimmers sample at the pool surface `surfLevel`. */
   private litLevelOf(a: BodyVisual): number {
     if (a.swimming && a.surfLevel !== undefined) return a.surfLevel;
-    return Math.max(0, a.elev / MAP_GEOMETRY.lh);
+    return Math.max(0, a.elev / this.geom.lh);
   }
 
   /** Depth vs occluding columns for ANY body (player or monster): a single
@@ -8814,7 +9004,7 @@ export class WorldScene extends Phaser.Scene {
         const faceOverFeet =
           higher &&
           o.y0 <= feetY + 6 &&
-          o.y0 >= feetY - (MAP_GEOMETRY.lh + MAP_GEOMETRY.dy + 9) &&
+          o.y0 >= feetY - (this.geom.lh + this.geom.dy + 9) &&
           o.col + o.row + 1.2 > colf + rowf;
         // (c) A camera-closer SOLID structure whose (tall, bottom-anchored)
         // art overlaps the sprite: billboard art covers anything behind
@@ -9536,14 +9726,14 @@ export class WorldScene extends Phaser.Scene {
    * Elevation: lift by the cell the corner belongs to (its down-right cell,
    * clamped), so a zone on a plateau traces the plateau's rim. */
   private projectZoneCorner(cornerCol: number, cornerRow: number): { x: number; y: number } {
-    const { dx, dy, lh } = MAP_GEOMETRY;
+    const { dx, dy, lh } = this.geom;
     const W = this.world?.width ?? 1;
     const H = this.world?.height ?? 1;
     const c = Math.max(0, Math.min(W - 1, cornerCol));
     const r = Math.max(0, Math.min(H - 1, cornerRow));
     const lvl = this.world?.rows[Math.floor(r)]?.[Math.floor(c)]?.l ?? 0;
     return {
-      x: this.iso.ox + (cornerCol - cornerRow) * dx + MAP_GEOMETRY.tile / 2,
+      x: this.iso.ox + (cornerCol - cornerRow) * dx + this.geom.tile / 2,
       y: this.iso.oy + (cornerCol + cornerRow) * dy - lvl * lh + TILE_DIAMOND_TOP,
     };
   }
@@ -9554,7 +9744,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.spawnZonesLoading) return;
     this.spawnZonesLoading = true;
     const name = this.worldName || DEFAULT_WORLD;
-    fetch(gameUrl(`/assets/maps2/worlds/${name.replace(/[^a-z0-9_-]/gi, "")}/spawns.json`))
+    fetch(gameUrl(worldFileUrl(name, "spawns.json")))
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
         this.spawnZones = j ? parseSpawns(j) : [];
@@ -9836,7 +10026,7 @@ export class WorldScene extends Phaser.Scene {
     const cuts = this.indoorCut;
     const world = this.world;
     if (!cuts || !world || !this.maps2) return; // legacy cut / no world: instant
-    const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile: tileSize } = this.geom;
     const cam = this.cameras.main;
     const cx0 = cam.worldView.x - OCC_CULL_PAD;
     const cx1 = cam.worldView.right + OCC_CULL_PAD;
@@ -10073,7 +10263,7 @@ export class WorldScene extends Phaser.Scene {
     const g = this.terrain;
     const w = this.world;
     if (!g || !w) return null;
-    const { dy, lh } = MAP_GEOMETRY;
+    const { dy, lh } = this.geom;
     const cover = dy / lh; // levels of height per up-screen step (0.9375)
     const MARGIN = 1; // levels a column's top stays below the burial line
     // 126 = the room texture's encoding budget (R packs the cut beside the
@@ -10476,6 +10666,644 @@ export class WorldScene extends Phaser.Scene {
    * half-frame trap — `setFlipX` mirrors WITHIN the sub-frame's own 32px box,
    * landing the half mirrored AND on the wrong side — cannot be reached here.
    */
+  /* ================= TILES 3.0 — the SECOND art source ====================
+   *
+   * A maps3 world's cells name a ground TYPE and nothing else, so there is no
+   * baked path to look up: `tiles3.ts` resolves what draws, `tiles3draw.ts`
+   * composes the two rasters the resolver only names, and `tiles3runtime.ts`
+   * does both ONE CELL AT A TIME. Everything else in this scene — the
+   * streaming RenderTexture, the depth sort, the occluders, the indoor cut,
+   * collision, nav — is geometry and compositing and does not care where the
+   * picture came from, which is why the wiring below is a second branch and not
+   * a second renderer.
+   *
+   * THE COORDINATE BRIDGE, and it is the whole trick: tiles3 works in its own
+   * `Frame`, and this scene works in `iso.ox/oy + MAP geometry`. They are the
+   * same lattice with different origins, so ONE frame built here maps every
+   * resolver output straight into world space:
+   *
+   *     columnX(f,x,y)     = f.ox + (x−y)·32 − 32   ≡ iso.ox + (x−y)·dx
+   *     columnY(f,x,y,z)−10 = f.oy + (x+y)·14 − z·pitch − 10 ≡ iso.oy + (x+y)·dy − z·lh
+   *
+   * hence `f.ox = iso.ox + DX` and `f.oy = iso.oy + TOP_Y`, with dy = 14 and
+   * lh = the MEASURED storey pitch. Get either offset wrong and nothing looks
+   * broken — the whole map simply shears by a row per grid step. */
+
+  /** The resolver's frame, expressed in this scene's world-space projection. */
+  private tiles3Frame(): T3Frame {
+    const w = this.world!;
+    return {
+      x0: 0,
+      y0: 0,
+      x1: w.width,
+      y1: w.height,
+      ox: this.iso.ox + T3_DX,
+      oy: this.iso.oy + T3_TOP_Y,
+      pitch: this.geom.lh,
+      canvas: [this.iso.w, this.iso.h],
+    };
+  }
+
+  /** Build the maps3 runtime out of the documents preload fetched. Runs once,
+   *  after setupStreamingGround has set `iso`. A missing ground_types or
+   *  patterns index leaves `t3` null and the world renders as empty ground —
+   *  loudly, because a silent fall-through here is a black map. */
+  private initTiles3() {
+    const world = this.world;
+    if (!world) return;
+    const docs: Partial<Record<Tiles3DocKey, unknown>> = {};
+    const absent: string[] = [];
+    for (const k of Object.keys(TILES3_DOCS) as Tiles3DocKey[]) {
+      const doc = this.cache.json.get(`t3doc:${k}`);
+      if (doc === undefined) absent.push(TILES3_DOCS[k]);
+      docs[k] = doc;
+    }
+    if (absent.length) console.warn(`[nangijala] tiles3: documents did not load: ${absent.join(", ")}`);
+    // The pitch is the MEASURED one (shared ISO_GEOMETRY_MAPS3.lh = 15) and the
+    // frame is already built with it — `checkTiles3Pitch` re-measures off the
+    // real art once it lands and says so if the two ever disagree.
+    const data = tiles3DataFrom(docs, this.geom.lh, (m) => console.warn(m));
+    if (!data) {
+      console.warn("[nangijala] tiles3: no ground_types/patterns — this world cannot resolve any art");
+      return;
+    }
+    const tiles = new Tiles3(data);
+    const view = viewFromParsed(world);
+    // THE REGION FLOOD FILL RUNS HERE, ONCE, OVER THE WHOLE DOC — measured 38ms
+    // on the_game's 512x512. Per camera window it would be faster and WRONG: a
+    // region id is `<ground>@<lexicographic minimum cell>`, so a window-local
+    // component gets a different id, a different set, and different art every
+    // time the camera moves, and the ground visibly reshuffles as you walk.
+    const t0 = performance.now();
+    this.t3 = new Tiles3World({ view, tiles, frame: this.tiles3Frame(), patterns: data.patterns });
+    this.t3regionMs = +(performance.now() - t0).toFixed(1);
+    this.t3load = new Tiles3Loader({
+      loader: this.tiles3LoaderAdapter(),
+      textures: this.t3tm,
+      route: this.t3route,
+      onBatch: () => this.repaintWorld(),
+    });
+    // The index decides which sheets to fetch; preload queued the library's
+    // published names, so this is a no-op unless a republish renamed one.
+    for (const path of sheetPaths(data.patterns)) this.t3load.need(path);
+    this.t3load.flush();
+    this.initScenery(view);
+    // A LoaderPlugin constructed after the scene has booted never sees BOOT, so
+    // it never registers the SHUTDOWN hook the scene's own loader gets — it has
+    // to be torn down by hand or an in-flight batch outlives the world it was
+    // fetched for.
+    this.events.once("shutdown", () => {
+      this.t3loader?.destroy();
+      this.t3loader = null;
+    });
+  }
+
+  /** Phaser's TextureManager as `tiles3draw` declares it.
+   *
+   * THE TRAP, and it is silent: Phaser's `textures.get(key)` returns the
+   * built-in `__MISSING` texture — a 32x32 checker — for a key it does not
+   * have, NOT undefined. Handed straight to the composer, an unloaded 64x46
+   * plate therefore arrives as 32x32 pixels: `composeBoundary` throws on the
+   * geometry mismatch (which kills the frame) and `conformPlate` would happily
+   * paste a checkerboard into the world. `exists` is the only honest test, so
+   * the adapter makes `get` answer through it. */
+  private t3TextureManager(): TextureManagerLike {
+    return {
+      exists: (k) => this.textures.exists(k),
+      get: (k) => (this.textures.exists(k) ? this.textures.get(k) : undefined),
+      addCanvas: (k, src) => this.textures.addCanvas(k, src as HTMLCanvasElement),
+      remove: (k) => this.textures.remove(k),
+    };
+  }
+
+  /** THE TERRAIN GETS ITS OWN LOADER, and it has to.
+   *
+   * `this.load` is a single FIFO queue, and the moment the avatar is in,
+   * `loadDeferredAnims` pushes ~1,700 action-animation frames onto it. Streamed
+   * terrain queued behind those waits minutes: measured on the_game, 95 plate
+   * files sat at position 1,719 and the ground never filled in at all — the
+   * world simply stayed empty while the counters said everything had been
+   * requested. A second `LoaderPlugin` on the same scene has its own queue and
+   * its own `complete`, writes into the SAME TextureManager, and downloads in
+   * parallel with the character art instead of behind it.
+   *
+   * `crossOrigin = "anonymous"` IS LOAD-BEARING, and having a dedicated loader
+   * is what makes it safe to set once. A composed boundary is built by reading
+   * its two plates back out of their textures (`getImageData`), and a
+   * cross-origin image loaded WITHOUT the attribute taints the canvas and makes
+   * that read throw — so on a staging join (art from jsDelivr, which answers
+   * `access-control-allow-origin: *`) every boundary in the world would
+   * silently vanish. The character/monster/NPC art stays on `this.load` with
+   * its old, forgiving behaviour, because a host that does NOT send CORS fails
+   * the load outright once the attribute is set. */
+  private tiles3Loader(): Phaser.Loader.LoaderPlugin {
+    if (!this.t3loader) {
+      this.t3loader = new Phaser.Loader.LoaderPlugin(this);
+      this.t3loader.crossOrigin = "anonymous";
+    }
+    return this.t3loader;
+  }
+
+  private tiles3LoaderAdapter() {
+    const l = this.tiles3Loader();
+    return {
+      image: (key: string, url: string) => l.image(key, url),
+      isLoading: () => l.isLoading(),
+      start: () => l.start(),
+      once: (event: string, cb: () => void) => l.once(event, cb),
+    };
+  }
+
+  /** Decoded RGBA behind a loaded texture. A texture whose source is already a
+   *  canvas is read from its own context; an `<img>` is drawn into a scratch
+   *  one first. Null while the art is not resident. */
+  private texPixels(key: string): T3Pixels | null {
+    if (!this.textures.exists(key)) return null;
+    const src = this.textures.get(key)?.getSourceImage() as
+      | (HTMLImageElement & HTMLCanvasElement)
+      | undefined;
+    if (!src) return null;
+    const w = src.naturalWidth || src.width;
+    const h = src.naturalHeight || src.height;
+    if (!w || !h) return null;
+    let ctx: CanvasRenderingContext2D | null =
+      typeof src.getContext === "function" ? src.getContext("2d") : null;
+    if (!ctx) {
+      const cv = document.createElement("canvas");
+      cv.width = w;
+      cv.height = h;
+      ctx = cv.getContext("2d");
+      ctx?.drawImage(src as CanvasImageSource, 0, 0);
+    }
+    try {
+      const id = ctx?.getImageData(0, 0, w, h);
+      return id ? { w, h, data: new Uint8ClampedArray(id.data) } : null;
+    } catch (e) {
+      // A TAINTED canvas — cross-origin art loaded without CORS. Say so once:
+      // every composed boundary in the world depends on this read.
+      console.warn(`[nangijala] tiles3: cannot read pixels of ${key} (${e})`);
+      return null;
+    }
+  }
+
+  /** The composed-texture factory, built the first time all three pattern
+   *  sheets are resident. Null until then, and a null factory draws no
+   *  boundaries and no conformed plates — the flats meet hard, which is the
+   *  pre-3.0 look, never a hole. */
+  private ensureTiles3Textures(): Tiles3Textures | null {
+    if (this.t3tex) return this.t3tex;
+    const t3 = this.t3;
+    if (!t3) return null;
+    const patterns = this.cache.json.get("t3doc:patterns") as PatternsDoc | undefined;
+    const groundTypes = (this.cache.json.get("t3doc:groundTypes") as { grounds?: Record<string, unknown> } | undefined)?.grounds;
+    if (!patterns || !groundTypes) return null;
+    if (!this.t3sheets) {
+      const p = patternSheetPaths(patterns);
+      const sil = this.texPixels(t3ArtKey(p.silhouette));
+      const masks = this.texPixels(t3ArtKey(p.masks));
+      const border = this.texPixels(t3ArtKey(p.border));
+      if (!sil || !masks || !border) return null;
+      this.t3sheets = patternSheets(patterns, sil, masks, border);
+    }
+    this.t3tex = new Tiles3Textures({
+      textures: this.t3tm,
+      sheets: this.t3sheets,
+      groundTypes: groundTypes as Record<string, { palette?: { wall?: string; top?: string }; base_color?: string }>,
+      // UNBOUNDED, deliberately. Eviction calls textures.remove, which pulls a
+      // texture out from under anything still holding the key; the ground RT
+      // drops its reference after the blit but the OCCLUDER pass keeps live
+      // Sprites on composed keys. Measured ceiling on the_game: 2,248 distinct
+      // compositions = 25 MB of canvas for the whole 512x512 world, and a
+      // camera window holds ~400.
+      limit: 0,
+    });
+    return this.t3tex;
+  }
+
+  /** THE MEASURED STOREY PITCH, re-derived from the art the game actually
+   *  loaded and compared with the published one. render3 measures it off the
+   *  x-over-x wall tile; a pitch one row too large exposes a bright stripe of
+   *  each lower floor at every storey, so a disagreement has to be visible in
+   *  the console rather than only on screen. Runs once, when the tile lands. */
+  private checkTiles3Pitch() {
+    if (this.t3pitchChecked || !this.t3) return;
+    let path: string | undefined;
+    try {
+      path = this.t3.tiles.overTile("grey_stone", "grey_stone").path;
+    } catch {
+      this.t3pitchChecked = true;
+      return;
+    }
+    if (!path) return;
+    const px = this.texPixels(t3ArtKey(path));
+    if (!px) return;
+    this.t3pitchChecked = true;
+    const pitch = measureStoreyPitch(px.w, px.h, (x, y) => px.data[(y * px.w + x) * 4 + 3] > 128);
+    if (pitch && pitch !== this.geom.lh)
+      console.warn(
+        `[nangijala] tiles3: the wall art measures a ${pitch}px storey, the world projects at ${this.geom.lh}px ` +
+          `— every stacked column is off by ${Math.abs(pitch - this.geom.lh)}px per storey (shared ISO_GEOMETRY_MAPS3.lh)`,
+      );
+  }
+
+  /** One resolved blit onto the ground RenderTexture. `batchDraw` cannot crop,
+   *  and exactly one op needs it — a FADE tile is the top `TOP_Y + 2·DY + 2`
+   *  rows of a 64x64 file and its wall is explicitly meaningless, so drawing
+   *  the whole file grows a stray wall band on flat ground. A cropped frame is
+   *  registered on the texture once, under a name derived from the crop. */
+  private t3Blit(
+    rt: Phaser.GameObjects.RenderTexture,
+    op: { key: string; x: number; y: number; sx: number; sy: number; sw: number; sh: number },
+    ax: number,
+    ay: number,
+    tint: number,
+  ) {
+    const tex = this.textures.get(op.key);
+    const src = tex?.getSourceImage() as { width?: number; height?: number } | undefined;
+    const fw = src?.width ?? op.sw;
+    const fh = src?.height ?? op.sh;
+    if (op.sx === 0 && op.sy === 0 && op.sw === fw && op.sh === fh) {
+      rt.batchDraw(op.key, op.x - ax, op.y - ay, 1, tint);
+      return;
+    }
+    const name = `t3c:${op.sx},${op.sy},${op.sw},${op.sh}`;
+    if (!tex.has(name)) tex.add(name, 0, op.sx, op.sy, op.sw, op.sh);
+    rt.batchDrawFrame(op.key, name, op.x - ax, op.y - ay, 1, tint);
+  }
+
+  /** THE MAPS3 GROUND PASS, in render3's own order: every cell (painter-sorted
+   *  by the u/v sweep), then the composed boundaries on the corner lattice
+   *  above them, then the deck slabs.
+   *
+   *  THREE PASSES, NOT ONE INTERLEAVED PASS, and that is the spec's order for a
+   *  reason: a boundary tile sits on the quad (x..x+1, y..y+1), so three of the
+   *  four cells it blends are drawn AFTER it in painter order — interleaving
+   *  would let those cells' own plates paint straight back over the transition.
+   *
+   *  Art that has not streamed in yet is simply not drawn; the loader repaints
+   *  when the batch lands. A hole this frame is a hole; a substituted tile is a
+   *  wrong picture that nothing ever corrects. */
+  private drawTiles3Ground(
+    rt: Phaser.GameObjects.RenderTexture,
+    ax: number,
+    ay: number,
+    u0: number,
+    u1: number,
+    v0: number,
+    v1: number,
+    mask: Map<number, number> | null,
+    cuts: Map<number, number> | null,
+    top: number,
+  ) {
+    const t3 = this.t3;
+    const world = this.world;
+    if (!t3 || !world) return;
+    const tex = this.ensureTiles3Textures();
+    const load = this.t3load;
+    const need = (p: string | null | undefined) => {
+      if (p) load?.need(p);
+    };
+    // Published BEFORE the passes and mutated in place: a gate reads these
+    // counters to tell a correct dark frame from a black one, and an exception
+    // mid-pass must leave what actually drew visible, not last frame's numbers.
+    const stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0 };
+    this.t3stats = stats;
+    const t0 = performance.now();
+    const cellOf = (c: number, r: number) => this.t3Try(`cell ${c},${r}`, () => t3.cell(c, r), null);
+    const boundaryOf = (c: number, r: number) => this.t3Try(`boundary ${c},${r}`, () => t3.boundary(c, r), null);
+    const decksOf = (c: number, r: number) => this.t3Try(`decks ${c},${r}`, () => t3.decks(c, r), []);
+
+    // The window, once — all three passes walk the same cells.
+    const cells: [number, number][] = [];
+    for (let v = v0; v <= v1; v++)
+      for (let u = u0; u <= u1; u++) {
+        if ((u + v) & 1) continue;
+        const col = (u + v) / 2;
+        const row = (v - u) / 2;
+        if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
+        cells.push([col, row]);
+      }
+
+    rt.beginDraw();
+    for (const [col, row] of cells) {
+      const cell = cellOf(col, row);
+      if (!cell) continue;
+      stats.cells++;
+      cellArtPaths(cell, need);
+      if (!tex) continue;
+      const idx = row * world.width + col;
+      const cut = mask ? (cuts ? cuts.get(idx) : top) : undefined;
+      const tint = this.caveTint(idx, !!mask);
+      for (const op of cellBlits(tex, this.t3tm, cell, cut)) {
+        this.t3Blit(rt, op, ax, ay, tint);
+        stats.blits++;
+      }
+    }
+
+    // THE COMPOSED BOUNDARY — the one genuinely new thing in v3: a transition
+    // is not a pre-baked tile any more, it is `mask ? plateB : plateA` under
+    // the published silhouette with a mandatory 1px darkened seam, which is why
+    // 18 shapes x 16 Wang masks over per-ground plates cover all 105 pairs.
+    for (const [col, row] of cells) {
+      const b = boundaryOf(col, row);
+      if (!b) continue;
+      boundaryArtPaths(b, need);
+      if (!tex) continue;
+      // A boundary is skipped INDOORS wherever ANY cell of its quad is a
+      // constrained column: the cut-away has already truncated those, and a
+      // transition pasted at the uncut level floats over the stump. With the
+      // legacy kill switch (cuts null) every column is constrained, so no
+      // boundary draws at all — which is what that switch means.
+      if (mask && (!cuts || this.t3QuadCut(cuts, col, row))) continue;
+      const op = tex.opsForBoundary(b);
+      if (!op) continue;
+      this.t3Blit(rt, op, ax, ay, this.caveTint(row * world.width + col, !!mask));
+      stats.boundaries++;
+    }
+
+    // DECK SLABS (roofs, bridges, the cave lid) last, as render3 draws them.
+    for (const [col, row] of cells) {
+      const idx = row * world.width + col;
+      if (mask && (cuts ? cuts.get(idx) : top) !== undefined) continue; // my roof, or a lid over my floor
+      for (const d of decksOf(col, row)) {
+        deckArtPaths(d, need);
+        if (!tex) continue;
+        const tint = this.caveTint(idx, !!mask);
+        for (const op of tex.opsForDeck(d)) {
+          this.t3Blit(rt, op, ax, ay, tint);
+          stats.decks++;
+        }
+      }
+    }
+    rt.endDraw();
+    stats.ms = +(performance.now() - t0).toFixed(1);
+    load?.flush();
+    this.checkTiles3Pitch();
+  }
+
+  /** RESOLVE, BUT NEVER TAKE THE FRAME DOWN. `Tiles3.overTile` THROWS when the
+   *  x-over-y matrix has no entry for a pair — deliberately, because the matrix
+   *  is the only wall source and a missing entry is a hole in it, not something
+   *  to paint around. In a still render that is a fatal; in a running game the
+   *  same throw would kill the whole update loop, every frame, for one
+   *  unpublished tile. So it is reported ONCE per distinct message and the cell
+   *  is skipped: a hole in the map, loudly, rather than a black screen. */
+  private t3Try<T>(where: string, f: () => T, fallback: T): T {
+    try {
+      return f();
+    } catch (e) {
+      const m = String((e as Error)?.message ?? e);
+      if (!this.t3Failed.has(m)) {
+        this.t3Failed.add(m);
+        console.warn(`[nangijala] tiles3: ${where} could not resolve — ${m}`);
+      }
+      return fallback;
+    }
+  }
+
+  /** Is any cell of the lattice quad anchored at (col,row) a CONSTRAINED
+   *  column? (indoor cut-away — see drawTiles3Ground). */
+  private t3QuadCut(cuts: Map<number, number>, col: number, row: number): boolean {
+    const w = this.world!.width;
+    return (
+      cuts.has(row * w + col) ||
+      cuts.has(row * w + col + 1) ||
+      cuts.has((row + 1) * w + col) ||
+      cuts.has((row + 1) * w + col + 1)
+    );
+  }
+
+  /** OCCLUDER COLUMNS for a maps3 world — the same contract as the maps2
+   *  branch: a duplicate of what the ground RT already painted, re-issued at
+   *  sprite depth so bodies interleave with terrain, plus one `occluderMeta`
+   *  record per column for `resolveBodyDepth`. Art and meta must agree in both
+   *  directions (meta without art crops a body's lit copy against terrain that
+   *  is not there; art without meta lets a body draw through a wall). */
+  private tiles3Occluders(
+    u0: number,
+    u1: number,
+    v0: number,
+    v1: number,
+    mask: Map<number, number> | null,
+    cuts: Map<number, number> | null,
+    top: number,
+    shows: (x: number, y: number) => boolean,
+    columnShows: (x: number, yTop: number, yBot: number) => boolean,
+  ): number {
+    const t3 = this.t3;
+    const world = this.world;
+    const tex = this.ensureTiles3Textures();
+    if (!t3 || !world || !tex) return 0;
+    const { dx, dy, lh, tile: tileSize } = this.geom;
+    let culled = 0;
+    for (let v = v0; v <= v1; v++) {
+      for (let u = u0; u <= u1; u++) {
+        if ((u + v) & 1) continue;
+        const col = (u + v) / 2;
+        const row = (v - u) / 2;
+        if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
+        const bx = this.iso.ox + u * dx;
+        const by = this.iso.oy + v * dy;
+        const oDepth = by + dy;
+        const idx = row * world.width + col;
+        const occCut = mask ? (cuts ? cuts.get(idx) : top) : undefined;
+
+        // A deck slab floating ABOVE its base must occlude whoever walks under
+        // it. Same rule as world@2: skip it entirely on a constrained column.
+        if (occCut === undefined)
+          for (const d of this.t3Try(`decks ${col},${row}`, () => t3.decks(col, row), [])) {
+            const base = world.rows[row]?.[col]?.l ?? 0;
+            if (d.level <= base) continue; // the terrain occluder already covers it
+            for (const op of tex.opsForDeck(d)) {
+              if (!shows(bx, op.y)) {
+                culled++;
+                continue;
+              }
+              this.occluders.push(
+                this.tagOccluder(this.add.image(bx, op.y, op.key).setOrigin(0, 0).setDepth(oDepth), col, row),
+              );
+            }
+            this.occluderMeta.push({
+              col, row, top: d.level, solid: false, depth: oDepth,
+              x0: bx, x1: bx + tileSize, y0: by - d.level * lh, y1: by + tileSize,
+            });
+          }
+
+        const cell = this.t3Try(`cell ${col},${row}`, () => t3.cell(col, row), null);
+        if (!cell || cell.kind !== "wall") continue; // flat and void cells never occlude
+        const topKey = t3SurfaceKey(tex, this.t3tm, cell);
+        const fk = t3FaceKey(this.t3tm, cell) ?? topKey;
+        if (!topKey || !fk) continue; // art still streaming
+        const topL = occCut !== undefined ? Math.min(cell.level, occCut) : cell.level;
+        if (topL < 0) continue;
+        const cutL = (c: number, r: number): number => {
+          const n = world.rows[r]?.[c];
+          if (!n) return -1;
+          const e = cuts ? cuts.get(r * world.width + c) : top;
+          return e === undefined ? n.l : Math.min(n.l, e);
+        };
+        // Only the EXPOSED faces, from the lowest front neighbour up — the same
+        // rule the world@2 branch has: redrawing the covered lower faces on top
+        // of the RT paints the front cell's ground back into a wall.
+        const from = mask
+          ? Math.max(0, Math.min(topL, Math.min(cutL(col + 1, row), cutL(col, row + 1)) + 1))
+          : this.stackFrom(col, row, topL, false);
+        for (let lvl = from; lvl < topL; lvl++) {
+          if (!shows(bx, by - lvl * lh)) {
+            culled++;
+            continue;
+          }
+          this.occluders.push(
+            this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row),
+          );
+        }
+        if (columnShows(bx, by - topL * lh, by + tileSize))
+          this.occluders.push(
+            this.tagOccluder(
+              this.add.image(bx, by - topL * lh, topL === cell.level ? topKey : fk).setOrigin(0, 0).setDepth(oDepth),
+              col,
+              row,
+            ),
+          );
+        else culled++;
+        this.occluderMeta.push({
+          col, row, top: topL, solid: false, depth: oDepth,
+          x0: bx, x1: bx + tileSize, y0: by - topL * lh, y1: by + tileSize,
+        });
+      }
+    }
+    return culled;
+  }
+
+  /* -- SCENERY (maps3) -----------------------------------------------------
+   * Freely placed, off-grid set dressing at CONTINUOUS cell coordinates —
+   * 1,388 placements over 205 distinct pieces on the_game. `scenery3.ts` owns
+   * the anchor projection, the crop/scale/flip fit and the spatial index; this
+   * scene owns the sprites, and it draws them through the SAME conventions the
+   * props do (one image per visible placement, origin 0,0, depth on the
+   * unlifted painter line) so bodies interleave with a tree exactly as they
+   * interleave with a pillar. There is no second depth path here — this repo
+   * has paid for that one. */
+
+  private initScenery(view: { levelAt: (x: number, y: number) => number }) {
+    const world = this.world;
+    if (!world?.scenery?.length || !this.t3) return;
+    this.scenery = new SceneryIndex(
+      buildPlacements(world.scenery, {
+        frame: this.t3.frame,
+        levelAt: (x, y) => view.levelAt(x, y),
+        // A piece under a ROOF or CAVE deck is indoors and render3 skips it —
+        // drawing it put a bush on the meadow house's roof. A BRIDGE hides
+        // nothing: you walk under a bridge and the scenery below is the point.
+        roofed: roofedCells(world.decks, world.width),
+        width: world.width,
+        bounds: { x0: 0, y0: 0, x1: world.width, y1: world.height },
+      }),
+    );
+    this.sceneryPieces = new SceneryPieces({
+      fetchJson: (url) =>
+        fetch(url).then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json();
+        }),
+      route: this.t3route,
+    });
+  }
+
+  /** The still's crop and canvas, measured ONCE per distinct art file. It is a
+   *  full alpha scan of the source, so per placement would cost the_game 1,388
+   *  scans for 205 answers — and per frame would cost that every frame. */
+  private sceneryArtFit(key: string): { bbox: ReturnType<typeof alphaBBox>; canvas: { w: number; h: number } } | null {
+    const hit = this.sceneryFit.get(key);
+    if (hit !== undefined) return hit as never;
+    const px = this.texPixels(key);
+    if (!px) return null;
+    const rec = { bbox: alphaBBox(px), canvas: { w: px.w, h: px.h } };
+    this.sceneryFit.set(key, rec as never);
+    return rec;
+  }
+
+  /** Queue one scenery art file. Same one-request-per-path tombstone rule the
+   *  tiles loader uses: a 404 must not re-fire every frame the piece is on
+   *  screen. Flushed once per rebuild by `flushScenery`. */
+  private needScenery(spritePath: string): boolean {
+    const key = sceneryArtKey(spritePath);
+    if (this.textures.exists(key)) return true;
+    if (!this.sceneryAsked.has(key)) {
+      this.sceneryAsked.add(key);
+      this.sceneryQueue.push([key, sceneryArtUrl(spritePath, this.t3route)]);
+    }
+    return false;
+  }
+
+  private flushScenery() {
+    if (!this.sceneryQueue.length) return;
+    const batch = this.sceneryQueue;
+    this.sceneryQueue = [];
+    const l = this.tiles3LoaderAdapter();
+    for (const [key, url] of batch) l.image(key, url);
+    l.once("complete", () => this.repaintWorld());
+    if (!l.isLoading()) l.start();
+  }
+
+  /** The visible scenery for this camera window. Rebuilt on the occluder
+   *  latch, with the props, so the two terrain-adjacent layers stay atomic. */
+  private rebuildScenery(cam: Phaser.Cameras.Scene2D.Camera) {
+    for (const im of this.sceneryImgs) im.destroy();
+    this.sceneryImgs = [];
+    const idx = this.scenery;
+    const pieces = this.sceneryPieces;
+    const world = this.world;
+    if (!idx || !pieces || !world) return;
+    const { dy } = this.geom;
+    const pad = 200;
+    const view = cam.worldView;
+    const rect = { x: view.x - pad, y: view.y - pad, w: view.width + pad * 2, h: view.height + pad * 2 };
+    let drawn = 0;
+    for (const p of idx.query(rect)) {
+      const piece = pieces.get(p.piece);
+      if (piece === undefined) {
+        void pieces.request(p.piece); // 205 fetches for 1,388 placements, lazily
+        continue;
+      }
+      if (piece === null) continue; // tombstoned: the manifest 404'd or is broken
+      const st = stateFor(piece, p.lit);
+      const sprite = southSprite(st);
+      if (!this.needScenery(sprite)) continue;
+      const art = this.sceneryArtFit(sceneryArtKey(sprite));
+      if (!art) continue;
+      const fit = fitSprite(art.bbox, art.canvas, piece.worldPxHeight, p.ax, p.ay, p.hflip);
+      if (fit.x + fit.w < rect.x || fit.x > rect.x + rect.w || fit.y + fit.h < rect.y || fit.y > rect.y + rect.h)
+        continue;
+      // INDOORS a piece outside my room still DRAWS — it renders below the
+      // multiply overlay, so zero ambient blacks it out for free and a torch
+      // through the doorway finds it. That is the props' rule, and the reason
+      // there is no mask test here.
+      const key = sceneryArtKey(sprite);
+      const tex = this.textures.get(key);
+      const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
+      if (!tex.has(name)) tex.add(name, 0, fit.sx, fit.sy, fit.sw, fit.sh);
+      this.sceneryImgs.push(
+        this.add
+          .image(fit.x, fit.y, key, name)
+          .setOrigin(0, 0)
+          .setDisplaySize(fit.w, fit.h)
+          // The mirror is about the CROP's centre, never the source canvas's:
+          // measured on the_game, 245 of 599 flipped placements shift a pixel
+          // or more the other way, tree_021 by 16. setFlipX on an origin-(0,0)
+          // image mirrors within its own displayed box, which IS the crop.
+          .setFlipX(fit.flipX)
+          // The UNLIFTED painter line, the same key render3 sorts on (x+y) and
+          // the same one props and terrain occluders use — so a character walks
+          // in front of a tree exactly when it should.
+          .setDepth(this.iso.oy + (p.x + p.y) * dy + dy),
+      );
+      drawn++;
+    }
+    this.t3stats.scenery = drawn;
+    this.flushScenery();
+  }
+
   private makeGroundRT() {
     this.groundRT?.destroy();
     const rs = this.renderScale();
@@ -10528,7 +11356,7 @@ export class WorldScene extends Phaser.Scene {
     this.lastGround = { x: ccx, y: ccy };
 
     const world = this.world;
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile } = this.geom;
     const rt = this.groundRT;
     // Anchor the texture in world space around the camera centre.
     const ax = Math.round(ccx - rt.width / 2);
@@ -10554,6 +11382,13 @@ export class WorldScene extends Phaser.Scene {
     const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
     const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
     const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
+
+    // MAPS3: no cell carries a baked path, so the whole pass is the tiles3
+    // resolution — three ordered sub-passes with their own begin/endDraw.
+    if (this.maps3) {
+      this.drawTiles3Ground(rt, ax, ay, u0, u1, v0, v1, mask, cuts, top);
+      return;
+    }
 
     rt.beginDraw();
     for (let v = v0; v <= v1; v++) {
@@ -11074,7 +11909,7 @@ export class WorldScene extends Phaser.Scene {
     const top = this.indoorTop; // the cut: highest level any column still draws
     const cuts = mask ? this.indoorCut : null; // per-wall raises past it
 
-    const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile: tileSize } = this.geom;
     const pad = 200;
     const x0 = cam.worldView.x - pad;
     const x1 = cam.worldView.right + pad;
@@ -11118,6 +11953,18 @@ export class WorldScene extends Phaser.Scene {
      * overlap an on-screen body's art box, so culling them whole is safe. */
     const columnShows = (ix: number, iyTop: number, iyBot: number) =>
       ix + tileSize >= cx0 && ix <= cx1 && iyBot >= cy0 && iyTop <= cy1;
+    // MAPS3: the column's art comes from tiles3, not from a baked path. Same
+    // cull boxes, same occluderMeta contract, same atomic rebuild — scenery
+    // rides here for exactly the reason props do (see rebuildProps).
+    if (this.maps3) {
+      this.occCulled = this.tiles3Occluders(u0, u1, v0, v1, mask, cuts, top, shows, columnShows);
+      this.rebuildScenery(cam);
+      // No glow field: tiles2/emission.json is a tiles2 product and a v3 world
+      // references none of it. An empty stamp list is what the night pipeline
+      // already does for a world with no emissive art.
+      this.glowStamps = [];
+      return;
+    }
     for (let v = v0; v <= v1; v++) {
       for (let u = u0; u <= u1; u++) {
         if ((u + v) & 1) continue;
@@ -11420,7 +12267,7 @@ export class WorldScene extends Phaser.Scene {
     if (!props || !props.length) return;
     const ANIM: Record<string, number> = { static: 0, pulse: 1, flicker: 2 };
 
-    const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile: tileSize } = this.geom;
     const pad = 200;
     // A tall prop rises well above its ground box, so pad the top generously.
     const x0 = cam.worldView.x - pad;
@@ -11634,7 +12481,7 @@ export class WorldScene extends Phaser.Scene {
    * emissionWave — the calm "alive" waveform the maintainer asked for). */
   private buildPoolStamps(cam: Phaser.Cameras.Scene2D.Camera): GlowStamp[] {
     if (!this.world || !this.night) return [];
-    const { dx, dy, lh } = MAP_GEOMETRY;
+    const { dx, dy, lh } = this.geom;
     const buckets = new Map<
       string,
       { color: [number, number, number]; strength: number; radius: number; anim: number; n: number; sc: number; sr: number; z: number }
@@ -11857,7 +12704,7 @@ export class WorldScene extends Phaser.Scene {
       Math.max(wv.x - (sx + reach), sx - reach - wv.right, wv.y - (sy + reach), sy - reach - wv.bottom);
     if (fireLit && this.campfire) {
       const c = this.campfire;
-      const reach = 7 * MAP_GEOMETRY.dx;
+      const reach = 7 * this.geom.dx;
       const edge = edgeOf(c.x, c.y, reach);
       if (edge < LIGHT_EXIT_PX)
         cands.set("campfire", {
@@ -11870,7 +12717,7 @@ export class WorldScene extends Phaser.Scene {
     for (const s of this.emissiveSources) {
       // A pool reaches radius*dx px past its anchor — the light must be LIVE
       // before its source scrolls on, or pools visibly pop at the screen edge.
-      const reach = s.radius * MAP_GEOMETRY.dx + 128;
+      const reach = s.radius * this.geom.dx + 128;
       const edge = edgeOf(s.sx, s.sy, reach);
       if (edge >= LIGHT_EXIT_PX) continue;
       // A SEALED-ROOM fire is indoor-only: lit exactly to the degree I am in
@@ -12060,7 +12907,7 @@ export class WorldScene extends Phaser.Scene {
     const p = this.project(fx, fy);
     // Same depth formula as players (unlifted ground y), nudged behind a
     // player standing on the very same cell.
-    const depth = p.y + lvl * MAP_GEOMETRY.lh + 0.4;
+    const depth = p.y + lvl * this.geom.lh + 0.4;
     if (!this.anims.exists(CAMPFIRE_KEY)) {
       this.anims.create({
         key: CAMPFIRE_KEY,
@@ -12121,7 +12968,7 @@ export class WorldScene extends Phaser.Scene {
    * the point where a character's feet stand, lifted by that cell's elevation. */
   private project(px: number, py: number): { x: number; y: number } {
     const f = this.projectFlat(px, py);
-    return { x: f.x, y: f.y - f.lvl * MAP_GEOMETRY.lh };
+    return { x: f.x, y: f.y - f.lvl * this.geom.lh };
   }
 
   /** Iso projection split into the FLAT (unlifted) ground point and the cell's
@@ -12130,7 +12977,7 @@ export class WorldScene extends Phaser.Scene {
    * only `lvl` steps at cell boundaries. */
   private projectFlat(px: number, py: number): { x: number; y: number; lvl: number } {
     if (!this.world) return { x: px, y: py, lvl: 0 };
-    const { dx, dy, tile } = MAP_GEOMETRY;
+    const { dx, dy, tile } = this.geom;
     const W = this.world.width;
     const H = this.world.height;
     const col = Math.max(0, Math.min(W - 0.001, px / CELL_WU)); // 1 cell = CELL_WU wu
@@ -12151,7 +12998,7 @@ export class WorldScene extends Phaser.Scene {
    * ground below instead of teleporting.
    */
   private stepElevation(av: Avatar, target: number, dt: number): void {
-    const s = integrateFall({ elev: av.elev, fallV: av.fallV, falling: av.falling }, target, dt, MAP_GEOMETRY.lh);
+    const s = integrateFall({ elev: av.elev, fallV: av.fallV, falling: av.falling }, target, dt, this.geom.lh);
     av.elev = s.elev;
     av.fallV = s.fallV;
     av.falling = s.falling;
