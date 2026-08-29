@@ -35,12 +35,14 @@
     "W5": {
       "group": "hot_springs",
       "name": "motion",
-      "prompt": "Animate the rising steam only. Nothing else moves.",
-      "moves": "Steam drifts up off the pool.",
+      "prompt": "This is the same picture in every frame. ONLY the thin wisp of steam moves, drifting slowly upward and thinning as it rises. It must never appear or vanish abruptly. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Steam drifts up instead of popping in and out.",
       "example": {
         "piece": "hot_springs/hot_spring_002",
         "state": "LIT_1"
-      }
+      },
+      "superseded_prompt": "Animate the rising steam only. Nothing else moves.",
+      "revised": "2026-08-29: he rejected the first result. Rewritten to state that every frame is the same picture and to forbid adding or removing anything \u2014 the failures were invention and redrawing, not excessive motion."
     },
     "W6": {
       "group": "moon_pools",
@@ -55,12 +57,14 @@
     "W7": {
       "group": "water_lily_clumps",
       "name": "motion",
-      "prompt": "Animate the lily pads only, rocking very gently. Nothing else moves.",
-      "moves": "The pads rock gently on the water.",
+      "prompt": "This is the same picture in every frame. ONLY the small flower at the centre moves, nodding very slightly. Nothing changes size, shape or position. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Only the flower nods; the pads hold their exact shape.",
       "example": {
         "piece": "water_lily_clumps/water_lily_clump_001",
         "state": "NOT_LIT_1"
-      }
+      },
+      "superseded_prompt": "Animate the lily pads only, rocking very gently. Nothing else moves.",
+      "revised": "2026-08-29: he rejected the first result. Rewritten to state that every frame is the same picture and to forbid adding or removing anything \u2014 the failures were invention and redrawing, not excessive motion."
     },
     "W8": {
       "group": "water_pumps",
@@ -85,12 +89,14 @@
     "C2": {
       "group": "market_stalls",
       "name": "motion",
-      "prompt": "Animate the cloth canopy only, rippling in a breeze. Nothing else moves.",
-      "moves": "The canopy ripples.",
+      "prompt": "This is the same picture in every frame. ONLY the cloth roof moves, sagging and lifting a few pixels as if in a faint draught. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The cloth roof sags and lifts, nothing beneath it changes.",
       "example": {
         "piece": "market_stalls/market_stall_001",
         "state": "NOT_LIT_1"
-      }
+      },
+      "superseded_prompt": "Animate the cloth canopy only, rippling in a breeze. Nothing else moves.",
+      "revised": "2026-08-29: he rejected the first result. Rewritten to state that every frame is the same picture and to forbid adding or removing anything \u2014 the failures were invention and redrawing, not excessive motion."
     },
     "C3": {
       "group": "scarecrows",
@@ -275,12 +281,14 @@
     "G13": {
       "group": "hanging_willows",
       "name": "motion",
-      "prompt": "Animate the trailing willow branches only, drifting in a breeze. Nothing else moves.",
-      "moves": "The willow curtain drifts sideways.",
+      "prompt": "This is the same picture in every frame. ONLY the very tips of the hanging strands sway, a few pixels sideways and very slowly. The rest of the tree is completely still. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Only the tips of the hanging strands stir.",
       "example": {
         "piece": "hanging_willows/hanging_willow_001",
         "state": "NOT_LIT_1"
-      }
+      },
+      "superseded_prompt": "Animate the trailing willow branches only, drifting in a breeze. Nothing else moves.",
+      "revised": "2026-08-29: he rejected the first result. Rewritten to state that every frame is the same picture and to forbid adding or removing anything \u2014 the failures were invention and redrawing, not excessive motion."
     },
     "L1": {
       "group": "crystals",
@@ -315,22 +323,26 @@
     "L4": {
       "group": "witch_rings",
       "name": "motion",
-      "prompt": "Animate the candle flames only. Nothing else moves.",
-      "moves": "The candles gutter and the ring shimmers.",
+      "prompt": "This is the same picture in every frame. ONLY the small flames that are already there flicker, very gently. No new flame appears anywhere. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The existing flames flicker; no new ones appear.",
       "example": {
         "piece": "witch_rings/witch_ring_002",
         "state": "NOT_LIT_3"
-      }
+      },
+      "superseded_prompt": "Animate the candle flames only. Nothing else moves.",
+      "revised": "2026-08-29: he rejected the first result. Rewritten to state that every frame is the same picture and to forbid adding or removing anything \u2014 the failures were invention and redrawing, not excessive motion."
     },
     "L6": {
       "group": "giant_mushrooms",
       "name": "motion",
-      "prompt": "Animate the glow on the cap only, breathing slowly. Nothing else moves.",
-      "moves": "The cap glow breathes.",
+      "prompt": "This is the same picture in every frame. ONLY the brightness of the glow already on the cap changes, dimming and lifting very slightly like slow breathing. The colours stay exactly as they are. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The existing glow breathes; the colours do not change.",
       "example": {
         "piece": "giant_mushrooms/giant_mushroom_001",
         "state": "LIT_1"
-      }
+      },
+      "superseded_prompt": "Animate the glow on the cap only, breathing slowly. Nothing else moves.",
+      "revised": "2026-08-29: he rejected the first result. Rewritten to state that every frame is the same picture and to forbid adding or removing anything \u2014 the failures were invention and redrawing, not excessive motion."
     },
     "L7": {
       "group": "meteor_stones",
@@ -375,12 +387,14 @@
     "A1": {
       "group": "beehives",
       "name": "motion",
-      "prompt": "Animate a few bees at the entrance hole only. Nothing else moves.",
-      "moves": "Bees come and go at the entrance.",
+      "prompt": "This is the same picture in every frame. ONLY two or three tiny dark specks move, drifting slowly in the air just outside the small opening. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Two or three specks drift outside the entrance.",
       "example": {
         "piece": "beehives/beehive_003",
         "state": "NOT_LIT_1"
-      }
+      },
+      "superseded_prompt": "Animate a few bees at the entrance hole only. Nothing else moves.",
+      "revised": "2026-08-29: he rejected the first result. Rewritten to state that every frame is the same picture and to forbid adding or removing anything \u2014 the failures were invention and redrawing, not excessive motion."
     },
     "M1": {
       "group": "windmills",
