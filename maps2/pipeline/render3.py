@@ -956,6 +956,36 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             zl = L(x, y)
             bx = ox + (x - x0 - (y - y0)) * DX - DX
 
+            def wang_surface(gr=gr, x=x, y=y, zl=zl):
+                """THE TILE IS THE BOUNDARY (the maintainer's Pair Lab model).
+
+                His lab reads the index from the four corners of the tile
+                being drawn — `8*g[r][c] + 4*g[r][c+1] + 2*g[r+1][c] +
+                g[r+1][c+1]` — so EVERY tile is a Wang tile and index 0/15
+                are the pure field. render3 instead drew a field plate per
+                cell and then composited a transition tile on top of it, and
+                the two fought: the field kept its hard diamond edge while
+                the transition repainted a whole cell from a DIFFERENT set
+                member, which is the zigzag seam one cell off the real edge
+                that he marked in red. Reproduced in isolation on a synthetic
+                screen-horizontal boundary, fixed by drawing the Wang tile
+                INSTEAD of the plate, never over it."""
+                quad = [(x, y), (x + 1, y), (x, y + 1), (x + 1, y + 1)]
+                gs = [g(*c) for c in quad]
+                if None not in gs and "" not in gs and len(set(gs)) == 2 \
+                        and len({L(*c) for c in quad}) == 1 \
+                        and not any(q in liq for q in gs):
+                    a, b = sorted(set(gs))
+                    sa, sb = side_roles(a, b)
+                    idx = (8 * (gs[0] == sb) + 4 * (gs[1] == sb)
+                           + 2 * (gs[2] == sb) + 1 * (gs[3] == sb))
+                    if idx not in (0, 15):
+                        return composed_boundary(
+                            sa, sb, idx,
+                            plate_img(sa, region_at(x, y, sa), x, y),
+                            plate_img(sb, region_at(x, y, sb), x, y), x, y)
+                return surface(gr, x, y, zl)
+
             def surface(gr=gr, x=x, y=y, zl=zl):
                 """THE MAINTAINER'S SURFACE for this cell, at ANY level: his
                 base tile set, eased by a fade near a ground change, and once
@@ -1062,7 +1092,7 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                                     (bx, col_y(x, y, zl)))
                 continue
             if zl == 0:
-                img.alpha_composite(surface(), (bx, col_y(x, y, zl)))
+                img.alpha_composite(wang_surface(), (bx, col_y(x, y, zl)))
                 continue
             front_low = min(L(x + 1, y), L(x, y + 1))
             fx, fy = (x + 1, y) if L(x + 1, y) <= L(x, y + 1) else (x, y + 1)
@@ -1082,13 +1112,13 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             # the top is the maintainer's set. Only the top face is painted,
             # so the cap's own wall — the only lawful wall source — survives.
             if not own_top(over_candidate(gr, side)["key"].strip("/")):
-                img.alpha_composite(top_face_only(surface()),
+                img.alpha_composite(top_face_only(wang_surface()),
                                     (bx, col_y(x, y, zl)))
 
     # 2) transitions on the corner lattice, over the flats: a drawn tile at
     #    corner (x,y) blends cells (x,y),(x+1,y),(x,y+1),(x+1,y+1) when all
     #    four share a level and exactly two grounds
-    for s in range(x0 + y0, x1 + y1 - 2):
+    for s in []:                      # the boundary is drawn WITH the cell now
         for x in range(max(x0, s - y1 + 2), min(x1 - 1, s - y0 + 1)):
             y = s - x
             quad = [(x, y), (x + 1, y), (x, y + 1), (x + 1, y + 1)]
