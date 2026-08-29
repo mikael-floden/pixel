@@ -1398,6 +1398,19 @@ ok(tGone.leftovers === 0 && tGone.stars && tGone.roofs === 0 && tGone.view === "
   await p.evaluate(() => { const r = document.querySelector(".world-cand .wall-mode"); r.scrollIntoView({ block: "center" }); [...r.querySelectorAll("button")].find((b2) => b2.textContent.trim() === "top only")?.click(); });
   await p.waitForTimeout(1800);
   const on = await card0();
+  /* THE ARGMIN SURVIVES THE LIVE REFRESH (maintainer 2026-08-29: "Pressing
+   * top only will always pick the first tile and not match and find the
+   * best"). tm/tflat/tk are measured at BUILD time; the live manifest has no
+   * such fields, so a refreshed candidate lost them and bestWall — whose
+   * argmin only runs when the face has stats — kept index 0 while still
+   * labelling itself "best match". The label claimed a measurement that had
+   * not happened, which is why it read as working. */
+  {
+    const picks = await p.evaluate(() => [...document.querySelectorAll(".world-cand .wall-step")]
+      .map((r) => (r.textContent.match(/#(\d+)\/(\d+)/) ?? [])[1]).filter(Boolean));
+    ok(picks.length === 0 || picks.some((x) => x !== "1"),
+      `the pick is a measurement, not index 0 (${picks.slice(0, 5).join(", ") || "none marked yet"})`);
+  }
   ok(on.stepper && /auto · best match/.test(on.label) && on.wallpick !== "",
     `marking TOP ONLY grows the ‹ › stepper on auto, and the cliff borrows a measured wall (${on.wallpick.split("/").pop()})`);
   /* THE PICK REACHES THE PICTURE WHATEVER THE VIEW (maintainer 2026-08-28:

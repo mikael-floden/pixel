@@ -7090,6 +7090,26 @@ function wangScene(a, b, patId, genSet, n, corner, scale = 1) {
  */
 let worldLive = null;   // null = not fetched yet, [] = fetched and empty
 let worldLiveAt = 0;    // when, for the unpinned-base revalidation below
+/** The BAKED candidate for a key — data.json carries the build's own
+ *  measurements, which the live manifest does not. */
+let BAKED_CANDS = null;
+/** Snapshot the baked candidates BEFORE the live list replaces them. */
+function snapshotBaked() {
+  if (BAKED_CANDS) return;
+  BAKED_CANDS = new Map();
+  for (const c of (state.data?.domains?.world ?? [])) {
+    for (const x of (c.candidates ?? [])) BAKED_CANDS.set(x.key, x);
+  }
+}
+function bakedCand(key) {
+  if (!BAKED_CANDS) {
+    BAKED_CANDS = new Map();
+    for (const c of (state.data?.domains?.world ?? [])) {
+      for (const x of (c.candidates ?? [])) BAKED_CANDS.set(x.key, x);
+    }
+  }
+  return BAKED_CANDS.get(key) ?? null;
+}
 async function refreshWorldPairs() {
   if (!state.admin) return false;
   /* REVALIDATE WHEN THE BASE CANNOT GUARANTEE CONSISTENCY (tiles' ask,
@@ -7122,6 +7142,7 @@ async function refreshWorldPairs() {
   const names = new Map((worldMeta().groundTypes ?? []).map((g) => [g.id, g.name]));
   const nice = (id) => names.get(id) ?? String(id ?? "").replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   const dead = new Set(worldMeta().tombstoned ?? []);
+  snapshotBaked();          // before worldLive replaces the baked list
   worldLive = cells.map(([id, cell]) => {
     const cands = (cell.candidates ?? []).map((c) => ({
       /* `tex` is the TEXTURED pass (tiles agent, 2026-08-27): the after tile
@@ -7134,6 +7155,24 @@ async function refreshWorldPairs() {
       wallScore: c.wall_score ?? null, wall: c.wall ?? null, topShare: c.top_share ?? null,
       overhang: c.overhang ?? null, clarity: c.clarity ?? null, paletteTop: c.palette_top ?? null,
       tileId: c.tile_id ?? null, style: c.style ?? null, prompt: c.prompt ?? null,
+      /* THE MEASUREMENTS SURVIVE THE LIVE REFRESH (maintainer 2026-08-29:
+       * "Pressing top only will always pick the first tile and not match and
+       * find the best"). tm/tflat/tk are measured at BUILD time — the browser
+       * cannot decode 3,000 tiles — so a candidate rebuilt from the live
+       * manifest had none, and bestWall's argmin, which runs only when the
+       * face has stats, kept index 0 while still labelling itself "best
+       * match". Carried over from the baked candidate of the same key, and
+       * the tile's own published fields with them. */
+      ...(() => {
+        const b = bakedCand(c.key);
+        return b ? { tm: b.tm ?? null, tflat: b.tflat ?? null, tk: b.tk ?? null,
+          borrowWall: c.borrow_wall ?? b.borrowWall ?? null,
+          topOnlyPub: c.top_only === true ? true : (b.topOnlyPub ?? null),
+          ownTopPub: c.own_top === true ? true : (b.ownTopPub ?? null) }
+          : { borrowWall: c.borrow_wall ?? null,
+            topOnlyPub: c.top_only === true ? true : null,
+            ownTopPub: c.own_top === true ? true : null };
+      })(),
     }))
       .filter((c) => c.art && c.key)
       // BEST FIRST — the wiki's own promise, kept here because the manifest
