@@ -59,12 +59,22 @@
           ],
           "generated_at": "2026-08-29T07:07:33+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "offering_tables/offering_table_009/lit_2/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_009/lit_2/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_009/lit_2/sprite.webp"
       }
     },
     "NOT_LIT_1": {
       "sprite": "offering_tables/offering_table_009/sprite.webp",
       "pixellab_object_id": "45e176bf-4a2d-44e3-925a-9acd70e82d03",
-      "generated_at": "2026-08-13T23:52:11+00:00"
+      "generated_at": "2026-08-13T23:52:11+00:00",
+      "rotations": {
+        "south-east": "offering_tables/offering_table_009/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_009/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_009/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "offering_tables/offering_table_009/not_lit_2/sprite.webp",
@@ -72,7 +82,12 @@
       "generated_at": "2026-08-16T19:47:55+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5044,
-      "glow_score": 0.0617
+      "glow_score": 0.0617,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_009/not_lit_2/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_009/not_lit_2/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_009/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "offering_tables/offering_table_009/not_lit_3/sprite.webp",
@@ -80,7 +95,12 @@
       "generated_at": "2026-08-16T19:48:14+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6423,
-      "glow_score": 0.1003
+      "glow_score": 0.1003,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_009/not_lit_3/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_009/not_lit_3/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_009/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "offering_tables/offering_table_009/not_lit_4/sprite.webp",
@@ -88,7 +108,12 @@
       "generated_at": "2026-08-16T19:48:05+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5081,
-      "glow_score": 0.0207
+      "glow_score": 0.0207,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_009/not_lit_4/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_009/not_lit_4/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_009/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "offering_tables/offering_table_009/not_lit_5/sprite.webp",
@@ -97,7 +122,12 @@
       "glow_concept": "the offerings themselves glowing faintly gold",
       "difference_from_source": 0.4207,
       "glow_score": 0.0692,
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "offering_tables/offering_table_009/not_lit_5/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_009/not_lit_5/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_009/not_lit_5/sprite.webp"
+      }
     }
   }
 }

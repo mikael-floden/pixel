@@ -37,12 +37,22 @@
       "generated_at": "2026-08-16T17:49:07+00:00",
       "glow_concept": "soulstone merchant scales shining on the counter",
       "difference_from_source": 0.3057,
-      "glow_score": 0.3457
+      "glow_score": 0.3457,
+      "rotations": {
+        "south-east": "market_stalls/market_stall_001/lit_2/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_001/lit_2/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_001/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "market_stalls/market_stall_001/sprite.webp",
       "pixellab_object_id": "26c591b9-4e5f-41c2-8bb5-48786e839c02",
-      "generated_at": "2026-08-13T01:20:58+00:00"
+      "generated_at": "2026-08-13T01:20:58+00:00",
+      "rotations": {
+        "south-east": "market_stalls/market_stall_001/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_001/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_001/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "market_stalls/market_stall_001/not_lit_2/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-16T17:55:13+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3316,
-      "glow_score": 0.2321
+      "glow_score": 0.2321,
+      "rotations": {
+        "south-east": "market_stalls/market_stall_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_001/not_lit_2/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_001/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "market_stalls/market_stall_001/not_lit_3/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T17:53:58+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8904,
-      "glow_score": 0.1658
+      "glow_score": 0.1658,
+      "rotations": {
+        "south-east": "market_stalls/market_stall_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_001/not_lit_3/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_001/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "market_stalls/market_stall_001/not_lit_4/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-16T17:46:11+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4896,
-      "glow_score": 0.3709
+      "glow_score": 0.3709,
+      "rotations": {
+        "south-east": "market_stalls/market_stall_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_001/not_lit_4/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_001/not_lit_4/sprite.webp"
+      }
     }
   }
 }

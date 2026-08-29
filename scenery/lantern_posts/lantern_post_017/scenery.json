@@ -38,7 +38,12 @@
       "generated_at": "2026-08-16T17:24:52+00:00",
       "glow_concept": "raw glowing amber soulstone chunk",
       "difference_from_source": 0.7801,
-      "glow_score": 0.3068
+      "glow_score": 0.3068,
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_017/lit_1/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_017/lit_1/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_017/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "lantern_posts/lantern_post_017/lit_2/sprite.webp",
@@ -68,6 +73,11 @@
           ],
           "generated_at": "2026-08-29T07:05:54+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_017/lit_2/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_017/lit_2/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_017/lit_2/sprite.webp"
       }
     },
     "LIT_3": {
@@ -77,12 +87,22 @@
       "glow_concept": null,
       "difference_from_source": 0.8658,
       "glow_score": 0.0352,
-      "relit_from": "NOT_LIT_2"
+      "relit_from": "NOT_LIT_2",
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_017/lit_3/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_017/lit_3/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_017/lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "lantern_posts/lantern_post_017/sprite.webp",
       "pixellab_object_id": "5fe30594-727c-4e30-a0c7-845491febaac",
-      "generated_at": "2026-08-14T00:41:21+00:00"
+      "generated_at": "2026-08-14T00:41:21+00:00",
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_017/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_017/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_017/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "lantern_posts/lantern_post_017/not_lit_4/sprite.webp",
@@ -90,7 +110,12 @@
       "generated_at": "2026-08-16T17:24:18+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8709,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_017/not_lit_4/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_017/not_lit_4/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_017/not_lit_4/sprite.webp"
+      }
     }
   }
 }

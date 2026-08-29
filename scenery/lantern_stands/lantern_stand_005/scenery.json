@@ -37,7 +37,12 @@
       "generated_at": "2026-08-16T17:33:53+00:00",
       "glow_concept": "green foxfire fungus packed behind the glass",
       "difference_from_source": 0.6936,
-      "glow_score": 0.1382
+      "glow_score": 0.1382,
+      "rotations": {
+        "south-east": "lantern_stands/lantern_stand_005/lit_2/rotations/south-east.webp",
+        "south-west": "lantern_stands/lantern_stand_005/lit_2/rotations/south-west.webp",
+        "south": "lantern_stands/lantern_stand_005/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "lantern_stands/lantern_stand_005/lit_3/sprite.webp",
@@ -46,12 +51,22 @@
       "glow_concept": null,
       "difference_from_source": 0.9067,
       "glow_score": 0.0411,
-      "relit_from": "NOT_LIT_2"
+      "relit_from": "NOT_LIT_2",
+      "rotations": {
+        "south-east": "lantern_stands/lantern_stand_005/lit_3/rotations/south-east.webp",
+        "south-west": "lantern_stands/lantern_stand_005/lit_3/rotations/south-west.webp",
+        "south": "lantern_stands/lantern_stand_005/lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "lantern_stands/lantern_stand_005/sprite.webp",
       "pixellab_object_id": "e90b70ce-22f1-4bad-b33c-13bc9d7b68d6",
-      "generated_at": "2026-08-13T11:18:21+00:00"
+      "generated_at": "2026-08-13T11:18:21+00:00",
+      "rotations": {
+        "south-east": "lantern_stands/lantern_stand_005/rotations/south-east.webp",
+        "south-west": "lantern_stands/lantern_stand_005/rotations/south-west.webp",
+        "south": "lantern_stands/lantern_stand_005/sprite.webp"
+      }
     }
   }
 }

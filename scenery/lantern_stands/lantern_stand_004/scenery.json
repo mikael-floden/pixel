@@ -34,7 +34,12 @@
     "LIT_1": {
       "sprite": "lantern_stands/lantern_stand_004/sprite.webp",
       "pixellab_object_id": "7d5fb7d7-6493-4deb-91f3-7a93c15110bc",
-      "generated_at": "2026-08-13T09:14:42+00:00"
+      "generated_at": "2026-08-13T09:14:42+00:00",
+      "rotations": {
+        "south-east": "lantern_stands/lantern_stand_004/rotations/south-east.webp",
+        "south-west": "lantern_stands/lantern_stand_004/rotations/south-west.webp",
+        "south": "lantern_stands/lantern_stand_004/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "lantern_stands/lantern_stand_004/not_lit_2/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-16T17:30:45+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7077,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "lantern_stands/lantern_stand_004/not_lit_2/rotations/south-east.webp",
+        "south-west": "lantern_stands/lantern_stand_004/not_lit_2/rotations/south-west.webp",
+        "south": "lantern_stands/lantern_stand_004/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "lantern_stands/lantern_stand_004/not_lit_3/sprite.webp",
@@ -51,7 +61,12 @@
       "glow_concept": null,
       "difference_from_source": 0.8388,
       "glow_score": 0.0315,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "lantern_stands/lantern_stand_004/not_lit_3/rotations/south-east.webp",
+        "south-west": "lantern_stands/lantern_stand_004/not_lit_3/rotations/south-west.webp",
+        "south": "lantern_stands/lantern_stand_004/not_lit_3/sprite.webp"
+      }
     }
   }
 }

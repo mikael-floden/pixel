@@ -37,7 +37,12 @@
       "generated_at": "2026-08-16T19:49:29+00:00",
       "glow_concept": null,
       "difference_from_source": 0.592,
-      "glow_score": 0.1391
+      "glow_score": 0.1391,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_012/lit_2/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_012/lit_2/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_012/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "offering_tables/offering_table_012/lit_3/sprite.webp",
@@ -45,7 +50,12 @@
       "generated_at": "2026-08-16T19:49:49+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5155,
-      "glow_score": 0.2592
+      "glow_score": 0.2592,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_012/lit_3/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_012/lit_3/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_012/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "offering_tables/offering_table_012/lit_4/sprite.webp",
@@ -53,13 +63,23 @@
       "generated_at": "2026-08-16T19:49:19+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5352,
-      "glow_score": 0.3668
+      "glow_score": 0.3668,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_012/lit_4/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_012/lit_4/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_012/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "offering_tables/offering_table_012/sprite.webp",
       "pixellab_object_id": "12b867f3-aec0-4d56-aa3f-b3c30062dbce",
       "generated_at": "2026-08-13T23:33:54+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "offering_tables/offering_table_012/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_012/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_012/sprite.webp"
+      }
     }
   }
 }

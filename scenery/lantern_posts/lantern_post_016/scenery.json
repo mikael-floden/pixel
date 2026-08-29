@@ -57,6 +57,11 @@
           ],
           "generated_at": "2026-08-29T07:05:05+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_016/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_016/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_016/sprite.webp"
       }
     },
     "LIT_3": {
@@ -87,6 +92,11 @@
           ],
           "generated_at": "2026-08-29T07:04:50+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_016/lit_3/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_016/lit_3/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_016/lit_3/sprite.webp"
       }
     },
     "LIT_4": {
@@ -117,6 +127,11 @@
           ],
           "generated_at": "2026-08-29T07:05:50+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_016/lit_4/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_016/lit_4/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_016/lit_4/sprite.webp"
       }
     },
     "NOT_LIT_2": {
@@ -125,7 +140,12 @@
       "generated_at": "2026-08-16T17:22:58+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7878,
-      "glow_score": 0.003
+      "glow_score": 0.003,
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_016/not_lit_2/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_016/not_lit_2/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_016/not_lit_2/sprite.webp"
+      }
     }
   }
 }

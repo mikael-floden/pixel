@@ -34,7 +34,12 @@
     "LIT_1": {
       "sprite": "ivy_posts/ivy_post_010/sprite.webp",
       "pixellab_object_id": "486a4507-e8c9-4377-9de0-3740511971cf",
-      "generated_at": "2026-08-13T22:00:01+00:00"
+      "generated_at": "2026-08-13T22:00:01+00:00",
+      "rotations": {
+        "south-east": "ivy_posts/ivy_post_010/rotations/south-east.webp",
+        "south-west": "ivy_posts/ivy_post_010/rotations/south-west.webp",
+        "south": "ivy_posts/ivy_post_010/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "ivy_posts/ivy_post_010/lit_3/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-16T17:12:16+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8824,
-      "glow_score": 0.079
+      "glow_score": 0.079,
+      "rotations": {
+        "south-east": "ivy_posts/ivy_post_010/lit_3/rotations/south-east.webp",
+        "south-west": "ivy_posts/ivy_post_010/lit_3/rotations/south-west.webp",
+        "south": "ivy_posts/ivy_post_010/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "ivy_posts/ivy_post_010/lit_4/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-16T17:11:46+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8188,
-      "glow_score": 0.1138
+      "glow_score": 0.1138,
+      "rotations": {
+        "south-east": "ivy_posts/ivy_post_010/lit_4/rotations/south-east.webp",
+        "south-west": "ivy_posts/ivy_post_010/lit_4/rotations/south-west.webp",
+        "south": "ivy_posts/ivy_post_010/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "ivy_posts/ivy_post_010/not_lit_1/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T17:12:26+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7192,
-      "glow_score": 0.0575
+      "glow_score": 0.0575,
+      "rotations": {
+        "south-east": "ivy_posts/ivy_post_010/not_lit_1/rotations/south-east.webp",
+        "south-west": "ivy_posts/ivy_post_010/not_lit_1/rotations/south-west.webp",
+        "south": "ivy_posts/ivy_post_010/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "ivy_posts/ivy_post_010/not_lit_2/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-16T17:12:27+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4914,
-      "glow_score": 0.0456
+      "glow_score": 0.0456,
+      "rotations": {
+        "south-east": "ivy_posts/ivy_post_010/not_lit_2/rotations/south-east.webp",
+        "south-west": "ivy_posts/ivy_post_010/not_lit_2/rotations/south-west.webp",
+        "south": "ivy_posts/ivy_post_010/not_lit_2/sprite.webp"
+      }
     }
   }
 }

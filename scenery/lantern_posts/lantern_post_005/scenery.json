@@ -38,7 +38,12 @@
       "glow_concept": null,
       "difference_from_source": 0.8441,
       "glow_score": 0.0185,
-      "relit_from": "NOT_LIT_3"
+      "relit_from": "NOT_LIT_3",
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_005/lit_3/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_005/lit_3/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_005/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "lantern_posts/lantern_post_005/sprite.webp",
@@ -48,7 +53,12 @@
       "difference_from_source": 0.896,
       "glow_score": 0.0779,
       "relit_from": "NOT_LIT_4",
-      "replaced_anchor": "NOT_LIT_1"
+      "replaced_anchor": "NOT_LIT_1",
+      "rotations": {
+        "south-east": "lantern_posts/lantern_post_005/rotations/south-east.webp",
+        "south-west": "lantern_posts/lantern_post_005/rotations/south-west.webp",
+        "south": "lantern_posts/lantern_post_005/sprite.webp"
+      }
     }
   }
 }

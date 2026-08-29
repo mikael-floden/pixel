@@ -37,7 +37,12 @@
       "generated_at": "2026-08-16T19:42:45+00:00",
       "glow_concept": "small wisps gathered over the food",
       "difference_from_source": 0.7907,
-      "glow_score": 0.0601
+      "glow_score": 0.0601,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_001/lit_1/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_001/lit_1/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_001/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "offering_tables/offering_table_001/lit_2/sprite.webp",
@@ -45,12 +50,22 @@
       "generated_at": "2026-08-16T19:43:04+00:00",
       "glow_concept": "embroidered cloth threads woven with light",
       "difference_from_source": 0.4905,
-      "glow_score": 0.122
+      "glow_score": 0.122,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_001/lit_2/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_001/lit_2/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_001/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "offering_tables/offering_table_001/sprite.webp",
       "pixellab_object_id": "f3f92c53-b7df-439e-9209-f1b8effb8b77",
-      "generated_at": "2026-08-13T00:55:11+00:00"
+      "generated_at": "2026-08-13T00:55:11+00:00",
+      "rotations": {
+        "south-east": "offering_tables/offering_table_001/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_001/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_001/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "offering_tables/offering_table_001/not_lit_2/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T19:41:57+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4601,
-      "glow_score": 0.0597
+      "glow_score": 0.0597,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_001/not_lit_2/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_001/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "offering_tables/offering_table_001/not_lit_3/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-16T19:42:35+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4813,
-      "glow_score": 0.0654
+      "glow_score": 0.0654,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_001/not_lit_3/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_001/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "offering_tables/offering_table_001/not_lit_4/sprite.webp",
@@ -74,7 +99,12 @@
       "generated_at": "2026-08-16T19:42:25+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4296,
-      "glow_score": 0.034
+      "glow_score": 0.034,
+      "rotations": {
+        "south-east": "offering_tables/offering_table_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_001/not_lit_4/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_001/not_lit_4/sprite.webp"
+      }
     }
   }
 }

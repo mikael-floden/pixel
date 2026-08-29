@@ -57,6 +57,11 @@
           ],
           "generated_at": "2026-08-29T07:03:39+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "house_clutter/clutter_012/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_012/rotations/south-west.webp",
+        "south": "house_clutter/clutter_012/sprite.webp"
       }
     },
     "NOT_LIT_2": {
@@ -65,7 +70,12 @@
       "generated_at": "2026-08-16T16:59:13+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6064,
-      "glow_score": 0.0583
+      "glow_score": 0.0583,
+      "rotations": {
+        "south-east": "house_clutter/clutter_012/not_lit_2/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_012/not_lit_2/rotations/south-west.webp",
+        "south": "house_clutter/clutter_012/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "house_clutter/clutter_012/not_lit_3/sprite.webp",
@@ -74,7 +84,12 @@
       "glow_concept": null,
       "difference_from_source": 0.6844,
       "glow_score": 0.1238,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "house_clutter/clutter_012/not_lit_3/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_012/not_lit_3/rotations/south-west.webp",
+        "south": "house_clutter/clutter_012/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "house_clutter/clutter_012/not_lit_4/sprite.webp",
@@ -83,7 +98,12 @@
       "glow_concept": null,
       "difference_from_source": 0.6614,
       "glow_score": 0.0158,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "house_clutter/clutter_012/not_lit_4/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_012/not_lit_4/rotations/south-west.webp",
+        "south": "house_clutter/clutter_012/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "house_clutter/clutter_012/not_lit_5/sprite.webp",
@@ -92,7 +112,12 @@
       "glow_concept": null,
       "difference_from_source": 0.7202,
       "glow_score": 0.0529,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "house_clutter/clutter_012/not_lit_5/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_012/not_lit_5/rotations/south-west.webp",
+        "south": "house_clutter/clutter_012/not_lit_5/sprite.webp"
+      }
     }
   }
 }

@@ -37,7 +37,12 @@
       "generated_at": "2026-08-16T17:50:09+00:00",
       "glow_concept": null,
       "difference_from_source": 0.514,
-      "glow_score": 0.0031
+      "glow_score": 0.0031,
+      "rotations": {
+        "south-east": "market_stalls/market_stall_003/not_lit_3/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_003/not_lit_3/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_003/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "market_stalls/market_stall_003/sprite.webp",
@@ -46,7 +51,12 @@
       "glow_concept": null,
       "difference_from_source": 0.3861,
       "glow_score": 0.0068,
-      "replaced_anchor": "NOT_LIT_1"
+      "replaced_anchor": "NOT_LIT_1",
+      "rotations": {
+        "south-east": "market_stalls/market_stall_003/rotations/south-east.webp",
+        "south-west": "market_stalls/market_stall_003/rotations/south-west.webp",
+        "south": "market_stalls/market_stall_003/sprite.webp"
+      }
     }
   }
 }

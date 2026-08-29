@@ -36,7 +36,12 @@
     "LIT_1": {
       "sprite": "house_clutter/clutter_900/sprite.webp",
       "pixellab_object_id": "73495fea-0281-4f5a-9f19-78599a4ce28d",
-      "generated_at": "2026-08-13T23:28:01+00:00"
+      "generated_at": "2026-08-13T23:28:01+00:00",
+      "rotations": {
+        "south-east": "house_clutter/clutter_900/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_900/rotations/south-west.webp",
+        "south": "house_clutter/clutter_900/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "house_clutter/clutter_900/lit_2/sprite.webp",
@@ -44,7 +49,12 @@
       "generated_at": "2026-08-16T16:59:34+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8828,
-      "glow_score": 0.042
+      "glow_score": 0.042,
+      "rotations": {
+        "south-east": "house_clutter/clutter_900/lit_2/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_900/lit_2/rotations/south-west.webp",
+        "south": "house_clutter/clutter_900/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "house_clutter/clutter_900/lit_3/sprite.webp",
@@ -52,7 +62,12 @@
       "generated_at": "2026-08-16T16:59:35+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8437,
-      "glow_score": 0.0641
+      "glow_score": 0.0641,
+      "rotations": {
+        "south-east": "house_clutter/clutter_900/lit_3/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_900/lit_3/rotations/south-west.webp",
+        "south": "house_clutter/clutter_900/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "house_clutter/clutter_900/lit_4/sprite.webp",
@@ -60,7 +75,12 @@
       "generated_at": "2026-08-16T16:59:45+00:00",
       "glow_concept": null,
       "difference_from_source": 0.9197,
-      "glow_score": 0.0301
+      "glow_score": 0.0301,
+      "rotations": {
+        "south-east": "house_clutter/clutter_900/lit_4/rotations/south-east.webp",
+        "south-west": "house_clutter/clutter_900/lit_4/rotations/south-west.webp",
+        "south": "house_clutter/clutter_900/lit_4/sprite.webp"
+      }
     }
   }
 }
