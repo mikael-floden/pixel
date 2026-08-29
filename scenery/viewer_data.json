@@ -1,6 +1,6 @@
 {
   "title": "Nangijala Scenery",
-  "scenery_count": 711,
+  "scenery_count": 710,
   "target_count": 2121,
   "scale": {
     "_comment": "REALISM RULE: scenery is scaled to the world by real height. 64px == 1.7m character; world_px_height = round(world_height_m * 64 / 1.7).",
@@ -1254,7 +1254,7 @@
       "name": "Cliff Fall",
       "type": "MOUNTAIN_WALL",
       "quota": 5,
-      "done": 1
+      "done": 0
     },
     {
       "rank": 157,
@@ -1427,7 +1427,6 @@
     "chairs_and_benches": 7,
     "charcoal_kilns": 1,
     "chess_tables": 2,
-    "cliff_falls": 1,
     "cliff_features": 5,
     "cliff_fragments": 2,
     "cliff_mosses": 3,
@@ -13959,85 +13958,6 @@
       "must_be_imbplemented_with_random_hflip": true,
       "rotations": {},
       "states": {},
-      "animations": []
-    },
-    {
-      "id": "cliff_fall_016",
-      "rel": "cliff_falls/cliff_fall_016",
-      "name": "A broad white curtain 016",
-      "category": "cliff_falls",
-      "lights": null,
-      "description": "a slender waterfall of clear water spilling down, breaking into white spray and mist at the bottom, wet green moss and small ferns clinging beside the flow, lush fantasy RPG nature art, rich and beautiful, uneven natural growth that is thick and leafy in a few places and bare stone-empty elsewhere, drifting off one side, no straight edges, no border, nothing it hangs from and no line across the top, fading away into a few last leaves at the edges, transparent background, no rock or wall behind it, a broad white curtain, heavy growth on one side thinning to bare on the other, towering, many times human height, self-emissive at night, softly radiating light: the whole fall shining like moonlight",
-      "view": "low top-down",
-      "size": 256,
-      "placement": {
-        "world_height_m": 9.37,
-        "world_px_height": 353,
-        "character_height_px": 64,
-        "character_height_m": 1.7,
-        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
-      },
-      "status": "complete",
-      "generated_at": "2026-08-14T05:02:11+00:00",
-      "pixellab_object_id": "0cd316e4-07bd-4a7a-bd6e-839e4e3d7976",
-      "sprite": "cliff_falls/cliff_fall_016/sprite.webp",
-      "art_hash": "017815d64a897286",
-      "type": "MOUNTAIN_WALL",
-      "must_be_imbplemented_with_random_hflip": true,
-      "rotations": {},
-      "states": {
-        "LIT_1": {
-          "sprite": "cliff_falls/cliff_fall_016/sprite.webp",
-          "pixellab_object_id": "0cd316e4-07bd-4a7a-bd6e-839e4e3d7976",
-          "generated_at": "2026-08-14T05:02:11+00:00",
-          "art_hash": "017815d64a897286"
-        },
-        "LIT_2": {
-          "sprite": "cliff_falls/cliff_fall_016/lit_2/sprite.webp",
-          "pixellab_object_id": "5776f335-5bc9-4f1a-9171-e39f4b8f59d5",
-          "generated_at": "2026-08-16T09:16:23+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.4876,
-          "glow_score": 0.1951,
-          "art_hash": "8cdd3cadcff8d7a6"
-        },
-        "LIT_3": {
-          "sprite": "cliff_falls/cliff_fall_016/lit_3/sprite.webp",
-          "pixellab_object_id": "49913c87-1b64-464f-9371-85445fed6eb9",
-          "generated_at": "2026-08-16T09:15:07+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9401,
-          "glow_score": 0.1491,
-          "art_hash": "7cd003a4f911802d"
-        },
-        "LIT_4": {
-          "sprite": "cliff_falls/cliff_fall_016/lit_4/sprite.webp",
-          "pixellab_object_id": "d018d9cd-5b6e-429b-aebe-9d5c23697b54",
-          "generated_at": "2026-08-16T09:15:09+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.74,
-          "glow_score": 0.1147,
-          "art_hash": "2a06e0b26c403ae6"
-        },
-        "NOT_LIT_1": {
-          "sprite": "cliff_falls/cliff_fall_016/not_lit_1/sprite.webp",
-          "pixellab_object_id": "77642210-fad9-4d1f-810e-114653f89d95",
-          "generated_at": "2026-08-16T09:15:34+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.9442,
-          "glow_score": 0.0,
-          "art_hash": "a2f7195004d0433e"
-        },
-        "NOT_LIT_2": {
-          "sprite": "cliff_falls/cliff_fall_016/not_lit_2/sprite.webp",
-          "pixellab_object_id": "71b3ca29-4fd4-41b8-9213-0fa3e73cb716",
-          "generated_at": "2026-08-16T09:16:03+00:00",
-          "glow_concept": null,
-          "difference_from_source": 0.946,
-          "glow_score": 0.0,
-          "art_hash": "43e4e9d1fec718bd"
-        }
-      },
       "animations": []
     },
     {
