@@ -71,7 +71,11 @@ V2_TO_V3 = {
     "clear_water": "water", "": "",
 }
 LIQUIDS = ("water", "deep_water")
-DEEP_R = 7          # open sea further than this from land is deep_water
+DEEP_R = 21         # open sea further than this from land is deep_water.
+                    # THREE TIMES the old 7 (maintainer, 2026-08-30: "the deep
+                    # water should start 3x away from the land vs what it uses
+                    # now") - the shallow shelf now reads as a coast you could
+                    # wade out into rather than a narrow rim before the drop.
 MUD_R = 1           # the fen: a single-cell muddy bank strip along the river
 
 
@@ -82,28 +86,82 @@ def _grid(doc):
     return W, H, mat, doc["level"]
 
 
+# Chamfer 3-4: the classic integer stand-in for Euclidean distance, 3 per
+# orthogonal step and 4 per diagonal (max error ~8%, and it costs two sweeps).
+# NOT a 4-neighbour BFS - that measures Manhattan distance, whose contours are
+# diamonds. At DEEP_R 7 the diamonds were small enough to hug the coastline; at
+# 21 they are not, and the shelf edge came out as long straight runs meeting in
+# right angles out in open water. Euclidean distance follows the coast.
+_ORTH, _DIAG = 3, 4
+SPECK = 32          # a patch of open ocean smaller than this is noise
+
+
 def _deep_water(W, H, mat):
-    """Open-sea cells further than DEEP_R from any land (4-neighbour BFS)."""
-    land = [(x, y) for y in range(H) for x in range(W)
-            if mat[y][x] not in ("", "water")]
-    dist = {c: 0 for c in land}
-    q = deque(land)
-    while q:
-        x, y = q.popleft()
-        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            n = (x + dx, y + dy)
-            if 0 <= n[0] < W and 0 <= n[1] < H and mat[n[1]][n[0]] == "water" \
-                    and n not in dist:
-                dist[n] = dist[(x, y)] + 1
-                q.append(n)
-    for (x, y), d in dist.items():
-        if mat[y][x] == "water" and d > DEEP_R:
-            mat[y][x] = "deep_water"
-    # the map's outer frame never touched land in the BFS: it is open sea too
+    """Open-sea cells further than DEEP_R cells from any land, by true
+    (chamfer-approximated Euclidean) distance."""
+    INF = 1 << 30
+    d = [[0 if mat[y][x] not in ("", "water") else INF for x in range(W)]
+         for y in range(H)]
+    for y in range(H):                      # forward sweep: N/NW/NE/W
+        row, up = d[y], d[y - 1] if y else None
+        for x in range(W):
+            if row[x] == 0:
+                continue
+            best = row[x]
+            if x:
+                best = min(best, row[x - 1] + _ORTH)
+            if up is not None:
+                best = min(best, up[x] + _ORTH)
+                if x:
+                    best = min(best, up[x - 1] + _DIAG)
+                if x + 1 < W:
+                    best = min(best, up[x + 1] + _DIAG)
+            row[x] = best
+    for y in range(H - 1, -1, -1):          # backward sweep: S/SE/SW/E
+        row, dn = d[y], d[y + 1] if y + 1 < H else None
+        for x in range(W - 1, -1, -1):
+            if row[x] == 0:
+                continue
+            best = row[x]
+            if x + 1 < W:
+                best = min(best, row[x + 1] + _ORTH)
+            if dn is not None:
+                best = min(best, dn[x] + _ORTH)
+                if x + 1 < W:
+                    best = min(best, dn[x + 1] + _DIAG)
+                if x:
+                    best = min(best, dn[x - 1] + _DIAG)
+            row[x] = best
+    cut = DEEP_R * _ORTH
     for y in range(H):
         for x in range(W):
-            if mat[y][x] == "water" and (x, y) not in dist:
+            if mat[y][x] == "water" and d[y][x] > cut:
                 mat[y][x] = "deep_water"
+    # NO SPECKS. A contour is a threshold, so wherever the sea floor grazes it
+    # the classification breaks into a handful of loose cells - four of them
+    # sat out in the open shelf as dark dots. A patch of open ocean smaller
+    # than SPECK reverts to the sea around it, in both directions.
+    seen = set()
+    for y in range(H):
+        for x in range(W):
+            if (x, y) in seen or mat[y][x] not in ("water", "deep_water"):
+                continue
+            here = mat[y][x]
+            comp, stack = [], [(x, y)]
+            seen.add((x, y))
+            while stack:
+                cx, cy = stack.pop()
+                comp.append((cx, cy))
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    n = (cx + dx, cy + dy)
+                    if 0 <= n[0] < W and 0 <= n[1] < H and n not in seen \
+                            and mat[n[1]][n[0]] == here:
+                        seen.add(n)
+                        stack.append(n)
+            if len(comp) < SPECK:
+                other = "water" if here == "deep_water" else "deep_water"
+                for (cx, cy) in comp:
+                    mat[cy][cx] = other
 
 
 def _fen(W, H, mat, lvl):
