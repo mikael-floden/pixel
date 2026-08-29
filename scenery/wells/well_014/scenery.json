@@ -53,6 +53,29 @@
         "south-east": "wells/well_014/lit_2/rotations/south-east.webp",
         "south-west": "wells/well_014/lit_2/rotations/south-west.webp",
         "south": "wells/well_014/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "28110133-9562-42e9-a71d-9bfab9be66bb",
+          "description": "This is the same picture in every frame. ONLY the glowing water inside the well brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_014/lit_2/animations/motion/00.webp",
+            "wells/well_014/lit_2/animations/motion/01.webp",
+            "wells/well_014/lit_2/animations/motion/02.webp",
+            "wells/well_014/lit_2/animations/motion/03.webp",
+            "wells/well_014/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_014/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:58:16+00:00",
+          "brief": "Z40"
+        }
       }
     },
     "LIT_3": {

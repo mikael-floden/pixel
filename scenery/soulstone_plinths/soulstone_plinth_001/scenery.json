@@ -78,6 +78,29 @@
         "south-east": "soulstone_plinths/soulstone_plinth_001/lit_2/rotations/south-east.webp",
         "south-west": "soulstone_plinths/soulstone_plinth_001/lit_2/rotations/south-west.webp",
         "south": "soulstone_plinths/soulstone_plinth_001/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "dfdeb52b-9ebe-4ca4-86e6-edd5f0e124fc",
+          "description": "This is the same picture in every frame. ONLY the cyan crystal brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/00.webp",
+            "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/01.webp",
+            "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/02.webp",
+            "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/03.webp",
+            "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:57:46+00:00",
+          "brief": "Z27"
+        }
       }
     },
     "NOT_LIT_1": {

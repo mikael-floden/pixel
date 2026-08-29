@@ -111,6 +111,29 @@
         "south-east": "market_stalls/market_stall_001/not_lit_2/rotations/south-east.webp",
         "south-west": "market_stalls/market_stall_001/not_lit_2/rotations/south-west.webp",
         "south": "market_stalls/market_stall_001/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "6bedd0cf-1045-46a8-8e99-c30232ff3f31",
+          "description": "This is the same picture in every frame. ONLY the cloth awning ripples. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/00.webp",
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/01.webp",
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/02.webp",
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/03.webp",
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_001/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:58:49+00:00",
+          "brief": "Z45"
+        }
       }
     },
     "NOT_LIT_3": {

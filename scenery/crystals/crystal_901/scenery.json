@@ -70,7 +70,30 @@
       "generated_at": "2026-08-16T11:25:49+00:00",
       "glow_concept": "the whole cluster radiating its own gem color",
       "difference_from_source": 0.5531,
-      "glow_score": 0.3756
+      "glow_score": 0.3756,
+      "animations": {
+        "motion": {
+          "group_id": "95e55eff-af59-4587-8673-54107b80b63a",
+          "description": "This is the same picture in every frame. ONLY the orange crystals brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystals/crystal_901/lit_2/animations/motion/00.webp",
+            "crystals/crystal_901/lit_2/animations/motion/01.webp",
+            "crystals/crystal_901/lit_2/animations/motion/02.webp",
+            "crystals/crystal_901/lit_2/animations/motion/03.webp",
+            "crystals/crystal_901/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "crystals/crystal_901/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:57:14+00:00",
+          "brief": "Z29"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "crystals/crystal_901/sprite.webp",

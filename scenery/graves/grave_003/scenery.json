@@ -42,6 +42,29 @@
         "south-east": "graves/grave_003/lit_1/rotations/south-east.webp",
         "south-west": "graves/grave_003/lit_1/rotations/south-west.webp",
         "south": "graves/grave_003/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "e66f3c2b-0302-4adc-b2e1-061f493a9873",
+          "description": "This is the same picture in every frame. ONLY the glowing cracks across the stone brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "graves/grave_003/lit_1/animations/motion/00.webp",
+            "graves/grave_003/lit_1/animations/motion/01.webp",
+            "graves/grave_003/lit_1/animations/motion/02.webp",
+            "graves/grave_003/lit_1/animations/motion/03.webp",
+            "graves/grave_003/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "graves/grave_003/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:58:22+00:00",
+          "brief": "Z36"
+        }
       }
     },
     "LIT_2": {

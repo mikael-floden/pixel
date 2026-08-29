@@ -128,6 +128,29 @@
         "south-east": "rope_swings/rope_swing_002/not_lit_6/rotations/south-east.webp",
         "south-west": "rope_swings/rope_swing_002/not_lit_6/rotations/south-west.webp",
         "south": "rope_swings/rope_swing_002/not_lit_6/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "82a6664b-ecaa-4d2d-a49d-abbf5d835300",
+          "description": "This is the same picture in every frame. ONLY the hanging seat swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/00.webp",
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/01.webp",
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/02.webp",
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/03.webp",
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/04.webp"
+          ],
+          "strip": "rope_swings/rope_swing_002/not_lit_6/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:56:48+00:00",
+          "brief": "Z22"
+        }
       }
     }
   }

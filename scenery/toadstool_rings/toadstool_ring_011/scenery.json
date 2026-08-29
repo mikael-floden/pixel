@@ -37,7 +37,30 @@
       "generated_at": "2026-08-17T11:02:44+00:00",
       "glow_concept": "low glowing spore mist pooled in the center",
       "difference_from_source": 0.5846,
-      "glow_score": 0.1781
+      "glow_score": 0.1781,
+      "animations": {
+        "motion": {
+          "group_id": "d90d8b06-ad7d-4cb3-8a20-55061f4c655c",
+          "description": "This is the same picture in every frame. ONLY the glowing pool in the middle brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "toadstool_rings/toadstool_ring_011/lit_1/animations/motion/00.webp",
+            "toadstool_rings/toadstool_ring_011/lit_1/animations/motion/01.webp",
+            "toadstool_rings/toadstool_ring_011/lit_1/animations/motion/02.webp",
+            "toadstool_rings/toadstool_ring_011/lit_1/animations/motion/03.webp",
+            "toadstool_rings/toadstool_ring_011/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "toadstool_rings/toadstool_ring_011/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:58:51+00:00",
+          "brief": "Z38"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "toadstool_rings/toadstool_ring_011/lit_2/sprite.webp",
