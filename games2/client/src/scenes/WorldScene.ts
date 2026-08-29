@@ -11497,11 +11497,26 @@ export class WorldScene extends Phaser.Scene {
     const world = this.world;
     if (!idx || !pieces || !world) return;
     const { dy, lh, tile: tileSize } = this.geom;
+    /* TWO RADII: what is DRAWN, and what is FETCHED.
+     *
+     * They used to be one 200px pad, which is barely off screen — so a piece
+     * was first ASKED for at the moment it was almost visible, and a scenery
+     * piece is two round trips deep (its manifest, then the art that manifest
+     * names). Running into new ground outpaced that and the forest assembled
+     * itself in front of the player (maintainer 2026-08-29: "scenery started to
+     * pop up on screen... we must understand what will soon come, and load it
+     * before we need it").
+     *
+     * The fetch radius is a full extra screen in every direction, so a piece is
+     * requested about a screen's worth of walking before it can be seen, while
+     * the DRAW set is unchanged — prefetching costs requests, not draw calls or
+     * sprites. */
     const pad = 200;
     const view = cam.worldView;
     const rect = { x: view.x - pad, y: view.y - pad, w: view.width + pad * 2, h: view.height + pad * 2 };
+    const reach = { x: view.x - view.width, y: view.y - view.height, w: view.width * 3, h: view.height * 3 };
     let drawn = 0;
-    for (const p of idx.query(rect)) {
+    for (const p of idx.query(reach)) {
       const piece = pieces.get(p.piece);
       if (piece === undefined) {
         void pieces.request(p.piece); // 205 fetches for 1,388 placements, lazily
@@ -11511,6 +11526,11 @@ export class WorldScene extends Phaser.Scene {
       const st = stateFor(piece, p.lit);
       const sprite = southSprite(st);
       if (!this.needScenery(sprite)) continue;
+      /* PREFETCH ONLY beyond the draw pad: the manifest is in hand and the art
+       * is queued by `needScenery` above, which is the whole point of coming
+       * out this far. Everything below builds a sprite. */
+      if (p.ax < rect.x - 256 || p.ax > rect.x + rect.w + 256 || p.ay < rect.y - 512 || p.ay > rect.y + rect.h + 256)
+        continue;
       const art = this.sceneryArtFit(sceneryArtKey(sprite));
       if (!art) continue;
       const fit = fitSprite(art.bbox, art.canvas, piece.worldPxHeight, p.ax, p.ay, p.hflip);
