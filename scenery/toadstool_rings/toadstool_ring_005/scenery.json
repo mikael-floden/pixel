@@ -37,7 +37,30 @@
       "generated_at": "2026-08-17T10:58:14+00:00",
       "glow_concept": "alternating caps glowing in a dotted circle",
       "difference_from_source": 0.3245,
-      "glow_score": 0.1968
+      "glow_score": 0.1968,
+      "animations": {
+        "motion": {
+          "group_id": "145cdd4a-02e4-4095-8af5-a456b22eda98",
+          "description": "This is the same picture in every frame. ONLY the glowing caps brighten and dim one after another around the ring, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "toadstool_rings/toadstool_ring_005/lit_2/animations/motion/00.webp",
+            "toadstool_rings/toadstool_ring_005/lit_2/animations/motion/01.webp",
+            "toadstool_rings/toadstool_ring_005/lit_2/animations/motion/02.webp",
+            "toadstool_rings/toadstool_ring_005/lit_2/animations/motion/03.webp",
+            "toadstool_rings/toadstool_ring_005/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "toadstool_rings/toadstool_ring_005/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:29:46+00:00",
+          "brief": "S13"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "toadstool_rings/toadstool_ring_005/sprite.webp",

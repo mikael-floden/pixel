@@ -98,6 +98,29 @@
         "south-east": "streetlights/streetlight_007/lit_2/rotations/south-east.webp",
         "south-west": "streetlights/streetlight_007/lit_2/rotations/south-west.webp",
         "south": "streetlights/streetlight_007/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "67acd089-bcca-4074-85b3-c0a81ee8e1c2",
+          "description": "This is the same picture in every frame. ONLY the small points of light inside the jar move, drifting slowly and blinking. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "streetlights/streetlight_007/lit_2/animations/motion/00.webp",
+            "streetlights/streetlight_007/lit_2/animations/motion/01.webp",
+            "streetlights/streetlight_007/lit_2/animations/motion/02.webp",
+            "streetlights/streetlight_007/lit_2/animations/motion/03.webp",
+            "streetlights/streetlight_007/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "streetlights/streetlight_007/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:29:53+00:00",
+          "brief": "S3"
+        }
       }
     },
     "NOT_LIT_1": {

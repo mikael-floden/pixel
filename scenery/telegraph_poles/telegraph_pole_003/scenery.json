@@ -37,7 +37,28 @@
       "generated_at": "2026-08-16T23:04:27+00:00",
       "glow_concept": "ceramic insulators glowing like small lanterns",
       "difference_from_source": 0.6149,
-      "glow_score": 0.1271
+      "glow_score": 0.1271,
+      "animations": {
+        "motion": {
+          "group_id": "c9e26fe1-72b7-43e9-a9ef-1a8bd399cdd3",
+          "description": "This is the same picture in every frame. ONLY the light in the ceramic insulators brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "telegraph_poles/telegraph_pole_003/lit_1/animations/motion/00.webp",
+            "telegraph_poles/telegraph_pole_003/lit_1/animations/motion/01.webp",
+            "telegraph_poles/telegraph_pole_003/lit_1/animations/motion/02.webp",
+            "telegraph_poles/telegraph_pole_003/lit_1/animations/motion/03.webp",
+            "telegraph_poles/telegraph_pole_003/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "telegraph_poles/telegraph_pole_003/lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T13:28:21+00:00",
+          "brief": "S12"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "telegraph_poles/telegraph_pole_003/lit_2/sprite.webp",

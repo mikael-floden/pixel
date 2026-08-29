@@ -75,6 +75,29 @@
         "south-east": "bell_posts/bell_post_004/lit_2/rotations/south-east.webp",
         "south-west": "bell_posts/bell_post_004/lit_2/rotations/south-west.webp",
         "south": "bell_posts/bell_post_004/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "4a296e5a-6b13-44fe-93a5-5ab51e4cc97d",
+          "description": "This is the same picture in every frame. ONLY the hanging board and the two lanterns move, swinging very gently together. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "bell_posts/bell_post_004/lit_2/animations/motion/00.webp",
+            "bell_posts/bell_post_004/lit_2/animations/motion/01.webp",
+            "bell_posts/bell_post_004/lit_2/animations/motion/02.webp",
+            "bell_posts/bell_post_004/lit_2/animations/motion/03.webp",
+            "bell_posts/bell_post_004/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "bell_posts/bell_post_004/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:28:45+00:00",
+          "brief": "S1"
+        }
       }
     },
     "LIT_4": {

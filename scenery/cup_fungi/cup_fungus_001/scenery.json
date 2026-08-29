@@ -37,7 +37,30 @@
       "generated_at": "2026-08-16T11:21:26+00:00",
       "glow_concept": "each cup brimming with glowing liquid light",
       "difference_from_source": 0.4707,
-      "glow_score": 0.2816
+      "glow_score": 0.2816,
+      "animations": {
+        "motion": {
+          "group_id": "957e7c87-6dbd-4a16-a659-6d718a82be11",
+          "description": "This is the same picture in every frame. ONLY the glowing liquid held in the cups brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cup_fungi/cup_fungus_001/lit_2/animations/motion/00.webp",
+            "cup_fungi/cup_fungus_001/lit_2/animations/motion/01.webp",
+            "cup_fungi/cup_fungus_001/lit_2/animations/motion/02.webp",
+            "cup_fungi/cup_fungus_001/lit_2/animations/motion/03.webp",
+            "cup_fungi/cup_fungus_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cup_fungi/cup_fungus_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:28:23+00:00",
+          "brief": "S9"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cup_fungi/cup_fungus_001/sprite.webp",
