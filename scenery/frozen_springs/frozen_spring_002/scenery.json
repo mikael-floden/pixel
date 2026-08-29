@@ -100,7 +100,30 @@
       "glow_concept": null,
       "difference_from_source": 0.7729,
       "glow_score": 0.17,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "animations": {
+        "motion": {
+          "group_id": "29a77b6e-5844-4744-94fc-5117ab086738",
+          "description": "This is the same picture in every frame. ONLY the falling water from the spout moves, pouring downward continuously. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "frozen_springs/frozen_spring_002/not_lit_5/animations/motion/00.webp",
+            "frozen_springs/frozen_spring_002/not_lit_5/animations/motion/01.webp",
+            "frozen_springs/frozen_spring_002/not_lit_5/animations/motion/02.webp",
+            "frozen_springs/frozen_spring_002/not_lit_5/animations/motion/03.webp",
+            "frozen_springs/frozen_spring_002/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "frozen_springs/frozen_spring_002/not_lit_5/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:30:45+00:00",
+          "brief": "S17"
+        }
+      }
     },
     "NOT_LIT_6": {
       "sprite": "frozen_springs/frozen_spring_002/not_lit_6/sprite.webp",

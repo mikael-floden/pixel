@@ -46,7 +46,28 @@
       "generated_at": "2026-08-16T15:30:34+00:00",
       "glow_concept": "hop cones glowing like strings of paper lanterns",
       "difference_from_source": 0.511,
-      "glow_score": 0.1878
+      "glow_score": 0.1878,
+      "animations": {
+        "motion": {
+          "group_id": "0820dc4b-f7a6-4e22-b5d3-f0ed5c82fe40",
+          "description": "This is the same picture in every frame. ONLY the light inside the hanging cones brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "hop_poles/hop_pole_001/lit_2/animations/motion/00.webp",
+            "hop_poles/hop_pole_001/lit_2/animations/motion/01.webp",
+            "hop_poles/hop_pole_001/lit_2/animations/motion/02.webp",
+            "hop_poles/hop_pole_001/lit_2/animations/motion/03.webp",
+            "hop_poles/hop_pole_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "hop_poles/hop_pole_001/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T13:30:26+00:00",
+          "brief": "S16"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "hop_poles/hop_pole_001/sprite.webp",
