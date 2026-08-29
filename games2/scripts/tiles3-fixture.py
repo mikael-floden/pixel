@@ -74,6 +74,13 @@ WINDOWS = [
             "13 of the 14 drawn corner-lattice indices.",
     ),
     dict(
+        name="his_beach",
+        x0=430, y0=352, x1=478, y1=400,
+        why="Where the maintainer stood when he marked stripes along every "
+            "grass~light_beach~water transition (2026-08-29, 453/375). The "
+            "coastline here is the fade band's densest run in the world.",
+    ),
+    dict(
         name="diag_corner",
         x0=328, y0=324, x1=344, y1=340,
         why="The ONLY place in the 262,144-cell world that carries a DIAGONAL "
