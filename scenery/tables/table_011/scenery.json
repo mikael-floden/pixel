@@ -47,18 +47,39 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "tables/table_011/lit_1/animations/flame/00.webp",
-            "tables/table_011/lit_1/animations/flame/01.webp",
-            "tables/table_011/lit_1/animations/flame/02.webp",
-            "tables/table_011/lit_1/animations/flame/03.webp",
-            "tables/table_011/lit_1/animations/flame/04.webp"
-          ],
-          "strip": "tables/table_011/lit_1/animations/flame__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T07:09:35+00:00"
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "tables/table_011/lit_1/animations/flame/south/00.webp",
+                "tables/table_011/lit_1/animations/flame/south/01.webp",
+                "tables/table_011/lit_1/animations/flame/south/02.webp",
+                "tables/table_011/lit_1/animations/flame/south/03.webp",
+                "tables/table_011/lit_1/animations/flame/south/04.webp"
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "tables/table_011/lit_1/animations/flame/south-east/00.webp",
+                "tables/table_011/lit_1/animations/flame/south-east/01.webp",
+                "tables/table_011/lit_1/animations/flame/south-east/02.webp",
+                "tables/table_011/lit_1/animations/flame/south-east/03.webp",
+                "tables/table_011/lit_1/animations/flame/south-east/04.webp"
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "tables/table_011/lit_1/animations/flame/south-west/00.webp",
+                "tables/table_011/lit_1/animations/flame/south-west/01.webp",
+                "tables/table_011/lit_1/animations/flame/south-west/02.webp",
+                "tables/table_011/lit_1/animations/flame/south-west/03.webp",
+                "tables/table_011/lit_1/animations/flame/south-west/04.webp"
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:27:46+00:00"
         }
       },
       "rotations": {
