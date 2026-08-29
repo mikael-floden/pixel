@@ -253,10 +253,11 @@ def _scenery(doc):
     is not one tree stamped; the bonfire A/B fixture -> the campfire piece; the
     chess tables -> their own scenery ids. Placement keeps the prop's cell
     (centre), fractional coords allowed by the format."""
-    species = _tree_species()
-    spnames = sorted(species)
     ancient = sorted(d for d in os.listdir(os.path.join(REPO, "scenery", "ancient_trees"))
                      if os.path.isdir(os.path.join(REPO, "scenery", "ancient_trees", d)))
+    W2, H2 = len(doc["mat"][0]), len(doc["mat"])
+    v3mat = [[V2_TO_V3.get(doc["materials"][i], "") for i in row]
+             for row in doc["mat"]]
     out = []
     paths = doc["paths"]
     props = sorted(doc.get("props", []), key=lambda p: (p["y"], p["x"]))
@@ -281,11 +282,12 @@ def _scenery(doc):
                 grp = "ancient_trees"
                 pick = ancient[ti % len(ancient)]
             else:
-                # prop trees obey the SAME zone-species rule as the forests
+                # prop trees obey the SAME three-type rule as the forests
                 # (cycling the full tree list here was the fruit salad)
                 grp = "trees"
-                prim, _acc = _zone_species(spnames, p["x"], p["y"])
-                pool = species[prim]
+                u = ((ti * 2654435761) & 0xffff) / 65536
+                pool = TREE_TYPES[_tree_pick(v3mat, doc["level"], W2, H2,
+                                             p["x"], p["y"], u)]
                 pick = pool[ti % len(pool)]
             out.append({"piece": f"{grp}/{pick}", "x": x, "y": y,
                         "hflip": bool(ti % 2)})
@@ -309,45 +311,91 @@ def _rng32(seed):
     return r
 
 
-def _tree_species():
-    """The 71 trees clustered into SPECIES by their own names. A forest speaks
-    ONE species (plus one accent); variation comes from within the species —
-    maintainer 2026-08-29: "don't use to many different tree types. It looks
-    better if you use different versions/variations of a few tree types."
-    Species with < 3 variations can't vary, so they stay solitary specimens."""
-    import re as _re
-    KEY = _re.compile(r"\b(oak|pine|birch|willow|spruce|maple|apple|cherry|elm"
-                      r"|ash|beech|fir|aspen|rowan|linden|lime|poplar|yew|alder"
-                      r"|cedar|chestnut|hazel|juniper|hawthorn|larch|pear)\b")
-    sp = {}
-    for d in sorted(os.listdir(os.path.join(REPO, "scenery", "trees"))):
-        p = os.path.join(REPO, "scenery", "trees", d, "scenery.json")
-        if not os.path.isfile(p):
-            continue
-        name = (json.load(open(p)).get("name") or "").lower()
-        m = KEY.search(name)
-        sp.setdefault(m.group(1) if m else "wild", []).append(d)
-    out = {k: v for k, v in sp.items() if len(v) >= 3 and k != "wild"}
-    assert len(out) >= 6, f"species clustering collapsed: {list(out)}"
-    return out
+TREE_TYPES = {
+    # Curated tree types — every list reads as VARIATIONS OF ONE TREE
+    # (that's what makes a wood look intentional instead of thrown together):
+    "birch": ["tree_001", "tree_008", "tree_016", "tree_058"],
+    "pine": ["tree_006", "tree_024", "tree_066", "tree_069", "tree_075"],
+    "oak": ["tree_039", "tree_047"],
+    "hawthorn": ["tree_005", "tree_011", "tree_053"],      # white blossom
+    "gold_beech": ["tree_013", "tree_040", "tree_055", "tree_082"],
+}
+
+# a WOOD speaks one primary + one secondary type — different woods across
+# the map may differ (maintainer 2026-08-30: "max 2-3 different trees — I'm
+# talking about the forest. You can add another tree on the other side of
+# the map"). Highland woods always speak pine.
+WOOD_PALETTES = [
+    ("birch", "oak"),
+    ("pine", "birch"),
+    ("hawthorn", "birch"),
+    ("gold_beech", "oak"),
+]
 
 
-ZONE = 36     # cells; every ZONE x ZONE area speaks ONE tree species (36 so
-              # a whole WOOD_R-12 wood fits inside one zone — 24 measured a
-              # species seam cutting through continuous woods)
+def _tree_pick(mat, lvl, W, H, x, y, u):
+    """Placement-time pick — a placeholder species; retype_woods() makes the
+    final per-wood call over every tree at the end of the build."""
+    if u < 0.05:
+        return "oak"
+    highish = lvl[y][x] >= 6 or any(
+        0 <= x + dx < W and 0 <= y + dy < H
+        and mat[y + dy][x + dx] in ("grey_stone", "snow", "black_rock")
+        for dx, dy in ((8, 0), (-8, 0), (0, 8), (0, -8)))
+    return "pine" if highish else "birch"
 
 
-def _zone_species(spnames, x, y):
-    """THE LOCALITY RULE for trees (maintainer 2026-08-29: "stick to one or
-    two tree types... don't just throw different trees around — it looks
-    like shit"): the map is cut into ZONE-sized areas and each area is
-    assigned ONE species (plus a fixed accent neighbour) by hash. EVERY tree
-    placer — the forest grower AND the v2 prop translation — asks this one
-    function, so a grove and the wood beside it can never clash."""
-    h = ((x // ZONE) * 2654435761 ^ (y // ZONE) * 40503 ^ 0x9e33) & 0xffffffff
-    prim = spnames[h % len(spnames)]
-    acc = spnames[(h % len(spnames) + 1 + (h >> 8) % 3) % len(spnames)]
-    return prim, acc
+def retype_woods(scen, is_high):
+    """THE FOREST COHERENCE PASS — the LAST word on tree species. All placed
+    trees cluster into WOODS (link distance 8); each wood is retyped to ONE
+    primary + ONE secondary type (~15%) from WOOD_PALETTES by centroid hash
+    (pine forced on highland woods). It runs over EVERY tree from EVERY
+    placer after all placement, so no code path can leak a stray species
+    into a wood — two earlier per-placer attempts both leaked (measured:
+    "it looks like shit")."""
+    trees = [p for p in scen if p["piece"].startswith("trees/")]
+    if not trees:
+        return 0
+    buckets = {}
+    for i, t in enumerate(trees):
+        buckets.setdefault((int(t["x"]) // 8, int(t["y"]) // 8), []).append(i)
+    parent = list(range(len(trees)))
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    for i, t in enumerate(trees):
+        bx, by = int(t["x"]) // 8, int(t["y"]) // 8
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                for j in buckets.get((bx + dx, by + dy), ()):
+                    if j < i and (trees[i]["x"] - trees[j]["x"]) ** 2 + \
+                            (trees[i]["y"] - trees[j]["y"]) ** 2 <= 64:
+                        parent[find(i)] = find(j)
+    woods = {}
+    for i in range(len(trees)):
+        woods.setdefault(find(i), []).append(i)
+    for members in woods.values():
+        cx = sum(trees[i]["x"] for i in members) / len(members)
+        cy = sum(trees[i]["y"] for i in members) / len(members)
+        h = (int(cx) * 2654435761 ^ int(cy) * 40503 ^ 0xd00d) & 0xffffffff
+        prim, sec = ("pine", "birch") if is_high(int(cx), int(cy)) else \
+            WOOD_PALETTES[h % len(WOOD_PALETTES)]
+        for k, i in enumerate(sorted(members)):
+            th = (h ^ (k * 40503) ^ 0x7ee5) & 0xffffffff
+            ty = sec if th % 100 < 15 else prim
+            pool = TREE_TYPES[ty]
+            trees[i]["piece"] = "trees/" + pool[th % len(pool)]
+    return len(woods)
+
+
+for _ty, _pieces in TREE_TYPES.items():
+    for _p in _pieces:
+        assert os.path.isdir(os.path.join(REPO, "scenery", "trees", _p)), \
+            f"palette piece missing: trees/{_p} ({_ty})"
 
 
 def _forests(W, H, mat, lvl, scen, spawn):
@@ -356,11 +404,10 @@ def _forests(W, H, mat, lvl, scen, spawn):
     forests — grown by rule:
 
       seeds     every existing tree placement on grass (the v2 grove sites)
-                plus the three biggest open-grass interiors;
-      woods     seeds within 14 cells cluster into one WOOD; each wood is
-                assigned ONE primary species + ONE accent (~25%) by hash —
-                variation comes from the 3-6 pieces within the species, never
-                from mixing many species (maintainer rule, 2026-08-29);
+                plus the biggest open-grass interiors;
+      trees     THE THREE-TYPE PALETTE ONLY (_tree_pick): birch lowland,
+                pine upland, grand oak rare — variation comes from the
+                pieces within a type, never from mixing types;
       ground    flat grass only — never roads (+2), banks, beach, rims, water;
       keep-outs spawn plaza (r 12), the houses (+4), existing pieces;
       density   jittered stride grid, ~1 tree per 4-5 cells inside a wood,
@@ -370,8 +417,6 @@ def _forests(W, H, mat, lvl, scen, spawn):
                 forest must cost ZERO of them.
     """
     import os as _os
-    species = _tree_species()
-    spnames = sorted(species)
     ancients = sorted(d for d in _os.listdir(_os.path.join(REPO, "scenery", "ancient_trees"))
                       if _os.path.isdir(_os.path.join(REPO, "scenery", "ancient_trees", d)))
     bushes = sorted(d for d in _os.listdir(_os.path.join(REPO, "scenery", "bushes"))
@@ -436,17 +481,14 @@ def _forests(W, H, mat, lvl, scen, spawn):
             if not grass_flat(jx, jy) or not clear(jx, jy) or (jx, jy) in taken:
                 continue
             taken.add((jx, jy))
-            # species come from the ZONE, not the wood — one function for
-            # every tree placer, so neighbours can never clash
-            prim, acc = _zone_species(spnames, jx, jy)
             u = r()
             if edge and u < 0.30:
                 grp, pool = "bushes", bushes
-            elif u < 0.04:
+            elif u < 0.03:
                 grp, pool = "ancient_trees", ancients
             else:
                 grp = "trees"
-                pool = species[acc] if r() < 0.15 else species[prim]
+                pool = TREE_TYPES[_tree_pick(mat, lvl, W, H, jx, jy, r())]
             pick = pool[int(r() * len(pool)) % len(pool)]
             out.append({"piece": f"{grp}/{pick}",
                         "x": jx + 0.25 + round(r() * 0.5, 2),
@@ -494,6 +536,15 @@ def build():
     yard = _yard(src, mat, lvl)
     scen = _scenery(src)
     scen += _forests(W, H, mat, lvl, scen, (int(src["spawn"][0]), int(src["spawn"][1])))
+
+    def _is_high(x, y):
+        if not (0 <= x < W and 0 <= y < H):
+            return False
+        return lvl[y][x] >= 6 or any(
+            0 <= x + dx < W and 0 <= y + dy < H
+            and mat[y + dy][x + dx] in ("grey_stone", "snow", "black_rock")
+            for dx, dy in ((8, 0), (-8, 0), (0, 8), (0, -8)))
+    retype_woods(scen, _is_high)
     nlit, worst = _light_audit(scen)
 
     grounds = sorted({m for row in mat for m in row if m})

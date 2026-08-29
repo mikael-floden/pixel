@@ -307,10 +307,12 @@ class Grow:
         # BENCHES): raw elevation snaps DOWN to a bench, so the land is broad
         # plateaus with clean multi-storey rims — a continuous field int()'d
         # measured as unreadable 1-step scribble across the whole island
-        # benches to 40 — ISLAND 1'S OWN SCALE (islandworld2 BENCH_HI = 40;
-        # maintainer 2026-08-29: "don't be shy about height differences! Use
-        # the first island as an example!")
-        BENCH = (0, 2, 4, 6, 9, 12, 16, 20, 24, 28, 32, 36, 40)
+        # benches to 40 with BIG JUMPS — island 1's drama, not a smooth dome
+        # (maintainer 2026-08-30: "the second island doesn't have the same
+        # height differences. We need a way way more extreme map. Look at
+        # the first island for inspiration"). Adjacent benches sit 4-8
+        # levels apart, so every rim is a real multi-storey cliff.
+        BENCH = (0, 2, 6, 12, 20, 28, 34, 40)
         ccx, ccy = cx - 0.13 * R, cy - 0.10 * R    # the massif rides NW
         zmap, beach = {}, []
         for y in range(max(1, cy - R - 4), min(NEW - 1, cy + R + 5)):
@@ -330,13 +332,14 @@ class Grow:
                     fall = 1 - d / rr
                     core = max(0.0, 1 - math.hypot(x - ccx, y - ccy) / (R * 0.72))
                     e = _fbm(x * 0.030, y * 0.030, 83, 4)
-                    rough = _fbm(x * 0.09 + 31, y * 0.09 + 31, 87)
-                    h = 0.52 * core ** 1.6 + 0.55 * e * fall ** 0.5 \
-                        + 0.22 * (rough - 0.5) * core
-                    zr = h * 40
+                    # ridged noise: knife crests and deep clefts, not a dome
+                    ridge = 1 - abs(2 * _fbm(x * 0.05 + 17, y * 0.05 + 17, 89) - 1)
+                    h = 0.50 * core ** 1.5 + 0.35 * e * fall ** 0.5 \
+                        + 0.45 * ridge * core * fall
+                    zr = h * 44
                     z = max(b for b in BENCH if zr >= b)
                     if back and d >= rr - 4:
-                        z = max(z, 6)
+                        z = max(z, 12)   # the sealed backside is SHEER
                     zmap[(x, y)] = z
                 elif d <= rr + 2.2 and not back:
                     beach.append((x, y))
@@ -363,7 +366,7 @@ class Grow:
         # river: walk downhill from the peak to the sea, water riding its own
         # level (the renderer's liquids-ride-own-level rule, already proven)
         px, py, pz = max(land, key=lambda c: c[2])
-        seen, steps = set(), 0
+        seen, steps, riv = set(), 0, []
         x, y = px, py
         while steps < 500:
             steps += 1
@@ -371,12 +374,15 @@ class Grow:
             if self.liquid(x, y):
                 break
             grd[y][x] = gi["water"]
+            riv.append((x, y))
             opts = [(self.lvl[y + dy][x + dx], x + dx, y + dy)
                     for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))
                     if (x + dx, y + dy) not in seen]
             if not opts:
                 break                  # a bowl: the river ends in a tarn
             _, x, y = min(opts)
+        for (rx, ry) in riv:           # the river runs in a GORGE: sunk 4
+            lvl[ry][rx] = max(0, lvl[ry][rx] - 4)
         self.i2_land = len(land)
         self.placed += [("island2 land", len(land)), ("river steps", steps)]
 
@@ -408,12 +414,101 @@ class Grow:
         self.placed += [("town road cells", n)]
 
     def isthmus(self):
-        """ONE ISLAND, VISUALLY (maintainer 2026-08-29: "the islands should
-        be connected and LOOK like a single island"): not a string bridge — a
-        BROAD NECK, 22-32 cells wide with an fbm-wobbled coast, flaring wider
-        where it meets each shore, so the silhouette reads as one landmass
-        pinched at the waist. Beach-fringed like every other coast."""
+        """ONE BIG ISLAND (maintainer 2026-08-30, after a waist-neck still
+        read as two islands: "the island should just be one big island"):
+        the WHOLE CHANNEL between the two landmasses is filled. Two water
+        BFS fields measure each sea cell's distance to either landmass;
+        every cell whose summed distance sits within closest-approach + 26
+        (fbm-wobbled) becomes lowland grass. The coasts fuse along their
+        entire facing front; the flanks stay concave bays."""
+        from collections import deque
         gi = self.gi
+
+        def landcomp(seed):
+            comp, q = {seed}, deque([seed])
+            while q:
+                x, y = q.popleft()
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    n_ = (x + dx, y + dy)
+                    if 0 <= n_[0] < NEW and 0 <= n_[1] < NEW \
+                            and n_ not in comp and not self.liquid(*n_) \
+                            and self.g(*n_):
+                        comp.add(n_)
+                        q.append(n_)
+            return comp
+
+        c1 = landcomp(tuple(self.doc["spawn"]))
+        # island 2 = the landmass around ITS OWN massif centre. NOT "all land
+        # not in c1": island 1's gorge splits it into fragments, and a fill
+        # aimed at "the other land" patched a river bank while the strait
+        # stayed open (measured: the fuse assert passed, the map still
+        # showed two islands).
+        assert not self.liquid(*ISL2) and self.g(*ISL2), "ISL2 centre not land"
+        c2 = landcomp(ISL2)
+        assert not (c1 & c2), "already one landmass — fill rule needs review"
+
+        import heapq
+
+        def waterdist(comp):
+            """EUCLIDEAN-ish water distance (Dijkstra, 10/14 costs, tenths of
+            a cell): Manhattan BFS gave diamond contours and the fill came
+            out as a straight-edged plate — measured, ugly."""
+            INF = 1 << 30
+            dist = [[INF] * NEW for _ in range(NEW)]
+            pq = []
+            STEP = ((1, 0, 10), (-1, 0, 10), (0, 1, 10), (0, -1, 10),
+                    (1, 1, 14), (1, -1, 14), (-1, 1, 14), (-1, -1, 14))
+            for (x, y) in comp:
+                for dx, dy, c in STEP:
+                    nx, ny = x + dx, y + dy
+                    if 0 <= nx < NEW and 0 <= ny < NEW \
+                            and self.liquid(nx, ny) and dist[ny][nx] > c:
+                        dist[ny][nx] = c
+                        heapq.heappush(pq, (c, nx, ny))
+            while pq:
+                d, x, y = heapq.heappop(pq)
+                if d > dist[y][x] or d > 1600:
+                    continue
+                for dx, dy, c in STEP:
+                    nx, ny = x + dx, y + dy
+                    if 0 <= nx < NEW and 0 <= ny < NEW \
+                            and self.liquid(nx, ny) and dist[ny][nx] > d + c:
+                        dist[ny][nx] = d + c
+                        heapq.heappush(pq, (d + c, nx, ny))
+            return dist
+
+        dA, dB = waterdist(c2), waterdist(c1)
+        BIG = 1 << 29
+        closest = min(dA[y][x] + dB[y][x] for y in range(NEW)
+                      for x in range(NEW)
+                      if self.liquid(x, y) and dA[y][x] < BIG and dB[y][x] < BIG)
+        filled, extra = [], 0
+        while True:
+            for y in range(NEW):
+                for x in range(NEW):
+                    if not self.liquid(x, y) or dA[y][x] >= BIG \
+                            or dB[y][x] >= BIG:
+                        continue
+                    T = closest + 260 + extra \
+                        + 240 * (_fbm(x * 0.045, y * 0.045, 93) - 0.5)
+                    if dA[y][x] + dB[y][x] <= T:
+                        self.grd[y][x] = gi["grass"]
+                        self.lvl[y][x] = 0
+                        filled.append((x, y))
+            if landcomp(tuple(self.doc["spawn"])) & c2:
+                break                  # ONE island, proven on the real grid
+            extra += 80
+            assert extra <= 400, "fill cannot fuse the islands"
+        assert len(filled) > 800, f"the channel fill collapsed: {len(filled)}"
+        xs = [c[0] for c in filled]
+        ys = [c[1] for c in filled]
+        for y in range(min(ys) - 6, max(ys) + 7):
+            for x in range(min(xs) - 6, max(xs) + 7):
+                if 0 <= x < NEW and 0 <= y < NEW and self.g(x, y) == "grass" \
+                        and self.lvl[y][x] == 0 \
+                        and any(self.liquid(x + dx, y + dy)
+                                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                    self.grd[y][x] = gi["light_beach"]
         tgt = (OFF[0] + 24, OFF[1] + 29)
         A = min(((x, y) for y in range(300) for x in range(300)
                  if not self.liquid(x, y) and self.g(x, y)),
@@ -421,36 +516,9 @@ class Grow:
         B = min(((x, y) for y in range(OFF[1], NEW) for x in range(OFF[0], NEW)
                  if not self.liquid(x, y) and self.g(x, y)),
                 key=lambda c: (c[0] - A[0]) ** 2 + (c[1] - A[1]) ** 2)
-        ax, ay = A
-        bx, by = B
-        steps = int(max(1.0, math.hypot(bx - ax, by - ay)) * 3)
-        n = 0
-        for t in range(steps + 1):
-            u = t / steps
-            fx = ax + (bx - ax) * u
-            fy = ay + (by - ay) * u
-            wob = _fbm(3 + u * 6, 1.7, 91)
-            wide = 11 + 5 * wob + (4 if u < 0.18 or u > 0.82 else 0)
-            W = int(wide) + 1
-            for dx in range(-W, W + 1):
-                for dy in range(-W, W + 1):
-                    x, y = int(fx) + dx, int(fy) + dy
-                    if math.hypot(x - fx, y - fy) <= wide \
-                            and 0 <= x < NEW and 0 <= y < NEW \
-                            and self.liquid(x, y):
-                        self.grd[y][x] = gi["grass"]; self.lvl[y][x] = 0
-                        n += 1
-        for y in range(min(ay, by) - 22, max(ay, by) + 23):
-            for x in range(min(ax, bx) - 22, max(ax, bx) + 23):
-                if 0 <= x < NEW and 0 <= y < NEW and self.g(x, y) == "grass" \
-                        and self.lvl[y][x] == 0 \
-                        and any(self.liquid(x + dx, y + dy)
-                                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
-                    self.grd[y][x] = gi["light_beach"]
-        assert n > 400, f"the neck must be LAND, not a string: {n} cells"
         self.bridgeA = A
         self.bridgeB = B
-        self.placed += [("isthmus cells", n)]
+        self.placed += [("channel fill cells", len(filled))]
 
     def town_ground(self):
         """THE TOWN takes the camera-facing south shelf: ground levelled to
@@ -720,6 +788,18 @@ class Grow:
         self.placed += [("island2 fen", fen),
                         ("island2 wall sides", sum(len(w["cells"]) for w in walls)),
                         ("island2 trees", len(trees))]
+
+    def retype(self):
+        """world3.retype_woods over the WHOLE grown map — the final word on
+        which species each wood speaks (per-forest rule)."""
+        def is_high(x, y):
+            if not (0 <= x < NEW and 0 <= y < NEW):
+                return False
+            return self.lvl[y][x] >= 6 or any(
+                self.g(x + dx, y + dy) in ("grey_stone", "snow", "black_rock")
+                for dx, dy in ((8, 0), (-8, 0), (0, 8), (0, -8)))
+        n = world3.retype_woods(self.doc["scenery"], is_high)
+        self.placed += [("woods retyped", n)]
 
     def spawns(self):
         """Monsters SPREAD over the doubled land (maintainer 2026-08-29): the
@@ -1186,7 +1266,8 @@ class Grow:
                       on=("light_beach",), hflip=True)
         n += self.put("beached_rowboats/beached_rowboat_900", cx + 1, cy + 3,
                       on=("light_beach",))
-        # The Mist Fen Isle: ONE species (hanging willows) + the grim props
+        # The Mist Fen Isle: hanging willows — its own remote mini-wood, ONE
+        # species (the per-forest rule allows a different tree elsewhere)
         cx, cy = centre(self.isl_fen)
         hw = self.pool("hanging_willows")
         for i, (dx, dy) in enumerate(((0, -2), (3, 1), (-3, 0), (1, 3))):
@@ -1236,7 +1317,8 @@ class Grow:
                      self.i2_road, self.i2_systems, self._reindex,
                      self.archipelago, self.pier, self.houses, self.town,
                      self.build_no_place, self.interiors, self.village,
-                     self.roads, self.nature, self.dress_islets, self.spawns):
+                     self.roads, self.nature, self.dress_islets,
+                     self.retype, self.spawns):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
