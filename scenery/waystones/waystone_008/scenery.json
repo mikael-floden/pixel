@@ -41,6 +41,29 @@
         "south-east": "waystones/waystone_008/rotations/south-east.webp",
         "south-west": "waystones/waystone_008/rotations/south-west.webp",
         "south": "waystones/waystone_008/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "8fd781a0-0986-452f-93b4-c898153ee61b",
+          "description": "This is the same picture in every frame. ONLY the light in the carved spiral brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "waystones/waystone_008/animations/motion/00.webp",
+            "waystones/waystone_008/animations/motion/01.webp",
+            "waystones/waystone_008/animations/motion/02.webp",
+            "waystones/waystone_008/animations/motion/03.webp",
+            "waystones/waystone_008/animations/motion/04.webp"
+          ],
+          "strip": "waystones/waystone_008/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:49:03+00:00",
+          "brief": "Q8"
+        }
       }
     },
     "LIT_2": {

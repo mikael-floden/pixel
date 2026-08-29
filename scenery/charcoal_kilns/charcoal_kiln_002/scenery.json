@@ -100,6 +100,29 @@
         "south-east": "charcoal_kilns/charcoal_kiln_002/not_lit_1/rotations/south-east.webp",
         "south-west": "charcoal_kilns/charcoal_kiln_002/not_lit_1/rotations/south-west.webp",
         "south": "charcoal_kilns/charcoal_kiln_002/not_lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "8fb409ba-1b5b-46a3-8cd0-21b592711c1e",
+          "description": "This is the same picture in every frame. ONLY one thin thread of smoke rises from the top of the dome and fades. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "charcoal_kilns/charcoal_kiln_002/not_lit_1/animations/motion/00.webp",
+            "charcoal_kilns/charcoal_kiln_002/not_lit_1/animations/motion/01.webp",
+            "charcoal_kilns/charcoal_kiln_002/not_lit_1/animations/motion/02.webp",
+            "charcoal_kilns/charcoal_kiln_002/not_lit_1/animations/motion/03.webp",
+            "charcoal_kilns/charcoal_kiln_002/not_lit_1/animations/motion/04.webp"
+          ],
+          "strip": "charcoal_kilns/charcoal_kiln_002/not_lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:51:31+00:00",
+          "brief": "Q22"
+        }
       }
     },
     "NOT_LIT_2": {

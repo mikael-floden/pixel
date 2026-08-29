@@ -369,7 +369,22 @@ class PixelLabClient:
             payload["directions"] = list(DIRECTIONS_8)
         if display_name:
             payload["display_name"] = display_name
-        resp = self._request("POST", f"{OBJECTS_URL}/{object_id}/animations", json=payload)
+        try:
+            resp = self._request("POST", f"{OBJECTS_URL}/{object_id}/animations",
+                                 json=payload)
+        except PixelLabError as e:
+            # SIZE IS A PROXY FOR DIRECTIONALITY, AND IT IS SOMETIMES WRONG.
+            # Callers decide `directions` from the piece's canvas (<=168px went
+            # down create-8-direction-object), but stones/stone_001 is 64px with
+            # all eight rotation_urls null — a 1-direction object on a small
+            # canvas — and the API rejects `directions` for those outright. The
+            # object itself is the authority, so take its word for it and retry.
+            if "1-direction" in str(e) and "directions" in payload:
+                payload.pop("directions")
+                resp = self._request("POST", f"{OBJECTS_URL}/{object_id}/animations",
+                                     json=payload)
+            else:
+                raise
         for job in (resp.get("background_job_ids") or []):
             try:
                 self.wait_job(job, timeout=job_timeout)

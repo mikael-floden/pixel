@@ -37,7 +37,28 @@
       "generated_at": "2026-08-16T20:14:02+00:00",
       "glow_concept": "swarm of glowing motes spiraling upward",
       "difference_from_source": 0.4895,
-      "glow_score": 0.1618
+      "glow_score": 0.1618,
+      "animations": {
+        "motion": {
+          "group_id": "ae9a77a2-6d99-4de5-af05-9bf29fcc9331",
+          "description": "This is the same picture in every frame. ONLY the small golden sparks around the rock move, drifting slowly and fading. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rock_spires/rock_spire_001/lit_1/animations/motion/00.webp",
+            "rock_spires/rock_spire_001/lit_1/animations/motion/01.webp",
+            "rock_spires/rock_spire_001/lit_1/animations/motion/02.webp",
+            "rock_spires/rock_spire_001/lit_1/animations/motion/03.webp",
+            "rock_spires/rock_spire_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "rock_spires/rock_spire_001/lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T11:51:49+00:00",
+          "brief": "Q13"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "rock_spires/rock_spire_001/lit_2/sprite.webp",

@@ -42,6 +42,29 @@
         "south-east": "barrels/barrel_001/lit_2/rotations/south-east.webp",
         "south-west": "barrels/barrel_001/lit_2/rotations/south-west.webp",
         "south": "barrels/barrel_001/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "d8a740b2-c9df-4c47-b4a1-233d2441d873",
+          "description": "This is the same picture in every frame. ONLY the glowing seep at the foot of the barrel brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "barrels/barrel_001/lit_2/animations/motion/00.webp",
+            "barrels/barrel_001/lit_2/animations/motion/01.webp",
+            "barrels/barrel_001/lit_2/animations/motion/02.webp",
+            "barrels/barrel_001/lit_2/animations/motion/03.webp",
+            "barrels/barrel_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "barrels/barrel_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:49:35+00:00",
+          "brief": "Q6"
+        }
       }
     },
     "NOT_LIT_1": {

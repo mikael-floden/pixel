@@ -79,6 +79,27 @@
             }
           },
           "generated_at": "2026-08-29T08:08:39+00:00"
+        },
+        "motion": {
+          "group_id": "2cfb8e2d-c4de-4765-ba5d-b112db6314c5",
+          "description": "This is the same picture in every frame. ONLY the small candle flame flickers, very gently. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beds/bed_001/lit_1/animations/motion/00.webp",
+            "beds/bed_001/lit_1/animations/motion/01.webp",
+            "beds/bed_001/lit_1/animations/motion/02.webp",
+            "beds/bed_001/lit_1/animations/motion/03.webp",
+            "beds/bed_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "beds/bed_001/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:50:51+00:00",
+          "brief": "Q19"
         }
       },
       "rotations": {

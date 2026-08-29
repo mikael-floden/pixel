@@ -36,7 +36,30 @@
       "glow_concept": "roots traced in glowing gold veins",
       "difference_from_source": 0.8816,
       "glow_score": 0.0777,
-      "generated_at": "2026-08-15T16:13:33+00:00"
+      "generated_at": "2026-08-15T16:13:33+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "d802473f-1e35-4a7c-9499-dfa0bfe08a3d",
+          "description": "This is the same picture in every frame. ONLY the pale veins in the stone brighten and dim, very slowly. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "petrified_stumps/petrified_stump_002/lit_2/animations/motion/00.webp",
+            "petrified_stumps/petrified_stump_002/lit_2/animations/motion/01.webp",
+            "petrified_stumps/petrified_stump_002/lit_2/animations/motion/02.webp",
+            "petrified_stumps/petrified_stump_002/lit_2/animations/motion/03.webp",
+            "petrified_stumps/petrified_stump_002/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "petrified_stumps/petrified_stump_002/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T11:49:27+00:00",
+          "brief": "Q7"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "petrified_stumps/petrified_stump_002/lit_3/sprite.webp",
