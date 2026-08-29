@@ -67,7 +67,30 @@
       "glow_concept": "ring of glowing mushrooms around the base",
       "difference_from_source": 0.969,
       "glow_score": 0.1994,
-      "generated_at": "2026-08-15T16:27:38+00:00"
+      "generated_at": "2026-08-15T16:27:38+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "acb9789c-6d9a-4d7a-b6c4-705edb63c30b",
+          "description": "This is the same picture in every frame. ONLY the cyan crystals on the stump brighten a little and return. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_007/lit_4/animations/motion/00.webp",
+            "stumps/stump_007/lit_4/animations/motion/01.webp",
+            "stumps/stump_007/lit_4/animations/motion/02.webp",
+            "stumps/stump_007/lit_4/animations/motion/03.webp",
+            "stumps/stump_007/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_007/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:05:14+00:00",
+          "brief": "C43"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stumps/stump_007/sprite.webp",

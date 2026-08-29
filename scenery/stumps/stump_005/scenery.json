@@ -36,7 +36,30 @@
       "glow_concept": "shelf undersides shedding pale spore light downward",
       "difference_from_source": 0.865,
       "glow_score": 0.1787,
-      "generated_at": "2026-08-15T16:27:38+00:00"
+      "generated_at": "2026-08-15T16:27:38+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "06c5f1e9-25d8-4140-9a78-0e6f65f36927",
+          "description": "This is the same picture in every frame. ONLY the glowing fungi on the stump brighten a little and return. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_005/lit_1/animations/motion/00.webp",
+            "stumps/stump_005/lit_1/animations/motion/01.webp",
+            "stumps/stump_005/lit_1/animations/motion/02.webp",
+            "stumps/stump_005/lit_1/animations/motion/03.webp",
+            "stumps/stump_005/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_005/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:05:37+00:00",
+          "brief": "C42"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stumps/stump_005/sprite.webp",

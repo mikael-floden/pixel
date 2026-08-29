@@ -4097,14 +4097,14 @@
   "B18": {
    "group": "fish_drying_racks",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the hanging fish swing a little to one side and back. The thing that moves is only MOVED, never redrawn: its own detail is copied from the first frame exactly -- every line, every edge, every colour, the same number of parts in the same places. It is displaced as one solid piece and nothing about it is reshaped. Nothing anywhere changes brightness or colour at any point; this is a movement only. Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY each hanging fish turns very slightly where it hangs, by a single pixel, without leaving its own spot. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
    "moves": "The fish sway.",
    "seen_in_art": "a rack strung with rows of split fish",
    "example": {
     "piece": "fish_drying_racks/fish_drying_rack_005",
     "state": "NOT_LIT_2"
    },
-   "redo": "Round 1: the fish swung but the grass at the base VANISHED in the middle frames and the posts shifted. The copy tail alone did not hold the surroundings."
+   "redo": "Round 2 still rocked the whole rack -- frame 2 leans and the grass shifts. 'Swing a little to one side and back' invites the frame to move with it. Narrowed to a single-pixel turn in place, which is the lever that fixed Y13."
   },
   "B20": {
    "group": "lantern_posts",
@@ -4208,14 +4208,14 @@
   "B34": {
    "group": "fallen_logs",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the glowing green fungi along the log brighten a little and return. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY the green light on the fungi brightens a little and returns. The fungi themselves keep exactly the shape, size, position and number they have in the first frame. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
    "moves": "The fungi pulse.",
    "seen_in_art": "a log grown with glowing green shelf fungi",
    "example": {
     "piece": "fallen_logs/fallen_log_011",
     "state": "LIT_2"
    },
-   "redo": "Round 1: a new green blob appeared at the top and the fungi MULTIPLIED -- more of them at the end than the start. This is the quantity escape; no-add clause added."
+   "redo": "Rounds 1 and 2 both MULTIPLIED the fungi -- new clusters grow on top of the log and it ends darker. The no-add clause did not bite. Third attempt separates the LIGHT (which may change) from the objects carrying it (which may not), and pins their count explicitly."
   },
   "B35": {
    "group": "fallen_logs",
@@ -5370,5 +5370,6 @@
  "_no_add_note": "CLOSING THE QUANTITY ESCAPE. Seen three times now: constrain brightness and the generator changes HOW MANY things there are instead -- A39 grew horns on a stump, B33/B34 multiplied the glowing fungi and grew a new blob, B18 deleted the grass at the base of a rack. The copy tail says everything else is 'copied exactly' but that is evidently read as a style note, not a count. Added 2026-08-29: 'Nothing anywhere is added and nothing anywhere is removed: every object in the picture is present in every frame, the same number of them, in the same places, at the same size.' Judge on the B1/B4/B18/B34/B46 results.",
  "_size_note": "PINNING THE SIZE OF A FLAME. B1's lantern flame BALLOONED into a glare lighting the whole well -- flicker was read as grow. Added 2026-08-29: 'It stays exactly the same size and the same shape in every frame -- it never grows, never spreads and never spills past where it already is; only its inner detail shifts.'",
  "_length_note": "PIXELLAB CAPS animation_description AT 1000 CHARACTERS. Over it the API answers 422 string_too_long and animate_motion reports a bare FAILED line -- B4 (1009 chars) and B46 (1033) were silently skipped in batch AB before this was found. Clause stacking is what crossed the line, so the clauses are kept COMPACT and PixelLabClient.animate_object now refuses over-long descriptions up front (DESCRIPTION_MAX) instead of letting the API swallow them.",
- "_object_id_note": "THE PIXELLAB LINK ON A CANDIDATE PAGE COMES FROM states[STATE].pixellab_object_id, NOT from the piece manifest's top-level 'id' (which is the folder slug) and not from 'object_id' (which does not exist). A selector written as meta.get('object_id') or meta.get('id') silently yields the slug, and every 'Open in PixelLab' link on the page 404s. Introduced around batch Y, found and fixed at batch AC."
+ "_object_id_note": "THE PIXELLAB LINK ON A CANDIDATE PAGE COMES FROM states[STATE].pixellab_object_id, NOT from the piece manifest's top-level 'id' (which is the folder slug) and not from 'object_id' (which does not exist). A selector written as meta.get('object_id') or meta.get('id') silently yields the slug, and every 'Open in PixelLab' link on the page 404s. Introduced around batch Y, found and fixed at batch AC.",
+ "_light_vs_object_note": "WHEN A GLOW SITS ON MANY SMALL OBJECTS, name the LIGHT, not the objects. 'the glowing fungi brighten' invites the generator to redraw and multiply the fungi (B34 grew new clusters twice, through both the cap and the no-add clause). Try instead: 'the green light ON the fungi brightens a little and returns. The fungi themselves keep exactly the shape, size, position and number they have in the first frame.' Introduced 2026-08-29; judge on B34."
 }

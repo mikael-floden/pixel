@@ -68,7 +68,30 @@
       "generated_at": "2026-08-15T21:12:31+00:00",
       "glow_concept": "phosphorescent rime edging every leaf",
       "difference_from_source": 0.534,
-      "glow_score": 0.1482
+      "glow_score": 0.1482,
+      "animations": {
+        "motion": {
+          "group_id": "ecc34972-6bef-438e-beeb-c0ca514e3c5f",
+          "description": "This is the same picture in every frame. ONLY the glowing edges of the leaves brighten a little and return. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "bushes/bush_011/lit_2/animations/motion/00.webp",
+            "bushes/bush_011/lit_2/animations/motion/01.webp",
+            "bushes/bush_011/lit_2/animations/motion/02.webp",
+            "bushes/bush_011/lit_2/animations/motion/03.webp",
+            "bushes/bush_011/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "bushes/bush_011/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:04:07+00:00",
+          "brief": "C29"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "bushes/bush_011/sprite.webp",
