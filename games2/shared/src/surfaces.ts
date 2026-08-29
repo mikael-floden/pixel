@@ -120,6 +120,20 @@ export const SURFACES: Record<string, Surface> = {
   black_mountain: ground(1.0, "stone"),
   crystal_ice: ground(1.05, "ice"),
   wooden_balcony: ground(1.0, "wood"),
+  // tiles3 grounds (maps2/worlds3 — the_game). Eight of these are a tiles2
+  // material RENAMED by the v2→v3 translation (maps2/spec/WORLD3.md), so they
+  // keep their old classification exactly: the ground did not change, only its
+  // name. grass/snow/ice/water already carry the renamed entry.
+  black_rock: ground(1.0, "stone"), // was black_mountain — TERRAIN, not a solid prop
+  grey_stone: ground(1.0, "stone"), // was stone_mountain — dito (elevation makes the cliff)
+  light_beach: ground(0.8, "sand"), // was light_sand
+  light_soil: ground(0.95, "dirt"), // was lightdark_dirt; the island's road ground
+  // New in v3, no v2 ancestor:
+  deep_water: { standable: false, swimmable: true, speed: 0.55, sound: "water" }, // open sea; swims like water
+  dark_mud: ground(0.85, "dirt"), // riverbank strip — heavier going than dirt, not a bog
+  parquet_floor: ground(1.0, "wood"), // house interior floor
+  brown_paving_stone: ground(1.1, "stone"), // laid stone yard — quicker than raw ground, like mosaic_floor
+  grey_paving_stone: ground(1.1, "stone"), // dito; also the roof-deck slab you can stand on
 };
 export const DEFAULT_SURFACE: Surface = ground(1.0, "grass");
 const ROAD_SURFACE: Surface = ground(1.2, "stone");

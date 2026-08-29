@@ -499,6 +499,10 @@ function clamp(v: number, lo: number, hi: number): number {
 // OTHER walkability axis) follows below.
 export * from "./surfaces";
 import { surfaceFor, VOID_SURFACE, type Surface } from "./surfaces";
+// maps3 reader. world3.ts imports only TYPES from here, so the cycle is erased
+// at runtime and this stays a plain one-way dependency.
+export * from "./world3";
+import { parseWorld3 } from "./world3";
 
 // Elevation traversal: you can WALK up/down a full 1-level step effortlessly (a
 // staircase step — no jump, no slowdown); a 2-level ledge needs a timed JUMP;
@@ -600,6 +604,20 @@ export interface ParsedWorld {
   /** maps2 world@2: elevated walkable slabs (roofs, bridge spans) floating over
    * the unchanged base terrain — a SECOND walkable surface at some cells. */
   decks?: Deck[];
+  /** maps3: the grounds the WORLD declares liquid. SURFACES still decides
+   * swimmability (the engine owns movement); this is the world's own answer,
+   * which the renderer needs for the things SURFACES has no opinion about —
+   * a liquid draws flat with no wall and is never a wall body. See world3.ts. */
+  liquids?: string[];
+  /** maps3: per-cell override of the ground a cliff/house FACE is built from,
+   * keyed `row * width + col` (the TerrainGrid index). ART ONLY — the cell's
+   * ground, elevation and walkability are unaffected. Read it with
+   * `wallSideAt`; "" / absent means the renderer's default (the ground at the
+   * face's foot). */
+  wallSides?: Record<number, string>;
+  /** maps3: freely placed, off-grid set dressing (see WorldScenery). Not
+   * `props`: those are grid-aligned tile PNGs that block their cell. */
+  scenery?: WorldScenery[];
 }
 
 /** A placed decoration: its cell (col,row) + tall (64×128) tile PNG path.
@@ -610,6 +628,19 @@ export interface WorldProp {
   row: number;
   path: string;
   levels?: number;
+}
+
+/** maps3 scenery: a `scenery/<piece>` sprite standing free of the tile grid.
+ * `x`/`y` are FRACTIONAL cell coordinates of the piece's feet (they land on .5
+ * — the cell's front vertex), `hflip` mirrors the art, and `lit` selects the
+ * piece's LIT_* state after dark. Carries no collision: scenery ships no
+ * hitbox field yet, so nothing here blocks a cell (see world3.ts). */
+export interface WorldScenery {
+  piece: string;
+  x: number;
+  y: number;
+  hflip: boolean;
+  lit: boolean;
 }
 
 /** world@2 deck: a thin walkable slab at `level`, floating over the base
@@ -623,7 +654,11 @@ export interface DeckCell {
   flip: boolean;
 }
 export interface Deck {
-  kind: string; // "roof" | "bridge" — a label, not load-bearing
+  // "roof" | "bridge" | "cave". A LABEL in world@2 (indoor-ness is derived
+  // geometrically — see indoor.ts); LOAD-BEARING in maps3, where roof and cave
+  // mean INDOORS and bridge does not (render3.py skips scenery under the first
+  // two). Carried through verbatim by both parsers.
+  kind: string;
   mat: string; // material NAME (its face tile builds the slab's underside/sides)
   level: number; // elevation of the walkable top, in levels
   thickness: number; // EXTRA face tiles below the top (render only; 0 = the top
@@ -640,6 +675,14 @@ export interface Deck {
  */
 export function parseWorld(json: any): ParsedWorld | null {
   if (!json) return null;
+  // maps2 / maps3 (pixel-maps3/world@1): the world stores SEMANTICS — a ground
+  // TYPE per cell — and the art is resolved at draw time. Dispatched FIRST and
+  // on schema alone: a v3 doc has none of the fields the parsers below sniff
+  // for, so it used to fall through all of them and return null (and the game
+  // silently fell back to an empty plain).
+  if (typeof json.schema === "string" && json.schema.startsWith("pixel-maps3/")) {
+    return parseWorld3(json);
+  }
   // maps2 / ringworld@1: 2D `top` (index into `paths`, -1 = void), `level`
   // and `mat` (index into `matids`) grids; the world bakes the exact top tile
   // per cell. Faces use the material's plain base tile (see faceTiles).
