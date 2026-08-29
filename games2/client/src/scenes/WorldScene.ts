@@ -11485,7 +11485,21 @@ export class WorldScene extends Phaser.Scene {
        * (anything hung on a wall) — and is not the same as no record at all,
        * which falls back to the anchor and a one-tile box. */
       const hb = sceneryHitboxFor(this.sceneryHitboxDoc, p.piece, st.key);
-      const box0 = hb?.boxes[0];
+      /* CONFIRMED BOXES ONLY — the doc's own advice ("filter on !auto for
+       * confirmed ones only"), and measured: of 3,704 records 3,689 are the
+       * wiki's ALPHA-PLACED proposals and 15 are the maintainer's. The two are
+       * not alike. His sit at ay 9..13 with ry 12..20; the proposals wrap the
+       * whole visible art, so tree_075's is ay 56.25, ry 30.75 — a footprint
+       * centre 34.5px (2.5 cells) up-screen of where the tree stands and a
+       * radius half again as big. That is the CANOPY once more, this time in
+       * the data: a body 2.4 cells behind the trunk still measured as below the
+       * ellipse's centre and drew in front (maintainer 2026-08-29: "maybe the
+       * hitbox is misplaced on this exact object" — it is).
+       *
+       * An auto record therefore falls back to the one-tile default at the
+       * anchor, which is predictable. Accepting or editing a box in the wiki
+       * drops the flag, and the game picks it up on the next fetch. */
+      const box0 = hb && !hb.auto ? hb.boxes[0] : undefined;
       const hbX = box0
         ? fit.x + (art.canvas.w / 2 + (fit.flipX ? -box0.ax : box0.ax) - fit.sx) * fit.kx
         : fit.x + fit.w / 2;
