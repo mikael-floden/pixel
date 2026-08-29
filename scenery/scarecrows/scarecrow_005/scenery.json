@@ -37,7 +37,12 @@
       "generated_at": "2026-08-16T20:36:51+00:00",
       "glow_concept": "lantern hung from an outstretched arm",
       "difference_from_source": 0.9174,
-      "glow_score": 0.0691
+      "glow_score": 0.0691,
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_005/lit_1/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_005/lit_1/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_005/lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "scarecrows/scarecrow_005/not_lit_3/sprite.webp",
@@ -45,7 +50,12 @@
       "generated_at": "2026-08-16T20:35:48+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5948,
-      "glow_score": 0.0224
+      "glow_score": 0.0224,
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_005/not_lit_3/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_005/not_lit_3/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_005/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "scarecrows/scarecrow_005/sprite.webp",
@@ -54,7 +64,12 @@
       "glow_concept": null,
       "difference_from_source": 0.7883,
       "glow_score": 0.1087,
-      "replaced_anchor": "NOT_LIT_1"
+      "replaced_anchor": "NOT_LIT_1",
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_005/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_005/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_005/sprite.webp"
+      }
     }
   }
 }

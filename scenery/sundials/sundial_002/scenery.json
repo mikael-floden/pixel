@@ -37,13 +37,23 @@
       "generated_at": "2026-08-16T22:47:57+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3848,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "sundials/sundial_002/not_lit_1/rotations/south-east.webp",
+        "south-west": "sundials/sundial_002/not_lit_1/rotations/south-west.webp",
+        "south": "sundials/sundial_002/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "sundials/sundial_002/sprite.webp",
       "pixellab_object_id": "a3e345ff-60e1-4f4c-8256-b0a69a47c9c1",
       "generated_at": "2026-08-13T05:59:38+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "sundials/sundial_002/rotations/south-east.webp",
+        "south-west": "sundials/sundial_002/rotations/south-west.webp",
+        "south": "sundials/sundial_002/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "sundials/sundial_002/not_lit_4/sprite.webp",
@@ -52,7 +62,12 @@
       "glow_concept": null,
       "difference_from_source": 0.8244,
       "glow_score": 0.0367,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "sundials/sundial_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "sundials/sundial_002/not_lit_4/rotations/south-west.webp",
+        "south": "sundials/sundial_002/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "sundials/sundial_002/not_lit_5/sprite.webp",
@@ -61,7 +76,12 @@
       "glow_concept": null,
       "difference_from_source": 0.8913,
       "glow_score": 0.006,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "sundials/sundial_002/not_lit_5/rotations/south-east.webp",
+        "south-west": "sundials/sundial_002/not_lit_5/rotations/south-west.webp",
+        "south": "sundials/sundial_002/not_lit_5/sprite.webp"
+      }
     },
     "NOT_LIT_6": {
       "sprite": "sundials/sundial_002/not_lit_6/sprite.webp",
@@ -70,7 +90,12 @@
       "glow_concept": null,
       "difference_from_source": 0.6916,
       "glow_score": 0.019,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "sundials/sundial_002/not_lit_6/rotations/south-east.webp",
+        "south-west": "sundials/sundial_002/not_lit_6/rotations/south-west.webp",
+        "south": "sundials/sundial_002/not_lit_6/sprite.webp"
+      }
     }
   }
 }

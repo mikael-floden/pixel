@@ -38,12 +38,22 @@
       "generated_at": "2026-08-16T20:53:48+00:00",
       "glow_concept": "small oil lamp bracketed beneath the arms",
       "difference_from_source": 0.807,
-      "glow_score": 0.0631
+      "glow_score": 0.0631,
+      "rotations": {
+        "south-east": "signposts/signpost_025/lit_1/rotations/south-east.webp",
+        "south-west": "signposts/signpost_025/lit_1/rotations/south-west.webp",
+        "south": "signposts/signpost_025/lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "signposts/signpost_025/sprite.webp",
       "pixellab_object_id": "02b9f6ef-d5bd-4875-961a-b0b5e0e0d3f4",
-      "generated_at": "2026-08-14T00:34:35+00:00"
+      "generated_at": "2026-08-14T00:34:35+00:00",
+      "rotations": {
+        "south-east": "signposts/signpost_025/rotations/south-east.webp",
+        "south-west": "signposts/signpost_025/rotations/south-west.webp",
+        "south": "signposts/signpost_025/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "signposts/signpost_025/not_lit_2/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-16T20:53:24+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4248,
-      "glow_score": 0.0242
+      "glow_score": 0.0242,
+      "rotations": {
+        "south-east": "signposts/signpost_025/not_lit_2/rotations/south-east.webp",
+        "south-west": "signposts/signpost_025/not_lit_2/rotations/south-west.webp",
+        "south": "signposts/signpost_025/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "signposts/signpost_025/not_lit_3/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-16T20:53:57+00:00",
       "glow_concept": null,
       "difference_from_source": 0.306,
-      "glow_score": 0.0282
+      "glow_score": 0.0282,
+      "rotations": {
+        "south-east": "signposts/signpost_025/not_lit_3/rotations/south-east.webp",
+        "south-west": "signposts/signpost_025/not_lit_3/rotations/south-west.webp",
+        "south": "signposts/signpost_025/not_lit_3/sprite.webp"
+      }
     }
   }
 }

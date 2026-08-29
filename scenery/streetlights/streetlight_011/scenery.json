@@ -35,7 +35,12 @@
       "sprite": "streetlights/streetlight_011/sprite.webp",
       "pixellab_object_id": "43987415-b040-4400-85f0-65a334edfa3c",
       "generated_at": "2026-08-13T23:17:57+00:00",
-      "relit_from": "NOT_LIT_1"
+      "relit_from": "NOT_LIT_1",
+      "rotations": {
+        "south-east": "streetlights/streetlight_011/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_011/rotations/south-west.webp",
+        "south": "streetlights/streetlight_011/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "streetlights/streetlight_011/lit_4/sprite.webp",
@@ -44,7 +49,12 @@
       "glow_concept": null,
       "difference_from_source": 0.3758,
       "glow_score": 0.0871,
-      "relit_from": "NOT_LIT_3"
+      "relit_from": "NOT_LIT_3",
+      "rotations": {
+        "south-east": "streetlights/streetlight_011/lit_4/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_011/lit_4/rotations/south-west.webp",
+        "south": "streetlights/streetlight_011/lit_4/sprite.webp"
+      }
     }
   }
 }

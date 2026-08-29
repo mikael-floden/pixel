@@ -36,7 +36,12 @@
       "sprite": "shipwreck_prows/shipwreck_prow_002/sprite.webp",
       "pixellab_object_id": "7d69421f-d5d7-4529-94f6-c17cf84d7788",
       "generated_at": "2026-08-14T01:15:52+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "shipwreck_prows/shipwreck_prow_002/rotations/south-east.webp",
+        "south-west": "shipwreck_prows/shipwreck_prow_002/rotations/south-west.webp",
+        "south": "shipwreck_prows/shipwreck_prow_002/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "shipwreck_prows/shipwreck_prow_002/not_lit_4/sprite.webp",
@@ -45,7 +50,12 @@
       "glow_concept": null,
       "difference_from_source": 0.3914,
       "glow_score": 0.0,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "shipwreck_prows/shipwreck_prow_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "shipwreck_prows/shipwreck_prow_002/not_lit_4/rotations/south-west.webp",
+        "south": "shipwreck_prows/shipwreck_prow_002/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "shipwreck_prows/shipwreck_prow_002/not_lit_5/sprite.webp",
@@ -54,7 +64,12 @@
       "glow_concept": null,
       "difference_from_source": 0.4734,
       "glow_score": 0.0,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "shipwreck_prows/shipwreck_prow_002/not_lit_5/rotations/south-east.webp",
+        "south-west": "shipwreck_prows/shipwreck_prow_002/not_lit_5/rotations/south-west.webp",
+        "south": "shipwreck_prows/shipwreck_prow_002/not_lit_5/sprite.webp"
+      }
     },
     "NOT_LIT_6": {
       "sprite": "shipwreck_prows/shipwreck_prow_002/not_lit_6/sprite.webp",
@@ -63,7 +78,12 @@
       "glow_concept": null,
       "difference_from_source": 0.4333,
       "glow_score": 0.0,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "shipwreck_prows/shipwreck_prow_002/not_lit_6/rotations/south-east.webp",
+        "south-west": "shipwreck_prows/shipwreck_prow_002/not_lit_6/rotations/south-west.webp",
+        "south": "shipwreck_prows/shipwreck_prow_002/not_lit_6/sprite.webp"
+      }
     }
   }
 }

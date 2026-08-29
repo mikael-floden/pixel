@@ -56,6 +56,11 @@
           ],
           "generated_at": "2026-08-29T07:06:53+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_020/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_020/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_020/sprite.webp"
       }
     },
     "LIT_2": {
@@ -86,6 +91,11 @@
           ],
           "generated_at": "2026-08-29T07:07:17+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_020/lit_2/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_020/lit_2/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_020/lit_2/sprite.webp"
       }
     },
     "LIT_3": {
@@ -116,6 +126,11 @@
           ],
           "generated_at": "2026-08-29T07:07:39+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_020/lit_3/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_020/lit_3/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_020/lit_3/sprite.webp"
       }
     },
     "NOT_LIT_1": {
@@ -124,7 +139,12 @@
       "generated_at": "2026-08-16T20:39:08+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5224,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_020/not_lit_1/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_020/not_lit_1/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_020/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "scarecrows/scarecrow_020/not_lit_2/sprite.webp",
@@ -132,7 +152,12 @@
       "generated_at": "2026-08-16T20:39:45+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4067,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_020/not_lit_2/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_020/not_lit_2/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_020/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "scarecrows/scarecrow_020/not_lit_3/sprite.webp",
@@ -141,7 +166,12 @@
       "glow_concept": null,
       "difference_from_source": 0.8611,
       "glow_score": 0.0549,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_020/not_lit_3/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_020/not_lit_3/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_020/not_lit_3/sprite.webp"
+      }
     }
   }
 }

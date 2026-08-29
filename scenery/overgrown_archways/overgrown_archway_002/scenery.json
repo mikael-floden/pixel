@@ -34,7 +34,12 @@
     "LIT_1": {
       "sprite": "overgrown_archways/overgrown_archway_002/sprite.webp",
       "pixellab_object_id": "e7246ed7-2dc3-4afa-990f-a9a200ff0ddf",
-      "generated_at": "2026-08-13T05:14:52+00:00"
+      "generated_at": "2026-08-13T05:14:52+00:00",
+      "rotations": {
+        "south-east": "overgrown_archways/overgrown_archway_002/rotations/south-east.webp",
+        "south-west": "overgrown_archways/overgrown_archway_002/rotations/south-west.webp",
+        "south": "overgrown_archways/overgrown_archway_002/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "overgrown_archways/overgrown_archway_002/not_lit_3/sprite.webp",
@@ -43,7 +48,12 @@
       "glow_concept": null,
       "difference_from_source": 0.4898,
       "glow_score": 0.0928,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "overgrown_archways/overgrown_archway_002/not_lit_3/rotations/south-east.webp",
+        "south-west": "overgrown_archways/overgrown_archway_002/not_lit_3/rotations/south-west.webp",
+        "south": "overgrown_archways/overgrown_archway_002/not_lit_3/sprite.webp"
+      }
     }
   }
 }

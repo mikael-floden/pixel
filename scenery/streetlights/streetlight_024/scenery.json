@@ -35,7 +35,12 @@
     "LIT_1": {
       "sprite": "streetlights/streetlight_024/sprite.webp",
       "pixellab_object_id": "55e3aa60-9b4f-4247-a5e3-bbe02122d68c",
-      "generated_at": "2026-08-14T00:50:26+00:00"
+      "generated_at": "2026-08-14T00:50:26+00:00",
+      "rotations": {
+        "south-east": "streetlights/streetlight_024/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_024/rotations/south-west.webp",
+        "south": "streetlights/streetlight_024/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "streetlights/streetlight_024/lit_2/sprite.webp",
@@ -43,7 +48,12 @@
       "generated_at": "2026-08-16T22:43:27+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6577,
-      "glow_score": 0.0767
+      "glow_score": 0.0767,
+      "rotations": {
+        "south-east": "streetlights/streetlight_024/lit_2/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_024/lit_2/rotations/south-west.webp",
+        "south": "streetlights/streetlight_024/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "streetlights/streetlight_024/lit_3/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-16T22:43:28+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7928,
-      "glow_score": 0.057
+      "glow_score": 0.057,
+      "rotations": {
+        "south-east": "streetlights/streetlight_024/lit_3/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_024/lit_3/rotations/south-west.webp",
+        "south": "streetlights/streetlight_024/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "streetlights/streetlight_024/lit_4/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-16T22:43:58+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7697,
-      "glow_score": 0.0789
+      "glow_score": 0.0789,
+      "rotations": {
+        "south-east": "streetlights/streetlight_024/lit_4/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_024/lit_4/rotations/south-west.webp",
+        "south": "streetlights/streetlight_024/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "streetlights/streetlight_024/not_lit_1/sprite.webp",
@@ -67,7 +87,12 @@
       "generated_at": "2026-08-16T22:44:25+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5982,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "streetlights/streetlight_024/not_lit_1/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_024/not_lit_1/rotations/south-west.webp",
+        "south": "streetlights/streetlight_024/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "streetlights/streetlight_024/not_lit_2/sprite.webp",
@@ -75,7 +100,12 @@
       "generated_at": "2026-08-16T22:46:14+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7501,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "streetlights/streetlight_024/not_lit_2/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_024/not_lit_2/rotations/south-west.webp",
+        "south": "streetlights/streetlight_024/not_lit_2/sprite.webp"
+      }
     }
   }
 }

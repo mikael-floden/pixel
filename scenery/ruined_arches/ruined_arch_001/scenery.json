@@ -37,7 +37,12 @@
       "generated_at": "2026-08-16T20:33:37+00:00",
       "glow_concept": "pinpoints of light in the crumbled mortar joints",
       "difference_from_source": 0.3562,
-      "glow_score": 0.0372
+      "glow_score": 0.0372,
+      "rotations": {
+        "south-east": "ruined_arches/ruined_arch_001/lit_1/rotations/south-east.webp",
+        "south-west": "ruined_arches/ruined_arch_001/lit_1/rotations/south-west.webp",
+        "south": "ruined_arches/ruined_arch_001/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "ruined_arches/ruined_arch_001/lit_2/sprite.webp",
@@ -45,7 +50,12 @@
       "generated_at": "2026-08-16T20:28:44+00:00",
       "glow_concept": "cold aurora shimmer hanging under the arch",
       "difference_from_source": 0.5743,
-      "glow_score": 0.1535
+      "glow_score": 0.1535,
+      "rotations": {
+        "south-east": "ruined_arches/ruined_arch_001/lit_2/rotations/south-east.webp",
+        "south-west": "ruined_arches/ruined_arch_001/lit_2/rotations/south-west.webp",
+        "south": "ruined_arches/ruined_arch_001/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "ruined_arches/ruined_arch_001/sprite.webp",
@@ -54,7 +64,12 @@
       "glow_concept": null,
       "difference_from_source": 0.37,
       "glow_score": 0.0011,
-      "replaced_anchor": "NOT_LIT_1"
+      "replaced_anchor": "NOT_LIT_1",
+      "rotations": {
+        "south-east": "ruined_arches/ruined_arch_001/rotations/south-east.webp",
+        "south-west": "ruined_arches/ruined_arch_001/rotations/south-west.webp",
+        "south": "ruined_arches/ruined_arch_001/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "ruined_arches/ruined_arch_001/not_lit_4/sprite.webp",
@@ -62,7 +77,12 @@
       "generated_at": "2026-08-16T20:28:23+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4385,
-      "glow_score": 0.0058
+      "glow_score": 0.0058,
+      "rotations": {
+        "south-east": "ruined_arches/ruined_arch_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "ruined_arches/ruined_arch_001/not_lit_4/rotations/south-west.webp",
+        "south": "ruined_arches/ruined_arch_001/not_lit_4/sprite.webp"
+      }
     }
   }
 }

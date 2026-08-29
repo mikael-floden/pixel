@@ -34,7 +34,12 @@
     "NOT_LIT_1": {
       "sprite": "sheaf_poles/sheaf_pole_005/sprite.webp",
       "pixellab_object_id": "d31ad1a9-b8c1-4d3c-b55b-265b135ffbdd",
-      "generated_at": "2026-08-13T21:28:04+00:00"
+      "generated_at": "2026-08-13T21:28:04+00:00",
+      "rotations": {
+        "south-east": "sheaf_poles/sheaf_pole_005/rotations/south-east.webp",
+        "south-west": "sheaf_poles/sheaf_pole_005/rotations/south-west.webp",
+        "south": "sheaf_poles/sheaf_pole_005/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "sheaf_poles/sheaf_pole_005/not_lit_2/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-16T20:44:07+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7329,
-      "glow_score": 0.1055
+      "glow_score": 0.1055,
+      "rotations": {
+        "south-east": "sheaf_poles/sheaf_pole_005/not_lit_2/rotations/south-east.webp",
+        "south-west": "sheaf_poles/sheaf_pole_005/not_lit_2/rotations/south-west.webp",
+        "south": "sheaf_poles/sheaf_pole_005/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "sheaf_poles/sheaf_pole_005/not_lit_3/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-16T20:44:17+00:00",
       "glow_concept": null,
       "difference_from_source": 0.9384,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "sheaf_poles/sheaf_pole_005/not_lit_3/rotations/south-east.webp",
+        "south-west": "sheaf_poles/sheaf_pole_005/not_lit_3/rotations/south-west.webp",
+        "south": "sheaf_poles/sheaf_pole_005/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "sheaf_poles/sheaf_pole_005/not_lit_4/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T20:43:56+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8554,
-      "glow_score": 0.0929
+      "glow_score": 0.0929,
+      "rotations": {
+        "south-east": "sheaf_poles/sheaf_pole_005/not_lit_4/rotations/south-east.webp",
+        "south-west": "sheaf_poles/sheaf_pole_005/not_lit_4/rotations/south-west.webp",
+        "south": "sheaf_poles/sheaf_pole_005/not_lit_4/sprite.webp"
+      }
     }
   }
 }

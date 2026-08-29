@@ -34,7 +34,12 @@
     "NOT_LIT_1": {
       "sprite": "rope_swings/rope_swing_001/sprite.webp",
       "pixellab_object_id": "ee75a8bb-4b98-46c6-8a83-aa49193028e0",
-      "generated_at": "2026-08-13T02:42:04+00:00"
+      "generated_at": "2026-08-13T02:42:04+00:00",
+      "rotations": {
+        "south-east": "rope_swings/rope_swing_001/rotations/south-east.webp",
+        "south-west": "rope_swings/rope_swing_001/rotations/south-west.webp",
+        "south": "rope_swings/rope_swing_001/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "rope_swings/rope_swing_001/not_lit_2/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-16T20:17:12+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4398,
-      "glow_score": 0.0013
+      "glow_score": 0.0013,
+      "rotations": {
+        "south-east": "rope_swings/rope_swing_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "rope_swings/rope_swing_001/not_lit_2/rotations/south-west.webp",
+        "south": "rope_swings/rope_swing_001/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "rope_swings/rope_swing_001/not_lit_3/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-16T20:16:42+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4785,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "rope_swings/rope_swing_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "rope_swings/rope_swing_001/not_lit_3/rotations/south-west.webp",
+        "south": "rope_swings/rope_swing_001/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "rope_swings/rope_swing_001/not_lit_4/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T20:18:08+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8764,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "rope_swings/rope_swing_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "rope_swings/rope_swing_001/not_lit_4/rotations/south-west.webp",
+        "south": "rope_swings/rope_swing_001/not_lit_4/sprite.webp"
+      }
     }
   }
 }

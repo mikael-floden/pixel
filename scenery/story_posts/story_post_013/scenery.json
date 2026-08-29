@@ -37,7 +37,12 @@
       "generated_at": "2026-08-17T19:34:22+00:00",
       "glow_concept": "oil lantern hooked below the finial",
       "difference_from_source": 0.792,
-      "glow_score": 0.0233
+      "glow_score": 0.0233,
+      "rotations": {
+        "south-east": "story_posts/story_post_013/lit_2/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_013/lit_2/rotations/south-west.webp",
+        "south": "story_posts/story_post_013/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "story_posts/story_post_013/sprite.webp",
@@ -50,7 +55,12 @@
       "generated_at": "2026-08-17T19:32:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5573,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "story_posts/story_post_013/not_lit_2/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_013/not_lit_2/rotations/south-west.webp",
+        "south": "story_posts/story_post_013/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "story_posts/story_post_013/not_lit_3/sprite.webp",
@@ -58,7 +68,12 @@
       "generated_at": "2026-08-17T19:32:42+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7064,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "story_posts/story_post_013/not_lit_3/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_013/not_lit_3/rotations/south-west.webp",
+        "south": "story_posts/story_post_013/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "story_posts/story_post_013/not_lit_4/sprite.webp",
@@ -66,7 +81,12 @@
       "generated_at": "2026-08-17T19:32:31+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6409,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "story_posts/story_post_013/not_lit_4/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_013/not_lit_4/rotations/south-west.webp",
+        "south": "story_posts/story_post_013/not_lit_4/sprite.webp"
+      }
     }
   }
 }

@@ -34,7 +34,12 @@
     "LIT_1": {
       "sprite": "rugs_and_hides/rug_012/sprite.webp",
       "pixellab_object_id": "c1fd5055-8f22-4adc-9198-2cc444d7d47d",
-      "generated_at": "2026-08-13T23:01:35+00:00"
+      "generated_at": "2026-08-13T23:01:35+00:00",
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_012/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_012/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_012/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "rugs_and_hides/rug_012/lit_2/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-16T20:21:41+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3296,
-      "glow_score": 0.1842
+      "glow_score": 0.1842,
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_012/lit_2/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_012/lit_2/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_012/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "rugs_and_hides/rug_012/lit_3/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-16T20:21:32+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2879,
-      "glow_score": 0.1574
+      "glow_score": 0.1574,
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_012/lit_3/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_012/lit_3/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_012/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "rugs_and_hides/rug_012/lit_4/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T20:21:53+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3153,
-      "glow_score": 0.1137
+      "glow_score": 0.1137,
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_012/lit_4/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_012/lit_4/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_012/lit_4/sprite.webp"
+      }
     }
   }
 }

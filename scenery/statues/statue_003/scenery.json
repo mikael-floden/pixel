@@ -37,7 +37,12 @@
       "generated_at": "2026-08-16T21:31:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6183,
-      "glow_score": 0.0323
+      "glow_score": 0.0323,
+      "rotations": {
+        "south-east": "statues/statue_003/not_lit_2/rotations/south-east.webp",
+        "south-west": "statues/statue_003/not_lit_2/rotations/south-west.webp",
+        "south": "statues/statue_003/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "statues/statue_003/not_lit_3/sprite.webp",
@@ -45,7 +50,12 @@
       "generated_at": "2026-08-16T21:31:06+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4029,
-      "glow_score": 0.0367
+      "glow_score": 0.0367,
+      "rotations": {
+        "south-east": "statues/statue_003/not_lit_3/rotations/south-east.webp",
+        "south-west": "statues/statue_003/not_lit_3/rotations/south-west.webp",
+        "south": "statues/statue_003/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "statues/statue_003/sprite.webp",
@@ -54,7 +64,12 @@
       "glow_concept": null,
       "difference_from_source": 0.5997,
       "glow_score": 0.0243,
-      "replaced_anchor": "NOT_LIT_1"
+      "replaced_anchor": "NOT_LIT_1",
+      "rotations": {
+        "south-east": "statues/statue_003/rotations/south-east.webp",
+        "south-west": "statues/statue_003/rotations/south-west.webp",
+        "south": "statues/statue_003/sprite.webp"
+      }
     }
   }
 }

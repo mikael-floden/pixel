@@ -59,6 +59,11 @@
           ],
           "generated_at": "2026-08-29T07:08:35+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "streetlights/streetlight_007/lit_1/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_007/lit_1/rotations/south-west.webp",
+        "south": "streetlights/streetlight_007/lit_1/sprite.webp"
       }
     },
     "LIT_2": {
@@ -67,12 +72,22 @@
       "generated_at": "2026-08-16T22:39:16+00:00",
       "glow_concept": "fireflies glowing in the jar",
       "difference_from_source": 0.9119,
-      "glow_score": 0.069
+      "glow_score": 0.069,
+      "rotations": {
+        "south-east": "streetlights/streetlight_007/lit_2/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_007/lit_2/rotations/south-west.webp",
+        "south": "streetlights/streetlight_007/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "streetlights/streetlight_007/sprite.webp",
       "pixellab_object_id": "93d9d572-0430-45af-a468-c8c855724c4c",
-      "generated_at": "2026-08-13T13:56:24+00:00"
+      "generated_at": "2026-08-13T13:56:24+00:00",
+      "rotations": {
+        "south-east": "streetlights/streetlight_007/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_007/rotations/south-west.webp",
+        "south": "streetlights/streetlight_007/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "streetlights/streetlight_007/not_lit_2/sprite.webp",
@@ -80,7 +95,12 @@
       "generated_at": "2026-08-16T22:37:58+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8778,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "streetlights/streetlight_007/not_lit_2/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_007/not_lit_2/rotations/south-west.webp",
+        "south": "streetlights/streetlight_007/not_lit_2/sprite.webp"
+      }
     }
   }
 }

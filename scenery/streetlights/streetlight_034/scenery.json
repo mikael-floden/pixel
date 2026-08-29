@@ -70,6 +70,11 @@
           ],
           "generated_at": "2026-08-29T07:09:05+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "streetlights/streetlight_034/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_034/rotations/south-west.webp",
+        "south": "streetlights/streetlight_034/sprite.webp"
       }
     },
     "LIT_2": {
@@ -100,6 +105,11 @@
           ],
           "generated_at": "2026-08-29T07:09:12+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "streetlights/streetlight_034/lit_2/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_034/lit_2/rotations/south-west.webp",
+        "south": "streetlights/streetlight_034/lit_2/sprite.webp"
       }
     },
     "LIT_4": {
@@ -130,6 +140,11 @@
           ],
           "generated_at": "2026-08-29T07:09:35+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "streetlights/streetlight_034/lit_4/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_034/lit_4/rotations/south-west.webp",
+        "south": "streetlights/streetlight_034/lit_4/sprite.webp"
       }
     },
     "NOT_LIT_1": {
@@ -138,7 +153,12 @@
       "generated_at": "2026-08-16T22:45:42+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5045,
-      "glow_score": 0.0179
+      "glow_score": 0.0179,
+      "rotations": {
+        "south-east": "streetlights/streetlight_034/not_lit_1/rotations/south-east.webp",
+        "south-west": "streetlights/streetlight_034/not_lit_1/rotations/south-west.webp",
+        "south": "streetlights/streetlight_034/not_lit_1/sprite.webp"
+      }
     }
   }
 }

@@ -37,12 +37,22 @@
       "generated_at": "2026-08-16T22:27:59+00:00",
       "glow_concept": "oil lantern hooked below the finial",
       "difference_from_source": 0.9077,
-      "glow_score": 0.2368
+      "glow_score": 0.2368,
+      "rotations": {
+        "south-east": "story_posts/story_post_009/lit_2/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_009/lit_2/rotations/south-west.webp",
+        "south": "story_posts/story_post_009/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "story_posts/story_post_009/sprite.webp",
       "pixellab_object_id": "2ebf0798-1cdc-41a6-80f1-e1f9f32631d1",
-      "generated_at": "2026-08-13T21:41:37+00:00"
+      "generated_at": "2026-08-13T21:41:37+00:00",
+      "rotations": {
+        "south-east": "story_posts/story_post_009/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_009/rotations/south-west.webp",
+        "south": "story_posts/story_post_009/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "story_posts/story_post_009/not_lit_2/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-16T22:26:59+00:00",
       "glow_concept": null,
       "difference_from_source": 0.588,
-      "glow_score": 0.2968
+      "glow_score": 0.2968,
+      "rotations": {
+        "south-east": "story_posts/story_post_009/not_lit_2/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_009/not_lit_2/rotations/south-west.webp",
+        "south": "story_posts/story_post_009/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "story_posts/story_post_009/not_lit_3/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T22:27:10+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7538,
-      "glow_score": 0.2412
+      "glow_score": 0.2412,
+      "rotations": {
+        "south-east": "story_posts/story_post_009/not_lit_3/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_009/not_lit_3/rotations/south-west.webp",
+        "south": "story_posts/story_post_009/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "story_posts/story_post_009/not_lit_4/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-16T22:27:10+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7716,
-      "glow_score": 0.199
+      "glow_score": 0.199,
+      "rotations": {
+        "south-east": "story_posts/story_post_009/not_lit_4/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_009/not_lit_4/rotations/south-west.webp",
+        "south": "story_posts/story_post_009/not_lit_4/sprite.webp"
+      }
     }
   }
 }

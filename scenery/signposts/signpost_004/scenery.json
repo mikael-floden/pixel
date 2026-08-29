@@ -35,7 +35,12 @@
       "sprite": "signposts/signpost_004/sprite.webp",
       "pixellab_object_id": "d4f281a0-0d95-4dfc-8344-bc9384ef7e99",
       "generated_at": "2026-08-13T08:45:01+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "signposts/signpost_004/rotations/south-east.webp",
+        "south-west": "signposts/signpost_004/rotations/south-west.webp",
+        "south": "signposts/signpost_004/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "signposts/signpost_004/not_lit_4/sprite.webp",
@@ -44,7 +49,12 @@
       "glow_concept": null,
       "difference_from_source": 0.633,
       "glow_score": 0.1197,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "signposts/signpost_004/not_lit_4/rotations/south-east.webp",
+        "south-west": "signposts/signpost_004/not_lit_4/rotations/south-west.webp",
+        "south": "signposts/signpost_004/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "signposts/signpost_004/not_lit_5/sprite.webp",
@@ -53,7 +63,12 @@
       "glow_concept": null,
       "difference_from_source": 0.1834,
       "glow_score": 0.074,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "signposts/signpost_004/not_lit_5/rotations/south-east.webp",
+        "south-west": "signposts/signpost_004/not_lit_5/rotations/south-west.webp",
+        "south": "signposts/signpost_004/not_lit_5/sprite.webp"
+      }
     },
     "NOT_LIT_6": {
       "sprite": "signposts/signpost_004/not_lit_6/sprite.webp",
@@ -62,7 +77,12 @@
       "glow_concept": null,
       "difference_from_source": 0.819,
       "glow_score": 0.0973,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "signposts/signpost_004/not_lit_6/rotations/south-east.webp",
+        "south-west": "signposts/signpost_004/not_lit_6/rotations/south-west.webp",
+        "south": "signposts/signpost_004/not_lit_6/sprite.webp"
+      }
     }
   }
 }

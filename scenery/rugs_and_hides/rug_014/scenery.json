@@ -37,13 +37,23 @@
       "generated_at": "2026-08-16T20:23:21+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5834,
-      "glow_score": 0.0749
+      "glow_score": 0.0749,
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_014/not_lit_1/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_014/not_lit_1/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_014/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "rugs_and_hides/rug_014/sprite.webp",
       "pixellab_object_id": "3db3c876-a704-41c2-94b3-4c1e7a176d74",
       "generated_at": "2026-08-13T23:14:49+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_014/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_014/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_014/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "rugs_and_hides/rug_014/not_lit_4/sprite.webp",
@@ -52,7 +62,12 @@
       "glow_concept": null,
       "difference_from_source": 0.6232,
       "glow_score": 0.2215,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_014/not_lit_4/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_014/not_lit_4/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_014/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "rugs_and_hides/rug_014/not_lit_5/sprite.webp",
@@ -61,7 +76,12 @@
       "glow_concept": null,
       "difference_from_source": 0.537,
       "glow_score": 0.2491,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_014/not_lit_5/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_014/not_lit_5/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_014/not_lit_5/sprite.webp"
+      }
     },
     "NOT_LIT_6": {
       "sprite": "rugs_and_hides/rug_014/not_lit_6/sprite.webp",
@@ -70,7 +90,12 @@
       "glow_concept": null,
       "difference_from_source": 0.6525,
       "glow_score": 0.306,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "rugs_and_hides/rug_014/not_lit_6/rotations/south-east.webp",
+        "south-west": "rugs_and_hides/rug_014/not_lit_6/rotations/south-west.webp",
+        "south": "rugs_and_hides/rug_014/not_lit_6/sprite.webp"
+      }
     }
   }
 }

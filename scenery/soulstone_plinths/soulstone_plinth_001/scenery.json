@@ -37,7 +37,12 @@
       "generated_at": "2026-08-16T21:17:36+00:00",
       "glow_concept": "glass dome scattering the stone's glow",
       "difference_from_source": 0.8263,
-      "glow_score": 0.2896
+      "glow_score": 0.2896,
+      "rotations": {
+        "south-east": "soulstone_plinths/soulstone_plinth_001/lit_1/rotations/south-east.webp",
+        "south-west": "soulstone_plinths/soulstone_plinth_001/lit_1/rotations/south-west.webp",
+        "south": "soulstone_plinths/soulstone_plinth_001/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "soulstone_plinths/soulstone_plinth_001/lit_2/sprite.webp",
@@ -45,12 +50,22 @@
       "generated_at": "2026-08-16T21:13:31+00:00",
       "glow_concept": "luminous crystal frost spreading down the pedestal",
       "difference_from_source": 0.9481,
-      "glow_score": 0.1548
+      "glow_score": 0.1548,
+      "rotations": {
+        "south-east": "soulstone_plinths/soulstone_plinth_001/lit_2/rotations/south-east.webp",
+        "south-west": "soulstone_plinths/soulstone_plinth_001/lit_2/rotations/south-west.webp",
+        "south": "soulstone_plinths/soulstone_plinth_001/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "soulstone_plinths/soulstone_plinth_001/sprite.webp",
       "pixellab_object_id": "cd9700e8-7931-40da-985a-604b4a80f2ef",
-      "generated_at": "2026-08-13T01:30:51+00:00"
+      "generated_at": "2026-08-13T01:30:51+00:00",
+      "rotations": {
+        "south-east": "soulstone_plinths/soulstone_plinth_001/rotations/south-east.webp",
+        "south-west": "soulstone_plinths/soulstone_plinth_001/rotations/south-west.webp",
+        "south": "soulstone_plinths/soulstone_plinth_001/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "soulstone_plinths/soulstone_plinth_001/not_lit_2/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T21:12:26+00:00",
       "glow_concept": null,
       "difference_from_source": 0.9399,
-      "glow_score": 0.0798
+      "glow_score": 0.0798,
+      "rotations": {
+        "south-east": "soulstone_plinths/soulstone_plinth_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "soulstone_plinths/soulstone_plinth_001/not_lit_2/rotations/south-west.webp",
+        "south": "soulstone_plinths/soulstone_plinth_001/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "soulstone_plinths/soulstone_plinth_001/not_lit_3/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-16T21:12:46+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8846,
-      "glow_score": 0.2112
+      "glow_score": 0.2112,
+      "rotations": {
+        "south-east": "soulstone_plinths/soulstone_plinth_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "soulstone_plinths/soulstone_plinth_001/not_lit_3/rotations/south-west.webp",
+        "south": "soulstone_plinths/soulstone_plinth_001/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "soulstone_plinths/soulstone_plinth_001/not_lit_4/sprite.webp",
@@ -74,7 +99,12 @@
       "generated_at": "2026-08-16T21:12:36+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8758,
-      "glow_score": 0.1004
+      "glow_score": 0.1004,
+      "rotations": {
+        "south-east": "soulstone_plinths/soulstone_plinth_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "soulstone_plinths/soulstone_plinth_001/not_lit_4/rotations/south-west.webp",
+        "south": "soulstone_plinths/soulstone_plinth_001/not_lit_4/sprite.webp"
+      }
     }
   }
 }

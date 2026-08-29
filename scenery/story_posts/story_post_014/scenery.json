@@ -38,7 +38,12 @@
       "glow_concept": null,
       "difference_from_source": 0.7521,
       "glow_score": 0.1436,
-      "replaced_anchor": "LIT_1"
+      "replaced_anchor": "LIT_1",
+      "rotations": {
+        "south-east": "story_posts/story_post_014/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_014/rotations/south-west.webp",
+        "south": "story_posts/story_post_014/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "story_posts/story_post_014/not_lit_3/sprite.webp",
@@ -47,7 +52,12 @@
       "glow_concept": null,
       "difference_from_source": 0.7419,
       "glow_score": 0.0655,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "story_posts/story_post_014/not_lit_3/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_014/not_lit_3/rotations/south-west.webp",
+        "south": "story_posts/story_post_014/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "story_posts/story_post_014/not_lit_4/sprite.webp",
@@ -56,7 +66,12 @@
       "glow_concept": null,
       "difference_from_source": 0.7953,
       "glow_score": 0.1655,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "story_posts/story_post_014/not_lit_4/rotations/south-east.webp",
+        "south-west": "story_posts/story_post_014/not_lit_4/rotations/south-west.webp",
+        "south": "story_posts/story_post_014/not_lit_4/sprite.webp"
+      }
     }
   }
 }

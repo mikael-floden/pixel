@@ -63,7 +63,12 @@
       "glow_concept": null,
       "difference_from_source": 0.8752,
       "glow_score": 0.1658,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "offering_tables/offering_table_018/not_lit_4/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_018/not_lit_4/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_018/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "offering_tables/offering_table_018/not_lit_5/sprite.webp",
@@ -86,7 +91,12 @@
       "glow_concept": null,
       "difference_from_source": 0.3187,
       "glow_score": 0.2183,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "offering_tables/offering_table_018/not_lit_6/rotations/south-east.webp",
+        "south-west": "offering_tables/offering_table_018/not_lit_6/rotations/south-west.webp",
+        "south": "offering_tables/offering_table_018/not_lit_6/sprite.webp"
+      }
     }
   }
 }

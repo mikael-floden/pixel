@@ -37,7 +37,12 @@
       "generated_at": "2026-08-16T21:34:10+00:00",
       "glow_concept": "the spout stream falling as a ribbon of light",
       "difference_from_source": 0.9394,
-      "glow_score": 0.0452
+      "glow_score": 0.0452,
+      "rotations": {
+        "south-east": "stone_fountains/stone_fountain_001/lit_1/rotations/south-east.webp",
+        "south-west": "stone_fountains/stone_fountain_001/lit_1/rotations/south-west.webp",
+        "south": "stone_fountains/stone_fountain_001/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "stone_fountains/stone_fountain_001/lit_2/sprite.webp",
@@ -45,12 +50,22 @@
       "generated_at": "2026-08-16T21:34:49+00:00",
       "glow_concept": "the basin water glowing pale gold",
       "difference_from_source": 0.9047,
-      "glow_score": 0.1531
+      "glow_score": 0.1531,
+      "rotations": {
+        "south-east": "stone_fountains/stone_fountain_001/lit_2/rotations/south-east.webp",
+        "south-west": "stone_fountains/stone_fountain_001/lit_2/rotations/south-west.webp",
+        "south": "stone_fountains/stone_fountain_001/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stone_fountains/stone_fountain_001/sprite.webp",
       "pixellab_object_id": "dd9d3a63-ad54-4480-a059-64bb680610ae",
-      "generated_at": "2026-08-13T02:08:40+00:00"
+      "generated_at": "2026-08-13T02:08:40+00:00",
+      "rotations": {
+        "south-east": "stone_fountains/stone_fountain_001/rotations/south-east.webp",
+        "south-west": "stone_fountains/stone_fountain_001/rotations/south-west.webp",
+        "south": "stone_fountains/stone_fountain_001/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "stone_fountains/stone_fountain_001/not_lit_3/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T21:32:12+00:00",
       "glow_concept": null,
       "difference_from_source": 0.204,
-      "glow_score": 0.0112
+      "glow_score": 0.0112,
+      "rotations": {
+        "south-east": "stone_fountains/stone_fountain_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "stone_fountains/stone_fountain_001/not_lit_3/rotations/south-west.webp",
+        "south": "stone_fountains/stone_fountain_001/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "stone_fountains/stone_fountain_001/not_lit_4/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-16T21:31:41+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7612,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "stone_fountains/stone_fountain_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "stone_fountains/stone_fountain_001/not_lit_4/rotations/south-west.webp",
+        "south": "stone_fountains/stone_fountain_001/not_lit_4/sprite.webp"
+      }
     }
   }
 }

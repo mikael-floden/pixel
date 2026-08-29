@@ -39,7 +39,12 @@
       "generated_at": "2026-08-16T20:42:29+00:00",
       "glow_concept": "carved turnip head lit from inside",
       "difference_from_source": 0.9461,
-      "glow_score": 0.2671
+      "glow_score": 0.2671,
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_901/lit_1/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_901/lit_1/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_901/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "scarecrows/scarecrow_901/lit_2/sprite.webp",
@@ -69,12 +74,22 @@
           ],
           "generated_at": "2026-08-29T07:07:33+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_901/lit_2/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_901/lit_2/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_901/lit_2/sprite.webp"
       }
     },
     "NOT_LIT_1": {
       "sprite": "scarecrows/scarecrow_901/sprite.webp",
       "pixellab_object_id": "be81d895-de21-4ff0-804b-43d9d6263135",
-      "generated_at": "2026-08-13T19:46:47+00:00"
+      "generated_at": "2026-08-13T19:46:47+00:00",
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_901/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_901/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_901/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "scarecrows/scarecrow_901/not_lit_3/sprite.webp",
@@ -82,7 +97,12 @@
       "generated_at": "2026-08-16T20:40:55+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6992,
-      "glow_score": 0.0248
+      "glow_score": 0.0248,
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_901/not_lit_3/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_901/not_lit_3/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_901/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "scarecrows/scarecrow_901/not_lit_4/sprite.webp",
@@ -90,7 +110,12 @@
       "generated_at": "2026-08-16T20:41:59+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6877,
-      "glow_score": 0.0144
+      "glow_score": 0.0144,
+      "rotations": {
+        "south-east": "scarecrows/scarecrow_901/not_lit_4/rotations/south-east.webp",
+        "south-west": "scarecrows/scarecrow_901/not_lit_4/rotations/south-west.webp",
+        "south": "scarecrows/scarecrow_901/not_lit_4/sprite.webp"
+      }
     }
   }
 }
