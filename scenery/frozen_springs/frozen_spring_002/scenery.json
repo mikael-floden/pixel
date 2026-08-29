@@ -132,7 +132,30 @@
       "glow_concept": null,
       "difference_from_source": 0.9769,
       "glow_score": 0.6597,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "animations": {
+        "motion": {
+          "group_id": "5a0ab826-852e-4a89-84c4-345dff9cf371",
+          "description": "This is the same picture in every frame. ONLY the small frost sparkles glint on and off. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "frozen_springs/frozen_spring_002/not_lit_6/animations/motion/00.webp",
+            "frozen_springs/frozen_spring_002/not_lit_6/animations/motion/01.webp",
+            "frozen_springs/frozen_spring_002/not_lit_6/animations/motion/02.webp",
+            "frozen_springs/frozen_spring_002/not_lit_6/animations/motion/03.webp",
+            "frozen_springs/frozen_spring_002/not_lit_6/animations/motion/04.webp"
+          ],
+          "strip": "frozen_springs/frozen_spring_002/not_lit_6/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:39:50+00:00",
+          "brief": "X46"
+        }
+      }
     }
   }
 }

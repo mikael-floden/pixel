@@ -42,6 +42,29 @@
         "south-east": "rugs_and_hides/rug_014/not_lit_1/rotations/south-east.webp",
         "south-west": "rugs_and_hides/rug_014/not_lit_1/rotations/south-west.webp",
         "south": "rugs_and_hides/rug_014/not_lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "facc8d44-37cf-4120-b601-7b5bcadce885",
+          "description": "This is the same picture in every frame. ONLY the fringe along the top and bottom edges moves, each strand by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rugs_and_hides/rug_014/not_lit_1/animations/motion/00.webp",
+            "rugs_and_hides/rug_014/not_lit_1/animations/motion/01.webp",
+            "rugs_and_hides/rug_014/not_lit_1/animations/motion/02.webp",
+            "rugs_and_hides/rug_014/not_lit_1/animations/motion/03.webp",
+            "rugs_and_hides/rug_014/not_lit_1/animations/motion/04.webp"
+          ],
+          "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T15:41:16+00:00",
+          "brief": "X65"
+        }
       }
     },
     "NOT_LIT_3": {
