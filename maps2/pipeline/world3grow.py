@@ -1019,7 +1019,7 @@ class Grow:
         if inner:
             self.doc["decks"].append(
                 {"kind": "roof", "level": base + rise, "thickness": 0,
-                 "ground": roof,
+                 "ground": roof, "side": wall,
                  "cells": [{"x": x, "y": y} for (x, y) in inner]})
         # doorstep
         dx, dy = door[0], door[1] + 1

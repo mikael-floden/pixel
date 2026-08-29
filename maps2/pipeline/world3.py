@@ -691,9 +691,14 @@ def build():
                      if lvl[c["y"]][c["x"]] < top_lv]
             if not cells:
                 continue
-        decks.append({"kind": kind, "level": dk["level"],
-                      "thickness": dk.get("thickness", 1), "ground": ground,
-                      "cells": cells})
+        entry = {"kind": kind, "level": dk["level"],
+                 "thickness": dk.get("thickness", 1), "ground": ground,
+                 "cells": cells}
+        if kind == "roof":
+            # roof OVER the wall material: the roof is then only the top face,
+            # the thin look he asked for
+            entry["side"] = "brown_paving_stone" if small else "parquet_floor"
+        decks.append(entry)
 
     doc = {
         "schema": SCHEMA,

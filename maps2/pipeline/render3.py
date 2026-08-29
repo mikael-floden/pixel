@@ -1265,9 +1265,18 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             front_covered = (x + 1, y) in cellset and (x, y + 1) in cellset
             lo = dl if front_covered else max(0, dl - max(1, th))
             bx = ox + (x - x0 - (y - y0)) * DX - DX
-            body = "grey_stone" if (dk.get("kind") == "cave"
-                                    and dg not in ("black_rock", "grey_stone")) else dg
-            cap = flat_tile(dg) if front_covered else over_tile(dg, body)
+            # A DECK IS X-OVER-Y TOO, and that is what makes a roof THIN
+            # (maintainer 2026-08-30, with two reference tiles: grass over
+            # black_rock reads as a thin skin of grass, grass over grass fills
+            # the whole cell and reads as a thick slab). A roof deck carrying
+            # a `side` draws roof-over-side, so the roof material is only its
+            # top face. Without a side it falls back to same-over-same, which
+            # is the thick look.
+            body = dk.get("side") or ("grey_stone" if (dk.get("kind") == "cave"
+                                      and dg not in ("black_rock", "grey_stone"))
+                                      else dg)
+            cap = over_tile(dg, body) if (body != dg or not front_covered) \
+                else flat_tile(dg)
             mid = storey_tile(body)
             for f in range(lo, dl + 1):
                 t = cap if f == dl else mid
