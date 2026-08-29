@@ -712,6 +712,125 @@ class Grow:
         self.placed += [("lights added by the budget pass", added),
                         ("lit total", len(lit))]
 
+    def npcs(self):
+        """THE CAST (maintainer 2026-08-30: "why didn't you add the NPCs to
+        the new map?"). the_game shipped monsters but no people, and the town
+        was built FOR people - "we have lots of NPCs that look good in a city".
+
+        Two sources, one file:
+          * the island's own 22, translated cell-for-cell (+OFF) - every
+            anchor they were cast for still exists: the chess table, the two
+            houses, the cave mouth, the bridges, the roads, the shore;
+          * a NEW town cast - merchants at the market stalls and townsfolk
+            around the plaza and the houses.
+
+        characters2 owns WHO they are; this file never restates their art or
+        lore, only where they stand and which way they look. MERCHANT_LOOK is
+        the v2 pipeline's own hand-curated table: only characters whose sprite
+        visibly presents wares, because "looks like a merchant" is a
+        judgement about art no terrain rule can make."""
+        import npcs as NP
+        roster = json.load(open(os.path.join(
+            REPO, "characters2", "npcs", "index.json")))["npcs"]
+        ox, oy = OFF
+        out, used = [], set()
+
+        def facing(dx, dy):
+            """characters2' 8 rotations in grid terms - south is +x+y, the
+            way the chess master faces over his board in the v2 file."""
+            if dx > 0 and dy > 0: return "south"
+            if dx < 0 and dy < 0: return "north"
+            if dx > 0 and dy < 0: return "east"
+            if dx < 0 and dy > 0: return "west"
+            if dx > 0: return "south-east"
+            if dy > 0: return "south-west"
+            if dx < 0: return "north-west"
+            return "north-east"
+
+        def standable(x, y):
+            g = self.g(x, y)
+            return bool(g) and g not in ("water", "deep_water")
+
+        def place(cid, kind, x, y, face, anchor, wares=None, idp="npc",
+                  allow_reuse=False):
+            if cid not in roster or not standable(x, y):
+                return False
+            if cid in used and not allow_reuse:
+                return False
+            used.add(cid)
+            e = {"id": f"{idp}-{len(out) + 1}", "character": cid,
+                 "name": roster[cid]["display_name"], "type": kind,
+                 "x": int(x), "y": int(y), "elev": int(self.lvl[int(y)][int(x)]),
+                 "facing": face, "anchor": anchor}
+            if wares:
+                e["wares"] = list(wares)
+            out.append(e)
+            return True
+
+        # 1) the island's own cast, moved with the island
+        src = json.load(open(os.path.join(
+            MAPS2, "worlds", "the_island2", "npcs.json")))["npcs"]
+        moved = 0
+        for n in src:
+            x, y = n["x"] + ox, n["y"] + oy
+            if place(n["character"], n["type"], x, y, n["facing"],
+                     n.get("anchor", "road"), n.get("wares"), "isle"):
+                moved += 1
+
+        # 2) the town: merchants at the stalls, townsfolk on the plaza
+        cx, cy = self.plaza
+        stalls = sorted((p for p in self.doc["scenery"]
+                         if p["piece"].startswith("market_stalls/")),
+                        key=lambda p: (p["y"], p["x"]))
+        # ONLY SEVEN CHARACTERS IN THE WHOLE LIBRARY LOOK LIKE MERCHANTS, and
+        # the island's own cast already uses all seven. A town with no shop is
+        # worse than the same vendor appearing twice a hundred cells apart, so
+        # a merchant may be reused in the town if his island copy is far away.
+        # Asked characters2 for more vendor art.
+        FAR = 60
+        here = {e["character"]: (e["x"], e["y"]) for e in out}
+        merch = [(c, w) for c, (w, _look) in NP.MERCHANT_LOOK.items()
+                 if c in roster
+                 and (c not in here
+                      or abs(here[c][0] - cx) + abs(here[c][1] - cy) > FAR)]
+        sold = 0
+        for st, (cid, wares) in zip(stalls, merch):
+            sx, sy = int(st["x"]), int(st["y"]) + 1     # behind his own stall
+            if place(cid, "MERCHANT", sx, sy, facing(cx - sx, cy - sy),
+                     "market", wares, "town", allow_reuse=True):
+                sold += 1
+        # townsfolk: the roles that belong in a town, ringing the plaza
+        want = ("commoner", "villager", "artisan", "craftsman", "herbalist",
+                "alchemist", "noble", "scholar")
+        folk = [c for c in sorted(roster)
+                if roster[c].get("role") in want and c not in used]
+        spots = [(cx - 5, cy - 3), (cx + 5, cy + 3), (cx - 4, cy + 4),
+                 (cx + 4, cy - 4), (cx - 2, cy + 5), (cx + 2, cy - 5),
+                 (cx - 6, cy + 1), (cx + 6, cy - 1)]
+        town = 0
+        for cid, (sx, sy) in zip(folk, spots):
+            if place(cid, "AMBIENT", sx, sy, facing(cx - sx, cy - sy),
+                     "town", None, "town"):
+                town += 1
+
+        # EVERY REFERENCE RESOLVES AND EVERY ONE STANDS ON GROUND — asserted,
+        # so a terrain change breaks the build instead of stranding somebody.
+        seen = set()
+        for e in out:
+            assert e["character"] in roster, e
+            assert e["name"] == roster[e["character"]]["display_name"], e
+            assert standable(e["x"], e["y"]), e
+            assert e["id"] not in seen, e
+            seen.add(e["id"])
+        json.dump({"schema": "pixel-maps3/npcs@1", "world": "the_game",
+                   "npcs": out},
+                  open(os.path.join(OUT, "npcs.json"), "w"),
+                  separators=(",", ":"))
+        self.placed += [("npcs: island cast moved", moved),
+                        ("npcs: town merchants", sold),
+                        ("npcs: townsfolk", town),
+                        ("npcs total", len(out))]
+
     def spawns(self):
         """Monsters SPREAD over the doubled land (maintainer 2026-08-29): the
         tuned v2 zones translate verbatim (+OFF); the new land gets NEW zones
@@ -1537,7 +1656,7 @@ class Grow:
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
-                     self.relight, self.spawns):
+                     self.relight, self.npcs, self.spawns):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
