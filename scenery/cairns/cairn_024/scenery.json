@@ -43,6 +43,29 @@
         "south-east": "cairns/cairn_024/lit_3/rotations/south-east.webp",
         "south-west": "cairns/cairn_024/lit_3/rotations/south-west.webp",
         "south": "cairns/cairn_024/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "f52345eb-8fa3-4db3-a3f9-2268f20078df",
+          "description": "This is the same picture in every frame. ONLY the gold orb on top of the cairn brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cairns/cairn_024/lit_3/animations/motion/00.webp",
+            "cairns/cairn_024/lit_3/animations/motion/01.webp",
+            "cairns/cairn_024/lit_3/animations/motion/02.webp",
+            "cairns/cairn_024/lit_3/animations/motion/03.webp",
+            "cairns/cairn_024/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "cairns/cairn_024/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:06:01+00:00",
+          "brief": "C49"
+        }
       }
     },
     "NOT_LIT_3": {
