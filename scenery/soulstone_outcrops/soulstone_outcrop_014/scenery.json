@@ -73,7 +73,30 @@
       "generated_at": "2026-08-16T21:03:33+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6736,
-      "glow_score": 0.2101
+      "glow_score": 0.2101,
+      "animations": {
+        "motion": {
+          "group_id": "a0bdbfe1-e7e9-4dae-8ac5-9bcbf24ecc45",
+          "description": "This is the same picture in every frame. ONLY the two glowing rings around the rock turn slowly. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_014/lit_3/animations/motion/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_014/lit_3/animations/motion/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_014/lit_3/animations/motion/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_014/lit_3/animations/motion/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_014/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_014/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:16:57+00:00",
+          "brief": "Y27"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "soulstone_outcrops/soulstone_outcrop_014/lit_4/sprite.webp",

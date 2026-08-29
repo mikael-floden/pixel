@@ -69,7 +69,30 @@
       "generated_at": "2026-08-16T09:42:34+00:00",
       "glow_concept": "light seeping from beneath the cushions",
       "difference_from_source": 0.9279,
-      "glow_score": 0.1553
+      "glow_score": 0.1553,
+      "animations": {
+        "motion": {
+          "group_id": "95e95ecf-617d-4361-9f83-f5cac3e2b939",
+          "description": "This is the same picture in every frame. ONLY the gold glow beneath the rocks brightens a little and returns. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_mosses/cliff_moss_043/lit_2/animations/motion/00.webp",
+            "cliff_mosses/cliff_moss_043/lit_2/animations/motion/01.webp",
+            "cliff_mosses/cliff_moss_043/lit_2/animations/motion/02.webp",
+            "cliff_mosses/cliff_moss_043/lit_2/animations/motion/03.webp",
+            "cliff_mosses/cliff_moss_043/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_mosses/cliff_moss_043/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:17:33+00:00",
+          "brief": "Y30"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cliff_mosses/cliff_moss_043/sprite.webp",

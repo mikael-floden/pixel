@@ -96,7 +96,30 @@
       "generated_at": "2026-08-16T20:04:31+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7925,
-      "glow_score": 0.0097
+      "glow_score": 0.0097,
+      "animations": {
+        "motion": {
+          "group_id": "63197b32-cb5d-4988-af56-399a83dfdd36",
+          "description": "This is the same picture in every frame. ONLY the feathery heads move, each leaning by a single pixel. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "reed_beds/reed_bed_005/not_lit_2/animations/motion/00.webp",
+            "reed_beds/reed_bed_005/not_lit_2/animations/motion/01.webp",
+            "reed_beds/reed_bed_005/not_lit_2/animations/motion/02.webp",
+            "reed_beds/reed_bed_005/not_lit_2/animations/motion/03.webp",
+            "reed_beds/reed_bed_005/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "reed_beds/reed_bed_005/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:18:57+00:00",
+          "brief": "Y46"
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "reed_beds/reed_bed_005/not_lit_3/sprite.webp",

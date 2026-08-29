@@ -88,6 +88,29 @@
         "south-east": "stone_fountains/stone_fountain_004/lit_4/rotations/south-east.webp",
         "south-west": "stone_fountains/stone_fountain_004/lit_4/rotations/south-west.webp",
         "south": "stone_fountains/stone_fountain_004/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "cc010f2b-bdd3-47f2-abfe-82a823222a09",
+          "description": "This is the same picture in every frame. ONLY the water pouring from the fountain runs downward. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/00.webp",
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/01.webp",
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/02.webp",
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/03.webp",
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stone_fountains/stone_fountain_004/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:18:24+00:00",
+          "brief": "Y41"
+        }
       }
     }
   }

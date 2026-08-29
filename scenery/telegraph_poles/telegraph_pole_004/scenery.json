@@ -146,7 +146,28 @@
       "generated_at": "2026-08-16T23:05:33+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3778,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "animations": {
+        "motion": {
+          "group_id": "fda3d4ab-5694-4c14-9a22-9652a36de0a5",
+          "description": "This is the same picture in every frame. ONLY the dangling wires move, swaying. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "telegraph_poles/telegraph_pole_004/not_lit_1/animations/motion/00.webp",
+            "telegraph_poles/telegraph_pole_004/not_lit_1/animations/motion/01.webp",
+            "telegraph_poles/telegraph_pole_004/not_lit_1/animations/motion/02.webp",
+            "telegraph_poles/telegraph_pole_004/not_lit_1/animations/motion/03.webp",
+            "telegraph_poles/telegraph_pole_004/not_lit_1/animations/motion/04.webp"
+          ],
+          "strip": "telegraph_poles/telegraph_pole_004/not_lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T16:16:51+00:00",
+          "brief": "Y26"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "telegraph_poles/telegraph_pole_004/not_lit_2/sprite.webp",

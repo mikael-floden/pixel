@@ -52,6 +52,29 @@
         "south-east": "ivy_posts/ivy_post_010/lit_3/rotations/south-east.webp",
         "south-west": "ivy_posts/ivy_post_010/lit_3/rotations/south-west.webp",
         "south": "ivy_posts/ivy_post_010/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "ba4fa92a-6e96-4fab-8bfe-028d784ea87d",
+          "description": "This is the same picture in every frame. ONLY the green rune on the post brightens a little and returns. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "ivy_posts/ivy_post_010/lit_3/animations/motion/00.webp",
+            "ivy_posts/ivy_post_010/lit_3/animations/motion/01.webp",
+            "ivy_posts/ivy_post_010/lit_3/animations/motion/02.webp",
+            "ivy_posts/ivy_post_010/lit_3/animations/motion/03.webp",
+            "ivy_posts/ivy_post_010/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "ivy_posts/ivy_post_010/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:17:42+00:00",
+          "brief": "Y34"
+        }
       }
     },
     "LIT_4": {

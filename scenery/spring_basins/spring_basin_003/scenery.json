@@ -129,7 +129,30 @@
       "generated_at": "2026-08-16T21:13:32+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7457,
-      "glow_score": 0.0166
+      "glow_score": 0.0166,
+      "animations": {
+        "motion": {
+          "group_id": "037dbd27-a13a-4292-96d6-6bd79e2d88df",
+          "description": "This is the same picture in every frame. ONLY the water spouting from the carved face runs downward. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "spring_basins/spring_basin_003/not_lit_3/animations/motion/00.webp",
+            "spring_basins/spring_basin_003/not_lit_3/animations/motion/01.webp",
+            "spring_basins/spring_basin_003/not_lit_3/animations/motion/02.webp",
+            "spring_basins/spring_basin_003/not_lit_3/animations/motion/03.webp",
+            "spring_basins/spring_basin_003/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "spring_basins/spring_basin_003/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:18:14+00:00",
+          "brief": "Y39"
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "spring_basins/spring_basin_003/not_lit_4/sprite.webp",
