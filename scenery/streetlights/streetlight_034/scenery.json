@@ -57,18 +57,29 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "streetlights/streetlight_034/animations/flame/00.webp",
-            "streetlights/streetlight_034/animations/flame/01.webp",
-            "streetlights/streetlight_034/animations/flame/02.webp",
-            "streetlights/streetlight_034/animations/flame/03.webp",
-            "streetlights/streetlight_034/animations/flame/04.webp"
-          ],
-          "strip": "streetlights/streetlight_034/animations/flame__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T07:09:05+00:00"
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "streetlights/streetlight_034/animations/flame/south/00.webp",
+                "streetlights/streetlight_034/animations/flame/south/01.webp",
+                "streetlights/streetlight_034/animations/flame/south/02.webp",
+                "streetlights/streetlight_034/animations/flame/south/03.webp",
+                "streetlights/streetlight_034/animations/flame/south/04.webp"
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "streetlights/streetlight_034/animations/flame/south-east/00.webp",
+                "streetlights/streetlight_034/animations/flame/south-east/01.webp",
+                "streetlights/streetlight_034/animations/flame/south-east/02.webp",
+                "streetlights/streetlight_034/animations/flame/south-east/03.webp",
+                "streetlights/streetlight_034/animations/flame/south-east/04.webp"
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:29:27+00:00"
         }
       },
       "rotations": {
