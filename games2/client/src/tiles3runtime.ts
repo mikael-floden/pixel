@@ -244,6 +244,15 @@ export class Tiles3Loader {
     return false;
   }
 
+  /** NOTHING QUEUED AND NOTHING IN FLIGHT — every path `need()` has been shown
+   *  is resident, or tombstoned by a 404 that will not be asked for again.
+   *  `stats.pending` alone is not this: `need()` only queues, and the queue does
+   *  not become pending until `flush()`, so pending is 0 in the window between a
+   *  pass and its flush with art still owed. */
+  get idle(): boolean {
+    return this.queued.length === 0 && this.stats.pending === 0;
+  }
+
   /** Start the queued batch, if any. Safe to call every pass. */
   flush(): void {
     if (!this.queued.length) return;

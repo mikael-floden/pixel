@@ -3762,7 +3762,7 @@ export class WorldScene extends Phaser.Scene {
         // rejoin is a new session — without this the setting looks on in
         // Settings while everything in the cave hunts you again.
         if (this.noAggroOn) room.send("noaggro", { on: true });
-        hideLoading(); // my avatar is in and the camera is on it — world's up
+        this.hideLoadingWhenTerrainIsUp(); // v3 streams its art — see the method
         this.loadDeferredAnims(); // action states stream in behind the live world
       }
       this.refreshRoster();
@@ -10943,6 +10943,57 @@ export class WorldScene extends Phaser.Scene {
    *  Art that has not streamed in yet is simply not drawn; the loader repaints
    *  when the batch lands. A hole this frame is a hole; a substituted tile is a
    *  wrong picture that nothing ever corrects. */
+  /** HIDE THE LOADING SCREEN WHEN THERE IS A WORLD BEHIND IT.
+   *
+   *  A tiles2 world's art is in the image and already loaded when the avatar
+   *  arrives, so hiding on "my avatar is in" was the same instant as "the world
+   *  is drawn". A maps3 world's art is NOT in the image (config/publish.json
+   *  ships userWorlds only): every plate, pattern and top streams from the CDN
+   *  after the join. The screen came down on the first frame anyway, and since
+   *  `opsForCell` DROPS an op whose texture is not resident yet — a hole this
+   *  frame is a hole, never a wrong tile — what the player got was his avatar
+   *  and a campfire standing on empty dark ground for several seconds
+   *  (maintainer 2026-08-29: "After loading the game is still rendered without
+   *  textures for a while").
+   *
+   *  So: hold until the terrain has actually painted, and show real progress
+   *  while it streams. DEADLINE-BOUNDED, because the alternative to a late
+   *  world is a screen that never lifts — a dead CDN, a 404 tombstone, or a
+   *  world whose art genuinely never arrives must all still drop the player in.
+   *  Releasing early only restores today's behaviour; it can never strand. */
+  private hideLoadingWhenTerrainIsUp(): void {
+    if (!this.maps3) {
+      hideLoading(); // image art: the avatar arriving IS the world being up
+      return;
+    }
+    const DEADLINE_MS = 20000;
+    const t0 = performance.now();
+    setLoadingProgress(0.96, "Streaming terrain…");
+    const tick = this.time.addEvent({
+      delay: 100,
+      loop: true,
+      callback: () => {
+        const waited = performance.now() - t0;
+        const load = this.t3load;
+        // PAINTED, not merely "nothing pending": a pass that drew zero blits
+        // has requested nothing yet, so pending is legitimately 0 on the very
+        // first frame and would release onto the same empty ground.
+        const painted = this.t3stats.blits > 0 && (!load || load.idle);
+        if (!painted && waited < DEADLINE_MS && !this.unloading) {
+          const st = load?.stats;
+          if (st && st.requested > 0)
+            setLoadingProgress(
+              0.96 + 0.03 * Math.min(1, (st.requested - st.pending) / st.requested),
+              "Streaming terrain…",
+            );
+          return;
+        }
+        tick.remove();
+        hideLoading();
+      },
+    });
+  }
+
   private drawTiles3Ground(
     rt: Phaser.GameObjects.RenderTexture,
     ax: number,
@@ -10990,35 +11041,51 @@ export class WorldScene extends Phaser.Scene {
       if (!cell) continue;
       stats.cells++;
       cellArtPaths(cell, need);
+      // THE COMPOSED BOUNDARY — `mask ? plateB : plateA` under the published
+      // silhouette with a mandatory 1px darkened seam, which is why 18 shapes x
+      // 16 Wang masks over per-ground plates cover all 105 pairs.
+      //
+      // DRAWN WITH ITS CELL, and that is the whole point. It used to be a
+      // SECOND pass over the window, after every surface — so a transition
+      // belonging to a far cell painted on top of the nearer cliff faces in
+      // front of it, and the column of a cliff came out shuffled (maintainer
+      // 2026-08-29: "the draw order is fucked up", circling one cliff edge).
+      // render3 hit the identical bug and killed the same pass — its loop is
+      // still there, spelled `for s in []`, with the note "the boundary is
+      // drawn WITH the cell now" (render3.py:1190). In painter order a cell
+      // draws once, and everything that cell wears draws inside that slot.
+      const b = boundaryOf(col, row);
+      if (b) boundaryArtPaths(b, need);
       if (!tex) continue;
       const idx = row * world.width + col;
       const cut = mask ? (cuts ? cuts.get(idx) : top) : undefined;
       const tint = this.caveTint(idx, !!mask);
-      for (const op of cellBlits(tex, this.t3tm, cell, cut)) {
-        this.t3Blit(rt, op, ax, ay, tint);
-        stats.blits++;
-      }
-    }
-
-    // THE COMPOSED BOUNDARY — the one genuinely new thing in v3: a transition
-    // is not a pre-baked tile any more, it is `mask ? plateB : plateA` under
-    // the published silhouette with a mandatory 1px darkened seam, which is why
-    // 18 shapes x 16 Wang masks over per-ground plates cover all 105 pairs.
-    for (const [col, row] of cells) {
-      const b = boundaryOf(col, row);
-      if (!b) continue;
-      boundaryArtPaths(b, need);
-      if (!tex) continue;
       // A boundary is skipped INDOORS wherever ANY cell of its quad is a
       // constrained column: the cut-away has already truncated those, and a
       // transition pasted at the uncut level floats over the stump. With the
       // legacy kill switch (cuts null) every column is constrained, so no
       // boundary draws at all — which is what that switch means.
-      if (mask && (!cuts || this.t3QuadCut(cuts, col, row))) continue;
-      const op = tex.opsForBoundary(b);
-      if (!op) continue;
-      this.t3Blit(rt, op, ax, ay, this.caveTint(row * world.width + col, !!mask));
-      stats.boundaries++;
+      const bop =
+        b && !(mask && (!cuts || this.t3QuadCut(cuts, col, row))) ? tex.opsForBoundary(b) : null;
+      // THE TILE IS THE BOUNDARY: on a flat cell the composed tile replaces the
+      // plate rather than covering it — same silhouette, so the plate under it
+      // was pure overdraw, and render3 composites exactly one tile here
+      // (`wang_surface()`). A raised cell still draws its wall column first and
+      // wears the transition on the cap, which is render3's own order.
+      if (bop && cell.kind === "field") {
+        this.t3Blit(rt, bop, ax, ay, tint);
+        stats.blits++;
+        stats.boundaries++;
+      } else {
+        for (const op of cellBlits(tex, this.t3tm, cell, cut)) {
+          this.t3Blit(rt, op, ax, ay, tint);
+          stats.blits++;
+        }
+        if (bop) {
+          this.t3Blit(rt, bop, ax, ay, tint);
+          stats.boundaries++;
+        }
+      }
     }
 
     // DECK SLABS (roofs, bridges, the cave lid) last, as render3 draws them.
