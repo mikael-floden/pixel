@@ -107,6 +107,7 @@ import { setClockTime, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
 import { getHand, setHand } from "../controls";
 import { setLoadingProgress, hideLoading } from "../loading";
+import { cameraZoom } from "../camzoom";
 import { fadeToBlack } from "../fade";
 import { applyUiZoom } from "../uiscale";
 import {
@@ -1369,6 +1370,11 @@ export class WorldScene extends Phaser.Scene {
   private camDetached = false;
   private lastGround = { x: NaN, y: NaN };
   private maxLevel = 0;
+  // The TERRAIN maximum alone. `maxLevel` above is lifted by deck slabs so the
+  // streamed window and the shader ray cover them; the map-image origin is not
+  // — BOTH map renderers take their headroom from the level grid only
+  // (render2 `_origin`, render3 `render`), so the Map tab's dot reads this.
+  private terrainMaxLevel = 0;
   // world@2 decks (elevated walkable slabs): cell key (row*width+col) → slab.
   private deckIndex = new Map<number, { deck: Deck; cell: Deck["cells"][number] }>();
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
@@ -2158,20 +2164,22 @@ export class WorldScene extends Phaser.Scene {
         const w = this.world;
         const col = av ? av.fx / CELL_WU : 0;
         const row = av ? av.fy / CELL_WU : 0;
-        // The minimaps are ISO renders (maps2 render_overview), so hud.ts needs
-        // maxL (the render origin lifts by the world's tallest level) and the
-        // player's own cell level (the iso dot lifts with the terrain it stands
-        // on). Clamp the cell index — fx/fy can ease a hair past the rim.
+        // The map images are ISO renders, so hud.ts needs maxL (both renderers
+        // lift the canvas origin by the world's tallest level) and the player's
+        // own cell level (the dot lifts with the terrain it stands on). `iso`
+        // says WHICH renderer drew it — maps.ts branches the projection and the
+        // filename on it. Clamp the cell index — fx/fy can ease past the rim.
         const ci = w ? Math.max(0, Math.min(w.width - 1, Math.floor(col))) : 0;
         const ri = w ? Math.max(0, Math.min(w.height - 1, Math.floor(row))) : 0;
         return {
           world: this.worldName,
           w: w?.width ?? 0,
           h: w?.height ?? 0,
-          maxL: this.maxLevel,
+          maxL: this.terrainMaxLevel,
           col,
           row,
           level: w?.rows[ri]?.[ci]?.l ?? 0,
+          iso: w?.iso,
         };
       },
       /** INDOOR MODE — the whole verdict, for gate assertions.
@@ -9670,6 +9678,7 @@ export class WorldScene extends Phaser.Scene {
     const cs = canvasSize(world);
     this.iso = { ox: cs.ox, oy: cs.oy, w: cs.w, h: cs.h };
     this.maxLevel = cs.maxLevel;
+    this.terrainMaxLevel = cs.maxLevel;
     // world@2 decks: index by cell for O(1) lookup in the ground/occluder loops,
     // and lift maxLevel so the streamed window + shader ray cover raised slabs.
     this.deckIndex.clear();
@@ -11839,9 +11848,10 @@ export class WorldScene extends Phaser.Scene {
   private zoomFor(): number {
     // Pick the base zoom from the CSS width (scale.width / rs), then × rs so the
     // camera renders at DEVICE pixels while the visible world extent is unchanged
-    // (1 world px still = base·rs backing px = base device px). rs=1 → byte-identical.
-    const rs = this.renderScale();
-    return Math.max(1, Math.round(this.scale.width / (520 * rs))) * rs;
+    // (1 world px still = base·rs backing px = base device px). rs=1 →
+    // byte-identical. ROUNDED to a whole backing pixel per world pixel — see
+    // `cameraZoom`, which owns the reason and the arithmetic.
+    return cameraZoom(this.scale.width, this.renderScale());
   }
 
   private tryJump() {

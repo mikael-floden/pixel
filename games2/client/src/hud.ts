@@ -23,6 +23,7 @@ import { getHand, toggleHand, handLabel } from "./controls";
 import { indoorLight, setIndoorLight } from "./indoorlight";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "./indoorwall";
 import { withV } from "./assetver";
+import { minimapDotPct, mapImageUrls, type MinimapFeed } from "./maps";
 import { gameAudio } from "../../composer/index";
 import { MAX_CHAT_LEN } from "@nangijala/shared";
 
@@ -79,9 +80,9 @@ function setCheck(box: HTMLElement, on: boolean) {
 // replaces it instead of leaking a second timer.
 let ambPoll: ReturnType<typeof setInterval> | null = null;
 
-/** Which extension each world's minimap actually answers to (see updateMap).
+/** Which map-image URL each world actually answered to (see updateMap).
  * Module-level so a HUD rebuild on rejoin doesn't re-probe. */
-const minimapExt = new Map<string, string>();
+const mapImgUrl = new Map<string, string>();
 
 /** A REAL touch device (a finger keyboard/thumbs are coming). Shared by the
  * chat keyboard lift and the landscape layout — under Chrome's "Request
@@ -335,38 +336,6 @@ function applyLayout() {
   window.dispatchEvent(new Event("ml-layout"));
 }
 
-/** The live feed the Map tab reads from window.__ml.minimap() (WorldScene). */
-interface MinimapFeed {
-  world: string; // maps2 world id -> /assets/maps2/worlds/<id>/minimap.{webp,png}
-  w: number; // grid width in cells
-  h: number; // grid height in cells
-  maxL: number; // world's tallest terrain level (the iso render's origin lifts by this)
-  col: number; // local player's fractional cell (fx / CELL_WU)
-  row: number; // local player's fractional cell (fy / CELL_WU)
-  level: number; // terrain level at the player's cell (the iso dot lifts with it)
-}
-
-// maps2 ISOMETRIC minimap projection — a REPLICA of maps2/pipeline/render2.py
-// (render_overview / _origin), so the "you are here" dot lands on the player's
-// cell on the iso minimap.png. The minimaps are transparent iso renders (not
-// top-down), verified to share this transform across every world incl.
-// the_island2's custom builder. DX/DY/LEVEL_PX match shared ISO_DX/ISO_DY/
-// LEVEL_PX; MARGIN + the 40/64/80 canvas pads are render2.py's. Percentages are
-// scale-invariant, so the 0.5 render scale + 2000px save cap drop out.
-const MM_DX = 32, MM_DY = 15, MM_LEVEL_PX = 16, MM_MARGIN = 12;
-/** Player cell (col,row) at terrain `level` -> [x%, y%] on the iso minimap. */
-function minimapDotPct(m: MinimapFeed): [number, number] {
-  const ox = (m.h - 1) * MM_DX + MM_MARGIN;
-  const oy = m.maxL * MM_LEVEL_PX + 40 + MM_MARGIN;
-  const fullW = (m.w + m.h) * MM_DX + MM_MARGIN * 2;
-  const fullH = (m.w + m.h) * MM_DY + 64 + m.maxL * MM_LEVEL_PX + 80;
-  // +MM_DX/+MM_DY: centre of the cell's 64-wide, 30-tall top diamond.
-  const x = ox + (m.col - m.row) * MM_DX + MM_DX;
-  const y = oy + (m.col + m.row) * MM_DY - m.level * MM_LEVEL_PX + MM_DY;
-  const clamp = (v: number) => Math.max(0, Math.min(1, v));
-  return [clamp(x / fullW) * 100, clamp(y / fullH) * 100];
-}
-
 export class HudBar {
   private pages = new Map<TabId, HTMLElement>();
   private invGrid: HTMLElement | null = null;
@@ -477,10 +446,10 @@ export class HudBar {
   }
 
   // ── Map tab ────────────────────────────────────────────────────────────
-  /** Build the Map page: a fitted minimap <img> plus a red "you are here" dot
-   * positioned by PERCENT via the iso projection (so it stays correct at any
-   * display size), over a fallback message for worlds that ship no minimap.png.
-   * The dot + image are driven by startMapLoop(). */
+  /** Build the Map page: a fitted map <img> plus a red "you are here" dot
+   * positioned by PERCENT via the world's own iso projection (so it stays
+   * correct at any display size), over a fallback message for worlds that ship
+   * no map image. The dot + image are driven by startMapLoop(). */
   private buildMap() {
     const page = this.pages.get("map")!;
     const wrap = mk("div", "ml-map");
@@ -571,30 +540,29 @@ export class HudBar {
     const ml = (window as unknown as { __ml?: { minimap?: () => MinimapFeed } }).__ml;
     const m = ml && typeof ml.minimap === "function" ? ml.minimap() : null;
     if (!m || !m.w || !m.h) return;
-    // Load the world's minimap once (and again if the world changed on rejoin).
-    // FORMAT-AGNOSTIC (2026-07-31): this is the one place the HUD reaches into
-    // ANOTHER domain's tree by filename, and maps2 is mid-migration to WebP —
-    // hardcoding either extension means the Map tab goes blank the day they
-    // convert (or the day they don't). So: ask for .webp, fall back to .png on
-    // error, and remember which one this world answered to so it costs at most
-    // one miss per world per session. maps2 needs no handshake with us.
+    // Load the world's map image once (and again if the world changed on
+    // rejoin). WHICH FILE IS maps.ts's CALL, not the HUD's: the two map
+    // renderers write two names in two trees (minimap.webp beside a world@1/@2
+    // world, overview.webp beside a maps3 one) and `mapImageUrls` is the one
+    // place that resolves it. The HUD only walks the candidates in order and
+    // remembers which one this world answered to, so a miss costs at most one
+    // request per world per session. No art domain needs a handshake with us.
     if (m.world && m.world !== this.mapSrcWorld) {
       this.mapSrcWorld = m.world;
       els.frame.hidden = false;
       els.empty.hidden = true;
-      const base = `/assets/maps2/worlds/${m.world}/minimap`;
-      const known = minimapExt.get(m.world);
       const img = els.img;
-      img.onerror = null;
-      if (!known) {
-        img.onerror = () => {
-          img.onerror = null;
-          minimapExt.set(m.world, ".png");
-          img.src = `${base}.png`;
-        };
-        img.onload = () => minimapExt.set(m.world, ".webp");
-      }
-      img.src = `${base}${known ?? ".webp"}`;
+      const known = mapImgUrl.get(m.world);
+      const tries = known ? [known] : mapImageUrls(m);
+      let i = 0;
+      const attempt = () => {
+        // The LAST candidate leaves onerror null so buildMap's own error
+        // listener shows the "no minimap" fallback.
+        img.onerror = i + 1 < tries.length ? () => { i += 1; attempt(); } : null;
+        img.onload = () => mapImgUrl.set(m.world, tries[i]);
+        img.src = tries[i];
+      };
+      attempt();
     }
     // Dot at the player's cell, projected onto the ISO minimap. Percent of the
     // frame == percent of the image (the frame is fit to the image by fitMap).

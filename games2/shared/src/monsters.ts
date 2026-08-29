@@ -3,7 +3,8 @@
 // Colyseus, no Phaser.
 //
 // SPAWN ZONES ARE MAP DATA (maintainer 2026-07-29): the maps2 agent owns them.
-// Every world ships `maps2/worlds/<name>/spawns.json` — `pixel-maps2/spawns@1`
+// Every world ships a `spawns.json` beside its world.json — `pixel-maps2/
+// spawns@1` under maps2/worlds, `pixel-maps3/spawns@1` under maps2/worlds3
 // (spec: maps2/spec/SPAWNS.md) — polygon zones {id, monster, area, elev, num}.
 // This module holds the PURE geometry/parsing half (schema types, even-odd
 // point-in-polygon, polygon→cells); the terrain-aware half (which cells are
@@ -30,12 +31,22 @@ export interface SpawnZone {
   num: number;
 }
 
+// The spawn schemas this parser reads. maps3 worlds carry the SAME zone
+// document under a maps3 name — verified field by field against the two live
+// files: identical top-level keys, identical zone keys in identical order
+// (id, monster, area, elev, num), identical value types, and the_game's 70
+// ported zones are the_island2's translated by (+240,+244) with monster/elev/
+// num untouched. The version rides with the WORLD schema, not the zone shape,
+// so one shape is read under both names. (An unlisted schema is still [] —
+// the guard is what stops a world.json or a places.json being read as zones.)
+const SPAWN_SCHEMAS = new Set(["pixel-maps2/spawns@1", "pixel-maps3/spawns@1"]);
+
 /** Parse a spawns.json payload. Returns [] for anything that isn't a
- * well-formed pixel-maps2/spawns@1 document; malformed zones are skipped
- * individually so one bad entry can't drop a whole world's monsters. */
+ * well-formed spawns@1 document (see SPAWN_SCHEMAS); malformed zones are
+ * skipped individually so one bad entry can't drop a whole world's monsters. */
 export function parseSpawns(json: unknown): SpawnZone[] {
   const doc = json as { schema?: string; zones?: unknown[] } | null;
-  if (!doc || doc.schema !== "pixel-maps2/spawns@1" || !Array.isArray(doc.zones)) return [];
+  if (!doc || !SPAWN_SCHEMAS.has(doc.schema as string) || !Array.isArray(doc.zones)) return [];
   const out: SpawnZone[] = [];
   for (const z of doc.zones as Array<Record<string, unknown>>) {
     if (!z || typeof z.id !== "string" || typeof z.monster !== "string") continue;

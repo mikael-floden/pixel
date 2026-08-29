@@ -38,6 +38,7 @@ export interface World {
 import { ISO_DX, ISO_DY, LEVEL_PX, isoOf, WorldCell, WorldProp, Deck, parseWorld } from "@nangijala/shared";
 import type { IsoGeometry } from "@nangijala/shared";
 import { gameUrl, resolveStagingBase, fetchSoon } from "./staging";
+import { isoFrame, columnX, columnY, DX as R3_DX, DY as R3_DY } from "./tiles3";
 
 export type { WorldProp, Deck };
 
@@ -106,6 +107,122 @@ export function worldFileUrl(name: string, file: string): string {
 
 export function worldUrl(name: string): string {
   return worldFileUrl(name, "world.json");
+}
+
+/* -- THE MAP TAB'S IMAGE, AND WHERE THE PLAYER IS ON IT --------------------- */
+// A world's map image is a RENDER, so the "you are here" dot must be placed by
+// THAT renderer's projection. Two renderers ship two images under two names:
+//
+//   world@1/@2  maps2/pipeline/render2.py  render_overview/_origin  minimap.webp
+//   maps3       maps2/pipeline/render3.py  render()                 overview.webp
+//
+// The URL and the projection therefore branch on the same fact — `iso` is set
+// only by parseWorld3 — and both live here because `worldFileUrl` is the one
+// place a world-file URL is built and `geometryFor` is the one place a world's
+// projection is read.
+//
+// PERCENTAGES ARE SCALE-INVARIANT, which is why neither renderer's output
+// scaling appears below: render2 saves at scale 0.5 capped to 2000-2400px wide,
+// render3 at min(0.5, 16300/fw) (WebP hard-limits a side to 16383px). Only the
+// FULL canvas origin and size matter, and both are exact integers.
+
+/** The live feed the Map tab reads from `window.__ml.minimap()` (WorldScene). */
+export interface MinimapFeed {
+  /** World id — resolved to a URL through `worldFileUrl`, never concatenated. */
+  world: string;
+  /** Grid width in cells. */
+  w: number;
+  /** Grid height in cells. */
+  h: number;
+  /** The world's tallest terrain level: BOTH renderers lift the canvas origin
+   *  by it, so the dot is wrong everywhere without it. */
+  maxL: number;
+  /** Local player's fractional cell (fx / CELL_WU). */
+  col: number;
+  /** Local player's fractional cell (fy / CELL_WU). */
+  row: number;
+  /** Terrain level under the player — the iso dot lifts with the ground. */
+  level: number;
+  /** The world's own projection when a maps3 renderer drew it (`World.iso`);
+   *  absent on world@1/@2, which is what selects render2's overview below. */
+  iso?: IsoGeometry;
+}
+
+/** render2's canvas margin (`MARGIN`); the 40/64/80 pads below are its own. */
+const R2_MARGIN = 12;
+
+/** Cell -> fraction of render2's overview canvas (world@1/@2). */
+function maps2DotFrac(m: MinimapFeed): [number, number] {
+  const { dx, dy, lh } = MAP_GEOMETRY;
+  const ox = (m.h - 1) * dx + R2_MARGIN;
+  const oy = m.maxL * lh + 40 + R2_MARGIN;
+  const fullW = (m.w + m.h) * dx + R2_MARGIN * 2;
+  const fullH = (m.w + m.h) * dy + 64 + m.maxL * lh + 80;
+  // render2 pastes a cell's 64-box at (ox + (x-y)*dx, oy + (x+y)*dy - L*lh) and
+  // a tiles2 top diamond is 64 wide x 30 tall from that box's row 0, so the
+  // diamond's CENTRE is +dx across and +dy down.
+  return [
+    (ox + (m.col - m.row) * dx + dx) / fullW,
+    (oy + (m.col + m.row) * dy - m.level * lh + dy) / fullH,
+  ];
+}
+
+/** Cell -> fraction of render3's overview canvas (maps3). */
+function maps3DotFrac(m: MinimapFeed): [number, number] {
+  // render3's origin, from the client's PROVEN replica of it rather than a
+  // second copy of the constants: `isoFrame` is render3.render()'s ox/oy/canvas
+  // for a window, and the map image is the window x0=y0=0, x1=w, y1=h. Note it
+  // takes BOTH pitches — the origin's headroom is render3's literal WALL (17),
+  // the per-level lift is the MEASURED storey pitch (`iso.lh`, 15).
+  const f = isoFrame({ x0: 0, y0: 0, x1: m.w, y1: m.h }, m.maxL, geometryFor(m).lh);
+  const [fullW, fullH] = f.canvas;
+  // columnX is the cell's 64-box LEFT edge and columnY is its top diamond's
+  // APEX row (a 64x46 plate's row 0 IS the apex — the same anchor scenery3
+  // derives its placements from). The diamond is 64x28 on this lattice, so its
+  // CENTRE is +DX across and +DY down.
+  return [
+    (columnX(f, m.col, m.row) + R3_DX) / fullW,
+    (columnY(f, m.col, m.row, m.level) + R3_DY) / fullH,
+  ];
+}
+
+/** Player cell (col,row) at terrain `level` -> [x%, y%] of the world's map
+ *  image. Clamped, because `fx/fy` can ease a hair past the rim. */
+export function minimapDotPct(m: MinimapFeed): [number, number] {
+  const [fx, fy] = m.iso ? maps3DotFrac(m) : maps2DotFrac(m);
+  const clamp = (v: number) => Math.max(0, Math.min(1, v));
+  return [clamp(fx) * 100, clamp(fy) * 100];
+}
+
+/** The world's map-tab image, in the order to try it. render2 writes
+ *  `minimap.webp` beside a world@1/@2 world; render3 writes `overview.webp`
+ *  beside a maps3 one — a different tree AND a different filename, both of them
+ *  resolved here through `worldFileUrl`. The `.png` second entry is the
+ *  format-agnostic probe the Map tab has always done, so no domain has to hand
+ *  us a format.
+ *
+ *  DELIBERATELY UNVERSIONED (no `withV`): these names are STABLE and the art
+ *  behind them is regenerable, so the URL must never carry a one-year
+ *  `immutable` grant. Unstamped, the server answers `no-cache`
+ *  (server/src/cachepolicy.ts) and a regenerated map is picked up on the next
+ *  load; for a staging world `gameUrl` rewrites it to the sha-pinned CDN, where
+ *  a cached copy can only ever be the whole of one commit. When maps2 moves
+ *  these outputs to hashed names + an index, THIS is the function that reads
+ *  the index — nothing else in the client names the file. */
+export function mapImageUrls(w: { world: string; iso?: IsoGeometry }): string[] {
+  const stem = w.iso ? "overview" : "minimap";
+  return [".webp", ".png"].map((ext) => gameUrl(worldFileUrl(w.world, stem + ext)));
+}
+
+/** Learn every world's TREE from the built manifest, with none of the picker's
+ *  admin/staging round trips — for callers that need only the URL mapping. */
+export async function loadWorldRoots(): Promise<void> {
+  try {
+    const res = await fetchSoon("/worlds.json", 8000, { cache: "no-cache" });
+    if (!res.ok) return;
+    const list = (await res.json()) as WorldInfo[];
+    if (Array.isArray(list)) for (const w of list) setWorldRoot(w.name, w.root);
+  } catch {}
 }
 
 export async function loadWorld(name: string = DEFAULT_WORLD): Promise<World | null> {

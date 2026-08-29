@@ -6,7 +6,7 @@ import { enterStaging, mergeStagingEntries, gameUrl } from "./staging";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
-import { loadWorld, loadWorldsList, worldRoot } from "./maps";
+import { loadWorld, loadWorldsList, loadWorldRoots, worldRoot, DEFAULT_WORLD } from "./maps";
 import { fetchAtlasIndex } from "./tileatlas";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
 import { setLoadingProgress, showLoading } from "./loading";
@@ -59,11 +59,22 @@ if (window.matchMedia("(display-mode: standalone), (display-mode: fullscreen)").
 
 async function bootMapPreview(): Promise<boolean> {
   if (location.hash !== "#map") return false;
-  const world = await loadWorld();
+  // WHICH world: the one you last played, else the default. `#map` previewed
+  // DEFAULT_WORLD's data under a hardcoded ring_test image before this. The
+  // roots come from the built manifest first, because a world's TREE is what
+  // every URL below is built from (a worlds3 name resolved to maps2/worlds
+  // 404s its own world.json).
+  await loadWorldRoots();
+  let name = DEFAULT_WORLD;
+  try {
+    const saved = JSON.parse(localStorage.getItem("ml-last-choice") || "null") as { world?: string } | null;
+    if (saved?.world) name = saved.world;
+  } catch {}
+  const world = await loadWorld(name);
   if (!world) {
     document.body.innerHTML =
-      '<p style="color:#eef;font-family:monospace;padding:2rem">No map yet ' +
-      "(maps2/worlds/&lt;name&gt;/world.json not found).</p>";
+      `<p style="color:#eef;font-family:monospace;padding:2rem">No map yet ` +
+      `(${worldRoot(name)}/${name}/world.json not found).</p>`;
     return true;
   }
   const game = new Phaser.Game({
@@ -75,6 +86,7 @@ async function bootMapPreview(): Promise<boolean> {
     scene: [MapPreviewScene],
   });
   game.registry.set("world", world);
+  game.registry.set("worldName", name);
   return true;
 }
 
