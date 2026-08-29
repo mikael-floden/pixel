@@ -68,7 +68,30 @@
       "generated_at": "2026-08-15T20:51:56+00:00",
       "glow_concept": "petals shedding slow drifting motes of light",
       "difference_from_source": 0.8892,
-      "glow_score": 0.1608
+      "glow_score": 0.1608,
+      "animations": {
+        "motion": {
+          "group_id": "b8e99332-c18c-4f9a-8c54-210625474f96",
+          "description": "This is the same picture in every frame. ONLY the gold sparks above the thicket brighten a little and return, one after another. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. The things carrying it keep exactly the shape, size, position and number they have in the first frame. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "briar_thickets/briar_thicket_015/lit_2/animations/motion/00.webp",
+            "briar_thickets/briar_thicket_015/lit_2/animations/motion/01.webp",
+            "briar_thickets/briar_thicket_015/lit_2/animations/motion/02.webp",
+            "briar_thickets/briar_thicket_015/lit_2/animations/motion/03.webp",
+            "briar_thickets/briar_thicket_015/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "briar_thickets/briar_thicket_015/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:19:38+00:00",
+          "brief": "D50"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "briar_thickets/briar_thicket_015/sprite.webp",

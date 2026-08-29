@@ -68,7 +68,30 @@
       "generated_at": "2026-08-17T11:02:54+00:00",
       "glow_concept": "every cap lit from inside like paper lanterns",
       "difference_from_source": 0.6696,
-      "glow_score": 0.1045
+      "glow_score": 0.1045,
+      "animations": {
+        "motion": {
+          "group_id": "2f429529-571c-4db4-9744-e9709e599a57",
+          "description": "This is the same picture in every frame. ONLY the gold light on the toadstools brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. The things carrying it keep exactly the shape, size, position and number they have in the first frame. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "toadstool_rings/toadstool_ring_011/lit_2/animations/motion/00.webp",
+            "toadstool_rings/toadstool_ring_011/lit_2/animations/motion/01.webp",
+            "toadstool_rings/toadstool_ring_011/lit_2/animations/motion/02.webp",
+            "toadstool_rings/toadstool_ring_011/lit_2/animations/motion/03.webp",
+            "toadstool_rings/toadstool_ring_011/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "toadstool_rings/toadstool_ring_011/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T19:19:13+00:00",
+          "brief": "D43"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "toadstool_rings/toadstool_ring_011/sprite.webp",
