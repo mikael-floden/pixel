@@ -186,52 +186,6 @@ def textured_art(key):
     return _TEXTURED.get(key.strip("/"))
 
 
-# -- slopes (tiles3/slopes@1) --------------------------------------------------
-# "One ground raised into a plateau with a graded edge down to ITSELF. NOT a
-# transition between two materials - the Wang bit means a corner is RAISED.
-# Index 0 flat, index 15 full plateau top." 15 grounds x 15 seeds, 64x46 -
-# the SAME frame as a plate, and index 15's alpha is the published silhouette
-# byte for byte, so a slope drops straight into the surface slot. The height
-# lives INSIDE the art: every published set is elevation 4px, a sub-storey
-# grade, which is what softens the foot of a rise.
-SLOPES = json.load(open(os.path.join(REPO, "tiles", "slopes", "index.json")))
-_SLOPE_BY_GROUND = {}
-for _s in SLOPES["sets"]:
-    # ONLY COMPLETE SETS. Measured over the published library: 9 of the 225
-    # sets ship fewer than 16 post files (7-15), and 122 of 3,553 files are
-    # 64x30 instead of the 64x46 the frame requires (slime and water worst).
-    # A short set indexed by a Wang bitmask is an IndexError; a 30-row tile
-    # cannot be masked by the 46-row silhouette. Reported to the tiles agent.
-    if _s.get("complete") and len(_s.get("post_files") or []) == 16:
-        _SLOPE_BY_GROUND.setdefault(_s["ground"], []).append(_s)
-for _g in _SLOPE_BY_GROUND:
-    _SLOPE_BY_GROUND[_g].sort(key=lambda s: s["dir"])
-
-
-def slope_tile(ground, index, x, y):
-    """The slope tile for this corner bitmask, seed chosen per AREA so a
-    hillside keeps one boundary character (same reasoning as a base set's
-    region)."""
-    sets = _SLOPE_BY_GROUND.get(ground)
-    if not sets or not (0 < index < 16):
-        return None
-    si = (fnv1a(f"slope|{ground}|{x // 24}|{y // 24}") % len(sets))
-    st = sets[si]
-    rel = os.path.join(st["dir"], "post", st["post_files"][index])
-    ck = ("slope", rel)
-    if ck not in _tile_cache:
-        f = os.path.join(REPO, rel)
-        if not os.path.isfile(f):
-            return None
-        im = Image.open(f).convert("RGBA")
-        if im.size != (TILE, 46):
-            _tile_cache[ck] = None     # a mis-sized publication: fall back
-            return None                # to the flat plate, never crash
-        im.info["k"] = ck
-        _tile_cache[ck] = im
-    return _tile_cache[ck]
-
-
 def as_surface(im):
     """Any tile art -> plate geometry (64x46, art at row 0), so a fade or a
     detail can stand in for a base-tile-set plate anywhere the surface is
@@ -391,6 +345,69 @@ FB = json.load(open(os.path.join(REPO, "live", "feedback", "tiles.json")))["entr
 BASE = json.load(open(os.path.join(REPO, "live", "tuning", "base_tiles.json"))).get("overrides", {})
 WALL_OV = json.load(open(os.path.join(REPO, "live", "tuning", "tile_walls.json"))).get("overrides", {})
 
+# -- slopes (tiles3/slopes@1) --------------------------------------------------
+# "One ground raised into a plateau with a graded edge down to ITSELF. NOT a
+# transition between two materials - the Wang bit means a corner is RAISED.
+# Index 0 flat, index 15 full plateau top." 15 grounds x 15 seeds, 64x46 -
+# the SAME frame as a plate, and index 15's alpha is the published silhouette
+# byte for byte, so a slope drops straight into the surface slot. The height
+# lives INSIDE the art: every published set is elevation 4px, a sub-storey
+# grade, which is what softens the foot of a rise.
+SLOPES = json.load(open(os.path.join(REPO, "tiles", "slopes", "index.json")))
+
+
+def _slope_approved(setdir, index):
+    """HIS VERDICT, PER TILE. Slope verdicts are keyed
+    tiles/slopes/<ground>/<set>/tile_NN in live/feedback/tiles.json. He has
+    judged 15 of the 225 sets (all 16 tiles of each, 13 grounds); the other
+    210 are UNJUDGED and must never be drawn — picking across all 15 seeds
+    per ground meant roughly 14 of every 15 slope tiles came from a set he
+    had never seen (his catch, 2026-08-30: "I kinda got the feeling you used
+    a slope I never approved")."""
+    k = f"{setdir.strip('/')}/tile_{index:02d}"
+    return FB.get(k, {}).get("status") == "approved"
+
+
+_SLOPE_BY_GROUND = {}
+for _s in SLOPES["sets"]:
+    # ONLY COMPLETE SETS. Measured over the published library: 9 of the 225
+    # sets ship fewer than 16 post files (7-15), and 122 of 3,553 files are
+    # 64x30 instead of the 64x46 the frame requires (slime and water worst).
+    # A short set indexed by a Wang bitmask is an IndexError; a 30-row tile
+    # cannot be masked by the 46-row silhouette. Reported to the tiles agent.
+    if _s.get("complete") and len(_s.get("post_files") or []) == 16 \
+            and any(_slope_approved(_s["dir"], _i) for _i in range(16)):
+        _SLOPE_BY_GROUND.setdefault(_s["ground"], []).append(_s)
+for _g in _SLOPE_BY_GROUND:
+    _SLOPE_BY_GROUND[_g].sort(key=lambda s: s["dir"])
+
+
+def slope_tile(ground, index, x, y):
+    """The slope tile for this corner bitmask, seed chosen per AREA so a
+    hillside keeps one boundary character (same reasoning as a base set's
+    region)."""
+    sets = [s for s in _SLOPE_BY_GROUND.get(ground, [])
+            if _slope_approved(s["dir"], index)]
+    if not sets or not (0 < index < 16):
+        return None            # unjudged ground (light_soil, water): no slope
+    si = (fnv1a(f"slope|{ground}|{x // 24}|{y // 24}") % len(sets))
+    st = sets[si]
+    rel = os.path.join(st["dir"], "post", st["post_files"][index])
+    ck = ("slope", rel)
+    if ck not in _tile_cache:
+        f = os.path.join(REPO, rel)
+        if not os.path.isfile(f):
+            return None
+        im = Image.open(f).convert("RGBA")
+        if im.size != (TILE, 46):
+            _tile_cache[ck] = None     # a mis-sized publication: fall back
+            return None                # to the flat plate, never crash
+        im.info["k"] = ck
+        _tile_cache[ck] = im
+    return _tile_cache[ck]
+
+
+
 
 def _hex(h):
     h = h.lstrip("#")
@@ -530,12 +547,47 @@ def pick_set(ground, region):
     return next(s for s in sets if s["id"] == CLEAN_SET_ID) if i < 0 else sets[i]
 
 
+def _member_key(t):
+    """A member's VERDICT key. A review member is keyed by its review key. A
+    tops member's identity is its RAW path, not the post rendering of it
+    ("the identity stays the RAW path, and the post file is a rendering of
+    the same tile" — wiki/site/wiki.js), and a top-only tile has no pair, so
+    its verdict rides the same path with a #top suffix."""
+    if not t or not t.endswith(".webp"):
+        return t
+    if "/post/" in t:
+        d, f = t.split("/post/")
+        m = re.match(r"(tile_\d+)\.[0-9a-f]{8}\.webp$", f)
+        if m:
+            return f"{d}/{m.group(1)}.webp"
+    return t
+
+
+def _member_rejected(m):
+    """HIS REJECTION OUTRANKS HIS SET (the wiki's own basePool drops a
+    rejected candidate). A tile he put in a set and later rejected was still
+    being drawn — one such member, tiles/grey_stone__over__lava/a467bcc3,
+    was measured on the map."""
+    t = m.get("tile")
+    if not t:
+        return False
+    k = _member_key(t)
+    for probe in (k, k + "#top", t):
+        if (FB.get((probe or "").strip("/"), {}) or {}).get("status") == "rejected":
+            return True
+    return False
+
+
 def pick_member(chosen, x, y):
     if not chosen or not chosen.get("members"):
         return {"kind": "clean"}
-    i = pick_weighted([m["weight"] for m in chosen["members"]],
+    mem = [m for m in chosen["members"]
+           if m.get("kind") == "clean" or not _member_rejected(m)]
+    if not mem:
+        return {"kind": "clean"}
+    i = pick_weighted([m["weight"] for m in mem],
                       unit_hash(f"bts1|tile|{chosen['id']}|{x}|{y}"))
-    return {"kind": "clean"} if i < 0 else chosen["members"][i]
+    return {"kind": "clean"} if i < 0 else mem[i]
 
 
 # the port is proven at import, not trusted
@@ -736,8 +788,12 @@ def fade_pool(field_ground, other):
             # HIS VERDICTS RIDE THE FADE KEY (tiles/docs/TRANSITIONS.md:188).
             # The pool was drawing tiles he had REJECTED; a rejected fade is
             # not a candidate, and a rated one outranks an unrated one.
+            # APPROVED ONLY. He has judged 825 of the 3,575 fade tiles (480
+            # approved, 345 rejected) — a layer he actively rates, so an
+            # unjudged tile is not a candidate either. Merely dropping the
+            # rejected ones still drew 151 tiles he had never seen.
             fbe = FB.get(t.get("key", ""), {})
-            if fbe.get("status") == "rejected":
+            if fbe.get("status") != "approved":
                 continue
             rating = float(fbe.get("rating") or 0)
             pct = t.get("pct", {}).get(other, 0)
