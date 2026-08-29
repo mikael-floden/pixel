@@ -72,21 +72,32 @@ def _now():
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-def anim_dir(rel, state, man):
+def anim_dir(rel, state, man, name=None):
     """Where this state's frames live.
 
     The ANCHOR state has no directory of its own — its sprite IS the piece's
     sprite.webp — so its animation goes at the piece root, matching campfire,
     the domain's only previously animated piece.
     """
+    name = name or NAME
     ent = (man.get("states") or {}).get(state) or {}
     if ent.get("sprite") == man.get("sprite"):
-        return os.path.join(rel, "animations", NAME)
-    return os.path.join(rel, state.lower(), "animations", NAME)
+        return os.path.join(rel, "animations", name)
+    return os.path.join(rel, state.lower(), "animations", name)
 
 
-def save_frames(frames, out_rel):
-    """Frames as lossless WebP + a horizontal strip, campfire's layout."""
+def save_frames(frames, out_rel, size=None):
+    """Frames as lossless WebP + a horizontal strip, campfire's layout.
+
+    NORMALISED TO THE PIECE'S OWN CANVAS, because PixelLab's internal canvas
+    is not always the repo's. An anvil is stored at 64px but its object lives
+    on a 68px canvas, so its raw frames came back 68x68 against a 64x64 sprite
+    — frame 0, which keep_first_frame guarantees IS the reference art, did not
+    match the sprite it belongs to. Normalising makes it byte-identical again,
+    which is what lets the animation stand in for the static sprite in-game.
+    The trees hid this: theirs are 192 both sides, so it is a no-op there."""
+    if size:
+        frames = [factory._normalize(im.convert("RGBA"), int(size)) for im in frames]
     paths = []
     for i, im in enumerate(frames):
         p = f"{out_rel}/{i:02d}.webp"
@@ -102,22 +113,24 @@ def save_frames(frames, out_rel):
     return paths, sp
 
 
-def record(rel, state, group_id, paths, strip, frames):
+def record(rel, state, group_id, paths, strip, frames, name=None, prompt=None,
+           directions=None):
     """Write the animation into the STATE's manifest entry (re-read first —
     workers finish out of order and must not clobber each other's writes)."""
     man = factory.read_manifest(rel) or {}
     states = dict(man.get("states") or {})
     ent = dict(states.get(state) or {})
     anims = dict(ent.get("animations") or {})
-    anims[NAME] = {
+    anims[name or NAME] = {
         "group_id": group_id,
-        "description": WIND,
+        "description": prompt or WIND,
         "mode": "v3",
         "frame_count": len(frames),      # 5: his 4 plus the kept original
         "generated_frames": FRAME_COUNT,
         "keep_first_frame": True,
         "frame_paths": paths,
         "strip": strip,
+        "directions": list(directions) if directions else None,
         "generated_at": _now(),
     }
     ent["animations"] = anims
@@ -140,10 +153,13 @@ def states_of(rel):
     return man, out
 
 
-def one(client, rel, man, state, oid, is_anchor):
+def one(client, rel, man, state, oid, is_anchor, name=None, prompt=None,
+        directions=None, adopt_existing=True):
     """Animate a single state (or adopt the anchor's existing animation)."""
+    name = name or NAME
+    prompt = prompt or WIND
     try:
-        if is_anchor:
+        if is_anchor and adopt_existing:
             # He made this one himself; adopt it rather than pay to redo it.
             existing = (client.get_object(oid).get("animations") or [])
             if existing:
@@ -152,20 +168,22 @@ def one(client, rel, man, state, oid, is_anchor):
                                                           wait=180)
                 if frames:
                     imgs = next(iter(frames.values()))
-                    out = anim_dir(rel, state, man)
-                    paths, strip = save_frames(imgs, out)
-                    record(rel, state, gid, paths, strip, imgs)
+                    out = anim_dir(rel, state, man, name)
+                    paths, strip = save_frames(imgs, out, man.get("size"))
+                    record(rel, state, gid, paths, strip, imgs, name,
+                           prompt, directions)
                     return (state, len(imgs), "adopted his own")
-        gid = client.animate_object(oid, WIND, frame_count=FRAME_COUNT)
+        gid = client.animate_object(oid, prompt, frame_count=FRAME_COUNT,
+                                    directions=directions)
         if not gid:
             return (state, 0, "no animation_group_id returned")
         frames = client.download_object_animation(oid, gid, expected=1, wait=600)
         if not frames:
             return (state, 0, "no frames came back")
         imgs = next(iter(frames.values()))
-        out = anim_dir(rel, state, man)
-        paths, strip = save_frames(imgs, out)
-        record(rel, state, gid, paths, strip, imgs)
+        out = anim_dir(rel, state, man, name)
+        paths, strip = save_frames(imgs, out, man.get("size"))
+        record(rel, state, gid, paths, strip, imgs, name, prompt, directions)
         return (state, len(imgs), "generated")
     except PixelLabError as e:
         return (state, 0, f"FAILED: {str(e)[:110]}")
