@@ -40,8 +40,8 @@
       "glow_score": 0.1762,
       "animations": {
         "motion": {
-          "group_id": "58949739-ecca-40f8-add3-c377932f13bd",
-          "description": "This is the same picture in every frame. ONLY the fire burning in the basket at the top flickers. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "bb053cd5-3c6c-40ce-8042-a8cafe9096a0",
+          "description": "This is the same picture in every frame. ONLY the fire burning in the basket at the very top flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -55,7 +55,7 @@
           ],
           "strip": "beacons/beacon_001/lit_1/animations/motion__strip.webp",
           "directions": null,
-          "generated_at": "2026-08-29T15:34:39+00:00",
+          "generated_at": "2026-08-29T16:06:59+00:00",
           "brief": "X5"
         }
       }

@@ -82,8 +82,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "6d0bd8a6-983c-4f8f-91b2-3bc56171a0a0",
-          "description": "This is the same picture in every frame. ONLY the candle flame inside the arch flickers. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "2a99af36-704d-4c17-ad84-b35a0d0f96fd",
+          "description": "This is the same picture in every frame. ONLY the small candle flame inside the arch flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -99,7 +99,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T15:34:48+00:00",
+          "generated_at": "2026-08-29T16:06:18+00:00",
           "brief": "X6"
         }
       }

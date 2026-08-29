@@ -1777,13 +1777,14 @@
   "X2": {
    "group": "torch_posts",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the three torch flames flicker. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+   "prompt": "This is the same picture in every frame. ONLY the three flames at the tops of the torches flicker. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
    "moves": "The three torch flames flicker.",
    "seen_in_art": "three torches bound together, each burning",
    "example": {
     "piece": "torch_posts/torch_post_005",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1 repainted the whole object rather than the named part (X5 rescaled the post, X24 flashed the awning black, X18 grew the roof snow). Rewritten with the copy-instruction tail."
   },
   "X3": {
    "group": "tables",
@@ -1810,24 +1811,26 @@
   "X5": {
    "group": "beacons",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the fire burning in the basket at the top flickers. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+   "prompt": "This is the same picture in every frame. ONLY the fire burning in the basket at the very top flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
    "moves": "The fire in the basket flickers.",
    "seen_in_art": "a tall post carrying a burning basket",
    "example": {
     "piece": "beacons/beacon_001",
     "state": "LIT_1"
-   }
+   },
+   "redo": "Round 1 repainted the whole object rather than the named part (X5 rescaled the post, X24 flashed the awning black, X18 grew the roof snow). Rewritten with the copy-instruction tail."
   },
   "X6": {
    "group": "wayside_shrines",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the candle flame inside the arch flickers. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+   "prompt": "This is the same picture in every frame. ONLY the small candle flame inside the arch flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
    "moves": "The shrine candle flickers.",
    "seen_in_art": "a carved stone arch with a candle burning inside",
    "example": {
     "piece": "wayside_shrines/wayside_shrine_013",
     "state": "LIT_3"
-   }
+   },
+   "redo": "Round 1 repainted the whole object rather than the named part (X5 rescaled the post, X24 flashed the awning black, X18 grew the roof snow). Rewritten with the copy-instruction tail."
   },
   "X7": {
    "group": "flame_niches",
@@ -1953,13 +1956,14 @@
   "X18": {
    "group": "wells",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the bucket hanging on the rope moves, swinging. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+   "prompt": "This is the same picture in every frame. ONLY the bucket hanging on the rope swings. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
    "moves": "The bucket swings.",
    "seen_in_art": "a snow-topped well with a bucket hanging from its rope",
    "example": {
     "piece": "wells/well_012",
     "state": "NOT_LIT_4"
-   }
+   },
+   "redo": "Round 1 repainted the whole object rather than the named part (X5 rescaled the post, X24 flashed the awning black, X18 grew the roof snow). Rewritten with the copy-instruction tail."
   },
   "X19": {
    "group": "washing_lines",
@@ -1975,13 +1979,14 @@
   "X20": {
    "group": "rope_swings",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the two plank seats hanging on the ropes move, swinging. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+   "prompt": "This is the same picture in every frame. ONLY the two plank seats hanging on the ropes swing. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
    "moves": "Both seats swing.",
    "seen_in_art": "a frame carrying two plank swings on ropes",
    "example": {
     "piece": "rope_swings/rope_swing_001",
     "state": "NOT_LIT_3"
-   }
+   },
+   "redo": "Round 1 repainted the whole object rather than the named part (X5 rescaled the post, X24 flashed the awning black, X18 grew the roof snow). Rewritten with the copy-instruction tail."
   },
   "X21": {
    "group": "rope_swings",
@@ -2008,35 +2013,38 @@
   "X23": {
    "group": "wall_hangings",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the bundles hanging from the rail move, swaying. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+   "prompt": "This is the same picture in every frame. ONLY the bundles hanging from the rail swing. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
    "moves": "The hung bundles sway.",
    "seen_in_art": "a shelf with garlic bundles hung from the rail above it",
    "example": {
     "piece": "wall_hangings/wall_hanging_012",
     "state": "NOT_LIT_4"
-   }
+   },
+   "redo": "Round 1 repainted the whole object rather than the named part (X5 rescaled the post, X24 flashed the awning black, X18 grew the roof snow). Rewritten with the copy-instruction tail."
   },
   "X24": {
    "group": "market_stalls",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the herb bundles hanging at the side move, swaying. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+   "prompt": "This is the same picture in every frame. ONLY the herb bundles hanging at the side swing. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
    "moves": "The hung herbs sway.",
    "seen_in_art": "a red-awninged stall with herb bundles hung at one side",
    "example": {
     "piece": "market_stalls/market_stall_003",
     "state": "NOT_LIT_3"
-   }
+   },
+   "redo": "Round 1 repainted the whole object rather than the named part (X5 rescaled the post, X24 flashed the awning black, X18 grew the roof snow). Rewritten with the copy-instruction tail."
   },
   "X25": {
    "group": "hearths",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the bundles on the mantel move, swaying. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+   "prompt": "This is the same picture in every frame. ONLY the bundles lying on the mantel shift. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
    "moves": "The bundles on the mantel stir.",
    "seen_in_art": "a stone fireplace with herb bundles laid along the mantel",
    "example": {
     "piece": "hearths/hearth_008",
     "state": "NOT_LIT_1"
-   }
+   },
+   "redo": "Round 1 repainted the whole object rather than the named part (X5 rescaled the post, X24 flashed the awning black, X18 grew the roof snow). Rewritten with the copy-instruction tail."
   },
   "X27": {
    "group": "maypoles",
@@ -2107,13 +2115,14 @@
   "X34": {
    "group": "giant_mushrooms",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the glowing gills under the cap brighten a little and return. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+   "prompt": "This is the same picture in every frame. ONLY the cyan light under the cap brightens a little and returns. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
    "moves": "The gills pulse.",
    "seen_in_art": "a tall mushroom with cyan light under its cap",
    "example": {
     "piece": "giant_mushrooms/giant_mushroom_002",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1 repainted the whole object rather than the named part (X5 rescaled the post, X24 flashed the awning black, X18 grew the roof snow). Rewritten with the copy-instruction tail."
   },
   "X35": {
    "group": "crystals",
@@ -2162,13 +2171,14 @@
   "X39": {
    "group": "frost_flowers",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the pale glow on the two ice roses brightens a little and returns. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+   "prompt": "This is the same picture in every frame. ONLY the pale glow on the two ice roses brightens a little and returns. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
    "moves": "The frost glow pulses.",
    "seen_in_art": "two white ice roses with a pale glow on their petals",
    "example": {
     "piece": "frost_flowers/frost_flower_002",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1 repainted the whole object rather than the named part (X5 rescaled the post, X24 flashed the awning black, X18 grew the roof snow). Rewritten with the copy-instruction tail."
   },
   "X40": {
    "group": "lantern_posts",
@@ -2239,13 +2249,14 @@
   "X46": {
    "group": "frozen_springs",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the small frost sparkles glint on and off. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+   "prompt": "This is the same picture in every frame. ONLY the small frost sparkles glint on and off. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
    "moves": "The frost glints.",
    "seen_in_art": "a frozen waterfall with small frost stars caught on the ice",
    "example": {
     "piece": "frozen_springs/frozen_spring_002",
     "state": "NOT_LIT_6"
-   }
+   },
+   "redo": "Round 1 repainted the whole object rather than the named part (X5 rescaled the post, X24 flashed the awning black, X18 grew the roof snow). Rewritten with the copy-instruction tail."
   },
   "X50": {
    "group": "stone_fountains",
@@ -2415,13 +2426,14 @@
   "X65": {
    "group": "rugs_and_hides",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the fringe along the top and bottom edges moves, each strand by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+   "prompt": "This is the same picture in every frame. ONLY the loose fringe strands along the top and bottom edges stir. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
    "moves": "The fringe stirs.",
    "seen_in_art": "a woven wall rug with a moon and a deer, fringed top and bottom",
    "example": {
     "piece": "rugs_and_hides/rug_014",
     "state": "NOT_LIT_1"
-   }
+   },
+   "redo": "Round 1 repainted the whole object rather than the named part (X5 rescaled the post, X24 flashed the awning black, X18 grew the roof snow). Rewritten with the copy-instruction tail."
   }
  },
  "declined": {
@@ -2743,5 +2755,6 @@
  "_loop_note": "From 2026-08-29 every revised prompt closes the loop explicitly — the last frame returns to the first, and nothing may darken below frame one. Added after he reported 'dark paint entering the animation at the end' on R27, where the final frame drained to brown instead of coming back to gold.",
  "_scale_note": "2026-08-29: the three worst results all showed the WHOLE OBJECT rescaling between frames, and in each the moving thing WAS the subject, filling the sprite. Every success so far moves a small fraction of the image instead — a lantern on a post, a bird on a totem. Revised prompts now add 'Nothing in the picture may change size, shape or position' and prefer a subject that occupies little of the frame.",
  "_sundial_note": "The sundial shadow (N19, U6, U27) has been offered in three separate lists and passed over every time. Not proposing it again.",
- "_calmer_note": "Do not use the word 'calmer' in a prompt. Measured: S1 went 4.5% -> 19.5% when asked to be barely visible, and Q19 5.3% -> 15.8%. State the motion concretely instead — 'each shifting by a single pixel' — and say what does not move."
+ "_calmer_note": "Do not use the word 'calmer' in a prompt. Measured: S1 went 4.5% -> 19.5% when asked to be barely visible, and Q19 5.3% -> 15.8%. State the motion concretely instead — 'each shifting by a single pixel' — and say what does not move.",
+ "_copy_note": "WHEN THE GENERATOR REPAINTS THE WHOLE OBJECT, state the hold as a COPY, not as a prohibition: 'Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour.' Naming the parts that must stay still is not available -- a material noun in a prompt is a thing to PAINT (the window lesson), so 'the stone arch does not move' paints a new arch. A copy instruction names nothing. Introduced 2026-08-29 on the 12 batch-X redos; judge it on those results."
 }

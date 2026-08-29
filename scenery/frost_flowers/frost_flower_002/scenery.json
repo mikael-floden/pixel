@@ -69,8 +69,8 @@
       "glow_score": 0.3808,
       "animations": {
         "motion": {
-          "group_id": "abd5195d-e686-43f1-b0c3-3c639697eaaf",
-          "description": "This is the same picture in every frame. ONLY the pale glow on the two ice roses brightens a little and returns. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "3ee2b7a0-c5c3-4db8-946b-dfd37eeee36d",
+          "description": "This is the same picture in every frame. ONLY the pale glow on the two ice roses brightens a little and returns. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -86,7 +86,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T15:38:44+00:00",
+          "generated_at": "2026-08-29T16:06:18+00:00",
           "brief": "X39"
         }
       }
