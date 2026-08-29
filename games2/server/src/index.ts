@@ -9,8 +9,8 @@ import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Encoder } from "@colyseus/schema";
 import { ROOM_NAME } from "@nangijala/shared";
-import { WorldRoom } from "./rooms/WorldRoom.js";
-import { initLive, registerLiveRoutes } from "./live.js";
+import { WorldRoom, sceneryBbox } from "./rooms/WorldRoom.js";
+import { initLive, registerLiveRoutes, sceneryHitboxOverrides } from "./live.js";
 import { cacheControlFor } from "./cachepolicy.js";
 
 // The combat schema (11 new Player fields, 4 new Monster fields, drops) put
@@ -86,6 +86,26 @@ registerLiveRoutes(app);
 void initLive(ASSETS_ROOT);
 // Deployed build id — clients poll this to detect a newer deploy and prompt a
 // refresh (see client/src/main.ts).
+/* THE COLLISION DOCUMENTS, SERVED BY THE AUTHORITY THAT STAMPS WITH THEM.
+ * Scenery footprints are turned into blocked cells from two files, and the
+ * client's prediction has to reach the SAME cells the server does or the body
+ * fights the correction every frame. Neither file was reachable the way the
+ * client asked for it: `/assets/games2/config/scenery-bbox.json` 404s (games2
+ * is not an ASSET_DOMAIN and never was), so the client stamped NOTHING and
+ * routed straight through every tree, and `/assets/live/tuning/...` is the
+ * IMAGE's baked copy while the server stamps from the LIVE one off GitHub —
+ * so a hitbox tuned in the wiki moved the server's trees and not the client's.
+ * Both are answered here from the objects the room itself holds, which is the
+ * only arrangement in which they cannot drift. ~96 KB gzipped, both together.
+ * `no-cache` (not no-store): the live half changes without a redeploy, so a
+ * cached copy must be REVALIDATED, and express's ETag then makes the usual
+ * answer a 304. */
+app.get("/api/scenery-collision", (_req, res) =>
+  res.setHeader("Cache-Control", "no-cache").json({
+    bbox: sceneryBbox(),
+    hitbox: sceneryHitboxOverrides(),
+  }),
+);
 app.get("/version", (_req, res) =>
   res.setHeader("Cache-Control", "no-store").json({ sha: process.env.GIT_SHA || "dev" }),
 );

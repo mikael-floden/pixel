@@ -137,7 +137,7 @@ export function resetWorldClocks() {
  *  scenery hitbox is in FRAME pixels, so the alpha bbox is what turns one into
  *  world cells. Missing file = no scenery collision, never a crash. */
 let sceneryBboxCache: SceneryBboxDoc | null | undefined;
-function sceneryBbox(): SceneryBboxDoc | null {
+export function sceneryBbox(): SceneryBboxDoc | null {
   if (sceneryBboxCache !== undefined) return sceneryBboxCache;
   try {
     // ESM: no __dirname. Same resolution `assetsRoot` uses, one level in —

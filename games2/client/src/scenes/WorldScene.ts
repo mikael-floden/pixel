@@ -11429,38 +11429,30 @@ export class WorldScene extends Phaser.Scene {
         }),
       route: this.t3route,
     });
-    /* THE PUBLISHED HITBOXES, fetched as an ASSET and not over the room socket.
-     * The server loads live/tuning/scenery_hitbox.json with every other live
-     * file, but its broadcast payload is `{monsters, constants}` only — and
-     * rightly so: this doc is 1 MB across 3,704 records and would ride every
-     * join and every save. Big live docs go the way tiles3's do, through
-     * `gameUrl` so a staging world reads the repo's copy. Failure is soft: no
-     * doc means every piece falls back to its anchor and a one-tile box. */
-    /* COLLISION DATA COMES FROM THE SERVER'S OWN COPY, never the staging CDN.
-     * `docUrl` routes a staging world's assets to cdn.jsdelivr at the sha this
-     * TAB pinned when it opened, while the server stamps footprints from the
-     * copies baked beside it. Two players who opened at different times — or a
-     * player and the server — then disagree about where a tree stands, and the
-     * prediction fights the correction every frame. Art may drift like that and
-     * only look different (the maintainer already caught two clients drawing
-     * different trees); COLLISION may not, because it decides where a body can
-     * be. `assetPath` alone keeps these two documents on the game server's
-     * origin, which is the same file the authority read. */
-    void fetch(assetPath("live/tuning/scenery_hitbox.json"))
+    /* THE COLLISION DOCUMENTS, FROM THE AUTHORITY THAT STAMPS WITH THEM.
+     * Footprints become blocked cells from two documents, and the prediction
+     * has to reach the SAME cells the server does or the body fights the
+     * correction every frame. Fetching them as ASSETS reached neither: the
+     * bbox table is under games2/, which is not an ASSET_DOMAIN, so it 404'd
+     * and `restampScenery` bailed on every call — the client stamped NOTHING
+     * and tap-to-move routed straight through trees (maintainer 2026-08-29:
+     * "the player walks straight into the tree and doesn't navigate around",
+     * and the stuck-oscillation before it: the server held a body the client
+     * believed was in open ground). The hitbox doc DID load, from the image's
+     * baked copy, while the server stamps from the LIVE one off GitHub — so
+     * tuning a hitbox in the wiki moved the server's trees and not ours.
+     * One endpoint answers both from the objects the server itself holds,
+     * which is the only arrangement in which they cannot drift; ~96 KB
+     * gzipped. Never `docUrl`: a staging CDN pinned at this TAB's sha would
+     * put two players' trees in different places. Failure is soft — no doc
+     * means no scenery collision, exactly as before, never a crash. */
+    void fetch("/api/scenery-collision")
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
-        this.sceneryHitboxDoc = (d?.overrides as Record<string, SceneryHitboxRec>) ?? null;
+        this.sceneryBboxDoc = (d?.bbox as SceneryBboxDoc) ?? null;
+        this.sceneryHitboxDoc = (d?.hitbox as Record<string, SceneryHitboxRec>) ?? null;
         this.restampScenery();
         this.repaintWorld();
-      })
-      .catch(() => {});
-    /* The bbox table the footprint maths needs — the same file the server reads,
-     * so both sides place an ellipse identically. */
-    void fetch(assetPath("games2/config/scenery-bbox.json"))
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        this.sceneryBboxDoc = (d as SceneryBboxDoc) ?? null;
-        this.restampScenery();
       })
       .catch(() => {});
   }
