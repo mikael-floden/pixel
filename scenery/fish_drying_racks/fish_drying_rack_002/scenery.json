@@ -39,6 +39,29 @@
         "south-east": "fish_drying_racks/fish_drying_rack_002/rotations/south-east.webp",
         "south-west": "fish_drying_racks/fish_drying_rack_002/rotations/south-west.webp",
         "south": "fish_drying_racks/fish_drying_rack_002/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "bbf1c8b9-208b-4e40-bf55-4ef183f03214",
+          "description": "Animate the hanging fish only, swaying gently. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fish_drying_racks/fish_drying_rack_002/animations/motion/00.webp",
+            "fish_drying_racks/fish_drying_rack_002/animations/motion/01.webp",
+            "fish_drying_racks/fish_drying_rack_002/animations/motion/02.webp",
+            "fish_drying_racks/fish_drying_rack_002/animations/motion/03.webp",
+            "fish_drying_racks/fish_drying_rack_002/animations/motion/04.webp"
+          ],
+          "strip": "fish_drying_racks/fish_drying_rack_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:35:34+00:00",
+          "brief": "C4"
+        }
       }
     },
     "LIT_2": {

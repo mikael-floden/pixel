@@ -39,6 +39,29 @@
         "south-east": "hanging_baskets/hanging_basket_005/rotations/south-east.webp",
         "south-west": "hanging_baskets/hanging_basket_005/rotations/south-west.webp",
         "south": "hanging_baskets/hanging_basket_005/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "c79671f3-6584-4d78-aeed-fb0d36b90124",
+          "description": "Animate the trailing flowers only, swaying gently. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "hanging_baskets/hanging_basket_005/animations/motion/00.webp",
+            "hanging_baskets/hanging_basket_005/animations/motion/01.webp",
+            "hanging_baskets/hanging_basket_005/animations/motion/02.webp",
+            "hanging_baskets/hanging_basket_005/animations/motion/03.webp",
+            "hanging_baskets/hanging_basket_005/animations/motion/04.webp"
+          ],
+          "strip": "hanging_baskets/hanging_basket_005/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:37:07+00:00",
+          "brief": "C9"
+        }
       }
     },
     "NOT_LIT_2": {

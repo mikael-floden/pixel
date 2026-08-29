@@ -42,7 +42,30 @@
     "NOT_LIT_1": {
       "sprite": "reed_beds/reed_bed_005/sprite.webp",
       "pixellab_object_id": "66a2172d-ca63-477f-9d79-da6fea18537f",
-      "generated_at": "2026-08-13T11:18:21+00:00"
+      "generated_at": "2026-08-13T11:18:21+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "fc73a756-ae07-45d5-b8e0-0fdb8256496e",
+          "description": "Animate the reeds only, bending in a gentle breeze. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "reed_beds/reed_bed_005/animations/motion/00.webp",
+            "reed_beds/reed_bed_005/animations/motion/01.webp",
+            "reed_beds/reed_bed_005/animations/motion/02.webp",
+            "reed_beds/reed_bed_005/animations/motion/03.webp",
+            "reed_beds/reed_bed_005/animations/motion/04.webp"
+          ],
+          "strip": "reed_beds/reed_bed_005/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:36:52+00:00",
+          "brief": "G1"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "reed_beds/reed_bed_005/not_lit_2/sprite.webp",

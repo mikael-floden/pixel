@@ -35,7 +35,30 @@
     "LIT_1": {
       "sprite": "moon_pools/moon_pool_002/sprite.webp",
       "pixellab_object_id": "95fea78f-0ee3-4201-8642-29b1b206a309",
-      "generated_at": "2026-08-14T02:01:35+00:00"
+      "generated_at": "2026-08-14T02:01:35+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "cf9bd9dd-e3b4-4bc7-a283-b1ae29611ebd",
+          "description": "Animate the reflection on the water only. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "moon_pools/moon_pool_002/animations/motion/00.webp",
+            "moon_pools/moon_pool_002/animations/motion/01.webp",
+            "moon_pools/moon_pool_002/animations/motion/02.webp",
+            "moon_pools/moon_pool_002/animations/motion/03.webp",
+            "moon_pools/moon_pool_002/animations/motion/04.webp"
+          ],
+          "strip": "moon_pools/moon_pool_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:35:57+00:00",
+          "brief": "W6"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "moon_pools/moon_pool_002/lit_4/sprite.webp",

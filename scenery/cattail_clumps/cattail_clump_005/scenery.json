@@ -34,7 +34,30 @@
     "NOT_LIT_1": {
       "sprite": "cattail_clumps/cattail_clump_005/sprite.webp",
       "pixellab_object_id": "081fb42c-9f88-43c5-9558-e2ffcc7bff16",
-      "generated_at": "2026-08-13T11:18:21+00:00"
+      "generated_at": "2026-08-13T11:18:21+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "bbd32fa9-940a-4d89-8904-9b72bf527795",
+          "description": "Animate the leaves and seed heads only, in a gentle breeze. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cattail_clumps/cattail_clump_005/animations/motion/00.webp",
+            "cattail_clumps/cattail_clump_005/animations/motion/01.webp",
+            "cattail_clumps/cattail_clump_005/animations/motion/02.webp",
+            "cattail_clumps/cattail_clump_005/animations/motion/03.webp",
+            "cattail_clumps/cattail_clump_005/animations/motion/04.webp"
+          ],
+          "strip": "cattail_clumps/cattail_clump_005/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:37:04+00:00",
+          "brief": "G2"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "cattail_clumps/cattail_clump_005/not_lit_2/sprite.webp",

@@ -34,7 +34,28 @@
     "LIT_1": {
       "sprite": "maypoles/maypole_002/sprite.webp",
       "pixellab_object_id": "51c67da6-a99c-44a2-8574-753692e1d2a2",
-      "generated_at": "2026-08-13T04:31:02+00:00"
+      "generated_at": "2026-08-13T04:31:02+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "5cddb0fc-1c0a-4646-9d62-9b66b335c83e",
+          "description": "Animate the ribbons only, streaming in a breeze. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "maypoles/maypole_002/animations/motion/00.webp",
+            "maypoles/maypole_002/animations/motion/01.webp",
+            "maypoles/maypole_002/animations/motion/02.webp",
+            "maypoles/maypole_002/animations/motion/03.webp",
+            "maypoles/maypole_002/animations/motion/04.webp"
+          ],
+          "strip": "maypoles/maypole_002/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T08:35:43+00:00",
+          "brief": "C5"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "maypoles/maypole_002/lit_2/sprite.webp",

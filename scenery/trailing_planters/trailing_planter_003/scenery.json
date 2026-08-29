@@ -41,6 +41,29 @@
         "south-east": "trailing_planters/trailing_planter_003/rotations/south-east.webp",
         "south-west": "trailing_planters/trailing_planter_003/rotations/south-west.webp",
         "south": "trailing_planters/trailing_planter_003/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "ee17deaa-3008-464b-8b32-65fc44feec34",
+          "description": "Animate the cascading vines only, swaying gently. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "trailing_planters/trailing_planter_003/animations/motion/00.webp",
+            "trailing_planters/trailing_planter_003/animations/motion/01.webp",
+            "trailing_planters/trailing_planter_003/animations/motion/02.webp",
+            "trailing_planters/trailing_planter_003/animations/motion/03.webp",
+            "trailing_planters/trailing_planter_003/animations/motion/04.webp"
+          ],
+          "strip": "trailing_planters/trailing_planter_003/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:36:15+00:00",
+          "brief": "C10"
+        }
       }
     },
     "NOT_LIT_2": {

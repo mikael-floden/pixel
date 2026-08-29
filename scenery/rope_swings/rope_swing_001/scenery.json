@@ -39,6 +39,29 @@
         "south-east": "rope_swings/rope_swing_001/rotations/south-east.webp",
         "south-west": "rope_swings/rope_swing_001/rotations/south-west.webp",
         "south": "rope_swings/rope_swing_001/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "5ba248bb-3623-4a21-83dd-c5545a66a195",
+          "description": "Animate the swinging seat and its ropes only. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rope_swings/rope_swing_001/animations/motion/00.webp",
+            "rope_swings/rope_swing_001/animations/motion/01.webp",
+            "rope_swings/rope_swing_001/animations/motion/02.webp",
+            "rope_swings/rope_swing_001/animations/motion/03.webp",
+            "rope_swings/rope_swing_001/animations/motion/04.webp"
+          ],
+          "strip": "rope_swings/rope_swing_001/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:36:08+00:00",
+          "brief": "C6"
+        }
       }
     },
     "NOT_LIT_2": {

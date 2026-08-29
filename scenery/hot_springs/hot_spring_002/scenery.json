@@ -35,7 +35,30 @@
     "LIT_1": {
       "sprite": "hot_springs/hot_spring_002/sprite.webp",
       "pixellab_object_id": "61e71c59-c139-4d7b-83f2-0399f086cd12",
-      "generated_at": "2026-08-14T01:10:53+00:00"
+      "generated_at": "2026-08-14T01:10:53+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "d81bb4d8-cd2e-424e-9129-972a2f90a717",
+          "description": "Animate the rising steam only. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "hot_springs/hot_spring_002/animations/motion/00.webp",
+            "hot_springs/hot_spring_002/animations/motion/01.webp",
+            "hot_springs/hot_spring_002/animations/motion/02.webp",
+            "hot_springs/hot_spring_002/animations/motion/03.webp",
+            "hot_springs/hot_spring_002/animations/motion/04.webp"
+          ],
+          "strip": "hot_springs/hot_spring_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:35:33+00:00",
+          "brief": "W5"
+        }
+      }
     }
   }
 }

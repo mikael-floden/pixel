@@ -42,7 +42,30 @@
     "NOT_LIT_1": {
       "sprite": "water_lily_clumps/water_lily_clump_001/sprite.webp",
       "pixellab_object_id": "66f1f5ab-0cc7-427f-98c2-27b98ec22887",
-      "generated_at": "2026-08-13T01:45:58+00:00"
+      "generated_at": "2026-08-13T01:45:58+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "97b4ef4d-6bc9-48e9-a0e2-946cf3a6b981",
+          "description": "Animate the lily pads only, rocking very gently. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_lily_clumps/water_lily_clump_001/animations/motion/00.webp",
+            "water_lily_clumps/water_lily_clump_001/animations/motion/01.webp",
+            "water_lily_clumps/water_lily_clump_001/animations/motion/02.webp",
+            "water_lily_clumps/water_lily_clump_001/animations/motion/03.webp",
+            "water_lily_clumps/water_lily_clump_001/animations/motion/04.webp"
+          ],
+          "strip": "water_lily_clumps/water_lily_clump_001/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:35:16+00:00",
+          "brief": "W7"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "water_lily_clumps/water_lily_clump_001/not_lit_2/sprite.webp",
