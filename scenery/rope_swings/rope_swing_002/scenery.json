@@ -94,8 +94,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "ff0e1c07-f847-4370-a7b6-9fd6ce441722",
-          "description": "This is the same picture in every frame. ONLY the hanging bench moves, swinging. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "group_id": "1d566457-e58c-4671-a280-686f6f8c0f31",
+          "description": "This is the same picture in every frame. ONLY the hanging bench swings a little to one side and back. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -111,7 +111,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T16:16:23+00:00",
+          "generated_at": "2026-08-29T16:47:12+00:00",
           "brief": "Y22"
         }
       }

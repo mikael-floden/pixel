@@ -2570,13 +2570,14 @@
   "Y13": {
    "group": "cauldron_camps",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the green surface of the brew bubbles. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+   "prompt": "This is the same picture in every frame. ONLY the small green surface at the very top of the brew moves, as if simmering. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The brew bubbles.",
    "seen_in_art": "a cauldron of green brew set on stones",
    "example": {
     "piece": "cauldron_camps/cauldron_camp_002",
     "state": "LIT_3"
-   }
+   },
+   "redo": "Round 1 redrew the whole vessel -- the body narrowed and the stones changed -- while the brew barely moved. Narrowed to the top surface only."
   },
   "Y14": {
    "group": "washing_lines",
@@ -2636,13 +2637,14 @@
   "Y22": {
    "group": "rope_swings",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the hanging bench moves, swinging. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+   "prompt": "This is the same picture in every frame. ONLY the hanging bench swings a little to one side and back. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The bench swings.",
    "seen_in_art": "a bench seat hung on chains under a frame",
    "example": {
     "piece": "rope_swings/rope_swing_002",
     "state": "NOT_LIT_5"
-   }
+   },
+   "redo": "Round 1 morphed the seat: the fan-shaped backrest vanished in frame 3 and returned in frame 5. It was redrawn instead of displaced. Rewritten to demand a rigid swing."
   },
   "Y23": {
    "group": "bell_posts",
@@ -2658,13 +2660,14 @@
   "Y24": {
    "group": "lantern_stands",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the hanging lantern moves, swinging, and the flame inside it flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+   "prompt": "This is the same picture in every frame. ONLY the hanging lantern swings a little to one side and back, and the flame burning inside it flickers. The flame is lit and clearly visible in every single frame, including the first. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The lantern swings and burns.",
    "seen_in_art": "a hook stand with a lit lantern hung from it",
    "example": {
     "piece": "lantern_stands/lantern_stand_014",
     "state": "LIT_5"
-   }
+   },
+   "redo": "Round 1 did not swing at all and the lantern was UNLIT for the first three frames -- the flame only appeared at frame 4. Rewritten to demand a rigid swing and a flame present in every frame."
   },
   "Y25": {
    "group": "lantern_stands",
@@ -3300,5 +3303,7 @@
  "_calmer_note": "Do not use the word 'calmer' in a prompt. Measured: S1 went 4.5% -> 19.5% when asked to be barely visible, and Q19 5.3% -> 15.8%. State the motion concretely instead — 'each shifting by a single pixel' — and say what does not move.",
  "_copy_note": "THE COPY TAIL: 'Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour.' State the hold as a COPY, never as a prohibition -- a material noun in a prompt is a thing to PAINT (the window lesson), so 'the stone arch does not move' paints a new arch. A copy instruction names nothing. MEASURED on the 12 batch-X redos (2026-08-29), and it does NOT work everywhere: it fixes the case where the moving thing is a SEPARATE object resting on or hanging off the piece (X24 market awning stopped flashing black, 21.5%->8.9%; X6 shrine 8.1%->4.0%; X20, X23, X25, X65 all steadier). It does NOT fix the case where the moving thing is LIGHT ON THE PIECE'S OWN SURFACE -- X39 ice roses, X46 frozen ice, X34 mushroom gills and X5 beacon post all still repaint their whole body, because there is no seam for the generator to copy across. For that shape, expect to reject rather than re-prompt. X18 (well) got WORSE, 15.3%->22.9%: the snow on the roof is what animates, and no wording has stopped it.",
  "_light_dies_note": "NEW FAULT, batch Y (2026-08-29): on a LIT piece the fire or glow can FADE AWAY across the loop instead of flickering -- a torch that ends unlit (Y2), a white blaze that shrinks to a candle (Y11), a pool of lantern light that disappears at frame 3 (Y6), a lantern that dims out (Y20), a gold spiral that loses its shape (Y35). Distinct from the whole-object repaint the copy tail addresses: here the named part is the ONLY thing that changes, and it changes by going out. The drift metric caught all five (29-61%). Candidate wording for the next attempt, untested: ask for the light to return to full brightness in the last frame by name, rather than relying on the generic 'last frame matches the first'.",
- "_flag_accuracy_note": "MY OWN FLAGS ARE NOT VERDICTS. Batch X: I flagged 7 as wrong and he kept 4 of them (X11, X35, X38, X54) while asking to redo 9 I had passed. Present flags as a shortlist to look at, never as a decision, and never delete on my own read alone."
+ "_flag_accuracy_note": "MY OWN FLAGS ARE NOT VERDICTS. Batch X: I flagged 7 as wrong and he kept 4 of them (X11, X35, X38, X54) while asking to redo 9 I had passed. Present flags as a shortlist to look at, never as a decision, and never delete on my own read alone.",
+ "_rigid_note": "WHEN A HUNG OBJECT MORPHS INSTEAD OF SWINGING, add the rigid-body clause: 'It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline.' The copy tail protects everything AROUND the moving part but says nothing about the moving part itself, so the generator is free to redraw the very thing it was told to move -- Y22's swing seat lost its backrest in frame 3 and got it back in frame 5. Introduced 2026-08-29 on Y13/Y22/Y24; judge it on those results.",
+ "_light_starts_off_note": "A LIT PIECE CAN COME ON LATE as well as go out: Y24's lantern was dark for frames 1-3 and only lit at frame 4. Counterpart to _light_dies_note. Fix under test: state that the flame is lit and clearly visible in EVERY single frame, including the first."
 }

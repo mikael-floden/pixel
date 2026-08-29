@@ -92,8 +92,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "dce0aa70-e92c-437b-bffc-330a6e51f952",
-          "description": "This is the same picture in every frame. ONLY the green surface of the brew bubbles. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "group_id": "022630bd-da77-4589-b506-8bfbd546a44f",
+          "description": "This is the same picture in every frame. ONLY the small green surface at the very top of the brew moves, as if simmering. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -109,7 +109,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T16:15:54+00:00",
+          "generated_at": "2026-08-29T16:47:12+00:00",
           "brief": "Y13"
         }
       }
