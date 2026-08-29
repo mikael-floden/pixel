@@ -4104,7 +4104,8 @@
     "piece": "fish_drying_racks/fish_drying_rack_005",
     "state": "NOT_LIT_2"
    },
-   "redo": "Round 2 still rocked the whole rack -- frame 2 leans and the grass shifts. 'Swing a little to one side and back' invites the frame to move with it. Narrowed to a single-pixel turn in place, which is the lever that fixed Y13."
+   "redo": "Round 2 still rocked the whole rack -- frame 2 leans and the grass shifts. 'Swing a little to one side and back' invites the frame to move with it. Narrowed to a single-pixel turn in place, which is the lever that fixed Y13.",
+   "result": "FAILED THREE TIMES. Round 1 lost the grass; round 2 rocked the whole rack; round 3 (narrowed to 'turns very slightly where it hangs, by a single pixel') was WORSE -- drift 16.8%->50.7%. A rack of many small hung objects over a grass base resists every phrasing tried. Do not write a fourth."
   },
   "B20": {
    "group": "lantern_posts",
@@ -4215,7 +4216,8 @@
     "piece": "fallen_logs/fallen_log_011",
     "state": "LIT_2"
    },
-   "redo": "Rounds 1 and 2 both MULTIPLIED the fungi -- new clusters grow on top of the log and it ends darker. The no-add clause did not bite. Third attempt separates the LIGHT (which may change) from the objects carrying it (which may not), and pins their count explicitly."
+   "redo": "Rounds 1 and 2 both MULTIPLIED the fungi -- new clusters grow on top of the log and it ends darker. The no-add clause did not bite. Third attempt separates the LIGHT (which may change) from the objects carrying it (which may not), and pins their count explicitly.",
+   "result": "IMPROVED on the third prompt. Naming the LIGHT rather than the fungi ('the green light on the fungi brightens... the fungi themselves keep exactly the shape, size, position and number they have in the first frame') stopped the multiplication that both the cap and the no-add clause had failed to stop. Drift 41.9%->32.2%."
   },
   "B35": {
    "group": "fallen_logs",
@@ -5915,5 +5917,6 @@
  "_size_note": "PINNING THE SIZE OF A FLAME. B1's lantern flame BALLOONED into a glare lighting the whole well -- flicker was read as grow. Added 2026-08-29: 'It stays exactly the same size and the same shape in every frame -- it never grows, never spreads and never spills past where it already is; only its inner detail shifts.'",
  "_length_note": "PIXELLAB CAPS animation_description AT 1000 CHARACTERS. Over it the API answers 422 string_too_long and animate_motion reports a bare FAILED line -- B4 (1009 chars) and B46 (1033) were silently skipped in batch AB before this was found. Clause stacking is what crossed the line, so the clauses are kept COMPACT and PixelLabClient.animate_object now refuses over-long descriptions up front (DESCRIPTION_MAX) instead of letting the API swallow them.",
  "_object_id_note": "THE PIXELLAB LINK ON A CANDIDATE PAGE COMES FROM states[STATE].pixellab_object_id, NOT from the piece manifest's top-level 'id' (which is the folder slug) and not from 'object_id' (which does not exist). A selector written as meta.get('object_id') or meta.get('id') silently yields the slug, and every 'Open in PixelLab' link on the page 404s. Introduced around batch Y, found and fixed at batch AC.",
- "_light_vs_object_note": "WHEN A GLOW SITS ON MANY SMALL OBJECTS, name the LIGHT, not the objects. 'the glowing fungi brighten' invites the generator to redraw and multiply the fungi (B34 grew new clusters twice, through both the cap and the no-add clause). Try instead: 'the green light ON the fungi brightens a little and returns. The fungi themselves keep exactly the shape, size, position and number they have in the first frame.' Introduced 2026-08-29; judge on B34."
+ "_light_vs_object_note": "WHEN A GLOW SITS ON MANY SMALL OBJECTS, name the LIGHT, not the objects. 'the glowing fungi brighten' invites the generator to redraw and multiply the fungi (B34 grew new clusters twice, through both the cap and the no-add clause). Try instead: 'the green light ON the fungi brightens a little and returns. The fungi themselves keep exactly the shape, size, position and number they have in the first frame.' Introduced 2026-08-29; judge on B34.",
+ "_glow_drift_open": "GLOW DRIFT IS THE ONE UNSOLVED FAULT, and four prompt fixes have not moved it: peak-in-the-middle (batch AA), the brightness cap (AB), the no-add clause (AC) and light-vs-object (AC). Measured drift medians for glow: 25.7 (Z) -> 18.5 (AA) -> 21.4 (AB) -> 22.8 (AC), with 5 of 29 still draining away in AC. The other faults in this family ARE solved -- blowout sits at ~1.9% median and multiplication is fixed. RECOMMENDATION: stop writing new clauses for it. Judge glows individually by eye and reject the faders; the marginal prompt is no longer paying."
 }
