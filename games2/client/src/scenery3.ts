@@ -843,3 +843,47 @@ export class SceneryPieces {
     await Promise.all([...ids].map((id) => this.request(id)));
   }
 }
+
+/* -- the published hitbox (live/tuning/scenery_hitbox.json) ------------------ */
+
+/** ONE ELLIPSE OF GROUND a piece stands on — `pixel-wiki-scenery-hitbox@1`.
+ *  Frame PIXELS, origin at the frame's CENTRE, the same units and quantity as a
+ *  monster's nadir shadow, so a consumer that resolves those needs no new
+ *  arithmetic. Never drawn: it is the footprint, and the doc states its purpose
+ *  — "its centre line is what decides render order — a player above an
+ *  ellipse's centre is drawn behind that part of the piece, below it in
+ *  front." */
+export type SceneryHitbox = { ax: number; ay: number; rx: number; ry: number; rot?: number };
+export type SceneryHitboxRec = { boxes?: SceneryHitbox[]; auto?: boolean };
+
+/** The record in force for one piece variation, or null when NOBODY HAS
+ *  DECIDED. Null and `boxes: []` are different answers and a consumer must not
+ *  conflate them: the empty list is a decision — this piece needs no footprint,
+ *  which is right for anything hung on a wall — while null means fall back.
+ *
+ *  KEYED PER VARIATION ("<path>#<state>", since variations differ in size) with
+ *  a piece-level record under the bare path as the fallback. CASE: a piece names
+ *  its states in UPPER_SNAKE (`NOT_LIT_1`) and the wiki writes the key in lower
+ *  (`#not_lit_1`), so the state is tried as given and then lowered — without
+ *  that, a piece with only per-variation records resolves to nothing at all.
+ *
+ *  `auto` is the wiki's alpha-placed PROPOSAL, shown as the default until the
+ *  maintainer accepts or edits it. Returned as-is: the game uses them as
+ *  provisional footprints, which is what the doc invites, and a caller that
+ *  wants only confirmed boxes filters on it. */
+export function sceneryHitboxFor(
+  doc: Record<string, SceneryHitboxRec> | null | undefined,
+  path: string,
+  state?: string,
+): { boxes: SceneryHitbox[]; auto: boolean } | null {
+  if (!doc) return null;
+  const rec =
+    (state ? doc[`scenery/${path}#${state}`] ?? doc[`scenery/${path}#${state.toLowerCase()}`] : undefined) ??
+    doc[`scenery/${path}`];
+  if (!rec) return null;
+  const boxes = (Array.isArray(rec.boxes) ? rec.boxes : []).filter(
+    (b): b is SceneryHitbox =>
+      !!b && [b.ax, b.ay, b.rx, b.ry].every((n) => typeof n === "number" && isFinite(n)) && b.rx > 0 && b.ry > 0,
+  );
+  return { boxes, auto: !!rec.auto };
+}

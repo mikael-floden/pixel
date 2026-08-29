@@ -185,6 +185,8 @@ import {
   roofedCells,
   southSprite,
   stateFor,
+  sceneryHitboxFor,
+  type SceneryHitboxRec,
   type SceneryFit,
 } from "../scenery3";
 
@@ -1254,6 +1256,8 @@ export class WorldScene extends Phaser.Scene {
   private sceneryAsked = new Set<string>();
   private sceneryQueue: [string, string][] = [];
   private sceneryRebuilds = 0; // the boot hold waits for the first one
+  /** live/tuning/scenery_hitbox.json `.overrides`, or null until it lands. */
+  private sceneryHitboxDoc: Record<string, SceneryHitboxRec> | null = null;
   // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
   private terrain: TerrainGrid | null = null;
   // ---- INDOOR MODE (see the constants block above) ------------------------
@@ -1403,6 +1407,10 @@ export class WorldScene extends Phaser.Scene {
     row: number;
     top: number; // column's top level
     solid: boolean; // impassable structure — its tall art is a billboard
+    /** POINT-ANCHORED (scenery): `depth` is the published hitbox centre's own
+     *  painter line, so "is it in front of me" is that against the body's nadir
+     *  line — exact, and not the grid diagonal with its cell-sized slack. */
+    point?: boolean;
     depth: number;
     x0: number;
     x1: number;
@@ -9030,11 +9038,19 @@ export class WorldScene extends Phaser.Scene {
         // level up, so its top lands ~lh+dy above the feet — a tighter band
         // (the old −26) let that ledge's corner poke between the legs with
         // the foot drawn over it (playtester, standing at a step edge).
+        /* IS THIS PIECE IN FRONT OF ME? A grid occluder answers on cell
+         * diagonals with a 1.2 slack, because its anchor is a cell corner and
+         * the body's is fractional. A POINT-anchored piece has a real published
+         * centre, so it answers exactly — the maintainer's own rule: "a player
+         * above an ellipse's centre is drawn behind that part of the piece,
+         * below it in front." With the slack, a tree whose footprint centre sat
+         * 0.2 cells BEHIND the player still claimed the front. */
+        const fwd = o.point ? o.depth > b.lyFlat : o.col + o.row + 1.2 > colf + rowf;
         const faceOverFeet =
           higher &&
           o.y0 <= feetY + 6 &&
           o.y0 >= feetY - (this.geom.lh + this.geom.dy + 9) &&
-          o.col + o.row + 1.2 > colf + rowf;
+          fwd;
         // (c) A camera-closer SOLID structure whose (tall, bottom-anchored)
         // art overlaps the sprite: billboard art covers anything behind
         // its diagonal regardless of how far its top rises above the feet
@@ -9047,7 +9063,7 @@ export class WorldScene extends Phaser.Scene {
         const solidArtOver =
           higher &&
           o.solid &&
-          o.col + o.row + 1.2 > colf + rowf &&
+          fwd &&
           b.lx >= o.x0 - 6 &&
           b.lx <= o.x1 + 6;
         if (rayBlocked || faceOverFeet || solidArtOver) {
@@ -11367,6 +11383,20 @@ export class WorldScene extends Phaser.Scene {
         }),
       route: this.t3route,
     });
+    /* THE PUBLISHED HITBOXES, fetched as an ASSET and not over the room socket.
+     * The server loads live/tuning/scenery_hitbox.json with every other live
+     * file, but its broadcast payload is `{monsters, constants}` only — and
+     * rightly so: this doc is 1 MB across 3,704 records and would ride every
+     * join and every save. Big live docs go the way tiles3's do, through
+     * `gameUrl` so a staging world reads the repo's copy. Failure is soft: no
+     * doc means every piece falls back to its anchor and a one-tile box. */
+    void fetch(docUrl("live/tuning/scenery_hitbox.json", this.t3route))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        this.sceneryHitboxDoc = (d?.overrides as Record<string, SceneryHitboxRec>) ?? null;
+        this.repaintWorld();
+      })
+      .catch(() => {});
   }
 
   /** The still's crop and canvas, measured ONCE per distinct art file. It is a
@@ -11443,6 +11473,28 @@ export class WorldScene extends Phaser.Scene {
       // multiply overlay, so zero ambient blacks it out for free and a torch
       // through the doorway finds it. That is the props' rule, and the reason
       // there is no mask test here.
+      /* THE PUBLISHED HITBOX — the ground this piece stands on, from the wiki
+       * (live/tuning/scenery_hitbox.json, pushed with every other live file).
+       * Its own contract says what it is for: "its centre line is what decides
+       * render order — a player above an ellipse's centre is drawn behind that
+       * part of the piece, below it in front." The ellipse is in FRAME pixels
+       * from the frame's centre, so `fit.kx/ky` (frame -> screen) and the
+       * crop's origin put it on screen; `flipX` mirrors ax with the art.
+       *
+       * A record with `boxes: []` is a DECISION — this piece needs no footprint
+       * (anything hung on a wall) — and is not the same as no record at all,
+       * which falls back to the anchor and a one-tile box. */
+      const hb = sceneryHitboxFor(this.sceneryHitboxDoc, p.piece, st.key);
+      const box0 = hb?.boxes[0];
+      const hbX = box0
+        ? fit.x + (art.canvas.w / 2 + (fit.flipX ? -box0.ax : box0.ax) - fit.sx) * fit.kx
+        : fit.x + fit.w / 2;
+      const hbY = box0 ? fit.y + (art.canvas.h / 2 + box0.ay - fit.sy) * fit.ky : fit.ay;
+      /* THE SORT KEY IS THE FOOTPRINT'S CENTRE, not the sprite's anchor — the
+       * maintainer's rule, and the same quantity the body sorts on (its nadir
+       * centre). Expressed as an offset from the anchor's painter line so the
+       * base stays the projection everything else uses. */
+      const hbDepth = this.iso.oy + (p.x + p.y) * dy + (hbY - fit.ay);
       const key = sceneryArtKey(sprite);
       const tex = this.textures.get(key);
       const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
@@ -11465,7 +11517,7 @@ export class WorldScene extends Phaser.Scene {
            * at 802.5, four tenths of a cell in front of it (maintainer
            * 2026-08-29: "I'm standing under the scenery, but the scenery is
            * still rendered on top of me"). */
-          .setDepth(this.iso.oy + (p.x + p.y) * dy),
+          .setDepth(hbDepth),
       );
       /* AND IT OCCLUDES. Scenery drew with the right painter depth but told
        * `resolveBodyDepth` nothing, so a body never sorted behind a tree — it
@@ -11499,7 +11551,7 @@ export class WorldScene extends Phaser.Scene {
             .setOrigin(0, 0)
             .setDisplaySize(fit.w, fit.h)
             .setFlipX(fit.flipX)
-            .setDepth(litDepth(this.iso.oy + (p.x + p.y) * dy)),
+            .setDepth(litDepth(hbDepth)),
           col: p.x,
           row: p.y,
           z: (world.rows[srow]?.[scol]?.l ?? 0) + 0.5,
@@ -11518,7 +11570,8 @@ export class WorldScene extends Phaser.Scene {
          * A rug rounds to 0 levels and can never occlude; a tree is several. */
         top: (world.rows[srow]?.[scol]?.l ?? 0) + Math.max(0, Math.round((piece.worldPxHeight ?? 0) / lh)),
         solid: true,
-        depth: this.iso.oy + (p.x + p.y) * dy,
+        point: true,
+        depth: hbDepth,
         /* THE BOX IS A FOOTPRINT, NOT THE DRAWN ART — the props' own rule
          * (`x0: bx, x1: bx + tileSize`), which never uses the art's width
          * either. A tree's crop is its CANOPY: metres of leaves that a body
@@ -11527,10 +11580,14 @@ export class WorldScene extends Phaser.Scene {
          * never wider than the art itself so a lamp post does not claim a whole
          * cell. Still a default: the moment scenery publishes a real
          * ground-contact box, this reads it instead. */
-        x0: fit.x + fit.w / 2 - Math.min(tileSize, fit.w) / 2,
-        x1: fit.x + fit.w / 2 + Math.min(tileSize, fit.w) / 2,
+        /* THE ELLIPSE'S OWN EXTENT when the wiki has published one, else the
+         * props' one-tile default. `y0` stays the art's top — that is how high
+         * the thing rises, which is what the cover crop line means — while the
+         * near edge is the footprint's, not the canopy's. */
+        x0: box0 ? hbX - box0.rx * fit.kx : fit.x + fit.w / 2 - Math.min(tileSize, fit.w) / 2,
+        x1: box0 ? hbX + box0.rx * fit.kx : fit.x + fit.w / 2 + Math.min(tileSize, fit.w) / 2,
         y0: fit.y,
-        y1: fit.y + fit.h,
+        y1: box0 ? hbY + box0.ry * fit.ky : fit.y + fit.h,
       });
       drawn++;
     }
