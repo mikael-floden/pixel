@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from collections import Counter
 
@@ -44,6 +45,7 @@ REPO = os.path.dirname(MAPS2)
 sys.path.insert(0, os.path.join(REPO, "tiles", "pipeline"))
 import transition_render as TR          # the lab's own composer — reused, not copied
 import render as TILE_RENDER            # tiles/pipeline/render.py — wall_height
+import transition_patterns as TPAT      # .plate() — the ONLY lawful conformer
 
 DX, DY, WALL, TILE = 32, 14, 17, 64
 TOP_Y = 10                              # review tiles: diamond apex row in the 64-box
@@ -79,21 +81,91 @@ def region_of(x, y, regions):
     return regions.get((x, y), "r0")
 
 
+PLATE_ROOT = os.path.join(REPO, "tiles", "patterns")
+GROUND_PAL = json.load(open(os.path.join(REPO, "tiles",
+                                         "ground_types.json")))["grounds"]
+PLATE_FALLBACK = Counter()      # ground -> members that could not be resolved
+_REGIONS = None
+
+
+def _plate_regions():
+    """(silhouette, top-face, wall) bool masks — transition_plates.regions()."""
+    global _REGIONS
+    if _REGIONS is None:
+        _, _, sil = TPAT.load_library(PLATE_ROOT)
+        top = TR.top_face(sil)
+        _REGIONS = (sil, top, sil & ~top)
+    return _REGIONS
+
+
+def conformed_plate(rel, ground):
+    """A base-tile member whose art has NO published plate, conformed here.
+
+    tiles/plates is built only from APPROVED REVIEW CELLS, but 104 of the 340
+    members in live/tuning/base_tile_sets.json point at art from
+    tiles/tops (kind top_only, "never resolve one against
+    review/manifest.json") and tiles/base_candidates. No plate exists for any
+    of them, so the old key8 rule appended a second .webp, missed, and fell
+    through to clean — 30.6% of members drew FLAT, invisibly (game agent,
+    2026-08-30; grass was 14 of 14, the island's main land cover).
+
+    Using the art verbatim is NOT the fix: a top tile is 64x64 review
+    geometry whose wall the tops index marks meaningless, a plate is 64x46
+    with a byte-exact silhouette alpha — straight composition puts 928 of
+    2012 px in the wrong alpha (tiles agent, measured). So conform with the
+    tiles agent's OWN conformer and fill the wall from the ground's palette,
+    exactly as transition_plates.plate_array does. Verified: run over a
+    review tile this reproduces their published plate byte-for-byte (0 px
+    differing), alpha == the published silhouette, 2012 opaque."""
+    ck = ("conform", rel, ground)
+    if ck in _tile_cache:
+        return _tile_cache[ck]
+    sil, _top, wall = _plate_regions()
+    a = np.array(TPAT.plate(Image.open(os.path.join(REPO, rel)), PLATE_ROOT))
+    w = GROUND_PAL[ground]["palette"]["wall"].lstrip("#")
+    a[wall, :3] = [int(w[i:i + 2], 16) for i in (0, 2, 4)]
+    a[..., 3] = np.where(sil, 255, 0)
+    a[~sil, :3] = 0
+    assert int((a[..., 3] > 0).sum()) == int(sil.sum()), \
+        f"conformed plate alpha != published silhouette: {rel}"
+    img = Image.fromarray(a.astype(np.uint8))
+    _tile_cache[ck] = img
+    return img
+
+
 def plate_img(ground, region, x, y):
     """The maintainer's ground look: SET per region, MEMBER per cell
-    (basesets port above), member -> plate (tiles/plates resolve rule),
+    (basesets port above); a member resolves to its published plate, or is
+    conformed from its own art when the plate library does not cover it;
     clean -> the ground's clean plate."""
     chosen = pick_set(ground, region)
     m = pick_member(chosen, x, y)
     root = os.path.join(REPO, "tiles", "plates")
     if m.get("kind") == "tile":
-        key8 = m["tile"].rsplit("/", 1)[-1]
-        f = os.path.join(root, ground, key8 + ".webp")
-        if os.path.isfile(f):
-            ck = ("plate", ground, key8)
-            if ck not in _tile_cache:
-                _tile_cache[ck] = Image.open(f).convert("RGBA")
-            return _tile_cache[ck]
+        t = m["tile"]
+        if t.endswith(".webp"):          # literal art path
+            # if the tiles agent ever publishes a plate for this art (its
+            # filename carries the content hash), the OFFICIAL plate wins —
+            # conforming here is a consumer-side stopgap, not ownership
+            for tok in re.findall(r"([0-9a-f]{8})", t.rsplit("/", 1)[-1]):
+                f = os.path.join(root, ground, tok + ".webp")
+                if os.path.isfile(f):
+                    ck = ("plate", ground, tok)
+                    if ck not in _tile_cache:
+                        _tile_cache[ck] = Image.open(f).convert("RGBA")
+                    return _tile_cache[ck]
+            if os.path.isfile(os.path.join(REPO, t)):
+                return conformed_plate(t, ground)
+            PLATE_FALLBACK[ground] += 1
+        else:                            # review key -> published plate
+            key8 = t.rsplit("/", 1)[-1]
+            f = os.path.join(root, ground, key8 + ".webp")
+            if os.path.isfile(f):
+                ck = ("plate", ground, key8)
+                if ck not in _tile_cache:
+                    _tile_cache[ck] = Image.open(f).convert("RGBA")
+                return _tile_cache[ck]
+            PLATE_FALLBACK[ground] += 1
     ck = ("plate", ground, "clean")
     if ck not in _tile_cache:
         _tile_cache[ck] = Image.open(os.path.join(root, ground, "clean.webp")).convert("RGBA")
@@ -726,6 +798,20 @@ def main():
         out = os.path.join(MAPS2, "worlds3", "the_game", "overview.webp")
     img.convert("RGB").save(out, lossless=True, method=4, exact=True)
     print("wrote", out, img.size)
+    # THE SILENT-FLAT GATE. The old member rule fell through to clean.webp on
+    # a miss: a real file, so every existence check passed and the only
+    # symptom was "the world looks flatter than it is" — 30.6% of members,
+    # invisible for two weeks. A miss is now counted and fatal.
+    if PLATE_FALLBACK:
+        print("BASE-TILE MEMBERS THAT COULD NOT BE RESOLVED (drawn flat):")
+        for g, n in sorted(PLATE_FALLBACK.items()):
+            print(f"   {g:22} {n}")
+        raise SystemExit(
+            "render3: %d base-tile member lookups fell back to clean. A "
+            "member with no published plate and no art on disk means "
+            "live/tuning/base_tile_sets.json references something that is "
+            "not published — report it, do not render flat."
+            % sum(PLATE_FALLBACK.values()))
 
 
 if __name__ == "__main__":
