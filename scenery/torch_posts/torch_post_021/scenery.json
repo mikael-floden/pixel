@@ -46,8 +46,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "d6308b28-92cb-4e59-91cb-9b5298c68f4c",
-          "description": "This is the same picture in every frame. ONLY the molten orange light in the head at the top brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. It is at its brightest in the MIDDLE of the animation and back to exactly its first-frame brightness and colour at the end. It never fades out and is never dimmer at the end than at the start.",
+          "group_id": "00372038-fe1d-4154-9e33-2892c38d89ad",
+          "description": "This is the same picture in every frame. ONLY the molten orange light in the head at the top brightens a little and returns. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -63,7 +63,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T17:53:14+00:00",
+          "generated_at": "2026-08-29T18:05:48+00:00",
           "brief": "A3"
         }
       }

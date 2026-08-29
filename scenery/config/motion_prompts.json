@@ -3446,24 +3446,26 @@
   "A2": {
    "group": "torch_posts",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the five flames on the branches flicker. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY the five flames on the branches flicker. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "All five torches burn.",
    "seen_in_art": "a bare tree carrying five burning torches on its branches",
    "example": {
     "piece": "torch_posts/torch_post_014",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1: the flames blew out to white in the middle frames and lost their orange. Peak capped."
   },
   "A3": {
    "group": "torch_posts",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the molten orange light in the head at the top brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. It is at its brightest in the MIDDLE of the animation and back to exactly its first-frame brightness and colour at the end. It never fades out and is never dimmer at the end than at the start.",
+   "prompt": "This is the same picture in every frame. ONLY the molten orange light in the head at the top brightens a little and returns. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The molten head breathes.",
    "seen_in_art": "a torch whose head is running molten rock",
    "example": {
     "piece": "torch_posts/torch_post_021",
     "state": "LIT_1"
-   }
+   },
+   "redo": "Round 1: the head went near-white mid-loop and ended dark red, much dimmer than it started. Peak capped and the end pinned."
   },
   "A4": {
    "group": "flame_niches",
@@ -3545,24 +3547,26 @@
   "A15": {
    "group": "fish_drying_racks",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the hanging fish swing. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY the three hanging fish swing a little to one side and back. The thing that moves is only MOVED, never redrawn: its own detail is copied from the first frame exactly -- every line, every edge, every colour, the same number of parts in the same places. It is displaced as one solid piece and nothing about it is reshaped. Nothing anywhere changes brightness or colour at any point; this is a movement only. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The fish sway.",
    "seen_in_art": "a rack with three split fish hung from it",
    "example": {
     "piece": "fish_drying_racks/fish_drying_rack_002",
     "state": "NOT_LIT_1"
-   }
+   },
+   "redo": "Round 1: the fish barely moved and the whole rack shifted brightness between frames."
   },
   "A16": {
    "group": "fish_drying_racks",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the hanging fish swing. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY the hanging fish swing a little to one side and back. The thing that moves is only MOVED, never redrawn: its own detail is copied from the first frame exactly -- every line, every edge, every colour, the same number of parts in the same places. It is displaced as one solid piece and nothing about it is reshaped. Nothing anywhere changes brightness or colour at any point; this is a movement only. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The fish sway.",
    "seen_in_art": "a rack strung with rows of split fish",
    "example": {
     "piece": "fish_drying_racks/fish_drying_rack_005",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1: 32.9% -- the posts and the grass moved with the fish, and the fish shapes were redrawn."
   },
   "A17": {
    "group": "fish_drying_racks",
@@ -3644,13 +3648,14 @@
   "A24": {
    "group": "rope_swings",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the hanging bench swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY the hanging bench swings a little to one side and back. The thing that moves is only MOVED, never redrawn: its own detail is copied from the first frame exactly -- every line, every edge, every colour, the same number of parts in the same places. It is displaced as one solid piece and nothing about it is reshaped. Nothing anywhere changes brightness or colour at any point; this is a movement only. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The bench swings.",
    "seen_in_art": "a bench seat hung under a wooden frame",
    "example": {
     "piece": "rope_swings/rope_swing_001",
     "state": "NOT_LIT_4"
-   }
+   },
+   "redo": "Round 1 and Y22 both redrew the seat -- the slats change between frames. The copy tail protects everything AROUND the mover but never protected the mover itself; this adds that."
   },
   "A28": {
    "group": "waystones",
@@ -3688,13 +3693,14 @@
   "A31": {
    "group": "waystones",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the gold knotwork on the stone brightens a little and returns. It is lit and clearly visible in every single frame, including the first. It is at its brightest in the MIDDLE of the animation and back to exactly its first-frame brightness and colour at the end. It never fades out and is never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY the gold knotwork on the stone brightens a little and returns. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The knotwork pulses.",
    "seen_in_art": "a standing stone covered in glowing gold knotwork",
    "example": {
     "piece": "waystones/waystone_013",
     "state": "LIT_1"
-   }
+   },
+   "redo": "Round 1: the whole stone washed out to white and the knotwork was dimmer at the end. Peak capped."
   },
   "A32": {
    "group": "waystones",
@@ -3776,13 +3782,14 @@
   "A39": {
    "group": "stumps",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the glowing mushrooms around the base brighten a little and return. It is lit and clearly visible in every single frame, including the first. It is at its brightest in the MIDDLE of the animation and back to exactly its first-frame brightness and colour at the end. It never fades out and is never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+   "prompt": "This is the same picture in every frame. ONLY the glowing mushrooms around the base of the stump brighten a little and return. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
    "moves": "The mushrooms pulse.",
    "seen_in_art": "a stump ringed with glowing cyan mushrooms",
    "example": {
     "piece": "stumps/stump_002",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1: the stump top blew out to white and disappeared into the glare. Peak capped, and the named part narrowed to the mushrooms at the base."
   },
   "A40": {
    "group": "stumps",
@@ -4374,5 +4381,7 @@
  "_narrowing_note": "NARROWING THE NAMED PART IS THE STRONGEST LEVER FOUND SO FAR. Y13 went 21.5%->5.5% motion and 29.5%->3.0% drift purely by changing 'the green surface of the brew bubbles' to 'the small green surface at the very top of the brew moves'. Name the smallest possible region and give it a position ('at the very top', 'at the two ends', 'inside the arch'); the generator holds everything outside a region it can locate.",
  "_ramp_note": "THE GLOW RAMP AND ITS FIX. Asking a glow to 'brighten a little and return' is read as a RAMP: the generator starts at full brightness and slides down, so the last frame is darkest and the light can vanish (batch Z: 6 of 15 drained, drift median 25.7%, worst 61.8%). FIX, MEASURED on 20 glows in batch AA (2026-08-29): add 'It is at its brightest in the MIDDLE of the animation and back to exactly its first-frame brightness and colour at the end. It never fades out and is never dimmer at the end than at the start.' Result: drift median 25.7% -> 18.5%, only 2 of 20 ending badly dark. The strips confirm the SHAPE changed -- these peak mid-animation and come back. NEW SIDE EFFECT to solve next: OVER-BRIGHTNESS at the peak. Three blew out to near-white and lost their own colours for a frame (A44 mushrooms, A39 stump, A45). Untested next step: cap the peak -- 'slightly brighter, never white, and it keeps its own colour at every moment'.",
  "_family_scores": "MEASURED MEDIANS across batches X/Y/Z/AA (motion %, drift %). FLAME IS FINISHED AS A PROBLEM: 8.8 -> 7.4 -> 3.5 motion, 5.5 drift in AA, and no flame has gone out or come on late since the lit-in-every-frame clause became standard. WATER: 3.8 / 7.5 / 5.5, settled, and nearly exhausted -- few unanimated pieces remain. HANGING: 15.2 -> 11.9 -> 14.4; its drift (~22%) is largely pegged cloth shading itself as it swings, which reads as motion not fault. GLOW: was the problem family, now tractable with the ramp fix above; the shapes that work are runes, cracks, veins, lit jars, mushrooms round a stump. FOLIAGE: worst in every batch it appeared in (20.8 / 22.6 / 24.8) -- the single-pixel cap does not bind. Proposed none in AA; keep it that way unless he asks.",
- "_asking_for_more_note": "ASKING FOR MORE MOVEMENT MOSTLY DOES NOT WORK. U25 (puffball) improved 1.4%->10.8% when asked for a clearly visible puff, but Z45 (stall awning) went 5.5%->4.3% under the same treatment. A piece that measures near zero is usually one where the named part is small and surrounded by busier detail; the generator ignores it. Prefer to drop rather than re-prompt a third time."
+ "_asking_for_more_note": "ASKING FOR MORE MOVEMENT MOSTLY DOES NOT WORK. U25 (puffball) improved 1.4%->10.8% when asked for a clearly visible puff, but Z45 (stall awning) went 5.5%->4.3% under the same treatment. A piece that measures near zero is usually one where the named part is small and surrounded by busier detail; the generator ignores it. Prefer to drop rather than re-prompt a third time.",
+ "_peak_cap_note": "CAPPING THE PEAK. The ramp fix (brightest in the middle) introduced over-brightness: glows blow out to near-white and lose their own colour for a frame -- 5 of the 7 batch-AA redos had this. Added 2026-08-29: 'It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment.' Judge on the A2/A3/A31/A39 results.",
+ "_mover_copy_note": "A COPY INSTRUCTION FOR THE MOVING OBJECT ITSELF. The standard copy tail protects everything AROUND the named part and says nothing about the part itself, so the generator is free to redraw the very thing it was told to move -- Y22's swing seat lost its backrest, A24's seat changed slats, A16's fish were reshaped. The rigid-body clause was too vague to stop it. Added 2026-08-29: 'The thing that moves is only MOVED, never redrawn: its own detail is copied from the first frame exactly -- every line, every edge, every colour, the same number of parts in the same places.' Judge on the A15/A16/A24 results."
 }

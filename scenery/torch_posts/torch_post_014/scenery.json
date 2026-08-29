@@ -56,8 +56,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "e993c967-699e-4523-9dcc-e4a21c7faa23",
-          "description": "This is the same picture in every frame. ONLY the five flames on the branches flicker. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "group_id": "e6f58b74-88bc-4020-afb2-57528e708706",
+          "description": "This is the same picture in every frame. ONLY the five flames on the branches flicker. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -73,7 +73,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T17:53:31+00:00",
+          "generated_at": "2026-08-29T18:05:31+00:00",
           "brief": "A2"
         }
       }
