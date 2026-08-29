@@ -18,8 +18,13 @@ semantics only — see world3.py):
     UPPER material of the set. Pairs with no committed set fall back to the
     pair's flat colours through a borrowed mask set (grass__to__water's
     geometry) — the FADE, flagged in the build log for review.
-  * details: top-approved tiles (live/feedback/tiles.json '#top') at
-    DETAIL_FREQ per field cell. Pool is empty today; fills as he approves.
+  * details: NOT a separate system. The maintainer's "once in a while a
+    detail" IS a base-tile-set member drawn from a tiles/tops *_detail_*
+    sheet, carrying its own weight beside the subtle members and the clean
+    weight — so he tunes how often a detail lands, per set, in his own file.
+    (A separate pool keyed on live/feedback '#top' approvals was WRONG: #top
+    rates a review candidate's top face, and drawing those raw put bright
+    lime diamonds with foreign lava/ice walls in a dark field.)
   * scenery: sprite scaled so height == placement.world_px_height, feet at
     the piece's (x,y) cell front vertex, hflip honoured, painter-ordered
     with the terrain.
@@ -133,6 +138,40 @@ def conformed_plate(rel, ground):
     return img
 
 
+def as_surface(im):
+    """Any tile art -> plate geometry (64x46, art at row 0), so a fade or a
+    detail can stand in for a base-tile-set plate anywhere the surface is
+    drawn. A review tile is 64x64 with its diamond apex at TOP_Y; the
+    published transition geometry starts at row 0 (transition_plates.py)."""
+    if im.height == 46:
+        return im
+    ck = ("surf", id(im))
+    if ck in _tile_cache:
+        return _tile_cache[ck]
+    out = im.crop((0, TOP_Y, TILE, min(im.height, TOP_Y + 46)))
+    if out.height < 46:
+        pad = Image.new("RGBA", (TILE, 46), (0, 0, 0, 0))
+        pad.alpha_composite(out, (0, 0))
+        out = pad
+    _tile_cache[ck] = out
+    return out
+
+
+def top_face_only(surf):
+    """The surface's TOP FACE alone — the wall region dropped so the cell's
+    x-over-y wall art shows through. THE WALL IS NEVER THE SURFACE'S."""
+    ck = ("topface", id(surf))
+    if ck in _tile_cache:
+        return _tile_cache[ck]
+    _sil, top, _wall = _plate_regions()
+    a = np.array(surf.convert("RGBA"))
+    out = np.zeros_like(a)
+    out[top] = a[top]
+    im = Image.fromarray(out)
+    _tile_cache[ck] = im
+    return im
+
+
 def plate_img(ground, region, x, y):
     """The maintainer's ground look: SET per region, MEMBER per cell
     (basesets port above); a member resolves to its published plate, or is
@@ -195,7 +234,6 @@ def side_roles(a, b):
 FADES = json.load(open(os.path.join(REPO, "tiles", "fades", "index.json"))) \
     if os.path.isfile(os.path.join(REPO, "tiles", "fades", "index.json")) else {"pairs": {}}
 FADE_BAND = 2                           # cells of fade band each side of a hard edge
-DETAIL_FREQ = 1 / 48                    # a detail roughly once per 48 field cells
 INDOOR_GROUNDS = {"parquet_floor", "brown_paving_stone", "grey_paving_stone"}
 # a wall's side is the ground at its FOOT — but an indoor floor is never a
 # wall's body: a stone wall whose foot stands on parquet is still stone
@@ -475,23 +513,6 @@ def pair_set(a, b):
     return out
 
 
-def detail_pool(ground):
-    """Top-approved detail tiles for a ground (live/feedback '#top' approvals,
-    raw pass — the flattening is why he had never seen them). Empty today."""
-    key = ("details", ground)
-    if key in _set_cache:
-        return _set_cache[key]
-    out = []
-    for ck, cell in MAN["cells"].items():
-        if cell["top"] != ground:
-            continue
-        for c in cell["candidates"]:
-            if FB.get(c["key"] + "#top", {}).get("status") == "approved":
-                out.append(Image.open(os.path.join(REPO, c.get("before") or c["file"])).convert("RGBA"))
-    _set_cache[key] = out
-    return out
-
-
 def fade_pool(field_ground, other):
     """The REAL fade product (tiles/fades, tiles3/fade-tiles@1): top-only mix
     tiles placed BY EDGE_GROUND — the ground the tile's rim belongs to — never
@@ -637,47 +658,48 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                 continue
             zl = L(x, y)
             bx = ox + (x - x0 - (y - y0)) * DX - DX
-            if zl == 0 or gr in liq:
-                if gr in liq:
-                    t = flat_tile(gr)
-                else:
-                    t = plate_img(gr, regions.get((x, y), "r0"), x, y)
-                    is_plate = True
-                if gr not in liq:
-                    # FADE BAND: within FADE_BAND cells of a different SOLID
-                    # ground at the same level, ease the change with the fades
-                    # product (top-only, placed by edge_ground). Deterministic.
-                    near = None
-                    for r in range(2, FADE_BAND + 1):   # ring 1 belongs to the
-                        # composed boundary tile; the fade eases further out
-                        for dx2, dy2 in ((r, 0), (-r, 0), (0, r), (0, -r)):
-                            og = g(x + dx2, y + dy2)
-                            if og and og != gr and og not in liq \
-                                    and L(x + dx2, y + dy2) == zl:
-                                near = (og, r)
-                                break
-                        if near:
+
+            def surface(gr=gr, x=x, y=y, zl=zl):
+                """THE MAINTAINER'S SURFACE for this cell, at ANY level: his
+                base tile set, eased by a fade near a ground change, and once
+                in a while a detail. Returns a 64x46 plate-geometry image.
+
+                Until 2026-08-30 this ran only for zl == 0: every raised cell
+                — the whole massif, every terrace, the town shelf — drew the
+                plain x-over-x review tile and ignored the sets he tunes.
+                'I kinda expected everything from using the base tile sets.'"""
+                t = plate_img(gr, regions.get((x, y), "r0"), x, y)
+                # FADE BAND: within FADE_BAND cells of a different SOLID
+                # ground at the same level, ease the change with the fades
+                # product (top-only, placed by edge_ground). Deterministic.
+                near = None
+                for r in range(2, FADE_BAND + 1):   # ring 1 belongs to the
+                    # composed boundary tile; the fade eases further out
+                    for dx2, dy2 in ((r, 0), (-r, 0), (0, r), (0, -r)):
+                        og = g(x + dx2, y + dy2)
+                        if og and og != gr and og not in liq \
+                                and L(x + dx2, y + dy2) == zl:
+                            near = (og, r)
                             break
                     if near:
-                        pool = fade_pool(gr, near[0])
-                        if pool:
-                            rr = _rng((x * 73856093) ^ (y * 19349663))
-                            # nearer the edge -> stronger mix; jittered pick
-                            hi = len(pool) - 1
-                            band_pos = (FADE_BAND + 1 - near[1]) / (FADE_BAND + 1)
-                            idx = min(hi, int((band_pos * 0.55 + rr() * 0.3 - 0.15) * hi))
-                            f = Image.open(os.path.join(REPO, pool[max(0, idx)][0])).convert("RGBA")
-                            f = f.crop((0, 0, f.width, min(f.height, TOP_Y + 2 * DY + 2)))
-                            t = f
-                    # DETAILS: a top-approved tile once in a while (pool is
-                    # empty until the maintainer approves — then it just works)
-                    if t is flat_tile(gr):
-                        dp = detail_pool(gr)
-                        if dp and _rng((x * 83492791) ^ (y * 2654435761))() < DETAIL_FREQ:
-                            t = dp[int(_rng(x * 31 + y)() * len(dp)) % len(dp)]
-                img.alpha_composite(t, (bx, col_y(x, y, zl) -
-                                        (0 if locals().get("is_plate") and t.height == 46 else TOP_Y)))
-                is_plate = False
+                        break
+                if near:
+                    pool = fade_pool(gr, near[0])
+                    if pool:
+                        rr = _rng((x * 73856093) ^ (y * 19349663))
+                        hi = len(pool) - 1          # nearer the edge -> stronger
+                        band_pos = (FADE_BAND + 1 - near[1]) / (FADE_BAND + 1)
+                        idx = min(hi, int((band_pos * 0.55 + rr() * 0.3 - 0.15) * hi))
+                        f = Image.open(os.path.join(REPO,
+                                       pool[max(0, idx)][0])).convert("RGBA")
+                        return as_surface(f)
+                return t
+
+            if gr in liq:
+                img.alpha_composite(flat_tile(gr), (bx, col_y(x, y, zl) - TOP_Y))
+                continue
+            if zl == 0:
+                img.alpha_composite(surface(), (bx, col_y(x, y, zl)))
                 continue
             front_low = min(L(x + 1, y), L(x, y + 1))
             fx, fy = (x + 1, y) if L(x + 1, y) <= L(x, y + 1) else (x, y + 1)
@@ -690,6 +712,11 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             for f in range(max(0, front_low), zl + 1):
                 t = cap if f == zl else mid
                 img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
+            # ...and the SURFACE goes on the cap: the wall is x-over-y art,
+            # the top is the maintainer's set. Only the top face is painted,
+            # so the cap's own wall — the only lawful wall source — survives.
+            img.alpha_composite(top_face_only(surface()),
+                                (bx, col_y(x, y, zl)))
 
     # 2) transitions on the corner lattice, over the flats: a drawn tile at
     #    corner (x,y) blends cells (x,y),(x+1,y),(x,y+1),(x+1,y+1) when all
