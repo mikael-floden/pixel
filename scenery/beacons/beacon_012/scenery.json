@@ -71,7 +71,28 @@
       "generated_at": "2026-08-15T19:56:35+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7626,
-      "glow_score": 0.0598
+      "glow_score": 0.0598,
+      "animations": {
+        "motion": {
+          "group_id": "c4284df8-93bd-46c8-96cd-9d9f8de31d90",
+          "description": "This is the same picture in every frame. ONLY the flame at the top flickers and the gold sparks drift away from it. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_012/lit_3/animations/motion/00.webp",
+            "beacons/beacon_012/lit_3/animations/motion/01.webp",
+            "beacons/beacon_012/lit_3/animations/motion/02.webp",
+            "beacons/beacon_012/lit_3/animations/motion/03.webp",
+            "beacons/beacon_012/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "beacons/beacon_012/lit_3/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T16:55:57+00:00",
+          "brief": "Z12"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "beacons/beacon_012/lit_4/sprite.webp",

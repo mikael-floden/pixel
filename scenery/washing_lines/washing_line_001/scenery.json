@@ -111,6 +111,29 @@
         "south-east": "washing_lines/washing_line_001/not_lit_3/rotations/south-east.webp",
         "south-west": "washing_lines/washing_line_001/not_lit_3/rotations/south-west.webp",
         "south": "washing_lines/washing_line_001/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "c88496ef-41c1-4b96-a7e0-fe2314a2288c",
+          "description": "This is the same picture in every frame. ONLY the things hanging on the line swing. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "washing_lines/washing_line_001/not_lit_3/animations/motion/00.webp",
+            "washing_lines/washing_line_001/not_lit_3/animations/motion/01.webp",
+            "washing_lines/washing_line_001/not_lit_3/animations/motion/02.webp",
+            "washing_lines/washing_line_001/not_lit_3/animations/motion/03.webp",
+            "washing_lines/washing_line_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "washing_lines/washing_line_001/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:56:16+00:00",
+          "brief": "Z17"
+        }
       }
     },
     "NOT_LIT_4": {

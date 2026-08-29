@@ -100,7 +100,28 @@
       "generated_at": "2026-08-16T17:56:05+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3296,
-      "glow_score": 0.0738
+      "glow_score": 0.0738,
+      "animations": {
+        "motion": {
+          "group_id": "e8cfb599-5b5f-434a-ab89-7bd7017fd403",
+          "description": "This is the same picture in every frame. ONLY the hanging ribbons swing. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "maypoles/maypole_007/not_lit_3/animations/motion/00.webp",
+            "maypoles/maypole_007/not_lit_3/animations/motion/01.webp",
+            "maypoles/maypole_007/not_lit_3/animations/motion/02.webp",
+            "maypoles/maypole_007/not_lit_3/animations/motion/03.webp",
+            "maypoles/maypole_007/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "maypoles/maypole_007/not_lit_3/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T16:56:15+00:00",
+          "brief": "Z15"
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "maypoles/maypole_007/not_lit_4/sprite.webp",

@@ -165,6 +165,29 @@
         "south-east": "fish_drying_racks/fish_drying_rack_003/not_lit_3/rotations/south-east.webp",
         "south-west": "fish_drying_racks/fish_drying_rack_003/not_lit_3/rotations/south-west.webp",
         "south": "fish_drying_racks/fish_drying_rack_003/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "a62a159e-93dd-4900-9dc1-f3bbe8bd7299",
+          "description": "This is the same picture in every frame. ONLY the hanging fish swing. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fish_drying_racks/fish_drying_rack_003/not_lit_3/animations/motion/00.webp",
+            "fish_drying_racks/fish_drying_rack_003/not_lit_3/animations/motion/01.webp",
+            "fish_drying_racks/fish_drying_rack_003/not_lit_3/animations/motion/02.webp",
+            "fish_drying_racks/fish_drying_rack_003/not_lit_3/animations/motion/03.webp",
+            "fish_drying_racks/fish_drying_rack_003/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "fish_drying_racks/fish_drying_rack_003/not_lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:56:23+00:00",
+          "brief": "Z20"
+        }
       }
     },
     "NOT_LIT_4": {
