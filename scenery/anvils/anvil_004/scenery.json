@@ -99,18 +99,39 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "anvils/anvil_004/lit_2/animations/flame/00.webp",
-            "anvils/anvil_004/lit_2/animations/flame/01.webp",
-            "anvils/anvil_004/lit_2/animations/flame/02.webp",
-            "anvils/anvil_004/lit_2/animations/flame/03.webp",
-            "anvils/anvil_004/lit_2/animations/flame/04.webp"
-          ],
-          "strip": "anvils/anvil_004/lit_2/animations/flame__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T06:37:50+00:00"
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "anvils/anvil_004/lit_2/animations/flame/south/00.webp",
+                "anvils/anvil_004/lit_2/animations/flame/south/01.webp",
+                "anvils/anvil_004/lit_2/animations/flame/south/02.webp",
+                "anvils/anvil_004/lit_2/animations/flame/south/03.webp",
+                "anvils/anvil_004/lit_2/animations/flame/south/04.webp"
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "anvils/anvil_004/lit_2/animations/flame/south-east/00.webp",
+                "anvils/anvil_004/lit_2/animations/flame/south-east/01.webp",
+                "anvils/anvil_004/lit_2/animations/flame/south-east/02.webp",
+                "anvils/anvil_004/lit_2/animations/flame/south-east/03.webp",
+                "anvils/anvil_004/lit_2/animations/flame/south-east/04.webp"
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "anvils/anvil_004/lit_2/animations/flame/south-west/00.webp",
+                "anvils/anvil_004/lit_2/animations/flame/south-west/01.webp",
+                "anvils/anvil_004/lit_2/animations/flame/south-west/02.webp",
+                "anvils/anvil_004/lit_2/animations/flame/south-west/03.webp",
+                "anvils/anvil_004/lit_2/animations/flame/south-west/04.webp"
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:08:39+00:00"
         }
       },
       "rotations": {
@@ -134,18 +155,39 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "anvils/anvil_004/lit_3/animations/flame/00.webp",
-            "anvils/anvil_004/lit_3/animations/flame/01.webp",
-            "anvils/anvil_004/lit_3/animations/flame/02.webp",
-            "anvils/anvil_004/lit_3/animations/flame/03.webp",
-            "anvils/anvil_004/lit_3/animations/flame/04.webp"
-          ],
-          "strip": "anvils/anvil_004/lit_3/animations/flame__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T06:37:19+00:00"
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "anvils/anvil_004/lit_3/animations/flame/south/00.webp",
+                "anvils/anvil_004/lit_3/animations/flame/south/01.webp",
+                "anvils/anvil_004/lit_3/animations/flame/south/02.webp",
+                "anvils/anvil_004/lit_3/animations/flame/south/03.webp",
+                "anvils/anvil_004/lit_3/animations/flame/south/04.webp"
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "anvils/anvil_004/lit_3/animations/flame/south-east/00.webp",
+                "anvils/anvil_004/lit_3/animations/flame/south-east/01.webp",
+                "anvils/anvil_004/lit_3/animations/flame/south-east/02.webp",
+                "anvils/anvil_004/lit_3/animations/flame/south-east/03.webp",
+                "anvils/anvil_004/lit_3/animations/flame/south-east/04.webp"
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "anvils/anvil_004/lit_3/animations/flame/south-west/00.webp",
+                "anvils/anvil_004/lit_3/animations/flame/south-west/01.webp",
+                "anvils/anvil_004/lit_3/animations/flame/south-west/02.webp",
+                "anvils/anvil_004/lit_3/animations/flame/south-west/03.webp",
+                "anvils/anvil_004/lit_3/animations/flame/south-west/04.webp"
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:08:22+00:00"
         }
       },
       "rotations": {
@@ -169,18 +211,39 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "anvils/anvil_004/lit_4/animations/flame/00.webp",
-            "anvils/anvil_004/lit_4/animations/flame/01.webp",
-            "anvils/anvil_004/lit_4/animations/flame/02.webp",
-            "anvils/anvil_004/lit_4/animations/flame/03.webp",
-            "anvils/anvil_004/lit_4/animations/flame/04.webp"
-          ],
-          "strip": "anvils/anvil_004/lit_4/animations/flame__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T06:37:26+00:00"
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "anvils/anvil_004/lit_4/animations/flame/south/00.webp",
+                "anvils/anvil_004/lit_4/animations/flame/south/01.webp",
+                "anvils/anvil_004/lit_4/animations/flame/south/02.webp",
+                "anvils/anvil_004/lit_4/animations/flame/south/03.webp",
+                "anvils/anvil_004/lit_4/animations/flame/south/04.webp"
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "anvils/anvil_004/lit_4/animations/flame/south-east/00.webp",
+                "anvils/anvil_004/lit_4/animations/flame/south-east/01.webp",
+                "anvils/anvil_004/lit_4/animations/flame/south-east/02.webp",
+                "anvils/anvil_004/lit_4/animations/flame/south-east/03.webp",
+                "anvils/anvil_004/lit_4/animations/flame/south-east/04.webp"
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "anvils/anvil_004/lit_4/animations/flame/south-west/00.webp",
+                "anvils/anvil_004/lit_4/animations/flame/south-west/01.webp",
+                "anvils/anvil_004/lit_4/animations/flame/south-west/02.webp",
+                "anvils/anvil_004/lit_4/animations/flame/south-west/03.webp",
+                "anvils/anvil_004/lit_4/animations/flame/south-west/04.webp"
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:08:54+00:00"
         }
       },
       "rotations": {
