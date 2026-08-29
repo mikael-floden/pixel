@@ -433,17 +433,6 @@
       },
       "approved": "2026-08-29 round 3"
     },
-    "N27": {
-      "group": "ruined_arches",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY a thin trickle of dust falls from the broken upper edge and fades. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "Dust sifts from the crumbling stone.",
-      "example": {
-        "piece": "ruined_arches/ruined_arch_001",
-        "state": "NOT_LIT_3"
-      },
-      "approved": "2026-08-29 round 3"
-    },
     "N37": {
       "group": "cliff_features",
       "name": "motion",
@@ -455,27 +444,18 @@
       },
       "approved": "2026-08-29 round 3"
     },
-    "N7": {
-      "group": "dock_pilings",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the water around the base moves, lapping gently against the posts. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "Water laps at the base of the posts.",
-      "example": {
-        "piece": "dock_pilings/dock_piling_001",
-        "state": "NOT_LIT_1"
-      },
-      "approved": "2026-08-29 round 3"
-    },
     "N9": {
       "group": "frozen_springs",
       "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY a small highlight moves slowly across the ice, like light catching it. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "Light glints across the ice.",
+      "prompt": "This is the same picture in every frame. ONLY one small bright point of light moves, sliding slowly across the frozen surface. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "A single highlight slides across the ice.",
       "example": {
         "piece": "frozen_springs/frozen_spring_002",
         "state": "NOT_LIT_3"
       },
-      "approved": "2026-08-29 round 3"
+      "approved": "2026-08-29 round 3",
+      "superseded_prompt": "This is the same picture in every frame. ONLY a small highlight moves slowly across the ice, like light catching it. Do not redraw anything else, and do not add or remove anything.",
+      "revised": "2026-08-29 redo. The first version described a glint as an effect; this names ONE point of light as the thing that moves, which is the shape that gave the best results in this domain (ant specks 3.8%, swinging cup 5.4%)."
     },
     "N16": {
       "group": "water_pumps",
@@ -488,17 +468,6 @@
       },
       "approved": "2026-08-29 round 3",
       "note": "moved off water_pump_001 NOT_LIT_1: W8's drip already occupies that state, and one piece carries one idle motion. Kept on a different pump so both his approved ideas survive rather than one overwriting the other."
-    },
-    "N22": {
-      "group": "beached_rowboats",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the boat rocks very slightly where it rests, tilting a pixel and back. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The hull rocks where it rests.",
-      "example": {
-        "piece": "beached_rowboats/beached_rowboat_001",
-        "state": "NOT_LIT_1"
-      },
-      "approved": "2026-08-29 round 3"
     },
     "N6": {
       "group": "mushrooms",
@@ -555,28 +524,6 @@
       },
       "approved": "2026-08-29 round 3"
     },
-    "N36": {
-      "group": "giant_fallen_bells",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the grass around the bell moves, stirring very slightly. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "Grass stirs around the fallen bell.",
-      "example": {
-        "piece": "giant_fallen_bells/giant_fallen_bell_002",
-        "state": "NOT_LIT_3"
-      },
-      "approved": "2026-08-29 round 3"
-    },
-    "N40": {
-      "group": "carts",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the loose cloth over the load moves, lifting a pixel or two and settling. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The tarpaulin over the load lifts.",
-      "example": {
-        "piece": "carts/cart_004",
-        "state": "NOT_LIT_3"
-      },
-      "approved": "2026-08-29 round 3"
-    },
     "N15": {
       "group": "crystal_trees",
       "name": "motion",
@@ -607,6 +554,66 @@
       "moves": "Only the tips of the hanging strands stir.",
       "prompt": "This is the same picture in every frame. ONLY the very tips of the hanging strands sway, a few pixels sideways and very slowly. The rest of the tree is completely still. Do not redraw anything else, and do not add or remove anything.",
       "why": "maintainer 2026-08-29, after two attempts: the object kept being reinterpreted rather than moved. witch_ring stones shifted, the mushroom cap recoloured instead of brightening, and the willow's fine strands boiled at 44.8% even calmed. Do not regenerate."
+    },
+    "N40": {
+      "group": "carts",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the loose cloth over the load moves, lifting a pixel or two and settling. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The tarpaulin over the load lifts.",
+      "example": {
+        "piece": "carts/cart_004",
+        "state": "NOT_LIT_3"
+      },
+      "approved": "2026-08-29 round 3",
+      "why": "maintainer 2026-08-29. All five asked for motion in the SURROUNDINGS of a large object \u2014 grass beside bones, water at a hull, dust off an arch, cloth over a cart \u2014 and the model redrew the large object instead of the small thing next to it. Do not regenerate."
+    },
+    "N27": {
+      "group": "ruined_arches",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY a thin trickle of dust falls from the broken upper edge and fades. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Dust sifts from the crumbling stone.",
+      "example": {
+        "piece": "ruined_arches/ruined_arch_001",
+        "state": "NOT_LIT_3"
+      },
+      "approved": "2026-08-29 round 3",
+      "why": "maintainer 2026-08-29. All five asked for motion in the SURROUNDINGS of a large object \u2014 grass beside bones, water at a hull, dust off an arch, cloth over a cart \u2014 and the model redrew the large object instead of the small thing next to it. Do not regenerate."
+    },
+    "N7": {
+      "group": "dock_pilings",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the water around the base moves, lapping gently against the posts. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Water laps at the base of the posts.",
+      "example": {
+        "piece": "dock_pilings/dock_piling_001",
+        "state": "NOT_LIT_1"
+      },
+      "approved": "2026-08-29 round 3",
+      "why": "maintainer 2026-08-29. All five asked for motion in the SURROUNDINGS of a large object \u2014 grass beside bones, water at a hull, dust off an arch, cloth over a cart \u2014 and the model redrew the large object instead of the small thing next to it. Do not regenerate."
+    },
+    "N22": {
+      "group": "beached_rowboats",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the boat rocks very slightly where it rests, tilting a pixel and back. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The hull rocks where it rests.",
+      "example": {
+        "piece": "beached_rowboats/beached_rowboat_001",
+        "state": "NOT_LIT_1"
+      },
+      "approved": "2026-08-29 round 3",
+      "why": "maintainer 2026-08-29. All five asked for motion in the SURROUNDINGS of a large object \u2014 grass beside bones, water at a hull, dust off an arch, cloth over a cart \u2014 and the model redrew the large object instead of the small thing next to it. Do not regenerate."
+    },
+    "N36": {
+      "group": "giant_fallen_bells",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the grass around the bell moves, stirring very slightly. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Grass stirs around the fallen bell.",
+      "example": {
+        "piece": "giant_fallen_bells/giant_fallen_bell_002",
+        "state": "NOT_LIT_3"
+      },
+      "approved": "2026-08-29 round 3",
+      "why": "maintainer 2026-08-29. All five asked for motion in the SURROUNDINGS of a large object \u2014 grass beside bones, water at a hull, dust off an arch, cloth over a cart \u2014 and the model redrew the large object instead of the small thing next to it. Do not regenerate."
     }
   },
   "_declined_note": "`declined` records briefs he has rejected outright. animate_motion reads `animations` only, so anything here is inert \u2014 it is kept so a later pass can see these were decided, not overlooked."

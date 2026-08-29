@@ -3663,29 +3663,7 @@
             "south-west": "beached_rowboats/beached_rowboat_001/rotations/south-west.webp",
             "south": "beached_rowboats/beached_rowboat_001/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "41cb192f-0016-4f59-8f8f-b63c68af4983",
-              "description": "This is the same picture in every frame. ONLY the boat rocks very slightly where it rests, tilting a pixel and back. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "beached_rowboats/beached_rowboat_001/animations/motion/00.webp",
-                "beached_rowboats/beached_rowboat_001/animations/motion/01.webp",
-                "beached_rowboats/beached_rowboat_001/animations/motion/02.webp",
-                "beached_rowboats/beached_rowboat_001/animations/motion/03.webp",
-                "beached_rowboats/beached_rowboat_001/animations/motion/04.webp"
-              ],
-              "strip": "beached_rowboats/beached_rowboat_001/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T11:07:25+00:00",
-              "brief": "N22"
-            }
-          },
+          "animations": {},
           "art_hash": "6c2bbbacbb0a0a80"
         },
         "NOT_LIT_3": {
@@ -11400,29 +11378,7 @@
             "south-west": "carts/cart_004/rotations/south-west.webp",
             "south": "carts/cart_004/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "42a6e57b-cdec-47af-af25-13d71632116b",
-              "description": "This is the same picture in every frame. ONLY the loose cloth over the load moves, lifting a pixel or two and settling. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "carts/cart_004/animations/motion/00.webp",
-                "carts/cart_004/animations/motion/01.webp",
-                "carts/cart_004/animations/motion/02.webp",
-                "carts/cart_004/animations/motion/03.webp",
-                "carts/cart_004/animations/motion/04.webp"
-              ],
-              "strip": "carts/cart_004/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T11:08:47+00:00",
-              "brief": "N40"
-            }
-          },
+          "animations": {},
           "art_hash": "0a8b797e6e7d7173"
         },
         "NOT_LIT_4": {
@@ -20916,29 +20872,7 @@
             "south-west": "dock_pilings/dock_piling_001/rotations/south-west.webp",
             "south": "dock_pilings/dock_piling_001/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "b75bfa3f-7b47-4a09-a033-6e71f7c699e8",
-              "description": "This is the same picture in every frame. ONLY the water around the base moves, lapping gently against the posts. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "dock_pilings/dock_piling_001/animations/motion/00.webp",
-                "dock_pilings/dock_piling_001/animations/motion/01.webp",
-                "dock_pilings/dock_piling_001/animations/motion/02.webp",
-                "dock_pilings/dock_piling_001/animations/motion/03.webp",
-                "dock_pilings/dock_piling_001/animations/motion/04.webp"
-              ],
-              "strip": "dock_pilings/dock_piling_001/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T11:07:24+00:00",
-              "brief": "N7"
-            }
-          },
+          "animations": {},
           "art_hash": "aaa5895be6b11de5"
         },
         "NOT_LIT_2": {
@@ -26571,8 +26505,8 @@
           "relit_from": "LIT_1",
           "animations": {
             "motion": {
-              "group_id": "4abe558d-6fe9-4663-a00f-4b78c9f7ca9d",
-              "description": "This is the same picture in every frame. ONLY a small highlight moves slowly across the ice, like light catching it. Do not redraw anything else, and do not add or remove anything.",
+              "group_id": "a0ecb4fc-9347-4450-8499-bcd2f8c78138",
+              "description": "This is the same picture in every frame. ONLY one small bright point of light moves, sliding slowly across the frozen surface. Do not redraw anything else, and do not add or remove anything.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -26588,7 +26522,7 @@
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-29T11:07:32+00:00",
+              "generated_at": "2026-08-29T11:16:53+00:00",
               "brief": "N9"
             }
           },
@@ -26747,29 +26681,7 @@
             "south-west": "giant_fallen_bells/giant_fallen_bell_002/rotations/south-west.webp",
             "south": "giant_fallen_bells/giant_fallen_bell_002/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "3f24c8cd-21ce-4da8-8010-593a36b542c8",
-              "description": "This is the same picture in every frame. ONLY the grass around the bell moves, stirring very slightly. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "giant_fallen_bells/giant_fallen_bell_002/animations/motion/00.webp",
-                "giant_fallen_bells/giant_fallen_bell_002/animations/motion/01.webp",
-                "giant_fallen_bells/giant_fallen_bell_002/animations/motion/02.webp",
-                "giant_fallen_bells/giant_fallen_bell_002/animations/motion/03.webp",
-                "giant_fallen_bells/giant_fallen_bell_002/animations/motion/04.webp"
-              ],
-              "strip": "giant_fallen_bells/giant_fallen_bell_002/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T11:08:40+00:00",
-              "brief": "N36"
-            }
-          },
+          "animations": {},
           "art_hash": "f583ed6250b03567"
         },
         "NOT_LIT_4": {
@@ -41914,29 +41826,7 @@
             "south-west": "ruined_arches/ruined_arch_001/rotations/south-west.webp",
             "south": "ruined_arches/ruined_arch_001/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "ca261ba0-fb7d-4540-b59a-5c3020627623",
-              "description": "This is the same picture in every frame. ONLY a thin trickle of dust falls from the broken upper edge and fades. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "ruined_arches/ruined_arch_001/animations/motion/00.webp",
-                "ruined_arches/ruined_arch_001/animations/motion/01.webp",
-                "ruined_arches/ruined_arch_001/animations/motion/02.webp",
-                "ruined_arches/ruined_arch_001/animations/motion/03.webp",
-                "ruined_arches/ruined_arch_001/animations/motion/04.webp"
-              ],
-              "strip": "ruined_arches/ruined_arch_001/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T11:07:24+00:00",
-              "brief": "N27"
-            }
-          },
+          "animations": {},
           "art_hash": "e22edfb6a853df03"
         },
         "NOT_LIT_4": {

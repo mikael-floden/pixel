@@ -70,29 +70,7 @@
         "south-west": "ruined_arches/ruined_arch_001/rotations/south-west.webp",
         "south": "ruined_arches/ruined_arch_001/sprite.webp"
       },
-      "animations": {
-        "motion": {
-          "group_id": "ca261ba0-fb7d-4540-b59a-5c3020627623",
-          "description": "This is the same picture in every frame. ONLY a thin trickle of dust falls from the broken upper edge and fades. Do not redraw anything else, and do not add or remove anything.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "ruined_arches/ruined_arch_001/animations/motion/00.webp",
-            "ruined_arches/ruined_arch_001/animations/motion/01.webp",
-            "ruined_arches/ruined_arch_001/animations/motion/02.webp",
-            "ruined_arches/ruined_arch_001/animations/motion/03.webp",
-            "ruined_arches/ruined_arch_001/animations/motion/04.webp"
-          ],
-          "strip": "ruined_arches/ruined_arch_001/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T11:07:24+00:00",
-          "brief": "N27"
-        }
-      }
+      "animations": {}
     },
     "NOT_LIT_4": {
       "sprite": "ruined_arches/ruined_arch_001/not_lit_4/sprite.webp",
