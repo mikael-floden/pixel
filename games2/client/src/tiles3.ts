@@ -15,12 +15,27 @@
  * for cell against server/test/fixtures/tiles3-parity.json, which was generated
  * out of render3 itself.
  *
- * WHAT STAYS OUTSIDE. Three of render3's decisions need PIXELS, and a pure
+ * WHAT IT RESOLVES, all of it render3's, all of it the maintainer's data: the
+ * base tile set per REGION and member per CELL on every cell — land, liquid,
+ * deck and raised alike; the SLOPE where a ground rises to itself; the FADE
+ * band before a ground change; his once-in-a-while DETAILS; the composed Wang
+ * BOUNDARY, which IS the cell's surface and is never drawn over it; the x-over-y
+ * WALL stack, its course keyed on the wall's own side; and the deck slabs.
+ *
+ * WHAT STAYS OUTSIDE. Four of render3's decisions need PIXELS, and a pure
  * module has none: the storey pitch (measured off the wall art — pass
  * `storeyPitch`, and `measureStoreyPitch` below is the rule to measure it
- * with), the fade set's alien-palette guard (pass `fadeGuard`), and conforming
- * a 64x64 base-candidate into 64x46 plate geometry (a `conform` art is reported
- * as such; the loader conforms it). Nothing here silently substitutes for one.
+ * with), the fade set's alien-palette guard (pass `fadeGuard`), the slope
+ * library's frame check (pass `slopeGuard`), and conforming a 64x64 review tile
+ * into 64x46 plate geometry (a `conform` art is reported as such; the loader
+ * conforms it). Nothing here silently substitutes for one, and every one of
+ * them is counted in `stats` when it is missing.
+ *
+ * AND WHAT IT ONLY NAMES. `topOnly` on a surface is render3's `top_face_only`,
+ * a MASK and not a crop — the wall is a vertical extrusion under the diamond,
+ * so no source rectangle expresses it. `TileArt.borrowedWall` is the face a
+ * `top_only` review tile borrows from another. Both are rasters the draw layer
+ * builds; this module says which.
  */
 
 /* -- geometry (render3 / tiles/docs/GEOMETRY.md) ---------------------------- */
@@ -37,14 +52,19 @@ export const TILE = 64;
 export const TOP_Y = 10;
 /** A plate is the top face plus its wall: 64x46, byte-exact silhouette alpha. */
 export const PLATE_H = 46;
-/** Cells of fade band each side of a hard edge. Ring 1 belongs to the composed
- *  boundary tile, so only ring 2 ever matches at FADE_BAND 2. */
+/** Cells of fade band each side of a hard edge. The band is a real CHEBYSHEV
+ *  distance band from ring 1: the boundary tile rides the corner lattice ON TOP
+ *  of the cell, so ring 1 is still the surface's to dress. */
 export const FADE_BAND = 2;
-/** A detail roughly once per 48 field cells. */
-export const DETAIL_FREQ = 1 / 48;
+/** A detail roughly once per 56 field cells — "once in a while", overridable per
+ *  ground by live/tuning/tile_details.json (`rate`), which publishes none today. */
+export const DETAIL_FREQ = 1 / 56;
 /** Set 0 is reserved, named Clean, and holds nothing but the clean member. It is
  *  never deleted — it is switched off by weight, so a ground can always draw. */
 export const CLEAN_SET_ID = 0;
+/** THE REGION IS A CHUNK: one set per ground per 24x24 block of cells. See
+ *  `regionAt` for why it is not a connected component. */
+export const REGION_CHUNK = 24;
 
 /** A wall's side is the ground at its FOOT — but an indoor floor is never a
  *  wall's body: a stone wall whose foot stands on parquet is still stone.
@@ -206,70 +226,52 @@ export interface Bounds {
 export interface Regions {
   /** render3's `region_of`: "r0" for a cell with no region (void, or outside). */
   idAt(x: number, y: number): string;
-  /** Every region id in the window, in flood-fill discovery order. */
+  /** Every region id the window touches, in row-major discovery order. */
   ids: string[];
 }
 
-/** THE REGION RULE: 4-connected same-ground components, id
- *  `<ground>@<minx>,<miny>` where the minimum is the LEXICOGRAPHIC minimum over
- *  the component's (x,y) TUPLES — the smallest x, and among those the smallest
- *  y. It is NOT (min x, min y) computed separately: those coincide on a
- *  rectangle and diverge on every real coastline, and picking the wrong one
- *  re-keys the set hash and repaints the whole world.
+/** THE REGION RULE: A 24-CELL CHUNK OF ONE GROUND, id `<ground>@<x/24>,<y/24>`.
  *
- *  REGIONS ARE WINDOW-LOCAL. `groundAt` is read only inside the window, exactly
- *  as render3's `g()` returns None outside it, so a component that leaves the
- *  window is cut at the edge and a port that passes a different window gets
- *  different ids. */
+ *  A region is what picks the SET, and its granularity is the consumer's call —
+ *  the shared reference calls it "an opaque string owned by the world agent"
+ *  (wiki/lib/basesets.mjs). CONNECTED COMPONENTS WERE THE WRONG CALL, and this
+ *  is the bug that made the maintainer's set weights invisible: an island is one
+ *  4-connected component per ground, so ONE set painted 98.7% of the_game's
+ *  grass, 99.7% of its snow and 99.8% of its black_rock. A chunk is a LOCATION —
+ *  independent of shape, of which window is being rendered, and of every other
+ *  cell — so the same coordinates always draw the same set, and the map carries
+ *  as many of his sets as he weighted (measured on the_game: the top set's share
+ *  of grass 98.7% -> 75.1%, of snow 99.7% -> 41.3%, of grey_stone 80.5% ->
+ *  41.9%). render3.py's `region_at`, to the character. */
+export function regionAt(ground: string, x: number, y: number): string {
+  return `${ground}@${Math.floor(x / REGION_CHUNK)},${Math.floor(y / REGION_CHUNK)}`;
+}
+
+/** Every region id a window touches, and the id of one cell's OWN ground. Kept
+ *  as an object rather than a bare function because a consumer wants the list
+ *  (a gate reports it, an atlas groups by it) and the id of a void cell must be
+ *  the same "r0" render3's `region_of` returns. */
 export function computeRegions(
   b: Bounds,
   groundAt: (x: number, y: number) => string | null,
 ): Regions {
-  const w = Math.max(0, b.x1 - b.x0);
-  const h = Math.max(0, b.y1 - b.y0);
   const ids: string[] = [];
-  const owner = new Int32Array(w * h).fill(-1);
-  const ground: (string | null)[] = new Array(w * h);
-  for (let y = 0; y < h; y++)
-    for (let x = 0; x < w; x++) ground[y * w + x] = groundAt(b.x0 + x, b.y0 + y);
-  const queue = new Int32Array(w * h);
-  for (let sy = 0; sy < h; sy++) {
-    for (let sx = 0; sx < w; sx++) {
-      const start = sy * w + sx;
-      if (owner[start] >= 0) continue;
-      const g = ground[start];
+  const seen = new Set<string>();
+  for (let y = b.y0; y < b.y1; y++)
+    for (let x = b.x0; x < b.x1; x++) {
+      const g = groundAt(x, y);
       if (!g) continue;
-      const id = ids.length;
-      let head = 0;
-      let tail = 0;
-      queue[tail++] = start;
-      owner[start] = id;
-      let minX = sx;
-      let minY = sy;
-      while (head < tail) {
-        const cur = queue[head++];
-        const cx = cur % w;
-        const cy = (cur - cx) / w;
-        if (cx < minX || (cx === minX && cy < minY)) {
-          minX = cx;
-          minY = cy;
-        }
-        const nbs = [cx + 1 < w ? cur + 1 : -1, cx > 0 ? cur - 1 : -1, cy + 1 < h ? cur + w : -1, cy > 0 ? cur - w : -1];
-        for (const nb of nbs) {
-          if (nb < 0 || owner[nb] >= 0 || ground[nb] !== g) continue;
-          owner[nb] = id;
-          queue[tail++] = nb;
-        }
-      }
-      ids.push(`${g}@${b.x0 + minX},${b.y0 + minY}`);
+      const id = regionAt(g, x, y);
+      if (seen.has(id)) continue;
+      seen.add(id);
+      ids.push(id);
     }
-  }
   return {
     ids,
     idAt(x: number, y: number): string {
       if (x < b.x0 || x >= b.x1 || y < b.y0 || y >= b.y1) return "r0";
-      const o = owner[(y - b.y0) * w + (x - b.x0)];
-      return o < 0 ? "r0" : ids[o];
+      const g = groundAt(x, y);
+      return g ? regionAt(g, x, y) : "r0";
     },
   };
 }
@@ -370,13 +372,48 @@ export function pickSet(sets: BaseSet[], ground: string, region: string): BaseSe
 /** WHICH MEMBER FILLS THIS CELL — per cell, which is what makes the field vary.
  *  Keyed by the SET ID and not by its position, so deleting another set does not
  *  repaint a field nobody touched. -1 is the sentinel for "no member has
- *  weight"; the caller draws clean. */
-export function pickMemberIndex(set: BaseSet | null | undefined, x: number, y: number): number {
+ *  weight"; the caller draws clean.
+ *
+ *  HIS REJECTION OUTRANKS HIS SET. `rejected` drops a member the maintainer put
+ *  in a set and later rejected BEFORE the weighted pick, so the remaining
+ *  members share its weight rather than the field keeping a tile he threw out
+ *  (one such member was measured drawing on the map). The returned index is into
+ *  the FULL `members` array either way. Omit `rejected` for the pure reference
+ *  pick — that is the form wiki/lib/basesets.mjs publishes and the test
+ *  cross-checks. */
+export function pickMemberIndex(
+  set: BaseSet | null | undefined,
+  x: number,
+  y: number,
+  rejected?: (m: BaseMember) => boolean,
+): number {
   if (!set || !set.members.length) return -1;
-  return pickWeighted(
-    set.members.map((m) => m.weight),
+  const pool = rejected ? set.members.filter((m) => m.kind === "clean" || !rejected(m)) : set.members;
+  if (!pool.length) return -1;
+  const i = pickWeighted(
+    pool.map((m) => m.weight),
     unitHash(`bts1|tile|${set.id}|${x}|${y}`),
   );
+  return i < 0 ? -1 : set.members.indexOf(pool[i]);
+}
+
+/** A MEMBER'S VERDICT KEY. A review member is keyed by its review key; a `tops`
+ *  member's identity is its RAW path and not the post rendering of it, and a
+ *  top-only tile has no pair, so its verdict rides the same path with a `#top`
+ *  suffix. render3's `_member_key`. */
+export function memberVerdictKey(tile: string): string {
+  if (!tile || !/\.webp$/.test(tile)) return tile;
+  const at = tile.indexOf("/post/");
+  if (at < 0) return tile;
+  const dir = tile.slice(0, at);
+  const file = tile.slice(at + "/post/".length);
+  const m = /^(tile_\d+)\.[0-9a-f]{8}\.webp$/.exec(file);
+  return m ? `${dir}/${m[1]}.webp` : tile;
+}
+
+/** Repo-relative keys are compared stripped of their slashes, as render3 does. */
+function strip(k: string): string {
+  return k.replace(/^\/+/, "").replace(/\/+$/, "");
 }
 
 /* -- member -> art (tiles/resolve.json) ------------------------------------- */
@@ -414,6 +451,13 @@ export interface ReviewCandidate {
   key: string;
   file: string;
   before?: string;
+  /** THE MEMBER'S OWN ART. `file` is the same tile with its top FLATTENED to the
+   *  ground's clean colour by the pair postprocess's design, so a set member
+   *  drawn from it paints the flat palette: 236 of the maintainer's 340 members
+   *  did, measured, and a grass field's mean top face came out EXACTLY
+   *  palette.top. Every candidate publishes this; the plate is geometry and
+   *  fallback only. */
+  textured?: string;
 }
 export interface ReviewCell {
   top: string;
@@ -433,12 +477,41 @@ export interface GroundType {
 
 export interface FadeTile {
   file: string;
+  /** The feedback key his verdicts ride. A fade is APPROVED-ONLY: he has judged
+   *  825 of the 3,575 tiles and an unjudged one is not a candidate either. */
+  key?: string;
   edge_ground?: string;
   pct?: Record<string, number>;
 }
 /** tiles/fades/index.json — `tiles3/fade-tiles@1`. */
 export interface FadesDoc {
   pairs?: Record<string, FadeTile[]>;
+}
+
+/** One candidate in a built fade pool: the art, his verdict key, how much of the
+ *  other ground shows, and the stars he gave it (which weight the pick). */
+export interface FadePoolTile {
+  file: string;
+  key: string;
+  pct: number;
+  rating: number;
+}
+
+/** tiles/slopes/index.json — `tiles3/slopes@1`. A Wang set on ELEVATION (the
+ *  bit means that corner is RAISED), in the same 64x46 frame as a plate, so a
+ *  slope drops straight into the surface slot. Every published set is a 4px
+ *  sub-storey grade: it softens the foot of a rise, it cannot bridge a 17px
+ *  storey (storey-height sets are requested from the tiles agent). */
+export interface SlopeSet {
+  ground: string;
+  /** `tiles/slopes/<ground>/<set>` — the verdict key's stem and the art root. */
+  dir: string;
+  complete?: boolean;
+  /** Index-aligned, 16 long, content-hashed: `<dir>/post/<post_files[i]>`. */
+  post_files?: string[];
+}
+export interface SlopesDoc {
+  sets?: SlopeSet[];
 }
 
 /** tiles/patterns/index.json — the Wang mask sheet a boundary blend samples,
@@ -459,6 +532,12 @@ export interface TileArt {
   key?: string;
   /** Repo-relative file, absent on a painted liquid diamond. */
   path?: string;
+  /** THE WALL THIS TILE BORROWS. The maintainer marked the tile `top_only`
+   *  (live/tuning/tile_walls.json — its own face is unusable) and named the
+   *  replacement in live/tuning/top_walls.json; the two files only mean anything
+   *  together. The face is `path`'s art with THIS tile's band pasted over rows
+   *  TOP_Y+2*DY.. — one raster the resolver names and does not draw. */
+  borrowedWall?: { key: string; path: string };
   painted?: "liquid_diamond";
   topRGB?: [number, number, number];
   w: number;
@@ -483,8 +562,11 @@ export interface Tiles3Data {
   storeyPitch: number;
   /** tiles/review/manifest.json — needed for walls, flats and details. */
   review?: ReviewManifest;
-  /** live/feedback/tiles.json `.entries` — the maintainer's approvals. */
-  feedback?: Record<string, { status?: string }>;
+  /** live/feedback/tiles.json `.entries` — the maintainer's verdicts. `status`
+   *  gates every art source (a rejected set member, an unapproved fade, an
+   *  unapproved slope tile is not a candidate) and `rating` weights the fade
+   *  pool. */
+  feedback?: Record<string, { status?: string; rating?: number }>;
   /** live/tuning/tile_walls.json `.overrides` — `top_only` keeps a top that
    *  repeats badly out of a storey fill. */
   wallOverrides?: Record<string, { top_only?: boolean }>;
@@ -496,12 +578,30 @@ export interface Tiles3Data {
   baseCandidates?: Record<string, { candidates?: { id?: string; file: string }[] }>;
   /** tiles/fades/index.json. */
   fades?: FadesDoc;
+  /** tiles/slopes/index.json. */
+  slopes?: SlopesDoc;
+  /** live/tuning/top_walls.json `.overrides` — the wall a `top_only` tile
+   *  borrows. Useless without `wallOverrides`, and vice versa. */
+  topWallOverrides?: Record<string, { wall?: string }>;
+  /** live/tuning/tile_tops.json `.overrides` — `own_top` keeps the x-over-y
+   *  tile's OWN top; the base-tile-set surface is not painted over it. */
+  topOverrides?: Record<string, { own_top?: boolean }>;
+  /** live/tuning/tile_details.json `.rate` — a per-ground detail rate. Nothing
+   *  is published today; every ground uses DETAIL_FREQ. */
+  detailRates?: Record<string, number>;
   /** The fade set's ALIEN-PALETTE GUARD, which is a pixel test render3 runs over
    *  the tile's own top diamond (80th percentile of the per-pixel distance to
    *  the nearer of the two palette tops, rejected above 78). A pure module
    *  cannot run it; pass it, or the pool keeps tiles render3 drops — measured on
    *  the parity fixture, 2 of 10 pools differ without it. */
   fadeGuard?: (file: string, field: string, other: string) => boolean;
+  /** IS THIS SLOPE TILE THE 64x46 THE FRAME REQUIRES? render3 falls back to the
+   *  flat plate for a mis-sized publication rather than masking a 30-row tile
+   *  with a 46-row silhouette. Measured today: all 240 reachable (approved,
+   *  complete-set) slope tiles are 64x46, so an absent guard changes nothing —
+   *  but the library has shipped 122 short tiles before, and
+   *  `stats.unguardedSlopes` counts every pick made without one. */
+  slopeGuard?: (file: string) => boolean;
   /** Where a stale index or an unresolvable member is reported. Defaults to
    *  console.warn; the counters in `stats` are always kept. */
   warn?: (message: string) => void;
@@ -516,6 +616,8 @@ export interface Tiles3Stats {
   unresolvedMembers: number;
   /** Fade pools built without `fadeGuard`. */
   unguardedFadePools: number;
+  /** Slope tiles taken without `slopeGuard`. */
+  unguardedSlopes: number;
 }
 
 /* -- the world the resolver reads ------------------------------------------- */
@@ -633,19 +735,55 @@ export function columnY(f: Frame, x: number, y: number, storey: number): number 
 
 /* -- what a cell draws ------------------------------------------------------ */
 
+/** Everything the resolver can hand the draw layer for one cell's TOP.
+ *
+ *  `topOnly` is `top_face_only(...)`: the wall region of the 64x46 art is
+ *  DROPPED so the cell's own x-over-y wall shows through. It is set on a liquid
+ *  (a liquid never shows a wall), on the cap of a wall column and on a deck
+ *  slab. It is a MASK, not a crop — the wall is a vertical extrusion under the
+ *  diamond, so no source rectangle expresses it. */
 export type FieldArt =
-  | { kind: "plate" | "conform" | "clean" | "fade" | "flat"; path: string; w: number; h: number }
-  | { kind: "liquid"; topRGB: [number, number, number]; w: number; h: number };
+  | { kind: "plate" | "conform" | "clean"; path: string; w: number; h: number; topOnly?: boolean }
+  | { kind: "liquid"; topRGB: [number, number, number]; w: number; h: number; topOnly?: boolean };
 
 export interface FadePick {
   other: string;
-  /** Ring distance at which the other ground was found. */
+  /** Chebyshev ring at which the other ground was found: 1 or 2. */
   dist: number;
   /** `<field ground>|<other ground>`. */
   poolKey: string;
   index: number;
-  /** The LCG's first draw — the jitter. */
+  /** The LCG's two draws: `u` decides WHETHER this cell fades at all, `v` picks
+   *  from the pool. Recorded because they are the whole determinism. */
   u: number;
+  v: number;
+  file: string;
+}
+
+/** The resolved surface of one cell, before it is placed. `art` is what draws;
+ *  the rest is the provenance a fixture and a gate check. */
+export interface Surface3 {
+  art: { kind: "plate" | "conform" | "clean"; path: string; w: number; h: number };
+  set?: number;
+  memberIndex?: number;
+  plate?: PlateArt;
+  slope?: SlopePick;
+  fade?: FadePick;
+  detail?: DetailPick;
+  boundary?: Tiles3Boundary;
+}
+
+export interface SlopePick {
+  /** The Wang-on-ELEVATION index: bit set = that corner is RAISED. 0 is flat
+   *  (no slope), 15 a full plateau top. */
+  index: number;
+  /** `tiles/slopes/<ground>/<set>` — the set the chunk picked. */
+  dir: string;
+  file: string;
+}
+
+export interface DetailPick {
+  index: number;
   file: string;
 }
 
@@ -665,10 +803,18 @@ export interface WallColumn {
   /** The cell is in a `walls[]` group, so `side` is the maintainer's, not the
    *  neighbour's. */
   over: boolean;
-  /** A face is exposed: the down-screen neighbour is lower. */
-  capped: boolean;
+  /** A face is exposed: a down-screen neighbour is LOWER. NO EXPOSED FACE, NO
+   *  WALL — a raised cell whose front neighbours sit at its own level shows no
+   *  cliff, and drawing its x-over-x tile anyway painted the tile's wall band
+   *  onto flat ground with nothing in front to cover it (the row of ticks along
+   *  every road and field edge on a plateau). Such a cell is resolved as a
+   *  FIELD cell: one surface, no column. */
+  capped: true;
   cap: TileArt;
   mid: TileArt;
+  /** The ground the repeated course is made of: THE WALL'S SIDE, always. Keying
+   *  it on the top ground drew 407 cells whose courses were a different material
+   *  from their own cap. */
   midGround: string;
   stack: WallStackStep[];
 }
@@ -678,22 +824,40 @@ export interface Tiles3Cell {
   y: number;
   ground: string;
   level: number;
+  /** The cell's OWN ground's region — `<ground>@<x/24>,<y/24>`. */
   region: string;
   /** Column origin: `sx` is the 64-box left edge, `sy` the box top at the cell's
    *  own level (before the tile's own TOP_Y offset). */
   sx: number;
   sy: number;
+  /** "wall" only when a face is EXPOSED. Everything else — level 0, a liquid at
+   *  any level, and a raised cell with no exposed face — draws one surface and
+   *  no column, which is what "field" means to the draw layer. */
   kind: "field" | "wall";
-  /** Field cells only, and only when the ground is not a liquid. */
+  /** The base-tile-set pick behind the surface. Absent when a composed boundary
+   *  IS the surface for its own ground's half — `boundary` carries both halves
+   *  then. */
   set?: number;
   memberIndex?: number;
   plate?: PlateArt;
+  /** The graded tile that replaced the flat plate: this ground rises to ITSELF
+   *  beside the cell. */
+  slope?: SlopePick;
   fade?: FadePick;
-  detail?: { index: number; file: string };
-  /** What is actually drawn on a field cell, and where. */
+  detail?: DetailPick;
+  /** THE TILE IS THE BOUNDARY. When the cell's own four corners hold exactly two
+   *  grounds at one level, render3 draws the composed Wang tile INSTEAD of the
+   *  plate — never over it, which is the zigzag seam one cell off the real edge.
+   *  `art` still names the cell's own half so a draw layer that has not composed
+   *  the boundary yet paints something coherent underneath it. */
+  boundary?: Tiles3Boundary;
+  /** The surface, and where its 64-box goes. */
   art?: FieldArt;
   pasteY?: number;
   wall?: WallColumn;
+  /** The surface is painted at all. False only where the maintainer set
+   *  `own_top` on the cap's review key: keep the x-over-y tile's own top. */
+  dressed?: boolean;
 }
 
 export interface Tiles3Boundary {
@@ -714,6 +878,13 @@ export interface Tiles3Boundary {
   memberA: number;
   setB: number;
   memberB: number;
+  /** A THREE-GROUND JUNCTION STILL GETS A BOUNDARY: the rarest of the three is
+   *  folded into the majority so the tile still blends. Falling back to the pure
+   *  plate there drew the cell's raw diamond edge — a hard straight segment in
+   *  the middle of an otherwise organic coastline. */
+  folded: boolean;
+  /** Only the top face of the composed tile is painted — a wall cap, a liquid. */
+  topOnly?: boolean;
   sx: number;
   sy: number;
   w: number;
@@ -735,6 +906,14 @@ export interface Tiles3DeckCell {
   mid: TileArt;
   sx: number;
   stack: WallStackStep[];
+  /** A roof, a bridge and a cave lid are GROUND too: the slab top wears the
+   *  maintainer's base tile set like any other surface (top face only, so the
+   *  cap's own wall survives). No fade, no slope, no boundary — render3 dresses
+   *  a deck straight from `plate_img`. */
+  surface: PlateArt;
+  surfaceSet: number;
+  surfaceMember: number;
+  surfaceY: number;
 }
 
 export interface Tiles3Window {
@@ -742,6 +921,8 @@ export interface Tiles3Window {
   regions: Regions;
   /** Painter order: back to front in (x+y), then x — render3's own sweep. */
   cells: Tiles3Cell[];
+  /** Every composed boundary in the window, in the same cell order. Each is the
+   *  `boundary` of the cell it is anchored on. */
   boundaries: Tiles3Boundary[];
   decks: Tiles3DeckCell[];
 }
@@ -749,7 +930,12 @@ export interface Tiles3Window {
 /* -- the resolver ----------------------------------------------------------- */
 
 export class Tiles3 {
-  readonly stats: Tiles3Stats = { staleMembers: 0, unresolvedMembers: 0, unguardedFadePools: 0 };
+  readonly stats: Tiles3Stats = {
+    staleMembers: 0,
+    unresolvedMembers: 0,
+    unguardedFadePools: 0,
+    unguardedSlopes: 0,
+  };
 
   private data: Tiles3Data;
   private setCache = new Map<string, BaseSet[]>();
@@ -758,7 +944,11 @@ export class Tiles3 {
   private candCache = new Map<string, ReviewCandidate[]>();
   private tileCache = new Map<string, TileArt>();
   private detailCache = new Map<string, string[]>();
-  private fadeCache = new Map<string, FadeTile[]>();
+  private fadeCache = new Map<string, FadePoolTile[]>();
+  private texturedCache: Map<string, string> | null = null;
+  private slopeCache: Map<string, SlopeSet[]> | null = null;
+  private slopeTileCache = new Map<string, SlopePick | null>();
+  private livePool = new Map<string, { weights: number[]; index: number[] }>();
   private warned = new Set<string>();
 
   constructor(data: Tiles3Data) {
@@ -773,6 +963,7 @@ export class Tiles3 {
     this.setCache.clear();
     this.setPick.clear();
     this.plateCache.clear();
+    this.livePool.clear();
   }
 
   private warn(key: string, message: string): void {
@@ -817,26 +1008,45 @@ export class Tiles3 {
     };
   }
 
-  /** A base_tile_sets member string -> the art that draws it, FROM THE DATA.
+  /** A base_tile_sets member string -> the art that draws it, render3's ladder.
    *
-   *  Missing from `members` means resolve.json is STALE, not that the member is
-   *  invalid: fall back to the documented `forms` rule, count it and say so.
+   *  A member has two legal forms, and which art each resolves to is NOT a
+   *  string rule but a lookup:
    *
-   *  DISAGREEMENT, recorded 2026-08-29: render3 additionally prefers a PUBLISHED
-   *  plate whose 8-hex filename matches a hash token in a `file` member's
-   *  basename, and only conforms when there is none. That branch needs a
-   *  directory listing, which a pure module has not got — so the index decides,
-   *  and the index is right today: over all 340 member references the two rules
-   *  agree on every one. If the tiles agent ever publishes such a plate,
-   *  resolve.json has to publish it too. */
+   *    REVIEW KEY (`tiles/<pair>/<key8>`) -> the candidate's OWN `textured` art,
+   *      CONFORMED into plate geometry. NEVER tiles/plates/<g>/<key8>.webp: that
+   *      is the same tile flattened to the ground's clean colour by the pair
+   *      postprocess's design, and reading it painted 236 of his 340 members
+   *      flat — measured, a grass field's mean top face was EXACTLY palette.top.
+   *      The plate is the fallback for a candidate with no textured pass.
+   *    FILE (`....webp`) -> the art itself, conformed. render3 first probes
+   *      tiles/plates/<ground>/<8-hex token>.webp for every hash token in the
+   *      basename and prefers a published plate; that needs a directory listing,
+   *      which a pure module has not got, so tiles/resolve.json answers it.
+   *      Measured over all 104 file-form members: ZERO such plate exists, so the
+   *      two rules agree on every member published today.
+   *
+   *  DISAGREEMENT, recorded 2026-08-29: tiles/resolve.json's `forms` still
+   *  resolves a review key to the flattened plate, so it is STALE against
+   *  render3 for all 236 review-key members and is only consulted for the file
+   *  form and for the plate fallback. The index owner has been told. */
   memberArt(ground: string, member: string): PlateArt {
     const key = `${ground}|${member}`;
     const hit = this.plateCache.get(key);
     if (hit) return hit;
+    const art = this.resolveMember(ground, member);
+    this.plateCache.set(key, art);
+    return art;
+  }
+
+  private resolveMember(ground: string, member: string): PlateArt {
+    if (!/\.webp$/.test(member)) {
+      const tex = this.texturedArt(member);
+      if (tex) return { kind: "conform", path: tex, member, stale: false, w: TILE, h: PLATE_H };
+    }
     const entry = this.data.memberResolve?.members?.[member];
-    let art: PlateArt;
-    if (entry && typeof entry.art === "string" && entry.art) {
-      art = {
+    if (entry && typeof entry.art === "string" && entry.art)
+      return {
         kind: entry.kind === "plate" ? "plate" : "conform",
         path: entry.art,
         member,
@@ -844,28 +1054,39 @@ export class Tiles3 {
         w: TILE,
         h: PLATE_H,
       };
-    } else {
-      this.stats.staleMembers++;
-      this.warn(
-        `stale:${member}`,
-        `tiles3: "${member}" is not in tiles/resolve.json — the index is STALE. ` +
-          `Falling back to the documented forms rule; regenerate resolve.json.`,
-      );
-      const forms = this.memberArtFromForms(ground, member);
-      if (forms) {
-        art = forms;
-      } else {
-        this.stats.unresolvedMembers++;
-        this.warn(
-          `unresolved:${member}`,
-          `tiles3: "${member}" resolves to no art at all and will draw CLEAN. ` +
-            `base_tile_sets references something that is not published.`,
-        );
-        art = this.cleanPlate(ground);
-      }
+    this.stats.staleMembers++;
+    this.warn(
+      `stale:${member}`,
+      `tiles3: "${member}" is not in tiles/resolve.json — the index is STALE. ` +
+        `Falling back to the documented forms rule; regenerate resolve.json.`,
+    );
+    const forms = this.memberArtFromForms(ground, member);
+    if (forms) return forms;
+    this.stats.unresolvedMembers++;
+    this.warn(
+      `unresolved:${member}`,
+      `tiles3: "${member}" resolves to no art at all and will draw CLEAN. ` +
+        `base_tile_sets references something that is not published.`,
+    );
+    return this.cleanPlate(ground);
+  }
+
+  /** THE MEMBER'S OWN ART for a review key: the candidate's published `textured`
+   *  pass, from the review manifest. Both the full key and its 8-hex basename
+   *  index it, as render3 does. */
+  private texturedArt(key: string): string | null {
+    if (!this.texturedCache) {
+      const m = new Map<string, string>();
+      for (const cell of Object.values(this.data.review?.cells ?? {}))
+        for (const c of cell.candidates) {
+          if (!c.textured) continue;
+          const k = strip(c.key);
+          m.set(k, c.textured);
+          m.set(k.split("/").pop() as string, c.textured);
+        }
+      this.texturedCache = m;
     }
-    this.plateCache.set(key, art);
-    return art;
+    return this.texturedCache.get(strip(key)) ?? null;
   }
 
   /** resolve.json's own `forms`, for when the index is stale. The plate form's
@@ -891,7 +1112,7 @@ export class Tiles3 {
   }
 
   /** The maintainer's ground look for one cell: SET per region, MEMBER per cell,
-   *  member -> art. */
+   *  member -> art. His rejections are applied to the member pool first. */
   plateAt(
     ground: string,
     region: string,
@@ -899,13 +1120,53 @@ export class Tiles3 {
     y: number,
   ): { set: BaseSet; memberIndex: number; art: PlateArt } {
     const set = this.setForRegion(ground, region);
-    const memberIndex = pickMemberIndex(set, x, y);
+    /* The rejected members are dropped ONCE per set, not per cell: this runs on
+     * every cell of every window and twice more on every boundary, and the
+     * filter+map form allocated four arrays each time. Same answer as
+     * `pickMemberIndex(set, x, y, rejected)`, and the parity fixture proves it. */
+    const pool = this.pool(ground, set);
+    const i = pickWeighted(pool.weights, unitHash(`bts1|tile|${set.id}|${x}|${y}`));
+    const memberIndex = i < 0 ? -1 : pool.index[i];
     const member = memberIndex >= 0 ? set.members[memberIndex] : null;
     const art =
       member && member.kind === "tile"
         ? this.memberArt(ground, member.tile)
         : this.cleanPlate(ground);
     return { set, memberIndex, art };
+  }
+
+  /** One set's members with his rejections already applied: the weights to pick
+   *  over, and where each lands in the set's full `members`. */
+  private pool(ground: string, set: BaseSet): { weights: number[]; index: number[] } {
+    const k = `${ground}|${set.id}`;
+    let p = this.livePool.get(k);
+    if (!p) {
+      p = { weights: [], index: [] };
+      set.members.forEach((m, i) => {
+        if (m.kind !== "clean" && this.memberRejected(m)) return;
+        (p as { weights: number[]; index: number[] }).weights.push(m.weight);
+        (p as { weights: number[]; index: number[] }).index.push(i);
+      });
+      this.livePool.set(k, p);
+    }
+    return p;
+  }
+
+  /** The same look at the cell's OWN region — every caller that has a ground and
+   *  a cell and no opinion about regions. */
+  plateFor(ground: string, x: number, y: number) {
+    return this.plateAt(ground, regionAt(ground, x, y), x, y);
+  }
+
+  /** Did he reject this member? The verdict rides the member's key, that key
+   *  plus `#top`, or the raw tile string. */
+  memberRejected(m: BaseMember): boolean {
+    if (m.kind !== "tile" || !m.tile) return false;
+    const fb = this.data.feedback ?? {};
+    const k = memberVerdictKey(m.tile);
+    for (const probe of [k, `${k}#top`, m.tile])
+      if (fb[strip(probe)]?.status === "rejected") return true;
+    return false;
   }
 
   /* -- the review matrix --------------------------------------------------- */
@@ -942,22 +1203,63 @@ export class Tiles3 {
     return cands[0] ?? null;
   }
 
-  /** The x-over-y tile — THE ONLY WALL SOURCE. Falls back to same-over-same.
-   *  Throws when neither exists: the matrix is the only wall source, and a
-   *  missing entry is a hole in it, not something to paint around. */
-  overTile(top: string, side: string): TileArt {
-    const k = `over|${top}|${side}`;
-    const hit = this.tileCache.get(k);
-    if (hit) return hit;
+  /** The candidate behind the x-over-y tile — same-over-same is the fallback. */
+  overCandidate(top: string, side: string): ReviewCandidate {
     const c = this.approvedCandidate(top, side) ?? this.approvedCandidate(top, top);
     if (!c)
       throw new Error(
         `tiles3: no review cell for ${top} over ${side} (nor ${top} over ${top}) — ` +
           `the x-over-y matrix is the ONLY wall source and it has no tile`,
       );
+    return c;
+  }
+
+  /** The x-over-y tile — THE ONLY WALL SOURCE. Falls back to same-over-same.
+   *  Throws when neither exists: the matrix is the only wall source, and a
+   *  missing entry is a hole in it, not something to paint around.
+   *
+   *  TOP_ONLY: when the maintainer marked this tile's own wall unusable, the
+   *  face is replaced by the wall he chose for it in top_walls.json — the tile
+   *  keeps its top and BORROWS a wall, which is the only thing the two files
+   *  mean together. Without the pairing the mark was dead: it filtered a storey
+   *  pool it could never match. */
+  overTile(top: string, side: string): TileArt {
+    const k = `over|${top}|${side}`;
+    const hit = this.tileCache.get(k);
+    if (hit) return hit;
+    const c = this.overCandidate(top, side);
     const t: TileArt = { role: "over", top, side, key: c.key, path: c.file, w: TILE, h: TILE };
+    if (this.topOnly(c.key)) {
+      const lend = this.borrowedWall(c.key) ?? this.approvedCandidate(side, side);
+      if (lend) t.borrowedWall = { key: lend.key, path: lend.file };
+    }
     this.tileCache.set(k, t);
     return t;
+  }
+
+  /** live/tuning/tile_walls.json: this tile's own wall is unusable. */
+  topOnly(key: string): boolean {
+    return !!this.data.wallOverrides?.[strip(key)]?.top_only;
+  }
+
+  /** live/tuning/tile_tops.json: keep the x-over-y tile's OWN top; do not paint
+   *  the base-tile-set surface over it. */
+  ownTop(key: string): boolean {
+    return !!this.data.topOverrides?.[strip(key)]?.own_top;
+  }
+
+  /** live/tuning/top_walls.json: the wall the maintainer picked for a `top_only`
+   *  tile. The reference names `<cell>/<key8>`; the candidate it points at is
+   *  looked up in the review matrix, never reconstructed as a path. */
+  borrowedWall(key: string): ReviewCandidate | null {
+    const ref = this.data.topWallOverrides?.[strip(key)]?.wall;
+    if (!ref) return null;
+    const parts = strip(ref).split("/");
+    if (parts.length < 2) return null;
+    const k8 = parts[parts.length - 1];
+    const cell = this.data.review?.cells?.[parts[parts.length - 2]];
+    if (!cell) return null;
+    return cell.candidates.find((c) => strip(c.key).endsWith(`/${k8}`)) ?? null;
   }
 
   /** The repeated storey below a cap: same-over-same, honouring `top_only`. */
@@ -1025,9 +1327,16 @@ export class Tiles3 {
     return null;
   }
 
-  /** Top-approved detail tiles for a ground: the maintainer's `#top` approvals
-   *  in the raw (pre-flattening) pass. The pool is empty for most grounds and
-   *  the field never reaches for one today — see `resolveWindow`. */
+  /** THE MAINTAINER'S ONCE-IN-A-WHILE GROUND DETAILS — his `#top` approvals, in
+   *  review-manifest order.
+   *
+   *  The wiki states the contract in his words: the roof glyph is "rating the
+   *  TOP as a once-in-a-while ground detail", and a tile REJECTED AS A PAIR (bad
+   *  wall) can still be a top-approved detail — the two reviews are independent
+   *  by design. The art is the TEXTURED pass, not `file`: the pair postprocess
+   *  flattens every top to the clean colour, which is WHY he has never seen most
+   *  of them. A detail is CONFORMED like any other surface, so its foreign lava,
+   *  ice or sand wall can never leak into a field. */
   detailPool(ground: string): string[] {
     let out = this.detailCache.get(ground);
     if (out) return out;
@@ -1035,39 +1344,143 @@ export class Tiles3 {
     const fb = this.data.feedback ?? {};
     for (const cell of Object.values(this.data.review?.cells ?? {})) {
       if (cell.top !== ground) continue;
-      for (const c of cell.candidates)
-        if (fb[`${c.key}#top`]?.status === "approved") out.push(c.before ?? c.file);
+      for (const c of cell.candidates) {
+        if (fb[`${c.key}#top`]?.status !== "approved") continue;
+        const rel = c.textured ?? c.before ?? c.file;
+        if (rel) out.push(rel);
+      }
     }
     this.detailCache.set(ground, out);
     return out;
   }
 
+  /* -- slopes -------------------------------------------------------------- */
+
+  /** THE SLOPE SETS A GROUND CAN DRAW, in `dir` order.
+   *
+   *  ONLY COMPLETE SETS: 9 of the 225 published sets ship fewer than 16 post
+   *  files, and a Wang set indexed by a corner bitmask is an out-of-range read on
+   *  a short one. ONLY JUDGED SETS: he has judged 15 of the 225, and picking
+   *  across all 15 seeds per ground meant roughly 14 of every 15 slope tiles came
+   *  from a set he had never seen ("I kinda got the feeling you used a slope I
+   *  never approved"). */
+  slopeSets(ground: string): SlopeSet[] {
+    if (!this.slopeCache) {
+      const by = new Map<string, SlopeSet[]>();
+      for (const st of this.data.slopes?.sets ?? []) {
+        if (!st.complete || (st.post_files?.length ?? 0) !== 16) continue;
+        let any = false;
+        for (let i = 0; i < 16 && !any; i++) any = this.slopeApproved(st.dir, i);
+        if (!any) continue;
+        const list = by.get(st.ground);
+        if (list) list.push(st);
+        else by.set(st.ground, [st]);
+      }
+      for (const list of by.values()) list.sort((a, b) => (a.dir < b.dir ? -1 : a.dir > b.dir ? 1 : 0));
+      this.slopeCache = by;
+    }
+    return this.slopeCache.get(ground) ?? [];
+  }
+
+  /** HIS VERDICT, PER TILE — verdicts are keyed `<set dir>/tile_NN`. */
+  slopeApproved(dir: string, index: number): boolean {
+    const k = `${strip(dir)}/tile_${String(index).padStart(2, "0")}`;
+    return this.data.feedback?.[k]?.status === "approved";
+  }
+
+  /** The graded tile for this corner bitmask. The SEED is chosen per CHUNK, so a
+   *  hillside keeps one boundary character for the same reason a base set does.
+   *  Null for an unjudged ground (light_soil, and every ground with no approved
+   *  set) and for the flat/full indices 0 and 15. */
+  slopeTile(ground: string, index: number, x: number, y: number): SlopePick | null {
+    const ck = `${ground}|${index}|${Math.floor(x / REGION_CHUNK)},${Math.floor(y / REGION_CHUNK)}`;
+    const hit = this.slopeTileCache.get(ck);
+    if (hit !== undefined) return hit;
+    let out: SlopePick | null = null;
+    if (index > 0 && index < 16) {
+      const sets = this.slopeSets(ground).filter((st) => this.slopeApproved(st.dir, index));
+      if (sets.length) {
+        const st = sets[fnv1a(`slope|${ground}|${Math.floor(x / REGION_CHUNK)}|${Math.floor(y / REGION_CHUNK)}`) % sets.length];
+        const file = `${st.dir}/post/${(st.post_files as string[])[index]}`;
+        /* A MIS-SIZED PUBLICATION FALLS BACK TO THE FLAT PLATE, never crashes: a
+         * 30-row tile cannot be masked by the 46-row silhouette. */
+        if (this.data.slopeGuard) {
+          if (this.data.slopeGuard(file)) out = { index, dir: st.dir, file };
+        } else {
+          this.stats.unguardedSlopes++;
+          out = { index, dir: st.dir, file };
+        }
+      }
+    }
+    this.slopeTileCache.set(ck, out);
+    return out;
+  }
+
+  /** THE SLOPE BITMASK for one cell: bit set when a cell touching that corner is
+   *  HIGHER and made of the SAME ground. Corner order is the Wang order —
+   *  NW, NE, SW, SE — and the bit is `8 >> i`. This is what makes a path uphill
+   *  read as a climb instead of a stack of flat diamonds. */
+  slopeIndexAt(
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    ground: string,
+    x: number,
+    y: number,
+    zl: number,
+  ): number {
+    /* Unrolled over the corner (i = 0..3 -> NW, NE, SW, SE) and the four cells
+     * that touch it. Runs on every cell of every window, so it allocates
+     * nothing: the array-of-pairs form cost 8 arrays per cell. */
+    let idx = 0;
+    for (let i = 0; i < 4; i++) {
+      const cx = x + (i & 1);
+      const cy = y + (i >> 1);
+      for (let k = 0; k < 4; k++) {
+        const ax = cx - 1 + (k & 1);
+        const ay = cy - 1 + (k >> 1);
+        if (L(ax, ay) > zl && g(ax, ay) === ground) {
+          idx |= 8 >> i;
+          break;
+        }
+      }
+    }
+    return idx;
+  }
+
   /* -- fades --------------------------------------------------------------- */
 
-  /** The REAL fade product: top-only mix tiles placed BY EDGE_GROUND — the
+  /** THE REAL FADE PRODUCT: top-only mix tiles placed BY EDGE_GROUND — the
    *  ground the tile's RIM belongs to — never by area majority (big rocks ON an
    *  ice sheet). Sorted by how much of the other ground shows.
+   *
+   *  APPROVED ONLY, and his rating rides the entry. He has judged 825 of the
+   *  3,575 fade tiles (480 approved, 345 rejected) — a layer he actively rates,
+   *  so an unjudged tile is not a candidate either; merely dropping the rejected
+   *  ones still drew 151 tiles he had never seen.
    *
    *  8..55% is the honest-mix window: a ~0% tile is the source set's own idea of
    *  a pure field, a >60% one reads as the other ground with a rim, and 50/50 is
    *  the maintainer's never rule. */
-  fadePool(field: string, other: string): FadeTile[] {
+  fadePool(field: string, other: string): FadePoolTile[] {
     const key = `${field}|${other}`;
     let out = this.fadeCache.get(key);
     if (out) return out;
     out = [];
     const pairs = this.data.fades?.pairs ?? {};
+    const fb = this.data.feedback ?? {};
     if (!this.data.fadeGuard) this.stats.unguardedFadePools++;
     for (const pk of [`${field}__to__${other}`, `${other}__to__${field}`]) {
       for (const t of pairs[pk] ?? []) {
         if (t.edge_ground !== field) continue;
+        const e = fb[t.key ?? ""];
+        if (e?.status !== "approved") continue;
         const pct = t.pct?.[other] ?? 0;
         if (!(pct >= 8 && pct <= 55)) continue;
         if (this.data.fadeGuard && !this.data.fadeGuard(t.file, field, other)) continue;
-        out.push(t);
+        out.push({ file: t.file, key: t.key ?? "", pct, rating: Number(e.rating) || 0 });
       }
     }
-    out.sort((a, b) => (a.pct?.[other] ?? 0) - (b.pct?.[other] ?? 0));
+    out.sort((a, b) => a.pct - b.pct);
     this.fadeCache.set(key, out);
     return out;
   }
@@ -1089,140 +1502,225 @@ export class Tiles3 {
     const regions = computeRegions(b, g);
 
     const cells: Tiles3Cell[] = [];
+    const boundaries: Tiles3Boundary[] = [];
     for (let s = b.x0 + b.y0; s < b.x1 + b.y1 - 1; s++) {
       for (let x = Math.max(b.x0, s - b.y1 + 1); x < Math.min(b.x1, s - b.y0 + 1); x++) {
-        const y = s - x;
-        const gr = g(x, y);
-        if (!gr) continue;
-        const zl = L(x, y);
-        const region = regions.idAt(x, y);
-        const cell: Tiles3Cell = {
-          x,
-          y,
-          ground: gr,
-          level: zl,
-          region,
-          sx: columnX(frame, x, y),
-          sy: columnY(frame, x, y, zl),
-          kind: "field",
-        };
+        const cell = this.resolveCell(view, frame, g, L, x, s - x);
+        if (!cell) continue;
         cells.push(cell);
-        const liquid = view.isLiquid(gr);
-        if (zl === 0 || liquid) {
-          let art: FieldArt;
-          if (liquid) {
-            const t = this.flatTile(gr);
-            art = {
-              kind: "liquid",
-              topRGB: t.topRGB ?? [128, 128, 128],
-              w: t.w,
-              h: t.h,
-            };
-          } else {
-            const p = this.plateAt(gr, region, x, y);
-            cell.set = p.set.id;
-            cell.memberIndex = p.memberIndex;
-            cell.plate = p.art;
-            art = { kind: p.art.kind, path: p.art.path, w: p.art.w, h: p.art.h };
-            const fade = this.fadeAt(g, L, gr, x, y, zl, view);
-            if (fade) {
-              cell.fade = fade;
-              /* A fade tile's WALL is explicitly meaningless (the index says so),
-               * so it is cropped to the top diamond and a flat field never grows
-               * a stray wall. */
-              art = { kind: "fade", path: fade.file, w: TILE, h: TOP_Y + 2 * DY + 2 };
-            }
-            /* render3 places a DETAIL only while the field tile is still
-             * `flat_tile(ground)` — and since plate_img took the field over
-             * (2026-08-29) it never is, so no detail is ever placed. Kept as the
-             * same condition rather than deleted: promote a ground back to a
-             * flat tile and details return with no edit here. */
-            if (art.kind === "flat") {
-              const d = this.detailAt(gr, x, y);
-              if (d) {
-                cell.detail = d;
-                art = { kind: "flat", path: d.file, w: TILE, h: TILE };
-              }
-            }
-          }
-          cell.art = art;
-          /* A 46px plate sits ON the cell's top vertex; anything 64-tall (the
-           * liquid diamond, a cropped fade) hangs from TOP_Y. */
-          cell.pasteY = cell.sy - (!liquid && art.h === PLATE_H ? 0 : TOP_Y);
-          continue;
-        }
-        cell.kind = "wall";
-        cell.wall = this.wallColumn(view, frame, g, L, gr, x, y, zl);
+        if (cell.boundary) boundaries.push(cell.boundary);
       }
     }
 
-    return {
-      frame,
-      regions,
-      cells,
-      boundaries: this.boundaries(frame, regions, g, L),
-      decks: this.deckCells(view, frame),
-    };
+    return { frame, regions, cells, boundaries, decks: this.deckCells(view, frame) };
   }
 
-  /** THE FADE BAND: within FADE_BAND cells of a different SOLID ground at the
-   *  same level, ease the change with the fades product. Ring 1 belongs to the
-   *  composed boundary tile, so the scan starts at ring 2. */
-  private fadeAt(
+  /** ONE CELL, whole. render3's inner loop: a liquid draws its surface's top
+   *  face and nothing else; a level-0 cell draws its Wang surface entire; a
+   *  raised cell draws its wall column and then wears the surface on the cap —
+   *  and a raised cell with NO EXPOSED FACE draws only the surface, which is a
+   *  field cell in every sense the draw layer has. */
+  resolveCell(
+    view: World3View,
+    frame: Frame,
     g: (x: number, y: number) => string | null,
     L: (x: number, y: number) => number,
-    gr: string,
     x: number,
     y: number,
-    zl: number,
-    view: World3View,
-  ): FadePick | null {
-    let near: [string, number] | null = null;
-    for (let r = 2; r <= FADE_BAND && !near; r++) {
-      for (const [dx, dy] of [
-        [r, 0],
-        [-r, 0],
-        [0, r],
-        [0, -r],
-      ]) {
-        const og = g(x + dx, y + dy);
-        if (og && og !== gr && !view.isLiquid(og) && L(x + dx, y + dy) === zl) {
-          near = [og, r];
-          break;
-        }
-      }
+  ): Tiles3Cell | null {
+    const gr = g(x, y);
+    if (!gr) return null;
+    const zl = L(x, y);
+    const cell: Tiles3Cell = {
+      x,
+      y,
+      ground: gr,
+      level: zl,
+      region: regionAt(gr, x, y),
+      sx: columnX(frame, x, y),
+      sy: columnY(frame, x, y, zl),
+      kind: "field",
+    };
+
+    if (view.isLiquid(gr)) {
+      /* A LIQUID IS A GROUND WITH A SET TOO (water: 16 tiles, clean weight 0 —
+       * he chose every one of them), and it was drawing a flat colour diamond
+       * while being the largest surface on the map. Top face only: a liquid
+       * never shows a wall. render3 takes `surface`, never `wang_surface` — no
+       * quad touching a liquid composes a boundary. */
+      this.dress(cell, this.surface(view, g, L, gr, x, y, zl), true);
+      return cell;
     }
-    if (!near) return null;
-    const pool = this.fadePool(gr, near[0]);
-    if (!pool.length) return null;
-    const u = lcg((x * 73856093) ^ (y * 19349663))();
-    const hi = pool.length - 1;
-    // Nearer the edge -> stronger mix; jittered so the band is not a stripe.
-    const bandPos = (FADE_BAND + 1 - near[1]) / (FADE_BAND + 1);
-    const index = Math.max(0, Math.min(hi, Math.trunc((bandPos * 0.55 + u * 0.3 - 0.15) * hi)));
+    if (zl === 0) {
+      this.dress(cell, this.wangSurface(view, frame, g, L, gr, x, y, zl), false);
+      return cell;
+    }
+
+    const frontLow = Math.min(L(x + 1, y), L(x, y + 1));
+    const down: [number, number] = L(x + 1, y) <= L(x, y + 1) ? [x + 1, y] : [x, y + 1];
+    const override = view.wallSideAt(x, y);
+    let side = override ?? g(down[0], down[1]) ?? gr;
+    /* Stone over its own body; water is never a wall material either. Only when
+     * the maintainer has NOT named the side himself. */
+    if (!override && (INDOOR_GROUNDS.includes(side) || view.isLiquid(side))) side = gr;
+
+    const exposed = frontLow < zl;
+    let dressed = true;
+    if (exposed) {
+      const cap = this.overTile(gr, side);
+      /* The repeated course is the WALL's own material in every case — keying it
+       * on the top ground drew 407 cells whose courses were a different material
+       * from their own cap. */
+      const mid = this.storeyTile(side);
+      const stack: WallStackStep[] = [];
+      for (let f = Math.max(0, frontLow); f <= zl; f++)
+        stack.push({ storey: f, tile: f === zl ? cap : mid, y: columnY(frame, x, y, f) - TOP_Y });
+      cell.kind = "wall";
+      cell.wall = {
+        side,
+        frontLow,
+        fx: down[0],
+        fy: down[1],
+        over: override !== null,
+        capped: true,
+        cap,
+        mid,
+        midGround: side,
+        stack,
+      };
+      dressed = !this.ownTop(this.overCandidate(gr, side).key);
+    }
+    /* ...and the SURFACE goes on the cap: the wall is x-over-y art, the top is
+     * the maintainer's set. TOP FACE ONLY at every raised level, exposed or not,
+     * so the cap's own wall — the only lawful wall source — survives, and an
+     * unexposed cell never paints a wall band onto flat ground. */
+    this.dress(cell, this.wangSurface(view, frame, g, L, gr, x, y, zl), true);
+    cell.dressed = dressed;
+    return cell;
+  }
+
+  /** Record a resolved surface on the cell and work out where its box goes. A
+   *  surface is always 64x46 plate geometry and always sits ON the cell's top
+   *  vertex, whatever produced it. */
+  private dress(cell: Tiles3Cell, srf: Surface3, topOnly: boolean): void {
+    cell.set = srf.set;
+    cell.memberIndex = srf.memberIndex;
+    cell.plate = srf.plate;
+    if (srf.slope) cell.slope = srf.slope;
+    if (srf.fade) cell.fade = srf.fade;
+    if (srf.detail) cell.detail = srf.detail;
+    if (srf.boundary) cell.boundary = srf.boundary;
+    cell.art = { ...srf.art, ...(topOnly ? { topOnly: true } : {}) };
+    cell.pasteY = cell.sy;
+  }
+
+  /** THE COMPOSED BOUNDARY THIS CELL WEARS, or null. The Wang index is read from
+   *  the four corners of the cell BEING DRAWN — `8*NW + 4*NE + 2*SW + 1*SE`, bit
+   *  set = side_b, the ground later in the library's `side_order` — so 0 and 15
+   *  are the pure field and draw no boundary. All four corners must share a
+   *  level, and NO LIQUID may touch the quad: a coast is a hard edge, not a
+   *  blend. */
+  boundaryAt(
+    view: World3View,
+    frame: Frame,
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    x: number,
+    y: number,
+  ): {
+    boundary: Tiles3Boundary;
+    pa: { set: BaseSet; memberIndex: number; art: PlateArt };
+    pb: { set: BaseSet; memberIndex: number; art: PlateArt };
+    ownSide: "a" | "b";
+  } | null {
+    /* THE FAST PATH, and it is most of the map: four corners of ONE ground is a
+     * pure field and composes nothing. Taken before a single allocation —
+     * `boundaryAt` runs on every cell of every window and the quad/Set/sort form
+     * cost eight objects per cell (measured: 93ms for a 64x64 streaming window,
+     * 40 with the early-outs). */
+    const g0 = g(x, y);
+    const g1 = g(x + 1, y);
+    const g2 = g(x, y + 1);
+    const g3 = g(x + 1, y + 1);
+    if (!g0 || !g1 || !g2 || !g3) return null;
+    if (g0 === g1 && g0 === g2 && g0 === g3) return null;
+    const z0 = L(x, y);
+    if (L(x + 1, y) !== z0 || L(x, y + 1) !== z0 || L(x + 1, y + 1) !== z0) return null;
+    let gs: (string | null)[] = [g0, g1, g2, g3];
+    let folded = false;
+    /* A THREE-GROUND JUNCTION STILL GETS A BOUNDARY. Falling back to the pure
+     * plate there drew the cell's raw diamond edge — a hard straight segment
+     * sitting in the middle of an otherwise organic coastline, which is what he
+     * kept marking. The rarest of the three is folded into the majority it
+     * already touches, so the tile still blends. Ties go to the ground seen
+     * FIRST, which is what Counter.most_common does. */
+    if (new Set(gs).size === 3) {
+      const order: string[] = [];
+      const n = new Map<string, number>();
+      for (const v of gs as string[]) {
+        if (!n.has(v)) order.push(v);
+        n.set(v, (n.get(v) ?? 0) + 1);
+      }
+      const ranked = order.slice().sort((a, c) => (n.get(c) as number) - (n.get(a) as number));
+      const keep = ranked.slice(0, 2);
+      const odd = order.find((t) => !keep.includes(t)) as string;
+      gs = (gs as string[]).map((t) => (t === odd ? keep[0] : t));
+      folded = true;
+    }
+    const uniq = new Set(gs as string[]);
+    if (uniq.size !== 2) return null;
+    if ([...uniq].some((q) => view.isLiquid(q))) return null;
+    const sorted = [...uniq].sort();
+    const [sa, sb] = this.sideRoles(sorted[0], sorted[1]);
+    const index =
+      8 * (gs[0] === sb ? 1 : 0) +
+      4 * (gs[1] === sb ? 1 : 0) +
+      2 * (gs[2] === sb ? 1 : 0) +
+      1 * (gs[3] === sb ? 1 : 0);
+    if (index === 0 || index === 15) return null;
+    /* EACH HALF ASKS FOR ITS OWN GROUND'S REGION. Asking with the other ground's
+     * region drew the neighbour from the wrong set. */
+    const pa = this.plateFor(sa, x, y);
+    const pb = this.plateFor(sb, x, y);
     return {
-      other: near[0],
-      dist: near[1],
-      poolKey: `${gr}|${near[0]}`,
-      index,
-      u,
-      file: pool[index].file,
+      pa,
+      pb,
+      ownSide: gs[0] === sb ? "b" : "a",
+      boundary: {
+        x,
+        y,
+        index,
+        a: sa,
+        b: sb,
+        maskFrame: this.maskFrame(index),
+        pattern: this.data.patterns.selection?.default_pattern ?? null,
+        plateA: pa.art,
+        plateB: pb.art,
+        setA: pa.set.id,
+        memberA: pa.memberIndex,
+        setB: pb.set.id,
+        memberB: pb.memberIndex,
+        folded,
+        /* TOP FACE ONLY at every raised level, so the cap's own wall survives.
+         * A quad is one level by the test above and never touches a liquid, so
+         * the cell's own level decides it outright. */
+        topOnly: z0 > 0 || undefined,
+        sx: columnX(frame, x, y),
+        sy: columnY(frame, x, y, z0),
+        w: TILE,
+        h: PLATE_H,
+      },
     };
   }
 
-  private detailAt(ground: string, x: number, y: number): { index: number; file: string } | null {
-    const pool = this.detailPool(ground);
-    if (!pool.length) return null;
-    if (!(lcg((x * 83492791) ^ (y * 2654435761))() < DETAIL_FREQ)) return null;
-    const index = Math.trunc(lcg(x * 31 + y)() * pool.length) % pool.length;
-    return { index, file: pool[index] };
-  }
-
-  /** THE WALL STACK for a level change: the rim cell draws its OVER-tile (its
-   *  own ground over the ground at the face's foot, i.e. the down-screen lower
-   *  neighbour), then one same-over-same storey per exposed level below it.
-   *  WHOLE TILES, not bands, at the MEASURED pitch. */
-  private wallColumn(
+  /** THE TILE IS THE BOUNDARY (the maintainer's Pair Lab model). His lab reads
+   *  the Wang index from the four corners of the tile BEING DRAWN, so every tile
+   *  is a Wang tile and 0/15 are the pure field. Drawing a field plate and then
+   *  compositing a transition over it made the two fight — the field kept its
+   *  hard diamond edge while the transition repainted the whole cell from a
+   *  DIFFERENT set member, which is the zigzag seam one cell off the real edge.
+   *  The composed tile is drawn INSTEAD of the plate, never over it. */
+  private wangSurface(
     view: World3View,
     frame: Frame,
     g: (x: number, y: number) => string | null,
@@ -1231,33 +1729,123 @@ export class Tiles3 {
     x: number,
     y: number,
     zl: number,
-  ): WallColumn {
-    const frontLow = Math.min(L(x + 1, y), L(x, y + 1));
-    const down = L(x + 1, y) <= L(x, y + 1) ? [x + 1, y] : [x, y + 1];
-    const override = view.wallSideAt(x, y);
-    let side = override ?? g(down[0], down[1]) ?? gr;
-    /* Stone over its own body; water is never a wall material either. Only when
-     * the maintainer has NOT named the side himself. */
-    if (!override && (INDOOR_GROUNDS.includes(side) || view.isLiquid(side))) side = gr;
-    const capped = frontLow < zl;
-    const cap = capped ? this.overTile(gr, side) : this.flatTile(gr);
-    const midGround = override ? side : gr;
-    const mid = this.storeyTile(midGround);
-    const stack: WallStackStep[] = [];
-    for (let f = Math.max(0, frontLow); f <= zl; f++)
-      stack.push({ storey: f, tile: f === zl ? cap : mid, y: columnY(frame, x, y, f) - TOP_Y });
-    return {
-      side,
-      frontLow,
-      fx: down[0],
-      fy: down[1],
-      over: override !== null,
-      capped,
-      cap,
-      mid,
-      midGround,
-      stack,
+  ): Surface3 {
+    const b = this.boundaryAt(view, frame, g, L, x, y);
+    if (b) {
+      /* `art` names the cell's OWN half of the composed tile, so a draw layer
+       * that has not composed the boundary yet paints something coherent under
+       * it — and the composed tile's alpha is the full silhouette, so where it
+       * does compose, nothing of the half shows. */
+      const own = b.ownSide === "b" ? b.pb : b.pa;
+      return {
+        art: { kind: own.art.kind, path: own.art.path, w: own.art.w, h: own.art.h },
+        set: own.set.id,
+        memberIndex: own.memberIndex,
+        plate: own.art,
+        boundary: b.boundary,
+      };
+    }
+    return this.surface(view, g, L, gr, x, y, zl);
+  }
+
+  /** THE MAINTAINER'S SURFACE for this cell, AT ANY LEVEL: his base tile set,
+   *  graded where the ground rises to itself, eased by a fade near a ground
+   *  change, and once in a while one of his details. Until 2026-08-30 this ran
+   *  only for level 0 — every raised cell, the whole massif, every terrace, the
+   *  town shelf, drew the plain x-over-x review tile and ignored the sets he
+   *  tunes. "I kinda expected everything from using the base tile sets." */
+  private surface(
+    view: World3View,
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    gr: string,
+    x: number,
+    y: number,
+    zl: number,
+  ): Surface3 {
+    const p = this.plateFor(gr, x, y);
+    const out: Surface3 = {
+      art: { kind: p.art.kind, path: p.art.path, w: p.art.w, h: p.art.h },
+      set: p.set.id,
+      memberIndex: p.memberIndex,
+      plate: p.art,
     };
+
+    const sidx = this.slopeIndexAt(g, L, gr, x, y, zl);
+    if (sidx) {
+      const sl = this.slopeTile(gr, sidx, x, y);
+      if (sl) {
+        out.slope = sl;
+        out.art = { kind: "plate", path: sl.file, w: TILE, h: PLATE_H };
+      }
+    }
+
+    /* THE FADE BAND: a REAL CHEBYSHEV DISTANCE BAND, ring 1 included. Four axis
+     * cells at one ring was not a band, and skipping ring 1 dropped the fade
+     * exactly where the drift is strongest — the boundary tile rides the corner
+     * lattice ON TOP of this cell, so ring 1 is still ours to dress. */
+    let near: [string, number] | null = null;
+    for (let r = 1; r <= FADE_BAND && !near; r++)
+      for (let dy = -r; dy <= r && !near; dy++)
+        for (let dx = -r; dx <= r; dx++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+          const og = g(x + dx, y + dy);
+          if (og && og !== gr && !view.isLiquid(og) && L(x + dx, y + dy) === zl) {
+            near = [og, r];
+            break;
+          }
+        }
+    if (near) {
+      const pool = this.fadePool(gr, near[0]);
+      if (pool.length) {
+        const rr = lcg((x * 73856093) ^ (y * 19349663));
+        /* A FADE IS A SCATTERED EVENT, NOT A COAT OF PAINT. Stamping the band
+         * solid put ONE tile on up to 1,357 cells — the repetition he ruled out.
+         * The probability falls off with distance from the switch. */
+        const bandPos = (FADE_BAND + 1 - near[1]) / (FADE_BAND + 1);
+        const u = rr();
+        if (u <= 0.45 * bandPos) {
+          /* Sample the WHOLE pool, weighted by his ratings, with the mix strength
+           * tracking the distance. */
+          const wts = pool.map((t) => (1.0 + 1.6 * t.rating) * (1.0 - Math.abs(t.pct / 60.0 - bandPos)));
+          let tot = 0;
+          for (const w of wts) if (w > 0) tot += w;
+          if (!tot) tot = 1.0;
+          const v = rr();
+          let acc = v * tot;
+          let pick = pool.length - 1;
+          for (let i = 0; i < wts.length; i++) {
+            acc -= Math.max(0, wts[i]);
+            if (acc <= 0) {
+              pick = i;
+              break;
+            }
+          }
+          const t = pool[Math.max(0, pick)];
+          out.fade = { other: near[0], dist: near[1], poolKey: `${gr}|${near[0]}`, index: pick, u, v, file: t.file };
+          /* A fade tile's WALL is explicitly meaningless by the producer's own
+           * index, so it conforms exactly like any other surface: top face kept,
+           * wall filled from the ground's palette, alpha the published
+           * silhouette. Hand-cropping it produced a 30-row surface the top-face
+           * mask could not index — and shipped a garbage wall besides. */
+          out.art = { kind: "conform", path: t.file, w: TILE, h: PLATE_H };
+          return out;
+        }
+      }
+    }
+
+    /* DETAILS: once in a while, one of his top-approved tops. */
+    const dp = this.detailPool(gr);
+    if (dp.length) {
+      const rate = this.data.detailRates?.[gr] ?? DETAIL_FREQ;
+      const rd = lcg((x * 83492791) ^ (y * 2654435761) ^ 0xd47a);
+      if (rd() < rate) {
+        const index = Math.trunc(rd() * dp.length) % dp.length;
+        out.detail = { index, file: dp[index] };
+        out.art = { kind: "conform", path: dp[index], w: TILE, h: PLATE_H };
+      }
+    }
+    return out;
   }
 
   /** side_a / side_b for a pair, canonical via the pattern library's own
@@ -1279,122 +1867,60 @@ export class Tiles3 {
     return row * (this.data.patterns.masks?.cols ?? 16) + index;
   }
 
-  /** THE CORNER LATTICE, over the flats: a tile drawn at corner (x,y) blends
-   *  cells (x,y), (x+1,y), (x,y+1), (x+1,y+1) when all four share a level and
-   *  hold exactly two grounds. Index = 8*NW + 4*NE + 2*SW + 1*SE with bit 1
-   *  meaning side_b — the ground LATER in side_order. 0 and 15 are one material
-   *  either way and are skipped.
-   *
-   *  THE TRAP, and it is render3's behaviour so it is the behaviour: BOTH plates
-   *  are resolved at the ANCHOR cell's region and the ANCHOR's x,y. The side
-   *  that is not the anchor's own ground therefore gets a set picked from a
-   *  region it does not belong to, and neither plate need match the plate the
-   *  blended cells themselves drew. */
-  private boundaries(
-    frame: Frame,
-    regions: Regions,
-    g: (x: number, y: number) => string | null,
-    L: (x: number, y: number) => number,
-  ): Tiles3Boundary[] {
-    const { x0, y0, x1, y1 } = frame;
-    const out: Tiles3Boundary[] = [];
-    for (let s = x0 + y0; s < x1 + y1 - 2; s++) {
-      for (let x = Math.max(x0, s - y1 + 2); x < Math.min(x1 - 1, s - y0 + 1); x++) {
-        const y = s - x;
-        const quad: [number, number][] = [
-          [x, y],
-          [x + 1, y],
-          [x, y + 1],
-          [x + 1, y + 1],
-        ];
-        const gs = quad.map((q) => g(q[0], q[1]));
-        if (gs.some((v) => v === null)) continue;
-        const uniq = [...new Set(gs as string[])];
-        if (uniq.length !== 2) continue;
-        if (new Set(quad.map((q) => L(q[0], q[1]))).size !== 1) continue;
-        const sorted = uniq.slice().sort();
-        const [sa, sb] = this.sideRoles(sorted[0], sorted[1]);
-        const index =
-          8 * (gs[0] === sb ? 1 : 0) +
-          4 * (gs[1] === sb ? 1 : 0) +
-          2 * (gs[2] === sb ? 1 : 0) +
-          1 * (gs[3] === sb ? 1 : 0);
-        if (index === 0 || index === 15) continue;
-        const region = regions.idAt(x, y);
-        const pa = this.plateAt(sa, region, x, y);
-        const pb = this.plateAt(sb, region, x, y);
-        out.push({
-          x,
-          y,
-          index,
-          a: sa,
-          b: sb,
-          maskFrame: this.maskFrame(index),
-          pattern: this.data.patterns.selection?.default_pattern ?? null,
-          plateA: pa.art,
-          plateB: pb.art,
-          setA: pa.set.id,
-          memberA: pa.memberIndex,
-          setB: pb.set.id,
-          memberB: pb.memberIndex,
-          /* The tile's apex sits on the quad's shared corner: render3 offsets the
-           * paste by -DY and then back by +DY, which is the column top itself. */
-          sx: columnX(frame, x, y),
-          sy: columnY(frame, x, y, L(x, y)),
-          w: TILE,
-          h: PLATE_H,
-        });
-      }
-    }
-    return out;
-  }
-
   /** DECKS — roofs, bridges and the cave lid: a slab whose top rides at its own
-   *  level with same-over-same wall bands down to its underside. A cell whose
-   *  down-screen neighbours are both deck is covered, so it needs no face and no
-   *  thickness. */
+   *  level with same-over-same wall bands down to its underside, and then WEARS
+   *  THE MAINTAINER'S SET like any other ground. A cell whose down-screen
+   *  neighbours are both deck is covered, so it needs no face and no thickness. */
   private deckCells(view: World3View, frame: Frame): Tiles3DeckCell[] {
     const out: Tiles3DeckCell[] = [];
     view.decks.forEach((dk, di) => {
-      const dg = dk.ground || "grey_stone";
-      const dl = Math.trunc(dk.level);
-      const th = Math.trunc(dk.thickness ?? 1);
       const cells = dk.cells
         .map((c) => [c.x, c.y] as [number, number])
         .sort((a, b) => a[0] + a[1] - (b[0] + b[1]) || a[1] - b[1]);
-      const set = new Set(cells.map(([x, y]) => y * view.width + x));
       for (const [x, y] of cells) {
         if (x < frame.x0 || x >= frame.x1 || y < frame.y0 || y >= frame.y1) continue;
-        const frontCovered =
-          set.has(y * view.width + x + 1) && set.has((y + 1) * view.width + x);
-        const lo = frontCovered ? dl : Math.max(0, dl - Math.max(1, th));
-        /* A cave lid is rock from underneath whatever its top is made of. */
-        const body =
-          dk.kind === "cave" && dg !== "black_rock" && dg !== "grey_stone" ? "grey_stone" : dg;
-        const cap = frontCovered ? this.flatTile(dg) : this.overTile(dg, body);
-        const mid = this.storeyTile(body);
-        const stack: WallStackStep[] = [];
-        for (let f = lo; f <= dl; f++)
-          stack.push({ storey: f, tile: f === dl ? cap : mid, y: columnY(frame, x, y, f) - TOP_Y });
-        out.push({
-          deck: di,
-          kind: dk.kind ?? null,
-          ground: dg,
-          level: dl,
-          thickness: th,
-          x,
-          y,
-          frontCovered,
-          lo,
-          body,
-          cap,
-          mid,
-          sx: columnX(frame, x, y),
-          stack,
-        });
+        out.push(this.deckCell(view, frame, dk, di, x, y));
       }
     });
     return out;
+  }
+
+  /** ONE deck cell, resolved. */
+  deckCell(view: World3View, frame: Frame, dk: Deck3, di: number, x: number, y: number): Tiles3DeckCell {
+    const dg = dk.ground || "grey_stone";
+    const dl = Math.trunc(dk.level);
+    const th = Math.trunc(dk.thickness ?? 1);
+    const set = new Set(dk.cells.map((c) => c.y * view.width + c.x));
+    const frontCovered = set.has(y * view.width + x + 1) && set.has((y + 1) * view.width + x);
+    const lo = frontCovered ? dl : Math.max(0, dl - Math.max(1, th));
+    /* A cave lid is rock from underneath whatever its top is made of. */
+    const body = dk.kind === "cave" && dg !== "black_rock" && dg !== "grey_stone" ? "grey_stone" : dg;
+    const cap = frontCovered ? this.flatTile(dg) : this.overTile(dg, body);
+    const mid = this.storeyTile(body);
+    const stack: WallStackStep[] = [];
+    for (let f = lo; f <= dl; f++)
+      stack.push({ storey: f, tile: f === dl ? cap : mid, y: columnY(frame, x, y, f) - TOP_Y });
+    const p = this.plateFor(dg, x, y);
+    return {
+      deck: di,
+      kind: dk.kind ?? null,
+      ground: dg,
+      level: dl,
+      thickness: th,
+      x,
+      y,
+      frontCovered,
+      lo,
+      body,
+      cap,
+      mid,
+      sx: columnX(frame, x, y),
+      stack,
+      surface: p.art,
+      surfaceSet: p.set.id,
+      surfaceMember: p.memberIndex,
+      surfaceY: columnY(frame, x, y, dl),
+    };
   }
 }
 

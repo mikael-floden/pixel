@@ -29,7 +29,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { Tiles3, viewFromDoc, hexRGB, TILE, PLATE_H, TOP_Y, DY } from "../../client/src/tiles3";
+import { Tiles3, viewFromDoc, hexRGB, TILE, PLATE_H, TOP_Y, DX, DY } from "../../client/src/tiles3";
 import {
   patternSheets,
   patternSheetPaths,
@@ -38,6 +38,7 @@ import {
   conformPlate,
   cropToArt,
   topFaceMask,
+  topFaceOnly,
   liquidDiamond,
   rint,
   artKey,
@@ -610,23 +611,29 @@ test("the_game's boundaries share compositions — the ratio, measured", { skip 
     wallOverrides: load("live/tuning/tile_walls.json").overrides,
     basePromotions: load("live/tuning/base_tiles.json").overrides,
     fades: load("tiles/fades/index.json"),
+    slopes: load("tiles/slopes/index.json"),
+    topWallOverrides: load("live/tuning/top_walls.json").overrides,
+    topOverrides: load("live/tuning/tile_tops.json").overrides,
     // MEASURED elsewhere (tiles3.test.ts); the pitch only moves paste y, and
     // nothing this gate asserts depends on it.
     storeyPitch: 15,
     warn: () => {},
   });
   const doc = load("maps2/worlds3/the_game/world.json");
-  // A STREAMING WINDOW, which is what decides the live cache — not the world.
-  const R = 32;
-  const win = t.resolveWindow(viewFromDoc(doc, { x0: 256 - R, y0: 256 - R, x1: 256 + R, y1: 256 + R }));
+  /* A STREAMING WINDOW, which is what decides the live cache — not the world.
+   * CENTRED ON THE TOWN, not on the map centre: since the boundary moved onto
+   * the cell itself, no quad touching a liquid composes at all (a coast is a
+   * hard edge), and the middle of a 196,368-cell ocean now holds 72. The four
+   * grounds that actually meet are here. */
+  const win = t.resolveWindow(viewFromDoc(doc, { x0: 368, y0: 328, x1: 432, y1: 392 }));
   const keys = win.boundaries.map((b) => boundaryKeyFor(b)).filter((k): k is string => !!k);
   const distinct = new Set(keys);
   assert.ok(win.boundaries.length > 100, `${win.boundaries.length} boundaries in a 64x64-cell window`);
   assert.ok(distinct.size < win.boundaries.length, `${win.boundaries.length} boundaries share ${distinct.size} compositions`);
-  // MEASURED over the whole 512x512 world: 6,266 boundaries, 2,248 distinct
-  // compositions (2.79x). A window is what the live cache holds; the peak over
-  // five window positions is 103 compositions at 32x32 cells, 405 at 64x64 and
-  // 831 at 96x96 — the numbers behind Tiles3TexturesOpts.limit.
+  // MEASURED over the whole 512x512 world: 3,390 boundaries, 2,047 distinct
+  // compositions (1.66x). A window is what the live cache holds; the peak over
+  // five window positions is 132 compositions at 32x32 cells, 468 at 64x64 and
+  // 731 at 96x96 — the numbers behind Tiles3TexturesOpts.limit.
   assert.ok(distinct.size < 900, `a 64x64-cell window holds ${distinct.size} compositions`);
   // every op the window emits resolves to a key, and every art key it names is
   // in the load list — no draw can reference something nothing fetches
@@ -634,4 +641,98 @@ test("the_game's boundaries share compositions — the ratio, measured", { skip 
   for (const op of windowOps(win))
     if (op.key.startsWith("t2:")) assert.ok(loads.has(op.key), `${op.key} is drawn but never loaded`);
   console.log(`      the_game 64x64 window: ${win.boundaries.length} boundaries, ${distinct.size} distinct compositions (${(win.boundaries.length / distinct.size).toFixed(2)}x reuse)`);
+});
+
+/* -- the water keeps its wall band off ------------------------------------- */
+
+// THE SEA'S DARK LATTICE (maintainer 2026-08-29: "The water has visible edges
+// that is not visible in the wiki... a dark blue tile line close to the
+// beach"). render3 draws a liquid as top_face_only(surface()); the client set
+// `topOnly` on the art and no draw path ever read it, so every water cell
+// painted its WALL BAND too. On the_game's water plates that band is 1088 px
+// against a 924 px top face, and darker (76,138,152) than the water above it
+// (126,183,199) — tiled, a dark lattice over the sea; at the shore, a hard line
+// with no cell in front to cover it.
+
+const WATER_PLATES = [
+  "tiles/plates/water/aa3287b9.webp",
+  "tiles/plates/water/60141780.webp",
+  "tiles/plates/water/688cb16f.webp",
+];
+const haveWater = WATER_PLATES.every((w) => existsSync(rel(w)));
+
+test("a water plate really does carry a wall band (the gate is not vacuous)", { skip: skip || !haveWater }, () => {
+  for (const path of WATER_PLATES) {
+    const a = cropToArt(px(path), SHEETS.fw, SHEETS.fh);
+    let top = 0;
+    let band = 0;
+    for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++) {
+      if (a.data[i * 4 + 3] === 0) continue;
+      if (SHEETS.libTop[i]) top++;
+      else band++;
+    }
+    assert.equal(top, 924, `${path} top face`);
+    assert.equal(band, 1088, `${path} wall band — if this is 0 the mask test proves nothing`);
+  }
+});
+
+test("topFaceOnly drops the wall band and touches nothing else", { skip: skip || !haveWater }, () => {
+  for (const path of WATER_PLATES) {
+    const src = px(path);
+    const a = cropToArt(src, SHEETS.fw, SHEETS.fh);
+    const out = topFaceOnly(SHEETS, src);
+    assert.equal(out.w, SHEETS.fw, "keeps plate geometry");
+    assert.equal(out.h, SHEETS.fh, "keeps plate geometry");
+    let kept = 0;
+    for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++) {
+      if (SHEETS.libTop[i]) {
+        // the top face survives byte for byte
+        for (let c = 0; c < 4; c++) assert.equal(out.data[i * 4 + c], a.data[i * 4 + c], `${path} top px ${i} ch ${c}`);
+        if (out.data[i * 4 + 3] > 0) kept++;
+      } else {
+        // and NOTHING outside it does — render3's `out = zeros; out[top] = a[top]`
+        for (let c = 0; c < 4; c++) assert.equal(out.data[i * 4 + c], 0, `${path} wall px ${i} ch ${c}`);
+      }
+    }
+    assert.equal(kept, 924, `${path} keeps its whole top face`);
+  }
+});
+
+test("a top-only plate never shares a texture key with the full tile", { skip }, () => {
+  const full = { kind: "plate", path: "tiles/plates/water/aa3287b9.webp" };
+  const top = { ...full, topOnly: true };
+  assert.notEqual(plateKey(top, "water"), plateKey(full, "water"), "same key = the full tile served for water");
+  assert.notEqual(plateSourceId(top, "water"), plateSourceId(full, "water"), "same content id = a boundary built from the wrong pixels");
+  // and a conformed one, whose wall band the conform REPAINTS
+  const cf = { kind: "conform", path: "tiles/plates/water/aa3287b9.webp" };
+  assert.notEqual(plateKey({ ...cf, topOnly: true }, "water"), plateKey(cf, "water"));
+});
+
+// WHY WATER MUST DRAW ITS SET AND NOT THE FLAT DIAMOND. `flat_tile`'s diamond
+// does not TILE: its widest row is 64 px but its first row is empty (half = 0
+// at y = 0), so a field of them laid on the iso step leaves a regular diagonal
+// lattice of holes — measured below at 252 px in a 100x100 interior patch, 2.5%
+// of the area, with the page's dark ground showing through every one. That is
+// the "visible edges" on the sea and the dark line along the shore. render3
+// draws a liquid as top_face_only(surface()) — real plates, whole silhouettes,
+// no holes — and the client follows it.
+test("the flat liquid diamond does NOT tile, which is why a liquid draws its set", { skip }, () => {
+  const d = liquidDiamond([255, 255, 255]);
+  const W = 400;
+  const H = 400;
+  const cov = new Int16Array(W * H);
+  const ox = 200;
+  const oy = 60;
+  for (let gy = 0; gy < 14; gy++)
+    for (let gx = 0; gx < 14; gx++) {
+      const sx = ox + (gx - gy) * DX - DX;
+      const sy = oy + (gx + gy) * DY;
+      if (sx < 0 || sy < 0 || sx + d.w > W || sy + d.h > H) continue;
+      for (let y = 0; y < d.h; y++)
+        for (let x = 0; x < d.w; x++)
+          if (d.data[(y * d.w + x) * 4 + 3] > 0) cov[(sy + y) * W + sx + x]++;
+    }
+  let holes = 0;
+  for (let y = 150; y < 250; y++) for (let x = 150; x < 250; x++) if (cov[y * W + x] === 0) holes++;
+  assert.equal(holes, 252, "the diamond lattice leaks exactly this many pixels per 100x100 of sea");
 });

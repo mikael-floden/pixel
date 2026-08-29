@@ -31,6 +31,8 @@ import {
   Tiles3,
   viewFromDoc,
   computeRegions,
+  regionAt,
+  REGION_CHUNK,
   measureStoreyPitch,
   isoFrame,
   setsFor,
@@ -66,9 +68,12 @@ const NEEDS = [
   "tiles/patterns/index.json",
   "tiles/review/manifest.json",
   "tiles/fades/index.json",
+  "tiles/slopes/index.json",
   "live/tuning/base_tile_sets.json",
   "live/tuning/base_tiles.json",
   "live/tuning/tile_walls.json",
+  "live/tuning/top_walls.json",
+  "live/tuning/tile_tops.json",
   "live/feedback/tiles.json",
 ];
 const MISSING = [FIXTURE, ...NEEDS.map(rel)].filter((p) => !existsSync(p));
@@ -128,6 +133,27 @@ function fadeGuard(groundTypes: Record<string, any>) {
   };
 }
 
+/** IS THIS SLOPE TILE THE 64x46 THE FRAME REQUIRES? render3 falls back to the
+ *  flat plate for a mis-sized publication rather than masking a 30-row tile with
+ *  a 46-row silhouette — the slope library has shipped 122 short tiles before.
+ *  A pure module cannot measure, so the real measurement is injected here. */
+function slopeGuard() {
+  const cache = new Map<string, boolean>();
+  return (file: string): boolean => {
+    const hit = cache.get(file);
+    if (hit !== undefined) return hit;
+    let ok = false;
+    try {
+      const { width, height } = imgRGBA(rel(file)) as { width: number; height: number };
+      ok = width === TILE && height === PLATE_H;
+    } catch {
+      ok = false;
+    }
+    cache.set(file, ok);
+    return ok;
+  };
+}
+
 /** Alpha > 128 — palette_snap's threshold, one step stricter than imagelib's. */
 function opaqueOf(path: string): { w: number; h: number; op: (x: number, y: number) => boolean } {
   const { width, height, data } = imgRGBA(rel(path)) as {
@@ -150,7 +176,11 @@ function build(): { t: Tiles3; pitch: number; groundTypes: Record<string, any> }
     wallOverrides: load("live/tuning/tile_walls.json").overrides,
     basePromotions: load("live/tuning/base_tiles.json").overrides,
     fades: load("tiles/fades/index.json"),
+    slopes: load("tiles/slopes/index.json"),
+    topWallOverrides: load("live/tuning/top_walls.json").overrides,
+    topOverrides: load("live/tuning/tile_tops.json").overrides,
     fadeGuard: fadeGuard(groundTypes),
+    slopeGuard: slopeGuard(),
     warn: () => {},
   };
   // THE PITCH IS MEASURED, from the very tile render3 measures it from, and only
@@ -281,7 +311,7 @@ test("every cell of every window resolves to render3's art", { skip: !!MISSING.l
   const { t } = build();
   let matched = 0;
   let total = 0;
-  const seen = { field: 0, liquid: 0, fade: 0, wall: 0, boundary: 0, deck: 0 };
+  const seen = { plate: 0, slope: 0, fade: 0, detail: 0, boundary: 0, folded: 0, liquid: 0, wall: 0, unexposed: 0, deck: 0 };
 
   for (const w of F.windows) {
     const view: World3View = viewFromDoc(doc, { x0: w.x0, y0: w.y0, x1: w.x1, y1: w.y1 });
@@ -293,11 +323,19 @@ test("every cell of every window resolves to render3's art", { skip: !!MISSING.l
     assert.equal(out.frame.pitch, w.origin.storey_pitch, `${w.name} pitch`);
     assert.equal(view.maxLevel, w.origin.world_max_level, `${w.name} world max level`);
     assert.deepEqual(out.frame.canvas, w.origin.canvas, `${w.name} canvas`);
+    /* `region_ids` is every region the fixture ASKED FOR, which includes the
+     * other ground's region on each half of a boundary; `regions.ids` is the
+     * regions the window's own cells live in. The second is a subset of the
+     * first, and must be exactly the set the cells name. */
+    assert.deepEqual(
+      [...out.regions.ids].sort(),
+      [...new Set(w.cells.map((c: any) => w.region_ids[c.r]))].sort(),
+      `${w.name} region ids`,
+    );
+    for (const id of out.regions.ids) assert.ok(w.region_ids.includes(id), `${w.name}: ${id} unknown`);
 
     const byCell = new Map<string, Tiles3Cell>();
     for (const c of out.cells) byCell.set(`${c.x},${c.y}`, c);
-    const bIx = new Map<string, number>();
-    out.boundaries.forEach((b, i) => bIx.set(`${b.x},${b.y}`, i));
 
     for (const c of w.cells) {
       total++;
@@ -310,10 +348,14 @@ test("every cell of every window resolves to render3's art", { skip: !!MISSING.l
       assert.equal(mine.sx, c.sx, `${at} sx`);
       assert.equal(mine.sy, c.sy, `${at} sy`);
 
+      /* THE WALL COLUMN, and its absence. A raised cell with no exposed face
+       * carries no column at all in render3 — it draws one surface, which is
+       * what "field" means here. */
       if (c.w) {
         seen.wall++;
         const wl = mine.wall;
         assert.ok(wl, `${at} should be a wall column`);
+        assert.equal(mine.kind, "wall", `${at} kind`);
         assert.equal(wl.side, c.w.side, `${at} wall side`);
         assert.equal(wl.frontLow, c.w.fl, `${at} front_low`);
         assert.equal(wl.fx, c.w.fx, `${at} face foot x`);
@@ -321,6 +363,7 @@ test("every cell of every window resolves to render3's art", { skip: !!MISSING.l
         assert.equal(wl.over, c.w.over, `${at} walls[] override`);
         assert.equal(wl.capped, c.w.capped, `${at} capped`);
         assert.equal(wl.midGround, c.w.midg, `${at} storey ground`);
+        assert.equal(wl.midGround, wl.side, `${at} the course is the WALL's side`);
         assertTile(F.tiles[c.w.cap], wl.cap, `${at} cap`);
         assertTile(F.tiles[c.w.mid], wl.mid, `${at} mid`);
         assert.equal(wl.stack.length, c.w.st.length, `${at} stack height`);
@@ -329,109 +372,128 @@ test("every cell of every window resolves to render3's art", { skip: !!MISSING.l
           assert.equal(wl.stack[i].y, y, `${at} storey ${i} paste y`);
           assertTile(F.tiles[ti], wl.stack[i].tile, `${at} storey ${i} tile`);
         });
-        assert.equal(mine.art, undefined, `${at} a wall column draws no field tile`);
       } else {
         assert.equal(mine.wall, undefined, `${at} should not be a wall column`);
-        assert.ok(mine.art, `${at} field tile`);
-        assert.equal(mine.pasteY, c.py, `${at} paste y`);
-        assert.equal(mine.art.h, c.ph, `${at} tile height`);
+        assert.equal(mine.kind, "field", `${at} kind`);
+        if (c.z > 0) seen.unexposed++;
       }
 
-      if (c.t !== undefined) {
+      /* THE SURFACE. Every one of them is 64x46 plate geometry pasted on the
+       * cell's own top vertex, whatever produced it. */
+      assert.ok(mine.art, `${at} surface`);
+      assert.equal(mine.pasteY, c.py, `${at} paste y`);
+      assert.equal(mine.art.h, c.ph, `${at} surface height`);
+      assert.equal(mine.art.h, PLATE_H, `${at} a surface is plate geometry`);
+      assert.equal(!!(mine.art as any).topOnly, !!c.top_only, `${at} top face only`);
+      assert.equal(mine.dressed ?? true, c.dressed ?? true, `${at} dressed`);
+      if (view.isLiquid(c.g)) {
         seen.liquid++;
-        assert.equal(mine.art?.kind, "liquid", `${at} liquid`);
-        assertTile(F.tiles[c.t], t.flatTile(c.g), `${at} liquid tile`);
-        assert.equal(mine.set, undefined, `${at} a liquid does not go through plate_img`);
+        assert.ok(c.top_only, `${at} a liquid never shows a wall`);
+        assert.equal(mine.boundary, undefined, `${at} no quad touching a liquid composes`);
       }
 
-      if (c.set !== undefined) {
-        seen.field++;
-        assert.equal(mine.set, c.set, `${at} set`);
-        assert.equal(mine.memberIndex, c.mi, `${at} member index`);
-        // The set is looked up BY ID: ids are sorted but not contiguous.
-        const setDoc = F.invariants.base_tile_sets[c.g].find((s: any) => s.id === c.set);
-        assert.ok(setDoc, `${at} set ${c.set} is not published for ${c.g}`);
-        assert.equal(
-          t.setsFor(c.g).find((s) => s.id === c.set)?.members.length,
-          setDoc.members.length,
-          `${at} member count`,
-        );
-        if (c.mi >= 0) {
-          const m = setDoc.members[c.mi];
-          const mm = t.setsFor(c.g).find((s) => s.id === c.set)!.members[c.mi];
-          assert.equal(mm.kind, m.kind, `${at} member kind`);
-          if (m.tile !== undefined) assert.equal((mm as any).tile, paths(m.tile), `${at} member`);
+      // set / member / plate — the maintainer's pick, on EVERY cell now.
+      assert.equal(mine.set, c.set, `${at} set`);
+      assert.equal(mine.memberIndex, c.mi, `${at} member index`);
+      const setDoc = F.invariants.base_tile_sets[c.g].find((s: any) => s.id === c.set);
+      assert.ok(setDoc, `${at} set ${c.set} is not published for ${c.g}`);
+      assert.equal(
+        t.setsFor(c.g).find((s) => s.id === c.set)?.members.length,
+        setDoc.members.length,
+        `${at} member count`,
+      );
+      if (c.mi >= 0) {
+        const m = setDoc.members[c.mi];
+        const mm = t.setsFor(c.g).find((s) => s.id === c.set)!.members[c.mi];
+        assert.equal(mm.kind, m.kind, `${at} member kind`);
+        if (m.tile !== undefined) assert.equal((mm as any).tile, paths(m.tile), `${at} member`);
+      }
+      assert.ok(mine.plate, `${at} plate`);
+      assertPlate(F.plates[c.p], mine.plate.kind, mine.plate.path, `${at} plate`);
+      assert.equal(mine.plate.stale, false, `${at} resolved through the published data`);
+
+      /* ...and what replaced it, in render3's own order: a slope replaces the
+       * plate, a fade replaces either, a detail replaces what is left, and a
+       * composed boundary replaces the lot. `srf` is the FINAL surface; the
+       * picks below still happened even when a later one won. */
+      const kind: string = c.srf;
+      if (c.sl) {
+        seen.slope++;
+        assert.ok(mine.slope, `${at} slope`);
+        assert.equal(mine.slope.index, c.sl.i, `${at} slope wang index`);
+        assert.equal(mine.slope.dir, c.sl.dir, `${at} slope set`);
+        assert.equal(mine.slope.file, paths(c.sl.t), `${at} slope tile`);
+        if (kind === "slope") {
+          assert.equal(mine.art.kind, "plate", `${at} a slope draws its own art`);
+          assert.equal((mine.art as any).path, paths(c.sl.t), `${at} slope art`);
         }
-        assert.ok(mine.plate, `${at} plate`);
-        assertPlate(F.plates[c.p], mine.plate.kind, mine.plate.path, `${at} plate`);
-        assert.equal(mine.plate.stale, false, `${at} resolved through tiles/resolve.json`);
+      } else {
+        assert.equal(mine.slope, undefined, `${at} the port graded a cell render3 does not`);
       }
-
       if (c.f) {
         seen.fade++;
+        assert.equal(kind, "fade", `${at} a fade is the final surface`);
         assert.ok(mine.fade, `${at} fade`);
         assert.equal(mine.fade.other, c.f.o, `${at} fade other ground`);
         assert.equal(mine.fade.dist, c.f.d, `${at} fade ring`);
         assert.equal(mine.fade.poolKey, c.f.pool, `${at} fade pool`);
         assert.equal(mine.fade.index, c.f.i, `${at} fade index`);
-        assert.ok(Math.abs(mine.fade.u - c.f.u) < 1e-12, `${at} fade jitter`);
+        assert.ok(Math.abs(mine.fade.u - c.f.u) < 1e-12, `${at} fade roll`);
+        assert.ok(Math.abs(mine.fade.v - c.f.v) < 1e-12, `${at} fade pick`);
         assert.equal(mine.fade.file, paths(c.f.t), `${at} fade tile`);
-        assert.equal(mine.art?.kind, "fade", `${at} draws the fade`);
+        assert.equal((mine.art as any).path, paths(c.f.t), `${at} draws the fade`);
+        assert.equal(mine.art.kind, "conform", `${at} a fade is conformed, never cropped`);
       } else {
         assert.equal(mine.fade, undefined, `${at} no fade here`);
       }
-
-      // Details are unreachable while the field draws from plates — the fixture
-      // records none, and neither may the port.
-      assert.equal(c.d, undefined, `${at} the fixture unexpectedly carries a detail`);
-      assert.equal(mine.detail, undefined, `${at} the port placed a detail render3 does not`);
-
-      const anchors: [number, number][] = C.boundary_anchor_order;
-      const ref = c.b ?? [null, null, null, null];
-      anchors.forEach(([dx, dy], i) => {
-        const key = `${c.x + dx},${c.y + dy}`;
-        const got = bIx.get(key);
-        if (ref[i] === null || ref[i] === undefined) {
-          assert.equal(got, undefined, `${at} unexpected boundary at ${key}`);
-        } else {
-          assert.ok(got !== undefined, `${at} missing boundary at ${key}`);
-          const fb = w.boundaries[ref[i]];
-          assert.equal(fb.x, c.x + dx, `${at} anchor x`);
-          assert.equal(fb.y, c.y + dy, `${at} anchor y`);
-        }
-      });
+      if (c.d) {
+        seen.detail++;
+        assert.equal(kind, "detail", `${at} a detail is the final surface`);
+        assert.ok(mine.detail, `${at} detail`);
+        assert.equal(mine.detail.index, c.d.i, `${at} detail index`);
+        assert.equal(mine.detail.file, paths(c.d.t), `${at} detail tile`);
+        assert.equal((mine.art as any).path, paths(c.d.t), `${at} draws the detail`);
+        assert.equal(mine.art.kind, "conform", `${at} a detail is conformed`);
+      } else {
+        assert.equal(mine.detail, undefined, `${at} the port placed a detail render3 does not`);
+      }
+      if (c.b !== undefined) {
+        seen.boundary++;
+        assert.equal(kind, "boundary", `${at} a boundary is the final surface`);
+        const fb = w.boundaries[c.b];
+        const mb = mine.boundary;
+        assert.ok(mb, `${at} boundary`);
+        assert.equal(mb.x, fb.x, `${at} boundary x`);
+        assert.equal(mb.y, fb.y, `${at} boundary y`);
+        assert.equal(mb.index, fb.i, `${at} wang index`);
+        assert.equal(mb.a, fb.a, `${at} side_a`);
+        assert.equal(mb.b, fb.b, `${at} side_b`);
+        assert.equal(mb.folded, fb.folded, `${at} three-ground fold`);
+        if (fb.folded) seen.folded++;
+        assert.equal(mb.setA, fb.seta, `${at} side_a set`);
+        assert.equal(mb.memberA, fb.mia, `${at} side_a member`);
+        assert.equal(mb.setB, fb.setb, `${at} side_b set`);
+        assert.equal(mb.memberB, fb.mib, `${at} side_b member`);
+        assertPlate(F.plates[fb.pa], mb.plateA.kind, mb.plateA.path, `${at} plate a`);
+        assertPlate(F.plates[fb.pb], mb.plateB.kind, mb.plateB.path, `${at} plate b`);
+        assert.equal(mb.sx, fb.sx, `${at} boundary sx`);
+        assert.equal(mb.sy, fb.sy, `${at} boundary sy`);
+        assert.equal(mb.pattern, F.invariants.masks.pattern, `${at} mask pattern`);
+        assert.equal(mb.maskFrame! % 16, fb.i, `${at} mask frame`);
+        assert.ok(F.invariants.masks.per_index[fb.i].true_px > 0, `${at} empty mask`);
+        assert.notEqual(mb.index, 0, `${at} index 0 is not drawn`);
+        assert.notEqual(mb.index, 15, `${at} index 15 is not drawn`);
+        assert.equal(!!mb.topOnly, !!c.top_only, `${at} boundary top face only`);
+      } else {
+        assert.equal(mine.boundary, undefined, `${at} the port composed a boundary render3 does not`);
+        if (kind === "plate") seen.plate++;
+      }
       matched++;
     }
     assert.equal(out.cells.length, w.cells.length, `${w.name} cell count`);
-
-    // Boundaries: the Wang index, the side roles, and the plate PAIR.
     assert.equal(out.boundaries.length, w.boundaries.length, `${w.name} boundary count`);
-    for (const fb of w.boundaries) {
-      const i = bIx.get(`${fb.x},${fb.y}`);
-      assert.ok(i !== undefined, `${w.name} boundary (${fb.x},${fb.y}) missing`);
-      const mb = out.boundaries[i];
-      const at = `${w.name} boundary (${fb.x},${fb.y})`;
-      assert.equal(mb.index, fb.i, `${at} wang index`);
-      assert.equal(mb.a, fb.a, `${at} side_a`);
-      assert.equal(mb.b, fb.b, `${at} side_b`);
-      assert.equal(mb.setA, fb.seta, `${at} side_a set`);
-      assert.equal(mb.memberA, fb.mia, `${at} side_a member`);
-      assert.equal(mb.setB, fb.setb, `${at} side_b set`);
-      assert.equal(mb.memberB, fb.mib, `${at} side_b member`);
-      assertPlate(F.plates[fb.pa], mb.plateA.kind, mb.plateA.path, `${at} plate a`);
-      assertPlate(F.plates[fb.pb], mb.plateB.kind, mb.plateB.path, `${at} plate b`);
-      assert.equal(mb.sx, fb.sx, `${at} sx`);
-      assert.equal(mb.sy, fb.sy, `${at} sy`);
-      // The blend samples the mask sheet at pattern.row * 16 + index.
-      assert.equal(mb.pattern, F.invariants.masks.pattern, `${at} mask pattern`);
-      assert.equal(mb.maskFrame! % 16, fb.i, `${at} mask frame`);
-      assert.ok(F.invariants.masks.per_index[fb.i].true_px > 0, `${at} empty mask`);
-      assert.notEqual(mb.index, 0, `${at} index 0 is not drawn`);
-      assert.notEqual(mb.index, 15, `${at} index 15 is not drawn`);
-      seen.boundary++;
-    }
 
-    // Decks: the same stack machinery, one level up.
+    // Decks: the same stack machinery one level up, and the slab wears his set.
     assert.equal(out.decks.length, w.decks.length, `${w.name} deck cell count`);
     w.decks.forEach((fd: any, i: number) => {
       const md = out.decks[i];
@@ -452,62 +514,100 @@ test("every cell of every window resolves to render3's art", { skip: !!MISSING.l
         assert.equal(md.stack[j].y, y, `${at} storey ${j} paste y`);
         assertTile(F.tiles[ti], md.stack[j].tile, `${at} storey ${j} tile`);
       });
+      assert.equal(md.surfaceSet, fd.srf_set, `${at} surface set`);
+      assert.equal(md.surfaceMember, fd.srf_mi, `${at} surface member`);
+      assertPlate(F.plates[fd.srf_p], md.surface.kind, md.surface.path, `${at} surface`);
+      assert.equal(md.surfaceY, fd.srf_y, `${at} surface paste y`);
       seen.deck++;
     });
   }
 
   assert.equal(matched, total);
   assert.equal(total, F.windows.reduce((n: number, w: any) => n + w.cells.length, 0));
+  // The fixture is only worth what it exercises: every art source must appear.
+  for (const [k, n] of Object.entries(seen))
+    if (k !== "folded") assert.ok(n > 0, `the fixture exercises no ${k} — it proves nothing about one`);
+  assert.ok(seen.folded > 0, "no three-ground junction in the fixture");
   console.log(
     `tiles3 parity: ${matched} of ${total} cells match render3 ` +
-      `(${seen.field} plate, ${seen.fade} of them faded, ${seen.liquid} liquid, ` +
-      `${seen.wall} wall columns, ${seen.boundary} boundaries, ${seen.deck} deck cells)`,
+      `(${seen.plate} plate, ${seen.slope} slope, ${seen.fade} fade, ${seen.detail} detail, ` +
+      `${seen.boundary} boundary of which ${seen.folded} folded, ${seen.liquid} liquid, ` +
+      `${seen.wall} wall columns, ${seen.unexposed} raised with no exposed face, ${seen.deck} deck cells)`,
   );
 });
 
 /* -- the region rule -------------------------------------------------------- */
 
-test("regions are 4-connected components keyed on the LEXICOGRAPHIC min cell", { skip: !!MISSING.length }, () => {
+test("a region is a 24-CELL CHUNK of one ground, not a connected component", { skip: !!MISSING.length }, () => {
+  // The rule itself, to the character.
+  assert.equal(REGION_CHUNK, F.invariants.constants.REGION_CHUNK);
+  assert.equal(regionAt("grass", 0, 0), "grass@0,0");
+  assert.equal(regionAt("grass", 23, 23), "grass@0,0");
+  assert.equal(regionAt("grass", 24, 23), "grass@1,0");
+  assert.equal(regionAt("snow", 380, 344), "snow@15,14");
+
   for (const w of F.windows) {
     const view = viewFromDoc(doc, { x0: w.x0, y0: w.y0, x1: w.x1, y1: w.y1 });
     const g = (x: number, y: number) =>
       x >= w.x0 && x < w.x1 && y >= w.y0 && y < w.y1 ? view.groundAt(x, y) : null;
     const r = computeRegions({ x0: w.x0, y0: w.y0, x1: w.x1, y1: w.y1 }, g);
-    assert.deepEqual(
-      [...r.ids].sort(),
-      [...w.region_ids].sort(),
-      `${w.name}: the window's region ids`,
-    );
-    // A region id must name a cell that IS in the region, and no cell of the
-    // region may sort before it. (min x, min y) taken separately can name a cell
-    // outside an L-shaped region entirely — that is the bug this pins.
-    const members = new Map<string, [number, number][]>();
+    for (const id of r.ids) assert.ok(w.region_ids.includes(id), `${w.name}: ${id} unknown`);
     for (let y = w.y0; y < w.y1; y++)
       for (let x = w.x0; x < w.x1; x++) {
-        const id = r.idAt(x, y);
-        if (id === "r0") continue;
-        if (!members.has(id)) members.set(id, []);
-        members.get(id)!.push([x, y]);
+        const ground = view.groundAt(x, y);
+        assert.equal(r.idAt(x, y), ground ? regionAt(ground, x, y) : "r0", `region at ${x},${y}`);
       }
-    for (const [id, cells] of members) {
-      const [ground, at] = id.split("@");
-      const [mx, my] = at.split(",").map(Number);
-      assert.ok(
-        cells.some(([x, y]) => x === mx && y === my),
-        `${id}: the id names a cell outside its own region`,
-      );
-      for (const [x, y] of cells) {
-        assert.equal(view.groundAt(x, y), ground, `${id}: mixed grounds in one region`);
-        assert.ok(x > mx || (x === mx && y >= my), `${id}: (${x},${y}) sorts before the id`);
-      }
-    }
+    /* A CHUNK IS A LOCATION: it does not depend on the window it was computed
+     * in, which is the whole reason a camera can stream without the ground
+     * reshuffling. A component id does depend on it, and that is the bug. */
+    const half = computeRegions(
+      { x0: w.x0, y0: w.y0, x1: w.x0 + Math.floor((w.x1 - w.x0) / 2), y1: w.y1 },
+      g,
+    );
+    for (let y = w.y0; y < w.y1; y++)
+      for (let x = w.x0; x < w.x0 + Math.floor((w.x1 - w.x0) / 2); x++)
+        assert.equal(half.idAt(x, y), r.idAt(x, y), `${w.name}: (${x},${y}) re-keyed by the window`);
   }
-  assert.ok(F.windows[0].region_ids.includes("grass@382,344"));
+});
+
+/* -- and the point of the region fix ---------------------------------------- */
+
+test("the maintainer's set weights actually reach the map", { skip: !!MISSING.length }, () => {
+  const bts = load("live/tuning/base_tile_sets.json");
+  const view = viewFromDoc(doc);
+  const cells = new Map<string, number>();
+  const picked = new Map<string, Map<number, number>>();
+  for (let y = 0; y < doc.size.h; y++)
+    for (let x = 0; x < doc.size.w; x++) {
+      const g = view.groundAt(x, y);
+      if (!g) continue;
+      cells.set(g, (cells.get(g) ?? 0) + 1);
+      const id = pickSet(setsFor(bts, g), g, regionAt(g, x, y)).id;
+      let per = picked.get(g);
+      if (!per) picked.set(g, (per = new Map()));
+      per.set(id, (per.get(id) ?? 0) + 1);
+    }
+  /* THE NUMBER THAT SAYS HIS TUNING IS LIVE. With connected components ONE set
+   * painted 98.7% of the grass, 99.7% of the snow and 99.8% of the black_rock —
+   * every other set he weighted was implemented and invisible. A ground with
+   * more than one weighted set must now spread across them. */
+  const lines: string[] = [];
+  for (const [g, n] of [...cells].sort((a, b) => b[1] - a[1])) {
+    const weighted = setsFor(bts, g).filter((s) => s.weight > 0).length;
+    const per = picked.get(g) as Map<number, number>;
+    const top = Math.max(...per.values());
+    lines.push(`      ${g.padEnd(20)} ${String(n).padStart(6)} cells  ${per.size} of ${weighted} weighted sets  top set ${((100 * top) / n).toFixed(1)}%`);
+    if (weighted > 1 && n >= 400)
+      assert.ok(per.size > 1, `${g}: ${weighted} weighted sets and only one ever picked`);
+    if (weighted > 2 && n >= 4000)
+      assert.ok(top / n < 0.9, `${g}: one set still paints ${((100 * top) / n).toFixed(1)}% of the ground`);
+  }
+  console.log("    sets actually picked across the_game:\n" + lines.join("\n"));
 });
 
 /* -- the data, not a re-implementation -------------------------------------- */
 
-test("a member missing from tiles/resolve.json is reported, never silently flattened", { skip: !!MISSING.length }, () => {
+test("a set member draws its TEXTURED art, and a gap in the index is reported", { skip: !!MISSING.length }, () => {
   const groundTypes = load("tiles/ground_types.json").grounds;
   const warnings: string[] = [];
   const stale = new Tiles3({
@@ -518,7 +618,8 @@ test("a member missing from tiles/resolve.json is reported, never silently flatt
     storeyPitch: C.storey_pitch,
     warn: (m) => warnings.push(m),
   });
-  // The plate form falls back to the published plate for the cell's ground...
+  // With no review manifest there is no textured art to prefer, so the plate
+  // form falls back to the published plate for the cell's ground...
   const a = stale.memberArt("grass", "tiles/grass__over__grass/b421e18e");
   assert.equal(a.kind, "plate");
   assert.equal(a.path, "tiles/plates/grass/b421e18e.webp");
@@ -538,10 +639,19 @@ test("a member missing from tiles/resolve.json is reported, never silently flatt
   assert.ok(warnings.some((m) => m.includes("STALE")));
   assert.ok(warnings.some((m) => m.includes("draw CLEAN")));
 
-  // And with the real index: every member of every set the world can reach
-  // resolves out of the DATA, with nothing falling back.
+  // And with the real data: every member of every set the world can reach
+  // resolves, with nothing falling back — and a REVIEW-KEY member resolves to
+  // the candidate's own TEXTURED art, never to tiles/plates/<g>/<key8>.webp.
+  // That plate is the same tile flattened to the clean colour by design; using
+  // it painted 236 of his 340 members flat, which is what tiles/resolve.json's
+  // `forms` still tells a consumer to do.
   const { t } = build();
+  const man = load("tiles/review/manifest.json");
+  const textured = new Map<string, string>();
+  for (const cell of Object.values<any>(man.cells))
+    for (const c of cell.candidates) if (c.textured) textured.set(c.key, c.textured);
   let members = 0;
+  let fromTextured = 0;
   for (const ground of Object.keys(load("live/tuning/base_tile_sets.json").grounds))
     for (const s of t.setsFor(ground))
       for (const m of s.members)
@@ -549,16 +659,23 @@ test("a member missing from tiles/resolve.json is reported, never silently flatt
           const art = t.memberArt(ground, m.tile);
           assert.equal(art.stale, false, `${ground} ${m.tile}`);
           assert.ok(existsSync(rel(art.path)), `${art.path} does not exist on disk`);
+          const tex = textured.get(m.tile);
+          if (tex) {
+            assert.equal(art.kind, "conform", `${ground} ${m.tile} must conform its own art`);
+            assert.equal(art.path, tex, `${ground} ${m.tile} must draw its textured pass`);
+            fromTextured++;
+          }
           members++;
         }
   assert.equal(t.stats.staleMembers, 0);
   assert.equal(t.stats.unresolvedMembers, 0);
   assert.ok(members >= 300, `only ${members} members checked`);
+  assert.ok(fromTextured >= 200, `only ${fromTextured} members came from their textured art`);
 });
 
 /* -- the pools -------------------------------------------------------------- */
 
-test("the detail and fade pools are render3's pools", { skip: !!MISSING.length }, () => {
+test("the detail, fade and slope pools are render3's pools", { skip: !!MISSING.length }, () => {
   const { t } = build();
   for (const [ground, want] of Object.entries<any>(F.invariants.detail_pools))
     assert.deepEqual(
@@ -566,18 +683,43 @@ test("the detail and fade pools are render3's pools", { skip: !!MISSING.length }
       want.map((i: number) => P[i]),
       `detail pool for ${ground}`,
     );
-  assert.equal(F.invariants.detail_pool_reachable, false);
+  // Details ARE reachable now: since `surface` took over every cell, the roll
+  // happens on any surface that is not a fade or a boundary.
+  assert.equal(F.invariants.detail_pool_reachable, true);
 
+  // A fade pool is APPROVED ONLY, in pct order, and carries his rating — the
+  // rating is what weights the pick, so a pool that agrees on files and not on
+  // ratings still draws a different tile.
   for (const w of F.windows)
     for (const [key, want] of Object.entries<any>(w.fade_pools)) {
       const [field, other] = key.split("|");
       assert.deepEqual(
-        t.fadePool(field, other).map((f) => [f.file, f.pct?.[other] ?? 0]),
-        want.map(([i, pct]: [number, number]) => [P[i], pct]),
+        t.fadePool(field, other).map((f) => [f.file, f.pct, f.rating]),
+        want.map(([i, pct, rating]: [number, number, number]) => [P[i], pct, rating]),
         `fade pool ${key}`,
       );
     }
   assert.equal(t.stats.unguardedFadePools, 0, "the palette guard must have been supplied");
+
+  // The slope library, filtered exactly as render3 filters it: complete sets
+  // with at least one tile he approved, in dir order, and the approved indices.
+  const grounds = Object.keys(F.invariants.slope_sets);
+  assert.ok(grounds.length >= 10, `only ${grounds.length} grounds carry a usable slope set`);
+  for (const [ground, want] of Object.entries<any>(F.invariants.slope_sets)) {
+    assert.deepEqual(
+      t.slopeSets(ground).map((st) => ({
+        dir: st.dir,
+        approved: [...Array(16).keys()].filter((i) => t.slopeApproved(st.dir, i)),
+      })),
+      want,
+      `slope sets for ${ground}`,
+    );
+  }
+  // A ground he has judged NOTHING for draws no slope at all — the whole point
+  // of the filter (light_soil carries every road on the map and has no set).
+  for (const ground of Object.keys(load("tiles/ground_types.json").grounds))
+    if (!F.invariants.slope_sets[ground])
+      assert.equal(t.slopeTile(ground, 7, 100, 100), null, `${ground} drew an unapproved slope`);
 });
 
 /* -- the geometry the renderer will paste with ------------------------------ */
@@ -593,11 +735,17 @@ test("the iso frame and the plate/tile offsets are render3's", { skip: !!MISSING
   assert.equal(C.PLATE_H, PLATE_H);
   assert.equal(C.TOP_Y, TOP_Y);
   assert.equal(C.DY, DY);
-  // A 46px plate lands ON the cell's top vertex; a 64px tile hangs from TOP_Y.
-  const plateCell = F.windows[0].cells.find((c: any) => c.ph === PLATE_H);
-  assert.equal(plateCell.py, plateCell.sy);
-  const tallCell = F.windows[0].cells.find((c: any) => c.ph === TILE);
-  assert.equal(tallCell.py, tallCell.sy - TOP_Y);
+  // EVERY surface is 46px plate geometry and lands ON the cell's top vertex —
+  // a plate, a slope, a conformed fade or detail, a composed boundary alike.
+  // The 64px review tiles are the wall stack, and those hang from TOP_Y.
+  for (const c of F.windows[0].cells) {
+    assert.equal(c.ph, PLATE_H, `(${c.x},${c.y}) surface height`);
+    assert.equal(c.py, c.sy, `(${c.x},${c.y}) surface paste y`);
+  }
+  const stacked = F.windows[0].cells.find((c: any) => c.w);
+  const [, ti, sy] = stacked.w.st[0];
+  assert.equal(F.tiles[ti].h, TILE);
+  assert.equal(sy, stacked.sy + (stacked.z - stacked.w.st[0][0]) * C.storey_pitch - TOP_Y);
 });
 
 /* -- the whole world, not just the sampled windows -------------------------- */

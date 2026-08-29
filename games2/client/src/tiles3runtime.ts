@@ -15,12 +15,10 @@
  * TWO THINGS STAY WHOLE-WORLD, and both are correctness, not performance:
  *
  *   REGIONS. The set that paints a ground is picked per REGION, and a region id
- *   is `<ground>@<lexicographic minimum cell>` over a 4-connected component.
- *   Computed over a camera window instead, a meadow gets a different id (and so
- *   a different set, and so different art) every time the window moves — the
- *   ground would visibly reshuffle as you walk. So the flood fill runs ONCE
- *   over the whole doc at load (measured: 27ms on the_game's 512x512) and every
- *   cell reads its id from that.
+ *   is `<ground>@<x/24>,<y/24>` — a CHUNK, so it is a pure function of the
+ *   coordinates and a camera window can never change it. `Regions` is still
+ *   built over the whole doc because a consumer wants the LIST of ids; the
+ *   lookup itself needs no table.
  *
  *   THE GROUND LOOKUP. render3 renders the whole map, so its `g()` is clamped
  *   to the whole map. Clamping to a camera window would cut regions, fade bands
@@ -36,35 +34,22 @@
 import {
   Tiles3,
   computeRegions,
-  columnX,
-  columnY,
-  lcg,
-  DY,
-  DETAIL_FREQ,
-  FADE_BAND,
-  INDOOR_GROUNDS,
-  PLATE_H,
-  TILE,
-  TOP_Y,
   type BaseTileSetsDoc,
   type Bounds,
   type Deck3,
-  type FadePick,
   type FadesDoc,
-  type FieldArt,
   type Frame,
   type GroundType,
   type MemberResolveDoc,
   type PatternsDoc,
   type Regions,
   type ReviewManifest,
+  type SlopesDoc,
   type TileArt,
   type Tiles3Boundary,
   type Tiles3Cell,
   type Tiles3Data,
   type Tiles3DeckCell,
-  type WallColumn,
-  type WallStackStep,
   type World3View,
 } from "./tiles3";
 import {
@@ -166,212 +151,52 @@ export class Tiles3World {
     });
   }
 
-  /** render3's `g()`: null outside the bounds. */
-  g(x: number, y: number): string | null {
+  /** render3's `g()`: null outside the bounds. Bound once — the resolver takes
+   *  it as a callback and a fresh arrow per cell would allocate per frame. */
+  readonly gf = (x: number, y: number): string | null => {
     const b = this.bounds;
     return x >= b.x0 && x < b.x1 && y >= b.y0 && y < b.y1 ? this.view.groundAt(x, y) : null;
-  }
+  };
 
   /** render3's `L()`: NOT bounds-clamped — a cliff at the edge still knows how
    *  far it drops. */
+  readonly Lf = (x: number, y: number): number => this.view.levelAt(x, y);
+
+  g(x: number, y: number): string | null {
+    return this.gf(x, y);
+  }
+
   L(x: number, y: number): number {
-    return this.view.levelAt(x, y);
+    return this.Lf(x, y);
   }
 
-  /** Everything one cell draws. Null for void / out of bounds. */
+  /** Everything one cell draws. Null for void / out of bounds.
+   *
+   *  DELEGATED, not re-implemented: `Tiles3.resolveCell` IS the arm of
+   *  `resolveWindow` that resolves a cell, so the streaming path and the sweep
+   *  cannot drift by construction. The window this file resolves against is the
+   *  WHOLE world (see the header), so `g` is clamped to `bounds` and never to a
+   *  camera. */
   cell(x: number, y: number): Tiles3Cell | null {
-    const gr = this.g(x, y);
-    if (!gr) return null;
-    const zl = this.L(x, y);
-    const region = this.regions.idAt(x, y);
-    const cell: Tiles3Cell = {
-      x,
-      y,
-      ground: gr,
-      level: zl,
-      region,
-      sx: columnX(this.frame, x, y),
-      sy: columnY(this.frame, x, y, zl),
-      kind: "field",
-    };
-    const liquid = this.view.isLiquid(gr);
-    if (zl === 0 || liquid) {
-      let art: FieldArt;
-      if (liquid) {
-        const t = this.tiles.flatTile(gr);
-        art = { kind: "liquid", topRGB: t.topRGB ?? [128, 128, 128], w: t.w, h: t.h };
-      } else {
-        const p = this.tiles.plateAt(gr, region, x, y);
-        cell.set = p.set.id;
-        cell.memberIndex = p.memberIndex;
-        cell.plate = p.art;
-        art = { kind: p.art.kind, path: p.art.path, w: p.art.w, h: p.art.h };
-        const fade = this.fadeAt(gr, x, y, zl);
-        if (fade) {
-          cell.fade = fade;
-          art = { kind: "fade", path: fade.file, w: TILE, h: TOP_Y + 2 * DY + 2 };
-        }
-        if (art.kind === "flat") {
-          const d = this.detailAt(gr, x, y);
-          if (d) {
-            cell.detail = d;
-            art = { kind: "flat", path: d.file, w: TILE, h: TILE };
-          }
-        }
-      }
-      cell.art = art;
-      cell.pasteY = cell.sy - (!liquid && art.h === PLATE_H ? 0 : TOP_Y);
-      return cell;
-    }
-    cell.kind = "wall";
-    cell.wall = this.wallColumn(gr, x, y, zl);
-    return cell;
+    return this.tiles.resolveCell(this.view, this.frame, this.gf, this.Lf, x, y);
   }
 
-  /** THE FADE BAND — the axis scan from ring 2 (ring 1 belongs to the composed
-   *  boundary tile). Port of `Tiles3.fadeAt`. */
-  private fadeAt(gr: string, x: number, y: number, zl: number): FadePick | null {
-    let near: [string, number] | null = null;
-    for (let r = 2; r <= FADE_BAND && !near; r++) {
-      for (const [dx, dy] of [
-        [r, 0],
-        [-r, 0],
-        [0, r],
-        [0, -r],
-      ]) {
-        const og = this.g(x + dx, y + dy);
-        if (og && og !== gr && !this.view.isLiquid(og) && this.L(x + dx, y + dy) === zl) {
-          near = [og, r];
-          break;
-        }
-      }
-    }
-    if (!near) return null;
-    const pool = this.tiles.fadePool(gr, near[0]);
-    if (!pool.length) return null;
-    const u = lcg((x * 73856093) ^ (y * 19349663))();
-    const hi = pool.length - 1;
-    const bandPos = (FADE_BAND + 1 - near[1]) / (FADE_BAND + 1);
-    const index = Math.max(0, Math.min(hi, Math.trunc((bandPos * 0.55 + u * 0.3 - 0.15) * hi)));
-    return { other: near[0], dist: near[1], poolKey: `${gr}|${near[0]}`, index, u, file: pool[index].file };
-  }
-
-  private detailAt(ground: string, x: number, y: number): { index: number; file: string } | null {
-    const pool = this.tiles.detailPool(ground);
-    if (!pool.length) return null;
-    if (!(lcg((x * 83492791) ^ (y * 2654435761))() < DETAIL_FREQ)) return null;
-    const index = Math.trunc(lcg(x * 31 + y)() * pool.length) % pool.length;
-    return { index, file: pool[index] };
-  }
-
-  /** THE WALL STACK. Port of `Tiles3.wallColumn`. */
-  private wallColumn(gr: string, x: number, y: number, zl: number): WallColumn {
-    const frontLow = Math.min(this.L(x + 1, y), this.L(x, y + 1));
-    const down = this.L(x + 1, y) <= this.L(x, y + 1) ? [x + 1, y] : [x, y + 1];
-    const override = this.view.wallSideAt(x, y);
-    let side = override ?? this.g(down[0], down[1]) ?? gr;
-    if (!override && (INDOOR_GROUNDS.includes(side) || this.view.isLiquid(side))) side = gr;
-    const capped = frontLow < zl;
-    const cap = capped ? this.tiles.overTile(gr, side) : this.tiles.flatTile(gr);
-    const midGround = override ? side : gr;
-    const mid = this.tiles.storeyTile(midGround);
-    const stack: WallStackStep[] = [];
-    for (let f = Math.max(0, frontLow); f <= zl; f++)
-      stack.push({ storey: f, tile: f === zl ? cap : mid, y: columnY(this.frame, x, y, f) - TOP_Y });
-    return { side, frontLow, fx: down[0], fy: down[1], over: override !== null, capped, cap, mid, midGround, stack };
-  }
-
-  /** THE CORNER LATTICE. Port of `Tiles3.boundaries`, for the ONE corner whose
-   *  north-west cell is (x,y). Null when the quad is not a two-ground,
-   *  one-level quad — which is most of the map. */
+  /** THE COMPOSED BOUNDARY this cell wears, for a draw pass that composes it in
+   *  its own layer. Same call `resolveCell` makes. */
   boundary(x: number, y: number): Tiles3Boundary | null {
     const b = this.bounds;
-    // The sweep's own ranges: a corner needs (x+1, y+1) inside the bounds.
-    if (x < b.x0 || y < b.y0 || x >= b.x1 - 1 || y >= b.y1 - 1) return null;
-    const quad: [number, number][] = [
-      [x, y],
-      [x + 1, y],
-      [x, y + 1],
-      [x + 1, y + 1],
-    ];
-    const gs = quad.map((q) => this.g(q[0], q[1]));
-    if (gs.some((v) => v === null)) return null;
-    const uniq = [...new Set(gs as string[])];
-    if (uniq.length !== 2) return null;
-    if (new Set(quad.map((q) => this.L(q[0], q[1]))).size !== 1) return null;
-    const sorted = uniq.slice().sort();
-    const [sa, sb] = this.tiles.sideRoles(sorted[0], sorted[1]);
-    const index =
-      8 * (gs[0] === sb ? 1 : 0) +
-      4 * (gs[1] === sb ? 1 : 0) +
-      2 * (gs[2] === sb ? 1 : 0) +
-      1 * (gs[3] === sb ? 1 : 0);
-    if (index === 0 || index === 15) return null;
-    const region = this.regions.idAt(x, y);
-    const pa = this.tiles.plateAt(sa, region, x, y);
-    const pb = this.tiles.plateAt(sb, region, x, y);
-    return {
-      x,
-      y,
-      index,
-      a: sa,
-      b: sb,
-      maskFrame: this.tiles.maskFrame(index),
-      pattern: this.patterns.selection?.default_pattern ?? null,
-      plateA: pa.art,
-      plateB: pb.art,
-      setA: pa.set.id,
-      memberA: pa.memberIndex,
-      setB: pb.set.id,
-      memberB: pb.memberIndex,
-      sx: columnX(this.frame, x, y),
-      sy: columnY(this.frame, x, y, this.L(x, y)),
-      w: TILE,
-      h: PLATE_H,
-    };
+    if (x < b.x0 || y < b.y0 || x >= b.x1 || y >= b.y1) return null;
+    return this.tiles.boundaryAt(this.view, this.frame, this.gf, this.Lf, x, y)?.boundary ?? null;
   }
 
-  /** The deck cells standing on one world cell, resolved. Port of
-   *  `Tiles3.deckCells` for a single (x,y) — a world cell can carry more than
-   *  one deck, and the order is the document's. */
+  /** The deck cells standing on one world cell, resolved. A world cell can carry
+   *  more than one deck, and the order is the document's. */
   decks(x: number, y: number): Tiles3DeckCell[] {
     const dis = this.deckAt.get(y * this.view.width + x);
     if (!dis) return [];
     const b = this.bounds;
     if (x < b.x0 || x >= b.x1 || y < b.y0 || y >= b.y1) return [];
-    const out: Tiles3DeckCell[] = [];
-    for (const di of dis) {
-      const dk = this.view.decks[di];
-      const dg = dk.ground || "grey_stone";
-      const dl = Math.trunc(dk.level);
-      const th = Math.trunc(dk.thickness ?? 1);
-      const set = new Set(dk.cells.map((c) => c.y * this.view.width + c.x));
-      const frontCovered = set.has(y * this.view.width + x + 1) && set.has((y + 1) * this.view.width + x);
-      const lo = frontCovered ? dl : Math.max(0, dl - Math.max(1, th));
-      const body = dk.kind === "cave" && dg !== "black_rock" && dg !== "grey_stone" ? "grey_stone" : dg;
-      const cap = frontCovered ? this.tiles.flatTile(dg) : this.tiles.overTile(dg, body);
-      const mid = this.tiles.storeyTile(body);
-      const stack: WallStackStep[] = [];
-      for (let f = lo; f <= dl; f++)
-        stack.push({ storey: f, tile: f === dl ? cap : mid, y: columnY(this.frame, x, y, f) - TOP_Y });
-      out.push({
-        deck: di,
-        kind: dk.kind ?? null,
-        ground: dg,
-        level: dl,
-        thickness: th,
-        x,
-        y,
-        frontCovered,
-        lo,
-        body,
-        cap,
-        mid,
-        sx: columnX(this.frame, x, y),
-        stack,
-      });
-    }
-    return out;
+    return dis.map((di) => this.tiles.deckCell(this.view, this.frame, this.view.decks[di], di, x, y));
   }
 }
 
@@ -454,9 +279,12 @@ export const TILES3_DOCS = {
   patterns: "tiles/patterns/index.json",
   review: "tiles/review/manifest.json",
   fades: "tiles/fades/index.json",
+  slopes: "tiles/slopes/index.json",
   baseTileSets: "live/tuning/base_tile_sets.json",
   basePromotions: "live/tuning/base_tiles.json",
   tileWalls: "live/tuning/tile_walls.json",
+  topWalls: "live/tuning/top_walls.json",
+  tileTops: "live/tuning/tile_tops.json",
   feedback: "live/feedback/tiles.json",
 } as const;
 
@@ -498,6 +326,14 @@ export function tiles3DataFrom(
     wallOverrides: docs.tileWalls?.overrides,
     basePromotions: docs.basePromotions?.overrides,
     fades: docs.fades as FadesDoc | undefined,
+    slopes: docs.slopes as SlopesDoc | undefined,
+    topWallOverrides: docs.topWalls?.overrides,
+    topOverrides: docs.tileTops?.overrides,
+    /* NO live/tuning/tile_details.json: the wiki has never published it, and a
+     * document in TILES3_DOCS is fetched on every world load — a permanent 404
+     * per boot to read a rate that does not exist. `Tiles3Data.detailRates` is
+     * wired and every ground uses DETAIL_FREQ until the file appears; add the
+     * path above on the day it does (render3 reads `.rate`). */
     /* NO FADE GUARD IN THE GAME, and it is a known, measured difference. The
      * guard is a PIXEL test over each candidate fade tile's own top diamond
      * (80th percentile distance to the nearer palette top, rejected above 78),
@@ -574,7 +410,9 @@ export function surfaceKey(t3: Tiles3Textures, tex: TextureManagerLike, cell: Ti
   const art = cell.art;
   if (!art) return null;
   if (art.kind === "liquid") return t3.liquid(art.topRGB);
-  if (art.kind === "conform") return t3.plate(art, cell.ground);
+  /* `topOnly` too: an occluder copy that drew the unmasked tile would put the
+   * wall band back on the water this pass exists to keep clean. */
+  if (art.kind === "conform" || art.topOnly) return t3.plate(art, cell.ground);
   const k = plateKey(art, cell.ground);
   return tex.exists(k) ? k : null;
 }

@@ -414,6 +414,32 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
   return out;
 }
 
+/** render3's `top_face_only`: the surface's TOP FACE alone, the wall band
+ *  dropped so the cell's own x-over-y wall shows through — and on a liquid, so
+ *  that nothing shows there at all. THE WALL IS NEVER THE SURFACE'S.
+ *
+ *  Measured on the_game's water plates: the band is 1088 px against a 924 px
+ *  top face, RGB(76,138,152) against (126,183,199) — more than half of every
+ *  tile, and darker than the water it sits under. Painting it tiled a dark
+ *  lattice across the whole sea and left a hard line along the shore, where the
+ *  last band has no cell in front of it to cover it up.
+ *
+ *  Zeroed, not cropped: the result keeps 64x46 plate geometry so it pastes at
+ *  the offset every other surface does. */
+export function topFaceOnly(sheets: PatternSheets, src: Pixels): Pixels {
+  const { fw, fh, libTop } = sheets;
+  const a = cropToArt(src, fw, fh);
+  const out = newPixels(fw, fh);
+  for (let i = 0; i < fw * fh; i++) {
+    if (!libTop[i]) continue;
+    out.data[i * 4] = a.data[i * 4];
+    out.data[i * 4 + 1] = a.data[i * 4 + 1];
+    out.data[i * 4 + 2] = a.data[i * 4 + 2];
+    out.data[i * 4 + 3] = a.data[i * 4 + 3];
+  }
+  return out;
+}
+
 /** A liquid's flat-colour diamond — render3's `flat_tile` for the four liquid
  *  grounds, which never show a wall. 64x64 with the diamond hung from TOP_Y, so
  *  it pastes at the same offset a review tile does. */
@@ -460,6 +486,13 @@ export function assetPath(path: string): string {
 export interface PlateLike {
   kind: string;
   path: string;
+  /** render3's `top_face_only` — paint the top face, drop the wall band. Set on
+   *  a liquid, whose surface never shows a wall. Part of the plate's CONTENT,
+   *  so it is in the key: a masked raster and the full tile are two different
+   *  pictures behind one path, and sharing a key between them is exactly the
+   *  cache bug that served whole wrong tiles in render3 (`never key a cache on
+   *  id()`). */
+  topOnly?: boolean;
 }
 
 /** THE CONTENT IDENTITY OF ONE PLATE — what actually went into its pixels, and
@@ -468,14 +501,16 @@ export interface PlateLike {
  *  by its path AND its ground, because the ground supplies the wall colour and
  *  the same art conformed for two grounds is two different rasters. */
 export function plateSourceId(art: PlateLike, ground: string): string {
-  return art.kind === "conform" ? `c:${ground}:${art.path}` : `p:${art.path}`;
+  const id = art.kind === "conform" ? `c:${ground}:${art.path}` : `p:${art.path}`;
+  return art.topOnly ? `t:${id}` : id;
 }
 
 /** Where a plate's DRAWABLE texture lands. A published/clean plate is drawn
  *  straight from its loaded file, so it keeps the plain art key and is never
  *  copied; a conformed plate is a derived raster and gets its own. */
 export function plateKey(art: PlateLike, ground: string): string {
-  return art.kind === "conform" ? `t3c:${ground}|${art.path}` : artKey(art.path);
+  const base = art.kind === "conform" ? `t3c:${ground}|${art.path}` : artKey(art.path);
+  return art.topOnly ? `t3f:${base}` : base;
 }
 
 /** The composed boundary's key: mask frame + both plate identities + the pass.
@@ -765,12 +800,11 @@ export class Tiles3Textures {
    *  key otherwise. */
   plate(art: PlateLike, ground: string): string | null {
     const key = plateKey(art, ground);
-    if (art.kind !== "conform") return this.o.textures.exists(key) ? key : null;
-    return this.ensure(key, () => {
-      const src = this.sourcePixels(artKey(art.path));
-      if (!src) return null;
-      return conformPlate(this.o.sheets, src, this.wallRGB(ground));
-    });
+    /* A published or clean plate is drawn straight from its loaded file and is
+     * never copied — UNLESS it is top-only, which is a different picture and so
+     * a built raster under its own key. */
+    if (art.kind !== "conform" && !art.topOnly) return this.o.textures.exists(key) ? key : null;
+    return this.ensure(key, () => this.platePixels(art, ground));
   }
 
   /** A liquid's painted diamond. */
@@ -791,7 +825,7 @@ export class Tiles3Textures {
       const art = cell.kind === "field" ? cell.art : undefined;
       let key: string | null;
       if (art && art.kind === "liquid") key = this.liquid(art.topRGB);
-      else if (art && art.kind === "conform") key = this.plate(art, cell.ground);
+      else if (art && (art.kind === "conform" || art.topOnly)) key = this.plate(art, cell.ground);
       else key = this.o.textures.exists(op.key) ? op.key : null;
       if (key) out.push(key === op.key ? op : { ...op, key });
     }
@@ -893,6 +927,9 @@ export class Tiles3Textures {
     } else {
       out = this.sourcePixels(artKey(art.path));
     }
+    /* LAST, over the conformed raster too: conforming REPAINTS the wall band
+     * from the ground palette, so masking first would hand it back. */
+    if (out && art.topOnly) out = topFaceOnly(this.o.sheets, out);
     if (out) this.pix.set(key, out);
     return out;
   }
