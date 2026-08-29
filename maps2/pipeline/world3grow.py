@@ -994,7 +994,12 @@ class Grow:
         return lv, th, wl, fl
 
     WALL_MATERIALS = ("parquet_floor", "brown_paving_stone", "grey_paving_stone")
-    HOUSE_RISE = 8            # levels; 8 x 15px = 120px against a 64px hero
+    # SIX TILES, AND V2 SAID SO ALL ALONG (islandworld2.HOUSE_WALL = 6).
+    # The maintainer's own breakdown, 2026-08-30: "the door is 5 tiles and the
+    # roof is 1, so a house should be 6 tiles in height". The wall ring rides
+    # at base + HOUSE_RISE and its top course IS the roof, so the doorway
+    # stands 5 clear and the roof is the sixth.
+    HOUSE_RISE = 6
 
     def house(self, x0, y0, w, h, wall, roof):
         """A house is a RING OF X-OVER-Y WALLS, and the roof is the thin band
@@ -1011,12 +1016,8 @@ class Grow:
         whole cells. There is no roof deck any more - a deck is a full cell
         of roof, which is exactly what he does not want."""
         assert wall in self.WALL_MATERIALS, f"{wall} is not a wall material"
-        # A HOUSE IS TALLER THAN THE PLAYER (maintainer 2026-08-30: "this
-        # house is not tall enough!"). The hero is 64px
-        # (scenery placement.character_height_px) and a storey is 15px, so the
-        # old 3-level wall stood 45px - SHORTER than the man walking past it,
-        # which is why it read as a bunker. 8 levels is 120px: a wall almost
-        # two heads over him, which is a house.
+        # A HOUSE IS SIX TILES TALL - five of door, one of roof. Three levels
+        # stood 45px against a 64px hero and read as a bunker; eight overshot.
         rise = self.HOUSE_RISE
         gi, grd, lvl = self.gi, self.grd, self.lvl
         base = self.lvl[y0][x0]
