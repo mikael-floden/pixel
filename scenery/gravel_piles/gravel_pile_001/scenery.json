@@ -42,6 +42,29 @@
         "south-east": "gravel_piles/gravel_pile_001/lit_1/rotations/south-east.webp",
         "south-west": "gravel_piles/gravel_pile_001/lit_1/rotations/south-west.webp",
         "south": "gravel_piles/gravel_pile_001/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "194bd238-e77c-4dcb-8cc6-e2fde79381b6",
+          "description": "This is the same picture in every frame. ONLY the golden trickle moves, running slowly down the slope. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "gravel_piles/gravel_pile_001/lit_1/animations/motion/00.webp",
+            "gravel_piles/gravel_pile_001/lit_1/animations/motion/01.webp",
+            "gravel_piles/gravel_pile_001/lit_1/animations/motion/02.webp",
+            "gravel_piles/gravel_pile_001/lit_1/animations/motion/03.webp",
+            "gravel_piles/gravel_pile_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "gravel_piles/gravel_pile_001/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T14:28:23+00:00",
+          "brief": "U10"
+        }
       }
     },
     "NOT_LIT_1": {

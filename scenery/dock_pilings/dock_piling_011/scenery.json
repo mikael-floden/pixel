@@ -43,6 +43,29 @@
         "south-east": "dock_pilings/dock_piling_011/lit_1/rotations/south-east.webp",
         "south-west": "dock_pilings/dock_piling_011/lit_1/rotations/south-west.webp",
         "south": "dock_pilings/dock_piling_011/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "b325d660-3ce7-48cb-a467-52c5510e9804",
+          "description": "This is the same picture in every frame. ONLY the lit water around the posts moves, rippling very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "dock_pilings/dock_piling_011/lit_1/animations/motion/00.webp",
+            "dock_pilings/dock_piling_011/lit_1/animations/motion/01.webp",
+            "dock_pilings/dock_piling_011/lit_1/animations/motion/02.webp",
+            "dock_pilings/dock_piling_011/lit_1/animations/motion/03.webp",
+            "dock_pilings/dock_piling_011/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "dock_pilings/dock_piling_011/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T14:28:05+00:00",
+          "brief": "U17"
+        }
       }
     },
     "NOT_LIT_1": {

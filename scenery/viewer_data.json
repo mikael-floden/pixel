@@ -3260,6 +3260,29 @@
             "south-west": "barrels/barrel_003/lit_2/rotations/south-west.webp",
             "south": "barrels/barrel_003/lit_2/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "04af9ca7-bf2f-4b46-955d-2c639113a40f",
+              "description": "This is the same picture in every frame. ONLY the light in the pale hoops brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "barrels/barrel_003/lit_2/animations/motion/00.webp",
+                "barrels/barrel_003/lit_2/animations/motion/01.webp",
+                "barrels/barrel_003/lit_2/animations/motion/02.webp",
+                "barrels/barrel_003/lit_2/animations/motion/03.webp",
+                "barrels/barrel_003/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "barrels/barrel_003/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:25:00+00:00",
+              "brief": "U11"
+            }
+          },
           "art_hash": "7a52a34037368a05"
         },
         "NOT_LIT_2": {
@@ -8652,6 +8675,29 @@
           "glow_concept": "glowworms strung along the arching canes",
           "difference_from_source": 0.726,
           "glow_score": 0.0181,
+          "animations": {
+            "motion": {
+              "group_id": "f68971e9-4e42-4d1e-9d16-9c33fa2f7860",
+              "description": "This is the same picture in every frame. ONLY the small green lights on the canes brighten a little and return, one after another. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "briar_thickets/briar_thicket_015/lit_1/animations/motion/00.webp",
+                "briar_thickets/briar_thicket_015/lit_1/animations/motion/01.webp",
+                "briar_thickets/briar_thicket_015/lit_1/animations/motion/02.webp",
+                "briar_thickets/briar_thicket_015/lit_1/animations/motion/03.webp",
+                "briar_thickets/briar_thicket_015/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "briar_thickets/briar_thicket_015/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:26:31+00:00",
+              "brief": "U14"
+            }
+          },
           "art_hash": "02a00769608e2a5d"
         },
         "LIT_2": {
@@ -10153,6 +10199,29 @@
             "south-east": "cairns/cairn_009/lit_2/rotations/south-east.webp",
             "south-west": "cairns/cairn_009/lit_2/rotations/south-west.webp",
             "south": "cairns/cairn_009/lit_2/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "ac7bd82a-5ca1-4c74-9754-e0cd3a1ad7f8",
+              "description": "This is the same picture in every frame. ONLY the light of the single topmost stone brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cairns/cairn_009/lit_2/animations/motion/00.webp",
+                "cairns/cairn_009/lit_2/animations/motion/01.webp",
+                "cairns/cairn_009/lit_2/animations/motion/02.webp",
+                "cairns/cairn_009/lit_2/animations/motion/03.webp",
+                "cairns/cairn_009/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cairns/cairn_009/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:25:24+00:00",
+              "brief": "U3"
+            }
           },
           "art_hash": "afbbd860b1b8397e"
         },
@@ -11747,6 +11816,29 @@
             "south-west": "carts/cart_011/lit_1/rotations/south-west.webp",
             "south": "carts/cart_011/lit_1/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "ddb41af8-9b9e-496b-8bf3-09542a0d4ce2",
+              "description": "This is the same picture in every frame. ONLY the cyan light in the moss brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "carts/cart_011/lit_1/animations/motion/00.webp",
+                "carts/cart_011/lit_1/animations/motion/01.webp",
+                "carts/cart_011/lit_1/animations/motion/02.webp",
+                "carts/cart_011/lit_1/animations/motion/03.webp",
+                "carts/cart_011/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "carts/cart_011/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:26:25+00:00",
+              "brief": "U18"
+            }
+          },
           "art_hash": "910733ba76d7762d"
         },
         "NOT_LIT_1": {
@@ -12137,6 +12229,29 @@
           "glow_concept": null,
           "difference_from_source": 0.7676,
           "glow_score": 0.0,
+          "animations": {
+            "motion": {
+              "group_id": "d24706b4-e8b2-4b21-a3c0-671dd062d5cc",
+              "description": "This is the same picture in every frame. ONLY the brown seed heads move, nodding very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cattail_clumps/cattail_clump_005/not_lit_3/animations/motion/00.webp",
+                "cattail_clumps/cattail_clump_005/not_lit_3/animations/motion/01.webp",
+                "cattail_clumps/cattail_clump_005/not_lit_3/animations/motion/02.webp",
+                "cattail_clumps/cattail_clump_005/not_lit_3/animations/motion/03.webp",
+                "cattail_clumps/cattail_clump_005/not_lit_3/animations/motion/04.webp"
+              ],
+              "strip": "cattail_clumps/cattail_clump_005/not_lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:27:24+00:00",
+              "brief": "U23"
+            }
+          },
           "art_hash": "bb858c2b449be65a"
         },
         "NOT_LIT_4": {
@@ -14201,6 +14316,29 @@
           "glow_concept": "glow-lichen shelf shining pale green",
           "difference_from_source": 0.897,
           "glow_score": 0.2323,
+          "animations": {
+            "motion": {
+              "group_id": "a1f868b0-02e3-4f41-a1c8-4c2bdc690325",
+              "description": "This is the same picture in every frame. ONLY the green light of the lichen brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_features/cliff_feature_007/lit_2/animations/motion/00.webp",
+                "cliff_features/cliff_feature_007/lit_2/animations/motion/01.webp",
+                "cliff_features/cliff_feature_007/lit_2/animations/motion/02.webp",
+                "cliff_features/cliff_feature_007/lit_2/animations/motion/03.webp",
+                "cliff_features/cliff_feature_007/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_features/cliff_feature_007/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:26:16+00:00",
+              "brief": "U19"
+            }
+          },
           "art_hash": "d15f0ab40e2d380d"
         },
         "NOT_LIT_1": {
@@ -20414,6 +20552,29 @@
           "glow_concept": "ground around the base lit in the crystal's color",
           "difference_from_source": 0.8471,
           "glow_score": 0.4635,
+          "animations": {
+            "motion": {
+              "group_id": "64efd1ed-a6b7-48ce-88cf-eaff8cb42486",
+              "description": "This is the same picture in every frame. ONLY the light inside the crystals brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "crystals/crystal_901/lit_1/animations/motion/00.webp",
+                "crystals/crystal_901/lit_1/animations/motion/01.webp",
+                "crystals/crystal_901/lit_1/animations/motion/02.webp",
+                "crystals/crystal_901/lit_1/animations/motion/03.webp",
+                "crystals/crystal_901/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "crystals/crystal_901/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:26:24+00:00",
+              "brief": "U16"
+            }
+          },
           "art_hash": "1a55da113a2b17b2"
         },
         "LIT_2": {
@@ -20595,6 +20756,29 @@
           "glow_concept": null,
           "difference_from_source": 0.4951,
           "glow_score": 0.0944,
+          "animations": {
+            "motion": {
+              "group_id": "fcb520c4-2402-4f95-9ba9-b1b8eb5a312c",
+              "description": "This is the same picture in every frame. ONLY a faint drift of spores rises out of the cups and thins away. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cup_fungi/cup_fungus_001/not_lit_4/animations/motion/00.webp",
+                "cup_fungi/cup_fungus_001/not_lit_4/animations/motion/01.webp",
+                "cup_fungi/cup_fungus_001/not_lit_4/animations/motion/02.webp",
+                "cup_fungi/cup_fungus_001/not_lit_4/animations/motion/03.webp",
+                "cup_fungi/cup_fungus_001/not_lit_4/animations/motion/04.webp"
+              ],
+              "strip": "cup_fungi/cup_fungus_001/not_lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:26:43+00:00",
+              "brief": "U24"
+            }
+          },
           "art_hash": "e2a513ae3fc710cc"
         }
       },
@@ -22007,6 +22191,29 @@
             "south-east": "dock_pilings/dock_piling_011/lit_1/rotations/south-east.webp",
             "south-west": "dock_pilings/dock_piling_011/lit_1/rotations/south-west.webp",
             "south": "dock_pilings/dock_piling_011/lit_1/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "b325d660-3ce7-48cb-a467-52c5510e9804",
+              "description": "This is the same picture in every frame. ONLY the lit water around the posts moves, rippling very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "dock_pilings/dock_piling_011/lit_1/animations/motion/00.webp",
+                "dock_pilings/dock_piling_011/lit_1/animations/motion/01.webp",
+                "dock_pilings/dock_piling_011/lit_1/animations/motion/02.webp",
+                "dock_pilings/dock_piling_011/lit_1/animations/motion/03.webp",
+                "dock_pilings/dock_piling_011/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_011/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:28:05+00:00",
+              "brief": "U17"
+            }
           },
           "art_hash": "9f4f928b449ab7c6"
         },
@@ -23572,6 +23779,29 @@
             "south-east": "fences/fence_001/lit_2/rotations/south-east.webp",
             "south-west": "fences/fence_001/lit_2/rotations/south-west.webp",
             "south": "fences/fence_001/lit_2/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "66f4f3df-65c4-4775-9f5b-8df3a0f3dbce",
+              "description": "This is the same picture in every frame. ONLY the light of the two pale post caps brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "fences/fence_001/lit_2/animations/motion/00.webp",
+                "fences/fence_001/lit_2/animations/motion/01.webp",
+                "fences/fence_001/lit_2/animations/motion/02.webp",
+                "fences/fence_001/lit_2/animations/motion/03.webp",
+                "fences/fence_001/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "fences/fence_001/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:25:32+00:00",
+              "brief": "U5"
+            }
           },
           "art_hash": "70e1d6ed7bd90ea8"
         },
@@ -27440,6 +27670,29 @@
           "glow_concept": null,
           "difference_from_source": 0.7079,
           "glow_score": 0.1736,
+          "animations": {
+            "motion": {
+              "group_id": "abf2b3ba-a693-4c37-9aca-bcfc9080279a",
+              "description": "This is the same picture in every frame. ONLY one small highlight moves, sliding slowly across the crystals inside. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "geodes/geode_001/not_lit_3/animations/motion/00.webp",
+                "geodes/geode_001/not_lit_3/animations/motion/01.webp",
+                "geodes/geode_001/not_lit_3/animations/motion/02.webp",
+                "geodes/geode_001/not_lit_3/animations/motion/03.webp",
+                "geodes/geode_001/not_lit_3/animations/motion/04.webp"
+              ],
+              "strip": "geodes/geode_001/not_lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:25:17+00:00",
+              "brief": "U15"
+            }
+          },
           "art_hash": "3c1f8ac2109e290a"
         },
         "NOT_LIT_4": {
@@ -28347,6 +28600,29 @@
             "south-east": "gravel_piles/gravel_pile_001/lit_1/rotations/south-east.webp",
             "south-west": "gravel_piles/gravel_pile_001/lit_1/rotations/south-west.webp",
             "south": "gravel_piles/gravel_pile_001/lit_1/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "194bd238-e77c-4dcb-8cc6-e2fde79381b6",
+              "description": "This is the same picture in every frame. ONLY the golden trickle moves, running slowly down the slope. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "gravel_piles/gravel_pile_001/lit_1/animations/motion/00.webp",
+                "gravel_piles/gravel_pile_001/lit_1/animations/motion/01.webp",
+                "gravel_piles/gravel_pile_001/lit_1/animations/motion/02.webp",
+                "gravel_piles/gravel_pile_001/lit_1/animations/motion/03.webp",
+                "gravel_piles/gravel_pile_001/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "gravel_piles/gravel_pile_001/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:28:23+00:00",
+              "brief": "U10"
+            }
           },
           "art_hash": "ab9390c47191304f"
         },
@@ -30770,6 +31046,29 @@
             "south-west": "haystacks/haystack_013/lit_2/rotations/south-west.webp",
             "south": "haystacks/haystack_013/lit_2/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "54f7296a-3544-44e1-a4d6-b79fb56b5456",
+              "description": "This is the same picture in every frame. ONLY the light showing through the gaps brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "haystacks/haystack_013/lit_2/animations/motion/00.webp",
+                "haystacks/haystack_013/lit_2/animations/motion/01.webp",
+                "haystacks/haystack_013/lit_2/animations/motion/02.webp",
+                "haystacks/haystack_013/lit_2/animations/motion/03.webp",
+                "haystacks/haystack_013/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "haystacks/haystack_013/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:25:57+00:00",
+              "brief": "U9"
+            }
+          },
           "art_hash": "8b83baa743ce8988"
         },
         "NOT_LIT_1": {
@@ -32983,6 +33282,27 @@
           "glow_concept": null,
           "difference_from_source": 0.7301,
           "glow_score": 0.0181,
+          "animations": {
+            "motion": {
+              "group_id": "922d235c-e50d-4742-8c93-0986b3df626d",
+              "description": "This is the same picture in every frame. ONLY the hop leaves move, stirring very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "hop_poles/hop_pole_001/not_lit_2/animations/motion/00.webp",
+                "hop_poles/hop_pole_001/not_lit_2/animations/motion/01.webp",
+                "hop_poles/hop_pole_001/not_lit_2/animations/motion/02.webp",
+                "hop_poles/hop_pole_001/not_lit_2/animations/motion/03.webp",
+                "hop_poles/hop_pole_001/not_lit_2/animations/motion/04.webp"
+              ],
+              "strip": "hop_poles/hop_pole_001/not_lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T14:27:22+00:00",
+              "brief": "U22"
+            }
+          },
           "art_hash": "a9ffd3f835664756"
         },
         "NOT_LIT_3": {
@@ -32992,6 +33312,27 @@
           "glow_concept": null,
           "difference_from_source": 0.4394,
           "glow_score": 0.0484,
+          "animations": {
+            "motion": {
+              "group_id": "46d42445-4947-4b49-82b8-21e5a65c4e90",
+              "description": "This is the same picture in every frame. ONLY the hanging bines move, stirring very slightly. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "hop_poles/hop_pole_001/not_lit_3/animations/motion/00.webp",
+                "hop_poles/hop_pole_001/not_lit_3/animations/motion/01.webp",
+                "hop_poles/hop_pole_001/not_lit_3/animations/motion/02.webp",
+                "hop_poles/hop_pole_001/not_lit_3/animations/motion/03.webp",
+                "hop_poles/hop_pole_001/not_lit_3/animations/motion/04.webp"
+              ],
+              "strip": "hop_poles/hop_pole_001/not_lit_3/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T14:27:14+00:00",
+              "brief": "U28"
+            }
+          },
           "art_hash": "d3727a36ae69bb0e"
         },
         "NOT_LIT_4": {
@@ -37832,6 +38173,27 @@
           "glow_concept": null,
           "difference_from_source": 0.4912,
           "glow_score": 0.1155,
+          "animations": {
+            "motion": {
+              "group_id": "d843570c-a485-4782-bef8-43d644047dcf",
+              "description": "This is the same picture in every frame. ONLY the hanging garlands move, swaying. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "maypoles/maypole_002/lit_4/animations/motion/00.webp",
+                "maypoles/maypole_002/lit_4/animations/motion/01.webp",
+                "maypoles/maypole_002/lit_4/animations/motion/02.webp",
+                "maypoles/maypole_002/lit_4/animations/motion/03.webp",
+                "maypoles/maypole_002/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "maypoles/maypole_002/lit_4/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T14:26:42+00:00",
+              "brief": "U21"
+            }
+          },
           "art_hash": "c9cc32b712f3c9a5"
         }
       },
@@ -38375,6 +38737,29 @@
           "glow_concept": "gently pulsing green glow deep inside the clump",
           "difference_from_source": 0.3478,
           "glow_score": 0.0953,
+          "animations": {
+            "motion": {
+              "group_id": "0fe04885-ddf1-473c-9ffe-bab9756a227c",
+              "description": "This is the same picture in every frame. ONLY the one bright green point inside the moss brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "moss_clumps/moss_clump_009/lit_2/animations/motion/00.webp",
+                "moss_clumps/moss_clump_009/lit_2/animations/motion/01.webp",
+                "moss_clumps/moss_clump_009/lit_2/animations/motion/02.webp",
+                "moss_clumps/moss_clump_009/lit_2/animations/motion/03.webp",
+                "moss_clumps/moss_clump_009/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "moss_clumps/moss_clump_009/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:25:07+00:00",
+              "brief": "U2"
+            }
+          },
           "art_hash": "4922bef5450ffa4a"
         },
         "NOT_LIT_1": {
@@ -38619,6 +39004,29 @@
           "difference_from_source": 0.6288,
           "glow_score": 0.144,
           "relit_from": "LIT_2",
+          "animations": {
+            "motion": {
+              "group_id": "7b2ed5bc-a688-4ed0-b34a-c7b0705324ee",
+              "description": "This is the same picture in every frame. ONLY the glowing freckles on the caps brighten a little and return. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "mushrooms/mushroom_001/not_lit_5/animations/motion/00.webp",
+                "mushrooms/mushroom_001/not_lit_5/animations/motion/01.webp",
+                "mushrooms/mushroom_001/not_lit_5/animations/motion/02.webp",
+                "mushrooms/mushroom_001/not_lit_5/animations/motion/03.webp",
+                "mushrooms/mushroom_001/not_lit_5/animations/motion/04.webp"
+              ],
+              "strip": "mushrooms/mushroom_001/not_lit_5/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:27:14+00:00",
+              "brief": "U26"
+            }
+          },
           "art_hash": "5f31d65c35ec60c7"
         }
       },
@@ -40600,6 +41008,29 @@
             "south-west": "overgrown_archways/overgrown_archway_001/not_lit_4/rotations/south-west.webp",
             "south": "overgrown_archways/overgrown_archway_001/not_lit_4/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "8daaa611-0241-42e6-89c7-795e33abf0ba",
+              "description": "This is the same picture in every frame. ONLY the long hanging trails move, swaying. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "overgrown_archways/overgrown_archway_001/not_lit_4/animations/motion/00.webp",
+                "overgrown_archways/overgrown_archway_001/not_lit_4/animations/motion/01.webp",
+                "overgrown_archways/overgrown_archway_001/not_lit_4/animations/motion/02.webp",
+                "overgrown_archways/overgrown_archway_001/not_lit_4/animations/motion/03.webp",
+                "overgrown_archways/overgrown_archway_001/not_lit_4/animations/motion/04.webp"
+              ],
+              "strip": "overgrown_archways/overgrown_archway_001/not_lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:27:14+00:00",
+              "brief": "U20"
+            }
+          },
           "art_hash": "b9357c63444ee453"
         }
       },
@@ -40638,6 +41069,29 @@
             "south-east": "overgrown_archways/overgrown_archway_002/rotations/south-east.webp",
             "south-west": "overgrown_archways/overgrown_archway_002/rotations/south-west.webp",
             "south": "overgrown_archways/overgrown_archway_002/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "b5750655-4380-401a-81a8-d07f7c306094",
+              "description": "This is the same picture in every frame. ONLY the light of the small sign at the top of the arch brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "overgrown_archways/overgrown_archway_002/animations/motion/00.webp",
+                "overgrown_archways/overgrown_archway_002/animations/motion/01.webp",
+                "overgrown_archways/overgrown_archway_002/animations/motion/02.webp",
+                "overgrown_archways/overgrown_archway_002/animations/motion/03.webp",
+                "overgrown_archways/overgrown_archway_002/animations/motion/04.webp"
+              ],
+              "strip": "overgrown_archways/overgrown_archway_002/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:25:24+00:00",
+              "brief": "U8"
+            }
           },
           "art_hash": "6176b1b324d0373b"
         },
@@ -41554,6 +42008,27 @@
                 "south"
               ],
               "generated_at": "2026-08-29T07:07:10+00:00"
+            },
+            "motion": {
+              "group_id": "ae66cb1a-c7dc-401f-8e4c-37f411b1ca00",
+              "description": "This is the same picture in every frame. ONLY the small cyan flames at the branch stubs flicker. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "petrified_stumps/petrified_stump_002/lit_3/animations/motion/00.webp",
+                "petrified_stumps/petrified_stump_002/lit_3/animations/motion/01.webp",
+                "petrified_stumps/petrified_stump_002/lit_3/animations/motion/02.webp",
+                "petrified_stumps/petrified_stump_002/lit_3/animations/motion/03.webp",
+                "petrified_stumps/petrified_stump_002/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "petrified_stumps/petrified_stump_002/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:25:00+00:00",
+              "brief": "U4"
             }
           },
           "art_hash": "39085f04de1a910f"
@@ -41931,6 +42406,29 @@
           "glow_concept": null,
           "difference_from_source": 0.4095,
           "glow_score": 0.1907,
+          "animations": {
+            "motion": {
+              "group_id": "ab511ca6-ab40-4b72-9c15-8da1962df5a7",
+              "description": "This is the same picture in every frame. ONLY a faint puff of spores rises from the top and thins away. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "puffballs/puffball_001/not_lit_4/animations/motion/00.webp",
+                "puffballs/puffball_001/not_lit_4/animations/motion/01.webp",
+                "puffballs/puffball_001/not_lit_4/animations/motion/02.webp",
+                "puffballs/puffball_001/not_lit_4/animations/motion/03.webp",
+                "puffballs/puffball_001/not_lit_4/animations/motion/04.webp"
+              ],
+              "strip": "puffballs/puffball_001/not_lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:26:42+00:00",
+              "brief": "U25"
+            }
+          },
           "art_hash": "5c4667eae4f70d8c"
         }
       },
@@ -49744,6 +50242,29 @@
             "south-west": "story_posts/story_post_009/lit_2/rotations/south-west.webp",
             "south": "story_posts/story_post_009/lit_2/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "2c8cee65-8043-4c79-86e9-962e25895cc4",
+              "description": "This is the same picture in every frame. ONLY the hanging lantern moves, swinging. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "story_posts/story_post_009/lit_2/animations/motion/00.webp",
+                "story_posts/story_post_009/lit_2/animations/motion/01.webp",
+                "story_posts/story_post_009/lit_2/animations/motion/02.webp",
+                "story_posts/story_post_009/lit_2/animations/motion/03.webp",
+                "story_posts/story_post_009/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "story_posts/story_post_009/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:24:59+00:00",
+              "brief": "U1"
+            }
+          },
           "art_hash": "f702473cdbaa3fd8"
         },
         "NOT_LIT_1": {
@@ -54382,6 +54903,29 @@
           "glow_concept": "every cap lit from inside like paper lanterns",
           "difference_from_source": 0.5838,
           "glow_score": 0.1061,
+          "animations": {
+            "motion": {
+              "group_id": "b47a48f2-4d8e-44e0-bd45-496e9bef139a",
+              "description": "This is the same picture in every frame. ONLY the light inside the caps brightens a little and returns, one after another. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "toadstool_rings/toadstool_ring_009/lit_1/animations/motion/00.webp",
+                "toadstool_rings/toadstool_ring_009/lit_1/animations/motion/01.webp",
+                "toadstool_rings/toadstool_ring_009/lit_1/animations/motion/02.webp",
+                "toadstool_rings/toadstool_ring_009/lit_1/animations/motion/03.webp",
+                "toadstool_rings/toadstool_ring_009/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "toadstool_rings/toadstool_ring_009/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:25:09+00:00",
+              "brief": "U13"
+            }
+          },
           "art_hash": "51a24f172ed2746f"
         },
         "LIT_2": {
@@ -90303,6 +90847,29 @@
             "south-east": "wayside_shrines/wayside_shrine_015/lit_1/rotations/south-east.webp",
             "south-west": "wayside_shrines/wayside_shrine_015/lit_1/rotations/south-west.webp",
             "south": "wayside_shrines/wayside_shrine_015/lit_1/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "4fd779b8-f468-4a80-b622-dcad6c08dfdd",
+              "description": "This is the same picture in every frame. ONLY the warm light in the doorway brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/00.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/01.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/02.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/03.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_015/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T14:25:34+00:00",
+              "brief": "U7"
+            }
           },
           "art_hash": "40d9bff6737f68ef"
         },
