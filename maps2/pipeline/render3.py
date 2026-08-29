@@ -707,7 +707,7 @@ def fade_pool(field_ground, other):
     by area majority (maintainer ruling 2026-08-28: big rocks ON an ice sheet).
     Returns [(file, other_pct)] usable inside a `field_ground` field next to
     `other`, sorted by how much of the other ground shows."""
-    key = ("fadepool", field_ground, other)
+    key = ("fadepool", field_ground, other)   # -> [(file, pct, rating)]
     if key in _set_cache:
         return _set_cache[key]
     out = []
@@ -715,6 +715,13 @@ def fade_pool(field_ground, other):
         for t in FADES.get("pairs", {}).get(pk, []):
             if t.get("edge_ground") != field_ground:
                 continue
+            # HIS VERDICTS RIDE THE FADE KEY (tiles/docs/TRANSITIONS.md:188).
+            # The pool was drawing tiles he had REJECTED; a rejected fade is
+            # not a candidate, and a rated one outranks an unrated one.
+            fbe = FB.get(t.get("key", ""), {})
+            if fbe.get("status") == "rejected":
+                continue
+            rating = float(fbe.get("rating") or 0)
             pct = t.get("pct", {}).get(other, 0)
             # honest mixes only: a ~0% tile is the source set's own idea of a
             # pure field (a lime square on our grass), a >60% one reads as the
@@ -749,7 +756,7 @@ def fade_pool(field_ground, other):
             near_d = _np.minimum(da, db)
             if _np.percentile(near_d, 80) > 78:
                 continue
-            out.append((t["file"], pct))
+            out.append((t["file"], pct, rating))
     out.sort(key=lambda r: r[1])
     _set_cache[key] = out
     return out
@@ -867,14 +874,24 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                 # FADE BAND: within FADE_BAND cells of a different SOLID
                 # ground at the same level, ease the change with the fades
                 # product (top-only, placed by edge_ground). Deterministic.
+                # A REAL DISTANCE BAND: the nearest differing solid ground at
+                # this level anywhere in the neighbourhood (Chebyshev), ring 1
+                # included. Four axis cells at one ring was not a band, and
+                # skipping ring 1 dropped the fade exactly where the drift is
+                # strongest — the boundary tile rides the corner lattice ON
+                # TOP of this cell, so ring 1 is still ours to dress.
                 near = None
-                for r in range(2, FADE_BAND + 1):   # ring 1 belongs to the
-                    # composed boundary tile; the fade eases further out
-                    for dx2, dy2 in ((r, 0), (-r, 0), (0, r), (0, -r)):
-                        og = g(x + dx2, y + dy2)
-                        if og and og != gr and og not in liq \
-                                and L(x + dx2, y + dy2) == zl:
-                            near = (og, r)
+                for r in range(1, FADE_BAND + 1):
+                    for dy2 in range(-r, r + 1):
+                        for dx2 in range(-r, r + 1):
+                            if max(abs(dx2), abs(dy2)) != r:
+                                continue
+                            og = g(x + dx2, y + dy2)
+                            if og and og != gr and og not in liq \
+                                    and L(x + dx2, y + dy2) == zl:
+                                near = (og, r)
+                                break
+                        if near:
                             break
                     if near:
                         break
@@ -882,9 +899,27 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                     pool = fade_pool(gr, near[0])
                     if pool:
                         rr = _rng((x * 73856093) ^ (y * 19349663))
-                        hi = len(pool) - 1          # nearer the edge -> stronger
+                        # A FADE IS A SCATTERED EVENT, NOT A COAT OF PAINT.
+                        # Stamping the band solid put ONE tile on up to 1,357
+                        # cells — the repetition he ruled out. Probability
+                        # falls off with distance from the switch.
                         band_pos = (FADE_BAND + 1 - near[1]) / (FADE_BAND + 1)
-                        idx = min(hi, int((band_pos * 0.55 + rr() * 0.3 - 0.15) * hi))
+                        if rr() > 0.45 * band_pos:
+                            return t
+                        # sample the WHOLE pool, weighted by his ratings, with
+                        # the mix strength tracking the distance
+                        wts = [(1.0 + 1.6 * rt) *
+                               (1.0 - abs((pc / 60.0) - band_pos))
+                               for (_f, pc, rt) in pool]
+                        tot = sum(w for w in wts if w > 0) or 1.0
+                        pick, acc = len(pool) - 1, rr() * tot
+                        for i2, w in enumerate(wts):
+                            acc -= max(0.0, w)
+                            if acc <= 0:
+                                pick = i2
+                                break
+                        idx = pick
+                        hi = len(pool) - 1
                         # a fade is TOP-ONLY art (its wall is meaningless by
                         # the producer's own index), so it conforms exactly
                         # like any other surface: top face kept, wall filled
