@@ -35,7 +35,30 @@
       "sprite": "geodes/geode_001/sprite.webp",
       "pixellab_object_id": "9520af74-40c5-415a-8c9f-6ecc95189e17",
       "generated_at": "2026-08-13T02:29:57+00:00",
-      "relit_from": "NOT_LIT_1"
+      "relit_from": "NOT_LIT_1",
+      "animations": {
+        "motion": {
+          "group_id": "d4fbc80c-1ec7-431d-8cce-2b47a31fe173",
+          "description": "Animate the glint inside the geode only. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "geodes/geode_001/animations/motion/00.webp",
+            "geodes/geode_001/animations/motion/01.webp",
+            "geodes/geode_001/animations/motion/02.webp",
+            "geodes/geode_001/animations/motion/03.webp",
+            "geodes/geode_001/animations/motion/04.webp"
+          ],
+          "strip": "geodes/geode_001/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:38:56+00:00",
+          "brief": "L8"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "geodes/geode_001/not_lit_2/sprite.webp",

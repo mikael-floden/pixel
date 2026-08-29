@@ -42,6 +42,29 @@
         "south-east": "soulstone_plinths/soulstone_plinth_001/lit_1/rotations/south-east.webp",
         "south-west": "soulstone_plinths/soulstone_plinth_001/lit_1/rotations/south-west.webp",
         "south": "soulstone_plinths/soulstone_plinth_001/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "e2d67c0c-0855-4e0b-8532-b222b468a0a8",
+          "description": "Animate the glow of the stone only, pulsing slowly. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/00.webp",
+            "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/01.webp",
+            "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/02.webp",
+            "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/03.webp",
+            "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:38:15+00:00",
+          "brief": "L3"
+        }
       }
     },
     "LIT_2": {

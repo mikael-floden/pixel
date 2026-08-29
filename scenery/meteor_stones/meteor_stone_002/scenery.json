@@ -56,6 +56,27 @@
             "south"
           ],
           "generated_at": "2026-08-29T07:06:20+00:00"
+        },
+        "motion": {
+          "group_id": "b01e7e8e-7e79-4978-b3c7-b33c77835420",
+          "description": "Animate the ember glow in the cracks only, pulsing slowly. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "meteor_stones/meteor_stone_002/animations/motion/00.webp",
+            "meteor_stones/meteor_stone_002/animations/motion/01.webp",
+            "meteor_stones/meteor_stone_002/animations/motion/02.webp",
+            "meteor_stones/meteor_stone_002/animations/motion/03.webp",
+            "meteor_stones/meteor_stone_002/animations/motion/04.webp"
+          ],
+          "strip": "meteor_stones/meteor_stone_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:38:22+00:00",
+          "brief": "L7"
         }
       }
     },

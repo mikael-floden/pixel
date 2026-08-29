@@ -40,6 +40,29 @@
         "south-east": "flower_stands/flower_stand_002/rotations/south-east.webp",
         "south-west": "flower_stands/flower_stand_002/rotations/south-west.webp",
         "south": "flower_stands/flower_stand_002/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "b599df16-10f0-4a22-a21d-9a364865f19c",
+          "description": "Animate the flower heads only, nodding gently. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_stands/flower_stand_002/animations/motion/00.webp",
+            "flower_stands/flower_stand_002/animations/motion/01.webp",
+            "flower_stands/flower_stand_002/animations/motion/02.webp",
+            "flower_stands/flower_stand_002/animations/motion/03.webp",
+            "flower_stands/flower_stand_002/animations/motion/04.webp"
+          ],
+          "strip": "flower_stands/flower_stand_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:37:15+00:00",
+          "brief": "G8"
+        }
       }
     },
     "NOT_LIT_4": {

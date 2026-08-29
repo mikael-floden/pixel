@@ -42,7 +42,30 @@
     "NOT_LIT_1": {
       "sprite": "bushes/bush_001/sprite.webp",
       "pixellab_object_id": "4b5cbf58-b6e2-42ce-895a-9bed00c25235",
-      "generated_at": "2026-08-13T00:55:11+00:00"
+      "generated_at": "2026-08-13T00:55:11+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "16d8397e-0ba8-4623-869e-7caa0893d348",
+          "description": "Animate the leaves only, shivering in a gentle breeze. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "bushes/bush_001/animations/motion/00.webp",
+            "bushes/bush_001/animations/motion/01.webp",
+            "bushes/bush_001/animations/motion/02.webp",
+            "bushes/bush_001/animations/motion/03.webp",
+            "bushes/bush_001/animations/motion/04.webp"
+          ],
+          "strip": "bushes/bush_001/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:37:46+00:00",
+          "brief": "G7"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "bushes/bush_001/not_lit_2/sprite.webp",

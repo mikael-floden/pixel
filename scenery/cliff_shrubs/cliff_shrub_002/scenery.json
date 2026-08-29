@@ -36,7 +36,28 @@
       "sprite": "cliff_shrubs/cliff_shrub_002/sprite.webp",
       "pixellab_object_id": "84dad1b8-c998-4e90-994f-c3640f007094",
       "generated_at": "2026-08-14T02:59:42+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "animations": {
+        "motion": {
+          "group_id": "2ac605f0-61d0-4d4a-89a0-705852b73e31",
+          "description": "Animate the foliage only, shivering in a gentle breeze. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_shrubs/cliff_shrub_002/animations/motion/00.webp",
+            "cliff_shrubs/cliff_shrub_002/animations/motion/01.webp",
+            "cliff_shrubs/cliff_shrub_002/animations/motion/02.webp",
+            "cliff_shrubs/cliff_shrub_002/animations/motion/03.webp",
+            "cliff_shrubs/cliff_shrub_002/animations/motion/04.webp"
+          ],
+          "strip": "cliff_shrubs/cliff_shrub_002/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T08:38:27+00:00",
+          "brief": "G6"
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "cliff_shrubs/cliff_shrub_002/not_lit_4/sprite.webp",

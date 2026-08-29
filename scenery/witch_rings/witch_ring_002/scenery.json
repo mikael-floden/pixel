@@ -54,6 +54,29 @@
         "south-east": "witch_rings/witch_ring_002/rotations/south-east.webp",
         "south-west": "witch_rings/witch_ring_002/rotations/south-west.webp",
         "south": "witch_rings/witch_ring_002/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "7ced46f7-b953-4883-bde1-5c8bad35220b",
+          "description": "Animate the candle flames only. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "witch_rings/witch_ring_002/animations/motion/00.webp",
+            "witch_rings/witch_ring_002/animations/motion/01.webp",
+            "witch_rings/witch_ring_002/animations/motion/02.webp",
+            "witch_rings/witch_ring_002/animations/motion/03.webp",
+            "witch_rings/witch_ring_002/animations/motion/04.webp"
+          ],
+          "strip": "witch_rings/witch_ring_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:38:07+00:00",
+          "brief": "L4"
+        }
       }
     },
     "NOT_LIT_4": {

@@ -50,7 +50,28 @@
     "NOT_LIT_1": {
       "sprite": "telegraph_poles/telegraph_pole_003/sprite.webp",
       "pixellab_object_id": "a944e349-7895-4b5b-b672-1738e8707cf4",
-      "generated_at": "2026-08-13T07:45:28+00:00"
+      "generated_at": "2026-08-13T07:45:28+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "b7fd4090-b09d-41d5-811c-13e4559fe943",
+          "description": "Animate the wires only, swaying gently. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "telegraph_poles/telegraph_pole_003/animations/motion/00.webp",
+            "telegraph_poles/telegraph_pole_003/animations/motion/01.webp",
+            "telegraph_poles/telegraph_pole_003/animations/motion/02.webp",
+            "telegraph_poles/telegraph_pole_003/animations/motion/03.webp",
+            "telegraph_poles/telegraph_pole_003/animations/motion/04.webp"
+          ],
+          "strip": "telegraph_poles/telegraph_pole_003/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T08:39:39+00:00",
+          "brief": "M4"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "telegraph_poles/telegraph_pole_003/not_lit_2/sprite.webp",

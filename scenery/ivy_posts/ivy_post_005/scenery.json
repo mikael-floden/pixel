@@ -95,6 +95,29 @@
         "south-east": "ivy_posts/ivy_post_005/rotations/south-east.webp",
         "south-west": "ivy_posts/ivy_post_005/rotations/south-west.webp",
         "south": "ivy_posts/ivy_post_005/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "83e19088-96e7-4ee4-a90e-c5be40b071cb",
+          "description": "Animate the loose ivy trails only, stirring gently. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "ivy_posts/ivy_post_005/animations/motion/00.webp",
+            "ivy_posts/ivy_post_005/animations/motion/01.webp",
+            "ivy_posts/ivy_post_005/animations/motion/02.webp",
+            "ivy_posts/ivy_post_005/animations/motion/03.webp",
+            "ivy_posts/ivy_post_005/animations/motion/04.webp"
+          ],
+          "strip": "ivy_posts/ivy_post_005/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:37:13+00:00",
+          "brief": "G10"
+        }
       }
     },
     "NOT_LIT_3": {

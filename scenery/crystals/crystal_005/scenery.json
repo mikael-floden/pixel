@@ -37,7 +37,30 @@
       "generated_at": "2026-08-16T11:11:41+00:00",
       "glow_concept": "ground around the base lit in the crystal's color",
       "difference_from_source": 0.7122,
-      "glow_score": 0.347
+      "glow_score": 0.347,
+      "animations": {
+        "motion": {
+          "group_id": "b2d083a9-3b37-4b6d-8de8-a3d795ac3ba8",
+          "description": "Animate the glow inside the crystals only, pulsing slowly. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystals/crystal_005/lit_1/animations/motion/00.webp",
+            "crystals/crystal_005/lit_1/animations/motion/01.webp",
+            "crystals/crystal_005/lit_1/animations/motion/02.webp",
+            "crystals/crystal_005/lit_1/animations/motion/03.webp",
+            "crystals/crystal_005/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "crystals/crystal_005/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:38:16+00:00",
+          "brief": "L1"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "crystals/crystal_005/sprite.webp",

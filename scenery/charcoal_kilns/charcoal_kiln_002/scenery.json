@@ -39,6 +39,29 @@
         "south-east": "charcoal_kilns/charcoal_kiln_002/rotations/south-east.webp",
         "south-west": "charcoal_kilns/charcoal_kiln_002/rotations/south-west.webp",
         "south": "charcoal_kilns/charcoal_kiln_002/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "0c9168e0-79cd-4681-b966-a080c709a92d",
+          "description": "Animate the smoke leaking from the vents only. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "charcoal_kilns/charcoal_kiln_002/animations/motion/00.webp",
+            "charcoal_kilns/charcoal_kiln_002/animations/motion/01.webp",
+            "charcoal_kilns/charcoal_kiln_002/animations/motion/02.webp",
+            "charcoal_kilns/charcoal_kiln_002/animations/motion/03.webp",
+            "charcoal_kilns/charcoal_kiln_002/animations/motion/04.webp"
+          ],
+          "strip": "charcoal_kilns/charcoal_kiln_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:38:55+00:00",
+          "brief": "S1"
+        }
       }
     },
     "LIT_3": {

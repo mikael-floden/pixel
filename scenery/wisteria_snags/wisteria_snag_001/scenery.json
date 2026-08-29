@@ -161,6 +161,27 @@
           ],
           "strip": "wisteria_snags/wisteria_snag_001/animations/wind__strip.webp",
           "generated_at": "2026-08-28T15:49:10+00:00"
+        },
+        "motion": {
+          "group_id": "e1453000-b3e2-41c4-a7f5-41fa56d508eb",
+          "description": "Animate the hanging wisteria only, swaying gently. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wisteria_snags/wisteria_snag_001/animations/motion/00.webp",
+            "wisteria_snags/wisteria_snag_001/animations/motion/01.webp",
+            "wisteria_snags/wisteria_snag_001/animations/motion/02.webp",
+            "wisteria_snags/wisteria_snag_001/animations/motion/03.webp",
+            "wisteria_snags/wisteria_snag_001/animations/motion/04.webp"
+          ],
+          "strip": "wisteria_snags/wisteria_snag_001/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T08:37:41+00:00",
+          "brief": "G12"
         }
       }
     },

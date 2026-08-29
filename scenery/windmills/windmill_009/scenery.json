@@ -34,7 +34,28 @@
     "NOT_LIT_1": {
       "sprite": "windmills/windmill_009/sprite.webp",
       "pixellab_object_id": "c802f85a-f39c-42e0-8309-ab4fb48ecc7e",
-      "generated_at": "2026-08-13T23:24:43+00:00"
+      "generated_at": "2026-08-13T23:24:43+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "65ae7726-359f-4383-ade0-13c6337549d4",
+          "description": "Animate the sails only, turning slowly. Nothing else moves.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "windmills/windmill_009/animations/motion/00.webp",
+            "windmills/windmill_009/animations/motion/01.webp",
+            "windmills/windmill_009/animations/motion/02.webp",
+            "windmills/windmill_009/animations/motion/03.webp",
+            "windmills/windmill_009/animations/motion/04.webp"
+          ],
+          "strip": "windmills/windmill_009/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T08:39:22+00:00",
+          "brief": "M1"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "windmills/windmill_009/not_lit_2/sprite.webp",
