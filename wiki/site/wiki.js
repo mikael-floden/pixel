@@ -5435,6 +5435,16 @@ function faceLookup() {
   FACE_LOOKUP = { rev, meta: worldMeta(), stats, keys };
   return FACE_LOOKUP;
 }
+/** The world candidate a face path or key belongs to — for the fields the
+ *  tile itself publishes (top_only, own_top, borrow_wall). */
+function faceCandOf(ref) {
+  const key = faceLookup().keys.get(ref) ?? ref;
+  for (const c of worldCells()) {
+    const hit = (c.candidates ?? []).find((x) => x.key === key);
+    if (hit) return hit;
+  }
+  return null;
+}
 const faceRefOf = (face) => {
   const f = String(face ?? "");
   if (f.startsWith("pp:")) return f.slice(3).split("::")[0];
@@ -5465,7 +5475,14 @@ function bestWall(typeId, face, { ignoreOverride = false } = {}) {
   if (!pool.length) out = { art: xoverxArt(typeId), key: null, i: -1, n: 0, auto: true, fkey: null };
   else {
     const fkey = fkey0;
-    const ov = ignoreOverride ? null : topWallsDoc().overrides?.[fkey]?.wall;
+    /* HIS OVERRIDE, THEN THE TILE'S OWN PUBLISHED PICK, THEN THE MEASUREMENT
+     * (2026-08-29). The tiles agent resolves borrow_wall on the candidate
+     * itself now (tiles3/review@3, after the games agent asked for one
+     * source), and that is what the GAME reads — so reading it here keeps the
+     * two identical by construction instead of by two implementations of one
+     * formula agreeing. */
+    const pub = faceCandOf(ref)?.borrowWall ?? null;
+    const ov = (ignoreOverride ? null : topWallsDoc().overrides?.[fkey]?.wall) ?? pub;
     let i = ov ? pool.findIndex((c) => c.key === ov) : -1;
     const auto = i < 0;
     if (i < 0) {

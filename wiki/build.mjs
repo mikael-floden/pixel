@@ -592,6 +592,15 @@ function buildWorld() {
         wallScore: c.wall_score ?? null,
         wall: c.wall ?? null,
         topShare: c.top_share ?? null,
+        /* THE TILE OWNS THESE NOW (tiles3/review@3, tiles agent 2026-08-29,
+         * after the games agent asked for one source): top_only, own_top and
+         * the RESOLVED borrow_wall ride the candidate, so the wiki and the
+         * game read the same value instead of each deriving one. The wiki
+         * still writes his verdicts to live/ and the tiles agent folds them
+         * back in — this is the published side of that loop. */
+        topOnlyPub: c.top_only === true ? true : null,
+        ownTopPub: c.own_top === true ? true : null,
+        borrowWall: c.borrow_wall ?? null,
         // How far the top surface droops over the wall — the thing "grass
         // over rock" is trying to achieve — and the flat colour the top
         // settled on.
