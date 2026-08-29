@@ -1263,7 +1263,14 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             if not (x0 <= x < x1 and y0 <= y < y1):
                 continue
             front_covered = (x + 1, y) in cellset and (x, y + 1) in cellset
-            lo = dl if front_covered else max(0, dl - max(1, th))
+            # THICKNESS 0 MEANS NO SKIRT, and the doorway is why. A roof deck
+            # covers the whole footprint including the door cell, whose front
+            # is open, so the old max(1, th) hung one storey of wall down into
+            # the doorway and the cap took a second: the door measured 4 tiles
+            # with 2 of wall above it instead of 5 with the roof on top
+            # (maintainer 2026-08-30). A 0-thickness deck now draws its cap
+            # course only - which is the x-over-y roof tile, one tile tall.
+            lo = dl if front_covered else max(0, dl - th)
             bx = ox + (x - x0 - (y - y0)) * DX - DX
             # A DECK IS X-OVER-Y TOO, and that is what makes a roof THIN
             # (maintainer 2026-08-30, with two reference tiles: grass over

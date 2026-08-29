@@ -46,9 +46,19 @@ world outside and fixes the draw order. Deleting one does not remove a
 decoration, it breaks every interior in the running game — measured
 2026-08-30, in production, by deleting them to make the roof thin.
 
-* Every enclosed room carries a roof deck over its **interior cells only**, at
-  the wall-top level. The wall ring keeps its own thin roof-over-wall course,
-  so the roof is never a slab lying over the walls as well.
+* Every enclosed room carries a roof deck over its **whole footprint** — walls
+  and doorway included, exactly as v2 did. Narrowing it to the interior leaves
+  the DOORWAY unroofed, because the door is a gap in the wall ring and so has
+  no wall course of its own to roof it.
+* **`thickness` is EXTRA face tiles BELOW the top; 0 means the top course
+  only.** This is the game's own definition (`games2/shared/src/index.ts`), and
+  a roof deck always uses 0. A renderer that floors it at 1 hangs a storey of
+  wall down into the doorway, and the door then measures 4 tiles with 2 above
+  it instead of 5 with the roof on top (measured 2026-08-30 — `render3.py` had
+  `max(1, th)`; the game was right and the reference render was lying).
+* **A house is 6 tiles tall: 5 of door, 1 of roof** (maintainer, 2026-08-30;
+  v2's `islandworld2.HOUSE_WALL = 6` said the same). The wall ring rides at
+  base + 6 and its top course IS the roof, so the doorway stands 5 clear.
 * A deck may carry a **`side`**, and is then drawn `ground` OVER `side`. That
   is what makes a roof THIN: a material is thin when it is only the TOP of an
   x-over-y pair (grass over black_rock is a skin of grass; grass over grass
