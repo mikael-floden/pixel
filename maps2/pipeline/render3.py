@@ -83,7 +83,7 @@ def _mask(index, pattern=None):
 
 
 def region_of(x, y, regions):
-    return regions.get((x, y), "r0")
+    return region_at(x, y, gr)
 
 
 PLATE_ROOT = os.path.join(REPO, "tiles", "patterns")
@@ -134,8 +134,38 @@ def conformed_plate(rel, ground):
     assert int((a[..., 3] > 0).sum()) == int(sil.sum()), \
         f"conformed plate alpha != published silhouette: {rel}"
     img = Image.fromarray(a.astype(np.uint8))
+    img.info["k"] = ck
     _tile_cache[ck] = img
     return img
+
+
+_TEXTURED = None
+
+
+def textured_art(key):
+    """THE MEMBER'S OWN ART for a review key: the published TEXTURED pass.
+
+    tiles/plates/<ground>/<key8>.webp is the same tile FLATTENED — "on a
+    flat-surface ground the plate's top is the clean colour by the tiles
+    agent's own design, so the set he audited textured composed clean"
+    (wiki/site/wiki.js:5541, the maintainer's black-rock complaint
+    2026-08-28). The wiki's fix was to draw the member's own art and keep the
+    plate for geometry only; render3 never got it, so 236 of his 340 members
+    drew the flat palette colour — measured, a grass field's mean top face
+    was EXACTLY palette.top (20,82,59).
+
+    Every candidate in the review manifest publishes `textured`; the plate
+    remains the fallback."""
+    global _TEXTURED
+    if _TEXTURED is None:
+        _TEXTURED = {}
+        for _c, cell in MAN["cells"].items():
+            for cand in cell["candidates"]:
+                t = cand.get("textured")
+                if t:
+                    _TEXTURED[cand["key"].strip("/")] = t
+                    _TEXTURED[cand["key"].strip("/").rsplit("/", 1)[-1]] = t
+    return _TEXTURED.get(key.strip("/"))
 
 
 def as_surface(im):
@@ -145,7 +175,7 @@ def as_surface(im):
     published transition geometry starts at row 0 (transition_plates.py)."""
     if im.height == 46:
         return im
-    ck = ("surf", id(im))
+    ck = ("surf", im.info.get("k") or id(im))
     if ck in _tile_cache:
         return _tile_cache[ck]
     out = im.crop((0, TOP_Y, TILE, min(im.height, TOP_Y + 46)))
@@ -160,7 +190,7 @@ def as_surface(im):
 def top_face_only(surf):
     """The surface's TOP FACE alone — the wall region dropped so the cell's
     x-over-y wall art shows through. THE WALL IS NEVER THE SURFACE'S."""
-    ck = ("topface", id(surf))
+    ck = ("topface", surf.info.get("k") or id(surf))
     if ck in _tile_cache:
         return _tile_cache[ck]
     _sil, top, _wall = _plate_regions()
@@ -170,6 +200,54 @@ def top_face_only(surf):
     im = Image.fromarray(out)
     _tile_cache[ck] = im
     return im
+
+
+DETAIL_FREQ = 1 / 56.0        # "once in a while"; overridable per ground by
+                              # live/tuning/tile_details.json if the wiki ever
+                              # publishes a rate (read below, absent today)
+_DETAIL_RATE = {}
+try:
+    _DETAIL_RATE = json.load(open(os.path.join(
+        REPO, "live", "tuning", "tile_details.json"))).get("rate", {})
+except Exception:
+    pass
+
+
+def detail_pool(ground):
+    """THE MAINTAINER'S ONCE-IN-A-WHILE GROUND DETAILS — his 478 '#top'
+    approvals, which nothing had ever drawn.
+
+    The wiki states the contract in his own words (wiki/site/wiki.js:5896):
+    "other categories can still have a chance to once in a while be in the
+    game!... if the top looks great you can give it a top star and approval",
+    and the card that collects it says it is "rating the TOP as a
+    once-in-a-while ground detail". A tile REJECTED AS A PAIR (bad wall) can
+    still be a top-approved detail — the top review is independent by design.
+
+    Two consequences the first implementation got wrong:
+      * the art is the RAW top (`before`). "The pair postprocess flattens
+        every top to the clean colour, which is WHY he has never seen most of
+        them" — drawing `after` would draw the flat colour he is trying to
+        escape.
+      * a detail's WALL is not its own: the pair may be rejected precisely
+        because that wall is bad, and half these tiles carry lava, ice or
+        sand faces. So it is conformed like any surface — top face kept,
+        wall filled from the ground's palette."""
+    key = ("details", ground)
+    if key in _set_cache:
+        return _set_cache[key]
+    out = []
+    for _ck, cell in MAN["cells"].items():
+        if cell["top"] != ground:
+            continue
+        for c in cell["candidates"]:
+            if FB.get(c["key"] + "#top", {}).get("status") != "approved":
+                continue
+            rel = c.get("textured") or c.get("before") or c.get("file")
+            if rel and os.path.isfile(os.path.join(REPO, rel)):
+                out.append(conformed_plate(rel, ground))
+    _set_cache[key] = out
+    return out
 
 
 def plate_img(ground, region, x, y):
@@ -196,18 +274,23 @@ def plate_img(ground, region, x, y):
             if os.path.isfile(os.path.join(REPO, t)):
                 return conformed_plate(t, ground)
             PLATE_FALLBACK[ground] += 1
-        else:                            # review key -> published plate
+        else:                            # review key -> the member's own art
+            tex = textured_art(t)
+            if tex and os.path.isfile(os.path.join(REPO, tex)):
+                return conformed_plate(tex, ground)
             key8 = t.rsplit("/", 1)[-1]
             f = os.path.join(root, ground, key8 + ".webp")
             if os.path.isfile(f):
                 ck = ("plate", ground, key8)
                 if ck not in _tile_cache:
                     _tile_cache[ck] = Image.open(f).convert("RGBA")
+                    _tile_cache[ck].info["k"] = ck
                 return _tile_cache[ck]
             PLATE_FALLBACK[ground] += 1
     ck = ("plate", ground, "clean")
     if ck not in _tile_cache:
         _tile_cache[ck] = Image.open(os.path.join(root, ground, "clean.webp")).convert("RGBA")
+        _tile_cache[ck].info["k"] = ck
     return _tile_cache[ck]
 
 
@@ -600,33 +683,19 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
     def L(x, y):
         return lvl[y][x] if (0 <= x < W and 0 <= y < H) else 0
 
-    # REGIONS for the base-tile-set pick: 4-connected same-ground components,
-    # id = ground@min-cell — stable for stable terrain, and one set per patch
-    # is exactly the maintainer's "the world-agent will always stick to a
-    # single base tile set at one location".
-    regions = {}
-    seen = set()
-    from collections import deque as _dq
-    for yy in range(y0, y1):
-        for xx in range(x0, x1):
-            if (xx, yy) in seen:
-                continue
-            gg = g(xx, yy)
-            if not gg:
-                continue
-            comp, q = [(xx, yy)], _dq([(xx, yy)])
-            seen.add((xx, yy))
-            while q:
-                cx2, cy2 = q.popleft()
-                for dx2, dy2 in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                    n = (cx2 + dx2, cy2 + dy2)
-                    if n not in seen and g(*n) == gg:
-                        seen.add(n)
-                        comp.append(n)
-                        q.append(n)
-            rid = f"{gg}@{min(comp)[0]},{min(comp)[1]}"
-            for c in comp:
-                regions[c] = rid
+    # REGIONS for the base-tile-set pick. The reference implementation says
+    # region "is an opaque string owned by the world agent — a region id, a
+    # chunk key, whatever it decides an area is" (wiki/lib/basesets.mjs:160),
+    # so the granularity is MY call, and connected components were the wrong
+    # call: grass is ONE 4-connected component across the whole island, so the
+    # entire map drew a single grass set and 19 of the 68 weighted sets the
+    # maintainer tuned never appeared anywhere. A CHUNK is a location: one set
+    # per ground per RGN-cell block, deterministic and independent of which
+    # window is being rendered.
+    RGN = 24
+
+    def region_at(x, y, gg):
+        return f"{gg}@{x // RGN},{y // RGN}"
 
     maxL = max(max(r) for r in lvl)
     ox = (y1 - 1 - y0) * DX + 8
@@ -668,7 +737,7 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                 — the whole massif, every terrace, the town shelf — drew the
                 plain x-over-x review tile and ignored the sets he tunes.
                 'I kinda expected everything from using the base tile sets.'"""
-                t = plate_img(gr, regions.get((x, y), "r0"), x, y)
+                t = plate_img(gr, region_at(x, y, gr), x, y)
                 # FADE BAND: within FADE_BAND cells of a different SOLID
                 # ground at the same level, ease the change with the fades
                 # product (top-only, placed by edge_ground). Deterministic.
@@ -692,11 +761,24 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                         idx = min(hi, int((band_pos * 0.55 + rr() * 0.3 - 0.15) * hi))
                         f = Image.open(os.path.join(REPO,
                                        pool[max(0, idx)][0])).convert("RGBA")
+                        f.info["k"] = ("fade", pool[max(0, idx)][0])
                         return as_surface(f)
+                # DETAILS: once in a while, one of his top-approved tops
+                dp = detail_pool(gr)
+                if dp:
+                    rate = float(_DETAIL_RATE.get(gr, DETAIL_FREQ))
+                    rd = _rng((x * 83492791) ^ (y * 2654435761) ^ 0xd47a)
+                    if rd() < rate:
+                        return dp[int(rd() * len(dp)) % len(dp)]
                 return t
 
             if gr in liq:
-                img.alpha_composite(flat_tile(gr), (bx, col_y(x, y, zl) - TOP_Y))
+                # A LIQUID IS A GROUND WITH A SET TOO (water: 16 tiles, clean
+                # weight 0 — he chose every one of them). It was drawing a
+                # flat diamond, and water is the largest surface on the map.
+                # Top face only: a liquid never shows a wall.
+                img.alpha_composite(top_face_only(surface()),
+                                    (bx, col_y(x, y, zl)))
                 continue
             if zl == 0:
                 img.alpha_composite(surface(), (bx, col_y(x, y, zl)))
@@ -736,10 +818,12 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                    + 2 * (gs[2] == sb) + 1 * (gs[3] == sb))
             if idx in (0, 15):
                 continue
-            reg = regions.get((x, y), "r0")
+            reg = region_at(x, y, gr)
+            # each half asks for ITS OWN ground's region — asking with the
+            # other ground's region drew the neighbour from the wrong set
             tile = composed_boundary(sa, sb, idx,
-                                     plate_img(sa, reg, x, y),
-                                     plate_img(sb, reg, x, y))
+                                     plate_img(sa, region_at(x, y, sa), x, y),
+                                     plate_img(sb, region_at(x, y, sb), x, y))
             z = L(x, y)
             cx = ox + (x - x0 - (y - y0)) * DX - DX
             cy = col_y(x, y, z) - DY
@@ -773,6 +857,11 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             for f in range(lo, dl + 1):
                 t = cap if f == dl else mid
                 img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
+            # a roof, a bridge and a cave lid are GROUND too: the slab top
+            # wears the maintainer's base tile set like any other surface
+            img.alpha_composite(
+                top_face_only(plate_img(dg, f"{dg}@{x // 24},{y // 24}", x, y)),
+                (bx, col_y(x, y, dl)))
 
     # 3) scenery, painter-ordered with terrain already flat-composited.
     #    A piece under a roof/cave deck is indoors — invisible from out here,
