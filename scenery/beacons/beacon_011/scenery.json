@@ -38,7 +38,28 @@
       "generated_at": "2026-08-15T19:55:45+00:00",
       "glow_concept": "spark column streaming off downwind",
       "difference_from_source": 0.4804,
-      "glow_score": 0.0583
+      "glow_score": 0.0583,
+      "animations": {
+        "motion": {
+          "group_id": "ab913203-8ada-4850-a6c3-401d92a82995",
+          "description": "This is the same picture in every frame. ONLY the flame at the top flickers and the sparks above it drift upward. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_011/lit_1/animations/motion/00.webp",
+            "beacons/beacon_011/lit_1/animations/motion/01.webp",
+            "beacons/beacon_011/lit_1/animations/motion/02.webp",
+            "beacons/beacon_011/lit_1/animations/motion/03.webp",
+            "beacons/beacon_011/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "beacons/beacon_011/lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T16:15:16+00:00",
+          "brief": "Y2"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "beacons/beacon_011/lit_2/sprite.webp",

@@ -42,7 +42,28 @@
       "generated_at": "2026-08-15T19:54:24+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5262,
-      "glow_score": 0.1233
+      "glow_score": 0.1233,
+      "animations": {
+        "motion": {
+          "group_id": "6a240bdf-cd22-4d13-9b4c-fbe27fa1b575",
+          "description": "This is the same picture in every frame. ONLY the cyan flame inside the cage flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_008/lit_2/animations/motion/00.webp",
+            "beacons/beacon_008/lit_2/animations/motion/01.webp",
+            "beacons/beacon_008/lit_2/animations/motion/02.webp",
+            "beacons/beacon_008/lit_2/animations/motion/03.webp",
+            "beacons/beacon_008/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "beacons/beacon_008/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T16:15:41+00:00",
+          "brief": "Y10"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "beacons/beacon_008/lit_3/sprite.webp",

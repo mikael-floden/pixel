@@ -42,6 +42,29 @@
         "south-east": "torch_posts/torch_post_011/lit_1/rotations/south-east.webp",
         "south-west": "torch_posts/torch_post_011/lit_1/rotations/south-west.webp",
         "south": "torch_posts/torch_post_011/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "50e5549c-a447-44e3-9103-2a8cc38467b3",
+          "description": "This is the same picture in every frame. ONLY the molten orange light in the head brightens a little and returns. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "torch_posts/torch_post_011/lit_1/animations/motion/00.webp",
+            "torch_posts/torch_post_011/lit_1/animations/motion/01.webp",
+            "torch_posts/torch_post_011/lit_1/animations/motion/02.webp",
+            "torch_posts/torch_post_011/lit_1/animations/motion/03.webp",
+            "torch_posts/torch_post_011/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_011/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:14:52+00:00",
+          "brief": "Y7"
+        }
       }
     },
     "LIT_2": {

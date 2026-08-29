@@ -52,6 +52,29 @@
         "south-east": "wayside_shrines/wayside_shrine_011/not_lit_2/rotations/south-east.webp",
         "south-west": "wayside_shrines/wayside_shrine_011/not_lit_2/rotations/south-west.webp",
         "south": "wayside_shrines/wayside_shrine_011/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "a3bd38fc-7c94-460d-825a-ecf93671bb79",
+          "description": "This is the same picture in every frame. ONLY the candle flame inside the shrine flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/00.webp",
+            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/01.webp",
+            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/02.webp",
+            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/03.webp",
+            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:14:28+00:00",
+          "brief": "Y5"
+        }
       }
     },
     "NOT_LIT_3": {

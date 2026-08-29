@@ -75,6 +75,29 @@
         "south-east": "fish_drying_racks/fish_drying_rack_002/lit_2/rotations/south-east.webp",
         "south-west": "fish_drying_racks/fish_drying_rack_002/lit_2/rotations/south-west.webp",
         "south": "fish_drying_racks/fish_drying_rack_002/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "09c17d61-768f-4e69-a610-68f7eb79fe88",
+          "description": "This is the same picture in every frame. ONLY the hanging strips move, swaying, and the flame in the lantern flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/00.webp",
+            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/01.webp",
+            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/02.webp",
+            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/03.webp",
+            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:16:25+00:00",
+          "brief": "Y20"
+        }
       }
     },
     "LIT_3": {
