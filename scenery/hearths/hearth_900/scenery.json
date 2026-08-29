@@ -58,6 +58,11 @@
           ],
           "generated_at": "2026-08-29T07:02:46+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "hearths/hearth_900/rotations/south-east.webp",
+        "south-west": "hearths/hearth_900/rotations/south-west.webp",
+        "south": "hearths/hearth_900/sprite.webp"
       }
     },
     "LIT_2": {
@@ -88,6 +93,11 @@
           ],
           "generated_at": "2026-08-29T07:03:41+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "hearths/hearth_900/lit_2/rotations/south-east.webp",
+        "south-west": "hearths/hearth_900/lit_2/rotations/south-west.webp",
+        "south": "hearths/hearth_900/lit_2/sprite.webp"
       }
     },
     "LIT_4": {
@@ -118,6 +128,11 @@
           ],
           "generated_at": "2026-08-29T07:02:57+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "hearths/hearth_900/lit_4/rotations/south-east.webp",
+        "south-west": "hearths/hearth_900/lit_4/rotations/south-west.webp",
+        "south": "hearths/hearth_900/lit_4/sprite.webp"
       }
     },
     "NOT_LIT_1": {
@@ -126,7 +141,12 @@
       "generated_at": "2026-08-16T15:21:12+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8601,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "hearths/hearth_900/not_lit_1/rotations/south-east.webp",
+        "south-west": "hearths/hearth_900/not_lit_1/rotations/south-west.webp",
+        "south": "hearths/hearth_900/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "hearths/hearth_900/not_lit_2/sprite.webp",
@@ -134,7 +154,12 @@
       "generated_at": "2026-08-16T15:22:05+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5257,
-      "glow_score": 0.0029
+      "glow_score": 0.0029,
+      "rotations": {
+        "south-east": "hearths/hearth_900/not_lit_2/rotations/south-east.webp",
+        "south-west": "hearths/hearth_900/not_lit_2/rotations/south-west.webp",
+        "south": "hearths/hearth_900/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "hearths/hearth_900/not_lit_3/sprite.webp",
@@ -143,7 +168,12 @@
       "glow_concept": null,
       "difference_from_source": 0.871,
       "glow_score": 0.0027,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "hearths/hearth_900/not_lit_3/rotations/south-east.webp",
+        "south-west": "hearths/hearth_900/not_lit_3/rotations/south-west.webp",
+        "south": "hearths/hearth_900/not_lit_3/sprite.webp"
+      }
     }
   }
 }

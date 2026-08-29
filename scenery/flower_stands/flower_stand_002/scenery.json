@@ -35,7 +35,12 @@
       "sprite": "flower_stands/flower_stand_002/sprite.webp",
       "pixellab_object_id": "3398d24f-dac9-47cb-bd1b-9155d3ef889e",
       "generated_at": "2026-08-13T04:07:46+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "flower_stands/flower_stand_002/rotations/south-east.webp",
+        "south-west": "flower_stands/flower_stand_002/rotations/south-west.webp",
+        "south": "flower_stands/flower_stand_002/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "flower_stands/flower_stand_002/not_lit_4/sprite.webp",
@@ -44,7 +49,12 @@
       "glow_concept": null,
       "difference_from_source": 0.8433,
       "glow_score": 0.0329,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "flower_stands/flower_stand_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "flower_stands/flower_stand_002/not_lit_4/rotations/south-west.webp",
+        "south": "flower_stands/flower_stand_002/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "flower_stands/flower_stand_002/not_lit_5/sprite.webp",
@@ -53,7 +63,12 @@
       "glow_concept": null,
       "difference_from_source": 0.892,
       "glow_score": 0.0192,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "flower_stands/flower_stand_002/not_lit_5/rotations/south-east.webp",
+        "south-west": "flower_stands/flower_stand_002/not_lit_5/rotations/south-west.webp",
+        "south": "flower_stands/flower_stand_002/not_lit_5/sprite.webp"
+      }
     }
   }
 }

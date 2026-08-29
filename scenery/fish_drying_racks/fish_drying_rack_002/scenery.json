@@ -34,7 +34,12 @@
     "LIT_1": {
       "sprite": "fish_drying_racks/fish_drying_rack_002/sprite.webp",
       "pixellab_object_id": "7a1fc934-df2d-4b1e-874b-337f4acb7c40",
-      "generated_at": "2026-08-13T04:25:57+00:00"
+      "generated_at": "2026-08-13T04:25:57+00:00",
+      "rotations": {
+        "south-east": "fish_drying_racks/fish_drying_rack_002/rotations/south-east.webp",
+        "south-west": "fish_drying_racks/fish_drying_rack_002/rotations/south-west.webp",
+        "south": "fish_drying_racks/fish_drying_rack_002/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "fish_drying_racks/fish_drying_rack_002/lit_2/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-16T12:16:52+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6651,
-      "glow_score": 0.0094
+      "glow_score": 0.0094,
+      "rotations": {
+        "south-east": "fish_drying_racks/fish_drying_rack_002/lit_2/rotations/south-east.webp",
+        "south-west": "fish_drying_racks/fish_drying_rack_002/lit_2/rotations/south-west.webp",
+        "south": "fish_drying_racks/fish_drying_rack_002/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "fish_drying_racks/fish_drying_rack_002/lit_3/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-16T12:19:32+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5166,
-      "glow_score": 0.0175
+      "glow_score": 0.0175,
+      "rotations": {
+        "south-east": "fish_drying_racks/fish_drying_rack_002/lit_3/rotations/south-east.webp",
+        "south-west": "fish_drying_racks/fish_drying_rack_002/lit_3/rotations/south-west.webp",
+        "south": "fish_drying_racks/fish_drying_rack_002/lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "fish_drying_racks/fish_drying_rack_002/not_lit_1/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T12:16:42+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4572,
-      "glow_score": 0.0025
+      "glow_score": 0.0025,
+      "rotations": {
+        "south-east": "fish_drying_racks/fish_drying_rack_002/not_lit_1/rotations/south-east.webp",
+        "south-west": "fish_drying_racks/fish_drying_rack_002/not_lit_1/rotations/south-west.webp",
+        "south": "fish_drying_racks/fish_drying_rack_002/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "fish_drying_racks/fish_drying_rack_002/not_lit_3/sprite.webp",
@@ -67,7 +87,12 @@
       "glow_concept": null,
       "difference_from_source": 0.743,
       "glow_score": 0.0241,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "fish_drying_racks/fish_drying_rack_002/not_lit_3/rotations/south-east.webp",
+        "south-west": "fish_drying_racks/fish_drying_rack_002/not_lit_3/rotations/south-west.webp",
+        "south": "fish_drying_racks/fish_drying_rack_002/not_lit_3/sprite.webp"
+      }
     }
   }
 }

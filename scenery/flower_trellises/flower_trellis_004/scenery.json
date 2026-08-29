@@ -38,7 +38,12 @@
       "glow_concept": null,
       "difference_from_source": 0.9429,
       "glow_score": 0.0076,
-      "replaced_anchor": "LIT_1"
+      "replaced_anchor": "LIT_1",
+      "rotations": {
+        "south-east": "flower_trellises/flower_trellis_004/rotations/south-east.webp",
+        "south-west": "flower_trellises/flower_trellis_004/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_004/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "flower_trellises/flower_trellis_004/not_lit_2/sprite.webp",
@@ -46,7 +51,12 @@
       "generated_at": "2026-08-16T14:20:11+00:00",
       "glow_concept": null,
       "difference_from_source": 0.9892,
-      "glow_score": 0.0129
+      "glow_score": 0.0129,
+      "rotations": {
+        "south-east": "flower_trellises/flower_trellis_004/not_lit_2/rotations/south-east.webp",
+        "south-west": "flower_trellises/flower_trellis_004/not_lit_2/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_004/not_lit_2/sprite.webp"
+      }
     }
   }
 }

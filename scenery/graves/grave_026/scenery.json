@@ -35,7 +35,12 @@
     "LIT_1": {
       "sprite": "graves/grave_026/sprite.webp",
       "pixellab_object_id": "0df4a9c4-fb77-4c9a-832b-7156851646f3",
-      "generated_at": "2026-08-14T00:45:37+00:00"
+      "generated_at": "2026-08-14T00:45:37+00:00",
+      "rotations": {
+        "south-east": "graves/grave_026/rotations/south-east.webp",
+        "south-west": "graves/grave_026/rotations/south-west.webp",
+        "south": "graves/grave_026/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "graves/grave_026/lit_2/sprite.webp",
@@ -43,7 +48,12 @@
       "generated_at": "2026-08-16T14:55:04+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4713,
-      "glow_score": 0.0722
+      "glow_score": 0.0722,
+      "rotations": {
+        "south-east": "graves/grave_026/lit_2/rotations/south-east.webp",
+        "south-west": "graves/grave_026/lit_2/rotations/south-west.webp",
+        "south": "graves/grave_026/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "graves/grave_026/lit_3/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-16T14:55:05+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4056,
-      "glow_score": 0.0465
+      "glow_score": 0.0465,
+      "rotations": {
+        "south-east": "graves/grave_026/lit_3/rotations/south-east.webp",
+        "south-west": "graves/grave_026/lit_3/rotations/south-west.webp",
+        "south": "graves/grave_026/lit_3/sprite.webp"
+      }
     }
   }
 }

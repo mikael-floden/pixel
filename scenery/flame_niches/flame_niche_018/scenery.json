@@ -57,6 +57,11 @@
           ],
           "generated_at": "2026-08-29T07:00:11+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_018/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_018/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_018/sprite.webp"
       }
     },
     "LIT_2": {
@@ -87,6 +92,11 @@
           ],
           "generated_at": "2026-08-29T07:00:11+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_018/lit_2/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_018/lit_2/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_018/lit_2/sprite.webp"
       }
     },
     "LIT_3": {
@@ -117,6 +127,11 @@
           ],
           "generated_at": "2026-08-29T07:00:37+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_018/lit_3/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_018/lit_3/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_018/lit_3/sprite.webp"
       }
     },
     "LIT_4": {
@@ -147,6 +162,11 @@
           ],
           "generated_at": "2026-08-29T07:00:07+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_018/lit_4/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_018/lit_4/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_018/lit_4/sprite.webp"
       }
     },
     "NOT_LIT_2": {
@@ -155,7 +175,12 @@
       "generated_at": "2026-08-16T14:02:40+00:00",
       "glow_concept": null,
       "difference_from_source": 0.9148,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_018/not_lit_2/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_018/not_lit_2/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_018/not_lit_2/sprite.webp"
+      }
     }
   }
 }

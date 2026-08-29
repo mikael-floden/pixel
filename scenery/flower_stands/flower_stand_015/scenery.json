@@ -35,7 +35,12 @@
     "NOT_LIT_1": {
       "sprite": "flower_stands/flower_stand_015/sprite.webp",
       "pixellab_object_id": "75ebfd5d-fc0a-4307-9643-e8a930596244",
-      "generated_at": "2026-08-14T02:39:51+00:00"
+      "generated_at": "2026-08-14T02:39:51+00:00",
+      "rotations": {
+        "south-east": "flower_stands/flower_stand_015/rotations/south-east.webp",
+        "south-west": "flower_stands/flower_stand_015/rotations/south-west.webp",
+        "south": "flower_stands/flower_stand_015/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "flower_stands/flower_stand_015/not_lit_2/sprite.webp",
@@ -43,7 +48,12 @@
       "generated_at": "2026-08-16T14:14:39+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5681,
-      "glow_score": 0.0769
+      "glow_score": 0.0769,
+      "rotations": {
+        "south-east": "flower_stands/flower_stand_015/not_lit_2/rotations/south-east.webp",
+        "south-west": "flower_stands/flower_stand_015/not_lit_2/rotations/south-west.webp",
+        "south": "flower_stands/flower_stand_015/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "flower_stands/flower_stand_015/not_lit_3/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-16T14:13:56+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2877,
-      "glow_score": 0.1614
+      "glow_score": 0.1614,
+      "rotations": {
+        "south-east": "flower_stands/flower_stand_015/not_lit_3/rotations/south-east.webp",
+        "south-west": "flower_stands/flower_stand_015/not_lit_3/rotations/south-west.webp",
+        "south": "flower_stands/flower_stand_015/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "flower_stands/flower_stand_015/not_lit_4/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-16T14:15:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5971,
-      "glow_score": 0.1715
+      "glow_score": 0.1715,
+      "rotations": {
+        "south-east": "flower_stands/flower_stand_015/not_lit_4/rotations/south-east.webp",
+        "south-west": "flower_stands/flower_stand_015/not_lit_4/rotations/south-west.webp",
+        "south": "flower_stands/flower_stand_015/not_lit_4/sprite.webp"
+      }
     }
   }
 }

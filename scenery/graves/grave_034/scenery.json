@@ -35,7 +35,12 @@
     "LIT_1": {
       "sprite": "graves/grave_034/sprite.webp",
       "pixellab_object_id": "48187bc1-ad36-4d92-849c-85cf1216fd1a",
-      "generated_at": "2026-08-14T02:15:50+00:00"
+      "generated_at": "2026-08-14T02:15:50+00:00",
+      "rotations": {
+        "south-east": "graves/grave_034/rotations/south-east.webp",
+        "south-west": "graves/grave_034/rotations/south-west.webp",
+        "south": "graves/grave_034/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "graves/grave_034/lit_2/sprite.webp",
@@ -43,7 +48,12 @@
       "generated_at": "2026-08-16T14:57:29+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5081,
-      "glow_score": 0.0723
+      "glow_score": 0.0723,
+      "rotations": {
+        "south-east": "graves/grave_034/lit_2/rotations/south-east.webp",
+        "south-west": "graves/grave_034/lit_2/rotations/south-west.webp",
+        "south": "graves/grave_034/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "graves/grave_034/lit_3/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-16T14:56:58+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4765,
-      "glow_score": 0.1168
+      "glow_score": 0.1168,
+      "rotations": {
+        "south-east": "graves/grave_034/lit_3/rotations/south-east.webp",
+        "south-west": "graves/grave_034/lit_3/rotations/south-west.webp",
+        "south": "graves/grave_034/lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "graves/grave_034/not_lit_1/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-16T14:57:09+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8522,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "graves/grave_034/not_lit_1/rotations/south-east.webp",
+        "south-west": "graves/grave_034/not_lit_1/rotations/south-west.webp",
+        "south": "graves/grave_034/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "graves/grave_034/not_lit_3/sprite.webp",
@@ -68,7 +88,12 @@
       "glow_concept": null,
       "difference_from_source": 0.8016,
       "glow_score": 0.0,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "graves/grave_034/not_lit_3/rotations/south-east.webp",
+        "south-west": "graves/grave_034/not_lit_3/rotations/south-west.webp",
+        "south": "graves/grave_034/not_lit_3/sprite.webp"
+      }
     }
   }
 }

@@ -37,12 +37,22 @@
       "generated_at": "2026-08-16T14:47:22+00:00",
       "glow_concept": "bioluminescent moss veining the cracks",
       "difference_from_source": 0.5008,
-      "glow_score": 0.0273
+      "glow_score": 0.0273,
+      "rotations": {
+        "south-east": "graves/grave_001/lit_2/rotations/south-east.webp",
+        "south-west": "graves/grave_001/lit_2/rotations/south-west.webp",
+        "south": "graves/grave_001/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "graves/grave_001/sprite.webp",
       "pixellab_object_id": "86ab862b-21c8-4876-8e1a-001b88692745",
-      "generated_at": "2026-08-12T23:42:29+00:00"
+      "generated_at": "2026-08-12T23:42:29+00:00",
+      "rotations": {
+        "south-east": "graves/grave_001/rotations/south-east.webp",
+        "south-west": "graves/grave_001/rotations/south-west.webp",
+        "south": "graves/grave_001/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "graves/grave_001/not_lit_2/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-16T14:46:49+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5834,
-      "glow_score": 0.0372
+      "glow_score": 0.0372,
+      "rotations": {
+        "south-east": "graves/grave_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "graves/grave_001/not_lit_2/rotations/south-west.webp",
+        "south": "graves/grave_001/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "graves/grave_001/not_lit_3/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T14:46:50+00:00",
       "glow_concept": null,
       "difference_from_source": 0.562,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "graves/grave_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "graves/grave_001/not_lit_3/rotations/south-west.webp",
+        "south": "graves/grave_001/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "graves/grave_001/not_lit_4/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-16T14:46:28+00:00",
       "glow_concept": null,
       "difference_from_source": 0.607,
-      "glow_score": 0.0039
+      "glow_score": 0.0039,
+      "rotations": {
+        "south-east": "graves/grave_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "graves/grave_001/not_lit_4/rotations/south-west.webp",
+        "south": "graves/grave_001/not_lit_4/sprite.webp"
+      }
     }
   }
 }

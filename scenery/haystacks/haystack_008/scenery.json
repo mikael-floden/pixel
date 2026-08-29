@@ -34,7 +34,12 @@
     "LIT_1": {
       "sprite": "haystacks/haystack_008/sprite.webp",
       "pixellab_object_id": "3eec8add-8744-4bf4-b22b-08aa05c44b3b",
-      "generated_at": "2026-08-13T20:48:49+00:00"
+      "generated_at": "2026-08-13T20:48:49+00:00",
+      "rotations": {
+        "south-east": "haystacks/haystack_008/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_008/rotations/south-west.webp",
+        "south": "haystacks/haystack_008/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "haystacks/haystack_008/lit_2/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-16T15:02:37+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8071,
-      "glow_score": 0.4754
+      "glow_score": 0.4754,
+      "rotations": {
+        "south-east": "haystacks/haystack_008/lit_2/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_008/lit_2/rotations/south-west.webp",
+        "south": "haystacks/haystack_008/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "haystacks/haystack_008/lit_3/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-16T15:02:02+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7232,
-      "glow_score": 0.6099
+      "glow_score": 0.6099,
+      "rotations": {
+        "south-east": "haystacks/haystack_008/lit_3/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_008/lit_3/rotations/south-west.webp",
+        "south": "haystacks/haystack_008/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "haystacks/haystack_008/lit_4/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T15:02:24+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7884,
-      "glow_score": 0.4123
+      "glow_score": 0.4123,
+      "rotations": {
+        "south-east": "haystacks/haystack_008/lit_4/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_008/lit_4/rotations/south-west.webp",
+        "south": "haystacks/haystack_008/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "haystacks/haystack_008/not_lit_1/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-16T15:04:56+00:00",
       "glow_concept": null,
       "difference_from_source": 1.0,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "haystacks/haystack_008/not_lit_1/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_008/not_lit_1/rotations/south-west.webp",
+        "south": "haystacks/haystack_008/not_lit_1/sprite.webp"
+      }
     }
   }
 }

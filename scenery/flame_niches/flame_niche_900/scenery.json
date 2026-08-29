@@ -58,6 +58,11 @@
           ],
           "generated_at": "2026-08-29T07:00:57+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_900/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_900/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_900/sprite.webp"
       }
     },
     "LIT_2": {
@@ -88,6 +93,11 @@
           ],
           "generated_at": "2026-08-29T07:00:40+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_900/lit_2/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_900/lit_2/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_900/lit_2/sprite.webp"
       }
     },
     "LIT_3": {
@@ -148,6 +158,11 @@
           ],
           "generated_at": "2026-08-29T07:00:41+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_900/lit_4/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_900/lit_4/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_900/lit_4/sprite.webp"
       }
     },
     "NOT_LIT_1": {
@@ -156,7 +171,12 @@
       "generated_at": "2026-08-16T14:03:52+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2557,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_900/not_lit_1/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_900/not_lit_1/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_900/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "flame_niches/flame_niche_900/not_lit_2/sprite.webp",
@@ -164,7 +184,12 @@
       "generated_at": "2026-08-16T14:03:53+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2822,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_900/not_lit_2/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_900/not_lit_2/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_900/not_lit_2/sprite.webp"
+      }
     }
   }
 }

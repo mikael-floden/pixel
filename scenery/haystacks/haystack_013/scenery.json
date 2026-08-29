@@ -37,12 +37,22 @@
       "generated_at": "2026-08-16T15:06:09+00:00",
       "glow_concept": "warm light leaking from a hollow inside",
       "difference_from_source": 0.7188,
-      "glow_score": 0.6304
+      "glow_score": 0.6304,
+      "rotations": {
+        "south-east": "haystacks/haystack_013/lit_2/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_013/lit_2/rotations/south-west.webp",
+        "south": "haystacks/haystack_013/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "haystacks/haystack_013/sprite.webp",
       "pixellab_object_id": "d359b86d-e62b-4e2a-9d7a-54e6588d0683",
-      "generated_at": "2026-08-13T22:08:50+00:00"
+      "generated_at": "2026-08-13T22:08:50+00:00",
+      "rotations": {
+        "south-east": "haystacks/haystack_013/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_013/rotations/south-west.webp",
+        "south": "haystacks/haystack_013/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "haystacks/haystack_013/not_lit_2/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-16T15:05:33+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5174,
-      "glow_score": 0.3031
+      "glow_score": 0.3031,
+      "rotations": {
+        "south-east": "haystacks/haystack_013/not_lit_2/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_013/not_lit_2/rotations/south-west.webp",
+        "south": "haystacks/haystack_013/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "haystacks/haystack_013/not_lit_3/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T15:05:56+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5994,
-      "glow_score": 0.576
+      "glow_score": 0.576,
+      "rotations": {
+        "south-east": "haystacks/haystack_013/not_lit_3/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_013/not_lit_3/rotations/south-west.webp",
+        "south": "haystacks/haystack_013/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "haystacks/haystack_013/not_lit_5/sprite.webp",
@@ -67,7 +87,12 @@
       "glow_concept": "stray straws glinting like spun gold",
       "difference_from_source": 0.4533,
       "glow_score": 0.5749,
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "haystacks/haystack_013/not_lit_5/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_013/not_lit_5/rotations/south-west.webp",
+        "south": "haystacks/haystack_013/not_lit_5/sprite.webp"
+      }
     }
   }
 }

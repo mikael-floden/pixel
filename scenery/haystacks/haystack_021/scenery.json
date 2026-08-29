@@ -35,7 +35,12 @@
     "NOT_LIT_1": {
       "sprite": "haystacks/haystack_021/sprite.webp",
       "pixellab_object_id": "ce39fe8b-43b6-4f88-9e56-c811c992bdb7",
-      "generated_at": "2026-08-14T01:27:49+00:00"
+      "generated_at": "2026-08-14T01:27:49+00:00",
+      "rotations": {
+        "south-east": "haystacks/haystack_021/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_021/rotations/south-west.webp",
+        "south": "haystacks/haystack_021/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "haystacks/haystack_021/not_lit_2/sprite.webp",
@@ -43,7 +48,12 @@
       "generated_at": "2026-08-16T15:05:57+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8193,
-      "glow_score": 0.3706
+      "glow_score": 0.3706,
+      "rotations": {
+        "south-east": "haystacks/haystack_021/not_lit_2/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_021/not_lit_2/rotations/south-west.webp",
+        "south": "haystacks/haystack_021/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "haystacks/haystack_021/not_lit_3/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-16T15:07:53+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4395,
-      "glow_score": 0.3718
+      "glow_score": 0.3718,
+      "rotations": {
+        "south-east": "haystacks/haystack_021/not_lit_3/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_021/not_lit_3/rotations/south-west.webp",
+        "south": "haystacks/haystack_021/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "haystacks/haystack_021/not_lit_4/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-16T15:09:23+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7372,
-      "glow_score": 0.6675
+      "glow_score": 0.6675,
+      "rotations": {
+        "south-east": "haystacks/haystack_021/not_lit_4/rotations/south-east.webp",
+        "south-west": "haystacks/haystack_021/not_lit_4/rotations/south-west.webp",
+        "south": "haystacks/haystack_021/not_lit_4/sprite.webp"
+      }
     }
   }
 }

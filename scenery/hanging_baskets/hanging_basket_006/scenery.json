@@ -37,7 +37,12 @@
       "generated_at": "2026-08-16T14:59:18+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7965,
-      "glow_score": 0.1154
+      "glow_score": 0.1154,
+      "rotations": {
+        "south-east": "hanging_baskets/hanging_basket_006/lit_4/rotations/south-east.webp",
+        "south-west": "hanging_baskets/hanging_basket_006/lit_4/rotations/south-west.webp",
+        "south": "hanging_baskets/hanging_basket_006/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "hanging_baskets/hanging_basket_006/not_lit_1/sprite.webp",
@@ -45,13 +50,23 @@
       "generated_at": "2026-08-16T14:59:33+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8266,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "hanging_baskets/hanging_basket_006/not_lit_1/rotations/south-east.webp",
+        "south-west": "hanging_baskets/hanging_basket_006/not_lit_1/rotations/south-west.webp",
+        "south": "hanging_baskets/hanging_basket_006/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "hanging_baskets/hanging_basket_006/sprite.webp",
       "pixellab_object_id": "90764009-0a03-46e1-b0d4-43cdfd121b0e",
       "generated_at": "2026-08-13T21:23:42+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "hanging_baskets/hanging_basket_006/rotations/south-east.webp",
+        "south-west": "hanging_baskets/hanging_basket_006/rotations/south-west.webp",
+        "south": "hanging_baskets/hanging_basket_006/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "hanging_baskets/hanging_basket_006/not_lit_5/sprite.webp",
@@ -60,7 +75,12 @@
       "glow_concept": null,
       "difference_from_source": 0.5991,
       "glow_score": 0.1009,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "hanging_baskets/hanging_basket_006/not_lit_5/rotations/south-east.webp",
+        "south-west": "hanging_baskets/hanging_basket_006/not_lit_5/rotations/south-west.webp",
+        "south": "hanging_baskets/hanging_basket_006/not_lit_5/sprite.webp"
+      }
     }
   }
 }

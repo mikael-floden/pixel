@@ -56,6 +56,11 @@
           ],
           "generated_at": "2026-08-29T06:59:09+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_006/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_006/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_006/sprite.webp"
       }
     },
     "LIT_2": {
@@ -86,6 +91,11 @@
           ],
           "generated_at": "2026-08-29T06:59:08+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_006/lit_2/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_006/lit_2/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_006/lit_2/sprite.webp"
       }
     },
     "LIT_3": {
@@ -116,6 +126,11 @@
           ],
           "generated_at": "2026-08-29T06:59:04+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_006/lit_3/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_006/lit_3/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_006/lit_3/sprite.webp"
       }
     },
     "LIT_4": {
@@ -146,6 +161,11 @@
           ],
           "generated_at": "2026-08-29T07:00:03+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_006/lit_4/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_006/lit_4/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_006/lit_4/sprite.webp"
       }
     },
     "NOT_LIT_1": {
@@ -154,7 +174,12 @@
       "generated_at": "2026-08-16T12:26:28+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3762,
-      "glow_score": 0.0103
+      "glow_score": 0.0103,
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_006/not_lit_1/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_006/not_lit_1/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_006/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "flame_niches/flame_niche_006/not_lit_2/sprite.webp",
@@ -162,7 +187,12 @@
       "generated_at": "2026-08-16T12:26:29+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8793,
-      "glow_score": 0.0646
+      "glow_score": 0.0646,
+      "rotations": {
+        "south-east": "flame_niches/flame_niche_006/not_lit_2/rotations/south-east.webp",
+        "south-west": "flame_niches/flame_niche_006/not_lit_2/rotations/south-west.webp",
+        "south": "flame_niches/flame_niche_006/not_lit_2/sprite.webp"
+      }
     }
   }
 }

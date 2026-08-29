@@ -42,7 +42,12 @@
       "generated_at": "2026-08-16T14:15:20+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7028,
-      "glow_score": 0.0616
+      "glow_score": 0.0616,
+      "rotations": {
+        "south-east": "flower_trellises/flower_trellis_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "flower_trellises/flower_trellis_001/not_lit_2/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_001/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "flower_trellises/flower_trellis_001/not_lit_3/sprite.webp",
@@ -50,7 +55,12 @@
       "generated_at": "2026-08-16T14:16:24+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6597,
-      "glow_score": 0.0496
+      "glow_score": 0.0496,
+      "rotations": {
+        "south-east": "flower_trellises/flower_trellis_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "flower_trellises/flower_trellis_001/not_lit_3/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_001/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "flower_trellises/flower_trellis_001/not_lit_4/sprite.webp",
@@ -58,7 +68,12 @@
       "generated_at": "2026-08-16T14:17:04+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7963,
-      "glow_score": 0.0329
+      "glow_score": 0.0329,
+      "rotations": {
+        "south-east": "flower_trellises/flower_trellis_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "flower_trellises/flower_trellis_001/not_lit_4/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_001/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "flower_trellises/flower_trellis_001/not_lit_5/sprite.webp",
@@ -67,7 +82,12 @@
       "glow_concept": "pollen sifting down as glowing dust",
       "difference_from_source": 0.6318,
       "glow_score": 0.1263,
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "flower_trellises/flower_trellis_001/not_lit_5/rotations/south-east.webp",
+        "south-west": "flower_trellises/flower_trellis_001/not_lit_5/rotations/south-west.webp",
+        "south": "flower_trellises/flower_trellis_001/not_lit_5/sprite.webp"
+      }
     }
   }
 }

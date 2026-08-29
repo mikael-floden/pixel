@@ -37,12 +37,22 @@
       "generated_at": "2026-08-16T14:45:33+00:00",
       "glow_concept": "trickle of glowing pebbles down one side",
       "difference_from_source": 0.5803,
-      "glow_score": 0.2984
+      "glow_score": 0.2984,
+      "rotations": {
+        "south-east": "gravel_piles/gravel_pile_001/lit_1/rotations/south-east.webp",
+        "south-west": "gravel_piles/gravel_pile_001/lit_1/rotations/south-west.webp",
+        "south": "gravel_piles/gravel_pile_001/lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "gravel_piles/gravel_pile_001/sprite.webp",
       "pixellab_object_id": "5a3efe9a-9112-474c-b1e0-20dfd2bb6f48",
-      "generated_at": "2026-08-13T01:32:12+00:00"
+      "generated_at": "2026-08-13T01:32:12+00:00",
+      "rotations": {
+        "south-east": "gravel_piles/gravel_pile_001/rotations/south-east.webp",
+        "south-west": "gravel_piles/gravel_pile_001/rotations/south-west.webp",
+        "south": "gravel_piles/gravel_pile_001/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "gravel_piles/gravel_pile_001/not_lit_2/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-16T14:44:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4969,
-      "glow_score": 0.1121
+      "glow_score": 0.1121,
+      "rotations": {
+        "south-east": "gravel_piles/gravel_pile_001/not_lit_2/rotations/south-east.webp",
+        "south-west": "gravel_piles/gravel_pile_001/not_lit_2/rotations/south-west.webp",
+        "south": "gravel_piles/gravel_pile_001/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "gravel_piles/gravel_pile_001/not_lit_3/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T14:44:50+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8704,
-      "glow_score": 0.0848
+      "glow_score": 0.0848,
+      "rotations": {
+        "south-east": "gravel_piles/gravel_pile_001/not_lit_3/rotations/south-east.webp",
+        "south-west": "gravel_piles/gravel_pile_001/not_lit_3/rotations/south-west.webp",
+        "south": "gravel_piles/gravel_pile_001/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "gravel_piles/gravel_pile_001/not_lit_4/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-16T14:44:10+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3683,
-      "glow_score": 0.0759
+      "glow_score": 0.0759,
+      "rotations": {
+        "south-east": "gravel_piles/gravel_pile_001/not_lit_4/rotations/south-east.webp",
+        "south-west": "gravel_piles/gravel_pile_001/not_lit_4/rotations/south-west.webp",
+        "south": "gravel_piles/gravel_pile_001/not_lit_4/sprite.webp"
+      }
     }
   }
 }
