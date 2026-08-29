@@ -4416,6 +4416,27 @@
           "glow_concept": null,
           "difference_from_source": 0.6242,
           "glow_score": 0.1345,
+          "animations": {
+            "motion": {
+              "group_id": "aac448b7-d238-4e82-a65a-d06aa702d101",
+              "description": "This is the same picture in every frame. ONLY the pale green flame inside the cage flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "beacons/beacon_008/lit_3/animations/motion/00.webp",
+                "beacons/beacon_008/lit_3/animations/motion/01.webp",
+                "beacons/beacon_008/lit_3/animations/motion/02.webp",
+                "beacons/beacon_008/lit_3/animations/motion/03.webp",
+                "beacons/beacon_008/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "beacons/beacon_008/lit_3/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T16:55:08+00:00",
+              "brief": "Z4"
+            }
+          },
           "art_hash": "c5fd8309d27aa9f8"
         },
         "LIT_4": {
@@ -4766,6 +4787,27 @@
           "glow_concept": null,
           "difference_from_source": 0.7626,
           "glow_score": 0.0598,
+          "animations": {
+            "motion": {
+              "group_id": "c4284df8-93bd-46c8-96cd-9d9f8de31d90",
+              "description": "This is the same picture in every frame. ONLY the flame at the top flickers and the gold sparks drift away from it. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "beacons/beacon_012/lit_3/animations/motion/00.webp",
+                "beacons/beacon_012/lit_3/animations/motion/01.webp",
+                "beacons/beacon_012/lit_3/animations/motion/02.webp",
+                "beacons/beacon_012/lit_3/animations/motion/03.webp",
+                "beacons/beacon_012/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "beacons/beacon_012/lit_3/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T16:55:57+00:00",
+              "brief": "Z12"
+            }
+          },
           "art_hash": "d8aed2fc2b95d47a"
         },
         "LIT_4": {
@@ -5019,6 +5061,27 @@
           "difference_from_source": 0.3378,
           "glow_score": 0.0364,
           "relit_from": "NOT_LIT_2",
+          "animations": {
+            "motion": {
+              "group_id": "dadba26c-944b-4fb3-89e2-1a75f3f18b43",
+              "description": "This is the same picture in every frame. ONLY the fire in the bowl at the top flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "beacons/beacon_015/lit_3/animations/motion/00.webp",
+                "beacons/beacon_015/lit_3/animations/motion/01.webp",
+                "beacons/beacon_015/lit_3/animations/motion/02.webp",
+                "beacons/beacon_015/lit_3/animations/motion/03.webp",
+                "beacons/beacon_015/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "beacons/beacon_015/lit_3/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T16:55:16+00:00",
+              "brief": "Z8"
+            }
+          },
           "art_hash": "6e53390596710fe3"
         },
         "NOT_LIT_1": {
@@ -6301,6 +6364,29 @@
             "south-west": "bell_posts/bell_post_004/not_lit_1/rotations/south-west.webp",
             "south": "bell_posts/bell_post_004/not_lit_1/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "1fed67db-0905-420e-b6b0-f2b3906a61ff",
+              "description": "This is the same picture in every frame. ONLY the hanging bell and the hanging lantern swing. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/00.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/01.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/02.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/03.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/not_lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:57:16+00:00",
+              "brief": "Z26"
+            }
+          },
           "art_hash": "6b731844f24a75d4"
         }
       },
@@ -7219,6 +7305,29 @@
             "south-west": "braziers/brazier_006/lit_3/rotations/south-west.webp",
             "south": "braziers/brazier_006/lit_3/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "8c4e00a9-d76c-4c12-b870-74a48aadfe90",
+              "description": "This is the same picture in every frame. ONLY the flame in the bowl flickers and the gold sparks above it drift upward. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "braziers/brazier_006/lit_3/animations/motion/00.webp",
+                "braziers/brazier_006/lit_3/animations/motion/01.webp",
+                "braziers/brazier_006/lit_3/animations/motion/02.webp",
+                "braziers/brazier_006/lit_3/animations/motion/03.webp",
+                "braziers/brazier_006/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "braziers/brazier_006/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:55:23+00:00",
+              "brief": "Z1"
+            }
+          },
           "art_hash": "f4a2cf1dbe08a909"
         },
         "LIT_4": {
@@ -8040,6 +8149,29 @@
             "south-west": "braziers/brazier_012/lit_3/rotations/south-west.webp",
             "south": "braziers/brazier_012/lit_3/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "0d5cc1b9-8d0c-4edb-9309-1d8e174db8ad",
+              "description": "This is the same picture in every frame. ONLY the fire in the box flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "braziers/brazier_012/lit_3/animations/motion/00.webp",
+                "braziers/brazier_012/lit_3/animations/motion/01.webp",
+                "braziers/brazier_012/lit_3/animations/motion/02.webp",
+                "braziers/brazier_012/lit_3/animations/motion/03.webp",
+                "braziers/brazier_012/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "braziers/brazier_012/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:54:43+00:00",
+              "brief": "Z7"
+            }
+          },
           "art_hash": "420f4891eab3815b"
         },
         "LIT_4": {
@@ -8374,6 +8506,29 @@
             "south-east": "braziers/brazier_015/lit_1/rotations/south-east.webp",
             "south-west": "braziers/brazier_015/lit_1/rotations/south-west.webp",
             "south": "braziers/brazier_015/lit_1/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "d7963a65-2fef-4be1-b425-622008844e64",
+              "description": "This is the same picture in every frame. ONLY the burning coals in the bowl brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "braziers/brazier_015/lit_1/animations/motion/00.webp",
+                "braziers/brazier_015/lit_1/animations/motion/01.webp",
+                "braziers/brazier_015/lit_1/animations/motion/02.webp",
+                "braziers/brazier_015/lit_1/animations/motion/03.webp",
+                "braziers/brazier_015/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "braziers/brazier_015/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:55:16+00:00",
+              "brief": "Z9"
+            }
           },
           "art_hash": "29852f85858d2e97"
         },
@@ -8793,6 +8948,29 @@
           "glow_concept": "glowworms strung along the arching canes",
           "difference_from_source": 0.293,
           "glow_score": 0.0421,
+          "animations": {
+            "motion": {
+              "group_id": "d8a6a68c-59ad-4fce-b85a-cad27d3a0ccd",
+              "description": "This is the same picture in every frame. ONLY the glowing green arcs brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "briar_thickets/briar_thicket_013/lit_1/animations/motion/00.webp",
+                "briar_thickets/briar_thicket_013/lit_1/animations/motion/01.webp",
+                "briar_thickets/briar_thicket_013/lit_1/animations/motion/02.webp",
+                "briar_thickets/briar_thicket_013/lit_1/animations/motion/03.webp",
+                "briar_thickets/briar_thicket_013/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "briar_thickets/briar_thicket_013/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T17:00:01+00:00",
+              "brief": "Z49"
+            }
+          },
           "art_hash": "a3019d5631f756ac"
         },
         "NOT_LIT_1": {
@@ -9830,6 +10008,29 @@
           "glow_concept": "phosphorescent rime edging every leaf",
           "difference_from_source": 0.6972,
           "glow_score": 0.2313,
+          "animations": {
+            "motion": {
+              "group_id": "5baf4c47-9bb2-4884-b5d1-f4d7a09b4025",
+              "description": "This is the same picture in every frame. ONLY the glowing edges of the leaves brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "bushes/bush_007/lit_2/animations/motion/00.webp",
+                "bushes/bush_007/lit_2/animations/motion/01.webp",
+                "bushes/bush_007/lit_2/animations/motion/02.webp",
+                "bushes/bush_007/lit_2/animations/motion/03.webp",
+                "bushes/bush_007/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "bushes/bush_007/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:59:38+00:00",
+              "brief": "Z50"
+            }
+          },
           "art_hash": "8c40aefc1069341e"
         },
         "NOT_LIT_1": {
@@ -10711,6 +10912,29 @@
             "south-east": "cairns/cairn_011/lit_1/rotations/south-east.webp",
             "south-west": "cairns/cairn_011/lit_1/rotations/south-west.webp",
             "south": "cairns/cairn_011/lit_1/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "bec49ec6-dd93-41f7-8926-54956754035c",
+              "description": "This is the same picture in every frame. ONLY the glowing ring around the stones turns slowly. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cairns/cairn_011/lit_1/animations/motion/00.webp",
+                "cairns/cairn_011/lit_1/animations/motion/01.webp",
+                "cairns/cairn_011/lit_1/animations/motion/02.webp",
+                "cairns/cairn_011/lit_1/animations/motion/03.webp",
+                "cairns/cairn_011/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cairns/cairn_011/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:58:05+00:00",
+              "brief": "Z31"
+            }
           },
           "art_hash": "7bb316c78ce9d4ec"
         },
@@ -20705,6 +20929,29 @@
           "glow_concept": "the whole cluster radiating its own gem color",
           "difference_from_source": 0.5531,
           "glow_score": 0.3756,
+          "animations": {
+            "motion": {
+              "group_id": "95e55eff-af59-4587-8673-54107b80b63a",
+              "description": "This is the same picture in every frame. ONLY the orange crystals brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "crystals/crystal_901/lit_2/animations/motion/00.webp",
+                "crystals/crystal_901/lit_2/animations/motion/01.webp",
+                "crystals/crystal_901/lit_2/animations/motion/02.webp",
+                "crystals/crystal_901/lit_2/animations/motion/03.webp",
+                "crystals/crystal_901/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "crystals/crystal_901/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:57:14+00:00",
+              "brief": "Z29"
+            }
+          },
           "art_hash": "f7e99cced4d72fc4"
         },
         "NOT_LIT_1": {
@@ -25033,6 +25280,29 @@
             "south-west": "fish_drying_racks/fish_drying_rack_002/lit_3/rotations/south-west.webp",
             "south": "fish_drying_racks/fish_drying_rack_002/lit_3/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "84cd2df7-f558-49de-850b-3101202bd831",
+              "description": "This is the same picture in every frame. ONLY the hanging fish swing and the flame in the lantern flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:56:16+00:00",
+              "brief": "Z21"
+            }
+          },
           "art_hash": "663e17ad4aa9e861"
         },
         "NOT_LIT_1": {
@@ -25229,6 +25499,29 @@
             "south-east": "fish_drying_racks/fish_drying_rack_003/not_lit_3/rotations/south-east.webp",
             "south-west": "fish_drying_racks/fish_drying_rack_003/not_lit_3/rotations/south-west.webp",
             "south": "fish_drying_racks/fish_drying_rack_003/not_lit_3/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "a62a159e-93dd-4900-9dc1-f3bbe8bd7299",
+              "description": "This is the same picture in every frame. ONLY the hanging fish swing. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_003/not_lit_3/animations/motion/00.webp",
+                "fish_drying_racks/fish_drying_rack_003/not_lit_3/animations/motion/01.webp",
+                "fish_drying_racks/fish_drying_rack_003/not_lit_3/animations/motion/02.webp",
+                "fish_drying_racks/fish_drying_rack_003/not_lit_3/animations/motion/03.webp",
+                "fish_drying_racks/fish_drying_rack_003/not_lit_3/animations/motion/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_003/not_lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:56:23+00:00",
+              "brief": "Z20"
+            }
           },
           "art_hash": "79c3bc6fb78fe1e4"
         },
@@ -29525,6 +29818,29 @@
             "south-west": "graves/grave_003/lit_1/rotations/south-west.webp",
             "south": "graves/grave_003/lit_1/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "e66f3c2b-0302-4adc-b2e1-061f493a9873",
+              "description": "This is the same picture in every frame. ONLY the glowing cracks across the stone brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "graves/grave_003/lit_1/animations/motion/00.webp",
+                "graves/grave_003/lit_1/animations/motion/01.webp",
+                "graves/grave_003/lit_1/animations/motion/02.webp",
+                "graves/grave_003/lit_1/animations/motion/03.webp",
+                "graves/grave_003/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "graves/grave_003/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:58:22+00:00",
+              "brief": "Z36"
+            }
+          },
           "art_hash": "a9c8b767ce2d31a7"
         },
         "LIT_2": {
@@ -30566,6 +30882,29 @@
             "south-east": "hanging_baskets/hanging_basket_006/not_lit_5/rotations/south-east.webp",
             "south-west": "hanging_baskets/hanging_basket_006/not_lit_5/rotations/south-west.webp",
             "south": "hanging_baskets/hanging_basket_006/not_lit_5/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "70f6637a-a9d7-4e6b-a234-ad70fc472f63",
+              "description": "This is the same picture in every frame. ONLY the trailing vines hanging below the basket swing. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "hanging_baskets/hanging_basket_006/not_lit_5/animations/motion/00.webp",
+                "hanging_baskets/hanging_basket_006/not_lit_5/animations/motion/01.webp",
+                "hanging_baskets/hanging_basket_006/not_lit_5/animations/motion/02.webp",
+                "hanging_baskets/hanging_basket_006/not_lit_5/animations/motion/03.webp",
+                "hanging_baskets/hanging_basket_006/not_lit_5/animations/motion/04.webp"
+              ],
+              "strip": "hanging_baskets/hanging_basket_006/not_lit_5/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:59:45+00:00",
+              "brief": "Z48"
+            }
           },
           "art_hash": "862fb8a44c6da52f"
         }
@@ -37126,6 +37465,29 @@
             "south-west": "lantern_posts/lantern_post_017/lit_1/rotations/south-west.webp",
             "south": "lantern_posts/lantern_post_017/lit_1/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "3e52678c-3a31-4ec3-b05a-393815faeae8",
+              "description": "This is the same picture in every frame. ONLY the flame at the top flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "lantern_posts/lantern_post_017/lit_1/animations/motion/00.webp",
+                "lantern_posts/lantern_post_017/lit_1/animations/motion/01.webp",
+                "lantern_posts/lantern_post_017/lit_1/animations/motion/02.webp",
+                "lantern_posts/lantern_post_017/lit_1/animations/motion/03.webp",
+                "lantern_posts/lantern_post_017/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "lantern_posts/lantern_post_017/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:54:42+00:00",
+              "brief": "Z3"
+            }
+          },
           "art_hash": "8c9e967fb362ab6e"
         },
         "LIT_2": {
@@ -38081,6 +38443,29 @@
             "south-west": "lantern_stands/lantern_stand_014/not_lit_1/rotations/south-west.webp",
             "south": "lantern_stands/lantern_stand_014/not_lit_1/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "433390c2-e149-430d-a055-e32edd76c15b",
+              "description": "This is the same picture in every frame. ONLY the hanging jar swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/00.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/01.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/02.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/03.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/04.webp"
+              ],
+              "strip": "lantern_stands/lantern_stand_014/not_lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:56:57+00:00",
+              "brief": "Z25"
+            }
+          },
           "art_hash": "f18e44e07776d04e"
         }
       },
@@ -38343,6 +38728,29 @@
             "south-west": "lantern_stands/lantern_stand_902/not_lit_2/rotations/south-west.webp",
             "south": "lantern_stands/lantern_stand_902/not_lit_2/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "3b83cbb6-ae82-4ff3-b7e4-1387c7216bde",
+              "description": "This is the same picture in every frame. ONLY the hanging lantern swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "lantern_stands/lantern_stand_902/not_lit_2/animations/motion/00.webp",
+                "lantern_stands/lantern_stand_902/not_lit_2/animations/motion/01.webp",
+                "lantern_stands/lantern_stand_902/not_lit_2/animations/motion/02.webp",
+                "lantern_stands/lantern_stand_902/not_lit_2/animations/motion/03.webp",
+                "lantern_stands/lantern_stand_902/not_lit_2/animations/motion/04.webp"
+              ],
+              "strip": "lantern_stands/lantern_stand_902/not_lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:57:04+00:00",
+              "brief": "Z24"
+            }
+          },
           "art_hash": "829e6e25357eaaea"
         }
       },
@@ -38536,6 +38944,29 @@
             "south-east": "market_stalls/market_stall_001/not_lit_2/rotations/south-east.webp",
             "south-west": "market_stalls/market_stall_001/not_lit_2/rotations/south-west.webp",
             "south": "market_stalls/market_stall_001/not_lit_2/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "6bedd0cf-1045-46a8-8e99-c30232ff3f31",
+              "description": "This is the same picture in every frame. ONLY the cloth awning ripples. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/00.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/01.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/02.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/03.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/not_lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:58:49+00:00",
+              "brief": "Z45"
+            }
           },
           "art_hash": "325488644bdb2d04"
         },
@@ -39198,6 +39629,27 @@
           "glow_concept": null,
           "difference_from_source": 0.3296,
           "glow_score": 0.0738,
+          "animations": {
+            "motion": {
+              "group_id": "e8cfb599-5b5f-434a-ab89-7bd7017fd403",
+              "description": "This is the same picture in every frame. ONLY the hanging ribbons swing. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "maypoles/maypole_007/not_lit_3/animations/motion/00.webp",
+                "maypoles/maypole_007/not_lit_3/animations/motion/01.webp",
+                "maypoles/maypole_007/not_lit_3/animations/motion/02.webp",
+                "maypoles/maypole_007/not_lit_3/animations/motion/03.webp",
+                "maypoles/maypole_007/not_lit_3/animations/motion/04.webp"
+              ],
+              "strip": "maypoles/maypole_007/not_lit_3/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T16:56:15+00:00",
+              "brief": "Z15"
+            }
+          },
           "art_hash": "3ff7a1d6b675b487"
         },
         "NOT_LIT_4": {
@@ -39846,6 +40298,29 @@
           "glow_concept": null,
           "difference_from_source": 0.881,
           "glow_score": 0.0733,
+          "animations": {
+            "motion": {
+              "group_id": "542a1545-87ab-4be9-b408-4404070ae0a3",
+              "description": "This is the same picture in every frame. ONLY the glowing gold spiral brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "moss_clumps/moss_clump_900/lit_2/animations/motion/00.webp",
+                "moss_clumps/moss_clump_900/lit_2/animations/motion/01.webp",
+                "moss_clumps/moss_clump_900/lit_2/animations/motion/02.webp",
+                "moss_clumps/moss_clump_900/lit_2/animations/motion/03.webp",
+                "moss_clumps/moss_clump_900/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "moss_clumps/moss_clump_900/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:58:12+00:00",
+              "brief": "Z37"
+            }
+          },
           "art_hash": "9ca723de27a40e0f"
         },
         "LIT_4": {
@@ -44191,6 +44666,29 @@
             "south-west": "rope_swings/rope_swing_002/not_lit_6/rotations/south-west.webp",
             "south": "rope_swings/rope_swing_002/not_lit_6/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "82a6664b-ecaa-4d2d-a49d-abbf5d835300",
+              "description": "This is the same picture in every frame. ONLY the hanging seat swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/00.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/01.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/02.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/03.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/not_lit_6/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:56:48+00:00",
+              "brief": "Z22"
+            }
+          },
           "art_hash": "fa18d133cb283ee5"
         }
       },
@@ -47195,6 +47693,29 @@
           "glow_concept": null,
           "difference_from_source": 0.667,
           "glow_score": 0.0681,
+          "animations": {
+            "motion": {
+              "group_id": "e564fbd0-f477-4995-babc-fc472e753303",
+              "description": "This is the same picture in every frame. ONLY the bright veins across the rock brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "soulstone_outcrops/soulstone_outcrop_016/lit_2/animations/motion/00.webp",
+                "soulstone_outcrops/soulstone_outcrop_016/lit_2/animations/motion/01.webp",
+                "soulstone_outcrops/soulstone_outcrop_016/lit_2/animations/motion/02.webp",
+                "soulstone_outcrops/soulstone_outcrop_016/lit_2/animations/motion/03.webp",
+                "soulstone_outcrops/soulstone_outcrop_016/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "soulstone_outcrops/soulstone_outcrop_016/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:57:07+00:00",
+              "brief": "Z28"
+            }
+          },
           "art_hash": "675fcad4b57aa3fd"
         },
         "LIT_3": {
@@ -47586,6 +48107,29 @@
             "south-west": "soulstone_plinths/soulstone_plinth_001/lit_2/rotations/south-west.webp",
             "south": "soulstone_plinths/soulstone_plinth_001/lit_2/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "dfdeb52b-9ebe-4ca4-86e6-edd5f0e124fc",
+              "description": "This is the same picture in every frame. ONLY the cyan crystal brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/00.webp",
+                "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/01.webp",
+                "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/02.webp",
+                "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/03.webp",
+                "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:57:46+00:00",
+              "brief": "Z27"
+            }
+          },
           "art_hash": "dff6f2cc65005623"
         },
         "NOT_LIT_1": {
@@ -47802,6 +48346,29 @@
           "glow_concept": null,
           "difference_from_source": 0.7306,
           "glow_score": 0.018,
+          "animations": {
+            "motion": {
+              "group_id": "f8f08f85-1c7a-4861-ba52-be1c6ef2c81d",
+              "description": "This is the same picture in every frame. ONLY the three jets of water run downward. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "spring_basins/spring_basin_003/not_lit_4/animations/motion/00.webp",
+                "spring_basins/spring_basin_003/not_lit_4/animations/motion/01.webp",
+                "spring_basins/spring_basin_003/not_lit_4/animations/motion/02.webp",
+                "spring_basins/spring_basin_003/not_lit_4/animations/motion/03.webp",
+                "spring_basins/spring_basin_003/not_lit_4/animations/motion/04.webp"
+              ],
+              "strip": "spring_basins/spring_basin_003/not_lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:59:02+00:00",
+              "brief": "Z43"
+            }
+          },
           "art_hash": "7096c215b357245d"
         }
       },
@@ -56147,6 +56714,27 @@
           "glow_concept": null,
           "difference_from_source": 0.2992,
           "glow_score": 0.0481,
+          "animations": {
+            "motion": {
+              "group_id": "7a149bba-6a0f-48ea-9d4f-57c316900ef3",
+              "description": "This is the same picture in every frame. ONLY the lit glass insulators brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "telegraph_poles/telegraph_pole_008/lit_2/animations/motion/00.webp",
+                "telegraph_poles/telegraph_pole_008/lit_2/animations/motion/01.webp",
+                "telegraph_poles/telegraph_pole_008/lit_2/animations/motion/02.webp",
+                "telegraph_poles/telegraph_pole_008/lit_2/animations/motion/03.webp",
+                "telegraph_poles/telegraph_pole_008/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "telegraph_poles/telegraph_pole_008/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-29T16:58:41+00:00",
+              "brief": "Z41"
+            }
+          },
           "art_hash": "10198b20dd23f264"
         },
         "LIT_3": {
@@ -56648,6 +57236,29 @@
           "glow_concept": "low glowing spore mist pooled in the center",
           "difference_from_source": 0.5846,
           "glow_score": 0.1781,
+          "animations": {
+            "motion": {
+              "group_id": "d90d8b06-ad7d-4cb3-8a20-55061f4c655c",
+              "description": "This is the same picture in every frame. ONLY the glowing pool in the middle brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "toadstool_rings/toadstool_ring_011/lit_1/animations/motion/00.webp",
+                "toadstool_rings/toadstool_ring_011/lit_1/animations/motion/01.webp",
+                "toadstool_rings/toadstool_ring_011/lit_1/animations/motion/02.webp",
+                "toadstool_rings/toadstool_ring_011/lit_1/animations/motion/03.webp",
+                "toadstool_rings/toadstool_ring_011/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "toadstool_rings/toadstool_ring_011/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:58:51+00:00",
+              "brief": "Z38"
+            }
+          },
           "art_hash": "24e27890b41534e9"
         },
         "LIT_2": {
@@ -58144,6 +58755,29 @@
             "south-west": "torch_posts/torch_post_011/lit_2/rotations/south-west.webp",
             "south": "torch_posts/torch_post_011/lit_2/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "37f253a8-49bb-420b-b678-693f636d4989",
+              "description": "This is the same picture in every frame. ONLY the flame at the top flickers and the green butterflies around it move. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "torch_posts/torch_post_011/lit_2/animations/motion/00.webp",
+                "torch_posts/torch_post_011/lit_2/animations/motion/01.webp",
+                "torch_posts/torch_post_011/lit_2/animations/motion/02.webp",
+                "torch_posts/torch_post_011/lit_2/animations/motion/03.webp",
+                "torch_posts/torch_post_011/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_011/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:54:27+00:00",
+              "brief": "Z5"
+            }
+          },
           "art_hash": "2e9c12ade2cdea64"
         },
         "NOT_LIT_1": {
@@ -58356,6 +58990,29 @@
             "south-east": "torch_posts/torch_post_013/lit_1/rotations/south-east.webp",
             "south-west": "torch_posts/torch_post_013/lit_1/rotations/south-west.webp",
             "south": "torch_posts/torch_post_013/lit_1/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "c0ca7c12-2d39-4c9f-8c9a-ed82de0c32cc",
+              "description": "This is the same picture in every frame. ONLY the molten orange light in the head brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "torch_posts/torch_post_013/lit_1/animations/motion/00.webp",
+                "torch_posts/torch_post_013/lit_1/animations/motion/01.webp",
+                "torch_posts/torch_post_013/lit_1/animations/motion/02.webp",
+                "torch_posts/torch_post_013/lit_1/animations/motion/03.webp",
+                "torch_posts/torch_post_013/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_013/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:55:33+00:00",
+              "brief": "Z6"
+            }
           },
           "art_hash": "fe0fc0d7d450adb6"
         },
@@ -88813,6 +89470,29 @@
             "south-west": "wall_hangings/wall_hanging_009/lit_2/rotations/south-west.webp",
             "south": "wall_hangings/wall_hanging_009/lit_2/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "f109fa24-61c2-4af0-afa3-7d6b47ebad92",
+              "description": "This is the same picture in every frame. ONLY each of the lit jars brightens a little and returns, one after another. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "wall_hangings/wall_hanging_009/lit_2/animations/motion/00.webp",
+                "wall_hangings/wall_hanging_009/lit_2/animations/motion/01.webp",
+                "wall_hangings/wall_hanging_009/lit_2/animations/motion/02.webp",
+                "wall_hangings/wall_hanging_009/lit_2/animations/motion/03.webp",
+                "wall_hangings/wall_hanging_009/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "wall_hangings/wall_hanging_009/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:58:14+00:00",
+              "brief": "Z39"
+            }
+          },
           "art_hash": "662be1a77e8a5868"
         },
         "NOT_LIT_1": {
@@ -89594,6 +90274,29 @@
             "south-west": "wall_hangings/wall_hanging_019/lit_1/rotations/south-west.webp",
             "south": "wall_hangings/wall_hanging_019/lit_1/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "484cfcc4-a913-4ac1-8f60-f80dec9fd30c",
+              "description": "This is the same picture in every frame. ONLY the two small lights brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "wall_hangings/wall_hanging_019/lit_1/animations/motion/00.webp",
+                "wall_hangings/wall_hanging_019/lit_1/animations/motion/01.webp",
+                "wall_hangings/wall_hanging_019/lit_1/animations/motion/02.webp",
+                "wall_hangings/wall_hanging_019/lit_1/animations/motion/03.webp",
+                "wall_hangings/wall_hanging_019/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "wall_hangings/wall_hanging_019/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:57:16+00:00",
+              "brief": "Z30"
+            }
+          },
           "art_hash": "aff7fa714afcb791"
         },
         "NOT_LIT_1": {
@@ -89746,6 +90449,29 @@
             "south-west": "washing_lines/washing_line_001/not_lit_3/rotations/south-west.webp",
             "south": "washing_lines/washing_line_001/not_lit_3/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "c88496ef-41c1-4b96-a7e0-fe2314a2288c",
+              "description": "This is the same picture in every frame. ONLY the things hanging on the line swing. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "washing_lines/washing_line_001/not_lit_3/animations/motion/00.webp",
+                "washing_lines/washing_line_001/not_lit_3/animations/motion/01.webp",
+                "washing_lines/washing_line_001/not_lit_3/animations/motion/02.webp",
+                "washing_lines/washing_line_001/not_lit_3/animations/motion/03.webp",
+                "washing_lines/washing_line_001/not_lit_3/animations/motion/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_001/not_lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:56:16+00:00",
+              "brief": "Z17"
+            }
+          },
           "art_hash": "69a4ed2da89ac7cd"
         },
         "NOT_LIT_4": {
@@ -89853,6 +90579,29 @@
             "south-west": "washing_lines/washing_line_002/not_lit_5/rotations/south-west.webp",
             "south": "washing_lines/washing_line_002/not_lit_5/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "2cb3a065-35b4-4c9b-9944-82753dbc7641",
+              "description": "This is the same picture in every frame. ONLY the washing hanging on the line swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "washing_lines/washing_line_002/not_lit_5/animations/motion/00.webp",
+                "washing_lines/washing_line_002/not_lit_5/animations/motion/01.webp",
+                "washing_lines/washing_line_002/not_lit_5/animations/motion/02.webp",
+                "washing_lines/washing_line_002/not_lit_5/animations/motion/03.webp",
+                "washing_lines/washing_line_002/not_lit_5/animations/motion/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_002/not_lit_5/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:56:00+00:00",
+              "brief": "Z18"
+            }
+          },
           "art_hash": "18a5fcdc5da3bec0"
         }
       },
@@ -89942,6 +90691,29 @@
             "south-east": "washing_lines/washing_line_007/not_lit_2/rotations/south-east.webp",
             "south-west": "washing_lines/washing_line_007/not_lit_2/rotations/south-west.webp",
             "south": "washing_lines/washing_line_007/not_lit_2/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "1d64c32e-6bda-4337-a73b-0cce512b68fc",
+              "description": "This is the same picture in every frame. ONLY the washing hanging on the line swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "washing_lines/washing_line_007/not_lit_2/animations/motion/00.webp",
+                "washing_lines/washing_line_007/not_lit_2/animations/motion/01.webp",
+                "washing_lines/washing_line_007/not_lit_2/animations/motion/02.webp",
+                "washing_lines/washing_line_007/not_lit_2/animations/motion/03.webp",
+                "washing_lines/washing_line_007/not_lit_2/animations/motion/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_007/not_lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:56:41+00:00",
+              "brief": "Z19"
+            }
           },
           "art_hash": "2eedf3db76cf034e"
         },
@@ -90131,6 +90903,29 @@
             "south-west": "washing_lines/washing_line_010/not_lit_4/rotations/south-west.webp",
             "south": "washing_lines/washing_line_010/not_lit_4/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "590637d2-784d-4da6-84d7-4c701f1e71c5",
+              "description": "This is the same picture in every frame. ONLY the washing hanging on the line swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "washing_lines/washing_line_010/not_lit_4/animations/motion/00.webp",
+                "washing_lines/washing_line_010/not_lit_4/animations/motion/01.webp",
+                "washing_lines/washing_line_010/not_lit_4/animations/motion/02.webp",
+                "washing_lines/washing_line_010/not_lit_4/animations/motion/03.webp",
+                "washing_lines/washing_line_010/not_lit_4/animations/motion/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_010/not_lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:56:32+00:00",
+              "brief": "Z16"
+            }
+          },
           "art_hash": "de389da260eb3017"
         },
         "NOT_LIT_5": {
@@ -90239,6 +91034,29 @@
             "south-east": "washing_lines/washing_line_011/lit_2/rotations/south-east.webp",
             "south-west": "washing_lines/washing_line_011/lit_2/rotations/south-west.webp",
             "south": "washing_lines/washing_line_011/lit_2/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "35b63aa5-fb70-4ef3-99f0-5abd042b0e8a",
+              "description": "This is the same picture in every frame. ONLY the washing hanging on the line swings and the small glowing beads brighten a little and return. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "washing_lines/washing_line_011/lit_2/animations/motion/00.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/01.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/02.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/03.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:55:43+00:00",
+              "brief": "Z14"
+            }
           },
           "art_hash": "1fd384120ed7c1c9"
         },
@@ -92092,6 +92910,29 @@
             "south-west": "water_pumps/water_pump_002/lit_4/rotations/south-west.webp",
             "south": "water_pumps/water_pump_002/lit_4/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "74c58f54-f9f7-4331-9c7f-f75a783dc645",
+              "description": "This is the same picture in every frame. ONLY the stream of water from the spout runs downward. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "water_pumps/water_pump_002/lit_4/animations/motion/00.webp",
+                "water_pumps/water_pump_002/lit_4/animations/motion/01.webp",
+                "water_pumps/water_pump_002/lit_4/animations/motion/02.webp",
+                "water_pumps/water_pump_002/lit_4/animations/motion/03.webp",
+                "water_pumps/water_pump_002/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "water_pumps/water_pump_002/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:59:04+00:00",
+              "brief": "Z42"
+            }
+          },
           "art_hash": "6d3d27ee88e71434"
         },
         "NOT_LIT_1": {
@@ -92573,6 +93414,29 @@
             "south-west": "wayside_shrines/wayside_shrine_011/not_lit_3/rotations/south-west.webp",
             "south": "wayside_shrines/wayside_shrine_011/not_lit_3/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "46235504-c649-4b8b-95cc-956c419adcf4",
+              "description": "This is the same picture in every frame. ONLY the candle flame inside the shrine flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/00.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/01.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/02.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/03.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:55:16+00:00",
+              "brief": "Z11"
+            }
+          },
           "art_hash": "9c96eda3d319c62f"
         },
         "NOT_LIT_4": {
@@ -92714,6 +93578,29 @@
             "south-east": "wayside_shrines/wayside_shrine_013/not_lit_3/rotations/south-east.webp",
             "south-west": "wayside_shrines/wayside_shrine_013/not_lit_3/rotations/south-west.webp",
             "south": "wayside_shrines/wayside_shrine_013/not_lit_3/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "f7eeebf7-2a51-4168-8b7d-d2f784f0a8b2",
+              "description": "This is the same picture in every frame. ONLY the two candle flames flicker. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_013/not_lit_3/animations/motion/00.webp",
+                "wayside_shrines/wayside_shrine_013/not_lit_3/animations/motion/01.webp",
+                "wayside_shrines/wayside_shrine_013/not_lit_3/animations/motion/02.webp",
+                "wayside_shrines/wayside_shrine_013/not_lit_3/animations/motion/03.webp",
+                "wayside_shrines/wayside_shrine_013/not_lit_3/animations/motion/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_013/not_lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:54:43+00:00",
+              "brief": "Z2"
+            }
           },
           "art_hash": "c6f509c214770507"
         }
@@ -92922,6 +93809,29 @@
             "south-east": "wayside_shrines/wayside_shrine_016/lit_4/rotations/south-east.webp",
             "south-west": "wayside_shrines/wayside_shrine_016/lit_4/rotations/south-west.webp",
             "south": "wayside_shrines/wayside_shrine_016/lit_4/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "687463ae-7955-4c89-a216-75dffaf291a5",
+              "description": "This is the same picture in every frame. ONLY the two candle flames flicker. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_016/lit_4/animations/motion/00.webp",
+                "wayside_shrines/wayside_shrine_016/lit_4/animations/motion/01.webp",
+                "wayside_shrines/wayside_shrine_016/lit_4/animations/motion/02.webp",
+                "wayside_shrines/wayside_shrine_016/lit_4/animations/motion/03.webp",
+                "wayside_shrines/wayside_shrine_016/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_016/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:55:00+00:00",
+              "brief": "Z10"
+            }
           },
           "art_hash": "d050b79e1bb7062d"
         },
@@ -93167,6 +94077,29 @@
             "south-west": "waystones/waystone_008/lit_2/rotations/south-west.webp",
             "south": "waystones/waystone_008/lit_2/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "1c6f59db-ef4a-4549-82b6-c625a8fd0dc0",
+              "description": "This is the same picture in every frame. ONLY the green runes on the stone brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "waystones/waystone_008/lit_2/animations/motion/00.webp",
+                "waystones/waystone_008/lit_2/animations/motion/01.webp",
+                "waystones/waystone_008/lit_2/animations/motion/02.webp",
+                "waystones/waystone_008/lit_2/animations/motion/03.webp",
+                "waystones/waystone_008/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "waystones/waystone_008/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:57:49+00:00",
+              "brief": "Z33"
+            }
+          },
           "art_hash": "8373491289942075"
         },
         "LIT_3": {
@@ -93264,6 +94197,29 @@
             "south-east": "waystones/waystone_009/lit_1/rotations/south-east.webp",
             "south-west": "waystones/waystone_009/lit_1/rotations/south-west.webp",
             "south": "waystones/waystone_009/lit_1/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "e6ab1a20-7834-40de-82de-efe093c4a9f8",
+              "description": "This is the same picture in every frame. ONLY the gold runes on the stone brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "waystones/waystone_009/lit_1/animations/motion/00.webp",
+                "waystones/waystone_009/lit_1/animations/motion/01.webp",
+                "waystones/waystone_009/lit_1/animations/motion/02.webp",
+                "waystones/waystone_009/lit_1/animations/motion/03.webp",
+                "waystones/waystone_009/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "waystones/waystone_009/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:58:31+00:00",
+              "brief": "Z35"
+            }
           },
           "art_hash": "5d501119928b386b"
         },
@@ -93444,6 +94400,29 @@
             "south-east": "waystones/waystone_011/lit_1/rotations/south-east.webp",
             "south-west": "waystones/waystone_011/lit_1/rotations/south-west.webp",
             "south": "waystones/waystone_011/lit_1/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "7e581f8b-fb98-4fb9-9916-91faedd422c6",
+              "description": "This is the same picture in every frame. ONLY the cyan runes on the stone brighten a little and return. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "waystones/waystone_011/lit_1/animations/motion/00.webp",
+                "waystones/waystone_011/lit_1/animations/motion/01.webp",
+                "waystones/waystone_011/lit_1/animations/motion/02.webp",
+                "waystones/waystone_011/lit_1/animations/motion/03.webp",
+                "waystones/waystone_011/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "waystones/waystone_011/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:58:21+00:00",
+              "brief": "Z34"
+            }
           },
           "art_hash": "a4677ab731b7e060"
         },
@@ -94545,6 +95524,29 @@
             "south-west": "wells/well_010/lit_2/rotations/south-west.webp",
             "south": "wells/well_010/lit_2/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "c66cb025-f028-450f-b0ea-7a0d7ae981eb",
+              "description": "This is the same picture in every frame. ONLY the glowing water inside the well brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "wells/well_010/lit_2/animations/motion/00.webp",
+                "wells/well_010/lit_2/animations/motion/01.webp",
+                "wells/well_010/lit_2/animations/motion/02.webp",
+                "wells/well_010/lit_2/animations/motion/03.webp",
+                "wells/well_010/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "wells/well_010/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:57:23+00:00",
+              "brief": "Z32"
+            }
+          },
           "art_hash": "d2b19ecf81990554"
         },
         "LIT_4": {
@@ -94933,6 +95935,29 @@
             "south-east": "wells/well_014/lit_2/rotations/south-east.webp",
             "south-west": "wells/well_014/lit_2/rotations/south-west.webp",
             "south": "wells/well_014/lit_2/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "28110133-9562-42e9-a71d-9bfab9be66bb",
+              "description": "This is the same picture in every frame. ONLY the glowing water inside the well brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "wells/well_014/lit_2/animations/motion/00.webp",
+                "wells/well_014/lit_2/animations/motion/01.webp",
+                "wells/well_014/lit_2/animations/motion/02.webp",
+                "wells/well_014/lit_2/animations/motion/03.webp",
+                "wells/well_014/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "wells/well_014/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-29T16:58:16+00:00",
+              "brief": "Z40"
+            }
           },
           "art_hash": "bb260f70f6753ea3"
         },

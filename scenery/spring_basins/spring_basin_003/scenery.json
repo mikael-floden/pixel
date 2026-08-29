@@ -160,7 +160,30 @@
       "generated_at": "2026-08-16T21:14:31+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7306,
-      "glow_score": 0.018
+      "glow_score": 0.018,
+      "animations": {
+        "motion": {
+          "group_id": "f8f08f85-1c7a-4861-ba52-be1c6ef2c81d",
+          "description": "This is the same picture in every frame. ONLY the three jets of water run downward. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "spring_basins/spring_basin_003/not_lit_4/animations/motion/00.webp",
+            "spring_basins/spring_basin_003/not_lit_4/animations/motion/01.webp",
+            "spring_basins/spring_basin_003/not_lit_4/animations/motion/02.webp",
+            "spring_basins/spring_basin_003/not_lit_4/animations/motion/03.webp",
+            "spring_basins/spring_basin_003/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "spring_basins/spring_basin_003/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:59:02+00:00",
+          "brief": "Z43"
+        }
+      }
     }
   }
 }
