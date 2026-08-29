@@ -87,6 +87,55 @@ amplitude and score 13.0 and 36.0. The seed is the lever: buy seeds, not amplitu
 running down the map diagonal, and it is where every tooth the maintainer crossed out
 was.
 
+## Building a road: three pools, keyed by the boundary's screen direction
+
+The maintainer's own method, arrived at by hand in the Pair Lab artifact and reproduced
+here so it does not live only inside a published page. A cell picks its variant from a
+POOL chosen by the direction its boundary runs ON SCREEN - not from one set, and not from
+all of them.
+
+| pool | indices | direction |
+|---|---|---|
+| `horiz` | 1, 7, 8, 14 | 0 degrees, the horizontal spoke |
+| `vert` | 2, 4, 11, 13 | 88 degrees, the vertical spoke |
+| `x` | 3, 5, 10, 12, **6, 9** | 24 degrees, the four diagonal spokes |
+
+6 and 9 are saddles - two curves crossing in one tile - so they belong with the X.
+
+**His pools for grass/soil** (`amp-seed`; `12-4` is `a12_s4`):
+
+```
+x     0-3, 0-5, 3-5, 21-5, 30-1
+vert  12-4, 18-4, 21-4, 23-4
+horiz 14-5, 15-2, 15-6, 18-6, 21-2, 24-6
+```
+
+`vert` is entirely seed 4, which the scorer agrees with independently: seed 4 wins 15 of
+23 pairs on worst-direction bump, and `screen-vertical` is the weak axis for 9 of 11
+sets. Amplitude does not predict quality; the seed does.
+
+**Within a pool, pick by a hash of the cell** (`hash(r, c, salt)` scaled to pool length),
+so a map draws the same road every time.
+
+**PURE CELLS (0 and 15) ALWAYS COME FROM ONE SET.** Rolling them across the pool was
+tried and rejected inside an hour: each set's grass is individually excellent but
+visibly DIFFERENT, and a field mixing them reads as patchwork - *"individually this is
+insanely good tiles. Adding them all together looks like horse shit."* Variation in open
+ground comes from base tiles that look the SAME, never from mixing different looks.
+
+**NO FLIPPING.** Mirroring a tile doubles the shape pool for free, and the maintainer
+traced chevrons of stray dots through open ground to it: a flipped tile meets its
+unflipped neighbour along a seam neither was drawn for. A free variation that costs a
+visible artefact is not free.
+
+**Which material is the road is a MAP decision, not a tile property** - index 0 holds
+whichever material the description named second, so a pair generated "dark mud to grass"
+draws grass as the road. Invert the corner bits (`i -> 15 - i`) rather than regenerating.
+
+Per-variant scores for all 23 generated pairs are published in
+`tiles/transitions/scores.json` (bump / wander / clean / grain and the worst direction,
+sorted best-first), regenerable with `transition_score.score_all()`.
+
 ## Mixing: two sets, not eleven
 
 Fitting variants to the curve helps only from a SMALL pool. Measured on the worst
