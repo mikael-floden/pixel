@@ -341,6 +341,46 @@ def _candidates(top, side):
     return out + [c for c in cell["candidates"] if c not in out]
 
 
+def _load_tuning(name):
+    p = os.path.join(REPO, "live", "tuning", name)
+    try:
+        return json.load(open(p)).get("overrides", {})
+    except Exception:
+        return {}
+
+
+# THE MAINTAINER'S TWO TILE TOGGLES, both live channels he edits in the wiki:
+#   tile_walls.json  top_only  -> this tile's OWN WALL is unusable
+#   top_walls.json   wall: key -> ...and THIS is the wall it borrows instead
+#   tile_tops.json   own_top   -> keep the tile's OWN TOP; do not paint the
+#                                 base-tile-set surface over it
+TOP_WALL_OV = _load_tuning("top_walls.json")
+TOP_OV = _load_tuning("tile_tops.json")
+
+
+def top_only(key):
+    return bool(WALL_OV.get(key, {}).get("top_only"))
+
+
+def own_top(key):
+    return bool(TOP_OV.get(key, {}).get("own_top"))
+
+
+def borrowed_wall(key):
+    """The wall the maintainer picked for a top_only tile (top_walls.json)."""
+    ref = TOP_WALL_OV.get(key, {}).get("wall")
+    if not ref:
+        return None
+    cell, k8 = ref.strip("/").rsplit("/", 2)[-2:]
+    c = MAN["cells"].get(cell)
+    if not c:
+        return None
+    for cand in c["candidates"]:
+        if cand["key"].strip("/").endswith("/" + k8):
+            return cand
+    return None
+
+
 def approved_candidate(top, side, storey=False):
     """The wiki's own rule: the approved candidate, else rank 0. For a STOREY
     fill (the repeated wall below the cap), candidates the maintainer flagged
@@ -458,16 +498,35 @@ def storey_pitch(im):
     return _lp_cache[key]
 
 
-def over_tile(top, side):
-    """The x-over-y tile image — THE ONLY WALL SOURCE. Falls back to
-    same-over-same, then to a painted flat tile."""
-    key = ("over", top, side)
-    if key in _tile_cache:
-        return _tile_cache[key]
+def over_candidate(top, side):
     c = approved_candidate(top, side) or approved_candidate(top, top)
     assert c, f"no review cell for {top} over {side} (nor {top} over {top}) — " \
               f"the x-over-y matrix is the ONLY wall source and it has no tile"
+    return c
+
+
+def over_tile(top, side):
+    """The x-over-y tile image — THE ONLY WALL SOURCE.
+
+    TOP_ONLY (his tile_walls.json): the tile's own wall is unusable, so the
+    face is replaced by the wall he chose for it in top_walls.json — the
+    tile keeps its top and BORROWS a wall, which is what the two files are
+    for. Without this the mark was dead: it only filtered a storey pool it
+    could never match."""
+    key = ("over", top, side)
+    if key in _tile_cache:
+        return _tile_cache[key]
+    c = over_candidate(top, side)
     im = Image.open(os.path.join(REPO, c["file"])).convert("RGBA")
+    if top_only(c["key"].strip("/")):
+        lend = borrowed_wall(c["key"].strip("/")) or approved_candidate(side, side)
+        if lend:
+            w = Image.open(os.path.join(REPO, lend["file"])).convert("RGBA")
+            out = im.copy()
+            band = w.crop((0, TOP_Y + 2 * DY, TILE, w.height))
+            out.paste((0, 0, 0, 0), (0, TOP_Y + 2 * DY, TILE, out.height))
+            out.alpha_composite(band, (0, TOP_Y + 2 * DY))
+            im = out
     _tile_cache[key] = im
     return im
 
@@ -790,15 +849,19 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                 side = gr                    # stone over its own body; water is
                                              # never a wall material either
             cap = over_tile(gr, side) if front_low < zl else flat_tile(gr)
-            mid = storey_tile(side if (x, y) in wall_over else gr)
+            # the repeated course is the WALL's own material in every case —
+            # keying it on the top ground drew 407 cells whose courses were a
+            # different material from their own cap
+            mid = storey_tile(side)
             for f in range(max(0, front_low), zl + 1):
                 t = cap if f == zl else mid
                 img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
             # ...and the SURFACE goes on the cap: the wall is x-over-y art,
             # the top is the maintainer's set. Only the top face is painted,
             # so the cap's own wall — the only lawful wall source — survives.
-            img.alpha_composite(top_face_only(surface()),
-                                (bx, col_y(x, y, zl)))
+            if not own_top(over_candidate(gr, side)["key"].strip("/")):
+                img.alpha_composite(top_face_only(surface()),
+                                    (bx, col_y(x, y, zl)))
 
     # 2) transitions on the corner lattice, over the flats: a drawn tile at
     #    corner (x,y) blends cells (x,y),(x+1,y),(x,y+1),(x+1,y+1) when all
