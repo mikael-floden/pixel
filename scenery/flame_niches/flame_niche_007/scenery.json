@@ -37,7 +37,29 @@
       "generated_at": "2026-08-16T12:27:07+00:00",
       "glow_concept": "row of tealights along the sill",
       "difference_from_source": 0.3833,
-      "glow_score": 0.2225
+      "glow_score": 0.2225,
+      "animations": {
+        "flame": {
+          "group_id": "25241598-62f9-40fd-878a-a8a75e5e0ef5",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flame_niches/flame_niche_007/lit_1/animations/flame/00.webp",
+            "flame_niches/flame_niche_007/lit_1/animations/flame/01.webp",
+            "flame_niches/flame_niche_007/lit_1/animations/flame/02.webp",
+            "flame_niches/flame_niche_007/lit_1/animations/flame/03.webp",
+            "flame_niches/flame_niche_007/lit_1/animations/flame/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_007/lit_1/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:59:08+00:00"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "flame_niches/flame_niche_007/lit_2/sprite.webp",
@@ -45,7 +67,29 @@
       "generated_at": "2026-08-16T12:27:47+00:00",
       "glow_concept": "sparks drifting up from the flame",
       "difference_from_source": 0.8722,
-      "glow_score": 0.0822
+      "glow_score": 0.0822,
+      "animations": {
+        "flame": {
+          "group_id": "bc46aa74-9e9f-48f2-92a6-3c0da7112976",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flame_niches/flame_niche_007/lit_2/animations/flame/00.webp",
+            "flame_niches/flame_niche_007/lit_2/animations/flame/01.webp",
+            "flame_niches/flame_niche_007/lit_2/animations/flame/02.webp",
+            "flame_niches/flame_niche_007/lit_2/animations/flame/03.webp",
+            "flame_niches/flame_niche_007/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_007/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:59:08+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "flame_niches/flame_niche_007/lit_3/sprite.webp",
