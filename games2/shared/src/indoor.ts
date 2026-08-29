@@ -244,7 +244,22 @@ function standingOpen(grid: TerrainGrid, i: number, elev: number): boolean {
  * when the roof deck also covers it. (Downward is free — gravity always is —
  * so a sunken floor is still floor.) */
 function interiorFloor(grid: TerrainGrid, i: number, elev: number, climb: number): boolean {
-  return standingOpen(grid, i, elev) && grid.level[i] <= elev + climb + EPS;
+  /* A ROOM IS TERRAIN AND ROOF, NOT FURNITURE. `standingOpen` refuses a BLOCKED
+   * cell, which is right for a doorway — you cannot leave through a boulder —
+   * and wrong for the room's own extent: a bed and a hearth are things IN the
+   * room, not holes in it. Scenery collision made that distinction load-bearing.
+   * Measured on the_game's spawn house: 13 floor cells, 5 of them under
+   * furniture, leaving 8 — exactly MIN_ROOM_CELLS, and fragmented, so the fill
+   * reached fewer and the house stopped counting as indoors altogether
+   * (maintainer 2026-08-29: "when I walk into a house we never enter indoor").
+   * The room's WALLS are still terrain: the level test below is what rejects
+   * them, and it is untouched. */
+  const furnitureOnly = grid.sceneryBlocked?.[i] === true;
+  if (grid.blocked[i] && !furnitureOnly) return false; // a PROP under a ceiling is that room's wall
+  const t = grid.type[i];
+  const s = t ? surfaceFor(t) : VOID_SURFACE;
+  const onOwnFloor = grid.deck[i] < 0 || elev < grid.deckBot[i] - EPS;
+  return (s.standable || s.swimmable) && onOwnFloor && grid.level[i] <= elev + climb + EPS;
 }
 
 /** Could the player LEAVE through fringe cell `j`? Standing-open (a solid slab

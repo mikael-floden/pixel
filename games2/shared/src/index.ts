@@ -988,6 +988,12 @@ export interface TerrainGrid {
    * unaffected), but movement into the cell is refused — a prop is an obstacle
    * the player collides with, like a tree or boulder. */
   blocked: boolean[];
+  /** Of the blocked cells, the ones blocked ONLY by SCENERY — set dressing a
+   *  body cannot walk through but which is still part of the room it stands in.
+   *  A maps2 PROP is different: a boulder under a ceiling is that room's wall,
+   *  and indoor.ts must keep telling the two apart. Absent on worlds with no
+   *  scenery. */
+  sceneryBlocked?: boolean[];
   /** world@2 decks: a SECOND walkable surface at some cells (roofs, bridges).
    * `deck[i]` = the deck's walkable level, or -1 for none. The base terrain
    * (level/type) stays walkable underneath; which surface a player is on is
@@ -3051,6 +3057,7 @@ export function stampSceneryCollision(
   geom: { dx: number; dy: number },
 ): number {
   if (!bbox?.boxes || !bbox.pieces || !hitbox) return 0;
+  const mask = grid.sceneryBlocked ?? (grid.sceneryBlocked = new Array<boolean>(grid.width * grid.height).fill(false));
   let blocked = 0;
   for (const pl of scenery) {
     const facts = bbox.pieces[pl.piece];
@@ -3103,6 +3110,24 @@ export function stampSceneryCollision(
       const rx = b.rx * k;
       const ry = b.ry * k;
       if (!(rx > 0) || !(ry > 0) || !isFinite(wx) || !isFinite(wy)) continue;
+      /* IT STANDS SOMEWHERE. A cell is 64x28 screen px and many published
+       * footprints are thinner than that — the waystone's is 3.5 frame px deep,
+       * about 5px on screen — so no cell CENTRE falls inside and the piece
+       * blocked nothing at all. Measured on the_game: 545 of 1,421 placements,
+       * 38%, including 75 of one tree (maintainer 2026-08-29: "this gravestone
+       * has no hitbox at all and I can run straight through it"). A piece that
+       * publishes a footprint occupies at least the cell its centre is in;
+       * quantisation may not round a real obstacle away to nothing. */
+      const ccx = Math.floor(wx);
+      const ccy = Math.floor(wy);
+      if (ccx >= 0 && ccy >= 0 && ccx < grid.width && ccy < grid.height) {
+        const ci = ccy * grid.width + ccx;
+        if (!grid.blocked[ci]) {
+          grid.blocked[ci] = true;
+          blocked++;
+        }
+        mask[ci] = true;
+      }
       const bound = (rx / geom.dx + ry / geom.dy) / 2;
       for (let r = Math.floor(wy - bound); r <= Math.ceil(wy + bound); r++) {
         if (r < 0 || r >= grid.height) continue;
@@ -3118,6 +3143,7 @@ export function stampSceneryCollision(
             grid.blocked[i] = true;
             blocked++;
           }
+          mask[i] = true;
         }
       }
     }
