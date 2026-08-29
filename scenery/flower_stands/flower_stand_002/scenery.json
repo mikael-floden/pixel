@@ -77,6 +77,29 @@
         "south-east": "flower_stands/flower_stand_002/not_lit_4/rotations/south-east.webp",
         "south-west": "flower_stands/flower_stand_002/not_lit_4/rotations/south-west.webp",
         "south": "flower_stands/flower_stand_002/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "c36bc37d-7ce2-45e3-9318-46a619443ba4",
+          "description": "This is the same picture in every frame. ONLY the foxglove spikes move, each nodding by a single pixel. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_stands/flower_stand_002/not_lit_4/animations/motion/00.webp",
+            "flower_stands/flower_stand_002/not_lit_4/animations/motion/01.webp",
+            "flower_stands/flower_stand_002/not_lit_4/animations/motion/02.webp",
+            "flower_stands/flower_stand_002/not_lit_4/animations/motion/03.webp",
+            "flower_stands/flower_stand_002/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "flower_stands/flower_stand_002/not_lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:19:05+00:00",
+          "brief": "Y44"
+        }
       }
     },
     "NOT_LIT_5": {

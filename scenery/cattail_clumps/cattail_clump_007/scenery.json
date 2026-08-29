@@ -42,7 +42,30 @@
       "generated_at": "2026-08-16T05:27:42+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6814,
-      "glow_score": 0.0012
+      "glow_score": 0.0012,
+      "animations": {
+        "motion": {
+          "group_id": "ec20bf0e-9c19-498c-af16-4d871d4837ee",
+          "description": "This is the same picture in every frame. ONLY the purple irises move, each nodding by a single pixel. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cattail_clumps/cattail_clump_007/not_lit_2/animations/motion/00.webp",
+            "cattail_clumps/cattail_clump_007/not_lit_2/animations/motion/01.webp",
+            "cattail_clumps/cattail_clump_007/not_lit_2/animations/motion/02.webp",
+            "cattail_clumps/cattail_clump_007/not_lit_2/animations/motion/03.webp",
+            "cattail_clumps/cattail_clump_007/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cattail_clumps/cattail_clump_007/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T16:19:22+00:00",
+          "brief": "Y47"
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "cattail_clumps/cattail_clump_007/not_lit_3/sprite.webp",
