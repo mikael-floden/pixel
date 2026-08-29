@@ -100,6 +100,47 @@ def _mask(index, pattern=None):
     return _MASKS[r0:r0 + fh, c0:c0 + fw] > 127
 
 
+# -- THE ROAD RULE (the maintainer's Pair Lab, artifact b4fd90ba) --------------
+# The mask is chosen by the DIRECTION THE BOUNDARY RUNS ON SCREEN, not by one
+# global default. His own comment: "0 deg -> the horizontal spoke; 24 deg ->
+# the four diagonal spokes (the X); 88 deg -> the vertical spoke. 6 and 9 are
+# saddles, two curves crossing in one tile, which is the crossing case and
+# goes with the X."
+POOL_OF = {1: "horiz", 7: "horiz", 8: "horiz", 14: "horiz",
+           2: "vert", 4: "vert", 11: "vert", 13: "vert",
+           3: "x", 5: "x", 10: "x", 12: "x", 6: "x", 9: "x"}
+# "The maintainer's own pools, arrived at by playing with this page." His set
+# ids are amplitude-seed; the patterns library names the same shapes aNN_sN.
+MASK_POOLS = {
+    "x":     ["a00_s3", "a00_s5", "a03_s5", "a21_s5", "a30_s1"],
+    "vert":  ["a12_s4", "a18_s4", "a21_s4", "a23_s4"],
+    "horiz": ["a14_s5", "a15_s2", "a15_s6", "a18_s6", "a21_s2", "a24_s6"],
+}
+_PAT_IDS = {pp["id"] for pp in PATTERNS["patterns"]}
+for _pool, _ids in MASK_POOLS.items():
+    for _i in _ids:
+        assert _i in _PAT_IDS, f"pool {_pool} names an unpublished pattern {_i}"
+
+
+def _lab_hash(r, cc, k, salt=1):
+    """His own hash, kept bit-for-bit so a boundary lands where he saw it."""
+    h = (r * 73856093) ^ (cc * 19349663) ^ (k * 83492791) ^ (salt * 2654435761)
+    h &= 0xffffffff
+    h = ((h ^ (h >> 15)) * 2246822507) & 0xffffffff
+    h = ((h ^ (h >> 13)) * 3266489909) & 0xffffffff
+    return ((h ^ (h >> 16)) & 0xffffffff) / 4294967296
+
+
+def mask_for(index, x, y):
+    """THE MASK THIS BOUNDARY CELL WEARS. One default everywhere was the
+    reason roads read as a single repeated squiggle: every spoke direction
+    got the shape he had tuned for the vertical one. NO FLIPPING — he traced
+    "the chevrons of stray dots running through open ground" to mirrored
+    tiles meeting unmirrored neighbours along a seam neither was drawn for."""
+    pool = MASK_POOLS[POOL_OF.get(index, "horiz")]
+    return pool[int(_lab_hash(y, x, 1) * len(pool)) % len(pool)]
+
+
 def region_of(x, y, regions):
     return region_at(x, y, gr)
 
@@ -312,11 +353,12 @@ def plate_img(ground, region, x, y):
     return _tile_cache[ck]
 
 
-def composed_boundary(ga, gb, index, pa, pb):
+def composed_boundary(ga, gb, index, pa, pb, x=0, y=0):
     """out.rgb = mask ? plate_b : plate_a; out.alpha = silhouette — the
-    patterns/plates contract, three draws, no geometry knowledge."""
+    patterns/plates contract, three draws, no geometry knowledge. The MASK
+    comes from the spoke pool (his Pair Lab), not from one global default."""
     a = np.array(pa); b = np.array(pb)
-    mk = _mask(index)
+    mk = _mask(index, mask_for(index, x, y))
     out = np.where(mk[..., None], b, a)
     out[..., 3] = _silhouette()
     return Image.fromarray(out.astype(np.uint8))
@@ -1066,7 +1108,8 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             # other ground's region drew the neighbour from the wrong set
             tile = composed_boundary(sa, sb, idx,
                                      plate_img(sa, region_at(x, y, sa), x, y),
-                                     plate_img(sb, region_at(x, y, sb), x, y))
+                                     plate_img(sb, region_at(x, y, sb), x, y),
+                                     x, y)
             z = L(x, y)
             cx = ox + (x - x0 - (y - y0)) * DX - DX
             cy = col_y(x, y, z) - DY
