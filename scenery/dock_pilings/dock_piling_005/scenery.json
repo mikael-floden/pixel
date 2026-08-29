@@ -45,8 +45,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "95c1b6fb-89e7-452a-867f-b4b48d01402e",
-          "description": "This is the same picture in every frame. ONLY the single topmost carved mark brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "6fbbe507-645b-4ccc-bfe0-9f439a498ab6",
+          "description": "This is the same picture in every frame. ONLY the single topmost carved mark brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -62,7 +62,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T13:28:21+00:00",
+          "generated_at": "2026-08-29T13:42:13+00:00",
           "brief": "R27"
         }
       }

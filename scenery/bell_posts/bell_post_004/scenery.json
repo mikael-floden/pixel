@@ -78,8 +78,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "4a296e5a-6b13-44fe-93a5-5ab51e4cc97d",
-          "description": "This is the same picture in every frame. ONLY the hanging board and the two lanterns move, swinging very gently together. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "02bd36e2-738f-4f6f-9c10-f0d0bc0567b9",
+          "description": "This is the same picture in every frame. ONLY the hanging board and the two lanterns tilt, together, on their bracket. The movement must be so small it is barely visible \u2014 one or two pixels at most. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -95,7 +95,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T13:28:45+00:00",
+          "generated_at": "2026-08-29T13:41:40+00:00",
           "brief": "S1"
         }
       }

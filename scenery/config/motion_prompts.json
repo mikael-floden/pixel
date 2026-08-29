@@ -331,14 +331,16 @@
     "S1": {
       "group": "bell_posts",
       "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the hanging board and the two lanterns move, swinging very gently together. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The sign and its lanterns swing.",
+      "prompt": "This is the same picture in every frame. ONLY the hanging board and the two lanterns tilt, together, on their bracket. The movement must be so small it is barely visible \u2014 one or two pixels at most. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The sign tilts by a pixel or two.",
       "seen_in_art": "a TAVERN board and two lit lanterns hanging off a bracket",
       "example": {
         "piece": "bell_posts/bell_post_004",
         "state": "LIT_2"
       },
-      "approved": "2026-08-29 round 6"
+      "approved": "2026-08-29 round 6",
+      "superseded_prompt": "This is the same picture in every frame. ONLY the hanging board and the two lanterns move, swinging very gently together. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "revised": "4.5% and he wants it far calmer; now capped at one or two pixels."
     },
     "S2": {
       "group": "scarecrows",
@@ -768,16 +770,16 @@
     "R27": {
       "group": "dock_pilings",
       "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the single topmost carved mark brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The topmost mark alone brightens.",
+      "prompt": "This is the same picture in every frame. ONLY the single topmost carved mark brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "One mark brightens, and nothing darkens.",
       "seen_in_art": "bound pilings with a column of glowing amber tally marks cut into the centre post",
       "example": {
         "piece": "dock_pilings/dock_piling_005",
         "state": "LIT_1"
       },
       "approved": "2026-08-29 round 5",
-      "superseded_prompt": "This is the same picture in every frame. ONLY the glowing marks brighten and dim one after another, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "revised": "32.4% asking a column of marks to brighten in turn \u2014 that is a surface, the pattern that keeps failing. One mark is a thing you can point at."
+      "superseded_prompt": "This is the same picture in every frame. ONLY the single topmost carved mark brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "revised": "He reported dark paint entering at the end \u2014 the final frame drained to a dull brown instead of returning to the opening gold. The prompt now closes the loop and forbids anything becoming darker than frame one."
     },
     "R28": {
       "group": "giant_skulls",
@@ -794,16 +796,16 @@
     "R29": {
       "group": "driftwood_logs",
       "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the cyan flames at the foot of the stump flicker, very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The cyan flames flicker.",
+      "prompt": "This is the same picture in every frame. ONLY the cyan light at the foot of the stump brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The cyan light barely breathes.",
       "seen_in_art": "a pale stump standing in bright cyan flames at its foot",
       "example": {
         "piece": "driftwood_logs/driftwood_log_901",
         "state": "LIT_3"
       },
       "approved": "2026-08-29 round 5",
-      "superseded_prompt": "This is the same picture in every frame. ONLY the cyan light at the foot of the stump brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "revised": "24.0% treating it as a glow. It reads as FLAME, and flame is the motion this domain understands best \u2014 his own 'Animate the flame only' is the calmest thing we have."
+      "superseded_prompt": "This is the same picture in every frame. ONLY the cyan flames at the foot of the stump flicker, very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "revised": "24.0% as a glow, 32.8% when I called it flames \u2014 the word invited fire that is not drawn there. Back to a glow, now barely visible and loop-closed."
     },
     "R30": {
       "group": "bushes",
@@ -1059,18 +1061,6 @@
       },
       "approved": "2026-08-29 round 5"
     },
-    "S5": {
-      "group": "waterwheels",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the cyan light at the axle brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The light at the axle breathes.",
-      "seen_in_art": "an old waterwheel with a bright cyan light burning at the axle",
-      "example": {
-        "piece": "waterwheels/waterwheel_003",
-        "state": "LIT_2"
-      },
-      "approved": "2026-08-29 round 6"
-    },
     "S6": {
       "group": "crystals",
       "name": "motion",
@@ -1122,14 +1112,16 @@
     "S12": {
       "group": "telegraph_poles",
       "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the light in the ceramic insulators brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The insulators breathe.",
+      "prompt": "This is the same picture in every frame. ONLY the light in the ceramic insulators brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The insulators barely change.",
       "seen_in_art": "a pole whose ceramic insulators glow like small lamps",
       "example": {
         "piece": "telegraph_poles/telegraph_pole_003",
         "state": "LIT_1"
       },
-      "approved": "2026-08-29 round 6"
+      "approved": "2026-08-29 round 6",
+      "superseded_prompt": "This is the same picture in every frame. ONLY the light in the ceramic insulators brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "revised": "14.8% and he wants it far calmer."
     },
     "S14": {
       "group": "reed_beds",
@@ -1158,26 +1150,16 @@
     "S16": {
       "group": "hop_poles",
       "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the light inside the hanging cones brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The cones breathe.",
+      "prompt": "This is the same picture in every frame. ONLY the light inside the hanging cones brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The cones brighten barely at all.",
       "seen_in_art": "hop cones hung down a pole, glowing like paper lamps",
       "example": {
         "piece": "hop_poles/hop_pole_001",
         "state": "LIT_2"
       },
-      "approved": "2026-08-29 round 6"
-    },
-    "S26": {
-      "group": "giant_snail_shells",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY one soft highlight moves, sliding slowly along the spiral of the shell. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "A sheen travels the spiral.",
-      "seen_in_art": "a pale shell with a pearly sheen along its spiral",
-      "example": {
-        "piece": "giant_snail_shells/giant_snail_shell_003",
-        "state": "LIT_1"
-      },
-      "approved": "2026-08-29 round 6"
+      "approved": "2026-08-29 round 6",
+      "superseded_prompt": "This is the same picture in every frame. ONLY the light inside the hanging cones brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "revised": "8.7% and he wants it far calmer."
     },
     "S3": {
       "group": "streetlights",
@@ -1524,7 +1506,34 @@
       },
       "approved": "2026-08-29 round 5",
       "why": "maintainer 2026-08-29 round 5 review."
+    },
+    "S5": {
+      "group": "waterwheels",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the cyan light at the axle brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The light at the axle breathes.",
+      "seen_in_art": "an old waterwheel with a bright cyan light burning at the axle",
+      "example": {
+        "piece": "waterwheels/waterwheel_003",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 6",
+      "why": "maintainer 2026-08-29 round 6 review."
+    },
+    "S26": {
+      "group": "giant_snail_shells",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY one soft highlight moves, sliding slowly along the spiral of the shell. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "A sheen travels the spiral.",
+      "seen_in_art": "a pale shell with a pearly sheen along its spiral",
+      "example": {
+        "piece": "giant_snail_shells/giant_snail_shell_003",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 6",
+      "why": "maintainer 2026-08-29 round 6 review."
     }
   },
-  "_declined_note": "`declined` records briefs he has rejected outright. animate_motion reads `animations` only, so anything here is inert \u2014 it is kept so a later pass can see these were decided, not overlooked."
+  "_declined_note": "`declined` records briefs he has rejected outright. animate_motion reads `animations` only, so anything here is inert \u2014 it is kept so a later pass can see these were decided, not overlooked.",
+  "_loop_note": "From 2026-08-29 every revised prompt closes the loop explicitly \u2014 the last frame returns to the first, and nothing may darken below frame one. Added after he reported 'dark paint entering the animation at the end' on R27, where the final frame drained to brown instead of coming back to gold."
 }

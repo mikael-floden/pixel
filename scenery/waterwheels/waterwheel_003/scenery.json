@@ -43,29 +43,7 @@
         "south-west": "waterwheels/waterwheel_003/lit_2/rotations/south-west.webp",
         "south": "waterwheels/waterwheel_003/lit_2/sprite.webp"
       },
-      "animations": {
-        "motion": {
-          "group_id": "9b2f0207-8a43-450a-92a9-a1b2c31129bb",
-          "description": "This is the same picture in every frame. ONLY the cyan light at the axle brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "waterwheels/waterwheel_003/lit_2/animations/motion/00.webp",
-            "waterwheels/waterwheel_003/lit_2/animations/motion/01.webp",
-            "waterwheels/waterwheel_003/lit_2/animations/motion/02.webp",
-            "waterwheels/waterwheel_003/lit_2/animations/motion/03.webp",
-            "waterwheels/waterwheel_003/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "waterwheels/waterwheel_003/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T13:29:19+00:00",
-          "brief": "S5"
-        }
-      }
+      "animations": {}
     },
     "NOT_LIT_1": {
       "sprite": "waterwheels/waterwheel_003/sprite.webp",

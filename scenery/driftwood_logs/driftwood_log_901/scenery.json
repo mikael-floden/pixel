@@ -50,8 +50,8 @@
       "generated_at": "2026-08-15T14:47:58+00:00",
       "animations": {
         "motion": {
-          "group_id": "1bcc41cd-e732-4853-bc04-b0da63fc5c39",
-          "description": "This is the same picture in every frame. ONLY the cyan flames at the foot of the stump flicker, very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "d8848324-d01a-4832-aba2-8b1db115e704",
+          "description": "This is the same picture in every frame. ONLY the cyan light at the foot of the stump brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -67,7 +67,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T13:28:37+00:00",
+          "generated_at": "2026-08-29T13:41:48+00:00",
           "brief": "R29"
         }
       }

@@ -6058,8 +6058,8 @@
           },
           "animations": {
             "motion": {
-              "group_id": "4a296e5a-6b13-44fe-93a5-5ab51e4cc97d",
-              "description": "This is the same picture in every frame. ONLY the hanging board and the two lanterns move, swinging very gently together. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "group_id": "02bd36e2-738f-4f6f-9c10-f0d0bc0567b9",
+              "description": "This is the same picture in every frame. ONLY the hanging board and the two lanterns tilt, together, on their bracket. The movement must be so small it is barely visible \u2014 one or two pixels at most. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -6075,7 +6075,7 @@
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-29T13:28:45+00:00",
+              "generated_at": "2026-08-29T13:41:40+00:00",
               "brief": "S1"
             }
           },
@@ -21447,8 +21447,8 @@
           },
           "animations": {
             "motion": {
-              "group_id": "95c1b6fb-89e7-452a-867f-b4b48d01402e",
-              "description": "This is the same picture in every frame. ONLY the single topmost carved mark brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "group_id": "6fbbe507-645b-4ccc-bfe0-9f439a498ab6",
+              "description": "This is the same picture in every frame. ONLY the single topmost carved mark brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -21464,7 +21464,7 @@
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-29T13:28:21+00:00",
+              "generated_at": "2026-08-29T13:42:13+00:00",
               "brief": "R27"
             }
           },
@@ -22476,8 +22476,8 @@
           "generated_at": "2026-08-15T14:47:58+00:00",
           "animations": {
             "motion": {
-              "group_id": "1bcc41cd-e732-4853-bc04-b0da63fc5c39",
-              "description": "This is the same picture in every frame. ONLY the cyan flames at the foot of the stump flicker, very gently. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "group_id": "d8848324-d01a-4832-aba2-8b1db115e704",
+              "description": "This is the same picture in every frame. ONLY the cyan light at the foot of the stump brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -22493,7 +22493,7 @@
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-29T13:28:37+00:00",
+              "generated_at": "2026-08-29T13:41:48+00:00",
               "brief": "R29"
             }
           },
@@ -27767,29 +27767,7 @@
           "glow_concept": "pearly shimmer along the whorls",
           "difference_from_source": 0.8911,
           "glow_score": 0.3182,
-          "animations": {
-            "motion": {
-              "group_id": "a64f3da9-6b5c-4d1f-bb7c-a798ddfe78a3",
-              "description": "This is the same picture in every frame. ONLY one soft highlight moves, sliding slowly along the spiral of the shell. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "giant_snail_shells/giant_snail_shell_003/lit_1/animations/motion/00.webp",
-                "giant_snail_shells/giant_snail_shell_003/lit_1/animations/motion/01.webp",
-                "giant_snail_shells/giant_snail_shell_003/lit_1/animations/motion/02.webp",
-                "giant_snail_shells/giant_snail_shell_003/lit_1/animations/motion/03.webp",
-                "giant_snail_shells/giant_snail_shell_003/lit_1/animations/motion/04.webp"
-              ],
-              "strip": "giant_snail_shells/giant_snail_shell_003/lit_1/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T13:30:03+00:00",
-              "brief": "S26"
-            }
-          },
+          "animations": {},
           "art_hash": "209241683ec8cb45"
         },
         "NOT_LIT_1": {
@@ -32791,8 +32769,8 @@
           "glow_score": 0.1878,
           "animations": {
             "motion": {
-              "group_id": "0820dc4b-f7a6-4e22-b5d3-f0ed5c82fe40",
-              "description": "This is the same picture in every frame. ONLY the light inside the hanging cones brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "group_id": "9ff10dfe-e41d-46e0-bc67-c7d6c8f9beb2",
+              "description": "This is the same picture in every frame. ONLY the light inside the hanging cones brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -32806,7 +32784,7 @@
               ],
               "strip": "hop_poles/hop_pole_001/lit_2/animations/motion__strip.webp",
               "directions": null,
-              "generated_at": "2026-08-29T13:30:26+00:00",
+              "generated_at": "2026-08-29T13:42:46+00:00",
               "brief": "S16"
             }
           },
@@ -53406,8 +53384,8 @@
           "glow_score": 0.1271,
           "animations": {
             "motion": {
-              "group_id": "c9e26fe1-72b7-43e9-a9ef-1a8bd399cdd3",
-              "description": "This is the same picture in every frame. ONLY the light in the ceramic insulators brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+              "group_id": "088257a1-9b6b-46bc-93e5-b53e6a2c7ea0",
+              "description": "This is the same picture in every frame. ONLY the light in the ceramic insulators brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -53421,7 +53399,7 @@
               ],
               "strip": "telegraph_poles/telegraph_pole_003/lit_1/animations/motion__strip.webp",
               "directions": null,
-              "generated_at": "2026-08-29T13:28:21+00:00",
+              "generated_at": "2026-08-29T13:42:05+00:00",
               "brief": "S12"
             }
           },
@@ -89415,29 +89393,7 @@
             "south-west": "waterwheels/waterwheel_003/lit_2/rotations/south-west.webp",
             "south": "waterwheels/waterwheel_003/lit_2/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "9b2f0207-8a43-450a-92a9-a1b2c31129bb",
-              "description": "This is the same picture in every frame. ONLY the cyan light at the axle brightens and dims, very slowly. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "waterwheels/waterwheel_003/lit_2/animations/motion/00.webp",
-                "waterwheels/waterwheel_003/lit_2/animations/motion/01.webp",
-                "waterwheels/waterwheel_003/lit_2/animations/motion/02.webp",
-                "waterwheels/waterwheel_003/lit_2/animations/motion/03.webp",
-                "waterwheels/waterwheel_003/lit_2/animations/motion/04.webp"
-              ],
-              "strip": "waterwheels/waterwheel_003/lit_2/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T13:29:19+00:00",
-              "brief": "S5"
-            }
-          },
+          "animations": {},
           "art_hash": "2f4cef222f4c8597"
         },
         "NOT_LIT_1": {
