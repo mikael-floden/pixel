@@ -450,6 +450,21 @@ def retype_woods(scen, ctx):
     for _ in range(2):
         ident = [max(set(v := [ident[j] for j in neighbours(i)]), key=v.count)
                  for i in range(len(trees))]
+    # 3) THE ECOTONE: where two forests meet, feather them into each other
+    #    instead of ruling a line — a third of the trees within reach of the
+    #    other identity take it, so the change reads as a wood giving way to
+    #    a wood (a hard seam between scarlet and near-black was the flaw an
+    #    independent visual audit caught).
+    feathered = list(ident)
+    for i in range(len(trees)):
+        other = [ident[j] for j in neighbours(i, 81) if ident[j] != ident[i]]
+        if not other:
+            continue
+        h = (int(trees[i]["x"] * 4) * 2246822519
+             ^ int(trees[i]["y"] * 4) * 3266489917) & 0xffffffff
+        if h % 100 < 34:
+            feathered[i] = max(set(other), key=other.count)
+    ident = feathered
     tally = {}
     for i, t in enumerate(trees):
         canopy = FOREST_SETS[ident[i]]
