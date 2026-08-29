@@ -11246,7 +11246,22 @@ export class WorldScene extends Phaser.Scene {
           }
 
         const cell = this.t3Try(`cell ${col},${row}`, () => t3.cell(col, row), null);
-        if (!cell || cell.kind !== "wall") continue; // flat and void cells never occlude
+        if (!cell) continue; // void cells never occlude
+        /* ANY RAISED COLUMN OCCLUDES — world@2's rule, restored.
+         *
+         * `kind === "wall"` answers a DRAWING question: does this column show an
+         * EXPOSED face? A cell whose down-screen neighbours sit at its own level
+         * shows none, so the resolver calls it a field — and it is still six
+         * levels of terrain standing between the camera and a body behind it.
+         * Gating OCCLUSION on that test dropped the occluder and its meta for
+         * every interior cell of a plateau or a thick house wall, so a body
+         * walked in front of terrain it should have been hidden by (maintainer
+         * 2026-08-29: "the player is rendered on top of the wall. THIS WORKED IN
+         * V2"). world@2 emits one for every l>0 tile, exposed or not, and so
+         * does this now. The exposed-face rule still governs the FACE COURSES
+         * below — those are art, and drawing a band with nothing in front of it
+         * is the row of ticks that rule exists to prevent. */
+        if (cell.kind !== "wall" && cell.level <= 0) continue;
         const topKey = t3SurfaceKey(tex, this.t3tm, cell);
         const fk = t3FaceKey(this.t3tm, cell) ?? topKey;
         if (!topKey || !fk) continue; // art still streaming
@@ -11261,9 +11276,12 @@ export class WorldScene extends Phaser.Scene {
         // Only the EXPOSED faces, from the lowest front neighbour up — the same
         // rule the world@2 branch has: redrawing the covered lower faces on top
         // of the RT paints the front cell's ground back into a wall.
-        const from = mask
-          ? Math.max(0, Math.min(topL, Math.min(cutL(col + 1, row), cutL(col, row + 1)) + 1))
-          : this.stackFrom(col, row, topL, false);
+        const from =
+          cell.kind !== "wall"
+            ? topL // no exposed face: the cap alone, never a band
+            : mask
+              ? Math.max(0, Math.min(topL, Math.min(cutL(col + 1, row), cutL(col, row + 1)) + 1))
+              : this.stackFrom(col, row, topL, false);
         for (let lvl = from; lvl < topL; lvl++) {
           if (!shows(bx, by - lvl * lh)) {
             culled++;
