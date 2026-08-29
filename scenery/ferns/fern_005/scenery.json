@@ -37,7 +37,30 @@
       "generated_at": "2026-08-16T12:06:55+00:00",
       "glow_concept": "central fiddlehead coil glowing as it unrolls",
       "difference_from_source": 0.6288,
-      "glow_score": 0.0848
+      "glow_score": 0.0848,
+      "animations": {
+        "motion": {
+          "group_id": "f34cd21d-6f2d-4794-be79-1c75762c5f3a",
+          "description": "This is the same picture in every frame. ONLY the light in the single curled fiddlehead brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "ferns/fern_005/lit_2/animations/motion/00.webp",
+            "ferns/fern_005/lit_2/animations/motion/01.webp",
+            "ferns/fern_005/lit_2/animations/motion/02.webp",
+            "ferns/fern_005/lit_2/animations/motion/03.webp",
+            "ferns/fern_005/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "ferns/fern_005/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:46:12+00:00",
+          "brief": "T5"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "ferns/fern_005/sprite.webp",

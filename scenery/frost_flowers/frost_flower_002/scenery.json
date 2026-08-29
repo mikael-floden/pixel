@@ -35,7 +35,30 @@
     "LIT_1": {
       "sprite": "frost_flowers/frost_flower_002/sprite.webp",
       "pixellab_object_id": "13b6f8f1-7f47-48cb-9d15-ee610e9557af",
-      "generated_at": "2026-08-14T02:04:43+00:00"
+      "generated_at": "2026-08-14T02:04:43+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "dca0ac97-ae25-437f-adaa-9d871a1a93cc",
+          "description": "This is the same picture in every frame. ONLY the light of the two ice roses brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "frost_flowers/frost_flower_002/animations/motion/00.webp",
+            "frost_flowers/frost_flower_002/animations/motion/01.webp",
+            "frost_flowers/frost_flower_002/animations/motion/02.webp",
+            "frost_flowers/frost_flower_002/animations/motion/03.webp",
+            "frost_flowers/frost_flower_002/animations/motion/04.webp"
+          ],
+          "strip": "frost_flowers/frost_flower_002/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:46:28+00:00",
+          "brief": "T8"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "frost_flowers/frost_flower_002/lit_2/sprite.webp",

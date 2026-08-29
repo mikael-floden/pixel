@@ -1244,6 +1244,198 @@
         "state": "NOT_LIT_5"
       },
       "approved": "2026-08-29 round 6"
+    },
+    "T1": {
+      "group": "rope_swings",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the hanging seat and its ropes move, swinging. The movement must be so small it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The seat swings.",
+      "seen_in_art": "a plank swing hanging by two ropes from a timber frame",
+      "example": {
+        "piece": "rope_swings/rope_swing_001",
+        "state": "NOT_LIT_2"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T2": {
+      "group": "lantern_stands",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the hanging lantern moves, swinging. The movement must be so small it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The lantern swings on its hook.",
+      "seen_in_art": "a green-lit lantern hung from a curved iron hook",
+      "example": {
+        "piece": "lantern_stands/lantern_stand_005",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T3": {
+      "group": "fish_drying_racks",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the hanging fish move, swaying. The movement must be so small it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The hanging fish sway.",
+      "seen_in_art": "rows of split fish hung over a bed of glowing embers",
+      "example": {
+        "piece": "fish_drying_racks/fish_drying_rack_003",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T4": {
+      "group": "story_posts",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light of the carved bird at the top brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The carved bird brightens.",
+      "seen_in_art": "a totem post topped with a softly glowing carved bird",
+      "example": {
+        "piece": "story_posts/story_post_001",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T5": {
+      "group": "ferns",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light in the single curled fiddlehead brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The coil brightens.",
+      "seen_in_art": "a fern with one bright green fiddlehead coil at its centre",
+      "example": {
+        "piece": "ferns/fern_005",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T6": {
+      "group": "beehives",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the honeycomb light inside the skep brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The comb light breathes.",
+      "seen_in_art": "a skep lit from inside, honeycomb showing through the straw",
+      "example": {
+        "piece": "beehives/beehive_003",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T7": {
+      "group": "crystals",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light inside the crystal cluster brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The cluster breathes.",
+      "seen_in_art": "a cluster of pink crystals lit from within",
+      "example": {
+        "piece": "crystals/crystal_009",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T8": {
+      "group": "frost_flowers",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light of the two ice roses brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The two roses brighten.",
+      "seen_in_art": "two white ice roses shining pale",
+      "example": {
+        "piece": "frost_flowers/frost_flower_002",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T9": {
+      "group": "flower_stands",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light of the white blooms brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The blooms brighten.",
+      "seen_in_art": "a stand of white night-blooms shining moon-pale",
+      "example": {
+        "piece": "flower_stands/flower_stand_007",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T10": {
+      "group": "lantern_posts",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the green light in the panel brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The green panel breathes.",
+      "seen_in_art": "a mossy post with one green-lit panel",
+      "example": {
+        "piece": "lantern_posts/lantern_post_015",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T12": {
+      "group": "overgrown_archways",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light in the hanging blossom clusters brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The blossom lanterns breathe.",
+      "seen_in_art": "pale blossom clusters strung along an arch like lanterns",
+      "example": {
+        "piece": "overgrown_archways/overgrown_archway_001",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T17": {
+      "group": "graves",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the cyan light in the cracks brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The light in the cracks breathes.",
+      "seen_in_art": "a headstone with cyan light held in its cracks",
+      "example": {
+        "piece": "graves/grave_001",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T18": {
+      "group": "rock_spires",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the cyan light in the seams brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The seams breathe.",
+      "seen_in_art": "a rock spire with cyan seams burning down its length",
+      "example": {
+        "piece": "rock_spires/rock_spire_001",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T13": {
+      "group": "spring_basins",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the falling water from the spouts moves, pouring downward continuously. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The spouts pour.",
+      "seen_in_art": "an octagonal basin with bright cyan water pouring from its spouts",
+      "example": {
+        "piece": "spring_basins/spring_basin_003",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T14": {
+      "group": "moon_pools",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the spiral on the water moves, turning slowly. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The spiral turns.",
+      "seen_in_art": "a stone ring holding pale water marked with one slow spiral",
+      "example": {
+        "piece": "moon_pools/moon_pool_002",
+        "state": "LIT_4"
+      },
+      "approved": "2026-08-29 round 7"
+    },
+    "T16": {
+      "group": "maypoles",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the hanging garlands move, swaying. The movement must be so small it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The garlands sway.",
+      "seen_in_art": "a maypole hung with long straw garlands",
+      "example": {
+        "piece": "maypoles/maypole_002",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 7"
     }
   },
   "declined": {

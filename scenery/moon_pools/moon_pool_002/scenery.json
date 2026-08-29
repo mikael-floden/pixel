@@ -66,7 +66,30 @@
       "generated_at": "2026-08-16T17:59:39+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7818,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "animations": {
+        "motion": {
+          "group_id": "cc38da98-df2c-45a2-b369-ea9d301c594f",
+          "description": "This is the same picture in every frame. ONLY the spiral on the water moves, turning slowly. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "moon_pools/moon_pool_002/lit_4/animations/motion/00.webp",
+            "moon_pools/moon_pool_002/lit_4/animations/motion/01.webp",
+            "moon_pools/moon_pool_002/lit_4/animations/motion/02.webp",
+            "moon_pools/moon_pool_002/lit_4/animations/motion/03.webp",
+            "moon_pools/moon_pool_002/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "moon_pools/moon_pool_002/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:47:36+00:00",
+          "brief": "T14"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "moon_pools/moon_pool_002/not_lit_1/sprite.webp",

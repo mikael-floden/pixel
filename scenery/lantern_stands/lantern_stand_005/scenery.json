@@ -42,6 +42,29 @@
         "south-east": "lantern_stands/lantern_stand_005/lit_2/rotations/south-east.webp",
         "south-west": "lantern_stands/lantern_stand_005/lit_2/rotations/south-west.webp",
         "south": "lantern_stands/lantern_stand_005/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "26d9ef36-c4b2-4c34-99e8-eaa8726ad1a4",
+          "description": "This is the same picture in every frame. ONLY the hanging lantern moves, swinging. The movement must be so small it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "lantern_stands/lantern_stand_005/lit_2/animations/motion/00.webp",
+            "lantern_stands/lantern_stand_005/lit_2/animations/motion/01.webp",
+            "lantern_stands/lantern_stand_005/lit_2/animations/motion/02.webp",
+            "lantern_stands/lantern_stand_005/lit_2/animations/motion/03.webp",
+            "lantern_stands/lantern_stand_005/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "lantern_stands/lantern_stand_005/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:46:19+00:00",
+          "brief": "T2"
+        }
       }
     },
     "LIT_3": {

@@ -42,6 +42,29 @@
         "south-east": "graves/grave_001/lit_2/rotations/south-east.webp",
         "south-west": "graves/grave_001/lit_2/rotations/south-west.webp",
         "south": "graves/grave_001/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "eb74d5af-33a5-4e2f-8c2e-7f88c881f643",
+          "description": "This is the same picture in every frame. ONLY the cyan light in the cracks brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "graves/grave_001/lit_2/animations/motion/00.webp",
+            "graves/grave_001/lit_2/animations/motion/01.webp",
+            "graves/grave_001/lit_2/animations/motion/02.webp",
+            "graves/grave_001/lit_2/animations/motion/03.webp",
+            "graves/grave_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "graves/grave_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:46:04+00:00",
+          "brief": "T17"
+        }
       }
     },
     "NOT_LIT_1": {

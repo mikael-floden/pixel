@@ -42,6 +42,29 @@
         "south-east": "overgrown_archways/overgrown_archway_001/lit_2/rotations/south-east.webp",
         "south-west": "overgrown_archways/overgrown_archway_001/lit_2/rotations/south-west.webp",
         "south": "overgrown_archways/overgrown_archway_001/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "69fe964b-24d7-47ea-9dc5-54ab5f882f09",
+          "description": "This is the same picture in every frame. ONLY the light in the hanging blossom clusters brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "overgrown_archways/overgrown_archway_001/lit_2/animations/motion/00.webp",
+            "overgrown_archways/overgrown_archway_001/lit_2/animations/motion/01.webp",
+            "overgrown_archways/overgrown_archway_001/lit_2/animations/motion/02.webp",
+            "overgrown_archways/overgrown_archway_001/lit_2/animations/motion/03.webp",
+            "overgrown_archways/overgrown_archway_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "overgrown_archways/overgrown_archway_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:46:37+00:00",
+          "brief": "T12"
+        }
       }
     },
     "NOT_LIT_1": {

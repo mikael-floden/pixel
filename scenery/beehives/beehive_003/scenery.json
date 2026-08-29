@@ -42,6 +42,29 @@
         "south-east": "beehives/beehive_003/lit_1/rotations/south-east.webp",
         "south-west": "beehives/beehive_003/lit_1/rotations/south-west.webp",
         "south": "beehives/beehive_003/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "8c67dd4a-044b-42ad-9075-b71431feeb5a",
+          "description": "This is the same picture in every frame. ONLY the honeycomb light inside the skep brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beehives/beehive_003/lit_1/animations/motion/00.webp",
+            "beehives/beehive_003/lit_1/animations/motion/01.webp",
+            "beehives/beehive_003/lit_1/animations/motion/02.webp",
+            "beehives/beehive_003/lit_1/animations/motion/03.webp",
+            "beehives/beehive_003/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "beehives/beehive_003/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:46:29+00:00",
+          "brief": "T6"
+        }
       }
     },
     "NOT_LIT_1": {

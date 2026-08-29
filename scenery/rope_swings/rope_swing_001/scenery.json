@@ -75,6 +75,29 @@
         "south-east": "rope_swings/rope_swing_001/not_lit_2/rotations/south-east.webp",
         "south-west": "rope_swings/rope_swing_001/not_lit_2/rotations/south-west.webp",
         "south": "rope_swings/rope_swing_001/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "c4b205c1-4717-4c8c-b415-e68ca533b8a9",
+          "description": "This is the same picture in every frame. ONLY the hanging seat and its ropes move, swinging. The movement must be so small it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rope_swings/rope_swing_001/not_lit_2/animations/motion/00.webp",
+            "rope_swings/rope_swing_001/not_lit_2/animations/motion/01.webp",
+            "rope_swings/rope_swing_001/not_lit_2/animations/motion/02.webp",
+            "rope_swings/rope_swing_001/not_lit_2/animations/motion/03.webp",
+            "rope_swings/rope_swing_001/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "rope_swings/rope_swing_001/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:46:12+00:00",
+          "brief": "T1"
+        }
       }
     },
     "NOT_LIT_3": {

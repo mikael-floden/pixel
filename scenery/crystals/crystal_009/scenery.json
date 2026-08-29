@@ -68,7 +68,30 @@
       "generated_at": "2026-08-16T11:14:14+00:00",
       "glow_concept": "the whole cluster radiating its own gem color",
       "difference_from_source": 0.3387,
-      "glow_score": 0.3844
+      "glow_score": 0.3844,
+      "animations": {
+        "motion": {
+          "group_id": "d361576d-4480-4518-a496-9ca9a9f95eea",
+          "description": "This is the same picture in every frame. ONLY the light inside the crystal cluster brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystals/crystal_009/lit_2/animations/motion/00.webp",
+            "crystals/crystal_009/lit_2/animations/motion/01.webp",
+            "crystals/crystal_009/lit_2/animations/motion/02.webp",
+            "crystals/crystal_009/lit_2/animations/motion/03.webp",
+            "crystals/crystal_009/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "crystals/crystal_009/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T13:46:53+00:00",
+          "brief": "T7"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "crystals/crystal_009/sprite.webp",
