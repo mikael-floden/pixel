@@ -9323,6 +9323,15 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
           onclick: (e) => { e.stopPropagation(); openPromoteModal(cell, cand, onVerdict); },
         }, inSets.length ? "☗ in another set too…" : "☖ add to a base tile set…"));
     })() : null,
+    /* A REJECTED TILE THAT IS STILL HERE SAYS WHY (maintainer 2026-08-29:
+     * "This tile was removed/rejected a long time ago. Now it's back again").
+     * It never came back — the rejection is recorded and the tiles agent has
+     * not carried it out yet, and 94 of his 2026-08-23 rejections are in that
+     * state. A card that shows the verdict but not the WAIT reads as the
+     * verdict having been lost. */
+    state.admin && fb("tiles", cand.key).status === "rejected" ? h("div", { class: "card-sub" },
+      h("span", { class: "pill warn", title: "Your rejection is recorded. The tile is still in the tiles agent's manifest, so it still appears here until their next run removes or replaces it." },
+        `rejected ${(fb("tiles", cand.key).updated_at ?? "").slice(0, 10) || "earlier"} · still in the manifest, waiting on the tiles agent`)) : null,
     reviewBox,
     state.admin && cand.prompt
       ? h("details", { class: "world-prompt" }, h("summary", {}, "prompt"), h("p", {}, cand.prompt),

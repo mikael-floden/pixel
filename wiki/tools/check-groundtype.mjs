@@ -1672,6 +1672,31 @@ await pub.waitForTimeout(2200);
 const pubDemo = await pub.evaluate(() => document.querySelectorAll(".trans-scene canvas").length);
 ok(pubDemo === 5, `the demo page is for everyone — all five scenes render for a player (${pubDemo})`);
 
+/* A STANDING REJECTION SAYS IT IS WAITING (maintainer 2026-08-29: "This tile
+ * was removed/rejected a long time ago. Now it's back again" — 94 of his
+ * 2026-08-23 rejections are still in the tiles agent's manifest, so the card
+ * must show the WAIT, not just the verdict, or a recorded rejection reads as
+ * a lost one). Driven the way he drives it: reject a tile that is on screen,
+ * which by definition is still in the manifest. */
+{
+  await p.goto(`${W}#/world/grass/black_rock`, { waitUntil: "load" });
+  await p.waitForTimeout(2600);
+  await p.evaluate(() => {
+    const c2 = document.querySelector(".world-cand");
+    c2.scrollIntoView({ block: "center" });
+    [...c2.querySelectorAll("button")].find((x) => /redo|remove/.test(x.textContent))?.click();
+  });
+  await p.waitForTimeout(1400);
+  const said = await p.evaluate(() => [...document.querySelectorAll(".world-cand .pill")]
+    .map((x) => x.textContent.trim()).filter((t2) => /still in the manifest/.test(t2)));
+  ok(said.length > 0, `a rejection the producing agent has not carried out says so on the card (${said[0] ?? "nothing said"})`);
+  // put it back, so the gate leaves no verdict behind
+  await p.evaluate(() => {
+    const c2 = document.querySelector(".world-cand");
+    [...c2.querySelectorAll("button")].find((x) => /redo|remove/.test(x.textContent))?.click();
+  });
+  await p.waitForTimeout(800);
+}
 ok(errs.length === 0, `no page errors (${errs.slice(0, 2).join(" | ") || "none"})`);
 // ---- THE DETAIL PICTURE IS 5x5, WITH NINE OF THE TILE IN THE MIDDLE -------
 // Maintainer 2026-08-23: "On the details page I want to review the tile as 5x5
