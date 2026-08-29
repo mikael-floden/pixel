@@ -59,18 +59,39 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "rusted_machines/rusted_machine_001/lit_2/animations/flame/00.webp",
-            "rusted_machines/rusted_machine_001/lit_2/animations/flame/01.webp",
-            "rusted_machines/rusted_machine_001/lit_2/animations/flame/02.webp",
-            "rusted_machines/rusted_machine_001/lit_2/animations/flame/03.webp",
-            "rusted_machines/rusted_machine_001/lit_2/animations/flame/04.webp"
-          ],
-          "strip": "rusted_machines/rusted_machine_001/lit_2/animations/flame__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T07:07:39+00:00"
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south/00.webp",
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south/01.webp",
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south/02.webp",
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south/03.webp",
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south/04.webp"
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-east/00.webp",
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-east/01.webp",
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-east/02.webp",
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-east/03.webp",
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-east/04.webp"
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-west/00.webp",
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-west/01.webp",
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-west/02.webp",
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-west/03.webp",
+                "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-west/04.webp"
+              ]
+            }
+          },
+          "generated_at": "2026-08-29T08:26:03+00:00"
         }
       },
       "rotations": {
