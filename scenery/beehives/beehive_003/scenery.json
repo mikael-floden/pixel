@@ -45,8 +45,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "8c67dd4a-044b-42ad-9075-b71431feeb5a",
-          "description": "This is the same picture in every frame. ONLY the honeycomb light inside the skep brightens a little and returns. The change must be so slight it is barely visible. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "6554a0ac-0fb7-483b-baad-b072775d623b",
+          "description": "This is the same picture in every frame. ONLY two or three tiny dark specks move, drifting slowly in the air just outside the small opening at the base. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -62,7 +62,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T13:46:29+00:00",
+          "generated_at": "2026-08-29T14:02:28+00:00",
           "brief": "T6"
         }
       }

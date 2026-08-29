@@ -69,8 +69,8 @@
       "glow_score": 0.0,
       "animations": {
         "motion": {
-          "group_id": "cc38da98-df2c-45a2-b369-ea9d301c594f",
-          "description": "This is the same picture in every frame. ONLY the spiral on the water moves, turning slowly. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "a1e57080-ed7b-42e3-97c2-cb4511cd31dd",
+          "description": "This is the same picture in every frame. ONLY the pale spiral mark on the water turns slowly, keeping exactly the same size. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -86,7 +86,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T13:47:36+00:00",
+          "generated_at": "2026-08-29T14:02:12+00:00",
           "brief": "T14"
         }
       }
