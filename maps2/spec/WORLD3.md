@@ -38,6 +38,19 @@ and the fade upgrades itself to art.
 }
 ```
 
+### `decks` — a roof deck is GAMEPLAY, not decoration
+
+A `kind: "roof"` deck is how the world says **"this is indoors"**. The game's
+indoor system keys on a roof deck over the player: it is what blacks out the
+world outside and fixes the draw order. Deleting one does not remove a
+decoration, it breaks every interior in the running game — measured
+2026-08-30, in production, by deleting them to make the roof thin.
+
+* Every enclosed room carries a roof deck over its **interior cells only**, at
+  the wall-top level. The wall ring keeps its own thin roof-over-wall course,
+  so the roof is never a slab lying over the walls as well.
+* Changing decks changes gameplay. Tell the games agent before it lands.
+
 ### `ramps` — the contract with the game
 
 A level change is a cliff. A **ramp** is where the world says a climb is
