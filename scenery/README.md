@@ -99,6 +99,37 @@ concurrent Docker builds/hour and an older build finishing last can briefly
 regress the live site). Several PixelLab jobs stay in flight at once
 (`budget.parallel_jobs`) — never wait on one job before submitting the next.
 
+### Motion animations: the maintainer picks from a candidate page
+
+Nothing gets a motion animation until he has ticked its ID. The loop is:
+`candidate_page.py` renders a review page (sprite, what I say should move, the
+prompt, a PixelLab link, a tick box); he copies the IDs back; `animate_motion.py
+--ids` runs exactly those. Briefs live in `config/motion_prompts.json` —
+`animations` for the accepted, `declined` for the rejected WITH the reason
+(they exist to stop the same piece being re-proposed).
+
+- **Write the prompt after looking at that one image** (maintainer, verbatim:
+  "You should write a dedicated propt for each image AFTER LOOKING AT the
+  image."). One prompt pasted across a batch names things that are not in the
+  sprite — molten veins described as a point of light — and he catches it.
+- **Never propose a `windows` or `trees` group piece** (maintainer, 2026-08-29:
+  "We are NOT working with windows and trees right now."). Enforced by
+  `EXCLUDED_GROUPS` in `candidate_page.py`, which every page must go through.
+  Match the group name exactly — `streetlights` contains the substring `tree`.
+- **Never put the word "calmer" in a prompt.** It reads as an instruction to
+  animate, not to restrain: measured, S1 went 4.5% → 19.5% and Q19 5.3% →
+  15.8% when asked to be barely visible. The phrasing that works names the
+  thing and caps it — "each shifting by a single pixel".
+- **More frames does not fix a bad loop.** Q19, Q11 and Q4 all measured worse
+  at 8 frames than at 4.
+- Two families have never come back rejected: **hanging** (a hung object can
+  only swing) and **flame** (the fire is already in the sprite). A **glow**
+  works when it is a discrete shape — a vial, a gem, a rune — and fails when
+  it is a wash over the whole object.
+- Rejected as predictors, do not re-attempt: motion % as a quality proxy;
+  "size predicts success" (tiny median 14.0% vs medium 14.0% — disproved);
+  rotation (a turning wheel measured 39.6% and was rejected).
+
 ### THE REVIEW IS CLOSED (maintainer, 2026-08-20)
 
 > "That was the last review! The remaining scenery must be kept unreviewed. I
