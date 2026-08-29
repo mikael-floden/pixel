@@ -39,29 +39,7 @@
       "difference_from_source": 0.9269,
       "glow_score": 0.1819,
       "generated_at": "2026-08-15T14:47:58+00:00",
-      "animations": {
-        "motion": {
-          "group_id": "879e9a87-0963-4f9c-ba8b-3c2391434503",
-          "description": "This is the same picture in every frame. ONLY the violet light inside the split brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "driftwood_logs/driftwood_log_901/lit_1/animations/motion/00.webp",
-            "driftwood_logs/driftwood_log_901/lit_1/animations/motion/01.webp",
-            "driftwood_logs/driftwood_log_901/lit_1/animations/motion/02.webp",
-            "driftwood_logs/driftwood_log_901/lit_1/animations/motion/03.webp",
-            "driftwood_logs/driftwood_log_901/lit_1/animations/motion/04.webp"
-          ],
-          "strip": "driftwood_logs/driftwood_log_901/lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T11:49:51+00:00",
-          "brief": "Q3"
-        }
-      }
+      "animations": {}
     },
     "LIT_3": {
       "sprite": "driftwood_logs/driftwood_log_901/lit_3/sprite.webp",

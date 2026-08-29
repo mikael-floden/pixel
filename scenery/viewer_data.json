@@ -4998,24 +4998,28 @@
           "glow_score": 0.3615,
           "animations": {
             "motion": {
-              "group_id": "b659b632-bced-4bb4-9464-59d075f8cd66",
-              "description": "This is the same picture in every frame. ONLY the light in the eye sockets brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
+              "group_id": "19b2ecc6-8152-4ef8-91c8-657b0e29952d",
+              "description": "This is the same picture in every frame. ONLY a small point of light inside the eye sockets moves, drifting slowly from one side to the other. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
               "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
+              "frame_count": 9,
+              "generated_frames": 8,
               "keep_first_frame": true,
               "frame_paths": [
                 "beast_skulls/beast_skull_001/lit_1/animations/motion/00.webp",
                 "beast_skulls/beast_skull_001/lit_1/animations/motion/01.webp",
                 "beast_skulls/beast_skull_001/lit_1/animations/motion/02.webp",
                 "beast_skulls/beast_skull_001/lit_1/animations/motion/03.webp",
-                "beast_skulls/beast_skull_001/lit_1/animations/motion/04.webp"
+                "beast_skulls/beast_skull_001/lit_1/animations/motion/04.webp",
+                "beast_skulls/beast_skull_001/lit_1/animations/motion/05.webp",
+                "beast_skulls/beast_skull_001/lit_1/animations/motion/06.webp",
+                "beast_skulls/beast_skull_001/lit_1/animations/motion/07.webp",
+                "beast_skulls/beast_skull_001/lit_1/animations/motion/08.webp"
               ],
               "strip": "beast_skulls/beast_skull_001/lit_1/animations/motion__strip.webp",
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-29T11:49:10+00:00",
+              "generated_at": "2026-08-29T12:11:36+00:00",
               "brief": "Q4"
             }
           },
@@ -5194,24 +5198,28 @@
               "generated_at": "2026-08-29T08:08:39+00:00"
             },
             "motion": {
-              "group_id": "2cfb8e2d-c4de-4765-ba5d-b112db6314c5",
-              "description": "This is the same picture in every frame. ONLY the small candle flame flickers, very gently. Do not redraw anything else, and do not add or remove anything.",
+              "group_id": "a15526f9-64e0-49c9-9719-a53fa014f598",
+              "description": "This is the same picture in every frame. ONLY the small candle flame flickers, very gently. Everything else in the picture is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
               "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
+              "frame_count": 9,
+              "generated_frames": 8,
               "keep_first_frame": true,
               "frame_paths": [
                 "beds/bed_001/lit_1/animations/motion/00.webp",
                 "beds/bed_001/lit_1/animations/motion/01.webp",
                 "beds/bed_001/lit_1/animations/motion/02.webp",
                 "beds/bed_001/lit_1/animations/motion/03.webp",
-                "beds/bed_001/lit_1/animations/motion/04.webp"
+                "beds/bed_001/lit_1/animations/motion/04.webp",
+                "beds/bed_001/lit_1/animations/motion/05.webp",
+                "beds/bed_001/lit_1/animations/motion/06.webp",
+                "beds/bed_001/lit_1/animations/motion/07.webp",
+                "beds/bed_001/lit_1/animations/motion/08.webp"
               ],
               "strip": "beds/bed_001/lit_1/animations/motion__strip.webp",
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-29T11:50:51+00:00",
+              "generated_at": "2026-08-29T12:11:04+00:00",
               "brief": "Q19"
             }
           },
@@ -6155,29 +6163,7 @@
             "south-west": "braziers/brazier_001/rotations/south-west.webp",
             "south": "braziers/brazier_001/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "d9478d25-8446-4287-b8f4-b46c4137237b",
-              "description": "This is the same picture in every frame. ONLY the faint red heat between the logs brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "braziers/brazier_001/animations/motion/00.webp",
-                "braziers/brazier_001/animations/motion/01.webp",
-                "braziers/brazier_001/animations/motion/02.webp",
-                "braziers/brazier_001/animations/motion/03.webp",
-                "braziers/brazier_001/animations/motion/04.webp"
-              ],
-              "strip": "braziers/brazier_001/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T11:49:35+00:00",
-              "brief": "Q23"
-            }
-          },
+          "animations": {},
           "art_hash": "554ff84796f08262"
         },
         "NOT_LIT_2": {
@@ -14308,10 +14294,10 @@
           "glow_score": 0.1498,
           "animations": {
             "motion": {
-              "group_id": "85c8b5a8-5452-40fc-b7b4-41eb8bc410e5",
-              "description": "This is the same picture in every frame. ONLY the green ooze on the rock moves, creeping slowly downward. Do not redraw anything else, and do not add or remove anything.",
+              "group_id": "929b6673-e7d3-47d7-9797-9d1e48af4a62",
+              "description": "This is the same picture in every frame. ONLY the green ooze on the rock moves, creeping slowly downward in one continuous flow that returns to where it started. Do not redraw anything else, and do not add or remove anything.",
               "mode": "v3",
-              "frame_count": 5,
+              "frame_count": 9,
               "generated_frames": 4,
               "keep_first_frame": true,
               "frame_paths": [
@@ -14319,13 +14305,17 @@
                 "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/01.webp",
                 "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/02.webp",
                 "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/03.webp",
-                "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/04.webp"
+                "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/04.webp",
+                "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/05.webp",
+                "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/06.webp",
+                "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/07.webp",
+                "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/08.webp"
               ],
               "strip": "cliff_fragments/cliff_fragment_001/lit_1/animations/motion__strip.webp",
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-29T11:49:20+00:00",
+              "generated_at": "2026-08-29T12:12:01+00:00",
               "brief": "Q11"
             }
           },
@@ -20365,29 +20355,7 @@
             "south-west": "cupboards_and_shelves/cupboard_001/lit_2/rotations/south-west.webp",
             "south": "cupboards_and_shelves/cupboard_001/lit_2/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "2d0b2ab6-654e-4f90-95c3-8d000046dc49",
-              "description": "This is the same picture in every frame. ONLY the light inside the jars brightens and dims, very slowly and not all together. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "cupboards_and_shelves/cupboard_001/lit_2/animations/motion/00.webp",
-                "cupboards_and_shelves/cupboard_001/lit_2/animations/motion/01.webp",
-                "cupboards_and_shelves/cupboard_001/lit_2/animations/motion/02.webp",
-                "cupboards_and_shelves/cupboard_001/lit_2/animations/motion/03.webp",
-                "cupboards_and_shelves/cupboard_001/lit_2/animations/motion/04.webp"
-              ],
-              "strip": "cupboards_and_shelves/cupboard_001/lit_2/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T11:49:20+00:00",
-              "brief": "Q5"
-            }
-          },
+          "animations": {},
           "art_hash": "a5e685315f6c66f3"
         },
         "NOT_LIT_1": {
@@ -22135,29 +22103,7 @@
           "difference_from_source": 0.9269,
           "glow_score": 0.1819,
           "generated_at": "2026-08-15T14:47:58+00:00",
-          "animations": {
-            "motion": {
-              "group_id": "879e9a87-0963-4f9c-ba8b-3c2391434503",
-              "description": "This is the same picture in every frame. ONLY the violet light inside the split brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "driftwood_logs/driftwood_log_901/lit_1/animations/motion/00.webp",
-                "driftwood_logs/driftwood_log_901/lit_1/animations/motion/01.webp",
-                "driftwood_logs/driftwood_log_901/lit_1/animations/motion/02.webp",
-                "driftwood_logs/driftwood_log_901/lit_1/animations/motion/03.webp",
-                "driftwood_logs/driftwood_log_901/lit_1/animations/motion/04.webp"
-              ],
-              "strip": "driftwood_logs/driftwood_log_901/lit_1/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T11:49:51+00:00",
-              "brief": "Q3"
-            }
-          },
+          "animations": {},
           "art_hash": "ec2747dc168f7b96"
         },
         "LIT_3": {
@@ -24582,29 +24528,7 @@
             "south-west": "flame_niches/flame_niche_005/not_lit_3/rotations/south-west.webp",
             "south": "flame_niches/flame_niche_005/not_lit_3/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "08324382-83b1-4a29-a0a7-faca4c6f5f6c",
-              "description": "This is the same picture in every frame. ONLY the light of the crystal inside the niche brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "flame_niches/flame_niche_005/not_lit_3/animations/motion/00.webp",
-                "flame_niches/flame_niche_005/not_lit_3/animations/motion/01.webp",
-                "flame_niches/flame_niche_005/not_lit_3/animations/motion/02.webp",
-                "flame_niches/flame_niche_005/not_lit_3/animations/motion/03.webp",
-                "flame_niches/flame_niche_005/not_lit_3/animations/motion/04.webp"
-              ],
-              "strip": "flame_niches/flame_niche_005/not_lit_3/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T11:49:28+00:00",
-              "brief": "Q1"
-            }
-          },
+          "animations": {},
           "art_hash": "59a7c22cc2984a05"
         }
       },
@@ -35907,29 +35831,7 @@
             "south-west": "lantern_stands/lantern_stand_004/not_lit_2/rotations/south-west.webp",
             "south": "lantern_stands/lantern_stand_004/not_lit_2/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "b9a7869e-db91-4ece-bc5d-38fc5ecd8e66",
-              "description": "This is the same picture in every frame. ONLY the hanging lantern moves, swinging very gently. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/00.webp",
-                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/01.webp",
-                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/02.webp",
-                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/03.webp",
-                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/04.webp"
-              ],
-              "strip": "lantern_stands/lantern_stand_004/not_lit_2/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T11:50:36+00:00",
-              "brief": "Q14"
-            }
-          },
+          "animations": {},
           "art_hash": "752ed6c00dc1a54c"
         },
         "NOT_LIT_3": {
@@ -49058,29 +48960,7 @@
             "south-west": "streetlights/streetlight_007/rotations/south-west.webp",
             "south": "streetlights/streetlight_007/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "9d94aee7-123b-44d2-96ba-021fc280876d",
-              "description": "This is the same picture in every frame. ONLY the ivy leaves on the post move, stirring very slightly. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "streetlights/streetlight_007/animations/motion/00.webp",
-                "streetlights/streetlight_007/animations/motion/01.webp",
-                "streetlights/streetlight_007/animations/motion/02.webp",
-                "streetlights/streetlight_007/animations/motion/03.webp",
-                "streetlights/streetlight_007/animations/motion/04.webp"
-              ],
-              "strip": "streetlights/streetlight_007/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T11:51:34+00:00",
-              "brief": "Q16"
-            }
-          },
+          "animations": {},
           "art_hash": "2a289d58457f52bb"
         },
         "NOT_LIT_2": {
@@ -53875,29 +53755,7 @@
             "south-west": "torch_posts/torch_post_004/not_lit_1/rotations/south-west.webp",
             "south": "torch_posts/torch_post_004/not_lit_1/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "5305157a-c417-4f3a-8903-28adcb686490",
-              "description": "This is the same picture in every frame. ONLY one thin wisp of smoke rises from the torch head and fades. Do not redraw anything else, and do not add or remove anything.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "torch_posts/torch_post_004/not_lit_1/animations/motion/00.webp",
-                "torch_posts/torch_post_004/not_lit_1/animations/motion/01.webp",
-                "torch_posts/torch_post_004/not_lit_1/animations/motion/02.webp",
-                "torch_posts/torch_post_004/not_lit_1/animations/motion/03.webp",
-                "torch_posts/torch_post_004/not_lit_1/animations/motion/04.webp"
-              ],
-              "strip": "torch_posts/torch_post_004/not_lit_1/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-29T11:50:26+00:00",
-              "brief": "Q20"
-            }
-          },
+          "animations": {},
           "art_hash": "798ad0308440023e"
         },
         "NOT_LIT_2": {

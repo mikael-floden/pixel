@@ -66,29 +66,7 @@
         "south-west": "braziers/brazier_001/rotations/south-west.webp",
         "south": "braziers/brazier_001/sprite.webp"
       },
-      "animations": {
-        "motion": {
-          "group_id": "d9478d25-8446-4287-b8f4-b46c4137237b",
-          "description": "This is the same picture in every frame. ONLY the faint red heat between the logs brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "braziers/brazier_001/animations/motion/00.webp",
-            "braziers/brazier_001/animations/motion/01.webp",
-            "braziers/brazier_001/animations/motion/02.webp",
-            "braziers/brazier_001/animations/motion/03.webp",
-            "braziers/brazier_001/animations/motion/04.webp"
-          ],
-          "strip": "braziers/brazier_001/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T11:49:35+00:00",
-          "brief": "Q23"
-        }
-      }
+      "animations": {}
     },
     "NOT_LIT_2": {
       "sprite": "braziers/brazier_001/not_lit_2/sprite.webp",

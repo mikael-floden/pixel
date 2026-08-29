@@ -535,18 +535,6 @@
       },
       "approved": "2026-08-29 round 3"
     },
-    "Q1": {
-      "group": "flame_niches",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the light of the crystal inside the niche brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The crystal in the niche pulses.",
-      "seen_in_art": "a cyan crystal standing lit inside the stone niche",
-      "example": {
-        "piece": "flame_niches/flame_niche_005",
-        "state": "NOT_LIT_3"
-      },
-      "approved": "2026-08-29 round 4"
-    },
     "Q2": {
       "group": "stones",
       "name": "motion",
@@ -559,41 +547,20 @@
       },
       "approved": "2026-08-29 round 4"
     },
-    "Q3": {
-      "group": "driftwood_logs",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the violet light inside the split brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The violet light in the split breathes.",
-      "seen_in_art": "a violet split glowing along the pale wood",
-      "example": {
-        "piece": "driftwood_logs/driftwood_log_901",
-        "state": "LIT_1"
-      },
-      "approved": "2026-08-29 round 4"
-    },
     "Q4": {
       "group": "beast_skulls",
       "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the light in the eye sockets brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The light in the eye sockets breathes.",
+      "prompt": "This is the same picture in every frame. ONLY a small point of light inside the eye sockets moves, drifting slowly from one side to the other. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "A point of light travels inside the sockets; the bone is frozen.",
       "seen_in_art": "cyan light held in the empty eye sockets",
       "example": {
         "piece": "beast_skulls/beast_skull_001",
         "state": "LIT_1"
       },
-      "approved": "2026-08-29 round 4"
-    },
-    "Q5": {
-      "group": "cupboards_and_shelves",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the light inside the jars brightens and dims, very slowly and not all together. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The jars brighten one at a time.",
-      "seen_in_art": "rows of jars glowing green, amber and red",
-      "example": {
-        "piece": "cupboards_and_shelves/cupboard_001",
-        "state": "LIT_2"
-      },
-      "approved": "2026-08-29 round 4"
+      "approved": "2026-08-29 round 4",
+      "superseded_prompt": "This is the same picture in every frame. ONLY the light in the eye sockets brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
+      "frame_count": 8,
+      "revised": "maintainer: 'the light should move not the skeleton'. The light is now a THING that travels, not a property of a surface \u2014 the distinction that separated the 7.1% crystal from the 32.4% sockets."
     },
     "Q6": {
       "group": "barrels",
@@ -643,18 +610,6 @@
       },
       "approved": "2026-08-29 round 4"
     },
-    "Q23": {
-      "group": "braziers",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the faint red heat between the logs brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The last heat in the logs fades and lifts.",
-      "seen_in_art": "logs laid ready in a cold iron bowl",
-      "example": {
-        "piece": "braziers/brazier_001",
-        "state": "NOT_LIT_1"
-      },
-      "approved": "2026-08-29 round 4"
-    },
     "Q10": {
       "group": "fallen_logs",
       "name": "motion",
@@ -670,14 +625,17 @@
     "Q11": {
       "group": "cliff_fragments",
       "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the green ooze on the rock moves, creeping slowly downward. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The ooze creeps down the rock.",
+      "prompt": "This is the same picture in every frame. ONLY the green ooze on the rock moves, creeping slowly downward in one continuous flow that returns to where it started. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The ooze creeps down and the loop joins cleanly.",
       "seen_in_art": "bright green ooze pouring down the broken rock",
       "example": {
         "piece": "cliff_fragments/cliff_fragment_001",
         "state": "LIT_1"
       },
-      "approved": "2026-08-29 round 4"
+      "approved": "2026-08-29 round 4",
+      "superseded_prompt": "This is the same picture in every frame. ONLY the green ooze on the rock moves, creeping slowly downward. Do not redraw anything else, and do not add or remove anything.",
+      "frame_count": 8,
+      "revised": "maintainer: 'needs a better loop (maybe more frames)'. Doubled to 8 frames and asked for a flow that returns to its start, so the cycle joins."
     },
     "Q12": {
       "group": "cairns",
@@ -703,18 +661,6 @@
       },
       "approved": "2026-08-29 round 4"
     },
-    "Q20": {
-      "group": "torch_posts",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY one thin wisp of smoke rises from the torch head and fades. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "Smoke leaves the dead head.",
-      "seen_in_art": "a spent torch head, dark in its iron cage",
-      "example": {
-        "piece": "torch_posts/torch_post_004",
-        "state": "NOT_LIT_1"
-      },
-      "approved": "2026-08-29 round 4"
-    },
     "Q22": {
       "group": "charcoal_kilns",
       "name": "motion",
@@ -728,41 +674,20 @@
       "approved": "2026-08-29 round 4",
       "note": "shares the charcoal_kilns group with S1; kept on a different state so neither overwrites the other."
     },
-    "Q14": {
-      "group": "lantern_stands",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the hanging lantern moves, swinging very gently. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The lantern swings on its arm.",
-      "seen_in_art": "a lantern hanging off an iron arm",
-      "example": {
-        "piece": "lantern_stands/lantern_stand_004",
-        "state": "NOT_LIT_2"
-      },
-      "approved": "2026-08-29 round 4"
-    },
-    "Q16": {
-      "group": "streetlights",
-      "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the ivy leaves on the post move, stirring very slightly. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The ivy on the post stirs.",
-      "seen_in_art": "ivy climbing the lamp post",
-      "example": {
-        "piece": "streetlights/streetlight_007",
-        "state": "NOT_LIT_1"
-      },
-      "approved": "2026-08-29 round 4"
-    },
     "Q19": {
       "group": "beds",
       "name": "motion",
-      "prompt": "This is the same picture in every frame. ONLY the small candle flame flickers, very gently. Do not redraw anything else, and do not add or remove anything.",
-      "moves": "The candle on the headboard flickers.",
+      "prompt": "This is the same picture in every frame. ONLY the small candle flame flickers, very gently. Everything else in the picture is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The bed is completely frozen; only the flame moves.",
       "seen_in_art": "a candle burning on the headboard shelf",
       "example": {
         "piece": "beds/bed_001",
         "state": "LIT_1"
       },
-      "approved": "2026-08-29 round 4"
+      "approved": "2026-08-29 round 4",
+      "superseded_prompt": "This is the same picture in every frame. ONLY the small candle flame flickers, very gently. Do not redraw anything else, and do not add or remove anything.",
+      "frame_count": 8,
+      "revised": "maintainer: 'the bed must be 100% not moving'. Says frozen and pixel-for-pixel identical rather than naming the furniture, which would invite repainting it."
     }
   },
   "declined": {
@@ -843,6 +768,97 @@
       },
       "approved": "2026-08-29 round 3",
       "why": "maintainer 2026-08-29. All five asked for motion in the SURROUNDINGS of a large object \u2014 grass beside bones, water at a hull, dust off an arch, cloth over a cart \u2014 and the model redrew the large object instead of the small thing next to it. Do not regenerate."
+    },
+    "Q16": {
+      "group": "streetlights",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the ivy leaves on the post move, stirring very slightly. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The ivy on the post stirs.",
+      "seen_in_art": "ivy climbing the lamp post",
+      "example": {
+        "piece": "streetlights/streetlight_007",
+        "state": "NOT_LIT_1"
+      },
+      "approved": "2026-08-29 round 4",
+      "why": "maintainer 2026-08-29 round 4 review."
+    },
+    "Q20": {
+      "group": "torch_posts",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY one thin wisp of smoke rises from the torch head and fades. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "Smoke leaves the dead head.",
+      "seen_in_art": "a spent torch head, dark in its iron cage",
+      "example": {
+        "piece": "torch_posts/torch_post_004",
+        "state": "NOT_LIT_1"
+      },
+      "approved": "2026-08-29 round 4",
+      "why": "maintainer 2026-08-29 round 4 review."
+    },
+    "Q1": {
+      "group": "flame_niches",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light of the crystal inside the niche brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The crystal in the niche pulses.",
+      "seen_in_art": "a cyan crystal standing lit inside the stone niche",
+      "example": {
+        "piece": "flame_niches/flame_niche_005",
+        "state": "NOT_LIT_3"
+      },
+      "approved": "2026-08-29 round 4",
+      "why": "maintainer 2026-08-29 round 4 review."
+    },
+    "Q5": {
+      "group": "cupboards_and_shelves",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the light inside the jars brightens and dims, very slowly and not all together. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The jars brighten one at a time.",
+      "seen_in_art": "rows of jars glowing green, amber and red",
+      "example": {
+        "piece": "cupboards_and_shelves/cupboard_001",
+        "state": "LIT_2"
+      },
+      "approved": "2026-08-29 round 4",
+      "why": "maintainer 2026-08-29 round 4 review."
+    },
+    "Q14": {
+      "group": "lantern_stands",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the hanging lantern moves, swinging very gently. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The lantern swings on its arm.",
+      "seen_in_art": "a lantern hanging off an iron arm",
+      "example": {
+        "piece": "lantern_stands/lantern_stand_004",
+        "state": "NOT_LIT_2"
+      },
+      "approved": "2026-08-29 round 4",
+      "why": "maintainer 2026-08-29 round 4 review."
+    },
+    "Q3": {
+      "group": "driftwood_logs",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the violet light inside the split brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The violet light in the split breathes.",
+      "seen_in_art": "a violet split glowing along the pale wood",
+      "example": {
+        "piece": "driftwood_logs/driftwood_log_901",
+        "state": "LIT_1"
+      },
+      "approved": "2026-08-29 round 4",
+      "why": "maintainer 2026-08-29 round 4 review."
+    },
+    "Q23": {
+      "group": "braziers",
+      "name": "motion",
+      "prompt": "This is the same picture in every frame. ONLY the faint red heat between the logs brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
+      "moves": "The last heat in the logs fades and lifts.",
+      "seen_in_art": "logs laid ready in a cold iron bowl",
+      "example": {
+        "piece": "braziers/brazier_001",
+        "state": "NOT_LIT_1"
+      },
+      "approved": "2026-08-29 round 4",
+      "why": "maintainer 2026-08-29 round 4 review."
     }
   },
   "_declined_note": "`declined` records briefs he has rejected outright. animate_motion reads `animations` only, so anything here is inert \u2014 it is kept so a later pass can see these were decided, not overlooked."

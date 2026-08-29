@@ -40,10 +40,10 @@
       "glow_score": 0.1498,
       "animations": {
         "motion": {
-          "group_id": "85c8b5a8-5452-40fc-b7b4-41eb8bc410e5",
-          "description": "This is the same picture in every frame. ONLY the green ooze on the rock moves, creeping slowly downward. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "929b6673-e7d3-47d7-9797-9d1e48af4a62",
+          "description": "This is the same picture in every frame. ONLY the green ooze on the rock moves, creeping slowly downward in one continuous flow that returns to where it started. Do not redraw anything else, and do not add or remove anything.",
           "mode": "v3",
-          "frame_count": 5,
+          "frame_count": 9,
           "generated_frames": 4,
           "keep_first_frame": true,
           "frame_paths": [
@@ -51,13 +51,17 @@
             "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/01.webp",
             "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/02.webp",
             "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/03.webp",
-            "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/04.webp"
+            "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/04.webp",
+            "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/05.webp",
+            "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/06.webp",
+            "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/07.webp",
+            "cliff_fragments/cliff_fragment_001/lit_1/animations/motion/08.webp"
           ],
           "strip": "cliff_fragments/cliff_fragment_001/lit_1/animations/motion__strip.webp",
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T11:49:20+00:00",
+          "generated_at": "2026-08-29T12:12:01+00:00",
           "brief": "Q11"
         }
       }

@@ -40,24 +40,28 @@
       "glow_score": 0.3615,
       "animations": {
         "motion": {
-          "group_id": "b659b632-bced-4bb4-9464-59d075f8cd66",
-          "description": "This is the same picture in every frame. ONLY the light in the eye sockets brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
+          "group_id": "19b2ecc6-8152-4ef8-91c8-657b0e29952d",
+          "description": "This is the same picture in every frame. ONLY a small point of light inside the eye sockets moves, drifting slowly from one side to the other. Everything else is frozen and pixel-for-pixel identical in every frame. Do not redraw anything else, and do not add or remove anything.",
           "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
+          "frame_count": 9,
+          "generated_frames": 8,
           "keep_first_frame": true,
           "frame_paths": [
             "beast_skulls/beast_skull_001/lit_1/animations/motion/00.webp",
             "beast_skulls/beast_skull_001/lit_1/animations/motion/01.webp",
             "beast_skulls/beast_skull_001/lit_1/animations/motion/02.webp",
             "beast_skulls/beast_skull_001/lit_1/animations/motion/03.webp",
-            "beast_skulls/beast_skull_001/lit_1/animations/motion/04.webp"
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/04.webp",
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/05.webp",
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/06.webp",
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/07.webp",
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/08.webp"
           ],
           "strip": "beast_skulls/beast_skull_001/lit_1/animations/motion__strip.webp",
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T11:49:10+00:00",
+          "generated_at": "2026-08-29T12:11:36+00:00",
           "brief": "Q4"
         }
       }

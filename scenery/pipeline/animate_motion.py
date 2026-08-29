@@ -79,17 +79,23 @@ def targets(pilot, only_ids=None):
             if NAME in (e.get("animations") or {}):
                 continue                   # already done — resumable
             out.append((rel, state, oid, int(man.get("size") or 64),
-                        b["prompt"], bid))
+                        b["prompt"], bid, int(b.get("frame_count") or FRAME_COUNT)))
     return out
 
 
-def one(client, rel, state, oid, size, prompt, bid):
+def one(client, rel, state, oid, size, prompt, bid, frames=None):
     dirs = ["south"] if size <= EIGHT_DIR_MAX else None
     man = factory.read_manifest(rel) or {}
     with _LOCKS[rel]:
         pass                               # cheap ordering barrier, not the write
-    st, n, how = A.one(client, rel, man, state, oid, False, NAME, prompt,
-                       dirs, False)
+    prev = A.FRAME_COUNT
+    if frames:
+        A.FRAME_COUNT = frames        # a brief may ask for a longer loop
+    try:
+        st, n, how = A.one(client, rel, man, state, oid, False, NAME, prompt,
+                           dirs, False)
+    finally:
+        A.FRAME_COUNT = prev
     if n:
         with _LOCKS[rel]:
             m = factory.read_manifest(rel) or {}
