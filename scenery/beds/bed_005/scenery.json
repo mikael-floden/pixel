@@ -37,7 +37,29 @@
       "generated_at": "2026-08-15T20:10:45+00:00",
       "glow_concept": "a candle on the headboard shelf",
       "difference_from_source": 0.9822,
-      "glow_score": 0.1173
+      "glow_score": 0.1173,
+      "animations": {
+        "flame": {
+          "group_id": "4a1dfc58-9a6e-4ee2-aeec-d4a79fd8bd59",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beds/bed_005/lit_2/animations/flame/00.webp",
+            "beds/bed_005/lit_2/animations/flame/01.webp",
+            "beds/bed_005/lit_2/animations/flame/02.webp",
+            "beds/bed_005/lit_2/animations/flame/03.webp",
+            "beds/bed_005/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "beds/bed_005/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:55:19+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "beds/bed_005/sprite.webp",

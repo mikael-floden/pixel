@@ -35,7 +35,27 @@
     "LIT_1": {
       "sprite": "beacons/beacon_014/sprite.webp",
       "pixellab_object_id": "e7ae656b-389f-4608-8a39-1eeec2b4d8e1",
-      "generated_at": "2026-08-14T01:38:25+00:00"
+      "generated_at": "2026-08-14T01:38:25+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "ec62c5e0-3ebc-44d6-aaba-4381e86a8341",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_014/animations/flame/00.webp",
+            "beacons/beacon_014/animations/flame/01.webp",
+            "beacons/beacon_014/animations/flame/02.webp",
+            "beacons/beacon_014/animations/flame/03.webp",
+            "beacons/beacon_014/animations/flame/04.webp"
+          ],
+          "strip": "beacons/beacon_014/animations/flame__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T06:55:19+00:00"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "beacons/beacon_014/lit_2/sprite.webp",
@@ -43,7 +63,27 @@
       "generated_at": "2026-08-15T19:56:47+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8103,
-      "glow_score": 0.0528
+      "glow_score": 0.0528,
+      "animations": {
+        "flame": {
+          "group_id": "ca7a33c4-7957-4c16-a1f2-7f7803948e64",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_014/lit_2/animations/flame/00.webp",
+            "beacons/beacon_014/lit_2/animations/flame/01.webp",
+            "beacons/beacon_014/lit_2/animations/flame/02.webp",
+            "beacons/beacon_014/lit_2/animations/flame/03.webp",
+            "beacons/beacon_014/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "beacons/beacon_014/lit_2/animations/flame__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T06:54:45+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "beacons/beacon_014/lit_3/sprite.webp",
@@ -51,7 +91,27 @@
       "generated_at": "2026-08-15T19:56:59+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8047,
-      "glow_score": 0.0558
+      "glow_score": 0.0558,
+      "animations": {
+        "flame": {
+          "group_id": "65b7994b-a68f-4275-819e-a4a51a47b4d9",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_014/lit_3/animations/flame/00.webp",
+            "beacons/beacon_014/lit_3/animations/flame/01.webp",
+            "beacons/beacon_014/lit_3/animations/flame/02.webp",
+            "beacons/beacon_014/lit_3/animations/flame/03.webp",
+            "beacons/beacon_014/lit_3/animations/flame/04.webp"
+          ],
+          "strip": "beacons/beacon_014/lit_3/animations/flame__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T06:55:50+00:00"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "beacons/beacon_014/lit_4/sprite.webp",
@@ -59,7 +119,27 @@
       "generated_at": "2026-08-15T19:57:19+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8116,
-      "glow_score": 0.0366
+      "glow_score": 0.0366,
+      "animations": {
+        "flame": {
+          "group_id": "a05b3962-6318-4904-877e-72d287b6657b",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_014/lit_4/animations/flame/00.webp",
+            "beacons/beacon_014/lit_4/animations/flame/01.webp",
+            "beacons/beacon_014/lit_4/animations/flame/02.webp",
+            "beacons/beacon_014/lit_4/animations/flame/03.webp",
+            "beacons/beacon_014/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "beacons/beacon_014/lit_4/animations/flame__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T06:54:45+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "beacons/beacon_014/not_lit_1/sprite.webp",

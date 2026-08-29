@@ -37,7 +37,29 @@
       "generated_at": "2026-08-15T20:32:31+00:00",
       "glow_concept": "silver-white soul-fire burning without smoke",
       "difference_from_source": 0.7944,
-      "glow_score": 0.2852
+      "glow_score": 0.2852,
+      "animations": {
+        "flame": {
+          "group_id": "45c20e6b-8997-4e3e-a1b5-3a1863462321",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "braziers/brazier_003/lit_2/animations/flame/00.webp",
+            "braziers/brazier_003/lit_2/animations/flame/01.webp",
+            "braziers/brazier_003/lit_2/animations/flame/02.webp",
+            "braziers/brazier_003/lit_2/animations/flame/03.webp",
+            "braziers/brazier_003/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "braziers/brazier_003/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T06:55:01+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "braziers/brazier_003/sprite.webp",

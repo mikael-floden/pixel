@@ -38,7 +38,27 @@
       "generated_at": "2026-08-15T19:58:24+00:00",
       "glow_concept": "great orange signal blaze in the cage",
       "difference_from_source": 0.8001,
-      "glow_score": 0.1222
+      "glow_score": 0.1222,
+      "animations": {
+        "flame": {
+          "group_id": "05ad2d6a-a538-477a-b812-a3ba7c9021bf",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_015/lit_1/animations/flame/00.webp",
+            "beacons/beacon_015/lit_1/animations/flame/01.webp",
+            "beacons/beacon_015/lit_1/animations/flame/02.webp",
+            "beacons/beacon_015/lit_1/animations/flame/03.webp",
+            "beacons/beacon_015/lit_1/animations/flame/04.webp"
+          ],
+          "strip": "beacons/beacon_015/lit_1/animations/flame__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-29T06:54:29+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "beacons/beacon_015/lit_3/sprite.webp",
