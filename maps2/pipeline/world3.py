@@ -162,9 +162,13 @@ def _houses(doc, mat):
                    key=lambda dk: len(dk["cells"]))
     for hi, dk in enumerate(roofs):
         lv, th = int(dk["level"]), int(dk.get("thickness", 1))
+        # THE ROOF IS THE THIN COURSE ON TOP OF THE WALL, not a slab
+        # (maintainer 2026-08-30): the ring cell's TOP is the roof material
+        # and its FACE is the wall, so the roof reads as a band. Wall
+        # materials are his three: parquet, brown paving, grey paving.
         stone = hi == 0                       # smallest roof = the spawn cottage
         wallmat = "brown_paving_stone" if stone else "parquet_floor"
-        topmat = "grey_paving_stone" if stone else "grass"
+        topmat = "grey_paving_stone" if stone else "light_soil"
         wcells = []
         for c in dk["cells"]:
             x, y = int(c["x"]), int(c["y"])
@@ -665,6 +669,8 @@ def build():
     gi = {g: i for i, g in enumerate(grounds)}
     decks = []
     for dk in src.get("decks", []):
+        if dk.get("kind") == "roof":
+            continue          # a roof is the wall's top course now, not a deck
         kind = dk.get("kind", "deck")
         ground = V2_TO_V3.get(src["materials"][dk["mat"]], "grey_stone") \
             if isinstance(dk.get("mat"), int) else "grey_stone"

@@ -355,13 +355,22 @@ def detail_pool(ground):
     return out
 
 
+ROOM_ANCHOR = {}          # (x,y) -> the room's anchor cell, for indoor floors
+
+
 def plate_img(ground, region, x, y):
     """The maintainer's ground look: SET per region, MEMBER per cell
     (basesets port above); a member resolves to its published plate, or is
     conformed from its own art when the plate library does not cover it;
     clean -> the ground's clean plate."""
     chosen = pick_set(ground, region)
-    m = pick_member(chosen, x, y)
+    # ONE PARQUET FLOOR PER ROOM (maintainer 2026-08-30). A room is a
+    # connected patch of indoor floor, and every cell of it asks for the
+    # member at the room's anchor, so the floor is laid as one board rather
+    # than a patchwork that changes under your feet.
+    ax, ay = ROOM_ANCHOR.get((x, y), (x, y)) if ground == "parquet_floor" \
+        else (x, y)
+    m = pick_member(chosen, ax, ay)
     root = os.path.join(REPO, "tiles", "plates")
     if m.get("kind") == "tile":
         t = m["tile"]
@@ -969,6 +978,27 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
     # window is being rendered.
     RGN = 24
 
+    # rooms: connected indoor-floor patches, each with one anchor
+    ROOM_ANCHOR.clear()
+    _seen = set()
+    for _y in range(y0, y1):
+        for _x in range(x0, x1):
+            if g(_x, _y) != "parquet_floor" or (_x, _y) in _seen:
+                continue
+            comp, stack = [], [(_x, _y)]
+            _seen.add((_x, _y))
+            while stack:
+                cx3, cy3 = stack.pop()
+                comp.append((cx3, cy3))
+                for dx3, dy3 in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    n = (cx3 + dx3, cy3 + dy3)
+                    if n not in _seen and g(*n) == "parquet_floor":
+                        _seen.add(n)
+                        stack.append(n)
+            anchor = min(comp)
+            for c in comp:
+                ROOM_ANCHOR[c] = anchor
+
     def region_at(x, y, gg):
         return f"{gg}@{x // RGN},{y // RGN}"
 
@@ -1262,6 +1292,15 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             continue
         meta = json.load(open(os.path.join(REPO, "scenery", p["piece"], "scenery.json")))
         spath = meta["sprite"]
+        # FACING: an indoor piece put against a wall must use the rotation
+        # that looks at the room (maintainer 2026-08-30: "you for example
+        # need to place the bed in SW or SE if you want it to be placed
+        # towards the wall"). Every piece ships rotations/south-east.webp and
+        # rotations/south-west.webp beside its south-facing base sprite.
+        if p.get("dir"):
+            cand = os.path.join(p["piece"], "rotations", p["dir"] + ".webp")
+            if os.path.isfile(os.path.join(REPO, "scenery", cand)):
+                spath = cand
         if p.get("lit"):              # {"lit": true} selects the LIT_* state
             litk = sorted(k for k in (meta.get("states") or {})
                           if k.startswith("LIT"))

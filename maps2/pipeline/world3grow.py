@@ -202,7 +202,7 @@ class Grow:
                     q.append((nx, ny))
         self.wd = dist
 
-    def put(self, piece, x, y, on=None, hflip=False, lit=False):
+    def put(self, piece, x, y, on=None, hflip=False, lit=False, dir=None):
         """One validated placement: the piece dir must exist, the ground must
         be in `on` (if given), the spot must be free. `lit` selects the
         piece's LIT_* state (the piece must ship one) and spends a slot of
@@ -232,6 +232,10 @@ class Grow:
             p["hflip"] = True
         if lit:
             p["lit"] = True
+        if dir and os.path.isfile(os.path.join(REPO, "scenery", piece,
+                                                "rotations", dir + ".webp")):
+            p["dir"] = dir      # not every piece ships rotations; the base
+                                # south sprite is the fallback
         self.doc["scenery"].append(p)
         if not hasattr(self, "occ"):
             self._reindex()
@@ -499,23 +503,21 @@ class Grow:
         8 slots, never over."""
         cx, cy = self.plaza
         x0, y0, TW, TH = self.town
-        specs = [(cx - 13, cy - 8, 6, 5, "brown_paving_stone",
-                  "grey_paving_stone", "grey_paving_stone"),
-                 (cx - 14, cy + 2, 7, 5, "parquet_floor", "grass", "grass"),
-                 (cx + 8, cy - 8, 7, 5, "parquet_floor", "grass", "grass"),
-                 (cx + 9, cy + 2, 6, 5, "brown_paving_stone",
-                  "grey_paving_stone", "grey_paving_stone"),
-                 (cx - 4, cy - 12, 8, 6, "brown_paving_stone",
-                  "grey_paving_stone", "grey_paving_stone"),
-                 (cx - 2, cy + 7, 6, 4, "parquet_floor", "grass", "grass")]
+        # wall material, then the thin roof course above it
+        specs = [(cx - 13, cy - 8, 6, 5, "brown_paving_stone", "grey_paving_stone"),
+                 (cx - 14, cy + 2, 7, 5, "parquet_floor", "light_soil"),
+                 (cx + 8, cy - 8, 7, 5, "parquet_floor", "light_soil"),
+                 (cx + 9, cy + 2, 6, 5, "brown_paving_stone", "grey_paving_stone"),
+                 (cx - 4, cy - 12, 8, 6, "grey_paving_stone", "brown_paving_stone"),
+                 (cx - 2, cy + 7, 6, 4, "parquet_floor", "light_soil")]
         built = 0
-        for (hx, hy, w, h, face, top, roof) in specs:
+        for (hx, hy, w, h, wall, roof) in specs:
             try:
                 px, py = self.find_pad(hx, hy, w, h, r=16, widen=False, dry=3)
             except AssertionError:
                 self.fail += 1
                 continue
-            self.house(px, py, w, h, face, top, roof)
+            self.house(px, py, w, h, wall, roof)
             built += 1
         assert built >= 5, f"the town only fit {built} houses"
         PAVE = ("grey_paving_stone", "brown_paving_stone")
@@ -667,6 +669,49 @@ class Grow:
         tally = world3.retype_woods(self.doc["scenery"], ctx)
         self.placed += [(f"forest {k}", v) for k, v in sorted(tally.items())]
 
+    def relight(self):
+        """FILL THE LIGHT BUDGET, NEVER EXCEED IT (maintainer 2026-08-29:
+        "push the limit so we get as much light as we can before the tech
+        fails us"). Every hearth, brazier and lamp is a CANDIDATE; they are
+        lit greedily, nearest-the-player-first, and a candidate is only lit
+        if the worst camera window still holds at most the engine's 8 slots
+        after it. Lighting them all blew the budget at 14 in one window the
+        moment every room got a hearth."""
+        import math as _m
+        VIEW_W, VIEW_H, SLOTS, RAD = 899, 774, 8, 7
+        RX, RY = _m.sqrt(2) * 32 * RAD, _m.sqrt(2) * 15 * RAD
+        LIGHTABLE = ("hearths/", "braziers/", "torch_posts/", "lantern_posts/",
+                     "lantern_stands/", "streetlights/", "flame_niches/",
+                     "campfire", "cauldron_camps/")
+        lit = [((p["x"] - p["y"]) * 32, (p["x"] + p["y"]) * 15)
+               for p in self.doc["scenery"] if p.get("lit")]
+
+        def fits(c):
+            for a in (c, *lit):
+                n = sum(1 for b in (c, *lit)
+                        if abs(b[0] - a[0]) <= VIEW_W / 2 + RX
+                        and abs(b[1] - a[1]) <= VIEW_H / 2 + RY)
+                if n > SLOTS:
+                    return False
+            return True
+
+        added = 0
+        cands = [p for p in self.doc["scenery"]
+                 if not p.get("lit") and p["piece"].startswith(LIGHTABLE)
+                 and any(k.startswith("LIT") for k in (json.load(open(
+                     os.path.join(REPO, "scenery", p["piece"],
+                                  "scenery.json"))).get("states") or {}))]
+        sx, sy = self.doc["spawn"]
+        cands.sort(key=lambda p: abs(p["x"] - sx) + abs(p["y"] - sy))
+        for p in cands:
+            c = ((p["x"] - p["y"]) * 32, (p["x"] + p["y"]) * 15)
+            if fits(c):
+                p["lit"] = True
+                lit.append(c)
+                added += 1
+        self.placed += [("lights added by the budget pass", added),
+                        ("lit total", len(lit))]
+
     def spawns(self):
         """Monsters SPREAD over the doubled land (maintainer 2026-08-29): the
         tuned v2 zones translate verbatim (+OFF); the new land gets NEW zones
@@ -791,19 +836,38 @@ class Grow:
 
     # -- houses ---------------------------------------------------------------
     def _roof_ref(self):
-        roofs = sorted((dk for dk in self.doc["decks"] if dk["kind"] == "roof"),
-                       key=lambda dk: len(dk["cells"]))
+        """Storey reference. Roof decks are gone (the roof is the wall's own
+        top course), so with none present the house is three storeys tall."""
+        roofs = [dk for dk in self.doc["decks"] if dk["kind"] == "roof"]
+        if not roofs:
+            return 0, 0, 3, 0
+        return self._roof_ref_from(roofs)
+
+    def _roof_ref_from(self, roofs):
+        roofs = sorted(roofs, key=lambda dk: len(dk["cells"]))
         big = roofs[-1]
         lv, th = int(big["level"]), int(big.get("thickness", 1))
         wl = max(self.lvl[c["y"]][c["x"]] for c in big["cells"])
         fl = min(self.lvl[c["y"]][c["x"]] for c in big["cells"])
         return lv, th, wl, fl
 
-    def house(self, x0, y0, w, h, face, top, roof):
-        """A new x-over-y house: perimeter cells raised to the reference wall
-        level with authored face+top, parquet interior, roof slab, south door.
-        Same geometry the two translated houses use, so the renderer needs
-        nothing new."""
+    WALL_MATERIALS = ("parquet_floor", "brown_paving_stone", "grey_paving_stone")
+
+    def house(self, x0, y0, w, h, wall, roof):
+        """A house is a RING OF X-OVER-Y WALLS, and the roof is the thin band
+        on top of them (maintainer 2026-08-30).
+
+        "Use Parquet Floor or Brown Paving Stone or Grey Paving Stone as the
+        wall. And use the x-over-y feature to make the roof texture thin (not
+        take up an entire cell). A good roof can be Light Soil over Parquet
+        Floor."
+
+        So the wall ring's cells carry roof-over-wall: their TOP is the roof
+        material and their FACE is the wall material, which makes the roof a
+        thin course around the top of the walls instead of a slab covering
+        whole cells. There is no roof deck any more - a deck is a full cell
+        of roof, which is exactly what he does not want."""
+        assert wall in self.WALL_MATERIALS, f"{wall} is not a wall material"
         lv, th, wl, fl = self._roof_ref()
         rise = max(3, wl - fl)   # storey count is RELATIVE: a house on the
                                  # bench-2 town plaza measured 40% shorter and
@@ -819,14 +883,11 @@ class Grow:
         for (x, y) in rect:
             ring = x in (x0, x0 + w - 1) or y in (y0, y0 + h - 1)
             if ring and (x, y) != door:
-                grd[y][x] = gi[top]; lvl[y][x] = base + rise
+                grd[y][x] = gi[roof]; lvl[y][x] = base + rise
                 wcells.append({"x": x, "y": y})
             else:
                 grd[y][x] = gi["parquet_floor"]; lvl[y][x] = base
-        self.doc["walls"].append({"side": face, "cells": wcells})
-        self.doc["decks"].append({"kind": "roof", "level": base + rise,
-                                  "thickness": 0, "ground": roof,
-                                  "cells": [{"x": x, "y": y} for (x, y) in rect]})
+        self.doc["walls"].append({"side": wall, "cells": wcells})
         # doorstep
         dx, dy = door[0], door[1] + 1
         if self.g(dx, dy) == "grass":
@@ -887,7 +948,7 @@ class Grow:
         # ABOVE the pier landing, never on the sand itself
         lx, ly = self.landing
         hx, hy = self.find_pad(lx - 6, ly - 6, 6, 5)
-        self.int_fisher = self.house(hx, hy, 6, 5, "parquet_floor", "grass", "grass")
+        self.int_fisher = self.house(hx, hy, 6, 5, "parquet_floor", "light_soil")
         # woodcutter's cabin: timber, at the forest edge — the grass cell with
         # the most trees within 12, at least 50 from spawn
         best = None
@@ -903,11 +964,11 @@ class Grow:
             if best is None or n > best[0]:
                 best = (n, x, y)
         wx, wy = self.find_pad(best[1], best[2], 7, 5)
-        self.int_wood = self.house(wx, wy, 7, 5, "parquet_floor", "grass", "grass")
+        self.int_wood = self.house(wx, wy, 7, 5, "parquet_floor", "light_soil")
         # the smithy: stone (slate over cobble), in the village near spawn
         mx, my = self.find_pad(sx + 8, sy - 6, 6, 5)
         self.int_smith = self.house(mx, my, 6, 5, "brown_paving_stone",
-                                    "grey_paving_stone", "grey_paving_stone")
+                                    "grey_paving_stone")
         self.smithy = (mx, my)
         self.woodcutter = (wx, wy)
         self.fisher = (hx, hy)
@@ -931,41 +992,118 @@ class Grow:
     def interiors(self):
         """Furnish EVERY parquet room (the indoor-scenery ask). The renderer
         hides pieces under roofs — the game shows them when you walk in."""
-        rooms = []
-        for dk in self.doc["decks"]:
-            if dk["kind"] != "roof":
-                continue
-            wl_dk = max(self.lvl[c["y"]][c["x"]] for c in dk["cells"])
-            floor = [(c["x"], c["y"]) for c in dk["cells"]
-                     if self.lvl[c["y"]][c["x"]] < wl_dk]
-            if len(floor) >= 4:
-                rooms.append(floor)
+        # NOTHING OUTDOOR STANDS ON AN INDOOR FLOOR. Building a house over
+        # ground that already had a tree or a bush left it growing in the
+        # sitting room.
+        INDOOR_OK = ("beds/", "tables/", "chairs_and_benches/", "hearths/",
+                     "cupboards_and_shelves/", "barrels/", "rugs_and_hides/",
+                     "house_clutter/", "wall_hangings/", "anvils/",
+                     "flower_stands/", "lantern_stands/", "braziers/")
+        par0 = self.gi["parquet_floor"]
+        before = len(self.doc["scenery"])
+        self.doc["scenery"] = [
+            p for p in self.doc["scenery"]
+            if not (0 <= int(p["x"]) < NEW and 0 <= int(p["y"]) < NEW
+                    and self.grd[int(p["y"])][int(p["x"])] == par0
+                    and not p["piece"].startswith(INDOOR_OK))]
+        self._reindex()
+        self.placed += [("outdoor scenery evicted from rooms",
+                         before - len(self.doc["scenery"]))]
+
+        # A ROOM IS A CONNECTED PATCH OF PARQUET FLOOR. Roof decks used to
+        # define them; the roof is the wall's own top course now, so the
+        # floor is what says "this is a room".
+        par = self.gi["parquet_floor"]
+        seen, rooms = set(), []
+        for y in range(NEW):
+            for x in range(NEW):
+                if self.grd[y][x] != par or (x, y) in seen:
+                    continue
+                comp, stack = [], [(x, y)]
+                seen.add((x, y))
+                while stack:
+                    cx3, cy3 = stack.pop()
+                    comp.append((cx3, cy3))
+                    for dx3, dy3 in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        n = (cx3 + dx3, cy3 + dy3)
+                        if n not in seen and 0 <= n[0] < NEW and 0 <= n[1] < NEW \
+                                and self.grd[n[1]][n[0]] == par:
+                            seen.add(n)
+                            stack.append(n)
+                if len(comp) >= 4:
+                    rooms.append(comp)
         for hi, floor in enumerate(sorted(rooms, key=lambda f: (f[0][1], f[0][0]))):
+            cells = set(floor)
             xs = sorted(x for x, _ in floor)
             ys = sorted(y for _, y in floor)
             x0, x1, y0, y1 = xs[0], xs[-1], ys[0], ys[-1]
             cx, cy = (x0 + x1) / 2 + 0.5, (y0 + y1) / 2 + 0.5
             r = _rng32(hi * 7919 ^ 0xfeed)
-            def pk(group):
-                p = self.pool(group)
-                return p[int(r() * len(p)) % len(p)]
+
+            def pk(group, d=None):
+                """Prefer a piece that HAS the rotation we need, so furniture
+                against a wall actually faces the room."""
+                pool = self.pool(group)
+                if d:
+                    have = [q for q in pool
+                            if os.path.isfile(os.path.join(
+                                REPO, "scenery", q, "rotations", d + ".webp"))]
+                    pool = have or pool
+                return pool[int(r() * len(pool)) % len(pool)]
+
             IN = ("parquet_floor",)
             n = 0
-            n += self.put(pk("hearths"), x0 + 1 + r(), y0 + 0.5, on=IN)
-            n += self.put(pk("tables"), cx, cy, on=IN)
-            n += self.put(pk("chairs_and_benches"), cx - 1.1, cy + 0.2, on=IN)
-            n += self.put(pk("beds"), x1 + 0.4, y0 + 0.6, on=IN)
-            area = len(floor)
-            if area >= 9:
-                n += self.put(pk("chairs_and_benches"), cx + 1.1, cy - 0.2,
-                              on=IN, hflip=True)
-                n += self.put(pk("cupboards_and_shelves"), x0 + 0.4, y1 + 0.3, on=IN)
-                n += self.put(pk("barrels"), x1 + 0.5, y1 + 0.4, on=IN)
+            # FURNITURE GOES AGAINST THE BACK WALLS, FACING THE ROOM
+            # (maintainer 2026-08-30). In this projection the two walls you
+            # see are the low-x one (upper LEFT on screen) and the low-y one
+            # (upper RIGHT). A piece standing against the left wall looks
+            # down-right, so it wears south-east; against the right wall it
+            # wears south-west. Placed with the base south sprite it stands
+            # with its back to the room instead.
+            west = [(x, y) for (x, y) in floor if x == x0]      # upper-left wall
+            north = [(x, y) for (x, y) in floor if y == y0]     # upper-right wall
+            west.sort(key=lambda c: c[1])
+            north.sort(key=lambda c: c[0])
+
+            def against(group, wall, idx, **kw):
+                if not wall:
+                    return 0
+                x, y = wall[min(idx, len(wall) - 1)]
+                d = "south-east" if wall is west else "south-west"
+                return self.put(pk(group, d), x + 0.5, y + 0.5,
+                                on=IN, dir=d, **kw)
+
+            # DRESS THE WHOLE WALL, not one piece of it: a room's furniture
+            # count follows its size, so a hall is furnished like a hall.
+            for k in range(max(1, len(west) // 3)):
+                n += against("beds", west, k * 3)
+            for k in range(max(1, len(north) // 3)):
+                n += against("cupboards_and_shelves", north, k * 3 + 1)
+            if len(north) > 2:
+                n += against("hearths", north, len(north) // 2)
+            if len(west) > 2:
+                n += against("barrels", west, len(west) - 1)
+            for k in range(len(cells) // 24):
+                n += against("chairs_and_benches", north, 2 + k * 4)
+            # the middle of the room: a table with chairs either side
+            if len(cells) >= 6:
+                n += self.put(pk("tables"), cx, cy, on=IN)
+                n += self.put(pk("chairs_and_benches", "south-east"),
+                              cx - 1.0, cy, on=IN, dir="south-east")
+                n += self.put(pk("chairs_and_benches", "south-west"),
+                              cx + 1.0, cy, on=IN, dir="south-west")
+            if len(cells) >= 12:
+                n += against("wall_hangings", north, max(0, len(north) - 2))
                 n += self.put(pk("rugs_and_hides"), cx, cy + 1.0, on=IN)
-            if area >= 16:
-                n += self.put(pk("house_clutter"), x0 + 0.5, cy, on=IN)
-                n += self.put(pk("wall_hangings"), cx + 1, y0 + 0.4, on=IN)
+                n += self.put(pk("house_clutter"), x1 + 0.5, y1 + 0.5, on=IN)
+            for k in range(len(cells) // 20):
+                rx = x0 + 1 + int(r() * max(1, x1 - x0 - 1))
+                ry = y0 + 1 + int(r() * max(1, y1 - y0 - 1))
+                grp = ("barrels", "house_clutter", "tables",
+                       "rugs_and_hides")[k % 4]
+                n += self.put(pk(grp), rx + 0.5, ry + 0.5, on=IN)
             self.placed += [(f"room {hi} furniture", n)]
+
         # the smithy works outdoors too: anvil + woodpile out FRONT (south —
         # anything beside/behind the house gets buried by the roof slab)
         mx, my = self.smithy
@@ -1399,7 +1537,7 @@ class Grow:
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
-                     self.spawns):
+                     self.relight, self.spawns):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
