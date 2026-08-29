@@ -44,7 +44,29 @@
       "generated_at": "2026-08-16T14:26:10+00:00",
       "glow_concept": "a single candle burning on the cut face",
       "difference_from_source": 0.4233,
-      "glow_score": 0.2379
+      "glow_score": 0.2379,
+      "animations": {
+        "flame": {
+          "group_id": "18e050f6-b37d-488a-a157-a923bab59f8b",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_020/lit_2/animations/flame/00.webp",
+            "stumps/stump_020/lit_2/animations/flame/01.webp",
+            "stumps/stump_020/lit_2/animations/flame/02.webp",
+            "stumps/stump_020/lit_2/animations/flame/03.webp",
+            "stumps/stump_020/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "stumps/stump_020/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:21:55+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "stumps/stump_020/lit_3/sprite.webp",

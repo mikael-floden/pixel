@@ -34,7 +34,29 @@
     "LIT_1": {
       "sprite": "tables/table_014/sprite.webp",
       "pixellab_object_id": "d914f92a-bb7a-4210-a001-f0d23da4a259",
-      "generated_at": "2026-08-13T23:42:50+00:00"
+      "generated_at": "2026-08-13T23:42:50+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "552314a3-ea7f-440b-8d23-c4a1e12e99b0",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "tables/table_014/animations/flame/00.webp",
+            "tables/table_014/animations/flame/01.webp",
+            "tables/table_014/animations/flame/02.webp",
+            "tables/table_014/animations/flame/03.webp",
+            "tables/table_014/animations/flame/04.webp"
+          ],
+          "strip": "tables/table_014/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:20:49+00:00"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "tables/table_014/lit_2/sprite.webp",
