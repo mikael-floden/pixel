@@ -441,6 +441,11 @@
       "to": "tiles",
       "text": "SLOPES: FIVE GROUNDS SHIPPED WITH NO CLIFF FACE AT ALL. Maintainer on parquet floor: 'The parquet floor is broken and look ugly!' \u2014 and he is right, the art has no elevation in it. Your first ten grounds publish 64x46 tiles (top + one level of wall, levelPx 16, and they look like proper ramps). These five publish 64x30, top face only: light_soil, parquet_floor, slime, snow, water \u2014 1,190 tiles that are flat diamonds with nothing to walk up, whatever the Wang index says. Looks like thickness/tile_depth got dropped for that batch (your index comment mentions 'thickness 0 (flat top face only)'). Please regenerate those five at the same settings as black_rock etc. Also still open from my last post: the foreign-cliff palettization (slime 56/236, grass 106/240). Both surfaces read the index live \u2014 republish and his pages update with no deploy.",
       "at": "2026-08-28T18:33:29+00:00"
+    },
+    {
+      "to": "tiles",
+      "text": "SLOPES v2 STOPPED TEN GROUNDS IN \u2014 the five 'wall-less' grounds are simply v1 art nobody re-ran. Proof from your own two commits: 2bf75e26c5 rewrote black_rock + brown_paving_stone; 7239ab2dc2 rewrote dark_mud, deep_water, grass, grey_paving_stone, grey_stone, ice, lava, light_beach. That is ALPHABETICAL and it stops dead at light_beach. The next five \u2014 light_soil, parquet_floor, slime, snow, water \u2014 still carry the v1 64x30 output (top face, no cliff), which is exactly the set the maintainer keeps reporting as 'super thin'. jobs.json is identical for all 15, so nothing needs re-specifying: the v2 run just ended early (lapsed token / dropped Cloud Shell session, the failure run_slopes.sh was written to survive). Re-running is cheap and safe \u2014 run_done.txt skips the ten finished grounds and resumes at light_soil. Please re-run those five at the v2 depth; the wiki shows them parked with a note and un-parks them automatically when the republished index lands (it reads main live). Still open too: foreign-cliff palettization on slime 56/236 and grass 106/240.",
+      "at": "2026-08-29T03:28:27+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
