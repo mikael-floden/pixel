@@ -886,16 +886,30 @@ const hitAlwaysShow = () => { try { return localStorage.getItem(HIT_ALWAYS_KEY) 
 const hitboxDoc = () => state.tuning.scenery_hitbox
   ?? (state.tuning.scenery_hitbox = { format: "pixel-wiki-scenery-hitbox@1", updated_at: "", overrides: {} });
 /** The piece's key — its path, the same key scenery_lights uses. */
-const hitboxKey = (entity) => entity?.path ?? entity?.id ?? null;
+/* ONE HITBOX PER VARIATION (maintainer 2026-08-29: "You don't store one
+ * hitbox per variation ... when I change the hitbox on a variation it changes
+ * on ALL variations/states. This is bad because different variations can be
+ * different size."). The key carries the state: "<path>#<state>". A record
+ * under the BARE path is the piece-level default the first pass wrote; it
+ * still answers for a variation with none of its own, so nothing already
+ * decided is lost and no variation is suddenly blank. */
+const hitboxKey = (entity, state) => {
+  const p2 = entity?.path ?? entity?.id ?? null;
+  if (!p2) return null;
+  return state ? `${p2}#${state}` : p2;
+};
+/** Every variation of a piece, in the order its card shows them. */
+const hitboxStates = (entity) => Object.keys(entity?.animations ?? {});
 /** The stored record, or null when nobody has decided yet. */
-function hitboxRaw(entity) {
-  const k = hitboxKey(entity);
-  const r = k ? hitboxDoc().overrides?.[k] : null;
+function hitboxRaw(entity, state) {
+  const ov = hitboxDoc().overrides ?? {};
+  const own = state ? ov[hitboxKey(entity, state)] : null;
+  const r = own ?? ov[hitboxKey(entity)];
   return r && Array.isArray(r.boxes) ? r : null;
 }
 /** Normalised boxes; [] means "decided: none". null means undecided. */
-function hitboxes(entity) {
-  const r = hitboxRaw(entity);
+function hitboxes(entity, state) {
+  const r = hitboxRaw(entity, state);
   if (!r) return null;
   return r.boxes
     .filter((b) => b && ["ax", "ay", "rx", "ry"].every((k) => isFinite(b[k])) && b.rx > 0 && b.ry > 0)
@@ -931,8 +945,8 @@ function hitboxDefault(entity, bb, fw, fh) {
  * rather than restating it means the day ISO_DY becomes 14 this follows. */
 
 /** Write one piece's boxes. [] is a real answer — "this needs none". */
-function setHitboxes(entity, boxes) {
-  const k = hitboxKey(entity);
+function setHitboxes(entity, boxes, state) {
+  const k = hitboxKey(entity, state);
   if (!k) return;
   const doc = hitboxDoc();
   (doc.overrides ??= {})[k] = {
@@ -948,8 +962,8 @@ function setHitboxes(entity, boxes) {
   markDirty(HITBOX_KEY);
 }
 /** Back to undecided — the record goes, not an empty list. */
-function clearHitbox(entity) {
-  const k = hitboxKey(entity);
+function clearHitbox(entity, state) {
+  const k = hitboxKey(entity, state);
   if (!k) return;
   delete hitboxDoc().overrides?.[k];
   hitboxDoc().updated_at = new Date().toISOString();
@@ -979,13 +993,24 @@ function clearHitbox(entity) {
  * not count"). The 2026-08-28 alpha pass wrote every undecided piece a
  * footprint with auto:true; accepting or editing rewrites the record without
  * the flag, which is what "set" means. */
-const hitboxAuto = (entity) => hitboxRaw(entity)?.auto === true;
-function hitboxState(entity) {
+const hitboxAuto = (entity, state) => hitboxRaw(entity, state)?.auto === true;
+function hitboxState(entity, state) {
   if (isWallScenery(entity)) return "wall";
-  if (hitboxAuto(entity)) return "todo";
-  const b = hitboxes(entity);
+  if (hitboxAuto(entity, state)) return "todo";
+  const b = hitboxes(entity, state);
   if (b === null) return "todo";
   return b.length ? "has" : "none";
+}
+/* THE FILTER COUNTS THE PIECE, and a piece is done only when EVERY variation
+ * is — they can differ in size, which is the whole reason they are keyed
+ * apart. One undecided variation keeps the piece in the to-do queue. */
+function hitboxPieceState(entity) {
+  if (isWallScenery(entity)) return "wall";
+  const states = hitboxStates(entity);
+  if (!states.length) return hitboxState(entity);
+  const each = states.map((st2) => hitboxState(entity, st2));
+  if (each.some((x) => x === "todo")) return "todo";
+  return each.some((x) => x === "has") ? "has" : "none";
 }
 
 /** The raw tuned record ({rx, ry, ax?, ay?, offsets?}), or null. */
@@ -1648,7 +1673,7 @@ function makePlayer(entity, kind, opts = {}) {
       ctx.restore();
       // QA probe: what the page believes about the hitbox, for the gate.
       window.__wikiHitbox = {
-        state: hitboxState(entity), sel: hitSel, n: boxes.length, s, dx, dy,
+        state: hitboxState(entity, cur.state), variation: cur.state, sel: hitSel, n: boxes.length, s, dx, dy,
         W: canvas.width, H: canvas.height,
         boxes: boxes.map((b) => ({ ...b })),
         screen: boxes.map((b) => ({ ex: +(dx + (fw / 2 + b.ax) * s).toFixed(2), ey: +(dy + (fh / 2 + b.ay) * s).toFixed(2) })),
@@ -1695,7 +1720,10 @@ function makePlayer(entity, kind, opts = {}) {
           if (!anims[s]?.dirs?.[cur.dir]) {
             cur.dir = state.data.directions.find((d) => anims[s]?.dirs?.[d]) ?? cur.dir;
           }
-          loadClip(); renderStateSeg(); revealActiveState(); renderDirPad(); refreshShadowBar(); onFacetChange?.();
+          // ...and the hitbox bar, which now shows THIS variation's own box
+          // (2026-08-29): without this the rails kept driving the previous
+          // variation's numbers while a different picture was on screen.
+          loadClip(); renderStateSeg(); revealActiveState(); renderDirPad(); refreshShadowBar(); refreshHitBar(); onFacetChange?.();
         },
         title: mark.title ? `${stateWords(s)} — ${mark.title}` : stateWords(s),
       }, stateLabel(s) + (anims[s].fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""));
@@ -1928,8 +1956,10 @@ function makePlayer(entity, kind, opts = {}) {
   /* THE WORKING LIST. An untouched piece starts from the art's own content
    * box so there is something to drag, but NOTHING IS STORED until he moves
    * it — a piece that merely got looked at must still count as "to do". */
-  const hitList = () => hitboxes(entity) ?? [hitboxDefault(entity, clip?.bb, clip?.fw ?? entity.frameW, clip?.fh ?? entity.frameH)];
-  const commitHit = (boxes) => { setHitboxes(entity, boxes); onShadowEdit?.(); refreshHitBar(); draw(); };
+  // ALWAYS THIS VARIATION: its own record, else the piece-level default,
+  // else a starting ellipse from THIS state's own measured content box.
+  const hitList = () => hitboxes(entity, cur.state) ?? [hitboxDefault(entity, clip?.bb, clip?.fw ?? entity.frameW, clip?.fh ?? entity.frameH)];
+  const commitHit = (boxes) => { setHitboxes(entity, boxes, cur.state); onShadowEdit?.(); refreshHitBar(); draw(); };
   const editHit = (i, patch) => {
     const boxes = hitList().map((b, n) => (n === i ? { ...b, ...patch } : b));
     commitHit(boxes);
@@ -2036,7 +2066,7 @@ function makePlayer(entity, kind, opts = {}) {
   const hitResetBtn = h("button", {
     class: "ghost-btn",
     title: "Forget this piece's record entirely — it goes back to undecided and returns to the to-do queue",
-    onclick: () => { hitSel = 0; clearHitbox(entity); onShadowEdit?.(); refreshHitBar(); draw(); },
+    onclick: () => { hitSel = 0; clearHitbox(entity, cur.state); onShadowEdit?.(); refreshHitBar(); draw(); },
   }, "Reset");
 
   const hitBar = h("div", { class: "shadow-bar hit-bar hidden" },
@@ -2066,9 +2096,9 @@ function makePlayer(entity, kind, opts = {}) {
    * record a manual edit would write — so the piece becomes "hitbox set". */
   const hitAcceptBtn = hitBtn
     ? h("button", {
-      class: `ghost-btn shadow-btn${hitboxState(entity) !== "todo" ? " hidden" : ""}`,
+      class: `ghost-btn shadow-btn${hitboxState(entity, cur.state) !== "todo" ? " hidden" : ""}`,
       title: "The proposed hitbox is right as drawn — store it as YOUR decision. Only accepted or hand-edited hitboxes count as set.",
-      onclick: () => { setHitboxes(entity, hitList()); onShadowEdit?.(); refreshHitBar(); draw(); },
+      onclick: () => { setHitboxes(entity, hitList(), cur.state); onShadowEdit?.(); refreshHitBar(); draw(); },
     }, "✓ Accept default hitbox")
     : null;
   /* BROWSE WITH THE HITBOX VISIBLE (maintainer 2026-08-28: "with this mode I
@@ -2096,11 +2126,11 @@ function makePlayer(entity, kind, opts = {}) {
   function refreshHitBar() {
     if (!hitBtn) return;
     // Accept exists exactly while the decision is still a proposal.
-    if (hitAcceptBtn) hitAcceptBtn.classList.toggle("hidden", hitboxState(entity) !== "todo");
+    if (hitAcceptBtn) hitAcceptBtn.classList.toggle("hidden", hitboxState(entity, cur.state) !== "todo");
     hitBar.classList.toggle("hidden", !cur.editHit);
     hitBtn.classList.toggle("on", cur.editHit);
     if (!cur.editHit) return;
-    const st = hitboxState(entity);
+    const st = hitboxState(entity, cur.state);
     const boxes = hitList();
     hitSel = Math.min(hitSel, Math.max(0, boxes.length - 1));
     const b = boxes[hitSel];
@@ -2117,7 +2147,7 @@ function makePlayer(entity, kind, opts = {}) {
     hitChips.classList.toggle("hidden", boxes.length < 2);
     hitDelBtn.disabled = boxes.length < 2;
     hitNoneBtn.disabled = st === "none";
-    hitResetBtn.disabled = !hitboxRaw(entity);
+    hitResetBtn.disabled = !hitboxRaw(entity, cur.state);
     /* BOTH RAILS REACH TWICE THE FRAME (maintainer 2026-08-27: "Why is this the
      * max D? Some scenery are really long/tall/wide... Make the max a little
      * bigger/longer").
@@ -2145,7 +2175,7 @@ function makePlayer(entity, kind, opts = {}) {
         ? h("b", {}, "no hitbox — this piece hangs on a wall")
         : h("b", {}, `${boxes.length} ellipse${boxes.length === 1 ? "" : "s"} · #${hitSel + 1} ${(b.rx * 2).toFixed(1)} × ${(b.ry * 2).toFixed(1)} px`),
       st === "none" ? "" : ` · at ${signed(b.ax)}, ${signed(b.ay)}${b.rot ? ` · turned ${Math.round(b.rot)}°` : ""}`,
-      st === "todo" ? (hitboxAuto(entity) ? " · proposed default — not set until you accept or adjust it" : " · not set — move anything to adopt it") : "",
+      st === "todo" ? (hitboxAuto(entity, cur.state) ? " · proposed default — not set until you accept or adjust it" : " · not set — move anything to adopt it") : "",
     );
   }
 
@@ -9729,22 +9759,22 @@ const OBJ_HITBOXES = {
   todo: {
     label: "no hitbox yet",
     title: "Nobody has decided about these — the ones left to do",
-    hit: (o) => hitboxState(o) === "todo",
+    hit: (o) => hitboxPieceState(o) === "todo",
   },
   has: {
     label: "hitbox set",
     title: "Pieces whose ground footprint you have drawn — one ellipse or several",
-    hit: (o) => hitboxState(o) === "has",
+    hit: (o) => hitboxPieceState(o) === "has",
   },
   none: {
     label: "needs none",
     title: "Decided piece by piece: this one needs no hitbox — for the odd standing piece that still should not collide",
-    hit: (o) => hitboxState(o) === "none",
+    hit: (o) => hitboxPieceState(o) === "none",
   },
   wall: {
     label: "wall scenery",
     title: "Windows and mountain-wall pieces — hung on a wall, so a hitbox does not apply. Decided by their type; nothing here ever needs marking",
-    hit: (o) => hitboxState(o) === "wall",
+    hit: (o) => hitboxPieceState(o) === "wall",
   },
 };
 const hitboxFilter = () => {

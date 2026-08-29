@@ -35,18 +35,25 @@ const LIVE = JSON.parse(readFileSync(new URL("../../live/tuning/scenery_hitbox.j
   const wallsOv = JSON.parse(readFileSync(new URL("../../live/tuning/scenery_walls.json", import.meta.url), "utf8")).overrides ?? {};
   const isWall = (o) => typeof wallsOv[o.path]?.wall === "boolean" ? wallsOv[o.path].wall : ["MOUNTAIN_WALL", "WINDOW"].includes(o.type);
   const eligible = PIECES.filter((o) => !isWall(o));
-  const missing = eligible.filter((o) => !LIVE.overrides?.[o.path]);
-  ok(missing.length === 0, `every non-wall piece has a stored hitbox (${missing.length ? "first missing: " + missing[0].path : eligible.length + " pieces"})`);
+  /* EVERY VARIATION, not every piece (2026-08-29): they can differ in size,
+   * so each carries its own record — or inherits the piece-level one he set
+   * himself. */
+  const varsOf = (o) => Object.keys(o.animations ?? {});
+  const missing = eligible.flatMap((o) => varsOf(o)
+    .filter((st) => !LIVE.overrides?.[`${o.path}#${st}`] && !LIVE.overrides?.[o.path])
+    .map((st) => `${o.path}#${st}`));
+  const nVars = eligible.reduce((n2, o) => n2 + varsOf(o).length, 0);
+  ok(missing.length === 0, `every VARIATION of every non-wall piece has a stored hitbox (${missing.length ? "first missing: " + missing[0] : nVars + " variations"})`);
   const badBox = [];
-  for (const o of eligible) {
-    const rec = LIVE.overrides?.[o.path]; if (!rec) continue;
-    const dd = Object.values(o.animations ?? {})[0]?.dirs?.south ?? {};
+  for (const o of eligible) for (const st of [...varsOf(o), null]) {
+    const rec = LIVE.overrides?.[st ? `${o.path}#${st}` : o.path]; if (!rec) continue;
+    const dd = (st ? o.animations[st] : Object.values(o.animations ?? {})[0])?.dirs?.south ?? {};
     const fw = dd.fw ?? o.size ?? 96, fh = dd.fh ?? o.size ?? 96;
     for (const b of rec.boxes ?? []) {
       const fin = ["ax", "ay", "rx", "ry"].every((k) => isFinite(b[k])) && b.rx > 0 && b.ry > 0;
       const inX = Math.abs(b.ax) + b.rx <= fw / 2 + 2;
       const inY = b.ay + b.ry <= fh / 2 + 2 && b.ay - b.ry >= -fh / 2 - 2;
-      if (!(fin && inX && inY)) badBox.push(`${o.path} ${JSON.stringify(b)} in ${fw}x${fh}`);
+      if (!(fin && inX && inY)) badBox.push(`${o.path}${st ? "#" + st : ""} ${JSON.stringify(b)} in ${fw}x${fh}`);
     }
     if ((rec.boxes ?? []).length > 1 && ((dd.bb ? dd.bb[2] - dd.bb[0] : fw) < 80)) {
       badBox.push(`${o.path}: ${rec.boxes.length} ellipses on a piece too narrow to be an entrance`);
@@ -135,7 +142,11 @@ ok(await p.evaluate(() => !!document.querySelector(".hit-bar.hidden")), "the edi
 // never be what this gate is measuring.
 await p.evaluate((k) => {
   const d = window.__wiki?.state?.tuning?.scenery_hitbox;
-  if (d?.overrides) delete d.overrides[k];
+  // per-VARIATION keys now (2026-08-29): clear the piece-level record and
+  // every "<path>#<state>" under it, or the editor inherits one of them
+  if (d?.overrides) for (const key of Object.keys(d.overrides)) {
+    if (key === k || key.startsWith(`${k}#`)) delete d.overrides[key];
+  }
 }, PIECE.path);
 await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click());
 await p.waitForTimeout(1200);
@@ -296,8 +307,15 @@ await p.waitForTimeout(500);
 await p.evaluate(() => document.querySelector("#save-btn")?.click());
 await p.waitForTimeout(900);
 const s = saves.at(-1);
-ok(s?.file === "tuning/scenery_hitbox" && Object.keys(s.set ?? {})[0] === PIECE.path,
-  `Commit posts one delta per PIECE, keyed by its path (${Object.keys(s?.set ?? {})[0]})`);
+/* KEYED PER VARIATION (maintainer 2026-08-29: "You don't store one hitbox
+ * per variation ... it changes on ALL variations. Different variations can be
+ * different size."): "<path>#<state>", the state being the one on screen. */
+{
+  const k0 = Object.keys(s?.set ?? {})[0] ?? "";
+  const shown = await p.evaluate(() => window.__wikiHitbox?.variation ?? "");
+  ok(s?.file === "tuning/scenery_hitbox" && k0 === `${PIECE.path}#${shown}`,
+    `Commit posts one delta per VARIATION, keyed path#state (${k0})`);
+}
 ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty or otherwise");
 /* ---- 7. THE WALL TAG IS CORRECTABLE, both ways (maintainer 2026-08-28:
  * "you have tagged some scenery as wall scenery that is not wall scenery and
@@ -343,7 +361,9 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   // a piece the earlier flows have NOT touched — the fixture piece and every
   // path this run saved carry gate-made state, not the shipped proposal
   const gateTouched = new Set(saves.flatMap((s2) => Object.keys(s2.set ?? {})));
-  const autoPiece = PIECES.find((o) => LIVE.overrides?.[o.path]?.auto === true
+  // a proposal now lives under "<path>#<state>" (2026-08-29)
+  const isAutoPiece = (o) => Object.keys(o.animations ?? {}).some((st) => LIVE.overrides?.[`${o.path}#${st}`]?.auto === true);
+  const autoPiece = PIECES.find((o) => isAutoPiece(o)
     && !["MOUNTAIN_WALL", "WINDOW"].includes(o.type)
     && o !== PIECE && !gateTouched.has(o.path));
   await p.goto(`${W}#/objects/${autoPiece.id}`, { waitUntil: "load" });
@@ -367,13 +387,14 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
     `the proposal reads as a PROPOSAL, and the piece still counts as to-do ("${read0.slice(-60)}")`);
   await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click());
   await p.waitForTimeout(600);
-  // accept: same boxes, his record now
+  // accept: same boxes, his record now — under THIS variation's key
+  const autoKey = await p.evaluate((path) => `${path}#${window.__wikiHitbox?.variation ?? ""}`, autoPiece.path);
   await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Accept default hitbox/.test(x.textContent))?.click());
   await p.waitForTimeout(800);
   const after = await p.evaluate((k) => {
     const r = window.__wiki.state.tuning.scenery_hitbox.overrides?.[k];
     return { auto: r?.auto === true, n: r?.boxes?.length ?? 0, boxes: r?.boxes ?? [] };
-  }, autoPiece.path);
+  }, autoKey);
   ok(!after.auto && after.n === before.n
     && after.boxes.every((b2, i) => Math.abs(b2.ax - before.boxes[i].ax) < 0.01 && Math.abs(b2.rx - before.boxes[i].rx) < 0.01),
     `Accept stores the very boxes on screen, without the auto flag (${after.n} box)`);
@@ -385,8 +406,8 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   await p.evaluate(() => document.querySelector("#save-btn")?.click());
   await p.waitForTimeout(800);
   const sA = saves.at(-1);
-  ok(sA?.file === "tuning/scenery_hitbox" && sA.set?.[autoPiece.path]?.auto === undefined && Array.isArray(sA.set?.[autoPiece.path]?.boxes),
-    "Commit posts the accepted record clean of the flag");
+  ok(sA?.file === "tuning/scenery_hitbox" && sA.set?.[autoKey]?.auto === undefined && Array.isArray(sA.set?.[autoKey]?.boxes),
+    `Commit posts the accepted record clean of the flag (${autoKey})`);
 
   // ALWAYS SHOW: overlay with the editor closed, persisting across the pager
   await p.evaluate(() => { delete window.__wikiHitbox; });
@@ -394,7 +415,7 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   await p.waitForTimeout(900);
   const shown = await p.evaluate(() => ({ probe: !!window.__wikiHitbox, on: [...document.querySelectorAll("button")].find((x) => /Always show hitbox/.test(x.textContent))?.classList.contains("on") }));
   ok(shown.probe && shown.on, "Always show draws the hitbox with NO editor open");
-  const nextPiece = PIECES.find((o) => o !== autoPiece && o !== PIECE && LIVE.overrides?.[o.path]?.auto === true
+  const nextPiece = PIECES.find((o) => o !== autoPiece && o !== PIECE && isAutoPiece(o)
     && !["MOUNTAIN_WALL", "WINDOW"].includes(o.type) && !gateTouched.has(o.path));
   await p.goto(`${W}#/objects/${nextPiece.id}`, { waitUntil: "load" });
   await p.waitForTimeout(2200);
@@ -403,6 +424,45 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
     `…and stays on while browsing to the next piece — the mode is the review (${nextPiece.id})`);
   await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Always show hitbox/.test(x.textContent))?.click());
   await p.waitForTimeout(500);
+}
+/* ---- ONE HITBOX PER VARIATION, ISOLATED (maintainer 2026-08-29: "when I
+ * change the hitbox on a variation it changes on ALL variations/states.
+ * This is bad because different variations can be different size."). ---- */
+{
+  // a piece THIS RUN has not touched: earlier sections leave their fixture on
+  // "needs none", which has no box to widen
+  const touched = new Set(saves.flatMap((s2) => Object.keys(s2.set ?? {}).map((k) => k.split("#")[0])));
+  const multi = PIECES.find((o) => Object.keys(o.animations ?? {}).length >= 2
+    && !["MOUNTAIN_WALL", "WINDOW"].includes(o.type)
+    && o !== PIECE && !touched.has(o.path));
+  await p.goto(`${W}#/objects/${multi.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  const states = await p.evaluate(() => [...document.querySelectorAll(".state-seg button, .stateseg button, .seg button")].map((x) => x.textContent.trim()));
+  await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click());
+  await p.waitForTimeout(1000);
+  const read = () => p.evaluate(() => ({ v: window.__wikiHitbox?.variation, w: window.__wikiHitbox?.boxes?.[0]?.rx ?? null }));
+  const a0 = await read();
+  // widen THIS variation by driving its W rail to the max
+  await p.evaluate(() => { const w2 = [...document.querySelectorAll(".hit-bar .shadow-slider")][0]; w2.value = w2.max; w2.dispatchEvent(new Event("input", { bubbles: true })); w2.dispatchEvent(new Event("change", { bubbles: true })); });
+  await p.waitForTimeout(700);
+  const a1 = await read();
+  ok(a1.w > a0.w, `variation ${a1.v} takes a wider hitbox (${a0.w} → ${a1.w})`);
+  // switch to the NEXT variation: it must be untouched
+  const moved = await p.evaluate(() => {
+    const segs = [...document.querySelectorAll("button")].filter((b2) => b2.closest(".state-seg, .stateseg, .seg"));
+    const on = segs.findIndex((b2) => b2.classList.contains("on"));
+    const next = segs[(on + 1) % segs.length];
+    if (!next || segs.length < 2) return false;
+    next.scrollIntoView({ block: "center" }); next.click(); return true;
+  });
+  await p.waitForTimeout(1400);
+  const b0 = await read();
+  ok(moved && b0.v && b0.v !== a1.v, `the card switches to another variation (${a1.v} → ${b0.v})`);
+  ok(Math.abs(b0.w - a0.w) < 0.01 && b0.w !== a1.w,
+    `and ITS hitbox is untouched by the edit next door (${b0.w} vs the widened ${a1.w})`);
+  const keys = await p.evaluate(() => Object.keys(window.__wiki.state.tuning.scenery_hitbox?.overrides ?? {}).filter((k) => k.includes("#")));
+  ok(keys.length >= 1 && keys.every((k) => /#/.test(k)),
+    `the stored record names the variation (${keys[0]})`);
 }
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 

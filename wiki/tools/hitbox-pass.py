@@ -24,10 +24,17 @@ def is_wall(o):
         return ov["wall"]
     return o.get("type") in WALL_TYPES
 
-def south_frame(o):
-    """First state's south frame 0 as RGBA, plus (fw, fh)."""
+def south_frame(o, want=None):
+    """A state's south frame 0 as RGBA, plus (fw, fh).
+
+    PER VARIATION (maintainer 2026-08-29: "different variations can be
+    different size"), so `want` names the state; without it, the first state
+    that has art — the piece-level default the first pass wrote."""
     anims = o.get("animations") or {}
-    for st in anims.values():
+    items = [(want, anims.get(want))] if want else list(anims.items())
+    for _name, st in items:
+        if not st:
+            continue
         d = (st.get("dirs") or {}).get("south")
         if not d or not d.get("strip"):
             continue
@@ -50,8 +57,8 @@ def spans_of(cols, min_gap):
             out.append([x, x])
     return out
 
-def place(o):
-    im, fw, fh = south_frame(o)
+def place(o, want=None):
+    im, fw, fh = south_frame(o, want)
     if im is None:
         return None, "no art"
     a = im.getchannel("A").load()
@@ -195,16 +202,30 @@ if __name__ == "__main__":
         now = datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
         n = s = 0
         for o in OBJECTS:
-            if is_wall(o) or o["path"] in existing:
+            if is_wall(o):
                 s += 1
                 continue
-            boxes, why = place(o)
-            if boxes is None:
-                print("SKIP", o["path"], why)
-                continue
-            hb["overrides"][o["path"]] = {"boxes": boxes, "updated_at": now}
-            n += 1
+            for st_name in (o.get("animations") or {}):
+                key = f"{o['path']}#{st_name}"
+                # never overwrite a decision: his own records have no auto flag
+                prev = existing.get(key)
+                if prev is not None and not prev.get("auto"):
+                    s += 1
+                    continue
+                boxes, why = place(o, st_name)
+                if boxes is None:
+                    print("SKIP", key, why)
+                    continue
+                hb["overrides"][key] = {"boxes": boxes, "auto": True, "updated_at": now}
+                n += 1
+        # the superseded piece-level PROPOSALS go: every variation now has its
+        # own. His own piece-level decisions stay — they keep answering for a
+        # variation he has not set (see hitboxRaw's fallback).
+        stale = [k for k, v in hb["overrides"].items() if "#" not in k and v.get("auto")]
+        for k in stale:
+            del hb["overrides"][k]
+        print(f"dropped {len(stale)} superseded piece-level proposals")
         hb["updated_at"] = now
         json.dump(hb, open(f"{ROOT}/live/tuning/scenery_hitbox.json", "w"), indent=2)
         open(f"{ROOT}/live/tuning/scenery_hitbox.json", "a").write("\n")
-        print(f"wrote {n}, kept {s} (walls + already set)")
+        print(f"wrote {n} variation defaults, kept {s} (walls + his own decisions)")

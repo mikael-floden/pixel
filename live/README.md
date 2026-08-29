@@ -156,6 +156,13 @@ The laws around the flow:
   a hitbox and a way for the game to change rendering order."*). Each
   ellipse's centre line decides draw order: a player **above** it is drawn
   behind that part of the piece, **below** it in front.
+  - **Keyed per VARIATION** (2026-08-29, maintainer: *"different variations
+    can be different size"*): `overrides["<path>#<state>"]`, e.g.
+    `scenery/anchors/anchor_001#not_lit_2`. A record under the bare path is an
+    older piece-level decision and still answers for a variation that has none
+    of its own. `auto: true` marks the wiki's alpha-placed proposal, measured
+    from that variation's own art — provisional for the game, and still "no
+    hitbox yet" in the review until he accepts or edits it.
   - `overrides["scenery/<category>/<piece>"] = { boxes: [{ax, ay, rx, ry,
     rot}], updated_at }`. `rot` is degrees, 0–179 (an ellipse is symmetric
     under a half turn).
