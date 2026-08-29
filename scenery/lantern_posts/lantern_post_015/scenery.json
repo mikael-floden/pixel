@@ -145,6 +145,29 @@
         "south-east": "lantern_posts/lantern_post_015/not_lit_2/rotations/south-east.webp",
         "south-west": "lantern_posts/lantern_post_015/not_lit_2/rotations/south-west.webp",
         "south": "lantern_posts/lantern_post_015/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "f3a2dd86-4cf4-490d-b69a-62810de7dd5d",
+          "description": "This is the same picture in every frame. ONLY the hanging lantern swings a little to one side and back. The thing that moves is only MOVED, never redrawn: its own detail is copied from the first frame exactly -- every line, every edge, every colour, the same number of parts in the same places. It is displaced as one solid piece and nothing about it is reshaped. Nothing anywhere changes brightness or colour at any point; this is a movement only. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "lantern_posts/lantern_post_015/not_lit_2/animations/motion/00.webp",
+            "lantern_posts/lantern_post_015/not_lit_2/animations/motion/01.webp",
+            "lantern_posts/lantern_post_015/not_lit_2/animations/motion/02.webp",
+            "lantern_posts/lantern_post_015/not_lit_2/animations/motion/03.webp",
+            "lantern_posts/lantern_post_015/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_015/not_lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T18:33:09+00:00",
+          "brief": "B20"
+        }
       }
     },
     "NOT_LIT_3": {
