@@ -43,7 +43,7 @@ import os
 import re
 import sys
 from collections import Counter
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import factory
 import viewer_build
@@ -133,41 +133,43 @@ def main():
         return 0
 
     client = PixelLabClient()
-    by_piece = {}
-    for rel, state, oid, size, _c in todo:
-        by_piece.setdefault(rel, []).append((state, oid, size))
-
+    # ONE FLAT POOL ACROSS PIECES, not a pool per piece. These pieces average
+    # 2.2 flame states and 41 of them have exactly one, so a per-piece pool ran
+    # 1-3 jobs against 14 workers and the first 7 pieces took 16 minutes — a
+    # ~4x waste of wall time that the trees never exposed, because a tree
+    # carries 14 states and filled the pool on its own.
+    mans = {}
+    for rel, _s, _o, _z, _c in todo:
+        if rel not in mans:
+            mans[rel] = factory.read_manifest(rel) or {}
     done = 0
-    for i, rel in enumerate(sorted(by_piece), 1):
-        usd = (client.balance().get("credits") or {}).get("usd", 0)
-        if usd is not None and usd < args.min_usd:
-            print(f"\nstopping: credits ${usd:.2f} below the ${args.min_usd:.2f} "
-                  f"floor. Re-run to resume — finished flames are skipped.")
-            break
-        man = factory.read_manifest(rel) or {}
-        work = by_piece[rel]
-        ok = 0
-        with ThreadPoolExecutor(max_workers=A.PARALLEL) as pool:
-            futs = []
-            for state, oid, size in work:
-                dirs = ["south"] if size <= EIGHT_DIR_MAX else None
-                # adopt_existing=False: an anchor here may already carry the
-                # TREE wind animation, which is not this animation and must not
-                # be adopted as one.
-                futs.append(pool.submit(A.one, client, rel, man, state, oid,
-                                        False, NAME, FLAME_PROMPT, dirs, False))
-            for f in futs:
-                state, n, how = f.result()
-                if n:
-                    ok += 1
-                else:
-                    print(f"    x {rel} {state}: {how}")
-        done += ok
-        print(f"  = [{i}/{len(by_piece)}] {rel}: {ok}/{len(work)}  (total {done}/{len(todo)})")
-        A.commit_push(f"scenery: flame animation for {rel} ({ok} state(s))")
+    since_commit = 0
+    with ThreadPoolExecutor(max_workers=A.PARALLEL) as pool:
+        futs = {}
+        for rel, state, oid, size, _c in todo:
+            dirs = ["south"] if size <= EIGHT_DIR_MAX else None
+            # adopt_existing=False: a state may already carry the TREE wind
+            # animation, which is not this animation and must not be adopted.
+            futs[pool.submit(A.one, client, rel, mans[rel], state, oid, False,
+                             NAME, FLAME_PROMPT, dirs, False)] = rel
+        for f in as_completed(futs):
+            rel = futs[f]
+            state, n, how = f.result()
+            if n:
+                done += 1
+                since_commit += 1
+            else:
+                print(f"    x {rel} {state}: {how}")
+            if done % 10 == 0 and since_commit:
+                print(f"  = {done}/{len(todo)} states")
+            # COMMIT PERIODICALLY. Same reason as the tree run: this is long,
+            # the repo is shared, and art only on disk is art a bad rebase eats.
+            if since_commit >= 20:
+                A.commit_push(f"scenery: flame animations ({done}/{len(todo)} states)")
+                since_commit = 0
     viewer_build.build()
     A.commit_push(f"scenery: flame animations — {done} state(s) across "
-                  f"{len(by_piece)} piece(s)")
+                  f"{len(set(r for r, *_ in todo))} piece(s)")
     print(f"\nanimated {done}/{len(todo)} flame state(s)")
     return 0
 
