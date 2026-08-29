@@ -84,9 +84,22 @@ def run(apply=True, limit=1200):
             continue
         for j, t in zip(js, ts):
             d = slug(g, j["amplitude"], j["seed"])
-            if os.path.exists(os.path.join(d, "meta.json")) and not REPLACE:
-                skipped += 1
-                continue
+            mp = os.path.join(d, "meta.json")
+            if os.path.exists(mp):
+                # RE-IMPORT ONLY WHAT ACTUALLY CHANGED. --replace forced a re-download of
+                # all 225 sets every round, so a streaming loop never reached the
+                # alphabetically-last grounds before restarting - slime, snow and water
+                # sat at v1 through three rounds while the log said "pushed 225 sets".
+                # The recorded tile_id answers the precise question (is the set on disk
+                # the one we are about to import?), so an unchanged set is skipped even
+                # under --replace and a changed one is always taken.
+                try:
+                    have = json.load(open(mp)).get("tile_id")
+                except Exception:
+                    have = None
+                if have == t["id"]:
+                    skipped += 1
+                    continue
             if not apply:
                 written += 1
                 continue
