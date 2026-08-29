@@ -2577,7 +2577,8 @@
     "piece": "cauldron_camps/cauldron_camp_002",
     "state": "LIT_3"
    },
-   "redo": "Round 1 redrew the whole vessel -- the body narrowed and the stones changed -- while the brew barely moved. Narrowed to the top surface only."
+   "redo": "Round 1 redrew the whole vessel -- the body narrowed and the stones changed -- while the brew barely moved. Narrowed to the top surface only.",
+   "result": "FIXED. 21.5%->5.5% motion, 29.5%->3.0% drift. Narrowing the named part to 'the small green surface at the very top' held the whole vessel still."
   },
   "Y14": {
    "group": "washing_lines",
@@ -2644,7 +2645,8 @@
     "piece": "rope_swings/rope_swing_002",
     "state": "NOT_LIT_5"
    },
-   "redo": "Round 1 morphed the seat: the fan-shaped backrest vanished in frame 3 and returned in frame 5. It was redrawn instead of displaced. Rewritten to demand a rigid swing."
+   "redo": "Round 1 morphed the seat: the fan-shaped backrest vanished in frame 3 and returned in frame 5. It was redrawn instead of displaced. Rewritten to demand a rigid swing.",
+   "result": "PARTLY. 16.9%->12.9%. The rigid clause did not stop it: the seat's backrest still flattens in frames 3-4 and returns in frame 5. A shaped detail inside a moving object still gets redrawn."
   },
   "Y23": {
    "group": "bell_posts",
@@ -2667,7 +2669,8 @@
     "piece": "lantern_stands/lantern_stand_014",
     "state": "LIT_5"
    },
-   "redo": "Round 1 did not swing at all and the lantern was UNLIT for the first three frames -- the flame only appeared at frame 4. Rewritten to demand a rigid swing and a flame present in every frame."
+   "redo": "Round 1 did not swing at all and the lantern was UNLIT for the first three frames -- the flame only appeared at frame 4. Rewritten to demand a rigid swing and a flame present in every frame.",
+   "result": "PARTLY. The 'lit in every frame' clause WORKED -- the lantern is now burning in all five frames instead of dark until frame 4 -- but the lantern recoloured from amber to pale white and still barely swings."
   },
   "Y25": {
    "group": "lantern_stands",
@@ -3304,6 +3307,7 @@
  "_copy_note": "THE COPY TAIL: 'Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour.' State the hold as a COPY, never as a prohibition -- a material noun in a prompt is a thing to PAINT (the window lesson), so 'the stone arch does not move' paints a new arch. A copy instruction names nothing. MEASURED on the 12 batch-X redos (2026-08-29), and it does NOT work everywhere: it fixes the case where the moving thing is a SEPARATE object resting on or hanging off the piece (X24 market awning stopped flashing black, 21.5%->8.9%; X6 shrine 8.1%->4.0%; X20, X23, X25, X65 all steadier). It does NOT fix the case where the moving thing is LIGHT ON THE PIECE'S OWN SURFACE -- X39 ice roses, X46 frozen ice, X34 mushroom gills and X5 beacon post all still repaint their whole body, because there is no seam for the generator to copy across. For that shape, expect to reject rather than re-prompt. X18 (well) got WORSE, 15.3%->22.9%: the snow on the roof is what animates, and no wording has stopped it.",
  "_light_dies_note": "NEW FAULT, batch Y (2026-08-29): on a LIT piece the fire or glow can FADE AWAY across the loop instead of flickering -- a torch that ends unlit (Y2), a white blaze that shrinks to a candle (Y11), a pool of lantern light that disappears at frame 3 (Y6), a lantern that dims out (Y20), a gold spiral that loses its shape (Y35). Distinct from the whole-object repaint the copy tail addresses: here the named part is the ONLY thing that changes, and it changes by going out. The drift metric caught all five (29-61%). Candidate wording for the next attempt, untested: ask for the light to return to full brightness in the last frame by name, rather than relying on the generic 'last frame matches the first'.",
  "_flag_accuracy_note": "MY OWN FLAGS ARE NOT VERDICTS. Batch X: I flagged 7 as wrong and he kept 4 of them (X11, X35, X38, X54) while asking to redo 9 I had passed. Present flags as a shortlist to look at, never as a decision, and never delete on my own read alone.",
- "_rigid_note": "WHEN A HUNG OBJECT MORPHS INSTEAD OF SWINGING, add the rigid-body clause: 'It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline.' The copy tail protects everything AROUND the moving part but says nothing about the moving part itself, so the generator is free to redraw the very thing it was told to move -- Y22's swing seat lost its backrest in frame 3 and got it back in frame 5. Introduced 2026-08-29 on Y13/Y22/Y24; judge it on those results.",
- "_light_starts_off_note": "A LIT PIECE CAN COME ON LATE as well as go out: Y24's lantern was dark for frames 1-3 and only lit at frame 4. Counterpart to _light_dies_note. Fix under test: state that the flame is lit and clearly visible in EVERY single frame, including the first."
+ "_rigid_note": "THE RIGID-BODY CLAUSE ('It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline.') MEASURED 2026-08-29 on Y22/Y24: it does NOT reliably stop a shaped detail inside the moving object being redrawn -- Y22's swing seat still lost its backrest mid-loop. Keep using it (it costs nothing) but do not expect it to save a hung object with fine internal detail.",
+ "_light_starts_off_note": "A LIT PIECE CAN COME ON LATE as well as go out: Y24's lantern was dark for frames 1-3. FIX CONFIRMED 2026-08-29: adding 'It is lit and clearly visible in every single frame, including the first' put the flame in all five frames. Now on every LIT brief as standard.",
+ "_narrowing_note": "NARROWING THE NAMED PART IS THE STRONGEST LEVER FOUND SO FAR. Y13 went 21.5%->5.5% motion and 29.5%->3.0% drift purely by changing 'the green surface of the brew bubbles' to 'the small green surface at the very top of the brew moves'. Name the smallest possible region and give it a position ('at the very top', 'at the two ends', 'inside the arch'); the generator holds everything outside a region it can locate."
 }

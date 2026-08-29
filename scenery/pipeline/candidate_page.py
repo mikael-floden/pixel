@@ -21,8 +21,9 @@ FAMILIES = {
     "water":   ("Falling water", "#6f9ee0"),
     "plant":   ("Foliage", "#7fb85c"),
     "cloth":   ("Cloth", "#b98fd0"),
+    "smoke":   ("Smoke", "#9aa3b0"),
 }
-ORDER = ["flame", "hanging", "glow", "water", "plant", "cloth"]
+ORDER = ["flame", "hanging", "glow", "water", "smoke", "cloth", "plant"]
 
 
 def excluded(rows):
