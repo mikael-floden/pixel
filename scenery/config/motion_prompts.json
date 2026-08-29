@@ -2732,7 +2732,7 @@
   "X47": {
    "group": "cliff_falls",
    "moves": "The water falls.",
-   "reason": "not picked from batch X (maintainer). Do not re-propose this piece.",
+   "reason": "Held, not rejected (maintainer, 2026-08-29): \"It has to be connected to real water to look good, so it's not that easy.\" The animation is not the blocker — a waterfall only reads if it lands in water the map actually has, so placement has to be settled first. Re-propose once that is decided; do not treat as a failed brief.",
    "example": {
     "piece": "cliff_falls/cliff_fall_016",
     "state": "LIT_2"
@@ -2741,7 +2741,7 @@
   "X48": {
    "group": "cliff_falls",
    "moves": "The water falls.",
-   "reason": "not picked from batch X (maintainer). Do not re-propose this piece.",
+   "reason": "Held, not rejected (maintainer, 2026-08-29): \"It has to be connected to real water to look good, so it's not that easy.\" The animation is not the blocker — a waterfall only reads if it lands in water the map actually has, so placement has to be settled first. Re-propose once that is decided; do not treat as a failed brief.",
    "example": {
     "piece": "cliff_falls/cliff_fall_001",
     "state": "LIT_1"
@@ -2750,7 +2750,7 @@
   "X49": {
    "group": "cliff_falls",
    "moves": "The water falls.",
-   "reason": "not picked from batch X (maintainer). Do not re-propose this piece.",
+   "reason": "Held, not rejected (maintainer, 2026-08-29): \"It has to be connected to real water to look good, so it's not that easy.\" The animation is not the blocker — a waterfall only reads if it lands in water the map actually has, so placement has to be settled first. Re-propose once that is decided; do not treat as a failed brief.",
    "example": {
     "piece": "cliff_falls/cliff_fall_004",
     "state": "LIT_2"
@@ -2770,5 +2770,6 @@
  "_loop_note": "From 2026-08-29 every revised prompt closes the loop explicitly — the last frame returns to the first, and nothing may darken below frame one. Added after he reported 'dark paint entering the animation at the end' on R27, where the final frame drained to brown instead of coming back to gold.",
  "_scale_note": "2026-08-29: the three worst results all showed the WHOLE OBJECT rescaling between frames, and in each the moving thing WAS the subject, filling the sprite. Every success so far moves a small fraction of the image instead — a lantern on a post, a bird on a totem. Revised prompts now add 'Nothing in the picture may change size, shape or position' and prefer a subject that occupies little of the frame.",
  "_sundial_note": "The sundial shadow (N19, U6, U27) has been offered in three separate lists and passed over every time. Not proposing it again.",
- "_calmer_note": "Do not use the word 'calmer' in a prompt. Measured: S1 went 4.5% -> 19.5% when asked to be barely visible, and Q19 5.3% -> 15.8%. State the motion concretely instead — 'each shifting by a single pixel' — and say what does not move."
+ "_calmer_note": "Do not use the word 'calmer' in a prompt. Measured: S1 went 4.5% -> 19.5% when asked to be barely visible, and Q19 5.3% -> 15.8%. State the motion concretely instead — 'each shifting by a single pixel' — and say what does not move.",
+ "_waterfall_note": "Waterfalls (cliff_falls) are held pending PLACEMENT, not animation quality. A fall needs real water at its foot or it reads as pouring onto dirt; that is a maps2 question about where the piece may be dropped, and the maintainer is deciding it. Fountains and pumps do NOT have this problem — they carry their own basin, which is why batch X kept all four and dropped all three falls."
 }
