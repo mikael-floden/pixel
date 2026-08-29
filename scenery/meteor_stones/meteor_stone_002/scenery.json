@@ -35,7 +35,29 @@
     "LIT_1": {
       "sprite": "meteor_stones/meteor_stone_002/sprite.webp",
       "pixellab_object_id": "85531ce9-3515-4606-ada1-d8a4a62811b7",
-      "generated_at": "2026-08-14T01:10:26+00:00"
+      "generated_at": "2026-08-14T01:10:26+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "0a9019e4-0e21-471c-b47f-047f0f120586",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "meteor_stones/meteor_stone_002/animations/flame/00.webp",
+            "meteor_stones/meteor_stone_002/animations/flame/01.webp",
+            "meteor_stones/meteor_stone_002/animations/flame/02.webp",
+            "meteor_stones/meteor_stone_002/animations/flame/03.webp",
+            "meteor_stones/meteor_stone_002/animations/flame/04.webp"
+          ],
+          "strip": "meteor_stones/meteor_stone_002/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:06:20+00:00"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "meteor_stones/meteor_stone_002/lit_2/sprite.webp",
@@ -43,7 +65,29 @@
       "generated_at": "2026-08-16T17:56:56+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5822,
-      "glow_score": 0.0155
+      "glow_score": 0.0155,
+      "animations": {
+        "flame": {
+          "group_id": "69149001-2dc0-4b38-a904-19c3b90b2ba4",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "meteor_stones/meteor_stone_002/lit_2/animations/flame/00.webp",
+            "meteor_stones/meteor_stone_002/lit_2/animations/flame/01.webp",
+            "meteor_stones/meteor_stone_002/lit_2/animations/flame/02.webp",
+            "meteor_stones/meteor_stone_002/lit_2/animations/flame/03.webp",
+            "meteor_stones/meteor_stone_002/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "meteor_stones/meteor_stone_002/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:06:08+00:00"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "meteor_stones/meteor_stone_002/lit_3/sprite.webp",
@@ -51,7 +95,29 @@
       "generated_at": "2026-08-16T17:56:43+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4622,
-      "glow_score": 0.0054
+      "glow_score": 0.0054,
+      "animations": {
+        "flame": {
+          "group_id": "5c26f486-be42-4254-88cb-2a831ca8ea7a",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "meteor_stones/meteor_stone_002/lit_3/animations/flame/00.webp",
+            "meteor_stones/meteor_stone_002/lit_3/animations/flame/01.webp",
+            "meteor_stones/meteor_stone_002/lit_3/animations/flame/02.webp",
+            "meteor_stones/meteor_stone_002/lit_3/animations/flame/03.webp",
+            "meteor_stones/meteor_stone_002/lit_3/animations/flame/04.webp"
+          ],
+          "strip": "meteor_stones/meteor_stone_002/lit_3/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:06:42+00:00"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "meteor_stones/meteor_stone_002/lit_4/sprite.webp",
@@ -59,7 +125,29 @@
       "generated_at": "2026-08-16T17:57:35+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4814,
-      "glow_score": 0.0121
+      "glow_score": 0.0121,
+      "animations": {
+        "flame": {
+          "group_id": "0aaeed39-6ded-4aad-a892-853cac5aeed8",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "meteor_stones/meteor_stone_002/lit_4/animations/flame/00.webp",
+            "meteor_stones/meteor_stone_002/lit_4/animations/flame/01.webp",
+            "meteor_stones/meteor_stone_002/lit_4/animations/flame/02.webp",
+            "meteor_stones/meteor_stone_002/lit_4/animations/flame/03.webp",
+            "meteor_stones/meteor_stone_002/lit_4/animations/flame/04.webp"
+          ],
+          "strip": "meteor_stones/meteor_stone_002/lit_4/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:06:53+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "meteor_stones/meteor_stone_002/not_lit_1/sprite.webp",

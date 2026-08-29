@@ -45,7 +45,29 @@
       "generated_at": "2026-08-16T20:33:00+00:00",
       "glow_concept": "a small pilot flame under the boiler",
       "difference_from_source": 0.6766,
-      "glow_score": 0.0225
+      "glow_score": 0.0225,
+      "animations": {
+        "flame": {
+          "group_id": "47b6266c-f869-4ec1-ba10-0b42c2abb2a2",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rusted_machines/rusted_machine_001/lit_2/animations/flame/00.webp",
+            "rusted_machines/rusted_machine_001/lit_2/animations/flame/01.webp",
+            "rusted_machines/rusted_machine_001/lit_2/animations/flame/02.webp",
+            "rusted_machines/rusted_machine_001/lit_2/animations/flame/03.webp",
+            "rusted_machines/rusted_machine_001/lit_2/animations/flame/04.webp"
+          ],
+          "strip": "rusted_machines/rusted_machine_001/lit_2/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:07:39+00:00"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "rusted_machines/rusted_machine_001/sprite.webp",

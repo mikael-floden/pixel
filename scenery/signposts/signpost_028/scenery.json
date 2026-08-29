@@ -35,7 +35,29 @@
     "LIT_1": {
       "sprite": "signposts/signpost_028/sprite.webp",
       "pixellab_object_id": "2a01fa09-625f-4910-9887-295ea32e140b",
-      "generated_at": "2026-08-14T01:17:02+00:00"
+      "generated_at": "2026-08-14T01:17:02+00:00",
+      "animations": {
+        "flame": {
+          "group_id": "1c786d2c-8b52-4737-aecc-95e70bdd1301",
+          "description": "Animate the flame only",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "signposts/signpost_028/animations/flame/00.webp",
+            "signposts/signpost_028/animations/flame/01.webp",
+            "signposts/signpost_028/animations/flame/02.webp",
+            "signposts/signpost_028/animations/flame/03.webp",
+            "signposts/signpost_028/animations/flame/04.webp"
+          ],
+          "strip": "signposts/signpost_028/animations/flame__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-29T07:07:28+00:00"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "signposts/signpost_028/lit_2/sprite.webp",
