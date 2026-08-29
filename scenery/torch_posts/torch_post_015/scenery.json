@@ -35,7 +35,12 @@
     "NOT_LIT_1": {
       "sprite": "torch_posts/torch_post_015/sprite.webp",
       "pixellab_object_id": "774a83f8-0de1-4340-bae8-a739b09bfd99",
-      "generated_at": "2026-08-14T00:44:50+00:00"
+      "generated_at": "2026-08-14T00:44:50+00:00",
+      "rotations": {
+        "south-east": "torch_posts/torch_post_015/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_015/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_015/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "torch_posts/torch_post_015/not_lit_2/sprite.webp",
@@ -43,7 +48,12 @@
       "generated_at": "2026-08-17T11:27:16+00:00",
       "glow_concept": null,
       "difference_from_source": 0.253,
-      "glow_score": 0.0077
+      "glow_score": 0.0077,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_015/not_lit_2/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_015/not_lit_2/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_015/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "torch_posts/torch_post_015/not_lit_3/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-17T11:27:46+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5913,
-      "glow_score": 0.0157
+      "glow_score": 0.0157,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_015/not_lit_3/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_015/not_lit_3/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_015/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "torch_posts/torch_post_015/not_lit_4/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-17T11:28:33+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3355,
-      "glow_score": 0.0022
+      "glow_score": 0.0022,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_015/not_lit_4/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_015/not_lit_4/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_015/not_lit_4/sprite.webp"
+      }
     }
   }
 }

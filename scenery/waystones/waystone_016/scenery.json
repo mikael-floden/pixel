@@ -35,7 +35,12 @@
     "LIT_1": {
       "sprite": "waystones/waystone_016/sprite.webp",
       "pixellab_object_id": "1b14d3a5-4c60-4f8d-8fd4-5b599de69fc9",
-      "generated_at": "2026-08-14T00:32:17+00:00"
+      "generated_at": "2026-08-14T00:32:17+00:00",
+      "rotations": {
+        "south-east": "waystones/waystone_016/rotations/south-east.webp",
+        "south-west": "waystones/waystone_016/rotations/south-west.webp",
+        "south": "waystones/waystone_016/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "waystones/waystone_016/lit_3/sprite.webp",
@@ -43,7 +48,12 @@
       "generated_at": "2026-08-17T12:37:05+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2594,
-      "glow_score": 0.051
+      "glow_score": 0.051,
+      "rotations": {
+        "south-east": "waystones/waystone_016/lit_3/rotations/south-east.webp",
+        "south-west": "waystones/waystone_016/lit_3/rotations/south-west.webp",
+        "south": "waystones/waystone_016/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "waystones/waystone_016/lit_4/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-17T12:37:07+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5634,
-      "glow_score": 0.0637
+      "glow_score": 0.0637,
+      "rotations": {
+        "south-east": "waystones/waystone_016/lit_4/rotations/south-east.webp",
+        "south-west": "waystones/waystone_016/lit_4/rotations/south-west.webp",
+        "south": "waystones/waystone_016/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "waystones/waystone_016/not_lit_1/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-17T12:37:08+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5606,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "waystones/waystone_016/not_lit_1/rotations/south-east.webp",
+        "south-west": "waystones/waystone_016/not_lit_1/rotations/south-west.webp",
+        "south": "waystones/waystone_016/not_lit_1/sprite.webp"
+      }
     }
   }
 }

@@ -34,7 +34,12 @@
     "LIT_1": {
       "sprite": "tables/table_010/sprite.webp",
       "pixellab_object_id": "a0d924ad-cfba-4d13-97f7-6c0fb95c851e",
-      "generated_at": "2026-08-13T21:35:44+00:00"
+      "generated_at": "2026-08-13T21:35:44+00:00",
+      "rotations": {
+        "south-east": "tables/table_010/rotations/south-east.webp",
+        "south-west": "tables/table_010/rotations/south-west.webp",
+        "south": "tables/table_010/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "tables/table_010/lit_2/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-16T22:57:22+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5809,
-      "glow_score": 0.0595
+      "glow_score": 0.0595,
+      "rotations": {
+        "south-east": "tables/table_010/lit_2/rotations/south-east.webp",
+        "south-west": "tables/table_010/lit_2/rotations/south-west.webp",
+        "south": "tables/table_010/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "tables/table_010/lit_3/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-16T22:56:05+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3681,
-      "glow_score": 0.056
+      "glow_score": 0.056,
+      "rotations": {
+        "south-east": "tables/table_010/lit_3/rotations/south-east.webp",
+        "south-west": "tables/table_010/lit_3/rotations/south-west.webp",
+        "south": "tables/table_010/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "tables/table_010/lit_4/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-16T22:57:12+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5927,
-      "glow_score": 0.0554
+      "glow_score": 0.0554,
+      "rotations": {
+        "south-east": "tables/table_010/lit_4/rotations/south-east.webp",
+        "south-west": "tables/table_010/lit_4/rotations/south-west.webp",
+        "south": "tables/table_010/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "tables/table_010/not_lit_2/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-16T22:58:55+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5267,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "tables/table_010/not_lit_2/rotations/south-east.webp",
+        "south-west": "tables/table_010/not_lit_2/rotations/south-west.webp",
+        "south": "tables/table_010/not_lit_2/sprite.webp"
+      }
     }
   }
 }

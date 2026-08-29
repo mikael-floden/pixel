@@ -37,7 +37,12 @@
       "generated_at": "2026-08-17T11:37:59+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7183,
-      "glow_score": 0.0209
+      "glow_score": 0.0209,
+      "rotations": {
+        "south-east": "wall_hangings/wall_hanging_010/lit_2/rotations/south-east.webp",
+        "south-west": "wall_hangings/wall_hanging_010/lit_2/rotations/south-west.webp",
+        "south": "wall_hangings/wall_hanging_010/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "wall_hangings/wall_hanging_010/lit_3/sprite.webp",
@@ -45,7 +50,12 @@
       "generated_at": "2026-08-17T11:38:00+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8707,
-      "glow_score": 0.2285
+      "glow_score": 0.2285,
+      "rotations": {
+        "south-east": "wall_hangings/wall_hanging_010/lit_3/rotations/south-east.webp",
+        "south-west": "wall_hangings/wall_hanging_010/lit_3/rotations/south-west.webp",
+        "south": "wall_hangings/wall_hanging_010/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "wall_hangings/wall_hanging_010/lit_4/sprite.webp",
@@ -53,13 +63,23 @@
       "generated_at": "2026-08-17T11:38:57+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6248,
-      "glow_score": 0.1301
+      "glow_score": 0.1301,
+      "rotations": {
+        "south-east": "wall_hangings/wall_hanging_010/lit_4/rotations/south-east.webp",
+        "south-west": "wall_hangings/wall_hanging_010/lit_4/rotations/south-west.webp",
+        "south": "wall_hangings/wall_hanging_010/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "wall_hangings/wall_hanging_010/sprite.webp",
       "pixellab_object_id": "5d6a84fe-ddd4-4fb5-a108-7e0d648b94d9",
       "generated_at": "2026-08-13T22:53:34+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "wall_hangings/wall_hanging_010/rotations/south-east.webp",
+        "south-west": "wall_hangings/wall_hanging_010/rotations/south-west.webp",
+        "south": "wall_hangings/wall_hanging_010/sprite.webp"
+      }
     }
   }
 }

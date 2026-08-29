@@ -39,7 +39,12 @@
       "glow_concept": null,
       "difference_from_source": 0.711,
       "glow_score": 0.2003,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "washing_lines/washing_line_016/not_lit_3/rotations/south-east.webp",
+        "south-west": "washing_lines/washing_line_016/not_lit_3/rotations/south-west.webp",
+        "south": "washing_lines/washing_line_016/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "washing_lines/washing_line_016/sprite.webp",
@@ -49,7 +54,12 @@
       "difference_from_source": 0.6253,
       "glow_score": 0.1716,
       "relit_from": "LIT_3",
-      "replaced_anchor": "LIT_1"
+      "replaced_anchor": "LIT_1",
+      "rotations": {
+        "south-east": "washing_lines/washing_line_016/rotations/south-east.webp",
+        "south-west": "washing_lines/washing_line_016/rotations/south-west.webp",
+        "south": "washing_lines/washing_line_016/sprite.webp"
+      }
     }
   }
 }

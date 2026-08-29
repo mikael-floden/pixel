@@ -34,7 +34,12 @@
     "LIT_1": {
       "sprite": "trailing_planters/trailing_planter_004/sprite.webp",
       "pixellab_object_id": "f25be62c-da44-4f88-bcb7-426da81421c7",
-      "generated_at": "2026-08-13T20:37:16+00:00"
+      "generated_at": "2026-08-13T20:37:16+00:00",
+      "rotations": {
+        "south-east": "trailing_planters/trailing_planter_004/rotations/south-east.webp",
+        "south-west": "trailing_planters/trailing_planter_004/rotations/south-west.webp",
+        "south": "trailing_planters/trailing_planter_004/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "trailing_planters/trailing_planter_004/lit_3/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-17T11:36:00+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2945,
-      "glow_score": 0.0284
+      "glow_score": 0.0284,
+      "rotations": {
+        "south-east": "trailing_planters/trailing_planter_004/lit_3/rotations/south-east.webp",
+        "south-west": "trailing_planters/trailing_planter_004/lit_3/rotations/south-west.webp",
+        "south": "trailing_planters/trailing_planter_004/lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "trailing_planters/trailing_planter_004/not_lit_3/sprite.webp",
@@ -51,7 +61,12 @@
       "glow_concept": null,
       "difference_from_source": 0.6803,
       "glow_score": 0.0122,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "trailing_planters/trailing_planter_004/not_lit_3/rotations/south-east.webp",
+        "south-west": "trailing_planters/trailing_planter_004/not_lit_3/rotations/south-west.webp",
+        "south": "trailing_planters/trailing_planter_004/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "trailing_planters/trailing_planter_004/not_lit_4/sprite.webp",
@@ -60,7 +75,12 @@
       "glow_concept": null,
       "difference_from_source": 0.6663,
       "glow_score": 0.0191,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "trailing_planters/trailing_planter_004/not_lit_4/rotations/south-east.webp",
+        "south-west": "trailing_planters/trailing_planter_004/not_lit_4/rotations/south-west.webp",
+        "south": "trailing_planters/trailing_planter_004/not_lit_4/sprite.webp"
+      }
     }
   }
 }

@@ -35,7 +35,12 @@
     "LIT_1": {
       "sprite": "tables/table_016/sprite.webp",
       "pixellab_object_id": "6a4baef3-d249-4a66-ae81-2ce9391d357a",
-      "generated_at": "2026-08-14T01:46:17+00:00"
+      "generated_at": "2026-08-14T01:46:17+00:00",
+      "rotations": {
+        "south-east": "tables/table_016/rotations/south-east.webp",
+        "south-west": "tables/table_016/rotations/south-west.webp",
+        "south": "tables/table_016/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "tables/table_016/lit_2/sprite.webp",
@@ -43,7 +48,12 @@
       "generated_at": "2026-08-16T23:02:37+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5484,
-      "glow_score": 0.1003
+      "glow_score": 0.1003,
+      "rotations": {
+        "south-east": "tables/table_016/lit_2/rotations/south-east.webp",
+        "south-west": "tables/table_016/lit_2/rotations/south-west.webp",
+        "south": "tables/table_016/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "tables/table_016/lit_3/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-16T23:03:06+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5355,
-      "glow_score": 0.2278
+      "glow_score": 0.2278,
+      "rotations": {
+        "south-east": "tables/table_016/lit_3/rotations/south-east.webp",
+        "south-west": "tables/table_016/lit_3/rotations/south-west.webp",
+        "south": "tables/table_016/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "tables/table_016/lit_4/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-16T23:03:25+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6068,
-      "glow_score": 0.1941
+      "glow_score": 0.1941,
+      "rotations": {
+        "south-east": "tables/table_016/lit_4/rotations/south-east.webp",
+        "south-west": "tables/table_016/lit_4/rotations/south-west.webp",
+        "south": "tables/table_016/lit_4/sprite.webp"
+      }
     }
   }
 }

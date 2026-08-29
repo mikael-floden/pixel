@@ -35,7 +35,12 @@
       "sprite": "waystones/waystone_010/sprite.webp",
       "pixellab_object_id": "f970f4eb-baf6-46bb-9977-f14d893cd439",
       "generated_at": "2026-08-13T20:46:10+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "waystones/waystone_010/rotations/south-east.webp",
+        "south-west": "waystones/waystone_010/rotations/south-west.webp",
+        "south": "waystones/waystone_010/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "waystones/waystone_010/not_lit_4/sprite.webp",
@@ -44,7 +49,12 @@
       "glow_concept": null,
       "difference_from_source": 0.3383,
       "glow_score": 0.0715,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "waystones/waystone_010/not_lit_4/rotations/south-east.webp",
+        "south-west": "waystones/waystone_010/not_lit_4/rotations/south-west.webp",
+        "south": "waystones/waystone_010/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "waystones/waystone_010/not_lit_5/sprite.webp",
@@ -53,7 +63,12 @@
       "glow_concept": null,
       "difference_from_source": 0.425,
       "glow_score": 0.0714,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "waystones/waystone_010/not_lit_5/rotations/south-east.webp",
+        "south-west": "waystones/waystone_010/not_lit_5/rotations/south-west.webp",
+        "south": "waystones/waystone_010/not_lit_5/sprite.webp"
+      }
     },
     "NOT_LIT_6": {
       "sprite": "waystones/waystone_010/not_lit_6/sprite.webp",
@@ -62,7 +77,12 @@
       "glow_concept": null,
       "difference_from_source": 0.5236,
       "glow_score": 0.0653,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "waystones/waystone_010/not_lit_6/rotations/south-east.webp",
+        "south-west": "waystones/waystone_010/not_lit_6/rotations/south-west.webp",
+        "south": "waystones/waystone_010/not_lit_6/sprite.webp"
+      }
     }
   }
 }

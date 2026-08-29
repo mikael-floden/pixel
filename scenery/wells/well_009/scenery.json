@@ -34,7 +34,12 @@
     "NOT_LIT_1": {
       "sprite": "wells/well_009/sprite.webp",
       "pixellab_object_id": "77f73b9c-0ba4-47fb-879e-a208cdc1e591",
-      "generated_at": "2026-08-13T20:47:53+00:00"
+      "generated_at": "2026-08-13T20:47:53+00:00",
+      "rotations": {
+        "south-east": "wells/well_009/rotations/south-east.webp",
+        "south-west": "wells/well_009/rotations/south-west.webp",
+        "south": "wells/well_009/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "wells/well_009/not_lit_2/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-17T12:52:53+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6881,
-      "glow_score": 0.2077
+      "glow_score": 0.2077,
+      "rotations": {
+        "south-east": "wells/well_009/not_lit_2/rotations/south-east.webp",
+        "south-west": "wells/well_009/not_lit_2/rotations/south-west.webp",
+        "south": "wells/well_009/not_lit_2/sprite.webp"
+      }
     }
   }
 }

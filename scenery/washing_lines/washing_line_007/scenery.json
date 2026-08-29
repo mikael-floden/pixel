@@ -37,12 +37,22 @@
       "generated_at": "2026-08-17T12:25:14+00:00",
       "glow_concept": "embroidered hems stitched in shining thread",
       "difference_from_source": 0.958,
-      "glow_score": 0.1717
+      "glow_score": 0.1717,
+      "rotations": {
+        "south-east": "washing_lines/washing_line_007/lit_2/rotations/south-east.webp",
+        "south-west": "washing_lines/washing_line_007/lit_2/rotations/south-west.webp",
+        "south": "washing_lines/washing_line_007/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "washing_lines/washing_line_007/sprite.webp",
       "pixellab_object_id": "98579073-7272-4c7a-bcd6-e5f14d0e2e0b",
-      "generated_at": "2026-08-13T21:47:13+00:00"
+      "generated_at": "2026-08-13T21:47:13+00:00",
+      "rotations": {
+        "south-east": "washing_lines/washing_line_007/rotations/south-east.webp",
+        "south-west": "washing_lines/washing_line_007/rotations/south-west.webp",
+        "south": "washing_lines/washing_line_007/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "washing_lines/washing_line_007/not_lit_2/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-17T11:53:24+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6463,
-      "glow_score": 0.0032
+      "glow_score": 0.0032,
+      "rotations": {
+        "south-east": "washing_lines/washing_line_007/not_lit_2/rotations/south-east.webp",
+        "south-west": "washing_lines/washing_line_007/not_lit_2/rotations/south-west.webp",
+        "south": "washing_lines/washing_line_007/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "washing_lines/washing_line_007/not_lit_3/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-17T11:53:14+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5454,
-      "glow_score": 0.072
+      "glow_score": 0.072,
+      "rotations": {
+        "south-east": "washing_lines/washing_line_007/not_lit_3/rotations/south-east.webp",
+        "south-west": "washing_lines/washing_line_007/not_lit_3/rotations/south-west.webp",
+        "south": "washing_lines/washing_line_007/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "washing_lines/washing_line_007/not_lit_4/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-17T11:55:15+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6518,
-      "glow_score": 0.0153
+      "glow_score": 0.0153,
+      "rotations": {
+        "south-east": "washing_lines/washing_line_007/not_lit_4/rotations/south-east.webp",
+        "south-west": "washing_lines/washing_line_007/not_lit_4/rotations/south-west.webp",
+        "south": "washing_lines/washing_line_007/not_lit_4/sprite.webp"
+      }
     }
   }
 }

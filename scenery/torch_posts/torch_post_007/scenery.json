@@ -37,7 +37,12 @@
       "generated_at": "2026-08-17T11:21:19+00:00",
       "glow_concept": "ember-crusted head glowing without open flame",
       "difference_from_source": 0.9127,
-      "glow_score": 0.0339
+      "glow_score": 0.0339,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_007/lit_1/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_007/lit_1/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_007/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "torch_posts/torch_post_007/lit_2/sprite.webp",
@@ -45,12 +50,22 @@
       "generated_at": "2026-08-17T11:22:13+00:00",
       "glow_concept": "halo of glow-moths circling the head",
       "difference_from_source": 0.82,
-      "glow_score": 0.0502
+      "glow_score": 0.0502,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_007/lit_2/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_007/lit_2/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_007/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "torch_posts/torch_post_007/sprite.webp",
       "pixellab_object_id": "231927b3-e8cc-48db-9eb9-bfc57fd82a56",
-      "generated_at": "2026-08-13T13:56:24+00:00"
+      "generated_at": "2026-08-13T13:56:24+00:00",
+      "rotations": {
+        "south-east": "torch_posts/torch_post_007/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_007/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_007/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "torch_posts/torch_post_007/not_lit_2/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-17T11:19:52+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6725,
-      "glow_score": 0.0176
+      "glow_score": 0.0176,
+      "rotations": {
+        "south-east": "torch_posts/torch_post_007/not_lit_2/rotations/south-east.webp",
+        "south-west": "torch_posts/torch_post_007/not_lit_2/rotations/south-west.webp",
+        "south": "torch_posts/torch_post_007/not_lit_2/sprite.webp"
+      }
     }
   }
 }

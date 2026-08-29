@@ -38,12 +38,22 @@
       "generated_at": "2026-08-17T11:48:28+00:00",
       "glow_concept": "jars glowing on the mounted shelf",
       "difference_from_source": 0.3545,
-      "glow_score": 0.1302
+      "glow_score": 0.1302,
+      "rotations": {
+        "south-east": "wall_hangings/wall_hanging_019/lit_1/rotations/south-east.webp",
+        "south-west": "wall_hangings/wall_hanging_019/lit_1/rotations/south-west.webp",
+        "south": "wall_hangings/wall_hanging_019/lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "wall_hangings/wall_hanging_019/sprite.webp",
       "pixellab_object_id": "69097aea-0820-48fc-a023-c54d35e26d1f",
-      "generated_at": "2026-08-14T02:47:10+00:00"
+      "generated_at": "2026-08-14T02:47:10+00:00",
+      "rotations": {
+        "south-east": "wall_hangings/wall_hanging_019/rotations/south-east.webp",
+        "south-west": "wall_hangings/wall_hanging_019/rotations/south-west.webp",
+        "south": "wall_hangings/wall_hanging_019/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "wall_hangings/wall_hanging_019/not_lit_2/sprite.webp",
@@ -51,7 +61,12 @@
       "generated_at": "2026-08-17T11:47:58+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2734,
-      "glow_score": 0.0075
+      "glow_score": 0.0075,
+      "rotations": {
+        "south-east": "wall_hangings/wall_hanging_019/not_lit_2/rotations/south-east.webp",
+        "south-west": "wall_hangings/wall_hanging_019/not_lit_2/rotations/south-west.webp",
+        "south": "wall_hangings/wall_hanging_019/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "wall_hangings/wall_hanging_019/not_lit_4/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-17T11:48:17+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4087,
-      "glow_score": 0.0149
+      "glow_score": 0.0149,
+      "rotations": {
+        "south-east": "wall_hangings/wall_hanging_019/not_lit_4/rotations/south-east.webp",
+        "south-west": "wall_hangings/wall_hanging_019/not_lit_4/rotations/south-west.webp",
+        "south": "wall_hangings/wall_hanging_019/not_lit_4/sprite.webp"
+      }
     }
   }
 }

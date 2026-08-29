@@ -38,7 +38,12 @@
       "generated_at": "2026-08-17T13:10:14+00:00",
       "glow_concept": "soft blue soul-light rising from the water below",
       "difference_from_source": 0.815,
-      "glow_score": 0.07
+      "glow_score": 0.07,
+      "rotations": {
+        "south-east": "wells/well_019/lit_1/rotations/south-east.webp",
+        "south-west": "wells/well_019/lit_1/rotations/south-west.webp",
+        "south": "wells/well_019/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "wells/well_019/lit_2/sprite.webp",
@@ -46,12 +51,22 @@
       "generated_at": "2026-08-17T13:14:30+00:00",
       "glow_concept": "hanging tin lantern lit under the roof peak",
       "difference_from_source": 0.2839,
-      "glow_score": 0.0565
+      "glow_score": 0.0565,
+      "rotations": {
+        "south-east": "wells/well_019/lit_2/rotations/south-east.webp",
+        "south-west": "wells/well_019/lit_2/rotations/south-west.webp",
+        "south": "wells/well_019/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "wells/well_019/sprite.webp",
       "pixellab_object_id": "7065b2fd-0311-4bf0-9178-cc0d987e023a",
-      "generated_at": "2026-08-14T00:50:07+00:00"
+      "generated_at": "2026-08-14T00:50:07+00:00",
+      "rotations": {
+        "south-east": "wells/well_019/rotations/south-east.webp",
+        "south-west": "wells/well_019/rotations/south-west.webp",
+        "south": "wells/well_019/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "wells/well_019/not_lit_2/sprite.webp",
@@ -59,7 +74,12 @@
       "generated_at": "2026-08-17T13:08:00+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4044,
-      "glow_score": 0.0066
+      "glow_score": 0.0066,
+      "rotations": {
+        "south-east": "wells/well_019/not_lit_2/rotations/south-east.webp",
+        "south-west": "wells/well_019/not_lit_2/rotations/south-west.webp",
+        "south": "wells/well_019/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "wells/well_019/not_lit_3/sprite.webp",
@@ -67,7 +87,12 @@
       "generated_at": "2026-08-17T13:08:29+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4873,
-      "glow_score": 0.0147
+      "glow_score": 0.0147,
+      "rotations": {
+        "south-east": "wells/well_019/not_lit_3/rotations/south-east.webp",
+        "south-west": "wells/well_019/not_lit_3/rotations/south-west.webp",
+        "south": "wells/well_019/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "wells/well_019/not_lit_4/sprite.webp",
@@ -75,7 +100,12 @@
       "generated_at": "2026-08-17T13:11:44+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5661,
-      "glow_score": 0.0023
+      "glow_score": 0.0023,
+      "rotations": {
+        "south-east": "wells/well_019/not_lit_4/rotations/south-east.webp",
+        "south-west": "wells/well_019/not_lit_4/rotations/south-west.webp",
+        "south": "wells/well_019/not_lit_4/sprite.webp"
+      }
     }
   }
 }

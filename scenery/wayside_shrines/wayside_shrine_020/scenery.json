@@ -56,6 +56,11 @@
           ],
           "generated_at": "2026-08-29T07:13:48+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_020/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_020/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_020/sprite.webp"
       }
     },
     "LIT_4": {
@@ -86,6 +91,11 @@
           ],
           "generated_at": "2026-08-29T07:13:10+00:00"
         }
+      },
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_020/lit_4/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_020/lit_4/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_020/lit_4/sprite.webp"
       }
     },
     "NOT_LIT_3": {
@@ -95,7 +105,12 @@
       "glow_concept": null,
       "difference_from_source": 0.517,
       "glow_score": 0.0015,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_020/not_lit_3/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_020/not_lit_3/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_020/not_lit_3/sprite.webp"
+      }
     }
   }
 }

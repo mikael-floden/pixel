@@ -37,12 +37,22 @@
       "generated_at": "2026-08-17T12:32:54+00:00",
       "glow_concept": "glowing unreadable runes flowing down the stone face",
       "difference_from_source": 0.8358,
-      "glow_score": 0.0921
+      "glow_score": 0.0921,
+      "rotations": {
+        "south-east": "waystones/waystone_011/lit_1/rotations/south-east.webp",
+        "south-west": "waystones/waystone_011/lit_1/rotations/south-west.webp",
+        "south": "waystones/waystone_011/lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "waystones/waystone_011/sprite.webp",
       "pixellab_object_id": "8d1206f1-fdc9-4256-97cd-b84eaecba584",
-      "generated_at": "2026-08-13T21:37:46+00:00"
+      "generated_at": "2026-08-13T21:37:46+00:00",
+      "rotations": {
+        "south-east": "waystones/waystone_011/rotations/south-east.webp",
+        "south-west": "waystones/waystone_011/rotations/south-west.webp",
+        "south": "waystones/waystone_011/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "waystones/waystone_011/not_lit_2/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-17T12:31:35+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3749,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "waystones/waystone_011/not_lit_2/rotations/south-east.webp",
+        "south-west": "waystones/waystone_011/not_lit_2/rotations/south-west.webp",
+        "south": "waystones/waystone_011/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "waystones/waystone_011/not_lit_3/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-17T12:31:56+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4363,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "waystones/waystone_011/not_lit_3/rotations/south-east.webp",
+        "south-west": "waystones/waystone_011/not_lit_3/rotations/south-west.webp",
+        "south": "waystones/waystone_011/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "waystones/waystone_011/not_lit_4/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-17T12:32:17+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7489,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "waystones/waystone_011/not_lit_4/rotations/south-east.webp",
+        "south-west": "waystones/waystone_011/not_lit_4/rotations/south-west.webp",
+        "south": "waystones/waystone_011/not_lit_4/sprite.webp"
+      }
     }
   }
 }

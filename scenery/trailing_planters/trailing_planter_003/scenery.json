@@ -36,7 +36,12 @@
     "NOT_LIT_1": {
       "sprite": "trailing_planters/trailing_planter_003/sprite.webp",
       "pixellab_object_id": "76dcc926-13c3-4169-9fcf-8a521a520436",
-      "generated_at": "2026-08-13T19:23:23+00:00"
+      "generated_at": "2026-08-13T19:23:23+00:00",
+      "rotations": {
+        "south-east": "trailing_planters/trailing_planter_003/rotations/south-east.webp",
+        "south-west": "trailing_planters/trailing_planter_003/rotations/south-west.webp",
+        "south": "trailing_planters/trailing_planter_003/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "trailing_planters/trailing_planter_003/not_lit_2/sprite.webp",
@@ -44,7 +49,12 @@
       "generated_at": "2026-08-17T11:34:19+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7444,
-      "glow_score": 0.0553
+      "glow_score": 0.0553,
+      "rotations": {
+        "south-east": "trailing_planters/trailing_planter_003/not_lit_2/rotations/south-east.webp",
+        "south-west": "trailing_planters/trailing_planter_003/not_lit_2/rotations/south-west.webp",
+        "south": "trailing_planters/trailing_planter_003/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "trailing_planters/trailing_planter_003/not_lit_3/sprite.webp",
@@ -52,7 +62,12 @@
       "generated_at": "2026-08-17T11:33:51+00:00",
       "glow_concept": null,
       "difference_from_source": 0.503,
-      "glow_score": 0.1308
+      "glow_score": 0.1308,
+      "rotations": {
+        "south-east": "trailing_planters/trailing_planter_003/not_lit_3/rotations/south-east.webp",
+        "south-west": "trailing_planters/trailing_planter_003/not_lit_3/rotations/south-west.webp",
+        "south": "trailing_planters/trailing_planter_003/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "trailing_planters/trailing_planter_003/not_lit_4/sprite.webp",
@@ -60,7 +75,12 @@
       "generated_at": "2026-08-17T11:34:40+00:00",
       "glow_concept": null,
       "difference_from_source": 0.687,
-      "glow_score": 0.0622
+      "glow_score": 0.0622,
+      "rotations": {
+        "south-east": "trailing_planters/trailing_planter_003/not_lit_4/rotations/south-east.webp",
+        "south-west": "trailing_planters/trailing_planter_003/not_lit_4/rotations/south-west.webp",
+        "south": "trailing_planters/trailing_planter_003/not_lit_4/sprite.webp"
+      }
     }
   }
 }

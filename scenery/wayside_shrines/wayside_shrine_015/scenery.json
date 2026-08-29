@@ -37,12 +37,22 @@
       "generated_at": "2026-08-17T12:25:15+00:00",
       "glow_concept": "warm interior light spilling from the doorway",
       "difference_from_source": 0.9291,
-      "glow_score": 0.1453
+      "glow_score": 0.1453,
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_015/lit_1/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_015/lit_1/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_015/lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "wayside_shrines/wayside_shrine_015/sprite.webp",
       "pixellab_object_id": "20066dd7-c8b1-4bd1-81f5-2dc96ad3de36",
-      "generated_at": "2026-08-13T22:06:53+00:00"
+      "generated_at": "2026-08-13T22:06:53+00:00",
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_015/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_015/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_015/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "wayside_shrines/wayside_shrine_015/not_lit_2/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-17T12:23:32+00:00",
       "glow_concept": null,
       "difference_from_source": 0.456,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_015/not_lit_2/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_015/not_lit_2/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_015/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "wayside_shrines/wayside_shrine_015/not_lit_3/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-17T12:24:18+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6691,
-      "glow_score": 0.0012
+      "glow_score": 0.0012,
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_015/not_lit_3/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_015/not_lit_3/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_015/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "wayside_shrines/wayside_shrine_015/not_lit_4/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-17T12:24:19+00:00",
       "glow_concept": null,
       "difference_from_source": 0.754,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "wayside_shrines/wayside_shrine_015/not_lit_4/rotations/south-east.webp",
+        "south-west": "wayside_shrines/wayside_shrine_015/not_lit_4/rotations/south-west.webp",
+        "south": "wayside_shrines/wayside_shrine_015/not_lit_4/sprite.webp"
+      }
     }
   }
 }

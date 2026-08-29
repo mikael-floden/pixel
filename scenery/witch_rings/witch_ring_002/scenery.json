@@ -38,13 +38,23 @@
       "generated_at": "2026-08-17T13:17:36+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2753,
-      "glow_score": 0.0592
+      "glow_score": 0.0592,
+      "rotations": {
+        "south-east": "witch_rings/witch_ring_002/not_lit_2/rotations/south-east.webp",
+        "south-west": "witch_rings/witch_ring_002/not_lit_2/rotations/south-west.webp",
+        "south": "witch_rings/witch_ring_002/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "witch_rings/witch_ring_002/sprite.webp",
       "pixellab_object_id": "ac611917-aaa4-4b4d-a439-f2c0282f4579",
       "generated_at": "2026-08-14T01:10:46+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "witch_rings/witch_ring_002/rotations/south-east.webp",
+        "south-west": "witch_rings/witch_ring_002/rotations/south-west.webp",
+        "south": "witch_rings/witch_ring_002/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "witch_rings/witch_ring_002/not_lit_4/sprite.webp",
@@ -53,7 +63,12 @@
       "glow_concept": null,
       "difference_from_source": 0.2992,
       "glow_score": 0.0685,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "witch_rings/witch_ring_002/not_lit_4/rotations/south-east.webp",
+        "south-west": "witch_rings/witch_ring_002/not_lit_4/rotations/south-west.webp",
+        "south": "witch_rings/witch_ring_002/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "witch_rings/witch_ring_002/not_lit_5/sprite.webp",
@@ -62,7 +77,12 @@
       "glow_concept": null,
       "difference_from_source": 0.5815,
       "glow_score": 0.062,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "witch_rings/witch_ring_002/not_lit_5/rotations/south-east.webp",
+        "south-west": "witch_rings/witch_ring_002/not_lit_5/rotations/south-west.webp",
+        "south": "witch_rings/witch_ring_002/not_lit_5/sprite.webp"
+      }
     },
     "NOT_LIT_6": {
       "sprite": "witch_rings/witch_ring_002/not_lit_6/sprite.webp",
@@ -71,7 +91,12 @@
       "glow_concept": null,
       "difference_from_source": 0.557,
       "glow_score": 0.0841,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "witch_rings/witch_ring_002/not_lit_6/rotations/south-east.webp",
+        "south-west": "witch_rings/witch_ring_002/not_lit_6/rotations/south-west.webp",
+        "south": "witch_rings/witch_ring_002/not_lit_6/sprite.webp"
+      }
     }
   }
 }

@@ -38,7 +38,12 @@
       "generated_at": "2026-08-17T19:36:13+00:00",
       "glow_concept": "ring of foxfire mushrooms at the base",
       "difference_from_source": 0.8754,
-      "glow_score": 0.1451
+      "glow_score": 0.1451,
+      "rotations": {
+        "south-east": "waystones/waystone_019/lit_1/rotations/south-east.webp",
+        "south-west": "waystones/waystone_019/lit_1/rotations/south-west.webp",
+        "south": "waystones/waystone_019/lit_1/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "waystones/waystone_019/lit_2/sprite.webp",
@@ -46,7 +51,12 @@
       "generated_at": "2026-08-17T19:36:34+00:00",
       "glow_concept": "warm handprint glow where travelers touch",
       "difference_from_source": 0.4332,
-      "glow_score": 0.066
+      "glow_score": 0.066,
+      "rotations": {
+        "south-east": "waystones/waystone_019/lit_2/rotations/south-east.webp",
+        "south-west": "waystones/waystone_019/lit_2/rotations/south-west.webp",
+        "south": "waystones/waystone_019/lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "waystones/waystone_019/sprite.webp",
@@ -59,7 +69,12 @@
       "generated_at": "2026-08-17T19:34:25+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2507,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "waystones/waystone_019/not_lit_2/rotations/south-east.webp",
+        "south-west": "waystones/waystone_019/not_lit_2/rotations/south-west.webp",
+        "south": "waystones/waystone_019/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "waystones/waystone_019/not_lit_3/sprite.webp",
@@ -67,7 +82,12 @@
       "generated_at": "2026-08-17T19:35:53+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6545,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "waystones/waystone_019/not_lit_3/rotations/south-east.webp",
+        "south-west": "waystones/waystone_019/not_lit_3/rotations/south-west.webp",
+        "south": "waystones/waystone_019/not_lit_3/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "waystones/waystone_019/not_lit_4/sprite.webp",
@@ -75,7 +95,12 @@
       "generated_at": "2026-08-17T19:36:03+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7234,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "waystones/waystone_019/not_lit_4/rotations/south-east.webp",
+        "south-west": "waystones/waystone_019/not_lit_4/rotations/south-west.webp",
+        "south": "waystones/waystone_019/not_lit_4/sprite.webp"
+      }
     }
   }
 }

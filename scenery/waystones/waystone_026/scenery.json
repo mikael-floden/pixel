@@ -38,13 +38,23 @@
       "generated_at": "2026-08-17T12:42:37+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8128,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "waystones/waystone_026/not_lit_2/rotations/south-east.webp",
+        "south-west": "waystones/waystone_026/not_lit_2/rotations/south-west.webp",
+        "south": "waystones/waystone_026/not_lit_2/sprite.webp"
+      }
     },
     "NOT_LIT_3": {
       "sprite": "waystones/waystone_026/sprite.webp",
       "pixellab_object_id": "9ed41dee-1d52-4977-99ee-a070d09ad7ac",
       "generated_at": "2026-08-14T02:17:33+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "rotations": {
+        "south-east": "waystones/waystone_026/rotations/south-east.webp",
+        "south-west": "waystones/waystone_026/rotations/south-west.webp",
+        "south": "waystones/waystone_026/sprite.webp"
+      }
     },
     "NOT_LIT_4": {
       "sprite": "waystones/waystone_026/not_lit_4/sprite.webp",
@@ -53,7 +63,12 @@
       "glow_concept": null,
       "difference_from_source": 0.6265,
       "glow_score": 0.0313,
-      "relit_from": "LIT_2"
+      "relit_from": "LIT_2",
+      "rotations": {
+        "south-east": "waystones/waystone_026/not_lit_4/rotations/south-east.webp",
+        "south-west": "waystones/waystone_026/not_lit_4/rotations/south-west.webp",
+        "south": "waystones/waystone_026/not_lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_5": {
       "sprite": "waystones/waystone_026/not_lit_5/sprite.webp",
@@ -62,7 +77,12 @@
       "glow_concept": null,
       "difference_from_source": 0.5981,
       "glow_score": 0.0961,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "rotations": {
+        "south-east": "waystones/waystone_026/not_lit_5/rotations/south-east.webp",
+        "south-west": "waystones/waystone_026/not_lit_5/rotations/south-west.webp",
+        "south": "waystones/waystone_026/not_lit_5/sprite.webp"
+      }
     },
     "NOT_LIT_6": {
       "sprite": "waystones/waystone_026/not_lit_6/sprite.webp",
@@ -71,7 +91,12 @@
       "glow_concept": null,
       "difference_from_source": 0.4883,
       "glow_score": 0.039,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "rotations": {
+        "south-east": "waystones/waystone_026/not_lit_6/rotations/south-east.webp",
+        "south-west": "waystones/waystone_026/not_lit_6/rotations/south-west.webp",
+        "south": "waystones/waystone_026/not_lit_6/sprite.webp"
+      }
     }
   }
 }

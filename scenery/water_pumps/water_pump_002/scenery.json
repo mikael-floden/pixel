@@ -34,7 +34,12 @@
     "LIT_1": {
       "sprite": "water_pumps/water_pump_002/sprite.webp",
       "pixellab_object_id": "065ab574-1351-49d1-8899-463b57ee75f4",
-      "generated_at": "2026-08-13T05:56:15+00:00"
+      "generated_at": "2026-08-13T05:56:15+00:00",
+      "rotations": {
+        "south-east": "water_pumps/water_pump_002/rotations/south-east.webp",
+        "south-west": "water_pumps/water_pump_002/rotations/south-west.webp",
+        "south": "water_pumps/water_pump_002/sprite.webp"
+      }
     },
     "LIT_2": {
       "sprite": "water_pumps/water_pump_002/lit_2/sprite.webp",
@@ -42,7 +47,12 @@
       "generated_at": "2026-08-17T12:10:38+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3658,
-      "glow_score": 0.0411
+      "glow_score": 0.0411,
+      "rotations": {
+        "south-east": "water_pumps/water_pump_002/lit_2/rotations/south-east.webp",
+        "south-west": "water_pumps/water_pump_002/lit_2/rotations/south-west.webp",
+        "south": "water_pumps/water_pump_002/lit_2/sprite.webp"
+      }
     },
     "LIT_3": {
       "sprite": "water_pumps/water_pump_002/lit_3/sprite.webp",
@@ -50,7 +60,12 @@
       "generated_at": "2026-08-17T12:10:59+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8751,
-      "glow_score": 0.0315
+      "glow_score": 0.0315,
+      "rotations": {
+        "south-east": "water_pumps/water_pump_002/lit_3/rotations/south-east.webp",
+        "south-west": "water_pumps/water_pump_002/lit_3/rotations/south-west.webp",
+        "south": "water_pumps/water_pump_002/lit_3/sprite.webp"
+      }
     },
     "LIT_4": {
       "sprite": "water_pumps/water_pump_002/lit_4/sprite.webp",
@@ -58,7 +73,12 @@
       "generated_at": "2026-08-17T12:10:28+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8415,
-      "glow_score": 0.1307
+      "glow_score": 0.1307,
+      "rotations": {
+        "south-east": "water_pumps/water_pump_002/lit_4/rotations/south-east.webp",
+        "south-west": "water_pumps/water_pump_002/lit_4/rotations/south-west.webp",
+        "south": "water_pumps/water_pump_002/lit_4/sprite.webp"
+      }
     },
     "NOT_LIT_1": {
       "sprite": "water_pumps/water_pump_002/not_lit_1/sprite.webp",
@@ -66,7 +86,12 @@
       "generated_at": "2026-08-17T12:10:50+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6573,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "water_pumps/water_pump_002/not_lit_1/rotations/south-east.webp",
+        "south-west": "water_pumps/water_pump_002/not_lit_1/rotations/south-west.webp",
+        "south": "water_pumps/water_pump_002/not_lit_1/sprite.webp"
+      }
     },
     "NOT_LIT_2": {
       "sprite": "water_pumps/water_pump_002/not_lit_2/sprite.webp",
@@ -74,7 +99,12 @@
       "generated_at": "2026-08-17T12:11:00+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7329,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "rotations": {
+        "south-east": "water_pumps/water_pump_002/not_lit_2/rotations/south-east.webp",
+        "south-west": "water_pumps/water_pump_002/not_lit_2/rotations/south-west.webp",
+        "south": "water_pumps/water_pump_002/not_lit_2/sprite.webp"
+      }
     }
   }
 }
