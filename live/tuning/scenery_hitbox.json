@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
   "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
-  "updated_at": "2026-08-30T18:21:30.424Z",
+  "updated_at": "2026-08-30T18:23:51.526Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -10930,131 +10930,121 @@
       "boxes": [
         {
           "ax": 1,
-          "ay": 10.5,
+          "ay": 17,
           "rx": 55.5,
-          "ry": 18.5,
+          "ry": 12,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:22:40.107Z"
     },
     "scenery/fallen_logs/fallen_log_011#not_lit_2": {
       "boxes": [
         {
-          "ax": -8.5,
-          "ay": 29.08,
-          "rx": 44,
-          "ry": 18.92,
+          "ax": 0.83,
+          "ay": 11.1,
+          "rx": 24.75,
+          "ry": 37,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:22:52.631Z"
     },
     "scenery/fallen_logs/fallen_log_011#not_lit_3": {
       "boxes": [
         {
           "ax": 0,
-          "ay": 38.33,
+          "ay": 12.26,
           "rx": 22.5,
-          "ry": 9.68,
+          "ry": 35.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:22:56.977Z"
     },
     "scenery/fallen_logs/fallen_log_011#not_lit_4": {
       "boxes": [
         {
-          "ax": 1.5,
-          "ay": 10.5,
+          "ax": 0.11,
+          "ay": 13.65,
           "rx": 56,
-          "ry": 18.5,
+          "ry": 12.25,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:23:07.109Z"
     },
     "scenery/fallen_logs/fallen_log_011#not_lit_5": {
       "boxes": [
         {
-          "ax": -1,
-          "ay": 37.5,
-          "rx": 49.5,
-          "ry": 12.5,
+          "ax": 1.28,
+          "ay": 12.48,
+          "rx": 48.25,
+          "ry": 40.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:23:27.195Z"
     },
     "scenery/fallen_logs/fallen_log_011#not_lit_6": {
       "boxes": [
         {
-          "ax": 1,
-          "ay": 14.5,
-          "rx": 55.5,
+          "ax": 0.41,
+          "ay": 11.81,
+          "rx": 56,
           "ry": 19.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:23:33.953Z"
     },
     "scenery/fallen_logs/fallen_log_011#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.5,
-          "ay": 6.5,
+          "ax": 0.63,
+          "ay": 10.01,
           "rx": 55,
           "ry": 18.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:23:36.766Z"
     },
     "scenery/fallen_logs/fallen_log_011#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.5,
-          "ay": 11,
+          "ax": 1.18,
+          "ay": 9.45,
           "rx": 60,
           "ry": 14,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:23:39.343Z"
     },
     "scenery/fallen_logs/fallen_log_011#not_lit_9": {
       "boxes": [
         {
-          "ax": 1.5,
-          "ay": 14,
+          "ax": 2.5,
+          "ay": 14.56,
           "rx": 54,
-          "ry": 19,
+          "ry": 14,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:23:44.487Z"
     },
     "scenery/fallen_logs/fallen_log_011#not_lit_10": {
       "boxes": [
         {
-          "ax": 1,
-          "ay": 10.5,
+          "ax": 0.71,
+          "ay": 14.26,
           "rx": 55.5,
-          "ry": 18.5,
+          "ry": 11.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:23:49.488Z"
     },
     "scenery/fallen_logs/fallen_log_011#lit_1": {
       "boxes": [
@@ -11066,8 +11056,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:21:43.964Z"
     },
     "scenery/fallen_logs/fallen_log_011#lit_2": {
       "boxes": [
@@ -11079,34 +11068,31 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:22:07.952Z"
     },
     "scenery/fallen_logs/fallen_log_011#lit_3": {
       "boxes": [
         {
-          "ax": -5.5,
-          "ay": 37.24,
-          "rx": 32,
-          "ry": 13.76,
+          "ax": 0.73,
+          "ay": 8.89,
+          "rx": 23.5,
+          "ry": 41.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:22:27.475Z"
     },
     "scenery/fallen_logs/fallen_log_011#lit_4": {
       "boxes": [
         {
-          "ax": 0.5,
-          "ay": 7.5,
+          "ax": 0.24,
+          "ay": 13.49,
           "rx": 56,
-          "ry": 13.5,
+          "ry": 10.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:22:36.957Z"
     },
     "scenery/fallen_logs/fallen_log_013#not_lit_1": {
       "boxes": [
@@ -24705,8 +24691,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:21:48.954Z"
     },
     "scenery/stones/stone_033#not_lit_1": {
       "boxes": [
@@ -24770,8 +24755,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:21:45.807Z"
     },
     "scenery/stones/stone_034#not_lit_3": {
       "boxes": [
@@ -25123,8 +25107,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:21:59.814Z"
     },
     "scenery/stones/stone_040#not_lit_1": {
       "boxes": [
@@ -25136,8 +25119,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:22:01.850Z"
     },
     "scenery/stones/stone_040#not_lit_2": {
       "boxes": [
@@ -25149,8 +25131,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:22:03.585Z"
     },
     "scenery/stones/stone_040#lit_2": {
       "boxes": [
@@ -25162,8 +25143,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:21:40.473Z"
     },
     "scenery/stones/stone_040#lit_3": {
       "boxes": [
@@ -25175,8 +25155,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:21:56.051Z"
     },
     "scenery/stones/stone_040#lit_4": {
       "boxes": [
@@ -25188,8 +25167,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:21:57.754Z"
     },
     "scenery/stones/stone_042#lit_1": {
       "boxes": [
