@@ -102,27 +102,7 @@
       "glow_concept": null,
       "difference_from_source": 0.5583,
       "glow_score": 0.0926,
-      "animations": {
-        "motion": {
-          "group_id": "62ca9733-35aa-4de3-8688-32248b374c40",
-          "description": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "cliff_vines/cliff_vine_124/lit_4/animations/motion/00.webp",
-            "cliff_vines/cliff_vine_124/lit_4/animations/motion/01.webp",
-            "cliff_vines/cliff_vine_124/lit_4/animations/motion/02.webp",
-            "cliff_vines/cliff_vine_124/lit_4/animations/motion/03.webp",
-            "cliff_vines/cliff_vine_124/lit_4/animations/motion/04.webp"
-          ],
-          "strip": "cliff_vines/cliff_vine_124/lit_4/animations/motion__strip.webp",
-          "directions": null,
-          "generated_at": "2026-08-30T10:37:52+00:00",
-          "brief": "K31"
-        }
-      }
+      "animations": {}
     },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_124/not_lit_1/sprite.webp",

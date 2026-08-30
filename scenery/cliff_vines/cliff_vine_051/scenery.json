@@ -41,8 +41,8 @@
       "glow_score": 0.0246,
       "animations": {
         "motion": {
-          "group_id": "7bdb0e99-662a-4753-886e-db0398c88651",
-          "description": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "group_id": "42b9bfe2-c3de-43f7-aeea-9cbefada5f3f",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the cyan flowers on the vine changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. They stay exactly the cyan they are in the first frame and are equally visible in every frame. Every leaf, every stem and every branch is copied from the first frame exactly: not one of them moves, bends, shifts, grows or changes shape or colour at any point. Frames 1, 2 and 5 are identical to each other. Only frames 3 and 4 differ at all, and only by a handful of pixels. Everything else is copied from the first frame exactly, pixel for pixel. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -56,7 +56,7 @@
           ],
           "strip": "cliff_vines/cliff_vine_051/lit_1/animations/motion__strip.webp",
           "directions": null,
-          "generated_at": "2026-08-30T10:35:08+00:00",
+          "generated_at": "2026-08-30T10:50:07+00:00",
           "brief": "K12"
         }
       }

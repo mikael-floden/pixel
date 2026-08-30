@@ -42,8 +42,8 @@
       "glow_score": 0.0138,
       "animations": {
         "motion": {
-          "group_id": "ddcdcb5d-c75f-4f57-890d-d92d76819bb1",
-          "description": "This is an almost completely still picture. ONLY the outermost edge of the cyan cracks across the stone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The cyan cracks across the stone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "group_id": "5b9ff04f-d2fe-4d0f-83e6-4869eecfecce",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the single brightest cyan crack changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. Every other crack in the stone stays exactly as it is. The crack stays exactly the cyan it is in the first frame and is equally visible in every frame. Frames 1, 2 and 5 are identical to each other. Only frames 3 and 4 differ at all, and only by a handful of pixels. Everything else is copied from the first frame exactly, pixel for pixel. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -57,7 +57,7 @@
           ],
           "strip": "aqueduct_fragments/aqueduct_fragment_901/lit_2/animations/motion__strip.webp",
           "directions": null,
-          "generated_at": "2026-08-30T10:33:25+00:00",
+          "generated_at": "2026-08-30T10:49:57+00:00",
           "brief": "H34"
         }
       }
