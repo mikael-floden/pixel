@@ -43,7 +43,28 @@
       "generated_at": "2026-08-16T10:37:34+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2643,
-      "glow_score": 0.001
+      "glow_score": 0.001,
+      "animations": {
+        "motion": {
+          "group_id": "4ecc5e18-340f-406f-9c5d-c4e085b8e529",
+          "description": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_064/lit_2/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_064/lit_2/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_064/lit_2/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_064/lit_2/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_064/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_064/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:35:50+00:00",
+          "brief": "K22"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "cliff_vines/cliff_vine_064/lit_3/sprite.webp",
@@ -51,7 +72,28 @@
       "generated_at": "2026-08-16T10:37:45+00:00",
       "glow_concept": null,
       "difference_from_source": 0.301,
-      "glow_score": 0.0013
+      "glow_score": 0.0013,
+      "animations": {
+        "motion": {
+          "group_id": "341ff7a3-05a6-4b2b-893e-27e1a177df17",
+          "description": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_064/lit_3/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_064/lit_3/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_064/lit_3/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_064/lit_3/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_064/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_064/lit_3/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:37:13+00:00",
+          "brief": "K23"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "cliff_vines/cliff_vine_064/lit_4/sprite.webp",
@@ -59,7 +101,28 @@
       "generated_at": "2026-08-16T10:38:06+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3399,
-      "glow_score": 0.0006
+      "glow_score": 0.0006,
+      "animations": {
+        "motion": {
+          "group_id": "df59b2dc-a60c-4717-ac21-90989aa0bc7b",
+          "description": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_064/lit_4/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_064/lit_4/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_064/lit_4/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_064/lit_4/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_064/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_064/lit_4/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:36:33+00:00",
+          "brief": "K24"
+        }
+      }
     }
   }
 }

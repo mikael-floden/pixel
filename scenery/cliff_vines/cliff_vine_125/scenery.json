@@ -38,7 +38,28 @@
       "generated_at": "2026-08-17T14:28:54+00:00",
       "glow_concept": "glowworm colonies strung in the foliage",
       "difference_from_source": 0.6938,
-      "glow_score": 0.0772
+      "glow_score": 0.0772,
+      "animations": {
+        "motion": {
+          "group_id": "57fc60f5-5ffe-43ca-9997-a8526228f715",
+          "description": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_125/lit_1/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_125/lit_1/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_125/lit_1/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_125/lit_1/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_125/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_125/lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:37:05+00:00",
+          "brief": "K25"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "cliff_vines/cliff_vine_125/lit_2/sprite.webp",
@@ -46,7 +67,28 @@
       "generated_at": "2026-08-16T10:58:45+00:00",
       "glow_concept": "moonlit silver shimmer across the leaves",
       "difference_from_source": 0.6814,
-      "glow_score": 0.065
+      "glow_score": 0.065,
+      "animations": {
+        "motion": {
+          "group_id": "c8087a1e-73e3-470a-9d4f-9804a355148d",
+          "description": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_125/lit_2/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_125/lit_2/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_125/lit_2/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_125/lit_2/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_125/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_125/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:36:57+00:00",
+          "brief": "K26"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_125/sprite.webp",
