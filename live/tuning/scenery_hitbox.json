@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
   "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
-  "updated_at": "2026-08-30T19:28:33.723Z",
+  "updated_at": "2026-08-30T19:28:54.618Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -20650,27 +20650,25 @@
       "boxes": [
         {
           "ax": 1,
-          "ay": 36.5,
+          "ay": 31.5,
           "rx": 30.5,
-          "ry": 7.5,
+          "ry": 12.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:28:45.744Z"
     },
     "scenery/reed_beds/reed_bed_005#not_lit_2": {
       "boxes": [
         {
           "ax": 1.5,
-          "ay": 36.5,
-          "rx": 33,
-          "ry": 8.5,
+          "ay": 30.25,
+          "rx": 25.75,
+          "ry": 14.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:28:49.695Z"
     },
     "scenery/reed_beds/reed_bed_005#not_lit_3": {
       "boxes": [
@@ -20690,26 +20688,24 @@
         {
           "ax": 0.5,
           "ay": 29.81,
-          "rx": 33,
+          "rx": 28.25,
           "ry": 14.19,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:28:52.929Z"
     },
     "scenery/reed_beds/reed_bed_005#lit_1": {
       "boxes": [
         {
           "ax": 1,
-          "ay": 36.5,
+          "ay": 32.5,
           "rx": 30.5,
-          "ry": 7.5,
+          "ry": 11.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:28:43.160Z"
     },
     "scenery/reed_beds/reed_bed_007#not_lit_1": {
       "boxes": [
