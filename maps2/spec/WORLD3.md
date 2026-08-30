@@ -102,6 +102,35 @@ lower anchor, so no indoor floor cell is left without one. the_game publishes
 54 in the hall south of it). The channel is additive — no cell, deck, wall or
 level changes — so collision, indoor detection and draw order are untouched.
 
+### `scenery` — a placement is centred on its HITBOX, not its art
+
+**The hitbox centre stands in the middle of a tile** (maintainer, 2026-08-30:
+*"the game will mark that spot in the nav as a tile we must navigate around —
+so we want that ground we now have to navigate around to match the scenery
+hitbox as good as possible"*).
+
+`x`/`y` is where the art is ANCHORED (its alpha-bbox bottom-centre), which is
+not where its footprint is. The offset between them is the piece's own
+business — its ellipse can sit well off the anchor — so the cell the game
+blocks landed wherever that offset fell. `world3grow.snap_hitboxes()` nudges
+every piece that publishes a footprint (always less than one cell) so its
+hitbox centre lands on a cell centre, which the game writes as
+`(col + 0.5, row + 0.5)`.
+
+The centre is computed with the game's own arithmetic
+(`stampSceneryCollision`, `games2/shared/src/index.ts`) and the game's own
+maps3 geometry (dx 32, dy 14): ellipse in FRAME pixels from the frame centre,
+art scaled so its bbox height is `wph`, anchored at the bbox's bottom-centre,
+screen offset back through the projection. Several ellipses on one piece are
+centred by their area-weighted centroid. Sources: `games2/config/scenery-bbox.json`
+and `live/tuning/scenery_hitbox.json` (his overrides win, and a piece with no
+record is left alone).
+
+Measured on the_game with the game's own cell test: pieces whose ellipse covers
+no cell centre — and which therefore block **nothing** — fall from **550 of
+1,421 (39%) to 11**, while total cells blocked barely moves (3,158 → 3,240).
+The footprints got accurate, not bigger. Build-asserted every run.
+
 ### `ramps` — the contract with the game
 
 A level change is a cliff. A **ramp** is where the world says a climb is

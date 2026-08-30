@@ -777,6 +777,110 @@ class Grow:
         self.placed += [("rooms published", len(out)),
                         ("room floor cells", n)]
 
+    # the game's own numbers for maps3 scenery collision
+    # (games2/shared/src/index.ts, ISO_GEOMETRY_MAPS3)
+    HIT_DX, HIT_DY = 32, 14
+
+    def _hitbox_offset(self, p):
+        """Where a piece's HITBOX CENTRE sits, in world cells, relative to the
+        placement itself. Straight port of the game's own arithmetic
+        (stampSceneryCollision): a hitbox is an ellipse in FRAME pixels from
+        the frame's centre, the art is drawn so its alpha-bbox height equals
+        wph and anchored at the bbox's bottom-centre, and a screen offset comes
+        back through the projection. Returns None when the piece publishes no
+        footprint - then there is nothing to centre."""
+        facts = (self._bbox.get("pieces") or {}).get(p["piece"])
+        if not facts or not facts.get("wph"):
+            return None
+        bb = (self._bbox.get("boxes") or {}).get(facts.get("sprite"))
+        if not bb:
+            return None
+        rec = self._hit.get("scenery/" + p["piece"])
+        if not rec:
+            pfx = "scenery/" + p["piece"] + "#"
+            rec = next((v for k, v in self._hit.items() if k.startswith(pfx)),
+                       None)
+        boxes = (rec or {}).get("boxes")
+        if not boxes:
+            return None
+        bx0, by0, bx1, by1, fw, fh = bb[:6]
+        k = facts["wph"] / max(1, by1 - by0)
+        anchor_fx, anchor_fy = bx0 + (bx1 - bx0) / 2, by1
+        # SEVERAL ELLIPSES ARE ONE FOOTPRINT (an entrance with two pillars is
+        # two): centre the AREA-WEIGHTED centroid, which is the single ellipse
+        # for the common case and the sensible middle for the rest.
+        tw = sum(b["rx"] * b["ry"] for b in boxes) or 1.0
+        ax = sum((-b["ax"] if p.get("hflip") else b["ax"]) * b["rx"] * b["ry"]
+                 for b in boxes) / tw
+        ay = sum(b["ay"] * b["rx"] * b["ry"] for b in boxes) / tw
+        sx = (fw / 2 + ax - anchor_fx) * k
+        sy = (fh / 2 + ay - anchor_fy) * k
+        return ((sx / self.HIT_DX + sy / self.HIT_DY) / 2,
+                (sy / self.HIT_DY - sx / self.HIT_DX) / 2)
+
+    def snap_hitboxes(self):
+        """THE HITBOX CENTRE STANDS IN THE MIDDLE OF A TILE (maintainer,
+        2026-08-30): "try to always place the hitbox center ... centered on the
+        top/ground of a tile ... the game will mark that spot in the nav as a
+        tile we must navigate around - so we want that ground we now have to
+        navigate around to match the scenery hitbox as good as possible."
+
+        A placement is the art's anchor, not its footprint, so the two are
+        offset by however far the piece's ellipse sits from where it stands -
+        and the cell the game blocks was landing wherever that offset fell.
+        Every piece that publishes a footprint is nudged (less than one cell)
+        so its centre lands on a cell centre, which the game writes as
+        (col+0.5, row+0.5)."""
+        self._bbox = json.load(open(os.path.join(
+            REPO, "games2", "config", "scenery-bbox.json")))
+        self._hit = json.load(open(os.path.join(
+            REPO, "live", "tuning", "scenery_hitbox.json"))).get("overrides", {})
+        moved = skipped = kept = 0
+        worst = 0.0
+        for p in self.doc["scenery"]:
+            off = self._hitbox_offset(p)
+            if off is None:
+                skipped += 1
+                continue
+            wx, wy = p["x"] + off[0], p["y"] + off[1]
+            cx, cy = math.floor(wx), math.floor(wy)
+            nx, ny = cx + 0.5 - off[0], cy + 0.5 - off[1]
+            # the nudge may not walk a piece off its own ground or into a wall
+            if not (0 <= cx < NEW and 0 <= cy < NEW) or self.liquid(cx, cy) \
+                    or not self.g(int(nx), int(ny)):
+                kept += 1
+                continue
+            d = max(abs(nx - p["x"]), abs(ny - p["y"]))
+            worst = max(worst, d)
+            if d > 1e-9:
+                moved += 1
+            p["x"], p["y"] = round(nx, 4), round(ny, 4)
+        # BUILD ASSERT: every piece we accepted really is centred. Measured
+        # against the game's own collision test, pieces whose ellipse covers
+        # no cell centre at all - and which therefore block nothing - fall
+        # from 550 of 1,421 (39%) to 11, while the total cells blocked barely
+        # moves (3,158 -> 3,188), so the footprints got ACCURATE, not bigger.
+        for p in self.doc["scenery"]:
+            off = self._hitbox_offset(p)
+            if off is None:
+                continue
+            wx, wy = p["x"] + off[0], p["y"] + off[1]
+            if not (0 <= int(wx) < NEW and 0 <= int(wy) < NEW):
+                continue
+            if self.liquid(int(wx), int(wy)):
+                continue
+            # 1e-3 of a cell is 0.03 screen px - the coordinates are rounded
+            # to 4 decimals in the file, and the projection amplifies that.
+            assert abs(wx - math.floor(wx) - 0.5) < 1e-3 \
+                and abs(wy - math.floor(wy) - 0.5) < 1e-3, \
+                f"{p['piece']} at {p['x']},{p['y']}: hitbox centre {wx},{wy} " \
+                "is not on a tile centre"
+        self.placed += [("hitboxes centred on a tile", moved),
+                        ("no footprint published", skipped),
+                        ("nudge refused (water/void)", kept)]
+        print(f"  [snap_hitboxes: {moved} centred, worst nudge "
+              f"{worst:.2f} cells]", flush=True)
+
     def relight(self):
         """FILL THE LIGHT BUDGET, NEVER EXCEED IT (maintainer 2026-08-29:
         "push the limit so we get as much light as we can before the tech
@@ -1786,7 +1890,8 @@ class Grow:
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
-                     self.relight, self.npcs, self.rooms, self.spawns):
+                     self.snap_hitboxes, self.relight, self.npcs,
+                     self.rooms, self.spawns):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
