@@ -156,6 +156,13 @@ The laws around the flow:
   a hitbox and a way for the game to change rendering order."*). Each
   ellipse's centre line decides draw order: a player **above** it is drawn
   behind that part of the piece, **below** it in front.
+  - **`no_collision`** (2026-08-29, maintainer: *"mark an object as no
+    collision/collision less — this can be a carpet or something else flat on
+    the floor"*). The **scenery domain owns the fact** and tags it in its own
+    metadata; a piece-level `{ boxes: [], no_collision: <bool> }` here is his
+    CORRECTION of that tag, and agreeing with it deletes the entry. It means
+    the player **walks over** the piece — distinct from a plain `boxes: []`
+    (hung on a wall, walked *past*) and from an absent record (undecided).
   - **Keyed per VARIATION** (2026-08-29, maintainer: *"different variations
     can be different size"*): `overrides["<path>#<state>"]`, e.g.
     `scenery/anchors/anchor_001#not_lit_2`. A record under the bare path is an

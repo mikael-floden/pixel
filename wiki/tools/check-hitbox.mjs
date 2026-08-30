@@ -98,8 +98,13 @@ const chips = await p.evaluate(() => [...document.querySelectorAll('[data-bar="w
  * of 'hitbox set'. You can create a new filter ... called 'wall scenery'").
  * Decided by TYPE, so the to-do queue holds only pieces a hitbox could ever
  * apply to — with windows in it, its count could never reach zero. */
-ok(chips.length === 5 && /^all \d+/.test(chips[0]) && /no hitbox yet/.test(chips[1])
-  && /hitbox set/.test(chips[2]) && /needs none/.test(chips[3]) && /wall scenery/.test(chips[4]),
+/* SIX SINCE 2026-08-29: "no collision" joined them, because a carpet is a
+ * different answer from a wall piece and he needs to find the mis-tagged
+ * ones. Asserted by NAME, not by index, so the next answer he needs does not
+ * redden this. */
+ok(/^all \d+/.test(chips[0])
+  && ["no hitbox yet", "hitbox set", "needs none", "no collision", "wall scenery"]
+    .every((n2) => chips.some((c) => c.startsWith(n2))),
   `the Scenery page filters on hitbox state, with counts (${chips.join(" | ")})`);
 const total = +(chips[0].match(/\d+/) ?? [0])[0];
 ok(total === PIECES.length, `over the whole domain (${total} of ${PIECES.length})`);
@@ -478,6 +483,66 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   const keys = await p.evaluate(() => Object.keys(window.__wiki.state.tuning.scenery_hitbox?.overrides ?? {}).filter((k) => k.includes("#")));
   ok(keys.length >= 1 && keys.every((k) => /#/.test(k)),
     `the stored record names the variation (${keys[0]})`);
+}
+/* ---- NO COLLISION: A THIRD ANSWER, AND THEIRS TO STATE (maintainer
+ * 2026-08-29: "mark an object as no collision/collision less — this can be a
+ * carpet or something else flat on the floor", and the scenery domain is
+ * writing the tag). A carpet and a window both hold no footprint; the player
+ * walks OVER one and PAST the other, so the game must tell them apart. ---- */
+{
+  const touched2 = new Set(saves.flatMap((s2) => Object.keys(s2.set ?? {}).map((k) => k.split("#")[0])));
+  const piece = PIECES.find((o) => !["MOUNTAIN_WALL", "WINDOW"].includes(o.type)
+    && !touched2.has(o.path) && o !== PIECE);
+  await p.goto(`${W}#/objects/${piece.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  await p.evaluate(() => {
+    // the button TOGGLES and cur.editHit survives navigation — open only if shut
+    if (!document.querySelector(".hit-bar:not(.hidden)")) {
+      [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click();
+    }
+  });
+  await p.waitForTimeout(1000);
+  await p.evaluate(() => { delete window.__wikiHitbox; });
+  await p.evaluate(() => [...document.querySelectorAll(".hit-bar:not(.hidden) button")].find((x) => /no collision/.test(x.textContent))?.click());
+  await p.waitForTimeout(1400);
+  const flat = await p.evaluate((path) => ({
+    rec: window.__wiki.state.tuning.scenery_hitbox.overrides?.[path] ?? null,
+    st: window.__wikiHitbox?.state ?? null,
+    read: document.querySelector(".hit-bar .shadow-read")?.textContent ?? "",
+    railsOff: [...document.querySelectorAll(".hit-bar .shadow-slider")].every((x) => x.disabled),
+  }), piece.path);
+  ok(flat.rec?.no_collision === true && (flat.rec.boxes ?? []).length === 0,
+    `${piece.id}: the correction is a PIECE-level { boxes: [], no_collision: true }`);
+  ok(flat.st === "flat", `its review state is its own, not "none" (${flat.st})`);
+  ok(/walks over/.test(flat.read) && flat.railsOff,
+    `the bar says the player walks over it and stops offering rails (${flat.read.slice(0, 46)})`);
+  await p.evaluate(() => document.querySelector("#save-btn")?.click());
+  await p.waitForTimeout(800);
+  ok(saves.at(-1)?.set?.[piece.path]?.no_collision === true,
+    "Commit posts it under the piece's own path, so every variation inherits it");
+  // agreeing with the scenery tag again must leave NO entry behind
+  await p.evaluate(() => {
+    if (!document.querySelector(".hit-bar:not(.hidden)")) {
+      [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click();
+    }
+  });
+  await p.waitForTimeout(900);
+  await p.evaluate(() => [...document.querySelectorAll(".hit-bar:not(.hidden) button")].find((x) => /no collision/.test(x.textContent))?.click());
+  await p.waitForTimeout(1000);
+  await p.evaluate(() => document.querySelector("#save-btn")?.click());
+  await p.waitForTimeout(900);
+  const cleared = await p.evaluate((path) => ({
+    rec: window.__wiki.state.tuning.scenery_hitbox.overrides?.[path] ?? null,
+    st: window.__wikiHitbox?.state ?? null,
+  }), piece.path);
+  ok(cleared.rec === null && (saves.at(-1)?.set?.[piece.path] ?? null) === null,
+    "and agreeing with the scenery domain's tag DELETES the correction — absent means their tag stands");
+  const chips = await p.evaluate(async () => {
+    location.hash = "#/objects";
+    await new Promise((r) => setTimeout(r, 2200));
+    return [...document.querySelectorAll('[data-bar="wiki-object-hitbox"] button')].map((x) => x.textContent.trim());
+  });
+  ok(chips.some((c) => /no collision/.test(c)), `the list offers a "no collision" filter (${chips.join(" | ").slice(0, 70)})`);
 }
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 

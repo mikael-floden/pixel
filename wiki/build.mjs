@@ -1369,6 +1369,13 @@ function buildObjects() {
       // — so this asks whether anything was SYNTHESISED, not for the `still`
       // key specifically.
       stillOnly: stillOnly && Object.keys(anims).length > 0,
+      /* NO COLLISION — A CARPET (scenery agent is writing this metadata now,
+       * 2026-08-29). Read from the piece, then its group, under any of the
+       * spellings the domain might land on: the wiki must draw it the day it
+       * appears, not a deploy later. The maintainer's correction lives in
+       * live/tuning/scenery_hitbox.json and outranks it. */
+      noCollision: (oj.no_collision === true || oj.collision === false || oj.flat === true
+        || factory.groups?.find?.((g) => g.id === (oj.group ?? group))?.no_collision === true) ? true : null,
       // When the art that is there NOW arrived, plus its content hash — the
       // hash is what a verdict is really ABOUT, and wiki.js stamps it into
       // every new verdict so staleness is byte-exact from here on. addedGuess

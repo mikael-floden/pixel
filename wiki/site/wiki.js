@@ -994,8 +994,37 @@ function clearHitbox(entity, state) {
  * footprint with auto:true; accepting or editing rewrites the record without
  * the flag, which is what "set" means. */
 const hitboxAuto = (entity, state) => hitboxRaw(entity, state)?.auto === true;
+/* NO COLLISION — A CARPET (maintainer 2026-08-29: "It must also be able to
+ * mark an object as no collision/collision less ... a carpet or something
+ * else flat on the floor"). An empty hitbox already said "nothing to collide
+ * with", but not WHY, and the two whys differ for the game: a WINDOW hangs on
+ * a wall the player walks past, a carpet lies on the ground they walk ON.
+ *
+ * THE SCENERY DOMAIN OWNS THE FACT ("The scenery is adding this no collision
+ * as metadata right now") — same arrangement as wall scenery, because it is
+ * a property of the piece, not a review verdict. The wiki reads their tag and
+ * lets him CORRECT it; agreeing with the tag deletes the correction, so the
+ * file only ever names exceptions. Piece-level: a carpet is a carpet in every
+ * state, and the per-variation resolver already falls back to the bare key. */
+const taggedFlat = (o) => o?.noCollision === true;
+const hitboxFlat = (entity) => {
+  const ov = hitboxDoc().overrides?.[hitboxKey(entity)]?.no_collision;
+  return typeof ov === "boolean" ? ov : taggedFlat(entity);
+};
+function setHitboxFlat(entity, on) {
+  const k = hitboxKey(entity);
+  if (!k) return;
+  const doc = hitboxDoc();
+  doc.overrides ??= {};
+  if (on === taggedFlat(entity)) delete doc.overrides[k];
+  else doc.overrides[k] = { boxes: [], no_collision: on, updated_at: new Date().toISOString() };
+  doc.updated_at = new Date().toISOString();
+  touch(HITBOX_KEY, k);
+  markDirty(HITBOX_KEY);
+}
 function hitboxState(entity, state) {
   if (isWallScenery(entity)) return "wall";
+  if (hitboxFlat(entity)) return "flat";
   if (hitboxAuto(entity, state)) return "todo";
   const b = hitboxes(entity, state);
   if (b === null) return "todo";
@@ -1006,6 +1035,7 @@ function hitboxState(entity, state) {
  * apart. One undecided variation keeps the piece in the to-do queue. */
 function hitboxPieceState(entity) {
   if (isWallScenery(entity)) return "wall";
+  if (hitboxFlat(entity)) return "flat";
   const states = hitboxStates(entity);
   if (!states.length) return hitboxState(entity);
   const each = states.map((st2) => hitboxState(entity, st2));
@@ -2063,6 +2093,11 @@ function makePlayer(entity, kind, opts = {}) {
     title: "This piece needs no hitbox — the right answer for anything hung on a wall. It leaves the to-do queue.",
     onclick: () => { hitSel = 0; commitHit([]); },
   }, "⊘ needs none");
+  const hitFlatBtn = h("button", {
+    class: "ghost-btn",
+    title: "Flat on the floor — a carpet, a rug, a puddle. The player WALKS OVER it: no collision, and it never comes between them and the camera. The scenery domain tags these; this corrects a wrong tag either way, for the whole piece.",
+    onclick: () => { hitSel = 0; setHitboxFlat(entity, !hitboxFlat(entity)); onShadowEdit?.(); refreshHitBar(); draw(); },
+  }, "⊘ no collision");
   const hitResetBtn = h("button", {
     class: "ghost-btn",
     title: "Forget this piece's record entirely — it goes back to undecided and returns to the to-do queue",
@@ -2072,7 +2107,7 @@ function makePlayer(entity, kind, opts = {}) {
   const hitBar = h("div", { class: "shadow-bar hit-bar hidden" },
     h("div", { class: "player-controls" }, hitRead),
     hitChips,
-    h("div", { class: "player-controls" }, hitAddBtn, hitDelBtn, hitNoneBtn, hitResetBtn),
+    h("div", { class: "player-controls" }, hitAddBtn, hitDelBtn, hitNoneBtn, hitFlatBtn, hitResetBtn),
     h("div", { class: "shadow-tools" },
       h("div", { class: "shadow-sliders" },
         h("label", {}, h("span", {}, "W"), hitW),
@@ -2146,7 +2181,10 @@ function makePlayer(entity, kind, opts = {}) {
     }));
     hitChips.classList.toggle("hidden", boxes.length < 2);
     hitDelBtn.disabled = boxes.length < 2;
-    hitNoneBtn.disabled = st === "none";
+    hitNoneBtn.disabled = st === "none" || st === "flat";
+    hitFlatBtn.classList.toggle("on", st === "flat");
+    hitAddBtn.disabled = st === "flat";
+    hitW.disabled = hitH.disabled = hitRot.disabled = st === "flat";
     hitResetBtn.disabled = !hitboxRaw(entity, cur.state);
     /* BOTH RAILS REACH TWICE THE FRAME (maintainer 2026-08-27: "Why is this the
      * max D? Some scenery are really long/tall/wide... Make the max a little
@@ -2188,10 +2226,12 @@ function makePlayer(entity, kind, opts = {}) {
     }
     const signed = (n) => `${n < 0 ? "−" : "+"}${Math.abs(n).toFixed(1)}`;
     hitRead.replaceChildren(
-      st === "none"
+      st === "flat"
+        ? h("b", {}, "no collision — flat on the floor, the player walks over it")
+        : st === "none"
         ? h("b", {}, "no hitbox — this piece hangs on a wall")
         : h("b", {}, `${boxes.length} ellipse${boxes.length === 1 ? "" : "s"} · #${hitSel + 1} ${(b.rx * 2).toFixed(1)} × ${(b.ry * 2).toFixed(1)} px`),
-      st === "none" ? "" : ` · at ${signed(b.ax)}, ${signed(b.ay)}${b.rot ? ` · turned ${Math.round(b.rot)}°` : ""}`,
+      st === "none" || st === "flat" ? "" : ` · at ${signed(b.ax)}, ${signed(b.ay)}${b.rot ? ` · turned ${Math.round(b.rot)}°` : ""}`,
       st === "todo" ? (hitboxAuto(entity, cur.state) ? " · proposed default — not set until you accept or adjust it" : " · not set — move anything to adopt it") : "",
     );
   }
@@ -9893,6 +9933,11 @@ const OBJ_HITBOXES = {
     title: "Decided piece by piece: this one needs no hitbox — for the odd standing piece that still should not collide",
     hit: (o) => hitboxPieceState(o) === "none",
   },
+  flat: {
+    label: "no collision",
+    title: "Flat on the floor — carpets, rugs, puddles. The player walks over them: no collision, and never in front of them",
+    hit: (o) => hitboxPieceState(o) === "flat",
+  },
   wall: {
     label: "wall scenery",
     title: "Windows and mountain-wall pieces — hung on a wall, so a hitbox does not apply. Decided by their type; nothing here ever needs marking",
@@ -9983,7 +10028,9 @@ function viewObjects() {
           ? h("span", { class: "pill ok", title: sh.animated === sh.states ? "Every state is animated" : `${sh.animated} of ${sh.states} states are animated` },
             sh.animated === sh.states ? "animated" : `animated ${sh.animated}/${sh.states}`)
           : h("span", { class: "muted" }, "static"),
-        dirWord(o) ? h("span", { class: "pill", title: `${sh.dirs} facings: ${dirWord(o)}` }, dirWord(o)) : null),
+        dirWord(o) ? h("span", { class: "pill", title: `${sh.dirs} facings: ${dirWord(o)}` }, dirWord(o)) : null,
+        hitboxPieceState(o) === "flat"
+          ? h("span", { class: "pill", title: "No collision — the player walks over this" }, "walk over") : null),
     // A stale verdict must not wear the badge of a live one — "remove" on a
     // piece regenerated since that call would read as a decision about the
     // art on screen.
