@@ -141,8 +141,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "b8bdaca9-608b-432a-a790-9748dfd8b873",
-          "description": "This is the same picture in every frame. ONLY the hanging lantern turns very slightly where it hangs. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "group_id": "93db4152-73e5-4c09-812a-4dc74550b506",
+          "description": "This is the same picture in every frame. ONLY the hanging lantern turns very slightly where it hangs. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. No sparks, no glare, no new bright pixels anywhere. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -158,7 +158,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-30T08:15:36+00:00",
+          "generated_at": "2026-08-30T09:25:47+00:00",
           "brief": "G13"
         }
       }

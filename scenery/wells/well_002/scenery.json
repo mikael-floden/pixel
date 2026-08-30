@@ -151,8 +151,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "d6f3c0c2-c2fb-4292-b985-e41429011064",
-          "description": "This is the same picture in every frame. ONLY the hanging bucket turns very slightly where it hangs. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "group_id": "7ed485ed-2fb5-4b1e-94db-dcc579284a74",
+          "description": "This is the same picture in every frame. ONLY the bucket hanging over the shaft turns very slightly where it hangs. It is clearly visible in every single frame, including the last; it never disappears. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -168,7 +168,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-30T08:15:03+00:00",
+          "generated_at": "2026-08-30T09:26:02+00:00",
           "brief": "G12"
         }
       }

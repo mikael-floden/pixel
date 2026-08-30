@@ -233,13 +233,14 @@
   "G7": {
    "group": "tables",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "prompt": "This is the same picture in every frame. ONLY the candle flame at the end of the desk flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
    "moves": "The lantern burns.",
    "seen_in_art": "a map desk with a lantern burning at one end",
    "example": {
     "piece": "tables/table_016",
     "state": "LIT_4"
-   }
+   },
+   "redo": "Round 1: the map on the desk shifted and the candle grew. Narrowed to the flame and size pinned."
   },
   "G8": {
    "group": "flower_stands",
@@ -265,13 +266,14 @@
   "G10": {
    "group": "wall_hangings",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the thread of purple vapour above the bottle rises and curls. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "prompt": "This is the same picture in every frame. ONLY the thread of purple vapour above the one bottle rises and curls. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
    "moves": "The vapour rises.",
    "seen_in_art": "a shelf of bottles, one trailing purple vapour",
    "example": {
     "piece": "wall_hangings/wall_hanging_009",
     "state": "NOT_LIT_4"
-   }
+   },
+   "redo": "Round 1: the BOTTLES swapped colours between frames -- green, purple and teal moved around. The vapour itself was fine."
   },
   "G11": {
    "group": "wells",
@@ -287,13 +289,14 @@
   "G12": {
    "group": "wells",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the hanging bucket turns very slightly where it hangs. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "prompt": "This is the same picture in every frame. ONLY the bucket hanging over the shaft turns very slightly where it hangs. It is clearly visible in every single frame, including the last; it never disappears. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
    "moves": "The bucket turns.",
    "seen_in_art": "a vine-grown well with a bucket over the shaft",
    "example": {
     "piece": "wells/well_002",
     "state": "NOT_LIT_3"
-   }
+   },
+   "redo": "Round 1: THE BUCKET VANISHED after the first frame and the roof and vines changed instead."
   },
   "L1": {
    "group": "crystals",
@@ -5202,46 +5205,50 @@
   "G5": {
    "group": "lantern_posts",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the light inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "prompt": "This is the same picture in every frame. ONLY the light inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
    "moves": "The lantern burns.",
    "seen_in_art": "a post carrying a green-lit lantern",
    "example": {
     "piece": "lantern_posts/lantern_post_008",
     "state": "LIT_3"
-   }
+   },
+   "redo": "Round 1: the lantern GREW taller and its shape changed. Size pinned."
   },
   "G13": {
    "group": "lantern_stands",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the hanging lantern turns very slightly where it hangs. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "prompt": "This is the same picture in every frame. ONLY the hanging lantern turns very slightly where it hangs. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. No sparks, no glare, no new bright pixels anywhere. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
    "moves": "The lantern turns.",
    "seen_in_art": "an iron crook with an unlit lantern hung from it",
    "example": {
     "piece": "lantern_stands/lantern_stand_018",
     "state": "NOT_LIT_1"
-   }
+   },
+   "redo": "Round 1: the UNLIT lantern LIT ITSELF UP by frame 4 and threw sparks. Nothing forbade light appearing; DARK clause added."
   },
   "G16": {
    "group": "telegraph_poles",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the dangling wires turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "prompt": "This is the same picture in every frame. ONLY the loose wires hanging from the crossarm turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. No sparks, no glare, no new bright pixels anywhere. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
    "moves": "The wires sway.",
    "seen_in_art": "a snowy pole with loose wires hanging from the crossarm",
    "example": {
     "piece": "telegraph_poles/telegraph_pole_003",
     "state": "NOT_LIT_3"
-   }
+   },
+   "redo": "Round 1: a dark arc appeared at the top and the snow and icicles changed."
   },
   "G17": {
    "group": "telegraph_poles",
    "name": "motion",
-   "prompt": "This is the same picture in every frame. ONLY the dangling wires turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "prompt": "This is the same picture in every frame. ONLY the cut wires dangling from the crossarm turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. No sparks, no glare, no new bright pixels anywhere. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
    "moves": "The wires sway.",
    "seen_in_art": "a snowy pole with cut wires dangling",
    "example": {
     "piece": "telegraph_poles/telegraph_pole_003",
     "state": "NOT_LIT_4"
-   }
+   },
+   "redo": "Round 1: the wires turned white and spiky and the snow grew."
   },
   "G18": {
    "group": "telegraph_poles",
@@ -6155,5 +6162,7 @@
  "_identity_note": "THE IDENTITY CLAUSE ('Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else.') MEASURED on the batch-AD redos 2026-08-29. It WORKS ON CARVED/ENGRAVED SUBJECTS: D47's runes stopped changing letters, drift 3.3->1.8, the best number of the round. It does NOTHING for organic multi-object glows: D33's berries still became white flowers, D45 still bloomed and blew out worse. A carved mark is a shape the generator can hold; a berry is not. Keep the clause -- it is cheap and it fixed the carving -- but do not expect it to rescue a plant.",
  "_stop_redoing_note": "STOP REDOING MULTI-OBJECT ORGANIC GLOWS. D33 (berried thicket) and D45 (gold-lit bushes) have now defeated FOUR separate fixes: the brightness cap (AB), the no-add clause (AC), the light-vs-object phrasing (AD) and the identity clause (AD redos). They are the exact class batch AD measured at 27.1% drift against 11.7% for single shapes. Reject rather than write a fifth clause. Redo budget is better spent on single-shape glows, flame and hanging.",
  "_selection_bar_note": "EVERY PAGE THAT SHOWS HIM A LIST OF IDS MUST CARRY THE TICK-AND-COPY BAR. He reviews in batches from a phone and reads ids off the page; without the bar he transcribes them by hand (\"I really like the feature where I can select things\"). The two redo pages shipped without it. Fixed structurally: candidate_page.render_results() builds a results page and always appends _TAIL, which is the bar -- do not hand-assemble a results page.",
- "_numbers_are_not_taste_note": "MY METRICS DO NOT PREDICT HIS EYE. The batch-AD redos: I scored D47 the best result of the round (drift 3.3->1.8, identity clause working exactly as designed) and D24 clearly improved; he looked at them and called both ugly, along with six others. Eight of nine removed. Motion %, drift and blowout catch specific FAULTS -- a light dying, a thing blooming, an object multiplying -- and are worth keeping for that. They say nothing about whether an animation is nice to look at. Never present a number as a verdict; show the animation and let him judge."
+ "_numbers_are_not_taste_note": "MY METRICS DO NOT PREDICT HIS EYE. The batch-AD redos: I scored D47 the best result of the round (drift 3.3->1.8, identity clause working exactly as designed) and D24 clearly improved; he looked at them and called both ugly, along with six others. Eight of nine removed. Motion %, drift and blowout catch specific FAULTS -- a light dying, a thing blooming, an object multiplying -- and are worth keeping for that. They say nothing about whether an animation is nice to look at. Never present a number as a verdict; show the animation and let him judge.",
+ "_dark_note": "LIGHT CAN APPEAR ON A PIECE THAT HAS NONE. G13's UNLIT lantern lit itself up by frame 4 and threw sparks; the clause set forbade light dying, blowing out and multiplying, but never light APPEARING. Added 2026-08-29 for NOT_LIT briefs: 'Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. No sparks, no glare, no new bright pixels anywhere.'",
+ "_present_note": "THE NAMED MOVER CAN SIMPLY VANISH. G12's bucket was gone from frame 2 onward and the well's roof animated instead. Added: 'It is clearly visible in every single frame, including the last; it never disappears.' Use on any hanging brief where the mover is small against a busy piece."
 }
