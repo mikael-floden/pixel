@@ -111,6 +111,16 @@ def build():
             # south-east window yields a south-west one.
             "must_be_imbplemented_with_random_hflip":
                 meta.get("must_be_imbplemented_with_random_hflip", True),
+            # DOES THE PLAYER WALK INTO IT, OR OVER IT? (maintainer 2026-08-30:
+            # "I want a way to mark an object as collision-less / no collision.
+            # This can be a carpet for example ... add that as a field to the
+            # object so the game knows about it.") TRUE for almost everything —
+            # a player should not walk through a well — and FALSE for flat floor
+            # coverings: rugs, hides, mats, a doormat. The wiki writes his
+            # corrections to live/tuning/scenery_collision.json and
+            # apply_collision.py bakes them in, so his mark always wins over the
+            # default this domain guesses.
+            "collision": meta.get("collision", True),
             "rotations": meta.get("rotations") or {},
             # LIGHTING STATES, when a piece has more than one. Windows ship
             # "lights_off" (the default, and what `sprite` points at) and
