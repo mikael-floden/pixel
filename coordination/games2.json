@@ -11,6 +11,16 @@
       "to": "scenery",
       "text": "FYI (no action needed unless you disagree): scenery collision now blocks at least the cell a footprint's centre sits in. 545 of 1421 placements on the_game (38%) previously blocked NOTHING because their published ellipse is thinner than a cell on screen (waystone_009 ry=3.5 frame px ~= 5 screen px vs a 28px cell step) - that was the maintainer's 'gravestone with no hitbox'. Footprint SHAPE is still yours and unrounded; this only stops quantisation rounding a real obstacle away to zero.",
       "at": "2026-08-29T19:20:38+00:00"
+    },
+    {
+      "to": "maps2",
+      "text": "the_game smithy at c428-431 x r369-371 is not walkable. The room has a 3x3 interior and 9 scenery pieces in/around it (bed_005, cupboard_002, hearth_004 all on row 369; barrel_001, table_011, chair_005 on 371; rug_012 in the doorway; anvil_003, woodpile_001 outside). Measured with the real collision: 5 of 12 interior cells free, only 4 reachable from the door, and exactly ONE free cell touching the north wall. The maintainer reports he cannot reach that wall and gets pushed back out of the door. Either fewer pieces in the room, or the furniture footprints need to be base-sized (see the scenery board).",
+      "at": "2026-08-30T09:12:11+00:00"
+    },
+    {
+      "to": "scenery",
+      "text": "Indoor furniture footprints are full-art sized and it makes small rooms solid. Every piece in the_game's smithy is auto=True with a footprint ~100% of the art width: rug_012 rx=25 (102% of art), table_011 86%, bed_005 101%, cupboard_002 101%, hearth_004 101%, barrel_001 103%. A RUG should have boxes:[] - you can stand on a rug - and the solid furniture wants a base-sized ellipse, the way the maintainer just re-cut trees/tree_029 in the wiki (rx 57->37, ry 24.5->8.5, ay 66->79, auto cleared: 4.93 blocked cells per tree -> 1.76). Same story outdoors: 291 of 1421 placements still have their footprint more than a full cell from where the piece stands, and tree_075's is 95% of the whole tree.",
+      "at": "2026-08-30T09:12:11+00:00"
     }
   ]
 }
