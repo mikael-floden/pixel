@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
   "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
-  "updated_at": "2026-08-30T18:23:51.526Z",
+  "updated_at": "2026-08-30T18:24:54.818Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -24306,8 +24306,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:39.055Z"
     },
     "scenery/stones/stone_025#not_lit_2": {
       "boxes": [
@@ -24319,34 +24318,31 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:40.748Z"
     },
     "scenery/stones/stone_025#not_lit_3": {
       "boxes": [
         {
-          "ax": 1.5,
-          "ay": 24,
+          "ax": 0.94,
+          "ay": 20.94,
           "rx": 27,
           "ry": 7,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:47.126Z"
     },
     "scenery/stones/stone_025#not_lit_4": {
       "boxes": [
         {
-          "ax": -0.5,
-          "ay": 22.5,
+          "ax": -0.63,
+          "ay": 14.29,
           "rx": 32,
-          "ry": 4.5,
+          "ry": 8,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:52.836Z"
     },
     "scenery/stones/stone_025#lit_2": {
       "boxes": [
@@ -24358,8 +24354,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:37.271Z"
     },
     "scenery/stones/stone_026#lit_1": {
       "boxes": [
@@ -24639,8 +24634,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:19.589Z"
     },
     "scenery/stones/stone_031#not_lit_2": {
       "boxes": [
@@ -24652,8 +24646,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:21.559Z"
     },
     "scenery/stones/stone_031#not_lit_3": {
       "boxes": [
@@ -24665,8 +24658,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:23.277Z"
     },
     "scenery/stones/stone_031#not_lit_4": {
       "boxes": [
@@ -24678,8 +24670,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:24.974Z"
     },
     "scenery/stones/stone_031#lit_1": {
       "boxes": [
@@ -24703,8 +24694,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:00.666Z"
     },
     "scenery/stones/stone_033#not_lit_2": {
       "boxes": [
@@ -24716,8 +24706,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:02.633Z"
     },
     "scenery/stones/stone_033#not_lit_3": {
       "boxes": [
@@ -24729,8 +24718,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:04.500Z"
     },
     "scenery/stones/stone_033#not_lit_4": {
       "boxes": [
@@ -24742,8 +24730,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:06.232Z"
     },
     "scenery/stones/stone_033#lit_2": {
       "boxes": [
@@ -24899,8 +24886,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:31.445Z"
     },
     "scenery/stones/stone_036#not_lit_4": {
       "boxes": [
@@ -24912,8 +24898,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:33.303Z"
     },
     "scenery/stones/stone_036#lit_2": {
       "boxes": [
@@ -24925,8 +24910,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:27.158Z"
     },
     "scenery/stones/stone_036#lit_4": {
       "boxes": [
@@ -24938,8 +24922,7 @@
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T18:24:29.019Z"
     },
     "scenery/stones/stone_037#not_lit_1": {
       "boxes": [
