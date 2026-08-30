@@ -2161,9 +2161,26 @@ function makePlayer(entity, kind, opts = {}) {
      * more room, not less precision, and the canvas already grows to hold
      * whatever they produce. */
     const fw = clip?.fw ?? entity.frameW ?? 96, fh = clip?.fh ?? entity.frameH ?? 96;
-    const reach = Math.max(64, Math.round(Math.max(fw, fh) * 2));
-    hitW.max = String(reach);
-    hitH.max = String(reach);
+    /* THE RAILS SPAN THE ART, NOT THE FRAME (maintainer 2026-08-29: "It's
+     * very hard to use the slider to edit a hitbox because you have made the
+     * max numbers so insanely big"). Twice the FRAME put a 96px piece on a
+     * 192px rail and a 256px piece on a 512px one, so a thumb's width moved
+     * the ellipse several pixels and the useful range — a footprint near the
+     * art's own size — was a sliver in the middle.
+     *
+     * A quarter past the piece's own content box is the honest reach: it
+     * covers any footprint that matches the art, with room to overshoot, and
+     * every pixel of rail is somewhere he might land. His 2026-08-27 ask for
+     * MORE range is kept where it was actually about long pieces — the box
+     * is measured, so a fallen log's rail is as long as the log. A stored box
+     * bigger than that (or a turned ellipse using D as its long axis) still
+     * shows: the rail never ends below the value it is displaying. */
+    const cw = clip?.bb ? clip.bb[2] - clip.bb[0] : fw;
+    const ch = clip?.bb ? clip.bb[3] - clip.bb[1] : fh;
+    const art = Math.max(cw, ch);
+    const reach = (cur2) => Math.max(48, Math.round(art * 1.25), Math.ceil(cur2));
+    hitW.max = String(reach(b ? b.rx * 2 : 0));
+    hitH.max = String(reach(b ? b.ry * 2 : 0));
     if (b) {
       if (document.activeElement !== hitW) hitW.value = String(b.rx * 2);
       if (document.activeElement !== hitH) hitH.value = String(b.ry * 2);

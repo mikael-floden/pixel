@@ -162,6 +162,21 @@ ok(open.bar && open.pad, "and opens with the same proxy pad the monster shadow u
  * that need a hitbox is always facing south. But the ellips might still need a
  * rotation to fit the object." */
 ok(open.rails === 3, `with three rails — width, depth and the ROTATION a monster never needed (${open.rails})`);
+/* THE RAILS SPAN THE ART (maintainer 2026-08-29: "very hard to use the
+ * slider ... the max numbers so insanely big"). A quarter past the content
+ * box, not twice the frame — and never shorter than the value they show. */
+{
+  const dd2 = Object.values(PIECE.animations)[0]?.dirs?.south ?? {};
+  const bb2 = dd2.bb;
+  const rails = await p.evaluate(() => [...document.querySelectorAll(".hit-bar .shadow-slider")].slice(0, 2)
+    .map((x) => ({ max: +x.max, val: +x.value })));
+  const art = bb2 ? Math.max(bb2[2] - bb2[0], bb2[3] - bb2[1]) : 0;
+  const frame = Math.max(dd2.fw ?? 96, dd2.fh ?? 96);
+  ok(art > 0 && rails.every((r) => r.max <= Math.max(48, Math.round(art * 1.25), Math.ceil(r.val))),
+    `the rails reach a quarter past the ART, not twice the frame (${rails.map((r) => r.max).join("/")} for art ${art}, frame ${frame})`);
+  ok(rails.every((r) => r.max >= r.val),
+    `and never end below the value they are showing (${rails.map((r) => `${r.val}/${r.max}`).join(", ")})`);
+}
 ok(open.probe?.state === "todo" && /not set/.test(open.read),
   "an untouched piece reads as NOT SET — merely opening it must not count as done");
 /* THE FIRST ELLIPSE COMES FROM THE ART, not from the middle of the frame: the
