@@ -43,7 +43,29 @@
         "south-west": "barrels/barrel_007/lit_2/rotations/south-west.webp",
         "south": "barrels/barrel_007/lit_2/sprite.webp"
       },
-      "animations": {}
+      "animations": {
+        "motion": {
+          "group_id": "23df8d1c-2241-4eba-81ff-10432db71c81",
+          "description": "This is an almost completely still picture. ONLY the cyan water in the barrel changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same cyan as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "barrels/barrel_007/lit_2/animations/motion/00.webp",
+            "barrels/barrel_007/lit_2/animations/motion/01.webp",
+            "barrels/barrel_007/lit_2/animations/motion/02.webp",
+            "barrels/barrel_007/lit_2/animations/motion/03.webp",
+            "barrels/barrel_007/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "barrels/barrel_007/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:59:36+00:00",
+          "brief": "H46"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "barrels/barrel_007/sprite.webp",

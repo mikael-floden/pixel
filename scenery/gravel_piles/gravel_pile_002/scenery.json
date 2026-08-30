@@ -89,7 +89,29 @@
         "south-west": "gravel_piles/gravel_pile_002/lit_3/rotations/south-west.webp",
         "south": "gravel_piles/gravel_pile_002/lit_3/sprite.webp"
       },
-      "animations": {}
+      "animations": {
+        "motion": {
+          "group_id": "e2cdd0b1-df76-43ca-a9c7-9e198651677a",
+          "description": "This is an almost completely still picture. ONLY the gold crystals in the gravel change: they brighten by the smallest amount that is still visible, then return. At their brightest they must still look exactly the same gold as in the first frame -- never pale, never white, never any other colour. They stay exactly the same size and shape; they never grow and never spread. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "gravel_piles/gravel_pile_002/lit_3/animations/motion/00.webp",
+            "gravel_piles/gravel_pile_002/lit_3/animations/motion/01.webp",
+            "gravel_piles/gravel_pile_002/lit_3/animations/motion/02.webp",
+            "gravel_piles/gravel_pile_002/lit_3/animations/motion/03.webp",
+            "gravel_piles/gravel_pile_002/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "gravel_piles/gravel_pile_002/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:59:03+00:00",
+          "brief": "H42"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "gravel_piles/gravel_pile_002/lit_4/sprite.webp",
