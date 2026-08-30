@@ -55,6 +55,29 @@
         "south-east": "offering_tables/offering_table_012/lit_3/rotations/south-east.webp",
         "south-west": "offering_tables/offering_table_012/lit_3/rotations/south-west.webp",
         "south": "offering_tables/offering_table_012/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "0bbec76d-a56a-49a5-8698-e790357789ba",
+          "description": "This is the same picture in every frame. ONLY the three candle flames flicker. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "offering_tables/offering_table_012/lit_3/animations/motion/00.webp",
+            "offering_tables/offering_table_012/lit_3/animations/motion/01.webp",
+            "offering_tables/offering_table_012/lit_3/animations/motion/02.webp",
+            "offering_tables/offering_table_012/lit_3/animations/motion/03.webp",
+            "offering_tables/offering_table_012/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "offering_tables/offering_table_012/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:34:09+00:00",
+          "brief": "H8"
+        }
       }
     },
     "LIT_4": {

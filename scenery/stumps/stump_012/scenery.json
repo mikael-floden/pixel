@@ -168,7 +168,30 @@
       "glow_concept": null,
       "difference_from_source": 0.4453,
       "glow_score": 0.1716,
-      "relit_from": "NOT_LIT_6"
+      "relit_from": "NOT_LIT_6",
+      "animations": {
+        "motion": {
+          "group_id": "8ddea832-b6a7-46fe-a739-023e08a32545",
+          "description": "This is the same picture in every frame. ONLY the green crack in the stump brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_012/lit_6/animations/motion/00.webp",
+            "stumps/stump_012/lit_6/animations/motion/01.webp",
+            "stumps/stump_012/lit_6/animations/motion/02.webp",
+            "stumps/stump_012/lit_6/animations/motion/03.webp",
+            "stumps/stump_012/lit_6/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_012/lit_6/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:35:40+00:00",
+          "brief": "H23"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stumps/stump_012/not_lit_1/sprite.webp",

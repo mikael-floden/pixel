@@ -43,6 +43,29 @@
         "south-east": "signposts/signpost_025/lit_1/rotations/south-east.webp",
         "south-west": "signposts/signpost_025/lit_1/rotations/south-west.webp",
         "south": "signposts/signpost_025/lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "75f96f3b-08c2-41b5-9061-b2f96fdcdd38",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "signposts/signpost_025/lit_1/animations/motion/00.webp",
+            "signposts/signpost_025/lit_1/animations/motion/01.webp",
+            "signposts/signpost_025/lit_1/animations/motion/02.webp",
+            "signposts/signpost_025/lit_1/animations/motion/03.webp",
+            "signposts/signpost_025/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "signposts/signpost_025/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T09:33:59+00:00",
+          "brief": "H5"
+        }
       }
     },
     "NOT_LIT_1": {

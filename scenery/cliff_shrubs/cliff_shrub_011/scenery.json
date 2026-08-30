@@ -38,7 +38,28 @@
       "generated_at": "2026-08-16T09:56:19+00:00",
       "glow_concept": "light in the crack at its root",
       "difference_from_source": 0.4711,
-      "glow_score": 0.0553
+      "glow_score": 0.0553,
+      "animations": {
+        "motion": {
+          "group_id": "26dba8fc-b22f-49ec-8cd6-0c74274f50d9",
+          "description": "This is the same picture in every frame. ONLY the small fire at the foot of the tree flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_shrubs/cliff_shrub_011/lit_1/animations/motion/00.webp",
+            "cliff_shrubs/cliff_shrub_011/lit_1/animations/motion/01.webp",
+            "cliff_shrubs/cliff_shrub_011/lit_1/animations/motion/02.webp",
+            "cliff_shrubs/cliff_shrub_011/lit_1/animations/motion/03.webp",
+            "cliff_shrubs/cliff_shrub_011/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "cliff_shrubs/cliff_shrub_011/lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T09:34:08+00:00",
+          "brief": "H4"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cliff_shrubs/cliff_shrub_011/sprite.webp",
