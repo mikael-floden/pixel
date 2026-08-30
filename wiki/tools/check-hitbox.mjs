@@ -18,6 +18,7 @@ const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ")
 const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
 const D = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
 const PIECES = D.domains.objects ?? [];
+const DATAOBJ = D.domains.objects ?? [];
 /* A FIXTURE THE MAINTAINER'S OWN WORK CANNOT BREAK. check-shadow.mjs is red
  * today for exactly this: it pins monster[0] and asserts the record is
  * untouched, so the first monster he tuned turned his work into a failing
@@ -39,7 +40,12 @@ const LIVE = JSON.parse(readFileSync(new URL("../../live/tuning/scenery_hitbox.j
    * so each carries its own record — or inherits the piece-level one he set
    * himself. */
   const varsOf = (o) => Object.keys(o.animations ?? {});
-  const missing = eligible.flatMap((o) => varsOf(o)
+  /* A COLLISIONLESS PIECE NEEDS NO FOOTPRINT (2026-08-29): the scenery domain
+   * tags carpets with collision:false and the wiki drops their proposals, so
+   * requiring a record for every variation of one would demand data that
+   * would be wrong to keep. */
+  const flatTagged = new Set((DATAOBJ ?? []).filter((o) => o.noCollision).map((o) => o.path));
+  const missing = eligible.filter((o) => !flatTagged.has(o.path)).flatMap((o) => varsOf(o)
     .filter((st) => !LIVE.overrides?.[`${o.path}#${st}`] && !LIVE.overrides?.[o.path])
     .map((st) => `${o.path}#${st}`));
   const nVars = eligible.reduce((n2, o) => n2 + varsOf(o).length, 0);
@@ -119,8 +125,8 @@ ok(total === PIECES.length, `over the whole domain (${total} of ${PIECES.length}
   const chipN = (name) => +((chips.find((c) => c.startsWith(name)) ?? "").match(/\d+$/) ?? [NaN])[0];
   ok(chipN("wall scenery") === wallN,
     `wall scenery counts the pieces the override-aware predicate calls walls (${chipN("wall scenery")} of ${wallN})`);
-  ok(chipN("no hitbox yet") + chipN("hitbox set") + chipN("needs none") + chipN("wall scenery") === total,
-    "and the four states partition the domain — no piece in two queues, none in zero");
+  ok(chipN("no hitbox yet") + chipN("hitbox set") + chipN("needs none") + chipN("no collision") + chipN("wall scenery") === total,
+    "and the FIVE states partition the domain — no piece in two queues, none in zero");
   // A window must NOT appear under "no hitbox yet".
   await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-object-hitbox"] button')].find((x) => /no hitbox yet/.test(x.textContent))?.click());
   await p.waitForTimeout(1400);
