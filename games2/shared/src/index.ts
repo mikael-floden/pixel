@@ -2345,7 +2345,7 @@ const JUMP_EDGE_COST = 3; // a 1-level climb costs ~3 walked cells — prefer sh
 /** Clearance pricing in findPath — see F5 in the notes and the measurement in
  *  the block that uses them. */
 const NEAR_SOLID_COST = 0.6; // a solid in the 3x3 ring
-const TIGHT_COST = 1.0; // a cell whose every point is inside a footprint's reach
+const TIGHT_COST = 2.0; // a cell whose every point is inside a footprint's reach
 
 /** Is this CELL a solid obstacle (prop / structure / non-enterable surface)? A
  * world@2 deck makes its cell walkable ON TOP regardless of the base, so a
@@ -4058,7 +4058,7 @@ export type SceneryHitboxDoc = Record<
 
 /** Nav lattice: the coarse pass samples each cell KxK ... */
 const NAV_COARSE = 4; // 4x4 over a 32wu cell — one sample per 8wu
-const NAV_SUB = 4; // 4x4 INSIDE a coarse tile that isn't provably covered — one per 2wu
+const NAV_SUB = 8; // 4x4 INSIDE a coarse tile that isn't provably covered — one per 2wu
 
 /**
  * Block the ground every scenery piece stands on — as an ELLIPSE, plus the
