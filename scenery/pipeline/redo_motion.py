@@ -23,6 +23,7 @@ import shutil
 import sys
 
 import factory
+import viewer_build
 
 NAME = "motion"
 CONFIG = os.path.join(factory.ROOT, "config", "motion_prompts.json")
@@ -59,6 +60,11 @@ def clear(ids, dry=False):
         factory.write_manifest(rel, man)
         done.append(bid)
         print(f"  = cleared {bid} {rel}#{state}")
+    if done and not dry:
+        # Same reason as remove_motion: the wiki reads viewer_data.json, so a
+        # cleared animation must leave the feed too or the wiki advertises frames
+        # that are no longer there. animate_motion rebuilds it again afterwards.
+        viewer_build.build()
     return done
 
 

@@ -22,6 +22,7 @@ import shutil
 import sys
 
 import factory
+import viewer_build
 
 NAME = "motion"
 CONFIG = os.path.join(factory.ROOT, "config", "motion_prompts.json")
@@ -63,6 +64,11 @@ def remove(ids, reason, dry=False):
     if not dry:
         with open(CONFIG, "w", encoding="utf-8") as f:
             json.dump(cfg, f, indent=1, ensure_ascii=False)
+        # REBUILD THE WIKI FEED. viewer_data.json is what the wiki reads; removing
+        # frames and manifest entries without rebuilding it leaves the wiki
+        # advertising animations whose files are gone, and he sees nothing where
+        # an animation used to be. Found 2026-08-29 with 46 such dangling entries.
+        viewer_build.build()
     return gone
 
 
