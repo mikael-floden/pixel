@@ -240,7 +240,8 @@
     "piece": "tables/table_016",
     "state": "LIT_4"
    },
-   "redo": "Round 1: the map on the desk shifted and the candle grew. Narrowed to the flame and size pinned."
+   "redo": "Round 1: the map on the desk shifted and the candle grew. Narrowed to the flame and size pinned.",
+   "result": "IMPROVED. Narrowing to the flame stopped the map and desk shifting: motion 24.1->11.2."
   },
   "G8": {
    "group": "flower_stands",
@@ -273,7 +274,8 @@
     "piece": "wall_hangings/wall_hanging_009",
     "state": "NOT_LIT_4"
    },
-   "redo": "Round 1: the BOTTLES swapped colours between frames -- green, purple and teal moved around. The vapour itself was fine."
+   "redo": "Round 1: the BOTTLES swapped colours between frames -- green, purple and teal moved around. The vapour itself was fine.",
+   "result": "UNCHANGED. Vapour is right; the bottles still swap colours despite the identity clause."
   },
   "G11": {
    "group": "wells",
@@ -296,7 +298,8 @@
     "piece": "wells/well_002",
     "state": "NOT_LIT_3"
    },
-   "redo": "Round 1: THE BUCKET VANISHED after the first frame and the roof and vines changed instead."
+   "redo": "Round 1: THE BUCKET VANISHED after the first frame and the roof and vines changed instead.",
+   "result": "FIXED by the visibility clause. The bucket is present in all five frames instead of vanishing after the first; drift 28.6->19.2."
   },
   "L1": {
    "group": "crystals",
@@ -5212,7 +5215,8 @@
     "piece": "lantern_posts/lantern_post_008",
     "state": "LIT_3"
    },
-   "redo": "Round 1: the lantern GREW taller and its shape changed. Size pinned."
+   "redo": "Round 1: the lantern GREW taller and its shape changed. Size pinned.",
+   "result": "WORSE. Lantern still changes shape and pales mid-loop: drift 9.7->24.2."
   },
   "G13": {
    "group": "lantern_stands",
@@ -5224,7 +5228,8 @@
     "piece": "lantern_stands/lantern_stand_018",
     "state": "NOT_LIT_1"
    },
-   "redo": "Round 1: the UNLIT lantern LIT ITSELF UP by frame 4 and threw sparks. Nothing forbade light appearing; DARK clause added."
+   "redo": "Round 1: the UNLIT lantern LIT ITSELF UP by frame 4 and threw sparks. Nothing forbade light appearing; DARK clause added.",
+   "result": "PARTLY. The dark clause cut drift 25.3->9.4, the biggest single improvement of the round, but the unlit lantern still brightens in the last frame."
   },
   "G16": {
    "group": "telegraph_poles",
@@ -5236,7 +5241,8 @@
     "piece": "telegraph_poles/telegraph_pole_003",
     "state": "NOT_LIT_3"
    },
-   "redo": "Round 1: a dark arc appeared at the top and the snow and icicles changed."
+   "redo": "Round 1: a dark arc appeared at the top and the snow and icicles changed.",
+   "result": "MARGINAL. Drift 38.8->34.7; icicles still shift with the wires."
   },
   "G17": {
    "group": "telegraph_poles",
@@ -5248,7 +5254,8 @@
     "piece": "telegraph_poles/telegraph_pole_003",
     "state": "NOT_LIT_4"
    },
-   "redo": "Round 1: the wires turned white and spiky and the snow grew."
+   "redo": "Round 1: the wires turned white and spiky and the snow grew.",
+   "result": "WORSE. 40.3->44.5 drift."
   },
   "G18": {
    "group": "telegraph_poles",
@@ -6707,6 +6714,7 @@
  "_stop_redoing_note": "STOP REDOING MULTI-OBJECT ORGANIC GLOWS. D33 (berried thicket) and D45 (gold-lit bushes) have now defeated FOUR separate fixes: the brightness cap (AB), the no-add clause (AC), the light-vs-object phrasing (AD) and the identity clause (AD redos). They are the exact class batch AD measured at 27.1% drift against 11.7% for single shapes. Reject rather than write a fifth clause. Redo budget is better spent on single-shape glows, flame and hanging.",
  "_selection_bar_note": "EVERY PAGE THAT SHOWS HIM A LIST OF IDS MUST CARRY THE TICK-AND-COPY BAR. He reviews in batches from a phone and reads ids off the page; without the bar he transcribes them by hand (\"I really like the feature where I can select things\"). The two redo pages shipped without it. Fixed structurally: candidate_page.render_results() builds a results page and always appends _TAIL, which is the bar -- do not hand-assemble a results page.",
  "_numbers_are_not_taste_note": "MY METRICS DO NOT PREDICT HIS EYE. The batch-AD redos: I scored D47 the best result of the round (drift 3.3->1.8, identity clause working exactly as designed) and D24 clearly improved; he looked at them and called both ugly, along with six others. Eight of nine removed. Motion %, drift and blowout catch specific FAULTS -- a light dying, a thing blooming, an object multiplying -- and are worth keeping for that. They say nothing about whether an animation is nice to look at. Never present a number as a verdict; show the animation and let him judge.",
- "_dark_note": "LIGHT CAN APPEAR ON A PIECE THAT HAS NONE. G13's UNLIT lantern lit itself up by frame 4 and threw sparks; the clause set forbade light dying, blowing out and multiplying, but never light APPEARING. Added 2026-08-29 for NOT_LIT briefs: 'Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. No sparks, no glare, no new bright pixels anywhere.'",
- "_present_note": "THE NAMED MOVER CAN SIMPLY VANISH. G12's bucket was gone from frame 2 onward and the well's roof animated instead. Added: 'It is clearly visible in every single frame, including the last; it never disappears.' Use on any hanging brief where the mover is small against a busy piece."
+ "_dark_note": "LIGHT CAN APPEAR ON A PIECE THAT HAS NONE. G13's UNLIT lantern lit itself up by frame 4 and threw sparks; the clause set forbade light dying, blowing out and multiplying, but never light APPEARING. Added for NOT_LIT briefs: 'Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. No sparks, no glare, no new bright pixels anywhere.' MEASURED: drift 25.3->9.4, the biggest single improvement of that round, though the lantern still brightens in the final frame. Keep it; it is not yet complete.",
+ "_present_note": "THE NAMED MOVER CAN SIMPLY VANISH. G12's bucket was gone from frame 2 onward and the well's roof animated instead. FIX CONFIRMED 2026-08-29: 'It is clearly visible in every single frame, including the last; it never disappears.' The bucket returned in all five frames and drift fell 28.6->19.2. Use on any brief where the mover is small against a busy piece.",
+ "_telegraph_poles_note": "TELEGRAPH POLES RESIST. telegraph_pole_003 and _008 have now failed across three batches and a redo: the dangling wires do move, but the icicles, snow and insulators shift with them and drift sits at 35-45%. The piece is a thin pole crowded with small detail, which is the shape that defeats every clause. Stop proposing them."
 }
