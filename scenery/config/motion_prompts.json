@@ -4844,7 +4844,8 @@
     "piece": "wells/well_002",
     "state": "LIT_4"
    },
-   "redo": "Round 1: a cyan arc APPEARED over the roof in the last frame and the bucket barely moved."
+   "redo": "Round 1: a cyan arc APPEARED over the roof in the last frame and the bucket barely moved.",
+   "result": "FIXED. 9.9->4.0 motion, drift 5.1->3.2; the stray cyan arc is gone."
   },
   "D10": {
    "group": "wells",
@@ -4856,7 +4857,8 @@
     "piece": "wells/well_012",
     "state": "NOT_LIT_6"
    },
-   "redo": "Round 1: the bucket was not animated at all -- the shaft interior and the snow changed instead. Named by position."
+   "redo": "Round 1: the bucket was not animated at all -- the shaft interior and the snow changed instead. Named by position.",
+   "result": "WORSE. Bucket still barely moves; the roof snow changes instead. 9.9->20.5, drift 10.8->25.1."
   },
   "D12": {
    "group": "fish_drying_racks",
@@ -4868,7 +4870,8 @@
     "piece": "fish_drying_racks/fish_drying_rack_005",
     "state": "NOT_LIT_4"
    },
-   "redo": "Round 1: the fish washed out to near-white (11.6% blowout) and the grass at the base was lost."
+   "redo": "Round 1: the fish washed out to near-white (11.6% blowout) and the grass at the base was lost.",
+   "result": "WORSE. Fish still pale, rack still shifts. Drift 31.1->40.7."
   },
   "D13": {
    "group": "graves",
@@ -5001,7 +5004,8 @@
     "piece": "dock_pilings/dock_piling_016",
     "state": "LIT_3"
    },
-   "redo": "Round 1: the crystals GREW and spread down the posts, and new ones appeared."
+   "redo": "Round 1: the crystals GREW and spread down the posts, and new ones appeared.",
+   "result": "IMPROVED. Crystals stop spreading down the posts; drift 28.4->20.8."
   },
   "D25": {
    "group": "torch_posts",
@@ -5046,7 +5050,8 @@
     "piece": "soulstone_outcrops/soulstone_outcrop_016",
     "state": "LIT_3"
    },
-   "redo": "Round 1: 22.3% blowout -- the starburst went white and grew spikes across the rock."
+   "redo": "Round 1: 22.3% blowout -- the starburst went white and grew spikes across the rock.",
+   "result": "PARTLY. Motion 26.4->13.2 but the starburst still washes white; blowout 22.3->26.0."
   },
   "D29": {
    "group": "stumps",
@@ -5102,7 +5107,8 @@
     "piece": "briar_thickets/briar_thicket_010",
     "state": "LIT_2"
    },
-   "redo": "Round 1: the RED BERRIES TURNED INTO WHITE FLOWERS over the loop. Identity clause added."
+   "redo": "Round 1: the RED BERRIES TURNED INTO WHITE FLOWERS over the loop. Identity clause added.",
+   "result": "NOT FIXED. Berries still become white flowers. Identity clause had no effect here."
   },
   "D34": {
    "group": "wells",
@@ -5114,7 +5120,8 @@
     "piece": "wells/well_008",
     "state": "LIT_2"
    },
-   "redo": "Round 1: white splashes and spikes GREW out of the water surface. Size and no-add pinned."
+   "redo": "Round 1: white splashes and spikes GREW out of the water surface. Size and no-add pinned.",
+   "result": "WORSE. No more spikes, but the water surface now bulges: 4.7->11.3 motion."
   },
   "D35": {
    "group": "soulstone_outcrops",
@@ -5236,7 +5243,8 @@
     "piece": "bushes/bush_008",
     "state": "LIT_3"
    },
-   "redo": "Round 1: the small gold points BLOOMED INTO BIG WHITE FLOWERS -- 15.0% blowout. Size plus identity."
+   "redo": "Round 1: the small gold points BLOOMED INTO BIG WHITE FLOWERS -- 15.0% blowout. Size plus identity.",
+   "result": "NOT FIXED and worse: still blooms, blowout 15.0->28.4."
   },
   "D46": {
    "group": "ivy_posts",
@@ -5259,7 +5267,8 @@
     "piece": "stones/stone_014",
     "state": "LIT_4"
    },
-   "redo": "Round 1: the carved runes CHANGED -- different letters by the last frame. Identity clause added."
+   "redo": "Round 1: the carved runes CHANGED -- different letters by the last frame. Identity clause added.",
+   "result": "FIXED by the identity clause. Runes hold their letters; drift 3.3->1.8, best of the round."
   },
   "D49": {
    "group": "mushrooms",
@@ -6175,5 +6184,6 @@
  "_glow_drift_open": "GLOW DRIFT IS THE ONE UNSOLVED FAULT, and four prompt fixes have not moved it: peak-in-the-middle (batch AA), the brightness cap (AB), the no-add clause (AC) and light-vs-object (AC). Measured drift medians for glow: 25.7 (Z) -> 18.5 (AA) -> 21.4 (AB) -> 22.8 (AC), with 5 of 29 still draining away in AC. The other faults in this family ARE solved -- blowout sits at ~1.9% median and multiplication is fixed. RECOMMENDATION: stop writing new clauses for it. Judge glows individually by eye and reject the faders; the marginal prompt is no longer paying.",
  "_single_vs_multi_note": "THE STRONGEST PREDICTOR OF A GOOD GLOW IS ITS SHAPE, NOT ITS PROMPT. Measured on batch AD's 37 glows (2026-08-29): a SINGLE-SHAPE glow -- one crack, seam, vein, rune, handprint, gem or pool of light -- drifted 11.7% median. A MULTI-OBJECT glow -- light spread over a ring of mushrooms, scattered patches, a crystal cluster -- drifted 27.1%, and every flagged failure was one. The light-vs-object phrasing introduced after B34 was on all 18 multis and did NOT rescue them, so it was the subject and not the sentence. PROPOSE SINGLE-SHAPE GLOWS ONLY.",
  "_pool_exhausted_note": "CORRECTION (2026-08-29): the claim that the pool was exhausted at batch AE was WRONG. The AE selector took ONE STATE PER PIECE and capped per group, so 173 was a SAMPLE, not the pool. 1,067 sibling states had never been looked at, and 631 of them belong to pieces already animated successfully -- the highest-prior candidates in the domain. Batch AF is drawn from there (88 opened, 31 kept). WHEN A SELECTOR SEEMS TO SHOW AN EXHAUSTED POOL, CHECK WHETHER IT IS THE SELECTOR THAT IS EXHAUSTED. Remaining after AF: ~1,500 unanimated states, of which the sibling-of-animated-piece set is the one worth mining.",
- "_identity_note": "THINGS TURNING INTO OTHER THINGS -- a fault distinct from fading, blowing out, multiplying or moving. Seen across batch AD: D47's carved runes became different letters, D33's red berries became white flowers, D45's small gold points bloomed into big white blossoms. Nothing in the clause set forbade a thing BECOMING A DIFFERENT THING. Added 2026-08-29: 'Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else.' Also added SIZE to glow briefs (it was flame-only) -- 'never grows and never spreads, only its brightness shifts' -- because the blooms were as much a growth as a recolour."
+ "_identity_note": "THE IDENTITY CLAUSE ('Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else.') MEASURED on the batch-AD redos 2026-08-29. It WORKS ON CARVED/ENGRAVED SUBJECTS: D47's runes stopped changing letters, drift 3.3->1.8, the best number of the round. It does NOTHING for organic multi-object glows: D33's berries still became white flowers, D45 still bloomed and blew out worse. A carved mark is a shape the generator can hold; a berry is not. Keep the clause -- it is cheap and it fixed the carving -- but do not expect it to rescue a plant.",
+ "_stop_redoing_note": "STOP REDOING MULTI-OBJECT ORGANIC GLOWS. D33 (berried thicket) and D45 (gold-lit bushes) have now defeated FOUR separate fixes: the brightness cap (AB), the no-add clause (AC), the light-vs-object phrasing (AD) and the identity clause (AD redos). They are the exact class batch AD measured at 27.1% drift against 11.7% for single shapes. Reject rather than write a fifth clause. Redo budget is better spent on single-shape glows, flame and hanging."
 }
