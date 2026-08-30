@@ -129,7 +129,28 @@
       "generated_at": "2026-08-16T23:04:54+00:00",
       "glow_concept": null,
       "difference_from_source": 0.467,
-      "glow_score": 0.0916
+      "glow_score": 0.0916,
+      "animations": {
+        "motion": {
+          "group_id": "f9838091-2ddd-4562-88ef-69cd077c02cb",
+          "description": "This is the same picture in every frame. ONLY the dangling wires turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "telegraph_poles/telegraph_pole_003/not_lit_3/animations/motion/00.webp",
+            "telegraph_poles/telegraph_pole_003/not_lit_3/animations/motion/01.webp",
+            "telegraph_poles/telegraph_pole_003/not_lit_3/animations/motion/02.webp",
+            "telegraph_poles/telegraph_pole_003/not_lit_3/animations/motion/03.webp",
+            "telegraph_poles/telegraph_pole_003/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "telegraph_poles/telegraph_pole_003/not_lit_3/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T08:16:25+00:00",
+          "brief": "G16"
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "telegraph_poles/telegraph_pole_003/not_lit_4/sprite.webp",
@@ -137,7 +158,28 @@
       "generated_at": "2026-08-16T23:04:17+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5204,
-      "glow_score": 0.0899
+      "glow_score": 0.0899,
+      "animations": {
+        "motion": {
+          "group_id": "bb6f316e-1a98-4085-9e92-337244a8f33f",
+          "description": "This is the same picture in every frame. ONLY the dangling wires turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "telegraph_poles/telegraph_pole_003/not_lit_4/animations/motion/00.webp",
+            "telegraph_poles/telegraph_pole_003/not_lit_4/animations/motion/01.webp",
+            "telegraph_poles/telegraph_pole_003/not_lit_4/animations/motion/02.webp",
+            "telegraph_poles/telegraph_pole_003/not_lit_4/animations/motion/03.webp",
+            "telegraph_poles/telegraph_pole_003/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "telegraph_poles/telegraph_pole_003/not_lit_4/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T08:16:30+00:00",
+          "brief": "G17"
+        }
+      }
     }
   }
 }

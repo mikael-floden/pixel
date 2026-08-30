@@ -104,7 +104,30 @@
       "generated_at": "2026-08-16T11:19:49+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5709,
-      "glow_score": 0.2196
+      "glow_score": 0.2196,
+      "animations": {
+        "motion": {
+          "group_id": "c5fa7450-3186-4df6-8bd6-8bf6681944f9",
+          "description": "This is the same picture in every frame. ONLY the cyan light on the crystal cluster brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "crystals/crystal_012/lit_4/animations/motion/00.webp",
+            "crystals/crystal_012/lit_4/animations/motion/01.webp",
+            "crystals/crystal_012/lit_4/animations/motion/02.webp",
+            "crystals/crystal_012/lit_4/animations/motion/03.webp",
+            "crystals/crystal_012/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "crystals/crystal_012/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T08:17:10+00:00",
+          "brief": "G24"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "crystals/crystal_012/not_lit_1/sprite.webp",

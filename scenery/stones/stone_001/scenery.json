@@ -67,7 +67,30 @@
       "generated_at": "2026-08-16T21:35:38+00:00",
       "glow_concept": "glowing pale handprint pressed on the face",
       "difference_from_source": 0.876,
-      "glow_score": 0.0845
+      "glow_score": 0.0845,
+      "animations": {
+        "motion": {
+          "group_id": "c49cc337-a0b2-4531-abc6-a7b215851bb2",
+          "description": "This is the same picture in every frame. ONLY the white handprint brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_001/lit_2/animations/motion/00.webp",
+            "stones/stone_001/lit_2/animations/motion/01.webp",
+            "stones/stone_001/lit_2/animations/motion/02.webp",
+            "stones/stone_001/lit_2/animations/motion/03.webp",
+            "stones/stone_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T08:17:19+00:00",
+          "brief": "G26"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stones/stone_001/sprite.webp",

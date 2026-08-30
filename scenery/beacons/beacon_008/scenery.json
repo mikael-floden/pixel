@@ -100,7 +100,28 @@
       "generated_at": "2026-08-15T19:54:14+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5629,
-      "glow_score": 0.0995
+      "glow_score": 0.0995,
+      "animations": {
+        "motion": {
+          "group_id": "40c62e28-f8a1-4b45-823c-a860abcffc1c",
+          "description": "This is the same picture in every frame. ONLY the cyan flame at the top flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beacons/beacon_008/lit_4/animations/motion/00.webp",
+            "beacons/beacon_008/lit_4/animations/motion/01.webp",
+            "beacons/beacon_008/lit_4/animations/motion/02.webp",
+            "beacons/beacon_008/lit_4/animations/motion/03.webp",
+            "beacons/beacon_008/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "beacons/beacon_008/lit_4/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T08:16:16+00:00",
+          "brief": "G1"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "beacons/beacon_008/not_lit_1/sprite.webp",

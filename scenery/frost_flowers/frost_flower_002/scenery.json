@@ -97,7 +97,30 @@
       "generated_at": "2026-08-16T14:22:02+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8661,
-      "glow_score": 0.3923
+      "glow_score": 0.3923,
+      "animations": {
+        "motion": {
+          "group_id": "7a73c176-3b9c-404e-a06e-836a8d5ca9f7",
+          "description": "This is the same picture in every frame. ONLY the pale glow on the ice rose brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "frost_flowers/frost_flower_002/lit_4/animations/motion/00.webp",
+            "frost_flowers/frost_flower_002/lit_4/animations/motion/01.webp",
+            "frost_flowers/frost_flower_002/lit_4/animations/motion/02.webp",
+            "frost_flowers/frost_flower_002/lit_4/animations/motion/03.webp",
+            "frost_flowers/frost_flower_002/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "frost_flowers/frost_flower_002/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T08:16:23+00:00",
+          "brief": "G20"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "frost_flowers/frost_flower_002/not_lit_2/sprite.webp",
