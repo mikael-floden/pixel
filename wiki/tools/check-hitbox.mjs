@@ -631,46 +631,65 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
  * value, re-derived on every render, so a drag fed itself: bigger value ->
  * longer rail -> the same thumb position reads a bigger value again.
  *
- * The test drives the rail the way a browser does — a THUMB FRACTION resolved
- * against the max in force at that instant — which is what makes the runaway
- * reproducible. A parked thumb must leave the ellipse exactly where it is. */
+ * Driven the way a browser drives it — a THUMB FRACTION resolved against the
+ * max in force at that instant — which is what makes the runaway reproducible;
+ * driving raw values cannot see this bug at all. Measured on the MODEL, not on
+ * the input, and on the fixture piece: an earlier cut ran at whatever the page
+ * had left open, which was a wall piece with no box, and passed vacuously
+ * against the unfixed code. */
 {
+  await p.goto(`${W}#/objects/${PIECE.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  await p.evaluate(() => { delete window.__wikiHitbox; });
+  /* Start from undecided: an earlier section marks this very piece "no
+   * collision", which disables the rails — the gate must measure the rail, not
+   * the leftovers of the section before it. */
+  await p.evaluate((k) => {
+    const d = window.__wiki?.state?.tuning?.scenery_hitbox;
+    if (d?.overrides) for (const key of Object.keys(d.overrides)) {
+      if (key === k || key.startsWith(`${k}#`)) delete d.overrides[key];
+    }
+  }, PIECE.path);
   await p.evaluate(() => {
     if (!document.querySelector(".hit-bar:not(.hidden)")) {
       [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click();
     }
   });
-  await p.waitForTimeout(900);
+  await p.waitForTimeout(1400);
   const drag = await p.evaluate(() => {
     const w = [...document.querySelectorAll(".hit-bar .shadow-slider")][0];
-    if (!w || w.disabled) return null;
+    const hb = window.__wikiHitbox;
+    if (!w || w.disabled || !hb?.boxes?.length) return null;
+    const wide = () => { const h2 = window.__wikiHitbox; return +(h2.boxes[h2.sel].rx * 2).toFixed(2); };
     const at = (f) => {
       const mn = +w.min, mx = +w.max;
       w.value = String(mn + f * (mx - mn));
       w.dispatchEvent(new Event("input", { bubbles: true }));
-      return { v: +w.value, max: +w.max };
+      return { w: wide(), max: +w.max };
     };
     w.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
+    const first = at(0.5);
     const still = [];
-    for (let i = 0; i < 6; i++) still.push(at(0.5));
+    for (let i = 0; i < 5; i++) still.push(at(0.5));
     const steps = [];
     for (let i = 1; i <= 5; i++) steps.push(at(0.5 + i * 0.05));
     w.dispatchEvent(new PointerEvent("pointerup", { bubbles: true }));
     w.dispatchEvent(new Event("change", { bubbles: true }));
-    return { still, steps };
+    return { first, still, steps };
   });
   await p.waitForTimeout(600);
-  if (!drag) {
-    ok(false, "a width rail to drag");
-  } else {
-    const held = drag.still.every((x) => x.v === drag.still[0].v);
-    ok(held, `a PARKED thumb leaves the ellipse alone (${drag.still.map((x) => x.v).join(" ")})`);
-    const scale = [...drag.still, ...drag.steps].every((x) => x.max === drag.still[0].max);
-    ok(scale, `and the scale cannot move under the drag (${[...drag.still, ...drag.steps].map((x) => x.max).join(" ")})`);
-    const ds = drag.steps.map((x, i) => x.v - (i ? drag.steps[i - 1].v : drag.still[drag.still.length - 1].v));
+  ok(!!drag, "the fixture piece opens with a real ellipse to drag");
+  if (drag) {
+    ok(drag.still.every((x) => x.w === drag.first.w),
+      `a PARKED thumb leaves the ellipse exactly where it is (${drag.first.w} → ${drag.still.map((x) => x.w).join(" ")})`);
+    ok([drag.first, ...drag.still, ...drag.steps].every((x) => x.max === drag.first.max),
+      `and the scale cannot move under the drag (${[drag.first, ...drag.still, ...drag.steps].map((x) => x.max).join(" ")})`);
+    const ds = drag.steps.map((x, i) => x.w - (i ? drag.steps[i - 1].w : drag.still[drag.still.length - 1].w));
     const mean = ds.reduce((a, c) => a + c, 0) / ds.length;
     ok(ds.length === 5 && mean > 0 && ds.every((d2) => Math.abs(d2 - mean) <= 0.6),
       `and five equal nudges move it five equal steps (${ds.map((d2) => d2.toFixed(1)).join(" ")})`);
+    ok(drag.steps[drag.steps.length - 1].w < drag.first.w * 1.6,
+      `so a small drag stays a small change (${drag.first.w} → ${drag.steps[drag.steps.length - 1].w})`);
   }
 }
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
