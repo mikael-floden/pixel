@@ -2448,6 +2448,8 @@ const CLEAR_LOOKAHEAD_STEPS = 12;
  *  shape. */
 const HOLD_MIN_TRAVEL = CELL_WU;
 
+
+
 /**
  * Is the way ahead OPEN, or merely open for one step? The single-step probe
  * every stall test uses answers the wrong question next to a wide obstacle: one
@@ -2706,15 +2708,52 @@ export function startStickDetour(
   for (const [rot, dist] of STICK_DETOUR_GOALS) {
     const cs = Math.cos(rot);
     const sn = Math.sin(rot);
+    const gx = x + (ux * cs - uy * sn) * dist * CELL_WU;
+    const gy = y + (ux * sn + uy * cs) * dist * CELL_WU;
     const trip = startTrip(
-      grid, x, y,
-      x + (ux * cs - uy * sn) * dist * CELL_WU,
-      y + (ux * sn + uy * cs) * dist * CELL_WU,
+      grid, x, y, gx, gy,
       false, nowMs, fromElev, undefined, STICK_DETOUR_NODES,
     );
-    if (trip) return trip;
+    if (trip && withinCorridor(trip, x, y, gx, gy)) return trip;
   }
   return null;
+}
+
+/** How far off the straight line a detour may bulge and still be a SKIRT. A
+ *  scenery footprint is 3-5 cells across, so rounding one needs about two and a
+ *  half; past three cells the route is not going round the thing in front of
+ *  you, it is going somewhere else. */
+const DETOUR_CORRIDOR_CELLS = 3;
+
+/**
+ * IS THIS A SKIRT, OR A JOURNEY? `findPath` answers "how do I get there", and
+ * inside a building the honest answer to "reach a point five cells through that
+ * wall" is OUT THE DOOR AND ROUND THE OUTSIDE. The walker then follows it, so
+ * holding a direction at an interior wall walked the player out of the house —
+ * measured in the maintainer's own room, 24.9 cells away from where he started
+ * (2026-08-30: "the player run out of the house... making it impossible for me
+ * to get close to the wall"). A route is only a dodge if it stays beside the
+ * line it was asked to travel; anything further is a real trip the player never
+ * asked for, and refusing it leaves the slide to carry the body along the wall,
+ * which is what walking into a wall should feel like.
+ */
+function withinCorridor(
+  trip: AutopilotTrip,
+  x: number,
+  y: number,
+  gx: number,
+  gy: number,
+): boolean {
+  const dx = gx - x;
+  const dy = gy - y;
+  const l2 = dx * dx + dy * dy;
+  if (l2 < 1e-9) return false;
+  const max = DETOUR_CORRIDOR_CELLS * CELL_WU;
+  for (const p of trip.path) {
+    const u = Math.max(0, Math.min(1, ((p.x - x) * dx + (p.y - y) * dy) / l2));
+    if (Math.hypot(p.x - (x + dx * u), p.y - (y + dy * u)) > max) return false;
+  }
+  return true;
 }
 
 export function startTrip(
@@ -3473,16 +3512,7 @@ export function stampSceneryCollision(
        * has no hitbox at all and I can run straight through it"). A piece that
        * publishes a footprint occupies at least the cell its centre is in;
        * quantisation may not round a real obstacle away to nothing. */
-      const ccx = Math.floor(wx);
-      const ccy = Math.floor(wy);
-      if (ccx >= 0 && ccy >= 0 && ccx < grid.width && ccy < grid.height) {
-        const ci = ccy * grid.width + ccx;
-        if (!grid.blocked[ci]) {
-          grid.blocked[ci] = true;
-          blocked++;
-        }
-        mask[ci] = true;
-      }
+      let hit = false;
       const bound = (rx / geom.dx + ry / geom.dy) / 2;
       for (let r = Math.floor(wy - bound); r <= Math.ceil(wy + bound); r++) {
         if (r < 0 || r >= grid.height) continue;
@@ -3499,6 +3529,35 @@ export function stampSceneryCollision(
             blocked++;
           }
           mask[i] = true;
+          hit = true;
+        }
+      }
+      /* IT STANDS SOMEWHERE — BUT ONLY IF NOTHING ELSE CAUGHT IT. A cell is
+       * 64x28 screen px and many published footprints are thinner than that:
+       * the waystone's is 3.5 frame px deep, about 5 on screen, so no cell
+       * CENTRE fell inside and the piece blocked nothing at all. Measured on
+       * the_game, 545 of 1,421 placements blocked NOTHING (maintainer
+       * 2026-08-29: "this gravestone has no hitbox at all"). Quantisation may
+       * round a footprint's SHAPE; it may not round a real obstacle away to
+       * zero.
+       *
+       * It may not INFLATE one either, and the first cut of this rule did:
+       * claiming the centre cell unconditionally added a cell to footprints the
+       * ellipse had already placed perfectly well. Indoors that is the
+       * difference between a room and a wall — the maintainer's smithy has a
+       * 3x3 floor, and the spurious cells took it from 8 free cells to 5,
+       * leaving nowhere to walk and squeezing him back out of his own door
+       * (2026-08-30: "the player run out of the house"). */
+      if (!hit) {
+        const ccx = Math.floor(wx);
+        const ccy = Math.floor(wy);
+        if (ccx >= 0 && ccy >= 0 && ccx < grid.width && ccy < grid.height) {
+          const ci = ccy * grid.width + ccx;
+          if (!grid.blocked[ci]) {
+            grid.blocked[ci] = true;
+            blocked++;
+          }
+          mask[ci] = true;
         }
       }
     }
