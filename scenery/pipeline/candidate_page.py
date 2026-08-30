@@ -222,3 +222,45 @@ if __name__ == "__main__":
     kept, dropped = excluded(rows)
     print(f"{len(kept)} kept, {len(dropped)} excluded by group: "
           + ", ".join(f"{d['id']} ({d['grp']})" for d in dropped))
+
+
+def render_results(cards_html, title, lede, key, out_path, intro="", head_extra="",
+                   bar_prompt="removed"):
+    """Render a RESULTS page -- animations that already exist, for accept/reject.
+
+    EVERY page that shows him a list of ids carries the tick-and-copy bar. The
+    redo pages shipped without it once and he had to transcribe ids by hand
+    ("I really like the feature where I can select things"); _TAIL is what
+    provides it, so results pages go through here rather than hand-assembling.
+    """
+    head = (_HEAD.replace("__TITLE__", title)
+                 .replace("</style>", head_extra + "</style>"))
+    how = ("<div class='how'><span class='h'>What I need from you</span>Tick anything you "
+           f"want <em>{bar_prompt}</em> and copy the list &mdash; the bar at the bottom "
+           "builds it. Silence means keep.</div>")
+    doc = (head + f"<h1>{title}</h1>\n<p class='lede'>{lede}</p>\n"
+           + intro + how + cards_html + _TAIL.replace("__KEY__", key))
+    with open(out_path, "w") as f:
+        f.write(doc)
+    return len(doc)
+
+
+def result_card(r, note="", tag="", checkbox=True):
+    """One playing-animation card with a tick box, for render_results."""
+    import html as _h
+    e = _h.escape
+    nb = f'<p class="note">{note}</p>' if note else ""
+    if not checkbox:
+        return (f'<article class="card"><span class="plate">'
+                f'<img src="{r["anim"]}" alt="{e(r["piece"])}"></span><div class="body">'
+                f'<div class="idline"><span class="chip">{r["id"]}</span>{tag}</div>'
+                f'<h3>{e(r["piece"])}</h3></div>{nb}</article>')
+    return (f'<article class="card"><input type="checkbox" id="c{r["id"]}" value="{r["id"]}">'
+            f'<label class="face" for="c{r["id"]}"><span class="plate">'
+            f'<img src="{r["anim"]}" alt="{e(r["piece"])}"></span><span class="body">'
+            f'<span class="idline"><span class="chip">{r["id"]}</span>{tag}'
+            f'<span class="tick" aria-hidden="true"></span></span>'
+            f'<span class="nm">{e(r["piece"])}</span>'
+            f'<span class="path">{e(r["grp"])} &middot; {e(r["state"])}</span>'
+            f'<span class="met"><b>{r["motion"]}%</b> moving <i>/</i> <b>{r["drift"]}%</b> drift'
+            f'</span></span></label>{nb}</article>')
