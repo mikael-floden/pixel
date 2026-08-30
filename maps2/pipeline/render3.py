@@ -1372,10 +1372,24 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             if litk:
                 spath = meta["states"][litk[0]]["sprite"]
         sp = Image.open(os.path.join(REPO, "scenery", spath)).convert("RGBA")
-        want = meta.get("placement", {}).get("world_px_height") or sp.height
-        bb = sp.getbbox()
+        # SCALE IS THE PIECE'S, NOT THE SPRITE'S (maintainer 2026-08-30: "fix
+        # your renderer so you draw objects in the correct scale"). The fit is
+        # k = world_px_height / bbox height, and taking that bbox from the
+        # sprite ACTUALLY DRAWN forces every variation and every rotation to
+        # exactly world_px_height - which throws away the size difference the
+        # artist drew between them. A rotation shows the piece's top face and
+        # is naturally taller, so squashing it to the same height drew it
+        # SMALLER: measured over the_game's 170 non-base sprites, 41 were more
+        # than 5% off and cupboard_008's south-west was 17% small, hearth_901's
+        # 22%. The scale comes from the piece's BASE sprite and is then applied
+        # to whatever sprite is drawn, so the proportions survive.
+        base = Image.open(os.path.join(REPO, "scenery", meta["sprite"])) \
+            .convert("RGBA")
+        bb0 = base.getbbox() or (0, 0, base.width, base.height)
+        want = meta.get("placement", {}).get("world_px_height") or base.height
+        k = want / max(1, bb0[3] - bb0[1])
+        bb = sp.getbbox() or (0, 0, sp.width, sp.height)
         art = sp.crop(bb)
-        k = want / art.height
         art = art.resize((max(1, round(art.width * k)), max(1, round(art.height * k))), Image.NEAREST)
         if p.get("hflip"):
             art = art.transpose(Image.FLIP_LEFT_RIGHT)

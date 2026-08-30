@@ -962,6 +962,31 @@ class Grow:
         for r in out:
             r["cells"].sort(key=lambda c: (c["x"], c["y"]))
         self.doc["rooms"] = out
+        # BUILD ASSERT: no piece points into the room. A piece standing on a
+        # room's low-x edge must look south-east and one on its low-y edge
+        # south-west - the mapping above, checked against the published rooms
+        # so an inversion can never ship again. It shipped once, by eye
+        # (maintainer: "a shelf pointing straight out into the room").
+        bad = []
+        for room in out:
+            cs = [(c["x"], c["y"]) for c in room["cells"]]
+            mnx, mny = min(c[0] for c in cs), min(c[1] for c in cs)
+            cells = set(cs)
+            for pl in self.doc["scenery"]:
+                c = (int(pl["x"]), int(pl["y"]))
+                if c not in cells or not pl.get("dir"):
+                    continue
+                # A CORNER CELL TOUCHES BOTH WALLS and either rotation backs
+                # onto one of them, so it is not a mistake - the assert only
+                # judges a piece standing on exactly one of the two edges.
+                if (c[0] == mnx) == (c[1] == mny):
+                    continue
+                want = "south-east" if c[0] == mnx else "south-west"
+                if want and pl["dir"] != want:
+                    bad.append((pl["piece"], c, pl["dir"], want))
+        assert not bad, ("furniture facing the wrong way: "
+                         + "; ".join(f"{p} at {c} is {d}, want {w}"
+                                     for p, c, d, w in bad[:6]))
         # every indoor floor cell belongs to exactly one room
         n = sum(len(r["cells"]) for r in out)
         assert n == len({(c["x"], c["y"]) for r in out for c in r["cells"]}), \
@@ -1536,7 +1561,10 @@ class Grow:
     # -- interiors ------------------------------------------------------------
     def interiors(self):
         """Furnish EVERY parquet room (the indoor-scenery ask). The renderer
-        hides pieces under roofs — the game shows them when you walk in."""
+        hides pieces under roofs; the GAME discards every roofed placement
+        outright (scenery3.ts returns early for a cell under a roof or cave
+        deck), so indoor furniture is visible in render3 output only until
+        that changes - reported to games."""
         # NOTHING OUTDOOR STANDS ON AN INDOOR FLOOR. Building a house over
         # ground that already had a tree or a bush left it growing in the
         # sitting room.
@@ -1602,16 +1630,25 @@ class Grow:
             # (maintainer 2026-08-30: "pick the correct SW vs SE so a
             # bookshelf is against the wall and not pointing into the room").
             #
-            # SCENERY'S ROTATION NAMES ARE THE OPPOSITE WAY ROUND FROM
-            # characters2' (the `facing` helper above: south-east = +x). The
-            # ART says otherwise, and the art is what you see: rendered in a
-            # test room, scenery/*/rotations/south-east.webp looks DOWN-LEFT
-            # (+y) and south-west.webp looks DOWN-RIGHT (+x). So:
-            #   back to the NORTH wall (low y, upper RIGHT) -> south-east
-            #   back to the WEST  wall (low x, upper LEFT)  -> south-west
-            # I had both inverted, which stood every piece with its back to
-            # the room. Verified by rendering one cupboard per wall per
-            # rotation, not by reading the names.
+            #   back to the WEST  wall (low x, upper LEFT)  -> south-east
+            #   back to the NORTH wall (low y, upper RIGHT) -> south-west
+            #
+            # `dir` is the direction the piece LOOKS, and south-east looks
+            # DOWN-RIGHT (+x), south-west DOWN-LEFT (+y) - the same convention
+            # as characters2 and as games2' vectorToDirection, not the
+            # opposite one I briefly talked myself into.
+            #
+            # MEASURED, because the eye got it backwards. A chair's backrest
+            # is unambiguous: the x-centroid of the top 35% of rows against
+            # the whole silhouette gives chair_010 south-east 24.0 vs 28.4
+            # (back LEFT, so it faces down-right) and south-west 39.6 vs 34.8
+            # (back RIGHT). chair_001 agrees, and bed_002 lays its long axis
+            # along y under south-east - flush to a low-x wall. Judging it
+            # instead from a rendered test room inverted every piece in every
+            # house; do not re-decide this by looking at a render.
+            #
+            # The east and south walls get no back-to-wall furniture: that
+            # needs north-west / north-east art and no scenery piece ships it.
             west = [(x, y) for (x, y) in floor if x == x0]      # upper-left wall
             north = [(x, y) for (x, y) in floor if y == y0]     # upper-right wall
             west.sort(key=lambda c: c[1])
@@ -1621,7 +1658,7 @@ class Grow:
                 if not wall:
                     return 0
                 x, y = wall[min(idx, len(wall) - 1)]
-                d = "south-west" if wall is west else "south-east"
+                d = "south-east" if wall is west else "south-west"
                 return self.put(pk(group, d), x + 0.5, y + 0.5,
                                 on=IN, dir=d, **kw)
 
@@ -1645,10 +1682,10 @@ class Grow:
                 # west of it, one north of it - and each looks at it. Seating
                 # them east and west put one chair's back to the table.
                 n += self.put(pk("tables"), cx, cy, on=IN)
-                n += self.put(pk("chairs_and_benches", "south-west"),
-                              cx - 1.0, cy, on=IN, dir="south-west")
                 n += self.put(pk("chairs_and_benches", "south-east"),
-                              cx, cy - 1.0, on=IN, dir="south-east")
+                              cx - 1.0, cy, on=IN, dir="south-east")
+                n += self.put(pk("chairs_and_benches", "south-west"),
+                              cx, cy - 1.0, on=IN, dir="south-west")
             if len(cells) >= 12:
                 n += against("wall_hangings", north, max(0, len(north) - 2))
                 n += self.put(pk("rugs_and_hides"), cx, cy + 1.0, on=IN)
