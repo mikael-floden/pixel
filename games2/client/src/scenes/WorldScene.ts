@@ -1508,6 +1508,14 @@ export class WorldScene extends Phaser.Scene {
   private itemRingImg?: Phaser.GameObjects.Image; // blue outline on the item being fetched
   private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
   private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
+  /** COLLISION DEBUG: paint the grid the body is actually held by. Asked for
+   *  because the footprints are invisible and their faults are not (maintainer
+   *  2026-08-30: "add a debug setting under settings so I can see the
+   *  collisions, so hard for me to understand what's going on right now").
+   *  Red is terrain or a maps2 prop; amber is a SCENERY footprint — the two
+   *  behave differently and the difference is exactly what has been confusing. */
+  private collisionOn = localStorage.getItem("ml-collision") === "1";
+  private collisionGfx?: Phaser.GameObjects.Graphics;
   /** Settings "disable aggro" — persisted here, ENFORCED on the server (the
    * proximity scan is server-side). Re-sent on every join. */
   private noAggroOn = localStorage.getItem("ml-no-aggro") === "1";
@@ -2138,6 +2146,8 @@ export class WorldScene extends Phaser.Scene {
         // a predator's proximity radius, gold = the provoke radius on the
         // sword-marked target.
         { label: "aggro radius", act: () => this.toggleAggroRadius(), get: () => this.aggroRadiusOn },
+        // The collision grid itself — red terrain/prop, amber scenery footprint.
+        { label: "collision", act: () => this.toggleCollision(), get: () => this.collisionOn },
         // Disable aggro (maintainer 2026-08-07: "I will use this feature to
         // test walk around in the cave without dying"). Server-side and per
         // player — see the "noaggro" handler in WorldRoom.
@@ -5159,6 +5169,7 @@ export class WorldScene extends Phaser.Scene {
     }
     if (!itemRingOn) this.itemRingImg?.setVisible(false);
 
+    this.drawCollisionDebug();
     // (2) Aggro-radius debug rings.
     if (!this.aggroGfx && this.aggroRadiusOn) this.aggroGfx = this.add.graphics().setDepth(-799_999);
     if (this.aggroGfx) {
@@ -5183,6 +5194,59 @@ export class WorldScene extends Phaser.Scene {
         });
       }
     }
+  }
+
+  /** Paint every blocked cell around the player as the diamond it really is.
+   *  Only near the player: the grid is 500x500 and this is a debug aid, not a
+   *  render path. Depth sits under the bodies with the other debug layers. */
+  private drawCollisionDebug(): void {
+    if (!this.collisionGfx && this.collisionOn) {
+      this.collisionGfx = this.add.graphics().setDepth(-799_998);
+    }
+    const gfx = this.collisionGfx;
+    if (!gfx) return;
+    gfx.clear();
+    const t = this.terrain;
+    if (!this.collisionOn || !t) return;
+    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    if (!me) return;
+    const RANGE = 16; // cells each way — a screen's worth on a phone
+    const c0 = Math.floor(me.fx / CELL_WU);
+    const r0 = Math.floor(me.fy / CELL_WU);
+    for (let r = r0 - RANGE; r <= r0 + RANGE; r++) {
+      if (r < 0 || r >= t.height) continue;
+      for (let c = c0 - RANGE; c <= c0 + RANGE; c++) {
+        if (c < 0 || c >= t.width) continue;
+        const i = r * t.width + c;
+        if (!t.blocked[i]) continue;
+        const scenery = t.sceneryBlocked?.[i] === true;
+        // Sit the diamond on the cell's own surface, like the aggro rings do.
+        const lift = (t.level[i] ?? 0) * this.geom.lh;
+        const pts = [
+          [c, r],
+          [c + 1, r],
+          [c + 1, r + 1],
+          [c, r + 1],
+        ].map(([cx, cy]) => {
+          const p = this.projectFlat(cx * CELL_WU, cy * CELL_WU);
+          return { x: p.x, y: p.y - lift };
+        });
+        gfx.fillStyle(scenery ? 0xffa94d : 0xf25d5d, 0.3);
+        gfx.fillPoints(pts, true);
+        gfx.lineStyle(1, scenery ? 0xffc078 : 0xff8787, 0.85);
+        gfx.strokePoints(pts, true);
+      }
+    }
+  }
+
+  private toggleCollision(on = !this.collisionOn) {
+    this.collisionOn = on;
+    try {
+      localStorage.setItem("ml-collision", on ? "1" : "0");
+    } catch {}
+    if (!on) this.collisionGfx?.clear();
+    this.chat.addLog("—", `Collision overlay: ${on ? "on — red = terrain, amber = scenery" : "off"}`);
+    return this.collisionOn;
   }
 
   private toggleAggroRadius(on = !this.aggroRadiusOn) {
