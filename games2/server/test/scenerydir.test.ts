@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { parseWorld } from "@nangijala/shared";
-import { facedSprite, southSprite } from "../../client/src/scenery3.ts";
+import { facedSprite, southSprite } from "../../client/src/scenery3";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 
