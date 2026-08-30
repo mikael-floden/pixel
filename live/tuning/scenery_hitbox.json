@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
   "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
-  "updated_at": "2026-08-30T16:09:18.728Z",
+  "updated_at": "2026-08-30T16:10:42.615Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -36469,184 +36469,170 @@
     "scenery/trees/tree_036#lit_1": {
       "boxes": [
         {
-          "ax": -2.5,
-          "ay": 65.74,
-          "rx": 70.5,
+          "ax": -2.63,
+          "ay": 64.16,
+          "rx": 53.25,
           "ry": 21.86,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:09:38.523Z"
     },
     "scenery/trees/tree_036#not_lit_1": {
       "boxes": [
         {
-          "ax": -2,
-          "ay": 65.59,
-          "rx": 71,
+          "ax": -3.12,
+          "ay": 63.35,
+          "rx": 52,
           "ry": 22.01,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:09:58.203Z"
     },
     "scenery/trees/tree_036#not_lit_2": {
       "boxes": [
         {
-          "ax": -2,
-          "ay": 65.59,
-          "rx": 71,
+          "ax": -2.65,
+          "ay": 63.59,
+          "rx": 52,
           "ry": 22.01,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:10:06.569Z"
     },
     "scenery/trees/tree_036#not_lit_3": {
       "boxes": [
         {
-          "ax": -2,
-          "ay": 65.59,
-          "rx": 71,
+          "ax": -3.92,
+          "ay": 62.91,
+          "rx": 53.5,
           "ry": 22.01,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:10:11.296Z"
     },
     "scenery/trees/tree_036#not_lit_4": {
       "boxes": [
         {
-          "ax": -2,
-          "ay": 65.59,
-          "rx": 71,
+          "ax": -3.43,
+          "ay": 63.47,
+          "rx": 49.75,
           "ry": 22.01,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:10:15.829Z"
     },
     "scenery/trees/tree_036#not_lit_5": {
       "boxes": [
         {
-          "ax": -2,
-          "ay": 65.59,
-          "rx": 71,
+          "ax": -2.24,
+          "ay": 63.97,
+          "rx": 51.5,
           "ry": 22.01,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:10:20.054Z"
     },
     "scenery/trees/tree_036#not_lit_6": {
       "boxes": [
         {
-          "ax": -2,
-          "ay": 65.59,
-          "rx": 71,
+          "ax": -2.42,
+          "ay": 62.64,
+          "rx": 50,
           "ry": 22.01,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:10:24.735Z"
     },
     "scenery/trees/tree_036#not_lit_7": {
       "boxes": [
         {
-          "ax": -2.5,
-          "ay": 65.74,
-          "rx": 70.5,
+          "ax": -2.15,
+          "ay": 63.99,
+          "rx": 54.75,
           "ry": 21.86,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:10:30.275Z"
     },
     "scenery/trees/tree_036#not_lit_8": {
       "boxes": [
         {
-          "ax": -2,
-          "ay": 65.59,
-          "rx": 71,
+          "ax": -1.21,
+          "ay": 62.95,
+          "rx": 54,
           "ry": 22.01,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:10:36.837Z"
     },
     "scenery/trees/tree_036#not_lit_9": {
       "boxes": [
         {
-          "ax": -1.5,
-          "ay": 66.36,
-          "rx": 68.5,
+          "ax": -2.75,
+          "ay": 62.48,
+          "rx": 52.5,
           "ry": 21.23,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:10:41.085Z"
     },
     "scenery/trees/tree_036#not_lit_10": {
       "boxes": [
         {
-          "ax": -2.5,
-          "ay": 65.74,
-          "rx": 70.5,
+          "ax": -3.35,
+          "ay": 62.82,
+          "rx": 50.5,
           "ry": 21.86,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:10:02.469Z"
     },
     "scenery/trees/tree_036#lit_2": {
       "boxes": [
         {
-          "ax": -2,
-          "ay": 65.59,
-          "rx": 71,
+          "ax": -2.7,
+          "ay": 62.56,
+          "rx": 51.75,
           "ry": 22.01,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:09:44.572Z"
     },
     "scenery/trees/tree_036#lit_3": {
       "boxes": [
         {
-          "ax": -2.5,
-          "ay": 65.74,
-          "rx": 70.5,
+          "ax": -3.22,
+          "ay": 63.14,
+          "rx": 51.5,
           "ry": 21.86,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:09:49.251Z"
     },
     "scenery/trees/tree_036#lit_4": {
       "boxes": [
         {
-          "ax": -2,
-          "ay": 65.59,
-          "rx": 71,
+          "ax": -1.84,
+          "ay": 62.8,
+          "rx": 56,
           "ry": 22.01,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:09:53.700Z"
     },
     "scenery/trees/tree_038#lit_1": {
       "boxes": [
