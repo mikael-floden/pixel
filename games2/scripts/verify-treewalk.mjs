@@ -36,13 +36,17 @@ try {
 
   // Trees near spawn, and the screen direction that runs into each.
   const CASES = [
+    // THE MAINTAINER'S OWN REPRO, to the tenth of a cell: "if you stand exactly
+    // where I stand and run upwards you run into the tree and get stuck... the
+    // player starts to flip direction back and forth forever" (2026-08-30).
+    { name: "tree_075 held UP (his repro)", at: [456.0, 361.8], key: "up" },
     { name: "tree_029", col: 445, row: 362, key: "down" },
     { name: "tree_075", col: 452, row: 358, key: "down" },
     { name: "tree_029 from below", col: 445, row: 362, key: "up" },
   ];
   for (const c of CASES) {
     // Stand 4 cells back along the direction the stick will push.
-    const back = await page.evaluate(({ col, row, key }) => {
+    const back = c.at ? { c: c.at[0], r: c.at[1] } : await page.evaluate(({ col, row, key }) => {
       const v = { down: [1, 1], up: [-1, -1], right: [1, -1], left: [-1, 1] }[key];
       const l = Math.hypot(v[0], v[1]);
       return { c: Math.round(col - (v[0] / l) * 4), r: Math.round(row - (v[1] / l) * 4) };
@@ -54,9 +58,22 @@ try {
     const samples = [];
     for (let i = 0; i < HOLD_MS / 250; i++) {
       await page.waitForTimeout(250);
-      samples.push(await page.evaluate(() => { const m = window.__ml.me(); return { x: m.x, y: m.y }; }));
+      const p = await page.evaluate(() => {
+        const m = window.__ml && window.__ml.me();
+        return m ? { x: m.x, y: m.y } : null;
+      });
+      if (!p) break; // socket dropped — reported below as too little travel
+      samples.push(p);
     }
     await page.keyboard.up(KEYS[c.key]);
+    // Direction flapping, the thing he actually sees: the body snapping back
+    // toward where it was two samples ago instead of getting on with it.
+    let flap = 0;
+    for (let i = 2; i < samples.length; i++) {
+      const d02 = Math.hypot(samples[i].x - samples[i - 2].x, samples[i].y - samples[i - 2].y);
+      const d01 = Math.hypot(samples[i].x - samples[i - 1].x, samples[i].y - samples[i - 1].y);
+      if (d01 > 2 && d02 < d01 * 0.5) flap++;
+    }
     const last = samples[samples.length - 1];
     const travelled = Math.hypot(last.x - before.x, last.y - before.y) / 32;
     // Did it ever sit still for a full second? That is the wedge.
@@ -69,6 +86,8 @@ try {
       `${c.name} (${c.key}): travelled ${travelled.toFixed(2)} cells, need >= ${MIN_CELLS}`);
     ok(worst < 4,
       `${c.name} (${c.key}): longest freeze ${(worst * 0.25).toFixed(2)}s, need < 1.00s`);
+    ok(flap <= 2,
+      `${c.name} (${c.key}): direction flapped ${flap}x, need <= 2`);
   }
 } finally {
   await browser.close();

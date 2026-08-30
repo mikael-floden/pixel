@@ -3924,6 +3924,32 @@ export class WorldScene extends Phaser.Scene {
         }
       });
     });
+    /* A HITBOX EDITED IN THE WIKI, WITHOUT A REDEPLOY OR A REJOIN. The server
+     * restamps its own collision when the live doc changes and says so; the
+     * prediction has to follow in the same breath, because a client and an
+     * authority holding different footprints is precisely the divergence the
+     * single collision endpoint exists to rule out. Refetch rather than trust a
+     * payload: the endpoint is the authority's own copy. */
+    room.onMessage("scenery:collision", () => {
+      void fetch("/api/scenery-collision")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (!d) return;
+          this.sceneryBboxDoc = (d.bbox as SceneryBboxDoc) ?? null;
+          this.sceneryHitboxDoc = (d.hitbox as Record<string, SceneryHitboxRec>) ?? null;
+          // The grid carries the OLD footprints stamped into it, so rebuild it
+          // from the world before stamping the new ones on: stamping is
+          // additive and would otherwise leave every retired cell blocked.
+          if (this.world) {
+            this.terrain = buildTerrainGrid(
+              this.world.width, this.world.height, this.world.rows, this.world.props, this.world.decks,
+            );
+          }
+          this.restampScenery();
+          this.repaintWorld();
+        })
+        .catch(() => {});
+    });
     room.onMessage("chat", (msg: ChatBroadcast) => {
       this.chat.addLog(msg.name, msg.text);
       this.showBubble(msg.id, msg.text);

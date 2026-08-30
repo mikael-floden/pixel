@@ -163,6 +163,28 @@ export class WorldRoom extends Room<WorldState> {
   // Per-room world state (NOT module-level — the server hosts many rooms, one
   // per selected world, and they can be different sizes / have different spawns).
   private terrain: TerrainGrid | null = null;
+  /** Fingerprint of the scenery hitbox doc this room's collision was stamped
+   *  from, so a live edit can be noticed — see restampSceneryFromLive. */
+  private sceneryHbStamp = "";
+
+  /** A HITBOX EDITED IN THE WIKI REACHES A ROOM THAT IS ALREADY RUNNING.
+   *  Live docs refresh on push, so `sceneryHitboxOverrides()` goes current
+   *  within seconds — but the collision grid is stamped ONCE when the room is
+   *  built and never again, so the authority kept the old footprints while the
+   *  client, which fetches the documents fresh, got the new ones. Two bodies
+   *  disagreeing about where a tree stands is the divergence the single
+   *  collision endpoint exists to prevent, so the room restamps and tells
+   *  everyone to do the same. Cheap: only when the BOXES actually changed. */
+  private async restampSceneryFromLive(): Promise<void> {
+    const stamp = hitboxStamp();
+    if (!stamp || stamp === this.sceneryHbStamp || !this.worldName) return;
+    this.sceneryHbStamp = stamp;
+    const w = await loadWorldGrid(this.worldName);
+    if (!w.terrain) return; // open world, or the reload failed — keep what works
+    this.terrain = w.terrain;
+    console.log(`[scenery] hitboxes changed — restamped "${this.worldName}" collision`);
+    this.broadcast("scenery:collision", { stamp });
+  }
   private worldSpawn: { x: number; y: number } | null = null;
   private worldW = WORLD_WIDTH; // world extent (grid×CELL_WU) for movement bounds
   private worldH = WORLD_HEIGHT;
@@ -312,7 +334,11 @@ export class WorldRoom extends Room<WorldState> {
     // Live tuning (live/tuning/* on GitHub main, held by the live store):
     // push every change to all clients over the room's own WebSocket, and
     // hand joiners the current state (see live.ts / live/README.md).
-    this.offLive = onLiveChange((tuning) => this.broadcast("live:update", tuning));
+    this.offLive = onLiveChange((tuning) => {
+      this.broadcast("live:update", tuning);
+      void this.restampSceneryFromLive();
+    });
+    this.sceneryHbStamp = hitboxStamp();
     // Publish each zone's bounding box so clients can draw the debug overlay
     // (the true shape is a polygon; the bbox is plenty for a debug rect).
     for (const z of this.zones) {
@@ -2000,6 +2026,24 @@ export async function readWorldDoc(name: string, file: string): Promise<unknown 
 export function resetWorldSourceCaches(): void {
   worldRootCache.clear();
   stagingCache.clear();
+}
+
+/** A cheap fingerprint of the scenery hitbox doc. Only the BOXES matter to
+ *  collision — `updated_at` churns on every wiki save without changing where a
+ *  body may stand, and restamping the world for that would be pure waste. */
+function hitboxStamp(): string {
+  const doc = sceneryHitboxOverrides();
+  if (!doc) return "";
+  let h = 0x811c9dc5;
+  for (const k of Object.keys(doc).sort()) {
+    const boxes = (doc[k] as { boxes?: unknown })?.boxes;
+    const s = k + JSON.stringify(boxes ?? null);
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+  }
+  return (h >>> 0).toString(36);
 }
 
 /** Load a named world (maps2/worlds or maps2/worlds3 — see WORLD_ROOTS) into a

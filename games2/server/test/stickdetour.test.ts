@@ -65,12 +65,6 @@ function holdStick(grid: ReturnType<typeof blobWorld>, ax: number, ay: number, u
     // A-B-A: snapping back to the heading before last is the VISIBLE flap.
     const n = hist.length;
     if (n > 2 && hist[n - 1] === hist[n - 3] && hist[n - 1] !== hist[n - 2]) flapping++;
-    // Whatever chose the heading, it must move the body — a wedged route is as
-    // frozen as a wedged input.
-    if (useDetour && bodyStalled(grid, x, y, iax, iay)) {
-      const sl = slideAlong(grid, x, y, ax, ay, slide);
-      if (sl) { iax = sl.ax; iay = sl.ay; trip = null; }
-    }
     const u = unstickFromSolids(grid, x, y, 80 * 0.033);
     x = u.x;
     y = u.y;
