@@ -41125,29 +41125,7 @@
             "south-west": "lantern_stands/lantern_stand_018/not_lit_1/rotations/south-west.webp",
             "south": "lantern_stands/lantern_stand_018/not_lit_1/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "93db4152-73e5-4c09-812a-4dc74550b506",
-              "description": "This is the same picture in every frame. ONLY the hanging lantern turns very slightly where it hangs. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. No sparks, no glare, no new bright pixels anywhere. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "lantern_stands/lantern_stand_018/not_lit_1/animations/motion/00.webp",
-                "lantern_stands/lantern_stand_018/not_lit_1/animations/motion/01.webp",
-                "lantern_stands/lantern_stand_018/not_lit_1/animations/motion/02.webp",
-                "lantern_stands/lantern_stand_018/not_lit_1/animations/motion/03.webp",
-                "lantern_stands/lantern_stand_018/not_lit_1/animations/motion/04.webp"
-              ],
-              "strip": "lantern_stands/lantern_stand_018/not_lit_1/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-30T09:25:47+00:00",
-              "brief": "G13"
-            }
-          },
+          "animations": {},
           "art_hash": "e78c62282988422b"
         },
         "NOT_LIT_2": {
@@ -60940,27 +60918,7 @@
           "glow_concept": null,
           "difference_from_source": 0.467,
           "glow_score": 0.0916,
-          "animations": {
-            "motion": {
-              "group_id": "8773e7b9-9ba9-4859-b2f9-210e5645140f",
-              "description": "This is the same picture in every frame. ONLY the loose wires hanging from the crossarm turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. No sparks, no glare, no new bright pixels anywhere. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "telegraph_poles/telegraph_pole_003/not_lit_3/animations/motion/00.webp",
-                "telegraph_poles/telegraph_pole_003/not_lit_3/animations/motion/01.webp",
-                "telegraph_poles/telegraph_pole_003/not_lit_3/animations/motion/02.webp",
-                "telegraph_poles/telegraph_pole_003/not_lit_3/animations/motion/03.webp",
-                "telegraph_poles/telegraph_pole_003/not_lit_3/animations/motion/04.webp"
-              ],
-              "strip": "telegraph_poles/telegraph_pole_003/not_lit_3/animations/motion__strip.webp",
-              "directions": null,
-              "generated_at": "2026-08-30T09:26:02+00:00",
-              "brief": "G16"
-            }
-          },
+          "animations": {},
           "art_hash": "3745b64f842d3708"
         },
         "NOT_LIT_4": {
@@ -60970,27 +60928,7 @@
           "glow_concept": null,
           "difference_from_source": 0.5204,
           "glow_score": 0.0899,
-          "animations": {
-            "motion": {
-              "group_id": "bfbe7e90-428f-4c82-b5fc-c0ef4d09f06f",
-              "description": "This is the same picture in every frame. ONLY the cut wires dangling from the crossarm turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. No sparks, no glare, no new bright pixels anywhere. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "telegraph_poles/telegraph_pole_003/not_lit_4/animations/motion/00.webp",
-                "telegraph_poles/telegraph_pole_003/not_lit_4/animations/motion/01.webp",
-                "telegraph_poles/telegraph_pole_003/not_lit_4/animations/motion/02.webp",
-                "telegraph_poles/telegraph_pole_003/not_lit_4/animations/motion/03.webp",
-                "telegraph_poles/telegraph_pole_003/not_lit_4/animations/motion/04.webp"
-              ],
-              "strip": "telegraph_poles/telegraph_pole_003/not_lit_4/animations/motion__strip.webp",
-              "directions": null,
-              "generated_at": "2026-08-30T09:26:18+00:00",
-              "brief": "G17"
-            }
-          },
+          "animations": {},
           "art_hash": "f355c4f279ac6bc0"
         }
       },
@@ -94398,8 +94336,8 @@
           },
           "animations": {
             "motion": {
-              "group_id": "8cba9dc3-7bca-4cb3-af52-85e1c74852bd",
-              "description": "This is the same picture in every frame. ONLY the thread of purple vapour above the one bottle rises and curls. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+              "group_id": "e28a3790-05cf-43f7-bceb-ac3c38cf7947",
+              "description": "This is the same picture in every frame. ONLY the thread of purple vapour above the third jar rises and curls. There are four jars on the shelf and they never change: from left to right they are dark red, green, purple and blue, and each one keeps exactly that colour and stays in exactly its own place in every frame. No jar swaps colour with another, none moves, none is redrawn. Everything below the vapour is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -94415,7 +94353,7 @@
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-30T09:26:02+00:00",
+              "generated_at": "2026-08-30T09:51:32+00:00",
               "brief": "G10"
             }
           },
@@ -100631,29 +100569,7 @@
             "south-west": "wells/well_002/not_lit_3/rotations/south-west.webp",
             "south": "wells/well_002/not_lit_3/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "7ed485ed-2fb5-4b1e-94db-dcc579284a74",
-              "description": "This is the same picture in every frame. ONLY the bucket hanging over the shaft turns very slightly where it hangs. It is clearly visible in every single frame, including the last; it never disappears. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "wells/well_002/not_lit_3/animations/motion/00.webp",
-                "wells/well_002/not_lit_3/animations/motion/01.webp",
-                "wells/well_002/not_lit_3/animations/motion/02.webp",
-                "wells/well_002/not_lit_3/animations/motion/03.webp",
-                "wells/well_002/not_lit_3/animations/motion/04.webp"
-              ],
-              "strip": "wells/well_002/not_lit_3/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-30T09:26:02+00:00",
-              "brief": "G12"
-            }
-          },
+          "animations": {},
           "art_hash": "a1382a5b36208500"
         }
       },
