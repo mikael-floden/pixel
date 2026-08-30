@@ -92,8 +92,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "086e5ae5-2e7b-412e-938c-52e17e320941",
-          "description": "This is an almost completely still picture. ONLY the gold runes on the headstone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "group_id": "11a636f6-7405-4c31-b921-7fdab0f8e05b",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the gold runes on the headstone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The gold runes on the headstone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -109,7 +109,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-30T10:08:54+00:00",
+          "generated_at": "2026-08-30T10:29:01+00:00",
           "brief": "J39"
         }
       }

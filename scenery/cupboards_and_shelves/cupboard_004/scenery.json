@@ -45,8 +45,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "ffe24399-48fe-4d70-84f9-a630ac402e7e",
-          "description": "This is an almost completely still picture. ONLY the warm light inside the cabinet changes: it brightens by the smallest amount that is still visible, then returns. At its brightest it must still look exactly the same warm orange as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "group_id": "97b5d60f-9dd3-44b1-a184-654d5423b29e",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the warm line of light in the cabinet doors changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The warm line of light in the cabinet doors is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the warm orange it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -62,7 +62,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-30T10:10:09+00:00",
+          "generated_at": "2026-08-30T10:30:25+00:00",
           "brief": "J50"
         }
       }

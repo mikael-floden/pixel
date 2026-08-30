@@ -5959,13 +5959,14 @@
   "J6": {
    "group": "stones",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the gold runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the gold runes on the stone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The gold runes on the stone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The runes brighten.",
    "seen_in_art": "a pale stone carved with gold runes",
    "example": {
     "piece": "stones/stone_029",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J7": {
    "group": "stones",
@@ -6003,13 +6004,14 @@
   "J10": {
    "group": "stones",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the white triquetra on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the white triquetra on the rock changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The white triquetra on the rock is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the white it is in the first frame and never washes out into a plain bright blur. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The triquetra brightens.",
    "seen_in_art": "a rock carved with a white triquetra",
    "example": {
     "piece": "stones/stone_036",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J11": {
    "group": "stones",
@@ -6047,13 +6049,14 @@
   "J14": {
    "group": "stones",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the orange cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the orange cracks across the rock changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The orange cracks across the rock is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the orange it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The cracks brighten.",
    "seen_in_art": "a rock split by molten orange cracks",
    "example": {
     "piece": "stones/stone_039",
     "state": "LIT_1"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J15": {
    "group": "stones",
@@ -6091,24 +6094,26 @@
   "J18": {
    "group": "stones",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the blue-white runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue-white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the blue-white runes on the stone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The blue-white runes on the stone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the blue-white it is in the first frame and never washes out into a plain bright blur. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The runes brighten.",
    "seen_in_art": "a standing stone carved with blue-white runes",
    "example": {
     "piece": "stones/stone_042",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J19": {
    "group": "stones",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the orange runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the orange runes on the stone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The orange runes on the stone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the orange it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The runes brighten.",
    "seen_in_art": "a stone carved with orange runes",
    "example": {
     "piece": "stones/stone_042",
     "state": "LIT_4"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J20": {
    "group": "stones",
@@ -6135,13 +6140,14 @@
   "J22": {
    "group": "stones",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the pale cyan rune on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same pale cyan as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the pale cyan rune on the rock changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The pale cyan rune on the rock is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the pale cyan it is in the first frame and never washes out into a plain bright blur. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The rune brightens.",
    "seen_in_art": "a mossy rock carved with a pale cyan rune",
    "example": {
     "piece": "stones/stone_046",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J23": {
    "group": "stones",
@@ -6168,13 +6174,14 @@
   "J25": {
    "group": "stones",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the gold cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the gold cracks across the rock changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The gold cracks across the rock is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The cracks brighten.",
    "seen_in_art": "a rock with gold cracks and gold crystals at its foot",
    "example": {
     "piece": "stones/stone_048",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J26": {
    "group": "stones",
@@ -6201,13 +6208,14 @@
   "J28": {
    "group": "stones",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the orange runes on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the orange runes on the rock changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The orange runes on the rock is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the orange it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The runes brighten.",
    "seen_in_art": "a dark brown rock carved with orange runes",
    "example": {
     "piece": "stones/stone_049",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J29": {
    "group": "stones",
@@ -6223,13 +6231,14 @@
   "J30": {
    "group": "stones",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the white triquetra on the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the white triquetra on the stone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The white triquetra on the stone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the white it is in the first frame and never washes out into a plain bright blur. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The triquetra brightens.",
    "seen_in_art": "a stone carved with a white triquetra",
    "example": {
     "piece": "stones/stone_050",
     "state": "LIT_4"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J31": {
    "group": "stones",
@@ -6256,24 +6265,26 @@
   "J33": {
    "group": "stones",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the cyan gems in the opening change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the cyan gems in the opening changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The cyan gems in the opening is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The gems brighten.",
    "seen_in_art": "a split rock with cyan gems in the opening",
    "example": {
     "piece": "stones/stone_054",
     "state": "LIT_4"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J34": {
    "group": "stones",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the orange runic circle on the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the orange runic circle on the stone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The orange runic circle on the stone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the orange it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The circle brightens.",
    "seen_in_art": "a brown stone carved with an orange runic circle",
    "example": {
     "piece": "stones/stone_056",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J35": {
    "group": "stones",
@@ -6289,13 +6300,14 @@
   "J39": {
    "group": "graves",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the gold runes on the headstone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the gold runes on the headstone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The gold runes on the headstone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The runes brighten.",
    "seen_in_art": "a headstone carved with gold runes",
    "example": {
     "piece": "graves/grave_026",
     "state": "LIT_3"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J40": {
    "group": "graves",
@@ -6311,13 +6323,14 @@
   "J41": {
    "group": "cairns",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the small gold flames on the stones change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the small gold flames on the stones changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The small gold flames on the stones is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The flames brighten.",
    "seen_in_art": "a cairn with small gold flames on its stones",
    "example": {
     "piece": "cairns/cairn_026",
     "state": "LIT_3"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J42": {
    "group": "cairns",
@@ -6355,13 +6368,14 @@
   "J45": {
    "group": "dock_pilings",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the gold sunburst on the post changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the gold sunburst on the post changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The gold sunburst on the post is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The sunburst brightens.",
    "seen_in_art": "a mooring post carved with a gold sunburst",
    "example": {
     "piece": "dock_pilings/dock_piling_014",
     "state": "LIT_4"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J46": {
    "group": "gravel_piles",
@@ -6388,35 +6402,38 @@
   "J48": {
    "group": "wells",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the pale water in the well changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same pale as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the pale water in the well changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The pale water in the well is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the pale blue it is in the first frame and never washes out into a plain bright blur. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The water brightens.",
    "seen_in_art": "a well brimming with pale water",
    "example": {
     "piece": "wells/well_008",
     "state": "LIT_4"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J49": {
    "group": "cupboards_and_shelves",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern on the shelf shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position it has in the first frame and stays amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern on the shelf shifts, by one pixel. The body of the flame keeps exactly the shape, size and position it has in the first frame and stays amber the whole time -- never pale, never white. The light does not spread: no part of the dresser, the shelves or the bottles gets any brighter or any darker at any point. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The lantern burns.",
    "seen_in_art": "a dresser with a lantern burning on its shelf",
    "example": {
     "piece": "cupboards_and_shelves/cupboard_010",
     "state": "LIT_2"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   },
   "J50": {
    "group": "cupboards_and_shelves",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the warm light inside the cabinet changes: it brightens by the smallest amount that is still visible, then returns. At its brightest it must still look exactly the same warm orange as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the warm line of light in the cabinet doors changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The warm line of light in the cabinet doors is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the warm orange it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The inner light flickers.",
    "seen_in_art": "a dresser lit warm from inside its cabinet",
    "example": {
     "piece": "cupboards_and_shelves/cupboard_004",
     "state": "LIT_3"
-   }
+   },
+   "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
   }
  },
  "declined": {
@@ -7269,5 +7286,6 @@
  "_gentle_note": "THE HOUSE STYLE IS ALMOST-STILL (maintainer, 2026-08-29: \"Try to be more gentle/subtile. I don't want much movement at all.\"). He asked to redo 25 pieces including ones measuring 1.5%, 2.3% and 2.8% drift -- my QUIETEST results were still too busy. Open every prompt with 'This is an almost completely still picture.' MEASURED on those 25: motion median 19.8->12.6, blowout median 3.8->0.0 (20 of 25 now zero). THE FLAME HALF WORKS OUTRIGHT: 'ONLY the very tip of <flame> shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position it has in the first frame and stays amber the whole time.' Three candles 21.0->0.6% motion, bedpost lamps 44.5->2.4, lantern post 6.2->0.9. THE GLOW HALF DOES NOT: 'brightens by the smallest amount that is still visible' is not binding -- several still pale out mid-loop, H37's carved panel vanished entirely by the last frame, H34's cracks spread. NEXT TO TRY on glows: bound the pixels, not the adjective -- e.g. 'no more than a handful of pixels change at all' or 'only the outermost edge of the carving brightens'.",
  "_pixel_bound_note": "BOUND THE PIXELS, NOT THE ADJECTIVE -- CONFIRMED on batch AJ (2026-08-29), the best glow result in the domain. The gentle wording 'brightens by the smallest amount that is still visible' did not bind. Rewritten to match the flame clause, which names a THING and a QUANTITY: 'Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture... It never fades, never vanishes, never spreads and never changes shape.' Across 45 glows: drift 11.9% (previous best 12.9), blowout 1.1% (was 6.5), motion 13.4% (was 16.1), and ZERO of 45 ending badly dark for the first time. Quietest 2.5%.",
  "_big_bright_region_note": "THE PIXEL BOUND CANNOT HOLD A BIG BRIGHT REGION -- CONFIRMED TWICE. Batch AJ: all five failures were wide molten lava seams covering much of the rock. Batch AH redos: the three that did not improve were H46 a barrel full of glowing water (drift 21.7->47.3), H34 an aqueduct laced with cyan cracks (34.9), H43 a molten torch bowl (blowout 6.4->20.5). 'No more than a few pixels change' is impossible to obey when the lit region IS most of the sprite. The bound works on a rune, a droplet, a set gem, a carved mark. DO NOT PROPOSE wide lava seams, filled basins or molten bowls.",
- "_pool_state_note": "POOL STATE 2026-08-29. The families that produce good work are EXHAUSTED: every lit stone, waystone, cairn, grave, lantern, flame, smoke and hanging piece is animated or declined. 191 lit states remain, 76 of them cliff_vines, the rest toadstool rings, grass tufts, haystacks, offering tables, rugs, trophies, scarecrows -- families measured as poor or with no light at all. Batch AK tests the one untried seam: vines whose light is a DISCRETE droplet, pod or flower rather than a wash. Crisp-but-many is the one combination the rules have never covered. If AK fails, the domain's motion work is finished at the current bar and the next move is new art or accepting done."
+ "_pool_state_note": "POOL STATE 2026-08-29. The families that produce good work are EXHAUSTED: every lit stone, waystone, cairn, grave, lantern, flame, smoke and hanging piece is animated or declined. 191 lit states remain, 76 of them cliff_vines, the rest toadstool rings, grass tufts, haystacks, offering tables, rugs, trophies, scarecrows -- families measured as poor or with no light at all. Batch AK tests the one untried seam: vines whose light is a DISCRETE droplet, pod or flower rather than a wash. Crisp-but-many is the one combination the rules have never covered. If AK fails, the domain's motion work is finished at the current bar and the next move is new art or accepting done.",
+ "_readable_note": "A GLOW CAN STOP BEING READABLE IN TWO DIRECTIONS, and the pixel bound stops neither. Across the 17 batch-AJ redos the same fault ran through nearly all: the carved mark either FADED to blank stone by the last frame (J10, J22, J18, J25, J30) or BLEW WHITE and swallowed itself (J39, J28, J45, J48, J14). Fix follows the flame pattern -- name a SUB-PART rather than the whole thing: 'ONLY the outermost edge of <mark> changes: a few pixels along that edge shift very slightly in brightness and shift straight back. <Mark> is fully visible and exactly as easy to read in every single frame, including the last.' Judge on this round."
 }

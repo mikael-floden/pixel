@@ -54,8 +54,8 @@
       "glow_score": 0.3637,
       "animations": {
         "motion": {
-          "group_id": "b160b51c-47fc-45a7-802d-579f53eb615a",
-          "description": "This is an almost completely still picture. ONLY the gold runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "group_id": "edd8ec51-eaac-42ae-9408-f6a3a6114e9b",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the gold runes on the stone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The gold runes on the stone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -71,7 +71,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-30T10:05:37+00:00",
+          "generated_at": "2026-08-30T10:29:49+00:00",
           "brief": "J6"
         }
       }

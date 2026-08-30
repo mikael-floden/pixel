@@ -59,8 +59,8 @@
       "glow_score": 0.1054,
       "animations": {
         "motion": {
-          "group_id": "3f3c2840-0a65-4695-bb13-f68bd8d78e0a",
-          "description": "This is an almost completely still picture. ONLY the pale cyan rune on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same pale cyan as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "group_id": "94ecf6d7-9048-4567-9e5a-d19998285edc",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the pale cyan rune on the rock changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The pale cyan rune on the rock is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the pale cyan it is in the first frame and never washes out into a plain bright blur. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -76,7 +76,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-30T10:07:18+00:00",
+          "generated_at": "2026-08-30T10:29:17+00:00",
           "brief": "J22"
         }
       }
