@@ -544,6 +544,32 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   });
   ok(chips.some((c) => /no collision/.test(c)), `the list offers a "no collision" filter (${chips.join(" | ").slice(0, 70)})`);
 }
+/* THE TREE DEFAULT IS THE TRUNK (maintainer 2026-08-29, after correcting 83
+ * of them: "Trees often has root branches that stick out and the player can
+ * kinda walk on them so I made it a little tighter. A rock on the other hand
+ * often go straight up so here I try to surround the rock more precisely").
+ * Data-level: a tree's proposal must be narrower than its art, and its own
+ * corrections must not have been touched. */
+{
+  const objs = PIECES;
+  const isTree = (o) => (o.type ?? "").toUpperCase() === "TREE" || /\/(trees|ancient_trees)\//.test(o.path);
+  const bbOf2 = (o, st) => (st ? o.animations?.[st] : Object.values(o.animations ?? {})[0])?.dirs?.south?.bb;
+  let wide = 0, checked = 0, hisTouched = 0;
+  for (const [key, rec] of Object.entries(LIVE.overrides ?? {})) {
+    const [path, st] = key.split("#");
+    const o = objs.find((x) => x.path === path);
+    if (!o || !isTree(o) || !(rec.boxes ?? []).length) continue;
+    if (!rec.auto) { hisTouched++; continue; }
+    const bb = bbOf2(o, st);
+    if (!bb) continue;
+    checked++;
+    // the trunk band can never be wider than the art it was measured in
+    if (rec.boxes[0].rx * 2 > (bb[2] - bb[0]) + 2) wide++;
+  }
+  ok(checked > 200 && wide === 0,
+    `every tree proposal is a trunk, never wider than the art (${checked} checked, ${wide} too wide)`);
+  ok(hisTouched > 0, `and his own tree corrections are still there, unflagged (${hisTouched})`);
+}
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 
 await b.close();

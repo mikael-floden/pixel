@@ -57,7 +57,61 @@ def spans_of(cols, min_gap):
             out.append([x, x])
     return out
 
+def is_tree(o):
+    return (o.get("type") or "").upper() == "TREE" or o["path"].split("/")[1] in ("trees", "ancient_trees")
+
+
+def place_tree(o, want=None):
+    """A TREE's footprint is its TRUNK, not its root spread.
+
+    Learned from the maintainer's own 83 corrections (2026-08-29): "Trees
+    often has root branches that stick out and the player can kinda walk on
+    them so I made it a little tighter. A rock on the other hand often go
+    straight up so here I try to surround the rock more precisely."
+
+    Fitted against those 83, sweeping band depth and multiplier: the width of
+    the art in the BOTTOM 12% of its own height, taken as-is, halves the
+    median width error (12.5px -> 5.5px). Depth is 0.31 of that width — his
+    trees run shallower than the 0.43 the rocks want — and the bottom edge
+    sits 1.4px above the art's lowest row, where a root tip is not contact.
+    Rocks and everything else keep place(): the same rule measured WORSE for
+    them (width error 1.0px -> 8.8px), which is the whole point of splitting."""
+    im, fw, fh = south_frame(o, want)
+    if im is None:
+        return None, "no art"
+    a = im.getchannel("A").load()
+    cols = {}
+    for y in range(fh):
+        for x in range(fw):
+            if a[x, y] > ALPHA_T:
+                cols.setdefault(x, []).append(y)
+    if not cols:
+        return None, "empty alpha"
+    xs = sorted(cols)
+    ys1 = max(max(v) for v in cols.values())
+    ys0 = min(min(v) for v in cols.values())
+    H = ys1 - ys0 + 1
+    lo = ys1 - max(1, round(H * 0.12))
+    band = [x for x in xs if any(y >= lo for y in cols[x])]
+    if not band:
+        band = xs
+    w = band[-1] - band[0] + 1
+    rx = max(3.0, w / 2)
+    ry = max(2.5, 0.31 * w / 2)
+    cx = (band[0] + band[-1] + 1) / 2
+    bottom = ys1 + 1 - 1.4
+    return [{
+        "ax": round(cx - fw / 2, 2),
+        "ay": round(bottom - fh / 2 - ry, 2),
+        "rx": round(rx, 2),
+        "ry": round(ry, 2),
+        "rot": 0,
+    }], "1 box (trunk)"
+
+
 def place(o, want=None):
+    if is_tree(o):
+        return place_tree(o, want)
     im, fw, fh = south_frame(o, want)
     if im is None:
         return None, "no art"
