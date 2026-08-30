@@ -692,6 +692,61 @@ class Grow:
         tally = world3.retype_woods(self.doc["scenery"], ctx)
         self.placed += [(f"forest {k}", v) for k, v in sorted(tally.items())]
 
+    # the floors a room is made of - the same set render3 treats as indoor
+    INDOOR_GROUNDS = ("parquet_floor", "brown_paving_stone", "grey_paving_stone")
+
+    def rooms(self):
+        """PUBLISH THE ROOMS. "The same room should only have one type of
+        Parquet Floor" (maintainer, 2026-08-30, twice) - and a renderer can
+        only obey that if it knows where a room ends. It cannot be inferred
+        from a chunk grid (buildings straddle chunk borders) and it cannot be
+        inferred from a roof deck either (this town hall is four rooms under
+        one deck). So the world states it: every connected patch of indoor
+        floor is a room, and a consumer picks ONE base tile for the whole
+        patch instead of one per cell.
+
+        Additive - no cell, deck, wall or level changes, so nothing about
+        collision, indoor detection or draw order moves."""
+        # A ROOM IS FLOOR, NOT WALL. The deck covers the whole footprint, so
+        # its cells include the wall ring - whose tops are brown_paving_stone
+        # at the deck's own level and would otherwise be published as a room.
+        # A floor cell lies BELOW its deck and carries no wall.
+        walls = {(c["x"], c["y"]) for w in self.doc["walls"] for c in w["cells"]}
+        indoor = {}
+        for dk in self.doc["decks"]:
+            if dk.get("kind") not in ("roof", "cave"):
+                continue
+            for c in dk["cells"]:
+                indoor[(c["x"], c["y"])] = int(dk["level"])
+        seen, out = set(), []
+        for (x, y) in sorted(indoor):
+            if (x, y) in seen or self.g(x, y) not in self.INDOOR_GROUNDS \
+                    or (x, y) in walls or self.lvl[y][x] >= indoor[(x, y)]:
+                continue
+            grd = self.g(x, y)
+            comp, stack = [], [(x, y)]
+            seen.add((x, y))
+            while stack:
+                cx, cy = stack.pop()
+                comp.append((cx, cy))
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    n = (cx + dx, cy + dy)
+                    if n in indoor and n not in seen and self.g(*n) == grd \
+                            and n not in walls \
+                            and self.lvl[n[1]][n[0]] < indoor[n]:
+                        seen.add(n)
+                        stack.append(n)
+            comp.sort()
+            out.append({"ground": grd,
+                        "cells": [{"x": cx, "y": cy} for (cx, cy) in comp]})
+        self.doc["rooms"] = out
+        # every indoor floor cell belongs to exactly one room
+        n = sum(len(r["cells"]) for r in out)
+        assert n == len({(c["x"], c["y"]) for r in out for c in r["cells"]}), \
+            "a cell is in two rooms"
+        self.placed += [("rooms published", len(out)),
+                        ("room floor cells", n)]
+
     def relight(self):
         """FILL THE LIGHT BUDGET, NEVER EXCEED IT (maintainer 2026-08-29:
         "push the limit so we get as much light as we can before the tech
@@ -1701,7 +1756,7 @@ class Grow:
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
-                     self.relight, self.npcs, self.spawns):
+                     self.relight, self.npcs, self.rooms, self.spawns):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)

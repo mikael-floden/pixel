@@ -370,8 +370,7 @@ def plate_img(ground, region, x, y):
     # border took two different sets and the floor changed pattern mid-room
     # even though the member rule was already in place. Anchoring both lays
     # the floor as one board.
-    ax, ay = ROOM_ANCHOR.get((x, y), (x, y)) if ground == "parquet_floor" \
-        else (x, y)
+    ax, ay = ROOM_ANCHOR.get((x, y), (x, y))
     if (ax, ay) != (x, y):
         region = f"{ground}@{ax // 24},{ay // 24}"
     chosen = pick_set(ground, region)
@@ -1009,26 +1008,19 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
     # window is being rendered.
     RGN = 24
 
-    # rooms: connected indoor-floor patches, each with one anchor
+    # ROOMS COME FROM THE WORLD, not from this renderer. The world publishes
+    # a `rooms` channel (world3grow.rooms) precisely so that every consumer -
+    # this and the game - lays one floor per room and agrees on where a room
+    # ends. Deriving it here would also be window-dependent: a room clipped by
+    # the render window would take a different anchor and a different tile.
     ROOM_ANCHOR.clear()
-    _seen = set()
-    for _y in range(y0, y1):
-        for _x in range(x0, x1):
-            if g(_x, _y) != "parquet_floor" or (_x, _y) in _seen:
-                continue
-            comp, stack = [], [(_x, _y)]
-            _seen.add((_x, _y))
-            while stack:
-                cx3, cy3 = stack.pop()
-                comp.append((cx3, cy3))
-                for dx3, dy3 in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                    n = (cx3 + dx3, cy3 + dy3)
-                    if n not in _seen and g(*n) == "parquet_floor":
-                        _seen.add(n)
-                        stack.append(n)
-            anchor = min(comp)
-            for c in comp:
-                ROOM_ANCHOR[c] = anchor
+    for room in doc.get("rooms", []):
+        cells = [(c["x"], c["y"]) for c in room["cells"]]
+        if not cells:
+            continue
+        anchor = min(cells)
+        for c in cells:
+            ROOM_ANCHOR[c] = anchor
 
     def region_at(x, y, gg):
         return f"{gg}@{x // RGN},{y // RGN}"

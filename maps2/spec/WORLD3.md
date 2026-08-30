@@ -31,6 +31,7 @@ and the fade upgrades itself to art.
   "decks":  [{"kind": "roof|bridge|cave", "level", "thickness",
               "ground", "cells": [{"x","y"}]}],
   "walls":  [{"side": "grey_stone", "cells": [{"x","y"}]}],  // authored wall body
+  "rooms":  [{"ground": "parquet_floor", "cells": [{"x","y"}]}], // ONE FLOOR EACH
   "ramps":  [{"from": 0, "to": 4, "ground": "light_soil",
               "cells": [{"x","y"}, ...]}],                   // THE WAY UP
   "scenery": [{"piece": "trees/tree_014", "x": 123.5, "y": 88.5,
@@ -66,6 +67,34 @@ decoration, it breaks every interior in the running game — measured
   tiles, 2026-08-30). House roofs are `brown_paving_stone` over `parquet_floor` (maintainer, 2026-08-30). With
   no `side` a deck draws same-over-same, which is the thick look.
 * Changing decks changes gameplay. Tell the games agent before it lands.
+
+### `rooms` — where a room ends, stated rather than guessed
+
+```jsonc
+"rooms": [{"ground": "parquet_floor", "cells": [{"x","y"}, ...]}]
+```
+
+**One floor tile per room** (maintainer, 2026-08-30, twice: *"When building
+houses use 1 Parquet Floor per room"*, then *"the same room should only have
+one type of Parquet Floor. You use several different Parquet Floor in the same
+room"*). A consumer picks the base-tile SET and MEMBER once per room — at the
+room's anchor, `min(cells)` — instead of once per cell.
+
+It has to be published because it cannot be inferred:
+
+* **not from the chunk grid** — sets are chosen per 24-cell chunk and buildings
+  straddle chunk borders (the town hall spans x 406–420, y 352–363; the chunk
+  edges fall at x=408 and y=360), so one room took two sets;
+* **not from the roof deck** — a deck covers a whole building, and its cells
+  include the wall ring, whose tops are the roof material at the deck's own
+  level;
+* **not per render window** — a room clipped by the window would take a
+  different anchor, and the same floor would change tile between two renders.
+
+A room is a connected (4-neighbour) patch of indoor floor: same ground, under a
+roof or cave deck, carrying no wall, and lying BELOW its deck. the_game
+publishes 11 rooms / 262 cells. The channel is additive — no cell, deck, wall or
+level changes — so collision, indoor detection and draw order are untouched.
 
 ### `ramps` — the contract with the game
 
