@@ -128,8 +128,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "06c926c6-cf35-4bed-a2dc-079d617aee24",
-          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "group_id": "562fed43-3b31-41d5-a367-235ccf6adbd8",
+          "description": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern on the stone post shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position they have in the first frame and stay amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -145,7 +145,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-30T09:34:32+00:00",
+          "generated_at": "2026-08-30T09:56:42+00:00",
           "brief": "H12"
         }
       }

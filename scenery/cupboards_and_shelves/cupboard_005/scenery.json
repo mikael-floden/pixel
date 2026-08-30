@@ -45,8 +45,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "f92bc4f9-6222-4056-8ad4-31b17c318d38",
-          "description": "This is the same picture in every frame. ONLY the orange light in the door crack flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "group_id": "ba9e723a-7261-4024-bc03-fe13aab479fd",
+          "description": "This is an almost completely still picture. ONLY the orange light in the crack between the cupboard doors changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same orange as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -62,7 +62,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-30T09:35:15+00:00",
+          "generated_at": "2026-08-30T09:57:07+00:00",
           "brief": "H19"
         }
       }
