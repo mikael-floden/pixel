@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
   "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
-  "updated_at": "2026-08-30T17:06:45.418Z",
+  "updated_at": "2026-08-30T17:10:45.515Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -15281,183 +15281,169 @@
       "boxes": [
         {
           "ax": 2.5,
-          "ay": 82.25,
-          "rx": 120.5,
-          "ry": 37.35,
+          "ay": 88.6,
+          "rx": 92,
+          "ry": 31,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:07:13.277Z"
     },
     "scenery/hanging_willows/hanging_willow_002#not_lit_1": {
       "boxes": [
         {
-          "ax": 2.5,
-          "ay": 82.25,
-          "rx": 120.5,
-          "ry": 37.35,
+          "ax": -0.43,
+          "ay": 86.98,
+          "rx": 99,
+          "ry": 24,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:08:18.631Z"
     },
     "scenery/hanging_willows/hanging_willow_002#not_lit_2": {
       "boxes": [
         {
-          "ax": 2,
-          "ay": 82.4,
-          "rx": 120,
-          "ry": 37.2,
+          "ax": -0.14,
+          "ay": 82.56,
+          "rx": 84.5,
+          "ry": 25.25,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:08:40.165Z"
     },
     "scenery/hanging_willows/hanging_willow_002#not_lit_3": {
       "boxes": [
         {
-          "ax": 2.5,
-          "ay": 82.25,
-          "rx": 120.5,
-          "ry": 37.35,
+          "ax": 0.72,
+          "ay": 84.46,
+          "rx": 90.75,
+          "ry": 26.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:08:54.865Z"
     },
     "scenery/hanging_willows/hanging_willow_002#not_lit_4": {
       "boxes": [
         {
-          "ax": 1.5,
-          "ay": 82.55,
-          "rx": 119.5,
-          "ry": 37.05,
+          "ax": -0.32,
+          "ay": 81.04,
+          "rx": 97.75,
+          "ry": 30.25,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:09:11.944Z"
     },
     "scenery/hanging_willows/hanging_willow_002#not_lit_5": {
       "boxes": [
         {
-          "ax": -1.5,
-          "ay": 88.13,
-          "rx": 101.5,
-          "ry": 31.46,
+          "ax": 0.26,
+          "ay": 81.71,
+          "rx": 73,
+          "ry": 24.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:09:32.853Z"
     },
     "scenery/hanging_willows/hanging_willow_002#not_lit_6": {
       "boxes": [
         {
-          "ax": 2,
-          "ay": 82.4,
-          "rx": 120,
-          "ry": 37.2,
+          "ax": 1.03,
+          "ay": 83.01,
+          "rx": 86.25,
+          "ry": 25.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:09:57.800Z"
     },
     "scenery/hanging_willows/hanging_willow_002#not_lit_7": {
       "boxes": [
         {
-          "ax": 2,
-          "ay": 82.4,
-          "rx": 120,
-          "ry": 37.2,
+          "ax": -0.43,
+          "ay": 85.03,
+          "rx": 88,
+          "ry": 26,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:10:10.867Z"
     },
     "scenery/hanging_willows/hanging_willow_002#not_lit_8": {
       "boxes": [
         {
-          "ax": 2.5,
-          "ay": 82.25,
-          "rx": 120.5,
-          "ry": 37.35,
+          "ax": 1.31,
+          "ay": 85.19,
+          "rx": 91.25,
+          "ry": 24,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:10:26.759Z"
     },
     "scenery/hanging_willows/hanging_willow_002#not_lit_9": {
       "boxes": [
         {
-          "ax": 2,
-          "ay": 82.4,
-          "rx": 120,
-          "ry": 37.2,
+          "ax": 0,
+          "ay": 85.93,
+          "rx": 92.25,
+          "ry": 26.25,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:10:41.403Z"
     },
     "scenery/hanging_willows/hanging_willow_002#not_lit_10": {
       "boxes": [
         {
-          "ax": 2,
-          "ay": 82.4,
-          "rx": 120,
-          "ry": 37.2,
+          "ax": 0.24,
+          "ay": 83.38,
+          "rx": 88.5,
+          "ry": 24.25,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:08:30.196Z"
     },
     "scenery/hanging_willows/hanging_willow_002#lit_2": {
       "boxes": [
         {
-          "ax": 0,
-          "ay": 81.78,
-          "rx": 122,
-          "ry": 37.82,
+          "ax": -2.87,
+          "ay": 84.96,
+          "rx": 98.5,
+          "ry": 26.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:07:33.914Z"
     },
     "scenery/hanging_willows/hanging_willow_002#lit_3": {
       "boxes": [
         {
           "ax": -1.5,
-          "ay": 97.74,
-          "rx": 70.5,
-          "ry": 21.86,
+          "ay": 97.1,
+          "rx": 55.75,
+          "ry": 22.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:07:42.914Z"
     },
     "scenery/hanging_willows/hanging_willow_002#lit_4": {
       "boxes": [
         {
-          "ax": 2.5,
-          "ay": 82.25,
-          "rx": 120.5,
-          "ry": 37.35,
+          "ax": 1.86,
+          "ay": 83.21,
+          "rx": 98.5,
+          "ry": 28,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T17:08:04.847Z"
     },
     "scenery/harvest_altars/harvest_altar_002#not_lit_3": {
       "boxes": [
