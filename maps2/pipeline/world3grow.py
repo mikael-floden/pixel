@@ -224,7 +224,196 @@ class Grow:
                     q.append((nx, ny))
         self.wd = dist
 
-    def put(self, piece, x, y, on=None, hflip=False, lit=False, dir=None):
+    # ---- themes: a place looks like a place ------------------------------
+    # (maintainer 2026-08-30) "When you place outdoor stuff in the nature
+    # (rocks, etc) you should try to stay at a given theme and use that rock
+    # with different variations and hflip. The reason I did so many variations
+    # was to be able to create a place that looks a certain way so it doesn't
+    # feel random. Random is what we don't want anything to feel."
+    #
+    # A FAMILY IS ONE SCULPT plus its own variations (its NOT_LIT_* states)
+    # and hflip. Verified on a contact sheet before writing a line of this:
+    # stones/stone_001's four states are the same vine-bound boulder redrawn,
+    # while stone_009 is a barnacled rock and stone_010 a carved slab. Mixing
+    # SCULPTS is what reads as random; mixing VARIATIONS of one sculpt reads
+    # as a place. The old pass did the former - it drew a group at random and
+    # then a piece at random out of the whole group, per cell.
+    #
+    # Every family carries its OWN low-frequency field with its own scale and
+    # phase, so families fade in and out ON DIFFERENT SCHEDULES ("you can also
+    # fade out the usage of one object and fade in a usage of another object
+    # ... but they fade in/out differently"). At any point the two strongest
+    # families are in play and each placement picks between them in proportion
+    # to their strength, so a boundary is a BAND where both appear, never a
+    # line.
+    # ---- don't hide a thing behind a bigger thing -------------------------
+    # (maintainer 2026-08-30) "Try also to think where you place them. Some
+    # objects are big and you should ofc not hide an object behind a big/tall
+    # object."
+    #
+    # Scenery is painter-ordered by x+y, so a piece with the LARGER x+y is
+    # drawn later and stands in front. A placement is refused when a piece
+    # already in front of it would cover most of it - and equally when it
+    # would itself bury something already standing there. Both directions
+    # matter: the second is how a tree ends up planted on top of a mushroom.
+    HIDE = 0.55            # refuse at more than this fraction covered
+
+    def _art_rect(self, piece, x, y):
+        """The piece's drawn rectangle in screen px, anchored bottom-centre at
+        the projection of (x,y) - the same fit the game uses: the art is
+        scaled so its ALPHA BBOX height equals world_px_height."""
+        if not hasattr(self, "_bx"):
+            self._bx = json.load(open(os.path.join(
+                REPO, "games2", "config", "scenery-bbox.json")))
+        facts = (self._bx.get("pieces") or {}).get(piece)
+        bb = (self._bx.get("boxes") or {}).get((facts or {}).get("sprite"))
+        if not facts or not facts.get("wph") or not bb:
+            return None
+        bx0, by0, bx1, by1 = bb[:4]
+        h = facts["wph"]
+        w = max(1, bx1 - bx0) * h / max(1, by1 - by0)
+        sx = (x - y) * 32.0
+        sy = (x + y) * 14.0
+        return (sx - w / 2, sy - h, sx + w / 2, sy)
+
+    def _hidden(self, piece, x, y):
+        """True when this placement is mostly buried, or would mostly bury a
+        neighbour. Only nearby pieces can overlap, so the search is the 5x5
+        cell block around the spot."""
+        a = self._art_rect(piece, x, y)
+        if a is None:
+            return False
+        aw, ah = a[2] - a[0], a[3] - a[1]
+        if aw <= 0 or ah <= 0:
+            return False
+        mine = x + y
+        for q in self.doc["scenery"]:
+            if abs(q["x"] - x) > 6 or abs(q["y"] - y) > 6:
+                continue
+            b = self._art_rect(q["piece"], q["x"], q["y"])
+            if b is None:
+                continue
+            ox = min(a[2], b[2]) - max(a[0], b[0])
+            oy = min(a[3], b[3]) - max(a[1], b[1])
+            if ox <= 0 or oy <= 0:
+                continue
+            inter = ox * oy
+            if q["x"] + q["y"] > mine:            # it is drawn in FRONT of me
+                if inter / (aw * ah) > self.HIDE:
+                    return True
+            else:                                  # I would be drawn over it
+                bw, bh = b[2] - b[0], b[3] - b[1]
+                if bw > 0 and bh > 0 and inter / (bw * bh) > self.HIDE:
+                    return True
+        return False
+
+    FADE = 0.02        # width of the band where two families interleave
+
+    # HIS RATINGS DECIDE WHO GETS THE GROUND. live/feedback/objects.json is
+    # the scenery verdict channel - 5,075 approved entries, each rated 1 to 5,
+    # keyed per piece AND per variation ("scenery/stones/stone_013#not_lit_2
+    # #south"). A rating is taste, so a 5 should headline a place and a 1
+    # should be rare; the bias is added to the family's field, which buys or
+    # loses it territory rather than just nudging a dice roll.
+    RATING_BIAS = {5: 0.10, 4: 0.05, 3: 0.0, 2: -0.08, 1: -0.20}
+
+    def _verdicts(self):
+        if not hasattr(self, "_vd"):
+            self._vd = json.load(open(os.path.join(
+                REPO, "live", "feedback", "objects.json")))["entries"]
+        return self._vd
+
+    def _rated(self, piece, state=None):
+        """(ok, rating). ok is False only for something he REJECTED - a
+        missing record is unrated, not rejected, and stays usable."""
+        v = self._verdicts()
+        k = f"scenery/{piece}" + (f"#{state.lower()}#south" if state else "")
+        rec = v.get(k)
+        if rec is None:
+            return True, 3
+        if rec.get("status") not in (None, "approved"):
+            return False, 0
+        return True, int(rec.get("rating") or 3)
+
+    def _fam_w(self, fi, x, y):
+        # BIG TERRITORIES. The first cut ran at 0.013-0.058 (periods of 17 to
+        # 77 cells) and a 24-cell block still straddled several families:
+        # measured 7 distinct pieces per block, barely better than the 10 the
+        # random pass gave. A family's territory has to be larger than the
+        # view, so these are periods of 90 to 250 cells.
+        f = 0.004 + 0.003 * (fi % 4)          # its own scale...
+        ph = fi * 97.3                        # ...and its own phase
+        return _fbm(x * f + ph, y * f + ph * 0.61, 0x5EED + fi * 17)
+
+    def _variations(self, piece):
+        """The piece's own variations: its NOT_LIT_* states. [] when it ships
+        none, and then the base still is the only look it has."""
+        if not hasattr(self, "_varc"):
+            self._varc = {}
+        if piece not in self._varc:
+            f = os.path.join(REPO, "scenery", piece, "scenery.json")
+            j = json.load(open(f))
+            self._varc[piece] = [k for k in sorted(j.get("states") or {})
+                                 if k.startswith("NOT_LIT")
+                                 and self._rated(piece, k)[0]]
+        return self._varc[piece]
+
+    THEME_SPAN = 0.0055     # ~180 cells across per province
+    THEME_SIZE = 3          # families that share a province
+    EDGE = 0.14             # fraction of a province that is blend band
+
+    def theme_pick(self, families, x, y, r):
+        """(piece, state) for this spot.
+
+        TWO LEVELS, because one was not enough. Giving all 54 candidates their
+        own field and taking the top two sounds right and is not: the ARGMAX
+        of many random fields has much finer structure than any one of them,
+        so a 42-cell view still showed four different rock sculpts. A place is
+        a PROVINCE that owns a few families:
+
+          level 1  a coarse field cuts the map into provinces (~180 cells) and
+                   each province owns THEME_SIZE families. Near a province
+                   edge the placements blend into the neighbour's set, so the
+                   change is a band and never a seam.
+          level 2  inside the province the families compete on their own
+                   fields, each with its own scale and phase, so they fade in
+                   and out on DIFFERENT schedules - his words exactly.
+
+        Within a family the variation is its own NOT_LIT_* state plus hflip,
+        which is the axis the variations were drawn for."""
+        families = [f for f in families if self._rated(f)[0]]
+        if not families:
+            return None, None
+        nth = max(1, len(families) // self.THEME_SIZE)
+        u = _fbm(x * self.THEME_SPAN + 3.1, y * self.THEME_SPAN + 3.1,
+                 0x71E3) * nth
+        t = min(nth - 1, int(u))
+        frac = u - t
+        # the blend band: only near an edge, and only toward that neighbour
+        if frac < self.EDGE and t > 0 and r() < 0.5 * (1 - frac / self.EDGE):
+            t -= 1
+        elif frac > 1 - self.EDGE and t < nth - 1 \
+                and r() < 0.5 * (1 - (1 - frac) / self.EDGE):
+            t += 1
+        pool = [families[i] for i in range(len(families)) if i % nth == t]
+        if not pool:
+            pool = families
+        w = sorted(((self._fam_w(i, x, y)
+                     + self.RATING_BIAS.get(self._rated(pool[i])[1], 0.0), i)
+                    for i in range(len(pool))), reverse=True)
+        (w1, i1) = w[0]
+        (w2, i2) = w[1] if len(w) > 1 else w[0]
+        # THE FADE IS A BAND OF KNOWN WIDTH. Blending by the RATIO of the two
+        # field values made it far too wide - fbm values sit close together,
+        # so a clear leader (0.60 against 0.55) still ceded 40% of its ground.
+        # A logistic on the GAP puts the width in one number.
+        p1 = 1.0 / (1.0 + math.exp(-(w1 - w2) / self.FADE))
+        piece = pool[i1 if r() < p1 else i2]
+        var = self._variations(piece)
+        return piece, (var[int(r() * len(var)) % len(var)] if var else None)
+
+    def put(self, piece, x, y, on=None, hflip=False, lit=False, dir=None,
+            state=None):
         """One validated placement: the piece dir must exist, the ground must
         be in `on` (if given), the spot must be free. `lit` selects the
         piece's LIT_* state (the piece must ship one) and spends a slot of
@@ -254,6 +443,9 @@ class Grow:
             p["hflip"] = True
         if lit:
             p["lit"] = True
+        if state and state in (self._variations(piece) or ()):
+            p["state"] = state          # the variation axis; unknown states
+                                        # fall through to the base still
         if dir and os.path.isfile(os.path.join(REPO, "scenery", piece,
                                                 "rotations", dir + ".webp")):
             p["dir"] = dir      # not every piece ships rotations; the base
@@ -1407,12 +1599,19 @@ class Grow:
             IN = ("parquet_floor",)
             n = 0
             # FURNITURE GOES AGAINST THE BACK WALLS, FACING THE ROOM
-            # (maintainer 2026-08-30). In this projection the two walls you
-            # see are the low-x one (upper LEFT on screen) and the low-y one
-            # (upper RIGHT). A piece standing against the left wall looks
-            # down-right, so it wears south-east; against the right wall it
-            # wears south-west. Placed with the base south sprite it stands
-            # with its back to the room instead.
+            # (maintainer 2026-08-30: "pick the correct SW vs SE so a
+            # bookshelf is against the wall and not pointing into the room").
+            #
+            # SCENERY'S ROTATION NAMES ARE THE OPPOSITE WAY ROUND FROM
+            # characters2' (the `facing` helper above: south-east = +x). The
+            # ART says otherwise, and the art is what you see: rendered in a
+            # test room, scenery/*/rotations/south-east.webp looks DOWN-LEFT
+            # (+y) and south-west.webp looks DOWN-RIGHT (+x). So:
+            #   back to the NORTH wall (low y, upper RIGHT) -> south-east
+            #   back to the WEST  wall (low x, upper LEFT)  -> south-west
+            # I had both inverted, which stood every piece with its back to
+            # the room. Verified by rendering one cupboard per wall per
+            # rotation, not by reading the names.
             west = [(x, y) for (x, y) in floor if x == x0]      # upper-left wall
             north = [(x, y) for (x, y) in floor if y == y0]     # upper-right wall
             west.sort(key=lambda c: c[1])
@@ -1422,7 +1621,7 @@ class Grow:
                 if not wall:
                     return 0
                 x, y = wall[min(idx, len(wall) - 1)]
-                d = "south-east" if wall is west else "south-west"
+                d = "south-west" if wall is west else "south-east"
                 return self.put(pk(group, d), x + 0.5, y + 0.5,
                                 on=IN, dir=d, **kw)
 
@@ -1440,11 +1639,16 @@ class Grow:
                 n += against("chairs_and_benches", north, 2 + k * 4)
             # the middle of the room: a table with chairs either side
             if len(cells) >= 6:
+                # A CHAIR FACES ITS TABLE. With only two rotations a chair can
+                # look down-right (+x, south-west) or down-left (+y,
+                # south-east), so both chairs sit UP-SCREEN of the table - one
+                # west of it, one north of it - and each looks at it. Seating
+                # them east and west put one chair's back to the table.
                 n += self.put(pk("tables"), cx, cy, on=IN)
-                n += self.put(pk("chairs_and_benches", "south-east"),
-                              cx - 1.0, cy, on=IN, dir="south-east")
                 n += self.put(pk("chairs_and_benches", "south-west"),
-                              cx + 1.0, cy, on=IN, dir="south-west")
+                              cx - 1.0, cy, on=IN, dir="south-west")
+                n += self.put(pk("chairs_and_benches", "south-east"),
+                              cx, cy - 1.0, on=IN, dir="south-east")
             if len(cells) >= 12:
                 n += against("wall_hangings", north, max(0, len(north) - 2))
                 n += self.put(pk("rugs_and_hides"), cx, cy + 1.0, on=IN)
@@ -1538,54 +1742,79 @@ class Grow:
 
     # -- nature ---------------------------------------------------------------
     def nature(self):
-        ferns, mush = self.pool("ferns"), self.pool("mushrooms")
-        toads, logs = self.pool("toadstool_rings"), self.pool("fallen_logs")
-        stumps = self.pool("stumps")
-        cats, reeds = self.pool("cattail_clumps"), self.pool("reed_beds")
+        """NATURE, THEMED. Every family is one sculpt varied within itself,
+        every family drifts on its own field, and the two strongest at any
+        spot share it in proportion - so a place has a look, neighbouring
+        places have different looks, and the change between them is a band
+        rather than a line. See theme_pick and _fam_w above for the why.
+
+        Density drifts too, on a field of its own: a wood is thick in places
+        and open in others, which is the other half of not feeling random."""
+        floor = self.pool("ferns") + self.pool("mushrooms") \
+            + self.pool("moss_clumps") + self.pool("toadstool_rings") \
+            + self.pool("fallen_logs") + self.pool("stumps")
+        open_ = self.pool("stones") + self.pool("grass_tufts") \
+            + self.pool("bushes")
+        wet = self.pool("cattail_clumps") + self.pool("reed_beds")
+        dry = self.pool("cup_fungi")
         lily = self.pool("water_lily_clumps")
-        drift = self.pool("driftwood_logs") + self.pool("giant_snail_shells") \
-            + ["whale_bones/whale_bone_001"]
+        beach = self.pool("driftwood_logs") + self.pool("giant_snail_shells")
         trees = [(p["x"], p["y"]) for p in self.doc["scenery"]
                  if p["piece"].startswith("trees/")]
-        n = {"floor": 0, "fen": 0, "lily": 0, "beach": 0}
+        tset = set()
+        for tx, ty in trees:
+            tset.add((int(tx) // 3, int(ty) // 3))
+
+        def near_trees(jx, jy):
+            return sum(1 for dx in (-1, 0, 1) for dy in (-1, 0, 1)
+                       if (int(jx) // 3 + dx, int(jy) // 3 + dy) in tset)
+
+        n = {"floor": 0, "open": 0, "fen": 0, "lily": 0, "beach": 0}
+        hid = 0
         for y in range(0, NEW, 3):
             for x in range(0, NEW, 3):
                 r = _rng32((x * 40503) ^ (y * 2654435761) ^ 0xf10a)
                 jx, jy = x + r() * 2, y + r() * 2
                 g = self.g(int(jx), int(jy))
+                # THE DENSITY OF A PLACE IS ITSELF A FIELD
+                dens = _fbm(jx * 0.021 + 11.0, jy * 0.021 + 11.0, 0xD3115)
+                kind = pool = None
                 if g == "grass":
-                    near = sum(1 for tx, ty in trees
-                               if abs(tx - jx) <= 3 and abs(ty - jy) <= 3)
-                    if near >= 2 and r() < 0.5:
-                        u = r()
-                        pc = ferns if u < 0.45 else mush if u < 0.75 else \
-                            toads if u < 0.85 else logs if u < 0.93 else stumps
-                        if self.put(pc[int(r() * len(pc)) % len(pc)],
-                                    jx + 0.5, jy + 0.5, on=("grass",),
-                                    hflip=r() < 0.5):
-                            n["floor"] += 1
-                elif g == "dark_mud" and r() < 0.30:
-                    wet = any(self.liquid(int(jx) + dx, int(jy) + dy)
-                              for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
-                    pc = (cats if r() < 0.6 else reeds) if wet else \
-                        (self.pool("cup_fungi") if r() < 0.4 else None)
-                    if pc and self.put(pc[int(r() * len(pc)) % len(pc)],
-                                       jx + 0.5, jy + 0.5, on=("dark_mud",),
-                                       hflip=r() < 0.5):
-                        n["fen"] += 1
-                elif g == "water" and r() < 0.10:
+                    if near_trees(jx, jy) >= 2:
+                        kind, pool, base = "floor", floor, 0.62
+                    else:
+                        kind, pool, base = "open", open_, 0.20
+                elif g == "dark_mud":
+                    swampy = any(self.liquid(int(jx) + dx, int(jy) + dy)
+                                 for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+                    kind, pool, base = "fen", (wet if swampy else dry), 0.42
+                elif g == "water" and n["lily"] < 24:
                     shore = sum(not self.liquid(int(jx) + dx, int(jy) + dy)
                                 for dx in (-1, 0, 1) for dy in (-1, 0, 1))
-                    if shore >= 2 and n["lily"] < 24:
-                        if self.put(lily[int(r() * len(lily)) % len(lily)],
-                                    jx + 0.5, jy + 0.5, on=("water",)):
-                            n["lily"] += 1
-                elif g == "light_beach" and r() < 0.04 and n["beach"] < 14:
-                    if self.put(drift[int(r() * len(drift)) % len(drift)],
-                                jx + 0.5, jy + 0.5, on=("light_beach",),
-                                hflip=r() < 0.5):
-                        n["beach"] += 1
+                    if shore >= 2:
+                        kind, pool, base = "lily", lily, 0.14
+                elif g == "light_beach" and n["beach"] < 14:
+                    kind, pool, base = "beach", beach, 0.06
+                if not kind or not pool:
+                    continue
+                # OUTCROPS, NOT POLKA DOTS. A linear density field spread the
+                # rocks evenly over a whole field; cubed, the field spends most
+                # of its range near zero, so bare ground stays bare and the
+                # thick patches get thicker. Same total, clustered.
+                if r() > min(1.0, base * 7.0 * dens ** 3):
+                    continue
+                piece, state = self.theme_pick(pool, jx, jy, r)
+                if not piece:
+                    continue
+                px, py = jx + 0.5, jy + 0.5
+                if self._hidden(piece, px, py):
+                    hid += 1
+                    continue
+                if self.put(piece, px, py, on=(g,), hflip=r() < 0.5,
+                            state=state):
+                    n[kind] += 1
         self.placed += sorted(n.items())
+        self.placed += [("refused: would be hidden", hid)]
 
     # -- islet dressing -------------------------------------------------------
     def dress_islets(self):

@@ -1358,6 +1358,14 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             cand = os.path.join(p["piece"], "rotations", p["dir"] + ".webp")
             if os.path.isfile(os.path.join(REPO, "scenery", cand)):
                 spath = cand
+        # {"state": "NOT_LIT_3"} IS THE VARIATION AXIS. The maintainer drew
+        # several variations per piece so a place can be built out of ONE
+        # sculpt and still not repeat ("use that rock with different
+        # variations and hflip", 2026-08-30), and until now nothing could ask
+        # for one: the world had no field for it and every consumer drew the
+        # base still. An unknown state falls through to the base.
+        if p.get("state") and (meta.get("states") or {}).get(p["state"]):
+            spath = meta["states"][p["state"]]["sprite"]
         if p.get("lit"):              # {"lit": true} selects the LIT_* state
             litk = sorted(k for k in (meta.get("states") or {})
                           if k.startswith("LIT"))
