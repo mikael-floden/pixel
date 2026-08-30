@@ -2213,10 +2213,28 @@ function makePlayer(entity, kind, opts = {}) {
      * is measured, so a fallen log's rail is as long as the log. A stored box
      * bigger than that (or a turned ellipse using D as its long axis) still
      * shows: the rail never ends below the value it is displaying. */
+    /* THE RAIL FOLLOWS THE BOX, not just the art (maintainer 2026-08-29:
+     * "It's very hard to set the hitbox on a tree using the slider. The max
+     * value is so huge and the root try to use the slider for is so small so
+     * the resolution is very bad on trees"). A tree's footprint is its TRUNK
+     * — 40px inside a 245px canopy — so a rail scaled to the art spent 85% of
+     * its travel on sizes no tree will ever have.
+     *
+     * Both rails share one scale, three times the ellipse's own longest axis,
+     * capped by the art's reach and floored at 48. Three times leaves room to
+     * grow in one drag; releasing re-scales, so growing again is always
+     * possible and the range zooms with the work instead of against it. And
+     * the rail never ends below the value it is showing, so an existing wide
+     * box still displays and still drags. */
     const cw = clip?.bb ? clip.bb[2] - clip.bb[0] : fw;
     const ch = clip?.bb ? clip.bb[3] - clip.bb[1] : fh;
-    const art = Math.max(cw, ch);
-    const reach = (cur2) => Math.max(48, Math.round(art * 1.25), Math.ceil(cur2));
+    const artReach = Math.max(48, Math.round(Math.max(cw, ch) * 1.25));
+    /* EACH RAIL ON ITS OWN SCALE. Sharing one — keyed to the longest axis —
+     * is what made DEPTH unusable: a ground footprint is about a third as
+     * deep as it is wide, so the D rail spent two thirds of its travel on
+     * depths no ellipse of that width will ever have. Measured on a tree
+     * trunk 40 wide and 12 deep: D went from a 120px rail to a 36px one. */
+    const reach = (cur2) => Math.max(24, Math.min(artReach, Math.round(cur2 * 3)), Math.ceil(cur2));
     hitW.max = String(reach(b ? b.rx * 2 : 0));
     hitH.max = String(reach(b ? b.ry * 2 : 0));
     if (b) {

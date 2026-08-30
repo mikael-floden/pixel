@@ -183,8 +183,14 @@ ok(open.rails === 3, `with three rails — width, depth and the ROTATION a monst
     .map((x) => ({ max: +x.max, val: +x.value })));
   const art = bb2 ? Math.max(bb2[2] - bb2[0], bb2[3] - bb2[1]) : 0;
   const frame = Math.max(dd2.fw ?? 96, dd2.fh ?? 96);
-  ok(art > 0 && rails.every((r) => r.max <= Math.max(48, Math.round(art * 1.25), Math.ceil(r.val))),
-    `the rails reach a quarter past the ART, not twice the frame (${rails.map((r) => r.max).join("/")} for art ${art}, frame ${frame})`);
+  /* EACH RAIL ON ITS OWN SCALE (maintainer 2026-08-29: "the max value is so
+   * huge and the root try to use the slider for is so small so the
+   * resolution is very bad on trees"). Three times the value it sets, capped
+   * by the art — so the DEPTH rail is no longer sized by the width. */
+  ok(art > 0 && rails.every((r) => r.max <= Math.max(24, Math.round(art * 1.25), Math.ceil(r.val))),
+    `no rail reaches past the art (${rails.map((r) => r.max).join("/")} for art ${art}, frame ${frame})`);
+  ok(rails.every((r) => r.val <= 2 || r.max <= Math.max(24, Math.ceil(r.val * 3), Math.ceil(r.val))),
+    `and each rail is scaled to ITS OWN value, not the other's (${rails.map((r) => `${r.val}→${r.max}`).join(", ")})`);
   ok(rails.every((r) => r.max >= r.val),
     `and never end below the value they are showing (${rails.map((r) => `${r.val}/${r.max}`).join(", ")})`);
 }
