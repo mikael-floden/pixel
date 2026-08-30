@@ -5462,14 +5462,14 @@
   "H10": {
    "group": "fences",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern at the end of the fence shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position they have in the first frame and stay amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern at the end of the fence shifts, by one pixel. No more than a few pixels change anywhere in the whole picture. The body of the flame keeps exactly the shape, size and position it has in the first frame and stays amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The lantern burns.",
    "seen_in_art": "a fence with a lantern burning on its end post",
    "example": {
     "piece": "fences/fence_006",
     "state": "LIT_2"
    },
-   "redo": "Redone GENTLER (maintainer: 'Try to be more gentle/subtle. I don't want much movement at all.'). Colour named from the sprite; motion cut to the smallest visible change."
+   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
   },
   "H11": {
    "group": "fences",
@@ -5613,14 +5613,14 @@
   "H24": {
    "group": "soulstone_outcrops",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the two purple gems in the rock change: they brighten by the smallest amount that is still visible, then return. At their brightest they must still look exactly the same purple as in the first frame -- never pale, never white, never any other colour. They stay exactly the same size and shape; they never grow and never spread. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the two purple gems in the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same purple as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "Both gems pulse.",
    "seen_in_art": "a rock set with two burning purple gems",
    "example": {
     "piece": "soulstone_outcrops/soulstone_outcrop_016",
     "state": "LIT_4"
    },
-   "redo": "Redone GENTLER (maintainer: 'Try to be more gentle/subtle. I don't want much movement at all.'). Colour named from the sprite; motion cut to the smallest visible change."
+   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
   },
   "H25": {
    "group": "soulstone_outcrops",
@@ -5670,14 +5670,14 @@
   "H29": {
    "group": "stones",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the white carved symbol on the stone changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same white as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the white carved symbol on the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The symbol pulses.",
    "seen_in_art": "a stone carved with one white glowing symbol",
    "example": {
     "piece": "stones/stone_022",
     "state": "LIT_2"
    },
-   "redo": "Redone GENTLER (maintainer: 'Try to be more gentle/subtle. I don't want much movement at all.'). Colour named from the sprite; motion cut to the smallest visible change."
+   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
   },
   "H30": {
    "group": "stones",
@@ -5728,14 +5728,14 @@
   "H34": {
    "group": "aqueduct_fragments",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the cyan cracks across the stone change: they brighten by the smallest amount that is still visible, then return. At their brightest they must still look exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They stay exactly the same size and shape; they never grow and never spread. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the cyan cracks across the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The cracks pulse.",
    "seen_in_art": "a broken aqueduct laced with bright cyan cracks",
    "example": {
     "piece": "aqueduct_fragments/aqueduct_fragment_901",
     "state": "LIT_2"
    },
-   "redo": "Redone GENTLER (maintainer: 'Try to be more gentle/subtle. I don't want much movement at all.'). Colour named from the sprite; motion cut to the smallest visible change."
+   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
   },
   "H35": {
    "group": "rock_spires",
@@ -5751,26 +5751,26 @@
   "H36": {
    "group": "rock_spires",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the pale gold bands around the spire change: they brighten by the smallest amount that is still visible, then return. At their brightest they must still look exactly the same pale gold as in the first frame -- never pale, never white, never any other colour. They stay exactly the same size and shape; they never grow and never spread. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the pale gold bands around the spire change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same pale gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The bands pulse.",
    "seen_in_art": "a stone spire ringed with glowing gold bands",
    "example": {
     "piece": "rock_spires/rock_spire_002",
     "state": "LIT_3"
    },
-   "redo": "Redone GENTLER (maintainer: 'Try to be more gentle/subtle. I don't want much movement at all.'). Colour named from the sprite; motion cut to the smallest visible change."
+   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
   },
   "H37": {
    "group": "graves",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the pale gold carved panel on the headstone changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same pale gold as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the pale gold carved panel on the headstone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same pale gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The panel pulses.",
    "seen_in_art": "a headstone with one gold-lit carved panel",
    "example": {
     "piece": "graves/grave_034",
     "state": "LIT_3"
    },
-   "redo": "Redone GENTLER (maintainer: 'Try to be more gentle/subtle. I don't want much movement at all.'). Colour named from the sprite; motion cut to the smallest visible change."
+   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
   },
   "H38": {
    "group": "waystones",
@@ -5811,38 +5811,38 @@
   "H41": {
    "group": "gravel_piles",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the gold crystals in the gravel change: they brighten by the smallest amount that is still visible, then return. At their brightest they must still look exactly the same gold as in the first frame -- never pale, never white, never any other colour. They stay exactly the same size and shape; they never grow and never spread. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the gold crystals in the gravel change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The crystals pulse.",
    "seen_in_art": "a gravel mound with gold crystals jutting from it",
    "example": {
     "piece": "gravel_piles/gravel_pile_002",
     "state": "LIT_2"
    },
-   "redo": "Redone GENTLER (maintainer: 'Try to be more gentle/subtle. I don't want much movement at all.'). Colour named from the sprite; motion cut to the smallest visible change."
+   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
   },
   "H42": {
    "group": "gravel_piles",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the gold crystals in the gravel change: they brighten by the smallest amount that is still visible, then return. At their brightest they must still look exactly the same gold as in the first frame -- never pale, never white, never any other colour. They stay exactly the same size and shape; they never grow and never spread. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the gold crystals in the gravel change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The crystals pulse.",
    "seen_in_art": "a gravel mound studded with lit gold crystals",
    "example": {
     "piece": "gravel_piles/gravel_pile_002",
     "state": "LIT_3"
    },
-   "redo": "Redone GENTLER (maintainer: 'Try to be more gentle/subtle. I don't want much movement at all.'). Colour named from the sprite; motion cut to the smallest visible change."
+   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
   },
   "H43": {
    "group": "torch_posts",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the molten orange bowl at the top of the torch changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same orange as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the orange molten bowl at the top of the torch changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The molten head pulses.",
    "seen_in_art": "a torch whose head is a bowl of molten orange",
    "example": {
     "piece": "torch_posts/torch_post_022",
     "state": "LIT_4"
    },
-   "redo": "Redone GENTLER (maintainer: 'Try to be more gentle/subtle. I don't want much movement at all.'). Colour named from the sprite; motion cut to the smallest visible change."
+   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
   },
   "H44": {
    "group": "stumps",
@@ -5858,26 +5858,26 @@
   "H45": {
    "group": "carts",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the orange ore in the cart changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same orange as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the orange ore in the cart changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The ore pulses.",
    "seen_in_art": "a cart carrying a load of glowing orange ore",
    "example": {
     "piece": "carts/cart_016",
     "state": "LIT_3"
    },
-   "redo": "Redone GENTLER (maintainer: 'Try to be more gentle/subtle. I don't want much movement at all.'). Colour named from the sprite; motion cut to the smallest visible change."
+   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
   },
   "H46": {
    "group": "barrels",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the cyan water in the barrel changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same cyan as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the cyan water in the barrel changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The water pulses.",
    "seen_in_art": "a barrel brimming with glowing cyan water",
    "example": {
     "piece": "barrels/barrel_007",
     "state": "LIT_2"
    },
-   "redo": "Redone GENTLER (maintainer: 'Try to be more gentle/subtle. I don't want much movement at all.'). Colour named from the sprite; motion cut to the smallest visible change."
+   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
   },
   "H48": {
    "group": "cliff_vines",

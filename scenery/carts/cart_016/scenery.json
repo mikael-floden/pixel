@@ -56,8 +56,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "8d174cdc-406a-4a16-aa7d-1d6e6d3a7802",
-          "description": "This is an almost completely still picture. ONLY the orange ore in the cart changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same orange as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "group_id": "edbec334-2fad-4bad-8cf7-003654ab815b",
+          "description": "This is an almost completely still picture. ONLY the orange ore in the cart changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -73,7 +73,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-30T09:58:55+00:00",
+          "generated_at": "2026-08-30T10:21:41+00:00",
           "brief": "H45"
         }
       }

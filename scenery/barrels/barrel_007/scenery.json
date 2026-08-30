@@ -45,8 +45,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "23df8d1c-2241-4eba-81ff-10432db71c81",
-          "description": "This is an almost completely still picture. ONLY the cyan water in the barrel changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same cyan as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "group_id": "69dd3010-b73d-4b84-b024-8aa76f65ff4d",
+          "description": "This is an almost completely still picture. ONLY the cyan water in the barrel changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -62,7 +62,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-30T09:59:36+00:00",
+          "generated_at": "2026-08-30T10:21:17+00:00",
           "brief": "H46"
         }
       }

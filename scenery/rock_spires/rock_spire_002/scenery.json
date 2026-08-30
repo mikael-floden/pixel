@@ -74,8 +74,8 @@
       "glow_score": 0.0633,
       "animations": {
         "motion": {
-          "group_id": "871a45d6-7d40-4f3f-b05a-d4f652ad5e2a",
-          "description": "This is an almost completely still picture. ONLY the pale gold bands around the spire change: they brighten by the smallest amount that is still visible, then return. At their brightest they must still look exactly the same pale gold as in the first frame -- never pale, never white, never any other colour. They stay exactly the same size and shape; they never grow and never spread. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "group_id": "b208bc00-a4b8-41cb-b31a-739ab2f8b23c",
+          "description": "This is an almost completely still picture. ONLY the pale gold bands around the spire change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same pale gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -89,7 +89,7 @@
           ],
           "strip": "rock_spires/rock_spire_002/lit_3/animations/motion__strip.webp",
           "directions": null,
-          "generated_at": "2026-08-30T09:59:29+00:00",
+          "generated_at": "2026-08-30T10:21:25+00:00",
           "brief": "H36"
         }
       }

@@ -128,8 +128,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "678a4ed7-ac21-40a8-8090-7310cd8c8720",
-          "description": "This is an almost completely still picture. ONLY the molten orange bowl at the top of the torch changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same orange as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "group_id": "50ec4405-b015-4aa1-810b-131a3403d6d6",
+          "description": "This is an almost completely still picture. ONLY the orange molten bowl at the top of the torch changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -145,7 +145,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-30T09:59:22+00:00",
+          "generated_at": "2026-08-30T10:21:01+00:00",
           "brief": "H43"
         }
       }
