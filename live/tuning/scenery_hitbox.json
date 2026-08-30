@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
-  "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre \u2014 the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order \u2014 a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
-  "updated_at": "2026-08-30T12:43:22.365Z",
+  "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
+  "updated_at": "2026-08-30T12:47:43.310Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -290,9 +290,9 @@
     "scenery/ancient_trees/ancient_tree_001#not_lit_1": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -303,9 +303,9 @@
     "scenery/ancient_trees/ancient_tree_001#not_lit_2": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -316,9 +316,9 @@
     "scenery/ancient_trees/ancient_tree_001#not_lit_3": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -329,9 +329,9 @@
     "scenery/ancient_trees/ancient_tree_001#not_lit_4": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -342,9 +342,9 @@
     "scenery/ancient_trees/ancient_tree_001#not_lit_5": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -355,9 +355,9 @@
     "scenery/ancient_trees/ancient_tree_001#not_lit_6": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -368,9 +368,9 @@
     "scenery/ancient_trees/ancient_tree_001#not_lit_7": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -381,9 +381,9 @@
     "scenery/ancient_trees/ancient_tree_001#not_lit_8": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -394,9 +394,9 @@
     "scenery/ancient_trees/ancient_tree_001#not_lit_9": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -407,9 +407,9 @@
     "scenery/ancient_trees/ancient_tree_001#not_lit_10": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -420,9 +420,9 @@
     "scenery/ancient_trees/ancient_tree_001#lit_1": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -433,9 +433,9 @@
     "scenery/ancient_trees/ancient_tree_001#lit_2": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -446,9 +446,9 @@
     "scenery/ancient_trees/ancient_tree_001#lit_3": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -459,9 +459,9 @@
     "scenery/ancient_trees/ancient_tree_001#lit_4": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 89.29,
-          "rx": 101.0,
+          "rx": 101,
           "ry": 31.31,
           "rot": 0
         }
@@ -8809,9 +8809,9 @@
     "scenery/crystal_trees/crystal_tree_002#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 25.81,
-          "rx": 9.0,
+          "rx": 9,
           "ry": 2.79,
           "rot": 0
         }
@@ -8822,9 +8822,9 @@
     "scenery/crystal_trees/crystal_tree_002#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 25.81,
-          "rx": 9.0,
+          "rx": 9,
           "ry": 2.79,
           "rot": 0
         }
@@ -8848,9 +8848,9 @@
     "scenery/crystal_trees/crystal_tree_002#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 26.1,
-          "rx": 8.0,
+          "rx": 8,
           "ry": 2.5,
           "rot": 0
         }
@@ -8874,9 +8874,9 @@
     "scenery/crystal_trees/crystal_tree_002#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 25.81,
-          "rx": 9.0,
+          "rx": 9,
           "ry": 2.79,
           "rot": 0
         }
@@ -8887,9 +8887,9 @@
     "scenery/crystal_trees/crystal_tree_002#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 25.81,
-          "rx": 9.0,
+          "rx": 9,
           "ry": 2.79,
           "rot": 0
         }
@@ -8900,9 +8900,9 @@
     "scenery/crystal_trees/crystal_tree_002#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 25.81,
-          "rx": 9.0,
+          "rx": 9,
           "ry": 2.79,
           "rot": 0
         }
@@ -8939,9 +8939,9 @@
     "scenery/crystal_trees/crystal_tree_002#not_lit_10": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 23.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -8952,9 +8952,9 @@
     "scenery/crystal_trees/crystal_tree_002#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 25.81,
-          "rx": 9.0,
+          "rx": 9,
           "ry": 2.79,
           "rot": 0
         }
@@ -8965,9 +8965,9 @@
     "scenery/crystal_trees/crystal_tree_002#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 25.81,
-          "rx": 9.0,
+          "rx": 9,
           "ry": 2.79,
           "rot": 0
         }
@@ -8978,9 +8978,9 @@
     "scenery/crystal_trees/crystal_tree_002#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 27.81,
-          "rx": 9.0,
+          "rx": 9,
           "ry": 2.79,
           "rot": 0
         }
@@ -15140,9 +15140,9 @@
     "scenery/hanging_willows/hanging_willow_001#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.47,
-          "rx": 123.0,
+          "rx": 123,
           "ry": 38.13,
           "rot": 0
         }
@@ -15153,9 +15153,9 @@
     "scenery/hanging_willows/hanging_willow_001#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.47,
-          "rx": 123.0,
+          "rx": 123,
           "ry": 38.13,
           "rot": 0
         }
@@ -15166,9 +15166,9 @@
     "scenery/hanging_willows/hanging_willow_001#not_lit_3": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 88.08,
-          "rx": 92.0,
+          "rx": 92,
           "ry": 28.52,
           "rot": 0
         }
@@ -15179,9 +15179,9 @@
     "scenery/hanging_willows/hanging_willow_001#not_lit_4": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 87.53,
-          "rx": 97.0,
+          "rx": 97,
           "ry": 30.07,
           "rot": 0
         }
@@ -15205,9 +15205,9 @@
     "scenery/hanging_willows/hanging_willow_001#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.47,
-          "rx": 123.0,
+          "rx": 123,
           "ry": 38.13,
           "rot": 0
         }
@@ -15218,9 +15218,9 @@
     "scenery/hanging_willows/hanging_willow_001#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.47,
-          "rx": 123.0,
+          "rx": 123,
           "ry": 38.13,
           "rot": 0
         }
@@ -15244,9 +15244,9 @@
     "scenery/hanging_willows/hanging_willow_001#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.47,
-          "rx": 123.0,
+          "rx": 123,
           "ry": 38.13,
           "rot": 0
         }
@@ -15257,9 +15257,9 @@
     "scenery/hanging_willows/hanging_willow_001#not_lit_10": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 91.49,
-          "rx": 81.0,
+          "rx": 81,
           "ry": 25.11,
           "rot": 0
         }
@@ -15270,9 +15270,9 @@
     "scenery/hanging_willows/hanging_willow_001#lit_1": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 87.53,
-          "rx": 97.0,
+          "rx": 97,
           "ry": 30.07,
           "rot": 0
         }
@@ -15283,9 +15283,9 @@
     "scenery/hanging_willows/hanging_willow_001#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.47,
-          "rx": 123.0,
+          "rx": 123,
           "ry": 38.13,
           "rot": 0
         }
@@ -15296,9 +15296,9 @@
     "scenery/hanging_willows/hanging_willow_001#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.47,
-          "rx": 123.0,
+          "rx": 123,
           "ry": 38.13,
           "rot": 0
         }
@@ -15309,9 +15309,9 @@
     "scenery/hanging_willows/hanging_willow_001#lit_4": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 86.53,
-          "rx": 97.0,
+          "rx": 97,
           "ry": 30.07,
           "rot": 0
         }
@@ -15348,9 +15348,9 @@
     "scenery/hanging_willows/hanging_willow_002#not_lit_2": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 82.4,
-          "rx": 120.0,
+          "rx": 120,
           "ry": 37.2,
           "rot": 0
         }
@@ -15400,9 +15400,9 @@
     "scenery/hanging_willows/hanging_willow_002#not_lit_6": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 82.4,
-          "rx": 120.0,
+          "rx": 120,
           "ry": 37.2,
           "rot": 0
         }
@@ -15413,9 +15413,9 @@
     "scenery/hanging_willows/hanging_willow_002#not_lit_7": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 82.4,
-          "rx": 120.0,
+          "rx": 120,
           "ry": 37.2,
           "rot": 0
         }
@@ -15439,9 +15439,9 @@
     "scenery/hanging_willows/hanging_willow_002#not_lit_9": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 82.4,
-          "rx": 120.0,
+          "rx": 120,
           "ry": 37.2,
           "rot": 0
         }
@@ -15452,9 +15452,9 @@
     "scenery/hanging_willows/hanging_willow_002#not_lit_10": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 82.4,
-          "rx": 120.0,
+          "rx": 120,
           "ry": 37.2,
           "rot": 0
         }
@@ -15465,9 +15465,9 @@
     "scenery/hanging_willows/hanging_willow_002#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 81.78,
-          "rx": 122.0,
+          "rx": 122,
           "ry": 37.82,
           "rot": 0
         }
@@ -16284,9 +16284,9 @@
     "scenery/honey_trees/honey_tree_002#not_lit_5": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 20.78,
-          "rx": 22.0,
+          "rx": 22,
           "ry": 6.82,
           "rot": 0
         }
@@ -16310,9 +16310,9 @@
     "scenery/honey_trees/honey_tree_002#not_lit_7": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 21.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -16323,9 +16323,9 @@
     "scenery/honey_trees/honey_tree_002#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 21.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -16336,9 +16336,9 @@
     "scenery/honey_trees/honey_tree_002#not_lit_9": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 19.47,
-          "rx": 23.0,
+          "rx": 23,
           "ry": 7.13,
           "rot": 0
         }
@@ -16388,9 +16388,9 @@
     "scenery/honey_trees/honey_tree_002#lit_4": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 25.26,
-          "rx": 14.0,
+          "rx": 14,
           "ry": 4.34,
           "rot": 0
         }
@@ -20434,9 +20434,9 @@
     "scenery/owl_snags/owl_snag_001#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -20447,9 +20447,9 @@
     "scenery/owl_snags/owl_snag_001#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -20460,9 +20460,9 @@
     "scenery/owl_snags/owl_snag_001#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -20473,9 +20473,9 @@
     "scenery/owl_snags/owl_snag_001#not_lit_4": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 77.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -20486,9 +20486,9 @@
     "scenery/owl_snags/owl_snag_001#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -20512,9 +20512,9 @@
     "scenery/owl_snags/owl_snag_001#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -20525,9 +20525,9 @@
     "scenery/owl_snags/owl_snag_001#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -20564,9 +20564,9 @@
     "scenery/owl_snags/owl_snag_001#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -20577,9 +20577,9 @@
     "scenery/owl_snags/owl_snag_001#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -20590,9 +20590,9 @@
     "scenery/owl_snags/owl_snag_001#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -20603,9 +20603,9 @@
     "scenery/owl_snags/owl_snag_001#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -20655,9 +20655,9 @@
     "scenery/owl_snags/owl_snag_002#not_lit_3": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 78.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -31011,9 +31011,9 @@
     "scenery/trees/tree_001#not_lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -31037,9 +31037,9 @@
     "scenery/trees/tree_001#not_lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -31050,9 +31050,9 @@
     "scenery/trees/tree_001#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -31063,9 +31063,9 @@
     "scenery/trees/tree_001#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 65.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -31076,9 +31076,9 @@
     "scenery/trees/tree_001#not_lit_6": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -31089,9 +31089,9 @@
     "scenery/trees/tree_001#not_lit_7": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -31102,9 +31102,9 @@
     "scenery/trees/tree_001#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -31115,9 +31115,9 @@
     "scenery/trees/tree_001#not_lit_9": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -31128,9 +31128,9 @@
     "scenery/trees/tree_001#not_lit_10": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -31141,9 +31141,9 @@
     "scenery/trees/tree_001#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -31167,9 +31167,9 @@
     "scenery/trees/tree_001#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -31180,9 +31180,9 @@
     "scenery/trees/tree_001#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -31271,9 +31271,9 @@
     "scenery/trees/tree_003#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -31310,9 +31310,9 @@
     "scenery/trees/tree_003#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.06,
-          "rx": 34.0,
+          "rx": 34,
           "ry": 10.54,
           "rot": 0
         }
@@ -31349,9 +31349,9 @@
     "scenery/trees/tree_003#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.72,
-          "rx": 48.0,
+          "rx": 48,
           "ry": 14.88,
           "rot": 0
         }
@@ -31414,9 +31414,9 @@
     "scenery/trees/tree_004#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 81.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -31570,9 +31570,9 @@
     "scenery/trees/tree_005#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 73.85,
-          "rx": 25.0,
+          "rx": 25,
           "ry": 7.75,
           "rot": 0
         }
@@ -31583,9 +31583,9 @@
     "scenery/trees/tree_005#not_lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 73.85,
-          "rx": 25.0,
+          "rx": 25,
           "ry": 7.75,
           "rot": 0
         }
@@ -31596,9 +31596,9 @@
     "scenery/trees/tree_005#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 73.85,
-          "rx": 25.0,
+          "rx": 25,
           "ry": 7.75,
           "rot": 0
         }
@@ -31609,9 +31609,9 @@
     "scenery/trees/tree_005#not_lit_5": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 73.85,
-          "rx": 25.0,
+          "rx": 25,
           "ry": 7.75,
           "rot": 0
         }
@@ -31623,7 +31623,7 @@
       "boxes": [
         {
           "ax": -1.5,
-          "ay": 74.0,
+          "ay": 74,
           "rx": 24.5,
           "ry": 7.59,
           "rot": 0
@@ -31636,7 +31636,7 @@
       "boxes": [
         {
           "ax": -1.5,
-          "ay": 74.0,
+          "ay": 74,
           "rx": 24.5,
           "ry": 7.59,
           "rot": 0
@@ -31648,9 +31648,9 @@
     "scenery/trees/tree_005#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 73.85,
-          "rx": 25.0,
+          "rx": 25,
           "ry": 7.75,
           "rot": 0
         }
@@ -31661,9 +31661,9 @@
     "scenery/trees/tree_005#not_lit_9": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 67.79,
-          "rx": 51.0,
+          "rx": 51,
           "ry": 15.81,
           "rot": 0
         }
@@ -31713,9 +31713,9 @@
     "scenery/trees/tree_005#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 73.85,
-          "rx": 25.0,
+          "rx": 25,
           "ry": 7.75,
           "rot": 0
         }
@@ -31726,9 +31726,9 @@
     "scenery/trees/tree_005#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 66.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -31739,9 +31739,9 @@
     "scenery/trees/tree_006#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.02,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.58,
           "rot": 0
         }
@@ -31765,9 +31765,9 @@
     "scenery/trees/tree_006#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.02,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.58,
           "rot": 0
         }
@@ -31778,9 +31778,9 @@
     "scenery/trees/tree_006#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.02,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.58,
           "rot": 0
         }
@@ -31791,9 +31791,9 @@
     "scenery/trees/tree_006#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.02,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.58,
           "rot": 0
         }
@@ -31804,9 +31804,9 @@
     "scenery/trees/tree_006#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.02,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.58,
           "rot": 0
         }
@@ -31817,9 +31817,9 @@
     "scenery/trees/tree_006#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.02,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.58,
           "rot": 0
         }
@@ -31843,9 +31843,9 @@
     "scenery/trees/tree_006#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.02,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.58,
           "rot": 0
         }
@@ -31869,9 +31869,9 @@
     "scenery/trees/tree_006#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.02,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.58,
           "rot": 0
         }
@@ -31882,9 +31882,9 @@
     "scenery/trees/tree_006#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.02,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.58,
           "rot": 0
         }
@@ -31895,9 +31895,9 @@
     "scenery/trees/tree_006#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.02,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.58,
           "rot": 0
         }
@@ -31960,9 +31960,9 @@
     "scenery/trees/tree_007#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.75,
-          "rx": 35.0,
+          "rx": 35,
           "ry": 10.85,
           "rot": 0
         }
@@ -31973,9 +31973,9 @@
     "scenery/trees/tree_007#not_lit_5": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 73.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -31986,9 +31986,9 @@
     "scenery/trees/tree_007#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.68,
-          "rx": 32.0,
+          "rx": 32,
           "ry": 9.92,
           "rot": 0
         }
@@ -32025,9 +32025,9 @@
     "scenery/trees/tree_007#not_lit_9": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -32038,9 +32038,9 @@
     "scenery/trees/tree_007#not_lit_10": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -32077,9 +32077,9 @@
     "scenery/trees/tree_007#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -32103,9 +32103,9 @@
     "scenery/trees/tree_008#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -32116,9 +32116,9 @@
     "scenery/trees/tree_008#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -32129,9 +32129,9 @@
     "scenery/trees/tree_008#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 68.1,
-          "rx": 50.0,
+          "rx": 50,
           "ry": 15.5,
           "rot": 0
         }
@@ -32142,9 +32142,9 @@
     "scenery/trees/tree_008#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -32155,9 +32155,9 @@
     "scenery/trees/tree_008#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -32168,9 +32168,9 @@
     "scenery/trees/tree_008#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -32181,9 +32181,9 @@
     "scenery/trees/tree_008#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -32194,9 +32194,9 @@
     "scenery/trees/tree_008#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -32207,9 +32207,9 @@
     "scenery/trees/tree_008#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -32220,9 +32220,9 @@
     "scenery/trees/tree_008#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -32233,9 +32233,9 @@
     "scenery/trees/tree_008#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -32246,9 +32246,9 @@
     "scenery/trees/tree_008#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -32259,9 +32259,9 @@
     "scenery/trees/tree_008#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -32272,9 +32272,9 @@
     "scenery/trees/tree_008#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -32285,9 +32285,9 @@
     "scenery/trees/tree_009#not_lit_1": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 68.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32298,9 +32298,9 @@
     "scenery/trees/tree_009#not_lit_2": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 68.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32311,9 +32311,9 @@
     "scenery/trees/tree_009#not_lit_3": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 68.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32324,9 +32324,9 @@
     "scenery/trees/tree_009#not_lit_4": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 68.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32337,9 +32337,9 @@
     "scenery/trees/tree_009#not_lit_5": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 68.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32350,9 +32350,9 @@
     "scenery/trees/tree_009#not_lit_6": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 68.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32363,9 +32363,9 @@
     "scenery/trees/tree_009#not_lit_7": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 68.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32376,9 +32376,9 @@
     "scenery/trees/tree_009#not_lit_8": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 68.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32389,9 +32389,9 @@
     "scenery/trees/tree_009#not_lit_9": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 68.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32402,9 +32402,9 @@
     "scenery/trees/tree_009#not_lit_10": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 68.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32415,9 +32415,9 @@
     "scenery/trees/tree_009#lit_1": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 69.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32441,9 +32441,9 @@
     "scenery/trees/tree_009#lit_3": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 68.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32454,9 +32454,9 @@
     "scenery/trees/tree_009#lit_4": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 68.17,
-          "rx": 53.0,
+          "rx": 53,
           "ry": 16.43,
           "rot": 0
         }
@@ -32467,9 +32467,9 @@
     "scenery/trees/tree_011#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 68.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -32480,9 +32480,9 @@
     "scenery/trees/tree_011#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 68.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -32506,9 +32506,9 @@
     "scenery/trees/tree_011#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 68.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -32519,9 +32519,9 @@
     "scenery/trees/tree_011#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 68.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -32532,9 +32532,9 @@
     "scenery/trees/tree_011#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 68.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -32558,9 +32558,9 @@
     "scenery/trees/tree_011#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 68.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -32571,9 +32571,9 @@
     "scenery/trees/tree_011#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 68.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -32584,9 +32584,9 @@
     "scenery/trees/tree_011#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 68.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -32597,9 +32597,9 @@
     "scenery/trees/tree_011#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 68.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -32610,9 +32610,9 @@
     "scenery/trees/tree_011#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 68.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -32623,9 +32623,9 @@
     "scenery/trees/tree_011#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 68.58,
-          "rx": 42.0,
+          "rx": 42,
           "ry": 13.02,
           "rot": 0
         }
@@ -32727,9 +32727,9 @@
     "scenery/trees/tree_012#not_lit_6": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -32753,9 +32753,9 @@
     "scenery/trees/tree_012#not_lit_8": {
       "boxes": [
         {
-          "ax": -8.0,
+          "ax": -8,
           "ay": 71.86,
-          "rx": 54.0,
+          "rx": 54,
           "ry": 16.74,
           "rot": 0
         }
@@ -32779,9 +32779,9 @@
     "scenery/trees/tree_012#not_lit_10": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 70.62,
-          "rx": 58.0,
+          "rx": 58,
           "ry": 17.98,
           "rot": 0
         }
@@ -32818,9 +32818,9 @@
     "scenery/trees/tree_012#lit_3": {
       "boxes": [
         {
-          "ax": -10.0,
+          "ax": -10,
           "ay": 71.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -32883,9 +32883,9 @@
     "scenery/trees/tree_013#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.79,
-          "rx": 51.0,
+          "rx": 51,
           "ry": 15.81,
           "rot": 0
         }
@@ -32961,9 +32961,9 @@
     "scenery/trees/tree_013#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.79,
-          "rx": 51.0,
+          "rx": 51,
           "ry": 15.81,
           "rot": 0
         }
@@ -32974,9 +32974,9 @@
     "scenery/trees/tree_013#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.79,
-          "rx": 51.0,
+          "rx": 51,
           "ry": 15.81,
           "rot": 0
         }
@@ -33013,9 +33013,9 @@
     "scenery/trees/tree_013#lit_4": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 74.1,
-          "rx": 50.0,
+          "rx": 50,
           "ry": 15.5,
           "rot": 0
         }
@@ -33313,7 +33313,7 @@
       "boxes": [
         {
           "ax": 0.5,
-          "ay": 73.0,
+          "ay": 73,
           "rx": 24.5,
           "ry": 7.59,
           "rot": 0
@@ -33325,9 +33325,9 @@
     "scenery/trees/tree_015#not_lit_10": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 80.4,
-          "rx": 20.0,
+          "rx": 20,
           "ry": 6.2,
           "rot": 0
         }
@@ -33390,9 +33390,9 @@
     "scenery/trees/tree_016#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 82.09,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.51,
           "rot": 0
         }
@@ -33403,9 +33403,9 @@
     "scenery/trees/tree_016#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 82.09,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.51,
           "rot": 0
         }
@@ -33416,9 +33416,9 @@
     "scenery/trees/tree_016#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 84.26,
-          "rx": 14.0,
+          "rx": 14,
           "ry": 4.34,
           "rot": 0
         }
@@ -33442,9 +33442,9 @@
     "scenery/trees/tree_016#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 84.26,
-          "rx": 14.0,
+          "rx": 14,
           "ry": 4.34,
           "rot": 0
         }
@@ -33468,9 +33468,9 @@
     "scenery/trees/tree_016#not_lit_6": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 82.71,
-          "rx": 19.0,
+          "rx": 19,
           "ry": 5.89,
           "rot": 0
         }
@@ -33494,9 +33494,9 @@
     "scenery/trees/tree_016#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 83.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -33507,9 +33507,9 @@
     "scenery/trees/tree_016#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 85.19,
-          "rx": 11.0,
+          "rx": 11,
           "ry": 3.41,
           "rot": 0
         }
@@ -33520,9 +33520,9 @@
     "scenery/trees/tree_016#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 84.26,
-          "rx": 14.0,
+          "rx": 14,
           "ry": 4.34,
           "rot": 0
         }
@@ -33533,9 +33533,9 @@
     "scenery/trees/tree_016#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 85.19,
-          "rx": 11.0,
+          "rx": 11,
           "ry": 3.41,
           "rot": 0
         }
@@ -33546,9 +33546,9 @@
     "scenery/trees/tree_016#lit_3": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 82.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -33559,9 +33559,9 @@
     "scenery/trees/tree_016#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 82.4,
-          "rx": 20.0,
+          "rx": 20,
           "ry": 6.2,
           "rot": 0
         }
@@ -33572,9 +33572,9 @@
     "scenery/trees/tree_017#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -33585,9 +33585,9 @@
     "scenery/trees/tree_017#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -33598,9 +33598,9 @@
     "scenery/trees/tree_017#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -33611,9 +33611,9 @@
     "scenery/trees/tree_017#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -33624,9 +33624,9 @@
     "scenery/trees/tree_017#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.75,
-          "rx": 35.0,
+          "rx": 35,
           "ry": 10.85,
           "rot": 0
         }
@@ -33637,9 +33637,9 @@
     "scenery/trees/tree_017#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -33650,9 +33650,9 @@
     "scenery/trees/tree_017#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -33663,9 +33663,9 @@
     "scenery/trees/tree_017#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -33676,9 +33676,9 @@
     "scenery/trees/tree_017#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -33702,9 +33702,9 @@
     "scenery/trees/tree_017#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -33715,9 +33715,9 @@
     "scenery/trees/tree_017#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -33741,9 +33741,9 @@
     "scenery/trees/tree_017#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.06,
-          "rx": 34.0,
+          "rx": 34,
           "ry": 10.54,
           "rot": 0
         }
@@ -33936,9 +33936,9 @@
     "scenery/trees/tree_019#not_lit_1": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 74.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -33949,9 +33949,9 @@
     "scenery/trees/tree_019#not_lit_2": {
       "boxes": [
         {
-          "ax": -4.0,
+          "ax": -4,
           "ay": 66.31,
-          "rx": 59.0,
+          "rx": 59,
           "ry": 18.29,
           "rot": 0
         }
@@ -33975,9 +33975,9 @@
     "scenery/trees/tree_019#not_lit_4": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 74.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -33988,9 +33988,9 @@
     "scenery/trees/tree_019#not_lit_5": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 74.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -34001,9 +34001,9 @@
     "scenery/trees/tree_019#not_lit_6": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 74.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -34014,9 +34014,9 @@
     "scenery/trees/tree_019#not_lit_7": {
       "boxes": [
         {
-          "ax": -26.0,
+          "ax": -26,
           "ay": 63.58,
-          "rx": 42.0,
+          "rx": 42,
           "ry": 13.02,
           "rot": 0
         }
@@ -34027,9 +34027,9 @@
     "scenery/trees/tree_019#not_lit_8": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 74.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -34040,9 +34040,9 @@
     "scenery/trees/tree_019#not_lit_9": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 74.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -34053,9 +34053,9 @@
     "scenery/trees/tree_019#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 65.45,
-          "rx": 65.0,
+          "rx": 65,
           "ry": 20.15,
           "rot": 0
         }
@@ -34066,9 +34066,9 @@
     "scenery/trees/tree_019#lit_1": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 74.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -34079,9 +34079,9 @@
     "scenery/trees/tree_019#lit_2": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 74.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -34092,9 +34092,9 @@
     "scenery/trees/tree_019#lit_3": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 74.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -34105,9 +34105,9 @@
     "scenery/trees/tree_019#lit_4": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 74.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -34196,9 +34196,9 @@
     "scenery/trees/tree_020#not_lit_6": {
       "boxes": [
         {
-          "ax": -15.0,
+          "ax": -15,
           "ay": 72.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34222,9 +34222,9 @@
     "scenery/trees/tree_020#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -34248,9 +34248,9 @@
     "scenery/trees/tree_020#not_lit_10": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 77.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -34339,9 +34339,9 @@
     "scenery/trees/tree_021#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -34352,9 +34352,9 @@
     "scenery/trees/tree_021#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -34378,9 +34378,9 @@
     "scenery/trees/tree_021#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -34391,9 +34391,9 @@
     "scenery/trees/tree_021#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -34417,9 +34417,9 @@
     "scenery/trees/tree_021#not_lit_10": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -34430,9 +34430,9 @@
     "scenery/trees/tree_021#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -34443,9 +34443,9 @@
     "scenery/trees/tree_021#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -34469,9 +34469,9 @@
     "scenery/trees/tree_021#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -34482,9 +34482,9 @@
     "scenery/trees/tree_022#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34495,9 +34495,9 @@
     "scenery/trees/tree_022#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34508,9 +34508,9 @@
     "scenery/trees/tree_022#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34521,9 +34521,9 @@
     "scenery/trees/tree_022#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34534,9 +34534,9 @@
     "scenery/trees/tree_022#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34547,9 +34547,9 @@
     "scenery/trees/tree_022#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34560,9 +34560,9 @@
     "scenery/trees/tree_022#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34573,9 +34573,9 @@
     "scenery/trees/tree_022#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34586,9 +34586,9 @@
     "scenery/trees/tree_022#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34599,9 +34599,9 @@
     "scenery/trees/tree_022#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34612,9 +34612,9 @@
     "scenery/trees/tree_022#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34625,9 +34625,9 @@
     "scenery/trees/tree_022#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34638,9 +34638,9 @@
     "scenery/trees/tree_022#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -34651,9 +34651,9 @@
     "scenery/trees/tree_022#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 74.86,
-          "rx": 54.0,
+          "rx": 54,
           "ry": 16.74,
           "rot": 0
         }
@@ -34677,9 +34677,9 @@
     "scenery/trees/tree_023#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 80.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -34716,9 +34716,9 @@
     "scenery/trees/tree_023#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -34729,9 +34729,9 @@
     "scenery/trees/tree_023#not_lit_6": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 78.51,
-          "rx": 39.0,
+          "rx": 39,
           "ry": 12.09,
           "rot": 0
         }
@@ -34781,9 +34781,9 @@
     "scenery/trees/tree_023#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -34794,9 +34794,9 @@
     "scenery/trees/tree_023#lit_1": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 81.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -34807,9 +34807,9 @@
     "scenery/trees/tree_023#lit_2": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 81.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -34820,9 +34820,9 @@
     "scenery/trees/tree_023#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -34833,9 +34833,9 @@
     "scenery/trees/tree_023#lit_4": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 81.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -34872,9 +34872,9 @@
     "scenery/trees/tree_024#not_lit_2": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 71.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -34885,9 +34885,9 @@
     "scenery/trees/tree_024#not_lit_3": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 71.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -34898,9 +34898,9 @@
     "scenery/trees/tree_024#not_lit_4": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 71.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -34911,9 +34911,9 @@
     "scenery/trees/tree_024#not_lit_5": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 71.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -34937,9 +34937,9 @@
     "scenery/trees/tree_024#not_lit_7": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 71.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -34950,9 +34950,9 @@
     "scenery/trees/tree_024#not_lit_8": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 71.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -34963,9 +34963,9 @@
     "scenery/trees/tree_024#not_lit_9": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 71.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -34989,9 +34989,9 @@
     "scenery/trees/tree_024#lit_2": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 71.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -35015,9 +35015,9 @@
     "scenery/trees/tree_024#lit_4": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 71.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -35028,9 +35028,9 @@
     "scenery/trees/tree_025#not_lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -35041,9 +35041,9 @@
     "scenery/trees/tree_025#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -35054,9 +35054,9 @@
     "scenery/trees/tree_025#not_lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -35067,9 +35067,9 @@
     "scenery/trees/tree_025#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -35080,9 +35080,9 @@
     "scenery/trees/tree_025#not_lit_5": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -35093,9 +35093,9 @@
     "scenery/trees/tree_025#not_lit_6": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -35106,9 +35106,9 @@
     "scenery/trees/tree_025#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -35119,9 +35119,9 @@
     "scenery/trees/tree_025#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 78.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -35132,9 +35132,9 @@
     "scenery/trees/tree_025#not_lit_9": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -35145,9 +35145,9 @@
     "scenery/trees/tree_025#not_lit_10": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -35158,9 +35158,9 @@
     "scenery/trees/tree_025#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -35171,9 +35171,9 @@
     "scenery/trees/tree_025#lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -35184,9 +35184,9 @@
     "scenery/trees/tree_025#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -35197,9 +35197,9 @@
     "scenery/trees/tree_025#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -35223,9 +35223,9 @@
     "scenery/trees/tree_028#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.79,
-          "rx": 51.0,
+          "rx": 51,
           "ry": 15.81,
           "rot": 0
         }
@@ -35236,9 +35236,9 @@
     "scenery/trees/tree_028#not_lit_2": {
       "boxes": [
         {
-          "ax": -24.0,
+          "ax": -24,
           "ay": 64.07,
-          "rx": 63.0,
+          "rx": 63,
           "ry": 19.53,
           "rot": 0
         }
@@ -35249,9 +35249,9 @@
     "scenery/trees/tree_028#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.79,
-          "rx": 51.0,
+          "rx": 51,
           "ry": 15.81,
           "rot": 0
         }
@@ -35262,9 +35262,9 @@
     "scenery/trees/tree_028#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.79,
-          "rx": 51.0,
+          "rx": 51,
           "ry": 15.81,
           "rot": 0
         }
@@ -35275,9 +35275,9 @@
     "scenery/trees/tree_028#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.79,
-          "rx": 51.0,
+          "rx": 51,
           "ry": 15.81,
           "rot": 0
         }
@@ -35366,9 +35366,9 @@
     "scenery/trees/tree_028#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.79,
-          "rx": 51.0,
+          "rx": 51,
           "ry": 15.81,
           "rot": 0
         }
@@ -35573,9 +35573,9 @@
     "scenery/trees/tree_030#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35586,9 +35586,9 @@
     "scenery/trees/tree_030#not_lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35599,9 +35599,9 @@
     "scenery/trees/tree_030#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35612,9 +35612,9 @@
     "scenery/trees/tree_030#not_lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35625,9 +35625,9 @@
     "scenery/trees/tree_030#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35638,9 +35638,9 @@
     "scenery/trees/tree_030#not_lit_5": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35651,9 +35651,9 @@
     "scenery/trees/tree_030#not_lit_6": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35664,9 +35664,9 @@
     "scenery/trees/tree_030#not_lit_7": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35677,9 +35677,9 @@
     "scenery/trees/tree_030#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35690,9 +35690,9 @@
     "scenery/trees/tree_030#not_lit_9": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35703,9 +35703,9 @@
     "scenery/trees/tree_030#not_lit_10": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35716,9 +35716,9 @@
     "scenery/trees/tree_030#lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35729,9 +35729,9 @@
     "scenery/trees/tree_030#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35742,9 +35742,9 @@
     "scenery/trees/tree_030#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 71.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -35755,9 +35755,9 @@
     "scenery/trees/tree_031#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35768,9 +35768,9 @@
     "scenery/trees/tree_031#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35781,9 +35781,9 @@
     "scenery/trees/tree_031#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35794,9 +35794,9 @@
     "scenery/trees/tree_031#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35807,9 +35807,9 @@
     "scenery/trees/tree_031#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35820,9 +35820,9 @@
     "scenery/trees/tree_031#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35833,9 +35833,9 @@
     "scenery/trees/tree_031#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35846,9 +35846,9 @@
     "scenery/trees/tree_031#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35872,9 +35872,9 @@
     "scenery/trees/tree_031#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35885,9 +35885,9 @@
     "scenery/trees/tree_031#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35898,9 +35898,9 @@
     "scenery/trees/tree_031#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35911,9 +35911,9 @@
     "scenery/trees/tree_031#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35924,9 +35924,9 @@
     "scenery/trees/tree_031#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.69,
-          "rx": 61.0,
+          "rx": 61,
           "ry": 18.91,
           "rot": 0
         }
@@ -35937,9 +35937,9 @@
     "scenery/trees/tree_032#lit_1": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 76.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -35950,9 +35950,9 @@
     "scenery/trees/tree_032#not_lit_1": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 76.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -35963,9 +35963,9 @@
     "scenery/trees/tree_032#not_lit_2": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 76.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -35989,9 +35989,9 @@
     "scenery/trees/tree_032#not_lit_4": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 76.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36002,9 +36002,9 @@
     "scenery/trees/tree_032#not_lit_5": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 76.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36015,9 +36015,9 @@
     "scenery/trees/tree_032#not_lit_6": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 74.51,
-          "rx": 39.0,
+          "rx": 39,
           "ry": 12.09,
           "rot": 0
         }
@@ -36041,9 +36041,9 @@
     "scenery/trees/tree_032#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 74.51,
-          "rx": 39.0,
+          "rx": 39,
           "ry": 12.09,
           "rot": 0
         }
@@ -36054,9 +36054,9 @@
     "scenery/trees/tree_032#not_lit_9": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.37,
-          "rx": 33.0,
+          "rx": 33,
           "ry": 10.23,
           "rot": 0
         }
@@ -36067,9 +36067,9 @@
     "scenery/trees/tree_032#not_lit_10": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 76.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36080,9 +36080,9 @@
     "scenery/trees/tree_032#lit_2": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 76.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36106,9 +36106,9 @@
     "scenery/trees/tree_032#lit_4": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 76.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36119,9 +36119,9 @@
     "scenery/trees/tree_034#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36132,9 +36132,9 @@
     "scenery/trees/tree_034#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36145,9 +36145,9 @@
     "scenery/trees/tree_034#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36158,9 +36158,9 @@
     "scenery/trees/tree_034#not_lit_3": {
       "boxes": [
         {
-          "ax": 7.0,
+          "ax": 7,
           "ay": 75.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -36171,9 +36171,9 @@
     "scenery/trees/tree_034#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36197,9 +36197,9 @@
     "scenery/trees/tree_034#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36210,9 +36210,9 @@
     "scenery/trees/tree_034#not_lit_7": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 75.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -36223,9 +36223,9 @@
     "scenery/trees/tree_034#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36249,9 +36249,9 @@
     "scenery/trees/tree_034#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36288,9 +36288,9 @@
     "scenery/trees/tree_034#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -36301,9 +36301,9 @@
     "scenery/trees/tree_035#not_lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 78.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -36340,9 +36340,9 @@
     "scenery/trees/tree_035#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -36366,9 +36366,9 @@
     "scenery/trees/tree_035#not_lit_6": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 78.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -36431,9 +36431,9 @@
     "scenery/trees/tree_035#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -36444,9 +36444,9 @@
     "scenery/trees/tree_035#lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 78.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -36457,9 +36457,9 @@
     "scenery/trees/tree_035#lit_3": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 75.03,
-          "rx": 47.0,
+          "rx": 47,
           "ry": 14.57,
           "rot": 0
         }
@@ -36470,9 +36470,9 @@
     "scenery/trees/tree_035#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 78.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -36496,9 +36496,9 @@
     "scenery/trees/tree_036#not_lit_1": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 65.59,
-          "rx": 71.0,
+          "rx": 71,
           "ry": 22.01,
           "rot": 0
         }
@@ -36509,9 +36509,9 @@
     "scenery/trees/tree_036#not_lit_2": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 65.59,
-          "rx": 71.0,
+          "rx": 71,
           "ry": 22.01,
           "rot": 0
         }
@@ -36522,9 +36522,9 @@
     "scenery/trees/tree_036#not_lit_3": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 65.59,
-          "rx": 71.0,
+          "rx": 71,
           "ry": 22.01,
           "rot": 0
         }
@@ -36535,9 +36535,9 @@
     "scenery/trees/tree_036#not_lit_4": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 65.59,
-          "rx": 71.0,
+          "rx": 71,
           "ry": 22.01,
           "rot": 0
         }
@@ -36548,9 +36548,9 @@
     "scenery/trees/tree_036#not_lit_5": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 65.59,
-          "rx": 71.0,
+          "rx": 71,
           "ry": 22.01,
           "rot": 0
         }
@@ -36561,9 +36561,9 @@
     "scenery/trees/tree_036#not_lit_6": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 65.59,
-          "rx": 71.0,
+          "rx": 71,
           "ry": 22.01,
           "rot": 0
         }
@@ -36587,9 +36587,9 @@
     "scenery/trees/tree_036#not_lit_8": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 65.59,
-          "rx": 71.0,
+          "rx": 71,
           "ry": 22.01,
           "rot": 0
         }
@@ -36626,9 +36626,9 @@
     "scenery/trees/tree_036#lit_2": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 65.59,
-          "rx": 71.0,
+          "rx": 71,
           "ry": 22.01,
           "rot": 0
         }
@@ -36652,9 +36652,9 @@
     "scenery/trees/tree_036#lit_4": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 65.59,
-          "rx": 71.0,
+          "rx": 71,
           "ry": 22.01,
           "rot": 0
         }
@@ -36665,9 +36665,9 @@
     "scenery/trees/tree_038#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36678,9 +36678,9 @@
     "scenery/trees/tree_038#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36691,9 +36691,9 @@
     "scenery/trees/tree_038#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36704,9 +36704,9 @@
     "scenery/trees/tree_038#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36717,9 +36717,9 @@
     "scenery/trees/tree_038#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36730,9 +36730,9 @@
     "scenery/trees/tree_038#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36743,9 +36743,9 @@
     "scenery/trees/tree_038#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36769,9 +36769,9 @@
     "scenery/trees/tree_038#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36782,9 +36782,9 @@
     "scenery/trees/tree_038#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36795,9 +36795,9 @@
     "scenery/trees/tree_038#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36808,9 +36808,9 @@
     "scenery/trees/tree_038#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36821,9 +36821,9 @@
     "scenery/trees/tree_038#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36834,9 +36834,9 @@
     "scenery/trees/tree_038#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -36847,9 +36847,9 @@
     "scenery/trees/tree_039#not_lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 75.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -36873,9 +36873,9 @@
     "scenery/trees/tree_039#not_lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 75.86,
-          "rx": 54.0,
+          "rx": 54,
           "ry": 16.74,
           "rot": 0
         }
@@ -36886,9 +36886,9 @@
     "scenery/trees/tree_039#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 75.86,
-          "rx": 54.0,
+          "rx": 54,
           "ry": 16.74,
           "rot": 0
         }
@@ -36899,9 +36899,9 @@
     "scenery/trees/tree_039#not_lit_5": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 75.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -36925,9 +36925,9 @@
     "scenery/trees/tree_039#not_lit_7": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 75.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -36938,9 +36938,9 @@
     "scenery/trees/tree_039#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 75.86,
-          "rx": 54.0,
+          "rx": 54,
           "ry": 16.74,
           "rot": 0
         }
@@ -36951,9 +36951,9 @@
     "scenery/trees/tree_039#not_lit_9": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 75.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -36964,9 +36964,9 @@
     "scenery/trees/tree_039#not_lit_10": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 75.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -36977,9 +36977,9 @@
     "scenery/trees/tree_039#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 75.55,
-          "rx": 55.0,
+          "rx": 55,
           "ry": 17.05,
           "rot": 0
         }
@@ -37003,9 +37003,9 @@
     "scenery/trees/tree_039#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 75.86,
-          "rx": 54.0,
+          "rx": 54,
           "ry": 16.74,
           "rot": 0
         }
@@ -37029,9 +37029,9 @@
     "scenery/trees/tree_040#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -37055,9 +37055,9 @@
     "scenery/trees/tree_040#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -37068,9 +37068,9 @@
     "scenery/trees/tree_040#not_lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -37081,9 +37081,9 @@
     "scenery/trees/tree_040#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -37094,9 +37094,9 @@
     "scenery/trees/tree_040#not_lit_5": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -37107,9 +37107,9 @@
     "scenery/trees/tree_040#not_lit_6": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -37133,9 +37133,9 @@
     "scenery/trees/tree_040#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -37146,9 +37146,9 @@
     "scenery/trees/tree_040#not_lit_9": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -37172,9 +37172,9 @@
     "scenery/trees/tree_040#lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 77.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -37198,9 +37198,9 @@
     "scenery/trees/tree_040#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -37211,9 +37211,9 @@
     "scenery/trees/tree_041#not_lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 89.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -37224,9 +37224,9 @@
     "scenery/trees/tree_041#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 89.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -37237,9 +37237,9 @@
     "scenery/trees/tree_041#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 88.02,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.58,
           "rot": 0
         }
@@ -37250,9 +37250,9 @@
     "scenery/trees/tree_041#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 89.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -37263,9 +37263,9 @@
     "scenery/trees/tree_041#not_lit_5": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 89.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -37276,9 +37276,9 @@
     "scenery/trees/tree_041#not_lit_6": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 89.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -37289,9 +37289,9 @@
     "scenery/trees/tree_041#not_lit_7": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 89.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -37302,9 +37302,9 @@
     "scenery/trees/tree_041#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 89.33,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.27,
           "rot": 0
         }
@@ -37328,9 +37328,9 @@
     "scenery/trees/tree_041#not_lit_10": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 89.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -37341,9 +37341,9 @@
     "scenery/trees/tree_041#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 89.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -37354,9 +37354,9 @@
     "scenery/trees/tree_041#lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 89.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -37367,9 +37367,9 @@
     "scenery/trees/tree_041#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 89.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -37380,9 +37380,9 @@
     "scenery/trees/tree_041#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 89.95,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.65,
           "rot": 0
         }
@@ -37393,9 +37393,9 @@
     "scenery/trees/tree_042#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 74.03,
-          "rx": 47.0,
+          "rx": 47,
           "ry": 14.57,
           "rot": 0
         }
@@ -37406,9 +37406,9 @@
     "scenery/trees/tree_042#not_lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 74.03,
-          "rx": 47.0,
+          "rx": 47,
           "ry": 14.57,
           "rot": 0
         }
@@ -37536,9 +37536,9 @@
     "scenery/trees/tree_042#lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 74.03,
-          "rx": 47.0,
+          "rx": 47,
           "ry": 14.57,
           "rot": 0
         }
@@ -37549,9 +37549,9 @@
     "scenery/trees/tree_042#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 74.03,
-          "rx": 47.0,
+          "rx": 47,
           "ry": 14.57,
           "rot": 0
         }
@@ -37562,9 +37562,9 @@
     "scenery/trees/tree_042#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 74.03,
-          "rx": 47.0,
+          "rx": 47,
           "ry": 14.57,
           "rot": 0
         }
@@ -37575,9 +37575,9 @@
     "scenery/trees/tree_043#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37588,9 +37588,9 @@
     "scenery/trees/tree_043#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37601,9 +37601,9 @@
     "scenery/trees/tree_043#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37614,9 +37614,9 @@
     "scenery/trees/tree_043#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37627,9 +37627,9 @@
     "scenery/trees/tree_043#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37640,9 +37640,9 @@
     "scenery/trees/tree_043#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37653,9 +37653,9 @@
     "scenery/trees/tree_043#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37666,9 +37666,9 @@
     "scenery/trees/tree_043#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37679,9 +37679,9 @@
     "scenery/trees/tree_043#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37692,9 +37692,9 @@
     "scenery/trees/tree_043#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37705,9 +37705,9 @@
     "scenery/trees/tree_043#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37718,9 +37718,9 @@
     "scenery/trees/tree_043#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37731,9 +37731,9 @@
     "scenery/trees/tree_043#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37744,9 +37744,9 @@
     "scenery/trees/tree_043#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 64.48,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.12,
           "rot": 0
         }
@@ -37952,9 +37952,9 @@
     "scenery/trees/tree_045#not_lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -37965,9 +37965,9 @@
     "scenery/trees/tree_045#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -37978,9 +37978,9 @@
     "scenery/trees/tree_045#not_lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -37991,9 +37991,9 @@
     "scenery/trees/tree_045#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.51,
-          "rx": 39.0,
+          "rx": 39,
           "ry": 12.09,
           "rot": 0
         }
@@ -38004,9 +38004,9 @@
     "scenery/trees/tree_045#not_lit_5": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -38017,9 +38017,9 @@
     "scenery/trees/tree_045#not_lit_6": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -38030,9 +38030,9 @@
     "scenery/trees/tree_045#not_lit_7": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -38043,9 +38043,9 @@
     "scenery/trees/tree_045#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -38056,9 +38056,9 @@
     "scenery/trees/tree_045#not_lit_9": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -38069,9 +38069,9 @@
     "scenery/trees/tree_045#not_lit_10": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.51,
-          "rx": 39.0,
+          "rx": 39,
           "ry": 12.09,
           "rot": 0
         }
@@ -38095,9 +38095,9 @@
     "scenery/trees/tree_045#lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -38108,9 +38108,9 @@
     "scenery/trees/tree_045#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -38121,9 +38121,9 @@
     "scenery/trees/tree_045#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.82,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 11.78,
           "rot": 0
         }
@@ -38134,9 +38134,9 @@
     "scenery/trees/tree_046#lit_1": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 69.52,
-          "rx": 68.0,
+          "rx": 68,
           "ry": 21.08,
           "rot": 0
         }
@@ -38147,9 +38147,9 @@
     "scenery/trees/tree_046#not_lit_1": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 69.52,
-          "rx": 68.0,
+          "rx": 68,
           "ry": 21.08,
           "rot": 0
         }
@@ -38173,9 +38173,9 @@
     "scenery/trees/tree_046#not_lit_3": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 69.52,
-          "rx": 68.0,
+          "rx": 68,
           "ry": 21.08,
           "rot": 0
         }
@@ -38186,9 +38186,9 @@
     "scenery/trees/tree_046#not_lit_4": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 69.52,
-          "rx": 68.0,
+          "rx": 68,
           "ry": 21.08,
           "rot": 0
         }
@@ -38212,9 +38212,9 @@
     "scenery/trees/tree_046#not_lit_6": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 69.52,
-          "rx": 68.0,
+          "rx": 68,
           "ry": 21.08,
           "rot": 0
         }
@@ -38238,9 +38238,9 @@
     "scenery/trees/tree_046#not_lit_8": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 69.52,
-          "rx": 68.0,
+          "rx": 68,
           "ry": 21.08,
           "rot": 0
         }
@@ -38251,9 +38251,9 @@
     "scenery/trees/tree_046#not_lit_9": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 69.52,
-          "rx": 68.0,
+          "rx": 68,
           "ry": 21.08,
           "rot": 0
         }
@@ -38264,9 +38264,9 @@
     "scenery/trees/tree_046#not_lit_10": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 69.52,
-          "rx": 68.0,
+          "rx": 68,
           "ry": 21.08,
           "rot": 0
         }
@@ -38277,9 +38277,9 @@
     "scenery/trees/tree_046#lit_2": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 69.52,
-          "rx": 68.0,
+          "rx": 68,
           "ry": 21.08,
           "rot": 0
         }
@@ -38290,9 +38290,9 @@
     "scenery/trees/tree_046#lit_3": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 69.52,
-          "rx": 68.0,
+          "rx": 68,
           "ry": 21.08,
           "rot": 0
         }
@@ -38342,9 +38342,9 @@
     "scenery/trees/tree_047#not_lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -38355,9 +38355,9 @@
     "scenery/trees/tree_047#not_lit_4": {
       "boxes": [
         {
-          "ax": 5.0,
+          "ax": 5,
           "ay": 60.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -38394,9 +38394,9 @@
     "scenery/trees/tree_047#not_lit_7": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 58.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -38407,9 +38407,9 @@
     "scenery/trees/tree_047#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 73.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -38420,9 +38420,9 @@
     "scenery/trees/tree_047#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -38472,9 +38472,9 @@
     "scenery/trees/tree_047#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 81.58,
-          "rx": 42.0,
+          "rx": 42,
           "ry": 13.02,
           "rot": 0
         }
@@ -38485,9 +38485,9 @@
     "scenery/trees/tree_047#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 69.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -38576,9 +38576,9 @@
     "scenery/trees/tree_048#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 78.27,
-          "rx": 43.0,
+          "rx": 43,
           "ry": 13.33,
           "rot": 0
         }
@@ -38680,9 +38680,9 @@
     "scenery/trees/tree_049#not_lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.16,
-          "rx": 24.0,
+          "rx": 24,
           "ry": 7.44,
           "rot": 0
         }
@@ -38693,9 +38693,9 @@
     "scenery/trees/tree_049#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.16,
-          "rx": 24.0,
+          "rx": 24,
           "ry": 7.44,
           "rot": 0
         }
@@ -38706,9 +38706,9 @@
     "scenery/trees/tree_049#not_lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.16,
-          "rx": 24.0,
+          "rx": 24,
           "ry": 7.44,
           "rot": 0
         }
@@ -38719,9 +38719,9 @@
     "scenery/trees/tree_049#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.78,
-          "rx": 22.0,
+          "rx": 22,
           "ry": 6.82,
           "rot": 0
         }
@@ -38732,9 +38732,9 @@
     "scenery/trees/tree_049#not_lit_5": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.16,
-          "rx": 24.0,
+          "rx": 24,
           "ry": 7.44,
           "rot": 0
         }
@@ -38745,9 +38745,9 @@
     "scenery/trees/tree_049#not_lit_6": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.16,
-          "rx": 24.0,
+          "rx": 24,
           "ry": 7.44,
           "rot": 0
         }
@@ -38758,9 +38758,9 @@
     "scenery/trees/tree_049#not_lit_7": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.16,
-          "rx": 24.0,
+          "rx": 24,
           "ry": 7.44,
           "rot": 0
         }
@@ -38784,9 +38784,9 @@
     "scenery/trees/tree_049#not_lit_9": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.16,
-          "rx": 24.0,
+          "rx": 24,
           "ry": 7.44,
           "rot": 0
         }
@@ -38810,9 +38810,9 @@
     "scenery/trees/tree_049#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.16,
-          "rx": 24.0,
+          "rx": 24,
           "ry": 7.44,
           "rot": 0
         }
@@ -38823,9 +38823,9 @@
     "scenery/trees/tree_049#lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.16,
-          "rx": 24.0,
+          "rx": 24,
           "ry": 7.44,
           "rot": 0
         }
@@ -38836,9 +38836,9 @@
     "scenery/trees/tree_049#lit_3": {
       "boxes": [
         {
-          "ax": -10.0,
+          "ax": -10,
           "ay": 74.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -38849,9 +38849,9 @@
     "scenery/trees/tree_049#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.16,
-          "rx": 24.0,
+          "rx": 24,
           "ry": 7.44,
           "rot": 0
         }
@@ -38888,9 +38888,9 @@
     "scenery/trees/tree_050#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 75.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -38901,9 +38901,9 @@
     "scenery/trees/tree_050#not_lit_3": {
       "boxes": [
         {
-          "ax": -5.0,
+          "ax": -5,
           "ay": 71.58,
-          "rx": 42.0,
+          "rx": 42,
           "ry": 13.02,
           "rot": 0
         }
@@ -38940,9 +38940,9 @@
     "scenery/trees/tree_050#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.54,
-          "rx": 26.0,
+          "rx": 26,
           "ry": 8.06,
           "rot": 0
         }
@@ -38966,9 +38966,9 @@
     "scenery/trees/tree_050#not_lit_8": {
       "boxes": [
         {
-          "ax": -4.0,
+          "ax": -4,
           "ay": 77.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -39018,9 +39018,9 @@
     "scenery/trees/tree_050#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -39031,9 +39031,9 @@
     "scenery/trees/tree_050#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 71.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -39044,9 +39044,9 @@
     "scenery/trees/tree_051#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -39057,9 +39057,9 @@
     "scenery/trees/tree_051#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -39070,9 +39070,9 @@
     "scenery/trees/tree_051#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -39096,9 +39096,9 @@
     "scenery/trees/tree_051#not_lit_5": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 73.38,
-          "rx": 62.0,
+          "rx": 62,
           "ry": 19.22,
           "rot": 0
         }
@@ -39109,9 +39109,9 @@
     "scenery/trees/tree_051#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -39122,9 +39122,9 @@
     "scenery/trees/tree_051#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -39135,9 +39135,9 @@
     "scenery/trees/tree_051#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -39148,9 +39148,9 @@
     "scenery/trees/tree_051#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -39161,9 +39161,9 @@
     "scenery/trees/tree_051#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -39174,9 +39174,9 @@
     "scenery/trees/tree_051#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -39187,9 +39187,9 @@
     "scenery/trees/tree_051#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -39200,9 +39200,9 @@
     "scenery/trees/tree_051#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -39213,9 +39213,9 @@
     "scenery/trees/tree_051#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -39421,9 +39421,9 @@
     "scenery/trees/tree_053#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.37,
-          "rx": 33.0,
+          "rx": 33,
           "ry": 10.23,
           "rot": 0
         }
@@ -39434,9 +39434,9 @@
     "scenery/trees/tree_053#not_lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.37,
-          "rx": 33.0,
+          "rx": 33,
           "ry": 10.23,
           "rot": 0
         }
@@ -39447,9 +39447,9 @@
     "scenery/trees/tree_053#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.37,
-          "rx": 33.0,
+          "rx": 33,
           "ry": 10.23,
           "rot": 0
         }
@@ -39486,9 +39486,9 @@
     "scenery/trees/tree_053#not_lit_7": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 75.06,
-          "rx": 34.0,
+          "rx": 34,
           "ry": 10.54,
           "rot": 0
         }
@@ -39538,9 +39538,9 @@
     "scenery/trees/tree_053#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.37,
-          "rx": 33.0,
+          "rx": 33,
           "ry": 10.23,
           "rot": 0
         }
@@ -39551,9 +39551,9 @@
     "scenery/trees/tree_053#lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.37,
-          "rx": 33.0,
+          "rx": 33,
           "ry": 10.23,
           "rot": 0
         }
@@ -39564,9 +39564,9 @@
     "scenery/trees/tree_053#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 76.37,
-          "rx": 33.0,
+          "rx": 33,
           "ry": 10.23,
           "rot": 0
         }
@@ -39577,9 +39577,9 @@
     "scenery/trees/tree_053#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 72.65,
-          "rx": 45.0,
+          "rx": 45,
           "ry": 13.95,
           "rot": 0
         }
@@ -39590,9 +39590,9 @@
     "scenery/trees/tree_054#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39603,9 +39603,9 @@
     "scenery/trees/tree_054#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39616,9 +39616,9 @@
     "scenery/trees/tree_054#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39629,9 +39629,9 @@
     "scenery/trees/tree_054#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39642,9 +39642,9 @@
     "scenery/trees/tree_054#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39655,9 +39655,9 @@
     "scenery/trees/tree_054#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39668,9 +39668,9 @@
     "scenery/trees/tree_054#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39681,9 +39681,9 @@
     "scenery/trees/tree_054#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39694,9 +39694,9 @@
     "scenery/trees/tree_054#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39707,9 +39707,9 @@
     "scenery/trees/tree_054#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39720,9 +39720,9 @@
     "scenery/trees/tree_054#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39733,9 +39733,9 @@
     "scenery/trees/tree_054#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39746,9 +39746,9 @@
     "scenery/trees/tree_054#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39759,9 +39759,9 @@
     "scenery/trees/tree_054#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -39772,9 +39772,9 @@
     "scenery/trees/tree_055#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -39785,9 +39785,9 @@
     "scenery/trees/tree_055#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -39798,9 +39798,9 @@
     "scenery/trees/tree_055#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -39811,9 +39811,9 @@
     "scenery/trees/tree_055#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -39824,9 +39824,9 @@
     "scenery/trees/tree_055#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -39837,9 +39837,9 @@
     "scenery/trees/tree_055#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -39850,9 +39850,9 @@
     "scenery/trees/tree_055#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -39863,9 +39863,9 @@
     "scenery/trees/tree_055#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -39876,9 +39876,9 @@
     "scenery/trees/tree_055#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -39889,9 +39889,9 @@
     "scenery/trees/tree_055#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -39902,9 +39902,9 @@
     "scenery/trees/tree_055#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -39941,9 +39941,9 @@
     "scenery/trees/tree_055#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.89,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 12.71,
           "rot": 0
         }
@@ -39954,9 +39954,9 @@
     "scenery/trees/tree_056#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 68.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -39967,9 +39967,9 @@
     "scenery/trees/tree_056#not_lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 68.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -39980,9 +39980,9 @@
     "scenery/trees/tree_056#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 68.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -40006,9 +40006,9 @@
     "scenery/trees/tree_056#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 68.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -40032,9 +40032,9 @@
     "scenery/trees/tree_056#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 75.13,
-          "rx": 37.0,
+          "rx": 37,
           "ry": 11.47,
           "rot": 0
         }
@@ -40045,9 +40045,9 @@
     "scenery/trees/tree_056#not_lit_7": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 68.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -40058,9 +40058,9 @@
     "scenery/trees/tree_056#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 68.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -40071,9 +40071,9 @@
     "scenery/trees/tree_056#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 65.37,
-          "rx": 33.0,
+          "rx": 33,
           "ry": 10.23,
           "rot": 0
         }
@@ -40084,9 +40084,9 @@
     "scenery/trees/tree_056#not_lit_10": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 68.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -40097,9 +40097,9 @@
     "scenery/trees/tree_056#lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 68.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -40110,9 +40110,9 @@
     "scenery/trees/tree_056#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 67.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -40123,9 +40123,9 @@
     "scenery/trees/tree_056#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 68.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -40188,9 +40188,9 @@
     "scenery/trees/tree_057#not_lit_5": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 71.24,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.36,
           "rot": 0
         }
@@ -40305,9 +40305,9 @@
     "scenery/trees/tree_057#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 75.58,
-          "rx": 42.0,
+          "rx": 42,
           "ry": 13.02,
           "rot": 0
         }
@@ -40318,9 +40318,9 @@
     "scenery/trees/tree_058#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.06,
-          "rx": 34.0,
+          "rx": 34,
           "ry": 10.54,
           "rot": 0
         }
@@ -40331,9 +40331,9 @@
     "scenery/trees/tree_058#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.37,
-          "rx": 33.0,
+          "rx": 33,
           "ry": 10.23,
           "rot": 0
         }
@@ -40344,9 +40344,9 @@
     "scenery/trees/tree_058#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.06,
-          "rx": 34.0,
+          "rx": 34,
           "ry": 10.54,
           "rot": 0
         }
@@ -40357,9 +40357,9 @@
     "scenery/trees/tree_058#not_lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 78.09,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.51,
           "rot": 0
         }
@@ -40370,9 +40370,9 @@
     "scenery/trees/tree_058#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.06,
-          "rx": 34.0,
+          "rx": 34,
           "ry": 10.54,
           "rot": 0
         }
@@ -40383,9 +40383,9 @@
     "scenery/trees/tree_058#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.06,
-          "rx": 34.0,
+          "rx": 34,
           "ry": 10.54,
           "rot": 0
         }
@@ -40396,9 +40396,9 @@
     "scenery/trees/tree_058#not_lit_6": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 78.09,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.51,
           "rot": 0
         }
@@ -40409,9 +40409,9 @@
     "scenery/trees/tree_058#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.06,
-          "rx": 34.0,
+          "rx": 34,
           "ry": 10.54,
           "rot": 0
         }
@@ -40448,9 +40448,9 @@
     "scenery/trees/tree_058#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.06,
-          "rx": 34.0,
+          "rx": 34,
           "ry": 10.54,
           "rot": 0
         }
@@ -40461,9 +40461,9 @@
     "scenery/trees/tree_058#lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 78.09,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.51,
           "rot": 0
         }
@@ -40474,9 +40474,9 @@
     "scenery/trees/tree_058#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 78.09,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.51,
           "rot": 0
         }
@@ -40773,9 +40773,9 @@
     "scenery/trees/tree_060#not_lit_7": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -40786,9 +40786,9 @@
     "scenery/trees/tree_060#not_lit_8": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -40799,9 +40799,9 @@
     "scenery/trees/tree_060#not_lit_9": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -40812,9 +40812,9 @@
     "scenery/trees/tree_060#not_lit_10": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -40825,9 +40825,9 @@
     "scenery/trees/tree_060#lit_1": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -40851,9 +40851,9 @@
     "scenery/trees/tree_060#lit_3": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 78.2,
-          "rx": 40.0,
+          "rx": 40,
           "ry": 12.4,
           "rot": 0
         }
@@ -40864,9 +40864,9 @@
     "scenery/trees/tree_060#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 74.86,
-          "rx": 54.0,
+          "rx": 54,
           "ry": 16.74,
           "rot": 0
         }
@@ -40877,9 +40877,9 @@
     "scenery/trees/tree_063#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -40890,9 +40890,9 @@
     "scenery/trees/tree_063#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -40903,9 +40903,9 @@
     "scenery/trees/tree_063#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -40916,9 +40916,9 @@
     "scenery/trees/tree_063#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -40929,9 +40929,9 @@
     "scenery/trees/tree_063#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -40942,9 +40942,9 @@
     "scenery/trees/tree_063#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -40968,9 +40968,9 @@
     "scenery/trees/tree_063#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -40981,9 +40981,9 @@
     "scenery/trees/tree_063#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -40994,9 +40994,9 @@
     "scenery/trees/tree_063#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -41007,9 +41007,9 @@
     "scenery/trees/tree_063#lit_1": {
       "boxes": [
         {
-          "ax": 3.0,
+          "ax": 3,
           "ay": 68.51,
-          "rx": 39.0,
+          "rx": 39,
           "ry": 12.09,
           "rot": 0
         }
@@ -41020,9 +41020,9 @@
     "scenery/trees/tree_063#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -41033,9 +41033,9 @@
     "scenery/trees/tree_063#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -41046,9 +41046,9 @@
     "scenery/trees/tree_063#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 70.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -41059,9 +41059,9 @@
     "scenery/trees/tree_064#lit_1": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 83.23,
-          "rx": 27.0,
+          "rx": 27,
           "ry": 8.37,
           "rot": 0
         }
@@ -41111,9 +41111,9 @@
     "scenery/trees/tree_064#not_lit_4": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 83.23,
-          "rx": 27.0,
+          "rx": 27,
           "ry": 8.37,
           "rot": 0
         }
@@ -41137,9 +41137,9 @@
     "scenery/trees/tree_064#not_lit_6": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 83.23,
-          "rx": 27.0,
+          "rx": 27,
           "ry": 8.37,
           "rot": 0
         }
@@ -41150,9 +41150,9 @@
     "scenery/trees/tree_064#not_lit_7": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 83.23,
-          "rx": 27.0,
+          "rx": 27,
           "ry": 8.37,
           "rot": 0
         }
@@ -41163,9 +41163,9 @@
     "scenery/trees/tree_064#not_lit_8": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 83.23,
-          "rx": 27.0,
+          "rx": 27,
           "ry": 8.37,
           "rot": 0
         }
@@ -41176,9 +41176,9 @@
     "scenery/trees/tree_064#not_lit_9": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 82.23,
-          "rx": 27.0,
+          "rx": 27,
           "ry": 8.37,
           "rot": 0
         }
@@ -41202,9 +41202,9 @@
     "scenery/trees/tree_064#lit_2": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 75.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -41215,9 +41215,9 @@
     "scenery/trees/tree_064#lit_3": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 83.23,
-          "rx": 27.0,
+          "rx": 27,
           "ry": 8.37,
           "rot": 0
         }
@@ -41228,9 +41228,9 @@
     "scenery/trees/tree_064#lit_4": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 83.23,
-          "rx": 27.0,
+          "rx": 27,
           "ry": 8.37,
           "rot": 0
         }
@@ -41241,9 +41241,9 @@
     "scenery/trees/tree_065#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.58,
-          "rx": 42.0,
+          "rx": 42,
           "ry": 13.02,
           "rot": 0
         }
@@ -41254,9 +41254,9 @@
     "scenery/trees/tree_065#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.68,
-          "rx": 32.0,
+          "rx": 32,
           "ry": 9.92,
           "rot": 0
         }
@@ -41267,9 +41267,9 @@
     "scenery/trees/tree_065#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.58,
-          "rx": 42.0,
+          "rx": 42,
           "ry": 13.02,
           "rot": 0
         }
@@ -41280,9 +41280,9 @@
     "scenery/trees/tree_065#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 76.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -41293,9 +41293,9 @@
     "scenery/trees/tree_065#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.68,
-          "rx": 32.0,
+          "rx": 32,
           "ry": 9.92,
           "rot": 0
         }
@@ -41319,9 +41319,9 @@
     "scenery/trees/tree_065#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.68,
-          "rx": 32.0,
+          "rx": 32,
           "ry": 9.92,
           "rot": 0
         }
@@ -41345,9 +41345,9 @@
     "scenery/trees/tree_065#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.68,
-          "rx": 32.0,
+          "rx": 32,
           "ry": 9.92,
           "rot": 0
         }
@@ -41358,9 +41358,9 @@
     "scenery/trees/tree_065#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.99,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 9.61,
           "rot": 0
         }
@@ -41371,9 +41371,9 @@
     "scenery/trees/tree_065#lit_1": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 73.03,
-          "rx": 47.0,
+          "rx": 47,
           "ry": 14.57,
           "rot": 0
         }
@@ -41384,9 +41384,9 @@
     "scenery/trees/tree_065#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.68,
-          "rx": 32.0,
+          "rx": 32,
           "ry": 9.92,
           "rot": 0
         }
@@ -41410,9 +41410,9 @@
     "scenery/trees/tree_065#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.68,
-          "rx": 32.0,
+          "rx": 32,
           "ry": 9.92,
           "rot": 0
         }
@@ -41423,9 +41423,9 @@
     "scenery/trees/tree_066#lit_1": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 69.38,
-          "rx": 62.0,
+          "rx": 62,
           "ry": 19.22,
           "rot": 0
         }
@@ -41436,9 +41436,9 @@
     "scenery/trees/tree_066#not_lit_1": {
       "boxes": [
         {
-          "ax": -5.0,
+          "ax": -5,
           "ay": 68.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -41462,9 +41462,9 @@
     "scenery/trees/tree_066#not_lit_3": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 69.38,
-          "rx": 62.0,
+          "rx": 62,
           "ry": 19.22,
           "rot": 0
         }
@@ -41475,9 +41475,9 @@
     "scenery/trees/tree_066#not_lit_4": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 69.38,
-          "rx": 62.0,
+          "rx": 62,
           "ry": 19.22,
           "rot": 0
         }
@@ -41488,9 +41488,9 @@
     "scenery/trees/tree_066#not_lit_5": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 69.38,
-          "rx": 62.0,
+          "rx": 62,
           "ry": 19.22,
           "rot": 0
         }
@@ -41501,9 +41501,9 @@
     "scenery/trees/tree_066#not_lit_6": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 69.38,
-          "rx": 62.0,
+          "rx": 62,
           "ry": 19.22,
           "rot": 0
         }
@@ -41527,9 +41527,9 @@
     "scenery/trees/tree_066#not_lit_8": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 69.38,
-          "rx": 62.0,
+          "rx": 62,
           "ry": 19.22,
           "rot": 0
         }
@@ -41540,9 +41540,9 @@
     "scenery/trees/tree_066#not_lit_9": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 70.62,
-          "rx": 58.0,
+          "rx": 58,
           "ry": 17.98,
           "rot": 0
         }
@@ -41556,7 +41556,7 @@
           "ax": -1.5,
           "ay": 66.6,
           "rx": 64.5,
-          "ry": 20.0,
+          "ry": 20,
           "rot": 0
         }
       ],
@@ -41566,9 +41566,9 @@
     "scenery/trees/tree_066#lit_2": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 69.38,
-          "rx": 62.0,
+          "rx": 62,
           "ry": 19.22,
           "rot": 0
         }
@@ -41579,9 +41579,9 @@
     "scenery/trees/tree_066#lit_3": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 67.83,
-          "rx": 67.0,
+          "rx": 67,
           "ry": 20.77,
           "rot": 0
         }
@@ -41592,9 +41592,9 @@
     "scenery/trees/tree_066#lit_4": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 69.38,
-          "rx": 62.0,
+          "rx": 62,
           "ry": 19.22,
           "rot": 0
         }
@@ -41787,9 +41787,9 @@
     "scenery/trees/tree_069#not_lit_1": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 76.68,
-          "rx": 32.0,
+          "rx": 32,
           "ry": 9.92,
           "rot": 0
         }
@@ -41800,9 +41800,9 @@
     "scenery/trees/tree_069#not_lit_2": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 76.58,
-          "rx": 42.0,
+          "rx": 42,
           "ry": 13.02,
           "rot": 0
         }
@@ -41826,9 +41826,9 @@
     "scenery/trees/tree_069#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 77.37,
-          "rx": 33.0,
+          "rx": 33,
           "ry": 10.23,
           "rot": 0
         }
@@ -41852,9 +41852,9 @@
     "scenery/trees/tree_069#not_lit_6": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 82.54,
-          "rx": 26.0,
+          "rx": 26,
           "ry": 8.06,
           "rot": 0
         }
@@ -41878,9 +41878,9 @@
     "scenery/trees/tree_069#not_lit_8": {
       "boxes": [
         {
-          "ax": 3.0,
+          "ax": 3,
           "ay": 77.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -41917,9 +41917,9 @@
     "scenery/trees/tree_069#lit_1": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 76.68,
-          "rx": 32.0,
+          "rx": 32,
           "ry": 9.92,
           "rot": 0
         }
@@ -41930,9 +41930,9 @@
     "scenery/trees/tree_069#lit_2": {
       "boxes": [
         {
-          "ax": 3.0,
+          "ax": 3,
           "ay": 77.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -41943,9 +41943,9 @@
     "scenery/trees/tree_069#lit_3": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 79.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -41956,9 +41956,9 @@
     "scenery/trees/tree_069#lit_4": {
       "boxes": [
         {
-          "ax": 3.0,
+          "ax": 3,
           "ay": 76.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -41969,9 +41969,9 @@
     "scenery/trees/tree_070#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -41982,9 +41982,9 @@
     "scenery/trees/tree_070#not_lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -41995,9 +41995,9 @@
     "scenery/trees/tree_070#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -42008,9 +42008,9 @@
     "scenery/trees/tree_070#not_lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -42021,9 +42021,9 @@
     "scenery/trees/tree_070#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -42034,9 +42034,9 @@
     "scenery/trees/tree_070#not_lit_5": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -42047,9 +42047,9 @@
     "scenery/trees/tree_070#not_lit_6": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -42060,9 +42060,9 @@
     "scenery/trees/tree_070#not_lit_7": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -42073,9 +42073,9 @@
     "scenery/trees/tree_070#not_lit_8": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -42086,9 +42086,9 @@
     "scenery/trees/tree_070#not_lit_9": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -42099,9 +42099,9 @@
     "scenery/trees/tree_070#not_lit_10": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -42112,9 +42112,9 @@
     "scenery/trees/tree_070#lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -42125,9 +42125,9 @@
     "scenery/trees/tree_070#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -42138,9 +42138,9 @@
     "scenery/trees/tree_070#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 71.0,
-          "rx": 60.0,
+          "ax": -1,
+          "ay": 71,
+          "rx": 60,
           "ry": 18.6,
           "rot": 0
         }
@@ -42229,9 +42229,9 @@
     "scenery/trees/tree_071#not_lit_7": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 68.9,
-          "rx": 70.0,
+          "rx": 70,
           "ry": 21.7,
           "rot": 0
         }
@@ -42515,9 +42515,9 @@
     "scenery/trees/tree_074#lit_1": {
       "boxes": [
         {
-          "ax": -14.0,
+          "ax": -14,
           "ay": 75.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -42528,9 +42528,9 @@
     "scenery/trees/tree_074#not_lit_1": {
       "boxes": [
         {
-          "ax": -14.0,
+          "ax": -14,
           "ay": 75.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -42541,9 +42541,9 @@
     "scenery/trees/tree_074#not_lit_2": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 75.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -42555,7 +42555,7 @@
       "boxes": [
         {
           "ax": 0.5,
-          "ay": 77.0,
+          "ay": 77,
           "rx": 24.5,
           "ry": 7.59,
           "rot": 0
@@ -42567,9 +42567,9 @@
     "scenery/trees/tree_074#not_lit_4": {
       "boxes": [
         {
-          "ax": -8.0,
+          "ax": -8,
           "ay": 70.41,
-          "rx": 49.0,
+          "rx": 49,
           "ry": 15.19,
           "rot": 0
         }
@@ -42593,9 +42593,9 @@
     "scenery/trees/tree_074#not_lit_6": {
       "boxes": [
         {
-          "ax": -14.0,
+          "ax": -14,
           "ay": 75.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -42619,9 +42619,9 @@
     "scenery/trees/tree_074#not_lit_8": {
       "boxes": [
         {
-          "ax": -6.0,
+          "ax": -6,
           "ay": 76.23,
-          "rx": 27.0,
+          "rx": 27,
           "ry": 8.37,
           "rot": 0
         }
@@ -42645,9 +42645,9 @@
     "scenery/trees/tree_074#not_lit_10": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 75.34,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.26,
           "rot": 0
         }
@@ -42658,9 +42658,9 @@
     "scenery/trees/tree_074#lit_2": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 73.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -42671,9 +42671,9 @@
     "scenery/trees/tree_074#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 80.68,
-          "rx": 32.0,
+          "rx": 32,
           "ry": 9.92,
           "rot": 0
         }
@@ -42684,9 +42684,9 @@
     "scenery/trees/tree_074#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 74.51,
-          "rx": 39.0,
+          "rx": 39,
           "ry": 12.09,
           "rot": 0
         }
@@ -42865,9 +42865,9 @@
     "scenery/trees/tree_077#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 69.09,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.51,
           "rot": 0
         }
@@ -42904,9 +42904,9 @@
     "scenery/trees/tree_077#not_lit_4": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 74.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -42917,9 +42917,9 @@
     "scenery/trees/tree_077#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 68.54,
-          "rx": 26.0,
+          "rx": 26,
           "ry": 8.06,
           "rot": 0
         }
@@ -42930,9 +42930,9 @@
     "scenery/trees/tree_077#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.71,
-          "rx": 19.0,
+          "rx": 19,
           "ry": 5.89,
           "rot": 0
         }
@@ -42943,9 +42943,9 @@
     "scenery/trees/tree_077#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 69.09,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.51,
           "rot": 0
         }
@@ -42969,9 +42969,9 @@
     "scenery/trees/tree_077#not_lit_9": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 68.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -43008,9 +43008,9 @@
     "scenery/trees/tree_077#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 69.09,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.51,
           "rot": 0
         }
@@ -43047,9 +43047,9 @@
     "scenery/trees/tree_079#not_lit_1": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43060,9 +43060,9 @@
     "scenery/trees/tree_079#not_lit_2": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43073,9 +43073,9 @@
     "scenery/trees/tree_079#not_lit_3": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43086,9 +43086,9 @@
     "scenery/trees/tree_079#not_lit_4": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43099,9 +43099,9 @@
     "scenery/trees/tree_079#not_lit_5": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43112,9 +43112,9 @@
     "scenery/trees/tree_079#not_lit_6": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43125,9 +43125,9 @@
     "scenery/trees/tree_079#not_lit_7": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43138,9 +43138,9 @@
     "scenery/trees/tree_079#not_lit_8": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43151,9 +43151,9 @@
     "scenery/trees/tree_079#not_lit_9": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43164,9 +43164,9 @@
     "scenery/trees/tree_079#not_lit_10": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43177,9 +43177,9 @@
     "scenery/trees/tree_079#lit_1": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43190,9 +43190,9 @@
     "scenery/trees/tree_079#lit_2": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43203,9 +43203,9 @@
     "scenery/trees/tree_079#lit_3": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43216,9 +43216,9 @@
     "scenery/trees/tree_079#lit_4": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 57.76,
-          "rx": 64.0,
+          "rx": 64,
           "ry": 19.84,
           "rot": 0
         }
@@ -43505,9 +43505,9 @@
     "scenery/trees/tree_083#not_lit_10": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 82.88,
-          "rx": 12.0,
+          "rx": 12,
           "ry": 3.72,
           "rot": 0
         }
@@ -43525,7 +43525,7 @@
           "rot": 0
         }
       ],
-      "updated_at": "2026-08-30T12:16:15.838Z"
+      "updated_at": "2026-08-30T12:47:41.612Z"
     },
     "scenery/trees/tree_083#lit_2": {
       "boxes": [
@@ -44708,9 +44708,9 @@
     "scenery/wasp_nest_trees/wasp_nest_tree_001#not_lit_3": {
       "boxes": [
         {
-          "ax": -4.0,
+          "ax": -4,
           "ay": 71.09,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.51,
           "rot": 0
         }
@@ -44721,9 +44721,9 @@
     "scenery/wasp_nest_trees/wasp_nest_tree_001#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 79.78,
-          "rx": 22.0,
+          "rx": 22,
           "ry": 6.82,
           "rot": 0
         }
@@ -44760,9 +44760,9 @@
     "scenery/wasp_nest_trees/wasp_nest_tree_001#not_lit_7": {
       "boxes": [
         {
-          "ax": -4.0,
+          "ax": -4,
           "ay": 83.71,
-          "rx": 19.0,
+          "rx": 19,
           "ry": 5.89,
           "rot": 0
         }
@@ -44851,9 +44851,9 @@
     "scenery/wasp_nest_trees/wasp_nest_tree_001#lit_4": {
       "boxes": [
         {
-          "ax": 22.0,
+          "ax": 22,
           "ay": 63.96,
-          "rx": 44.0,
+          "rx": 44,
           "ry": 13.64,
           "rot": 0
         }
@@ -44890,9 +44890,9 @@
     "scenery/wasp_nest_trees/wasp_nest_tree_002#not_lit_2": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 71.83,
-          "rx": 67.0,
+          "rx": 67,
           "ry": 20.77,
           "rot": 0
         }
@@ -44929,9 +44929,9 @@
     "scenery/wasp_nest_trees/wasp_nest_tree_002#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 79.58,
-          "rx": 42.0,
+          "rx": 42,
           "ry": 13.02,
           "rot": 0
         }
@@ -44955,9 +44955,9 @@
     "scenery/wasp_nest_trees/wasp_nest_tree_002#not_lit_7": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 88.4,
-          "rx": 20.0,
+          "rx": 20,
           "ry": 6.2,
           "rot": 0
         }
@@ -44968,9 +44968,9 @@
     "scenery/wasp_nest_trees/wasp_nest_tree_002#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 80.92,
-          "rx": 28.0,
+          "rx": 28,
           "ry": 8.68,
           "rot": 0
         }
@@ -44981,9 +44981,9 @@
     "scenery/wasp_nest_trees/wasp_nest_tree_002#not_lit_9": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 83.44,
-          "rx": 36.0,
+          "rx": 36,
           "ry": 11.16,
           "rot": 0
         }
@@ -47425,9 +47425,9 @@
     "scenery/wisteria_snags/wisteria_snag_001#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 69.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -47438,9 +47438,9 @@
     "scenery/wisteria_snags/wisteria_snag_001#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 73.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -47464,9 +47464,9 @@
     "scenery/wisteria_snags/wisteria_snag_001#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 73.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -47477,9 +47477,9 @@
     "scenery/wisteria_snags/wisteria_snag_001#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 73.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -47490,9 +47490,9 @@
     "scenery/wisteria_snags/wisteria_snag_001#not_lit_6": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 70.3,
-          "rx": 30.0,
+          "rx": 30,
           "ry": 9.3,
           "rot": 0
         }
@@ -47503,9 +47503,9 @@
     "scenery/wisteria_snags/wisteria_snag_001#not_lit_7": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 73.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -47516,9 +47516,9 @@
     "scenery/wisteria_snags/wisteria_snag_001#not_lit_8": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 73.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -47529,9 +47529,9 @@
     "scenery/wisteria_snags/wisteria_snag_001#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 73.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
@@ -47542,9 +47542,9 @@
     "scenery/wisteria_snags/wisteria_snag_001#not_lit_10": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 69.68,
-          "rx": 32.0,
+          "rx": 32,
           "ry": 9.92,
           "rot": 0
         }
@@ -47555,9 +47555,9 @@
     "scenery/wisteria_snags/wisteria_snag_001#lit_1": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 69.68,
-          "rx": 32.0,
+          "rx": 32,
           "ry": 9.92,
           "rot": 0
         }
@@ -47581,9 +47581,9 @@
     "scenery/wisteria_snags/wisteria_snag_001#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 73.61,
-          "rx": 29.0,
+          "rx": 29,
           "ry": 8.99,
           "rot": 0
         }
