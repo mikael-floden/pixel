@@ -2250,7 +2250,18 @@ function makePlayer(entity, kind, opts = {}) {
         ? h("b", {}, "no hitbox — this piece hangs on a wall")
         : h("b", {}, `${boxes.length} ellipse${boxes.length === 1 ? "" : "s"} · #${hitSel + 1} ${(b.rx * 2).toFixed(1)} × ${(b.ry * 2).toFixed(1)} px`),
       st === "none" || st === "flat" ? "" : ` · at ${signed(b.ax)}, ${signed(b.ay)}${b.rot ? ` · turned ${Math.round(b.rot)}°` : ""}`,
-      st === "todo" ? (hitboxAuto(entity, cur.state) ? " · proposed default — not set until you accept or adjust it" : " · not set — move anything to adopt it") : "",
+      /* NO STATUS PROSE ON THIS LINE (maintainer 2026-08-29: "you draw this
+       * text 'proposed default not set until you accept or adjust it' and
+       * then I try to click on the Width slider and then you remove that text
+       * and move all sliders up so I always select the slider under it
+       * instead ... I don't need that stupid text").
+       *
+       * It wrapped to a second line, and adjusting anything turned the state
+       * from proposed to set — so the line unwrapped, the bar lost a row, and
+       * the rails jumped up under his thumb mid-tap. The Accept button
+       * already says a proposal is a proposal, and it is beside the picture
+       * rather than under his finger. */
+      "",
     );
   }
 

@@ -791,7 +791,14 @@ label.chk { display: inline-flex; align-items: center; gap: 5px; font-size: 13px
 .shadow-bar { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--muted); }
 .shadow-bar.hidden { display: none; }
 .shadow-hint { font-size: 12.5px; }
-.shadow-read { font-variant-numeric: tabular-nums; color: var(--ink); }
+/* ONE LINE, ALWAYS (maintainer 2026-08-29: a status suffix wrapped this to
+   two lines, and the moment he touched a rail the state changed, the line
+   unwrapped and every control below jumped up under his thumb). A fixed row
+   height means no text this line can ever hold moves the rails. */
+.shadow-read {
+  font-variant-numeric: tabular-nums; color: var(--ink);
+  display: block; min-height: 1.5em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 .shadow-bar .ghost-btn { padding: 4px 10px; font-size: 13px; }
 .shadow-bar .ghost-btn:disabled { opacity: 0.45; cursor: default; background: transparent; }
 

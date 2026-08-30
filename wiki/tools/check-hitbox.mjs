@@ -194,8 +194,11 @@ ok(open.rails === 3, `with three rails — width, depth and the ROTATION a monst
   ok(rails.every((r) => r.max >= r.val),
     `and never end below the value they are showing (${rails.map((r) => `${r.val}/${r.max}`).join(", ")})`);
 }
-ok(open.probe?.state === "todo" && /not set/.test(open.read),
-  "an untouched piece reads as NOT SET — merely opening it must not count as done");
+/* THE STATE, NOT THE PROSE (2026-08-29: the status suffix is gone from the
+ * read line — it re-wrapped and moved the rails under his thumb — so the
+ * claim is checked where it lives). */
+ok(open.probe?.state === "todo",
+  `an untouched piece is still TO DO — merely opening it must not count as done (${open.probe?.state})`);
 /* THE FIRST ELLIPSE COMES FROM THE ART, not from the middle of the frame: the
  * piece's own measured content box, sitting at its foot. */
 const bb = Object.values(PIECE.animations)[0]?.dirs?.south?.bb;
@@ -415,8 +418,12 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   await p.waitForTimeout(1000);
   const before = await p.evaluate(() => ({ ...(window.__wikiHitbox ?? {}) }));
   const read0 = await p.evaluate(() => document.querySelector(".hit-bar .shadow-read")?.textContent ?? "");
-  ok(before.state === "todo" && /proposed default/.test(read0) && /not set/.test(read0),
-    `the proposal reads as a PROPOSAL, and the piece still counts as to-do ("${read0.slice(-60)}")`);
+  const accept0 = await p.evaluate(() => {
+    const b2 = [...document.querySelectorAll("button")].find((x) => /Accept default hitbox/.test(x.textContent));
+    return !!b2 && !b2.classList.contains("hidden");
+  });
+  ok(before.state === "todo" && accept0,
+    `a proposal still counts as to-do, and says so with the Accept button rather than prose under his thumb (${before.state})`);
   await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click());
   await p.waitForTimeout(600);
   // accept: same boxes, his record now — under THIS variation's key
@@ -581,6 +588,42 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   ok(checked > 200 && wide === 0,
     `every tree proposal is a trunk, never wider than the art (${checked} checked, ${wide} too wide)`);
   ok(hisTouched > 0, `and his own tree corrections are still there, unflagged (${hisTouched})`);
+}
+/* THE CONTROLS MUST NOT MOVE UNDER HIS THUMB (maintainer 2026-08-29: "I try
+ * to click on the Width slider and then you remove that text and move all
+ * sliders up so I always select the slider under it instead"). Adjusting a
+ * rail changes the piece's state, which changed the read line's text, which
+ * re-wrapped it — and every control below jumped a row. Measured: each
+ * rail's own top before and after a real adjustment. */
+{
+  const flat2 = PIECES.find((o) => !["MOUNTAIN_WALL", "WINDOW"].includes(o.type)
+    && Object.keys(o.animations ?? {}).length >= 1);
+  await p.goto(`${W}#/objects/${flat2.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  await p.evaluate(() => {
+    if (!document.querySelector(".hit-bar:not(.hidden)")) {
+      [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click();
+    }
+  });
+  await p.waitForTimeout(1200);
+  const tops = () => p.evaluate(() => [...document.querySelectorAll(".hit-bar .shadow-slider")]
+    .map((x) => Math.round(x.getBoundingClientRect().top)));
+  const before = await tops();
+  // a real adjustment: the state goes from proposed to set right here
+  await p.evaluate(() => {
+    const w2 = [...document.querySelectorAll(".hit-bar .shadow-slider")][0];
+    w2.value = String(Math.max(4, +w2.value - 6));
+    w2.dispatchEvent(new Event("input", { bubbles: true }));
+    w2.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await p.waitForTimeout(900);
+  const after = await tops();
+  const moved = before.map((t2, i2) => Math.abs(t2 - (after[i2] ?? 0))).filter((d2) => d2 > 1);
+  ok(before.length === after.length && moved.length === 0,
+    `adjusting a rail leaves every rail where it was (${before.join("/")} → ${after.join("/")})`);
+  const read = await p.evaluate(() => document.querySelector(".hit-bar .shadow-read")?.textContent ?? "");
+  ok(!/proposed default|not set until/.test(read),
+    `and the line carries no status prose to reflow (${read.slice(0, 48)})`);
 }
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 
