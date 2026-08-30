@@ -3487,8 +3487,9 @@ export function stampSceneryCollision(
       const cy = fh / 2 + b.ay;
       const sx = (cx - anchorFx) * k;
       const sy = (cy - anchorFy) * k;
-      const wx = pl.x + (sx / geom.dx + sy / geom.dy) / 2;
-      const wy = pl.y + (sy / geom.dy - sx / geom.dx) / 2;
+      const auto = (rec as { auto?: boolean }).auto === true;
+      const wx = auto ? pl.x : pl.x + (sx / geom.dx + sy / geom.dy) / 2;
+      const wy = auto ? pl.y : pl.y + (sy / geom.dy - sx / geom.dx) / 2;
       /* TEST THE ELLIPSE WHERE IT IS DRAWN — on SCREEN — instead of turning it
        * into a world-space disc. The iso map sends a world circle of radius R
        * to semi-axes R*dx*SQRT2 and R*dy*SQRT2 (the singular values of
