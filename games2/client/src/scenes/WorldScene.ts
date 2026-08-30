@@ -5202,7 +5202,12 @@ export class WorldScene extends Phaser.Scene {
    *  render path. Depth sits under the bodies with the other debug layers. */
   private drawCollisionDebug(): void {
     if (!this.collisionGfx && this.collisionOn) {
-      this.collisionGfx = this.add.graphics().setDepth(-799_998);
+      /* AN X-RAY, ABOVE THE ART. Under the world it is invisible exactly where
+       * it matters: a wall cell's marker sits on the GROUND, and the wall's own
+       * art stands over that spot and hides it — so the overlay showed every
+       * footprint on open grass and nothing at all on the building he could not
+       * walk into. Over the top, it reads as the floor plan it is meant to be. */
+      this.collisionGfx = this.add.graphics().setDepth(900_002.5);
     }
     const gfx = this.collisionGfx;
     if (!gfx) return;
@@ -5231,8 +5236,13 @@ export class WorldScene extends Phaser.Scene {
           canSwim: true,
         });
         if (enterable) continue;
-        // Sit the diamond on the cell's own surface, like the aggro rings do.
-        const lift = (t.level[i] ?? 0) * this.geom.lh;
+        /* ONE PLANE — THE PLAYER'S. Lifting each diamond to its own cell's
+         * surface put a wall's marker up on the roof, six levels above the
+         * ground it actually stops you on, so a building read as a patch of
+         * colour floating over its own tiles. What this overlay is FOR is a
+         * floor plan of where the body may go, so every marker sits on the
+         * plane the body is standing on. */
+        const lift = (me.surfLevel ?? 0) * this.geom.lh;
         const pts = [
           [c, r],
           [c + 1, r],
