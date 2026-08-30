@@ -416,12 +416,7 @@ export type BlockedFn = ((toX: number, toY: number, fromX: number, fromY: number
    *
    * Answers for the body CENTRE at (x,y): the outward unit normal of the
    * scenery footprint in the way, or null when nothing is in reach. */
-  contactNormal?: (
-    x: number,
-    y: number,
-    ux: number,
-    uy: number,
-  ) => { nx: number; ny: number; rho: number } | null;
+  contactNormal?: (x: number, y: number, ux: number, uy: number) => { nx: number; ny: number } | null;
 };
 
 /** Drop test: is moving from (fromX,fromY) onto (toX,toY) a FALL (a downward
@@ -539,24 +534,31 @@ export function stepMovement(
     if (rx === fx && ry === fy) {
       /* THE GLIDE. Per-axis resolution slides along a WALL — one axis survives
        * — but an ellipse refuses both axes at once for every heading that is
-       * not parallel to one of them, and the body stops dead. Measured on
-       * the_game against trees/tree_029 with the exact footprint test and no
-       * glide: all 8 held-stick directions travelled 0.0wu in 2s once the body
-       * reached the shape. That is worse than the cell raster it replaced, and
-       * the opposite of what the ellipse is for (maintainer 2026-08-30: "I made
-       * it an ellipse because that would always slide the player around it when
+       * not parallel to one of them, and the body stops dead — which is the
+       * opposite of what the shape is for (maintainer 2026-08-30: "I made it an
+       * ellipse because that would always slide the player around it when
        * running into the ellipse").
        *
        * So: ask the shape which way is "along" — the outward normal at the
        * contact, which only the retained ellipse can give — project this
        * substep onto its tangent, and try that ONCE, through the same probes.
        * One retry, not a loop: a second projection off a second contact is how
-       * a body starts orbiting a gap it cannot fit through. With it, the same
-       * 8 directions travel 33.9-90.5wu (mean 62.4wu) and every one of them
-       * ends up clear of the tree.
+       * a body starts orbiting a gap it cannot fit through.
+       *
+       * Measured on one trees/tree_029, held stick, 8 screen directions x 9
+       * lateral offsets, 3s each, raw movement with no autopilot on top:
+       *
+       *              got past the trunk   frozen >=0.5s   mean advance
+       *   no glide           11.1%            66.7%          128.1wu
+       *   glide              16.7%            58.3%          139.1wu
+       *
+       * and over the_game's 25 open-ground tree_029s, 1,800 approaches:
+       * 6.9% -> 9.4% past, 79.9% -> 69.8% frozen, 78.1 -> 86.5wu advanced.
        *
        * Head-on into the centre still stops: the tangent is zero there, and a
-       * body that walks exactly at a trunk's centre has not chosen a side. */
+       * body that walks exactly at a trunk's centre has not chosen a side. That
+       * case belongs to slideAlong, one layer up, which remembers which way
+       * round it went and so cannot flip-flop. */
       const cn = blocked ? blocked.contactNormal : undefined;
       const sl = Math.hypot(sx, sy);
       if (!cn || sl < 1e-9) break;
@@ -564,15 +566,15 @@ export function stepMovement(
       if (!hit) break; // terrain, not scenery: dead stop, exactly as before
       const into = sx * hit.nx + sy * hit.ny;
       if (into >= 0) break; // already moving away from it — something else holds us
-      /* LEANING OUT OF THE TURN WAS TRIED AND REJECTED. The retry probes
+      /* LEANING OUT OF THE TURN WAS TRIED, AND MEASURED WORSE. The retry probes
        * PLAYER_RADIUS along the STRAIGHT tangent while the surface curves away
        * under it, so the probe lands L^2/(2*rho) inside the shape — 3.7wu at
-       * the tight end of a tree_029 — and refuses the glide too. Adding that
-       * sagitta as an outward lean is the textbook correction and it measured
-       * WORSE: held-stick approaches frozen for half a second went 58.3% ->
-       * 63.9% on one tree and 69.8% -> 71.9% in the forest, because at that
-       * curvature the lean is a third of the substep and turns a slide into a
-       * retreat. The plain tangent is kept. */
+       * the tight end of a tree_029 — and can refuse the glide as well. Adding
+       * that sagitta back as an outward lean is the textbook correction and it
+       * made things worse: held-stick approaches frozen for half a second went
+       * 58.3% -> 63.9% on one tree and 69.8% -> 71.9% in the forest, because at
+       * that curvature the lean is a third of the substep and turns a slide
+       * into a retreat. The plain tangent is kept. */
       const gx = sx - into * hit.nx;
       const gy = sy - into * hit.ny;
       freeX = false;
@@ -1097,16 +1099,6 @@ export interface TerrainGrid {
    *  wall, and indoor.ts must keep telling the two apart. Absent on worlds with
    *  no scenery. Exactly `blocked && !propBlocked`. */
   sceneryBlocked?: boolean[];
-  /** HOW MUCH of each cell a body cannot stand in, in sixteenths (0 = wide
-   *  open, 16 = only a sliver, and a cell with none left is in `blocked`). The
-   *  nav layer is binary and a forest is not: with the footprints kept as
-   *  ellipses most trees no longer block a whole cell, so a route that only
-   *  avoided BLOCKED cells threaded gaps a body then had to grind through.
-   *  findPath prices this in, so a clear lane is preferred and a tight one is
-   *  taken only when it is genuinely shorter. Absent on worlds with no scenery.
-   *  Measured by the same lattice that derives `blocked` — see
-   *  stampSceneryCollision. */
-  sceneryTight?: Uint8Array;
   /** THE COLLISION TRUTH: the scenery footprint ELLIPSES themselves, kept as
    *  drawn (centre in CELLS, semi-axes in SCREEN px) plus a per-cell bucket
    *  index. `blocked` above is derived FROM this; movement collides with this.
@@ -1333,9 +1325,15 @@ const ROOT2 = Math.SQRT2;
  * hitbox, and that is the bug the maintainer reported against waystone_009
  * ("this gravestone has no hitbox at all and I can run straight through it").
  * The alternative, growing EVERY footprint by 4.5wu so the probe lattice could
- * not miss it, costs every piece 4.5wu of standoff on top of PLAYER_RADIUS:
- * measured on one tree_029, mean closest approach 2.13x the drawn ellipse
- * instead of 1.47x — which recreates the very complaint this work fixes. */
+ * not miss it, costs every piece 4.5wu of standoff on top of PLAYER_RADIUS —
+ * which is the complaint this work exists to fix. Measured on one tree_029, the
+ * body's closest approach to the DRAWN ellipse over the 8 held-stick
+ * directions is 11.2-15.0wu (mean 14.0) with the floor; PLAYER_RADIUS is 12, so
+ * that is 2.0wu of slack, and the 15.0 is exactly the corner probe, hypot(12,9),
+ * touching the outline. The cell raster it replaces gave 6.5-92.5wu for the
+ * SAME piece (mean 30.1) and 2.6-29.0wu (mean 19.8) for that piece moved half a
+ * cell — because a raster answers about the cell the ellipse landed in, not
+ * about the ellipse. */
 export const MIN_FOOTPRINT_SEMI = PLAYER_RADIUS * 0.375; // 4.5wu — half the lateral probe spacing
 
 /** The furthest a probe point can be from the body centre: the leading edge is
@@ -1401,9 +1399,9 @@ function closestOnEllipse(e0: number, e1: number, y0: number, y1: number, out: {
   }
 }
 
-/** Scratch, module-level: these run inside the movement tick and an allocation
- *  per probe is exactly the kind of garbage the keepNames note in canEnterElev
- *  is about. Single-threaded, never held across a call. */
+/** Scratch for the closest-point solve, module-level: this runs inside the
+ *  movement tick and an allocation per probe is exactly the kind of garbage the
+ *  keepNames note in canEnterElev is about. Never held across a call. */
 const _near = { x: 0, y: 0 };
 
 /**
@@ -1414,11 +1412,14 @@ const _near = { x: 0, y: 0 };
  * outward unit normal at the contact (world space), which is what the glide
  * steers along.
  *
- * This is the EXACT distance to the drawn ellipse, not the ellipse with `r`
- * added to both semi-axes: E(a+r, b+r) is a strict SUBSET of E (+) disc(r), so
- * adding the radius under-blocks — measured on the_game's footprints at
- * r = PLAYER_RADIUS, by up to 1.32wu of radial shortfall (worst piece), which
- * is a body corner visibly inside the shape the maintainer drew.
+ * It is the EXACT distance to the drawn ellipse, not the ellipse with `r` added
+ * to both semi-axes. E(p+r, q+r) is a strict SUBSET of E (+) disc(r), so adding
+ * the radius UNDER-blocks, and on real data it under-blocks badly: measured
+ * over the_game's 1,747 footprints at r = PLAYER_RADIUS, the true offset curve
+ * escapes E(p+r, q+r) by up to 7.43wu — more than half a body — because some
+ * pieces are extremely elongated (a fallen log is 28wu by 1.4wu) and that
+ * approximation is only good for near-circles. Two cheap gates below keep the
+ * exact solve off the hot path; each is proved where it is used.
  */
 function footprintPenetration(
   fp: SceneryFootprints,
@@ -1426,7 +1427,7 @@ function footprintPenetration(
   x: number,
   y: number,
   r: number,
-  norm: { nx: number; ny: number; rho: number } | null,
+  norm: { nx: number; ny: number } | null,
 ): number {
   const ox = x / CELL_WU - fp.cx[j];
   const oy = y / CELL_WU - fp.cy[j];
@@ -1437,41 +1438,35 @@ function footprintPenetration(
   const p = fp.p[j];
   const q = fp.q[j];
   const rc = r / CELL_WU;
-  // Cheap reject: outside the offset region's own bounding box. This is the
-  // gate that keeps the exact solve off the hot path for all but true contacts.
+  // GATE 1, reject: outside the offset region's own bounding box. Its support
+  // in either axis is exactly p+rc and q+rc, so this is tight and exact.
   const ax = X < 0 ? -X : X;
   const ay = Y < 0 ? -Y : Y;
   if (ax >= p + rc || ay >= q + rc) return -1;
-  // Cheap accept: inside E(p+rc, q+rc), which is a strict SUBSET of the true
-  // offset region E (+) disc(rc) — the very under-blocking F9 warns about, used
-  // here in the only direction it is sound: everything it accepts really is in
-  // contact. Everything it accepts INSIDE the raw ellipse too gets the gradient
-  // normal; between the two the exact solve below gives a better one.
   const gu = X / (p + rc);
   const gv = Y / (q + rc);
   const inGrown = gu * gu + gv * gv <= 1;
   const u = X / p;
   const v = Y / q;
   const g2 = u * u + v * v;
-  // Cheap reject: the raw ellipse's gauge is a NORM, so g(a+b) <= g(a) + g(b),
-  // and every point of E (+) disc(rc) is therefore inside g <= 1 + rc/min(p,q).
-  // Past that line the point is provably free.
   if (inGrown) {
-    /* Cheap ACCEPT, for the boolean query only. Every point of E(p+rc, q+rc) is
-     * within rc of E(p,q): a boundary point t*((p+rc)cosA, (q+rc)sinA) sits
-     * exactly t*rc from t*(p cosA, q sinA), which convexity puts inside E. So
-     * this is F9's under-blocking subset used in the one direction where it is
-     * sound — everything it accepts really is in contact. Contact queries skip
-     * it, because the glide needs a true normal and a true depth. */
-    /* The value returned is a sound LOWER BOUND on the true penetration, not a
-     * flag, because the nav bake reads it as "every point within this far is
-     * blocked too" and would be wrong to trust a made-up number. For a point
-     * with gauge G > 1, z/G lies on the ellipse and |z - z/G| = |z|(G-1)/G <=
-     * max(p,q)*(G-1), so the distance to the ellipse is at most that. */
+    /* GATE 2, accept — boolean queries only. Every point of E(p+rc, q+rc) IS
+     * within rc of E(p,q): a point t*((p+rc)cosA, (q+rc)sinA), t in [0,1], sits
+     * exactly t*rc from t*(p cosA, q sinA), which convexity puts inside E. This
+     * is F9's under-blocking subset used in the one direction where it is sound
+     * — everything it accepts really is in contact. A CONTACT query skips it,
+     * because the glide needs a true normal and a true depth, and there are
+     * few of those.
+     *
+     * The number returned is a sound LOWER bound on the true penetration, not a
+     * flag: the nav bake reads it as "every point within this far is blocked
+     * too" and would be wrong to trust a made-up one. For gauge G > 1 the point
+     * z/G lies on the ellipse and |z - z/G| = |z|(G-1)/G <= max(p,q)*(G-1), so
+     * the distance to the ellipse is at most that. */
     if (norm === null) return Math.max(1e-12, (rc - (Math.sqrt(g2) - 1) * (p > q ? p : q)) * CELL_WU);
   } else {
-    /* Cheap REJECT. The raw ellipse's gauge is a NORM, so g(a+b) <= g(a)+g(b),
-     * and every point of E (+) disc(rc) is inside g <= 1 + rc/min(p,q). */
+    /* GATE 3, reject. The raw ellipse's gauge is a NORM, so g(a+b) <= g(a)+g(b)
+     * and every point of E (+) disc(rc) lies inside g <= 1 + rc/min(p,q). */
     const lim = 1 + rc / (p < q ? p : q);
     if (g2 > lim * lim) return -1;
   }
@@ -1485,14 +1480,15 @@ function footprintPenetration(
       const l = Math.hypot(wx, wy);
       if (l > 1e-12) { norm.nx = wx / l; norm.ny = wy / l; }
       else { norm.nx = 1; norm.ny = 0; }
-      norm.rho = Infinity; // already inside: there is no surface to follow
     }
     return rc * CELL_WU; // distance to the FILLED ellipse is 0 in here
   }
   // Exact: distance from (|X|,|Y|) to E(p,q), first quadrant, major axis first.
-  // Only points in the thin band BETWEEN the two cheap gates reach here — on
-  // the_game's nav bake that is 6.2% of the tests, which is what takes the bake
-  // from 1,121ms to 214ms without changing a single answer.
+  // Only points in the thin band BETWEEN the two cheap gates reach here, which
+  // is what keeps a 30-iteration bisection off the hot path. Measured on
+  // the_game: footprintBlocks costs 74ns at points scattered around every
+  // footprint, and canEnterElev pays 133ns -> 171ns for gaining the whole
+  // ellipse test beside scenery (120 -> 144ns over the map at large).
   const swap = q > p;
   const e0 = swap ? q : p;
   const e1 = swap ? p : q;
@@ -1515,24 +1511,12 @@ function footprintPenetration(
       norm.nx = 1;
       norm.ny = 0;
     }
-    /* AND HOW SHARPLY THE SURFACE TURNS THERE. A body gliding along a curved
-     * shape probes PLAYER_RADIUS ahead along the STRAIGHT tangent, and a chord
-     * of that length falls L^2/(2*rho) inside the arc — 3.7wu at the tight end
-     * of a tree_029 — so the retry's own probe lands inside the shape and the
-     * glide refuses itself. Handing the caller the radius of curvature of the
-     * OFFSET curve it is standing on (rho of the ellipse at the closest point,
-     * plus how far out the body is) is what lets it correct for that, and only
-     * where the surface is actually tight. */
-    const ct = _near.x / e0;
-    const st = _near.y / e1;
-    const num = e0 * e0 * st * st + e1 * e1 * ct * ct;
-    norm.rho = ((num * Math.sqrt(num)) / (e0 * e1) + d) * CELL_WU;
   }
   return (rc - d) * CELL_WU;
 }
 
-/** The footprints bucketed at the cell containing (x,y) (world units), as a
- *  [lo,hi) range into `fp.items`; hi <= lo when the point is off the grid. */
+/** The cell index whose bucket answers for world point (x,y), or -1 off the
+ *  grid. The footprints to test are then items[start[i] .. start[i+1]-1]. */
 function footprintBucket(grid: TerrainGrid, x: number, y: number): number {
   const col = Math.floor(x / CELL_WU);
   const row = Math.floor(y / CELL_WU);
@@ -1598,7 +1582,7 @@ export function footprintContact(
   r: number,
   ux?: number,
   uy?: number,
-): { nx: number; ny: number; depth: number; rho: number } | null {
+): { nx: number; ny: number; depth: number } | null {
   const fp = grid.footprints;
   if (!fp || fp.n === 0) return null;
   const i = footprintBucket(grid, x, y);
@@ -1606,8 +1590,8 @@ export function footprintContact(
   const hi = fp.start[i + 1];
   if (hi === fp.start[i]) return null;
   const rc = Math.min(r, fp.pad * CELL_WU);
-  const n = { nx: 0, ny: 0, rho: Infinity };
-  let best: { nx: number; ny: number; depth: number; rho: number } | null = null;
+  const n = { nx: 0, ny: 0 };
+  let best: { nx: number; ny: number; depth: number } | null = null;
   let bestScore = -Infinity;
   const aimed = ux !== undefined && uy !== undefined;
   for (let k = fp.start[i]; k < hi; k++) {
@@ -1622,27 +1606,50 @@ export function footprintContact(
     const score = aimed ? -(n.nx * ux! + n.ny * uy!) : d;
     if (score > bestScore) {
       bestScore = score;
-      best = { nx: n.nx, ny: n.ny, depth: d, rho: n.rho };
+      best = { nx: n.nx, ny: n.ny, depth: d };
     }
   }
   return best;
 }
 
-/** Every footprint whose outline is near (x,y) (world units), for the debug
- *  overlay: the ellipse as DRAWN (centre in cells, semi-axes in screen px) so
- *  the "show hitbox" button can stroke the real shape rather than the cells. */
-export function footprintsNear(
+/**
+ * Every footprint reaching into a rectangle of cells, deduplicated — the ellipse
+ * as DRAWN: centre in CELLS, semi-axes in SCREEN px, plus the index of the
+ * placement it came from.
+ *
+ * This exists for the SHOW HITBOX overlay, which the maintainer asked to show
+ * both layers at once (2026-08-30: "the show hitbox button should show both
+ * what the nav navigates around and the real ellipse hitbox"). The nav half is
+ * already on the grid — `blocked` for the cells, `sceneryBlocked` for the ones
+ * scenery closed — and this is the other half. Drawing it needs no maths on the
+ * client: the ellipse is stroked in screen space at the piece's own screen
+ * position, which is exactly the space rx/ry are measured in.
+ */
+export function footprintsInCells(
   grid: TerrainGrid,
-  col: number,
-  row: number,
+  col0: number,
+  row0: number,
+  col1: number,
+  row1: number,
 ): { cx: number; cy: number; rx: number; ry: number; place: number }[] {
   const fp = grid.footprints;
-  if (!fp || col < 0 || row < 0 || col >= grid.width || row >= grid.height) return [];
-  const i = row * grid.width + col;
+  if (!fp) return [];
+  const c0 = Math.max(0, Math.min(col0, col1));
+  const c1 = Math.min(grid.width - 1, Math.max(col0, col1));
+  const r0 = Math.max(0, Math.min(row0, row1));
+  const r1 = Math.min(grid.height - 1, Math.max(row0, row1));
+  const seen = new Set<number>();
   const out: { cx: number; cy: number; rx: number; ry: number; place: number }[] = [];
-  for (let k = fp.start[i]; k < fp.start[i + 1]; k++) {
-    const j = fp.items[k];
-    out.push({ cx: fp.cx[j], cy: fp.cy[j], rx: fp.rx[j], ry: fp.ry[j], place: fp.place[j] });
+  for (let r = r0; r <= r1; r++) {
+    for (let c = c0; c <= c1; c++) {
+      const i = r * grid.width + c;
+      for (let k = fp.start[i]; k < fp.start[i + 1]; k++) {
+        const j = fp.items[k];
+        if (seen.has(j)) continue;
+        seen.add(j);
+        out.push({ cx: fp.cx[j], cy: fp.cy[j], rx: fp.rx[j], ry: fp.ry[j], place: fp.place[j] });
+      }
+    }
   }
   return out;
 }
@@ -1710,7 +1717,7 @@ export function canEnter(
 function gridContactNormal(grid: TerrainGrid) {
   return (x: number, y: number, ux: number, uy: number) => {
     const c = footprintContact(grid, x, y, FOOTPRINT_REACH, ux, uy);
-    return c ? { nx: c.nx, ny: c.ny, rho: c.rho } : null;
+    return c ? { nx: c.nx, ny: c.ny } : null;
   };
 }
 
@@ -1907,9 +1914,8 @@ export function unstickFromSolids(
    * movement probes only ever look AHEAD, so nothing else would ever push it
    * out. The ellipse hands us both the depth and the direction. */
   // PLAYER_RADIUS, not `clearance`: this is "the body OVERLAPS the shape", and
-  // it must stay strictly inside what the probes enforce (13.5wu sideways,
-  // 16.5 ahead) or the rescue and normal movement would shove each other every
-  // tick for a body walking past a tree.
+  // it is the same radius the nav layer and clearanceAdjust use, so the rescue
+  // agrees with them about where a body is allowed to stand.
   const fpHit = footprintContact(grid, x, y, PLAYER_RADIUS);
   if (fpHit) {
     px += fpHit.nx * fpHit.depth;
@@ -2344,8 +2350,9 @@ const JUMP_EDGE_COST = 3; // a 1-level climb costs ~3 walked cells — prefer sh
 
 /** Clearance pricing in findPath — see F5 in the notes and the measurement in
  *  the block that uses them. */
-const NEAR_SOLID_COST = 0.6; // a solid in the 3x3 ring
-const TIGHT_COST = 2.0; // a cell whose every point is inside a footprint's reach
+/** What a step past a solid cell costs on top of the step itself. See the
+ *  measurement where it is applied. */
+const NEAR_SOLID_COST = 0.6;
 
 /** Is this CELL a solid obstacle (prop / structure / non-enterable surface)? A
  * world@2 deck makes its cell walkable ON TOP regardless of the base, so a
@@ -2572,7 +2579,6 @@ export function findPath(
   // the path follower turns up to a waypoint-radius early — a route hugging a
   // prop cell clips its corner and grinds ("doesn't understand the hitbox").
   const solidCell = (c: number, r: number) => cellSolid(grid, c, r);
-  const tightness = grid.sceneryTight;
   const nearSolid = (c: number, r: number) => {
     for (let dr = -1; dr <= 1; dr++)
       for (let dc = -1; dc <= 1; dc++)
@@ -2772,13 +2778,29 @@ export function findPath(
           } else {
             cost = s.jump ? JUMP_EDGE_COST : 1; // 1-level auto-jump climb
           }
-          // Prefer a 1-cell buffer around solids when one exists nearby.
-          if (NEAR_SOLID_COST && nearSolid(nc, nr)) cost += NEAR_SOLID_COST;
-          // …and prefer a lane the BODY fits down. `nearSolid` is binary and
-          // one cell coarse; `sceneryTight` says what fraction of THIS cell a
-          // body cannot stand in, which is the same clearance question asked of
-          // the shape that actually stops it. See NEAR_SOLID_COST.
-          if (tightness && TIGHT_COST) cost += (tightness[nr * W + nc] / 16) * TIGHT_COST;
+          /* Prefer a 1-cell buffer around solids when one exists nearby.
+           *
+           * KEPT, AND MEASURED, now that the nav layer is body-derived rather
+           * than a raster of the art (F5: the padding was justified by "the
+           * mover's collision reaches PLAYER_RADIUS ahead and 0.75R sideways",
+           * which the nav layer now accounts for itself, so it looked like a
+           * double count). It is not: over 200 seeded autopilot trips on
+           * the_game at 16ms and 133ms frames, all of which arrive either way,
+           * dropping it made trips 12% SLOWER (12.9s mean against 11.5s) and
+           * routes 6.7% longer (4,447 cells against 4,169). The padding is not
+           * about the body fitting — the nav layer settles that — it is about
+           * the FOLLOWER, which steers in 8 screen directions and turns up to a
+           * waypoint-radius early, so a route that hugs a solid is one the body
+           * cannot actually track.
+           *
+           * A finer replacement was tried and dropped: a per-cell "tightness"
+           * (what fraction of the cell a body cannot stand in, from the same
+           * lattice that derives `blocked`) priced at 1.0. Alone it gave 11.9s;
+           * added on top of this it gave 12.0s; at 2.0 it gave 12.4s and left
+           * 11 targets unroutable instead of 5. It measured no better on the
+           * held-stick freeze rate either (7.0% against 6.9%), so it is not
+           * worth a 256 KB array and a second knob. */
+          if (nearSolid(nc, nr)) cost += NEAR_SOLID_COST;
           // Base water is swimmable but ~1.8x slower — a route only cuts through
           // it when shorter than the land detour. (A deck slab is dry ground.)
           if (s.layer === 0 && isSwim(nc, nr)) cost *= WATER_COST_MULT;
@@ -4058,7 +4080,7 @@ export type SceneryHitboxDoc = Record<
 
 /** Nav lattice: the coarse pass samples each cell KxK ... */
 const NAV_COARSE = 4; // 4x4 over a 32wu cell — one sample per 8wu
-const NAV_SUB = 8; // 4x4 INSIDE a coarse tile that isn't provably covered — one per 2wu
+const NAV_SUB = 8; // 8x8 INSIDE a coarse tile that isn't provably covered — one per 1wu
 
 /**
  * Block the ground every scenery piece stands on — as an ELLIPSE, plus the
@@ -4135,7 +4157,8 @@ export function stampSceneryCollision(
      * string compares and cost 885ms of the 905ms this function took — on the
      * server at world load, and again on the client every time one of the two
      * documents lands. 201 distinct pieces, so the cache answers 1,546 of them
-     * for free and the whole stamp drops to 41ms. */
+     * for free and the whole stamp — ellipse table, bucket index and nav bake
+     * included — drops to 126ms. */
     let rec = recCache.get(pl.piece);
     if (rec === undefined) {
       rec = hitbox[`scenery/${pl.piece}`];
@@ -4203,8 +4226,9 @@ export function stampSceneryCollision(
    * The world-axis half-extent of the ellipse is exact, not the old generous
    * (rx/dx + ry/dy)/2: with world semi-axes p,q along the map diagonals, the
    * support in either world axis is sqrt((p^2+q^2)/2) = 0.5*hypot(rx/dx, ry/dy).
-   * Measured on the_game: 21,486 bucket entries for 1,747 footprints, 12.3
-   * cells each, 168 KB of Int32 — the loose bound cost 38% more for nothing. */
+   * Measured on the_game: 20,964 bucket entries for 1,747 footprints, 12.0
+   * cells each — 82 KB of items beside the 1 MB row-major start array, which is
+   * what an O(few) point query costs on a 512x512 world. */
   const fp: SceneryFootprints = {
     n,
     cx: Float64Array.from(ecx),
@@ -4257,18 +4281,13 @@ export function stampSceneryCollision(
    * opening for the player to pass through" — and a per-piece rule cannot
    * answer it.
    *
-   * Sampled on a lattice, coarse then fine. A FREE sample is a PROOF that a
-   * legal position exists, so this layer can never over-block; the only error
-   * is the other way, a free sliver narrower than the fine lattice that gets
-   * called blocked. NAV_COARSE=4 (one sample per 8wu) settles the open cells in
-   * 16 tests; NAV_FINE=16 (one sample per 2wu) runs only where the coarse pass
-   * found nothing. Measured on the_game: the fine pass rescues 371 cells the
-   * coarse pass had called blocked (11.8%), and a 64x64 control lattice (one
-   * sample per 0.5wu) rescues a further 6 — 0.2% of the 2,894 blocked cells,
-   * each a gap under 2wu wide in configuration space, which is a knife-edge no
-   * path follower could track anyway. 262,144 cells, 8,911 candidates, 24ms. */
+   * Sampled on a lattice, coarse then refined where the coarse pass cannot
+   * prove the answer — see navCellOpen for the density and the error it
+   * accepts. Measured on the_game: 13,442 candidate cells of 262,144, of which
+   * 2,568 come out blocked against the 3,185 the old raster produced. The nav
+   * layer comes out SMALLER, which is the point: a footprint blocks a cell only
+   * when it really fills it. */
   const nav = new Array<boolean>(cells).fill(false);
-  const tight = new Uint8Array(cells);
   const seen = new Uint8Array(cells);
   let blocked = 0;
   for (let j = 0; j < n; j++) {
@@ -4278,56 +4297,52 @@ export function stampSceneryCollision(
         if (seen[i]) continue;
         seen[i] = 1;
         if (grid.propBlocked[i]) continue; // already solid; nothing to derive
-        const free = navCellFree(grid, c, r);
-        if (free < 0) {
-          nav[i] = true;
-          grid.blocked[i] = true;
-          blocked++;
-        } else tight[i] = NAV_COARSE * NAV_COARSE - free;
+        if (navCellOpen(grid, c, r)) continue;
+        nav[i] = true;
+        grid.blocked[i] = true;
+        blocked++;
       }
     }
   }
   grid.sceneryBlocked = nav;
-  grid.sceneryTight = tight;
   return blocked;
 }
 
 /**
- * How much of cell (col,row) can hold a legal body centre? Returns the number
- * of the NAV_COARSE^2 lattice points that do — 0 when only the refinement found
- * one at all, -1 when none exists anywhere in the cell (the cell is nav-blocked).
+ * Does ANY point of cell (col,row) hold a legal body centre?
  *
  * COARSE, THEN FINE WHERE IT MATTERS. The coarse pass samples the cell 4x4 —
  * one point per 8wu tile — and each sample answers with a DEPTH, which is a
- * radius around it that is provably blocked as well. A tile whose sample is
- * blocked at least its own half-diagonal deep (8*SQRT1_2 = 5.66wu) is therefore
- * fully covered and needs no refinement at all; deep inside a tree that is
- * every tile, and the whole cell costs 16 tests. Only the tiles left uncertain
- * are re-sampled 4x4 inside themselves, one point per 2wu.
+ * radius around it that is provably blocked as well (moving a point by d moves
+ * its distance to a shape by at most d). A tile whose sample is blocked at
+ * least its own half-diagonal deep (8*SQRT1_2 = 5.66wu) is therefore fully
+ * covered and needs no refinement at all; deep inside a tree that is every
+ * tile, and the whole cell is settled in 16 tests. Only the tiles left
+ * uncertain are re-sampled 8x8 inside themselves, one point per 1wu.
  *
  * A FREE sample is a PROOF that a legal body position exists, so this can never
- * over-block a cell. The residue runs the other way: a free sliver narrower
- * than the fine lattice and inside an uncertain tile is called blocked.
- * Measured on the_game against a 64x64 control lattice (one sample per 0.5wu):
- * 33 of 2,805 blocked cells, 1.2%, every one of them a gap under 2wu wide in
- * configuration space — a knife-edge no path follower could track anyway.
+ * over-block a cell — and the coarse pass alone would: it calls 3,035 of
+ * the_game's cells blocked and the refinement rescues 467 of them, 15.4%.
+ * The residue runs the other way, a free sliver narrower than the fine lattice
+ * inside an uncertain tile. Measured against a 64x64 control lattice (one
+ * sample per 0.5wu): 14 of the 2,568 blocked cells, 0.55%, every one a gap
+ * under 1wu wide in configuration space — a knife-edge no path follower could
+ * track anyway. NAV_SUB=4 (2wu) left 83 such cells, 3.15%, and saved 11ms.
  */
-function navCellFree(grid: TerrainGrid, col: number, row: number): number {
+function navCellOpen(grid: TerrainGrid, col: number, row: number): boolean {
   const step = CELL_WU / NAV_COARSE;
   const cover = step * Math.SQRT1_2; // half-diagonal of one coarse tile
   const x0 = col * CELL_WU;
   const y0 = row * CELL_WU;
   let needy = 0;
-  let free = 0;
   for (let a = 0; a < NAV_COARSE; a++) {
     for (let b = 0; b < NAV_COARSE; b++) {
       const d = footprintDepth(grid, x0 + (b + 0.5) * step, y0 + (a + 0.5) * step, PLAYER_RADIUS);
-      if (d <= 0) free++; // a legal body position, proved
-      else if (d < cover) _needyTiles[needy++] = a * NAV_COARSE + b;
+      if (d <= 0) return true; // a legal body position, proved
+      if (d < cover) _needyTiles[needy++] = a * NAV_COARSE + b;
     }
   }
-  if (free) return free;
-  if (!needy) return -1; // every tile provably covered
+  if (!needy) return false; // every tile provably covered
   const sub = step / NAV_SUB;
   for (let t = 0; t < needy; t++) {
     const tb = _needyTiles[t] % NAV_COARSE;
@@ -4336,11 +4351,11 @@ function navCellFree(grid: TerrainGrid, col: number, row: number): number {
       for (let b = 0; b < NAV_SUB; b++) {
         const x = x0 + tb * step + (b + 0.5) * sub;
         const y = y0 + ta * step + (a + 0.5) * sub;
-        if (footprintDepth(grid, x, y, PLAYER_RADIUS) <= 0) return 0; // open, barely
+        if (footprintDepth(grid, x, y, PLAYER_RADIUS) <= 0) return true; // open, barely
       }
     }
   }
-  return -1;
+  return false;
 }
 /** Scratch for navCellOpen — the bake visits ~13k cells and this saves an array
  *  allocation on every one of them. */
