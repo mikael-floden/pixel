@@ -43,7 +43,30 @@
       "generated_at": "2026-08-16T21:54:26+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6171,
-      "glow_score": 0.0572
+      "glow_score": 0.0572,
+      "animations": {
+        "motion": {
+          "group_id": "15e1c277-af1b-4dea-b24d-2c597686ce7c",
+          "description": "This is an almost completely still picture. ONLY the orange spiral in the gap changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_024/lit_3/animations/motion/00.webp",
+            "stones/stone_024/lit_3/animations/motion/01.webp",
+            "stones/stone_024/lit_3/animations/motion/02.webp",
+            "stones/stone_024/lit_3/animations/motion/03.webp",
+            "stones/stone_024/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_024/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:05:12+00:00",
+          "brief": "J1"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "stones/stone_024/lit_4/sprite.webp",
@@ -51,7 +74,30 @@
       "generated_at": "2026-08-16T21:54:36+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6955,
-      "glow_score": 0.0922
+      "glow_score": 0.0922,
+      "animations": {
+        "motion": {
+          "group_id": "a7431fb0-67ef-46a2-b566-ca195363a651",
+          "description": "This is an almost completely still picture. ONLY the orange seam through the boulder changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_024/lit_4/animations/motion/00.webp",
+            "stones/stone_024/lit_4/animations/motion/01.webp",
+            "stones/stone_024/lit_4/animations/motion/02.webp",
+            "stones/stone_024/lit_4/animations/motion/03.webp",
+            "stones/stone_024/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_024/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:06:10+00:00",
+          "brief": "J2"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stones/stone_024/not_lit_1/sprite.webp",

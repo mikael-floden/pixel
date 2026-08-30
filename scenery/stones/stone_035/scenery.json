@@ -51,7 +51,30 @@
       "generated_at": "2026-08-16T22:07:37+00:00",
       "glow_concept": "tiny golden memory motes drifting above it",
       "difference_from_source": 0.5957,
-      "glow_score": 0.0945
+      "glow_score": 0.0945,
+      "animations": {
+        "motion": {
+          "group_id": "3950ffe5-f3ad-4dde-81c1-0f21454c958a",
+          "description": "This is an almost completely still picture. ONLY the gold crescent moon on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_035/lit_1/animations/motion/00.webp",
+            "stones/stone_035/lit_1/animations/motion/01.webp",
+            "stones/stone_035/lit_1/animations/motion/02.webp",
+            "stones/stone_035/lit_1/animations/motion/03.webp",
+            "stones/stone_035/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_035/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:05:37+00:00",
+          "brief": "J8"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "stones/stone_035/lit_2/sprite.webp",
@@ -59,7 +82,30 @@
       "generated_at": "2026-08-16T22:07:48+00:00",
       "glow_concept": "ring of ghost-blue lichen circles",
       "difference_from_source": 0.6393,
-      "glow_score": 0.0696
+      "glow_score": 0.0696,
+      "animations": {
+        "motion": {
+          "group_id": "b0d9bce8-2069-4d9c-ba37-9e30c2d199ea",
+          "description": "This is an almost completely still picture. ONLY the ring of cyan dots on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_035/lit_2/animations/motion/00.webp",
+            "stones/stone_035/lit_2/animations/motion/01.webp",
+            "stones/stone_035/lit_2/animations/motion/02.webp",
+            "stones/stone_035/lit_2/animations/motion/03.webp",
+            "stones/stone_035/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_035/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:05:54+00:00",
+          "brief": "J9"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stones/stone_035/sprite.webp",

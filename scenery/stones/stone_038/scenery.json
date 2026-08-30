@@ -56,7 +56,30 @@
       "generated_at": "2026-08-16T22:10:28+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8328,
-      "glow_score": 0.0268
+      "glow_score": 0.0268,
+      "animations": {
+        "motion": {
+          "group_id": "cd461ec0-a615-453c-b1e9-44947d5e7da5",
+          "description": "This is an almost completely still picture. ONLY the orange cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_038/lit_2/animations/motion/00.webp",
+            "stones/stone_038/lit_2/animations/motion/01.webp",
+            "stones/stone_038/lit_2/animations/motion/02.webp",
+            "stones/stone_038/lit_2/animations/motion/03.webp",
+            "stones/stone_038/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_038/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:05:13+00:00",
+          "brief": "J12"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "stones/stone_038/lit_4/sprite.webp",
@@ -64,7 +87,30 @@
       "generated_at": "2026-08-16T22:11:08+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7496,
-      "glow_score": 0.0415
+      "glow_score": 0.0415,
+      "animations": {
+        "motion": {
+          "group_id": "d4bdc128-0e41-4dce-9b01-973016e339c7",
+          "description": "This is an almost completely still picture. ONLY the orange crack through the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_038/lit_4/animations/motion/00.webp",
+            "stones/stone_038/lit_4/animations/motion/01.webp",
+            "stones/stone_038/lit_4/animations/motion/02.webp",
+            "stones/stone_038/lit_4/animations/motion/03.webp",
+            "stones/stone_038/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_038/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:06:12+00:00",
+          "brief": "J13"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stones/stone_038/not_lit_1/sprite.webp",

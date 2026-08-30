@@ -56,7 +56,30 @@
       "generated_at": "2026-08-16T22:12:58+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5507,
-      "glow_score": 0.0411
+      "glow_score": 0.0411,
+      "animations": {
+        "motion": {
+          "group_id": "87791b53-0fa6-4161-8768-df12468f8213",
+          "description": "This is an almost completely still picture. ONLY the green gem in the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same green as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_040/lit_2/animations/motion/00.webp",
+            "stones/stone_040/lit_2/animations/motion/01.webp",
+            "stones/stone_040/lit_2/animations/motion/02.webp",
+            "stones/stone_040/lit_2/animations/motion/03.webp",
+            "stones/stone_040/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_040/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:06:37+00:00",
+          "brief": "J15"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "stones/stone_040/lit_3/sprite.webp",
@@ -64,7 +87,30 @@
       "generated_at": "2026-08-16T22:12:59+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5732,
-      "glow_score": 0.0153
+      "glow_score": 0.0153,
+      "animations": {
+        "motion": {
+          "group_id": "cbec1b09-0533-4722-a407-4b78afd4b26c",
+          "description": "This is an almost completely still picture. ONLY the green patches on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_040/lit_3/animations/motion/00.webp",
+            "stones/stone_040/lit_3/animations/motion/01.webp",
+            "stones/stone_040/lit_3/animations/motion/02.webp",
+            "stones/stone_040/lit_3/animations/motion/03.webp",
+            "stones/stone_040/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_040/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:06:36+00:00",
+          "brief": "J16"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "stones/stone_040/lit_4/sprite.webp",
@@ -72,7 +118,30 @@
       "generated_at": "2026-08-16T22:13:36+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7707,
-      "glow_score": 0.0483
+      "glow_score": 0.0483,
+      "animations": {
+        "motion": {
+          "group_id": "51abeae7-bdb3-47df-bc6d-aa79e6166670",
+          "description": "This is an almost completely still picture. ONLY the green cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_040/lit_4/animations/motion/00.webp",
+            "stones/stone_040/lit_4/animations/motion/01.webp",
+            "stones/stone_040/lit_4/animations/motion/02.webp",
+            "stones/stone_040/lit_4/animations/motion/03.webp",
+            "stones/stone_040/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_040/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:06:38+00:00",
+          "brief": "J17"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stones/stone_040/not_lit_1/sprite.webp",

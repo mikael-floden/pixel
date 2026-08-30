@@ -56,7 +56,30 @@
       "generated_at": "2026-08-16T22:13:54+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7269,
-      "glow_score": 0.0367
+      "glow_score": 0.0367,
+      "animations": {
+        "motion": {
+          "group_id": "d65351f6-98dc-4a70-892c-786de041dce3",
+          "description": "This is an almost completely still picture. ONLY the blue-white runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue-white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_042/lit_2/animations/motion/00.webp",
+            "stones/stone_042/lit_2/animations/motion/01.webp",
+            "stones/stone_042/lit_2/animations/motion/02.webp",
+            "stones/stone_042/lit_2/animations/motion/03.webp",
+            "stones/stone_042/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_042/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:06:54+00:00",
+          "brief": "J18"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "stones/stone_042/lit_4/sprite.webp",
@@ -64,7 +87,30 @@
       "generated_at": "2026-08-16T22:14:23+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5379,
-      "glow_score": 0.0351
+      "glow_score": 0.0351,
+      "animations": {
+        "motion": {
+          "group_id": "06999902-7cfc-411b-8273-90cd98445cb8",
+          "description": "This is an almost completely still picture. ONLY the orange runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_042/lit_4/animations/motion/00.webp",
+            "stones/stone_042/lit_4/animations/motion/01.webp",
+            "stones/stone_042/lit_4/animations/motion/02.webp",
+            "stones/stone_042/lit_4/animations/motion/03.webp",
+            "stones/stone_042/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_042/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:07:02+00:00",
+          "brief": "J19"
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "stones/stone_042/not_lit_2/sprite.webp",

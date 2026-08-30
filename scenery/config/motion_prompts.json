@@ -5900,6 +5900,523 @@
     "piece": "sheaf_poles/sheaf_pole_002",
     "state": "LIT_2"
    }
+  },
+  "J1": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange spiral in the gap changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The spiral brightens.",
+   "seen_in_art": "a split boulder with an orange spiral burning in the gap",
+   "example": {
+    "piece": "stones/stone_024",
+    "state": "LIT_3"
+   }
+  },
+  "J2": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange seam through the boulder changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The seam brightens.",
+   "seen_in_art": "a boulder split by a molten orange seam",
+   "example": {
+    "piece": "stones/stone_024",
+    "state": "LIT_4"
+   }
+  },
+  "J3": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold cracks across the boulder change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cracks brighten.",
+   "seen_in_art": "a boulder laced with gold cracks",
+   "example": {
+    "piece": "stones/stone_025",
+    "state": "LIT_2"
+   }
+  },
+  "J4": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan gems in the stones change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gems brighten.",
+   "seen_in_art": "grey stones set with cyan gems",
+   "example": {
+    "piece": "stones/stone_026",
+    "state": "LIT_4"
+   }
+  },
+  "J5": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan vein in the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The vein brightens.",
+   "seen_in_art": "a dark rock with a cyan crystal vein",
+   "example": {
+    "piece": "stones/stone_027",
+    "state": "LIT_2"
+   }
+  },
+  "J6": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The runes brighten.",
+   "seen_in_art": "a pale stone carved with gold runes",
+   "example": {
+    "piece": "stones/stone_029",
+    "state": "LIT_2"
+   }
+  },
+  "J7": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The runes brighten.",
+   "seen_in_art": "a brown stone carved with orange runes",
+   "example": {
+    "piece": "stones/stone_033",
+    "state": "LIT_2"
+   }
+  },
+  "J8": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold crescent moon on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The moon brightens.",
+   "seen_in_art": "a rock marked with a gold crescent moon",
+   "example": {
+    "piece": "stones/stone_035",
+    "state": "LIT_1"
+   }
+  },
+  "J9": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the ring of cyan dots on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The ring brightens.",
+   "seen_in_art": "a dark rock ringed with cyan dots",
+   "example": {
+    "piece": "stones/stone_035",
+    "state": "LIT_2"
+   }
+  },
+  "J10": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the white triquetra on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The triquetra brightens.",
+   "seen_in_art": "a rock carved with a white triquetra",
+   "example": {
+    "piece": "stones/stone_036",
+    "state": "LIT_2"
+   }
+  },
+  "J11": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the white triquetra on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The triquetra brightens.",
+   "seen_in_art": "a snow-capped rock carved with a white triquetra",
+   "example": {
+    "piece": "stones/stone_036",
+    "state": "LIT_4"
+   }
+  },
+  "J12": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cracks brighten.",
+   "seen_in_art": "a blue-grey rock veined with orange cracks",
+   "example": {
+    "piece": "stones/stone_038",
+    "state": "LIT_2"
+   }
+  },
+  "J13": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange crack through the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The crack brightens.",
+   "seen_in_art": "a blue rock with one orange crack running through it",
+   "example": {
+    "piece": "stones/stone_038",
+    "state": "LIT_4"
+   }
+  },
+  "J14": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cracks brighten.",
+   "seen_in_art": "a rock split by molten orange cracks",
+   "example": {
+    "piece": "stones/stone_039",
+    "state": "LIT_1"
+   }
+  },
+  "J15": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the green gem in the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same green as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gem brightens.",
+   "seen_in_art": "a dark rock with a green gem set in it",
+   "example": {
+    "piece": "stones/stone_040",
+    "state": "LIT_2"
+   }
+  },
+  "J16": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the green patches on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The patches brighten.",
+   "seen_in_art": "a dark rock with green patches lit in its surface",
+   "example": {
+    "piece": "stones/stone_040",
+    "state": "LIT_3"
+   }
+  },
+  "J17": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the green cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cracks brighten.",
+   "seen_in_art": "a dark rock laced with a green crack network",
+   "example": {
+    "piece": "stones/stone_040",
+    "state": "LIT_4"
+   }
+  },
+  "J18": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the blue-white runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue-white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The runes brighten.",
+   "seen_in_art": "a standing stone carved with blue-white runes",
+   "example": {
+    "piece": "stones/stone_042",
+    "state": "LIT_2"
+   }
+  },
+  "J19": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The runes brighten.",
+   "seen_in_art": "a stone carved with orange runes",
+   "example": {
+    "piece": "stones/stone_042",
+    "state": "LIT_4"
+   }
+  },
+  "J20": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cracks brighten.",
+   "seen_in_art": "an arched rock split by molten orange cracks",
+   "example": {
+    "piece": "stones/stone_043",
+    "state": "LIT_1"
+   }
+  },
+  "J21": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the white handprint on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The handprint brightens.",
+   "seen_in_art": "an arched rock marked with a white handprint",
+   "example": {
+    "piece": "stones/stone_043",
+    "state": "LIT_2"
+   }
+  },
+  "J22": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the pale cyan rune on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same pale cyan as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The rune brightens.",
+   "seen_in_art": "a mossy rock carved with a pale cyan rune",
+   "example": {
+    "piece": "stones/stone_046",
+    "state": "LIT_2"
+   }
+  },
+  "J23": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the pale cyan circles on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same pale cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The circles brighten.",
+   "seen_in_art": "a mossy rock marked with pale cyan circles",
+   "example": {
+    "piece": "stones/stone_046",
+    "state": "LIT_3"
+   }
+  },
+  "J24": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the pale cyan marks on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same pale cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The marks brighten.",
+   "seen_in_art": "a mossy rock set with pale cyan marks",
+   "example": {
+    "piece": "stones/stone_046",
+    "state": "LIT_4"
+   }
+  },
+  "J25": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cracks brighten.",
+   "seen_in_art": "a rock with gold cracks and gold crystals at its foot",
+   "example": {
+    "piece": "stones/stone_048",
+    "state": "LIT_2"
+   }
+  },
+  "J26": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cracks brighten.",
+   "seen_in_art": "a rock laced with fine gold cracks",
+   "example": {
+    "piece": "stones/stone_048",
+    "state": "LIT_3"
+   }
+  },
+  "J27": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold crack down the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The crack brightens.",
+   "seen_in_art": "a mossy rock with a gold crack down its face",
+   "example": {
+    "piece": "stones/stone_048",
+    "state": "LIT_4"
+   }
+  },
+  "J28": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange runes on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The runes brighten.",
+   "seen_in_art": "a dark brown rock carved with orange runes",
+   "example": {
+    "piece": "stones/stone_049",
+    "state": "LIT_2"
+   }
+  },
+  "J29": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the white spiral on the pillar changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The spiral brightens.",
+   "seen_in_art": "a stone pillar carved with a white spiral",
+   "example": {
+    "piece": "stones/stone_050",
+    "state": "LIT_3"
+   }
+  },
+  "J30": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the white triquetra on the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The triquetra brightens.",
+   "seen_in_art": "a stone carved with a white triquetra",
+   "example": {
+    "piece": "stones/stone_050",
+    "state": "LIT_4"
+   }
+  },
+  "J31": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan gems in the rocks change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gems brighten.",
+   "seen_in_art": "clustered rocks set with cyan gems",
+   "example": {
+    "piece": "stones/stone_054",
+    "state": "LIT_2"
+   }
+  },
+  "J32": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan gems in the rocks change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gems brighten.",
+   "seen_in_art": "pale rocks holding cyan gems",
+   "example": {
+    "piece": "stones/stone_054",
+    "state": "LIT_3"
+   }
+  },
+  "J33": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan gems in the opening change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gems brighten.",
+   "seen_in_art": "a split rock with cyan gems in the opening",
+   "example": {
+    "piece": "stones/stone_054",
+    "state": "LIT_4"
+   }
+  },
+  "J34": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange runic circle on the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The circle brightens.",
+   "seen_in_art": "a brown stone carved with an orange runic circle",
+   "example": {
+    "piece": "stones/stone_056",
+    "state": "LIT_2"
+   }
+  },
+  "J35": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange carving on the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The carving brightens.",
+   "seen_in_art": "a stone carved with an orange triquetra and runes",
+   "example": {
+    "piece": "stones/stone_056",
+    "state": "LIT_4"
+   }
+  },
+  "J39": {
+   "group": "graves",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold runes on the headstone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The runes brighten.",
+   "seen_in_art": "a headstone carved with gold runes",
+   "example": {
+    "piece": "graves/grave_026",
+    "state": "LIT_3"
+   }
+  },
+  "J40": {
+   "group": "graves",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the small gold light at the foot of the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The light brightens.",
+   "seen_in_art": "a headstone with a small gold light at its foot",
+   "example": {
+    "piece": "graves/grave_020",
+    "state": "LIT_2"
+   }
+  },
+  "J41": {
+   "group": "cairns",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the small gold flames on the stones change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The flames brighten.",
+   "seen_in_art": "a cairn with small gold flames on its stones",
+   "example": {
+    "piece": "cairns/cairn_026",
+    "state": "LIT_3"
+   }
+  },
+  "J42": {
+   "group": "cairns",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold crack between the stones changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The crack brightens.",
+   "seen_in_art": "a cairn with one gold crack between the stones",
+   "example": {
+    "piece": "cairns/cairn_026",
+    "state": "LIT_4"
+   }
+  },
+  "J43": {
+   "group": "cairns",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the white carved names on the stones change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The names brighten.",
+   "seen_in_art": "a cairn of stones carved with white names",
+   "example": {
+    "piece": "cairns/cairn_019",
+    "state": "LIT_2"
+   }
+  },
+  "J44": {
+   "group": "rock_spires",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold bands around the spire change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The bands brighten.",
+   "seen_in_art": "a stone spire banded with gold light",
+   "example": {
+    "piece": "rock_spires/rock_spire_002",
+    "state": "LIT_4"
+   }
+  },
+  "J45": {
+   "group": "dock_pilings",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold sunburst on the post changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The sunburst brightens.",
+   "seen_in_art": "a mooring post carved with a gold sunburst",
+   "example": {
+    "piece": "dock_pilings/dock_piling_014",
+    "state": "LIT_4"
+   }
+  },
+  "J46": {
+   "group": "gravel_piles",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold crystals in the gravel change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The crystals brighten.",
+   "seen_in_art": "a gravel mound with gold crystals jutting from it",
+   "example": {
+    "piece": "gravel_piles/gravel_pile_002",
+    "state": "LIT_4"
+   }
+  },
+  "J47": {
+   "group": "aqueduct_fragments",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the thin gold light on the arch changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The light brightens.",
+   "seen_in_art": "a ruined arch with a thin gold light down one side",
+   "example": {
+    "piece": "aqueduct_fragments/aqueduct_fragment_002",
+    "state": "LIT_4"
+   }
+  },
+  "J48": {
+   "group": "wells",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the pale water in the well changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same pale as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The water brightens.",
+   "seen_in_art": "a well brimming with pale water",
+   "example": {
+    "piece": "wells/well_008",
+    "state": "LIT_4"
+   }
+  },
+  "J49": {
+   "group": "cupboards_and_shelves",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern on the shelf shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position it has in the first frame and stays amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The lantern burns.",
+   "seen_in_art": "a dresser with a lantern burning on its shelf",
+   "example": {
+    "piece": "cupboards_and_shelves/cupboard_010",
+    "state": "LIT_2"
+   }
+  },
+  "J50": {
+   "group": "cupboards_and_shelves",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the warm light inside the cabinet changes: it brightens by the smallest amount that is still visible, then returns. At its brightest it must still look exactly the same warm orange as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The inner light flickers.",
+   "seen_in_art": "a dresser lit warm from inside its cabinet",
+   "example": {
+    "piece": "cupboards_and_shelves/cupboard_004",
+    "state": "LIT_3"
+   }
   }
  },
  "declined": {
@@ -6686,6 +7203,33 @@
     "piece": "telegraph_poles/telegraph_pole_003",
     "state": "NOT_LIT_4"
    }
+  },
+  "J36": {
+   "group": "waystones",
+   "moves": "The crack brightens.",
+   "reason": "not picked from batch AJ (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "waystones/waystone_030",
+    "state": "LIT_2"
+   }
+  },
+  "J38": {
+   "group": "waystones",
+   "moves": "The cracks brighten.",
+   "reason": "not picked from batch AJ (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "waystones/waystone_030",
+    "state": "LIT_4"
+   }
+  },
+  "J37": {
+   "group": "waystones",
+   "moves": "The cracks brighten.",
+   "reason": "not picked from batch AJ (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "waystones/waystone_030",
+    "state": "LIT_3"
+   }
   }
  },
  "_declined_note": "`declined` records briefs he has rejected outright. animate_motion reads `animations` only, so anything here is inert — it is kept so a later pass can see these were decided, not overlooked.",
@@ -6722,5 +7266,6 @@
  "_telegraph_poles_note": "TELEGRAPH POLES RESIST. telegraph_pole_003 and _008 have now failed across three batches and a redo: the dangling wires do move, but the icicles, snow and insulators shift with them and drift sits at 35-45%. The piece is a thin pole crowded with small detail, which is the shape that defeats every clause. Stop proposing them.",
  "_blowout_is_next": "THE RESIDUAL GLOW FAULT IS NOW BLOWOUT, NOT DRIFT (batch AH). With drift solved by the crisp-edge filter, what remains is small bright shapes washing to white at the peak and coming back -- gems and crystals especially (H41 gravel crystals 16.9% blowout, H24 purple gems 20.2%, H43 molten torch head 16.9%). The peak cap already forbids white; it is not holding on small high-contrast shapes. Next thing to try, untested: name the colour it must keep -- 'it stays gold/purple at every moment and never becomes pale or white' -- rather than the generic 'keeps its own colour'.",
  "_name_the_colours_note": "NAMING THE COLOUR KILLS BLOWOUT -- CONFIRMED TWICE. G10's four jars stopped swapping colours when spelled out by position ('dark red, green, purple and blue, left to right'), motion 11.1->6.0. Then across the 25 batch-AH redos, replacing the generic 'keeps its own colour' with the actual colour read off the sprite ('still exactly the same gold as in the first frame -- never pale, never white') took blowout from a 3.8% median to 0.0%, with 20 of 25 measuring exactly zero. ALWAYS open the sprite and name the colour.",
- "_gentle_note": "THE HOUSE STYLE IS ALMOST-STILL (maintainer, 2026-08-29: \"Try to be more gentle/subtile. I don't want much movement at all.\"). He asked to redo 25 pieces including ones measuring 1.5%, 2.3% and 2.8% drift -- my QUIETEST results were still too busy. Open every prompt with 'This is an almost completely still picture.' MEASURED on those 25: motion median 19.8->12.6, blowout median 3.8->0.0 (20 of 25 now zero). THE FLAME HALF WORKS OUTRIGHT: 'ONLY the very tip of <flame> shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position it has in the first frame and stays amber the whole time.' Three candles 21.0->0.6% motion, bedpost lamps 44.5->2.4, lantern post 6.2->0.9. THE GLOW HALF DOES NOT: 'brightens by the smallest amount that is still visible' is not binding -- several still pale out mid-loop, H37's carved panel vanished entirely by the last frame, H34's cracks spread. NEXT TO TRY on glows: bound the pixels, not the adjective -- e.g. 'no more than a handful of pixels change at all' or 'only the outermost edge of the carving brightens'."
+ "_gentle_note": "THE HOUSE STYLE IS ALMOST-STILL (maintainer, 2026-08-29: \"Try to be more gentle/subtile. I don't want much movement at all.\"). He asked to redo 25 pieces including ones measuring 1.5%, 2.3% and 2.8% drift -- my QUIETEST results were still too busy. Open every prompt with 'This is an almost completely still picture.' MEASURED on those 25: motion median 19.8->12.6, blowout median 3.8->0.0 (20 of 25 now zero). THE FLAME HALF WORKS OUTRIGHT: 'ONLY the very tip of <flame> shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position it has in the first frame and stays amber the whole time.' Three candles 21.0->0.6% motion, bedpost lamps 44.5->2.4, lantern post 6.2->0.9. THE GLOW HALF DOES NOT: 'brightens by the smallest amount that is still visible' is not binding -- several still pale out mid-loop, H37's carved panel vanished entirely by the last frame, H34's cracks spread. NEXT TO TRY on glows: bound the pixels, not the adjective -- e.g. 'no more than a handful of pixels change at all' or 'only the outermost edge of the carving brightens'.",
+ "_pixel_bound_note": "BOUND THE PIXELS, NOT THE ADJECTIVE. The gentle glow clause 'brightens by the smallest amount that is still visible' did not bind (batch AH redos: panels vanished, cracks spread). The flame clause works because it names a THING and a QUANTITY -- 'only the very tip, by one or two pixels'. Glow clause rewritten to match, 2026-08-29: 'Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture... It never fades, never vanishes, never spreads and never changes shape.' First used on batch AJ's 45 glows; judge it there."
 }

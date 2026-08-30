@@ -38,7 +38,30 @@
       "generated_at": "2026-08-16T21:58:01+00:00",
       "glow_concept": "patches of luminous blue-green moss",
       "difference_from_source": 0.9216,
-      "glow_score": 0.0632
+      "glow_score": 0.0632,
+      "animations": {
+        "motion": {
+          "group_id": "80b64af1-177f-4fbb-8fc7-a5e9d82c2607",
+          "description": "This is an almost completely still picture. ONLY the cyan vein in the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_027/lit_2/animations/motion/00.webp",
+            "stones/stone_027/lit_2/animations/motion/01.webp",
+            "stones/stone_027/lit_2/animations/motion/02.webp",
+            "stones/stone_027/lit_2/animations/motion/03.webp",
+            "stones/stone_027/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_027/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:05:29+00:00",
+          "brief": "J5"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stones/stone_027/sprite.webp",

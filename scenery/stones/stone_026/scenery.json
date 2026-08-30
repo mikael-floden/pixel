@@ -43,7 +43,30 @@
       "generated_at": "2026-08-16T21:56:47+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8005,
-      "glow_score": 0.0203
+      "glow_score": 0.0203,
+      "animations": {
+        "motion": {
+          "group_id": "ce661124-0808-421e-ba68-6b3f5ed2199e",
+          "description": "This is an almost completely still picture. ONLY the cyan gems in the stones change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_026/lit_4/animations/motion/00.webp",
+            "stones/stone_026/lit_4/animations/motion/01.webp",
+            "stones/stone_026/lit_4/animations/motion/02.webp",
+            "stones/stone_026/lit_4/animations/motion/03.webp",
+            "stones/stone_026/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_026/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:05:55+00:00",
+          "brief": "J4"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stones/stone_026/not_lit_1/sprite.webp",
