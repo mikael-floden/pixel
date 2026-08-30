@@ -686,6 +686,13 @@ export interface WorldScenery {
   y: number;
   hflip: boolean;
   lit: boolean;
+  /** The facing the MAP asked for: "south" | "south-east" | "south-west",
+   *  absent meaning south. The renderer resolves it against the piece's
+   *  `rotations` map. Carried because the world really does name it — 70 of
+   *  the_game's 1,421 placements do — and dropping it drew every one of them
+   *  facing south (maintainer 2026-08-30: "This is wrong! I don't want it like
+   *  that!"). */
+  dir?: string;
 }
 
 /** world@2 deck: a thin walkable slab at `level`, floating over the base

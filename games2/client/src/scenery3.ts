@@ -40,6 +40,8 @@ export interface ScenerySpec {
   y: number;
   hflip?: boolean;
   lit?: boolean;
+  /** "south" | "south-east" | "south-west" — see facedSprite. */
+  dir?: string;
 }
 
 /** A deck as either producer spells its cells: the raw v3 doc uses `x`/`y`,
@@ -334,13 +336,26 @@ export function stateFor(piece: SceneryPiece, lit?: boolean, override?: string |
   return piece.states[key] ?? { key: "", sprite: piece.sprite, rotations: {}, anims: {} };
 }
 
-/** SOUTH is the domain's only placeable facing (scenery never rotates; the
- *  SE/SW facings exist so a `windows` piece can hang on a wall that faces
- *  another way, and world placements name none). `rotations.south` when the
- *  state publishes it, else the state's own sprite — which is what the 14
- *  mid-generation states with a south-less `rotations` map need. */
+/** The still for a state, in the facing the PLACEMENT asked for.
+ *
+ *  This used to be `southSprite`, on the stated premise that "world placements
+ *  name none" — which the data has since falsified: 70 of the_game's 1,421
+ *  placements carry `dir`, 42 south-west and 28 south-east, and every one of
+ *  them was being drawn facing south (maintainer 2026-08-30: "This is wrong! I
+ *  don't want it like that!"). A `windows` piece hung on a south-east wall is
+ *  exactly what those facings exist for.
+ *
+ *  Falls back the way it always did: the asked-for rotation, else south, else
+ *  the state's own sprite — which is what the 14 mid-generation states with a
+ *  south-less `rotations` map need. So a placement naming a facing the piece
+ *  does not publish still draws, rather than resolving to a missing file. */
+export function facedSprite(state: SceneryState, dir?: string): string {
+  return (dir ? state.rotations[dir] : "") || state.rotations.south || state.sprite;
+}
+
+/** The south still. Kept for callers that mean SOUTH specifically. */
 export function southSprite(state: SceneryState): string {
-  return state.rotations.south || state.sprite;
+  return facedSprite(state);
 }
 
 /* -- the fit: crop -> scale -> flip -> paste --------------------------------- */
@@ -498,6 +513,8 @@ export interface SceneryPlacement {
   y: number;
   hflip: boolean;
   lit: boolean;
+  /** The facing the map asked for — see facedSprite. Absent means south. */
+  dir?: string;
   /** The anchor cell and its level. */
   cx: number;
   cy: number;
@@ -555,6 +572,7 @@ export function buildPlacements(
       y: p.y,
       hflip: !!p.hflip,
       lit: !!p.lit,
+      ...(p.dir ? { dir: p.dir } : {}),
       cx,
       cy,
       level,
@@ -758,7 +776,9 @@ export function sceneryLoads(
     const piece = pieces(pl.piece);
     if (!piece) continue;
     const st = stateFor(piece, pl.lit);
-    add(southSprite(st));
+    // Queue the art the placement will actually DRAW, not the south still: a
+    // faced placement whose rotation was never queued pops in later, or never.
+    add(facedSprite(st, pl.dir));
     if (opts.anims) for (const a of Object.values(st.anims)) for (const f of a.frames) add(f);
   }
   return [...out.values()];

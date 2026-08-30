@@ -193,7 +193,7 @@ import {
   artKey as sceneryArtKey,
   artUrl as sceneryArtUrl,
   roofedCells,
-  southSprite,
+  facedSprite,
   stateFor,
   sceneryHitboxFor,
   type SceneryHitboxRec,
@@ -11708,7 +11708,7 @@ export class WorldScene extends Phaser.Scene {
       }
       if (piece === null) continue; // tombstoned: the manifest 404'd or is broken
       const st = stateFor(piece, p.lit);
-      const sprite = southSprite(st);
+      const sprite = facedSprite(st, p.dir);
       if (!this.needScenery(sprite)) continue;
       /* PREFETCH ONLY beyond the draw pad: the manifest is in hand and the art
        * is queued by `needScenery` above, which is the whole point of coming

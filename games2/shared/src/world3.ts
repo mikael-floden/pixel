@@ -125,6 +125,10 @@ export function parseWorld3(json: any): ParsedWorld | null {
     }
   }
 
+  // The facings the scenery manifests publish `rotations` for. A placement may
+  // name one; everything else draws south.
+  const SCENERY_FACINGS = new Set(["south", "south-east", "south-west"]);
+
   // SCENERY is off-grid and fractional (feet at a cell's front vertex, so the
   // coordinates land on .5), names a `scenery/<piece>` rather than a tile path,
   // and can be `lit` (selects the piece's LIT_* state after dark). None of that
@@ -140,6 +144,10 @@ export function parseWorld3(json: any): ParsedWorld | null {
       y: Number(p?.y),
       hflip: !!p?.hflip,
       lit: !!p?.lit,
+      /* THE FACING THE MAP ASKED FOR. Only the three the scenery domain
+       * publishes rotations for; anything else is a typo and falls back to
+       * south rather than resolving to a missing file. */
+      ...(SCENERY_FACINGS.has(String(p?.dir)) ? { dir: String(p.dir) } : {}),
     }))
     .filter((p: WorldScenery) => !!p.piece && Number.isFinite(p.x) && Number.isFinite(p.y));
 
