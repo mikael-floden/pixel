@@ -68,6 +68,29 @@
         "south-east": "wells/well_006/not_lit_5/rotations/south-east.webp",
         "south-west": "wells/well_006/not_lit_5/rotations/south-west.webp",
         "south": "wells/well_006/not_lit_5/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "b8d92fed-029e-4ec6-a755-a7eaee44b03e",
+          "description": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_006/not_lit_5/animations/motion/00.webp",
+            "wells/well_006/not_lit_5/animations/motion/01.webp",
+            "wells/well_006/not_lit_5/animations/motion/02.webp",
+            "wells/well_006/not_lit_5/animations/motion/03.webp",
+            "wells/well_006/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_006/not_lit_5/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T11:16:48+00:00",
+          "brief": "M1"
+        }
       }
     },
     "NOT_LIT_6": {
@@ -82,6 +105,29 @@
         "south-east": "wells/well_006/not_lit_6/rotations/south-east.webp",
         "south-west": "wells/well_006/not_lit_6/rotations/south-west.webp",
         "south": "wells/well_006/not_lit_6/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "f1d6b126-1265-4120-85f4-019a3cbcdf35",
+          "description": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_006/not_lit_6/animations/motion/00.webp",
+            "wells/well_006/not_lit_6/animations/motion/01.webp",
+            "wells/well_006/not_lit_6/animations/motion/02.webp",
+            "wells/well_006/not_lit_6/animations/motion/03.webp",
+            "wells/well_006/not_lit_6/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_006/not_lit_6/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T11:16:32+00:00",
+          "brief": "M2"
+        }
       }
     }
   }

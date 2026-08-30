@@ -376,43 +376,47 @@
    }
   },
   "M1": {
-   "group": "windmills",
+   "group": "wells",
    "name": "motion",
-   "prompt": "Animate the sails only, turning slowly. Nothing else moves.",
-   "moves": "The sails turn.",
+   "prompt": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The bucket turns.",
+   "seen_in_art": "a well with a bucket hung over the shaft",
    "example": {
-    "piece": "windmills/windmill_009",
-    "state": "NOT_LIT_1"
+    "piece": "wells/well_006",
+    "state": "NOT_LIT_5"
    }
   },
   "M2": {
-   "group": "rusted_machines",
+   "group": "wells",
    "name": "motion",
-   "prompt": "Animate the flywheel only, turning very slowly. Nothing else moves.",
-   "moves": "The flywheel creeps round.",
+   "prompt": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The bucket turns.",
+   "seen_in_art": "a well with a bucket hung over the shaft",
    "example": {
-    "piece": "rusted_machines/rusted_machine_001",
-    "state": "NOT_LIT_1"
+    "piece": "wells/well_006",
+    "state": "NOT_LIT_6"
    }
   },
   "M3": {
    "group": "wells",
    "name": "motion",
-   "prompt": "Animate the hanging bucket and rope only, swaying gently. Nothing else moves.",
-   "moves": "The bucket sways on its rope.",
+   "prompt": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The bucket turns.",
+   "seen_in_art": "a well with a bucket hung over the shaft",
    "example": {
-    "piece": "wells/well_002",
-    "state": "LIT_1"
+    "piece": "wells/well_009",
+    "state": "NOT_LIT_2"
    }
   },
   "M4": {
-   "group": "telegraph_poles",
+   "group": "wells",
    "name": "motion",
-   "prompt": "Animate the wires only, swaying gently. Nothing else moves.",
-   "moves": "The wires sway between poles.",
+   "prompt": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The bucket turns.",
+   "seen_in_art": "a well with a bucket hung over the shaft",
    "example": {
-    "piece": "telegraph_poles/telegraph_pole_003",
-    "state": "NOT_LIT_1"
+    "piece": "wells/well_011",
+    "state": "NOT_LIT_2"
    }
   },
   "N12": {
@@ -6799,6 +6803,171 @@
     "state": "LIT_2"
    },
    "redo": "Round 1 failed because the LEAVES reshuffled every frame, not because of the lights. Rewritten to freeze the leaves, stems and branches by name, and to bound the loop itself: frames 1, 2 and 5 identical, only 3 and 4 differing."
+  },
+  "M43": {
+   "group": "cliff_shrubs",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the very tip of the small fire at the foot of the tree shifts, by one pixel. The body of the flame keeps exactly the shape, size and position it has in the first frame and stays amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The fire burns.",
+   "seen_in_art": "a red maple with a small fire at its roots",
+   "example": {
+    "piece": "cliff_shrubs/cliff_shrub_017",
+    "state": "LIT_2"
+   }
+  },
+  "M5": {
+   "group": "wells",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The bucket turns.",
+   "seen_in_art": "a well with a bucket hung over the shaft",
+   "example": {
+    "piece": "wells/well_011",
+    "state": "NOT_LIT_3"
+   }
+  },
+  "M6": {
+   "group": "wells",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The bucket turns.",
+   "seen_in_art": "a well with a bucket hung over the shaft",
+   "example": {
+    "piece": "wells/well_011",
+    "state": "NOT_LIT_4"
+   }
+  },
+  "M11": {
+   "group": "wells",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The bucket turns.",
+   "seen_in_art": "a well with a bucket hung over the shaft",
+   "example": {
+    "piece": "wells/well_019",
+    "state": "NOT_LIT_4"
+   }
+  },
+  "M23": {
+   "group": "lantern_posts",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the lantern hanging from the post moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The lantern turns.",
+   "seen_in_art": "a post with an unlit lantern hung from it",
+   "example": {
+    "piece": "lantern_posts/lantern_post_008",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "M33": {
+   "group": "cliff_roots",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the cyan vein in the rock changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The cyan vein in the rock is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The light brightens.",
+   "seen_in_art": "a rock face with cyan vein in the rock",
+   "example": {
+    "piece": "cliff_roots/cliff_root_067",
+    "state": "LIT_1"
+   }
+  },
+  "M34": {
+   "group": "cliff_roots",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the cyan vein in the rock changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The cyan vein in the rock is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The light brightens.",
+   "seen_in_art": "a rock face with cyan vein in the rock",
+   "example": {
+    "piece": "cliff_roots/cliff_root_067",
+    "state": "LIT_2"
+   }
+  },
+  "M35": {
+   "group": "cliff_roots",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the gold light at the root tips changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The gold light at the root tips is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The light brightens.",
+   "seen_in_art": "a rock face with gold light at the root tips",
+   "example": {
+    "piece": "cliff_roots/cliff_root_047",
+    "state": "LIT_2"
+   }
+  },
+  "M36": {
+   "group": "cliff_roots",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the gold lights among the roots changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The gold lights among the roots is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The light brightens.",
+   "seen_in_art": "a rock face with gold lights among the roots",
+   "example": {
+    "piece": "cliff_roots/cliff_root_049",
+    "state": "LIT_1"
+   }
+  },
+  "M37": {
+   "group": "cliff_roots",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the cyan lights among the roots changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The cyan lights among the roots is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The light brightens.",
+   "seen_in_art": "a rock face with cyan lights among the roots",
+   "example": {
+    "piece": "cliff_roots/cliff_root_049",
+    "state": "LIT_2"
+   }
+  },
+  "M38": {
+   "group": "cup_fungi",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the gold centres of the cup fungi changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The gold centres of the cup fungi is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The centres brighten.",
+   "seen_in_art": "orange cup fungi with lit gold centres",
+   "example": {
+    "piece": "cup_fungi/cup_fungus_002",
+    "state": "LIT_2"
+   }
+  },
+  "M39": {
+   "group": "cup_fungi",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the gold centres of the cup fungi changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The gold centres of the cup fungi is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The centres brighten.",
+   "seen_in_art": "orange cup fungi with lit gold centres",
+   "example": {
+    "piece": "cup_fungi/cup_fungus_002",
+    "state": "LIT_3"
+   }
+  },
+  "M40": {
+   "group": "cup_fungi",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the gold centres of the cup fungi changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The gold centres of the cup fungi is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The centres brighten.",
+   "seen_in_art": "orange cup fungi with lit gold centres",
+   "example": {
+    "piece": "cup_fungi/cup_fungus_002",
+    "state": "LIT_4"
+   }
+  },
+  "M41": {
+   "group": "water_lily_clumps",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the two white flowers on the pads changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The two white flowers on the pads is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the white it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The flowers brighten.",
+   "seen_in_art": "lily pads with two lit white flowers",
+   "example": {
+    "piece": "water_lily_clumps/water_lily_clump_002",
+    "state": "LIT_2"
+   }
+  },
+  "M42": {
+   "group": "water_lily_clumps",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the two white flowers on the pads changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The two white flowers on the pads is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the white it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The flowers brighten.",
+   "seen_in_art": "lily pads with two lit white flowers",
+   "example": {
+    "piece": "water_lily_clumps/water_lily_clump_002",
+    "state": "LIT_3"
+   }
   }
  },
  "declined": {
@@ -7728,6 +7897,222 @@
    "example": {
     "piece": "cliff_vines/cliff_vine_064",
     "state": "LIT_2"
+   }
+  },
+  "M7": {
+   "group": "wells",
+   "moves": "The bucket turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "wells/well_013",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "M8": {
+   "group": "wells",
+   "moves": "The bucket turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "wells/well_013",
+    "state": "NOT_LIT_4"
+   }
+  },
+  "M9": {
+   "group": "wells",
+   "moves": "The bucket turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "wells/well_016",
+    "state": "NOT_LIT_4"
+   }
+  },
+  "M10": {
+   "group": "wells",
+   "moves": "The bucket turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "wells/well_017",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "M12": {
+   "group": "wells",
+   "moves": "The hook turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "wells/well_010",
+    "state": "NOT_LIT_3"
+   }
+  },
+  "M13": {
+   "group": "wells",
+   "moves": "The hook turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "wells/well_017",
+    "state": "NOT_LIT_3"
+   }
+  },
+  "M14": {
+   "group": "rugs_and_hides",
+   "moves": "The fringe stirs.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "rugs_and_hides/rug_009",
+    "state": "NOT_LIT_4"
+   }
+  },
+  "M15": {
+   "group": "rugs_and_hides",
+   "moves": "The fringe stirs.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "rugs_and_hides/rug_009",
+    "state": "NOT_LIT_5"
+   }
+  },
+  "M16": {
+   "group": "rugs_and_hides",
+   "moves": "The fringe stirs.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "rugs_and_hides/rug_014",
+    "state": "NOT_LIT_6"
+   }
+  },
+  "M17": {
+   "group": "rugs_and_hides",
+   "moves": "The fringe stirs.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "rugs_and_hides/rug_017",
+    "state": "NOT_LIT_4"
+   }
+  },
+  "M18": {
+   "group": "rugs_and_hides",
+   "moves": "The fringe stirs.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "rugs_and_hides/rug_017",
+    "state": "NOT_LIT_5"
+   }
+  },
+  "M19": {
+   "group": "rugs_and_hides",
+   "moves": "The fringe stirs.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "rugs_and_hides/rug_017",
+    "state": "NOT_LIT_6"
+   }
+  },
+  "M20": {
+   "group": "lantern_posts",
+   "moves": "The lantern turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "lantern_posts/lantern_post_006",
+    "state": "NOT_LIT_1"
+   }
+  },
+  "M21": {
+   "group": "lantern_posts",
+   "moves": "The lantern turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "lantern_posts/lantern_post_006",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "M22": {
+   "group": "lantern_posts",
+   "moves": "The lantern turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "lantern_posts/lantern_post_008",
+    "state": "NOT_LIT_1"
+   }
+  },
+  "M24": {
+   "group": "lantern_posts",
+   "moves": "The lantern turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "lantern_posts/lantern_post_014",
+    "state": "NOT_LIT_1"
+   }
+  },
+  "M25": {
+   "group": "lantern_posts",
+   "moves": "The lantern turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "lantern_posts/lantern_post_014",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "M26": {
+   "group": "lantern_posts",
+   "moves": "The lantern turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "lantern_posts/lantern_post_016",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "M27": {
+   "group": "lantern_posts",
+   "moves": "The lantern turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "lantern_posts/lantern_post_018",
+    "state": "NOT_LIT_1"
+   }
+  },
+  "M28": {
+   "group": "lantern_posts",
+   "moves": "The lantern turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "lantern_posts/lantern_post_018",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "M29": {
+   "group": "lantern_posts",
+   "moves": "The lantern turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "lantern_posts/lantern_post_020",
+    "state": "NOT_LIT_1"
+   }
+  },
+  "M30": {
+   "group": "lantern_posts",
+   "moves": "The lantern turns.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "lantern_posts/lantern_post_026",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "M31": {
+   "group": "signposts",
+   "moves": "The charms turn.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "signposts/signpost_025",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "M32": {
+   "group": "signposts",
+   "moves": "The charms turn.",
+   "reason": "not picked from batch AM (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "signposts/signpost_025",
+    "state": "NOT_LIT_3"
    }
   }
  },

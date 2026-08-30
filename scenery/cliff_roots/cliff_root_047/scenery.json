@@ -38,7 +38,28 @@
       "generated_at": "2026-08-16T09:46:57+00:00",
       "glow_concept": "the root tips glowing faintly",
       "difference_from_source": 0.6424,
-      "glow_score": 0.0451
+      "glow_score": 0.0451,
+      "animations": {
+        "motion": {
+          "group_id": "e91191ee-de1a-4c81-a983-bbfc929222a9",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the gold light at the root tips changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The gold light at the root tips is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_roots/cliff_root_047/lit_2/animations/motion/00.webp",
+            "cliff_roots/cliff_root_047/lit_2/animations/motion/01.webp",
+            "cliff_roots/cliff_root_047/lit_2/animations/motion/02.webp",
+            "cliff_roots/cliff_root_047/lit_2/animations/motion/03.webp",
+            "cliff_roots/cliff_root_047/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_roots/cliff_root_047/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T11:16:49+00:00",
+          "brief": "M35"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cliff_roots/cliff_root_047/sprite.webp",

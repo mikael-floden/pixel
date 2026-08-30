@@ -38,7 +38,30 @@
       "generated_at": "2026-08-16T09:52:06+00:00",
       "glow_concept": "glow-moss packed between them",
       "difference_from_source": 0.9753,
-      "glow_score": 0.0912
+      "glow_score": 0.0912,
+      "animations": {
+        "motion": {
+          "group_id": "a26683eb-88a6-4a69-b582-062b013103b8",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the cyan vein in the rock changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The cyan vein in the rock is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_roots/cliff_root_067/lit_1/animations/motion/00.webp",
+            "cliff_roots/cliff_root_067/lit_1/animations/motion/01.webp",
+            "cliff_roots/cliff_root_067/lit_1/animations/motion/02.webp",
+            "cliff_roots/cliff_root_067/lit_1/animations/motion/03.webp",
+            "cliff_roots/cliff_root_067/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "cliff_roots/cliff_root_067/lit_1/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T11:16:40+00:00",
+          "brief": "M33"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "cliff_roots/cliff_root_067/lit_2/sprite.webp",
@@ -46,7 +69,30 @@
       "generated_at": "2026-08-16T09:51:50+00:00",
       "glow_concept": "the root tips glowing faintly",
       "difference_from_source": 0.6973,
-      "glow_score": 0.0544
+      "glow_score": 0.0544,
+      "animations": {
+        "motion": {
+          "group_id": "bdc6150d-5da5-4b54-8d05-c7756e500fce",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the cyan vein in the rock changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The cyan vein in the rock is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_roots/cliff_root_067/lit_2/animations/motion/00.webp",
+            "cliff_roots/cliff_root_067/lit_2/animations/motion/01.webp",
+            "cliff_roots/cliff_root_067/lit_2/animations/motion/02.webp",
+            "cliff_roots/cliff_root_067/lit_2/animations/motion/03.webp",
+            "cliff_roots/cliff_root_067/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_roots/cliff_root_067/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T11:16:48+00:00",
+          "brief": "M34"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cliff_roots/cliff_root_067/sprite.webp",
