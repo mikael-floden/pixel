@@ -57,6 +57,7 @@ import {
   screenToWorldVector,
   PLAYER_RADIUS,
   WALK_CLIMB,
+  canEnter,
   JUMP_CLIMB,
   JUMP_SPEED_FACTOR,
   JUMP_MS,
@@ -5218,8 +5219,18 @@ export class WorldScene extends Phaser.Scene {
       for (let c = c0 - RANGE; c <= c0 + RANGE; c++) {
         if (c < 0 || c >= t.width) continue;
         const i = r * t.width + c;
-        if (!t.blocked[i]) continue;
         const scenery = t.sceneryBlocked?.[i] === true;
+        /* WALLS ARE ELEVATION, NOT `blocked`. The first cut drew only the
+         * blocked array and so showed footprints while leaving the house he
+         * could not walk into completely unmarked — the one thing he was
+         * looking at. What a player means by "can I go there" is canEnter from
+         * where he stands, which folds in the climb, water and deck rules too,
+         * so ask exactly that. */
+        const enterable = canEnter(t, me.fx, me.fy, (c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU, {
+          maxClimb: WALK_CLIMB,
+          canSwim: true,
+        });
+        if (enterable) continue;
         // Sit the diamond on the cell's own surface, like the aggro rings do.
         const lift = (t.level[i] ?? 0) * this.geom.lh;
         const pts = [
