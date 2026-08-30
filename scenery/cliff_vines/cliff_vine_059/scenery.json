@@ -38,7 +38,28 @@
       "generated_at": "2026-08-16T10:33:35+00:00",
       "glow_concept": "glowworm colonies strung in the foliage",
       "difference_from_source": 0.472,
-      "glow_score": 0.0196
+      "glow_score": 0.0196,
+      "animations": {
+        "motion": {
+          "group_id": "7d17ca70-36f6-402c-9be1-f31fe701ac2c",
+          "description": "This is an almost completely still picture. ONLY the orange pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_059/lit_1/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_059/lit_1/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_059/lit_1/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_059/lit_1/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_059/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_059/lit_1/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:39:16+00:00",
+          "brief": "K35"
+        }
+      }
     },
     "LIT_2": {
       "sprite": "cliff_vines/cliff_vine_059/lit_2/sprite.webp",
@@ -46,7 +67,28 @@
       "generated_at": "2026-08-16T10:34:27+00:00",
       "glow_concept": "amber memory-light dripping from the tips",
       "difference_from_source": 0.2422,
-      "glow_score": 0.0718
+      "glow_score": 0.0718,
+      "animations": {
+        "motion": {
+          "group_id": "59ccd462-5cdd-431f-98cf-cbd332cb3a28",
+          "description": "This is an almost completely still picture. ONLY the orange pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_059/lit_2/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_059/lit_2/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_059/lit_2/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_059/lit_2/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_059/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_059/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:38:55+00:00",
+          "brief": "K36"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_059/sprite.webp",

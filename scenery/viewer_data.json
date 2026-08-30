@@ -3103,8 +3103,8 @@
           "glow_score": 0.0138,
           "animations": {
             "motion": {
-              "group_id": "2773d4c0-4200-4884-a1ed-606db5dcaa02",
-              "description": "This is an almost completely still picture. ONLY the cyan cracks across the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "group_id": "ddcdcb5d-c75f-4f57-890d-d92d76819bb1",
+              "description": "This is an almost completely still picture. ONLY the outermost edge of the cyan cracks across the stone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The cyan cracks across the stone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -3118,7 +3118,7 @@
               ],
               "strip": "aqueduct_fragments/aqueduct_fragment_901/lit_2/animations/motion__strip.webp",
               "directions": null,
-              "generated_at": "2026-08-30T10:21:42+00:00",
+              "generated_at": "2026-08-30T10:33:25+00:00",
               "brief": "H34"
             }
           },
@@ -3410,8 +3410,8 @@
           },
           "animations": {
             "motion": {
-              "group_id": "69dd3010-b73d-4b84-b024-8aa76f65ff4d",
-              "description": "This is an almost completely still picture. ONLY the cyan water in the barrel changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "group_id": "473ab0e9-536b-4b9e-bac2-e5e449ea1301",
+              "description": "This is an almost completely still picture. ONLY the outermost edge of the cyan water in the barrel changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The cyan water in the barrel is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -3427,7 +3427,7 @@
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-30T10:21:17+00:00",
+              "generated_at": "2026-08-30T10:32:36+00:00",
               "brief": "H46"
             }
           },
@@ -13273,29 +13273,7 @@
             "south-west": "carts/cart_016/lit_3/rotations/south-west.webp",
             "south": "carts/cart_016/lit_3/sprite.webp"
           },
-          "animations": {
-            "motion": {
-              "group_id": "edbec334-2fad-4bad-8cf7-003654ab815b",
-              "description": "This is an almost completely still picture. ONLY the orange ore in the cart changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "carts/cart_016/lit_3/animations/motion/00.webp",
-                "carts/cart_016/lit_3/animations/motion/01.webp",
-                "carts/cart_016/lit_3/animations/motion/02.webp",
-                "carts/cart_016/lit_3/animations/motion/03.webp",
-                "carts/cart_016/lit_3/animations/motion/04.webp"
-              ],
-              "strip": "carts/cart_016/lit_3/animations/motion__strip.webp",
-              "directions": [
-                "south"
-              ],
-              "generated_at": "2026-08-30T10:21:41+00:00",
-              "brief": "H45"
-            }
-          },
+          "animations": {},
           "art_hash": "06bbfb612749d1df"
         },
         "LIT_4": {
@@ -18356,6 +18334,27 @@
           "glow_concept": "moonlit silver shimmer across the leaves",
           "difference_from_source": 0.3572,
           "glow_score": 0.0642,
+          "animations": {
+            "motion": {
+              "group_id": "8e60a857-da89-4434-9ed1-082bd5c300db",
+              "description": "This is an almost completely still picture. ONLY glowing white droplets hanging from the vine tips change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_049/lit_1/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_049/lit_1/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_049/lit_1/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_049/lit_1/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_049/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_049/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:32:45+00:00",
+              "brief": "K1"
+            }
+          },
           "art_hash": "fc45faac38f9f250"
         },
         "LIT_2": {
@@ -18365,6 +18364,27 @@
           "glow_concept": "luminous sap veins glowing through the leaves",
           "difference_from_source": 0.3754,
           "glow_score": 0.0969,
+          "animations": {
+            "motion": {
+              "group_id": "e2d09ff3-a9ed-45cc-b0da-c164de39bfed",
+              "description": "This is an almost completely still picture. ONLY glowing white droplets hanging from the vine tips change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_049/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_049/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_049/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_049/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_049/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_049/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:33:34+00:00",
+              "brief": "K2"
+            }
+          },
           "art_hash": "e2a61bf0c17b8835"
         },
         "LIT_3": {
@@ -18382,6 +18402,27 @@
           "difference_from_source": 0.6062,
           "glow_score": 0.1761,
           "relit_from": "NOT_LIT_2",
+          "animations": {
+            "motion": {
+              "group_id": "d41d0ab3-bb4f-4055-9740-deaab265acb4",
+              "description": "This is an almost completely still picture. ONLY glowing white droplets hanging from the vine tips change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_049/lit_4/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_049/lit_4/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_049/lit_4/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_049/lit_4/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_049/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_049/lit_4/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:32:56+00:00",
+              "brief": "K3"
+            }
+          },
           "art_hash": "b5c2e62eb4f6c7e1"
         },
         "LIT_5": {
@@ -18392,6 +18433,27 @@
           "difference_from_source": 0.3656,
           "glow_score": 0.0611,
           "relit_from": "NOT_LIT_3",
+          "animations": {
+            "motion": {
+              "group_id": "fdfb9c0c-a521-4518-96b4-2ced3bff5ab0",
+              "description": "This is an almost completely still picture. ONLY glowing white droplets hanging from the vine tips change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_049/lit_5/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_049/lit_5/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_049/lit_5/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_049/lit_5/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_049/lit_5/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_049/lit_5/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:32:54+00:00",
+              "brief": "K4"
+            }
+          },
           "art_hash": "d6536c1e158dc417"
         },
         "LIT_6": {
@@ -18402,6 +18464,27 @@
           "difference_from_source": 0.4003,
           "glow_score": 0.0601,
           "relit_from": "NOT_LIT_4",
+          "animations": {
+            "motion": {
+              "group_id": "449841c3-a546-479c-954e-cd21148c70e5",
+              "description": "This is an almost completely still picture. ONLY glowing white droplets hanging from the vine tips change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_049/lit_6/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_049/lit_6/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_049/lit_6/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_049/lit_6/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_049/lit_6/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_049/lit_6/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:32:54+00:00",
+              "brief": "K5"
+            }
+          },
           "art_hash": "ce6c7d7bff86e1d4"
         }
       },
@@ -18439,6 +18522,27 @@
           "glow_concept": "luminous sap veins glowing through the leaves",
           "difference_from_source": 0.2167,
           "glow_score": 0.0246,
+          "animations": {
+            "motion": {
+              "group_id": "7bdb0e99-662a-4753-886e-db0398c88651",
+              "description": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_051/lit_1/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_051/lit_1/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_051/lit_1/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_051/lit_1/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_051/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_051/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:35:08+00:00",
+              "brief": "K12"
+            }
+          },
           "art_hash": "b964d63584df62a7"
         },
         "LIT_2": {
@@ -18448,6 +18552,27 @@
           "glow_concept": "pale blue soul-flowers dotted down the fall",
           "difference_from_source": 0.2823,
           "glow_score": 0.0299,
+          "animations": {
+            "motion": {
+              "group_id": "b11eab20-8dc8-4057-8546-90a231651172",
+              "description": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_051/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_051/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_051/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_051/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_051/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_051/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:34:35+00:00",
+              "brief": "K13"
+            }
+          },
           "art_hash": "e62642c457c5b964"
         },
         "NOT_LIT_1": {
@@ -18524,6 +18649,27 @@
           "glow_concept": null,
           "difference_from_source": 0.5182,
           "glow_score": 0.0164,
+          "animations": {
+            "motion": {
+              "group_id": "611c48e2-e3db-47d8-89b9-11639ec395b1",
+              "description": "This is an almost completely still picture. ONLY glowing white droplets hanging along the strands change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_052/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_052/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_052/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_052/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_052/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_052/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:33:02+00:00",
+              "brief": "K6"
+            }
+          },
           "art_hash": "6ec381c6d70a214e"
         },
         "LIT_3": {
@@ -18533,6 +18679,27 @@
           "glow_concept": null,
           "difference_from_source": 0.4664,
           "glow_score": 0.0254,
+          "animations": {
+            "motion": {
+              "group_id": "4fdb5495-02b2-497e-890e-764b4a70062d",
+              "description": "This is an almost completely still picture. ONLY glowing white droplets hanging along the strands change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_052/lit_3/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_052/lit_3/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_052/lit_3/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_052/lit_3/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_052/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_052/lit_3/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:32:37+00:00",
+              "brief": "K7"
+            }
+          },
           "art_hash": "0fc1f53ab01aef2c"
         },
         "LIT_4": {
@@ -18542,6 +18709,27 @@
           "glow_concept": null,
           "difference_from_source": 0.5541,
           "glow_score": 0.0124,
+          "animations": {
+            "motion": {
+              "group_id": "6778cedf-a3d7-4be5-9924-c05ff56221fe",
+              "description": "This is an almost completely still picture. ONLY glowing white droplets hanging along the strands change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_052/lit_4/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_052/lit_4/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_052/lit_4/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_052/lit_4/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_052/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_052/lit_4/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:32:54+00:00",
+              "brief": "K8"
+            }
+          },
           "art_hash": "44de2d001fc8c24d"
         },
         "NOT_LIT_1": {
@@ -18677,6 +18865,27 @@
           "glow_concept": "glowworm colonies strung in the foliage",
           "difference_from_source": 0.2664,
           "glow_score": 0.0402,
+          "animations": {
+            "motion": {
+              "group_id": "3fce6f96-85a0-4833-8a6a-2b6450f3009f",
+              "description": "This is an almost completely still picture. ONLY the pale gold pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same pale gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_057/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_057/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_057/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_057/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_057/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_057/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:39:53+00:00",
+              "brief": "K39"
+            }
+          },
           "art_hash": "89daa64deec5beb1"
         },
         "NOT_LIT_2": {
@@ -18816,6 +19025,27 @@
           "glow_concept": "glowworm colonies strung in the foliage",
           "difference_from_source": 0.472,
           "glow_score": 0.0196,
+          "animations": {
+            "motion": {
+              "group_id": "7d17ca70-36f6-402c-9be1-f31fe701ac2c",
+              "description": "This is an almost completely still picture. ONLY the orange pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_059/lit_1/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_059/lit_1/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_059/lit_1/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_059/lit_1/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_059/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_059/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:39:16+00:00",
+              "brief": "K35"
+            }
+          },
           "art_hash": "c7c5fa78d0d69e87"
         },
         "LIT_2": {
@@ -18825,6 +19055,27 @@
           "glow_concept": "amber memory-light dripping from the tips",
           "difference_from_source": 0.2422,
           "glow_score": 0.0718,
+          "animations": {
+            "motion": {
+              "group_id": "59ccd462-5cdd-431f-98cf-cbd332cb3a28",
+              "description": "This is an almost completely still picture. ONLY the orange pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_059/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_059/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_059/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_059/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_059/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_059/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:38:55+00:00",
+              "brief": "K36"
+            }
+          },
           "art_hash": "bbb31c11402be8b8"
         },
         "NOT_LIT_1": {
@@ -18965,6 +19216,27 @@
           "glow_concept": "pale blue soul-flowers dotted down the fall",
           "difference_from_source": 0.2033,
           "glow_score": 0.0361,
+          "animations": {
+            "motion": {
+              "group_id": "9ee7ca5b-5bad-436f-a17b-21967348cbb4",
+              "description": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_061/lit_1/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_061/lit_1/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_061/lit_1/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_061/lit_1/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_061/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_061/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:35:48+00:00",
+              "brief": "K14"
+            }
+          },
           "art_hash": "8fa6ca473b405df7"
         },
         "LIT_2": {
@@ -18974,6 +19246,27 @@
           "glow_concept": "glowworm colonies strung in the foliage",
           "difference_from_source": 0.4477,
           "glow_score": 0.0502,
+          "animations": {
+            "motion": {
+              "group_id": "dbbfd12b-3bbb-4341-a610-de2ec8f858c9",
+              "description": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_061/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_061/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_061/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_061/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_061/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_061/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:35:16+00:00",
+              "brief": "K15"
+            }
+          },
           "art_hash": "6fdb3eb931e75d1c"
         },
         "NOT_LIT_1": {
@@ -19050,6 +19343,27 @@
           "glow_concept": null,
           "difference_from_source": 0.2643,
           "glow_score": 0.001,
+          "animations": {
+            "motion": {
+              "group_id": "4ecc5e18-340f-406f-9c5d-c4e085b8e529",
+              "description": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_064/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_064/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_064/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_064/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_064/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_064/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:35:50+00:00",
+              "brief": "K22"
+            }
+          },
           "art_hash": "c96191c8c3a3f82a"
         },
         "LIT_3": {
@@ -19059,6 +19373,27 @@
           "glow_concept": null,
           "difference_from_source": 0.301,
           "glow_score": 0.0013,
+          "animations": {
+            "motion": {
+              "group_id": "341ff7a3-05a6-4b2b-893e-27e1a177df17",
+              "description": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_064/lit_3/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_064/lit_3/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_064/lit_3/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_064/lit_3/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_064/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_064/lit_3/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:37:13+00:00",
+              "brief": "K23"
+            }
+          },
           "art_hash": "c57f4d29385bbfc1"
         },
         "LIT_4": {
@@ -19068,6 +19403,27 @@
           "glow_concept": null,
           "difference_from_source": 0.3399,
           "glow_score": 0.0006,
+          "animations": {
+            "motion": {
+              "group_id": "df59b2dc-a60c-4717-ac21-90989aa0bc7b",
+              "description": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_064/lit_4/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_064/lit_4/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_064/lit_4/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_064/lit_4/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_064/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_064/lit_4/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:36:33+00:00",
+              "brief": "K24"
+            }
+          },
           "art_hash": "39d074ad1e1b35e4"
         }
       },
@@ -19393,6 +19749,27 @@
           "glow_concept": "glowworm colonies strung in the foliage",
           "difference_from_source": 0.4133,
           "glow_score": 0.0756,
+          "animations": {
+            "motion": {
+              "group_id": "34250839-9672-4c1b-8101-3130fcf722b1",
+              "description": "This is an almost completely still picture. ONLY the orange pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_073/lit_1/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_073/lit_1/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_073/lit_1/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_073/lit_1/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_073/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_073/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:38:38+00:00",
+              "brief": "K37"
+            }
+          },
           "art_hash": "36e9c3a5e6502714"
         },
         "LIT_2": {
@@ -19402,6 +19779,27 @@
           "glow_concept": "amber memory-light dripping from the tips",
           "difference_from_source": 0.3451,
           "glow_score": 0.1398,
+          "animations": {
+            "motion": {
+              "group_id": "587abcab-2e2b-4320-8591-b326776d4b47",
+              "description": "This is an almost completely still picture. ONLY the orange pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_073/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_073/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_073/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_073/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_073/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_073/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:39:28+00:00",
+              "brief": "K38"
+            }
+          },
           "art_hash": "48f5464da8204d4d"
         },
         "NOT_LIT_1": {
@@ -19931,6 +20329,27 @@
           "glow_concept": "luminous sap veins glowing through the leaves",
           "difference_from_source": 0.6441,
           "glow_score": 0.1061,
+          "animations": {
+            "motion": {
+              "group_id": "27bb33ee-8cc0-44d1-b38b-b883ee7266df",
+              "description": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_115/lit_1/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_115/lit_1/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_115/lit_1/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_115/lit_1/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_115/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_115/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:34:27+00:00",
+              "brief": "K16"
+            }
+          },
           "art_hash": "defa8fe733f2fd26"
         },
         "LIT_2": {
@@ -19940,6 +20359,27 @@
           "glow_concept": "pale blue soul-flowers dotted down the fall",
           "difference_from_source": 0.5763,
           "glow_score": 0.2546,
+          "animations": {
+            "motion": {
+              "group_id": "53f14134-f8b7-4313-9ad8-85e8bba5fd03",
+              "description": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_115/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_115/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_115/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_115/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_115/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_115/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:35:11+00:00",
+              "brief": "K17"
+            }
+          },
           "art_hash": "354d167535a4acf4"
         },
         "NOT_LIT_1": {
@@ -20010,6 +20450,27 @@
           "glow_concept": "pale blue soul-flowers dotted down the fall",
           "difference_from_source": 0.6077,
           "glow_score": 0.0843,
+          "animations": {
+            "motion": {
+              "group_id": "203144bd-a15e-4106-9e4c-aaddd24397fb",
+              "description": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_123/lit_1/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_123/lit_1/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_123/lit_1/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_123/lit_1/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_123/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_123/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:36:45+00:00",
+              "brief": "K27"
+            }
+          },
           "art_hash": "ade6308aac3d4c16"
         },
         "LIT_2": {
@@ -20019,6 +20480,27 @@
           "glow_concept": "glowworm colonies strung in the foliage",
           "difference_from_source": 0.5717,
           "glow_score": 0.1624,
+          "animations": {
+            "motion": {
+              "group_id": "4d6ac39c-a1a8-4a91-8718-f54a977fb6cb",
+              "description": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_123/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_123/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_123/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_123/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_123/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_123/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:37:13+00:00",
+              "brief": "K28"
+            }
+          },
           "art_hash": "12c5797de9777451"
         },
         "NOT_LIT_1": {
@@ -20095,6 +20577,27 @@
           "glow_concept": null,
           "difference_from_source": 0.8822,
           "glow_score": 0.0851,
+          "animations": {
+            "motion": {
+              "group_id": "ed2a34c5-9110-4b0e-9468-3059d906799f",
+              "description": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_124/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_124/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_124/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_124/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_124/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_124/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:38:03+00:00",
+              "brief": "K29"
+            }
+          },
           "art_hash": "42be31196ee52ecc"
         },
         "LIT_3": {
@@ -20104,6 +20607,27 @@
           "glow_concept": null,
           "difference_from_source": 0.6975,
           "glow_score": 0.1015,
+          "animations": {
+            "motion": {
+              "group_id": "3fb51004-80da-41c5-8282-1aef2f07f484",
+              "description": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_124/lit_3/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_124/lit_3/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_124/lit_3/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_124/lit_3/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_124/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_124/lit_3/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:37:29+00:00",
+              "brief": "K30"
+            }
+          },
           "art_hash": "702c2bd54c35ab33"
         },
         "LIT_4": {
@@ -20113,6 +20637,27 @@
           "glow_concept": null,
           "difference_from_source": 0.5583,
           "glow_score": 0.0926,
+          "animations": {
+            "motion": {
+              "group_id": "62ca9733-35aa-4de3-8688-32248b374c40",
+              "description": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_124/lit_4/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_124/lit_4/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_124/lit_4/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_124/lit_4/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_124/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_124/lit_4/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:37:52+00:00",
+              "brief": "K31"
+            }
+          },
           "art_hash": "9b77e0c6029a5437"
         },
         "NOT_LIT_1": {
@@ -20168,6 +20713,27 @@
           "glow_concept": "glowworm colonies strung in the foliage",
           "difference_from_source": 0.6938,
           "glow_score": 0.0772,
+          "animations": {
+            "motion": {
+              "group_id": "57fc60f5-5ffe-43ca-9997-a8526228f715",
+              "description": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_125/lit_1/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_125/lit_1/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_125/lit_1/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_125/lit_1/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_125/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_125/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:37:05+00:00",
+              "brief": "K25"
+            }
+          },
           "art_hash": "1f21d67f51eff9b5"
         },
         "LIT_2": {
@@ -20177,6 +20743,27 @@
           "glow_concept": "moonlit silver shimmer across the leaves",
           "difference_from_source": 0.6814,
           "glow_score": 0.065,
+          "animations": {
+            "motion": {
+              "group_id": "c8087a1e-73e3-470a-9d4f-9804a355148d",
+              "description": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_125/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_125/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_125/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_125/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_125/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_125/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:36:57+00:00",
+              "brief": "K26"
+            }
+          },
           "art_hash": "50d3cd4a8ea90bd8"
         },
         "NOT_LIT_1": {
@@ -20332,6 +20919,27 @@
           "glow_concept": null,
           "difference_from_source": 0.6334,
           "glow_score": 0.0322,
+          "animations": {
+            "motion": {
+              "group_id": "403f6a69-a8a9-451b-806d-54ee15579b8d",
+              "description": "This is an almost completely still picture. ONLY glowing white droplets hanging under the leaves change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_134/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_134/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_134/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_134/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_134/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_134/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:34:58+00:00",
+              "brief": "K9"
+            }
+          },
           "art_hash": "33be50aa239c51c0"
         },
         "LIT_3": {
@@ -20341,6 +20949,27 @@
           "glow_concept": null,
           "difference_from_source": 0.4793,
           "glow_score": 0.035,
+          "animations": {
+            "motion": {
+              "group_id": "d6271411-3a60-42b3-9458-fd5fca5d847f",
+              "description": "This is an almost completely still picture. ONLY glowing white droplets hanging under the leaves change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_134/lit_3/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_134/lit_3/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_134/lit_3/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_134/lit_3/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_134/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_134/lit_3/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:34:33+00:00",
+              "brief": "K10"
+            }
+          },
           "art_hash": "fa21ef810b0dc0ab"
         },
         "LIT_4": {
@@ -20350,6 +20979,27 @@
           "glow_concept": null,
           "difference_from_source": 0.7188,
           "glow_score": 0.0289,
+          "animations": {
+            "motion": {
+              "group_id": "1bf303b4-2713-473b-9d47-7e2ace2333dd",
+              "description": "This is an almost completely still picture. ONLY glowing white droplets hanging under the leaves change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_134/lit_4/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_134/lit_4/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_134/lit_4/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_134/lit_4/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_134/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_134/lit_4/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:34:43+00:00",
+              "brief": "K11"
+            }
+          },
           "art_hash": "afa4d2bd3d39a66e"
         },
         "NOT_LIT_1": {
@@ -20405,6 +21055,27 @@
           "glow_concept": "moonlit silver shimmer across the leaves",
           "difference_from_source": 0.5881,
           "glow_score": 0.0214,
+          "animations": {
+            "motion": {
+              "group_id": "4111609e-8ea9-4b0b-a552-20280fa7f459",
+              "description": "This is an almost completely still picture. ONLY the yellow-green pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same yellow-green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_135/lit_1/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_135/lit_1/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_135/lit_1/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_135/lit_1/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_135/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_135/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:39:03+00:00",
+              "brief": "K40"
+            }
+          },
           "art_hash": "7939c0b39440b72f"
         },
         "LIT_2": {
@@ -20414,6 +21085,27 @@
           "glow_concept": "luminous sap veins glowing through the leaves",
           "difference_from_source": 0.4316,
           "glow_score": 0.0756,
+          "animations": {
+            "motion": {
+              "group_id": "53dc37b1-4313-4e0a-a68c-a207ecf0451b",
+              "description": "This is an almost completely still picture. ONLY the yellow-green pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same yellow-green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_135/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_135/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_135/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_135/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_135/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_135/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:39:10+00:00",
+              "brief": "K41"
+            }
+          },
           "art_hash": "7fddb7bf69bb56b8"
         },
         "NOT_LIT_1": {
@@ -20484,6 +21176,27 @@
           "glow_concept": "glowworm colonies strung in the foliage",
           "difference_from_source": 0.465,
           "glow_score": 0.0472,
+          "animations": {
+            "motion": {
+              "group_id": "1d19c5f6-8b18-480a-85c2-3a706c8a55fc",
+              "description": "This is an almost completely still picture. ONLY the cyan light running along the stem change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_137/lit_1/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_137/lit_1/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_137/lit_1/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_137/lit_1/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_137/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_137/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:35:32+00:00",
+              "brief": "K20"
+            }
+          },
           "art_hash": "4c193c225e565d06"
         },
         "LIT_2": {
@@ -20493,6 +21206,27 @@
           "glow_concept": "amber memory-light dripping from the tips",
           "difference_from_source": 0.3832,
           "glow_score": 0.0426,
+          "animations": {
+            "motion": {
+              "group_id": "402d4fcd-b89b-4ebf-bb8d-557a528595bd",
+              "description": "This is an almost completely still picture. ONLY the cyan light running along the stem change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_137/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_137/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_137/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_137/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_137/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_137/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:37:06+00:00",
+              "brief": "K21"
+            }
+          },
           "art_hash": "bc8af60040fd6b6b"
         },
         "NOT_LIT_1": {
@@ -20569,6 +21303,27 @@
           "glow_concept": null,
           "difference_from_source": 0.3354,
           "glow_score": 0.1826,
+          "animations": {
+            "motion": {
+              "group_id": "8ea2844a-3f39-47a5-866c-aba930301230",
+              "description": "This is an almost completely still picture. ONLY the green pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_140/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_140/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_140/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_140/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_140/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_140/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:38:37+00:00",
+              "brief": "K42"
+            }
+          },
           "art_hash": "4423c893fb266358"
         },
         "LIT_3": {
@@ -20578,6 +21333,27 @@
           "glow_concept": null,
           "difference_from_source": 0.382,
           "glow_score": 0.1926,
+          "animations": {
+            "motion": {
+              "group_id": "589c233e-b8f1-49aa-801a-fbbd9fd64ae6",
+              "description": "This is an almost completely still picture. ONLY the green pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_140/lit_3/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_140/lit_3/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_140/lit_3/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_140/lit_3/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_140/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_140/lit_3/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:39:15+00:00",
+              "brief": "K43"
+            }
+          },
           "art_hash": "8ad73100fa7eb8d4"
         },
         "LIT_4": {
@@ -20587,6 +21363,27 @@
           "glow_concept": null,
           "difference_from_source": 0.4061,
           "glow_score": 0.1921,
+          "animations": {
+            "motion": {
+              "group_id": "4c35aa13-2d7b-4171-a015-257f61961a28",
+              "description": "This is an almost completely still picture. ONLY the green pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_140/lit_4/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_140/lit_4/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_140/lit_4/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_140/lit_4/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_140/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_140/lit_4/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:39:17+00:00",
+              "brief": "K44"
+            }
+          },
           "art_hash": "f6584d076677c37f"
         },
         "NOT_LIT_1": {
@@ -20642,6 +21439,27 @@
           "glow_concept": "pale blue soul-flowers dotted down the fall",
           "difference_from_source": 0.5187,
           "glow_score": 0.0452,
+          "animations": {
+            "motion": {
+              "group_id": "d1e1e93d-4751-465d-bafc-20b6ee4d5732",
+              "description": "This is an almost completely still picture. ONLY the cyan light running along the stem change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_141/lit_1/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_141/lit_1/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_141/lit_1/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_141/lit_1/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_141/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_141/lit_1/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:35:16+00:00",
+              "brief": "K18"
+            }
+          },
           "art_hash": "f9327fa154b81c2e"
         },
         "LIT_2": {
@@ -20651,6 +21469,27 @@
           "glow_concept": "glowworm colonies strung in the foliage",
           "difference_from_source": 0.59,
           "glow_score": 0.0496,
+          "animations": {
+            "motion": {
+              "group_id": "75be99c9-6745-4a1b-8356-f0ce42f81460",
+              "description": "This is an almost completely still picture. ONLY the cyan light running along the stem change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_141/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_141/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_141/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_141/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_141/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_141/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:35:39+00:00",
+              "brief": "K19"
+            }
+          },
           "art_hash": "d541de87a6c39075"
         },
         "NOT_LIT_1": {
@@ -20806,6 +21645,27 @@
           "glow_concept": null,
           "difference_from_source": 0.4855,
           "glow_score": 0.0462,
+          "animations": {
+            "motion": {
+              "group_id": "edfb42f2-2d09-4ba8-a124-2d9941e09619",
+              "description": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_148/lit_2/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_148/lit_2/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_148/lit_2/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_148/lit_2/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_148/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_148/lit_2/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:37:29+00:00",
+              "brief": "K32"
+            }
+          },
           "art_hash": "32a3539d6d7fcc52"
         },
         "LIT_3": {
@@ -20815,6 +21675,27 @@
           "glow_concept": null,
           "difference_from_source": 0.5923,
           "glow_score": 0.0476,
+          "animations": {
+            "motion": {
+              "group_id": "54635f47-07fd-4031-812a-0ae1a5f74761",
+              "description": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_148/lit_3/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_148/lit_3/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_148/lit_3/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_148/lit_3/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_148/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_148/lit_3/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:37:51+00:00",
+              "brief": "K33"
+            }
+          },
           "art_hash": "8f38197993112daf"
         },
         "LIT_4": {
@@ -20824,6 +21705,27 @@
           "glow_concept": null,
           "difference_from_source": 0.5192,
           "glow_score": 0.0475,
+          "animations": {
+            "motion": {
+              "group_id": "c7e8a436-1932-4c37-926c-f371595b0cda",
+              "description": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cliff_vines/cliff_vine_148/lit_4/animations/motion/00.webp",
+                "cliff_vines/cliff_vine_148/lit_4/animations/motion/01.webp",
+                "cliff_vines/cliff_vine_148/lit_4/animations/motion/02.webp",
+                "cliff_vines/cliff_vine_148/lit_4/animations/motion/03.webp",
+                "cliff_vines/cliff_vine_148/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "cliff_vines/cliff_vine_148/lit_4/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:38:48+00:00",
+              "brief": "K34"
+            }
+          },
           "art_hash": "53d03a9e971a6058"
         },
         "NOT_LIT_1": {
@@ -32831,8 +33733,8 @@
           },
           "animations": {
             "motion": {
-              "group_id": "d23ed7d2-b8aa-4120-8c59-e6bfacc25e0b",
-              "description": "This is an almost completely still picture. ONLY the pale gold carved panel on the headstone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same pale gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "group_id": "6d42cae8-a25d-49d5-b2e4-aa7b1c710df2",
+              "description": "This is an almost completely still picture. ONLY the outermost edge of the pale gold carved panel on the headstone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The pale gold carved panel on the headstone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the pale gold it is in the first frame and never washes out into a plain bright blur. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -32848,7 +33750,7 @@
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-30T10:22:39+00:00",
+              "generated_at": "2026-08-30T10:32:36+00:00",
               "brief": "H37"
             }
           },
@@ -63147,6 +64049,29 @@
           "glow_concept": "glowing mycelium threads linking the toadstools underground",
           "difference_from_source": 0.662,
           "glow_score": 0.1882,
+          "animations": {
+            "motion": {
+              "group_id": "41a65a2a-c07f-4ca1-9201-3dd6d3ac2911",
+              "description": "This is an almost completely still picture. ONLY the cyan threads under the mushrooms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "toadstool_rings/toadstool_ring_015/lit_2/animations/motion/00.webp",
+                "toadstool_rings/toadstool_ring_015/lit_2/animations/motion/01.webp",
+                "toadstool_rings/toadstool_ring_015/lit_2/animations/motion/02.webp",
+                "toadstool_rings/toadstool_ring_015/lit_2/animations/motion/03.webp",
+                "toadstool_rings/toadstool_ring_015/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "toadstool_rings/toadstool_ring_015/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:39:19+00:00",
+              "brief": "K45"
+            }
+          },
           "art_hash": "e7f9c0fde7f7d6ca"
         },
         "NOT_LIT_1": {
@@ -65536,8 +66461,8 @@
           },
           "animations": {
             "motion": {
-              "group_id": "50ec4405-b015-4aa1-810b-131a3403d6d6",
-              "description": "This is an almost completely still picture. ONLY the orange molten bowl at the top of the torch changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "group_id": "cea18bc9-b63d-4b5e-b039-6799ad4e0760",
+              "description": "This is an almost completely still picture. ONLY the outermost edge of the orange molten bowl at the top of the torch changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The orange molten bowl at the top of the torch is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the orange it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -65553,7 +66478,7 @@
               "directions": [
                 "south"
               ],
-              "generated_at": "2026-08-30T10:21:01+00:00",
+              "generated_at": "2026-08-30T10:32:36+00:00",
               "brief": "H43"
             }
           },

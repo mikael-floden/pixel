@@ -72,7 +72,28 @@
       "generated_at": "2026-08-16T11:02:20+00:00",
       "glow_concept": null,
       "difference_from_source": 0.382,
-      "glow_score": 0.1926
+      "glow_score": 0.1926,
+      "animations": {
+        "motion": {
+          "group_id": "589c233e-b8f1-49aa-801a-fbbd9fd64ae6",
+          "description": "This is an almost completely still picture. ONLY the green pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_140/lit_3/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_140/lit_3/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_140/lit_3/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_140/lit_3/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_140/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_140/lit_3/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:39:15+00:00",
+          "brief": "K43"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "cliff_vines/cliff_vine_140/lit_4/sprite.webp",
@@ -80,7 +101,28 @@
       "generated_at": "2026-08-16T11:02:53+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4061,
-      "glow_score": 0.1921
+      "glow_score": 0.1921,
+      "animations": {
+        "motion": {
+          "group_id": "4c35aa13-2d7b-4171-a015-257f61961a28",
+          "description": "This is an almost completely still picture. ONLY the green pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_140/lit_4/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_140/lit_4/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_140/lit_4/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_140/lit_4/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_140/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_140/lit_4/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:39:17+00:00",
+          "brief": "K44"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_140/not_lit_1/sprite.webp",
