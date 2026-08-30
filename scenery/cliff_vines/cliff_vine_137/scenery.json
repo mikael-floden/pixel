@@ -68,27 +68,7 @@
       "glow_concept": "amber memory-light dripping from the tips",
       "difference_from_source": 0.3832,
       "glow_score": 0.0426,
-      "animations": {
-        "motion": {
-          "group_id": "41e5dc57-2c44-4104-995f-4d5ee4ec0544",
-          "description": "This is an almost completely still picture. ONLY the outermost edge of the cyan light running along the stem changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. They stay exactly the cyan they are in the first frame and are equally visible in every frame. Every leaf, every stem and every branch is copied from the first frame exactly: not one of them moves, bends, shifts, grows or changes shape or colour at any point. Frames 1, 2 and 5 are identical to each other. Only frames 3 and 4 differ at all, and only by a handful of pixels. Everything else is copied from the first frame exactly, pixel for pixel. The last frame matches the first exactly.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "cliff_vines/cliff_vine_137/lit_2/animations/motion/00.webp",
-            "cliff_vines/cliff_vine_137/lit_2/animations/motion/01.webp",
-            "cliff_vines/cliff_vine_137/lit_2/animations/motion/02.webp",
-            "cliff_vines/cliff_vine_137/lit_2/animations/motion/03.webp",
-            "cliff_vines/cliff_vine_137/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "cliff_vines/cliff_vine_137/lit_2/animations/motion__strip.webp",
-          "directions": null,
-          "generated_at": "2026-08-30T10:50:22+00:00",
-          "brief": "K21"
-        }
-      }
+      "animations": {}
     },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_137/sprite.webp",

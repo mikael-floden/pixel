@@ -102,27 +102,7 @@
       "glow_concept": null,
       "difference_from_source": 0.5583,
       "glow_score": 0.0926,
-      "animations": {
-        "motion": {
-          "group_id": "da5d58f4-98a7-42c0-8172-08c5f8721a74",
-          "description": "This is an almost completely still picture. ONLY the outermost edge of the gold droplets hanging under the blossoms changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. They stay exactly the gold they are in the first frame and are equally visible in every frame. Every leaf, every stem and every branch is copied from the first frame exactly: not one of them moves, bends, shifts, grows or changes shape or colour at any point. Frames 1, 2 and 5 are identical to each other. Only frames 3 and 4 differ at all, and only by a handful of pixels. Everything else is copied from the first frame exactly, pixel for pixel. The last frame matches the first exactly.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "cliff_vines/cliff_vine_124/lit_4/animations/motion/00.webp",
-            "cliff_vines/cliff_vine_124/lit_4/animations/motion/01.webp",
-            "cliff_vines/cliff_vine_124/lit_4/animations/motion/02.webp",
-            "cliff_vines/cliff_vine_124/lit_4/animations/motion/03.webp",
-            "cliff_vines/cliff_vine_124/lit_4/animations/motion/04.webp"
-          ],
-          "strip": "cliff_vines/cliff_vine_124/lit_4/animations/motion__strip.webp",
-          "directions": null,
-          "generated_at": "2026-08-30T10:52:44+00:00",
-          "brief": "K31"
-        }
-      }
+      "animations": {}
     },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_124/not_lit_1/sprite.webp",
