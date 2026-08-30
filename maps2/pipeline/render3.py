@@ -750,6 +750,24 @@ def over_tile(top, side):
     return im
 
 
+INTERIOR_SHADE = 0.30      # how much light an interior face keeps
+
+
+def shadowed(img, key):
+    """The same tile in shadow. An INTERIOR face - the inside of a far wall,
+    seen from outside through a doorway - is not lit like an exterior wall and
+    is not absent either: skipping it outright let you see straight through
+    the house to the grass behind, which showed as a green sliver across the
+    top of every door once the doorway ran full height. A room seen through a
+    door is DARK."""
+    ck = ("shadow", key)
+    if ck not in _tile_cache:
+        a = np.array(img).astype(np.int16)
+        a[..., :3] = (a[..., :3] * INTERIOR_SHADE).astype(np.int16)
+        _tile_cache[ck] = Image.fromarray(a.astype(np.uint8), "RGBA")
+    return _tile_cache[ck]
+
+
 def storey_tile(ground):
     """The repeated storey below a cap: same-over-same, honouring top_only."""
     key = ("storey", ground)
@@ -1209,7 +1227,8 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             # where the ground is light_soil, light green where it is grass,
             # one per tile. The surface below supplies the top face; the wall
             # is drawn only where a face is actually exposed.
-            exposed = front_low < zl and (fx, fy) not in indoor
+            inside = (fx, fy) in indoor
+            exposed = front_low < zl
             if exposed:
                 cap = over_tile(gr, side)
                 # the repeated course is the WALL's own material in every
@@ -1218,6 +1237,8 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                 mid = storey_tile(side)
                 for f in range(max(0, front_low), zl + 1):
                     t = cap if f == zl else mid
+                    if inside:       # an interior face: in shadow, not lit
+                        t = shadowed(t, (gr, side, f == zl))
                     img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
             # ...and the SURFACE goes on the cap: the wall is x-over-y art,
             # the top is the maintainer's set. Only the top face is painted,
@@ -1295,11 +1316,26 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             body = dk.get("side") or ("grey_stone" if (dk.get("kind") == "cave"
                                       and dg not in ("black_rock", "grey_stone"))
                                       else dg)
+            # NO FASCIA OVER A DOORWAY. The cap tile is x-over-y: a top face
+            # plus ONE STOREY of the side material. Over the wall ring that
+            # storey is the roof's edge and belongs there. Over the DOORWAY -
+            # a deck cell with no wall under it and an open front - there is
+            # nothing for it to be the edge of, and it hangs a storey of
+            # timber across the top of the opening: the door measures 5
+            # storeys of a 6-storey wall (maintainer 2026-08-30, "the house
+            # door is one cell not tall enough"). There the roof is its top
+            # face only, and the doorway runs the full height of the wall.
+            doorway = not front_covered and (x, y) not in wall_over \
+                and L(x, y) < dl
             cap = over_tile(dg, body) if (body != dg or not front_covered) \
                 else flat_tile(dg)
             mid = storey_tile(body)
             for f in range(lo, dl + 1):
-                t = cap if f == dl else mid
+                # over a doorway the top course is the ROOF'S OWN EDGE, so it
+                # is roof-over-roof: dropping it entirely opened a sliver of
+                # grass through the top of the door, and leaving it as
+                # roof-over-wall hung a storey of timber there instead.
+                t = (over_tile(dg, dg) if doorway else cap) if f == dl else mid
                 img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
             # a roof, a bridge and a cave lid are GROUND too: the slab top
             # wears the maintainer's base tile set like any other surface
