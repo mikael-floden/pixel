@@ -3025,6 +3025,27 @@
           "glow_concept": null,
           "difference_from_source": 0.4975,
           "glow_score": 0.0283,
+          "animations": {
+            "motion": {
+              "group_id": "63b81107-ab02-4293-b2c3-fe36a53cedbe",
+              "description": "This is an almost completely still picture. ONLY the thin gold light on the arch changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "aqueduct_fragments/aqueduct_fragment_002/lit_4/animations/motion/00.webp",
+                "aqueduct_fragments/aqueduct_fragment_002/lit_4/animations/motion/01.webp",
+                "aqueduct_fragments/aqueduct_fragment_002/lit_4/animations/motion/02.webp",
+                "aqueduct_fragments/aqueduct_fragment_002/lit_4/animations/motion/03.webp",
+                "aqueduct_fragments/aqueduct_fragment_002/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "aqueduct_fragments/aqueduct_fragment_002/lit_4/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:10:06+00:00",
+              "brief": "J47"
+            }
+          },
           "art_hash": "5b81578731a836bb"
         },
         "NOT_LIT_1": {
@@ -12275,6 +12296,29 @@
             "south-west": "cairns/cairn_019/lit_2/rotations/south-west.webp",
             "south": "cairns/cairn_019/lit_2/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "f5903123-3199-4139-8a9e-445e1c626d8f",
+              "description": "This is an almost completely still picture. ONLY the white carved names on the stones change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cairns/cairn_019/lit_2/animations/motion/00.webp",
+                "cairns/cairn_019/lit_2/animations/motion/01.webp",
+                "cairns/cairn_019/lit_2/animations/motion/02.webp",
+                "cairns/cairn_019/lit_2/animations/motion/03.webp",
+                "cairns/cairn_019/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cairns/cairn_019/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:09:42+00:00",
+              "brief": "J43"
+            }
+          },
           "art_hash": "149c20f1126c4b76"
         },
         "NOT_LIT_1": {
@@ -12779,6 +12823,29 @@
             "south-west": "cairns/cairn_026/lit_3/rotations/south-west.webp",
             "south": "cairns/cairn_026/lit_3/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "0a3b85ab-5de2-411f-ac0e-90c52d41dd36",
+              "description": "This is an almost completely still picture. ONLY the small gold flames on the stones change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cairns/cairn_026/lit_3/animations/motion/00.webp",
+                "cairns/cairn_026/lit_3/animations/motion/01.webp",
+                "cairns/cairn_026/lit_3/animations/motion/02.webp",
+                "cairns/cairn_026/lit_3/animations/motion/03.webp",
+                "cairns/cairn_026/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "cairns/cairn_026/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:09:19+00:00",
+              "brief": "J41"
+            }
+          },
           "art_hash": "68fc2769f20eb805"
         },
         "LIT_4": {
@@ -12792,6 +12859,29 @@
             "south-east": "cairns/cairn_026/lit_4/rotations/south-east.webp",
             "south-west": "cairns/cairn_026/lit_4/rotations/south-west.webp",
             "south": "cairns/cairn_026/lit_4/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "47399405-099e-4246-b980-9f3dbe74d6a1",
+              "description": "This is an almost completely still picture. ONLY the gold crack between the stones changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cairns/cairn_026/lit_4/animations/motion/00.webp",
+                "cairns/cairn_026/lit_4/animations/motion/01.webp",
+                "cairns/cairn_026/lit_4/animations/motion/02.webp",
+                "cairns/cairn_026/lit_4/animations/motion/03.webp",
+                "cairns/cairn_026/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "cairns/cairn_026/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:09:01+00:00",
+              "brief": "J42"
+            }
           },
           "art_hash": "c012ac08f8215873"
         },
@@ -22673,6 +22763,29 @@
             "south-west": "cupboards_and_shelves/cupboard_004/lit_3/rotations/south-west.webp",
             "south": "cupboards_and_shelves/cupboard_004/lit_3/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "ffe24399-48fe-4d70-84f9-a630ac402e7e",
+              "description": "This is an almost completely still picture. ONLY the warm light inside the cabinet changes: it brightens by the smallest amount that is still visible, then returns. At its brightest it must still look exactly the same warm orange as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cupboards_and_shelves/cupboard_004/lit_3/animations/motion/00.webp",
+                "cupboards_and_shelves/cupboard_004/lit_3/animations/motion/01.webp",
+                "cupboards_and_shelves/cupboard_004/lit_3/animations/motion/02.webp",
+                "cupboards_and_shelves/cupboard_004/lit_3/animations/motion/03.webp",
+                "cupboards_and_shelves/cupboard_004/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "cupboards_and_shelves/cupboard_004/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:10:09+00:00",
+              "brief": "J50"
+            }
+          },
           "art_hash": "abe80d53b5e53c6e"
         },
         "LIT_4": {
@@ -22977,6 +23090,29 @@
             "south-east": "cupboards_and_shelves/cupboard_010/lit_2/rotations/south-east.webp",
             "south-west": "cupboards_and_shelves/cupboard_010/lit_2/rotations/south-west.webp",
             "south": "cupboards_and_shelves/cupboard_010/lit_2/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "6fa47bf9-5f5f-4736-8206-db42228fb32c",
+              "description": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern on the shelf shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position it has in the first frame and stays amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "cupboards_and_shelves/cupboard_010/lit_2/animations/motion/00.webp",
+                "cupboards_and_shelves/cupboard_010/lit_2/animations/motion/01.webp",
+                "cupboards_and_shelves/cupboard_010/lit_2/animations/motion/02.webp",
+                "cupboards_and_shelves/cupboard_010/lit_2/animations/motion/03.webp",
+                "cupboards_and_shelves/cupboard_010/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "cupboards_and_shelves/cupboard_010/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:10:01+00:00",
+              "brief": "J49"
+            }
           },
           "art_hash": "ea55ab959cfe21da"
         },
@@ -24041,6 +24177,29 @@
             "south-east": "dock_pilings/dock_piling_014/lit_4/rotations/south-east.webp",
             "south-west": "dock_pilings/dock_piling_014/lit_4/rotations/south-west.webp",
             "south": "dock_pilings/dock_piling_014/lit_4/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "8fef0b64-726e-4960-928c-cbd7fb1b0e51",
+              "description": "This is an almost completely still picture. ONLY the gold sunburst on the post changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/00.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/01.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/02.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/03.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:10:08+00:00",
+              "brief": "J45"
+            }
           },
           "art_hash": "ddf0fecf64fea65b"
         },
@@ -31458,6 +31617,29 @@
             "south-west": "gravel_piles/gravel_pile_002/lit_4/rotations/south-west.webp",
             "south": "gravel_piles/gravel_pile_002/lit_4/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "e2f192d8-81c8-4a1f-bcef-5db6c2f541b1",
+              "description": "This is an almost completely still picture. ONLY the gold crystals in the gravel change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "gravel_piles/gravel_pile_002/lit_4/animations/motion/00.webp",
+                "gravel_piles/gravel_pile_002/lit_4/animations/motion/01.webp",
+                "gravel_piles/gravel_pile_002/lit_4/animations/motion/02.webp",
+                "gravel_piles/gravel_pile_002/lit_4/animations/motion/03.webp",
+                "gravel_piles/gravel_pile_002/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "gravel_piles/gravel_pile_002/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:09:18+00:00",
+              "brief": "J46"
+            }
+          },
           "art_hash": "bb85595e61c46d92"
         },
         "NOT_LIT_1": {
@@ -32213,6 +32395,29 @@
             "south-west": "graves/grave_020/lit_2/rotations/south-west.webp",
             "south": "graves/grave_020/lit_2/sprite.webp"
           },
+          "animations": {
+            "motion": {
+              "group_id": "c3b88c59-4206-4f63-a3d2-3ef5c43761df",
+              "description": "This is an almost completely still picture. ONLY the small gold light at the foot of the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "graves/grave_020/lit_2/animations/motion/00.webp",
+                "graves/grave_020/lit_2/animations/motion/01.webp",
+                "graves/grave_020/lit_2/animations/motion/02.webp",
+                "graves/grave_020/lit_2/animations/motion/03.webp",
+                "graves/grave_020/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "graves/grave_020/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:09:11+00:00",
+              "brief": "J40"
+            }
+          },
           "art_hash": "f291f1565d044980"
         },
         "NOT_LIT_3": {
@@ -32332,6 +32537,29 @@
             "south-east": "graves/grave_026/lit_3/rotations/south-east.webp",
             "south-west": "graves/grave_026/lit_3/rotations/south-west.webp",
             "south": "graves/grave_026/lit_3/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "086e5ae5-2e7b-412e-938c-52e17e320941",
+              "description": "This is an almost completely still picture. ONLY the gold runes on the headstone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "graves/grave_026/lit_3/animations/motion/00.webp",
+                "graves/grave_026/lit_3/animations/motion/01.webp",
+                "graves/grave_026/lit_3/animations/motion/02.webp",
+                "graves/grave_026/lit_3/animations/motion/03.webp",
+                "graves/grave_026/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "graves/grave_026/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:08:54+00:00",
+              "brief": "J39"
+            }
           },
           "art_hash": "7f98750aacc5ccb5"
         }
@@ -47280,6 +47508,27 @@
           "glow_concept": null,
           "difference_from_source": 0.5736,
           "glow_score": 0.0921,
+          "animations": {
+            "motion": {
+              "group_id": "70312908-7c7e-46a9-9470-5995be7e5ec1",
+              "description": "This is an almost completely still picture. ONLY the gold bands around the spire change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "rock_spires/rock_spire_002/lit_4/animations/motion/00.webp",
+                "rock_spires/rock_spire_002/lit_4/animations/motion/01.webp",
+                "rock_spires/rock_spire_002/lit_4/animations/motion/02.webp",
+                "rock_spires/rock_spire_002/lit_4/animations/motion/03.webp",
+                "rock_spires/rock_spire_002/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "rock_spires/rock_spire_002/lit_4/animations/motion__strip.webp",
+              "directions": null,
+              "generated_at": "2026-08-30T10:09:45+00:00",
+              "brief": "J44"
+            }
+          },
           "art_hash": "b9e8f65c8f0e96d3"
         },
         "NOT_LIT_1": {
@@ -53825,6 +54074,29 @@
           "glow_concept": null,
           "difference_from_source": 0.6171,
           "glow_score": 0.0572,
+          "animations": {
+            "motion": {
+              "group_id": "15e1c277-af1b-4dea-b24d-2c597686ce7c",
+              "description": "This is an almost completely still picture. ONLY the orange spiral in the gap changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_024/lit_3/animations/motion/00.webp",
+                "stones/stone_024/lit_3/animations/motion/01.webp",
+                "stones/stone_024/lit_3/animations/motion/02.webp",
+                "stones/stone_024/lit_3/animations/motion/03.webp",
+                "stones/stone_024/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_024/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:05:12+00:00",
+              "brief": "J1"
+            }
+          },
           "art_hash": "0ddb2e6694477be8"
         },
         "LIT_4": {
@@ -53834,6 +54106,29 @@
           "glow_concept": null,
           "difference_from_source": 0.6955,
           "glow_score": 0.0922,
+          "animations": {
+            "motion": {
+              "group_id": "a7431fb0-67ef-46a2-b566-ca195363a651",
+              "description": "This is an almost completely still picture. ONLY the orange seam through the boulder changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_024/lit_4/animations/motion/00.webp",
+                "stones/stone_024/lit_4/animations/motion/01.webp",
+                "stones/stone_024/lit_4/animations/motion/02.webp",
+                "stones/stone_024/lit_4/animations/motion/03.webp",
+                "stones/stone_024/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_024/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:06:10+00:00",
+              "brief": "J2"
+            }
+          },
           "art_hash": "06e21289fa01f8e8"
         },
         "NOT_LIT_1": {
@@ -53889,6 +54184,29 @@
           "glow_concept": "tiny golden memory motes drifting above it",
           "difference_from_source": 0.3348,
           "glow_score": 0.0778,
+          "animations": {
+            "motion": {
+              "group_id": "c1a442f0-1155-48a2-9645-8adc9dd58cff",
+              "description": "This is an almost completely still picture. ONLY the gold cracks across the boulder change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_025/lit_2/animations/motion/00.webp",
+                "stones/stone_025/lit_2/animations/motion/01.webp",
+                "stones/stone_025/lit_2/animations/motion/02.webp",
+                "stones/stone_025/lit_2/animations/motion/03.webp",
+                "stones/stone_025/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_025/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:06:18+00:00",
+              "brief": "J3"
+            }
+          },
           "art_hash": "7e06ed1e749181dd"
         },
         "NOT_LIT_1": {
@@ -53965,6 +54283,29 @@
           "glow_concept": null,
           "difference_from_source": 0.8005,
           "glow_score": 0.0203,
+          "animations": {
+            "motion": {
+              "group_id": "ce661124-0808-421e-ba68-6b3f5ed2199e",
+              "description": "This is an almost completely still picture. ONLY the cyan gems in the stones change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_026/lit_4/animations/motion/00.webp",
+                "stones/stone_026/lit_4/animations/motion/01.webp",
+                "stones/stone_026/lit_4/animations/motion/02.webp",
+                "stones/stone_026/lit_4/animations/motion/03.webp",
+                "stones/stone_026/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_026/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:05:55+00:00",
+              "brief": "J4"
+            }
+          },
           "art_hash": "f13d07072e47d851"
         },
         "NOT_LIT_1": {
@@ -54011,6 +54352,29 @@
           "glow_concept": "patches of luminous blue-green moss",
           "difference_from_source": 0.9216,
           "glow_score": 0.0632,
+          "animations": {
+            "motion": {
+              "group_id": "80b64af1-177f-4fbb-8fc7-a5e9d82c2607",
+              "description": "This is an almost completely still picture. ONLY the cyan vein in the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_027/lit_2/animations/motion/00.webp",
+                "stones/stone_027/lit_2/animations/motion/01.webp",
+                "stones/stone_027/lit_2/animations/motion/02.webp",
+                "stones/stone_027/lit_2/animations/motion/03.webp",
+                "stones/stone_027/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_027/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:05:29+00:00",
+              "brief": "J5"
+            }
+          },
           "art_hash": "21a48c375216641f"
         },
         "NOT_LIT_1": {
@@ -54154,6 +54518,29 @@
           "glow_concept": "thin runes etched glowing warm amber",
           "difference_from_source": 0.8585,
           "glow_score": 0.3637,
+          "animations": {
+            "motion": {
+              "group_id": "b160b51c-47fc-45a7-802d-579f53eb615a",
+              "description": "This is an almost completely still picture. ONLY the gold runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_029/lit_2/animations/motion/00.webp",
+                "stones/stone_029/lit_2/animations/motion/01.webp",
+                "stones/stone_029/lit_2/animations/motion/02.webp",
+                "stones/stone_029/lit_2/animations/motion/03.webp",
+                "stones/stone_029/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_029/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:05:37+00:00",
+              "brief": "J6"
+            }
+          },
           "art_hash": "0ef1774655fbdef8"
         },
         "NOT_LIT_1": {
@@ -54397,6 +54784,29 @@
           "glow_concept": "thin runes etched glowing warm amber",
           "difference_from_source": 0.6723,
           "glow_score": 0.0558,
+          "animations": {
+            "motion": {
+              "group_id": "8ed54b89-5199-47ab-97a7-c91c4a78f75c",
+              "description": "This is an almost completely still picture. ONLY the orange runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_033/lit_2/animations/motion/00.webp",
+                "stones/stone_033/lit_2/animations/motion/01.webp",
+                "stones/stone_033/lit_2/animations/motion/02.webp",
+                "stones/stone_033/lit_2/animations/motion/03.webp",
+                "stones/stone_033/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_033/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:05:21+00:00",
+              "brief": "J7"
+            }
+          },
           "art_hash": "9bb2838b2de74fb4"
         },
         "NOT_LIT_1": {
@@ -54557,6 +54967,29 @@
           "glow_concept": "tiny golden memory motes drifting above it",
           "difference_from_source": 0.5957,
           "glow_score": 0.0945,
+          "animations": {
+            "motion": {
+              "group_id": "3950ffe5-f3ad-4dde-81c1-0f21454c958a",
+              "description": "This is an almost completely still picture. ONLY the gold crescent moon on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_035/lit_1/animations/motion/00.webp",
+                "stones/stone_035/lit_1/animations/motion/01.webp",
+                "stones/stone_035/lit_1/animations/motion/02.webp",
+                "stones/stone_035/lit_1/animations/motion/03.webp",
+                "stones/stone_035/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_035/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:05:37+00:00",
+              "brief": "J8"
+            }
+          },
           "art_hash": "29f33349feed7a87"
         },
         "LIT_2": {
@@ -54566,6 +54999,29 @@
           "glow_concept": "ring of ghost-blue lichen circles",
           "difference_from_source": 0.6393,
           "glow_score": 0.0696,
+          "animations": {
+            "motion": {
+              "group_id": "b0d9bce8-2069-4d9c-ba37-9e30c2d199ea",
+              "description": "This is an almost completely still picture. ONLY the ring of cyan dots on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_035/lit_2/animations/motion/00.webp",
+                "stones/stone_035/lit_2/animations/motion/01.webp",
+                "stones/stone_035/lit_2/animations/motion/02.webp",
+                "stones/stone_035/lit_2/animations/motion/03.webp",
+                "stones/stone_035/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_035/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:05:54+00:00",
+              "brief": "J9"
+            }
+          },
           "art_hash": "16a82fdbaf30765f"
         },
         "NOT_LIT_1": {
@@ -54644,6 +55100,29 @@
           "glow_concept": null,
           "difference_from_source": 0.3829,
           "glow_score": 0.1644,
+          "animations": {
+            "motion": {
+              "group_id": "2c25ea75-4bda-466d-aa29-b96fe77d137b",
+              "description": "This is an almost completely still picture. ONLY the white triquetra on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_036/lit_2/animations/motion/00.webp",
+                "stones/stone_036/lit_2/animations/motion/01.webp",
+                "stones/stone_036/lit_2/animations/motion/02.webp",
+                "stones/stone_036/lit_2/animations/motion/03.webp",
+                "stones/stone_036/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_036/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:06:03+00:00",
+              "brief": "J10"
+            }
+          },
           "art_hash": "31151869d517bac1"
         },
         "LIT_4": {
@@ -54653,6 +55132,29 @@
           "glow_concept": null,
           "difference_from_source": 0.5458,
           "glow_score": 0.1882,
+          "animations": {
+            "motion": {
+              "group_id": "0a154593-662e-4811-952e-0ca213ea7746",
+              "description": "This is an almost completely still picture. ONLY the white triquetra on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_036/lit_4/animations/motion/00.webp",
+                "stones/stone_036/lit_4/animations/motion/01.webp",
+                "stones/stone_036/lit_4/animations/motion/02.webp",
+                "stones/stone_036/lit_4/animations/motion/03.webp",
+                "stones/stone_036/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_036/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:13:47+00:00",
+              "brief": "J11"
+            }
+          },
           "art_hash": "779282922adb4992"
         },
         "NOT_LIT_3": {
@@ -54781,6 +55283,29 @@
           "glow_concept": null,
           "difference_from_source": 0.8328,
           "glow_score": 0.0268,
+          "animations": {
+            "motion": {
+              "group_id": "cd461ec0-a615-453c-b1e9-44947d5e7da5",
+              "description": "This is an almost completely still picture. ONLY the orange cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_038/lit_2/animations/motion/00.webp",
+                "stones/stone_038/lit_2/animations/motion/01.webp",
+                "stones/stone_038/lit_2/animations/motion/02.webp",
+                "stones/stone_038/lit_2/animations/motion/03.webp",
+                "stones/stone_038/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_038/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:05:13+00:00",
+              "brief": "J12"
+            }
+          },
           "art_hash": "e8c9af6db56230d2"
         },
         "LIT_4": {
@@ -54790,6 +55315,29 @@
           "glow_concept": null,
           "difference_from_source": 0.7496,
           "glow_score": 0.0415,
+          "animations": {
+            "motion": {
+              "group_id": "d4bdc128-0e41-4dce-9b01-973016e339c7",
+              "description": "This is an almost completely still picture. ONLY the orange crack through the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_038/lit_4/animations/motion/00.webp",
+                "stones/stone_038/lit_4/animations/motion/01.webp",
+                "stones/stone_038/lit_4/animations/motion/02.webp",
+                "stones/stone_038/lit_4/animations/motion/03.webp",
+                "stones/stone_038/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_038/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:06:12+00:00",
+              "brief": "J13"
+            }
+          },
           "art_hash": "6744c86835bdadb5"
         },
         "NOT_LIT_1": {
@@ -54853,6 +55401,29 @@
           "glow_concept": "molten orange soulstone veins in deep cracks",
           "difference_from_source": 0.8011,
           "glow_score": 0.1736,
+          "animations": {
+            "motion": {
+              "group_id": "0169f8a2-231a-4510-aa61-b8e7054c5b24",
+              "description": "This is an almost completely still picture. ONLY the orange cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_039/lit_1/animations/motion/00.webp",
+                "stones/stone_039/lit_1/animations/motion/01.webp",
+                "stones/stone_039/lit_1/animations/motion/02.webp",
+                "stones/stone_039/lit_1/animations/motion/03.webp",
+                "stones/stone_039/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_039/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:06:45+00:00",
+              "brief": "J14"
+            }
+          },
           "art_hash": "37d5a9bab86737d6"
         },
         "NOT_LIT_1": {
@@ -54937,6 +55508,29 @@
           "glow_concept": null,
           "difference_from_source": 0.5507,
           "glow_score": 0.0411,
+          "animations": {
+            "motion": {
+              "group_id": "87791b53-0fa6-4161-8768-df12468f8213",
+              "description": "This is an almost completely still picture. ONLY the green gem in the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same green as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_040/lit_2/animations/motion/00.webp",
+                "stones/stone_040/lit_2/animations/motion/01.webp",
+                "stones/stone_040/lit_2/animations/motion/02.webp",
+                "stones/stone_040/lit_2/animations/motion/03.webp",
+                "stones/stone_040/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_040/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:06:37+00:00",
+              "brief": "J15"
+            }
+          },
           "art_hash": "0607d9e8c803598a"
         },
         "LIT_3": {
@@ -54946,6 +55540,29 @@
           "glow_concept": null,
           "difference_from_source": 0.5732,
           "glow_score": 0.0153,
+          "animations": {
+            "motion": {
+              "group_id": "cbec1b09-0533-4722-a407-4b78afd4b26c",
+              "description": "This is an almost completely still picture. ONLY the green patches on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_040/lit_3/animations/motion/00.webp",
+                "stones/stone_040/lit_3/animations/motion/01.webp",
+                "stones/stone_040/lit_3/animations/motion/02.webp",
+                "stones/stone_040/lit_3/animations/motion/03.webp",
+                "stones/stone_040/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_040/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:06:36+00:00",
+              "brief": "J16"
+            }
+          },
           "art_hash": "209312c0d2cfcbfc"
         },
         "LIT_4": {
@@ -54955,6 +55572,29 @@
           "glow_concept": null,
           "difference_from_source": 0.7707,
           "glow_score": 0.0483,
+          "animations": {
+            "motion": {
+              "group_id": "51abeae7-bdb3-47df-bc6d-aa79e6166670",
+              "description": "This is an almost completely still picture. ONLY the green cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_040/lit_4/animations/motion/00.webp",
+                "stones/stone_040/lit_4/animations/motion/01.webp",
+                "stones/stone_040/lit_4/animations/motion/02.webp",
+                "stones/stone_040/lit_4/animations/motion/03.webp",
+                "stones/stone_040/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_040/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:06:38+00:00",
+              "brief": "J17"
+            }
+          },
           "art_hash": "e31304e71698dab4"
         },
         "NOT_LIT_1": {
@@ -55024,6 +55664,29 @@
           "glow_concept": null,
           "difference_from_source": 0.7269,
           "glow_score": 0.0367,
+          "animations": {
+            "motion": {
+              "group_id": "d65351f6-98dc-4a70-892c-786de041dce3",
+              "description": "This is an almost completely still picture. ONLY the blue-white runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue-white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_042/lit_2/animations/motion/00.webp",
+                "stones/stone_042/lit_2/animations/motion/01.webp",
+                "stones/stone_042/lit_2/animations/motion/02.webp",
+                "stones/stone_042/lit_2/animations/motion/03.webp",
+                "stones/stone_042/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_042/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:06:54+00:00",
+              "brief": "J18"
+            }
+          },
           "art_hash": "8ddb8a6daabd22a2"
         },
         "LIT_4": {
@@ -55033,6 +55696,29 @@
           "glow_concept": null,
           "difference_from_source": 0.5379,
           "glow_score": 0.0351,
+          "animations": {
+            "motion": {
+              "group_id": "06999902-7cfc-411b-8273-90cd98445cb8",
+              "description": "This is an almost completely still picture. ONLY the orange runes on the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_042/lit_4/animations/motion/00.webp",
+                "stones/stone_042/lit_4/animations/motion/01.webp",
+                "stones/stone_042/lit_4/animations/motion/02.webp",
+                "stones/stone_042/lit_4/animations/motion/03.webp",
+                "stones/stone_042/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_042/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:07:02+00:00",
+              "brief": "J19"
+            }
+          },
           "art_hash": "44d237364858cbbd"
         },
         "NOT_LIT_2": {
@@ -55087,6 +55773,29 @@
           "glow_concept": "molten orange soulstone veins in deep cracks",
           "difference_from_source": 0.5138,
           "glow_score": 0.1253,
+          "animations": {
+            "motion": {
+              "group_id": "504d11d5-b260-4384-9c74-544c840293de",
+              "description": "This is an almost completely still picture. ONLY the orange cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_043/lit_1/animations/motion/00.webp",
+                "stones/stone_043/lit_1/animations/motion/01.webp",
+                "stones/stone_043/lit_1/animations/motion/02.webp",
+                "stones/stone_043/lit_1/animations/motion/03.webp",
+                "stones/stone_043/lit_1/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_043/lit_1/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:06:54+00:00",
+              "brief": "J20"
+            }
+          },
           "art_hash": "4c2cf621bf9c35fa"
         },
         "LIT_2": {
@@ -55096,6 +55805,29 @@
           "glow_concept": "glowing pale handprint pressed on the face",
           "difference_from_source": 0.8241,
           "glow_score": 0.0854,
+          "animations": {
+            "motion": {
+              "group_id": "6c7361c4-8988-4c83-8dec-63a301ceb94f",
+              "description": "This is an almost completely still picture. ONLY the white handprint on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_043/lit_2/animations/motion/00.webp",
+                "stones/stone_043/lit_2/animations/motion/01.webp",
+                "stones/stone_043/lit_2/animations/motion/02.webp",
+                "stones/stone_043/lit_2/animations/motion/03.webp",
+                "stones/stone_043/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_043/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:07:44+00:00",
+              "brief": "J21"
+            }
+          },
           "art_hash": "b2b04da0e1a6411c"
         },
         "NOT_LIT_1": {
@@ -55324,6 +56056,29 @@
           "glow_concept": null,
           "difference_from_source": 0.5262,
           "glow_score": 0.1054,
+          "animations": {
+            "motion": {
+              "group_id": "3f3c2840-0a65-4695-bb13-f68bd8d78e0a",
+              "description": "This is an almost completely still picture. ONLY the pale cyan rune on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same pale cyan as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_046/lit_2/animations/motion/00.webp",
+                "stones/stone_046/lit_2/animations/motion/01.webp",
+                "stones/stone_046/lit_2/animations/motion/02.webp",
+                "stones/stone_046/lit_2/animations/motion/03.webp",
+                "stones/stone_046/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_046/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:07:18+00:00",
+              "brief": "J22"
+            }
+          },
           "art_hash": "38cf2ce808a82d19"
         },
         "LIT_3": {
@@ -55333,6 +56088,29 @@
           "glow_concept": null,
           "difference_from_source": 0.7998,
           "glow_score": 0.0143,
+          "animations": {
+            "motion": {
+              "group_id": "73b3db8c-e2d8-4c23-9c64-8a80b5f8221c",
+              "description": "This is an almost completely still picture. ONLY the pale cyan circles on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same pale cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_046/lit_3/animations/motion/00.webp",
+                "stones/stone_046/lit_3/animations/motion/01.webp",
+                "stones/stone_046/lit_3/animations/motion/02.webp",
+                "stones/stone_046/lit_3/animations/motion/03.webp",
+                "stones/stone_046/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_046/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:07:36+00:00",
+              "brief": "J23"
+            }
+          },
           "art_hash": "069e8358259b0ffa"
         },
         "LIT_4": {
@@ -55342,6 +56120,29 @@
           "glow_concept": null,
           "difference_from_source": 0.5713,
           "glow_score": 0.0732,
+          "animations": {
+            "motion": {
+              "group_id": "a8c66d7d-0459-43a3-a3f7-39124ee95c38",
+              "description": "This is an almost completely still picture. ONLY the pale cyan marks on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same pale cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_046/lit_4/animations/motion/00.webp",
+                "stones/stone_046/lit_4/animations/motion/01.webp",
+                "stones/stone_046/lit_4/animations/motion/02.webp",
+                "stones/stone_046/lit_4/animations/motion/03.webp",
+                "stones/stone_046/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_046/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:07:26+00:00",
+              "brief": "J24"
+            }
+          },
           "art_hash": "285ab264ab06a13b"
         }
       },
@@ -55453,6 +56254,29 @@
           "glow_concept": null,
           "difference_from_source": 0.6877,
           "glow_score": 0.0828,
+          "animations": {
+            "motion": {
+              "group_id": "bee2b340-4009-4472-be1d-bb6ec16ee84a",
+              "description": "This is an almost completely still picture. ONLY the gold cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_048/lit_2/animations/motion/00.webp",
+                "stones/stone_048/lit_2/animations/motion/01.webp",
+                "stones/stone_048/lit_2/animations/motion/02.webp",
+                "stones/stone_048/lit_2/animations/motion/03.webp",
+                "stones/stone_048/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_048/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:07:36+00:00",
+              "brief": "J25"
+            }
+          },
           "art_hash": "23b506f6520f8030"
         },
         "LIT_3": {
@@ -55462,6 +56286,29 @@
           "glow_concept": null,
           "difference_from_source": 0.5946,
           "glow_score": 0.0442,
+          "animations": {
+            "motion": {
+              "group_id": "1e7eb2f8-eb13-48d3-9322-f14a2e9cbb28",
+              "description": "This is an almost completely still picture. ONLY the gold cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_048/lit_3/animations/motion/00.webp",
+                "stones/stone_048/lit_3/animations/motion/01.webp",
+                "stones/stone_048/lit_3/animations/motion/02.webp",
+                "stones/stone_048/lit_3/animations/motion/03.webp",
+                "stones/stone_048/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_048/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:08:01+00:00",
+              "brief": "J26"
+            }
+          },
           "art_hash": "c38d9fdfd376db4b"
         },
         "LIT_4": {
@@ -55471,6 +56318,29 @@
           "glow_concept": null,
           "difference_from_source": 0.6727,
           "glow_score": 0.0522,
+          "animations": {
+            "motion": {
+              "group_id": "a5617621-3d4c-4612-bf41-2853527bb6a5",
+              "description": "This is an almost completely still picture. ONLY the gold crack down the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_048/lit_4/animations/motion/00.webp",
+                "stones/stone_048/lit_4/animations/motion/01.webp",
+                "stones/stone_048/lit_4/animations/motion/02.webp",
+                "stones/stone_048/lit_4/animations/motion/03.webp",
+                "stones/stone_048/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_048/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:07:46+00:00",
+              "brief": "J27"
+            }
+          },
           "art_hash": "2f50cbf8c0cae60b"
         },
         "NOT_LIT_1": {
@@ -55525,6 +56395,29 @@
           "glow_concept": "thin runes etched glowing warm amber",
           "difference_from_source": 0.8696,
           "glow_score": 0.0717,
+          "animations": {
+            "motion": {
+              "group_id": "db40e33d-1372-4628-a833-58c5a6ca1652",
+              "description": "This is an almost completely still picture. ONLY the orange runes on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_049/lit_2/animations/motion/00.webp",
+                "stones/stone_049/lit_2/animations/motion/01.webp",
+                "stones/stone_049/lit_2/animations/motion/02.webp",
+                "stones/stone_049/lit_2/animations/motion/03.webp",
+                "stones/stone_049/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_049/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:08:02+00:00",
+              "brief": "J28"
+            }
+          },
           "art_hash": "0c16b8dd8caf66f4"
         },
         "NOT_LIT_1": {
@@ -55609,6 +56502,29 @@
           "glow_concept": null,
           "difference_from_source": 0.6289,
           "glow_score": 0.0598,
+          "animations": {
+            "motion": {
+              "group_id": "d204f990-73d6-44f0-a285-105519936716",
+              "description": "This is an almost completely still picture. ONLY the white spiral on the pillar changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_050/lit_3/animations/motion/00.webp",
+                "stones/stone_050/lit_3/animations/motion/01.webp",
+                "stones/stone_050/lit_3/animations/motion/02.webp",
+                "stones/stone_050/lit_3/animations/motion/03.webp",
+                "stones/stone_050/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_050/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:08:11+00:00",
+              "brief": "J29"
+            }
+          },
           "art_hash": "f970b14bf6ac6026"
         },
         "LIT_4": {
@@ -55618,6 +56534,29 @@
           "glow_concept": null,
           "difference_from_source": 0.332,
           "glow_score": 0.0629,
+          "animations": {
+            "motion": {
+              "group_id": "9b10d06b-bf91-4857-82ec-b922f3f9ee2f",
+              "description": "This is an almost completely still picture. ONLY the white triquetra on the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_050/lit_4/animations/motion/00.webp",
+                "stones/stone_050/lit_4/animations/motion/01.webp",
+                "stones/stone_050/lit_4/animations/motion/02.webp",
+                "stones/stone_050/lit_4/animations/motion/03.webp",
+                "stones/stone_050/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_050/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:07:54+00:00",
+              "brief": "J30"
+            }
+          },
           "art_hash": "171c00df2c03fe18"
         },
         "NOT_LIT_1": {
@@ -55678,6 +56617,29 @@
           "glow_concept": null,
           "difference_from_source": 0.8243,
           "glow_score": 0.0307,
+          "animations": {
+            "motion": {
+              "group_id": "95d545ce-f97d-42c5-9a99-98b555dc4664",
+              "description": "This is an almost completely still picture. ONLY the cyan gems in the rocks change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_054/lit_2/animations/motion/00.webp",
+                "stones/stone_054/lit_2/animations/motion/01.webp",
+                "stones/stone_054/lit_2/animations/motion/02.webp",
+                "stones/stone_054/lit_2/animations/motion/03.webp",
+                "stones/stone_054/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_054/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:08:03+00:00",
+              "brief": "J31"
+            }
+          },
           "art_hash": "a61deb43fdddbf2c"
         },
         "LIT_3": {
@@ -55687,6 +56649,29 @@
           "glow_concept": null,
           "difference_from_source": 0.6193,
           "glow_score": 0.0123,
+          "animations": {
+            "motion": {
+              "group_id": "376f3c9a-e398-47a9-a989-20c831f9cb74",
+              "description": "This is an almost completely still picture. ONLY the cyan gems in the rocks change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_054/lit_3/animations/motion/00.webp",
+                "stones/stone_054/lit_3/animations/motion/01.webp",
+                "stones/stone_054/lit_3/animations/motion/02.webp",
+                "stones/stone_054/lit_3/animations/motion/03.webp",
+                "stones/stone_054/lit_3/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_054/lit_3/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:08:18+00:00",
+              "brief": "J32"
+            }
+          },
           "art_hash": "770f84812a133aab"
         },
         "LIT_4": {
@@ -55696,6 +56681,29 @@
           "glow_concept": null,
           "difference_from_source": 0.8265,
           "glow_score": 0.0066,
+          "animations": {
+            "motion": {
+              "group_id": "3f2c5e05-3a94-4207-85d3-5d8ef772746e",
+              "description": "This is an almost completely still picture. ONLY the cyan gems in the opening change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_054/lit_4/animations/motion/00.webp",
+                "stones/stone_054/lit_4/animations/motion/01.webp",
+                "stones/stone_054/lit_4/animations/motion/02.webp",
+                "stones/stone_054/lit_4/animations/motion/03.webp",
+                "stones/stone_054/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_054/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:08:25+00:00",
+              "brief": "J33"
+            }
+          },
           "art_hash": "5a5e475f47644488"
         },
         "NOT_LIT_2": {
@@ -55756,6 +56764,29 @@
           "glow_concept": null,
           "difference_from_source": 0.7254,
           "glow_score": 0.0684,
+          "animations": {
+            "motion": {
+              "group_id": "18ccaed4-4960-4416-be74-c2bea0984d1d",
+              "description": "This is an almost completely still picture. ONLY the orange runic circle on the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_056/lit_2/animations/motion/00.webp",
+                "stones/stone_056/lit_2/animations/motion/01.webp",
+                "stones/stone_056/lit_2/animations/motion/02.webp",
+                "stones/stone_056/lit_2/animations/motion/03.webp",
+                "stones/stone_056/lit_2/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_056/lit_2/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:09:10+00:00",
+              "brief": "J34"
+            }
+          },
           "art_hash": "384dbd8e123554cf"
         },
         "LIT_4": {
@@ -55765,6 +56796,29 @@
           "glow_concept": null,
           "difference_from_source": 0.5797,
           "glow_score": 0.0693,
+          "animations": {
+            "motion": {
+              "group_id": "a585aa49-b5f4-4b61-a4a4-420811482589",
+              "description": "This is an almost completely still picture. ONLY the orange carving on the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "stones/stone_056/lit_4/animations/motion/00.webp",
+                "stones/stone_056/lit_4/animations/motion/01.webp",
+                "stones/stone_056/lit_4/animations/motion/02.webp",
+                "stones/stone_056/lit_4/animations/motion/03.webp",
+                "stones/stone_056/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "stones/stone_056/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:09:33+00:00",
+              "brief": "J35"
+            }
+          },
           "art_hash": "8aef366e4fbb1944"
         },
         "NOT_LIT_1": {
@@ -100722,6 +101776,29 @@
             "south-east": "wells/well_008/lit_4/rotations/south-east.webp",
             "south-west": "wells/well_008/lit_4/rotations/south-west.webp",
             "south": "wells/well_008/lit_4/sprite.webp"
+          },
+          "animations": {
+            "motion": {
+              "group_id": "d3e6192d-d6a5-4888-871e-569777ec5719",
+              "description": "This is an almost completely still picture. ONLY the pale water in the well changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same pale as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+              "mode": "v3",
+              "frame_count": 5,
+              "generated_frames": 4,
+              "keep_first_frame": true,
+              "frame_paths": [
+                "wells/well_008/lit_4/animations/motion/00.webp",
+                "wells/well_008/lit_4/animations/motion/01.webp",
+                "wells/well_008/lit_4/animations/motion/02.webp",
+                "wells/well_008/lit_4/animations/motion/03.webp",
+                "wells/well_008/lit_4/animations/motion/04.webp"
+              ],
+              "strip": "wells/well_008/lit_4/animations/motion__strip.webp",
+              "directions": [
+                "south"
+              ],
+              "generated_at": "2026-08-30T10:10:10+00:00",
+              "brief": "J48"
+            }
           },
           "art_hash": "ef840583cbbfaadd"
         },

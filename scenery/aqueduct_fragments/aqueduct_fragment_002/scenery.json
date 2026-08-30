@@ -58,7 +58,28 @@
       "generated_at": "2026-08-15T19:37:44+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4975,
-      "glow_score": 0.0283
+      "glow_score": 0.0283,
+      "animations": {
+        "motion": {
+          "group_id": "63b81107-ab02-4293-b2c3-fe36a53cedbe",
+          "description": "This is an almost completely still picture. ONLY the thin gold light on the arch changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "aqueduct_fragments/aqueduct_fragment_002/lit_4/animations/motion/00.webp",
+            "aqueduct_fragments/aqueduct_fragment_002/lit_4/animations/motion/01.webp",
+            "aqueduct_fragments/aqueduct_fragment_002/lit_4/animations/motion/02.webp",
+            "aqueduct_fragments/aqueduct_fragment_002/lit_4/animations/motion/03.webp",
+            "aqueduct_fragments/aqueduct_fragment_002/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "aqueduct_fragments/aqueduct_fragment_002/lit_4/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:10:06+00:00",
+          "brief": "J47"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "aqueduct_fragments/aqueduct_fragment_002/not_lit_1/sprite.webp",

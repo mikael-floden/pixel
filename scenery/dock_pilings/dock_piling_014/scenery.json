@@ -125,6 +125,29 @@
         "south-east": "dock_pilings/dock_piling_014/lit_4/rotations/south-east.webp",
         "south-west": "dock_pilings/dock_piling_014/lit_4/rotations/south-west.webp",
         "south": "dock_pilings/dock_piling_014/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "8fef0b64-726e-4960-928c-cbd7fb1b0e51",
+          "description": "This is an almost completely still picture. ONLY the gold sunburst on the post changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "dock_pilings/dock_piling_014/lit_4/animations/motion/00.webp",
+            "dock_pilings/dock_piling_014/lit_4/animations/motion/01.webp",
+            "dock_pilings/dock_piling_014/lit_4/animations/motion/02.webp",
+            "dock_pilings/dock_piling_014/lit_4/animations/motion/03.webp",
+            "dock_pilings/dock_piling_014/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "dock_pilings/dock_piling_014/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:10:08+00:00",
+          "brief": "J45"
+        }
       }
     },
     "NOT_LIT_1": {

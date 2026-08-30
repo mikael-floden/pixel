@@ -82,7 +82,30 @@
       "generated_at": "2026-08-16T22:08:40+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5458,
-      "glow_score": 0.1882
+      "glow_score": 0.1882,
+      "animations": {
+        "motion": {
+          "group_id": "0a154593-662e-4811-952e-0ca213ea7746",
+          "description": "This is an almost completely still picture. ONLY the white triquetra on the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same white as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_036/lit_4/animations/motion/00.webp",
+            "stones/stone_036/lit_4/animations/motion/01.webp",
+            "stones/stone_036/lit_4/animations/motion/02.webp",
+            "stones/stone_036/lit_4/animations/motion/03.webp",
+            "stones/stone_036/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_036/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:13:47+00:00",
+          "brief": "J11"
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "stones/stone_036/sprite.webp",
