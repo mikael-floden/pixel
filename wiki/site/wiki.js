@@ -2035,6 +2035,8 @@ function makePlayer(entity, kind, opts = {}) {
    * a rail he is not looking at. The third is the one scenery needs and a
    * monster never did — "the ellips might still need a rotation to fit the
    * object", because scenery does not turn to face the camera. */
+  /* The frozen rail scales, keyed piece#state|ellipse|rail. */
+  const railMax = new Map();
   const mkHitRail = (key, label, cfg) => {
     const inp = h("input", { type: "range", class: "shadow-slider", "aria-label": label, ...cfg });
     inp.addEventListener("input", () => {
@@ -2053,7 +2055,35 @@ function makePlayer(entity, kind, opts = {}) {
       }
       editHit(hitSel, key === "w" ? { rx: v / 2 } : { rot: v });
     });
-    inp.addEventListener("change", () => { editBox = null; draw(); });
+    /* A DRAG IS HELD, AND THE SCALE CANNOT MOVE UNDER IT. Tracked with pointer
+     * events rather than focus, because a touch on a range input does not
+     * reliably focus it — and the phone is the only device he reviews on. */
+    inp.addEventListener("pointerdown", () => { inp.__drag = true; });
+    const release = () => { inp.__drag = false; };
+    inp.addEventListener("pointerup", release);
+    inp.addEventListener("pointercancel", release);
+    /* THE SCALE ONLY MOVES WHEN HE HAS RUN OUT OF RAIL (maintainer 2026-08-30:
+     * "The hitbox slider is now completely useless! It's not linear. I change
+     * it just a bit and the hitbox blows away."). Deriving the max from the
+     * LIVE value on every render made the rail a FEEDBACK LOOP: a nudge right
+     * grew the value, the bigger value grew the max, the thumb kept its pixel
+     * position on the now-longer scale, and the next move read a bigger number
+     * still — so one slow drag ran the ellipse away exponentially.
+     *
+     * The scale is cached per ellipse and frozen for the whole drag, which is
+     * what makes the rail linear. It is re-derived on RELEASE, and only when
+     * the value actually reached an end of the rail: over 90% (he needs more
+     * room) or under 15% (he needs finer steps). Re-scaling on every release
+     * would teleport the thumb to a third of the rail every time he let go. */
+    inp.addEventListener("change", () => {
+      const v = +inp.value, m = +inp.max;
+      if (inp.__railKey && m > 0 && (v > m * 0.9 || v < m * 0.15)) {
+        railMax.delete(inp.__railKey);
+        refreshHitBar();
+      }
+      editBox = null;
+      draw();
+    });
     return inp;
   };
   const hitW = mkHitRail("w", "Width", { min: "2", step: "0.5" });
@@ -2235,8 +2265,26 @@ function makePlayer(entity, kind, opts = {}) {
      * depths no ellipse of that width will ever have. Measured on a tree
      * trunk 40 wide and 12 deep: D went from a 120px rail to a 36px one. */
     const reach = (cur2) => Math.max(24, Math.min(artReach, Math.round(cur2 * 3)), Math.ceil(cur2));
-    hitW.max = String(reach(b ? b.rx * 2 : 0));
-    hitH.max = String(reach(b ? b.ry * 2 : 0));
+    /* ONE FROZEN SCALE PER ELLIPSE. The key is the piece, its state and which
+     * ellipse, so stepping to another one measures afresh while this one holds
+     * still. Outside a drag the scale is re-derived whenever the value sits at
+     * either end of it — that is what re-fits the rail after Reset, after
+     * Accept default, or when a proposal lands, without any of those buttons
+     * having to know this cache exists. The floor keeps a stored box wider
+     * than the cached scale visible and draggable. */
+    const railFor = (rail, inp, cur2) => {
+      const k = `${hitboxKey(entity, cur.state) ?? "?"}|${hitSel}|${rail}`;
+      inp.__railKey = k;
+      const held = inp.__drag === true || document.activeElement === inp;
+      let m = railMax.get(k);
+      if (m == null || (!held && (cur2 > m * 0.9 || cur2 < m * 0.15))) {
+        m = reach(cur2);
+        railMax.set(k, m);
+      }
+      return Math.max(m, Math.ceil(cur2));
+    };
+    hitW.max = String(railFor("w", hitW, b ? b.rx * 2 : 0));
+    hitH.max = String(railFor("h", hitH, b ? b.ry * 2 : 0));
     if (b) {
       if (document.activeElement !== hitW) hitW.value = String(b.rx * 2);
       if (document.activeElement !== hitH) hitH.value = String(b.ry * 2);
