@@ -5728,14 +5728,14 @@
   "H34": {
    "group": "aqueduct_fragments",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the cyan cracks across the stone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the cyan cracks across the stone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The cyan cracks across the stone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The cracks pulse.",
    "seen_in_art": "a broken aqueduct laced with bright cyan cracks",
    "example": {
     "piece": "aqueduct_fragments/aqueduct_fragment_901",
     "state": "LIT_2"
    },
-   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
+   "redo": "Third attempt with the EDGE clause proven on the 17 batch-AJ redos. H43/H46/H34 are the wide-bright-region shape that defeated the pixel bound twice."
   },
   "H35": {
    "group": "rock_spires",
@@ -5763,14 +5763,14 @@
   "H37": {
    "group": "graves",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the pale gold carved panel on the headstone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same pale gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the pale gold carved panel on the headstone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The pale gold carved panel on the headstone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the pale gold it is in the first frame and never washes out into a plain bright blur. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The panel pulses.",
    "seen_in_art": "a headstone with one gold-lit carved panel",
    "example": {
     "piece": "graves/grave_034",
     "state": "LIT_3"
    },
-   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
+   "redo": "Third attempt with the EDGE clause proven on the 17 batch-AJ redos. H43/H46/H34 are the wide-bright-region shape that defeated the pixel bound twice."
   },
   "H38": {
    "group": "waystones",
@@ -5835,14 +5835,14 @@
   "H43": {
    "group": "torch_posts",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the orange molten bowl at the top of the torch changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the orange molten bowl at the top of the torch changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The orange molten bowl at the top of the torch is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the orange it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The molten head pulses.",
    "seen_in_art": "a torch whose head is a bowl of molten orange",
    "example": {
     "piece": "torch_posts/torch_post_022",
     "state": "LIT_4"
    },
-   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
+   "redo": "Third attempt with the EDGE clause proven on the 17 batch-AJ redos. H43/H46/H34 are the wide-bright-region shape that defeated the pixel bound twice."
   },
   "H44": {
    "group": "stumps",
@@ -5855,29 +5855,17 @@
     "state": "LIT_4"
    }
   },
-  "H45": {
-   "group": "carts",
-   "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the orange ore in the cart changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same orange as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-   "moves": "The ore pulses.",
-   "seen_in_art": "a cart carrying a load of glowing orange ore",
-   "example": {
-    "piece": "carts/cart_016",
-    "state": "LIT_3"
-   },
-   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
-  },
   "H46": {
    "group": "barrels",
    "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the cyan water in the barrel changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the cyan water in the barrel changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The cyan water in the barrel is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
    "moves": "The water pulses.",
    "seen_in_art": "a barrel brimming with glowing cyan water",
    "example": {
     "piece": "barrels/barrel_007",
     "state": "LIT_2"
    },
-   "redo": "Rewritten with the PIXEL-BOUNDED clause proven on batch AJ (drift 11.9%, blowout 1.1%, zero endings dark). The earlier gentle wording leaned on an adjective and did not bind."
+   "redo": "Third attempt with the EDGE clause proven on the 17 batch-AJ redos. H43/H46/H34 are the wide-bright-region shape that defeated the pixel bound twice."
   },
   "H48": {
    "group": "cliff_vines",
@@ -6434,6 +6422,501 @@
     "state": "LIT_3"
    },
    "redo": "Round 1 with the pixel bound cut the movement but the mark stopped being READABLE -- most faded to blank stone by the last frame, several blew white and swallowed themselves. Rewritten to name a SUB-PART (the outer edge), the pattern that fixed flames, plus an explicit requirement that it is equally readable in every frame."
+  },
+  "K1": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY glowing white droplets hanging from the vine tips change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "Glowing white droplets hanging from the vine tips brighten.",
+   "seen_in_art": "glowing white droplets hanging from the vine tips on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_049",
+    "state": "LIT_1"
+   }
+  },
+  "K2": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY glowing white droplets hanging from the vine tips change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "Glowing white droplets hanging from the vine tips brighten.",
+   "seen_in_art": "glowing white droplets hanging from the vine tips on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_049",
+    "state": "LIT_2"
+   }
+  },
+  "K3": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY glowing white droplets hanging from the vine tips change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "Glowing white droplets hanging from the vine tips brighten.",
+   "seen_in_art": "glowing white droplets hanging from the vine tips on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_049",
+    "state": "LIT_4"
+   }
+  },
+  "K4": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY glowing white droplets hanging from the vine tips change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "Glowing white droplets hanging from the vine tips brighten.",
+   "seen_in_art": "glowing white droplets hanging from the vine tips on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_049",
+    "state": "LIT_5"
+   }
+  },
+  "K5": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY glowing white droplets hanging from the vine tips change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "Glowing white droplets hanging from the vine tips brighten.",
+   "seen_in_art": "glowing white droplets hanging from the vine tips on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_049",
+    "state": "LIT_6"
+   }
+  },
+  "K6": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY glowing white droplets hanging along the strands change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "Glowing white droplets hanging along the strands brighten.",
+   "seen_in_art": "glowing white droplets hanging along the strands on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_052",
+    "state": "LIT_2"
+   }
+  },
+  "K7": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY glowing white droplets hanging along the strands change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "Glowing white droplets hanging along the strands brighten.",
+   "seen_in_art": "glowing white droplets hanging along the strands on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_052",
+    "state": "LIT_3"
+   }
+  },
+  "K8": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY glowing white droplets hanging along the strands change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "Glowing white droplets hanging along the strands brighten.",
+   "seen_in_art": "glowing white droplets hanging along the strands on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_052",
+    "state": "LIT_4"
+   }
+  },
+  "K9": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY glowing white droplets hanging under the leaves change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "Glowing white droplets hanging under the leaves brighten.",
+   "seen_in_art": "glowing white droplets hanging under the leaves on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_134",
+    "state": "LIT_2"
+   }
+  },
+  "K10": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY glowing white droplets hanging under the leaves change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "Glowing white droplets hanging under the leaves brighten.",
+   "seen_in_art": "glowing white droplets hanging under the leaves on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_134",
+    "state": "LIT_3"
+   }
+  },
+  "K11": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY glowing white droplets hanging under the leaves change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "Glowing white droplets hanging under the leaves brighten.",
+   "seen_in_art": "glowing white droplets hanging under the leaves on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_134",
+    "state": "LIT_4"
+   }
+  },
+  "K12": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cyan flowers on the vine brighten.",
+   "seen_in_art": "the cyan flowers on the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_051",
+    "state": "LIT_1"
+   }
+  },
+  "K13": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cyan flowers on the vine brighten.",
+   "seen_in_art": "the cyan flowers on the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_051",
+    "state": "LIT_2"
+   }
+  },
+  "K14": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cyan flowers on the vine brighten.",
+   "seen_in_art": "the cyan flowers on the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_061",
+    "state": "LIT_1"
+   }
+  },
+  "K15": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cyan flowers on the vine brighten.",
+   "seen_in_art": "the cyan flowers on the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_061",
+    "state": "LIT_2"
+   }
+  },
+  "K16": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cyan flowers on the vine brighten.",
+   "seen_in_art": "the cyan flowers on the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_115",
+    "state": "LIT_1"
+   }
+  },
+  "K17": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cyan flowers on the vine brighten.",
+   "seen_in_art": "the cyan flowers on the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_115",
+    "state": "LIT_2"
+   }
+  },
+  "K18": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan light running along the stem change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cyan light running along the stem brighten.",
+   "seen_in_art": "the cyan light running along the stem on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_141",
+    "state": "LIT_1"
+   }
+  },
+  "K19": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan light running along the stem change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cyan light running along the stem brighten.",
+   "seen_in_art": "the cyan light running along the stem on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_141",
+    "state": "LIT_2"
+   }
+  },
+  "K20": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan light running along the stem change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cyan light running along the stem brighten.",
+   "seen_in_art": "the cyan light running along the stem on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_137",
+    "state": "LIT_1"
+   }
+  },
+  "K21": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan light running along the stem change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cyan light running along the stem brighten.",
+   "seen_in_art": "the cyan light running along the stem on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_137",
+    "state": "LIT_2"
+   }
+  },
+  "K22": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The blue flowers on the vine brighten.",
+   "seen_in_art": "the blue flowers on the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_064",
+    "state": "LIT_2"
+   }
+  },
+  "K23": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The blue flowers on the vine brighten.",
+   "seen_in_art": "the blue flowers on the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_064",
+    "state": "LIT_3"
+   }
+  },
+  "K24": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The blue flowers on the vine brighten.",
+   "seen_in_art": "the blue flowers on the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_064",
+    "state": "LIT_4"
+   }
+  },
+  "K25": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The blue flowers on the vine brighten.",
+   "seen_in_art": "the blue flowers on the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_125",
+    "state": "LIT_1"
+   }
+  },
+  "K26": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the blue flowers on the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same blue as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The blue flowers on the vine brighten.",
+   "seen_in_art": "the blue flowers on the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_125",
+    "state": "LIT_2"
+   }
+  },
+  "K27": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gold droplets hanging under the blossoms brighten.",
+   "seen_in_art": "the gold droplets hanging under the blossoms on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_123",
+    "state": "LIT_1"
+   }
+  },
+  "K28": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gold droplets hanging under the blossoms brighten.",
+   "seen_in_art": "the gold droplets hanging under the blossoms on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_123",
+    "state": "LIT_2"
+   }
+  },
+  "K29": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gold droplets hanging under the blossoms brighten.",
+   "seen_in_art": "the gold droplets hanging under the blossoms on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_124",
+    "state": "LIT_2"
+   }
+  },
+  "K30": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gold droplets hanging under the blossoms brighten.",
+   "seen_in_art": "the gold droplets hanging under the blossoms on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_124",
+    "state": "LIT_3"
+   }
+  },
+  "K31": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gold droplets hanging under the blossoms brighten.",
+   "seen_in_art": "the gold droplets hanging under the blossoms on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_124",
+    "state": "LIT_4"
+   }
+  },
+  "K32": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gold droplets hanging under the blossoms brighten.",
+   "seen_in_art": "the gold droplets hanging under the blossoms on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_148",
+    "state": "LIT_2"
+   }
+  },
+  "K33": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gold droplets hanging under the blossoms brighten.",
+   "seen_in_art": "the gold droplets hanging under the blossoms on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_148",
+    "state": "LIT_3"
+   }
+  },
+  "K34": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the gold droplets hanging under the blossoms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The gold droplets hanging under the blossoms brighten.",
+   "seen_in_art": "the gold droplets hanging under the blossoms on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_148",
+    "state": "LIT_4"
+   }
+  },
+  "K35": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The orange pods hanging from the vine brighten.",
+   "seen_in_art": "the orange pods hanging from the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_059",
+    "state": "LIT_1"
+   }
+  },
+  "K36": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The orange pods hanging from the vine brighten.",
+   "seen_in_art": "the orange pods hanging from the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_059",
+    "state": "LIT_2"
+   }
+  },
+  "K37": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The orange pods hanging from the vine brighten.",
+   "seen_in_art": "the orange pods hanging from the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_073",
+    "state": "LIT_1"
+   }
+  },
+  "K38": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the orange pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same orange as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The orange pods hanging from the vine brighten.",
+   "seen_in_art": "the orange pods hanging from the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_073",
+    "state": "LIT_2"
+   }
+  },
+  "K39": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the pale gold pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same pale gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The pale gold pods hanging from the vine brighten.",
+   "seen_in_art": "the pale gold pods hanging from the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_057",
+    "state": "LIT_2"
+   }
+  },
+  "K40": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the yellow-green pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same yellow-green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The yellow-green pods hanging from the vine brighten.",
+   "seen_in_art": "the yellow-green pods hanging from the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_135",
+    "state": "LIT_1"
+   }
+  },
+  "K41": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the yellow-green pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same yellow-green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The yellow-green pods hanging from the vine brighten.",
+   "seen_in_art": "the yellow-green pods hanging from the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_135",
+    "state": "LIT_2"
+   }
+  },
+  "K42": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the green pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The green pods hanging from the vine brighten.",
+   "seen_in_art": "the green pods hanging from the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_140",
+    "state": "LIT_2"
+   }
+  },
+  "K43": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the green pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The green pods hanging from the vine brighten.",
+   "seen_in_art": "the green pods hanging from the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_140",
+    "state": "LIT_3"
+   }
+  },
+  "K44": {
+   "group": "cliff_vines",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the green pods hanging from the vine change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same green as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The green pods hanging from the vine brighten.",
+   "seen_in_art": "the green pods hanging from the vine on a cliff vine",
+   "example": {
+    "piece": "cliff_vines/cliff_vine_140",
+    "state": "LIT_4"
+   }
+  },
+  "K45": {
+   "group": "toadstool_rings",
+   "name": "motion",
+   "prompt": "This is an almost completely still picture. ONLY the cyan threads under the mushrooms change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+   "moves": "The cyan threads under the mushrooms brighten.",
+   "seen_in_art": "the cyan threads under the mushrooms",
+   "example": {
+    "piece": "toadstool_rings/toadstool_ring_015",
+    "state": "LIT_2"
+   }
   }
  },
  "declined": {
@@ -7245,6 +7728,15 @@
    "reason": "not picked from batch AJ (maintainer). Do not re-propose this piece.",
    "example": {
     "piece": "waystones/waystone_030",
+    "state": "LIT_3"
+   }
+  },
+  "H45": {
+   "group": "carts",
+   "moves": "The ore pulses.",
+   "reason": "ugly animation, rejected on sight (maintainer, batch AH). Cart of glowing ore -- wide bright region.",
+   "example": {
+    "piece": "carts/cart_016",
     "state": "LIT_3"
    }
   }

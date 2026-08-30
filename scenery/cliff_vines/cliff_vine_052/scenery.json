@@ -43,7 +43,28 @@
       "generated_at": "2026-08-16T10:25:43+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5182,
-      "glow_score": 0.0164
+      "glow_score": 0.0164,
+      "animations": {
+        "motion": {
+          "group_id": "611c48e2-e3db-47d8-89b9-11639ec395b1",
+          "description": "This is an almost completely still picture. ONLY glowing white droplets hanging along the strands change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_052/lit_2/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_052/lit_2/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_052/lit_2/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_052/lit_2/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_052/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_052/lit_2/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:33:02+00:00",
+          "brief": "K6"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "cliff_vines/cliff_vine_052/lit_3/sprite.webp",
@@ -51,7 +72,28 @@
       "generated_at": "2026-08-16T10:25:54+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4664,
-      "glow_score": 0.0254
+      "glow_score": 0.0254,
+      "animations": {
+        "motion": {
+          "group_id": "4fdb5495-02b2-497e-890e-764b4a70062d",
+          "description": "This is an almost completely still picture. ONLY glowing white droplets hanging along the strands change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_052/lit_3/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_052/lit_3/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_052/lit_3/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_052/lit_3/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_052/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_052/lit_3/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:32:37+00:00",
+          "brief": "K7"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "cliff_vines/cliff_vine_052/lit_4/sprite.webp",
@@ -59,7 +101,28 @@
       "generated_at": "2026-08-16T10:26:08+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5541,
-      "glow_score": 0.0124
+      "glow_score": 0.0124,
+      "animations": {
+        "motion": {
+          "group_id": "6778cedf-a3d7-4be5-9924-c05ff56221fe",
+          "description": "This is an almost completely still picture. ONLY glowing white droplets hanging along the strands change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same white as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cliff_vines/cliff_vine_052/lit_4/animations/motion/00.webp",
+            "cliff_vines/cliff_vine_052/lit_4/animations/motion/01.webp",
+            "cliff_vines/cliff_vine_052/lit_4/animations/motion/02.webp",
+            "cliff_vines/cliff_vine_052/lit_4/animations/motion/03.webp",
+            "cliff_vines/cliff_vine_052/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "cliff_vines/cliff_vine_052/lit_4/animations/motion__strip.webp",
+          "directions": null,
+          "generated_at": "2026-08-30T10:32:54+00:00",
+          "brief": "K8"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "cliff_vines/cliff_vine_052/not_lit_1/sprite.webp",

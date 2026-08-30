@@ -92,8 +92,8 @@
       },
       "animations": {
         "motion": {
-          "group_id": "d23ed7d2-b8aa-4120-8c59-e6bfacc25e0b",
-          "description": "This is an almost completely still picture. ONLY the pale gold carved panel on the headstone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same pale gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "group_id": "6d42cae8-a25d-49d5-b2e4-aa7b1c710df2",
+          "description": "This is an almost completely still picture. ONLY the outermost edge of the pale gold carved panel on the headstone changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The pale gold carved panel on the headstone is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the pale gold it is in the first frame and never washes out into a plain bright blur. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -109,7 +109,7 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-30T10:22:39+00:00",
+          "generated_at": "2026-08-30T10:32:36+00:00",
           "brief": "H37"
         }
       }
