@@ -37,7 +37,30 @@
       "generated_at": "2026-08-17T12:04:32+00:00",
       "glow_concept": "soul-light shining up through gaps between pads",
       "difference_from_source": 0.2907,
-      "glow_score": 0.1049
+      "glow_score": 0.1049,
+      "animations": {
+        "motion": {
+          "group_id": "234d6bf4-3f42-404b-a93d-7ffe11e00f2b",
+          "description": "This is the same picture in every frame. ONLY the ring of violet light on the pads brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_lily_clumps/water_lily_clump_001/lit_2/animations/motion/00.webp",
+            "water_lily_clumps/water_lily_clump_001/lit_2/animations/motion/01.webp",
+            "water_lily_clumps/water_lily_clump_001/lit_2/animations/motion/02.webp",
+            "water_lily_clumps/water_lily_clump_001/lit_2/animations/motion/03.webp",
+            "water_lily_clumps/water_lily_clump_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "water_lily_clumps/water_lily_clump_001/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T08:17:38+00:00",
+          "brief": "G30"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "water_lily_clumps/water_lily_clump_001/sprite.webp",
