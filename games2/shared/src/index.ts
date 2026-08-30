@@ -1574,6 +1574,18 @@ export function steerAssist(
     for (const [cax, cay] of EIGHT_WAY) {
       const cw = screenToWorldVector(cax, cay);
       const cl = Math.hypot(cw.x, cw.y) || 1;
+      /* NEVER BACKWARDS. `perp` is the world axis across the intent, and
+       * world-perpendicular is not screen-perpendicular: running the stick
+       * straight UP into a tree the best match for the perpendicular target is
+       * screen (-1,1), whose forward dot is -0.71 — a retreat. It moves, so the
+       * assist returns it; the body backs off; the raw heading is no longer
+       * stalled so the next tick the assist declines and the body walks back
+       * in. Traced at the maintainer's own spot (456.0,361.8 held up, stuck at
+       * 452.4,358.4): raw and assist alternating every single frame, 233 input
+       * flips in 300, the body pinned to two hundredths of a cell — "the player
+       * starts to flip direction back and forth forever". A dodge is sideways;
+       * a retreat is a surrender, and it is what closes the loop. */
+      if ((cw.x * ux + cw.y * uy) / cl < -1e-6) continue;
       const dot = (cw.x * target.x + cw.y * target.y) / cl;
       if (dot > bestDot) {
         bestDot = dot;
@@ -2417,6 +2429,59 @@ export function bodyStalled(
 export interface SlideMemo {
   ax: number;
   ay: number;
+  /** Where the deflection was committed. The hold is released on DISTANCE
+   *  SKIRTED as well as on a clear probe: a lookahead taken at a corner can
+   *  flicker clear/not-clear from one tick to the next, and releasing on the
+   *  clear tick drops the body straight back onto the obstacle — the same
+   *  two-tick alternation the hold exists to stop, just one level up. */
+  fromX?: number;
+  fromY?: number;
+}
+
+/** How far ahead a heading is simulated when asking "is the way actually open,
+ *  or open for exactly one step?". 12 probe steps of 0.08s is about a second of
+ *  walking — far enough to clear a footprint, which is 3-5 cells across. */
+const CLEAR_LOOKAHEAD_STEPS = 12;
+
+/** How far a committed deflection is skirted before it may be released: one
+ *  cell. Distance, not ticks, so a slow phone and a fast one skirt the same
+ *  shape. */
+const HOLD_MIN_TRAVEL = CELL_WU;
+
+/**
+ * Is the way ahead OPEN, or merely open for one step? The single-step probe
+ * every stall test uses answers the wrong question next to a wide obstacle: one
+ * sidestep frees exactly one step, the raw heading immediately steers back into
+ * the trunk, and the two alternate forever. Traced at the maintainer's own spot
+ * (456.0,361.8 held up): the deflection and the raw input swapping every frame,
+ * 233 flips in 300, the body pinned to two hundredths of a cell — "the player
+ * starts to flip direction back and forth forever". Holding the heading for the
+ * lookahead is what tells a real opening from a one-step gap.
+ */
+export function headingClear(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+): boolean {
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const dt = 0.08;
+  const worldW = worldWidthOf(grid);
+  const worldH = worldHeightOf(grid);
+  let cx = x;
+  let cy = y;
+  for (let i = 0; i < CLEAR_LOOKAHEAD_STEPS; i++) {
+    const r = stepMovement(
+      cx, cy, ax, ay, false, dt,
+      makeBlocked(grid, walk), 1, true, worldW, worldH,
+      makeSideBlocked(grid, walk),
+    );
+    if (Math.hypot(r.x - cx, r.y - cy) <= WALK_SPEED * dt * 0.35) return false;
+    cx = r.x;
+    cy = r.y;
+  }
+  return true;
 }
 
 /**
@@ -2476,6 +2541,149 @@ export function slideAlong(
   }
   if (memo) { memo.ax = best ? best.ax : 0; memo.ay = best ? best.ay : 0; }
   return best;
+}
+
+/**
+ * THE WHOLE WALK DECISION FOR A HELD DIRECTION, in one place, because the ORDER
+ * is the thing that was wrong and order cannot be unit-tested when it lives
+ * inline in the scene.
+ *
+ * Rules, in the order they fire:
+ *  1. HOLD a deflection already committed to, until the raw heading is clear
+ *     for a real lookahead — not for one step. Releasing on a one-step probe is
+ *     what made the character "flip direction back and forth forever": the
+ *     sidestep frees exactly one step, the raw heading walks straight back into
+ *     the trunk, repeat. Traced at 456.0,361.8 held up, stuck at 452.4,358.4 —
+ *     233 input flips in 300 frames, the body pinned to two hundredths of a
+ *     cell. With the hold: 2 flips, and it walks away past the tree.
+ *  2. Follow a detour already planned.
+ *  3. The local steer assist (terrain walls and doorways, its real strength).
+ *  4. Plan a detour with findPath — a footprint is a 3-to-5 cell blob and the
+ *     local assist cannot round one, let alone escape a pocket between two.
+ *  5. Slide: never stand still while any non-backward heading would move.
+ *  6. Latch whatever deflection came out, so rule 1 can hold it next tick.
+ */
+export function walkHeading(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+  hold: SlideMemo,
+  opts: { nowMs: number; trip: AutopilotTrip | null; fromElev?: number; worldW?: number; worldH?: number; noDetour?: boolean },
+): { ax: number; ay: number; trip: AutopilotTrip | null } {
+  let trip = opts.trip;
+  if (ax === 0 && ay === 0) {
+    hold.ax = 0;
+    hold.ay = 0;
+    return { ax, ay, trip: null };
+  }
+  const worldW = opts.worldW ?? worldWidthOf(grid);
+  const worldH = opts.worldH ?? worldHeightOf(grid);
+  const rawClear = headingClear(grid, x, y, ax, ay);
+  const skirted = Math.hypot(x - (hold.fromX ?? x), y - (hold.fromY ?? y));
+  /* THE HOLD IS RELEASED BY ITS OWN CONDITION, NOT RE-ASKED EVERY TICK. Gating
+   * the hold on "is the raw heading clear right now" reintroduces the flap it
+   * exists to stop, because that lookahead FLICKERS beside an obstacle: traced
+   * at tree_031, the deflection stayed latched at (1,0) the whole time and the
+   * output still fell back to the raw (0,1) every third tick, pulling the body
+   * back onto the trunk it had just stepped off. A commitment that is
+   * re-litigated every frame is not a commitment. So: while a deflection is
+   * latched it is USED, and it ends only when the way ahead is genuinely open
+   * AND the body has skirted a full cell. */
+  const latched = hold.ax !== 0 || hold.ay !== 0;
+  const release = rawClear && skirted >= HOLD_MIN_TRAVEL;
+  if (latched && !release) {
+    if (!bodyStalled(grid, x, y, hold.ax, hold.ay)) return { ax: hold.ax, ay: hold.ay, trip: null };
+    /* The committed heading ground to a stop against the same obstacle. Pick
+     * ANOTHER deflection — never fall back to the raw heading, which is the one
+     * pointing into the thing being avoided. Traced at tree_031: the held (1,0)
+     * stalls every third tick, the fallback handed control to the raw (0,1),
+     * and the body was pulled back onto the trunk it had just left — 90 flaps
+     * with the deflection latched the whole way through. */
+    const sl = slideAlong(grid, x, y, ax, ay, hold);
+    if (sl) return { ax: sl.ax, ay: sl.ay, trip: null };
+    hold.ax = 0;
+    hold.ay = 0;
+  }
+  if (release) {
+    hold.ax = 0;
+    hold.ay = 0;
+  }
+  let hx = ax;
+  let hy = ay;
+  let deflected = false;
+  // 2. Follow a planned detour.
+  if (trip) {
+    const d = stepAutopilot(grid, trip, x, y, opts.nowMs, worldW, worldH, opts.fromElev);
+    if (d.done) trip = null;
+    else {
+      hx = d.ax;
+      hy = d.ay;
+      deflected = true;
+    }
+  }
+  if (!trip) {
+    // 3. The local assist.
+    const a = steerAssist(grid, x, y, ax, ay);
+    if (a) {
+      hx = a.ax;
+      hy = a.ay;
+      deflected = true;
+    } else if (!opts.noDetour && bodyStalled(grid, x, y, ax, ay)) {
+      // 4. Plan round it.
+      trip = startStickDetour(grid, x, y, ax, ay, opts.nowMs, opts.fromElev);
+      if (trip) {
+        const d = stepAutopilot(grid, trip, x, y, opts.nowMs, worldW, worldH, opts.fromElev);
+        if (d.done) trip = null;
+        else {
+          hx = d.ax;
+          hy = d.ay;
+          deflected = true;
+        }
+      }
+    }
+  }
+  /* NO RETREAT, WHATEVER PICKED IT. A planned route is allowed to curve, but a
+   * heading that OPPOSES the stick is never what the player asked for: measured
+   * at tree_017, the detour's first heading was (1,1) against an input of
+   * (-1,-1) — dead backwards — and the hold then committed the body to walking
+   * away from the tree for fifteen frames before turning round and doing it
+   * again. That is the flapping, one level up from the steer assist's own
+   * version of the same mistake. Sideways is a dodge; backwards is a surrender,
+   * and the slide below always has a better answer. */
+  {
+    const iw = screenToWorldVector(ax, ay);
+    const il = Math.hypot(iw.x, iw.y) || 1;
+    const hw = screenToWorldVector(hx, hy);
+    const hl = Math.hypot(hw.x, hw.y) || 1;
+    if (deflected && (hw.x * iw.x + hw.y * iw.y) / (hl * il) < -1e-6) {
+      hx = ax;
+      hy = ay;
+      deflected = false;
+      trip = null;
+    }
+  }
+  // 5. Never motionless while there is a way out.
+  if (bodyStalled(grid, x, y, hx, hy)) {
+    const sl = slideAlong(grid, x, y, ax, ay, hold);
+    if (sl) {
+      hx = sl.ax;
+      hy = sl.ay;
+      deflected = true;
+      trip = null;
+    }
+  }
+  // 6. Latch it, and drop the latch once the way ahead is genuinely open.
+  if (deflected) {
+    if (hold.ax === 0 && hold.ay === 0) {
+      hold.fromX = x;
+      hold.fromY = y;
+    }
+    hold.ax = hx;
+    hold.ay = hy;
+  }
+  return { ax: hx, ay: hy, trip };
 }
 
 /** Plan the short way round whatever the stick is jammed against. Null when

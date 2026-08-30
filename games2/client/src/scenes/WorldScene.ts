@@ -31,7 +31,7 @@ import {
   shadowBodyRadius,
   shadowAnchorOf,
   startTrip,
-  startStickDetour,
+  walkHeading,
   bodyStalled,
   slideAlong,
   type SlideMemo,
@@ -1190,7 +1190,9 @@ export class WorldScene extends Phaser.Scene {
   private stickTrip: AutopilotTrip | null = null;
   private stickDir = { ax: 0, ay: 0 };
   /** Which way the body is currently sliding along something — see slideAlong. */
-  private slideMemo: SlideMemo = { ax: 0, ay: 0 };
+  private walkHold: SlideMemo = { ax: 0, ay: 0 };
+  /** The tap autopilot's own slide commitment — never shared with walkHold. */
+  private tapSlide: SlideMemo = { ax: 0, ay: 0 };
   // Autopilot decision trace (debug hook __ml.navLog; ring buffer, dev cost ~0).
   private navLog: Record<string, unknown>[] = [];
   // Hold-to-move: the one pointer allowed to steer (first touch down), the
@@ -8100,45 +8102,31 @@ export class WorldScene extends Phaser.Scene {
           // The stick moved: whatever was being rounded is no longer the ask.
           if (this.stickTrip && (ax !== this.stickDir.ax || ay !== this.stickDir.ay)) {
             this.stickTrip = null;
+            this.walkHold.ax = 0;
+            this.walkHold.ay = 0;
           }
-          // Rounding something: the route drives, exactly as a tap would.
-          if (this.stickTrip) {
-            const d = stepAutopilot(
-              this.terrain, this.stickTrip, me.fx, me.fy, performance.now(),
-              this.worldW, this.worldH, me.surfLevel ?? undefined,
-            );
-            if (d.done) this.stickTrip = null;
-            else { ax = d.ax; ay = d.ay; }
-          }
-          if (!this.stickTrip) {
-            const assist = steerAssist(this.terrain, me.fx, me.fy, ax, ay);
-            if (assist) {
-              ax = assist.ax;
-              ay = assist.ay;
-            } else if (bodyStalled(this.terrain, me.fx, me.fy, ax, ay)) {
-              /* STILL WEDGED. steerAssist is a local rule and cannot round a
-               * multi-cell footprint or escape the pocket between two of them,
-               * so the stall plans the short way round instead — the same
-               * findPath tap-to-move uses. Only reached where the player is
-               * otherwise stuck dead, so it can never make walking worse. */
-              this.stickTrip = startStickDetour(
-                this.terrain, me.fx, me.fy, ax, ay, performance.now(), me.surfLevel ?? undefined,
-              );
-              this.stickDir = { ax, ay };
-              if (this.stickTrip) {
-                const d = stepAutopilot(
-                  this.terrain, this.stickTrip, me.fx, me.fy, performance.now(),
-                  this.worldW, this.worldH, me.surfLevel ?? undefined,
-                );
-                if (d.done) this.stickTrip = null;
-                else { ax = d.ax; ay = d.ay; }
-              }
-            }
-          }
+          this.stickDir = { ax, ay };
+          /* ONE decision, shared and headless-tested — see walkHeading. It owns
+           * the whole order: hold a commitment, follow a planned detour, the
+           * local assist, plan round a footprint, slide rather than stand
+           * still, never retreat. The order is the part that was wrong, which
+           * is exactly why it does not live inline here any more. */
+          const r = walkHeading(this.terrain, me.fx, me.fy, ax, ay, this.walkHold, {
+            nowMs: performance.now(),
+            trip: this.stickTrip,
+            fromElev: me.surfLevel ?? undefined,
+            worldW: this.worldW,
+            worldH: this.worldH,
+          });
+          ax = r.ax;
+          ay = r.ay;
+          this.stickTrip = r.trip;
         }
       }
     } else {
       this.stickTrip = null; // stick released
+      this.walkHold.ax = 0;
+      this.walkHold.ay = 0;
       // Held finger at rest: pointermove stops firing, so commit any
       // budget-deferred drag retarget from the frame loop instead.
       this.holdRepath(performance.now());
@@ -8152,27 +8140,22 @@ export class WorldScene extends Phaser.Scene {
         running = drive.running;
       }
     }
-    /* NEVER MOTIONLESS WHILE THERE IS A WAY OUT. Whatever produced the heading
-     * — keys, the steer assist, a stick detour, a tap trip — it has to actually
-     * move the body; a route that has run into something is exactly as frozen as
-     * a raw input. Measured on the_game before this, holding a direction into a
-     * tree left the body dead still, with an escape available the whole time, in
-     * 87.4% of approaches and for as long as 13 seconds. With it: 0%, and the
-     * median approach travels 8.4 cells instead of 2.6. Sliding along the trunk
-     * is what a player expects from running into a tree (maintainer 2026-08-29:
-     * "why don't you just walk around the object?"). */
-    if (this.terrain && (ax !== 0 || ay !== 0)) {
+    /* THE TAP PATH GETS THE SAME FLOOR. `walkHeading` covers a held direction;
+     * a tap trip can wedge against a footprint just as easily, and standing
+     * still with open ground beside you is never the right answer. Keys already
+     * went through walkHeading above, so this only ever fires for the autopilot.
+     * Its own memo: the two paths must not share a commitment. */
+    if (this.terrain && !this.keysActive && (ax !== 0 || ay !== 0)) {
       const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
       if (me && bodyStalled(this.terrain, me.fx, me.fy, ax, ay)) {
-        const sl = slideAlong(this.terrain, me.fx, me.fy, ax, ay, this.slideMemo);
+        const sl = slideAlong(this.terrain, me.fx, me.fy, ax, ay, this.tapSlide);
         if (sl) {
           ax = sl.ax;
           ay = sl.ay;
-          this.stickTrip = null; // that route is wedged; plan again from here
         }
-      } else if (this.slideMemo.ax !== 0 || this.slideMemo.ay !== 0) {
-        this.slideMemo.ax = 0;
-        this.slideMemo.ay = 0;
+      } else if (this.tapSlide.ax !== 0 || this.tapSlide.ay !== 0) {
+        this.tapSlide.ax = 0;
+        this.tapSlide.ay = 0;
       }
     }
     // SOFT MONSTER COLLISION (maintainer 2026-07-30): monsters are not in the

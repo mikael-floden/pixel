@@ -2,8 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   buildTerrainGrid, stepMovement, makeBlocked, makeSideBlocked, unstickFromSolids,
-  steerAssist, bodyStalled, startStickDetour, slideAlong, stepAutopilot, screenToWorldVector,
-  type SlideMemo,
+  steerAssist, walkHeading, bodyStalled, screenToWorldVector, type SlideMemo,
   CELL_WU, WALK_CLIMB, WALK_SPEED, type AutopilotTrip,
 } from "@nangijala/shared";
 
@@ -47,27 +46,25 @@ function holdStick(grid: ReturnType<typeof blobWorld>, ax: number, ay: number, u
   let frozenRun = 0;
   const ww = W * CELL_WU;
   const wh = H * CELL_WU;
+  let flapping = 0;
+  const hist: string[] = [];
   for (let i = 0; i < 700; i++) {
     t += 33;
     let iax = ax;
     let iay = ay;
-    if (trip) {
-      const d = stepAutopilot(grid, trip, x, y, t, ww, wh);
-      if (d.done) trip = null;
-      else { iax = d.ax; iay = d.ay; }
-    }
-    if (!trip) {
+    if (useDetour) {
+      const r = walkHeading(grid, x, y, ax, ay, slide, { nowMs: t, trip, worldW: ww, worldH: wh });
+      iax = r.ax;
+      iay = r.ay;
+      trip = r.trip;
+    } else {
       const a = steerAssist(grid, x, y, ax, ay);
       if (a) { iax = a.ax; iay = a.ay; }
-      else if (useDetour && bodyStalled(grid, x, y, ax, ay)) {
-        trip = startStickDetour(grid, x, y, ax, ay, t);
-        if (trip) {
-          const d = stepAutopilot(grid, trip, x, y, t, ww, wh);
-          if (d.done) trip = null;
-          else { iax = d.ax; iay = d.ay; }
-        }
-      }
     }
+    hist.push(`${iax},${iay}`);
+    // A-B-A: snapping back to the heading before last is the VISIBLE flap.
+    const n = hist.length;
+    if (n > 2 && hist[n - 1] === hist[n - 3] && hist[n - 1] !== hist[n - 2]) flapping++;
     // Whatever chose the heading, it must move the body — a wedged route is as
     // frozen as a wedged input.
     if (useDetour && bodyStalled(grid, x, y, iax, iay)) {
@@ -86,7 +83,7 @@ function holdStick(grid: ReturnType<typeof blobWorld>, ax: number, ay: number, u
     else frozenRun = 0;
   }
   // Progress along the direction actually asked for — sideways is not arrival.
-  return { advanced: ((x - startX) * ux + (y - startY) * uy) / CELL_WU, worstFrozen };
+  return { advanced: ((x - startX) * ux + (y - startY) * uy) / CELL_WU, worstFrozen, flapping };
 }
 
 const DIRS: [number, number][] = [
@@ -104,6 +101,10 @@ test("a held stick rounds a multi-cell footprint instead of wedging on it", () =
       );
       // The rule the maintainer actually asked for: never stand still against
       // a thing you could walk around. 15 ticks is half a second.
+      assert.ok(
+        got.flapping < 20,
+        `radius ${radius}, stick (${ax},${ay}): flapped ${got.flapping} times — the direction snapped back and forth`,
+      );
       assert.ok(
         got.worstFrozen < 15,
         `radius ${radius}, stick (${ax},${ay}): froze for ${got.worstFrozen} ticks with open ground beside it`,
