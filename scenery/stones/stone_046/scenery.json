@@ -87,7 +87,30 @@
       "generated_at": "2026-08-16T22:17:50+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7998,
-      "glow_score": 0.0143
+      "glow_score": 0.0143,
+      "animations": {
+        "motion": {
+          "group_id": "73b3db8c-e2d8-4c23-9c64-8a80b5f8221c",
+          "description": "This is an almost completely still picture. ONLY the pale cyan circles on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same pale cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_046/lit_3/animations/motion/00.webp",
+            "stones/stone_046/lit_3/animations/motion/01.webp",
+            "stones/stone_046/lit_3/animations/motion/02.webp",
+            "stones/stone_046/lit_3/animations/motion/03.webp",
+            "stones/stone_046/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_046/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:07:36+00:00",
+          "brief": "J23"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "stones/stone_046/lit_4/sprite.webp",
@@ -95,7 +118,30 @@
       "generated_at": "2026-08-16T22:18:44+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5713,
-      "glow_score": 0.0732
+      "glow_score": 0.0732,
+      "animations": {
+        "motion": {
+          "group_id": "a8c66d7d-0459-43a3-a3f7-39124ee95c38",
+          "description": "This is an almost completely still picture. ONLY the pale cyan marks on the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same pale cyan as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_046/lit_4/animations/motion/00.webp",
+            "stones/stone_046/lit_4/animations/motion/01.webp",
+            "stones/stone_046/lit_4/animations/motion/02.webp",
+            "stones/stone_046/lit_4/animations/motion/03.webp",
+            "stones/stone_046/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_046/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:07:26+00:00",
+          "brief": "J24"
+        }
+      }
     }
   }
 }

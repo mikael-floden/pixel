@@ -52,6 +52,29 @@
         "south-east": "graves/grave_020/lit_2/rotations/south-east.webp",
         "south-west": "graves/grave_020/lit_2/rotations/south-west.webp",
         "south": "graves/grave_020/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "c3b88c59-4206-4f63-a3d2-3ef5c43761df",
+          "description": "This is an almost completely still picture. ONLY the small gold light at the foot of the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "graves/grave_020/lit_2/animations/motion/00.webp",
+            "graves/grave_020/lit_2/animations/motion/01.webp",
+            "graves/grave_020/lit_2/animations/motion/02.webp",
+            "graves/grave_020/lit_2/animations/motion/03.webp",
+            "graves/grave_020/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "graves/grave_020/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:09:11+00:00",
+          "brief": "J40"
+        }
       }
     },
     "NOT_LIT_3": {

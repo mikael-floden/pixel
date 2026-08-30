@@ -89,6 +89,29 @@
         "south-east": "graves/grave_026/lit_3/rotations/south-east.webp",
         "south-west": "graves/grave_026/lit_3/rotations/south-west.webp",
         "south": "graves/grave_026/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "086e5ae5-2e7b-412e-938c-52e17e320941",
+          "description": "This is an almost completely still picture. ONLY the gold runes on the headstone change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "graves/grave_026/lit_3/animations/motion/00.webp",
+            "graves/grave_026/lit_3/animations/motion/01.webp",
+            "graves/grave_026/lit_3/animations/motion/02.webp",
+            "graves/grave_026/lit_3/animations/motion/03.webp",
+            "graves/grave_026/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "graves/grave_026/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:08:54+00:00",
+          "brief": "J39"
+        }
       }
     }
   }

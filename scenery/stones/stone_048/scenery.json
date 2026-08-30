@@ -56,7 +56,30 @@
       "generated_at": "2026-08-16T22:20:21+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6877,
-      "glow_score": 0.0828
+      "glow_score": 0.0828,
+      "animations": {
+        "motion": {
+          "group_id": "bee2b340-4009-4472-be1d-bb6ec16ee84a",
+          "description": "This is an almost completely still picture. ONLY the gold cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_048/lit_2/animations/motion/00.webp",
+            "stones/stone_048/lit_2/animations/motion/01.webp",
+            "stones/stone_048/lit_2/animations/motion/02.webp",
+            "stones/stone_048/lit_2/animations/motion/03.webp",
+            "stones/stone_048/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_048/lit_2/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:07:36+00:00",
+          "brief": "J25"
+        }
+      }
     },
     "LIT_3": {
       "sprite": "stones/stone_048/lit_3/sprite.webp",
@@ -64,7 +87,30 @@
       "generated_at": "2026-08-16T22:20:33+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5946,
-      "glow_score": 0.0442
+      "glow_score": 0.0442,
+      "animations": {
+        "motion": {
+          "group_id": "1e7eb2f8-eb13-48d3-9322-f14a2e9cbb28",
+          "description": "This is an almost completely still picture. ONLY the gold cracks across the rock change. Their brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At their brightest they are still exactly the same gold as in the first frame -- never pale, never white, never any other colour. They never fade, never vanish, never spread and never change shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_048/lit_3/animations/motion/00.webp",
+            "stones/stone_048/lit_3/animations/motion/01.webp",
+            "stones/stone_048/lit_3/animations/motion/02.webp",
+            "stones/stone_048/lit_3/animations/motion/03.webp",
+            "stones/stone_048/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_048/lit_3/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:08:01+00:00",
+          "brief": "J26"
+        }
+      }
     },
     "LIT_4": {
       "sprite": "stones/stone_048/lit_4/sprite.webp",
@@ -72,7 +118,30 @@
       "generated_at": "2026-08-16T22:20:34+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6727,
-      "glow_score": 0.0522
+      "glow_score": 0.0522,
+      "animations": {
+        "motion": {
+          "group_id": "a5617621-3d4c-4612-bf41-2853527bb6a5",
+          "description": "This is an almost completely still picture. ONLY the gold crack down the rock changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_048/lit_4/animations/motion/00.webp",
+            "stones/stone_048/lit_4/animations/motion/01.webp",
+            "stones/stone_048/lit_4/animations/motion/02.webp",
+            "stones/stone_048/lit_4/animations/motion/03.webp",
+            "stones/stone_048/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_048/lit_4/animations/motion__strip.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-08-30T10:07:46+00:00",
+          "brief": "J27"
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "stones/stone_048/not_lit_1/sprite.webp",
