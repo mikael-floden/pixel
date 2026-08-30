@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
   "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
-  "updated_at": "2026-08-30T16:15:25.737Z",
+  "updated_at": "2026-08-30T16:16:33.630Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -8809,184 +8809,170 @@
     "scenery/crystal_trees/crystal_tree_002#lit_1": {
       "boxes": [
         {
-          "ax": 0,
-          "ay": 25.81,
+          "ax": -0.31,
+          "ay": 24.14,
           "rx": 9,
           "ry": 2.79,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:15:35.413Z"
     },
     "scenery/crystal_trees/crystal_tree_002#not_lit_1": {
       "boxes": [
         {
           "ax": 0,
-          "ay": 25.81,
+          "ay": 24.85,
           "rx": 9,
-          "ry": 2.79,
+          "ry": 3.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:15:55.739Z"
     },
     "scenery/crystal_trees/crystal_tree_002#not_lit_2": {
       "boxes": [
         {
           "ax": -0.5,
-          "ay": 25.66,
+          "ay": 24.6,
           "rx": 9.5,
-          "ry": 2.94,
+          "ry": 4,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:16:08.922Z"
     },
     "scenery/crystal_trees/crystal_tree_002#not_lit_3": {
       "boxes": [
         {
           "ax": 0,
-          "ay": 26.1,
+          "ay": 25.1,
           "rx": 8,
-          "ry": 2.5,
+          "ry": 3.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:16:12.155Z"
     },
     "scenery/crystal_trees/crystal_tree_002#not_lit_4": {
       "boxes": [
         {
           "ax": -0.5,
-          "ay": 24.97,
+          "ay": 23.85,
           "rx": 8.5,
-          "ry": 2.63,
+          "ry": 3.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:16:15.655Z"
     },
     "scenery/crystal_trees/crystal_tree_002#not_lit_5": {
       "boxes": [
         {
           "ax": 0,
-          "ay": 25.81,
+          "ay": 25.1,
           "rx": 9,
-          "ry": 2.79,
+          "ry": 3.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:16:19.104Z"
     },
     "scenery/crystal_trees/crystal_tree_002#not_lit_6": {
       "boxes": [
         {
           "ax": 0,
-          "ay": 25.81,
+          "ay": 24.1,
           "rx": 9,
-          "ry": 2.79,
+          "ry": 4.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:16:23.038Z"
     },
     "scenery/crystal_trees/crystal_tree_002#not_lit_7": {
       "boxes": [
         {
           "ax": 0,
-          "ay": 25.81,
+          "ay": 24.85,
           "rx": 9,
-          "ry": 2.79,
+          "ry": 3.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:16:26.338Z"
     },
     "scenery/crystal_trees/crystal_tree_002#not_lit_8": {
       "boxes": [
         {
           "ax": 1.5,
-          "ay": 26.1,
+          "ay": 24.85,
           "rx": 7.5,
-          "ry": 2.5,
+          "ry": 3.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:16:29.438Z"
     },
     "scenery/crystal_trees/crystal_tree_002#not_lit_9": {
       "boxes": [
         {
           "ax": 0.5,
-          "ay": 25.97,
+          "ay": 24.85,
           "rx": 8.5,
-          "ry": 2.63,
+          "ry": 3.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:16:32.071Z"
     },
     "scenery/crystal_trees/crystal_tree_002#not_lit_10": {
       "boxes": [
         {
           "ax": -1,
-          "ay": 23.95,
+          "ay": 22.6,
           "rx": 15,
-          "ry": 4.65,
+          "ry": 6,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:16:00.888Z"
     },
     "scenery/crystal_trees/crystal_tree_002#lit_2": {
       "boxes": [
         {
           "ax": 0,
-          "ay": 25.81,
+          "ay": 25.1,
           "rx": 9,
-          "ry": 2.79,
+          "ry": 3.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:15:39.323Z"
     },
     "scenery/crystal_trees/crystal_tree_002#lit_3": {
       "boxes": [
         {
           "ax": 0,
-          "ay": 25.81,
+          "ay": 24.6,
           "rx": 9,
-          "ry": 2.79,
+          "ry": 4,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:15:43.690Z"
     },
     "scenery/crystal_trees/crystal_tree_002#lit_4": {
       "boxes": [
         {
           "ax": 0,
-          "ay": 27.81,
+          "ay": 26.6,
           "rx": 9,
-          "ry": 2.79,
+          "ry": 4,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-30T12:37:33.249Z"
+      "updated_at": "2026-08-30T16:15:53.472Z"
     },
     "scenery/crystals/crystal_005#not_lit_1": {
       "boxes": [
