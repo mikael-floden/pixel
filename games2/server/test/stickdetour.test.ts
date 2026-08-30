@@ -22,8 +22,16 @@ function blobWorld(radius: number) {
   const grid = buildTerrainGrid(W, H, rows, [], []);
   const cx = 12;
   const cy = 12;
+  /* BOTH LAYERS. `blocked` is the derived NAV layer (what the pathfinder walks
+   * around) and `propBlocked` is the terrain the movement tick collides with —
+   * a synthetic blob is a solid object, so it is in both. Writing only the nav
+   * layer, as this fixture did while the two were one array, now describes an
+   * obstacle the body walks straight through. */
   for (let r = cy - radius; r <= cy + radius; r++)
-    for (let c = cx - radius; c <= cx + radius; c++) grid.blocked[r * W + c] = true;
+    for (let c = cx - radius; c <= cx + radius; c++) {
+      grid.blocked[r * W + c] = true;
+      grid.propBlocked[r * W + c] = true;
+    }
   return grid;
 }
 
