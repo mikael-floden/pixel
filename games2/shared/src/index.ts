@@ -1442,7 +1442,12 @@ function footprintPenetration(
      * this is F9's under-blocking subset used in the one direction where it is
      * sound — everything it accepts really is in contact. Contact queries skip
      * it, because the glide needs a true normal and a true depth. */
-    if (norm === null) return 1;
+    /* The value returned is a sound LOWER BOUND on the true penetration, not a
+     * flag, because the nav bake reads it as "every point within this far is
+     * blocked too" and would be wrong to trust a made-up number. For a point
+     * with gauge G > 1, z/G lies on the ellipse and |z - z/G| = |z|(G-1)/G <=
+     * max(p,q)*(G-1), so the distance to the ellipse is at most that. */
+    if (norm === null) return Math.max(1e-12, (rc - (Math.sqrt(g2) - 1) * (p > q ? p : q)) * CELL_WU);
   } else {
     /* Cheap REJECT. The raw ellipse's gauge is a NORM, so g(a+b) <= g(a)+g(b),
      * and every point of E (+) disc(rc) is inside g <= 1 + rc/min(p,q). */
@@ -1460,7 +1465,7 @@ function footprintPenetration(
       if (l > 1e-12) { norm.nx = wx / l; norm.ny = wy / l; }
       else { norm.nx = 1; norm.ny = 0; }
     }
-    return rc * CELL_WU + 1; // deeper than any contact: fully inside
+    return rc * CELL_WU; // distance to the FILLED ellipse is 0 in here
   }
   // Exact: distance from (|X|,|Y|) to E(p,q), first quadrant, major axis first.
   // Only points in the thin band BETWEEN the two cheap gates reach here — on
@@ -1522,6 +1527,26 @@ export function footprintBlocks(grid: TerrainGrid, x: number, y: number, r: numb
     if (footprintPenetration(fp, fp.items[k], x, y, rc, null) > 0) return true;
   }
   return false;
+}
+
+/** How deep into the nearest footprint a body of radius `r` at (x,y) reaches,
+ *  in world units — <= 0 when it is clear of every one. A LOWER bound, never an
+ *  over-estimate, so the nav bake can read it as "every point within this far
+ *  of here is blocked too" (moving a point by d changes its distance to a shape
+ *  by at most d) and skip that whole neighbourhood. */
+function footprintDepth(grid: TerrainGrid, x: number, y: number, r: number): number {
+  const fp = grid.footprints;
+  if (!fp || fp.n === 0) return -1;
+  const i = footprintBucket(grid, x, y);
+  if (i < 0) return -1;
+  const hi = fp.start[i + 1];
+  const rc = Math.min(r, fp.pad * CELL_WU);
+  let best = -1;
+  for (let k = fp.start[i]; k < hi; k++) {
+    const d = footprintPenetration(fp, fp.items[k], x, y, rc, null);
+    if (d > best) best = d;
+  }
+  return best;
 }
 
 /**
@@ -3967,7 +3992,7 @@ export type SceneryHitboxDoc = Record<
 
 /** Nav lattice: the coarse pass samples each cell KxK ... */
 const NAV_COARSE = 4; // 4x4 over a 32wu cell — one sample per 8wu
-const NAV_FINE = 16; // 16x16 — one sample per 2wu, only where the coarse pass found nothing
+const NAV_SUB = 4; // 4x4 INSIDE a coarse tile that isn't provably covered — one per 2wu
 
 /**
  * Block the ground every scenery piece stands on — as an ELLIPSE, plus the
@@ -4166,8 +4191,7 @@ export function stampSceneryCollision(
         if (seen[i]) continue;
         seen[i] = 1;
         if (grid.propBlocked[i]) continue; // already solid; nothing to derive
-        if (navCellOpen(grid, c, r, NAV_COARSE)) continue;
-        if (navCellOpen(grid, c, r, NAV_FINE)) continue;
+        if (navCellOpen(grid, c, r)) continue;
         nav[i] = true;
         grid.blocked[i] = true;
         blocked++;
@@ -4178,20 +4202,55 @@ export function stampSceneryCollision(
   return blocked;
 }
 
-/** Does ANY point of cell (col,row), sampled on a KxK lattice, hold a legal
- *  body centre? One free sample proves the cell is open. */
-function navCellOpen(grid: TerrainGrid, col: number, row: number, k: number): boolean {
-  const step = CELL_WU / k;
-  const x0 = col * CELL_WU + step / 2;
-  const y0 = row * CELL_WU + step / 2;
-  for (let a = 0; a < k; a++) {
-    const y = y0 + a * step;
-    for (let b = 0; b < k; b++) {
-      if (!footprintBlocks(grid, x0 + b * step, y, FOOTPRINT_BODY_RADIUS)) return true;
+/**
+ * Does ANY point of cell (col,row) hold a legal body centre?
+ *
+ * COARSE, THEN FINE WHERE IT MATTERS. The coarse pass samples the cell 4x4 —
+ * one point per 8wu tile — and each sample answers with a DEPTH, which is a
+ * radius around it that is provably blocked as well. A tile whose sample is
+ * blocked at least its own half-diagonal deep (8*SQRT1_2 = 5.66wu) is therefore
+ * fully covered and needs no refinement at all; deep inside a tree that is
+ * every tile, and the whole cell costs 16 tests. Only the tiles left uncertain
+ * are re-sampled 4x4 inside themselves, one point per 2wu.
+ *
+ * A FREE sample is a PROOF that a legal body position exists, so this can never
+ * over-block a cell. The residue runs the other way: a free sliver narrower
+ * than the fine lattice and inside an uncertain tile is called blocked.
+ * Measured on the_game against a 64x64 control lattice (one sample per 0.5wu):
+ * 33 of 2,805 blocked cells, 1.2%, every one of them a gap under 2wu wide in
+ * configuration space — a knife-edge no path follower could track anyway.
+ */
+function navCellOpen(grid: TerrainGrid, col: number, row: number): boolean {
+  const step = CELL_WU / NAV_COARSE;
+  const cover = step * Math.SQRT1_2; // half-diagonal of one coarse tile
+  const x0 = col * CELL_WU;
+  const y0 = row * CELL_WU;
+  let needy = 0;
+  for (let a = 0; a < NAV_COARSE; a++) {
+    for (let b = 0; b < NAV_COARSE; b++) {
+      const d = footprintDepth(grid, x0 + (b + 0.5) * step, y0 + (a + 0.5) * step, FOOTPRINT_BODY_RADIUS);
+      if (d <= 0) return true; // a legal body position, proved
+      if (d < cover) _needyTiles[needy++] = a * NAV_COARSE + b;
+    }
+  }
+  if (!needy) return false; // every tile provably covered
+  const sub = step / NAV_SUB;
+  for (let t = 0; t < needy; t++) {
+    const tb = _needyTiles[t] % NAV_COARSE;
+    const ta = (_needyTiles[t] - tb) / NAV_COARSE;
+    for (let a = 0; a < NAV_SUB; a++) {
+      for (let b = 0; b < NAV_SUB; b++) {
+        const x = x0 + tb * step + (b + 0.5) * sub;
+        const y = y0 + ta * step + (a + 0.5) * sub;
+        if (footprintDepth(grid, x, y, FOOTPRINT_BODY_RADIUS) <= 0) return true;
+      }
     }
   }
   return false;
 }
+/** Scratch for navCellOpen — the bake visits ~13k cells and this saves an array
+ *  allocation on every one of them. */
+const _needyTiles = new Int32Array(NAV_COARSE * NAV_COARSE);
 
 /* -- THE DEEP-SEA CURRENT ----------------------------------------------------
  * Deep water is the END OF THE WORLD, and the maintainer's call (2026-08-29) is
