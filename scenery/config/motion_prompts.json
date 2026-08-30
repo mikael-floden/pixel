@@ -397,28 +397,6 @@
     "state": "NOT_LIT_6"
    }
   },
-  "M3": {
-   "group": "wells",
-   "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-   "moves": "The bucket turns.",
-   "seen_in_art": "a well with a bucket hung over the shaft",
-   "example": {
-    "piece": "wells/well_009",
-    "state": "NOT_LIT_2"
-   }
-  },
-  "M4": {
-   "group": "wells",
-   "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-   "moves": "The bucket turns.",
-   "seen_in_art": "a well with a bucket hung over the shaft",
-   "example": {
-    "piece": "wells/well_011",
-    "state": "NOT_LIT_2"
-   }
-  },
   "N12": {
    "group": "ant_hills",
    "name": "motion",
@@ -6815,17 +6793,6 @@
     "state": "LIT_2"
    }
   },
-  "M5": {
-   "group": "wells",
-   "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-   "moves": "The bucket turns.",
-   "seen_in_art": "a well with a bucket hung over the shaft",
-   "example": {
-    "piece": "wells/well_011",
-    "state": "NOT_LIT_3"
-   }
-  },
   "M6": {
    "group": "wells",
    "name": "motion",
@@ -6846,72 +6813,6 @@
    "example": {
     "piece": "wells/well_019",
     "state": "NOT_LIT_4"
-   }
-  },
-  "M23": {
-   "group": "lantern_posts",
-   "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the lantern hanging from the post moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-   "moves": "The lantern turns.",
-   "seen_in_art": "a post with an unlit lantern hung from it",
-   "example": {
-    "piece": "lantern_posts/lantern_post_008",
-    "state": "NOT_LIT_2"
-   }
-  },
-  "M33": {
-   "group": "cliff_roots",
-   "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the cyan vein in the rock changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The cyan vein in the rock is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-   "moves": "The light brightens.",
-   "seen_in_art": "a rock face with cyan vein in the rock",
-   "example": {
-    "piece": "cliff_roots/cliff_root_067",
-    "state": "LIT_1"
-   }
-  },
-  "M34": {
-   "group": "cliff_roots",
-   "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the cyan vein in the rock changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The cyan vein in the rock is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-   "moves": "The light brightens.",
-   "seen_in_art": "a rock face with cyan vein in the rock",
-   "example": {
-    "piece": "cliff_roots/cliff_root_067",
-    "state": "LIT_2"
-   }
-  },
-  "M35": {
-   "group": "cliff_roots",
-   "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the gold light at the root tips changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The gold light at the root tips is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-   "moves": "The light brightens.",
-   "seen_in_art": "a rock face with gold light at the root tips",
-   "example": {
-    "piece": "cliff_roots/cliff_root_047",
-    "state": "LIT_2"
-   }
-  },
-  "M36": {
-   "group": "cliff_roots",
-   "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the gold lights among the roots changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The gold lights among the roots is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-   "moves": "The light brightens.",
-   "seen_in_art": "a rock face with gold lights among the roots",
-   "example": {
-    "piece": "cliff_roots/cliff_root_049",
-    "state": "LIT_1"
-   }
-  },
-  "M37": {
-   "group": "cliff_roots",
-   "name": "motion",
-   "prompt": "This is an almost completely still picture. ONLY the outermost edge of the cyan lights among the roots changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The cyan lights among the roots is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-   "moves": "The light brightens.",
-   "seen_in_art": "a rock face with cyan lights among the roots",
-   "example": {
-    "piece": "cliff_roots/cliff_root_049",
-    "state": "LIT_2"
    }
   },
   "M38": {
@@ -8114,6 +8015,87 @@
     "piece": "signposts/signpost_025",
     "state": "NOT_LIT_3"
    }
+  },
+  "M23": {
+   "group": "lantern_posts",
+   "moves": "The lantern turns.",
+   "reason": "ugly animation, rejected on sight (maintainer, batch AM). Do not re-propose.",
+   "example": {
+    "piece": "lantern_posts/lantern_post_008",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "M3": {
+   "group": "wells",
+   "moves": "The bucket turns.",
+   "reason": "ugly animation, rejected on sight (maintainer, batch AM). Do not re-propose.",
+   "example": {
+    "piece": "wells/well_009",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "M5": {
+   "group": "wells",
+   "moves": "The bucket turns.",
+   "reason": "ugly animation, rejected on sight (maintainer, batch AM). Do not re-propose.",
+   "example": {
+    "piece": "wells/well_011",
+    "state": "NOT_LIT_3"
+   }
+  },
+  "M4": {
+   "group": "wells",
+   "moves": "The bucket turns.",
+   "reason": "ugly animation, rejected on sight (maintainer, batch AM). Do not re-propose.",
+   "example": {
+    "piece": "wells/well_011",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "M33": {
+   "group": "cliff_roots",
+   "moves": "The light brightens.",
+   "reason": "ugly animation, rejected on sight (maintainer, batch AM). Do not re-propose.",
+   "example": {
+    "piece": "cliff_roots/cliff_root_067",
+    "state": "LIT_1"
+   }
+  },
+  "M34": {
+   "group": "cliff_roots",
+   "moves": "The light brightens.",
+   "reason": "ugly animation, rejected on sight (maintainer, batch AM). Do not re-propose.",
+   "example": {
+    "piece": "cliff_roots/cliff_root_067",
+    "state": "LIT_2"
+   }
+  },
+  "M35": {
+   "group": "cliff_roots",
+   "moves": "The light brightens.",
+   "reason": "ugly animation, rejected on sight (maintainer, batch AM). Do not re-propose.",
+   "example": {
+    "piece": "cliff_roots/cliff_root_047",
+    "state": "LIT_2"
+   }
+  },
+  "M36": {
+   "group": "cliff_roots",
+   "moves": "The light brightens.",
+   "reason": "ugly animation, rejected on sight (maintainer, batch AM). Do not re-propose.",
+   "example": {
+    "piece": "cliff_roots/cliff_root_049",
+    "state": "LIT_1"
+   }
+  },
+  "M37": {
+   "group": "cliff_roots",
+   "moves": "The light brightens.",
+   "reason": "ugly animation, rejected on sight (maintainer, batch AM). Do not re-propose.",
+   "example": {
+    "piece": "cliff_roots/cliff_root_049",
+    "state": "LIT_2"
+   }
   }
  },
  "_declined_note": "`declined` records briefs he has rejected outright. animate_motion reads `animations` only, so anything here is inert — it is kept so a later pass can see these were decided, not overlooked.",
@@ -8162,6 +8144,7 @@
  "_bound_the_loop_note": "FRAME-LEVEL INSTRUCTIONS ARE IGNORED. Tried 2026-08-29 on 27 redos: 'Frames 1, 2 and 5 are identical to each other. Only frames 3 and 4 differ at all.' Result: across 26 pieces and 104 frames, NOT ONE frame came back identical to another. The generator does not reason about individual frames at all -- constrain WHAT changes and BY HOW MUCH, never WHICH FRAME. Do not re-attempt.",
  "_vines_settled": "VINES: MOSTLY BUT NOT ENTIRELY UNANIMATABLE (2026-08-29). Two full prompts and every clause in the set across 45 then 26 pieces; a vine is a hundred small shapes with no still ground behind them and the generator redraws it wholesale. I recommended removing all 26 redos; he removed 12 and KEPT 14. So some vine results are acceptable to his eye even at 20-35% drift -- my read is again stricter than his. Do not propose vines as a family, but do not assume every vine result is worthless either. H34 (aqueduct cracks) failed on its FOURTH attempt and is the clearer do-not-retry.",
  "_unlit_hanging_seam": "DO NOT FILTER CANDIDATES TO LIT STATES -- CONFIRMED by batch AM (2026-08-29). A bucket on a well rope, a hung lantern, charms on a cord and a rug fringe all move without glowing. The 8 unlit hanging pieces measured 9.7% motion / 11.8% drift / 0.0% blowout, with the two quietest at 2.5% and 3.6% -- the closest to still this domain has produced. ~260 unlit states remain in the proven hanging/flame groups. When a pool looks exhausted, check whether the FILTER is what is exhausted; that has now been the answer twice.",
- "_busy_body_check": "CHECK THE BODY, NOT JUST THE LIGHT, BEFORE PROPOSING A GLOW. Batch AM: I proposed four cliff_root states reading them as 'a crisp vein on rock'. cliff_root_049 is a rock wall COVERED IN ROOTS -- a busy body, the shape already settled as unfixable -- and it measured 56.3% and 42.7% motion. The crisp-mark rule requires a STILL body behind the mark. Look at what surrounds the light, not only at the light.",
- "_maintainer_taste_note": "HE DOES NOT WANT UNLIT LANTERNS OR RUGS. Batch AM offered 11 unlit hung lanterns and 6 rug fringes; he took 1 lantern and 0 rugs, while taking every glow and every well bucket. Fringe measured fine in earlier batches, so this is taste rather than quality: propose well buckets and lit pieces, not unlit lanterns or rugs."
+ "_busy_body_check": "CHECK THE BODY, NOT JUST THE LIGHT, BEFORE PROPOSING A GLOW. Batch AM: I proposed five cliff_root states reading them as 'a crisp vein on rock'. They are rock faces COVERED IN ROOTS -- a busy body, the shape already settled as unfixable -- and measured up to 56.3% motion. ALL FIVE were rejected on sight, including cliff_root_067 which measured well (9-13%). The crisp-mark rule requires a STILL body behind the mark. cliff_roots is now a do-not-propose group alongside cliff_vines, cliff_shrubs and foliage.",
+ "_maintainer_taste_note": "HE DOES NOT WANT UNLIT LANTERNS OR RUGS. Batch AM offered 11 unlit hung lanterns and 6 rug fringes; he took 1 lantern and 0 rugs, while taking every glow and every well bucket. Fringe measured fine in earlier batches, so this is taste rather than quality: propose well buckets and lit pieces, not unlit lanterns or rugs.",
+ "_wells_note": "WELLS: the bucket must hang FREE and clear. Batch AM kept well_006 (x2, 2.5% and 6.9%) and well_019 (3.6%) -- all a bucket hanging in open air on a rope -- and rejected well_009 and well_011 (x2), where the bucket sits low against the wellhead or the structure is busy behind it. Same rule as everywhere: the mover needs still, empty ground behind it."
 }

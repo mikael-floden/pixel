@@ -39,27 +39,7 @@
       "glow_concept": "the root tips glowing faintly",
       "difference_from_source": 0.6813,
       "glow_score": 0.0074,
-      "animations": {
-        "motion": {
-          "group_id": "8be5ce6f-83a4-4a99-ab38-024c4c12d508",
-          "description": "This is an almost completely still picture. ONLY the outermost edge of the gold lights among the roots changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The gold lights among the roots is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "cliff_roots/cliff_root_049/lit_1/animations/motion/00.webp",
-            "cliff_roots/cliff_root_049/lit_1/animations/motion/01.webp",
-            "cliff_roots/cliff_root_049/lit_1/animations/motion/02.webp",
-            "cliff_roots/cliff_root_049/lit_1/animations/motion/03.webp",
-            "cliff_roots/cliff_root_049/lit_1/animations/motion/04.webp"
-          ],
-          "strip": "cliff_roots/cliff_root_049/lit_1/animations/motion__strip.webp",
-          "directions": null,
-          "generated_at": "2026-08-30T11:18:46+00:00",
-          "brief": "M36"
-        }
-      }
+      "animations": {}
     },
     "LIT_2": {
       "sprite": "cliff_roots/cliff_root_049/lit_2/sprite.webp",
@@ -68,27 +48,7 @@
       "glow_concept": "soul-light running up the roots",
       "difference_from_source": 0.5924,
       "glow_score": 0.0267,
-      "animations": {
-        "motion": {
-          "group_id": "b4687861-0b1e-412a-9bf2-695bb01b6a2b",
-          "description": "This is an almost completely still picture. ONLY the outermost edge of the cyan lights among the roots changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. The cyan lights among the roots is fully visible and exactly as easy to read in every frame -- it never fades, never vanishes and is never swallowed by glare. Its inside stays exactly the cyan it is in the first frame. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
-          "mode": "v3",
-          "frame_count": 5,
-          "generated_frames": 4,
-          "keep_first_frame": true,
-          "frame_paths": [
-            "cliff_roots/cliff_root_049/lit_2/animations/motion/00.webp",
-            "cliff_roots/cliff_root_049/lit_2/animations/motion/01.webp",
-            "cliff_roots/cliff_root_049/lit_2/animations/motion/02.webp",
-            "cliff_roots/cliff_root_049/lit_2/animations/motion/03.webp",
-            "cliff_roots/cliff_root_049/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "cliff_roots/cliff_root_049/lit_2/animations/motion__strip.webp",
-          "directions": null,
-          "generated_at": "2026-08-30T11:18:44+00:00",
-          "brief": "M37"
-        }
-      }
+      "animations": {}
     },
     "NOT_LIT_1": {
       "sprite": "cliff_roots/cliff_root_049/sprite.webp",
