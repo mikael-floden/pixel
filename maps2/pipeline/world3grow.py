@@ -718,10 +718,26 @@ class Grow:
                 continue
             for c in dk["cells"]:
                 indoor[(c["x"], c["y"])] = int(dk["level"])
+        def floor(c):
+            return (c in indoor and c not in walls
+                    and self.g(*c) in self.INDOOR_GROUNDS
+                    and self.lvl[c[1]][c[0]] < indoor[c])
+
+        # A DOORWAY IS NOT A ROOM BOUNDARY YOU CAN WALK THROUGH TWICE.
+        # The maintainer counts rooms by their WALLS - shown the town hall as
+        # one 116-cell patch he answered "that looks like 3 rooms to me", and
+        # it is: two chambers north of the dividing wall and one hall south.
+        # Flooding through the door gaps merged all three. A doorway is a
+        # floor cell with wall on BOTH opposite sides; it does not conduct,
+        # and it joins the room with the lower anchor afterwards so it still
+        # gets a tile.
+        doors = {c for c in indoor if floor(c)
+                 and (((c[0] - 1, c[1]) in walls and (c[0] + 1, c[1]) in walls)
+                      or ((c[0], c[1] - 1) in walls
+                          and (c[0], c[1] + 1) in walls))}
         seen, out = set(), []
         for (x, y) in sorted(indoor):
-            if (x, y) in seen or self.g(x, y) not in self.INDOOR_GROUNDS \
-                    or (x, y) in walls or self.lvl[y][x] >= indoor[(x, y)]:
+            if (x, y) in seen or not floor((x, y)) or (x, y) in doors:
                 continue
             grd = self.g(x, y)
             comp, stack = [], [(x, y)]
@@ -731,14 +747,28 @@ class Grow:
                 comp.append((cx, cy))
                 for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                     n = (cx + dx, cy + dy)
-                    if n in indoor and n not in seen and self.g(*n) == grd \
-                            and n not in walls \
-                            and self.lvl[n[1]][n[0]] < indoor[n]:
+                    if n not in seen and n not in doors and floor(n) \
+                            and self.g(*n) == grd:
                         seen.add(n)
                         stack.append(n)
             comp.sort()
             out.append({"ground": grd,
                         "cells": [{"x": cx, "y": cy} for (cx, cy) in comp]})
+        # every doorway joins a neighbouring room (lowest anchor wins), so no
+        # indoor floor cell is left without one
+        home = {}
+        for i, r in enumerate(out):
+            for c in r["cells"]:
+                home[(c["x"], c["y"])] = i
+        for c in sorted(doors):
+            cand = sorted(home[n] for n in
+                          ((c[0] + 1, c[1]), (c[0] - 1, c[1]),
+                           (c[0], c[1] + 1), (c[0], c[1] - 1)) if n in home)
+            if cand:
+                out[cand[0]]["cells"].append({"x": c[0], "y": c[1]})
+                home[c] = cand[0]
+        for r in out:
+            r["cells"].sort(key=lambda c: (c["x"], c["y"]))
         self.doc["rooms"] = out
         # every indoor floor cell belongs to exactly one room
         n = sum(len(r["cells"]) for r in out)

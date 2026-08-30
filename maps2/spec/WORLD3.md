@@ -92,8 +92,14 @@ It has to be published because it cannot be inferred:
   different anchor, and the same floor would change tile between two renders.
 
 A room is a connected (4-neighbour) patch of indoor floor: same ground, under a
-roof or cave deck, carrying no wall, and lying BELOW its deck. the_game
-publishes 11 rooms / 262 cells. The channel is additive — no cell, deck, wall or
+roof or cave deck, carrying no wall, and lying BELOW its deck — and **a doorway
+does not conduct**. A doorway is a floor cell with wall on both opposite sides;
+flooding through them merged the town hall's three chambers into one 116-cell
+patch, and the maintainer counts rooms by their walls ("that looks like 3 rooms
+to me", 2026-08-30). Each doorway then joins the neighbouring room with the
+lower anchor, so no indoor floor cell is left without one. the_game publishes
+13 rooms / 262 cells; the town hall is 3 (32 + 30 north of its dividing wall,
+54 in the hall south of it). The channel is additive — no cell, deck, wall or
 level changes — so collision, indoor detection and draw order are untouched.
 
 ### `ramps` — the contract with the game
