@@ -187,53 +187,58 @@
    }
   },
   "G1": {
-   "group": "reed_beds",
+   "group": "beacons",
    "name": "motion",
-   "prompt": "Animate the reeds only, bending in a gentle breeze. Nothing else moves.",
-   "moves": "The reeds and seed plumes bend.",
+   "prompt": "This is the same picture in every frame. ONLY the cyan flame at the top flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The flame burns.",
+   "seen_in_art": "a tower beacon burning with a cyan flame",
    "example": {
-    "piece": "reed_beds/reed_bed_005",
-    "state": "NOT_LIT_1"
+    "piece": "beacons/beacon_008",
+    "state": "LIT_4"
    }
   },
   "G2": {
-   "group": "cattail_clumps",
+   "group": "torch_posts",
    "name": "motion",
-   "prompt": "Animate the leaves and seed heads only, in a gentle breeze. Nothing else moves.",
-   "moves": "The leaves arch and the heads nod.",
+   "prompt": "This is the same picture in every frame. ONLY the three flames on the frame flicker. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "All three burn.",
+   "seen_in_art": "a wooden frame carrying three burning torches",
    "example": {
-    "piece": "cattail_clumps/cattail_clump_005",
-    "state": "NOT_LIT_1"
+    "piece": "torch_posts/torch_post_014",
+    "state": "LIT_4"
    }
   },
   "G3": {
-   "group": "grass_tufts",
+   "group": "lantern_posts",
    "name": "motion",
-   "prompt": "Animate the grass blades only, bending in a gentle breeze. Nothing else moves.",
-   "moves": "The blades bend and spring back.",
+   "prompt": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The lantern burns.",
+   "seen_in_art": "a post between logs with a lantern burning on it",
    "example": {
-    "piece": "grass_tufts/grass_tuft_001",
-    "state": "NOT_LIT_1"
+    "piece": "lantern_posts/lantern_post_026",
+    "state": "LIT_4"
    }
   },
   "G6": {
-   "group": "cliff_shrubs",
+   "group": "lantern_posts",
    "name": "motion",
-   "prompt": "Animate the foliage only, shivering in a gentle breeze. Nothing else moves.",
-   "moves": "The windbent foliage shivers.",
+   "prompt": "This is the same picture in every frame. ONLY the light inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The lantern burns.",
+   "seen_in_art": "a weathered post with a dim green lantern",
    "example": {
-    "piece": "cliff_shrubs/cliff_shrub_002",
-    "state": "NOT_LIT_3"
+    "piece": "lantern_posts/lantern_post_008",
+    "state": "LIT_4"
    }
   },
   "G7": {
-   "group": "bushes",
+   "group": "tables",
    "name": "motion",
-   "prompt": "Animate the leaves only, shivering in a gentle breeze. Nothing else moves.",
-   "moves": "The leaves shiver.",
+   "prompt": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The lantern burns.",
+   "seen_in_art": "a map desk with a lantern burning at one end",
    "example": {
-    "piece": "bushes/bush_001",
-    "state": "NOT_LIT_1"
+    "piece": "tables/table_016",
+    "state": "LIT_4"
    }
   },
   "G8": {
@@ -247,43 +252,47 @@
    }
   },
   "G9": {
-   "group": "hop_poles",
+   "group": "torch_posts",
    "name": "motion",
-   "prompt": "Animate the hanging bines only, swaying gently. Nothing else moves.",
-   "moves": "The bines and cones sway on the pole.",
+   "prompt": "This is the same picture in every frame. ONLY the cyan light on the crystals at the top brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The crystals pulse.",
+   "seen_in_art": "a carved post topped with lit cyan crystals",
    "example": {
-    "piece": "hop_poles/hop_pole_001",
-    "state": "NOT_LIT_1"
+    "piece": "torch_posts/torch_post_012",
+    "state": "LIT_4"
    }
   },
   "G10": {
-   "group": "ivy_posts",
+   "group": "wall_hangings",
    "name": "motion",
-   "prompt": "Animate the loose ivy trails only, stirring gently. Nothing else moves.",
-   "moves": "The loose ivy trails stir.",
+   "prompt": "This is the same picture in every frame. ONLY the thread of purple vapour above the bottle rises and curls. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The vapour rises.",
+   "seen_in_art": "a shelf of bottles, one trailing purple vapour",
    "example": {
-    "piece": "ivy_posts/ivy_post_005",
-    "state": "NOT_LIT_1"
+    "piece": "wall_hangings/wall_hanging_009",
+    "state": "NOT_LIT_4"
    }
   },
   "G11": {
-   "group": "overgrown_archways",
+   "group": "wells",
    "name": "motion",
-   "prompt": "Animate the hanging vines only, swaying gently. Nothing else moves.",
-   "moves": "The vines hanging through the arch sway.",
+   "prompt": "This is the same picture in every frame. ONLY the hanging bucket turns very slightly where it hangs. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The bucket turns.",
+   "seen_in_art": "a well with a bucket hung on a chain over the shaft",
    "example": {
-    "piece": "overgrown_archways/overgrown_archway_001",
-    "state": "NOT_LIT_1"
+    "piece": "wells/well_010",
+    "state": "NOT_LIT_2"
    }
   },
   "G12": {
-   "group": "wisteria_snags",
+   "group": "wells",
    "name": "motion",
-   "prompt": "Animate the hanging wisteria only, swaying gently. Nothing else moves.",
-   "moves": "The long hanging racemes sway.",
+   "prompt": "This is the same picture in every frame. ONLY the hanging bucket turns very slightly where it hangs. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The bucket turns.",
+   "seen_in_art": "a vine-grown well with a bucket over the shaft",
    "example": {
-    "piece": "wisteria_snags/wisteria_snag_001",
-    "state": "NOT_LIT_1"
+    "piece": "wells/well_002",
+    "state": "NOT_LIT_3"
    }
   },
   "L1": {
@@ -5273,6 +5282,215 @@
     "piece": "briar_thickets/briar_thicket_015",
     "state": "LIT_2"
    }
+  },
+  "G4": {
+   "group": "lantern_stands",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the flame inside the hanging lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The lantern burns.",
+   "seen_in_art": "an iron crook with a lantern burning on its hook",
+   "example": {
+    "piece": "lantern_stands/lantern_stand_018",
+    "state": "LIT_4"
+   }
+  },
+  "G5": {
+   "group": "lantern_posts",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the light inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The lantern burns.",
+   "seen_in_art": "a post carrying a green-lit lantern",
+   "example": {
+    "piece": "lantern_posts/lantern_post_008",
+    "state": "LIT_3"
+   }
+  },
+  "G13": {
+   "group": "lantern_stands",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the hanging lantern turns very slightly where it hangs. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The lantern turns.",
+   "seen_in_art": "an iron crook with an unlit lantern hung from it",
+   "example": {
+    "piece": "lantern_stands/lantern_stand_018",
+    "state": "NOT_LIT_1"
+   }
+  },
+  "G16": {
+   "group": "telegraph_poles",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the dangling wires turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The wires sway.",
+   "seen_in_art": "a snowy pole with loose wires hanging from the crossarm",
+   "example": {
+    "piece": "telegraph_poles/telegraph_pole_003",
+    "state": "NOT_LIT_3"
+   }
+  },
+  "G17": {
+   "group": "telegraph_poles",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the dangling wires turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The wires sway.",
+   "seen_in_art": "a snowy pole with cut wires dangling",
+   "example": {
+    "piece": "telegraph_poles/telegraph_pole_003",
+    "state": "NOT_LIT_4"
+   }
+  },
+  "G18": {
+   "group": "telegraph_poles",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the dangling wires turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The wires sway.",
+   "seen_in_art": "a vined pole with wires looping from the crossarm",
+   "example": {
+    "piece": "telegraph_poles/telegraph_pole_008",
+    "state": "NOT_LIT_1"
+   }
+  },
+  "G19": {
+   "group": "telegraph_poles",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the dangling wires turn very slightly where they hang. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The wires sway.",
+   "seen_in_art": "a pole with wires and vines hanging from its arm",
+   "example": {
+    "piece": "telegraph_poles/telegraph_pole_008",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "G20": {
+   "group": "frost_flowers",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the pale glow on the ice rose brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The glow pulses.",
+   "seen_in_art": "a single ice rose with a pale glow on its petals",
+   "example": {
+    "piece": "frost_flowers/frost_flower_002",
+    "state": "LIT_4"
+   }
+  },
+  "G21": {
+   "group": "cairns",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the gold light in the seams between the stones brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The seams pulse.",
+   "seen_in_art": "a cairn with gold light burning in the seams",
+   "example": {
+    "piece": "cairns/cairn_016",
+    "state": "LIT_4"
+   }
+  },
+  "G22": {
+   "group": "cattail_clumps",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the ring of cyan light at the base brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The ring pulses.",
+   "seen_in_art": "cattails standing in a ring of cyan light",
+   "example": {
+    "piece": "cattail_clumps/cattail_clump_020",
+    "state": "LIT_3"
+   }
+  },
+  "G23": {
+   "group": "cattail_clumps",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the cyan light at the base brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The pool pulses.",
+   "seen_in_art": "cattails over a cyan-lit pool",
+   "example": {
+    "piece": "cattail_clumps/cattail_clump_020",
+    "state": "LIT_4"
+   }
+  },
+  "G24": {
+   "group": "crystals",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the cyan light on the crystal cluster brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The cluster pulses.",
+   "seen_in_art": "a single cluster of cyan crystals on rock",
+   "example": {
+    "piece": "crystals/crystal_012",
+    "state": "LIT_4"
+   }
+  },
+  "G25": {
+   "group": "soulstone_outcrops",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the white vein across the rock brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The vein pulses.",
+   "seen_in_art": "a rock crossed by one white vein between purple crystals",
+   "example": {
+    "piece": "soulstone_outcrops/soulstone_outcrop_016",
+    "state": "LIT_5"
+   }
+  },
+  "G26": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the white handprint brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The handprint pulses.",
+   "seen_in_art": "a pentagram plaque marked with a white handprint",
+   "example": {
+    "piece": "stones/stone_001",
+    "state": "LIT_2"
+   }
+  },
+  "G27": {
+   "group": "stones",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the cyan runes on the rock brighten a little and return. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The runes pulse.",
+   "seen_in_art": "a rock carved with a line of cyan runes",
+   "example": {
+    "piece": "stones/stone_018",
+    "state": "LIT_4"
+   }
+  },
+  "G28": {
+   "group": "stumps",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the green light down the stump brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The light pulses.",
+   "seen_in_art": "a stump with bright green light running down its sides",
+   "example": {
+    "piece": "stumps/stump_013",
+    "state": "LIT_2"
+   }
+  },
+  "G29": {
+   "group": "stumps",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the green light on the sapling brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The sapling glow pulses.",
+   "seen_in_art": "a stump with a green-lit sapling growing from its top",
+   "example": {
+    "piece": "stumps/stump_013",
+    "state": "LIT_3"
+   }
+  },
+  "G30": {
+   "group": "water_lily_clumps",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the ring of violet light on the pads brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The ring pulses.",
+   "seen_in_art": "lily pads ringed with violet light",
+   "example": {
+    "piece": "water_lily_clumps/water_lily_clump_001",
+    "state": "LIT_2"
+   }
+  },
+  "G31": {
+   "group": "mushrooms",
+   "name": "motion",
+   "prompt": "This is the same picture in every frame. ONLY the cyan light on the central stalk brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+   "moves": "The stalk pulses.",
+   "seen_in_art": "mushrooms around one bright cyan stalk",
+   "example": {
+    "piece": "mushrooms/mushroom_011",
+    "state": "LIT_2"
+   }
   }
  },
  "declined": {
@@ -5902,6 +6120,33 @@
    "example": {
     "piece": "cauldron_camps/cauldron_camp_002",
     "state": "NOT_LIT_1"
+   }
+  },
+  "G14": {
+   "group": "beacons",
+   "moves": "The lantern turns.",
+   "reason": "not picked from batch AF (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "beacons/beacon_016",
+    "state": "NOT_LIT_2"
+   }
+  },
+  "G8": {
+   "group": "hearths",
+   "moves": "The fire burns.",
+   "reason": "not picked from batch AF (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "hearths/hearth_900",
+    "state": "NOT_LIT_3"
+   }
+  },
+  "G15": {
+   "group": "lantern_posts",
+   "moves": "The lantern turns.",
+   "reason": "not picked from batch AF (maintainer). Do not re-propose this piece.",
+   "example": {
+    "piece": "lantern_posts/lantern_post_015",
+    "state": "NOT_LIT_4"
    }
   }
  },
