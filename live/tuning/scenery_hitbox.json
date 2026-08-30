@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
   "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
-  "updated_at": "2026-08-30T19:28:54.618Z",
+  "updated_at": "2026-08-30T19:29:58.444Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -26235,131 +26235,121 @@
       "boxes": [
         {
           "ax": 0,
-          "ay": 18,
-          "rx": 27.5,
-          "ry": 6,
+          "ay": 10.35,
+          "rx": 24,
+          "ry": 10.25,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:29:30.375Z"
     },
     "scenery/stumps/stump_005#not_lit_2": {
       "boxes": [
         {
-          "ax": 0,
-          "ay": 19.5,
-          "rx": 29.5,
-          "ry": 7.5,
+          "ax": -0.47,
+          "ay": 11.44,
+          "rx": 25,
+          "ry": 11.25,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:29:28.355Z"
     },
     "scenery/stumps/stump_005#not_lit_3": {
       "boxes": [
         {
-          "ax": 0,
-          "ay": 21,
-          "rx": 27.5,
-          "ry": 3,
+          "ax": -0.36,
+          "ay": 6.99,
+          "rx": 23.75,
+          "ry": 11.25,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:29:25.721Z"
     },
     "scenery/stumps/stump_005#not_lit_4": {
       "boxes": [
         {
-          "ax": -0.5,
-          "ay": 19,
-          "rx": 28,
-          "ry": 8,
+          "ax": -0.79,
+          "ay": 6.8,
+          "rx": 23.5,
+          "ry": 14,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:29:22.422Z"
     },
     "scenery/stumps/stump_005#not_lit_5": {
       "boxes": [
         {
-          "ax": 0,
-          "ay": 12.18,
+          "ax": -0.5,
+          "ay": 8.47,
           "rx": 27.5,
           "ry": 11.82,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:29:35.731Z"
     },
     "scenery/stumps/stump_005#not_lit_6": {
       "boxes": [
         {
-          "ax": -1,
-          "ay": 19.5,
+          "ax": -0.12,
+          "ay": 10.88,
           "rx": 27.5,
-          "ry": 6.5,
+          "ry": 9.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:29:39.061Z"
     },
     "scenery/stumps/stump_005#not_lit_8": {
       "boxes": [
         {
-          "ax": 0,
-          "ay": 20.5,
+          "ax": -0.38,
+          "ay": 12.59,
           "rx": 28.5,
-          "ry": 6.5,
+          "ry": 9.75,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:29:42.912Z"
     },
     "scenery/stumps/stump_005#not_lit_9": {
       "boxes": [
         {
-          "ax": 0.5,
-          "ay": 16,
-          "rx": 27,
-          "ry": 9,
+          "ax": 0.63,
+          "ay": 9.99,
+          "rx": 27.25,
+          "ry": 10.25,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:29:50.564Z"
     },
     "scenery/stumps/stump_005#not_lit_10": {
       "boxes": [
         {
-          "ax": 0,
-          "ay": 19,
-          "rx": 27.5,
-          "ry": 6,
+          "ax": -0.59,
+          "ay": 9.72,
+          "rx": 23,
+          "ry": 10.25,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:29:56.383Z"
     },
     "scenery/stumps/stump_005#lit_1": {
       "boxes": [
         {
           "ax": -1,
-          "ay": 19,
-          "rx": 31.5,
-          "ry": 13,
+          "ay": 14.5,
+          "rx": 30.25,
+          "ry": 17.5,
           "rot": 0
         }
       ],
-      "auto": true,
-      "updated_at": "2026-08-29T06:51:37.697Z"
+      "updated_at": "2026-08-30T19:29:03.950Z"
     },
     "scenery/stumps/stump_007#not_lit_1": {
       "boxes": [
