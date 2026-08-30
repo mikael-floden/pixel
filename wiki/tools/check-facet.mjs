@@ -364,6 +364,48 @@ ok(!(await pp.evaluate(() => !!document.querySelector(".judged-ok, .judged-no"))
   "nor the review marks on the chips — those are a Game Master's working notes");
 await pub.close();
 
+/* THE LIST SAYS WHAT A PIECE IS (maintainer 2026-08-29: "I want it to be
+ * clearer to see how many states, directions and if it's animated ... a x3,
+ * x7 pill in the top right corner. To hard to know now without clicking on
+ * it"). Counted from the published clips, so the card cannot drift from what
+ * the piece actually has. */
+{
+  await p.goto(`${W}#/objects`, { waitUntil: "load" });
+  await p.waitForTimeout(3000);
+  const cards = await p.evaluate(() => [...document.querySelectorAll("a.card")].slice(0, 40).map((c) => ({
+    href: c.getAttribute("href"),
+    count: c.querySelector(".thumb-count")?.textContent ?? "",
+    play: !!c.querySelector(".thumb-play"),
+    shape: (c.querySelector(".obj-shape")?.textContent ?? "").replace(/\s+/g, " ").trim(),
+  })));
+  ok(cards.length > 0, `the scenery list draws cards (${cards.length})`);
+  const byId = new Map((DATA.domains.objects ?? []).map((o) => [o.id, o]));
+  const shapeOf = (o) => {
+    const anims = Object.values(o.animations ?? {});
+    const dirs = new Set();
+    let animated = 0;
+    for (const a of anims) {
+      let moves = false;
+      for (const [d, c] of Object.entries(a.dirs ?? {})) { dirs.add(d); if ((c.frames ?? 1) > 1) moves = true; }
+      if (moves) animated++;
+    }
+    return { states: anims.length, dirs: dirs.size, animated };
+  };
+  const wrong = [];
+  for (const c of cards) {
+    const o = byId.get((c.href ?? "").split("/").pop());
+    if (!o) continue;
+    const sh = shapeOf(o);
+    if (sh.states > 1 && c.count !== `×${sh.states}`) wrong.push(`${o.id}: count ${c.count || "(none)"} vs ${sh.states}`);
+    if (!!sh.animated !== c.play) wrong.push(`${o.id}: play ${c.play} vs animated ${sh.animated}`);
+    if (sh.animated && !/animated/.test(c.shape)) wrong.push(`${o.id}: "${c.shape}" hides that it moves`);
+    if (!sh.animated && !/static/.test(c.shape)) wrong.push(`${o.id}: "${c.shape}" does not say static`);
+  }
+  ok(wrong.length === 0, wrong.length ? `card shape wrong — ${wrong[0]} (${wrong.length})`
+    : `every card's state count, animated mark and facings match its published clips (${cards.length} cards)`);
+  ok(cards.some((c) => c.play) && cards.some((c) => /×\d/.test(c.count)),
+    `and both marks appear while scrolling (${cards.filter((c) => c.play).length} animated, ${cards.filter((c) => c.count).length} with a state pill)`);
+}
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");
 await b.close();

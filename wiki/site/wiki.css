@@ -1796,3 +1796,22 @@ input[type="range"] { accent-color: var(--accent); }
    a flex item stretches on the cross axis by default, which drew a 64x46 tile
    64x120 — right width, wrong height, and it read as "very zoomed in". */
 .slope-tile { width: auto; height: auto; align-self: center; image-rendering: pixelated; }
+
+/* ---- SCENERY AT A GLANCE (maintainer 2026-08-29: "I want it to be clearer
+   to see how many states, directions and if it's animated ... a x3, x7 pill
+   in the top right corner. To hard to know now without clicking on it") ----
+   The two marks ride the ARTWORK, where the eye already is while scrolling;
+   the facings and the animated/static word sit on the row beneath the name,
+   so a card still reads top-down without the picture becoming a dashboard. */
+.card .thumb { position: relative; }
+.thumb-count, .thumb-play {
+  position: absolute; top: 5px; z-index: 1;
+  font-size: 11.5px; line-height: 1; padding: 3px 6px; border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  border: 1px solid var(--border); color: var(--ink);
+  font-variant-numeric: tabular-nums; pointer-events: none;
+}
+.thumb-count { right: 5px; font-weight: 600; }
+.thumb-play { left: 5px; color: var(--accent, #c9a227); border-color: color-mix(in srgb, var(--accent, #c9a227) 55%, var(--border)); }
+.obj-shape { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.obj-shape .pill { font-size: 11px; padding: 1px 6px; }

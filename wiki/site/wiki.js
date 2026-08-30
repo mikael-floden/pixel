@@ -9935,20 +9935,60 @@ function viewObjects() {
   const q = objectQueue();
   const list = q.list.filter((o) => matches(state.query, o.id, o.name, o.category, o.description));
   const cats = [...new Set(list.map((o) => o.category))].sort();
-  const card = (o) => h("a", { class: "card", href: `#/objects/${o.id}` },
-    h("div", { class: "thumb checker" }, h("img", { src: assetUrl(o.preview), alt: o.name, loading: "lazy" })),
-    h("div", { class: "card-name" }, o.name),
-    // The synthesised `still` must not read as an animation here — the
-    // list is where you scan for what actually moves.
-    h("div", { class: "card-sub" }, o.stillOnly || !Object.keys(o.animations).length
-      // Static, but not necessarily one-sided or single-state: say so before
-      // you open it. Kept short — this is a card, not a header.
-      ? (stillShape(o) ? `static · ${stillShape(o).replace(" directions", " views")}` : "static")
-      : Object.keys(o.animations).join(", ")),
+  /* WHAT A PIECE IS, WITHOUT OPENING IT (maintainer 2026-08-29: "When
+   * scrolling over Scenery I want it to be clearer to see how many states,
+   * directions and if it's animated. The states should be a x3, x7 pill in
+   * the top right corner ... To hard to know now without clicking on it").
+   *
+   * Three facts, three places: the STATE COUNT rides the thumbnail's top
+   * right, and the row under the name carries the facings and whether it
+   * moves. Counted from the published clips, so an animated state and a
+   * still one are told apart by their frames rather than by a flag. */
+  const shapeOf = (o) => {
+    const anims = Object.values(o.animations ?? {});
+    const states = anims.length;
+    const dirs = new Set();
+    let animated = 0, animatedDirs = 0;
+    for (const a of anims) {
+      let moves = false;
+      for (const [d, c] of Object.entries(a.dirs ?? {})) {
+        dirs.add(d);
+        if ((c.frames ?? 1) > 1) { moves = true; animatedDirs++; }
+      }
+      if (moves) animated++;
+    }
+    return { states, dirs: dirs.size, animated, animatedDirs };
+  };
+  const DIR_SHORT = { south: "S", "south-east": "SE", "south-west": "SW", east: "E", west: "W", north: "N", "north-east": "NE", "north-west": "NW" };
+  const dirWord = (o) => {
+    const seen = Object.values(o.animations ?? {}).flatMap((a) => Object.keys(a.dirs ?? {}));
+    const order = ["south-west", "south", "south-east", "west", "east", "north-west", "north", "north-east"];
+    const uniq = order.filter((d) => seen.includes(d));
+    return uniq.length <= 1 ? "" : uniq.map((d) => DIR_SHORT[d] ?? d).join("/");
+  };
+  const card = (o) => {
+    const sh = shapeOf(o);
+    return h("a", { class: "card", href: `#/objects/${o.id}` },
+      h("div", { class: "thumb checker" },
+        h("img", { src: assetUrl(o.preview), alt: o.name, loading: "lazy" }),
+        sh.states > 1 ? h("span", { class: "thumb-count", title: `${sh.states} states — variants of this piece you can switch between` }, `×${sh.states}`) : null,
+        sh.animated ? h("span", { class: "thumb-play", title: sh.animated === sh.states
+          ? `Animated — every state moves (${sh.animatedDirs} clip${sh.animatedDirs === 1 ? "" : "s"})`
+          : `Animated — ${sh.animated} of ${sh.states} states move` }, "▶") : null),
+      h("div", { class: "card-name" }, o.name),
+      // The synthesised `still` must not read as an animation here — the
+      // list is where you scan for what actually moves.
+      h("div", { class: "card-sub obj-shape" },
+        sh.animated
+          ? h("span", { class: "pill ok", title: sh.animated === sh.states ? "Every state is animated" : `${sh.animated} of ${sh.states} states are animated` },
+            sh.animated === sh.states ? "animated" : `animated ${sh.animated}/${sh.states}`)
+          : h("span", { class: "muted" }, "static"),
+        dirWord(o) ? h("span", { class: "pill", title: `${sh.dirs} facings: ${dirWord(o)}` }, dirWord(o)) : null),
     // A stale verdict must not wear the badge of a live one — "remove" on a
     // piece regenerated since that call would read as a decision about the
     // art on screen.
-    h("div", { class: "card-badges" }, ...objBadges(o)));
+      h("div", { class: "card-badges" }, ...objBadges(o)));
+  };
   return h("div", {},
     sectionHead("objects"),
     h("p", { class: "muted" }, "The scenery of the world — animated props and map objects."),
