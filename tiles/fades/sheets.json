@@ -16,8 +16,8 @@
   "with": "{a} with {b}",
   "and": "{a} and {b}"
  },
- "n_sheets": 1070,
- "n_tiles": 17120,
+ "n_sheets": 1074,
+ "n_tiles": 17184,
  "sheets": [
   {
    "schema": "tiles3/fades@1",
@@ -20564,6 +20564,48 @@
    "use_for": "transition",
    "dominant": "grey_stone",
    "minor": "grass",
+   "prompt": "grass spots on grey stone",
+   "phrasing": "spots",
+   "rep": 1,
+   "seed": 30797,
+   "tile_id": "fb025ac6-4aad-4e36-8880-65bab0e4a2d6",
+   "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+   },
+   "n_tiles": 16,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "dir": "tiles/fades/grey_stone__with__grass/spots_1"
+  },
+  {
+   "schema": "tiles3/fades@1",
+   "kind": "fade_top_only",
+   "wall_is_meaningless": true,
+   "use_for": "transition",
+   "dominant": "grey_stone",
+   "minor": "grass",
    "prompt": "grey stone with grass",
    "phrasing": "with",
    "rep": 1,
@@ -24168,6 +24210,48 @@
     "tile_15.webp"
    ],
    "dir": "tiles/fades/ice__with__grey_stone/on_top_of_1"
+  },
+  {
+   "schema": "tiles3/fades@1",
+   "kind": "fade_top_only",
+   "wall_is_meaningless": true,
+   "use_for": "transition",
+   "dominant": "ice",
+   "minor": "grey_stone",
+   "prompt": "one grey stone rock on ice",
+   "phrasing": "one_rock",
+   "rep": 1,
+   "seed": 44283,
+   "tile_id": "97411943-c350-4d28-8c77-114caecda952",
+   "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+   },
+   "n_tiles": 16,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "dir": "tiles/fades/ice__with__grey_stone/one_rock_1"
   },
   {
    "schema": "tiles3/fades@1",
@@ -27990,6 +28074,48 @@
     "tile_15.webp"
    ],
    "dir": "tiles/fades/lava__with__slime/on_top_of_1"
+  },
+  {
+   "schema": "tiles3/fades@1",
+   "kind": "fade_top_only",
+   "wall_is_meaningless": true,
+   "use_for": "transition",
+   "dominant": "lava",
+   "minor": "slime",
+   "prompt": "one slime rock on lava",
+   "phrasing": "one_rock",
+   "rep": 1,
+   "seed": 25055,
+   "tile_id": "5572855d-f59d-4078-a006-e9c7265b5c31",
+   "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+   },
+   "n_tiles": 16,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "dir": "tiles/fades/lava__with__slime/one_rock_1"
   },
   {
    "schema": "tiles3/fades@1",
@@ -35592,6 +35718,48 @@
     "tile_15.webp"
    ],
    "dir": "tiles/fades/parquet_floor__with__grey_stone/on_top_of_1"
+  },
+  {
+   "schema": "tiles3/fades@1",
+   "kind": "fade_top_only",
+   "wall_is_meaningless": true,
+   "use_for": "transition",
+   "dominant": "parquet_floor",
+   "minor": "grey_stone",
+   "prompt": "one grey stone rock on parquet floor",
+   "phrasing": "one_rock",
+   "rep": 1,
+   "seed": 88840,
+   "tile_id": "e2e943ee-8253-4607-94c8-38e213c21a90",
+   "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+   },
+   "n_tiles": 16,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "dir": "tiles/fades/parquet_floor__with__grey_stone/one_rock_1"
   },
   {
    "schema": "tiles3/fades@1",
