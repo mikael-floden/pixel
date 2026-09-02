@@ -484,12 +484,46 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     slab bit-identical to pre-cull. Gate: the occluder block of
     `verify-smoke.mjs` on `occlusion_test` (the only compact world with BOTH
     level-32 terrain and decks), standing and walking.
-  - STILL OPEN: this cut the image COUNT, not the churn (~92% of the set is
-    identical between rebuilds; worst walking frame 971 → 784 ms). The
-    remaining spike is destroy-all/create-all + `redrawGround`'s own
-    unconditional deck face loop (~9,000 extra `batchDraw`s per redraw).
-    Next: pool the images or trim the RT — the RT trim is NOT a drop-in (it
-    skips void cells).
+  - **THE OCCLUDER SET IS POOLED, NOT REBUILT** (`occImage`, `destroyBatch`,
+    2026-09-02). A rebuild used to destroy every image and create every image,
+    and 90-95% of what it created was bit-identical to what it had just
+    destroyed (measured: 1,489 of 1,649 after a 99 px step at the forest).
+    Two costs, both now gone: Phaser's `destroy()` takes an object off the
+    display list by SCANNING it (`exists()` = indexOf, then `remove()` =
+    indexOf + splice; 3.90 GameObject.removeFromDisplayList), so destroying
+    ~5,400 occluders in a ~5,900-object list was QUADRATIC — 39 ms of pure JS;
+    creating them again was 43 ms. `destroyBatch` filters the display list ONCE
+    against a Set and only then destroys (each object finds itself absent and
+    skips the scan); `occImage` keys an image on everything that makes it what
+    it is — `col,row,tex,x,y,depth` (col/row included: two cells at different
+    levels CAN share a screen point) — takes it back out of the pool untouched,
+    and the rebuild destroys only what left the window. Measured per rebuild,
+    legacy → pooled: snow cliffs 88 → 19 ms (×4.6), snow shore 87 → 21 ms,
+    autumn wood 28 → 12 ms, forest 24 → 15 ms — with the pooled set and its
+    painter order IDENTICAL to the legacy set at all four (`__ml.occDump()`
+    lists every occluder in (depth, list position) order; the A/B is
+    `__ml.occRebuild("legacy"|"bulk"|"pool")`, one build, same camera).
+    THE LAW THAT MAKES REUSE SAFE: Phaser's depth sort is STABLE, and a
+    column's faces and cap share one depth (`oDepth = by + dy`) and stack only
+    because they were inserted bottom-up, cap last — so once images outlive a
+    rebuild, insertion order is gone and EVERY image a rebuild places gets
+    depth = base + creationIndex × `OCC_DEPTH_EPS` (1e-6), scenery included,
+    which reproduces "insertion order among equals" exactly and tops out at
+    ~0.006 — far inside the ≥0.3 every body and light keeps from a column
+    (`resolveBodyDepth` +0.5 / above+0.6 / below−0.3; lights +0.1). The
+    metadata (`occluderMeta`, `emissiveLights`, the cover index) is still
+    rebuilt in full every time: it is data, and the cover index's staleness
+    contract is unchanged. The maps2 branch (the_island2) creates images the
+    old way and never sees the pool. A pooled image the scene has destroyed
+    (`scene` gone) is dropped, never reused.
+  - STILL OPEN after the pool: `redrawGround` is still a full repaint of the
+    ground RT with an unconditional deck face loop (31-55% of its blits land
+    entirely OUTSIDE the texture — measured 1,739 of 3,892 at the forest, 6,623
+    of 12,067 at the autumn wood), and `repaintWorld` fires BOTH full rebuilds
+    on every landed art batch, twice per batch (both `once("complete")`
+    handlers on the one loader) — in a 24 s walking window that was 8 of 11
+    occluder rebuilds and 8 of 8 ground redraws. Next: coalesce the repaints
+    to one per frame, then the RT bounds test.
 - `stairs` tiles are ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower,
   cactus, lava) are impassable — `SURFACES`/`surfaceFor` (`road_*` by prefix).

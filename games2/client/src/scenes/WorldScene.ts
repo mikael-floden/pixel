@@ -815,6 +815,18 @@ const DIR_STICK_MS = 160;
 // the residual previously misread as edge-alpha inset).
 const TILE_DIAMOND_TOP = 5;
 
+/* EVERY IMAGE A REBUILD PLACES GETS A UNIQUE DEPTH: its base painter depth plus
+ * its creation index times this. Phaser's depth sort is STABLE, so images that
+ * share a depth draw in INSERTION order — and a column's wall faces and cap all
+ * share one depth (oDepth = by + dy) and stack correctly only because they were
+ * inserted bottom-up, cap last. Once images are REUSED across rebuilds (the
+ * occluder pool, below) insertion order is history, so the order is written
+ * into the depth instead: creation index × 1e-6 reproduces "insertion order
+ * among equals" exactly, and tops out at ~0.006 over a 6,000-image rebuild —
+ * far inside the ≥0.3 every body and light keeps from a column's depth
+ * (resolveBodyDepth: +0.5 / above+0.6 / below−0.3; lights +0.1/+0.2). */
+const OCC_DEPTH_EPS = 1e-6;
+
 /* THE LOADING BAR'S BANDS — a stage gets the share of the BAR that matches its
  * share of the TIME, measured, so the bar moves at roughly one speed the whole
  * way (maintainer 2026-09-02: "it loads 55% and the last 45% goes super fast").
@@ -1521,6 +1533,21 @@ export class WorldScene extends Phaser.Scene {
     y1: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
+  /** Dev switch for A/B measurement of destroyBatch's two paths (`__ml.occRebuild`);
+   *  nothing in play reads it. */
+  private occFastDestroy = true;
+  /** Pure-JS cost of the last rebuild's destroy pass(es), for the probe. */
+  private occDestroyMs = 0;
+  /* THE OCCLUDER POOL — see occImage. `occNext` holds the CURRENT set keyed by
+   * everything that makes an image what it is; a rebuild moves it to `occPool`,
+   * takes what it can back out, and destroys the rest. Dev switch `occPoolOn`
+   * exists only for the A/B in `__ml.occRebuild`. */
+  private occPool = new Map<string, Phaser.GameObjects.Image[]>();
+  private occNext = new Map<string, Phaser.GameObjects.Image[]>();
+  private occPoolOn = true;
+  private occSeq = 0;
+  private occReused = 0;
+  private occCreated = 0;
   // ── THE COVER SURFACES ────────────────────────────────────────────────────
   // "Covered" is not modelled, it is RASTERISED: the very occluder Images that
   // hide a body are drawn into that body's own frame grid, so a diagonal wall
@@ -3415,6 +3442,49 @@ export class WorldScene extends Phaser.Scene {
       lastInput: () => this.lastInput,
       // Monster render-state probe (shared body pipeline QA): per monster the
       // resolved depth, cover line, shadow anchor and lit-copy state.
+      /** MICRO-BENCH: force one full occluder rebuild right now — the latch
+       *  poisoned exactly as repaintWorld does — and report its pure-JS cost,
+       *  split into the destroy pass and the rest. `fast` flips destroyBatch's
+       *  O(n) path off/on for an A/B in one session. */
+      /** THE SET AS DRAWN, for parity checks: every occluder in display-list
+       *  painter order (depth, then list position), with its base depth. */
+      occDump: () => {
+        const list = this.children.list;
+        const pos = new Map<Phaser.GameObjects.GameObject, number>();
+        list.forEach((o, i) => pos.set(o, i));
+        return this.occluders
+          .map((im) => ({ im, i: pos.get(im) ?? -1 }))
+          .sort((a, b) => a.im.depth - b.im.depth || a.i - b.i)
+          .map(({ im }) => [im.texture.key, im.x, im.y, Math.round(im.depth * 10) / 10, im.getData("oc"), im.getData("or")]);
+      },
+      occRebuild: (mode?: "legacy" | "bulk" | "pool") => {
+        if (mode === "legacy") {
+          this.occFastDestroy = false;
+          this.occPoolOn = false;
+        } else if (mode === "bulk") {
+          this.occFastDestroy = true;
+          this.occPoolOn = false;
+        } else if (mode === "pool") {
+          this.occFastDestroy = true;
+          this.occPoolOn = true;
+        }
+        const before = this.occluders.length + this.litOccluders.length + this.sceneryImgs.length;
+        this.lastOccl = { x: NaN, y: NaN };
+        const t0 = performance.now();
+        this.rebuildOccluders();
+        const ms = performance.now() - t0;
+        return {
+          mode: this.occPoolOn ? "pool" : this.occFastDestroy ? "bulk" : "legacy",
+          reused: this.occReused,
+          created: this.occCreated,
+          destroyed: before,
+          built: this.occluders.length + this.litOccluders.length + this.sceneryImgs.length,
+          ms: +ms.toFixed(1),
+          destroyMs: +this.occDestroyMs.toFixed(1),
+          buildMs: +(ms - this.occDestroyMs).toFixed(1),
+          displayList: this.children.length,
+        };
+      },
       /** THE FRAME BUDGET at this spot — `perf(true)` arms it, `perf()` reads
        *  and RESETS. Sections are wall-clock inside update(); `counts` is what
        *  the scene was carrying when they ran. Frame deltas are the scene's own
@@ -12174,9 +12244,7 @@ export class WorldScene extends Phaser.Scene {
                 culled++;
                 continue;
               }
-              this.occluders.push(
-                this.tagOccluder(this.add.image(bx, op.y, op.key).setOrigin(0, 0).setDepth(oDepth), col, row),
-              );
+              this.occluders.push(this.occImage(op.key, bx, op.y, oDepth, col, row));
             }
             this.occluderMeta.push({
               col, row, top: d.level, solid: false, depth: oDepth,
@@ -12226,18 +12294,10 @@ export class WorldScene extends Phaser.Scene {
             culled++;
             continue;
           }
-          this.occluders.push(
-            this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row),
-          );
+          this.occluders.push(this.occImage(fk, bx, by - lvl * lh, oDepth, col, row));
         }
         if (columnShows(bx, by - topL * lh, by + tileSize))
-          this.occluders.push(
-            this.tagOccluder(
-              this.add.image(bx, by - topL * lh, topL === cell.level ? topKey : fk).setOrigin(0, 0).setDepth(oDepth),
-              col,
-              row,
-            ),
-          );
+          this.occluders.push(this.occImage(topL === cell.level ? topKey : fk, bx, by - topL * lh, oDepth, col, row));
         else culled++;
         this.occluderMeta.push({
           col, row, top: topL, solid: false, depth: oDepth,
@@ -12408,7 +12468,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private rebuildScenery(cam: Phaser.Cameras.Scene2D.Camera) {
-    for (const im of this.sceneryImgs) im.destroy();
+    this.destroyBatch(this.sceneryImgs);
     this.sceneryImgs = [];
     /* COUNTED BEFORE THE GUARD: the boot hold waits for this pass to have RUN,
      * and a world with no scenery index runs it and finds nothing. Counting
@@ -12553,7 +12613,7 @@ export class WorldScene extends Phaser.Scene {
            * at 802.5, four tenths of a cell in front of it (maintainer
            * 2026-08-29: "I'm standing under the scenery, but the scenery is
            * still rendered on top of me"). */
-          .setDepth(hbDepth),
+          .setDepth(hbDepth + this.occSeq++ * OCC_DEPTH_EPS),
       );
       /* AND IT OCCLUDES. Scenery drew with the right painter depth but told
        * `resolveBodyDepth` nothing, so a body never sorted behind a tree — it
@@ -12587,7 +12647,7 @@ export class WorldScene extends Phaser.Scene {
             .setOrigin(0, 0)
             .setDisplaySize(fit.w, fit.h)
             .setFlipX(fit.flipX)
-            .setDepth(litDepth(hbDepth)),
+            .setDepth(litDepth(hbDepth) + this.occSeq++ * OCC_DEPTH_EPS),
           col: p.x,
           row: p.y,
           z: (world.rows[srow]?.[scol]?.l ?? 0) + 0.5,
@@ -13198,9 +13258,90 @@ export class WorldScene extends Phaser.Scene {
    * bounds (`top`, `col`/`row`, `solid`, `x0`/`x1`/`y0`/`y1`) from
    * `occluderMeta`. Keep this cheap — a rebuild runs it ~3,885 times at
    * the_island2's mountain. */
+  /** DESTROY A SET OF DISPLAY OBJECTS IN O(n), NOT O(n²).
+   *
+   *  Phaser's `destroy()` takes the object off the scene's display list by
+   *  SCANNING it: `exists()` is an indexOf over the whole list, then `remove()`
+   *  is a second indexOf plus a splice (Phaser 3.90:
+   *  GameObject.removeFromDisplayList → DisplayList.exists / List.remove →
+   *  ArrayUtils.Remove). Destroying the occluder set one object at a time is
+   *  therefore QUADRATIC in the list length — measured at the snow cliffs,
+   *  5,714 occluders in a ~6,000-object list cost 90-130 ms of pure JS in ONE
+   *  frame, every 96 px of camera travel: the single largest JS event at the
+   *  maintainer's laggy spots (investigation 2026-09-02).
+   *
+   *  So the whole set leaves the display list in ONE pass — the list is
+   *  filtered in place against a Set — and only then is each object destroyed;
+   *  it now finds itself absent (its `exists()` scans only the few hundred
+   *  objects that remain) and skips the removal. Everything else `destroy()`
+   *  does — texture release, event teardown, update-list removal — runs exactly
+   *  as before. What is skipped is the per-object REMOVED_FROM_SCENE emit,
+   *  whose only listeners in Phaser are Sprite (update-list removal; these are
+   *  Images) and Group/Layer (which hold none of these) — nothing observes the
+   *  difference. One depth sort is queued for the frame, as the rebuild's new
+   *  objects would have queued anyway. */
+  private destroyBatch(objs: readonly Phaser.GameObjects.GameObject[]): void {
+    if (!objs.length) return;
+    if (this.occFastDestroy) {
+      const gone = new Set<Phaser.GameObjects.GameObject>(objs);
+      const list = this.children.list;
+      let w = 0;
+      for (let r = 0; r < list.length; r++) {
+        const o = list[r];
+        if (!gone.has(o)) list[w++] = o;
+      }
+      list.length = w;
+      this.children.queueDepthSort();
+    }
+    for (const o of objs) o.destroy();
+  }
+
   private tagOccluder(img: Phaser.GameObjects.Image, col: number, row: number): Phaser.GameObjects.Image {
     img.setData("oc", col);
     img.setData("or", row);
+    return img;
+  }
+
+  /** ONE OCCLUDER IMAGE, REUSED WHEN NOTHING ABOUT IT CHANGED.
+   *
+   *  Every 96 px of camera travel the occluder set was destroyed and rebuilt
+   *  from scratch, and the investigation measured that 90-95% of the images it
+   *  recreated were bit-identical to the ones it had just destroyed (a one-latch
+   *  step at the forest: 1,489 of 1,649 the same, reproduced twice). Creating
+   *  ~5,400 Phaser images costs ~46-58 ms of JS at the snow cliffs and
+   *  destroying them ~12 ms even after the O(n) destroy — in ONE frame, roughly
+   *  twice a second while running. That stall IS the lag at the maintainer's
+   *  laggy spots.
+   *
+   *  So an image is identified by everything that makes it what it is — cell,
+   *  texture, position and base depth (col/row are in the key because two cells
+   *  at different levels CAN land on the same screen point) — and a rebuild
+   *  asks for the same key it asked for last time: the image comes back out of
+   *  the pool untouched, the ~5-10% delta is created and destroyed, and the
+   *  cover index and metadata are rebuilt in full as before (they are data).
+   *  The pool is a multimap because the old set could legitimately hold two
+   *  identical images. A pooled image that the scene has since destroyed
+   *  (`scene` gone) is dropped, never reused. Depth: see OCC_DEPTH_EPS. */
+  private occImage(tex: string, x: number, y: number, depth: number, col: number, row: number): Phaser.GameObjects.Image {
+    const k = `${col},${row},${tex},${x},${y},${depth}`;
+    const have = this.occPool.get(k);
+    let img: Phaser.GameObjects.Image | undefined;
+    while (have && have.length) {
+      const cand = have.pop()!;
+      if (cand.scene) {
+        img = cand;
+        break;
+      }
+    }
+    if (img) this.occReused++;
+    else {
+      img = this.tagOccluder(this.add.image(x, y, tex).setOrigin(0, 0), col, row);
+      this.occCreated++;
+    }
+    img.setDepth(depth + this.occSeq++ * OCC_DEPTH_EPS);
+    let arr = this.occNext.get(k);
+    if (!arr) this.occNext.set(k, (arr = []));
+    arr.push(img);
     return img;
   }
 
@@ -13222,10 +13363,27 @@ export class WorldScene extends Phaser.Scene {
     )
       return;
     this.lastOccl = { x: ccx, y: ccy };
-    for (const im of this.occluders) im.destroy();
-    for (const lo of this.litOccluders) lo.img.destroy();
+    const tDestroy = performance.now();
+    this.occSeq = 0;
+    this.occReused = 0;
+    this.occCreated = 0;
+    if (this.maps3 && this.occPoolOn) {
+      /* THE CURRENT SET BECOMES THE POOL. Every maps3 occluder is created by
+       * occImage and therefore lives in occNext; what this rebuild does not
+       * take back out is destroyed at the end of the maps3 branch. The lit
+       * copies are not pooled (an emissive maps2 feature; none on a v3 world). */
+      this.occPool = this.occNext;
+      this.occNext = new Map();
+      this.destroyBatch(this.litOccluders.map((lo) => lo.img));
+    } else {
+      // ONE pass for both sets — see destroyBatch.
+      this.destroyBatch(this.occluders.concat(this.litOccluders.map((lo) => lo.img)));
+      this.occPool.clear();
+      this.occNext.clear();
+    }
     this.litOccluders = [];
     this.occluders = [];
+    this.occDestroyMs = performance.now() - tDestroy;
     this.occluderMeta = [];
     this.emissiveLights = [];
 
@@ -13304,6 +13462,13 @@ export class WorldScene extends Phaser.Scene {
        * the world — the player standing on top of a house he was behind. The
        * depth sort was right the whole time; the second copy was not. */
       this.rebuildCoverIndex();
+      // WHAT THE POOL DID NOT GIVE BACK is what actually left the window.
+      const tLeft = performance.now();
+      const leftover: Phaser.GameObjects.Image[] = [];
+      for (const arr of this.occPool.values()) for (const im of arr) leftover.push(im);
+      this.occPool.clear();
+      this.destroyBatch(leftover);
+      this.occDestroyMs += performance.now() - tLeft;
       return;
     }
     for (let v = v0; v <= v1; v++) {
