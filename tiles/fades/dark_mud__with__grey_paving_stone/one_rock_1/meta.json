@@ -1,0 +1,41 @@
+{
+ "schema": "tiles3/fades@1",
+ "kind": "fade_top_only",
+ "wall_is_meaningless": true,
+ "use_for": "transition",
+ "dominant": "dark_mud",
+ "minor": "grey_paving_stone",
+ "prompt": "one grey paving stone rock on dark mud",
+ "phrasing": "one_rock",
+ "rep": 1,
+ "seed": 5028,
+ "tile_id": "13978cf3-9a6f-4e40-a7c4-1d503c644013",
+ "settings": {
+  "tile_size": 64,
+  "tile_view": "high top-down",
+  "view_angle": 28.0,
+  "depth_ratio": 0.5,
+  "tile_type": "isometric",
+  "flat_top_px": 2,
+  "outline_mode": "segmentation"
+ },
+ "n_tiles": 16,
+ "tiles": [
+  "tile_00.webp",
+  "tile_01.webp",
+  "tile_02.webp",
+  "tile_03.webp",
+  "tile_04.webp",
+  "tile_05.webp",
+  "tile_06.webp",
+  "tile_07.webp",
+  "tile_08.webp",
+  "tile_09.webp",
+  "tile_10.webp",
+  "tile_11.webp",
+  "tile_12.webp",
+  "tile_13.webp",
+  "tile_14.webp",
+  "tile_15.webp"
+ ]
+}
