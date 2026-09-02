@@ -79,6 +79,7 @@ import {
   PICKUP_RADIUS_WU,
   attackRange,
   PLAYER_BODY_RADIUS,
+  MONSTER_DODGE_MARGIN,
   PROVOKE_RADIUS_WU,
   DROP_TTL_MS,
   DROP_FLASH_MS,
@@ -1518,7 +1519,10 @@ export class WorldScene extends Phaser.Scene {
    *  then asked to show BOTH halves of it, because collision and navigation are
    *  no longer the same shape: "the show hitbox button should show both what
    *  the nav navigates around and the real ellipse hitbox". See
-   *  drawCollisionDebug for the four marks and what each one means. */
+   *  drawCollisionDebug for each mark and what it means — including the bodies,
+   *  which own no cell and no footprint and so are invisible to every other
+   *  layer here (maintainer 2026-09-02: "should show the collision for NPCs and
+   *  monsters as well"). */
   private collisionOn = localStorage.getItem("ml-collision") === "1";
   private collisionGfx?: Phaser.GameObjects.Graphics;
   /** Settings "disable aggro" — persisted here, ENFORCED on the server (the
@@ -5355,6 +5359,51 @@ export class WorldScene extends Phaser.Scene {
     const bry = (PLAYER_RADIUS / CELL_WU) * dy * Math.SQRT2;
     gfx.lineStyle(1, 0xffffff, 0.8);
     gfx.strokeEllipse(bp.x, bp.y - lift, brx * 2, bry * 2, 36);
+
+    /* AND THE BODIES — MONSTERS AND NPCS (maintainer 2026-09-02: "should show
+     * the collision for NPCs and monsters as well").
+     *
+     * These are the one collision on the map that owns NO CELL AND NO
+     * FOOTPRINT: they are deliberately kept out of the grid entirely (no
+     * network cost, no pathfinder cost — maintainer 2026-07-30), and the INPUT
+     * dodges a radius instead. So nothing above this line can ever draw them,
+     * and without their own mark the overlay would answer "what stops me?" with
+     * everything except the thing walking towards him.
+     *
+     * TWO RINGS, because there are two honest answers and they differ by more
+     * than half a body:
+     *   GREEN SOLID  the body itself, `radius` — for a tuned monster that is
+     *                shadowBodyRadius of the wiki's own shadow, which is why it
+     *                can differ per monster and per state.
+     *   GREEN FAINT  where the dodge actually turns him: radius + his own
+     *                PLAYER_BODY_RADIUS + MONSTER_DODGE_MARGIN. He never
+     *                touches the inner ring, and being unable to see why was
+     *                the same complaint as the footprints.
+     * Each sits on the BODY's own elevation (already a pixel lift), not the
+     * player's plane — the aggro rings' rule. A monster up on a deck draws its
+     * circle under itself rather than on the floor below. */
+    const ring = (wx: number, wy: number, r: number, px: number, colour: number, alpha: number) => {
+      const p = this.projectFlat(wx, wy);
+      gfx.lineStyle(1, colour, alpha);
+      gfx.strokeEllipse(
+        p.x,
+        p.y - px,
+        (r / CELL_WU) * dx * Math.SQRT2 * 2,
+        (r / CELL_WU) * dy * Math.SQRT2 * 2,
+        36,
+      );
+    };
+    const self = PLAYER_BODY_RADIUS + MONSTER_DODGE_MARGIN;
+    this.monsters.forEach((mv) => {
+      if (Math.abs(mv.fx - me.fx) > 400 || Math.abs(mv.fy - me.fy) > 400) return;
+      ring(mv.fx, mv.fy, mv.radius, mv.elev, 0x51cf66, 0.95);
+      ring(mv.fx, mv.fy, mv.radius + self, mv.elev, 0x51cf66, 0.35);
+    });
+    this.npcs.forEach((npc) => {
+      if (Math.abs(npc.fx - me.fx) > 400 || Math.abs(npc.fy - me.fy) > 400) return;
+      ring(npc.fx, npc.fy, NPC_BODY_RADIUS, npc.elev, 0x51cf66, 0.95);
+      ring(npc.fx, npc.fy, NPC_BODY_RADIUS + self, npc.elev, 0x51cf66, 0.35);
+    });
   }
 
   /** The same grid with the SCENERY TAKEN OUT: no `footprints`, so the ellipse
@@ -5384,13 +5433,14 @@ export class WorldScene extends Phaser.Scene {
     } catch {}
     if (!on) this.collisionGfx?.clear();
     this.chat.addLog("—", `Collision overlay: ${on ? "on" : "off"}`);
-    // The legend on its own line: four marks do not fit on the end of a
+    // The legend on its own line: the marks do not fit on the end of a
     // sentence, and this overlay is unreadable without knowing which is which.
     if (on)
       this.chat.addLog(
         "—",
         "red = terrain · amber = a cell the nav routes around · teal = the REAL hitbox ellipse " +
-          "(violet = widened to the minimum) · white = your body at PLAYER_RADIUS",
+          "(violet = widened to the minimum) · white = your body · green = a monster or NPC body, " +
+          "faint green = where its dodge turns you",
       );
     return this.collisionOn;
   }
