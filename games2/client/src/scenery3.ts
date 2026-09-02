@@ -437,6 +437,27 @@ export function fitSprite(
   ax: number,
   ay: number,
   flipX = false,
+  /* THE SCALE IS THE PIECE'S, NOT THE DRAWN SPRITE'S. `world_px_height` describes
+   * the PIECE, so deriving k from whatever sprite happens to be drawn forces
+   * every rotation and every state to exactly that height and throws away the
+   * size difference between them. A rotation shows the top face and is
+   * naturally taller, so squashing it draws it SMALLER — measured over
+   * the_game's rotations: 20 of 29 piece+facing combinations more than 5% off,
+   * 8 more than 15%, worst cupboard_008 south-west at +32%.
+   *
+   * It is also what pulls the HITBOX off its art, which is how it was noticed
+   * (maintainer 2026-09-02: "the hitboxes doesn't align with the big hitbox
+   * review I did in the wiki"): stampSceneryCollision scales the published
+   * ellipse by the BASE sprite's bbox, so any placement drawn at a different
+   * scale gets an outline that is the wrong size and in the wrong place. The
+   * maps2 agent hit this first on their renderer and posted the warning — "the
+   * same trap is waiting in games2' fitSprite, which also measures the sprite it
+   * draws; it will bite the moment dir and state land there". It did.
+   *
+   * Pass the base sprite's bbox HEIGHT and the rotation keeps its own
+   * proportions relative to the piece. Omitted, this is the old behaviour
+   * exactly, which is what every base-sprite placement already wants. */
+  scaleH?: number,
 ): SceneryFit {
   // A fully transparent sprite has no bbox; PIL's `crop(None)` copies the whole
   // image, so the whole canvas is the crop.
@@ -444,7 +465,7 @@ export function fitSprite(
   const sw = Math.max(1, r - l);
   const sh = Math.max(1, b - t);
   const want = wantH && wantH > 0 ? wantH : canvas.h;
-  const k = want / sh;
+  const k = want / (scaleH && scaleH > 0 ? scaleH : sh);
   const w = Math.max(1, rint(sw * k));
   const h = Math.max(1, rint(sh * k));
   return {

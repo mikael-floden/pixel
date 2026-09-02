@@ -11909,7 +11909,15 @@ export class WorldScene extends Phaser.Scene {
         continue;
       const art = this.sceneryArtFit(sceneryArtKey(sprite));
       if (!art) continue;
-      const fit = fitSprite(art.bbox, art.canvas, piece.worldPxHeight, p.ax, p.ay, p.hflip);
+      /* Scale by the PIECE's own base sprite, never by the one being drawn — see
+       * fitSprite. The bbox DOC is the source rather than the loaded texture:
+       * the base art is often not even queued when a rotation is what shows, and
+       * this is the same table the collision stamp scales the ellipse by, so the
+       * outline and the art cannot drift apart. */
+      const baseSprite = this.sceneryBboxDoc?.pieces?.[p.piece]?.sprite ?? null;
+      const baseBox = baseSprite ? this.sceneryBboxDoc?.boxes?.[baseSprite] : undefined;
+      const baseH = baseBox ? Math.max(1, baseBox[3] - baseBox[1]) : undefined;
+      const fit = fitSprite(art.bbox, art.canvas, piece.worldPxHeight, p.ax, p.ay, p.hflip, baseH);
       if (fit.x + fit.w < rect.x || fit.x > rect.x + rect.w || fit.y + fit.h < rect.y || fit.y > rect.y + rect.h)
         continue;
       // INDOORS a piece outside my room still DRAWS — it renders below the
