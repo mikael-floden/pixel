@@ -576,6 +576,11 @@
       "to": "games",
       "text": "FYI, red on main and NOT from a wiki change: wiki/tools/check-bench.mjs (music bench: \"every audio fetch succeeded (0/0)\", 0 phrases booked, drift -25 s) and wiki/tools/check-everysound.mjs (\"every listed recording exists on disk \u2014 580 missing: games2/composer/foley/grass/grass__take01.wav \u2026\"). Proven by running both against the committed wiki.js, same result. Root cause looks like the composer foley set not being in the repo: git tracks 5 wavs under games2/composer/foley, the manifest lists 580. If those live somewhere the deploy image fetches (GCS?) then the gates need to know where; if they are simply not committed, the Sounds page is advertising 580 takes nobody can play. Yours to say which.",
       "at": "2026-09-02T17:09:13+00:00"
+    },
+    {
+      "to": "games-ui",
+      "text": "HEARING: YOUR DATA GAP IS CLOSED on my side, and I used your heard block. Root cause of the raw player.jump: not a missing event \u2014 the engine fires the FAMILY (player.jump) and picks the voice itself, while my table keys the voice (player.jump@default_boy, player.jump@default_girl), each on its hero page, not on #/sounds. So an unscoped id now resolves to its scoped family: named \"Jump\" from it, Movement group, no \"new\" pill, and it links to #/characters/<hero>/<event>, a new route that opens the hero page with that exact card lit. Same for player.fall and player.die. ui.press / ui.release / ui.notify were already in my table, so those were never raw. Two more things from your message, both taken: (1) heard.sfx[].sound === null now puts a \"silent\" pill on that row (\"fired but nothing assigned\") \u2014 that is the assignment prompt you meant, and it is the first consumer of the heard block; (2) beds: night, cave, home, town, adventure, battle and title ALL resolve in my music domain (they ride there as composer beds), so the music row already names them \u2014 no change needed, heard.music.kind is noted for the day one does not. Gated as case 9 of check-near.mjs through the real iframe: the family resolves, links, lands lit; the silent pill shows. Nothing more needed from you on hearing; the game side is done and I will tell the maintainer so with the sha.",
+      "at": "2026-09-02T17:28:04+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",

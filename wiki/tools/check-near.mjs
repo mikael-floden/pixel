@@ -203,6 +203,49 @@ ok(pushed === SNAP.items.length, `…and the page still draws it once the index 
   const landedM = await f8.evaluate(() => ({ hash: location.hash, lit: document.querySelector(".panel.spot")?.getAttribute("data-track") ?? null }));
   ok(landedM.lit === BED.id, `and a bed opens the Music page with its track lit (${landedM.hash}, lit: ${landedM.lit})`);
 }
+
+// ---- 9. an unscoped family, and the sound that played nothing -------------
+/* games-ui, 2026-09-02, from the real drawer: "player.jump ... not in your
+ * sfx.events list, so the card shows the raw id and a 'new' pill for an event
+ * that has played since July". The engine fires the FAMILY (player.jump) and
+ * picks the hero's voice; the wiki keys the voice (player.jump@default_boy)
+ * on the hero's page. And the heard block's sound:null is the event that
+ * fired and played nothing — the one he would want to assign. */
+{
+  const JUMP = (D.sfx?.events ?? []).find((e) => /^player\.jump@/.test(e.id));
+  const KICK = (D.sfx?.events ?? []).find((e) => e.id === "combat.kick") ?? D.sfx?.events?.[0];
+  ok(!!JUMP && !!JUMP.scope?.id, `the table keys the jump by VOICE (${JUMP?.id}, on ${JUMP?.scope?.domain}/${JUMP?.scope?.id})`);
+  const FAMILY = {
+    world: "the_game", at: { col: 3, row: 3 }, radius: 12,
+    items: [
+      { domain: "sounds", id: "player.jump", ago: 2.0, n: 1 },
+      { domain: "sounds", id: KICK.id, ago: 5.5, n: 1 },
+    ],
+    heard: { music: null, sfx: [
+      { event: "player.jump", sound: "composer/jump_voice", ago: 2.0, at: 1000 },
+      { event: KICK.id, sound: null, ago: 5.5, at: 900 },
+    ] },
+  };
+  await p.goto(W, { waitUntil: "load" });
+  await p.waitForTimeout(1200);
+  await p.evaluate(() => { window.__wired = false; });
+  await install(FAMILY);
+  await p.waitForTimeout(2600);
+  const f9 = await frame();
+  const fam = await f9.evaluate(() => [...document.querySelectorAll(".near-hearing a.card")].map((a) => ({
+    href: a.getAttribute("href"), name: a.querySelector(".card-name")?.textContent ?? "",
+    sub: (a.querySelector(".card-sub")?.textContent ?? "").replace(/\s+/g, " ").trim() })));
+  ok(fam[0]?.name === JUMP.name && !/new/.test(fam[0]?.sub ?? ""),
+    `an unscoped family id is named from its voice-scoped table entry, not shown raw (“${fam[0]?.name}” — “${fam[0]?.sub}”)`);
+  // The href is URL-encoded (@ → %40); the router decodes it, as the landing below proves.
+  ok(fam[0]?.href === `#/${JUMP.scope.domain}/${JUMP.scope.id}/${encodeURIComponent(JUMP.id)}`,
+    `and links to the hero page where that card lives (${fam[0]?.href})`);
+  ok(/silent/.test(fam[1]?.sub ?? ""), `an event that fired and played NOTHING is marked silent (“${fam[1]?.name}” — “${fam[1]?.sub}”)`);
+  await f9.evaluate(() => [...document.querySelectorAll(".near-hearing a.card")][0].click());
+  await p.waitForTimeout(2200);
+  const landedH = await f9.evaluate(() => ({ hash: location.hash, lit: document.querySelector(".sfx-event.spot")?.getAttribute("data-event") ?? null }));
+  ok(landedH.lit === JUMP.id, `tapping it opens the hero's page with THAT card lit (${landedH.hash}, lit: ${landedH.lit})`);
+}
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 await b.close();
 console.log(fails.length ? `\nNEAR CHECKS FAILED (${fails.length})` : "\nALL NEAR CHECKS PASSED");

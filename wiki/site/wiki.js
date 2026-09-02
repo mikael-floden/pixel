@@ -11997,21 +11997,43 @@ const isAudioRow = (it) => it?.domain === "music" || it?.domain === "sounds";
 const nearAgo = (a) => (!(a > 0.5) ? "playing now" : a < 60 ? `${Math.round(a)} s ago` : `${Math.round(a / 60)} min ago`);
 function nearAudioRow(it) {
   const dom = String(it.domain), id = String(it.id);
-  let name = id, sub = label(dom), known = false;
+  let name = id, sub = label(dom), known = false, silent = false;
+  let href = `#/${dom}/${encodeURIComponent(id)}`;
   if (dom === "music") {
     const t = (state.data.domains.music ?? []).find((x) => x.id === id);
     if (t) { name = t.name ?? id; known = true; }
   } else {
-    const ev = (state.data.sfx?.events ?? []).find((x) => x.id === id);
+    const evs = state.data.sfx?.events ?? [];
+    let ev = evs.find((x) => x.id === id);
+    /* THE GAME FIRES THE FAMILY, THE TABLE KEYS THE VOICE (games-ui, 2026-09-02:
+     * "player.jump ... not in your sfx.events list, so the card shows the raw
+     * id and a 'new' pill for an event that has played since July"). The
+     * engine emits `player.jump` and picks the hero's voice itself; the wiki
+     * lists `player.jump@default_boy` and `@default_girl`, each on its hero's
+     * page. So an unscoped id resolves to its scoped family: named from it,
+     * and linked to the hero page where that card lives. */
+    if (!ev) {
+      const fam = evs.filter((x) => x.id.startsWith(`${id}@`) && x.scope?.domain && x.scope?.id);
+      if (fam.length) {
+        ev = fam[0];
+        href = `#/${ev.scope.domain}/${encodeURIComponent(ev.scope.id)}/${encodeURIComponent(ev.id)}`;
+      }
+    }
     if (ev) { name = ev.name ?? id; sub = ev.group ? `${ev.group} · ${label(dom)}` : label(dom); known = true; }
+    // The heard block says what actually PLAYED. sound:null on the latest
+    // firing means the event fired and nothing was assigned — the row he
+    // would want to give a sound to, so it is named as such.
+    const last = (nearSnap?.heard?.sfx ?? []).find((x) => x?.event === id);
+    if (last && last.sound === null) silent = true;
   }
-  return h("a", { class: "card", href: `#/${dom}/${encodeURIComponent(id)}` },
+  return h("a", { class: "card", href },
     h("div", { class: "thumb" }, h("span", { class: "near-glyph" }, dom === "music" ? "♪" : "🔊")),
     h("div", { class: "card-name" }, name),
     h("div", { class: "card-sub" },
       h("span", { class: "pill" }, nearAgo(+it.ago)),
       it.n > 1 ? h("span", { class: "muted" }, ` ×${it.n}`) : null,
       h("span", { class: "muted" }, ` · ${sub}`),
+      silent ? h("span", { class: "pill warn", title: "This event fired but has no sound assigned — nothing was heard. Assign one on its page." }, "silent") : null,
       known ? null : h("span", { class: "pill warn", title: "This build has never seen this id — newer than the wiki's last rebuild." }, "new")));
 }
 function viewNear() {
@@ -12073,7 +12095,9 @@ function route() {
   let view;
   if (state.query && !id) view = viewSearch();
   else if (page === "monsters") view = id ? viewMonster(id) : viewMonsters();
-  else if (page === "characters") view = id ? viewCharacter(id) : viewCharacters();
+  // #/characters/<hero>/<event> lights that hero's own sound card — where the
+  // 🔍 page's voice-scoped rows (player.jump@default_boy) land.
+  else if (page === "characters") { view = id ? viewCharacter(id) : viewCharacters(); if (id && sub) spotlight(`[data-event="${CSS.escape(sub)}"]`); }
   else if (page === "tiles") view = id ? (sub ? viewTileInstance(id, sub) : viewTileType(id)) : viewTiles();
   else if (page === "world") view = id === "transition" && sub ? viewWorldTransition(sub)
     : id ? (sub ? viewWorldPair(id, sub) : viewWorldType(id)) : viewWorld();
@@ -12260,6 +12284,8 @@ function initChrome() {
       nearSnap = {
         world: d.world ?? null, at: d.at ?? null, radius: d.radius ?? 12,
         items: Array.isArray(d.items) ? d.items.filter((x) => x && x.domain && x.id) : [],
+        // What actually played (spec: `heard`) — detail the rows cannot carry.
+        heard: d.heard && typeof d.heard === "object" ? d.heard : null,
       };
       nearAsked = false;
       // NOT before the index is in. The game pushes its snapshot on the
