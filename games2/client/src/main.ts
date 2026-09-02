@@ -1,3 +1,4 @@
+import { mountFpsBadge } from "./fpsbadge";
 import Phaser from "phaser";
 import { loadManifest } from "./manifest";
 import { loadMonsterManifest } from "./monsterManifest";
@@ -178,6 +179,16 @@ async function boot() {
   // any styled surface (badge, select, HUD) so nothing flashes unthemed.
   mountTheme();
   showVersion();
+  try {
+    // `?fps=1` shows the frame meter and remembers it; `?fps=0` forgets. See fpsbadge.ts.
+    // localStorage can THROW (private mode, blocked site data) — never let a meter stop the boot.
+    const q = new URLSearchParams(location.search).get("fps");
+    if (q === "1") localStorage.setItem("ml-fps", "1");
+    else if (q === "0") localStorage.removeItem("ml-fps");
+    if (localStorage.getItem("ml-fps") === "1") mountFpsBadge();
+  } catch {
+    /* no storage — no meter */
+  }
   watchForUpdates();
   // Composer's audition page (/#foley): every generated foley candidate,
   // playable on the real deploy — the maintainer's ears close the QA loop.

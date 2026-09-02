@@ -3471,6 +3471,15 @@ export class WorldScene extends Phaser.Scene {
         this.groundCull = prevCull;
         return out;
       },
+      /** THE LIGHTING PASSES' A/B: arm/disarm the surface-march block skip. */
+      nightSkip: (on: boolean) => this.night?.setSkip(on) ?? null,
+      /** PARITY, same turn: the night or fog pass rendered with the skip off and on
+       *  back to back, nothing else changing — {full, skip} hashes of its pixels. */
+      nightParity: (which: "night" | "fog" = "night") =>
+        this.night ? this.night.parityHash(which) : Promise.reject(new Error("no night lighting")),
+      /** PARITY for the lighting passes: hash of the night or fog pass's own pixels. */
+      nightHash: (which: "night" | "fog" = "night") =>
+        this.night ? this.night.passHash(which) : Promise.reject(new Error("no night lighting")),
       /** PARITY: a hash of the ground render texture's ACTUAL PIXELS (read
        *  back through Phaser's snapshot), so two modes can be proven to draw
        *  the same picture rather than argued to. Exact because the RT is

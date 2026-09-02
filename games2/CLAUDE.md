@@ -1834,6 +1834,42 @@ saturated summit 0.001 — matches the terrain wash).
 - Always-night per-pixel shader: MULTIPLY overlay; per-pixel surface resolve
   (cell + height) → point lights with attenuation, LOS cast shadows, Lambert
   face gating with penumbras at both ends of every wall band.
+- **THE SURFACE MARCH SKIPS WHOLE BLOCKS** (`blockMaxAt`, `uHBlock`, 2026-09-02).
+  Every pixel of the night, mist and depth-fog passes resolves the ground
+  under it by walking a ray from the WORLD's max level down, one cell boundary
+  per iteration, with one dependent `heightAt` fetch per cell until the first
+  column whose top reaches the segment. Under a 40-level world that is ~44
+  fetches per pixel per pass on level-0 ground and ~8 on level-32 snow —
+  measured 176-188 dependent fetches per device pixel per frame at the forest
+  spots against ~119 on the snow, which is 1.8-2.9× a mid-range phone's whole
+  30 fps fragment budget and exactly why the forest lagged worst (maintainer
+  2026-09-02, running from the spawn into the autumn wood). `buildHeightmap`
+  now also builds `world-heightmap-blockmax` (one texel per 8×8 cells, the
+  max of `uHeight`'s R byte, same packing, NEAREST); the march fetches it when
+  the ray enters a new block and, while `v0 + blockMax·kk < vLo`, skips the
+  cell's fetch — ONLY the fetch: vLo, vMid, cr and the hit test are untouched,
+  so z, cell and everything downstream are bit-identical (a cell is hit iff
+  `v0 + H·kk ≥ vLo` and every H in the block is ≤ its max; both sides decode
+  with the same expression, so the bound holds in float too). PROVEN on real
+  pixels: `__ml.nightParity("night"|"fog")` renders a pass with the skip off
+  and on back to back in ONE turn (no frame between — `load()`+`flush()`, the
+  renderer's own render-to-texture path — so uAnimTime, the eased ambient and
+  every light are the same uniforms for both) and hashes each; identical at
+  four spots × Day/Evening/Night, 12 of 12. (A frame-to-frame comparison
+  CANNOT prove this: the eased uniforms never exactly converge, so no two
+  frames of the same variant hash equal — the trap the first bench fell
+  into.) Armed only with its texture bound (`uSkip`; an unbound sampler reads
+  unit 0 = the full heightmap and would make one cell's height a "block max").
+  Three more byte-identical cuts landed with it: the prop sun-shadow loop is
+  gated on `uHasProps` (the_game places no props, so its 7 iterations and two
+  fetches per pixel per daytime frame were identity); `emitAt` is fetched only
+  under `uEmitN > 0.5`; the glow field is cleared only when it has or had
+  stamps and `uGlowOn` is 1 only when it has them (a clear of an empty field
+  is a whole extra render pass on a tiler). NOT taken, on purpose: half-res
+  depth fog (moves the cel band by ~0.67 art px — an approved look) and the
+  three jittered sun marches (locked: "the shadow on cliffs looks perfect").
+  The GLSL twin `groundCellAt` (cave gate only, a different channel) keeps
+  the full walk. Frame meter for the phone: `?fps=1` (`fpsbadge.ts`).
 - **DEPTH-FOG — cel-shaded EDGE-HIGHLIGHT fog** (`DEPTHFOG_FRAG`; job: make
   cliff EDGES readable — maintainer: "see the exact edge where the cliff
   starts"). A third, always-on NORMAL-blend overlay: a smooth horizontal

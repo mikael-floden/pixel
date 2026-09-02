@@ -162,6 +162,9 @@ uniform float uAnimTime;
 uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
 uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
+uniform sampler2D uHBlock; // BLOCK×BLOCK block-max of uHeight.r (unbound sampler = unit 0!)
+uniform vec2 uHBlockN;     // the block grid's size
+uniform float uSkip;       // 1 = uHBlock is bound and the march may skip whole blocks
 uniform float uHScale;    // levels→byte pack scale (per-world; 16 unless the world tops ~15 levels)
 uniform vec3 uAmbient;    // night grade (what unlit white becomes)
 uniform vec4 uSun;        // directional sun: cast dir (grid x,y), slope (levels/cell), strength
@@ -189,6 +192,7 @@ uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
 uniform float uEmitN;       // number of palette entries (0 = no emission)
 uniform sampler2D uGlow;    // world-anchored glow-halo field (same window as uCam)
 uniform float uGlowOn;      // 1 when the glow field is bound (unbound sampler = unit 0!)
+uniform float uHasProps;    // 0 when the world places no props: the prop-shadow loop is a no-op then
 uniform float uGlowFlip;    // render-target y orientation (calibrated numerically)
 
 // Bilinear height for the LOS march ONLY: blockers ramp in over ~a cell, so
@@ -499,6 +503,14 @@ float cwNoise(vec2 p) {
              mix(cwHash(i + vec2(0.0, 1.0)), cwHash(i + vec2(1.0, 1.0)), u.x), u.y);
 }
 
+// The largest surface height any cell of block b can report through
+// heightAt — the same decode as heightAt, so it bounds it exactly; a block
+// outside the world answers 99 (= never skip; heightAt says 99 there too).
+float blockMaxAt(vec2 b) {
+  if (b.x < 0.0 || b.y < 0.0 || b.x >= uHBlockN.x || b.y >= uHBlockN.y) return 99.0;
+  return texture2D(uHBlock, (b + 0.5) / uHBlockN).r * 255.0 / uHScale;
+}
+
 void main() {
   vec2 suv = gl_FragCoord.xy / resolution;
   float wx = uCam.x + suv.x * uCam.z;
@@ -567,6 +579,8 @@ void main() {
   // worlds; break-on-found keeps the cost proportional to each pixel's real
   // depth (a plain continue guard would tick all 128 iterations per fragment
   // — that alone stalled the software-GL harness across 3 fullscreen passes).
+  vec2 blk = vec2(-9.0);
+  float hb = 99.0;
   for (int s = 0; s < 128; s++) {
     if (found || vHi <= v0 - 1.5) break;
     float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
@@ -574,6 +588,19 @@ void main() {
     float vLo = max(vColB, vRowB);
     float vMid = (vHi + vLo) * 0.5;
     vec2 cr = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
+    // THE HIERARCHICAL SKIP. This walk starts at the WORLD's max level and
+    // pays one dependent fetch per cell until the first column whose top
+    // reaches the segment — 44 per pixel per pass on level-0 ground under a
+    // 40-level world, the forest spots' whole lag (investigation 2026-09-02).
+    // A cell is hit iff v0 + H*kk >= vLo; every H in this block is <= the
+    // block's max, so when v0 + hb*kk < vLo no cell in it can be hit and the
+    // fetch is skipped. ONLY the fetch: the walk's arithmetic, vLo, vMid, cr
+    // and the hit test are untouched, so z, cell and everything downstream
+    // are bit-identical (uSkip is the A/B switch; parity is pinned on the
+    // pass's own pixels by __ml.nightHash).
+    vec2 b = floor(cr * 0.125);
+    if (uSkip > 0.5 && (b.x != blk.x || b.y != blk.y)) { blk = b; hb = blockMaxAt(b); }
+    if (uSkip > 0.5 && v0 + hb * kk < vLo - 0.0001) { vHi = vLo; continue; }
     float H = heightAt(cr);
     if (H < 90.0) {
       float vSurf = v0 + H * kk; // this column's top along the ray
@@ -732,7 +759,11 @@ void main() {
     // geometric cone can pinch, so the tip ends as a soft round fade.
     float m = 0.0;
     float dcp = 0.0;
-    for (int s = 1; s <= 8; s++) {
+    // A world with no placed props has pArr == 0 everywhere, so pr is always
+    // 0, m stays 0 and the loop's only effect (sunVis *= 1 - 0.75*m) is
+    // identity — 7 iterations and two fetches per pixel per daytime frame for
+    // nothing. Gated on the CPU-known fact, byte-identical.
+    if (uHasProps > 0.5) for (int s = 1; s <= 8; s++) {
       dcp += 0.35;
       vec2 p = pos - uSun.xy * dcp;
       if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
@@ -986,7 +1017,8 @@ void main() {
   // night reveals it, and the art's own contrast survives the multiply.
   // Per-cell hash phase so a lava lake shimmers instead of blinking in sync.
   float emSelf = 1.0; // tile self-pulse (1.0 for non-emitters — a no-op)
-  float eIdx = emitAt(cell) - 1.0;
+  float eIdx = -1.0;
+  if (uEmitN > 0.5) eIdx = emitAt(cell) - 1.0; // a dead fetch when there is no palette
   if (uEmitN > 0.5 && eIdx > -0.5) {
     float tw = 0.5 / uEmitN; // one palette texel
     vec3 eCol = texture2D(uEmit, vec2((eIdx * 2.0 + 0.5) * tw, 0.5)).rgb;
@@ -1055,6 +1087,13 @@ void main() {
 const FIELD_KEY = "night-light-field";
 /** Per-cell ROOM MASK: R = 255 where the cell belongs to the room the local
  * player is standing in. One texel per world cell, NEAREST — see roomAt(). */
+/* THE BLOCK-MAX HEIGHT TEXTURE — see the surface-resolve march. One texel per
+ * BLOCK×BLOCK cells holding the maximum of uHeight's R over the block, in the
+ * same byte packing, so a march can prove a whole block cannot be hit and skip
+ * its fetches. Built beside the heightmaps in buildHeightmap. */
+const BLOCK = 8;
+const BLOCK_KEY = "world-heightmap-blockmax";
+
 const ROOM_KEY = "world-room-mask";
 const MIST_KEY = "mist-field";
 const DEPTHFOG_KEY = "depthfog-field";
@@ -1088,6 +1127,9 @@ uniform float uAnimTime;
 uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
 uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
+uniform sampler2D uHBlock; // BLOCK×BLOCK block-max of uHeight.r (unbound sampler = unit 0!)
+uniform vec2 uHBlockN;     // the block grid's size
+uniform float uSkip;       // 1 = uHBlock is bound and the march may skip whole blocks
 uniform float uHScale;    // levels→byte pack scale (per-world; 16 unless the world tops ~15 levels)
 uniform vec3 uAmbient;    // current grade — mist dims with the night
 uniform float uMist;      // eased cover 0..1
@@ -1115,6 +1157,14 @@ float mNoise(vec2 p) {
              mix(mHash(i + vec2(0.0, 1.0)), mHash(i + vec2(1.0, 1.0)), u2.x), u2.y);
 }
 
+// The largest surface height any cell of block b can report through
+// heightAt — the same decode as heightAt, so it bounds it exactly; a block
+// outside the world answers 99 (= never skip; heightAt says 99 there too).
+float blockMaxAt(vec2 b) {
+  if (b.x < 0.0 || b.y < 0.0 || b.x >= uHBlockN.x || b.y >= uHBlockN.y) return 99.0;
+  return texture2D(uHBlock, (b + 0.5) / uHBlockN).r * 255.0 / uHScale;
+}
+
 void main() {
   vec2 suv = gl_FragCoord.xy / resolution;
   float wx = uCam.x + suv.x * uCam.z;
@@ -1139,6 +1189,8 @@ void main() {
   // worlds; break-on-found keeps the cost proportional to each pixel's real
   // depth (a plain continue guard would tick all 128 iterations per fragment
   // — that alone stalled the software-GL harness across 3 fullscreen passes).
+  vec2 blk = vec2(-9.0);
+  float hb = 99.0;
   for (int s = 0; s < 128; s++) {
     if (found || vHi <= v0 - 1.5) break;
     float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
@@ -1146,6 +1198,19 @@ void main() {
     float vLo = max(vColB, vRowB);
     float vMid = (vHi + vLo) * 0.5;
     vec2 cr = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
+    // THE HIERARCHICAL SKIP. This walk starts at the WORLD's max level and
+    // pays one dependent fetch per cell until the first column whose top
+    // reaches the segment — 44 per pixel per pass on level-0 ground under a
+    // 40-level world, the forest spots' whole lag (investigation 2026-09-02).
+    // A cell is hit iff v0 + H*kk >= vLo; every H in this block is <= the
+    // block's max, so when v0 + hb*kk < vLo no cell in it can be hit and the
+    // fetch is skipped. ONLY the fetch: the walk's arithmetic, vLo, vMid, cr
+    // and the hit test are untouched, so z, cell and everything downstream
+    // are bit-identical (uSkip is the A/B switch; parity is pinned on the
+    // pass's own pixels by __ml.nightHash).
+    vec2 b = floor(cr * 0.125);
+    if (uSkip > 0.5 && (b.x != blk.x || b.y != blk.y)) { blk = b; hb = blockMaxAt(b); }
+    if (uSkip > 0.5 && v0 + hb * kk < vLo - 0.0001) { vHi = vLo; continue; }
     float H = heightAt(cr);
     if (H < 90.0) {
       float vSurf = v0 + H * kk;
@@ -1195,6 +1260,9 @@ uniform vec2 resolution;
 uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
 uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
+uniform sampler2D uHBlock; // BLOCK×BLOCK block-max of uHeight.r (unbound sampler = unit 0!)
+uniform vec2 uHBlockN;     // the block grid's size
+uniform float uSkip;       // 1 = uHBlock is bound and the march may skip whole blocks
 uniform float uHScale;    // levels→byte pack scale (per-world; 16 unless the world tops ~15 levels)
 uniform vec3 uAmbient;    // current grade — the haze dims with the night
 uniform float uPlayerZ;   // the local player's current surface LEVEL
@@ -1281,6 +1349,14 @@ float drape(vec2 cr) {
   return h;
 }
 
+// The largest surface height any cell of block b can report through
+// heightAt — the same decode as heightAt, so it bounds it exactly; a block
+// outside the world answers 99 (= never skip; heightAt says 99 there too).
+float blockMaxAt(vec2 b) {
+  if (b.x < 0.0 || b.y < 0.0 || b.x >= uHBlockN.x || b.y >= uHBlockN.y) return 99.0;
+  return texture2D(uHBlock, (b + 0.5) / uHBlockN).r * 255.0 / uHScale;
+}
+
 void main() {
   if (uFog <= 0.003) { gl_FragColor = vec4(0.0); return; }
   vec2 suv = gl_FragCoord.xy / resolution;
@@ -1307,6 +1383,8 @@ void main() {
   // worlds; break-on-found keeps the cost proportional to each pixel's real
   // depth (a plain continue guard would tick all 128 iterations per fragment
   // — that alone stalled the software-GL harness across 3 fullscreen passes).
+  vec2 blk = vec2(-9.0);
+  float hb = 99.0;
   for (int s = 0; s < 128; s++) {
     if (found || vHi <= v0 - 1.5) break;
     float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
@@ -1314,6 +1392,19 @@ void main() {
     float vLo = max(vColB, vRowB);
     float vMid = (vHi + vLo) * 0.5;
     vec2 cr = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
+    // THE HIERARCHICAL SKIP. This walk starts at the WORLD's max level and
+    // pays one dependent fetch per cell until the first column whose top
+    // reaches the segment — 44 per pixel per pass on level-0 ground under a
+    // 40-level world, the forest spots' whole lag (investigation 2026-09-02).
+    // A cell is hit iff v0 + H*kk >= vLo; every H in this block is <= the
+    // block's max, so when v0 + hb*kk < vLo no cell in it can be hit and the
+    // fetch is skipped. ONLY the fetch: the walk's arithmetic, vLo, vMid, cr
+    // and the hit test are untouched, so z, cell and everything downstream
+    // are bit-identical (uSkip is the A/B switch; parity is pinned on the
+    // pass's own pixels by __ml.nightHash).
+    vec2 b = floor(cr * 0.125);
+    if (uSkip > 0.5 && (b.x != blk.x || b.y != blk.y)) { blk = b; hb = blockMaxAt(b); }
+    if (uSkip > 0.5 && v0 + hb * kk < vLo - 0.0001) { vHi = vLo; continue; }
     float H = heightAt(cr);
     if (H < 90.0) {
       float vSurf = v0 + H * kk;
@@ -1622,6 +1713,10 @@ export class NightLights {
   private emitList: EmissionEntry[] = []; // palette order (index = shader eIdx)
   // Glow-halo field: world-anchored RT sharing the shader's exact window.
   private glowRT?: Phaser.GameObjects.RenderTexture;
+  private glowDirty = false;
+  /** The block-max grid's size (buildHeightmap) and the skip's A/B switch. */
+  private blockN = { x: 1, y: 1 };
+  private skipOn = true;
   private glowKey = "";
   private stampImg?: Phaser.GameObjects.Image;
   // Measured (off-centre stamp probe): this stack's RT samples straight, no
@@ -1675,6 +1770,10 @@ export class NightLights {
       uAnimTime: { type: "1f", value: 0 },
       uHScale: { type: "1f", value: 16 },
       uHeight: { type: "sampler2D", value: null },
+      uHBlock: { type: "sampler2D", value: null },
+      uHBlockN: { type: "2f", value: { x: 1, y: 1 } },
+      uSkip: { type: "1f", value: 0 },
+      uHasProps: { type: "1f", value: 0 },
     });
     // Elevation depth-fog shader (declared uniforms only — the uSun lesson).
     this.depthFogBase = new Phaser.Display.BaseShader("depthfog-field", DEPTHFOG_FRAG, undefined, {
@@ -1691,6 +1790,10 @@ export class NightLights {
       uRoomOn: { type: "1f", value: 0 },
       uIndoorMix: { type: "1f", value: 0 },
       uHeight: { type: "sampler2D", value: null },
+      uHBlock: { type: "sampler2D", value: null },
+      uHBlockN: { type: "2f", value: { x: 1, y: 1 } },
+      uSkip: { type: "1f", value: 0 },
+      uHasProps: { type: "1f", value: 0 },
       uHeightL: { type: "sampler2D", value: null },
       uHeightG: { type: "sampler2D", value: null },
       uRoom: { type: "sampler2D", value: null },
@@ -1767,6 +1870,10 @@ export class NightLights {
       uRoomOn: { type: "1f", value: 0 },
       uRoom: { type: "sampler2D", value: null },
       uHeight: { type: "sampler2D", value: null },
+      uHBlock: { type: "sampler2D", value: null },
+      uHBlockN: { type: "2f", value: { x: 1, y: 1 } },
+      uSkip: { type: "1f", value: 0 },
+      uHasProps: { type: "1f", value: 0 },
       uHeightL: { type: "sampler2D", value: null },
       uHeightG: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
@@ -1861,6 +1968,14 @@ export class NightLights {
       .setOrigin(0, 0)
       .setVisible(false);
     s.setSampler2D("uHeight", "world-heightmap");
+    // THE SKIP IS ARMED ONLY WITH ITS TEXTURE BOUND — an unbound sampler reads
+    // unit 0 (the full heightmap), which would make one cell's height the
+    // "block max" and skip cells that are hit.
+    if (this.scene.textures.exists(BLOCK_KEY)) {
+      s.setSampler2D("uHBlock", BLOCK_KEY, 6);
+      s.setUniform("uHBlockN.value", { x: this.blockN.x, y: this.blockN.y });
+      s.setUniform("uSkip.value", this.skipOn ? 1 : 0);
+    } else s.setUniform("uSkip.value", 0);
     s.setRenderToTexture(key);
     this.mistShader = s;
     const old = this.mistOverlay!.texture.key;
@@ -1883,6 +1998,14 @@ export class NightLights {
       .setOrigin(0, 0)
       .setVisible(false);
     s.setSampler2D("uHeight", "world-heightmap");
+    // THE SKIP IS ARMED ONLY WITH ITS TEXTURE BOUND — an unbound sampler reads
+    // unit 0 (the full heightmap), which would make one cell's height the
+    // "block max" and skip cells that are hit.
+    if (this.scene.textures.exists(BLOCK_KEY)) {
+      s.setSampler2D("uHBlock", BLOCK_KEY, 6);
+      s.setUniform("uHBlockN.value", { x: this.blockN.x, y: this.blockN.y });
+      s.setUniform("uSkip.value", this.skipOn ? 1 : 0);
+    } else s.setUniform("uSkip.value", 0);
     if (this.scene.textures.exists("world-heightmap-linear"))
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
     if (this.scene.textures.exists("world-heightmap-ground"))
@@ -1913,6 +2036,14 @@ export class NightLights {
       .setOrigin(0, 0)
       .setVisible(this.active);
     s.setSampler2D("uHeight", "world-heightmap");
+    // THE SKIP IS ARMED ONLY WITH ITS TEXTURE BOUND — an unbound sampler reads
+    // unit 0 (the full heightmap), which would make one cell's height the
+    // "block max" and skip cells that are hit.
+    if (this.scene.textures.exists(BLOCK_KEY)) {
+      s.setSampler2D("uHBlock", BLOCK_KEY, 6);
+      s.setUniform("uHBlockN.value", { x: this.blockN.x, y: this.blockN.y });
+      s.setUniform("uSkip.value", this.skipOn ? 1 : 0);
+    } else s.setUniform("uSkip.value", 0);
     if (this.scene.textures.exists("world-heightmap-linear"))
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
     if (this.scene.textures.exists("world-heightmap-ground"))
@@ -1927,6 +2058,7 @@ export class NightLights {
     this.glowKey = `night-glow-${this.fieldCount}`;
     this.glowRT.saveTexture(this.glowKey);
     s.setSampler2D("uGlow", this.glowKey, 3);
+    s.setUniform("uHasProps.value", (this.world.props?.length ?? 0) > 0 ? 1 : 0);
     // The room mask (unit 4). Built lazily the first time the player steps
     // indoors — a world nobody ever enters a building in never pays for it.
     this.ensureRoomTexture();
@@ -2143,7 +2275,16 @@ export class NightLights {
   }
 
   private buildHeightmap() {
-    if (this.scene.textures.exists("world-heightmap")) return;
+    if (this.scene.textures.exists("world-heightmap")) {
+      // Textures outlive this instance (the manager is per game): keep the
+      // block grid's size honest for the bindings, or arm nothing.
+      const bt = this.scene.textures.get(BLOCK_KEY);
+      if (this.scene.textures.exists(BLOCK_KEY) && bt) {
+        const src = bt.getSourceImage() as { width: number; height: number };
+        this.blockN = { x: src.width, y: src.height };
+      } else this.skipOn = false;
+      return;
+    }
     const w = this.world.width;
     const h = this.world.height;
     // Emission palette indices: category → position in emitList (+1 in the
@@ -2288,6 +2429,34 @@ export class NightLights {
       }
     }
     ctx.putImageData(img, 0, 0);
+    /* THE BLOCK-MAX GRID beside it: max of R over each BLOCK×BLOCK of cells,
+     * same byte packing, so the shader's decode of it bounds heightAt exactly. */
+    {
+      const bw = Math.ceil(w / BLOCK);
+      const bh = Math.ceil(h / BLOCK);
+      if (this.scene.textures.exists(BLOCK_KEY)) this.scene.textures.remove(BLOCK_KEY);
+      const btex = this.scene.textures.createCanvas(BLOCK_KEY, bw, bh)!;
+      const bctx = btex.getContext();
+      const bimg = bctx.createImageData(bw, bh);
+      for (let by = 0; by < bh; by++)
+        for (let bx = 0; bx < bw; bx++) {
+          let m = 0;
+          const r1 = Math.min(h, (by + 1) * BLOCK);
+          const c1 = Math.min(w, (bx + 1) * BLOCK);
+          for (let r = by * BLOCK; r < r1; r++)
+            for (let c = bx * BLOCK; c < c1; c++) {
+              const v = img.data[(r * w + c) * 4];
+              if (v > m) m = v;
+            }
+          const j = (by * bw + bx) * 4;
+          bimg.data[j] = m;
+          bimg.data[j + 3] = 255;
+        }
+      bctx.putImageData(bimg, 0, 0);
+      btex.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      btex.refresh();
+      this.blockN = { x: bw, y: bh };
+    }
     tex!.refresh();
     const texL = this.scene.textures.createCanvas("world-heightmap-linear", w, h);
     if (texL) {
@@ -2660,6 +2829,72 @@ export class NightLights {
     };
   }
 
+  /** A/B: arm or disarm the hierarchical skip on every pass (dev probe). */
+  setSkip(on: boolean): boolean {
+    this.skipOn = on;
+    for (const sh of [this.shader, this.mistShader, this.depthFogShader])
+      sh?.setUniform("uSkip.value", on && this.scene.textures.exists(BLOCK_KEY) ? 1 : 0);
+    return on;
+  }
+
+  /** THE RAW PIXELS of a pass's own framebuffer, hashed — read with
+   *  gl.readPixels while its framebuffer is bound, so it is exact for ANY
+   *  alpha (the depth-fog pass writes fractional alpha, which a 2D-canvas
+   *  round trip would premultiply and quantise — review, 2026-09-02) and
+   *  synchronous. */
+  private hashPass(sh: Phaser.GameObjects.Shader): string {
+    const r = this.scene.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+    const gl = r.gl;
+    const fb = (sh as unknown as { framebuffer?: unknown }).framebuffer;
+    if (!fb) throw new Error("pass has no framebuffer");
+    (r as unknown as { setFramebuffer: (f: unknown, s?: boolean) => void }).setFramebuffer(fb, true);
+    const buf = new Uint8Array(sh.width * sh.height * 4);
+    gl.readPixels(0, 0, sh.width, sh.height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+    (r as unknown as { setFramebuffer: (f: unknown, s?: boolean) => void }).setFramebuffer(null, true);
+    let h = 0x811c9dc5;
+    for (let i = 0; i < buf.length; i++) h = Math.imul(h ^ buf[i], 0x01000193) >>> 0;
+    return h.toString(16).padStart(8, "0");
+  }
+
+  /** PARITY: a hash of a pass's OWN pixels as last rendered (dev probe). */
+  passHash(which: "night" | "fog"): Promise<{ hash: string; w: number; h: number }> {
+    const sh = which === "night" ? this.shader : this.depthFogShader;
+    if (!sh) return Promise.reject(new Error(`no ${which} pass`));
+    try {
+      return Promise.resolve({ hash: this.hashPass(sh), w: sh.width, h: sh.height });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  /** PARITY, SAME TURN: render a pass with the skip OFF and read its pixels,
+   *  then with the skip ON and read again — nothing else changes in between
+   *  (no frame passes: uAnimTime, the eased ambient and every light are the
+   *  same uniforms for both), so the two hashes differ only by the skip. The
+   *  renderer draws a render-to-texture shader with exactly load() + flush()
+   *  (ShaderWebGLRenderer). Raw readPixels, so exact for both passes. */
+  parityHash(which: "night" | "fog"): Promise<{ full: string; skip: string; w: number; h: number }> {
+    const sh = which === "night" ? this.shader : this.depthFogShader;
+    if (!sh) return Promise.reject(new Error(`no ${which} pass`));
+    const draw = sh as unknown as { load: () => void; flush: () => void };
+    const armed = this.scene.textures.exists(BLOCK_KEY);
+    try {
+      sh.setUniform("uSkip.value", 0);
+      draw.load();
+      draw.flush();
+      const full = this.hashPass(sh);
+      sh.setUniform("uSkip.value", armed ? 1 : 0);
+      draw.load();
+      draw.flush();
+      const skip = this.hashPass(sh);
+      sh.setUniform("uSkip.value", this.skipOn && armed ? 1 : 0);
+      return Promise.resolve({ full, skip, w: sh.width, h: sh.height });
+    } catch (e) {
+      sh.setUniform("uSkip.value", this.skipOn && armed ? 1 : 0);
+      return Promise.reject(e);
+    }
+  }
+
   update(
     cam: Phaser.Cameras.Scene2D.Camera,
     lights: ShaderLight[],
@@ -2730,7 +2965,11 @@ export class NightLights {
       // zoom/k — without it the glow slid off its source by 1/zoom when the
       // camera zoomed out while running (maintainer 2026-07-25).
       const gscale = rt.width / (wv.width * k);
-      rt.clear();
+      // A clear of an already-empty field is a whole extra render pass on a
+      // tile-based GPU (~6 MB of writes at dpr 2.75): clear only when there
+      // is something to draw or something to erase.
+      if (stamps.length || this.glowDirty) rt.clear();
+      this.glowDirty = stamps.length > 0;
       if (stamps.length) {
         const t = this.scene.time.now / 1000;
         const img = this.stampImg;
@@ -2759,7 +2998,8 @@ export class NightLights {
         }
         rt.endDraw();
       }
-      s.setUniform("uGlowOn.value", 1);
+      // An empty field adds vec3(0): skip its dependent fetch per pixel.
+      s.setUniform("uGlowOn.value", stamps.length ? 1 : 0);
       s.setUniform("uGlowFlip.value", this.glowFlip);
     } else {
       s.setUniform("uGlowOn.value", 0);
