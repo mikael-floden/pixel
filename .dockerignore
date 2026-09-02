@@ -3,6 +3,12 @@
 # critical path) until the Dockerfile actually bakes them in.
 *
 !games2
+# The music ARCHIVE (every generated take, kept so the maintainer can swap
+# one back in) is wiki content, not game content: the engine never requests
+# a pool/ bed, and the wiki reads what is not in the image from the repo CDN.
+# 97 MB measured 2026-08-22. foley/*/pool stays IN: assigned takes live there
+# (thunder__cand07..17) and the engine's take lookup searches it.
+games2/composer/music/pool
 games2/node_modules
 games2/client/dist
 games2/**/*.tsbuildinfo
