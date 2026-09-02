@@ -69,13 +69,42 @@ PHRASINGS = {
 }
 DEFAULT_PHRASING = "on_top_of"
 
+# SPOTS: a discrete OBJECT of b sitting on a field of a, which is the shape the
+# maintainer actually wants from a fade (2026-08-29): "I like when it's some form of rock
+# like a black rock on top of snow... where the snow is like a snow ball or snow spot on
+# top of regular black_rock, or a black rock on top of snow ground."
+#
+# Object words, not area words. The first fade run proved the difference: "{b} on top of
+# {a}" drew FULL coverage and produced 5,717 no-real-mixture rejects, because "on top of"
+# reads as a layer rather than a thing. "spots", "lumps", "rocks" read as objects and
+# leave the ground around them.
+#
+# NOTHING SAYS "IN THE MIDDLE". He asked for "kinda centered and not in the middle", and
+# the puddle run measured why that matters: islands told to centre landed at a centroid
+# radius of 0.146 of the tile's half-width, and a field of them reads as a polka-dot grid
+# - the artefact he has rejected twice. Five wordings so a pair gets five different looks
+# rather than one repeated.
+SPOT_PHRASINGS = {
+    "spots":    "{b} spots on {a}",
+    "one_rock": "one {b} rock on {a}",
+    "lumps":    "a few {b} lumps on {a}",
+    # "OF" BINDS THE MATERIAL; AN ADJECTIVE DOES NOT. Measured on the grass/snow pilot:
+    # "small grass rocks on snow" and "grass clumps on snow" both drew actual grey
+    # STONE - the object noun won and the material was dropped - while "snow spots" and
+    # "one snow rock" (where snow is plausibly the object) came out right. So the two
+    # wordings whose noun can carry its own material now say "of {b}", which pins it.
+    "patches":  "patches of {b} on {a}",
+    "piles":    "a few piles of {b} on {a}",
+}
+
 
 def _h(*p):
     return int(hashlib.sha1("|".join(map(str, p)).encode()).hexdigest()[:8], 16)
 
 
 def prompt_for(a, b, phrasing=DEFAULT_PHRASING):
-    return PHRASINGS[phrasing].format(a=words(a), b=words(b))
+    table = SPOT_PHRASINGS if phrasing in SPOT_PHRASINGS else PHRASINGS
+    return table[phrasing].format(a=words(a), b=words(b))
 
 
 def sheet_dir(a, b, phrasing, rep):
@@ -164,7 +193,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only")
     ap.add_argument("--pairs", nargs="*")
-    ap.add_argument("--phrasing", default=DEFAULT_PHRASING, choices=sorted(PHRASINGS))
+    ap.add_argument("--phrasing", default=DEFAULT_PHRASING,
+                    choices=sorted(set(PHRASINGS) | set(SPOT_PHRASINGS)))
+    ap.add_argument("--spots", action="store_true",
+                    help="the five SPOT wordings, both directions: 10 sheets per pair")
+    ap.add_argument("--transition-pairs", action="store_true",
+                    help="only pairs that have a generated transition set")
     ap.add_argument("--reps", type=int, default=1)
     ap.add_argument("--max-usd", type=float, default=5.0)
     ap.add_argument("--min-usd", type=float, default=15.0)
@@ -178,7 +212,17 @@ def main():
         return
 
     pairs = {tuple(p.split(":")) for p in args.pairs} if args.pairs else None
-    jobs = plan(only=args.only, pairs=pairs, phrasing=args.phrasing, reps=args.reps)
+    if args.transition_pairs:
+        import blends as _b
+        tp = _b.transition_pairs()
+        pairs = {(x, y) for p in tp for x, y in (p, p[::-1])}
+    if args.spots:
+        # 10 sheets per unordered pair: five wordings, both directions. `pairs` already
+        # holds both orderings, so iterating the wordings gives exactly that.
+        jobs = [j for ph in sorted(SPOT_PHRASINGS)
+                for j in plan(only=args.only, pairs=pairs, phrasing=ph, reps=args.reps)]
+    else:
+        jobs = plan(only=args.only, pairs=pairs, phrasing=args.phrasing, reps=args.reps)
     todo = [j for j in jobs if not is_complete(j["dir"])]
     print(f"{len(jobs)} sheet(s) planned; {len(jobs)-len(todo)} on disk, {len(todo)} to "
           f"generate ~${len(todo)*matrix.SHEET_USD:.2f}")
