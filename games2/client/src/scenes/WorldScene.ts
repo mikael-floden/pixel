@@ -189,6 +189,7 @@ import {
 } from "../tiles3runtime";
 import {
   SceneryIndex,
+  type SceneryPlacement,
   SceneryPieces,
   buildPlacements,
   fitSprite,
@@ -5334,12 +5335,36 @@ export class WorldScene extends Phaser.Scene {
      * clamp inside projectFlat is deliberately not used: it exists to keep a
      * BODY on the map, and dragging a footprint centre inward would draw the
      * outline somewhere its owner is not. */
-    const { dx, dy, tile } = this.geom;
+    const { dx, dy } = this.geom;
     const floorRx = (MIN_FOOTPRINT_SEMI / CELL_WU) * dx * Math.SQRT2;
     const floorRy = (MIN_FOOTPRINT_SEMI / CELL_WU) * dy * Math.SQRT2;
+    /* THE OUTLINE HANGS OFF THE ART'S OWN ANCHOR, not off projectFlat.
+     *
+     * projectFlat answers where a BODY's feet go, and that convention is +DX
+     * right and +DY below a cell's anchor and carries no elevation at all — it
+     * returns the level rather than applying it. Drawing footprints through it
+     * therefore put every outline 32px right and 14px low of the piece it
+     * belongs to (maintainer 2026-09-02: "all hitboxes are a bit lowered
+     * compared to the wiki"), and pinned them to the PLAYER's plane, so a piece
+     * standing on any other level was wrong by a whole storey as well ("when I
+     * look at objects at a different elevation I feel as if the hitbox can be
+     * very wrong"). Both were mine, and both are the same mistake: re-deriving a
+     * projection beside the one the art already uses.
+     *
+     * A placement carries `ax`/`ay` — anchorX/anchorY, the exact screen point
+     * the sprite is drawn from, with that piece's own level already in it. The
+     * ellipse centre is a world offset from the anchor, so it is that same
+     * offset projected: sx = (ox-oy)*dx, sy = (ox+oy)*dy, which is precisely the
+     * mapping stampSceneryCollision inverted to place the centre. Outline and
+     * art now share one anchor and cannot drift again. */
+    const byIndex = this.footprintAnchors();
     for (const f of footprintsInCells(t, c0 - RANGE, r0 - RANGE, c0 + RANGE, r0 + RANGE)) {
-      const ex = this.iso.ox + (f.cx - f.cy) * dx + tile / 2;
-      const ey = this.iso.oy + (f.cx + f.cy) * dy + dy - lift;
+      const pl = byIndex.get(f.place);
+      if (!pl) continue; // off-window: the art is not placed, so nothing to mark
+      const ox = f.cx - pl.x;
+      const oy = f.cy - pl.y;
+      const ex = pl.ax + (ox - oy) * dx;
+      const ey = pl.ay + (ox + oy) * dy;
       const widened = f.rx <= floorRx + 1e-6 || f.ry <= floorRy + 1e-6;
       gfx.lineStyle(1, widened ? 0xb197fc : 0x3bc9db, 0.95);
       gfx.strokeEllipse(ex, ey, f.rx * 2, f.ry * 2, 44);
@@ -5404,6 +5429,21 @@ export class WorldScene extends Phaser.Scene {
       ring(npc.fx, npc.fy, NPC_BODY_RADIUS, npc.elev, 0x51cf66, 0.95);
       ring(npc.fx, npc.fy, NPC_BODY_RADIUS + self, npc.elev, 0x51cf66, 0.35);
     });
+  }
+
+  /** Placements by their world index, for the collision overlay: the footprint
+   *  table names a placement by index and the overlay needs that placement's
+   *  own screen anchor. Cached against the index object, which is rebuilt
+   *  whenever the window moves. */
+  private anchorCache?: { of: unknown; map: Map<number, SceneryPlacement> };
+  private footprintAnchors(): Map<number, SceneryPlacement> {
+    const idx = this.scenery;
+    if (this.anchorCache?.of !== idx) {
+      const map = new Map<number, SceneryPlacement>();
+      for (const p of idx?.placements ?? []) map.set(p.i, p);
+      this.anchorCache = { of: idx, map };
+    }
+    return this.anchorCache.map;
   }
 
   /** The same grid with the SCENERY TAKEN OUT: no `footprints`, so the ellipse
