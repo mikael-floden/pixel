@@ -348,6 +348,77 @@ def _load_cache():
 
 
 FEEDBACK = os.path.join(REPO, "live", "feedback", "tiles.json")
+REMOVED = os.path.join(FADES, "removed.json")
+
+
+def apply_review(keys_seen):
+    """key -> True when the maintainer wants this tile OUT of the fade listing.
+
+    A REMOVAL IS REMEMBERED HERE, NOT ONLY IN THE FEEDBACK FILE, and it has to be: the
+    two are coupled in a loop that erased 772 verdicts. He marks remove -> this pass
+    drops the tile from index.json -> the wiki prunes the feedback entry because the
+    tile is no longer listed -> the verdict is gone -> the next publish lists the tile
+    again. Measured 2026-09-02: all 772 fade verdicts vanished from the feedback file
+    and 770 removed tiles came back, so he reviewed the same tiles twice. Reading the
+    feedback file alone cannot fix this, because by the time we read it the verdict is
+    already gone.
+
+    So this owns a tombstone list. Precedence, and the middle line is the one that
+    matters:
+
+        status "rejected" now   -> removed, and tombstoned so it stays removed
+        status set, not rejected -> listed, tombstone cleared (an ACTIVE un-reject)
+        no entry at all          -> the tombstone decides
+
+    Absence is NOT approval - it is the wiki having forgotten - so only an explicit
+    non-rejected verdict brings a tile back. `keys_seen` bounds the file to tiles that
+    still exist, so it cannot grow without limit.
+    """
+    tomb = set()
+    if os.path.isfile(REMOVED):
+        try:
+            tomb = set(json.load(open(REMOVED)).get("keys") or [])
+        except Exception:
+            tomb = set()
+    status = {}
+    if os.path.isfile(FEEDBACK):
+        try:
+            status = {k: v.get("status")
+                      for k, v in (json.load(open(FEEDBACK)).get("entries") or {}).items()
+                      if "#" not in k and isinstance(v, dict) and v.get("status")}
+        except Exception:
+            status = {}
+    out, new = {}, 0
+    for k in keys_seen:
+        st = status.get(k)
+        if st == "rejected":
+            out[k] = True
+            if k not in tomb:
+                tomb.add(k); new += 1
+        elif st:
+            out[k] = False
+            tomb.discard(k)
+        else:
+            out[k] = k in tomb
+    tomb &= set(keys_seen)      # forget tiles whose art no longer exists
+    doc = {
+        "schema": "tiles3/fade-removals@1",
+        "_comment": [
+            "TILES THE MAINTAINER REMOVED FROM THE FADE LISTING - the durable record.",
+            "The wiki prunes a feedback entry once the tile leaves index.json, which",
+            "erased 772 verdicts and brought 770 removed tiles back. This file is what",
+            "keeps a removal decided. An explicit non-rejected verdict in",
+            "live/feedback/tiles.json clears an entry here; absence never does.",
+            "The art itself is untouched and only the fade listing is affected.",
+        ],
+        "n_removed": len(tomb),
+        "keys": sorted(tomb),
+    }
+    tmp = REMOVED + f".{os.getpid()}.tmp"
+    with open(tmp, "w") as f:
+        json.dump(doc, f, indent=1)
+    os.replace(tmp, REMOVED)
+    return out, len(tomb), new
 
 
 def review_verdicts():
@@ -369,9 +440,8 @@ def review_verdicts():
 
 def main():
     cache = _load_cache()
-    verdicts = review_verdicts()
     fresh, reused, removed = 0, 0, 0
-    pairs, rejected, n_valid = {}, {}, 0
+    candidates, rejected, n_valid = [], {}, 0
     for sheet in sheets():
         pk = f'{sheet["dominant"]}__to__{sheet["minor"]}'
         for i, name in enumerate(sheet["tiles"]):
@@ -387,11 +457,20 @@ def main():
                 cache[key] = {"fp": fp, "entry": e, "why": why}
             if e is None:
                 rejected[why] = rejected.get(why, 0) + 1
-            elif verdicts.get(key) == "rejected":
-                removed += 1            # the maintainer said remove; the art stays on disk
             else:
-                pairs.setdefault(pk, []).append(e)
-                n_valid += 1
+                candidates.append((pk, key, e))
+
+    # The review is applied to everything that PASSED the gate, in one place, and the
+    # removals are remembered (see apply_review) so a verdict survives the wiki pruning
+    # its own entry.
+    drop, n_tomb, n_new = apply_review([k for _, k, _ in candidates])
+    pairs = {}
+    for pk, key, e in candidates:
+        if drop.get(key):
+            removed += 1                # the maintainer said remove; the art stays on disk
+        else:
+            pairs.setdefault(pk, []).append(e)
+            n_valid += 1
     for pk in pairs:
         first = pk.split("__to__")[0]
         pairs[pk].sort(key=lambda e: -e["pct"][first])
@@ -411,14 +490,21 @@ def main():
             "Rejected tiles stay on disk (raw sheets are never deleted) but are not",
             "listed here and should not be shown.",
             "REVIEW IS HONOURED: a key marked rejected in live/feedback/tiles.json",
-            "(the wiki's remove button) is dropped from this index on every publish.",
-            "Only the fade listing is affected - the art and the tile's other roles",
-            "are untouched. Un-rejecting brings the tile back on the next publish.",
+            "(the wiki's remove button) is dropped from this index on every publish,",
+            "and the removal is REMEMBERED in tiles/fades/removed.json - the wiki",
+            "prunes its own entry once a tile leaves this index, which erased 772",
+            "verdicts and brought 770 removed tiles back. Only the fade listing is",
+            "affected; the art and the tile's other roles are untouched. An explicit",
+            "approve brings a tile back; its entry merely going missing does not.",
         ],
         "review": {
-            "source": "live/feedback/tiles.json entries[<key>].status",
-            "rule": "rejected -> not listed; anything else -> listed if it passes the gate",
+            "source": "live/feedback/tiles.json entries[<key>].status, plus the durable "
+                      "record in tiles/fades/removed.json",
+            "rule": "rejected -> removed and remembered; an explicit non-rejected status "
+                    "-> listed and the memory cleared; no entry -> the memory decides",
             "n_removed_by_review": removed,
+            "n_remembered": n_tomb,
+            "n_new_this_publish": n_new,
         },
         "classifier": FM.DESCRIPTION,
         "n_valid": n_valid,
@@ -436,7 +522,8 @@ def main():
         json.dump(doc, f, indent=1)
     os.replace(tmp, dst)
     print(f"valid: {n_valid}   rejected: {sum(rejected.values())}  {rejected}")
-    print(f"removed by the maintainer's review: {removed}")
+    print(f"removed by the maintainer's review: {removed} "
+          f"({n_new} new this run; {n_tomb} remembered in removed.json)")
     for pk in sorted(pairs)[:8]:
         first = pk.split("__to__")[0]
         ps = [e["pct"][first] for e in pairs[pk]]
