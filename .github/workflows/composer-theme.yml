@@ -63,6 +63,14 @@ jobs:
       # audio that exists must reach the repo whatever else went wrong. The
       # deploy still gates on `pushed`, so a run that produced nothing is a
       # no-op rather than an empty rollout.
+      # The audio hash manifest ships in the SAME commit as the audio, so it
+      # cannot describe bytes that are not there yet. `if: always()` for the
+      # same reason the commit step has it: a run that generated three tracks
+      # and then hit the quota must still publish hashes for those three.
+      - name: Re-hash the audio
+        if: always()
+        run: python games2/composer/scripts/audio-hashes.py
+
       - name: Commit + push
         if: always()
         id: push
