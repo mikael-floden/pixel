@@ -142,6 +142,20 @@ const setVerdict = async (want) => {
 await setVerdict("approved");
 const afterApprove = await facet();
 ok(/approved/.test(afterApprove.verdictClasses), "approving marks THIS state");
+/* HIS OWN VERDICTS, AGAIN (2026-08-30). The two assertions below want a facet
+ * that is NOT judged, and this file already learned once that the maintainer
+ * has judged these for real — it stopped clicking blind but still assumed the
+ * neighbours were blank, so both went red the day he approved every state of
+ * window_058. Only the facet just approved (lights_off · S) is kept. The neighbours are cleared in the page first (never committed:
+ * /api/wiki/save is captured), which is what makes "approving THIS one did not
+ * touch that one" a statement about the code rather than about his week. */
+await p.evaluate(() => {
+  const e = window.__wiki?.state?.feedback?.objects?.entries;
+  if (!e) return;
+  for (const k of Object.keys(e)) {
+    if (k.startsWith("scenery/windows/window_058#") && !/#lights_off#south$/.test(k)) delete e[k];
+  }
+});
 await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /lights on/i.test(x.title)).click());
 await p.waitForTimeout(500);
 const s2 = await facet();
@@ -405,6 +419,52 @@ await pub.close();
     : `every card's state count, animated mark and facings match its published clips (${cards.length} cards)`);
   ok(cards.some((c) => c.play) && cards.some((c) => /×\d/.test(c.count)),
     `and both marks appear while scrolling (${cards.filter((c) => c.play).length} animated, ${cards.filter((c) => c.count).length} with a state pill)`);
+}
+/* ONE FACT, ONE ANSWER: a verdict the chip no longer counts must not look
+ * current in the row (maintainer 2026-08-30: "some states is not green even if
+ * the state is approved when I click on the state"). His lit_3 on tree_064
+ * carried a stamp from art that has since been regenerated, so facetMark read
+ * it as unjudged and left the chip plain, while the row underneath went on
+ * painting its approve button green. Reproduced here by stamping a verdict
+ * with an art hash that matches nothing. */
+{
+  /* A SOUTH-ONLY PIECE, because a chip goes green only when EVERY direction of
+   * its state is approved — on a piece with SE the green would be about the
+   * directions, not about the staleness this section is measuring. */
+  await p.goto(`${W}#/objects/ancient_tree_001`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  const chipCls = () => p.evaluate(() => [...document.querySelectorAll(".seg-states button")][0]?.className ?? "");
+  const row = () => p.evaluate(() => {
+    const f = document.querySelector(".facet-head .fb-row");
+    return { cls: [...(f?.querySelectorAll("button") ?? [])].map((x) => x.className).join("|"),
+             text: f?.textContent ?? "" };
+  });
+  const restamp = (art) => p.evaluate((a) => {
+    const first = [...document.querySelectorAll(".seg-states button")][0];
+    const st = first?.dataset?.state ?? "lit_1";
+    window.__wiki.state.feedback.objects.entries[`scenery/ancient_trees/ancient_tree_001#${st}#south`] =
+      { status: "approved", rating: 5, art: a, updated_at: new Date().toISOString() };
+  }, art);
+  const reaim = async () => {
+    await p.evaluate(() => [...document.querySelectorAll(".seg-states button")][1]?.click());
+    await p.waitForTimeout(350);
+    await p.evaluate(() => [...document.querySelectorAll(".seg-states button")][0]?.click());
+    await p.waitForTimeout(450);
+  };
+  await restamp("deadbeefdeadbeef");     // a hash belonging to no art that exists
+  await reaim();
+  const stale = await row();
+  ok(!/approved/.test(stale.cls), `a verdict about vanished art does not paint the row green (${stale.cls})`);
+  ok(/regenerated since/.test(stale.text), `and the row says why (“${stale.text.replace(/\s+/g, " ").slice(-40).trim()}”)`);
+  ok(!/judged-ok/.test(await chipCls()), "which is the same answer its state chip gives");
+  // One tap re-judges the art on screen: row and chip agree, the other way.
+  await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /approve/.test(x.textContent))?.click());
+  await p.waitForTimeout(500);
+  const fresh = await row();
+  ok(/approved/.test(fresh.cls) && !/regenerated since/.test(fresh.text),
+    "judging it again makes the row current");
+  await p.waitForTimeout(300);
+  ok(/judged-ok/.test(await chipCls()), "and turns the chip green — one fact, told once");
 }
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");

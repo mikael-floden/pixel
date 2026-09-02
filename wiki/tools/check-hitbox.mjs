@@ -481,24 +481,37 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   await p.waitForTimeout(1000);
   const read = () => p.evaluate(() => ({ v: window.__wikiHitbox?.variation, w: window.__wikiHitbox?.boxes?.[0]?.rx ?? null }));
   const a0 = await read();
+  /* MEASURE THE NEIGHBOUR FIRST. This used to assert that the next variation
+   * was as wide as this one started — true only while both still carried the
+   * same proposal, so the day he tuned one of them by hand the gate went red
+   * about his work rather than about the code. Variations differ ON PURPOSE;
+   * what must hold is that editing one leaves the other exactly as it was. */
+  /* PICK BY INDEX ON THE STATE ROW. "Click the next one" walked past the
+   * variation it had just measured as soon as the piece had three, and the
+   * loose `.seg` selector also swept in the speed and zoom rows, which are
+   * segs too. */
+  const pickVar = (i) => p.evaluate((n) => {
+    const segs = [...document.querySelectorAll(".seg-states button")];
+    if (segs.length < 2 || !segs[n]) return false;
+    segs[n].scrollIntoView({ block: "center" }); segs[n].click(); return true;
+  }, i);
+  await pickVar(1);
+  await p.waitForTimeout(1300);
+  const bBefore = await read();
+  await pickVar(0);
+  await p.waitForTimeout(1300);
   // widen THIS variation by driving its W rail to the max
   await p.evaluate(() => { const w2 = [...document.querySelectorAll(".hit-bar .shadow-slider")][0]; w2.value = w2.max; w2.dispatchEvent(new Event("input", { bubbles: true })); w2.dispatchEvent(new Event("change", { bubbles: true })); });
   await p.waitForTimeout(700);
   const a1 = await read();
   ok(a1.w > a0.w, `variation ${a1.v} takes a wider hitbox (${a0.w} → ${a1.w})`);
-  // switch to the NEXT variation: it must be untouched
-  const moved = await p.evaluate(() => {
-    const segs = [...document.querySelectorAll("button")].filter((b2) => b2.closest(".state-seg, .stateseg, .seg"));
-    const on = segs.findIndex((b2) => b2.classList.contains("on"));
-    const next = segs[(on + 1) % segs.length];
-    if (!next || segs.length < 2) return false;
-    next.scrollIntoView({ block: "center" }); next.click(); return true;
-  });
+  // back to the variation measured above: it must be exactly as it was
+  const moved = await pickVar(1);
   await p.waitForTimeout(1400);
   const b0 = await read();
   ok(moved && b0.v && b0.v !== a1.v, `the card switches to another variation (${a1.v} → ${b0.v})`);
-  ok(Math.abs(b0.w - a0.w) < 0.01 && b0.w !== a1.w,
-    `and ITS hitbox is untouched by the edit next door (${b0.w} vs the widened ${a1.w})`);
+  ok(bBefore.v === b0.v && Math.abs(b0.w - bBefore.w) < 0.01 && b0.w !== a1.w,
+    `and ITS hitbox is untouched by the edit next door (${b0.w} before and after, vs the widened ${a1.w})`);
   const keys = await p.evaluate(() => Object.keys(window.__wiki.state.tuning.scenery_hitbox?.overrides ?? {}).filter((k) => k.includes("#")));
   ok(keys.length >= 1 && keys.every((k) => /#/.test(k)),
     `the stored record names the variation (${keys[0]})`);
@@ -585,8 +598,13 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
     // the trunk band can never be wider than the art it was measured in
     if (rec.boxes[0].rx * 2 > (bb[2] - bb[0]) + 2) wide++;
   }
-  ok(checked > 200 && wide === 0,
-    `every tree proposal is a trunk, never wider than the art (${checked} checked, ${wide} too wide)`);
+  /* NO FLOOR UNDER `checked`. It used to demand 200+ proposals to look at,
+   * which made "he has decided every tree himself" — the finished state of the
+   * job — indistinguishable from a broken pass. What must hold is that no
+   * proposal is wider than the art it was measured in; an empty proposal set
+   * is the work being done. */
+  ok(wide === 0,
+    `every tree proposal is a trunk, never wider than the art (${checked} proposals checked, ${wide} too wide, ${hisTouched} decided by hand)`);
   ok(hisTouched > 0, `and his own tree corrections are still there, unflagged (${hisTouched})`);
 }
 /* THE CONTROLS MUST NOT MOVE UNDER HIS THUMB (maintainer 2026-08-29: "I try
@@ -691,6 +709,23 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
     ok(drag.steps[drag.steps.length - 1].w < drag.first.w * 1.6,
       `so a small drag stays a small change (${drag.first.w} → ${drag.steps[drag.steps.length - 1].w})`);
   }
+}
+/* THE BANNER NAMES THE QUEUE HE IS IN (maintainer 2026-08-30, reading it off a
+ * piece page: "Trees only · newest first · 65 of 710" while the list was
+ * really trees WITHOUT a hitbox). The hitbox filter rode the same pager as
+ * type/sort/review but was the one narrowing the banner never mentioned, so
+ * the count was the only clue — and a count reads as "how many trees". */
+{
+  await p.goto(`${W}#/objects`, { waitUntil: "load" });
+  await p.waitForTimeout(2200);
+  await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-object-hitbox"] button')].find((x) => /no hitbox yet/.test(x.textContent))?.click());
+  await p.waitForTimeout(1200);
+  const first = await p.evaluate(() => document.querySelector("a.card")?.getAttribute("href") ?? "");
+  await p.goto(`${W}${first}`, { waitUntil: "load" });
+  await p.waitForTimeout(2000);
+  const banner = await p.evaluate(() => document.querySelector(".queue-note")?.textContent ?? "");
+  ok(/no hitbox yet/.test(banner), `the piece page names the hitbox queue it is walking (“${banner.replace(/\s+/g, " ").trim().slice(0, 60)}”)`);
+  await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-object-hitbox"] button')].find((x) => /^all/.test(x.textContent))?.click());
 }
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 

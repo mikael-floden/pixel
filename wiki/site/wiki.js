@@ -594,7 +594,16 @@ function starsWidget(domain, id, onStars, glyph) {
 // `stamp` rides into every verdict this widget writes — the scenery pages
 // pass { art: <sprite hash> } so a verdict records the exact bytes it judged
 // (objVerdict's staleness is then byte-exact, immune to invented dates).
-function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal", rejectOnly = false, stamp = null } = {}) {
+/* A VERDICT THE REST OF THE UI NO LONGER COUNTS MUST NOT LOOK CURRENT
+ * (maintainer 2026-08-30: "some states is not green even if the state is
+ * approved when I click on the state"). The state chip already reads a verdict
+ * stamped on art that has since been regenerated as unjudged — that is the
+ * rule he asked for — but the row underneath went on drawing its approve
+ * button green, so the same fact was told two ways on one screen. Now `stale`
+ * rides in from the same facetStale() the chip uses: the buttons drop their
+ * current-verdict paint and the row says why, so one tap re-judges the art
+ * that is actually on screen and the chip goes green with it. */
+function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal", rejectOnly = false, stamp = null, stale = false } = {}) {
   if (!state.admin) {
     const st = fb(domain, id).status;
     if (st === "approved") return h("span", { class: "pill ok" }, "approved");
@@ -603,7 +612,13 @@ function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitl
   }
   const wrap = h("span", { class: "verdict" });
   const render = () => {
-    const st = fb(domain, id).status;
+    // Re-read every render, never captured: judging again re-stamps the record
+    // with the art on screen, and the row must stop calling it stale the
+    // instant it stops being stale.
+    const gone = typeof stale === "function" ? stale() : stale;
+    // A stale verdict is shown as what it now IS — a decision about art that
+    // is gone — so it paints as undecided until he judges again.
+    const st = gone ? null : fb(domain, id).status;
     // NB: replaceChildren stringifies null into a literal "null" text node —
     // the same trap h() guards against. Filter, never pass a bare null.
     wrap.replaceChildren(...[
@@ -611,6 +626,7 @@ function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitl
       // approval of the binding as a whole lives one row up.
       rejectOnly ? null : h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "approved" ? null : "approved", ...(stamp ?? {}) }); render(); onchange?.(); } }, "✓ approve"),
       h("button", { class: st === "rejected" ? "rejected" : "", title: rejectTitle, onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "rejected" ? null : "rejected", ...(stamp ?? {}) }); render(); onchange?.(); } }, reject),
+      gone ? h("span", { class: "pill warn", title: "You judged this state before the art was regenerated, so the verdict is about a picture that no longer exists — judge the one on screen and it counts again." }, "regenerated since — judge again") : null,
     ].filter(Boolean));
   };
   render();
@@ -4757,6 +4773,7 @@ function viewMonster(id) {
       // producing agent can tell a live verdict from one about art it has
       // since regenerated.
       stamp: { art: m.animations?.[st]?.dirs?.[dir]?.h ?? null },
+      stale: () => facetStale(m, st, dir, fb("monsters", `${m.path}#${st}#${dir}`)),
       reject: "✕ redo",
       rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the monsters agent to regenerate`,
       rejectedLabel: "to be redone",
@@ -4977,6 +4994,7 @@ function viewCharacter(id) {
       // producing agent can tell a live verdict from one about art it has
       // since regenerated.
       stamp: { art: c.animations?.[st]?.dirs?.[dir]?.h ?? null },
+      stale: () => facetStale(c, st, dir, fb("characters", `${c.path}#${st}#${dir}`)),
       reject: "✕ redo",
       rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the characters agent to regenerate`,
       rejectedLabel: "to be redone",
@@ -10278,6 +10296,7 @@ function viewObject(id) {
         // record the state's own hash rather than the piece's"). Falls back to
         // the piece's while a clip is still unmeasured.
         stamp: { art: o.animations?.[st]?.dirs?.[dir]?.h ?? o.artHash ?? null },
+        stale: () => facetStale(o, st, dir, fb("objects", `${o.path}#${st}#${dir}`)),
         reject: "✕ redo",
         rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — the scenery agent regenerates it, the piece stays`,
         rejectedLabel: "to be redone",
@@ -10322,8 +10341,13 @@ function viewObject(id) {
       // Each active narrowing named once, then the count. "Trees only · needs
       // review only · 12 of 764" — every word of it is why ‹ › stops where it
       // stops.
+      /* EVERY NARROWING IS NAMED. The hitbox queue rode the pager without
+       * appearing here, so "Trees only · newest first · 65 of 710" was the
+       * banner over a list that was really trees WITHOUT a hitbox — the count
+       * was the only hint, and it reads as the number of trees. */
       [q.type === "all" ? null : `${objTypeLabel(q.type)} only`,
         q.filter === "all" ? null : `${OBJ_FILTERS[q.filter].label} only`,
+        !q.hitbox || q.hitbox === "all" ? null : `${OBJ_HITBOXES[q.hitbox].label} only`,
         q.sort === "group" ? null : OBJ_SORTS[q.sort].label,
         `${q.list.length} of ${q.total}`].filter(Boolean).join(" · "),
       inQueue ? null : h("span", { class: "pill err" }, "this one is outside the filter")) : null,
