@@ -79,6 +79,25 @@ test("the ?v art grant is unchanged: matching sha only, real deploys only", () =
   assert.equal(cc(tile, "", ""), REVALIDATE, "an unset GIT_SHA never grants a year");
 });
 
+test("the ?h grant is verified against the SERVED BYTES, never against the index or the URL alone", () => {
+  const tile = join(GAME_ROOT, "..", "tiles2", "grass_x_2", "0.webp");
+  const real = "0123456789abcdef"; // what the file hashes to, per the server's own hashing
+  const at = (queryH: unknown, fileHash: (() => string | null) | undefined, queryV?: unknown, gitSha = SHA) =>
+    cacheControlFor({ filePath: tile, bundleDir: BUNDLE_DIR, gitSha, queryV, queryH, fileHash });
+  assert.equal(at(real, () => real), IMMUTABLE, "hash matches the bytes → a year");
+  assert.equal(at("fedcba9876543210", () => real), REVALIDATE, "a stale index's hash never freezes new bytes");
+  assert.equal(at(real, () => null), REVALIDATE, "unhashable file → nothing granted");
+  assert.equal(at(real, undefined), REVALIDATE, "no hasher wired → nothing granted");
+  assert.equal(at("0123456789ABCDEF", () => real), REVALIDATE, "malformed (upper-case) hash → no lookup");
+  assert.equal(at("0123", () => real), REVALIDATE, "malformed (short) hash → no lookup");
+  assert.equal(at(["a", "b"], () => real), REVALIDATE, "non-string query → no lookup");
+  assert.equal(at(real, () => real, "deadbeef", "dev"), IMMUTABLE, "?h stands on its own, even on a dev sha");
+  assert.equal(at("fedcba9876543210", () => real, SHA), IMMUTABLE, "a wrong ?h does not revoke a matching ?v");
+  let hashed = 0;
+  assert.equal(at(undefined, () => (hashed++, real)), REVALIDATE, "no ?h → the file is not hashed at all");
+  assert.equal(hashed, 0, "hashing is lazy: only a well-formed ?h pays for it");
+});
+
 test("index.html is never frozen — it names the hashed bundles", () => {
   assert.equal(cc(join(CLIENT_DIST, "index.html")), REVALIDATE);
   assert.equal(cc(join(CLIENT_DIST, "sw.js")), REVALIDATE);

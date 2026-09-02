@@ -8,16 +8,27 @@
  * one-year grant is to be able to prove the rule, which means being able to
  * test it without booting a server. Hence a pure function.
  *
- * THE THREE OUTCOMES:
+ * THE FOUR OUTCOMES:
  *
  *  1. `immutable` — a rollup emit under client/dist/assets. Vite names every
  *     file there `<name>-<contenthash>.<ext>`, so that URL cannot ever denote
  *     different bytes: change the content and you change the filename.
- *  2. `immutable` — art requested with `?v=<this instance's GIT_SHA>`. The
- *     client stamps its own build sha (client/src/assetver.ts) and the art is
- *     baked into the SAME image, so for that one sha the bytes are fixed.
- *     A rollout mismatch (old instance, new sha) simply falls through to (3).
- *  3. `no-cache` — everything else. Revalidated on every load: cheap 304s,
+ *  2. `immutable` — art requested with `?h=<hash>` where <hash> EQUALS THE
+ *     HASH OF THE BYTES THIS SERVER IS ABOUT TO SEND (server/src/assethash.ts,
+ *     sha256-16 of the file, memoised). The client learns hashes from
+ *     /asset-index.json (client/src/assetver.ts); the server never trusts that
+ *     index, only the file. So an unchanged file keeps its URL across deploys
+ *     and the browser never asks for it again, while a stale index can only
+ *     ever earn a revalidated response — never a frozen wrong file. (The
+ *     maintainer 2026-09-02: one uncached list of hashes, fetch only what
+ *     changed; the earlier rejection of per-file hashes assumed the server
+ *     could not verify them.)
+ *  3. `immutable` — art requested with `?v=<this instance's GIT_SHA>`. The
+ *     client stamps its own build sha for anything the index does not cover
+ *     (client/public art, CDN URLs) and the art is baked into the SAME image,
+ *     so for that one sha the bytes are fixed. A rollout mismatch (old
+ *     instance, new sha) simply falls through to (4).
+ *  4. `no-cache` — everything else. Revalidated on every load: cheap 304s,
  *     and a deploy is visible immediately.
  *
  * WHY THE DIRECTORY TEST IS LOAD-BEARING, and not merely tidy:
@@ -37,6 +48,7 @@
  * of inheriting a grant it cannot honour.
  */
 import { basename, sep } from "path";
+import { ASSET_HASH_RE } from "./assethash.js";
 
 /** One year, and never revalidate. Only for bytes that cannot change. */
 export const IMMUTABLE = "public, max-age=31536000, immutable";
@@ -61,10 +73,18 @@ export interface CacheSubject {
   gitSha: string;
   /** The request's `?v` value, if any. */
   queryV: unknown;
+  /** The request's `?h` value, if any. */
+  queryH?: unknown;
+  /** The hash of the bytes about to be served, computed ONLY when a
+   *  well-formed `?h` is present (lazy: most requests carry none). Null when
+   *  the file cannot be hashed — then nothing is granted. */
+  fileHash?: () => string | null;
 }
 
 export function cacheControlFor(s: CacheSubject): string {
   if (isHashedBundleFile(s.filePath, s.bundleDir)) return IMMUTABLE;
+  if (typeof s.queryH === "string" && ASSET_HASH_RE.test(s.queryH) && s.fileHash && s.fileHash() === s.queryH)
+    return IMMUTABLE;
   if (s.gitSha && s.gitSha !== "dev" && s.queryV === s.gitSha) return IMMUTABLE;
   return REVALIDATE;
 }

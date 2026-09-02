@@ -3,6 +3,7 @@ import { loadManifest } from "./manifest";
 import { loadMonsterManifest } from "./monsterManifest";
 import { loadNpcManifest, loadNpcPlacement } from "./npcManifest";
 import { loadMonsterBootKinds } from "./monsterBoot";
+import { loadAssetIndex } from "./assetver";
 import { enterStaging, mergeStagingEntries, gameUrl } from "./staging";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
@@ -187,35 +188,40 @@ async function boot() {
   }
   // Composer's SCORE audition (/#score): every generated music bed, playable
   // with its measured loop point — the maintainer decides what plays where.
+  // THE ASSET INDEX first of all (client/src/assetver.ts): every art URL
+  // stamped after it lands carries a content hash instead of the build sha,
+  // so a deploy no longer invalidates the whole browser cache. Awaited with the
+  // manifests below; it never blocks a boot on its own (404 → `?v` fallback).
+  const assetIndexReady = loadAssetIndex();
   if (location.hash === "#score") {
     const { mountScoreAudition } = await import("../../composer/scoreAudition");
     mountScoreAudition();
     return;
   }
   if (await bootMapPreview()) return;
-  const manifest = await loadManifest();
-  // Monster catalog (the poring family) — served in parallel. Optional: a
-  // missing/failed manifest just means no monsters render (never dead-end the
-  // player over debug creatures).
-  const monsterManifest = await loadMonsterManifest().catch((e) => {
-    console.warn("[nangijala] monster manifest unavailable — no monsters will render:", e);
-    return null;
-  });
-  // NPC catalog (characters2/npcs) — same contract: optional, and a failure
-  // just means the world's people do not render.
-  const npcManifest = await loadNpcManifest().catch((e) => {
-    console.warn("[nangijala] npc manifest unavailable — no NPCs will render:", e);
-    return null;
-  });
+  // The four boot catalogs and the asset index, IN PARALLEL — they are
+  // independent documents (four serial awaits here cost a round trip each).
+  // Monster and NPC catalogs are optional: a missing/failed one just means no
+  // monsters / no people render (never dead-end the player over debug
+  // creatures). The world list is what the pre-join screen offers: BOTH a
+  // world (any published world) AND a character.
+  const [manifest, monsterManifest, npcManifest, worlds] = await Promise.all([
+    loadManifest(),
+    loadMonsterManifest().catch((e) => {
+      console.warn("[nangijala] monster manifest unavailable — no monsters will render:", e);
+      return null;
+    }),
+    loadNpcManifest().catch((e) => {
+      console.warn("[nangijala] npc manifest unavailable — no NPCs will render:", e);
+      return null;
+    }),
+    loadWorldsList(),
+    assetIndexReady,
+  ]);
   // The art agents periodically reset/regenerate the roster, so it can be empty.
   // Never dead-end the player: fall back to a built-in "Wanderer" so the shared
   // world is always joinable (the world scene draws it procedurally).
   manifest.characters = withFallback(manifest.characters);
-
-  // Pre-join screen: the player chooses BOTH a world (any playable maps2
-  // world the maps agent has shipped — glow_test is the emissive showcase)
-  // AND a character.
-  const worlds = await loadWorldsList();
 
   // Audio (games2/composer, its own agent): the engine boots HERE — before the
   // select screen — so its buttons click, the AudioContext unlocks on the

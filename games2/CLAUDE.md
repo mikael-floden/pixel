@@ -2058,11 +2058,27 @@ saturated summit 0.001 — matches the terrain wash).
   (1) preload fetches ONLY `BOOT_ANIM_STATES` (idle/walk/run/jump,
   manifest.ts); the 9 action states background-load via
   `loadDeferredAnims()` once the avatar joins.
-  (2) Every Phaser /assets URL is stamped `?v=<build sha>` (assetver.ts,
-  VITE_GIT_SHA); the server grants `immutable` 1y ONLY when v matches its
-  OWN GIT_SHA (same image bakes bundle+art, so those bytes can never
-  change; mismatch → no-cache revalidate). New deploy = new sha = fresh
-  URLs — stale-cache-proof by construction; sw.js caches nothing.
+  (2) **Every /assets URL is stamped with its CONTENT HASH** — `?h=<sha256-16>`
+  from `/asset-index.json` (assetver.ts), ONE `no-cache` document naming the
+  current hash of every file under ASSETS_ROOT (`scripts/build-asset-index.mjs`,
+  run in the image build after the curated root is complete; express's ETag
+  makes the per-boot revalidation a 304 until a deploy changes art). The
+  server grants `immutable` 1y ONLY when the hash equals the hash of THE
+  BYTES IT IS ABOUT TO SEND (`server/src/assethash.ts`, memoised per file;
+  `cachepolicy.ts`) — it never trusts the index. So an unchanged file keeps
+  its URL across deploys and the browser never asks for it again, while a
+  stale index can only earn a revalidated response, never a frozen wrong
+  file (maintainer 2026-09-02: one uncached list of hashes, fetch only what
+  changed — and no cache bugs). `?v=<build sha>` (VITE_GIT_SHA) remains the
+  FALLBACK for whatever the index does not name — client/public art (UI,
+  atlases, icons), a staging world's CDN URLs, any boot where the index
+  failed — with the old rule: `immutable` only when v matches the server's
+  OWN GIT_SHA, else no-cache. sw.js caches nothing. The index is fetched
+  first of all in main.ts and awaited with the four boot catalogs (which
+  are fetched in parallel — four serial awaits cost a round trip each).
+  Gates: `cachepolicy.test.ts` (the ?h grant is verified against served
+  bytes; malformed, stale and mismatched hashes never freeze; hashing is
+  lazy), `assethash.test.ts`, `assetver.test.ts`.
   **THE BUNDLE IS A SEPARATE GRANT**: everything rollup emits into
   `client/dist/assets` is content-hashed by the bundler, so those URLs are
   immutable by construction. The rule matched `js|css` only, leaving 532 of
@@ -2076,13 +2092,13 @@ saturated summit 0.001 — matches the terrain wash).
   has no `assets/` dir. Policy: `server/src/cachepolicy.ts` (a pure
   function, testable without a server); regressions:
   `server/test/cachepolicy.test.ts`.
-  **DO NOT replace the global build sha with per-file/per-domain content
-  hashes for ART** — proposed and REJECTED: the global sha is what makes the
-  immutable grant VERIFIABLE (the server compares ?v against its own
-  GIT_SHA and can only freeze bytes it shipped); per-file hashes force it to
-  trust any ?v — converting the worst case into a 1-year cache entry no
-  deploy can heal. It also breaks the audio agent's ?v stamping, leaves
-  ~2 MB of client/public art unstamped, and breaks the CI gate.
+  **A per-file hash is only ever granted after VERIFICATION against the
+  served bytes** — an UNVERIFIED per-file hash was proposed and REJECTED
+  once for the right reason (a server that trusts any `?h` converts the
+  worst case into a 1-year cache entry no deploy can heal); hashing the
+  file it serves is what removed that premise. The composer keeps its own
+  `withAudioV` (`?v`), and client/public art stays on `?v` — both still
+  verifiable, both unchanged.
   (2b) **Responses are COMPRESSED** (server/src/index.ts, brotli q4 /
   gzip 6, threshold 1 KB): ~2.5 MB off a cold load (bundle 1.97→0.50 MB,
   world.json 737→37 KB, monsters.json 383→21 KB). Images are NOT compressed

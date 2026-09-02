@@ -62,6 +62,6 @@ export default defineConfig({
     port: 5173,
     // The wiki (served at /assets/wiki/site/) talks to the world server's
     // /api (live state, admin login/save) — same-origin in prod, proxied in dev.
-    proxy: { "/api": "http://localhost:2567" },
+    proxy: { "/api": "http://localhost:2567", "/asset-index.json": "http://localhost:2567" },
   },
 });

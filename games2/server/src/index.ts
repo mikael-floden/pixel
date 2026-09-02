@@ -1,5 +1,5 @@
 import { createServer } from "http";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import express from "express";
@@ -12,6 +12,7 @@ import { ROOM_NAME } from "@nangijala/shared";
 import { WorldRoom, sceneryBbox } from "./rooms/WorldRoom.js";
 import { initLive, registerLiveRoutes, sceneryHitboxOverrides } from "./live.js";
 import { cacheControlFor } from "./cachepolicy.js";
+import { assetHash } from "./assethash.js";
 
 // The combat schema (11 new Player fields, 4 new Monster fields, drops) put
 // the_island2's FULL-STATE join snapshot past the encoder's 8KB default —
@@ -149,9 +150,30 @@ const BUNDLE_DIR = join(clientDist, "assets");
 function setCacheHeaders(res: express.Response, path: string) {
   res.setHeader(
     "Cache-Control",
-    cacheControlFor({ filePath: path, bundleDir: BUNDLE_DIR, gitSha: GIT_SHA, queryV: res.req?.query?.v }),
+    cacheControlFor({
+      filePath: path,
+      bundleDir: BUNDLE_DIR,
+      gitSha: GIT_SHA,
+      queryV: res.req?.query?.v,
+      queryH: res.req?.query?.h,
+      fileHash: () => assetHash(path), // the bytes about to be served, never the index
+    }),
   );
 }
+
+// THE ASSET INDEX — one `no-cache` document naming the current content hash
+// of every file under ASSETS_ROOT (scripts/build-asset-index.mjs, run in the
+// image build after the curated root is complete). The client stamps art with
+// `?h=<hash>` from it (client/src/assetver.ts) so an unchanged file keeps its
+// URL across deploys; express's ETag turns the per-boot revalidation into a
+// 304 until a deploy changes some art. Absent (dev, an old image) → 404 and
+// the client stamps `?v=<sha>` exactly as before.
+const ASSET_INDEX = process.env.ASSET_INDEX || join(ASSETS_ROOT, "asset-index.json");
+const assetIndexJson: string | null = existsSync(ASSET_INDEX) ? readFileSync(ASSET_INDEX, "utf8") : null;
+app.get("/asset-index.json", (_req, res) => {
+  if (assetIndexJson === null) return res.status(404).setHeader("Cache-Control", "no-store").end();
+  res.setHeader("Cache-Control", "no-cache").type("application/json").send(assetIndexJson);
+});
 
 if (serveClient) {
   // The composer's own foley takes and music beds, for the wiki's sound and

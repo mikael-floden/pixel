@@ -125,6 +125,12 @@ COPY --from=curate /src /full
 # domain. --check fails the build on a named-but-missing file, shipset's own
 # rule. Always creates /assets/tiles so the runtime COPY has a source.
 RUN npx tsx scripts/ship-tiles3.ts --root /full --out /assets --check
+# THE ASSET INDEX — the content hash of every file the runtime will serve
+# (scripts/build-asset-index.mjs), built AFTER the curated root is complete.
+# The client stamps art with `?h=<hash>` from it, so a deploy no longer
+# invalidates the browser cache of unchanged art; the server verifies each
+# hash against the bytes it serves before granting a year (cachepolicy.ts).
+RUN node scripts/build-asset-index.mjs --root /assets --out /assets/asset-index.json
 RUN node /full/wiki/build.mjs --root /full --games2 /app \
  || node -e 'const f="/full/wiki/site/data.json",fs=require("fs");const d=JSON.parse(fs.readFileSync(f,"utf8"));d.registry_stale=true;fs.writeFileSync(f,JSON.stringify(d));console.error("[wiki] BUILD FAILED — shipping the committed registry, flagged stale")'
 RUN npm run build:client
@@ -162,6 +168,7 @@ COPY --from=build /app/client/dist client/dist
 COPY --from=curate /shipped/ /assets/
 # …the tiles3 closure the build stage resolved (see ship-tiles3 above)…
 COPY --from=build /assets/tiles/ /assets/tiles/
+COPY --from=build /assets/asset-index.json /assets/asset-index.json
 # …AND THE WIKI REGISTRY BUILT FROM THIS DEPLOY'S OWN TREE (see the build stage:
 # it is built from /full, the whole repo, not from the curated art). The runtime
 # copies /assets from CURATE, so without this line that output is discarded on
