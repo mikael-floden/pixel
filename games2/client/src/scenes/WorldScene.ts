@@ -203,6 +203,8 @@ import {
   sceneryHitboxFor,
   type SceneryHitboxRec,
   type SceneryFit,
+  anchorX,
+  anchorY,
 } from "../scenery3";
 
 // Fallback loop rates when a state has no measured gaitFps. The jump clip is
@@ -3338,6 +3340,27 @@ export class WorldScene extends Phaser.Scene {
       lastInput: () => this.lastInput,
       // Monster render-state probe (shared body pipeline QA): per monster the
       // resolved depth, cover line, shadow anchor and lit-copy state.
+      /** THE TWO PLANES a world point can be drawn on, for one cell — the
+       *  question every overlay/anchor argument reduces to. `flat` is
+       *  projectFlat (the BODY's feet convention: +tile/2, +dy); `art` is the
+       *  tiles3 frame's anchor for the same point, which is where the terrain
+       *  and the scenery sprites are actually drawn. */
+      planes: (col: number, row: number) => {
+        const pf = this.projectFlat((col + 0.5) * CELL_WU, (row + 0.5) * CELL_WU);
+        const f = this.t3?.frame;
+        const art = f ? { x: anchorX(f, col + 0.5, row + 0.5), y: anchorY(f, col + 0.5, row + 0.5, 0) } : null;
+        // What the OVERLAYS draw a cell through — must equal `art`, or the
+        // marks and the world they describe are on two planes.
+        const cn = this.projectCellCorner(col + 0.5, row + 0.5, 0);
+        return {
+          flat: { x: +pf.x.toFixed(3), y: +pf.y.toFixed(3), lvl: pf.lvl },
+          art: art ? { x: +art.x.toFixed(3), y: +art.y.toFixed(3) } : null,
+          corner: { x: +cn.x.toFixed(3), y: +cn.y.toFixed(3) },
+          delta: art ? { x: +(pf.x - art.x).toFixed(3), y: +(pf.y - art.y).toFixed(3) } : null,
+          cornerVsArt: art ? { x: +(cn.x - art.x).toFixed(3), y: +(cn.y - art.y).toFixed(3) } : null,
+          geom: { dx: this.geom.dx, dy: this.geom.dy, lh: this.geom.lh, tile: this.geom.tile },
+        };
+      },
       /** INDOOR SCENERY: what the index holds under roofs, and how much of it
        *  the cut is letting through right now. */
       sceneryIndoor: () => {
@@ -5357,7 +5380,10 @@ export class WorldScene extends Phaser.Scene {
      * own tiles. What this overlay is FOR is a floor plan of where the body may
      * go, so every mark — diamonds and ellipses alike — sits on the plane the
      * body is standing on. */
-    const lift = (me.surfLevel ?? 0) * this.geom.lh;
+    /* ONE LEVEL FOR EVERY MARK — the player's — and ONE PROJECTION, the
+     * ground's (projectCellCorner). Mixing the two conventions is what put the
+     * footprint ellipses 4 px above the cells they block. */
+    const meLevel = me.surfLevel ?? 0;
     const bare = this.bareTerrain(t);
     for (let r = r0 - RANGE; r <= r0 + RANGE; r++) {
       if (r < 0 || r >= t.height) continue;
@@ -5384,10 +5410,7 @@ export class WorldScene extends Phaser.Scene {
           [c + 1, r],
           [c + 1, r + 1],
           [c, r + 1],
-        ].map(([cx, cy]) => {
-          const p = this.projectFlat(cx * CELL_WU, cy * CELL_WU);
-          return { x: p.x, y: p.y - lift };
-        });
+        ].map(([cx, cy]) => this.projectCellCorner(cx, cy, meLevel));
         gfx.fillStyle(terrain ? 0xf25d5d : 0xffa94d, 0.3);
         gfx.fillPoints(pts, true);
         gfx.lineStyle(1, terrain ? 0xff8787 : 0xffc078, 0.85);
@@ -5446,11 +5469,11 @@ export class WorldScene extends Phaser.Scene {
      * semi-axes R*dx*SQRT2 and R*dy*SQRT2 in cells (the singular values of
      * [[dx,-dx],[dy,dy]]) — the same identity the footprints are stored under,
      * so the two shapes are drawn by one rule and cannot disagree. */
-    const bp = this.projectFlat(me.fx, me.fy);
+    const bp = this.projectCellCorner(me.fx / CELL_WU, me.fy / CELL_WU, meLevel);
     const brx = (PLAYER_RADIUS / CELL_WU) * dx * Math.SQRT2;
     const bry = (PLAYER_RADIUS / CELL_WU) * dy * Math.SQRT2;
     gfx.lineStyle(1, 0xffffff, 0.8);
-    gfx.strokeEllipse(bp.x, bp.y - lift, brx * 2, bry * 2, 36);
+    gfx.strokeEllipse(bp.x, bp.y, brx * 2, bry * 2, 36);
 
     /* AND THE BODIES — MONSTERS AND NPCS (maintainer 2026-09-02: "should show
      * the collision for NPCs and monsters as well").
@@ -5475,7 +5498,7 @@ export class WorldScene extends Phaser.Scene {
      * player's plane — the aggro rings' rule. A monster up on a deck draws its
      * circle under itself rather than on the floor below. */
     const ring = (wx: number, wy: number, r: number, px: number, colour: number, alpha: number) => {
-      const p = this.projectFlat(wx, wy);
+      const p = this.projectCellCorner(wx / CELL_WU, wy / CELL_WU, 0);
       gfx.lineStyle(1, colour, alpha);
       gfx.strokeEllipse(
         p.x,
@@ -10339,15 +10362,49 @@ export class WorldScene extends Phaser.Scene {
    * Elevation: lift by the cell the corner belongs to (its down-right cell,
    * clamped), so a zone on a plateau traces the plateau's rim. */
   private projectZoneCorner(cornerCol: number, cornerRow: number): { x: number; y: number } {
-    const { dx, dy, lh } = this.geom;
     const W = this.world?.width ?? 1;
     const H = this.world?.height ?? 1;
     const c = Math.max(0, Math.min(W - 1, cornerCol));
     const r = Math.max(0, Math.min(H - 1, cornerRow));
     const lvl = this.world?.rows[Math.floor(r)]?.[Math.floor(c)]?.l ?? 0;
+    return this.projectCellCorner(cornerCol, cornerRow, lvl);
+  }
+
+  /** THE ONE PROJECTION FOR A POINT OF THE GROUND ITSELF — corners, cell
+   *  diamonds, footprints, anything that describes the WORLD rather than a
+   *  body standing in it. NEVER projectFlat for these.
+   *
+   *  `projectFlat` answers a different question: where a BODY's feet are
+   *  DRAWN, which is the cell diamond's centre plus the character ground
+   *  anchor (+tile/2, +dy). Feeding it ground coordinates puts every outline
+   *  built from them down-screen of the art it describes, and that mistake has
+   *  now been made twice — the spawn overlay's half-cell drop (maps agent +
+   *  monster_demo screenshot, 2026-07-30) and the collision overlay's constant
+   *  vertical offset (maps agent + the maintainer's annotated screenshot,
+   *  2026-09-02: he marked the collision centre and the tile-top centre
+   *  himself and they were apart, straight down, with zero horizontal error —
+   *  the tell of an anchor term applied to one and not the other).
+   *
+   *  WHERE THE GROUND IS depends on which renderer drew it:
+   *   - maps3: the tiles3 FRAME is the art plane BY CONSTRUCTION — the same
+   *     anchorX/anchorY every plate, boundary, deck slab and scenery sprite is
+   *     placed through. Measured against projectFlat with `__ml.planes`: 0 px
+   *     in x, exactly DY − TOP_Y = 4 px in y, everywhere.
+   *   - maps2: the lattice plus TILE_DIAMOND_TOP, the measured seat of the
+   *     drawn diamond inside the 64 px art box.
+   *
+   *  `level` is the surface to lift to and belongs to the CALLER, because the
+   *  two overlays differ on purpose: the collision floor plan flattens every
+   *  mark to the player's own plane (a wall's marker must not fly up to the
+   *  roof), while a spawn zone traces the rim it actually sits on. Coordinates
+   *  are continuous CELLS, so a body's world point works too (px / CELL_WU). */
+  private projectCellCorner(col: number, row: number, level: number): { x: number; y: number } {
+    const f = this.t3?.frame;
+    if (f) return { x: anchorX(f, col, row), y: anchorY(f, col, row, level) };
+    const { dx, dy, lh, tile } = this.geom;
     return {
-      x: this.iso.ox + (cornerCol - cornerRow) * dx + this.geom.tile / 2,
-      y: this.iso.oy + (cornerCol + cornerRow) * dy - lvl * lh + TILE_DIAMOND_TOP,
+      x: this.iso.ox + (col - row) * dx + tile / 2,
+      y: this.iso.oy + (col + row) * dy - level * lh + TILE_DIAMOND_TOP,
     };
   }
 
