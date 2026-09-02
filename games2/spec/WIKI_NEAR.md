@@ -76,7 +76,28 @@ it in the same commit as either side.
 - `items` may be **empty** (a swim far from anything). The wiki should say
   so rather than show a blank page.
 
-## `heard` — what the player is hearing (added 2026-09-02)
+## Hearing — what the player is hearing (added 2026-09-02)
+
+**What the page renders: two more domains in `items`.** The wiki (7aaff42041)
+lists audio beside the spatial rows, in the same array, as its own section —
+`ago` in seconds where the others carry `dist`:
+
+```jsonc
+{ "domain": "music",  "id": "nangijala_cherry_valley", "ago": 0,   "n": 1 },  // what plays now → #/music/<id>
+{ "domain": "sounds", "id": "combat.kick",             "ago": 1.2, "n": 1 },  // an EVENT of the last 30 s → #/sounds/<event>
+{ "domain": "sounds", "id": "player.jump",             "ago": 4.0, "n": 2 }   // n = times it fired
+```
+
+`music.id` is the wiki's `music` domain id for a catalog track, or a bed name
+(`night`, `cave`, …) which the page shows plainly. `sounds.id` is the event
+exactly as the wiki's `sfx.events` spells it; `ago` is the most recent
+firing. The game appends these after the spatial rows; the page sorts its
+hearing section by `ago` itself.
+
+**What carries the detail: `heard`.** The rows above cannot say WHICH sound
+played, nor that an event played nothing. The full ledger rides alongside:
+
+### `heard`
 
 Maintainer: *"Does the #/near also contain music playing right now and sound
 effects triggered the last 30s (filtered on how recently the sound effect was
@@ -124,8 +145,8 @@ played)?"* — one more field on the same message:
 
 Answered with a fresh `wiki:near` if the drawer is open over the world.
 Opened from the **select screen** there is no world: the game answers with
-`"items": []` and `"world": null`, and the wiki should say that this page
-works from inside the game.
+`"world": null` and no spatial rows — the hearing rows may still be there
+(the title theme is playing) — and the wiki says to enter the world first.
 
 ## What the wiki page should do (the ask, not the design)
 

@@ -148,8 +148,11 @@ try {
         window.parent.postMessage({ type: "wiki:wantNear" }, location.origin);
       }),
   );
-  noWorld && noWorld.world === null && Array.isArray(noWorld.items) && noWorld.items.length === 0
-    ? ok("before the world exists, wantNear is answered with world:null, items:[]")
+  // No SPATIAL rows before the world exists — but the ear is honest even here:
+  // the title theme plays and the tap that opened the drawer clicked.
+  const isAudio = (it) => it.domain === "music" || it.domain === "sounds";
+  noWorld && noWorld.world === null && Array.isArray(noWorld.items) && noWorld.items.every(isAudio)
+    ? ok(`before the world exists, wantNear answers world:null with no spatial rows (${noWorld.items.length} audio row(s): ${noWorld.items.map((i) => i.id).join(", ")})`)
     : fail(`select-screen wantNear reply: ${JSON.stringify(noWorld)}`);
   await page.evaluate(() => document.querySelector(".ml-wikiback")?.click());
   await page.waitForFunction(() => !document.querySelector(".ml-wikiroot"), null, { timeout: 5000 });
@@ -337,7 +340,11 @@ try {
   if (!snap) fail("no wiki:near reply to wiki:wantNear");
   else {
     const items = snap.items ?? [];
-    const sorted = items.every((it, i) => i === 0 || it.dist >= items[i - 1].dist);
+    // Spatial rows sort by dist; the audio rows (ago, not dist) are appended
+    // after them and the page sorts its own hearing section.
+    const spatial = items.filter((it) => !isAudio(it));
+    const sorted = spatial.every((it, i) => i === 0 || it.dist >= spatial[i - 1].dist)
+      && items.findIndex(isAudio) === (items.some(isAudio) ? spatial.length : -1);
     snap.world && snap.at && items.length > 0 && sorted
       ? ok(`wiki:near — ${items.length} rows for ${snap.world} at (${snap.at.col},${snap.at.row}), nearest first`)
       : fail(`wiki:near malformed: world=${snap.world} at=${JSON.stringify(snap.at)} rows=${items.length} sorted=${sorted}`);
@@ -352,11 +359,15 @@ try {
       for (const k of Object.keys(d.domains)) out[k] = d.domains[k].map((e) => e.id);
       // #/world/<type> is the ground-TYPE page: a type exists when some pair has it on top.
       out.world = [...new Set(d.domains.world.map((w) => w.top))];
+      // A `sounds` row is an EVENT (#/sounds/<event>), not a catalog sound.
+      out.sounds = (d.sfx?.events ?? []).map((e) => e.id);
       return out;
     });
-    const okDomains = ["monsters", "characters", "items", "objects", "tiles", "world"];
+    // …plus the two AUDIO domains the wiki renders as its own section
+    // (music: what plays now; sounds: the EVENTS of the last 30 s, by `ago`).
+    const okDomains = ["monsters", "characters", "items", "objects", "tiles", "world", "music", "sounds"];
     const badDomain = items.filter((it) => !okDomains.includes(it.domain));
-    badDomain.length === 0 ? ok("every row is one of the six routable domains") : fail(`unroutable domains: ${badDomain.map((b) => b.domain).join(",")}`);
+    badDomain.length === 0 ? ok("every row is one of the eight routable domains") : fail(`unroutable domains: ${badDomain.map((b) => b.domain).join(",")}`);
     const unknown = items.filter((it) => known[it.domain] && !known[it.domain].includes(it.id));
     unknown.length < items.length
       ? ok(`${items.length - unknown.length}/${items.length} ids resolve in the wiki index${unknown.length ? ` (stale build: ${unknown.map((u) => `${u.domain}/${u.id}`).slice(0, 4).join(", ")})` : ""}`)
@@ -403,6 +414,15 @@ try {
     cards[0] && /under you/.test(cards[0].sub) && cards[0].href === `#/${items[0].domain}/${encodeURIComponent(items[0].id)}`
       ? ok(`the first card is the ground under the feet (${cards[0].href} — "${cards[0].sub}")`)
       : fail(`first card wrong: ${JSON.stringify(cards[0])} for ${items[0]?.domain}/${items[0]?.id}`);
+    if (audioUp) {
+      const audioRows = items.filter((it) => it.domain === "music" || it.domain === "sounds");
+      const audioCards = cards.filter((c) => /^#\/(music|sounds)\//.test(c.href));
+      audioRows.length >= 2 && audioCards.length === audioRows.length
+        ? ok(`the wiki's hearing section renders the audio rows (${audioCards.map((c) => c.href.replace("#/", "")).slice(0, 4).join(", ")})`)
+        : fail(`audio rows ${audioRows.length} vs audio cards ${audioCards.length}: ${JSON.stringify(audioCards)}`);
+      const kick = cards.find((c) => c.href === "#/sounds/combat.kick");
+      kick && /s ago|playing now/.test(kick.sub) ? ok(`the kick card says when (${kick.sub.trim()})`) : fail(`kick card: ${JSON.stringify(kick)}`);
+    }
   }
   await page.evaluate(() => document.querySelector(".ml-wikiback")?.click());
   await page.waitForFunction(() => !document.querySelector(".ml-wikiroot"), null, { timeout: 5000 });

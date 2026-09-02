@@ -64,6 +64,25 @@ function snapshot(): NearSnapshot {
   // The ear rides along even with no world (the select screen plays the title
   // theme, and its 🔍-less wiki can still be navigated to #/near).
   try { s.heard = gameAudio.heard(); } catch {}
+  // …AND as rows the page renders (the wiki's shape, shipped 7aaff42041): two
+  // more domains in the same list, `ago` in seconds where the others carry
+  // `dist` — one `music` row for what plays now (a track id routes to
+  // #/music/<id>; a bed name is shown plainly), and one `sounds` row per
+  // EVENT of the last 30 s (#/sounds/<event>), newest first, `n` = how many
+  // times it fired. `heard` above keeps the detail the rows cannot carry —
+  // the sound that actually started, or null for an unassigned event.
+  if (s.heard) {
+    const rows: Array<{ domain: string; id: string; ago: number; n: number }> = [];
+    if (s.heard.music) rows.push({ domain: "music", id: s.heard.music.id, ago: 0, n: 1 });
+    const seen = new Map<string, { domain: string; id: string; ago: number; n: number }>();
+    for (const x of s.heard.sfx) {
+      if (!x.event) continue; // the composer's own sounds are not events the page lists
+      const cur = seen.get(x.event);
+      if (cur) cur.n++;
+      else { const r = { domain: "sounds", id: x.event, ago: x.ago, n: 1 }; seen.set(x.event, r); rows.push(r); }
+    }
+    (s.items as unknown[]).push(...rows);
+  }
   return s;
 }
 
