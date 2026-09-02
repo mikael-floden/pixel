@@ -614,7 +614,11 @@ clip, no tint.
   `maps2/worlds/<name>/spawns.json` (`pixel-maps2/spawns@1`, spec
   `maps2/spec/SPAWNS.md`) — polygon zones `{id, monster, area, elev, num}`.
   The game's old hardcoded rectangles are DELETED. `shared/monsters.ts` does
-  the pure geometry (`parseSpawns`/`pointInZone` even-odd/`zonePolygonCells`);
+  the pure geometry (`parseSpawns`/`pointInZone` even-odd/`zonePolygonCells` —
+  a SCANLINE, byte-identical to testing every cell with `pointInZone`: the
+  per-cell loop cost 3.1 s of server CPU on EVERY room creation for the_game
+  and the_island2, stalling the sim for everyone already in the world; ~70 ms
+  now; gate `server/test/zonefill.test.ts`);
   `shared/buildZoneRuntimes(grid, zones)` resolves zones against terrain (a
   cell qualifies on whichever surface — base OR deck — has its level in band
   and is enterable; a zone with more swimmable than standable cells is a WATER

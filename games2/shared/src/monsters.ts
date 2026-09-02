@@ -75,18 +75,28 @@ export function pointInZone(zone: SpawnZone, px: number, py: number): boolean {
 }
 
 /** All grid cells whose CENTRE lies inside the zone polygon (clipped to the
- * world). Pure geometry — elevation/standability filtering happens against the
- * terrain grid in buildZoneRuntimes. */
+ * world), row-major. Pure geometry — elevation/standability filtering happens
+ * against the terrain grid in buildZoneRuntimes.
+ *
+ * SCANLINE, and byte-identical to testing every cell with `pointInZone`: each
+ * row's edge crossings are computed ONCE with the exact expression and
+ * half-open rule pointInZone uses, then a cell is inside when an odd number of
+ * crossings lie strictly right of its centre — the same parity the per-cell
+ * toggle loop arrives at, without re-walking every edge per cell. (Per-cell
+ * over the bbox cost 3.1 s of server CPU per room creation on the_game AND
+ * the_island2 — 82 zones × bbox × edges, blocking the sim for everyone
+ * already in the world; 8 ms now. Pinned by server/test/zonefill.test.ts.) */
 export function zonePolygonCells(
   zone: SpawnZone,
   wCells: number,
   hCells: number,
 ): Array<{ c: number; r: number }> {
+  const poly = zone.area;
   let minC = Infinity;
   let minR = Infinity;
   let maxC = -Infinity;
   let maxR = -Infinity;
-  for (const [x, y] of zone.area) {
+  for (const [x, y] of poly) {
     minC = Math.min(minC, x);
     maxC = Math.max(maxC, x);
     minR = Math.min(minR, y);
@@ -97,8 +107,26 @@ export function zonePolygonCells(
   const c1 = Math.min(wCells - 1, Math.ceil(maxC) - 1);
   const r0 = Math.max(0, Math.floor(minR));
   const r1 = Math.min(hCells - 1, Math.ceil(maxR) - 1);
-  for (let r = r0; r <= r1; r++)
-    for (let c = c0; c <= c1; c++) if (pointInZone(zone, c + 0.5, r + 0.5)) out.push({ c, r });
+  const xs: number[] = [];
+  for (let r = r0; r <= r1; r++) {
+    const py = r + 0.5;
+    xs.length = 0;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, yi] = poly[i];
+      const [xj, yj] = poly[j];
+      if (yi > py !== yj > py) xs.push(((xj - xi) * (py - yi)) / (yj - yi) + xi);
+    }
+    if (!xs.length) continue;
+    xs.sort((a, b) => a - b);
+    // Centres sweep left to right; k = crossings NOT strictly right of px, so
+    // xs.length - k is exactly the count pointInZone's toggle loop would make.
+    let k = 0;
+    for (let c = c0; c <= c1; c++) {
+      const px = c + 0.5;
+      while (k < xs.length && !(px < xs[k])) k++;
+      if ((xs.length - k) & 1) out.push({ c, r });
+    }
+  }
   return out;
 }
 
