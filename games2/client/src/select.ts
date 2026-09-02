@@ -3,6 +3,7 @@ import { WorldInfo, DEFAULT_WORLD } from "./maps";
 import { showLoading } from "./loading";
 import { mountTheme, toggleTheme } from "./theme";
 import { openWikiPanel } from "./wikipanel";
+import { listenWikiNear } from "./wikinear";
 import { gameAudio } from "../../composer/index";
 import { withV } from "./assetver";
 import { drawPixelText, measurePixelText } from "./pixeltext";
@@ -428,6 +429,9 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     const wikiBtn = overlay.querySelector("#ml-wiki") as HTMLButtonElement;
     pressFx(wikiBtn);
     wikiBtn.addEventListener("click", () => openWikiPanel());
+    // The wiki's #/near page asks the game what is around the player; from
+    // here there is no world yet, and the answer must say so (spec/WIKI_NEAR.md).
+    listenWikiNear();
 
     // Dark/light directly from the select screen (maintainer 2026-07-30) —
     // the SAME shared theme the game HUD and the wiki read (theme.ts), so

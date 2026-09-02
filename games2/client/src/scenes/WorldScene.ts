@@ -3874,6 +3874,80 @@ export class WorldScene extends Phaser.Scene {
         );
         return out;
       },
+      // WHAT IS AROUND ME, by wiki id (games-ui's 🔍 button — spec/WIKI_NEAR.md,
+      // maintainer 2026-09-02: "a way to fast find what you stand next to").
+      // One row per (domain, id) at the NEAREST instance, `n` = how many are
+      // within the radius, sorted nearest first. The ids are the domains' own
+      // — roster id, characters2 folder key, item id, scenery piece, material
+      // — so the wiki's route is `#/<domain>/<id>` with nothing invented here.
+      // Other players are not rows: they have no wiki page. Terrain samples a
+      // tighter ring than bodies (the ground is everywhere; "what am I standing
+      // on / next to" is the question), and the tile drawn under the nearest
+      // cell rides along so the wiki can deep-link the instance.
+      nearby: (radius = 12, groundRadius = 4) => {
+        const me = this.room?.state.players.get(this.room!.sessionId);
+        if (!me || !this.world) return { world: this.worldName, at: null, radius, items: [] };
+        const mx = me.x, my = me.y;
+        type Row = { domain: string; id: string; dist: number; n: number; path?: string };
+        const best = new Map<string, Row>();
+        const add = (domain: string, id: string, wx: number, wy: number, path?: string) => {
+          const dist = Math.hypot(wx - mx, wy - my) / CELL_WU;
+          const key = `${domain}/${id}`;
+          const cur = best.get(key);
+          if (!cur) best.set(key, { domain, id, dist, n: 1, ...(path ? { path } : {}) });
+          else {
+            cur.n++;
+            if (dist < cur.dist) { cur.dist = dist; if (path) cur.path = path; }
+          }
+        };
+        const within = (wx: number, wy: number, r: number) => Math.hypot(wx - mx, wy - my) <= r * CELL_WU;
+        for (const mv of this.monsters.values()) if (within(mv.fx, mv.fy, radius)) add("monsters", mv.kind, mv.fx, mv.fy);
+        for (const n of this.npcs.values()) if (within(n.fx, n.fy, radius)) add("characters", n.charId, n.fx, n.fy);
+        for (const d of this.drops.values()) if (within(d.wx, d.wy, radius)) add("items", d.item, d.wx, d.wy);
+        for (const sc of this.world.scenery ?? []) {
+          const wx = sc.x * CELL_WU, wy = sc.y * CELL_WU;
+          // A placement names `category/piece`; the wiki keys objects by the
+          // bare piece id (unique across categories — verified on the index).
+          if (within(wx, wy, radius)) add("objects", sc.piece.split("/").pop() ?? sc.piece, wx, wy);
+        }
+        // GROUND: a Tiles 2.0 material is a page in the wiki's `tiles` domain;
+        // a Tiles 3.0 ground TYPE (the_game and every maps3 world) is a page in
+        // its `world` domain (`#/world/<type>` — viewWorldType). Same cell.t,
+        // two routes, decided by which renderer this world booted.
+        const groundDomain = this.t3 ? "world" : "tiles";
+        // Terrain: the cell centres in a ring around the feet, plus the tiles2
+        // PROPS standing on them (tall tile art — a tree, a boulder — whose
+        // page is its material's).
+        const c0 = Math.floor(mx / CELL_WU), r0 = Math.floor(my / CELL_WU);
+        const rows = this.world.rows;
+        for (let rr = r0 - groundRadius; rr <= r0 + groundRadius; rr++) {
+          for (let cc = c0 - groundRadius; cc <= c0 + groundRadius; cc++) {
+            const cell = rows[rr]?.[cc];
+            if (!cell || !cell.t) continue;
+            const wx = (cc + 0.5) * CELL_WU, wy = (rr + 0.5) * CELL_WU;
+            if (!within(wx, wy, groundRadius)) continue;
+            // The cell UNDER the feet is "0 cells away" whatever its centre is.
+            const under = cc === c0 && rr === r0;
+            add(groundDomain, cell.t, under ? mx : wx, under ? my : wy, cell.path);
+          }
+        }
+        for (const pr of this.world.props ?? []) {
+          const wx = (pr.col + 0.5) * CELL_WU, wy = (pr.row + 0.5) * CELL_WU;
+          if (!within(wx, wy, radius)) continue;
+          const mat = pr.path.split("/")[1];
+          if (mat) add(groundDomain, mat, wx, wy, pr.path);
+        }
+        const items = [...best.values()]
+          .map((r) => ({ ...r, dist: +r.dist.toFixed(2) }))
+          .sort((a, b) => a.dist - b.dist)
+          .slice(0, 80);
+        return {
+          world: this.worldName,
+          at: { col: +(mx / CELL_WU).toFixed(2), row: +(my / CELL_WU).toFixed(2) },
+          radius,
+          items,
+        };
+      },
       pickupNearest: () => this.pickupNearest(),
       inv: () => this.hud?.invSnapshot?.() ?? [],
       // QA (local only, like __ml.weather): paint a backpack WITHOUT farming

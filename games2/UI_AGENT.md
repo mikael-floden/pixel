@@ -52,6 +52,11 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   full-screen reader is over the world (today: the wiki drawer). The seam
   between `wikipanel.ts`, which asks, and `main.ts`, which registers the
   game — neither has to know about the other. Probe `__mlFreeze`.
+- `client/src/wikinear.ts` — the 🔍 "what am I standing next to?" button,
+  a pill-high square one gap left of the Wiki button, and the game's half of
+  `spec/WIKI_NEAR.md`: it opens the drawer on `#/near` and hands the wiki a
+  nearest-first snapshot keyed by the wiki's own ids (from WorldScene's
+  `__ml.nearby()`), answering `wiki:wantNear` for as long as a drawer is up.
 - `client/src/select.ts` — character/world select screen.
 - `client/src/loading.ts` — loading overlay.
 - `client/src/roster.ts` — player roster overlay (currently unmounted).
@@ -83,7 +88,8 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `scripts/verify-levelup.mjs` (the XP bar's level-up),
   `scripts/verify-tagline.mjs` (the logo's tagline pool + the erased art),
   `scripts/verify-wikibtn.mjs` (the in-game Wiki button, the wiki's
-  remembered reading spot, and the game-loop freeze while it is open).
+  remembered reading spot, the game-loop freeze while it is open, and the
+  🔍 button + its `wiki:near` contract).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -193,6 +199,23 @@ from the games agent), #18 (title/landing screen).
   close and pagehide, applied on the next open — the hash rides the iframe
   src, the scroll waits for the page to be tall enough (the wiki fetches
   data.json before it renders).
+- **THE 🔍 BUTTON IS THE WIKI'S SEARCH, SORTED BY DISTANCE** (`wikinear.ts`
+  + `spec/WIKI_NEAR.md`, maintainer 2026-09-02: "a square search icon to the
+  left of the Wiki button … directly to the search with the results sorted by
+  how far away they are from the player — a way to fast find what you stand
+  next to"). Two agents, one contract file; change it in the same commit as
+  either side. THE IDS ARE THE WIKI'S OWN, and they come from two id spaces
+  that look alike: a Tiles 2.0 material is a `tiles` page, but a Tiles 3.0
+  ground TYPE (`the_game`, every maps3 world — `grass`, `brown_paving_stone`)
+  is a `world` page (`#/world/<type>`), and the wiki keys scenery by the bare
+  piece id while a placement names `category/piece`. The first cut sent
+  `tiles/grass` and `objects/streetlights/streetlight_007` and 7 of 29 rows
+  routed; the gate now fetches the wiki's shipped `data.json` and requires
+  the ground under the feet to route. A stale wiki BUILD can still leave a
+  fresh roster entry unresolved — that is reported, never failed. The
+  snapshot is taken AFTER the freeze, so it cannot go stale while the player
+  reads; `#/near` is a page like any other to the spot store (the Wiki button
+  returns to it), the 🔍 always starts a fresh one.
 - **A FULL-SCREEN READER OVER THE WORLD PUTS THE LOOP TO SLEEP** — and waking
   it is NOT `TimeStep.resume()` (`gamefreeze.ts`, maintainer 2026-08-13: "the
   wiki lags a bit when opened on top of the game — can you freeze or pause the

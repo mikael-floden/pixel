@@ -22,6 +22,12 @@
 //      outcome it exists for, the frames the wiki's document actually gets.
 //   5. THE SPOT: open the wiki, navigate + scroll, close, reopen — same
 //      page, same scroll. Read through the iframe (same origin).
+//   6. THE 🔍 BUTTON (maintainer 2026-09-02: "a square search icon to the
+//      left of the Wiki button … directly to the search with the results
+//      sorted by how far away they are from the player"): a pill-high SQUARE
+//      one gap left of the Wiki button in every placement, and the contract
+//      of spec/WIKI_NEAR.md — the drawer opens on #/near and the iframe is
+//      handed a nearest-first list keyed by the wiki's own ids.
 import { chromium } from "playwright-core";
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
@@ -56,7 +62,7 @@ const rects = async () => {
         const b = e.getBoundingClientRect();
         return { l: b.left, t: b.top, r: b.right, b: b.bottom, w: b.width, h: b.height };
       };
-      return JSON.stringify({ pill: r(".ml-clock"), btn: r(".ml-wikibtn") });
+      return JSON.stringify({ pill: r(".ml-clock"), btn: r(".ml-wikibtn"), near: r(".ml-wikinear") });
     });
     if (now === prev) return JSON.parse(now);
     prev = now;
@@ -80,6 +86,16 @@ const assertStack = (g, side, label) => {
   near(gap, 10, 2)
     ? ok(`${label}: ${side} the pill with the 10px gap (${gap.toFixed(1)})`)
     : fail(`${label}: wanted ${side} the pill at 10px, gap is ${gap.toFixed(1)} (btn ${g.btn.t.toFixed(0)}..${g.btn.b.toFixed(0)}, pill ${g.pill.t.toFixed(0)}..${g.pill.b.toFixed(0)})`);
+
+  // The 🔍: a square the pill's height, on the Wiki button's own line, one
+  // 10px gap to its LEFT — so the three read as one stack in every placement.
+  if (!g.near) return fail(`${label}: the 🔍 button is missing`);
+  near(g.near.w, g.near.h) && near(g.near.h, g.btn.h)
+    ? ok(`${label}: 🔍 is a pill-high square (${g.near.w}x${g.near.h})`)
+    : fail(`${label}: 🔍 is ${g.near.w}x${g.near.h}, wanted a ${g.btn.h}px square`);
+  near(g.near.t, g.btn.t) && near(g.btn.l - g.near.r, 10, 2)
+    ? ok(`${label}: 🔍 sits left of Wiki with the 10px gap (${(g.btn.l - g.near.r).toFixed(1)})`)
+    : fail(`${label}: 🔍 off the Wiki line — top ${g.near.t.toFixed(0)} vs ${g.btn.t.toFixed(0)}, gap ${(g.btn.l - g.near.r).toFixed(1)}`);
 };
 
 const frameSel = ".ml-wikipanel iframe";
@@ -116,6 +132,23 @@ try {
   // pre-game half of the app runs through this path.
   await page.click("#ml-wiki");
   await page.waitForSelector(frameSel, { timeout: 10000 });
+  await frameReady();
+  // …and a wantNear from here gets the honest "no world" answer, not silence
+  // (spec/WIKI_NEAR.md: the page must be able to say "works from inside the
+  // game" rather than hang on a reply that never comes).
+  const noWorld = await wiki().evaluate(
+    () =>
+      new Promise((res) => {
+        const t = setTimeout(() => res(null), 4000);
+        window.addEventListener("message", (e) => {
+          if (e.data?.type === "wiki:near") { clearTimeout(t); res(e.data); }
+        });
+        window.parent.postMessage({ type: "wiki:wantNear" }, location.origin);
+      }),
+  );
+  noWorld && noWorld.world === null && Array.isArray(noWorld.items) && noWorld.items.length === 0
+    ? ok("before the world exists, wantNear is answered with world:null, items:[]")
+    : fail(`select-screen wantNear reply: ${JSON.stringify(noWorld)}`);
   await page.evaluate(() => document.querySelector(".ml-wikiback")?.click());
   await page.waitForFunction(() => !document.querySelector(".ml-wikiroot"), null, { timeout: 5000 });
   errors.length === 0
@@ -151,13 +184,15 @@ try {
   near(lifted.pill.t - lifted.btn.b, 10, 2)
     ? ok("keyboard lift: the 10px gap survives")
     : fail(`gap while lifted: ${(lifted.pill.t - lifted.btn.b).toFixed(1)}px`);
+  near(lifted.near.b, lifted.btn.b, 2)
+    ? ok("keyboard lift: 🔍 rides on the Wiki button's line")
+    : fail(`keyboard lift left 🔍 behind (🔍 bottom ${lifted.near.b.toFixed(0)}, Wiki ${lifted.btn.b.toFixed(0)})`);
   await page.evaluate(() => {
     document.documentElement.classList.remove("ml-kb-up");
     document.documentElement.style.removeProperty("--ml-inputlift");
   });
 
   // ── 3. THE FREEZE: the loop sleeps for as long as the drawer is up ─────
-  await page.evaluate(() => localStorage.removeItem("ml-wiki-spot"));
   await page.click(".ml-wikibtn");
   await page.waitForSelector(frameSel, { timeout: 10000 });
   await frameReady();
@@ -223,8 +258,6 @@ try {
     : fail(`the thaw armed the panic cooldown (_coolDown ${woke.cool}) — the world will run slow for ${woke.cool} frames`);
 
   // ── 4. the SPOT: navigate, scroll, close, reopen ───────────────────────
-  // Start from no remembered spot — section 3's own close saved one.
-  await page.evaluate(() => localStorage.removeItem("ml-wiki-spot"));
   await page.click(".ml-wikibtn");
   await frameReady(true);
   // pick a real route off the wiki's own nav, then scroll partway down
@@ -248,10 +281,10 @@ try {
   // close by tapping the game strip (the back layer)
   await page.evaluate(() => document.querySelector(".ml-wikiback")?.click());
   await page.waitForFunction(() => !document.querySelector(".ml-wikiroot"), null, { timeout: 5000 });
-  const spot = await page.evaluate(() => JSON.parse(localStorage.getItem("ml-wiki-spot") || "null"));
-  spot && spot.hash === target && near(spot.scroll, scrolled, 40)
-    ? ok(`closing saves the spot (${spot.hash} @ ${spot.scroll}px)`)
-    : fail(`saved spot wrong: ${JSON.stringify(spot)} (wanted ${target} @ ~${scrolled})`);
+  // The spot lives in a module variable for exactly the playing session
+  // (maintainer 2026-08-14: a restart goes back to overview) — there is
+  // nothing in storage to read, so the store is asserted through the only
+  // door it has: the reopen below.
 
   // reopen: same page, same scroll
   await page.click(".ml-wikibtn");
@@ -271,7 +304,71 @@ try {
   await page.evaluate(() => document.querySelector(".ml-wikiback")?.click());
   await page.waitForFunction(() => !document.querySelector(".ml-wikiroot"), null, { timeout: 5000 });
 
-  // ── 5. right-handed landscape: BELOW the pill under the XP chip ────────
+  // ── 6. THE 🔍 BUTTON: #/near and the nearest-first list ───────────────
+  await page.click(".ml-wikinear");
+  await page.waitForSelector(frameSel, { timeout: 10000 });
+  await frameReady();
+  const nearHash = await wiki().evaluate(() => location.hash);
+  nearHash === "#/near"
+    ? ok("🔍 opens the drawer on #/near")
+    : fail(`🔍 opened on "${nearHash}", wanted #/near`);
+  // Ask exactly as the wiki page will (spec/WIKI_NEAR.md) and read the reply
+  // from inside the iframe — the game must answer a wantNear while open.
+  const snap = await wiki().evaluate(
+    () =>
+      new Promise((res) => {
+        const t = setTimeout(() => res(null), 4000);
+        window.addEventListener("message", (e) => {
+          if (e.data?.type === "wiki:near") { clearTimeout(t); res(e.data); }
+        });
+        window.parent.postMessage({ type: "wiki:wantNear" }, location.origin);
+      }),
+  );
+  if (!snap) fail("no wiki:near reply to wiki:wantNear");
+  else {
+    const items = snap.items ?? [];
+    const sorted = items.every((it, i) => i === 0 || it.dist >= items[i - 1].dist);
+    snap.world && snap.at && items.length > 0 && sorted
+      ? ok(`wiki:near — ${items.length} rows for ${snap.world} at (${snap.at.col},${snap.at.row}), nearest first`)
+      : fail(`wiki:near malformed: world=${snap.world} at=${JSON.stringify(snap.at)} rows=${items.length} sorted=${sorted}`);
+    const under = items.find((it) => (it.domain === "tiles" || it.domain === "world") && it.dist === 0);
+    under ? ok(`the ground under the feet is row zero (${under.id}, x${under.n})`) : fail("no tiles row at dist 0 — what am I standing on?");
+    // The ids are the wiki's own — check them against the wiki's shipped
+    // index. A miss is a stale wiki BUILD, not a game bug, so the whole set
+    // fails only if NOTHING resolves; strays are reported.
+    const known = await page.evaluate(async () => {
+      const d = await (await fetch("/assets/wiki/site/data.json", { cache: "no-store" })).json();
+      const out = {};
+      for (const k of Object.keys(d.domains)) out[k] = d.domains[k].map((e) => e.id);
+      // #/world/<type> is the ground-TYPE page: a type exists when some pair has it on top.
+      out.world = [...new Set(d.domains.world.map((w) => w.top))];
+      return out;
+    });
+    const okDomains = ["monsters", "characters", "items", "objects", "tiles", "world"];
+    const badDomain = items.filter((it) => !okDomains.includes(it.domain));
+    badDomain.length === 0 ? ok("every row is one of the six routable domains") : fail(`unroutable domains: ${badDomain.map((b) => b.domain).join(",")}`);
+    const unknown = items.filter((it) => known[it.domain] && !known[it.domain].includes(it.id));
+    unknown.length < items.length
+      ? ok(`${items.length - unknown.length}/${items.length} ids resolve in the wiki index${unknown.length ? ` (stale build: ${unknown.map((u) => `${u.domain}/${u.id}`).slice(0, 4).join(", ")})` : ""}`)
+      : fail(`none of the ${items.length} ids exist in the wiki index`);
+    under && known[under.domain] && known[under.domain].includes(under.id)
+      ? ok(`…and the ground under the feet routes (#/${under.domain}/${under.id})`)
+      : fail(`the ground under the feet does not route: ${under ? `${under.domain}/${under.id}` : "none"}`);
+    const dup = new Set(items.map((it) => `${it.domain}/${it.id}`)).size !== items.length;
+    !dup ? ok("one row per (domain, id)") : fail("duplicate (domain, id) rows");
+  }
+  await page.evaluate(() => document.querySelector(".ml-wikiback")?.click());
+  await page.waitForFunction(() => !document.querySelector(".ml-wikiroot"), null, { timeout: 5000 });
+  // The Wiki button still starts where the player LEFT the wiki — #/near is
+  // a page like any other to the spot store.
+  await page.click(".ml-wikibtn");
+  await frameReady();
+  const backTo = await wiki().evaluate(() => location.hash);
+  backTo === "#/near" ? ok("the Wiki button remembers #/near like any page") : fail(`Wiki reopened on "${backTo}"`);
+  await page.evaluate(() => document.querySelector(".ml-wikiback")?.click());
+  await page.waitForFunction(() => !document.querySelector(".ml-wikiroot"), null, { timeout: 5000 });
+
+  // ── 7. right-handed landscape: BELOW the pill under the XP chip ────────
   await page.setViewportSize({ width: 851, height: 393 });
   await page.waitForFunction(
     () => document.documentElement.classList.contains("ml-land") && !document.querySelector(".ml-flip-veil"),
@@ -280,13 +377,13 @@ try {
   );
   assertStack(await rects(), "below", "right-handed landscape");
 
-  // ── 6. left-handed landscape: the pill keeps its corner, button ABOVE ──
+  // ── 8. left-handed landscape: the pill keeps its corner, button ABOVE ──
   await page.evaluate(() => window.__ml.hand("left"));
   await page.waitForTimeout(800);
   assertStack(await rects(), "above", "left-handed landscape");
   await page.evaluate(() => window.__ml.hand("right"));
 
-  // ── 7. portrait return ─────────────────────────────────────────────────
+  // ── 9. portrait return ─────────────────────────────────────────────────
   await page.setViewportSize({ width: 393, height: 851 });
   await page.waitForFunction(
     () => !document.documentElement.classList.contains("ml-land") && !document.querySelector(".ml-flip-veil"),

@@ -178,8 +178,12 @@ function layout(panel: HTMLDivElement, frame: HTMLIFrameElement): void {
   frame.style.transform = f > 1 ? `scale(${f})` : "";
 }
 
-export function openWikiPanel(): void {
-  if (root) return; // already open
+/** `hash` opens the wiki ON that route instead of the remembered spot (the
+ * 🔍 button's `#/near` — spec/WIKI_NEAR.md); the remembered scroll is not
+ * applied either, a fresh page starts at its top. Returns the iframe so the
+ * caller can talk to it (`load`, postMessage); null when already open. */
+export function openWikiPanel(opts: { hash?: string } = {}): HTMLIFrameElement | null {
+  if (root) return null; // already open
   // A close still sliding out has not yet handed its history entry back —
   // flush it first, or that delayed back() would pop the entry THIS open is
   // about to push and shut the new drawer on arrival.
@@ -200,8 +204,8 @@ export function openWikiPanel(): void {
   const panel = document.createElement("div");
   panel.className = "ml-wikipanel";
   const frame = document.createElement("iframe");
-  const spot = readSpot();
-  frame.src = WIKI_BASE + (spot?.hash ?? "");
+  const start = opts.hash ? { hash: opts.hash, scroll: 0 } : readSpot();
+  frame.src = WIKI_BASE + (start?.hash ?? "");
   frame.title = "Nangijala Wiki";
   openFrame = frame;
   panel.appendChild(frame);
@@ -279,7 +283,7 @@ export function openWikiPanel(): void {
   let scrollRestored = false;
   frame.addEventListener("load", () => {
     onTheme?.();
-    const want = spot?.scroll ?? 0;
+    const want = start?.scroll ?? 0;
     if (scrollRestored || want <= 0) return;
     scrollRestored = true;
     const cw = frame.contentWindow;
@@ -300,6 +304,7 @@ export function openWikiPanel(): void {
     back.classList.add("on");
     panel.classList.add("on");
   }));
+  return frame;
 }
 
 export function closeWikiPanel(opts?: { fromBack?: boolean }): void {

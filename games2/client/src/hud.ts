@@ -18,6 +18,7 @@
 import { mountGamepadStick } from "./gamepad";
 import { mountBars } from "./bars";
 import { mountWikiButton } from "./wikibtn";
+import { mountWikiNearButton } from "./wikinear";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { getHand, toggleHand, handLabel } from "./controls";
 import { indoorLight, setIndoorLight } from "./indoorlight";
@@ -150,6 +151,7 @@ export function mountPageFrame() {
   injectStyles();
   mountBars(); // HP/EP/XP + gold + level, over the top of the game view
   mountWikiButton(); // the wiki drawer's opener, stacked with the clock pill
+  mountWikiNearButton(); // 🔍 what am I standing next to — left of the Wiki button
   document.getElementById("ml-pageframe")?.remove(); // ancient overlay, if any
   // In the WORLD now: landscape becomes a real layout instead of the
   // "rotate your phone" prompt (index.html hides #ml-rotate under this
@@ -1633,7 +1635,7 @@ function injectStyles() {
      fades. Handedness changes keep the plain anchor transitions — nothing
      else moves during a hand switch. !important — these transitions live
      in four different injected sheets. */
-  :root.ml-noanim .ml-bars,:root.ml-noanim .ml-clock,:root.ml-noanim .ml-wikibtn,
+  :root.ml-noanim .ml-bars,:root.ml-noanim .ml-clock,:root.ml-noanim .ml-wikibtn,:root.ml-noanim .ml-wikinear,
   :root.ml-noanim .ml-chatlog,:root.ml-noanim .ml-chatinput{transition:none!important}
   /* the rotation veil: theme surface over the game view while the canvas
      re-fits (beginFlip). Fades on the compositor once the world is ready. */

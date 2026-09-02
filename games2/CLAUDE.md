@@ -1937,6 +1937,20 @@ saturated summit 0.001 — matches the terrain wash).
   return under the teleport rule). **Waking is NOT `TimeStep.resume()`** —
   see UI_AGENT.md: it arms Phaser's 120-frame panic cooldown = visible slow
   motion. Gate: section 3 of verify-wikibtn.mjs; probe `__mlFreeze`.
+- **`__ml.nearby()` — WHAT IS AROUND ME, BY WIKI ID** (games-ui's 🔍 button,
+  `client/src/wikinear.ts`; contract `spec/WIKI_NEAR.md`; maintainer
+  2026-09-02 "a way to fast find what you stand next to"). One row per
+  (domain, id) at the NEAREST instance, `n` = how many within the radius,
+  nearest first, capped 80: monsters by roster id, NPCs by characters2 key,
+  drops by item id, scenery by BARE piece id, and the ground as
+  `tiles/<material>` on a Tiles 2.0 world or `world/<type>` on a Tiles 3.0
+  one (`this.t3` decides — the wiki has two ground domains; `#/world/<type>`
+  is its ground-type page). Bodies within 12 cells, ground within 4, the cell
+  under the feet is distance 0. Other players are not rows (no page). A probe
+  like the rest of `__ml`, called once per drawer open — the scene owns the
+  maps, so the enumeration lives here; wikinear.ts only relays it into the
+  iframe as `wiki:near`. Gate: section 6 of verify-wikibtn.mjs (every id
+  checked against the wiki's shipped index).
 - **HUD (golden-ratio split)**: game viewport = TOP 61.8% (`#game`,
   `--hud-h-inv`); bottom 38.2% (`--hud-h`) is the DOM HUD
   (`client/src/hud.ts`): 6 wiki-style tabs over pages. applyLayout()
