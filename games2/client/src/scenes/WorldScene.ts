@@ -14,6 +14,8 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   stampSceneryCollision,
+  footprintsInCells,
+  MIN_FOOTPRINT_SEMI,
   ISO_GEOMETRY_MAPS3,
   type SceneryBboxDoc,
   makeBlocked,
@@ -1509,12 +1511,14 @@ export class WorldScene extends Phaser.Scene {
   private itemRingImg?: Phaser.GameObjects.Image; // blue outline on the item being fetched
   private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
   private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
-  /** COLLISION DEBUG: paint the grid the body is actually held by. Asked for
+  /** COLLISION DEBUG: paint what the body is actually held by. Asked for
    *  because the footprints are invisible and their faults are not (maintainer
    *  2026-08-30: "add a debug setting under settings so I can see the
-   *  collisions, so hard for me to understand what's going on right now").
-   *  Red is terrain or a maps2 prop; amber is a SCENERY footprint — the two
-   *  behave differently and the difference is exactly what has been confusing. */
+   *  collisions, so hard for me to understand what's going on right now"), and
+   *  then asked to show BOTH halves of it, because collision and navigation are
+   *  no longer the same shape: "the show hitbox button should show both what
+   *  the nav navigates around and the real ellipse hitbox". See
+   *  drawCollisionDebug for the four marks and what each one means. */
   private collisionOn = localStorage.getItem("ml-collision") === "1";
   private collisionGfx?: Phaser.GameObjects.Graphics;
   /** Settings "disable aggro" — persisted here, ENFORCED on the server (the
@@ -2147,8 +2151,10 @@ export class WorldScene extends Phaser.Scene {
         // a predator's proximity radius, gold = the provoke radius on the
         // sword-marked target.
         { label: "aggro radius", act: () => this.toggleAggroRadius(), get: () => this.aggroRadiusOn },
-        // The collision grid itself — red terrain/prop, amber scenery footprint.
-        { label: "collision", act: () => this.toggleCollision(), get: () => this.collisionOn },
+        /* THE COLLISION OVERLAY — the maintainer's "show hitbox button". Both
+         * layers at once: the cells the nav plans around AND the real footprint
+         * ellipses the body collides with (see drawCollisionDebug). */
+        { label: "collision (hitbox)", act: () => this.toggleCollision(), get: () => this.collisionOn },
         // Disable aggro (maintainer 2026-08-07: "I will use this feature to
         // test walk around in the cave without dying"). Server-side and per
         // player — see the "noaggro" handler in WorldRoom.
@@ -2645,6 +2651,25 @@ export class WorldScene extends Phaser.Scene {
           rows.push(line);
         }
         return { c0, r0, rows };
+      },
+      /* THE COLLISION / HITBOX OVERLAY, and the two layers it paints. `on`
+       * flips the same switch the settings row does (so a headless screenshot
+       * needs no menu), and the counts make "is the client holding the same
+       * scenery the server stamped" answerable without looking at pixels: the
+       * server logs the same two numbers at world load. Measured equal on
+       * the_game — 1,747 footprints, 2,568 nav cells — through the JSON the
+       * /api/scenery-collision endpoint serves. */
+      collision: (on?: boolean) => {
+        if (on !== undefined) this.toggleCollision(on);
+        const g = this.terrain;
+        let nav = 0;
+        let props = 0;
+        if (g)
+          for (let i = 0; i < g.blocked.length; i++) {
+            if (g.blocked[i]) nav++;
+            if (g.propBlocked[i]) props++;
+          }
+        return { on: this.collisionOn, footprints: g?.footprints?.n ?? 0, navCells: nav, propCells: props };
       },
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
       caveDbg: () => ({
@@ -3948,14 +3973,13 @@ export class WorldScene extends Phaser.Scene {
           if (!d) return;
           this.sceneryBboxDoc = (d.bbox as SceneryBboxDoc) ?? null;
           this.sceneryHitboxDoc = (d.hitbox as Record<string, SceneryHitboxRec>) ?? null;
-          // The grid carries the OLD footprints stamped into it, so rebuild it
-          // from the world before stamping the new ones on: stamping is
-          // additive and would otherwise leave every retired cell blocked.
-          if (this.world) {
-            this.terrain = buildTerrainGrid(
-              this.world.width, this.world.height, this.world.rows, this.world.props, this.world.decks,
-            );
-          }
+          // Straight back through the stamp — no grid rebuild. It used to be
+          // rebuilt here because stamping only ever ADDED blocked cells, so a
+          // retired hitbox stayed solid forever; the stamp now resets the
+          // derived layer to `propBlocked` and rebuilds the ellipse table from
+          // scratch, and keeping the SAME grid object means nothing that has a
+          // reference to it (the overlay's bare-terrain view, a trip in flight)
+          // is left pointing at a grid the game no longer moves on.
           this.restampScenery();
           this.repaintWorld();
         })
@@ -5197,9 +5221,45 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  /** Paint every blocked cell around the player as the diamond it really is.
-   *  Only near the player: the grid is 500x500 and this is a debug aid, not a
-   *  render path. Depth sits under the bodies with the other debug layers. */
+  /** Paint what really holds the body — BOTH layers, because they are not the
+   *  same shape and telling them apart is the whole point (maintainer
+   *  2026-08-30: "the show hitbox button should show both what the nav
+   *  navigates around and the real ellipse hitbox").
+   *
+   *  Four marks, each answering a different question:
+   *
+   *   RED diamond    TERRAIN — ground `canEnter` refuses on its own: a wall, a
+   *                  cliff step, deep water, a maps2 prop. Asked on a view of
+   *                  the grid with the SCENERY TAKEN OUT (`bareTerrain`), so a
+   *                  tree leaning against a house still reads as house, and so
+   *                  the rules (climb, stairs, swim, decks) stay canEnter's own
+   *                  instead of being re-derived here to drift.
+   *   AMBER diamond  NAV — a cell the scenery closes completely: no body centre
+   *                  fits anywhere inside it, so findPath routes around it.
+   *                  DERIVED from the ellipses and deliberately SMALLER than
+   *                  they are — 2,568 cells on the_game against the 3,185 the
+   *                  old raster claimed. A piece the body can slide past closes
+   *                  no cell at all and shows only as its outline, which is the
+   *                  maintainer's rule: "that object might be invisible for the
+   *                  nav system because the player will be able to run by that
+   *                  object by sliding around the object".
+   *   TEAL ellipse   THE FOOTPRINT ITSELF — the collision truth, the shape the
+   *                  body actually stops against. Stroked straight in SCREEN px
+   *                  at the piece's own screen position, which is the space the
+   *                  wiki drew it in, so nothing on the way here can distort it.
+   *                  VIOLET when a semi-axis sits at MIN_FOOTPRINT_SEMI: that
+   *                  piece collides WIDER than drawn, because under 4.5wu the
+   *                  six movement probes step clean over it (50 of the_game's
+   *                  1,747 — the waystone with "no hitbox at all").
+   *   WHITE ellipse  MY OWN BODY at PLAYER_RADIUS (12wu), on the ground under
+   *                  me — so "does it stop exactly at the edge" is something to
+   *                  LOOK at rather than something to believe. Its skin should
+   *                  kiss a teal outline and never cross it; the axis probes
+   *                  reach 0.75R sideways as well, so a corner can hold you
+   *                  hypot(12,9) = 15wu out.
+   *
+   *  Only near the player: the grid is 512x512 and this is a debug aid, not a
+   *  render path. */
   private drawCollisionDebug(): void {
     if (!this.collisionGfx && this.collisionOn) {
       /* AN X-RAY, ABOVE THE ART. Under the world it is invisible exactly where
@@ -5219,30 +5279,34 @@ export class WorldScene extends Phaser.Scene {
     const RANGE = 16; // cells each way — a screen's worth on a phone
     const c0 = Math.floor(me.fx / CELL_WU);
     const r0 = Math.floor(me.fy / CELL_WU);
+    /* ONE PLANE — THE PLAYER'S. Lifting each mark to its own cell's surface put
+     * a wall's marker up on the roof, six levels above the ground it actually
+     * stops you on, so a building read as a patch of colour floating over its
+     * own tiles. What this overlay is FOR is a floor plan of where the body may
+     * go, so every mark — diamonds and ellipses alike — sits on the plane the
+     * body is standing on. */
+    const lift = (me.surfLevel ?? 0) * this.geom.lh;
+    const bare = this.bareTerrain(t);
     for (let r = r0 - RANGE; r <= r0 + RANGE; r++) {
       if (r < 0 || r >= t.height) continue;
       for (let c = c0 - RANGE; c <= c0 + RANGE; c++) {
         if (c < 0 || c >= t.width) continue;
         const i = r * t.width + c;
-        const scenery = t.sceneryBlocked?.[i] === true;
         /* WALLS ARE ELEVATION, NOT `blocked`. The first cut drew only the
          * blocked array and so showed footprints while leaving the house he
          * could not walk into completely unmarked — the one thing he was
          * looking at. What a player means by "can I go there" is canEnter from
          * where he stands, which folds in the climb, water and deck rules too,
-         * so ask exactly that. */
-        const enterable = canEnter(t, me.fx, me.fy, (c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU, {
+         * so ask exactly that — of the terrain alone. */
+        const terrain = !canEnter(bare, me.fx, me.fy, (c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU, {
           maxClimb: WALK_CLIMB,
           canSwim: true,
         });
-        if (enterable) continue;
-        /* ONE PLANE — THE PLAYER'S. Lifting each diamond to its own cell's
-         * surface put a wall's marker up on the roof, six levels above the
-         * ground it actually stops you on, so a building read as a patch of
-         * colour floating over its own tiles. What this overlay is FOR is a
-         * floor plan of where the body may go, so every marker sits on the
-         * plane the body is standing on. */
-        const lift = (me.surfLevel ?? 0) * this.geom.lh;
+        // Terrain wins the colour where both hold: a wall with a tree against
+        // it is a wall, and painting it amber is how the house he could not
+        // enter would go back to looking like set dressing.
+        const nav = !terrain && t.sceneryBlocked?.[i] === true;
+        if (!terrain && !nav) continue;
         const pts = [
           [c, r],
           [c + 1, r],
@@ -5252,12 +5316,65 @@ export class WorldScene extends Phaser.Scene {
           const p = this.projectFlat(cx * CELL_WU, cy * CELL_WU);
           return { x: p.x, y: p.y - lift };
         });
-        gfx.fillStyle(scenery ? 0xffa94d : 0xf25d5d, 0.3);
+        gfx.fillStyle(terrain ? 0xf25d5d : 0xffa94d, 0.3);
         gfx.fillPoints(pts, true);
-        gfx.lineStyle(1, scenery ? 0xffc078 : 0xff8787, 0.85);
+        gfx.lineStyle(1, terrain ? 0xff8787 : 0xffc078, 0.85);
         gfx.strokePoints(pts, true);
       }
     }
+    /* THE REAL HITBOX, LAST, SO IT LIES OVER THE CELLS IT PRODUCED. A footprint
+     * is published as an iso ellipse in SCREEN px about a centre in CELLS, and
+     * projectFlat's own formula turns that centre into the same screen point
+     * the art is drawn at — after which rx/ry need no arithmetic whatsoever,
+     * because the projection is exactly what they were measured through. The
+     * clamp inside projectFlat is deliberately not used: it exists to keep a
+     * BODY on the map, and dragging a footprint centre inward would draw the
+     * outline somewhere its owner is not. */
+    const { dx, dy, tile } = this.geom;
+    const floorRx = (MIN_FOOTPRINT_SEMI / CELL_WU) * dx * Math.SQRT2;
+    const floorRy = (MIN_FOOTPRINT_SEMI / CELL_WU) * dy * Math.SQRT2;
+    for (const f of footprintsInCells(t, c0 - RANGE, r0 - RANGE, c0 + RANGE, r0 + RANGE)) {
+      const ex = this.iso.ox + (f.cx - f.cy) * dx + tile / 2;
+      const ey = this.iso.oy + (f.cx + f.cy) * dy + dy - lift;
+      const widened = f.rx <= floorRx + 1e-6 || f.ry <= floorRy + 1e-6;
+      gfx.lineStyle(1, widened ? 0xb197fc : 0x3bc9db, 0.95);
+      gfx.strokeEllipse(ex, ey, f.rx * 2, f.ry * 2, 44);
+      // A centre tick: a hitbox parked off its own art is the fault that is
+      // hardest to see from the outline alone (it just looks like the wrong
+      // size), and it is the one the wiki editor fixes.
+      gfx.lineBetween(ex - 3, ey, ex + 3, ey);
+      gfx.lineBetween(ex, ey - 3, ex, ey + 3);
+    }
+    /* AND MY OWN BODY, so the standoff can be READ off the screen: a world
+     * circle of PLAYER_RADIUS projects to the axis-aligned screen ellipse with
+     * semi-axes R*dx*SQRT2 and R*dy*SQRT2 in cells (the singular values of
+     * [[dx,-dx],[dy,dy]]) — the same identity the footprints are stored under,
+     * so the two shapes are drawn by one rule and cannot disagree. */
+    const bp = this.projectFlat(me.fx, me.fy);
+    const brx = (PLAYER_RADIUS / CELL_WU) * dx * Math.SQRT2;
+    const bry = (PLAYER_RADIUS / CELL_WU) * dy * Math.SQRT2;
+    gfx.lineStyle(1, 0xffffff, 0.8);
+    gfx.strokeEllipse(bp.x, bp.y - lift, brx * 2, bry * 2, 36);
+  }
+
+  /** The same grid with the SCENERY TAKEN OUT: no `footprints`, so the ellipse
+   *  query answers false, and `blocked` back to the terrain half it used to
+   *  mean. The overlay asks canEnter on this to decide whether a cell is
+   *  refused by the GROUND, instead of re-deriving canEnter's climb/stairs/
+   *  swim/deck rules beside it and letting the copy drift.
+   *
+   *  Cached per grid object: the terrain half is fixed once built (only the
+   *  scenery re-stamps), and a fresh spread per cell would be 1,089 objects a
+   *  frame. Read-only — `blocked` here IS `propBlocked`, not a copy of it. */
+  private bareGrid?: { of: TerrainGrid; view: TerrainGrid };
+  private bareTerrain(t: TerrainGrid): TerrainGrid {
+    if (this.bareGrid?.of !== t) {
+      this.bareGrid = {
+        of: t,
+        view: { ...t, blocked: t.propBlocked, sceneryBlocked: undefined, footprints: undefined },
+      };
+    }
+    return this.bareGrid.view;
   }
 
   private toggleCollision(on = !this.collisionOn) {
@@ -5266,7 +5383,15 @@ export class WorldScene extends Phaser.Scene {
       localStorage.setItem("ml-collision", on ? "1" : "0");
     } catch {}
     if (!on) this.collisionGfx?.clear();
-    this.chat.addLog("—", `Collision overlay: ${on ? "on — red = terrain, amber = scenery" : "off"}`);
+    this.chat.addLog("—", `Collision overlay: ${on ? "on" : "off"}`);
+    // The legend on its own line: four marks do not fit on the end of a
+    // sentence, and this overlay is unreadable without knowing which is which.
+    if (on)
+      this.chat.addLog(
+        "—",
+        "red = terrain · amber = a cell the nav routes around · teal = the REAL hitbox ellipse " +
+          "(violet = widened to the minimum) · white = your body at PLAYER_RADIUS",
+      );
     return this.collisionOn;
   }
 
@@ -11624,13 +11749,30 @@ export class WorldScene extends Phaser.Scene {
   /** The still's crop and canvas, measured ONCE per distinct art file. It is a
    *  full alpha scan of the source, so per placement would cost the_game 1,388
    *  scans for 205 answers — and per frame would cost that every frame. */
-  /** Re-apply scenery footprints to the prediction grid. Idempotent per grid:
-   *  the terrain is rebuilt from the world before this runs, and both documents
-   *  arrive asynchronously, so this is called again as each lands. */
+  /** Re-apply the scenery footprints to the prediction grid — THE SAME
+   *  FUNCTION, the same two documents and the same projection the server stamps
+   *  with, because a client and an authority holding different ellipses is the
+   *  divergence /api/scenery-collision exists to rule out.
+   *
+   *  CALLED WITH WHATEVER HAS LANDED, INCLUDING NOTHING. The two documents
+   *  arrive asynchronously, so this runs again as each one does; the stamp is
+   *  idempotent (it resets the derived cells to `propBlocked` and rebuilds the
+   *  ellipse table from scratch) and a missing document resets and stops. That
+   *  is why the caller no longer rebuilds the whole grid first: bailing out
+   *  early instead would leave the PREVIOUS footprints in place when a live
+   *  hitbox edit retires one, and the body would keep colliding with a shape
+   *  the wiki has deleted. */
   private restampScenery(): void {
-    const w = this.world;
-    if (!w?.scenery?.length || !this.terrain || !this.sceneryBboxDoc || !this.sceneryHitboxDoc) return;
-    stampSceneryCollision(this.terrain, w.scenery, this.sceneryBboxDoc, this.sceneryHitboxDoc, ISO_GEOMETRY_MAPS3);
+    if (!this.terrain) return;
+    stampSceneryCollision(
+      this.terrain,
+      this.world?.scenery ?? [],
+      this.sceneryBboxDoc,
+      this.sceneryHitboxDoc,
+      // Scenery is a maps3 thing, and maps3 draws on dy=14 — the same argument
+      // WorldRoom passes, or the client's trees would stand somewhere else.
+      ISO_GEOMETRY_MAPS3,
+    );
   }
 
   private sceneryArtFit(key: string): { bbox: ReturnType<typeof alphaBBox>; canvas: { w: number; h: number } } | null {
