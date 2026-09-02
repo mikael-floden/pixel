@@ -931,8 +931,12 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
     const S = await face("S"), SE = await face("SE"), SW = await face("SW");
     const K = (D.iso?.dy ?? 15) / (D.iso?.dx ?? 32);
     const want = Math.atan(K) * 180 / Math.PI;         // a 45° ground turn, projected
-    ok(Math.abs(SE.drawn[0] - (S.drawn[0] + want)) < 0.6 && Math.abs(SW.drawn[0] - (S.drawn[0] - want)) < 0.6,
-      `SE and SW are pre-turned by the ISO angle, not by 45° (${S.drawn[0]}° → ${SE.drawn[0]}° / ${SW.drawn[0]}°, want ±${want.toFixed(1)}°)`);
+    /* SOUTH-EAST TURNS NEGATIVE — his correction, 2026-09-02. The first cut had
+     * it mirrored because it was derived from the silhouette's bottom edge,
+     * which on a turned box is the front face, not the footprint's long
+     * axis. */
+    ok(Math.abs(SE.drawn[0] - (S.drawn[0] - want)) < 0.6 && Math.abs(SW.drawn[0] - (S.drawn[0] + want)) < 0.6,
+      `SE turns one way and SW the other, by the ISO angle and not by 45° (${S.drawn[0]}° → SE ${SE.drawn[0]}° / SW ${SW.drawn[0]}°, want ∓${want.toFixed(1)}°)`);
     ok(Math.abs(want - 25.1) < 0.2, `which today is 25.1° from iso ${D.iso?.dx}/${D.iso?.dy} (${want.toFixed(2)}°)`);
     ok(SE.rail === Math.round(((SE.drawn[0] % 180) + 180) % 180),
       `and the rail shows the angle in force for the facing on screen (rail ${SE.rail}, drawn ${SE.drawn[0]})`);

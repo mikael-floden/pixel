@@ -1071,7 +1071,13 @@ function facingTilt(dir) {
   if (!th) return 0;                       // south, or a facing we do not know
   const k = (state.data?.iso?.dy ?? 15) / (state.data?.iso?.dx ?? 32);
   const r = th * Math.PI / 180;
-  return Math.atan2(k * Math.sin(r), Math.cos(r)) * 180 / Math.PI;
+  /* THE SIGN IS NEGATIVE, and it cost a round trip to learn (maintainer
+   * 2026-09-02: "The rotation you did for SE and SW is the wrong direction").
+   * I picked it from a measurement of the silhouette's BOTTOM EDGE, which on a
+   * turned box is the front face nearest the camera — roughly PERPENDICULAR to
+   * the footprint's long axis, so it reported the mirror of the answer. A
+   * south-east piece's footprint runs up to the right on screen. */
+  return -Math.atan2(k * Math.sin(r), Math.cos(r)) * 180 / Math.PI;
 }
 /* THE ANGLE THIS BOX IS DRAWN AT, for one facing. `rot` is the SOUTH angle he
  * tuned; a rect adds the facing's tilt. `rot_by_dir` is his correction for one

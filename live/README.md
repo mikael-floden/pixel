@@ -199,15 +199,19 @@ The laws around the flow:
       monsters) … we only have one width and height. The rotation should be
       pre-adjusted"*). `rot` is the **south** angle. For any other facing a
       rect is drawn at `rot + tilt(dir)`, where a ground turn of θ (45° per
-      compass step) projects to `atan2(k·sinθ, cosθ)` with `k = dy/dx` — **25.1°
-      for south-east today, not 45°**, because the ground is squashed. Nothing
+      compass step) projects to `−atan2(k·sinθ, cosθ)` with `k = dy/dx` —
+      **−25.1° for south-east today, +25.1° for south-west, not ±45°**, because
+      the ground is squashed. The **sign is negative**, corrected 2026-09-02
+      after shipping it mirrored: it had been read off the silhouette's bottom
+      edge, which on a turned box is the front face nearest the camera and runs
+      roughly PERPENDICULAR to the footprint's long axis. Nothing
       is stored for this: the tilt is arithmetic every consumer can do, from
       the same iso block the game already uses for a monster's shadow.
       Ellipses are left alone — a footprint with no corners reads the same
       turned.
     - **`rot_by_dir`: `{ "<dir>": deg }`, his correction for ONE facing.** The
-      art is not always turned the way the compass says (measured across 14
-      rect pieces: most mirror cleanly, four are turned the other way), so
+      art is not always turned the way the compass says (across 14 rect pieces
+      most mirror cleanly, a few do not), so
       aligning a bookshelf on south-east must not drag south and south-west
       out of true. Present only for facings he has aligned by hand; every
       other facing is the derived tilt. Resolution: `rot_by_dir[dir]` ??
