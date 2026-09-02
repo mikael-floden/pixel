@@ -28,6 +28,14 @@ existed and adopted verbatim rather than negotiated:
   - `key` is STABLE for the life of the art - the maintainer's verdicts ride
     live/feedback/tiles.json on it verbatim. It is derived from the sheet directory and
     the tile's position, which never change; the content hash lives only in `file`.
+  - THE VERDICTS ARE HONOURED HERE. A key whose status is `rejected` (the wiki's
+    "remove" button) is dropped from this index on every publish - the same one-way
+    sync every other review state gets. Not doing so is the bug the maintainer hit
+    twice ("every fade I have marked remove has not been removed"): 772 verdicts sat
+    in the feedback file while the index kept listing the tiles. The art itself stays
+    on disk - content-hashed names are harmless and un-rejecting brings it straight
+    back - and only the FADE listing is affected: a fade key names a fade tile and
+    nothing else, so a verdict here can never reach a tile's other roles.
   - `file` is the full repo-relative path of the shipped bytes ("I never construct
     paths" - wiki). Content-hashed, immutable, current + one previous generation kept.
   - `pct` both grounds by name, 0-100. Extra fields ride along and are ignored by the
@@ -339,9 +347,30 @@ def _load_cache():
     return seed
 
 
+FEEDBACK = os.path.join(REPO, "live", "feedback", "tiles.json")
+
+
+def review_verdicts():
+    """key -> status from the maintainer's own feedback file, exact keys only.
+
+    Keys carrying a facet suffix (`<key>#top`, the wiki's "not a detail" verdict) are
+    a verdict on one USE of a tile, not on the tile - "the tile itself is untouched" -
+    and are never read as one.
+    """
+    if not os.path.isfile(FEEDBACK):
+        return {}
+    try:
+        d = json.load(open(FEEDBACK))
+    except Exception:
+        return {}
+    return {k: v.get("status") for k, v in (d.get("entries") or {}).items()
+            if "#" not in k and isinstance(v, dict) and v.get("status")}
+
+
 def main():
     cache = _load_cache()
-    fresh, reused = 0, 0
+    verdicts = review_verdicts()
+    fresh, reused, removed = 0, 0, 0
     pairs, rejected, n_valid = {}, {}, 0
     for sheet in sheets():
         pk = f'{sheet["dominant"]}__to__{sheet["minor"]}'
@@ -358,6 +387,8 @@ def main():
                 cache[key] = {"fp": fp, "entry": e, "why": why}
             if e is None:
                 rejected[why] = rejected.get(why, 0) + 1
+            elif verdicts.get(key) == "rejected":
+                removed += 1            # the maintainer said remove; the art stays on disk
             else:
                 pairs.setdefault(pk, []).append(e)
                 n_valid += 1
@@ -379,7 +410,16 @@ def main():
             "the prompt. `key` is stable for the life of the art; verdicts ride on it.",
             "Rejected tiles stay on disk (raw sheets are never deleted) but are not",
             "listed here and should not be shown.",
+            "REVIEW IS HONOURED: a key marked rejected in live/feedback/tiles.json",
+            "(the wiki's remove button) is dropped from this index on every publish.",
+            "Only the fade listing is affected - the art and the tile's other roles",
+            "are untouched. Un-rejecting brings the tile back on the next publish.",
         ],
+        "review": {
+            "source": "live/feedback/tiles.json entries[<key>].status",
+            "rule": "rejected -> not listed; anything else -> listed if it passes the gate",
+            "n_removed_by_review": removed,
+        },
         "classifier": FM.DESCRIPTION,
         "n_valid": n_valid,
         "n_rejected": rejected,
@@ -396,6 +436,7 @@ def main():
         json.dump(doc, f, indent=1)
     os.replace(tmp, dst)
     print(f"valid: {n_valid}   rejected: {sum(rejected.values())}  {rejected}")
+    print(f"removed by the maintainer's review: {removed}")
     for pk in sorted(pairs)[:8]:
         first = pk.split("__to__")[0]
         ps = [e["pct"][first] for e in pairs[pk]]

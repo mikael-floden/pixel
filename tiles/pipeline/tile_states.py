@@ -85,7 +85,14 @@ def _doc(name):
 
 
 def _verdicts():
-    """key -> status, from the maintainer's own feedback file."""
+    """key -> status, from the maintainer's own feedback file - EXACT keys only.
+
+    `<key>#top` is the wiki's "not a detail" verdict: a judgement on one USE of the tile
+    ("the tile itself is untouched"), never on the tile. Stripping the suffix merged it
+    into the tile's own verdict - measured, that flipped 260 tiles, 67 of them approved
+    tiles whose top was merely judged not detail material - which is precisely the
+    "remove the entire tile" mistake the maintainer warned against.
+    """
     if not os.path.isfile(FEEDBACK):
         return {}
     try:
@@ -94,8 +101,10 @@ def _verdicts():
         return {}
     out = {}
     for k, v in (d.get("entries") or d.get("overrides") or {}).items():
+        if "#" in k:
+            continue
         if isinstance(v, dict) and v.get("status"):
-            out[k.split("#")[0]] = v["status"]
+            out[k] = v["status"]
     return out
 
 
