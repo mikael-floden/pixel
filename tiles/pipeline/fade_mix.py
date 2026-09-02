@@ -30,6 +30,13 @@ def mix_fraction(image, ground_a, ground_b, detail=False):
     if r is None:
         return {"uncertain": True}
     if detail:
+        # mixmeter bails to a BARE FLOAT on its early exits (a == b, or no usable
+        # evidence) even under detail=True. Unpacking that raised TypeError and took the
+        # whole publish down with it - one malformed tile from one sheet stopped every
+        # removal from landing. Without the maps there is no segmentation to steer by,
+        # so the honest answer is uncertain.
+        if not isinstance(r, tuple):
+            return {"uncertain": True}
         f, det = r
         return {"frac_b": float(f), "post": det["post"], "mask": det["mask"]}
     return {"frac_b": float(r)}

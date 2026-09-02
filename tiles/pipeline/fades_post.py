@@ -452,7 +452,15 @@ def main():
                 reused += 1
                 e, why = hit.get("entry"), hit.get("why")
             else:
-                e, why = analyse(sheet, i, name)
+                # A TILE THAT EXPLODES IS A REJECTED TILE, NOT A DEAD PUBLISH. One
+                # unpack error inside the meter aborted the entire run, so the index was
+                # never rewritten and the maintainer's removals silently stopped landing
+                # while every status check still read "applied". Analysis is per tile and
+                # independent; failure belongs to the tile.
+                try:
+                    e, why = analyse(sheet, i, name)
+                except Exception as ex:
+                    e, why = None, f"analysis failed: {type(ex).__name__}"
                 fresh += 1
                 cache[key] = {"fp": fp, "entry": e, "why": why}
             if e is None:
