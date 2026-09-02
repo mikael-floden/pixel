@@ -208,6 +208,14 @@ export interface LoaderLike {
   isLoading(): boolean;
   start(): void;
   once(event: string, cb: () => void): unknown;
+  /** EVERY file as it finishes — success or error — with its key. Without it
+   *  `pending` can only settle when a whole batch lands, which makes the
+   *  loading bar a staircase: measured on the_game, the 140-file terrain batch
+   *  held the bar at 54% for 8 s and then jumped it to 100% (maintainer
+   *  2026-09-02: "it loads 55% and the last 45% goes super fast"). Optional —
+   *  a caller that does not offer it still settles per batch, exactly as
+   *  before. */
+  onFile?(cb: (key: string) => void): unknown;
 }
 
 /** THE STREAMING ART CACHE. A draw pass asks for the files a window needs; this
@@ -218,7 +226,15 @@ export interface LoaderLike {
  *  would otherwise re-fire on every redraw the cell is on screen — the requested
  *  set is the tombstone, exactly as `SceneryPieces` does for manifests. */
 export class Tiles3Loader {
-  readonly stats = { requested: 0, batches: 0, pending: 0 };
+  /** `done` counts FILES, so `requested - done` is honest progress mid-batch;
+   *  `pending` is kept as its mirror because the loading hold and the probes
+   *  read it. */
+  readonly stats = { requested: 0, batches: 0, pending: 0, done: 0 };
+  /** Keys this loader asked for and has not seen finish. The scene shares its
+   *  Phaser loader with the SCENERY art, so a file event has to be matched
+   *  against what THIS loader queued or terrain progress counts someone else's
+   *  files. */
+  private inflight = new Set<string>();
   private asked = new Set<string>();
   private queued: string[] = [];
 
@@ -229,7 +245,13 @@ export class Tiles3Loader {
       route?: UrlRoute;
       onBatch: () => void;
     },
-  ) {}
+  ) {
+    this.o.loader.onFile?.((key) => {
+      if (!this.inflight.delete(key)) return; // scenery art, or a stray
+      this.stats.done = Math.min(this.stats.requested, this.stats.done + 1);
+      this.stats.pending = Math.max(0, this.stats.requested - this.stats.done);
+    });
+  }
 
   /** Queue one repo-relative art file if it is neither resident nor asked for.
    *  Returns true when the texture is ALREADY drawable. */
@@ -253,17 +275,33 @@ export class Tiles3Loader {
     return this.queued.length === 0 && this.stats.pending === 0;
   }
 
+  /** Files finished of files asked for, 0..1 — the loading bar's terrain half. */
+  get progress(): number {
+    return this.stats.requested ? this.stats.done / this.stats.requested : 1;
+  }
+
   /** Start the queued batch, if any. Safe to call every pass. */
   flush(): void {
     if (!this.queued.length) return;
     const batch = this.queued;
     this.queued = [];
     this.stats.requested += batch.length;
-    this.stats.pending += batch.length;
-    for (const path of batch) this.o.loader.image(artKey(path), routeUrl(path, this.o.route));
+    this.stats.pending = Math.max(0, this.stats.requested - this.stats.done);
+    for (const path of batch) {
+      const key = artKey(path);
+      this.inflight.add(key);
+      this.o.loader.image(key, routeUrl(path, this.o.route));
+    }
+    /* THE BATCH RECONCILES what the per-file events did not. Every file of this
+     * batch is finished by now, so `done` may be pulled up to the count at
+     * flush time — which also makes the whole thing self-healing when a caller
+     * offers no `onFile` at all (then this IS the accounting, as before). */
+    const upTo = this.stats.requested;
     this.o.loader.once("complete", () => {
       this.stats.batches++;
-      this.stats.pending = Math.max(0, this.stats.pending - batch.length);
+      for (const path of batch) this.inflight.delete(artKey(path));
+      this.stats.done = Math.max(this.stats.done, Math.min(upTo, this.stats.requested));
+      this.stats.pending = Math.max(0, this.stats.requested - this.stats.done);
       this.o.onBatch();
     });
     if (!this.o.loader.isLoading()) this.o.loader.start();

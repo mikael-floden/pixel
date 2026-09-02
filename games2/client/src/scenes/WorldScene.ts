@@ -815,6 +815,29 @@ const DIR_STICK_MS = 160;
 // the residual previously misread as edge-alpha inset).
 const TILE_DIAMOND_TOP = 5;
 
+/* THE LOADING BAR'S BANDS — a stage gets the share of the BAR that matches its
+ * share of the TIME, measured, so the bar moves at roughly one speed the whole
+ * way (maintainer 2026-09-02: "it loads 55% and the last 45% goes super fast").
+ *
+ * Measured on a cold the_game boot before this: 3.0 s of boot, 5.4 s of art
+ * batch, 2.7 s standing still at "Connecting…", 15.5 s streaming — and the bar
+ * showed 0-60% for all of it, then jumped 54 -> 100 when the one big terrain
+ * batch landed. Bands 60-99% were never displayed at all.
+ *
+ * BOOT ends at 0.08 (bundle, manifests, world.json — no fine progress to be
+ * had before the scene exists). ART is the Phaser boot batch, which reports per
+ * file. CONNECT has nothing to count — matchmake, the join, the first state —
+ * so it CREEPS asymptotically across its band and never reaches the end of it.
+ * STREAM is terrain + scenery, also per file now, and it is the long pole. */
+const BAR_ART0 = 0.08;
+const BAR_ART1 = 0.3;
+const BAR_CONNECT1 = 0.4;
+/** Time constant of the connect creep. Its band is ~2.7 s of a ~27 s boot, so a
+ *  2 s constant spends most of the band without ever claiming it. */
+const BAR_CONNECT_TAU_MS = 2000;
+const STREAM_BAR0 = 0.4;
+const STREAM_BAR1 = 0.98;
+
 // ===========================================================================
 // INDOORS — the renderer half of shared/src/indoor.ts
 // ===========================================================================
@@ -1302,6 +1325,12 @@ export class WorldScene extends Phaser.Scene {
   private sceneryAsked = new Set<string>();
   private sceneryQueue: [string, string][] = [];
   private sceneryRebuilds = 0; // the boot hold waits for the first one
+  /** Scenery ART files (not manifests) queued and finished — the loading bar's
+   *  last stage counts them beside the terrain's. */
+  private sceneryArt = { requested: 0, done: 0 };
+  /** The "Connecting…" creep — see the bar bands. */
+  private connectCreep: Phaser.Time.TimerEvent | null = null;
+  private sceneryArtCounting = false;
   private sceneryRoofedDrawn = 0; // roofed pieces the last rebuild actually drew
   private sceneryManifestTimer: Phaser.Time.TimerEvent | null = null; // a manifest-landed rebuild is pending
   /** games2/config/scenery-bbox.json, or null until it lands. */
@@ -1759,9 +1788,10 @@ export class WorldScene extends Phaser.Scene {
      * the real work had not started (maintainer 2026-08-29: "the loading freezes
      * on 100% for a long time"). It gets a third, and the streaming stage owns
      * the rest. */
-    const artSpan = this.maps3 ? 0.3 : 0.85;
+    const art0 = this.maps3 ? BAR_ART0 : 0.05;
+    const artSpan = this.maps3 ? BAR_ART1 - BAR_ART0 : 0.85;
     this.load.on("progress", (f: number) => {
-      if (!this.deferredAnimsKicked) setLoadingProgress(0.05 + f * artSpan, "Loading art…");
+      if (!this.deferredAnimsKicked) setLoadingProgress(art0 + f * artSpan, "Loading art…");
     });
     // The world's NPCs stand there from the first frame: their standing art
     // joins THIS batch (one small image per distinct character) instead of
@@ -2204,7 +2234,27 @@ export class WorldScene extends Phaser.Scene {
     cam.setZoom(this.zoomFor());
     cam.setBackgroundColor(this.world ? "#181c28" : "#1b3327");
 
-    setLoadingProgress(this.maps3 ? 0.38 : 0.95, "Connecting…");
+    setLoadingProgress(this.maps3 ? BAR_ART1 : 0.95, "Connecting…");
+    /* A BAR THAT STANDS STILL READS AS A HANG. This stage — matchmake, the
+     * join, the first state — publishes nothing to count, and it is ~10% of a
+     * maps3 boot. So the bar creeps across its own band on an exponential that
+     * approaches BAR_CONNECT1 without arriving: it can never overtake the
+     * streaming stage that follows (which starts exactly there), and it cannot
+     * promise a finish it does not know about. Cleared when the world starts
+     * streaming, and by shutdown. */
+    if (this.maps3) {
+      const t0 = performance.now();
+      this.connectCreep?.remove();
+      this.connectCreep = this.time.addEvent({
+        delay: 100,
+        loop: true,
+        callback: () => {
+          const f = 1 - Math.exp(-(performance.now() - t0) / BAR_CONNECT_TAU_MS);
+          setLoadingProgress(BAR_ART1 + (BAR_CONNECT1 - BAR_ART1) * f, "Connecting…");
+        },
+      });
+      this.events.once("shutdown", () => { this.connectCreep?.remove(); this.connectCreep = null; });
+    }
     try {
       this.bindRoom(
         await joinWorld(
@@ -11503,6 +11553,17 @@ export class WorldScene extends Phaser.Scene {
       isLoading: () => l.isLoading(),
       start: () => l.start(),
       once: (event: string, cb: () => void) => l.once(event, cb),
+      /* EVERY FILE, SUCCESS OR ERROR — what turns the loading bar from a
+       * staircase into a line. Phaser reports the two outcomes on different
+       * events (an ERRORED file never fires FILE_COMPLETE), and a stage that
+       * only counted successes would stall the bar on a 404 for the whole
+       * batch. Registered once per loader; both the terrain loader and the
+       * scenery art ride this one Phaser queue, so the key is what tells them
+       * apart (`t2:` vs `s3:`). */
+      onFile: (cb: (key: string) => void) => {
+        l.on(Phaser.Loader.Events.FILE_COMPLETE, (key: string) => cb(key));
+        l.on(Phaser.Loader.Events.FILE_LOAD_ERROR, (file: { key?: string }) => cb(file?.key ?? ""));
+      },
     };
   }
 
@@ -11671,7 +11732,9 @@ export class WorldScene extends Phaser.Scene {
     /* MONOTONIC. The denominator GROWS as the window discovers art — a scenery
      * manifest arrives and queues its sprites — so the raw fraction can fall,
      * and a bar that walks backwards reads as a fault. It only ever advances. */
-    let shown = 0.4;
+    this.connectCreep?.remove(); // the streaming stage counts real files now
+    this.connectCreep = null;
+    let shown = STREAM_BAR0;
     setLoadingProgress(shown, "Streaming the world…");
     const tick = this.time.addEvent({
       delay: 100,
@@ -11709,12 +11772,25 @@ export class WorldScene extends Phaser.Scene {
            * most of a maps3 join and now owns most of the bar (0.40 -> 0.98). */
           const t = load?.stats;
           const sp = this.sceneryPieces?.stats;
-          const want = (t?.requested ?? 0) + (sp?.requested ?? 0) + this.sceneryQueue.length;
-          const have = (t ? t.requested - t.pending : 0) + (sp ? sp.loaded + sp.failed : 0);
-          if (want > 0) {
-            shown = Math.max(shown, 0.4 + 0.58 * Math.min(1, have / want));
-            setLoadingProgress(shown, "Streaming the world…");
-          }
+          /* THREE COUNTS, ONE BAR: terrain files, scenery manifests, and the
+           * scenery ART those manifests open — all per FILE now, so this stage
+           * moves continuously instead of standing still until a batch lands.
+           * The queue is in `want` because those files are known to be coming;
+           * it empties into sceneryArt.requested, so the denominator does not
+           * lurch when a flush happens. */
+          const want =
+            (t?.requested ?? 0) + (sp?.requested ?? 0) + this.sceneryArt.requested + this.sceneryQueue.length;
+          const have = (t?.done ?? 0) + (sp ? sp.loaded + sp.failed : 0) + this.sceneryArt.done;
+          const measured = want > 0 ? STREAM_BAR0 + (STREAM_BAR1 - STREAM_BAR0) * Math.min(1, have / want) : 0;
+          /* AND A FLOOR THAT MOVES ON ITS OWN for the opening seconds, because
+           * "requested" happens in one step and the first file lands whole
+           * round trips later: measured, the bar sat dead at the stage's start
+           * for 5.0 s while 140 terrain files were in flight and none had
+           * finished. The creep is asymptotic to a FIFTH of the stage, so it
+           * can never overtake honest progress or promise the end. */
+          const creep = STREAM_BAR0 + (STREAM_BAR1 - STREAM_BAR0) * 0.2 * (1 - Math.exp(-waited / 2500));
+          shown = Math.max(shown, measured, creep);
+          setLoadingProgress(shown, "Streaming the world…");
           return;
         }
         tick.remove();
@@ -12134,8 +12210,22 @@ export class WorldScene extends Phaser.Scene {
     const batch = this.sceneryQueue;
     this.sceneryQueue = [];
     const l = this.tiles3LoaderAdapter();
+    /* COUNTED, because the loading bar's last stage is mostly these. They ride
+     * the terrain loader's Phaser queue but are not the terrain loader's files,
+     * so they keep their own tally and the hold adds the two. */
+    this.sceneryArt.requested += batch.length;
+    if (!this.sceneryArtCounting) {
+      this.sceneryArtCounting = true;
+      l.onFile((key) => {
+        if (key.startsWith("s3:") && this.sceneryArt.done < this.sceneryArt.requested) this.sceneryArt.done++;
+      });
+    }
     for (const [key, url] of batch) l.image(key, url);
-    l.once("complete", () => this.repaintWorld());
+    l.once("complete", () => {
+      // Reconcile, the batch rule: everything queued before this landed.
+      this.sceneryArt.done = this.sceneryArt.requested;
+      this.repaintWorld();
+    });
     if (!l.isLoading()) l.start();
   }
 
@@ -12203,7 +12293,9 @@ export class WorldScene extends Phaser.Scene {
       // roof is actually cut away — see roofCutAwayAt.
       if (p.roofed && !this.roofCutAwayAt(p.cx, p.cy, p.level)) continue;
       if (piece === null) continue; // tombstoned: the manifest 404'd or is broken
-      const st = stateFor(piece, p.lit);
+      // THE VARIATION THE MAP PLACED — without it every tree in a forest drew
+      // the piece's base still and the wood looked stamped from one tree.
+      const st = stateFor(piece, p.lit, p.state);
       const sprite = facedSprite(st, p.dir);
       if (!this.needScenery(sprite)) continue;
       /* PREFETCH ONLY beyond the draw pad: the manifest is in hand and the art

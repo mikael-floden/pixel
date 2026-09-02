@@ -42,6 +42,10 @@ export interface ScenerySpec {
   lit?: boolean;
   /** "south" | "south-east" | "south-west" — see facedSprite. */
   dir?: string;
+  /** The piece's own state key ("NOT_LIT_7") — the VARIATION maps2 placed.
+   *  Resolved by `stateFor`, which falls through to the base still for a key
+   *  the piece does not publish. */
+  state?: string;
 }
 
 /** A deck as either producer spells its cells: the raw v3 doc uses `x`/`y`,
@@ -545,6 +549,8 @@ export interface SceneryPlacement {
   lit: boolean;
   /** The facing the map asked for — see facedSprite. Absent means south. */
   dir?: string;
+  /** The variation the map asked for — see ScenerySpec.state. */
+  state?: string;
   /** The anchor cell and its level. */
   cx: number;
   cy: number;
@@ -621,6 +627,7 @@ export function buildPlacements(
       hflip: !!p.hflip,
       lit: !!p.lit,
       ...(p.dir ? { dir: p.dir } : {}),
+      ...(p.state ? { state: p.state } : {}),
       ...(o.roofed?.has(cy * width + cx) ? { roofed: true as const } : {}),
       cx,
       cy,

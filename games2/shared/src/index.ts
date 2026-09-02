@@ -755,6 +755,12 @@ export interface WorldProp {
  * hitbox field yet, so nothing here blocks a cell (see world3.ts). */
 export interface WorldScenery {
   piece: string;
+  /** THE VARIATION maps2 placed — a key of the piece's own `states` map
+   *  ("NOT_LIT_7"). 976 of the_game's 1,260 placements carry one and the trees
+   *  use ten of them; dropping it drew every tree in the forest as the piece's
+   *  base still (maintainer 2026-09-02, via the maps agent: "I made lots of
+   *  variations in order to get an interesting forest"). */
+  state?: string;
   x: number;
   y: number;
   hflip: boolean;
@@ -4169,7 +4175,7 @@ const NAV_SUB = 8; // 8x8 INSIDE a coarse tile that isn't provably covered — o
  */
 export function stampSceneryCollision(
   grid: TerrainGrid,
-  scenery: readonly { piece: string; x: number; y: number; hflip?: boolean; lit?: boolean }[],
+  scenery: readonly { piece: string; x: number; y: number; hflip?: boolean; lit?: boolean; state?: string }[],
   bbox: SceneryBboxDoc | null | undefined,
   hitbox: SceneryHitboxDoc | null | undefined,
   geom: { dx: number; dy: number },
@@ -4207,9 +4213,16 @@ export function stampSceneryCollision(
      * documents lands. 201 distinct pieces, so the cache answers 1,546 of them
      * for free and the whole stamp — ellipse table, bucket index and nav bake
      * included — drops to 126ms. */
-    let rec = recCache.get(pl.piece);
+    /* THE VARIATION THAT IS DRAWN answers first, because the outline the
+     * overlay draws resolves the same way (`sceneryHitboxFor(doc, piece,
+     * st.key)`) and the two must not disagree — the maintainer tuned 994 of
+     * these records by hand. Then the piece, then any variation's. Cached per
+     * (piece, state) for the same reason the piece cache exists: the fallback
+     * scan is 3,704 keys. */
+    const rkey = pl.state ? `${pl.piece}#${pl.state}` : pl.piece;
+    let rec = recCache.get(rkey);
     if (rec === undefined) {
-      rec = hitbox[`scenery/${pl.piece}`];
+      rec = (pl.state ? hitbox[`scenery/${pl.piece}#${pl.state}`] : undefined) ?? hitbox[`scenery/${pl.piece}`];
       if (!rec) {
         const pfx = `scenery/${pl.piece}#`;
         for (const k in hitbox) {
@@ -4219,11 +4232,15 @@ export function stampSceneryCollision(
           }
         }
       }
-      recCache.set(pl.piece, rec ?? null);
+      recCache.set(rkey, rec ?? null);
     }
     const boxes = rec?.boxes;
     if (!boxes?.length) continue; // no record, or a decided "this piece needs none"
-    const spr = facts.sprite;
+    /* AND THE VARIATION'S OWN ART: the ellipse is published in the frame px of
+     * the sprite it was drawn on, and the states differ (tree_049's run 165-179
+     * px tall, 117-173 wide). Scaling a variation's ellipse by the BASE bbox
+     * would reintroduce, in miniature, the drift the rotation fix removed. */
+    const spr = (pl.state ? facts.states?.[pl.state] : null) ?? facts.sprite;
     const bb = spr ? bbox.boxes[spr] : undefined;
     if (!bb) continue;
     const [bx0, , bx1, by1, fw, fh] = bb;

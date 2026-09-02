@@ -148,6 +148,10 @@ export function parseWorld3(json: any): ParsedWorld | null {
        * publishes rotations for; anything else is a typo and falls back to
        * south rather than resolving to a missing file. */
       ...(SCENERY_FACINGS.has(String(p?.dir)) ? { dir: String(p.dir) } : {}),
+      // THE VARIATION, kept verbatim: the piece's own states map is the only
+      // authority on which keys exist, and it is read at draw time — an unknown
+      // key falls through to the base still rather than drawing nothing.
+      ...(typeof p?.state === "string" && p.state ? { state: p.state } : {}),
     }))
     .filter((p: WorldScenery) => !!p.piece && Number.isFinite(p.x) && Number.isFinite(p.y));
 
