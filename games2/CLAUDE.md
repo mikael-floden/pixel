@@ -9,13 +9,36 @@ inside the actual real game").
 
 - **`games2/config/publish.json`** — the ONLY hand-maintained part: published
   worlds, playable characters, the three game-referenced scenery pieces.
-  Everything else is DERIVED.
+  Everything else is DERIVED. `userWorlds` = `the_game` + `the_island2`
+  (maintainer 2026-09-02: the_game is the default map and, once he is happy
+  with it, the only playable one; the_island2 stays until then). A name may
+  live in EITHER world tree — resolved by probing `maps2/worlds` then
+  `maps2/worlds3`, as the server and build-worlds do — so the policy names a
+  world and nothing else.
 - **`games2/scripts/shipset.mjs`** closes over those roots: a published world
   drags in its `paths[]` tiles, its NPCs' character art, its spawn zones'
-  monsters. `--report` prints the savings table, `--check` fails on a
-  reachable-but-missing file, `--emit <dir>` materialises the curated root.
-  The Dockerfile's **`curate` stage** runs `--emit`; the final image copies
-  from it, one layer per domain. Measured: 212.7 MB → 59.7 MB.
+  monsters, and — a worlds3 world — its placed SCENERY pieces' whole
+  directories (the manifest names sprite, rotations, variations and animations
+  and the maps2 agent places a piece as a whole: the_game, 187 pieces / 23.7 MB
+  for 1,263 placements). `--report` prints the savings table, `--check` fails
+  on a reachable-but-missing file, `--emit <dir>` materialises the curated
+  root. The Dockerfile's **`curate` stage** runs `--emit`; the final image
+  copies from it, one layer per domain. Measured: 358 MB of art on disk →
+  130.5 MB in the image (92.5 with the_island2 alone).
+- **A worlds3 world's TERRAIN ART is the tiles3 resolver's exact closure**,
+  not the `tiles/` domain: `scripts/ship-tiles3.ts` (Dockerfile BUILD stage,
+  where TypeScript exists; the curate stage has none) runs the real resolver
+  over every cell, corner and deck of each published worlds3 world through the
+  same `cellArtPaths`/`boundaryArtPaths`/`deckArtPaths` the scene hands its
+  loader, copies exactly those files plus the `TILES3_DOCS` index documents
+  from `/full` into `/assets/tiles`, and `--check` fails the build on a
+  named-but-missing file — shipset's rule, applied here. The runtime stage
+  copies `/assets/tiles` from the build stage. Measured on the_game: 508 files
+  / 0.35 MB of a 400 MB domain, resolved in ~1.5 s. (A JSON-level
+  approximation would drift from the renderer; per-ground subtrees would ship
+  ~90 MB.) Module `scripts/tiles3closure.ts`; gate
+  `server/test/shiptiles3.test.ts` (complete, deterministic, and STILL a
+  closure — it fails if the resolver ever names whole trees).
 - Filtering the asset root filters everything downstream for free — the image
   rebuilds every manifest and the wiki registry from `ASSETS_ROOT`, so
   `worlds.json`/`monsters.json`/wiki `data.json` list only shipped content and
@@ -58,10 +81,11 @@ one HTTP request per tile (571 for the_island2).
   requests on boot, all sliced, world renders); verify-indoor doubles as the
   pixel canary against atlas-sliced textures.
 
-**STAGING WORLDS.** The image ships `userWorlds` ONLY; every `devWorlds` map
-is streamed from the repo when an admin joins — a dev map costs production
-ZERO bytes (the leak this stops: 57 monsters in monster_demo dragged 16 MB of
-monster art in; measured 89.5 → 105.4 MB).
+**STAGING WORLDS.** The image ships `userWorlds` ONLY (either tree — see the
+content split above); every `devWorlds`/`devWorlds3` map is streamed from the
+repo when an admin joins — a dev map costs production ZERO bytes (the leak
+this stops: 57 monsters in monster_demo dragged 16 MB of monster art in;
+measured 89.5 → 105.4 MB).
 
 - CLIENT: `client/src/staging.ts`, one chokepoint `gameUrl()` — identity
   function when inactive (a normal player's path is byte-identical). Activated
@@ -97,23 +121,24 @@ existing world's disk reads and network requests unchanged.
   the staging fetch that resolves the root is the same one `stagingCache`
   serves to the read behind it, so a v3 world costs ONE extra 404 per process
   and a v2 world costs none. Every file of a world reads from ITS tree.
-- `config/publish.json` `devWorlds3` names the maps3 staging worlds
-  (`the_game`). Nothing about them ships: the ship-set closure walks
-  `userWorlds` only — verified, the digest and all 21,338 paths are unchanged,
-  with 0 `tiles/` and 0 `maps2/worlds3/` entries. `shipset.mjs` reads the key
-  in `--check-policy` and NOWHERE ELSE, and an absent tree there is "not
+- `config/publish.json` `devWorlds3` names maps3 STAGING worlds (none today:
+  `the_game` is published). A published worlds3 world ships its docs, NPC,
+  monster and scenery closure through shipset and its terrain art through
+  ship-tiles3 (content split above); `--check-policy` verifies a published
+  name against whichever trees are checked out, and an absent tree is "not
   checked out", not a typo (the deploy's test job sparse-checks-out
   `/maps2/worlds/` alone).
 - **The tiles3 ART needs no new plumbing**: the resolver names repo-relative
   files (`tiles/plates`, `tiles/patterns`, `tiles/tops`, `tiles/fades`,
   `tiles/base_candidates`, `tiles/review`, the index JSONs) served at
   `/assets/tiles/…`, which `gameUrl`'s existing `/assets/` rule maps onto the
-  CDN — as it does `/assets/live/tuning/base_tile_sets.json`. `tiles` is
-  already in both asset-domain lists, so **dev serves it from the working tree
-  and prod 404s it**, which is exactly right: 240 MB of tiles3 art must never
-  enter the image while tiles2 is what the real game renders.
-- HOW TO PLAY IT: sign in as admin, pick **The Game** in the world picker (dev
-  rows are admin-only; `npm run dev` shows it unconditionally). Gate:
+  CDN for a STAGING world — as it does `/assets/live/tuning/base_tile_sets.json`.
+  `tiles` is in both asset-domain lists: dev serves the working tree, prod
+  serves the published worlds' closure baked by ship-tiles3 and 404s
+  everything else — the 400 MB domain never enters the image.
+- HOW TO PLAY IT: it is the DEFAULT map (`maps.ts DEFAULT_WORLD`, first in
+  the picker, preselected) and a user world since 2026-09-02; the dev worlds
+  stay admin-only (`npm run dev` shows them unconditionally). Gate:
   `server/test/worldserve.test.ts` — both trees, disk and network, the request
   log, `gameUrl`'s identity, and a real Colyseus join landing on the maps3
   spawn.

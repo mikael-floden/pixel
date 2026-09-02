@@ -72,7 +72,7 @@ export function geometryFor(world?: { iso?: IsoGeometry } | null): MapGeometry {
 // orderWorlds). The maps agent adds worlds under maps2/worlds/<name>/; a world
 // becomes playable + selectable once it has a world.json (see worlds.json,
 // built by scripts/build-worlds.mjs).
-export const DEFAULT_WORLD = "the_island2";
+export const DEFAULT_WORLD = "the_game";
 
 /* -- WHICH TREE A WORLD LIVES IN ------------------------------------------- */
 // `maps2/worlds` holds world@1/world@2; `maps2/worlds3` holds
@@ -329,7 +329,7 @@ export async function loadWorldsList(): Promise<WorldInfo[]> {
       }
     }
   } catch {}
-  return [{ name: DEFAULT_WORLD, label: "The Island2" }];
+  return [{ name: DEFAULT_WORLD, label: "The Game" }];
 }
 
 /** Dev worlds the image does NOT carry, from the committed publish policy. */

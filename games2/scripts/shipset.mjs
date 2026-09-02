@@ -116,12 +116,24 @@ const worldNames = policy.userWorlds ?? policy.worlds ?? [];
 if (!worldNames.length) warn("policy publishes NO worlds — the image will have no map art");
 
 const perWorld = {};
+// A published world lives in ONE of the two trees — maps2/worlds (world@1/@2,
+// baked tile paths) or maps2/worlds3 (pixel-maps3, a ground name per cell) —
+// resolved by probing, worlds first, exactly as the server's worldRootFor and
+// build-worlds.mjs do, so the policy names a world and nothing else. A worlds3
+// world has no paths[] to close over: its terrain art is the tiles3 resolver's
+// closure, computed with the real resolver by scripts/ship-tiles3.ts in the
+// Dockerfile's BUILD stage (TypeScript is not available in this one). What it
+// does carry here is its SCENERY placements, closed over by piece directory.
+const treeOf = (name) =>
+  ["worlds", "worlds3"].map((t) => [`maps2/${t}`, join(ASSETS_ROOT, "maps2", t, name)]).find(([, d]) => existsSync(d)) ??
+  null;
 for (const name of worldNames) {
-  const dir = join(ASSETS_ROOT, "maps2", "worlds", name);
-  if (!existsSync(dir)) {
-    warn(`published world "${name}" does not exist — skipping`);
+  const found = treeOf(name);
+  if (!found) {
+    warn(`published world "${name}" does not exist in maps2/worlds or maps2/worlds3 — skipping`);
     continue;
   }
+  const [tree, dir] = found;
   // The world's own files (world.json, npcs/spawns/places, minimap, map_base,
   // and any per-world sheets like prop_demo's props_*.webp).
   const own = walk(dir);
@@ -159,11 +171,25 @@ for (const name of worldNames) {
     else warn(`world ${name}: zone "${z.id}" references monster ${z.monster}, which is missing`);
   }
 
+  // Scenery placements → the pieces' WHOLE directories: manifest, sprite,
+  // rotations, variations and animations. The manifest names all of them and
+  // the maps2 agent places a piece as a whole, states included — measured on
+  // the_game, 187 pieces / 23.7 MB for 1,263 placements.
+  const pieces = new Set();
+  for (const s of w?.scenery ?? []) if (typeof s?.piece === "string") pieces.add(s.piece);
+  for (const piece of pieces) {
+    const pdir = join(ASSETS_ROOT, "scenery", piece);
+    if (existsSync(pdir)) addAll(walk(pdir));
+    else warn(`world ${name}: places scenery piece ${piece}, which is missing`);
+  }
+
   perWorld[name] = {
+    tree,
     files: own.length,
     tiles: new Set(tiles).size,
     characters: new Set(chars).size,
     monsters: new Set(mons).size,
+    scenery: pieces.size,
   };
 }
 
@@ -318,7 +344,9 @@ if (process.argv.includes("--report")) {
   if (warnings.length) console.log(`\n${warnings.length} warning(s) above.`);
   console.log("\nper published world:");
   for (const [n, v] of Object.entries(perWorld))
-    console.log(`  ${n.padEnd(18)} ${String(v.tiles).padStart(5)} tiles  ${String(v.characters).padStart(4)} npcs  ${String(v.monsters).padStart(3)} monsters`);
+    console.log(
+      `  ${n.padEnd(18)} ${v.tree.padEnd(13)} ${String(v.tiles).padStart(5)} tiles  ${String(v.characters).padStart(4)} npcs  ${String(v.monsters).padStart(3)} monsters  ${String(v.scenery).padStart(4)} scenery`,
+    );
   console.log();
 }
 
@@ -393,8 +421,20 @@ if (process.argv.includes("--check-policy")) {
   // checked here and NOWHERE ELSE in this file — the ship-set closure above
   // walks `userWorlds` only, so neither a worlds3 world nor a byte of tiles/
   // enters the image.
+  // A PUBLISHED world may live in either tree (see treeOf above). Missing from
+  // every tree that IS checked out is a problem only when both trees are — the
+  // deploy's test job sparse-checks-out maps2/worlds alone, and a worlds3 world
+  // is simply unverifiable there, not a typo.
+  const trees = ["worlds", "worlds3"].filter((t) => existsSync(join(ASSETS_ROOT, "maps2", t)));
+  for (const n of worldNames) {
+    const wj = trees.map((t) => join(ASSETS_ROOT, "maps2", t, n, "world.json")).find((p) => existsSync(p));
+    if (wj) {
+      if (!readJson(wj, `world ${n}`)) problems.push(`world "${n}" has unparseable world.json`);
+    } else if (trees.length === 2) problems.push(`published world "${n}" has no world.json in maps2/worlds or maps2/worlds3`);
+    else console.log(`[shipset] published world "${n}" not found in the checked-out tree(s) — unverified`);
+  }
   for (const [root, names] of [
-    ["worlds", [...worldNames, ...(policy.devWorlds ?? [])]],
+    ["worlds", policy.devWorlds ?? []],
     ["worlds3", policy.devWorlds3 ?? []],
   ]) {
     // AN ABSENT TREE IS "NOT CHECKED OUT HERE", NOT A TYPO — the same rule

@@ -16,12 +16,22 @@
     "with it, which is what makes the image and the tile atlas rebuild."
   ],
 
-  "userWorlds": ["the_island2"],
+  "userWorlds": ["the_game", "the_island2"],
   "$comment_userWorlds": [
     "THE GAME. What an end user may select, and — since 2026-08-15 — the ONLY",
     "worlds the image carries: the ship-set closure walks this list, nothing",
     "else. A product gate, not a security boundary (the repo is public); the",
-    "point is the game never OFFERS anything else."
+    "point is the game never OFFERS anything else.",
+    "",
+    "A name may live in EITHER world tree — maps2/worlds (world@1/@2) or",
+    "maps2/worlds3 (pixel-maps3) — resolved by probing, so this list names a",
+    "world and nothing else. the_game is the default map (maintainer 2026-09-02:",
+    "the new default, and once we are happy with it the only playable map;",
+    "until then the_island2 stays). A worlds3 world ships its own docs, its",
+    "NPC/monster closure and its placed scenery pieces from here, and its",
+    "TERRAIN ART as the tiles3 resolver's exact closure, computed in the",
+    "Dockerfile's build stage by scripts/ship-tiles3.ts (measured on the_game:",
+    "508 files / 0.3 MB of the 400 MB tiles/ domain)."
   ],
 
   "devWorlds": [
@@ -36,7 +46,7 @@
     "ring_test",
     "trans_demo"
   ],
-  "devWorlds3": ["the_game"],
+  "devWorlds3": [],
   "$comment_devWorlds3": [
     "STAGING worlds in the SECOND world tree, maps2/worlds3/<name>/world.json",
     "(pixel-maps3/world@1 — a ground NAME per cell, no baked tile art; tiles3",
@@ -48,8 +58,8 @@
     "Joining one also streams the tiles3 ART TREES (tiles/plates, tiles/patterns,",
     "tiles/tops, tiles/fades, tiles/base_candidates, tiles/review + the index",
     "JSONs) from the CDN through the same gameUrl chokepoint: they are served at",
-    "/assets/tiles/... and the image ships none of them, which is the point —",
-    "tiles/ is 240 MB and tiles2 is still what the real game renders."
+    "/assets/tiles/... and the image ships only the closure of its PUBLISHED",
+    "worlds3 worlds (userWorlds above), never the 400 MB domain."
   ],
 
   "$comment_devWorlds": [

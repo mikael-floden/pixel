@@ -327,7 +327,7 @@ export class WorldRoom extends Room<WorldState> {
       this.zones = this.terrain ? await loadSpawnZones(world, this.terrain) : [];
       // A world absent from disk was STAGED (fetched from the repo) — say so,
       // with the two facts that decide whether the join is playable.
-      if (!existsSync(join(assetsRoot(), "maps2", "worlds", world)))
+      if (!WORLD_ROOTS.some((r) => existsSync(join(assetsRoot(), r, world))))
         console.log(`[staging] world "${world}": terrain=${!!this.terrain} zones=${this.zones.length}`);
     }
     this.setState(new WorldState());

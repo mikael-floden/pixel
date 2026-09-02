@@ -118,6 +118,13 @@ ENV VITE_GIT_SHA=$GIT_SHA
 # "which root did it read" is the whole bug class here, and the old line's
 # answer (/assets, the curated one) was invisible at the call site.
 COPY --from=curate /src /full
+# THE TILES3 ART CLOSURE of every published maps2/worlds3 world (the_game) —
+# computed HERE with the real resolver (TypeScript, so not in the curate stage)
+# from /full into /assets/tiles: every file the resolver names for every cell,
+# corner and deck, and nothing else — measured 508 files / 0.3 MB of a 400 MB
+# domain. --check fails the build on a named-but-missing file, shipset's own
+# rule. Always creates /assets/tiles so the runtime COPY has a source.
+RUN npx tsx scripts/ship-tiles3.ts --root /full --out /assets --check
 RUN node /full/wiki/build.mjs --root /full --games2 /app \
  || node -e 'const f="/full/wiki/site/data.json",fs=require("fs");const d=JSON.parse(fs.readFileSync(f,"utf8"));d.registry_stale=true;fs.writeFileSync(f,JSON.stringify(d));console.error("[wiki] BUILD FAILED — shipping the committed registry, flagged stale")'
 RUN npm run build:client
@@ -153,6 +160,8 @@ COPY --from=build /app/client/dist client/dist
 # sound and music pages play, now fetched from the repo (wiki.js resolves
 # composer/** against the CDN), so no player carries it.
 COPY --from=curate /shipped/ /assets/
+# …the tiles3 closure the build stage resolved (see ship-tiles3 above)…
+COPY --from=build /assets/tiles/ /assets/tiles/
 # …AND THE WIKI REGISTRY BUILT FROM THIS DEPLOY'S OWN TREE (see the build stage:
 # it is built from /full, the whole repo, not from the curated art). The runtime
 # copies /assets from CURATE, so without this line that output is discarded on
