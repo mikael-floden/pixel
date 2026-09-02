@@ -1562,8 +1562,29 @@ function makePlayer(entity, kind, opts = {}) {
   function draw() {
     const fw = clip?.fw ?? entity.frameW ?? 64, fh = clip?.fh ?? entity.frameH ?? 64;
     const bb = clip?.bb ?? [0, 0, fw, fh];   // content box in frame px
-    const s = cur.zoom || (state.data.artScale || 2);
+    const s0 = cur.zoom || (state.data.artScale || 2);
     const cw = Math.max(1, bb[2] - bb[0]), ch = Math.max(1, bb[3] - bb[1]);
+    /* GAME-TRUE SIZE BESIDE THE MAN (games agent, 2026-09-02: "THE SCENERY
+     * SIZE REFERENCE MISLED THE MAINTAINER INTO GENERATING SMALL BEDS — it
+     * draws the piece at its NATIVE sprite pixels beside the Man at his").
+     * The game draws a piece scaled so its cropped height is world_px_height
+     * × characterBodyPx / character_height_px, and the Man at his art size —
+     * so bed_005 stood at 1.14× the Man here and 0.75× in the world, and he
+     * generated to the wrong picture. While the Man is shown, the PIECE takes
+     * the game's factor and the Man keeps his own scale (placeHuman gets s0),
+     * so the two are in the game's ratio. With the Man hidden nothing changes:
+     * the hitbox editor and every zoom keep the scale they had. */
+    const placementFactor = () => {
+      if (kind !== "object" || !human || human.style.display === "none") return 1;
+      const pl = entity.placement, sc = state.data.sceneryScale;
+      const wph = +pl?.world_px_height;
+      if (!(wph > 0) || !sc) return 1;
+      const cpx = +pl?.character_height_px > 0 ? +pl.character_height_px : sc.contractCharacterPx;
+      return (wph * sc.characterBodyPx / cpx) / ch;
+    };
+    const s = s0 * placementFactor();
+    // QA probe: the scale the piece is drawn at, and why.
+    if (kind === "object") window.__wikiScale = { s, s0, factor: +(s / s0).toFixed(4) };
     const showShadow = cur.shadow && kind === "monster";
     /* ---- THE ANCHOR-TRUE LAYOUT (shadow shown) --------------------------
      * Everything is placed at a fixed offset from the ANCHOR — the shadow's
@@ -1699,7 +1720,7 @@ function makePlayer(entity, kind, opts = {}) {
       });
     }
     sizeStage();   // after the canvas is sized — the stage only grows for it
-    placeHuman(s); // and the size reference tracks the same scale + baseline
+    placeHuman(s0); // the Man at HIS scale: the piece carries the placement factor
     updateOverflowNote();
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, canvas.width, canvas.height);

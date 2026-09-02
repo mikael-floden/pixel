@@ -2851,6 +2851,22 @@ const data = {
   // The game's iso projection (maps2/spec/WORLD_FORMAT.md): tile-instance
   // previews must compose cells with the REAL geometry or the seams lie.
   iso: { tilePx: 64, dx: 32, dy: 15, levelPx: 16, diamondH: 30 },
+  /* HOW BIG THE GAME DRAWS A PIECE (games agent, 2026-09-02: "the size
+   * reference misled the maintainer into generating small beds — it draws the
+   * piece at its NATIVE sprite pixels beside the Man at his"). The game scales
+   * a piece so its cropped height is world_px_height × characterBodyPx /
+   * character_height_px (sceneryDrawnPx in games2/shared): the scenery
+   * contract sizes pieces against a 64-px person, the game's people are 88.
+   * Read from the game's own source so the day either number moves the wiki
+   * follows; the fallbacks are today's values. */
+  sceneryScale: (() => {
+    try {
+      const src = readFileSync(join(ROOT, "games2/shared/src/index.ts"), "utf8");
+      const body = src.match(/CHARACTER_BODY_PX\s*=\s*(\d+)/)?.[1];
+      const contract = src.match(/SCENERY_CONTRACT_CHARACTER_PX\s*=\s*(\d+)/)?.[1];
+      return { characterBodyPx: Number(body) || 88, contractCharacterPx: Number(contract) || 64 };
+    } catch { return { characterBodyPx: 88, contractCharacterPx: 64 }; }
+  })(),
   // One px-per-art-px for every creature in the animation viewer, and one
   // stage size per domain (the widest/tallest pose any of them needs) so
   // paging through monsters never moves the layout.

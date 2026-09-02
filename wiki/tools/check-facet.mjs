@@ -466,6 +466,57 @@ await pub.close();
   await p.waitForTimeout(300);
   ok(/judged-ok/.test(await chipCls()), "and turns the chip green — one fact, told once");
 }
+/* THE SIZE REFERENCE IS GAME-TRUE (games agent, 2026-09-02: "THE SCENERY SIZE
+ * REFERENCE MISLED THE MAINTAINER INTO GENERATING SMALL BEDS — it draws the
+ * piece at its NATIVE sprite pixels beside the Man at his"). The game draws a
+ * piece so its cropped height is world_px_height × characterBodyPx /
+ * character_height_px and the Man at his art size. Measured here as the ratio
+ * of what is actually on screen — the canvas beside the Man's element — so a
+ * bed generated to look right in the wiki looks right in the game. */
+{
+  const D = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
+  const piece = (D.domains.objects ?? []).find((o) => o.id === "bed_005" && o.placement?.world_px_height)
+    ?? (D.domains.objects ?? []).find((o) => o.placement?.world_px_height > 0 && Object.keys(o.animations ?? {}).length);
+  ok(!!piece && !!D.sceneryScale, `a placed piece and the game's scale constants (${piece?.id}, ${JSON.stringify(D.sceneryScale)})`);
+  if (piece && D.sceneryScale) {
+    await p.goto(`${W}#/objects/${piece.id}`, { waitUntil: "load" });
+    await p.waitForTimeout(2400);
+    const measure = () => p.evaluate(() => {
+      const c = document.querySelector(".player-stage canvas");
+      const m = document.querySelector(".human-ref");
+      const hb = window.__wikiHitbox;
+      return { canvasH: c?.height ?? null, manH: m && m.style.display !== "none" ? parseFloat(m.style.height) : null, manShown: !!m && m.style.display !== "none" };
+    });
+    const off = await measure();
+    await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /vs human/.test(x.textContent))?.click());
+    await p.waitForTimeout(900);
+    const on = await measure();
+    ok(on.manShown && on.manH > 0, `the Man appears beside the piece (${on.manH}px tall)`);
+    // The clip on screen and its cropped height, from the same data the page uses.
+    const st = Object.keys(piece.animations)[0];
+    const clip = piece.animations[st]?.dirs?.south ?? Object.values(piece.animations[st]?.dirs ?? {})[0];
+    const ch = clip?.bb ? clip.bb[3] - clip.bb[1] : null;
+    const pl = piece.placement;
+    const drawnPx = pl.world_px_height * D.sceneryScale.characterBodyPx / (pl.character_height_px || D.sceneryScale.contractCharacterPx);
+    const boy = (D.domains.characters ?? []).find((c) => c.id === "default_boy");
+    const manBB = boy?.animations?.idle?.dirs?.south?.bb;
+    const manPx = manBB ? manBB[3] - manBB[1] : null;
+    const wantRatio = drawnPx / manPx;
+    // The canvas is cropped to the content box (plus the hitbox/overlay slack
+    // that grows it), so compare piece-to-Man using the piece's own scale.
+    const sPiece = await p.evaluate(() => window.__wikiScale?.s ?? null);
+    const sMan = on.manH / manPx;
+    ok(sPiece && sMan && Math.abs((sPiece / sMan) - (drawnPx / ch)) < 0.02,
+      `beside the Man the piece is drawn at the GAME's placement scale — ${piece.id}: ${(sPiece / sMan).toFixed(3)}× its native px, want ${(drawnPx / ch).toFixed(3)} (world ${pl.world_px_height}px → drawn ${drawnPx.toFixed(1)}px over a ${ch}px crop)`);
+    ok(Math.abs((drawnPx / manPx) - (pl.world_height_m / 1.7)) < 0.08,
+      `which puts it at ${(drawnPx / manPx).toFixed(2)}× the Man — the contract's ${pl.world_height_m}m against 1.7m is ${(pl.world_height_m / 1.7).toFixed(2)}×`);
+    await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /vs human/.test(x.textContent))?.click());
+    await p.waitForTimeout(700);
+    const back = await measure();
+    ok(!back.manShown && back.canvasH === off.canvasH,
+      `and with the Man hidden the piece is back at its own scale (canvas ${off.canvasH} → ${on.canvasH} → ${back.canvasH})`);
+  }
+}
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");
 await b.close();
