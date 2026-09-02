@@ -997,16 +997,23 @@ class Grow:
     # the game's own numbers for maps3 scenery collision
     # (games2/shared/src/index.ts, ISO_GEOMETRY_MAPS3)
     HIT_DX, HIT_DY = 32, 14
-    # THE HITBOX CENTRE STAYS ON THE CELL CENTRE, and the offset the
-    # maintainer sees ("I feel like you place the objects a bit to far up") is
-    # NOT fixable here. I tried: dropping every placement down-screen by the
-    # 10 px that separates a tile's drawn top face from the projection of its
-    # centre moves the hitbox centre to 0.857 of the way across its cell, and
-    # a footprint that small stops covering ANY cell centre - measured, pieces
-    # blocking nothing went from 1% to 71% and cells blocked from 3,240 to
-    # 477. The nav footprint is the whole reason the rule exists, so the data
-    # keeps the exact centre and the alignment is the RENDERERS' to fix: the
-    # art plane and the nav plane have to be the same plane. Reported.
+    # THE HITBOX CENTRE STAYS ON THE CELL CENTRE. The offset the maintainer
+    # sees with the overlay on is REAL and now measured from his own annotated
+    # screenshot: he marked the collision centre and the tile-top centre, and
+    # they are 11 px apart on a 2.57x zoom - 4.2 SCREEN PX AT 1x, straight
+    # down, with no horizontal error at all. That is exactly DY - TOP_Y
+    # (14 - 10), the same term that separates a tile's drawn top face from the
+    # projection of its cell in this renderer.
+    #
+    # IT CANNOT BE COMPENSATED HERE, measured twice. Dropping every placement
+    # down-screen to chase it moves the hitbox centre off the cell centre, and
+    # published footprints are thin enough that they then cover no cell centre
+    # at all:
+    #       drop 10 px  -> pieces blocking NOTHING 1% -> 71%, cells 3240 -> 477
+    #       drop 4.2 px -> pieces blocking NOTHING 1% -> 16.5%, cells -> 1132
+    # The nav footprint is the entire reason the centring exists, so the data
+    # keeps the exact centre and the 4.2 px belongs to whichever renderer draws
+    # the sprite and the nav tile on different planes. Reported to games.
     HITBOX_DROP = 0.0    # screen px, down-screen - see above before changing
 
     def _hitbox_offset(self, p):
