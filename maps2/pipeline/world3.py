@@ -378,39 +378,38 @@ def _rng32(seed):
 
 
 FOREST_SETS = {
-    # Look-clusters read off a rendered contact sheet of all 71 tree pieces
-    # (names lie: the "birch" name list mixed white-blossom crowns into the
-    # silver birches). Each set is internally ONE tree, and every set is
-    # visibly DIFFERENT from every other — that is what lets one region's
-    # wood look nothing like the next region's.
-    # NO GLOWING TRUNKS in a forest set: tree_058 and tree_074 carry a
-    # cyan-glowing trunk, and an independent visual audit read them as a
-    # "corrupted species" wherever they appeared. Loud magic is a landmark,
-    # never a forest's building block.
-    "birch_pale":    ["tree_001", "tree_083", "tree_045"],
-    "conifer_dark":  ["tree_069", "tree_063"],
-    "conifer_snow":  ["tree_031", "tree_065", "tree_017"],
-    "oak_green":     ["tree_047", "tree_077", "tree_059", "tree_035"],
-    "oak_dark":      ["tree_046", "tree_066", "tree_034"],
-    "autumn_red":    ["tree_015", "tree_029", "tree_057", "tree_071"],
-    "autumn_gold":   ["tree_003", "tree_021", "tree_052", "tree_067"],
-    "blossom_white": ["tree_005", "tree_011", "tree_053"],
-    # tree_012/tree_054 are white-and-yellow FLOWERING trees on orange
-    # trunks — a different tree from the grey weeping willows, audit-caught
-    "willow_grey":   ["tree_043", "tree_085"],
-    "dead_bare":     ["tree_009", "tree_028", "tree_051", "tree_070"],
-    "windswept":     ["tree_075", "tree_079", "tree_024"],
+    # THE MAINTAINER'S OWN SEVEN (2026-08-30). He named them and why:
+    #   "Aspen with trembling round leaves 083 (smaller and easier to see
+    #   through) / Slender silver birch 001 (same style) / Wild cherry in
+    #   blossom, tall irregular crown 049 (looks good) / Juniper, columnar and
+    #   dark 023 / Autumn-flame maple, scarlet crown 015 / White-blossomed
+    #   hawthorn 053 / Black alder with cones, waterside tree 017 (looks good
+    #   on snow)."
+    #
+    # ONE SPECIES PER FOREST, varied by its OWN 10 NOT_LIT_* states and hflip
+    # - the same family rule the rocks use. A wood built from one tree reads
+    # as a wood; three species mixed read as a nursery. Every one of the seven
+    # ships 10 variations, so a stand of 40 aspens repeats a look 4 times, not
+    # 40 times.
+    #
+    # The 18 sets that used to be here are gone, not renamed: they were 25
+    # species over 814 trees and he could not see the player through them.
+    "aspen":          ["tree_083"],
+    "birch_silver":   ["tree_001"],
+    "cherry_blossom": ["tree_049"],
+    "juniper_dark":   ["tree_023"],
+    "maple_flame":    ["tree_015"],
+    "hawthorn_white": ["tree_053"],
+    "alder_black":    ["tree_017"],
 }
 
-# the understory that belongs with each canopy — a wood's bushes are retyped
+# the understory that belongs with each canopy - a wood's bushes are retyped
 # with its trees, so the floor never fights the crown
 FOREST_UNDER = {
-    "birch_pale": ["bush_001", "bush_011"], "conifer_dark": ["bush_017"],
-    "conifer_snow": ["bush_008"], "oak_green": ["bush_015", "bush_001"],
-    "oak_dark": ["bush_017", "bush_011"], "autumn_red": ["bush_016"],
-    "autumn_gold": ["bush_016", "bush_900"], "blossom_white": ["bush_007"],
-    "willow_grey": ["bush_008"], "dead_bare": ["bush_008"],
-    "windswept": ["bush_015"],
+    "aspen": ["bush_001"], "birch_silver": ["bush_001", "bush_011"],
+    "cherry_blossom": ["bush_007"], "juniper_dark": ["bush_017"],
+    "maple_flame": ["bush_016"], "hawthorn_white": ["bush_007"],
+    "alder_black": ["bush_008"],
 }
 
 # THE FOREST MAP (maintainer 2026-08-30: "why do you use the same trees on
@@ -423,9 +422,12 @@ FOREST_UNDER = {
 #     space (iso: east = x-y, south = x+y), with the outer ring shifted
 #     half a turn — so N/E/S/W differ, and each has an inner and an outer
 #     wood that differ too. 8 wedges x 2 rings = 16 forest areas.
-COMPASS_FORESTS = ["oak_green", "autumn_red", "birch_pale", "oak_dark",
-                   "blossom_white", "autumn_gold", "conifer_dark",
-                   "willow_grey"]   # ordered so NEIGHBOURING wedges contrast
+COMPASS_FORESTS = ["aspen", "maple_flame", "birch_silver", "juniper_dark",
+                   "cherry_blossom", "hawthorn_white"]
+# ordered so NEIGHBOURING wedges contrast: pale-green, scarlet, white-trunked,
+# dark columnar, blossom, white-blossom. alder_black is not in the wheel - it
+# is the waterside and snow tree, placed by terrain below, which is where he
+# said it looks good.
 
 
 class ForestCtx:
@@ -453,17 +455,17 @@ class ForestCtx:
     def identity(self, x, y):
         z = self.z(x, y)
         if z >= 18 or self.near(x, y, ("snow", "ice"), 4):
-            return "conifer_snow"
+            return "alder_black"      # "looks good on snow" - his words
         if self.near(x, y, ("dark_mud",), 4):
-            return "dead_bare"
+            return "alder_black"      # the waterside tree, in the fen
         if z >= 13 or self.near(x, y, ("grey_stone", "black_rock"), 3):
-            return "conifer_dark"    # tight: at radius 6 the mountain ate
+            return "juniper_dark"    # tight: at radius 6 the mountain ate
                                      # 356 of 802 trees and the map went one
                                      # colour again
         if z <= 2 and self.near(x, y, ("light_beach",), 4):
-            return "windswept"
+            return "juniper_dark"     # the only one that reads as wind-hardy
         if self.near(x, y, ("water",), 3):
-            return "willow_grey"
+            return "alder_black"      # "waterside tree", again his words
         u = (x - y) - (self.cx - self.cy)          # screen east
         v = (x + y) - (self.cx + self.cy)          # screen south
         sector = int((math.atan2(v, u) + math.pi) / (2 * math.pi) * 8) % 8
@@ -478,7 +480,20 @@ def _tree_pick(mat, lvl, W, H, x, y, u):
         0 <= x + dx < W and 0 <= y + dy < H
         and mat[y + dy][x + dx] in ("grey_stone", "snow", "black_rock")
         for dx, dy in ((8, 0), (-8, 0), (0, 8), (0, -8)))
-    return "conifer_dark" if highish else "birch_pale"
+    return "juniper_dark" if highish else "birch_silver"
+
+
+_TSTATE = {}
+
+
+def _tree_states(piece):
+    """The piece's own variations: its NOT_LIT_* states."""
+    if piece not in _TSTATE:
+        j = json.load(open(os.path.join(REPO, "scenery", piece,
+                                        "scenery.json")))
+        _TSTATE[piece] = [k for k in sorted(j.get("states") or {})
+                          if k.startswith("NOT_LIT")]
+    return _TSTATE[piece]
 
 
 def retype_woods(scen, ctx):
@@ -514,13 +529,26 @@ def retype_woods(scen, ctx):
                             (trees[i]["y"] - trees[j]["y"]) ** 2 <= r2:
                         yield j
 
+    # A TERRAIN IDENTITY IS PINNED. alder_black is chosen because the tree
+    # stands on snow or by water - his words, "black alder ... waterside tree
+    # (looks good on snow)" - and that is a fact about the ground, not a
+    # stray. Left unpinned it lost every vote: 38 trees qualified by terrain
+    # and the minimum-stand rule absorbed all 38, so the species he asked for
+    # by name appeared exactly 0 times. Smoothing decides the COMPASS woods,
+    # which are arbitrary by construction; it does not get a say here.
+    pinned = [d == "alder_black" for d in ident]
+
+    def keep(new_ident):
+        return [ident[i] if pinned[i] else new_ident[i]
+                for i in range(len(trees))]
+
     # 2) two mode-smoothing passes: a tree adopts the identity most of its
     #    neighbours have, so a stand never checkerboards at a region seam —
     #    the boundary moves to where the trees thin out, which is where a
     #    real forest changes.
     for _ in range(2):
-        ident = [max(set(v := [ident[j] for j in neighbours(i)]), key=v.count)
-                 for i in range(len(trees))]
+        ident = keep([max(set(v := [ident[j] for j in neighbours(i)]),
+                          key=v.count) for i in range(len(trees))])
     # 3) THE ECOTONE: where two forests meet, feather them into each other
     #    instead of ruling a line — a third of the trees within reach of the
     #    other identity take it, so the change reads as a wood giving way to
@@ -539,7 +567,7 @@ def retype_woods(scen, ctx):
              ^ (int(trees[i]["y"]) // 4) * 3266489917) & 0xffffffff
         if h % 100 < 40:
             feathered[i] = max(set(other), key=other.count)
-    ident = feathered
+    ident = keep(feathered)
     # MINIMUM STAND SIZE: a tree whose own identity has fewer than 3 members
     # within reach reverts to the local majority. A one-off tree of a strong
     # species does not read as variation, it reads as a placement mistake.
@@ -549,13 +577,22 @@ def retype_woods(scen, ctx):
             near = [ident[j] for j in neighbours(i, 100)]
             if near.count(ident[i]) < 3:
                 fixed[i] = max(set(near), key=near.count)
-        ident = fixed
+        ident = keep(fixed)
     tally = {}
     for i, t in enumerate(trees):
         canopy = FOREST_SETS[ident[i]]
         h = (int(t["x"] * 4) * 2654435761 ^ int(t["y"] * 4) * 40503
              ^ 0xd00d) & 0xffffffff
-        t["piece"] = "trees/" + canopy[h % len(canopy)]
+        piece = "trees/" + canopy[h % len(canopy)]
+        t["piece"] = piece
+        # ONE SPECIES, TEN LOOKS. Each of his seven ships 10 NOT_LIT_*
+        # variations and nothing was ever asking for one - every tree of a
+        # species was the identical sprite, which is half of why a wood read
+        # as a wall. The variation is chosen from the tree's own position, so
+        # it is stable across rebuilds.
+        var = _tree_states(piece)
+        if var:
+            t["state"] = var[(h >> 8) % len(var)]
         tally[ident[i]] = tally.get(ident[i], 0) + 1
     # 3) understory follows the nearest tree's identity
     for b in items:
@@ -649,6 +686,14 @@ def _forests(W, H, mat, lvl, scen, spawn):
         if len(hearts) >= 5:
             break
     seeds += hearts
+    # CELLS BETWEEN TRUNKS. Swept and measured against "what fraction of a
+    # walkable forest cell has the player more than half hidden by trees drawn
+    # in front of him": gap 1.5 (the old build) 77%, gap 2.2 57%, gap 3.0 51%,
+    # gap 3.8 40%. 3.0 is the knee - past it the wood thins to an orchard for
+    # 11 more points, and the rest of that number is the trees' own height
+    # (120-180 px against a 64 px player), which is the game's to solve with a
+    # fade, not mine to solve by deleting the forest.
+    TREE_GAP = 3.0
     WOOD_R = 12       # real woods, not groves (maintainer 2026-08-29: "don't
                       # be shy... I'm looking forward to see hundreds of trees")
     out, taken = [], {(int(p["x"]), int(p["y"])) for p in scen}
@@ -660,15 +705,28 @@ def _forests(W, H, mat, lvl, scen, spawn):
             if d2 > WOOD_R * WOOD_R:
                 continue
             edge = d2 > (WOOD_R - 3) ** 2
-            if r() > (0.55 if not edge else 0.30):
+            # THIN THE WOOD (maintainer 2026-08-30: "You have created way to
+            # many trees ... placed them so tight it's very hard to even see
+            # the player"). Measured before the change: 814 trees, 40% with a
+            # neighbour closer than 1.5 cells, densest 24-cell block 71 trees.
+            # A tree draws 120-180 px tall against a 64 px player, so at that
+            # spacing anything in front of him is a wall.
+            if r() > (0.30 if not edge else 0.16):
                 continue
             jx, jy = x + int(r() * 2), y + int(r() * 2)
             if not grass_flat(jx, jy) or not clear(jx, jy) or (jx, jy) in taken:
                 continue
+            # AND KEEP THEM APART. The `taken` cell test only stopped two
+            # trees sharing a cell; with jitter they still stood half a cell
+            # apart. TREE_GAP is the distance between trunks, in cells.
+            if any((jx - ox) ** 2 + (jy - oy) ** 2 < TREE_GAP * TREE_GAP
+                   for (ox, oy) in taken
+                   if abs(jx - ox) <= TREE_GAP and abs(jy - oy) <= TREE_GAP):
+                continue
             taken.add((jx, jy))
             u = r()
             if edge and u < 0.12:
-                grp, pool = "bushes", FOREST_UNDER["birch_pale"]
+                grp, pool = "bushes", FOREST_UNDER["birch_silver"]
             else:
                 grp = "trees"
                 pool = FOREST_SETS[_tree_pick(mat, lvl, W, H, jx, jy, r())]
