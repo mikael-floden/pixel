@@ -496,6 +496,85 @@ def _tree_states(piece):
     return _TSTATE[piece]
 
 
+# ---- how much room a tree needs is a property of THE TREE --------------------
+# (maintainer 2026-09-02, comparing two woods in game) "How close the trees are
+# placed on the first image looks good (maybe still a bit to tight). The second
+# image looks way way to tight. The reson might be the second tree type has
+# less alpha so you can't see the player at all. So trees that is more dense
+# has to be placed with a greater distance and even the first image with a less
+# dense tree has to also be placed at a somewhat greater distance."
+#
+# ONE GLOBAL GAP CANNOT BE RIGHT FOR SEVEN TREES. Measured from the art:
+#   tree_053 hawthorn  2.75 cells wide, crown 77.8% -> covers 22.4k px^2
+#   tree_083 aspen     1.79 cells wide, crown 68.8% -> covers 14.0k
+#   tree_023 juniper   1.50 cells wide, crown 76.0% ->  8.8k
+# The hawthorn hides two and a half times as much screen as the juniper, and at
+# a shared 3-cell gap its crowns close into the wall he photographed.
+#
+# So every species carries its own RADIUS, from its own drawn width and crown
+# fill, and a pair must stand at least the SUM of their two radii apart - the
+# sum, not the larger, because a dense tree beside an airy one still needs its
+# own clearance. Enforced after retype_woods, since that is where a tree
+# finally learns what it is.
+TREE_R_K = 0.87        # calibrated so the aspen wood he liked opens slightly
+                       # (3.0 -> 3.6 cells) and the hawthorn wood nearly
+                       # doubles (3.0 -> 5.9)
+_TR_CACHE = {}
+
+
+def tree_radius(piece):
+    """Half the clearance this species needs, in cells, from its own art."""
+    if piece not in _TR_CACHE:
+        from PIL import Image
+        import numpy as np
+        j = json.load(open(os.path.join(REPO, "scenery", piece,
+                                        "scenery.json")))
+        a = np.array(Image.open(os.path.join(REPO, "scenery",
+                                             j["sprite"])).convert("RGBA"))
+        al = a[..., 3] > 128
+        ys, xs = np.where(al)
+        y0, y1, x0, x1 = ys.min(), ys.max(), xs.min(), xs.max()
+        box = al[y0:y1 + 1, x0:x1 + 1]
+        fill = float(box[:max(1, int(box.shape[0] * 0.6))].mean())
+        wph = (j.get("placement") or {}).get("world_px_height") or (y1 - y0 + 1)
+        wide = (x1 - x0 + 1) * wph / max(1, y1 - y0 + 1) / 64.0
+        _TR_CACHE[piece] = TREE_R_K * wide * (0.6 + 0.8 * fill)
+    return _TR_CACHE[piece]
+
+
+def thin_by_species(scen):
+    """Drop the trees that stand closer than the two species need. Runs after
+    retype_woods, keeps the up-screen tree of any offending pair (deterministic
+    in scan order), and never touches anything that is not a tree."""
+    trees = [p for p in scen if p["piece"].startswith("trees/")]
+    trees.sort(key=lambda p: (round(p["x"] + p["y"], 3), p["x"]))
+    kept, drop = [], set()
+    grid = {}
+    for t in trees:
+        r = tree_radius(t["piece"])
+        cx, cy = int(t["x"]) // 8, int(t["y"]) // 8
+        clash = False
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                for o, ro in grid.get((cx + dx, cy + dy), ()):
+                    need = r + ro
+                    if (t["x"] - o["x"]) ** 2 + (t["y"] - o["y"]) ** 2 \
+                            < need * need:
+                        clash = True
+                        break
+                if clash:
+                    break
+            if clash:
+                break
+        if clash:
+            drop.add(id(t))
+        else:
+            kept.append(t)
+            grid.setdefault((cx, cy), []).append((t, r))
+    scen[:] = [p for p in scen if id(p) not in drop]
+    return len(drop), len(kept)
+
+
 def retype_woods(scen, ctx):
     """THE FOREST PASS — the LAST word on what a wood is made of. Every
     placed tree, forest ancient and bush clusters into WOODS (link 8); each

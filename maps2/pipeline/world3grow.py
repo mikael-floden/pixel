@@ -882,6 +882,12 @@ class Grow:
             NEW, NEW, self.g,
             lambda x, y: self.lvl[y][x] if 0 <= x < NEW and 0 <= y < NEW else 0)
         tally = world3.retype_woods(self.doc["scenery"], ctx)
+        # NOW that every tree knows what it is, enforce the clearance ITS OWN
+        # species needs - a hawthorn hides two and a half times the screen a
+        # juniper does and cannot stand as close.
+        dropped, left = world3.thin_by_species(self.doc["scenery"])
+        self.placed += [("trees thinned by species spacing", dropped),
+                        ("trees left", left)]
         self.placed += [(f"forest {k}", v) for k, v in sorted(tally.items())]
 
     # the floors a room is made of - the same set render3 treats as indoor
