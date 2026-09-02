@@ -8365,8 +8365,15 @@ function viewWorldType(top) {
         { persist: false })) : null,
     state.admin && trans.length ? h("p", { class: "muted" },
       "Each neighbour draws its own side as chosen on its pair page — open one for its second switch.") : null,
+    state.admin && trans.length && fadesIndex?.pairs ? h("div", { class: "ground-pass" },
+      h("span", { class: "muted" }, "Fade review"),
+      sortBar("fade-order", [
+        ["all", "all", "Every neighbour, in the usual order"],
+        ["left", "most left first", "Neighbours with the most unreviewed fade tiles first"],
+        ["todo", "to review", "Only neighbours that still have fade tiles without a verdict"],
+      ], fadeOrderMode(), (id) => { try { localStorage.setItem(FADE_ORDER_KEY, id); } catch {} keepScrollY = window.scrollY; route(); }, { persist: false })) : null,
     trans.length
-      ? h("div", {}, ...trans.map((x) => {
+      ? h("div", {}, ...orderTransitions(trans, state.admin ? fadeOrderMode() : "all").map((x) => {
         const other = x.a === t.id ? x.b : x.a;
         // The strip previews the pair's DEFAULT look: the library's default
         // pattern (or the pair's straightest generated set under Raw), four
@@ -8380,6 +8387,7 @@ function viewWorldType(top) {
             ? h("span", { class: "muted", title: "This pair was also pregenerated — its raw art is reachable under Raw" }, ` ${x.sets.length} generated set${x.sets.length === 1 ? "" : "s"}`)
             : null,
           transPassPill(x.a, x.b, genSet),
+          state.admin ? fadeReviewPill(x.a, x.b) : null,
           h("div", { class: "trans-strip checker" }, ...picks.map((f) =>
             artNodeFor(f, "", `${t.name} to ${other} transition tile`))));
       }))
@@ -8786,6 +8794,39 @@ function fadeTilesFor(a, b) {
     .map((t) => ({ key: t.key, file: t.file, pctA: +t.pct[a], pctB: isFinite(t.pct[b]) ? +t.pct[b] : 100 - +t.pct[a] }))
     .sort((x, y) => y.pctA - x.pctA);
 }
+/* HOW MUCH OF A PAIR'S FADE REVIEW IS LEFT (maintainer 2026-09-02: "I have a
+ * hard time knowing how much fade tiles I have left to review for a given
+ * tile pair ... It's very hard to click on each pair to see if I have
+ * reviewed this already or not"). One number per pair, computed from the
+ * same list the pair page reviews: total tiles, and how many still carry
+ * neither approve nor reject. `null` while the index has not loaded — that
+ * is "unknown", never "0 left". */
+const fadeJudged = (k) => { const st = fb("tiles", k).status; return st === "approved" || st === "rejected"; };
+function fadeReview(a, b) {
+  if (!fadesIndex?.pairs) return null;
+  const tiles = fadeTilesFor(a, b);
+  const left = tiles.filter((t) => !fadeJudged(t.key)).length;
+  return { total: tiles.length, left, done: tiles.length - left };
+}
+/** The pill that says it — on the Fade tab's rows and wherever a pair is listed. */
+function fadeReviewPill(a, b) {
+  const r = fadeReview(a, b);
+  if (!r) return h("span", { class: "pill muted fade-left", title: "The fade index has not loaded yet" }, "fade tiles: …");
+  if (!r.total) return h("span", { class: "pill muted fade-left", "data-left": "0", "data-total": "0", title: "The tiles agent has published no fade tiles for this pair" }, "no fade tiles");
+  if (!r.left) return h("span", { class: "pill ok fade-left", "data-left": "0", "data-total": String(r.total), title: `All ${r.total} fade tiles carry your approve or reject` }, `fades: all ${r.total} reviewed`);
+  return h("span", { class: "pill warn fade-left", "data-left": String(r.left), "data-total": String(r.total), title: `${r.left} of ${r.total} fade tiles still without an approve or reject` }, `${r.left} of ${r.total} fades left`);
+}
+/* THE FADE TAB'S OWN ORDER (same ask): "left first" sorts the neighbours by
+ * how many fade tiles still wait, most first; "to review" hides the pairs
+ * that are done. Persisted, and the pair page's ‹ › walks the same order. */
+const FADE_ORDER_KEY = "wiki-fade-order";
+const fadeOrderMode = () => { try { return localStorage.getItem(FADE_ORDER_KEY) || "all"; } catch { return "all"; } };
+function orderTransitions(list, mode) {
+  if (mode === "all" || !fadesIndex?.pairs) return list;
+  const withN = list.map((x) => ({ x, r: fadeReview(x.a, x.b) ?? { left: 0, total: 0 } }));
+  const kept = mode === "todo" ? withN.filter((e) => e.r.left > 0) : withN;
+  return kept.sort((p, q) => q.r.left - p.r.left || q.r.total - p.r.total).map((e) => e.x);
+}
 /* One fade tile, reviewed IN THE FIELD: the wandering-edge scene at rough
  * 0.12 · s4 (his pick), with every pure cell of the tile's MAJORITY side
  * drawn as the fade tile — "display the fade tile on the grass side if grass
@@ -8902,8 +8943,19 @@ function viewWorldTransition(pairId) {
       corner: (x, y) => (x < walk[Math.min(y, N)] ? 1 : 0) },
   ];
   return h("div", {},
-    crumbRow("#/world", `← ${label("world")}`, "world/transitions",
-      allTransitionsOf(tr.a).map((x) => ({ id: `transition/${x.a}__to__${x.b}`, name: `${typeLabelWorld(x.a)} ↔ ${typeLabelWorld(x.b).toLowerCase()}` })),
+    // BASE "world", NOT "world/transitions": crumbRow builds `#/<base>/<id>`,
+    // and with the ids already spelled `transition/<a>__to__<b>` the old base
+    // produced #/world/transitions/transition/… — a route nothing handles, so
+    // ‹ › on a pair page landed on a broken page (found 2026-09-02 by the gate
+    // that walks it).
+    crumbRow("#/world", `← ${label("world")}`, "world",
+      // The Fade tab's order — "most left first" / "to review" — is the order
+      // ‹ › walks here too, with THIS pair kept in even when it is done.
+      orderTransitions(allTransitionsOf(tr.a), state.admin ? fadeOrderMode() : "all")
+        .filter((x, i, arr) => arr.indexOf(x) === i)
+        .concat(allTransitionsOf(tr.a).filter((x) => x.a === tr.a && x.b === tr.b))
+        .filter((x, i, arr) => arr.findIndex((y) => y.a === x.a && y.b === x.b) === i)
+        .map((x) => ({ id: `transition/${x.a}__to__${x.b}`, name: `${typeLabelWorld(x.a)} ↔ ${typeLabelWorld(x.b).toLowerCase()}` })),
       `transition/${tr.a}__to__${tr.b}`),
     h("div", { class: "sect-head" }, h("h1", {}, `${nameA} ↔ ${nameB.toLowerCase()}`)),
     h("div", { class: "spawn-line" },

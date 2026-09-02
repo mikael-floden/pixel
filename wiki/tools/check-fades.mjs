@@ -317,6 +317,65 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
   ok(key0 && key0 in payload && payload[key0] === null, `an explicit un-reject is sent as a deletion (${key0?.split("/").pop()} → null)`);
   ok(!("tiles/fades/never_cleared_by_him" in payload), `a touched id he never cleared is NOT sent as a deletion (keys sent: ${Object.keys(payload).length})`);
 }
+
+// ---- 8. how much of each pair is LEFT, on the list, sortable ---------------
+/* Maintainer 2026-09-02: "I have a hard time knowing how much fade tiles I
+ * have left to review for a given tile pair ... It's very hard to click on
+ * each pair to see if I have reviewed this already or not." */
+{
+  const grassPairs = Object.keys(IDX.pairs).filter((k) => k.split("__to__").includes("grass"));
+  const perPair = new Map();
+  for (const k of grassPairs) {
+    const [a, b2] = k.split("__to__"); const g = [a, b2].sort().join("|");
+    perPair.set(g, (perPair.get(g) ?? 0) + (IDX.pairs[k] ?? []).filter((x) => x.file && x.pct).length);
+  }
+  await p.goto(`${W}#/world`, { waitUntil: "load" });
+  await p.waitForTimeout(800);
+  // EVERY fade verdict goes, not just grass↔ice: the local harness has no
+  // /api/live/state, so the page falls back to the repo's real feedback file
+  // and every other grass pair still carries his verdicts.
+  await p.evaluate(() => { const e = window.__wiki?.state?.feedback?.tiles?.entries ?? {}; for (const k of Object.keys(e)) if (k.startsWith("tiles/fades/")) delete e[k]; });
+  // seed: grass↔ice fully reviewed, so it is the one pair with 0 left
+  await p.evaluate((keys) => { const f = window.__wiki.state.feedback.tiles; f.entries ??= {}; for (const k of keys) f.entries[k] = { status: "approved", updated_at: "x" }; }, MERGED.map((x) => x.key));
+  await p.evaluate(() => { try { localStorage.setItem("wiki-fade-order", "all"); } catch {} location.hash = "#/world/grass"; });
+  await p.waitForTimeout(3500);
+  await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /^Fade/.test(x.textContent.trim()))?.click());
+  await p.waitForTimeout(2500);
+  const rows = () => p.evaluate(() => [...document.querySelectorAll("a.trans-row")].map((r) => ({
+    href: r.getAttribute("href"), text: r.querySelector(".fade-left")?.textContent ?? null,
+    left: +(r.querySelector(".fade-left")?.dataset.left ?? -1), total: +(r.querySelector(".fade-left")?.dataset.total ?? -1) })));
+  const r0 = await rows();
+  ok(r0.length > 3 && r0.every((r) => r.text), `every neighbour on the Fade tab says how many fade tiles are left (${r0.length} rows, e.g. “${r0[0]?.text}”)`);
+  const ice = r0.find((r) => /grass__to__ice|ice__to__grass/.test(r.href));
+  ok(ice && ice.left === 0 && /all \d+ reviewed/.test(ice.text), `a fully reviewed pair says so (${ice?.text})`);
+  const other = r0.find((r) => r.left > 0);
+  ok(other && other.left === other.total && /of \d+ fades left/.test(other.text), `an unreviewed pair counts every tile as left (${other?.text})`);
+  // the numbers are the index's numbers
+  const wrong = r0.filter((r) => { const m = /transition\/([^_]+(?:_[^_]+)*)__to__(.+)$/.exec(r.href); if (!m) return false; const g = [m[1], m[2]].sort().join("|"); return perPair.has(g) && r.total !== perPair.get(g); });
+  ok(wrong.length === 0, `each total is the merged index count for that pair (${wrong.length} wrong)`);
+  // "most left first": ice (0 left) sinks to the bottom
+  await p.evaluate(() => [...document.querySelectorAll('[data-bar="fade-order"] button')].find((x) => /most left first/.test(x.textContent))?.click());
+  await p.waitForTimeout(2500);
+  const r1 = await rows();
+  const desc = r1.every((r, i) => i === 0 || r1[i - 1].left >= r.left);
+  ok(desc && r1[r1.length - 1].left === 0, `"most left first" sorts by what is left, the finished pair last (${r1.map((r) => r.left).join(" ")})`);
+  // "to review": the finished pair is gone
+  await p.evaluate(() => [...document.querySelectorAll('[data-bar="fade-order"] button')].find((x) => /to review/.test(x.textContent))?.click());
+  await p.waitForTimeout(2500);
+  const r2 = await rows();
+  ok(r2.length === r1.length - 1 && !r2.some((r) => /ice/.test(r.href)), `"to review" hides the finished pair (${r1.length} → ${r2.length} rows)`);
+  // and the pair page's ‹ › walks that order: from the first row, "next" is the second row
+  await p.evaluate((h2) => { location.hash = h2; }, r2[0].href);
+  await p.waitForTimeout(3000);
+  const nav = await p.evaluate(() => document.querySelector(".detail-nav a.nav-btn[title^='Next']")?.getAttribute("href") ?? null);
+  ok(nav === r2[1]?.href, `the pair page's next follows the same order (${nav} vs ${r2[1]?.href})`);
+  // ...and that link is a route the wiki actually serves (it was not: base "world/transitions")
+  await p.evaluate((h2) => { location.hash = h2; }, nav);
+  await p.waitForTimeout(3000);
+  const landedNext = await p.evaluate(() => ({ h1: document.querySelector("h1")?.textContent ?? "", body: document.querySelector("#content")?.textContent?.slice(0, 40) ?? "" }));
+  ok(/↔/.test(landedNext.h1), `and "next" lands on a real pair page, not a dead route (“${landedNext.h1 || landedNext.body}”)`);
+  await p.evaluate(() => { try { localStorage.setItem("wiki-fade-order", "all"); } catch {} });
+}
 await b.close();
 console.log(fails.length ? `\nFADE CHECKS FAILED (${fails.length})` : "\nALL FADE CHECKS PASSED");
 process.exit(fails.length ? 1 : 0);
