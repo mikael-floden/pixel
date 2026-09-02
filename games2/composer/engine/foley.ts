@@ -7,7 +7,6 @@
  * regenerates its own, see foley/pipeline/generate.py).
  */
 
-import { withAudioV } from "./assetver";
 
 // foley/<surface>/<surface>__takeNN.{ogg,wav} → hashed bundle URLs.
 //
@@ -39,7 +38,9 @@ export function composerFoley(surface: string): string[] | null {
   // Vite already content-hashes these bundle urls; the ?v=<sha> stamp is what
   // flips the server from no-cache to immutable for a take (its hashed-asset
   // rule only covers .js/.css), so a footstep set downloads once per deploy.
-  return takes && takes.length > 0 ? takes.map(withAudioV) : null;
+  // Bundle emits: content-hashed by the bundler, immutable by directory —
+  // a token here would re-download them every deploy (see assetver.ts).
+  return takes && takes.length > 0 ? [...takes] : null;
 }
 
 /** ONE named take of a set, stamped like composerFoley's urls. `take` may be
@@ -66,7 +67,7 @@ export function composerFoleyTake(set: string, take: string | number): string | 
     rows.find((r) => r.name.replace(/\.(ogg|wav)$/i, "").endsWith(`__${want}`)) ??
     // a bare index: "3" / 3 means the THIRD take, 1-based like the filenames
     (/^\d+$/.test(want) ? rows[Number(want) - 1] : undefined);
-  return hit ? withAudioV(hit.url) : null;
+  return hit ? hit.url : null;
 }
 
 export function composerFoleySurfaces(): string[] {

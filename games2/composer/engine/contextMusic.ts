@@ -27,7 +27,6 @@
  * outgoing bed is kept alive through a fade, so at most two are decoded at once.
  */
 
-import { withAudioV } from "./assetver";
 import { AudioGraph, BufferCache } from "./context";
 import { dbToGain } from "./catalog";
 import { MusicalContext } from "./oneshot";
@@ -106,8 +105,9 @@ for (const path of Object.keys(bundled)) {
 }
 
 /** The playable URL for a bed: first listed format this browser can decode
- * (opus everywhere, AAC on Safari/iOS), version-pinned so it downloads once
- * per deploy. Null when the bed has not been generated yet. */
+ * (opus everywhere, AAC on Safari/iOS). The url is a bundle emit whose name
+ * carries its content hash, so it is cached for a year as-is and survives a
+ * deploy unchanged. Null when the bed has not been generated yet. */
 export function bedTrack(name: string): { url: string; entry: TrackEntry } | null {
   const entry = TRACKS[name];
   if (!entry) return null;
@@ -116,7 +116,9 @@ export function bedTrack(name: string): { url: string; entry: TrackEntry } | nul
     const url = byName.get(f.file);
     if (!url) continue;
     if (probe && f.mime && !probe.canPlayType(f.mime)) continue;
-    return { url: withAudioV(url), entry };
+    // A bundle emit: its filename carries the content hash, so it is
+    // immutable as-is and must NOT be stamped (assetver.ts).
+    return { url, entry };
   }
   return null;
 }

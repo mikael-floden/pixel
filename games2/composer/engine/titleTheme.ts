@@ -13,7 +13,6 @@
  * approved, and on its own screen — still lives here.
  */
 
-import { withAudioV } from "./assetver";
 
 // music/*.mp3 → hashed bundle URLs.
 const files = import.meta.glob("../music/*.mp3", {
@@ -36,14 +35,14 @@ function byName(...needles: string[]): string | null {
  * are audition-only until the maintainer routes them. */
 export function nightMusicUrl(): string | null {
   const url = byName("night", "mystic", "nocturne");
-  return url ? withAudioV(url) : null;
+  return url; // bundle emit — never stamped (assetver.ts)
 }
 
 /** The title/login theme URL, or null if not generated yet. */
 export function titleThemeUrl(): string | null {
   // A file named title/theme; else the first mp3 that isn't the night bed.
   const named = byName("title", "theme");
-  if (named) return withAudioV(named);
+  if (named) return named;
   const keys = Object.keys(files).sort().filter((k) => !/night/i.test(k));
-  return keys[0] ? withAudioV(files[keys[0]]) : null;
+  return keys[0] ? files[keys[0]] : null;
 }

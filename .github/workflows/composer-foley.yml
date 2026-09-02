@@ -57,13 +57,6 @@ jobs:
       - name: Compress the takes to opus
         run: python games2/composer/foley/pipeline/to-opus.py
 
-      # After to-opus, because the hash must describe the bytes that ship —
-      # hashing the wav masters that are about to be replaced would pin urls to
-      # files the image does not contain.
-      - name: Re-hash the audio
-        if: always()
-        run: python games2/composer/scripts/audio-hashes.py
-
       - name: Commit + push
         id: push
         run: |
