@@ -524,14 +524,34 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     pool is drained at the next rebuild. The pool holds TEXTURE OBJECTS across
     rebuilds, so tiles3's `limit: 0` cache must stay unbounded, or an eviction
     must clear the pool too.
-  - STILL OPEN after the pool: `redrawGround` is still a full repaint of the
-    ground RT with an unconditional deck face loop (31-55% of its blits land
-    entirely OUTSIDE the texture — measured 1,739 of 3,892 at the forest, 6,623
-    of 12,067 at the autumn wood), and `repaintWorld` fires BOTH full rebuilds
-    on every landed art batch, twice per batch (both `once("complete")`
-    handlers on the one loader) — in a 24 s walking window that was 8 of 11
-    occluder rebuilds and 8 of 8 ground redraws. Next: coalesce the repaints
-    to one per frame, then the RT bounds test.
+  - **STREAMING REPAINTS ARE COALESCED** (`requestRepaint`, 2026-09-02). While
+    a window's art streams in, three things used to run a FULL synchronous
+    repaint — the terrain batch landing (`Tiles3Loader.onBatch`), the scenery
+    batch landing (its own `once("complete")` on the SAME Phaser loader, so one
+    batch fired both), and the scenery manifest settle — each redrawing the
+    whole ground RT (41-52 ms) and every occluder. Measured over a 24 s walk
+    with art landing: 8 of 11 occluder rebuilds and 8 of 8 ground redraws were
+    that, not camera movement. Now a landing MARKS what it dirtied and
+    `update()` poisons the matching latch at most once per frame: a terrain
+    batch needs ground + occluders (its plates were holes, its faces skipped);
+    a scenery batch or manifest needs the occluder rebuild ONLY — scenery rides
+    inside it; the terrain occluders come back out of the pool, while the
+    scenery images and lit copies are rebuilt in full (not pooled). The
+    explicit `repaintWorld()` callers (the indoor cut, landed hitbox docs) stay
+    synchronous — state changes whose callers may read the result on the same
+    frame — and clear the pending flags, so a landing beside a state change
+    costs one pass, not two. The boot hold will not release with a repaint
+    pending (`hold.repaintPending` in `__ml.tiles3()`). Measured: the pass
+    lands in the SAME step the loader would have repainted in (Phaser emits
+    COMPLETE from a browser task between steps; the flags drain at the top of
+    update()), so the visible frame is identical to legacy — the deferral is
+    zero frames. Probe: `__ml.repaints(coalesce?)` (landings by kind vs passes
+    run; the switch reproduces legacy for an A/B).
+  - STILL OPEN after both: `redrawGround` is a full repaint of the ground RT
+    with an unconditional deck face loop, and 31-55% of its blits land entirely
+    OUTSIDE the texture (measured 1,739 of 3,892 at the forest, 6,623 of 12,067
+    at the autumn wood). Next: the per-op RT bounds test, then scrolling the
+    world-anchored RT instead of clearing it.
 - `stairs` tiles are ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower,
   cactus, lava) are impassable — `SURFACES`/`surfaceFor` (`road_*` by prefix).

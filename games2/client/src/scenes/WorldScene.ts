@@ -1930,7 +1930,7 @@ export class WorldScene extends Phaser.Scene {
         // crossOrigin attribute a staging join depends on.
         const l = this.tiles3Loader();
         for (const path of sheetPaths({} as PatternsDoc)) l.image(t3ArtKey(path), docUrl(path, this.t3route));
-        l.once("complete", () => this.repaintWorld());
+        l.once("complete", () => this.requestRepaint("terrain"));
         l.start();
       }
       // placeCampfire guards on textures.exists, so a miss means no bonfire
@@ -2562,6 +2562,7 @@ export class WorldScene extends Phaser.Scene {
         // THE BOOT HOLD'S OWN INPUTS, raw — which of them is still false is
         // the only way to tell why a loading screen ran to its deadline.
         hold: {
+            repaintPending: this.repaintGroundPending || this.repaintOccPending,
           rebuilds: this.sceneryRebuilds,
           queued: this.sceneryQueue.length,
           piecesIdle: !this.sceneryPieces || this.sceneryPieces.idle,
@@ -3450,6 +3451,15 @@ export class WorldScene extends Phaser.Scene {
       lastInput: () => this.lastInput,
       // Monster render-state probe (shared body pipeline QA): per monster the
       // resolved depth, cover line, shadow anchor and lit-copy state.
+      /** THE STREAMING REPAINTS: how many landings asked, how many passes ran.
+       *  `coalesce` flips the A/B switch (legacy = every landing repaints
+       *  synchronously). Counters reset on read. */
+      repaints: (coalesce?: boolean) => {
+        if (typeof coalesce === "boolean") this.repaintCoalesce = coalesce;
+        const out = { coalesce: this.repaintCoalesce, ...this.repaintStats };
+        this.repaintStats = { terrain: 0, scenery: 0, manifest: 0, groundRuns: 0, occRuns: 0 };
+        return out;
+      },
       /** MICRO-BENCH: force one full occluder rebuild right now — the latch
        *  poisoned exactly as repaintWorld does — and report its pure-JS cost,
        *  split into the destroy pass and the rest. `fast` flips destroyBatch's
@@ -7368,6 +7378,17 @@ export class WorldScene extends Phaser.Scene {
     // run — bumping it in the flush instead would make every probe read
     // "this body has no surface" one tick too early.
     this.coverTick++;
+    // The coalesced streaming repaints — see requestRepaint.
+    if (this.repaintGroundPending) {
+      this.repaintGroundPending = false;
+      this.lastGround = { x: NaN, y: NaN };
+      this.repaintStats.groundRuns++;
+    }
+    if (this.repaintOccPending) {
+      this.repaintOccPending = false;
+      this.lastOccl = { x: NaN, y: NaN };
+      this.repaintStats.occRuns++;
+    }
     if (this.perfOn) {
       const now = performance.now();
       if (this.perfLast) this.perfFrames.push(now - this.perfLast);
@@ -11064,22 +11085,75 @@ export class WorldScene extends Phaser.Scene {
     this.indoorDebris = out.length ? out : null;
   }
 
-  /** Throw away both terrain caches and rebuild them THIS frame.
-   *
-   * Poison BOTH latches together, always. They fire on different thresholds
-   * (the ground RT on 256px of camera drift, the occluders on 96px), and
-   * flipping one without the other brings the hidden roof straight back as ~30
-   * occluder SPRITES floating over a ground RT that has already deleted it.
-   * NaN short-circuits both guards — the existing idiom (see the night shader /
-   * resize paths). Re-running them here rather than waiting for the top of the
-   * next frame costs one extra rebuild on a transition frame (a handful per
-   * session) and buys a frame with no stale roof on screen; both are
-   * self-gating no-ops the rest of the time. */
+  /** An EXPLICIT repaint — a state change (the indoor cut, a landed hitbox
+   *  doc) whose caller may read the result on the same frame. Poisons BOTH
+   *  latches together and runs both passes NOW rather than at the top of the
+   *  next frame, which is what buys a frame with no stale roof between the
+   *  verdict and the picture. Counted in the perf sections like the latched
+   *  passes. A full explicit pass satisfies any pending request by
+   *  construction, so the streaming flags are cleared first — without that,
+   *  an art batch landing beside a state change cost a second, identical full
+   *  pass on the following frame (review, 2026-09-02). */
   private repaintWorld() {
+    this.repaintGroundPending = false;
+    this.repaintOccPending = false;
     this.lastGround = { x: NaN, y: NaN };
     this.lastOccl = { x: NaN, y: NaN };
+    this.ps();
     this.redrawGround();
+    this.pe("redrawGround");
+    this.ps();
     this.rebuildOccluders();
+    this.pe("rebuildOccluders");
+  }
+
+  /* STREAMING REPAINTS ARE COALESCED — one per frame, and only the pass the
+   * landed art actually needs.
+   *
+   * Three things fire while a window's art streams in: the terrain loader's
+   * batch landing, the scenery loader's batch landing — BOTH once("complete")
+   * handlers on the ONE Phaser loader, so one batch fired both — and the
+   * scenery manifest settle. Each ran a FULL repaint synchronously: the whole
+   * ground RT (41-52 ms of JS) plus every occluder. Measured over a 24 s walk
+   * with art landing: 8 of 11 occluder rebuilds and 8 of 8 ground redraws were
+   * this, not camera movement (investigation 2026-09-02). That is the stutter
+   * of a freshly loading area.
+   *
+   * Now a landing MARKS what it dirtied and update() poisons the matching
+   * latch at most once per frame: a terrain batch needs the ground (its
+   * plates were holes) and the occluders (its wall faces were skipped); a
+   * scenery batch or manifest needs only the occluder rebuild, because scenery
+   * rides inside it — the terrain occluders come back out of the pool, while
+   * the scenery images and every lit copy are rebuilt in full (they are not
+   * pooled: see OCC_DEPTH_EPS). The explicit repaintWorld() callers (indoor
+   * cut, hitbox docs) are unchanged: state changes whose callers may read the
+   * result immediately.
+   * `repaintCoalesce` is the A/B switch for `__ml.repaints`, nothing else
+   * reads it. */
+  private repaintGroundPending = false;
+  private repaintOccPending = false;
+  private repaintCoalesce = true;
+  private repaintStats = { terrain: 0, scenery: 0, manifest: 0, groundRuns: 0, occRuns: 0 };
+  private requestRepaint(kind: "terrain" | "scenery" | "manifest"): void {
+    this.repaintStats[kind]++;
+    if (!this.repaintCoalesce) {
+      // LEGACY, byte-for-byte: terrain and scenery batches repainted everything
+      // synchronously; a manifest settle rebuilt the occluders.
+      if (kind === "manifest") {
+        this.lastOccl = { x: NaN, y: NaN };
+        this.ps();
+        this.rebuildOccluders();
+        this.pe("rebuildOccluders");
+        this.repaintStats.occRuns++;
+      } else {
+        this.repaintWorld();
+        this.repaintStats.groundRuns++;
+        this.repaintStats.occRuns++;
+      }
+      return;
+    }
+    if (kind === "terrain") this.repaintGroundPending = true;
+    this.repaintOccPending = true;
   }
 
   /** Is this world cell part of the room I am standing in?
@@ -11723,7 +11797,7 @@ export class WorldScene extends Phaser.Scene {
       loader: this.tiles3LoaderAdapter(),
       textures: this.t3tm,
       route: this.t3route,
-      onBatch: () => this.repaintWorld(),
+      onBatch: () => this.requestRepaint("terrain"),
     });
     // The index decides which sheets to fetch; preload queued the library's
     // published names, so this is a no-op unless a republish renamed one.
@@ -12004,7 +12078,8 @@ export class WorldScene extends Phaser.Scene {
           this.sceneryQueue.length === 0 &&
           (!this.sceneryPieces || this.sceneryPieces.idle) &&
           !this.tiles3Loader().isLoading();
-        const painted = this.t3stats.blits > 0 && (!load || load.idle) && scenery;
+        const painted =
+          this.t3stats.blits > 0 && (!load || load.idle) && scenery && !this.repaintGroundPending && !this.repaintOccPending;
         // The ground has drawn SOMETHING — the only fact that makes giving up
         // on the rest reasonable.
         const anyGround = this.t3stats.blits > 0;
@@ -12457,7 +12532,7 @@ export class WorldScene extends Phaser.Scene {
     l.once("complete", () => {
       // Reconcile, the batch rule: everything queued before this landed.
       this.sceneryArt.done = this.sceneryArt.requested;
-      this.repaintWorld();
+      this.requestRepaint("scenery");
     });
     if (!l.isLoading()) l.start();
   }
@@ -12478,8 +12553,7 @@ export class WorldScene extends Phaser.Scene {
     this.sceneryManifestTimer = this.time.delayedCall(SCENERY_MANIFEST_SETTLE_MS, () => {
       this.sceneryManifestTimer = null;
       if (this.unloading || !this.world) return;
-      this.lastOccl = { x: NaN, y: NaN };
-      this.rebuildOccluders();
+      this.requestRepaint("manifest");
     });
   }
 
