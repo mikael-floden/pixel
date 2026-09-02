@@ -1023,7 +1023,18 @@ class Grow:
         bb = (self._bbox.get("boxes") or {}).get(facts.get("sprite"))
         if not bb:
             return None
-        rec = self._hit.get("scenery/" + p["piece"])
+        # THE RECORD THE GAME WILL ACTUALLY USE. The hitbox channel is keyed
+        # per variation ("scenery/stones/stone_013#not_lit_2") and the game
+        # resolves the DRAWN state's record, so a placement that names a
+        # variation must be centred on THAT ellipse, not the piece's. Measured
+        # on the_game: 19 placements differ, all fallen_log_020, by up to 7
+        # frame px - small, but it is exactly the kind of drift that shows up
+        # as "the hitbox is off" with the overlay on.
+        rec = None
+        if p.get("state"):
+            rec = self._hit.get(f"scenery/{p['piece']}#{p['state'].lower()}")
+        if not rec:
+            rec = self._hit.get("scenery/" + p["piece"])
         if not rec:
             pfx = "scenery/" + p["piece"] + "#"
             rec = next((v for k, v in self._hit.items() if k.startswith(pfx)),
