@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { loadManifest } from "./manifest";
 import { loadMonsterManifest } from "./monsterManifest";
 import { loadNpcManifest, loadNpcPlacement } from "./npcManifest";
+import { loadMonsterBootKinds } from "./monsterBoot";
 import { enterStaging, mergeStagingEntries, gameUrl } from "./staging";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
@@ -294,7 +295,13 @@ async function boot() {
   // art after the world was already on screen (the pop-in). Fetched here, the
   // placement is ready before the scene exists and the art rides the normal
   // boot progress. Tiny file, and worlds without NPCs return [] instantly.
-  const npcPlacement = await loadNpcPlacement(worldName).catch(() => []);
+  // And WHICH MONSTER ART the boot batch carries (client/src/monsterBoot.ts):
+  // the kinds with a spawn zone near where the player will stand; the rest
+  // stream in the deferred batch. Same tiny file, same boot-time reasoning.
+  const [npcPlacement, monsterBootKinds] = await Promise.all([
+    loadNpcPlacement(worldName).catch(() => []),
+    loadMonsterBootKinds(worldName, world?.spawn ?? null),
+  ]);
 
   // Render at the DEVICE's real pixels, not CSS pixels. The canvas backing store
   // is RS× the CSS size; the camera zoom is RS× higher to keep the SAME view.
@@ -403,6 +410,7 @@ async function boot() {
   game.registry.set("monsterManifest", monsterManifest);
   game.registry.set("npcManifest", npcManifest);
   game.registry.set("npcPlacement", npcPlacement);
+  game.registry.set("monsterBootKinds", monsterBootKinds);
   game.registry.set("atlasIndex", atlasIndex);
   game.registry.set("character", character);
   game.registry.set("name", name);

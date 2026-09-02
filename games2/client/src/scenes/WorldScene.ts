@@ -92,6 +92,7 @@ import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
+import { writeLastPos } from "../monsterBoot";
 import { NpcManifest, NpcDef, NpcPlacement, loadNpcPlacement } from "../npcManifest";
 import { colorForName } from "../placeholder";
 import { setBar, setLevel } from "../bars";
@@ -1011,6 +1012,10 @@ interface MonsterAvatar {
   // CAMERA GATE (see MONSTER_CULL_SLACK): true while the body's art cannot
   // touch the view, so its render pipeline is parked. Positions keep syncing.
   culled?: boolean;
+  // ART PENDING: this kind's walk/idle strips ride the deferred batch and
+  // have not landed. Parked exactly like a culled body — never the placeholder
+  // wanderer, never a checkerboard — and released by onMonsterArtLanded.
+  artPending?: boolean;
   // COMBAT mirrors (server mstate/actionSeq drive the clips).
   mstate?: string;
   lastActionSeq?: number;
@@ -1144,6 +1149,13 @@ export class WorldScene extends Phaser.Scene {
   private monstersActive = 0;
   // Monster catalog (null when /monsters.json was unavailable → no monsters).
   private monsterManifest: MonsterManifest | null = null;
+  /** Kinds whose walk/idle art rides the BOOT batch (client/src/monsterBoot.ts);
+   *  null = every kind, the pre-split behaviour. */
+  private monsterBootKinds: Set<string> | null = null;
+  /** Kinds the boot batch left out: queued in the deferred batch, and their
+   *  bodies stay parked (artPending) until THEIR strips land. */
+  private monsterDeferredKinds = new Set<string>();
+  private lastPosSavedAt = 0;
   private npcManifest: NpcManifest | null = null;
   /** Placed NPCs, rendered through the SAME body pipeline as players and
    * monsters (depth, nadir shadow, lit copy). Client-only decor: they have no
@@ -1663,6 +1675,7 @@ export class WorldScene extends Phaser.Scene {
   init() {
     this.manifest = this.registry.get("manifest") as Manifest;
     this.monsterManifest = (this.registry.get("monsterManifest") as MonsterManifest | null) ?? null;
+    this.monsterBootKinds = (this.registry.get("monsterBootKinds") as Set<string> | null | undefined) ?? null;
     this.npcManifest = (this.registry.get("npcManifest") as NpcManifest | null) ?? null;
     this.npcPlacement = (this.registry.get("npcPlacement") as NpcPlacement[] | null) ?? [];
     this.myCharacter = this.registry.get("character") as CharacterDef;
@@ -1764,25 +1777,17 @@ export class WorldScene extends Phaser.Scene {
     // Monster art: 48x48 HORIZONTAL strips, loaded as spritesheets (campfire
     // pattern). WALK/ROAM only this round — load just the resolved walk (jump)
     // strip per (kind, direction); attack/die are deferred.
+    // NEAR KINDS ONLY (client/src/monsterBoot.ts): a world can name every kind
+    // there is (the_game: 57 — 912 strips, 5.3 MB, half of a cold boot's
+    // requests), but only the kinds with a zone near where the player will
+    // stand ride the boot batch. The rest queue in the deferred batch and
+    // their bodies stay parked until their own strips land.
     for (const def of this.monsterManifest?.monsters ?? []) {
-      // WALK + IDLE (maintainer 2026-07-30: stopped monsters must PLAY their
-      // idle, not freeze on a walk frame); attack/die stay deferred.
-      const states = [monsterWalkKey(def)];
-      if (def.idleAnim && !states.includes(def.idleAnim)) states.push(def.idleAnim);
-      for (const anim of states) {
-        const dirStrips = def.strips?.[anim] ?? {};
-        for (const [dir, url] of Object.entries(dirStrips)) {
-          if (!url) continue; // guard a missing strip
-          // Slice with the STRIP'S OWN measured frame size — art repairs
-          // resize strips in place, so the monster-level size can be stale
-          // (frame bleed).
-          const dims = def.stripDims?.[anim]?.[dir];
-          this.load.spritesheet(monsterSheetKey(def.id, anim, dir), withV(url), {
-            frameWidth: dims?.w ?? def.frameW,
-            frameHeight: dims?.h ?? def.frameH,
-          });
-        }
+      if (this.monsterBootKinds && !this.monsterBootKinds.has(def.id)) {
+        this.monsterDeferredKinds.add(def.id);
+        continue;
       }
+      this.queueMonsterBodyStrips(def);
     }
     // Isometric ground tiles.
     if (this.world) {
@@ -3315,6 +3320,17 @@ export class WorldScene extends Phaser.Scene {
       lastInput: () => this.lastInput,
       // Monster render-state probe (shared body pipeline QA): per monster the
       // resolved depth, cover line, shadow anchor and lit-copy state.
+      /** The boot/deferred split of monster art and what is still parked. */
+      monsterBoot: () => ({
+        boot: this.monsterBootKinds ? [...this.monsterBootKinds].sort() : null,
+        deferred: [...this.monsterDeferredKinds].sort(),
+        pending: [...this.monsters.values()].filter((mv) => mv.artPending).map((mv) => mv.kind),
+        // kinds whose south walk clip is registered — the deferred ones join
+        // this list one kind at a time as their strips land
+        clipKinds: (this.monsterManifest?.monsters ?? [])
+          .filter((d) => this.anims.exists(monsterAnimKey(d.id, monsterWalkKey(d), DEFAULT_DIRECTION)))
+          .map((d) => d.id).length,
+      }),
       monsterInfo: () =>
         [...this.monsters.entries()].map(([id, mv]) => ({
           id,
@@ -3399,6 +3415,8 @@ export class WorldScene extends Phaser.Scene {
           // Camera-gated (off-screen): its pipeline is parked this frame, so
           // `playing`/`depth`/`lit` are deliberately stale — QA must skip it.
           culled: !!mv.culled,
+          artPending: !!mv.artPending,
+          spriteVisible: mv.sprite.visible,
           // Combat mirrors (verify-combat drives fights through these).
           x: mv.fx,
           y: mv.fy,
@@ -3642,6 +3660,7 @@ export class WorldScene extends Phaser.Scene {
         let animatingCulled = 0;
         let wrongCulled = 0;
         let wastedActive = 0;
+        let parkedInView = 0;
         this.monsters.forEach((mv) => {
           const b = mv.sprite.getBounds();
           const sw = mv.shadow.displayWidth;
@@ -3655,7 +3674,9 @@ export class WorldScene extends Phaser.Scene {
             culled++;
             if (mv.sprite.visible || mv.lit?.visible || mv.shadow.visible) visibleCulled++;
             if (mv.sprite.anims.isPlaying) animatingCulled++;
-            if (hits) wrongCulled++;
+            // A body parked for art it does not have yet is culled ON PURPOSE
+            // wherever it stands — counted apart, never as a wrong cull.
+            if (hits) mv.artPending ? parkedInView++ : wrongCulled++;
           } else if (!hits) wastedActive++;
         });
         return {
@@ -3665,6 +3686,7 @@ export class WorldScene extends Phaser.Scene {
           visibleCulled,
           animatingCulled,
           wrongCulled,
+          parkedInView,
           wastedActive,
           slack: MONSTER_CULL_SLACK,
         };
@@ -4092,6 +4114,11 @@ export class WorldScene extends Phaser.Scene {
     // origin near the feet so it y-sorts and lifts like a player. Fall back to
     // the wanderer placeholder if a monster's strip failed to load.
     const sprite = this.add.sprite(p0.x, p0.y, hasArt ? initKey : PLACEHOLDER_TEX);
+    // A kind whose strips are still in the deferred batch starts PARKED —
+    // hidden like a culled body — and onMonsterArtLanded releases it. A kind
+    // whose art is simply missing keeps today's placeholder.
+    const artPending = !hasArt && this.monsterDeferredKinds.has(m.kind);
+    if (artPending) sprite.setVisible(false);
     // Feet origin = the PER-DIRECTION measured ground contract (feet line +
     // foot centre of the south strip to start; playMonsterAnim re-anchors on
     // every facing change). One pooled anchor floated whole directions by up
@@ -4132,11 +4159,14 @@ export class WorldScene extends Phaser.Scene {
         (e0 ? e0.q * 2 : shadowH) * MONSTER_SHADOW_SPREAD,
       );
     if (e0) shadow.setRotation(e0.theta);
+    if (artPending) shadow.setVisible(false);
     const mv: MonsterAvatar = {
       sprite,
       shadow,
       kind: m.kind,
       label,
+      artPending,
+      culled: artPending,
       lx: p0.x,
       ly: p0.y,
       lyFlat: f0.y,
@@ -7572,6 +7602,7 @@ export class WorldScene extends Phaser.Scene {
           ? Math.max(mv.shadowH, sp.displayHeight * (1 - sp.originY))
           : mv.shadowH;
         const onScreen =
+          !mv.artPending && // parked until its strips land — see addMonster
           g.x + halfW >= vL &&
           g.x - halfW <= vR &&
           ay + down >= vT &&
@@ -8388,7 +8419,19 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  /** Remember the cell I stand on in this world (localStorage, every few
+   *  seconds): the next boot loads the monster art of THIS neighbourhood too,
+   *  because a returning player lands on their saved spot, not the spawn. */
+  private saveLastPos() {
+    const now = this.time.now;
+    if (now - this.lastPosSavedAt < 3000) return;
+    this.lastPosSavedAt = now;
+    const me = this.room?.state.players?.get(this.room.sessionId);
+    if (me) writeLastPos(this.worldName, me.x / CELL_WU, me.y / CELL_WU);
+  }
+
   private predictAndSend(dt: number) {
+    this.saveLastPos();
     if (this.selfDead) {
       this.sendAccum = 0;
       this.jumpQueued = false;
@@ -9882,6 +9925,19 @@ export class WorldScene extends Phaser.Scene {
       queued++;
     }
     this.npcIdleQueue = [];
+    // FAR MONSTERS' walk/idle strips — the kinds the boot batch left out.
+    // Behind my urgent clips and the NPC idles, ahead of my weapon/spell
+    // states: a body that can wander into view outranks a clip nothing can
+    // trigger yet. Each kind releases its parked bodies the moment ITS strips
+    // land (per-kind FILE_COMPLETE count below), not at the batch's end.
+    const farKeys = new Map<string, string[]>();
+    for (const def of this.monsterManifest?.monsters ?? []) {
+      if (!this.monsterDeferredKinds.has(def.id)) continue;
+      const keys = this.queueMonsterBodyStrips(def);
+      if (keys.length) farKeys.set(def.id, keys);
+      else this.onMonsterArtLanded(def.id); // already resident — nothing to wait for
+      queued += keys.length;
+    }
     if (myDef) for (const s of myRest) mineByState.set(s, queueState(myDef, s));
     for (const def of chars) {
       if (def.uid === myDef?.uid) continue; // already queued, first
@@ -9971,6 +10027,32 @@ export class WorldScene extends Phaser.Scene {
         this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onFile),
       );
     }
+    if (farKeys.size) {
+      const kindOf = new Map<string, string>(); // sheet key -> kind
+      const leftOf = new Map<string, number>(); // kind -> strips outstanding
+      for (const [kind, keys] of farKeys) {
+        leftOf.set(kind, keys.length);
+        for (const k of keys) kindOf.set(k, kind);
+      }
+      const onStrip = (key: string) => {
+        const kind = kindOf.get(key);
+        if (kind === undefined) return;
+        kindOf.delete(key);
+        const n = (leftOf.get(kind) ?? 1) - 1;
+        if (n > 0) return void leftOf.set(kind, n);
+        leftOf.delete(kind);
+        this.onMonsterArtLanded(kind);
+        if (!leftOf.size) this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onStrip);
+      };
+      this.load.on(Phaser.Loader.Events.FILE_COMPLETE, onStrip);
+      this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+        this.load.off(Phaser.Loader.Events.FILE_COMPLETE, onStrip);
+        // An ERRORED strip never fires FILE_COMPLETE: release what is left so a
+        // kind with a missing file degrades to today's placeholder, not to a
+        // body parked forever.
+        for (const kind of [...leftOf.keys()]) this.onMonsterArtLanded(kind);
+      });
+    }
     this.load.once(Phaser.Loader.Events.COMPLETE, () => {
       this.buildAnimations();
       // THE SINGLE-CALL-SITE TRAP (see CLAUDE.md): textures.exists turning
@@ -10058,8 +10140,48 @@ export class WorldScene extends Phaser.Scene {
    * its strip spritesheet. Frame counts vary per (kind, dir) — read them from
    * the manifest (poring/forest = 16, ice/lava/sand/water = 6), never hardcode.
    * Slow 6-frame hops read better at ~6fps, the longer 16-frame ones at ~10. */
-  private buildMonsterAnimations() {
+  /** WALK + IDLE strips for one kind (maintainer 2026-07-30: stopped monsters
+   *  must PLAY their idle, not freeze on a walk frame); attack/angry/die are
+   *  always deferred. Returns the sheet keys it queued, so a caller can count
+   *  them landing. Sliced with the STRIP'S OWN measured frame size — art
+   *  repairs resize strips in place, so the monster-level size can be stale
+   *  (frame bleed). */
+  private queueMonsterBodyStrips(def: MonsterDef): string[] {
+    const keys: string[] = [];
+    const states = [monsterWalkKey(def)];
+    if (def.idleAnim && !states.includes(def.idleAnim)) states.push(def.idleAnim);
+    for (const anim of states) {
+      const dirStrips = def.strips?.[anim] ?? {};
+      for (const [dir, url] of Object.entries(dirStrips)) {
+        if (!url) continue; // guard a missing strip
+        const sk = monsterSheetKey(def.id, anim, dir);
+        if (this.textures.exists(sk)) continue;
+        const dims = def.stripDims?.[anim]?.[dir];
+        this.load.spritesheet(sk, withV(url), {
+          frameWidth: dims?.w ?? def.frameW,
+          frameHeight: dims?.h ?? def.frameH,
+        });
+        keys.push(sk);
+      }
+    }
+    return keys;
+  }
+
+  /** A deferred kind's strips are in: register its clips and release every
+   *  parked body of that kind. The per-frame path then un-culls it and swaps
+   *  the placeholder for the real strip (playMonsterAnim re-textures whenever
+   *  the sheet exists), so nothing here touches a sprite directly. */
+  private onMonsterArtLanded(kind: string) {
+    this.monsterDeferredKinds.delete(kind);
+    this.buildMonsterAnimations(kind);
+    this.monsters.forEach((mv) => {
+      if (mv.kind === kind) mv.artPending = false;
+    });
+  }
+
+  private buildMonsterAnimations(only?: string) {
     for (const def of this.monsterManifest?.monsters ?? []) {
+      if (only !== undefined && def.id !== only) continue;
       const walk = monsterWalkKey(def);
       // kind: loop (walk/idle/angry) vs once (attack spans ~0.7s, die spans
       // the server's MONSTER_DIE_MS corpse window so the clip and the sweep

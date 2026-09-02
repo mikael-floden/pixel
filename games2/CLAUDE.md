@@ -1082,9 +1082,33 @@ clip, no tint.
   separation and both monster startTrip sites route with canSwim false; a
   SWIMMING victim instantly disengages its hunter; swimmers can neither swing
   nor provoke (no water-sniping — cuts both ways). Players keep canSwim true.
+- **MONSTER ART IS NEAR-FIRST** (`client/src/monsterBoot.ts`, rule
+  `shared/monsterBootKinds`): the boot batch carries the walk+idle strips of
+  only the kinds with a spawn zone within `MONSTER_BOOT_RADIUS_CELLS` (32,
+  Chebyshev to the zone bbox) of the world's spawn OR of the cell the player
+  last stood on in this world (`ml-lastpos:<world>`, written every 3 s —
+  a returning player lands on their saved spot). Every other kind's strips
+  queue in the deferred batch behind my urgent clips and the NPC idles, and
+  a body whose kind is still deferred starts PARKED — culled, never the
+  placeholder wanderer — until ITS strips land (per-kind FILE_COMPLETE
+  count → `onMonsterArtLanded` registers the clips and releases the bodies;
+  an errored strip releases on the batch's COMPLETE and degrades to the
+  placeholder as before). No spawns.json / no zones / any fetch error → every
+  kind at boot, the pre-split behaviour. (the_game names all 57 kinds; 912
+  strips / 5.3 MB were half of a cold boot's 1,884 requests, and 20 kinds
+  live within 32 cells of the spawn: measured 320 strips before the avatar
+  is in, 146 monsters with 92 parked, released one kind at a time, 57/57
+  clips at the end, zero visible placeholders across 116 samples. A monster
+  roams only inside its zone and chases ≤ ESCAPE_RADIUS past it, so a
+  deferred kind cannot reach the player before the batch lands.) Probes:
+  `__ml.monsterBoot()` (boot/deferred/pending/clipKinds), `monsterInfo().
+  artPending/spriteVisible`, `monsterGate().parkedInView` (a parked body in
+  view is counted apart, never as a wrong cull). Gate:
+  `server/test/monsterboot.test.ts` (definition, union of centres, the real
+  partition on every world on disk).
 - **Monster combat clips**: attack/angry/die strips (~525 files, ~3.1MB)
   background-load in the SAME deferred batch as the player's action states
-  (boot stays walk+idle). The COMPLETE handler re-runs
+  (boot stays walk+idle of the NEAR kinds — above). The COMPLETE handler re-runs
   buildMonsterAnimations (a late texture never registers a clip by itself —
   the single-call-site trap). attack/die once-through (die paced to
   MONSTER_DIE_MS so clip and corpse sweep agree); angry loops between swings;

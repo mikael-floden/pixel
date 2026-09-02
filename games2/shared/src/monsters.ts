@@ -130,6 +130,53 @@ export function zonePolygonCells(
   return out;
 }
 
+/** Chebyshev distance, in CELLS, from a cell to a zone polygon's bounding box
+ * — 0 when the cell is inside the box. The box, not the polygon: this ranks
+ * zones by how soon a walker could meet them, and a box is never smaller than
+ * its polygon, so it can only err toward "near". */
+export function zoneDistanceCells(zone: SpawnZone, col: number, row: number): number {
+  let minC = Infinity;
+  let minR = Infinity;
+  let maxC = -Infinity;
+  let maxR = -Infinity;
+  for (const [x, y] of zone.area) {
+    minC = Math.min(minC, x);
+    maxC = Math.max(maxC, x);
+    minR = Math.min(minR, y);
+    maxR = Math.max(maxR, y);
+  }
+  const dc = Math.max(minC - col, 0, col - maxC);
+  const dr = Math.max(minR - row, 0, row - maxR);
+  return Math.max(dc, dr);
+}
+
+/** How far, in cells, a spawn zone may be from where the player will stand
+ * for its monsters' walk/idle art to ride the BOOT batch. Beyond it the art
+ * rides the deferred batch and the monster stays culled until it lands.
+ * (32 = several phone screens: a monster roams only inside its own zone and
+ * chases at most ESCAPE_RADIUS_WU ≈ 12 cells past it, and the deferred batch
+ * lands within seconds of the join. Measured on the_game and the_island2:
+ * 20 of 57 kinds within 32 cells of the spawn — 592 strips / 3.4 MB off a
+ * 1,884-request boot.) */
+export const MONSTER_BOOT_RADIUS_CELLS = 32;
+
+/** The monster kinds whose art the boot batch carries: every kind with a zone
+ * within `radiusCells` of ANY centre — the world's declared spawn and the
+ * player's last known spot in this world (a returning player lands on their
+ * saved spot, not the spawn). No centres → every kind, the pre-split
+ * behaviour: when in doubt, include. */
+export function monsterBootKinds(
+  zones: SpawnZone[],
+  centres: ReadonlyArray<readonly [number, number]>,
+  radiusCells: number = MONSTER_BOOT_RADIUS_CELLS,
+): Set<string> {
+  const out = new Set<string>();
+  for (const z of zones) {
+    if (!centres.length || centres.some(([c, r]) => zoneDistanceCells(z, c, r) <= radiusCells)) out.add(z.monster);
+  }
+  return out;
+}
+
 /** The zone polygon's bounding box in WORLD UNITS (debug overlay publish). */
 export function zoneBBox(zone: SpawnZone): { x0: number; y0: number; x1: number; y1: number } {
   let minC = Infinity;
