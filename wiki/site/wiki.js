@@ -936,7 +936,7 @@ function hitboxes(entity, state) {
      * ellipse — every record written before today, and every round footprint
      * since, so nothing has to be migrated and no consumer has to guess. */
     .map((b) => ({ ax: +b.ax, ay: +b.ay, rx: +b.rx, ry: +b.ry, rot: isFinite(b.rot) ? +b.rot : 0,
-      ...(b.shape === "rect" ? { shape: "rect" } : {}) }));
+      ...(b.shape === "rect" || b.shape === "ellipse" ? { shape: b.shape } : {}) }));
 }
 /* WHERE A FIRST ELLIPSE STARTS, from the art's own measured content box —
  * `bb` [x0,y0,x1,y1] in frame pixels, published per state+direction. A piece
@@ -977,9 +977,11 @@ function setHitboxes(entity, boxes, state) {
       ax: +(+b.ax).toFixed(2), ay: +(+b.ay).toFixed(2),
       rx: +(+b.rx).toFixed(2), ry: +(+b.ry).toFixed(2),
       rot: +(((+b.rot || 0) % 360 + 360) % 360).toFixed(1),
-      // Written ONLY for rects: an absent key is the ellipse, so the file does
-      // not grow a redundant "shape":"ellipse" on all 3,673 existing records.
-      ...(b.shape === "rect" ? { shape: "rect" } : {}),
+      // Written only where he DISAGREES with the domain's per-piece
+      // hitbox_shape, so the file names exceptions and the 3,673 records
+      // already on it stay byte-identical. Both spellings are meaningful:
+      // "ellipse" on a rect-tagged bookshelf is a real correction.
+      ...(b.shape === "rect" || b.shape === "ellipse" ? { shape: b.shape } : {}),
     })),
     updated_at: new Date().toISOString(),
   };
@@ -1033,6 +1035,13 @@ const hitboxAuto = (entity, state) => hitboxRaw(entity, state)?.auto === true;
  * file only ever names exceptions. Piece-level: a carpet is a carpet in every
  * state, and the per-variation resolver already falls back to the bare key. */
 const taggedFlat = (o) => o?.noCollision === true;
+/* THE SHAPE A PIECE'S FOOTPRINT DEFAULTS TO (scenery agent, 2026-09-02:
+ * `hitbox_shape`, 131 rect / 576 ellipse). The domain states the fact — a
+ * bookshelf is boxy whoever looks at it — and his per-BOX choice in the tuning
+ * file outranks it, exactly as with the collision flag. Resolution, for every
+ * consumer: box.shape ?? piece.hitbox_shape ?? "ellipse". */
+const taggedShape = (o) => (o?.hitboxShape === "rect" ? "rect" : "ellipse");
+const boxShape = (o, b) => (b?.shape === "rect" || b?.shape === "ellipse" ? b.shape : taggedShape(o));
 const hitboxFlat = (entity) => {
   const ov = hitboxDoc().overrides?.[hitboxKey(entity)]?.no_collision;
   return typeof ov === "boolean" ? ov : taggedFlat(entity);
@@ -1715,7 +1724,7 @@ function makePlayer(entity, kind, opts = {}) {
         ctx.beginPath();
         // Same centre, same half-axes, same rotation — only the outline
         // differs, so switching shape never moves the footprint he placed.
-        if (b.shape === "rect") {
+        if (boxShape(entity, b) === "rect") {
           ctx.save();
           ctx.translate(ex, ey);
           ctx.rotate(th);
@@ -2256,7 +2265,10 @@ function makePlayer(entity, kind, opts = {}) {
       }, `${i + 1}`);
     }));
     hitChips.classList.toggle("hidden", boxes.length < 2);
-    const shapeNow = b?.shape === "rect" ? "rect" : "ellipse";
+    const shapeNow = boxShape(entity, b);
+    // Choosing the domain's own answer DELETES the correction — the tag stands
+    // on its own, and the day scenery re-tags a piece the wiki follows.
+    const shapeTag = taggedShape(entity);
     hitShape.replaceChildren(...[
       ["ellipse", "◯ ellipse", "A rounded footprint — trees, rocks, barrels: anything with no straight edge"],
       ["rect", "▭ rect", "Straight edges and square corners — a table, a bookshelf, a bed. This is what lets the map agent push a piece flush into a corner or against a wall."],
@@ -2266,7 +2278,7 @@ function makePlayer(entity, kind, opts = {}) {
       // `false` through h() would grey out both shapes on every piece.
       const btn = h("button", {
         class: shapeNow === k ? "on" : "", type: "button", title,
-        onclick: () => { if (shapeNow !== k) editHit(hitSel, { shape: k === "rect" ? "rect" : null }); },
+        onclick: () => { if (shapeNow !== k) editHit(hitSel, { shape: k === shapeTag ? null : k }); },
       }, label);
       btn.disabled = st === "flat" || !b;
       return btn;
@@ -2359,7 +2371,7 @@ function makePlayer(entity, kind, opts = {}) {
         ? h("b", {}, "no hitbox — this piece hangs on a wall")
         // "box", not "ellipse": with two shapes on offer the count can span
         // both, and the glyph says which one the rails are driving.
-        : h("b", {}, `${boxes.length} box${boxes.length === 1 ? "" : "es"} · #${hitSel + 1} ${b.shape === "rect" ? "▭" : "◯"} ${(b.rx * 2).toFixed(1)} × ${(b.ry * 2).toFixed(1)} px`),
+        : h("b", {}, `${boxes.length} box${boxes.length === 1 ? "" : "es"} · #${hitSel + 1} ${boxShape(entity, b) === "rect" ? "▭" : "◯"} ${(b.rx * 2).toFixed(1)} × ${(b.ry * 2).toFixed(1)} px`),
       st === "none" || st === "flat" ? "" : ` · at ${signed(b.ax)}, ${signed(b.ay)}${b.rot ? ` · turned ${Math.round(b.rot)}°` : ""}`,
       /* NO STATUS PROSE ON THIS LINE (maintainer 2026-08-29: "you draw this
        * text 'proposed default not set until you accept or adjust it' and

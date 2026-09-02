@@ -1376,6 +1376,13 @@ function buildObjects() {
        * live/tuning/scenery_hitbox.json and outranks it. */
       noCollision: (oj.no_collision === true || oj.collision === false || oj.flat === true
         || factory.groups?.find?.((g) => g.id === (oj.group ?? group))?.no_collision === true) ? true : null,
+      /* WHAT SHAPE THE FOOTPRINT WANTS TO BE (scenery agent, 2026-09-02:
+       * `hitbox_shape` per piece — 131 rect, 576 ellipse). Same two-level
+       * arrangement as the collision flag: the DOMAIN states the fact, the
+       * maintainer's per-box choice in live/tuning/scenery_hitbox.json
+       * outranks it. Carried as-is so an unknown future value is visible
+       * rather than silently flattened to "ellipse". */
+      hitboxShape: typeof oj.hitbox_shape === "string" ? oj.hitbox_shape : null,
       // When the art that is there NOW arrived, plus its content hash — the
       // hash is what a verdict is really ABOUT, and wiki.js stamps it into
       // every new verdict so staleness is byte-exact from here on. addedGuess

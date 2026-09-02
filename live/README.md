@@ -173,7 +173,7 @@ The laws around the flow:
   - `overrides["scenery/<category>/<piece>"] = { boxes: [{ax, ay, rx, ry,
     rot, shape?}], updated_at }`. `rot` is degrees, 0–179 (both shapes are
     symmetric under a half turn).
-  - **`shape`: `"rect"`, or absent for an ellipse** (2026-08-30, maintainer:
+  - **`shape`: `"rect"` / `"ellipse"`, absent = the piece's own tag** (2026-08-30, maintainer:
     *"town and indoor often have hitboxes that needs a rect and not an ellipse.
     Take a table or bookshelf … will make it possible for me to do a perfect
     hitbox on a bookshelf, bed, etc and the map-agent can then make use of the
@@ -181,12 +181,22 @@ The laws around the flow:
     the wall"*). **Per BOX, not per piece** — an L-shaped counter is two rects,
     a well is a rect base with a round rim. `ax/ay/rx/ry/rot` mean exactly what
     they mean for an ellipse: same centre, same half-axes (so a rect is
-    `2·rx` × `2·ry`), same rotation. Absent means ellipse, so every record
-    written before today is already correct and nothing migrates. **A consumer
-    that ignores `shape` gets the inscribed ellipse of the rect** — smaller
-    than the truth at the corners, which is the safe direction to be wrong
-    while the game catches up, but it is exactly the corner fit the furniture
-    was drawn for, so consumers should read it.
+    `2·rx` × `2·ry`), same rotation.
+    - **RESOLUTION, for every consumer: `box.shape` ?? the piece's
+      `hitbox_shape` ?? `"ellipse"`.** The scenery domain publishes
+      `hitbox_shape` per piece in its own `scenery.json` (2026-09-02: 131
+      rect, 576 ellipse) — the domain states the fact, a bookshelf being boxy
+      whoever looks at it — and an entry here is the maintainer's CORRECTION
+      of it, the same two-level arrangement as `no_collision`. Agreeing with
+      the tag deletes the entry, so this file only ever names exceptions and
+      the 3,673 records written before the field existed stay byte-identical.
+    - Both spellings are therefore meaningful: `"ellipse"` on a rect-tagged
+      bookshelf is a real correction, not a default written out. **Absent does
+      NOT mean ellipse** — ask the piece.
+    - **A consumer that ignores `shape` gets the inscribed ellipse of the
+      rect** — smaller than the truth at the corners, the safe direction to be
+      wrong while the game catches up, but the corner fit is exactly what the
+      furniture was drawn for, so consumers should read it.
   - **Stored in SCREEN space, unlike a monster's.** A monster's `rx`/`ry` are
     ground-space, tuned facing south, and the game unsquashes, rotates and
     re-squashes them per facing. Scenery never turns, and the Game Master fits

@@ -811,6 +811,54 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   }, PIECE.path);
   ok(back && !("shape" in back), `going back to an ellipse writes no shape key at all (${JSON.stringify(back)})`);
 }
+/* THE DOMAIN STATES THE SHAPE, HE OVERRIDES IT (scenery agent 2026-09-02:
+ * hitbox_shape per piece, 131 rect / 576 ellipse). Same two-level arrangement
+ * as the collision flag, so a bookshelf must arrive as a rect with NOTHING
+ * stored, and only a disagreement is written down. */
+{
+  const rectPiece = DATAOBJ.find((o) => o.hitboxShape === "rect" && Object.keys(o.animations ?? {}).length
+    && !["MOUNTAIN_WALL", "WINDOW"].includes(o.type));
+  ok(!!rectPiece, `the domain publishes rect-shaped pieces (${DATAOBJ.filter((o) => o.hitboxShape === "rect").length} of ${DATAOBJ.length})`);
+  if (rectPiece) {
+    await p.goto(`${W}#/objects/${rectPiece.id}`, { waitUntil: "load" });
+    await p.waitForTimeout(2400);
+    await p.evaluate((k) => {
+      const d = window.__wiki?.state?.tuning?.scenery_hitbox;
+      if (d?.overrides) for (const key of Object.keys(d.overrides)) {
+        if (key === k || key.startsWith(`${k}#`)) delete d.overrides[key];
+      }
+    }, rectPiece.path);
+    await p.evaluate(() => { delete window.__wikiHitbox; });
+    await p.evaluate(() => {
+      if (!document.querySelector(".hit-bar:not(.hidden)")) {
+        [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click();
+      }
+    });
+    await p.waitForTimeout(1400);
+    const on = await p.evaluate(() => [...document.querySelectorAll(".hit-shape button")].find((x) => x.classList.contains("on"))?.textContent?.trim() ?? "");
+    ok(/rect/.test(on), `a rect-tagged piece opens ON rect, with nothing stored (${rectPiece.id} → “${on}”)`);
+    const read = await p.evaluate(() => document.querySelector(".hit-bar .shadow-read")?.textContent ?? "");
+    ok(/▭/.test(read), `and the read line says so (“${read.slice(0, 34)}”)`);
+    // Disagreeing with the tag is what gets written down...
+    await p.evaluate(() => [...document.querySelectorAll(".hit-shape button")].find((x) => /ellipse/.test(x.textContent))?.click());
+    await p.waitForTimeout(800);
+    const dis = await p.evaluate((path) => {
+      const ov = window.__wiki?.state?.tuning?.scenery_hitbox?.overrides ?? {};
+      const k = Object.keys(ov).find((x) => x === path || x.startsWith(`${path}#`));
+      return ov[k]?.boxes?.[0] ?? null;
+    }, rectPiece.path);
+    ok(dis?.shape === "ellipse", `calling a rect-tagged piece round is stored EXPLICITLY — absent no longer means ellipse (${JSON.stringify(dis)})`);
+    // ...and agreeing again deletes it, so the tag stands on its own.
+    await p.evaluate(() => [...document.querySelectorAll(".hit-shape button")].find((x) => /rect/.test(x.textContent))?.click());
+    await p.waitForTimeout(800);
+    const agree = await p.evaluate((path) => {
+      const ov = window.__wiki?.state?.tuning?.scenery_hitbox?.overrides ?? {};
+      const k = Object.keys(ov).find((x) => x === path || x.startsWith(`${path}#`));
+      return ov[k]?.boxes?.[0] ?? null;
+    }, rectPiece.path);
+    ok(agree && !("shape" in agree), `and agreeing with the domain deletes the correction (${JSON.stringify(agree)})`);
+  }
+}
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 
 await b.close();
