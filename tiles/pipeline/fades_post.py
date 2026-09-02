@@ -295,12 +295,67 @@ def analyse(sheet, i, name):
     }, None
 
 
+CACHE = os.path.join(FADES, "analysis_cache.json")
+
+
+def _fingerprint(path):
+    """Cheap identity for a raw tile: size + mtime. A regenerated sheet changes both."""
+    try:
+        st = os.stat(path)
+        return f"{st.st_size}:{int(st.st_mtime)}"
+    except OSError:
+        return None
+
+
+def _load_cache():
+    """Reuse previous analysis, seeded from the published index on first run.
+
+    THE PASS USED TO REBUILD EVERYTHING EVERY ROUND - 10,000+ tiles, hours per round -
+    so while a generation run was in flight NOTHING new ever reached the index and the
+    maintainer had nothing to review ("what transition/fade pair can I start reviewing?").
+    81 pairs sat generated and invisible. Analysis is per tile and deterministic, so a
+    tile whose raw bytes have not changed does not need re-analysing; only new sheets do,
+    and a round now finishes in the time it takes to analyse what actually arrived.
+    """
+    if os.path.isfile(CACHE):
+        try:
+            return json.load(open(CACHE))
+        except Exception:
+            pass
+    # seed from the published index: those entries were produced by this same pass
+    seed = {}
+    ip = os.path.join(FADES, "index.json")
+    if os.path.isfile(ip):
+        try:
+            d = json.load(open(ip))
+            for ents in (d.get("pairs") or {}).values():
+                for e in ents:
+                    raw = e["key"] + ".webp"
+                    fp = _fingerprint(os.path.join(REPO, raw))
+                    if fp:
+                        seed[e["key"]] = {"fp": fp, "entry": e}
+        except Exception:
+            pass
+    return seed
+
+
 def main():
+    cache = _load_cache()
+    fresh, reused = 0, 0
     pairs, rejected, n_valid = {}, {}, 0
     for sheet in sheets():
         pk = f'{sheet["dominant"]}__to__{sheet["minor"]}'
         for i, name in enumerate(sheet["tiles"]):
-            e, why = analyse(sheet, i, name)
+            key = f'{sheet["dir"]}/{name[:-5]}'
+            fp = _fingerprint(os.path.join(REPO, sheet["dir"], name))
+            hit = cache.get(key)
+            if hit and fp and hit.get("fp") == fp:
+                reused += 1
+                e, why = hit.get("entry"), hit.get("why")
+            else:
+                e, why = analyse(sheet, i, name)
+                fresh += 1
+                cache[key] = {"fp": fp, "entry": e, "why": why}
             if e is None:
                 rejected[why] = rejected.get(why, 0) + 1
             else:
@@ -330,6 +385,11 @@ def main():
         "n_rejected": rejected,
         "pairs": pairs,
     }
+    ctmp = CACHE + f".{os.getpid()}.tmp"
+    with open(ctmp, "w") as f:
+        json.dump(cache, f)
+    os.replace(ctmp, CACHE)
+    print(f"analysed {fresh} new tiles, reused {reused} from cache")
     dst = os.path.join(FADES, "index.json")
     tmp = f"{dst}.{os.getpid()}.tmp"
     with open(tmp, "w") as f:
