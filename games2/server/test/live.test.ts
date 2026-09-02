@@ -10,6 +10,8 @@ import express from "express";
 
 // Mock GitHub (raw + contents API) — must be up BEFORE live.ts reads env.
 const ghFiles = new Map<string, string>(); // "live/tuning/monsters.json" -> body
+const ghOversize = new Set<string>();   // paths the contents API serves WITHOUT content
+let ghBlobDown = false;                  // simulate the blob endpoint failing too
 let ghPuts = 0;
 const mock = createServer((req, res) => {
   const url = new URL(req.url ?? "/", "http://x");
@@ -21,6 +23,14 @@ const mock = createServer((req, res) => {
     res.end(body);
     return;
   }
+  // git data API: /repos/<repo>/git/blobs/<sha> — any size, base64
+  const bm = /^\/repos\/[^/]+\/[^/]+\/git\/blobs\/sha-(.+)$/.exec(url.pathname);
+  if (bm && req.method === "GET") {
+    const body = ghFiles.get(decodeURIComponent(bm[1]));
+    if (!body || ghBlobDown) { res.writeHead(404).end("{}"); return; }
+    res.end(JSON.stringify({ sha: "sha-" + bm[1], content: Buffer.from(body).toString("base64"), encoding: "base64" }));
+    return;
+  }
   // contents API: /repos/<repo>/contents/<path>
   const m = /^\/repos\/[^/]+\/[^/]+\/contents\/(.+)$/.exec(url.pathname);
   if (m) {
@@ -28,6 +38,8 @@ const mock = createServer((req, res) => {
     if (req.method === "GET") {
       const body = ghFiles.get(path);
       if (!body) { res.writeHead(404).end("{}"); return; }
+      // GitHub returns NO content (but the sha and size) for files over 1 MB.
+      if (ghOversize.has(path)) { res.end(JSON.stringify({ sha: "sha-" + path, size: body.length, content: "", encoding: "none" })); return; }
       res.end(JSON.stringify({ sha: "sha-" + path, content: Buffer.from(body).toString("base64") }));
       return;
     }
@@ -266,6 +278,36 @@ test("initLive notifies rooms so boot-window joiners get the real tuning", async
   await live.initLive("/nonexistent");
   off();
   assert.equal(notified, 1);
+});
+
+/* THE 1 MB WIPE (2026-09-02): live/feedback/tiles.json grew past GitHub's
+ * contents-API limit, the API answered with a sha and no content, the server
+ * read that as an empty document and committed one save's 53 entries over
+ * 6,890 of the Game Master's verdicts. Measured, not hypothetical. */
+test("an oversize file is fetched by blob, and a save can NEVER shrink it to the delta", async () => {
+  process.env.WIKI_GITHUB_TOKEN = "test-token";   // an earlier case clears it to prove fail-closed
+  const path = "live/feedback/tiles.json";
+  const entries: Record<string, unknown> = {};
+  for (let i = 0; i < 300; i++) entries[`tiles/pair_${i}/abcd${i}`] = { status: i % 2 ? "approved" : "rejected", updated_at: "2026-09-02T10:00:00.000Z" };
+  ghFiles.set(path, JSON.stringify({ format: "pixel-wiki-feedback@1", domain: "tiles", updated_at: "2026-09-02T10:00:00.000Z", entries }));
+  ghOversize.add(path);
+  await live.initLive("/nonexistent");   // beforeEach reset the store; boot it like every other case
+  const cookie = await login();
+  const before = ghPuts;
+  const r = await fetch(`${base}/api/wiki/save`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${cookie}` },
+    body: JSON.stringify({ file: "feedback/tiles", set: { "tiles/pair_new/ffff": { status: "approved", updated_at: "2026-09-02T11:00:00.000Z" } } }) });
+  assert.equal(r.status, 200, "the save succeeds through the blob endpoint");
+  assert.equal(ghPuts, before + 1);
+  const after = JSON.parse(ghFiles.get(path)!) as { entries: Record<string, unknown> };
+  assert.equal(Object.keys(after.entries).length, 301, "301 entries: the 300 that were there plus the one saved — not 1");
+  // ...and when even the blob endpoint is down, the save FAILS rather than wiping.
+  ghBlobDown = true;
+  const r2 = await fetch(`${base}/api/wiki/save`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${cookie}` },
+    body: JSON.stringify({ file: "feedback/tiles", set: { "tiles/pair_new/gggg": { status: "approved", updated_at: "2026-09-02T11:01:00.000Z" } } }) });
+  assert.notEqual(r2.status, 200, "no base readable → the save is refused, loudly");
+  assert.equal(Object.keys((JSON.parse(ghFiles.get(path)!) as { entries: Record<string, unknown> }).entries).length, 301, "and nothing on GitHub changed");
+  ghBlobDown = false;
+  ghOversize.delete(path);
 });
 
 test("save with no server token fails closed (memory untouched)", async () => {

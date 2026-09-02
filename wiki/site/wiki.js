@@ -484,6 +484,17 @@ const state = {
 };
 function touch(key, id) {
   (state.touched[key] ?? (state.touched[key] = new Set())).add(id);
+  /* A DELETION IS SENT ONLY WHEN HE DELETED (2026-09-02, the day 6,890 tile
+   * verdicts were erased server-side and this client turned out to be a
+   * second way to lose them). A save sends `null` for a touched id whose
+   * value is absent — which is right when he cleared it, and catastrophic
+   * when the id is absent because the document under him was REPLACED (a
+   * live refresh, a rollback, a stale copy): every id he had touched would go
+   * out as a delete. So the moment of touching records whether the value was
+   * absent THEN — the only time absence means "he removed it". */
+  const cleared = state.cleared ?? (state.cleared = {});
+  const set = cleared[key] ?? (cleared[key] = new Set());
+  if (valueOf(key, id) === null) set.add(id); else set.delete(id);
 }
 const adminToken = () => localStorage.getItem("wiki-admin-token") ?? "";
 
@@ -690,7 +701,23 @@ function valueOf(key, id) {
 async function apiSaveFile(key) {
   const snapshot = new Set(state.touched[key] ?? []);
   if (!snapshot.size) { state.dirty.delete(key); return; }
-  const set = Object.fromEntries([...snapshot].map((id) => [id, valueOf(key, id)]));
+  // Absent-but-never-cleared ids are DROPPED from the save, not sent as
+  // deletions — see touch(). They are also forgotten locally: there is nothing
+  // of his to keep dirty for them.
+  const explicitlyCleared = state.cleared?.[key] ?? new Set();
+  const set = {};
+  let skipped = 0;
+  for (const id of snapshot) {
+    const v = valueOf(key, id);
+    if (v === null && !explicitlyCleared.has(id)) { skipped++; continue; }
+    set[id] = v;
+  }
+  if (skipped) console.warn(`[wiki] ${key}: ${skipped} touched id(s) had no value and were never cleared by you — not sent as deletions`);
+  if (!Object.keys(set).length) {
+    const t0 = state.touched[key]; if (t0) { for (const id of snapshot) t0.delete(id); if (!t0.size) delete state.touched[key]; }
+    if (!state.touched[key]) state.dirty.delete(key);
+    return;
+  }
   const res = await fetch(API("/api/wiki/save"), {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${adminToken()}` },
@@ -709,6 +736,7 @@ async function apiSaveFile(key) {
   // Only forget ids saved in THIS pass so edits made mid-save stay dirty.
   const t = state.touched[key];
   if (t) { for (const id of snapshot) t.delete(id); if (!t.size) delete state.touched[key]; }
+  const c = state.cleared?.[key]; if (c) for (const id of snapshot) c.delete(id);
   if (!state.touched[key]) state.dirty.delete(key);
 }
 async function saveAll() {
@@ -734,6 +762,7 @@ async function saveAll() {
 async function discardAll() {
   state.dirty.clear();
   state.touched = {};
+  state.cleared = {};
   await loadLiveFiles();
   updateSavebar();
   route();

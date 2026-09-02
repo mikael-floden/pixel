@@ -169,8 +169,10 @@ ok(far.length === 0, far.length
 // 2026-08-28: "if there is a pair that doesn't have a single accept/reject I
 // must have missed it") ------------------------------------------------------
 {
-  // recomputed HERE from the index + the live feedback file, independently
-  const fbDoc = JSON.parse(readFileSync(ROOT + "live/feedback/tiles.json", "utf8"));
+  // recomputed HERE from the index + the feedback the PAGE holds (the gate
+  // serves feedback.tiles empty — see the /api/live/state route above — so
+  // the disk file is not what the page is looking at), independently
+  const fbDoc = { entries: await p.evaluate(() => window.__wiki?.state?.feedback?.tiles?.entries ?? {}) };
   const merged = new Map();
   for (const [k, list] of Object.entries(IDX.pairs)) {
     const g = k.split("__to__").sort().join("|");
@@ -187,7 +189,9 @@ ok(far.length === 0, far.length
   const led = await p.evaluate(() => {
     const rows = [...document.querySelectorAll(".ledger-line, .ledger-row, div")]
       .find((x) => /Fade tiles/.test(x.textContent) && /untouched|carries|votes/.test(x.textContent));
-    const pill = [...document.querySelectorAll(".pill")].map((x) => x.textContent.trim()).find((t2) => /untouched|all visited/.test(t2));
+    // THE FADE LINE'S OWN PILL. The World page also carries a bare "untouched"
+    // pill on the tops line, and the first match on the page was that one.
+    const pill = [...document.querySelectorAll(".pill")].map((x) => x.textContent.trim()).find((t2) => /^\d+ untouched$|^all visited$/.test(t2));
     const jumps = [...document.querySelectorAll(".ledger-jump button")].map((x) => x.textContent.trim()).filter((t2) => /↔/.test(t2));
     return { has: !!rows, pill, jumps };
   });
@@ -287,6 +291,31 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
   const r7 = await rows();
   ok(r7.pill === `${MERGED.length} to review first` && r7.reviewed.indexOf(true) === -1,
     `coming back with the verdicts cleared, everything is unreviewed again and the order is the plain % order (${r7.pill})`);
+}
+
+// ---- 7. a save deletes ONLY what he deleted -------------------------------
+/* 2026-09-02: 6,890 tile verdicts were erased server-side (a 1 MB file the
+ * contents API returned without content). Auditing the client for a second
+ * way to lose them found one: a save sent `null` for every touched id whose
+ * value was absent — right after an explicit clear, catastrophic after the
+ * document under him was replaced. Now only an id he actually cleared goes
+ * out as a deletion; a touched-but-absent id is dropped from the save. */
+{
+  await reopen("#/world/transition/grass__to__ice");
+  saves.length = 0;
+  const key0 = await p.evaluate(() => document.querySelector(".fade-tile .fade-key")?.title ?? null);
+  // (i) reject, then un-reject: an explicit clear IS a deletion
+  await p.evaluate(() => { const row = document.querySelector(".fade-tile"); [...row.querySelectorAll("button")].find((x) => /✕/.test(x.textContent))?.click(); });
+  await p.waitForTimeout(400);
+  await p.evaluate(() => { const row = document.querySelector(".fade-tile"); [...row.querySelectorAll("button")].find((x) => /✕/.test(x.textContent))?.click(); });
+  await p.waitForTimeout(400);
+  // (ii) an id he never touched by hand, absent from the doc — as after a replaced document
+  await p.evaluate(() => { const st = window.__wiki.state; (st.touched["feedback/tiles"] ??= new Set()).add("tiles/fades/never_cleared_by_him"); st.dirty.add("feedback/tiles"); });
+  await p.evaluate(() => document.querySelector("#save-btn")?.click());
+  await p.waitForTimeout(1500);
+  const payload = saves.find((x) => x?.file === "feedback/tiles")?.set ?? {};
+  ok(key0 && key0 in payload && payload[key0] === null, `an explicit un-reject is sent as a deletion (${key0?.split("/").pop()} → null)`);
+  ok(!("tiles/fades/never_cleared_by_him" in payload), `a touched id he never cleared is NOT sent as a deletion (keys sent: ${Object.keys(payload).length})`);
 }
 await b.close();
 console.log(fails.length ? `\nFADE CHECKS FAILED (${fails.length})` : "\nALL FADE CHECKS PASSED");

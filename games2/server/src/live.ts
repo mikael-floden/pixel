@@ -364,15 +364,34 @@ function ghHeaders(): Record<string, string> {
   };
 }
 
+/* A FILE THAT EXISTS IS NEVER READ AS EMPTY (2026-09-02, 6,890 of the Game
+ * Master's tile verdicts erased in one save). GitHub's contents API returns
+ * the blob sha but NO content for a file over 1 MB — live/feedback/tiles.json
+ * had grown to 1,058,285 bytes — and this function turned that into
+ * `doc: null`, which ghCommitDelta then treated as "no file yet": it merged a
+ * 53-entry delta onto an EMPTY document and PUT it with the valid sha.
+ * GitHub accepted. Nothing errored. Now: no content + a sha means "too big
+ * for this endpoint", so the blob is fetched through the git data API (base64
+ * up to 100 MB); if that fails too the save FAILS LOUDLY. `doc: null` is
+ * reserved for a true 404. */
 async function ghGetContents(rel: string): Promise<{ doc: Doc | null; sha?: string }> {
   const url = `${GH_API}/repos/${REPO}/contents/live/${rel}?ref=${BRANCH}`;
   const res = await fetch(url, { headers: ghHeaders(), signal: AbortSignal.timeout(10000) });
   if (res.status === 404) return { doc: null, sha: undefined };
   if (!res.ok) throw new Error(`GitHub GET live/${rel}: HTTP ${res.status}`);
-  const j = (await res.json()) as { sha?: string; content?: string };
+  const j = (await res.json()) as { sha?: string; content?: string; size?: number };
+  let text = Buffer.from((j.content ?? "").replace(/\n/g, ""), "base64").toString("utf8");
+  if (!text.trim() && j.sha) {
+    // Over the contents-API size limit: the blob endpoint serves any size.
+    const bres = await fetch(`${GH_API}/repos/${REPO}/git/blobs/${j.sha}`, { headers: ghHeaders(), signal: AbortSignal.timeout(15000) });
+    if (!bres.ok) throw new Error(`GitHub GET blob for live/${rel}: HTTP ${bres.status} (file is ${j.size ?? "?"} bytes — over the contents-API limit, and the blob fetch failed; refusing to save rather than start from empty)`);
+    const b = (await bres.json()) as { content?: string };
+    text = Buffer.from((b.content ?? "").replace(/\n/g, ""), "base64").toString("utf8");
+  }
   try {
-    return { doc: JSON.parse(Buffer.from((j.content ?? "").replace(/\n/g, ""), "base64").toString("utf8")) as Doc, sha: j.sha };
+    return { doc: JSON.parse(text) as Doc, sha: j.sha };
   } catch {
+    if (j.sha) throw new Error(`GitHub GET live/${rel}: the file exists (${j.size ?? "?"} bytes) but could not be read as JSON — refusing to save rather than start from empty`);
     return { doc: null, sha: j.sha };
   }
 }
@@ -383,7 +402,19 @@ async function ghCommitDelta(rel: string, key: string, delta: Record<string, unk
   const url = `${GH_API}/repos/${REPO}/contents/live/${rel}`;
   for (let attempt = 0; ; attempt++) {
     const { doc: base, sha } = await ghGetContents(rel);
+    // Belt and braces for the wipe above: an existing file with no readable
+    // base is a bug, never a fresh start; and a merge can only shrink a bucket
+    // by the nulls the delta actually carries.
+    if (sha && !base) throw Object.assign(new Error(`live/${rel} exists on GitHub but no base could be read — refusing to overwrite it`), { status: 502 });
     const merged = applyDelta(key, base ?? emptyDoc(key), delta);
+    const bucketOf = (d: Doc | null) => {
+      const b = key.startsWith("feedback/") ? d?.entries : key === "tuning/monsters" ? d?.monsters : key === "tuning/sfx_requests" ? (d as Record<string, unknown> | null)?.requests : key === "tuning/base_tile_sets" ? d?.grounds : d?.overrides;
+      return b && typeof b === "object" ? Object.keys(b as object).length : 0;
+    };
+    const nulls = Object.values(delta).filter((v) => v === null || v === undefined).length;
+    if (base && bucketOf(merged) < bucketOf(base) - nulls) {
+      throw Object.assign(new Error(`live/${rel}: merge would drop ${bucketOf(base) - bucketOf(merged)} entries but the delta only deletes ${nulls} — refusing`), { status: 502 });
+    }
     const body: Record<string, unknown> = {
       message: `live: admin update — ${rel}`,
       content: Buffer.from(JSON.stringify(merged, null, 2) + "\n", "utf8").toString("base64"),
