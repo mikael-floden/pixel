@@ -76,6 +76,46 @@ it in the same commit as either side.
 - `items` may be **empty** (a swim far from anything). The wiki should say
   so rather than show a blank page.
 
+## `heard` — what the player is hearing (added 2026-09-02)
+
+Maintainer: *"Does the #/near also contain music playing right now and sound
+effects triggered the last 30s (filtered on how recently the sound effect was
+played)?"* — one more field on the same message:
+
+```jsonc
+"heard": {
+  "music": { "id": "nangijala_cherry_valley", "kind": "track",   // or "bed" / "title"
+             "section": "A", "position": 42.1 },                 // null when silent
+  "sfx": [                                                       // MOST RECENT FIRST, ≤ 30 s, ≤ 40 rows
+    { "event": "combat.kick",  "sound": null,            "ago": 1.2, "at": 812345.6 },
+    { "event": "player.jump",  "sound": "composer/jump_voice", "ago": 4.0, "at": 809512.0 },
+    { "event": null,           "sound": "footstep_grass", "ago": 4.3, "at": 809201.3 }
+  ]
+}
+```
+
+- **`music.kind`**: `track` — a catalog track, `id` is the wiki's `music`
+  domain id (`#/music`); `bed` — a context bed (`night`, `cave`, `home`,
+  `town`, `adventure`, `battle`, …), the Dynamic tab; `title` — the select
+  screen's theme. `section` is the score's current section name or null,
+  `position` seconds into it. `null` when nothing plays (music off, or muted
+  by the wiki's own mute button).
+- **`sfx`**: every event the engine was ASKED to play in the window, newest
+  first. `event` is the game's semantic id exactly as the wiki's `sfx.events`
+  spells it (`item.drop`, `combat.kick`, `player.jump`, `ui.press`…), or null
+  for a sound the composer played on its own (footsteps, flourishes).
+  `sound` is what actually started — a catalog id from the `sounds` domain, or
+  a composer take `composer/<set>` — or **null when the event is unassigned
+  and played nothing**. The null is deliberate: an emitted-but-silent event is
+  exactly what the Game Master would want to assign a sound to, and here it is
+  with a timestamp. `ago` is seconds before the snapshot (one decimal), `at`
+  the `performance.now()` it fired. The loop is frozen behind the drawer, so
+  "4 s ago" stays true while he reads.
+- Not recorded: events emitted while the engine is not ready (no AudioContext
+  yet, sound switched off) — nothing was heard.
+- Source: `gameAudio.heard()` (composer, `engine/api.ts`), the same ledger
+  `__ml.audio().heard` shows. Probe for the whole message: `__mlNear.snapshot()`.
+
 ## The message: wiki → game
 
 ```jsonc

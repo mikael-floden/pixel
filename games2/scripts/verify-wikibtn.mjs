@@ -33,7 +33,9 @@ import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
 
-const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
+// Autoplay unlocked so the composer's AudioContext can run headlessly — the
+// `heard` block only records what the engine was READY to play.
+const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox", "--autoplay-policy=no-user-gesture-required"] });
 let bad = false;
 const fail = (m) => {
   console.log("FAIL:", m);
@@ -305,6 +307,14 @@ try {
   await page.waitForFunction(() => !document.querySelector(".ml-wikiroot"), null, { timeout: 5000 });
 
   // ── 6. THE 🔍 BUTTON: #/near and the nearest-first list ───────────────
+  // Two sounds into the ledger first: a jump (a voice take — plays) and a
+  // kick (assignable, unassigned in this build unless the Game Master did —
+  // recorded either way). Order matters: kick LAST so it must come FIRST.
+  const audioUp = await page.evaluate(() => { const a = window.__ml.audio(); return a.context === "running" && a.catalog > 0; });
+  await page.evaluate(() => { window.__ml.audioEvent("player.jump"); });
+  await page.waitForTimeout(250);
+  await page.evaluate(() => { window.__ml.audioEvent("combat.kick"); });
+  await page.waitForTimeout(150);
   await page.click(".ml-wikinear");
   await page.waitForSelector(frameSel, { timeout: 10000 });
   await frameReady();
@@ -356,6 +366,30 @@ try {
       : fail(`the ground under the feet does not route: ${under ? `${under.domain}/${under.id}` : "none"}`);
     const dup = new Set(items.map((it) => `${it.domain}/${it.id}`)).size !== items.length;
     !dup ? ok("one row per (domain, id)") : fail("duplicate (domain, id) rows");
+    // THE EAR (maintainer 2026-09-02: music now + sound effects of the last
+    // 30 s, most recent first). Asserted only when the engine could hear at
+    // all — a harness without a running AudioContext records nothing, by
+    // contract — but the block itself must always be there.
+    const heard = snap.heard;
+    heard && Array.isArray(heard.sfx) && "music" in heard
+      ? ok(`heard block present (music ${heard.music ? `${heard.music.kind}:${heard.music.id}` : "none"}, ${heard.sfx.length} sfx)`)
+      : fail(`heard block missing or malformed: ${JSON.stringify(heard)}`);
+    if (audioUp && heard) {
+      // The composer's own sounds (a footstep, the button's click) may land
+      // after the kick — what must hold is kick BEFORE jump in a newest-first
+      // list, and both present.
+      const ev = heard.sfx.map((x) => x.event);
+      const iK = ev.indexOf("combat.kick"), iJ = ev.indexOf("player.jump");
+      iK >= 0 && iJ >= 0 && iK < iJ
+        ? ok(`sfx newest first — kick (fired last) listed before jump (${ev.map((e) => e ?? "·").slice(0, 5).join(" ‹ ")})`)
+        : fail(`sfx order/content wrong: ${ev.join(",")}`);
+      const sorted = heard.sfx.every((x, i) => i === 0 || x.at <= heard.sfx[i - 1].at);
+      const fresh = heard.sfx.every((x) => x.ago >= 0 && x.ago <= 30);
+      sorted && fresh ? ok("every sfx row is within 30 s and the list is sorted by recency") : fail(`sfx not sorted/fresh: ${JSON.stringify(heard.sfx.slice(0, 4))}`);
+      const jump = heard.sfx.find((x) => x.event === "player.jump");
+      jump && jump.sound ? ok(`a played event names its sound (${jump.sound})`) : fail(`player.jump row has no sound: ${JSON.stringify(jump)}`);
+      heard.music ? ok(`music now: ${heard.music.kind} ${heard.music.id}${heard.music.section ? ` · ${heard.music.section}` : ""} @ ${heard.music.position}s`) : fail("music is on and playing in-world, but heard.music is null");
+    } else ok(`(audio engine not running on this harness — ear content not asserted, context=${audioUp})`);
     // …and the WIKI'S HALF renders it: the drawer shows one card per row,
     // nearest first, the ground under the feet reading "under you". This is
     // the end-to-end the maintainer sees; the page's own behaviours are the

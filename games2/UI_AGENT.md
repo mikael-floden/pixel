@@ -215,7 +215,14 @@ from the games agent), #18 (title/landing screen).
   fresh roster entry unresolved — that is reported, never failed. The
   snapshot is taken AFTER the freeze, so it cannot go stale while the player
   reads; `#/near` is a page like any other to the spot store (the Wiki button
-  returns to it), the 🔍 always starts a fresh one.
+  returns to it), the 🔍 always starts a fresh one. THE EAR (maintainer, same day:
+  "does #/near also contain the music playing right now and the sound effects
+  triggered the last 30 s?"): the snapshot carries `heard` — the composer's
+  ledger (`gameAudio.heard()`: score now + every sound EVENT of the last 30 s,
+  newest first, `sound: null` when the event is unassigned and played nothing,
+  which is the row the Game Master wants). The ledger lives in the composer
+  (games-audio's module, edited additively + announced); we only relay it.
+  Probe `__mlNear.snapshot()`.
 - **A FULL-SCREEN READER OVER THE WORLD PUTS THE LOOP TO SLEEP** — and waking
   it is NOT `TimeStep.resume()` (`gamefreeze.ts`, maintainer 2026-08-13: "the
   wiki lags a bit when opened on top of the game — can you freeze or pause the

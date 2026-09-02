@@ -22,6 +22,12 @@ export interface MusicalContext {
 }
 
 export interface PlayOpts {
+  /** The HEARD LEDGER row this play belongs to (api.ts event()). Carried in
+   * the opts because a one-shot starts AFTER its buffer promise resolves —
+   * always after event() has returned — so nothing else can tie the sound
+   * that started back to the event that asked for it. Opaque here: onStart
+   * hands it back. */
+  heard?: { sound: string | null };
   /** -1 (hard left) .. 1 (hard right); 0 = centre. */
   pan?: number;
   /** 0 (at the listener) .. 1 (edge of earshot) — attenuates + softens. */
@@ -49,6 +55,10 @@ export class OneShotPlayer {
   played = 0;
   /** Last few sound ids that actually started (QA: "what just played?"). */
   recent: string[] = [];
+  /** Called with the sound id the moment a one-shot is scheduled to start —
+   * the composer's HEARD ledger (api.ts heard(); games2/spec/WIKI_NEAR.md).
+   * Fired at both start sites below, so pure and shaped playback agree. */
+  onStart: ((soundId: string, opts: PlayOpts) => void) | null = null;
   /** ENFORCE UNMODIFIED AUDIO (maintainer testing switch): when true every
    * one-shot plays the raw file — no pitch/gain/start jitter, no scale-snap,
    * no rate change, no lowpass, no pan, no distance attenuation, no delay.
@@ -122,6 +132,7 @@ export class OneShotPlayer {
       this.played++;
       this.recent.push(sound.id);
       if (this.recent.length > 12) this.recent.shift();
+      this.onStart?.(sound.id, opts);
       return;
     }
 
@@ -191,6 +202,7 @@ export class OneShotPlayer {
     this.played++;
     this.recent.push(sound.id);
     if (this.recent.length > 12) this.recent.shift();
+    this.onStart?.(sound.id, opts);
   }
 }
 

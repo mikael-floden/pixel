@@ -1949,8 +1949,11 @@ saturated summit 0.001 — matches the terrain wash).
   under the feet is distance 0. Other players are not rows (no page). A probe
   like the rest of `__ml`, called once per drawer open — the scene owns the
   maps, so the enumeration lives here; wikinear.ts only relays it into the
-  iframe as `wiki:near`. Gate: section 6 of verify-wikibtn.mjs (every id
-  checked against the wiki's shipped index).
+  iframe as `wiki:near` — together with `heard`, the composer's ledger of the
+  score now + the sound events of the last 30 s (`gameAudio.heard()`, also on
+  `__ml.audio().heard`). Gate: section 6 of verify-wikibtn.mjs (every id
+  checked against the wiki's shipped index; the ear asserted when the harness
+  has a running AudioContext).
 - **HUD (golden-ratio split)**: game viewport = TOP 61.8% (`#game`,
   `--hud-h-inv`); bottom 38.2% (`--hud-h`) is the DOM HUD
   (`client/src/hud.ts`): 6 wiki-style tabs over pages. applyLayout()

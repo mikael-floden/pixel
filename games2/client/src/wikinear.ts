@@ -24,6 +24,7 @@
  */
 
 import { openWikiPanel } from "./wikipanel";
+import { gameAudio } from "../../composer/index";
 
 const NEAR_HASH = "#/near";
 // The Wiki button's box (wikibtn.ts): 80x32 content + 1px border. The square
@@ -40,6 +41,11 @@ type NearSnapshot = {
   at: { col: number; row: number } | null;
   radius: number;
   items: Array<{ domain: string; id: string; dist: number; n: number; path?: string }>;
+  /** What the player is HEARING (maintainer 2026-09-02: "does #/near also
+   * contain the music playing right now and the sound effects triggered the
+   * last 30 s, filtered on how recently they were played?") — the composer's
+   * own ledger, `gameAudio.heard()`; see spec/WIKI_NEAR.md "heard". */
+  heard?: ReturnType<typeof gameAudio.heard>;
 };
 
 let root: HTMLButtonElement | null = null;
@@ -50,11 +56,15 @@ let listening = false;
  * screen, a scene mid-rebuild). Never throws — a reply is always sent. */
 function snapshot(): NearSnapshot {
   const ml = (window as unknown as { __ml?: { nearby?: (r?: number) => NearSnapshot } }).__ml;
+  let s: NearSnapshot = { world: null, at: null, radius: 0, items: [] };
   try {
-    const s = ml && typeof ml.nearby === "function" ? ml.nearby() : null;
-    if (s && Array.isArray(s.items)) return s;
+    const n = ml && typeof ml.nearby === "function" ? ml.nearby() : null;
+    if (n && Array.isArray(n.items)) s = n;
   } catch {}
-  return { world: null, at: null, radius: 0, items: [] };
+  // The ear rides along even with no world (the select screen plays the title
+  // theme, and its 🔍-less wiki can still be navigated to #/near).
+  try { s.heard = gameAudio.heard(); } catch {}
+  return s;
 }
 
 function post(frame: HTMLIFrameElement): void {
@@ -90,6 +100,10 @@ export function openWikiNear(): void {
   // fires `load` again; a later return to #/near asks with wiki:wantNear.
   frame.addEventListener("load", () => { if (openFrame === frame) post(frame); }, { once: true });
 }
+
+/** QA probe (own namespace — WorldScene assigns `__ml` wholesale): the exact
+ * snapshot the wiki would be handed right now. */
+(window as unknown as { __mlNear?: unknown }).__mlNear = { snapshot };
 
 export function mountWikiNearButton(): void {
   document.querySelectorAll(".ml-wikinear").forEach((e) => e.remove());
