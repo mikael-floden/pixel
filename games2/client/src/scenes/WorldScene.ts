@@ -1328,6 +1328,30 @@ export class WorldScene extends Phaser.Scene {
   /** Scenery ART files (not manifests) queued and finished — the loading bar's
    *  last stage counts them beside the terrain's. */
   private sceneryArt = { requested: 0, done: 0 };
+  /* THE FRAME BUDGET, on demand (`__ml.perf(true)`). Off by default and gated
+   * at every call site, so a normal frame pays one boolean per section. The
+   * question it answers is the only one that matters for a stutter: WHICH
+   * section of update() owned the long frames, and how many objects it was
+   * walking when it did. Sections nest (rebuildOccluders contains
+   * rebuildScenery), hence the stack. */
+  private perfOn = false;
+  private perfStack: number[] = [];
+  private perfAcc: Record<string, { n: number; ms: number; max: number }> = {};
+  private perfFrames: number[] = [];
+  private perfLast = 0;
+  private ps(): void {
+    if (this.perfOn) this.perfStack.push(performance.now());
+  }
+  private pe(key: string): void {
+    if (!this.perfOn) return;
+    const t0 = this.perfStack.pop();
+    if (t0 === undefined) return;
+    const d = performance.now() - t0;
+    const a = (this.perfAcc[key] ??= { n: 0, ms: 0, max: 0 });
+    a.n++;
+    a.ms += d;
+    if (d > a.max) a.max = d;
+  }
   /** The "Connecting…" creep — see the bar bands. */
   private connectCreep: Phaser.Time.TimerEvent | null = null;
   private sceneryArtCounting = false;
@@ -3391,6 +3415,50 @@ export class WorldScene extends Phaser.Scene {
       lastInput: () => this.lastInput,
       // Monster render-state probe (shared body pipeline QA): per monster the
       // resolved depth, cover line, shadow anchor and lit-copy state.
+      /** THE FRAME BUDGET at this spot — `perf(true)` arms it, `perf()` reads
+       *  and RESETS. Sections are wall-clock inside update(); `counts` is what
+       *  the scene was carrying when they ran. Frame deltas are the scene's own
+       *  update cadence, so they include Phaser's render. */
+      perf: (on?: boolean) => {
+        if (on !== undefined) {
+          this.perfOn = on;
+          this.perfAcc = {};
+          this.perfFrames = [];
+          this.perfStack = [];
+          this.perfLast = 0;
+          return { armed: on };
+        }
+        const f = [...this.perfFrames].sort((a, b) => a - b);
+        const pick = (q: number) => (f.length ? +f[Math.min(f.length - 1, Math.floor(f.length * q))].toFixed(1) : 0);
+        const sections = Object.fromEntries(
+          Object.entries(this.perfAcc)
+            .sort((a, b) => b[1].ms - a[1].ms)
+            .map(([k, v]) => [k, { n: v.n, totalMs: +v.ms.toFixed(1), avgMs: +(v.ms / Math.max(1, v.n)).toFixed(2), maxMs: +v.max.toFixed(1) }]),
+        );
+        const r = this.game.renderer as unknown as { drawCount?: number; batches?: number };
+        const out = {
+          frames: { n: f.length, p50: pick(0.5), p90: pick(0.9), p99: pick(0.99), max: f.length ? +f[f.length - 1].toFixed(1) : 0 },
+          sections,
+          counts: {
+            occluders: this.occluders.length,
+            litOccluders: this.litOccluders.length,
+            occluderMeta: this.occluderMeta.length,
+            sceneryImgs: this.sceneryImgs.length,
+            propImgs: this.propImgs?.length ?? 0,
+            monsters: this.monsters.size,
+            monstersActive: this.monstersActive,
+            avatars: this.avatars.size,
+            npcs: this.npcs.size,
+            displayList: this.children.length,
+            textures: Object.keys(this.textures.list).length,
+            drawCount: r?.drawCount ?? null,
+          },
+          window: { ms: +this.perfFrames.reduce((a, b) => a + b, 0).toFixed(0) },
+        };
+        this.perfAcc = {};
+        this.perfFrames = [];
+        return out;
+      },
       /** THE TWO PLANES a world point can be drawn on, for one cell — the
        *  question every overlay/anchor argument reduces to. `flat` is
        *  projectFlat (the BODY's feet convention: +tile/2, +dy); `art` is the
@@ -3805,6 +3873,7 @@ export class WorldScene extends Phaser.Scene {
       monstersDump: () => {
         const st = (this.room?.state as any)?.monsters;
         const out: Record<string, unknown>[] = [];
+        this.ps();
         this.monsters.forEach((mv, id) => {
           const m = st?.get(id);
           out.push({
@@ -3817,6 +3886,7 @@ export class WorldScene extends Phaser.Scene {
             elev: m?.elev ?? 0,
           });
         });
+        this.pe("monsterLoop");
         return out;
       },
       monsterAt: (x: number, y: number) => {
@@ -7215,8 +7285,17 @@ export class WorldScene extends Phaser.Scene {
     // run — bumping it in the flush instead would make every probe read
     // "this body has no surface" one tick too early.
     this.coverTick++;
+    if (this.perfOn) {
+      const now = performance.now();
+      if (this.perfLast) this.perfFrames.push(now - this.perfLast);
+      this.perfLast = now;
+    }
+    this.ps();
     this.redrawGround();
+    this.pe("redrawGround");
+    this.ps();
     this.rebuildOccluders();
+    this.pe("rebuildOccluders");
     if (!this.room) return;
     const dt = delta / 1000;
     const myId = this.room.sessionId;
@@ -7240,6 +7319,7 @@ export class WorldScene extends Phaser.Scene {
     });
     gameAudio.setUnderwater(!!state.players.get(myId)?.swimming);
 
+    this.ps();
     this.avatars.forEach((av, id) => {
       const player = state.players.get(id);
       if (!player) return;
@@ -7739,6 +7819,7 @@ export class WorldScene extends Phaser.Scene {
         dist: sp.dist,
       });
     });
+    this.pe("avatarLoop");
 
     // INDOORS — run it HERE, not at the top of update(): this is the earliest
     // point at which the local player's fx/fy AND surfLevel are all fresh (the
@@ -8000,7 +8081,9 @@ export class WorldScene extends Phaser.Scene {
 
     // The world's people: placed by maps2, drawn through the shared body
     // pipeline, breathing on their own calm clocks.
+    this.ps();
     this.stepNpcs();
+    this.pe("stepNpcs");
     // Sword marker + target frame + aggro-radius debug rings (all read the
     // freshly-updated monster sprites above).
     this.updateTargetOverlays();
@@ -13205,7 +13288,9 @@ export class WorldScene extends Phaser.Scene {
     // rides here for exactly the reason props do (see rebuildProps).
     if (this.maps3) {
       this.occCulled = this.tiles3Occluders(u0, u1, v0, v1, mask, cuts, top, shows, columnShows);
+      this.ps();
       this.rebuildScenery(cam);
+      this.pe("rebuildScenery");
       // No glow field: tiles2/emission.json is a tiles2 product and a v3 world
       // references none of it. An empty stamp list is what the night pipeline
       // already does for a world with no emissive art.
