@@ -1772,6 +1772,13 @@ input[type="range"] { accent-color: var(--accent); }
    second thing to learn. What is added is the ellipse picker, which only
    appears once a piece has more than one. */
 .hit-chips { display: flex; gap: 6px; margin: 6px 0; }
+/* The shape segment sits beside the box chips: both answer "which box, and what
+   is it". Fixed height whether one box is listed or five, so choosing a shape
+   never shifts the rails under his thumb. */
+.hit-shape-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.hit-shape { flex: 0 0 auto; }
+.hit-shape button { min-height: 40px; padding: 0 12px; }
+.hit-shape button[disabled] { opacity: 0.45; }
 .hit-chips.hidden { display: none; }
 .hit-chips .sortbar-btn { min-width: 40px; min-height: 40px; border-radius: 8px; }
 /* Three rails now, not two, so they get a little less room each. */

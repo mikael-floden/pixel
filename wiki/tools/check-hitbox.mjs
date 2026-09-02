@@ -307,7 +307,7 @@ await fits("turned 60 degrees");
 await fits("dragged clear of the art");
 
 // ---- 4. several ellipses, and a rotation on each --------------------------
-await p.evaluate(() => [...document.querySelectorAll(".hit-bar button")].find((x) => /\+ ellipse/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll(".hit-bar button")].find((x) => /\+ box/.test(x.textContent))?.click());
 await p.waitForTimeout(700);
 const two = await p.evaluate(() => ({ probe: window.__wikiHitbox, chips: document.querySelectorAll(".hit-chips button").length }));
 /* "The Scenery might have two collisions and not just one ... for example when
@@ -726,6 +726,90 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   const banner = await p.evaluate(() => document.querySelector(".queue-note")?.textContent ?? "");
   ok(/no hitbox yet/.test(banner), `the piece page names the hitbox queue it is walking (“${banner.replace(/\s+/g, " ").trim().slice(0, 60)}”)`);
   await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-object-hitbox"] button')].find((x) => /^all/.test(x.textContent))?.click());
+}
+/* RECT OR ELLIPSE, PER BOX (maintainer 2026-08-30: "town and indoor often have
+ * hitboxes that needs a rect and not an ellipse. Take a table or bookshelf ...
+ * the map-agent can then make use of the perfect hitbox to be able to place
+ * the furniture in a corner or against the wall"). Three things have to hold
+ * or the feature is decoration: the choice reaches the FILE (the map agent
+ * reads the file, not the screen), the outline on screen really is a rectangle
+ * — measured at a corner an ellipse cannot reach — and every other control
+ * still drives it, rotation included. */
+{
+  await p.goto(`${W}#/objects/${PIECE.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  await p.evaluate((k) => {
+    const d = window.__wiki?.state?.tuning?.scenery_hitbox;
+    if (d?.overrides) for (const key of Object.keys(d.overrides)) {
+      if (key === k || key.startsWith(`${k}#`)) delete d.overrides[key];
+    }
+  }, PIECE.path);
+  await p.evaluate(() => { delete window.__wikiHitbox; });
+  await p.evaluate(() => {
+    if (!document.querySelector(".hit-bar:not(.hidden)")) {
+      [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click();
+    }
+  });
+  await p.waitForTimeout(1400);
+  const seg = await p.evaluate(() => [...document.querySelectorAll(".hit-shape button")].map((x) => `${x.textContent.trim()}${x.classList.contains("on") ? "*" : ""}`));
+  ok(seg.length === 2 && /ellipse\*/.test(seg.join(" ")),
+    `the bar offers both shapes and starts on the ellipse (${seg.join(" | ")})`);
+  /* THE CORNER AN ELLIPSE CANNOT REACH. At (ex+rx, ey+ry) an ellipse has long
+   * since curved away; a rect has its corner exactly there. Sampled on the
+   * canvas, so this is about what he SEES, not about the record. */
+  const cornerPaint = () => p.evaluate(() => {
+    const hb = window.__wikiHitbox; if (!hb) return null;
+    const b = hb.boxes[hb.sel], sc = hb.screen[hb.sel];
+    const cv = document.querySelector(".player-stage canvas") ?? document.querySelector("canvas");
+    try {
+      const ctx = cv.getContext("2d");
+      const x = Math.round(sc.ex + b.rx * hb.s), y = Math.round(sc.ey + b.ry * hb.s);
+      let hits = 0;
+      for (let dx2 = -3; dx2 <= 3; dx2++) for (let dy2 = -3; dy2 <= 3; dy2++) {
+        const px2 = ctx.getImageData(x + dx2, y + dy2, 1, 1).data;
+        if (px2[3] > 40 && px2[0] > 150 && px2[1] < 190 && px2[2] < 160) hits++;
+      }
+      return hits;
+    } catch { return -1; }   // tainted canvas: the geometry checks still stand
+  });
+  const roundCorner = await cornerPaint();
+  await p.evaluate(() => [...document.querySelectorAll(".hit-shape button")].find((x) => /rect/.test(x.textContent))?.click());
+  await p.waitForTimeout(900);
+  const stored = await p.evaluate((path) => {
+    const ov = window.__wiki?.state?.tuning?.scenery_hitbox?.overrides ?? {};
+    const k = Object.keys(ov).find((x) => x === path || x.startsWith(`${path}#`));
+    return { key: k ?? null, box: ov[k]?.boxes?.[0] ?? null };
+  }, PIECE.path);
+  ok(stored.box?.shape === "rect", `choosing rect reaches the FILE, on the box he selected (${stored.key} → ${JSON.stringify(stored.box)})`);
+  ok(stored.box && stored.box.rx > 0 && stored.box.ry > 0 && isFinite(stored.box.rot),
+    "and it keeps every other number the ellipse had — one shape, same controls");
+  const sharpCorner = await cornerPaint();
+  if (roundCorner >= 0 && sharpCorner >= 0) {
+    ok(sharpCorner > 0 && roundCorner === 0,
+      `and it is DRAWN as a rectangle — the corner an ellipse cannot reach is painted (${roundCorner} → ${sharpCorner} stroke pixels)`);
+  } else {
+    ok(false, "the canvas could not be sampled — the drawing check did not run");
+  }
+  // Rotation still drives it: the rect turns, and the record keeps the angle.
+  await p.evaluate(() => { const r = [...document.querySelectorAll(".hit-bar .shadow-slider")][2]; r.value = "40"; r.dispatchEvent(new Event("input", { bubbles: true })); r.dispatchEvent(new Event("change", { bubbles: true })); });
+  await p.waitForTimeout(800);
+  const turned = await p.evaluate((path) => {
+    const ov = window.__wiki?.state?.tuning?.scenery_hitbox?.overrides ?? {};
+    const k = Object.keys(ov).find((x) => x === path || x.startsWith(`${path}#`));
+    return ov[k]?.boxes?.[0] ?? null;
+  }, PIECE.path);
+  ok(turned?.shape === "rect" && Math.abs(turned.rot - 40) < 0.6,
+    `a rect turns like an ellipse does (rot ${turned?.rot}, still ${turned?.shape})`);
+  // ...and back: an ellipse carries NO shape key, so the 3,673 records already
+  // on file stay exactly as they are.
+  await p.evaluate(() => [...document.querySelectorAll(".hit-shape button")].find((x) => /ellipse/.test(x.textContent))?.click());
+  await p.waitForTimeout(800);
+  const back = await p.evaluate((path) => {
+    const ov = window.__wiki?.state?.tuning?.scenery_hitbox?.overrides ?? {};
+    const k = Object.keys(ov).find((x) => x === path || x.startsWith(`${path}#`));
+    return ov[k]?.boxes?.[0] ?? null;
+  }, PIECE.path);
+  ok(back && !("shape" in back), `going back to an ellipse writes no shape key at all (${JSON.stringify(back)})`);
 }
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 

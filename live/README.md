@@ -171,8 +171,22 @@ The laws around the flow:
     from that variation's own art — provisional for the game, and still "no
     hitbox yet" in the review until he accepts or edits it.
   - `overrides["scenery/<category>/<piece>"] = { boxes: [{ax, ay, rx, ry,
-    rot}], updated_at }`. `rot` is degrees, 0–179 (an ellipse is symmetric
-    under a half turn).
+    rot, shape?}], updated_at }`. `rot` is degrees, 0–179 (both shapes are
+    symmetric under a half turn).
+  - **`shape`: `"rect"`, or absent for an ellipse** (2026-08-30, maintainer:
+    *"town and indoor often have hitboxes that needs a rect and not an ellipse.
+    Take a table or bookshelf … will make it possible for me to do a perfect
+    hitbox on a bookshelf, bed, etc and the map-agent can then make use of the
+    'perfect hitbox' to be able to place the furniture in a corner or against
+    the wall"*). **Per BOX, not per piece** — an L-shaped counter is two rects,
+    a well is a rect base with a round rim. `ax/ay/rx/ry/rot` mean exactly what
+    they mean for an ellipse: same centre, same half-axes (so a rect is
+    `2·rx` × `2·ry`), same rotation. Absent means ellipse, so every record
+    written before today is already correct and nothing migrates. **A consumer
+    that ignores `shape` gets the inscribed ellipse of the rect** — smaller
+    than the truth at the corners, which is the safe direction to be wrong
+    while the game catches up, but it is exactly the corner fit the furniture
+    was drawn for, so consumers should read it.
   - **Stored in SCREEN space, unlike a monster's.** A monster's `rx`/`ry` are
     ground-space, tuned facing south, and the game unsquashes, rotates and
     re-squashes them per facing. Scenery never turns, and the Game Master fits

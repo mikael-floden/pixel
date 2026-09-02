@@ -929,7 +929,14 @@ function hitboxes(entity, state) {
   if (!r) return null;
   return r.boxes
     .filter((b) => b && ["ax", "ay", "rx", "ry"].every((k) => isFinite(b[k])) && b.rx > 0 && b.ry > 0)
-    .map((b) => ({ ax: +b.ax, ay: +b.ay, rx: +b.rx, ry: +b.ry, rot: isFinite(b.rot) ? +b.rot : 0 }));
+    /* SHAPE RIDES WITH THE BOX (maintainer 2026-08-30: "town and indoor often
+     * have hitboxes that needs a rect and not an ellipse ... a table or
+     * bookshelf ... the map-agent can then make use of the perfect hitbox to
+     * place the furniture in a corner or against the wall"). Absent means
+     * ellipse — every record written before today, and every round footprint
+     * since, so nothing has to be migrated and no consumer has to guess. */
+    .map((b) => ({ ax: +b.ax, ay: +b.ay, rx: +b.rx, ry: +b.ry, rot: isFinite(b.rot) ? +b.rot : 0,
+      ...(b.shape === "rect" ? { shape: "rect" } : {}) }));
 }
 /* WHERE A FIRST ELLIPSE STARTS, from the art's own measured content box —
  * `bb` [x0,y0,x1,y1] in frame pixels, published per state+direction. A piece
@@ -970,6 +977,9 @@ function setHitboxes(entity, boxes, state) {
       ax: +(+b.ax).toFixed(2), ay: +(+b.ay).toFixed(2),
       rx: +(+b.rx).toFixed(2), ry: +(+b.ry).toFixed(2),
       rot: +(((+b.rot || 0) % 360 + 360) % 360).toFixed(1),
+      // Written ONLY for rects: an absent key is the ellipse, so the file does
+      // not grow a redundant "shape":"ellipse" on all 3,673 existing records.
+      ...(b.shape === "rect" ? { shape: "rect" } : {}),
     })),
     updated_at: new Date().toISOString(),
   };
@@ -1701,8 +1711,19 @@ function makePlayer(entity, kind, opts = {}) {
         // see both to judge the pair, and know which one the rails drive.
         ctx.strokeStyle = on ? "rgba(217,119,87,1)" : "rgba(217,119,87,0.45)";
         ctx.lineWidth = on ? 1.5 : 1;
+        const px = Math.max(1, b.rx * s), py = Math.max(1, b.ry * s);
         ctx.beginPath();
-        ctx.ellipse(ex, ey, Math.max(1, b.rx * s), Math.max(1, b.ry * s), th, 0, Math.PI * 2);
+        // Same centre, same half-axes, same rotation — only the outline
+        // differs, so switching shape never moves the footprint he placed.
+        if (b.shape === "rect") {
+          ctx.save();
+          ctx.translate(ex, ey);
+          ctx.rotate(th);
+          ctx.rect(-px, -py, px * 2, py * 2);
+          ctx.restore();
+        } else {
+          ctx.ellipse(ex, ey, px, py, th, 0, Math.PI * 2);
+        }
         ctx.stroke();
         if (on) {
           ctx.setLineDash([3, 3]);
@@ -1999,6 +2020,15 @@ function makePlayer(entity, kind, opts = {}) {
   let hitSel = 0;                       // which ellipse the controls drive
   const hitRead = h("span", { class: "shadow-read" });
   const hitChips = h("div", { class: "hit-chips" });
+  /* ELLIPSE OR RECT, PER BOX (maintainer 2026-08-30: "town and indoor often
+   * have hitboxes that needs a rect and not an ellipse. Take a table or
+   * bookshelf ... will make it possible for me to do a perfect hitbox on a
+   * bookshelf, bed, etc and the map-agent can then make use of the perfect
+   * hitbox to be able to place the furniture in a corner or against the
+   * wall"). Two options in a segment, the same idiom as Placed and Light, so
+   * the shape in force is readable without pressing anything — and every other
+   * control keeps working on it unchanged, rotation included. */
+  const hitShape = h("div", { class: "seg hit-shape" });
   /* THE WORKING LIST. An untouched piece starts from the art's own content
    * box so there is something to drag, but NOTHING IS STORED until he moves
    * it — a piece that merely got looked at must still count as "to do". */
@@ -2013,7 +2043,7 @@ function makePlayer(entity, kind, opts = {}) {
 
   const hitPadKnob = h("span", { class: "pad-knob" });
   const hitPad = h("div", {
-    class: "shadow-pad", title: "Drag to move this ellipse — your thumb stays off the art",
+    class: "shadow-pad", title: "Drag to move this box — your thumb stays off the art",
   }, h("span", { class: "pad-label" }, "move"), hitPadKnob);
   let hitDrag = null;
   hitPad.addEventListener("pointerdown", (ev) => {
@@ -2111,7 +2141,7 @@ function makePlayer(entity, kind, opts = {}) {
 
   const hitAddBtn = h("button", {
     class: "ghost-btn",
-    title: "Add a second ellipse — an entrance with two pillars touches the ground twice",
+    title: "Add a second box — an entrance with two pillars touches the ground twice, an L-shaped counter is two rects",
     onclick: () => {
       const boxes = hitList();
       const b = boxes[hitSel] ?? hitboxDefault(entity, clip?.bb, clip?.fw, clip?.fh);
@@ -2121,16 +2151,16 @@ function makePlayer(entity, kind, opts = {}) {
       hitSel = boxes.length - 1;
       commitHit(boxes);
     },
-  }, "+ ellipse");
+  }, "+ box");
   const hitDelBtn = h("button", {
     class: "ghost-btn",
-    title: "Remove this ellipse",
+    title: "Remove this box",
     onclick: () => {
       const boxes = hitList().filter((_, i) => i !== hitSel);
       hitSel = Math.max(0, hitSel - 1);
       commitHit(boxes);
     },
-  }, "− ellipse");
+  }, "− box");
   /* "SOME SCENERY IS MEANT TO BE PLACED ON A HOUSE/MOUNTAIN/CAVE WALL - THEY
    * OFC NEED NO HITBOX." An empty list is a DECISION and is stored as one, so
    * the queue can tell it apart from a piece nobody has opened. */
@@ -2152,7 +2182,7 @@ function makePlayer(entity, kind, opts = {}) {
 
   const hitBar = h("div", { class: "shadow-bar hit-bar hidden" },
     h("div", { class: "player-controls" }, hitRead),
-    hitChips,
+    h("div", { class: "player-controls hit-shape-row" }, hitChips, hitShape),
     h("div", { class: "player-controls" }, hitAddBtn, hitDelBtn, hitNoneBtn, hitFlatBtn, hitResetBtn),
     h("div", { class: "shadow-tools" },
       h("div", { class: "shadow-sliders" },
@@ -2226,6 +2256,21 @@ function makePlayer(entity, kind, opts = {}) {
       }, `${i + 1}`);
     }));
     hitChips.classList.toggle("hidden", boxes.length < 2);
+    const shapeNow = b?.shape === "rect" ? "rect" : "ellipse";
+    hitShape.replaceChildren(...[
+      ["ellipse", "◯ ellipse", "A rounded footprint — trees, rocks, barrels: anything with no straight edge"],
+      ["rect", "▭ rect", "Straight edges and square corners — a table, a bookshelf, a bed. This is what lets the map agent push a piece flush into a corner or against a wall."],
+    ].map(([k, label, title]) => {
+      // `disabled` is a PROPERTY here, never an h() attribute: an attribute
+      // named disabled disables the button whatever its value, so passing
+      // `false` through h() would grey out both shapes on every piece.
+      const btn = h("button", {
+        class: shapeNow === k ? "on" : "", type: "button", title,
+        onclick: () => { if (shapeNow !== k) editHit(hitSel, { shape: k === "rect" ? "rect" : null }); },
+      }, label);
+      btn.disabled = st === "flat" || !b;
+      return btn;
+    }));
     hitDelBtn.disabled = boxes.length < 2;
     hitNoneBtn.disabled = st === "none" || st === "flat";
     hitFlatBtn.classList.toggle("on", st === "flat");
@@ -2312,7 +2357,9 @@ function makePlayer(entity, kind, opts = {}) {
         ? h("b", {}, "no collision — flat on the floor, the player walks over it")
         : st === "none"
         ? h("b", {}, "no hitbox — this piece hangs on a wall")
-        : h("b", {}, `${boxes.length} ellipse${boxes.length === 1 ? "" : "s"} · #${hitSel + 1} ${(b.rx * 2).toFixed(1)} × ${(b.ry * 2).toFixed(1)} px`),
+        // "box", not "ellipse": with two shapes on offer the count can span
+        // both, and the glyph says which one the rails are driving.
+        : h("b", {}, `${boxes.length} box${boxes.length === 1 ? "" : "es"} · #${hitSel + 1} ${b.shape === "rect" ? "▭" : "◯"} ${(b.rx * 2).toFixed(1)} × ${(b.ry * 2).toFixed(1)} px`),
       st === "none" || st === "flat" ? "" : ` · at ${signed(b.ax)}, ${signed(b.ay)}${b.rot ? ` · turned ${Math.round(b.rot)}°` : ""}`,
       /* NO STATUS PROSE ON THIS LINE (maintainer 2026-08-29: "you draw this
        * text 'proposed default not set until you accept or adjust it' and
