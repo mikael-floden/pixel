@@ -1836,3 +1836,7 @@ input[type="range"] { accent-color: var(--accent); }
 .near-glyph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 30px; opacity: 0.8; }
 .near-hearing { margin-top: 18px; }
 .panel.spot, .sfx-event.spot { outline: 2px solid var(--accent, #d97757); outline-offset: 2px; transition: outline-color 1.2s ease 1.2s; }
+
+/* The fade list's seam between "still to review" and "already reviewed". */
+.fade-divider { margin: 14px 0 6px; padding-top: 8px; border-top: 1px dashed var(--border, #555); font-size: 13px; }
+.fade-tile.reviewed { opacity: 0.86; }

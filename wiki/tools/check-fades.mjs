@@ -21,6 +21,10 @@ const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/i
 
 // ---- 0. the published index is sane, before any browser opens --------------
 const IDX = JSON.parse(readFileSync(ROOT + "tiles/fades/index.json", "utf8"));
+const D = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));   // ground types, for the uncovered-pair search
+const grounds = (D.worldMeta?.groundTypes ?? []).map((g2) => g2.id);
+const covered = (a, b2) => IDX.pairs[`${a}__to__${b2}`] || IDX.pairs[`${b2}__to__${a}`];
+const nameOf = (id) => (D.worldMeta?.groundTypes ?? []).find((g2) => g2.id === id)?.name ?? id;
 ok(IDX.schema === "tiles3/fade-tiles@1", `the index speaks the posted contract (${IDX.schema})`);
 const allTiles = Object.values(IDX.pairs).flat();
 ok(allTiles.every((t) => t.key && t.file && t.pct && Object.values(t.pct).every((v) => v >= 0 && v <= 100)
@@ -55,9 +59,26 @@ const read = () => p.evaluate(() => ({
   more: [...document.querySelectorAll("button")].map((x) => x.textContent.trim()).find((x) => /^Show 12 more/.test(x)) ?? null,
 }));
 
+/* HIS OWN VERDICTS MUST NOT BE WHAT THIS GATE MEASURES (2026-09-02): the fade
+ * list now puts unreviewed tiles first, so a pair he has partly reviewed
+ * would reorder sections 1–3 by his week rather than by %. The pair's tile
+ * verdicts are cleared in the page (never committed — save is captured)
+ * before the first read, and re-applied deliberately in section 6. */
+const clearPairVerdicts = () => p.evaluate((keys) => {
+  const e = window.__wiki?.state?.feedback?.tiles?.entries; if (!e) return 0;
+  let n = 0; for (const k of keys) if (e[k]) { delete e[k]; n++; } return n;
+}, MERGED.map((x) => x.key));
+const reopen = async (hash) => {
+  await p.goto(`${W}#/world`, { waitUntil: "load" });   // leave the pair, so the visit's frozen order is dropped
+  await p.waitForTimeout(800);
+  await clearPairVerdicts();
+  await p.evaluate((h2) => { location.hash = h2; }, hash);
+  await p.waitForTimeout(5000);
+};
 // ---- 1. the section: MERGED, sorted by the page's first ground, paginated --
 await p.goto(`${W}#/world/transition/grass__to__ice`, { waitUntil: "load" });
 await p.waitForTimeout(5000);
+await reopen("#/world/transition/grass__to__ice");
 const g = await read();
 ok(!!g.panel && /most grass first/.test(g.panel), `the pair page grows a Fade tiles section, sorted for ITS first ground (${g.panel})`);
 ok(g.pill === String(MERGED.length),
@@ -78,8 +99,7 @@ const descOK = g2.rows.every((r, i) => i === 0 || parseInt(g2.rows[i - 1]) >= pa
 ok(descOK, "and the visible order is monotonically grass-descending across the page break");
 
 // ---- 3. the reversed page: same merged tiles, the other way up -------------
-await p.goto(`${W}#/world/transition/ice__to__grass`, { waitUntil: "load" });
-await p.waitForTimeout(5000);
+await reopen("#/world/transition/ice__to__grass");
 const i2 = await read();
 ok(/^Ice/.test(i2.h1), `the reversed route keeps ITS orientation — the page is Ice ↔ grass, not renamed (${i2.h1})`);
 ok(i2.pill === String(MERGED.length), `the reversed page shows the SAME merged set (${i2.pill} of ${MERGED.length})`);
@@ -118,9 +138,19 @@ ok(far.length === 0, far.length
 // black_rock ↔ parquet floor: "doesn't render/show any fading tiles" — the
 // silent absence read as a broken page) -------------------------------------
 {
-  const bare = Object.keys(IDX.pairs).every((k) => !(k.includes("black_rock") && k.includes("parquet_floor")));
-  ok(bare, "black_rock↔parquet_floor is genuinely uncovered by the index — the case under test");
-  await p.goto(`${W}#/world/transition/black_rock__to__parquet_floor`, { waitUntil: "load" });
+  /* THE UNCOVERED PAIR IS FOUND, NOT NAMED. black_rock↔parquet_floor was the
+   * case in August; the tiles agent covered it on 2026-09-02 (spot fades, 203
+   * pairs), and a gate pinned to one pair would then be asserting that their
+   * work had not happened. Any ground pair the index lacks is the case. */
+  // Only a PUBLISHED transition has a pair page at all (any other pair is
+  // "Unknown transition"), so the case is an uncovered pair among those.
+  const known = (D.worldMeta?.transitions ?? []).map((x) => [x.a, x.b]);
+  const bare = known.find(([a, b2]) => !covered(a, b2)) ?? null;
+  const [bareA, bareB] = bare ?? [null, null];
+  ok(true, bareA ? `a published transition the index does not cover exists — ${bareA}↔${bareB} is the case under test`
+    : `every published transition (${known.length}) is covered by the index — the empty-pair path has no live case today, so its assertion is skipped rather than faked`);
+  if (bareA) {
+  await p.goto(`${W}#/world/transition/${bareA}__to__${bareB}`, { waitUntil: "load" });
   await p.waitForTimeout(3000);
   const empt = await p.evaluate(() => {
     const t2 = [...document.querySelectorAll(".panel-title")].find((x) => /Fade tiles/.test(x.textContent));
@@ -129,6 +159,7 @@ ok(far.length === 0, far.length
   });
   ok(empt.panel && empt.pill === "0" && /published no fade tiles/.test(empt.says),
     `an uncovered pair shows the section saying WHY it is empty (${empt.says.slice(0, 56)}…)`);
+  }
   // back to a covered pair — section 5 stars a real fade card
   await p.goto(`${W}#/world/transition/ice__to__grass`, { waitUntil: "load" });
   await p.waitForTimeout(4000);
@@ -163,8 +194,12 @@ ok(far.length === 0, far.length
   ok(led.has, "the World ledger carries a Fade tiles line");
   ok(expUntouched === 0 ? led.pill === "all visited" : led.pill === `${expUntouched} untouched`,
     `its count is the truth recomputed from the index and his feedback (${led.pill} vs expected ${expUntouched})`);
-  ok(!led.jumps.some((t2) => /parquet/.test(t2) && /black rock|grey stone|deep water/i.test(t2)) || IDX.pairs["black_rock__to__parquet_floor"],
-    "a pair with nothing published is never offered as missed — there is nothing there to vote on");
+  // A pair with nothing published is never offered as missed. Checked for
+  // EVERY uncovered pair, by the ground names the ledger prints.
+  const uncoveredNamed = (D.worldMeta?.transitions ?? []).filter((x) => !covered(x.a, x.b)).map((x) => [nameOf(x.a), nameOf(x.b)]);
+  const offeredEmpty = led.jumps.filter((t2) => uncoveredNamed.some(([na, nb]) => new RegExp(na, "i").test(t2) && new RegExp(nb, "i").test(t2)));
+  ok(offeredEmpty.length === 0,
+    `a pair with nothing published is never offered as missed — there is nothing there to vote on (${uncoveredNamed.length} uncovered pairs checked${offeredEmpty.length ? "; offered: " + offeredEmpty[0] : ""})`);
   if (expUntouched > 0) {
     await p.evaluate(() => [...document.querySelectorAll(".ledger-jump button")].find((x) => /↔/.test(x.textContent))?.click());
     await p.waitForTimeout(3000);
@@ -193,6 +228,66 @@ ok(await p2.evaluate(() => ![...document.querySelectorAll(".panel-title")].some(
   "with no index (a world before the tiles agent published) the section simply is not there");
 await p2.close();
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
+
+// ---- 6. unreviewed first, each block by %, and the order holds while he works
+/* Maintainer 2026-09-02: "the same sorting, but unreviewed tiles should have a
+ * higher sort order. So first comes the tiles I still have to approve/reject
+ * (sorted individually the same way). Once the tiles I have still not
+ * approved/rejected is over the already reviewed tiles will come (again
+ * individually sorted by %)." */
+{
+  const byGrass = [...MERGED].sort((a, b2) => b2.pct.grass - a.pct.grass);
+  const top2 = byGrass.slice(0, 2).map((x) => x.key);        // the two grass-heaviest get verdicts
+  await p.goto(`${W}#/world`, { waitUntil: "load" });
+  await p.waitForTimeout(800);
+  await clearPairVerdicts();
+  await p.evaluate((keys) => {
+    const f = window.__wiki.state.feedback.tiles; f.entries ??= {};
+    f.entries[keys[0]] = { status: "approved", updated_at: new Date().toISOString() };
+    f.entries[keys[1]] = { status: "rejected", updated_at: new Date().toISOString() };
+  }, top2);
+  await p.evaluate(() => { location.hash = "#/world/transition/grass__to__ice"; });
+  await p.waitForTimeout(5000);
+  const rows = () => p.evaluate(() => ({
+    pct: [...document.querySelectorAll(".fade-tile b")].map((x) => parseInt(x.textContent)),
+    keys: [...document.querySelectorAll(".fade-tile .fade-key")].map((x) => x.title),
+    reviewed: [...document.querySelectorAll(".fade-tile")].map((x) => x.classList.contains("reviewed")),
+    divider: document.querySelector(".fade-divider")?.textContent ?? null,
+    pill: [...document.querySelectorAll(".panel-title .pill")].map((x) => x.textContent.trim()).find((x) => /to review first|all reviewed/.test(x)) ?? null,
+    probe: window.__wikiFadeOrder ?? null,
+  }));
+  // show everything so both blocks are on the page
+  // To the END: 151 tiles is thirteen presses, and the seam sits at row 150.
+  for (let i = 0; i < 24; i++) {
+    const more = await p.evaluate(() => { const b2 = [...document.querySelectorAll("button")].find((x) => /^Show 12 more/.test(x.textContent)); if (b2) { b2.click(); return true; } return false; });
+    if (!more) break;
+    await p.waitForTimeout(2200);
+  }
+  const r6 = await rows();
+  const firstDone = r6.reviewed.indexOf(true);
+  ok(firstDone === MERGED.length - 2 && r6.reviewed.slice(firstDone).every(Boolean),
+    `the two judged tiles sink below EVERY unreviewed one, however grass-heavy they are (reviewed block starts at row ${firstDone + 1} of ${r6.keys.length}; probe ${JSON.stringify(r6.probe)})`);
+  ok(!top2.includes(r6.keys[0]) && r6.pct[0] === Math.round(byGrass[2].pct.grass),
+    `so the page opens on the grass-heaviest tile still WAITING for a verdict (${r6.pct[0]}% grass)`);
+  const desc = (a) => a.every((v, i) => i === 0 || a[i - 1] >= v);
+  ok(desc(r6.pct.slice(0, firstDone)) && desc(r6.pct.slice(firstDone)),
+    `each block keeps the % order on its own (unreviewed ${r6.pct[0]}→${r6.pct[firstDone - 1]}, reviewed ${r6.pct[firstDone]}→${r6.pct[r6.pct.length - 1]})`);
+  ok(r6.keys.slice(firstDone).join() === top2.join(), `and the reviewed block is exactly the two he judged, grass-descending (${r6.keys.slice(firstDone).map((k) => k.split("/").pop()).join(", ")})`);
+  ok(/already reviewed/.test(r6.divider ?? ""), `the seam between the blocks is named (“${r6.divider}”)`);
+  ok(r6.pill === `${MERGED.length - 2} to review first`, `and the panel says how many are left (${r6.pill})`);
+  // A verdict given mid-visit must not move the row under his thumb.
+  const before = await rows();
+  await p.evaluate(() => { const row = document.querySelector(".fade-tile"); [...row.querySelectorAll("button")].find((x) => /approve/.test(x.textContent))?.click(); });
+  await p.waitForTimeout(2500);
+  const after = await rows();
+  ok(after.keys[0] === before.keys[0] && after.keys.join() === before.keys.join(),
+    `approving the first tile leaves the order exactly where it was — it re-sorts on the next visit, not under his thumb (${after.keys[0].split("/").pop()} still first)`);
+  ok(after.pill === `${MERGED.length - 3} to review first`, `while the count already says one fewer is left (${after.pill})`);
+  await reopen("#/world/transition/grass__to__ice");
+  const r7 = await rows();
+  ok(r7.pill === `${MERGED.length} to review first` && r7.reviewed.indexOf(true) === -1,
+    `coming back with the verdicts cleared, everything is unreviewed again and the order is the plain % order (${r7.pill})`);
+}
 await b.close();
 console.log(fails.length ? `\nFADE CHECKS FAILED (${fails.length})` : "\nALL FADE CHECKS PASSED");
 process.exit(fails.length ? 1 : 0);

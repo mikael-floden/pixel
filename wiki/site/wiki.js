@@ -8603,6 +8603,8 @@ function viewWorldType(top) {
  * around in the game. Make the page look good and ambitious.") ---- */
 const transState = new Map();   // pair -> { set, seed }
 const fadeShown = new Map();    // unordered pair -> fade tiles shown (12 at a time)
+/** The fade list's order for the pair being visited: { key, keys, firstDone }. */
+let fadeOrder = { key: null, keys: [], firstDone: 0 };
 /* ---- FADE TILES: both grounds on ONE top (maintainer 2026-08-28) ---------
  * "This is tiles the map-agent can use to start warming up the player for a
  * new ground-type long before the transition happens. So this is tiles
@@ -8967,18 +8969,66 @@ function viewWorldTransition(pairId) {
        * — the tiles are the same, only the order flips. */
       const fkey = [tr.a, tr.b].sort().join("|");
       const shown = fadeShown.get(fkey) ?? 12;
+      /* WHAT IS LEFT TO REVIEW COMES FIRST (maintainer 2026-09-02: "the same
+       * sorting, but unreviewed tiles should have a higher sort order. So
+       * first comes the tiles I still have to approve/reject (sorted
+       * individually the same way). Once the tiles I have still not
+       * approved/rejected is over the already reviewed tiles will come (again
+       * individually sorted by %)"). Two blocks, each in the % order the page
+       * already had; "reviewed" is a verdict — approved or rejected — because
+       * that is the decision he is trying to find the gaps in.
+       *
+       * FROZEN FOR THE VISIT. A verdict re-renders the page, and if the
+       * partition were recomputed on every render the tile he just approved
+       * would drop out of the top block and everything below would slide up
+       * under his thumb — the slider-text bug in a new coat. So the order is
+       * taken once per visit to this pair (either direction) and kept until
+       * he leaves it; coming back re-sorts, which is when he wants it. */
+      const judged = (k) => { const st = fb("tiles", k).status; return st === "approved" || st === "rejected"; };
+      const dirKey = `${fkey}|${tr.a}`;
+      if (fadeOrder.key !== dirKey) {
+        const pending = tiles2.filter((t) => !judged(t.key)).map((t) => t.key);
+        const done = tiles2.filter((t) => judged(t.key)).map((t) => t.key);
+        fadeOrder = { key: dirKey, keys: [...pending, ...done], firstDone: pending.length };
+      }
+      const rank = new Map(fadeOrder.keys.map((k, i) => [k, i]));
+      // A tile that arrived since the visit began (a live index refresh) sorts
+      // by % among the unreviewed rather than vanishing.
+      const pos = (t) => rank.get(t.key) ?? (-1 - t.pctA / 1000);   // new arrivals lead, % descending
+      const ordered = [...tiles2].sort((x, y) => pos(x) - pos(y));
+      const left = tiles2.filter((t) => !judged(t.key)).length;
+      // The count ticks down IN PLACE as he judges: a verdict re-renders only
+      // its own row (no route()), so the frozen order never moves — and this
+      // pill is the one thing on the page that should change.
+      const leftPill = h("span", { title: "Tiles without an approve or reject come first, in the same % order; the ones you have judged follow, in the same order. The order holds while you work and re-sorts when you come back." });
+      const paintLeft = () => {
+        const n = tiles2.filter((t) => !judged(t.key)).length;
+        leftPill.className = `pill${n ? " warn" : " ok"}`;
+        leftPill.textContent = n ? `${n} to review first` : "all reviewed";
+      };
+      paintLeft();
+      // QA probe: the frozen order and the live count, for the gate.
+      // (__wikiFades is the scene's cell audit array — a different probe.)
+      window.__wikiFadeOrder = { key: fadeOrder.key, firstDone: fadeOrder.firstDone, n: fadeOrder.keys.length, tiles: tiles2.length, left, shown };
       return [h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "Fade tiles",
           h("span", { class: "pill" }, `${tiles2.length}`),
-          h("span", { class: "pill", title: `Sorted by ${nameA.toLowerCase()} share, highest first — the reversed page sorts the same tiles the other way` }, `most ${nameA.toLowerCase()} first`)),
+          h("span", { class: "pill", title: `Sorted by ${nameA.toLowerCase()} share, highest first — the reversed page sorts the same tiles the other way` }, `most ${nameA.toLowerCase()} first`),
+          leftPill),
         h("p", { class: "muted" },
           `Both grounds on one top — what the map agent scatters to warm a player up for ${nameB.toLowerCase()} long before the boundary. Each sits in the wandering edge on the side it mostly is.`),
-        ...tiles2.slice(0, shown).map((t) => h("div", { class: "fade-tile" },
-          h("div", { class: "player-controls" },
-            h("b", {}, `${Math.round(t.pctA)}% ${nameA.toLowerCase()} · ${Math.round(t.pctB)}% ${nameB.toLowerCase()}`),
-            h("span", { class: "muted mono fade-key", title: t.key }, t.key.split("/").pop())),
-          fadeScene(tr.a, tr.b, t),
-          feedbackRow("tiles", t.key, {}))),
+        ...ordered.slice(0, shown).flatMap((t, i) => [
+          // The seam between the blocks, named — so a reviewed tile near the
+          // top is never mistaken for an unreviewed one.
+          i === fadeOrder.firstDone && fadeOrder.firstDone > 0 && i < ordered.length
+            ? h("div", { class: "fade-divider muted" }, "already reviewed — same order") : null,
+          h("div", { class: `fade-tile${i >= fadeOrder.firstDone ? " reviewed" : ""}` },
+            h("div", { class: "player-controls" },
+              h("b", {}, `${Math.round(t.pctA)}% ${nameA.toLowerCase()} · ${Math.round(t.pctB)}% ${nameB.toLowerCase()}`),
+              h("span", { class: "muted mono fade-key", title: t.key }, t.key.split("/").pop())),
+            fadeScene(tr.a, tr.b, t),
+            feedbackRow("tiles", t.key, { onchange: paintLeft })),
+        ].filter(Boolean)),
         tiles2.length > shown ? h("button", {
           class: "ghost-btn", style: "margin-top:10px",
           onclick: () => { fadeShown.set(fkey, shown + 12); keepScrollY = window.scrollY; route(); },
@@ -12092,6 +12142,10 @@ function route() {
   // context" — but walking away from the page must silence it.
   const onBench = page === "bench" || (page === "music" && musicTab === "dynamic");
   if (!onBench) { benchEngine.stopAll(); benchEngine.onChange = null; }
+  // Leaving a transition pair drops the fade list's frozen order, so the next
+  // visit re-sorts (unreviewed first); staying on the pair — a verdict's
+  // re-render, Show 12 more — keeps it.
+  if (!(page === "world" && id === "transition")) fadeOrder = { key: null, keys: [], firstDone: 0 };
   let view;
   if (state.query && !id) view = viewSearch();
   else if (page === "monsters") view = id ? viewMonster(id) : viewMonsters();
