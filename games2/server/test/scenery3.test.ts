@@ -397,13 +397,16 @@ test("placements drop what render3 drops, and keep its painter order", { skip },
   const bounds = { x0: W.x0, y0: W.y0, x1: W.x1, y1: W.y1 };
   const view = viewFromDoc(doc, bounds);
   const frame = isoFrame(bounds, view.maxLevel, W.origin.storey_pitch);
-  const ps = buildPlacements(doc.scenery, {
+  const all = buildPlacements(doc.scenery, {
     frame,
     levelAt: view.levelAt,
     roofed: roofedCells(doc.decks, doc.size.w),
     width: doc.size.w,
     bounds,
   });
+  // render3 draws an OVERVIEW from above, so its survivors are the unroofed
+  // ones; the index keeps the roofed pieces for the cut-away to show.
+  const ps = all.filter((p) => !p.roofed);
   assert.equal(ps.length, W.scenery.length, "same survivors as render3");
   for (let i = 0; i < ps.length; i++) {
     assert.equal(ps[i].piece, W.scenery[i].piece, `#${i} piece`);
@@ -414,7 +417,7 @@ test("placements drop what render3 drops, and keep its painter order", { skip },
   }
 });
 
-test("a roof or a cave hides a piece; a bridge does not", { skip }, () => {
+test("a roof or a cave FLAGS a piece; a bridge does not", { skip }, () => {
   const decks = [
     { kind: "roof", cells: [{ x: 1, y: 1 }] },
     { kind: "cave", cells: [{ col: 2, row: 2 }] },
@@ -433,8 +436,25 @@ test("a roof or a cave hides a piece; a bridge does not", { skip }, () => {
     ],
     { frame, levelAt: () => 0, roofed: r, width: 10 },
   );
-  assert.deepEqual(ps.map((p) => p.piece), ["a/3"]);
-  assert.equal(ps[0].i, 2, "the world index survives the filter");
+  // KEPT AND FLAGGED, not dropped: the roofed pieces are the interiors'
+  // furniture, and a cut-away shows them (WorldScene.roofCutAwayAt). render3's
+  // own survivor set is `!roofed`.
+  assert.deepEqual(ps.map((p) => p.piece), ["a/1", "a/2", "a/3"]);
+  assert.deepEqual(ps.map((p) => !!p.roofed), [true, true, false], "the roof and the cave flag; the bridge does not");
+  assert.deepEqual(ps.filter((p) => !p.roofed).map((p) => p.piece), ["a/3"], "render3's set");
+  assert.deepEqual(ps.map((p) => p.i), [0, 1, 2], "the world index survives");
+  assert.deepEqual(ps.map((p) => p.order), [0, 1, 2], "painter order stays monotone across the flagged ones");
+  assert.ok(!("roofed" in ps[2]), "an unroofed placement carries no flag at all");
+  // Malformed entries are still DROPPED — a piece with no id or no position
+  // cannot be drawn by anything, roof or no roof.
+  assert.equal(ps.length, 3, "the empty id and the NaN coordinate are gone");
+});
+
+test("with no roofed set every placement is unflagged (a world with no roof deck)", { skip }, () => {
+  const frame = isoFrame({ x0: 0, y0: 0, x1: 8, y1: 8 }, 0, 15);
+  const ps = buildPlacements([{ piece: "a/1", x: 1.5, y: 1.5 }], { frame, levelAt: () => 0 });
+  assert.equal(ps.length, 1);
+  assert.ok(!("roofed" in ps[0]));
 });
 
 test("the whole world's scenery resolves — the real counts", { skip }, () => {
@@ -448,7 +468,14 @@ test("the whole world's scenery resolves — the real counts", { skip }, () => {
     width: doc.size.w,
   });
   assert.equal(all.length, doc.scenery.length);
-  assert.ok(all.length - shown.length > 0, "some pieces are indoors");
+  assert.equal(shown.length, all.length, "roofed pieces are flagged, never dropped");
+  const indoors = shown.filter((p) => p.roofed);
+  assert.ok(indoors.length > 0, "some pieces are indoors");
+  // The interiors' furnishing is the thing this flag exists for, and it is a
+  // large share of the map — if it ever reads 0 again, every house on the_game
+  // is empty in the game while its furniture still blocks the player.
+  assert.ok(indoors.length > 50, `${indoors.length} indoor placements`);
+  assert.ok(distinctPieces(indoors).length > 10, "and they are many distinct pieces");
   const ids = distinctPieces(shown);
   assert.ok(ids.length * 4 < shown.length, `${ids.length} distinct pieces for ${shown.length} placements`);
   for (const id of ids) assert.ok(existsSync(rel(manifestPath(id))), `${id} exists`);

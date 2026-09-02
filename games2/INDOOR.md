@@ -57,6 +57,14 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
   - Gate: `scripts/verify-indoorscope.mjs` (house_demo, six roofed houses):
     no constrained cell inside house_b, sentinels published, probe-light on
     the neighbour's roof, kill-switch flat world, the transition fade.
+- **SCENERY UNDER THE ROOF FOLLOWS THE CUT** (maps3): a placement under a
+  roof/cave deck is kept in the index and flagged (`SceneryPlacement.roofed`);
+  `WorldScene.roofCutAwayAt` draws it only while `indoorMask` is up and that
+  column's `cutAt` is finite and at/above the piece — i.e. exactly while the
+  roof over it is not drawn. Gated on the DRAWN state like `aboveCut`, so the
+  furniture stays through the exit fade and goes when the slab returns; keyed
+  on the CUT, never on a room test, so the neighbour's house keeps both its
+  roof and its furniture. Gate: `scripts/verify-indoorscenery.mjs`.
 - **The transition is a DEBRIS CROSSFADE, not a pop**: on the indoor flip the
   REMOVED art (roof slab, wall bands above each cut, the cone's tops) is
   rebuilt as ordinary world-anchored images at occluder depths

@@ -1299,6 +1299,7 @@ export class WorldScene extends Phaser.Scene {
   private sceneryAsked = new Set<string>();
   private sceneryQueue: [string, string][] = [];
   private sceneryRebuilds = 0; // the boot hold waits for the first one
+  private sceneryRoofedDrawn = 0; // roofed pieces the last rebuild actually drew
   private sceneryManifestTimer: Phaser.Time.TimerEvent | null = null; // a manifest-landed rebuild is pending
   /** games2/config/scenery-bbox.json, or null until it lands. */
   private sceneryBboxDoc: SceneryBboxDoc | null = null;
@@ -3337,6 +3338,25 @@ export class WorldScene extends Phaser.Scene {
       lastInput: () => this.lastInput,
       // Monster render-state probe (shared body pipeline QA): per monster the
       // resolved depth, cover line, shadow anchor and lit-copy state.
+      /** INDOOR SCENERY: what the index holds under roofs, and how much of it
+       *  the cut is letting through right now. */
+      sceneryIndoor: () => {
+        const ps = this.scenery?.placements ?? [];
+        const roofed = ps.filter((p) => p.roofed);
+        return {
+          placements: ps.length,
+          roofed: roofed.length,
+          cutAway: roofed.filter((p) => this.roofCutAwayAt(p.cx, p.cy, p.level)).length,
+          drawn: this.t3stats.scenery,
+          drawnRoofed: this.sceneryRoofedDrawn,
+          indoor: this.indoorInside,
+          // The DRAWN cut state, which is what the rule actually reads: the mask
+          // outlives the verdict for the length of the exit fade.
+          maskUp: !!this.indoorMask,
+          grade: +this.indoorGrade().toFixed(3),
+          pieces: [...new Set(roofed.map((p) => p.piece))].length,
+        };
+      },
       /** The boot/deferred split of monster art and what is still parked. */
       monsterBoot: () => ({
         boot: this.monsterBootKinds ? [...this.monsterBootKinds].sort() : null,
@@ -11034,6 +11054,27 @@ export class WorldScene extends Phaser.Scene {
     return z > this.cutAt(fx / CELL_WU, fy / CELL_WU);
   }
 
+  /** IS THE ROOF OVER THIS CELL CUT AWAY RIGHT NOW? — the one question a piece
+   *  of indoor scenery asks (`SceneryPlacement.roofed`). It stands under a roof
+   *  or cave deck, so it may be drawn exactly when that deck is not.
+   *
+   *  The answer is the cut itself, never a room test: `cutAt` returns Infinity
+   *  for a column drawn WHOLE — the street, the neighbour's house, my own
+   *  building before I step inside — and a finite level for one the cut-away
+   *  has truncated, which is precisely "the roof above it has been removed
+   *  this frame". A piece above that level is still under drawn art and stays
+   *  hidden (`level <= cut`), which is what keeps a cave's upper gallery from
+   *  showing through the floor of the one above it.
+   *
+   *  Gated on `indoorMask` for the same reason aboveCut is: the exit fade keeps
+   *  the cut world painted while the light rolls back, and the furniture must
+   *  not vanish a beat before the roof slab returns over it. */
+  private roofCutAwayAt(col: number, row: number, level: number): boolean {
+    if (!this.indoorMask) return false; // no cut drawn: every roof is whole
+    const cut = this.cutAt(col, row);
+    return Number.isFinite(cut) && level <= cut;
+  }
+
   /** The level the column at this cell draws to while the cut is active: its
    * entry in the constrained set, or Infinity for a column drawn whole (the
    * per-cell world), or the scalar dial (the legacy kill-switch world).
@@ -12093,12 +12134,16 @@ export class WorldScene extends Phaser.Scene {
     const rect = { x: view.x - pad, y: view.y - pad, w: view.width + pad * 2, h: view.height + pad * 2 };
     const reach = { x: view.x - view.width, y: view.y - view.height, w: view.width * 3, h: view.height * 3 };
     let drawn = 0;
+    let roofedDrawn = 0; // indoor furniture the cut let through — see roofCutAwayAt
     for (const p of idx.query(reach)) {
       const piece = pieces.get(p.piece);
       if (piece === undefined) {
         void pieces.request(p.piece); // 205 fetches for 1,388 placements, lazily; landing → onSceneryManifest
         continue;
       }
+      // INDOOR FURNITURE: a piece under a roof/cave deck draws only while that
+      // roof is actually cut away — see roofCutAwayAt.
+      if (p.roofed && !this.roofCutAwayAt(p.cx, p.cy, p.level)) continue;
       if (piece === null) continue; // tombstoned: the manifest 404'd or is broken
       const st = stateFor(piece, p.lit);
       const sprite = facedSprite(st, p.dir);
@@ -12261,8 +12306,10 @@ export class WorldScene extends Phaser.Scene {
         y1: box0 ? hbY + box0.ry * fit.ky : fit.y + fit.h,
       });
       drawn++;
+      if (p.roofed) roofedDrawn++;
     }
     this.t3stats.scenery = drawn;
+    this.sceneryRoofedDrawn = roofedDrawn;
     this.flushScenery();
   }
 

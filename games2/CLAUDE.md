@@ -247,6 +247,26 @@ by construction, so no existing branch changed.
   maintainer's other tuned sets never appear. Fixing it is a RESOLUTION change
   (tiles3.ts + its fixture), not a wiring one, which is why this run did not
   make it.
+- **INDOOR SCENERY IS DRAWN WHILE ITS ROOF IS CUT AWAY** — the furniture of
+  every house and cave. `buildPlacements` FLAGS a placement under a roof/cave
+  deck (`SceneryPlacement.roofed`) instead of dropping it: render3 drops those
+  from its OVERVIEW, which a cut-away must not copy. `rebuildScenery` then
+  draws one only while `WorldScene.roofCutAwayAt(cx, cy, level)` is true —
+  `indoorMask` up (the DRAWN cut state, so the exit fade keeps the furniture
+  until the roof slab is back, exactly as `aboveCut` treats bodies) AND
+  `cutAt` finite for that column (Infinity = drawn whole: the street, the
+  neighbour's house, my own building before I step in) AND the piece at or
+  below that cut. (136 of the_game's 1,263 placements — every bed, cupboard,
+  hearth, table, chair, brazier and rug — were dropped at LOAD and could never
+  be drawn, while the server stamped their footprints into the collision grid
+  from `world.scenery` whole: maintainer, "it feels like something is
+  invisible inside this house". Measured standing in the 180-cell inn: 17 of
+  17 of its pieces drawn, and only 17 of the 136 released — every other roof
+  on the map keeps its furniture hidden, which is the bush-on-the-roof rule
+  the drop was protecting.) Probe: `__ml.sceneryIndoor()` (placements/roofed/
+  cutAway/drawnRoofed/maskUp/grade). Gates: `scripts/verify-indoorscenery.mjs`
+  (derives the most-furnished room from the world doc; a real join, inside and
+  out) + the placement half of `server/test/scenery3.test.ts`.
 - KNOWN GAPS, stated: no FADE GUARD in the game (it is a pixel test over art the
   pool has not fetched yet — measured, 2 of 10 pools keep a tile render3 drops,
   which is a wrong tile inside a 1-cell band, never a hole;

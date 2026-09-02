@@ -104,10 +104,11 @@ export function inBounds(p: ScenerySpec, b: Bounds): boolean {
 }
 
 /** The cells a ROOF or CAVE deck covers, as `y * width + x` keys. A piece under
- *  one is INDOORS and render3 skips it: drawing it put a bush on the meadow
- *  house's roof. A BRIDGE deck does not hide anything — you walk under a bridge
- *  and the scenery below is meant to be seen. (the_game: 979 roofed cells hide
- *  124 of 1,388 placements.) */
+ *  one is INDOORS: render3 skips it (drawing it put a bush on the meadow
+ *  house's roof) and the game draws it only while that roof is cut away — see
+ *  SceneryPlacement.roofed. A BRIDGE deck covers nothing: you walk under a
+ *  bridge and the scenery below is meant to be seen. (the_game: 979 roofed
+ *  cells hold 136 of 1,263 placements — the interiors' whole furnishing.) */
 export function roofedCells(
   decks: readonly SceneryDeckLike[] | undefined,
   width: number,
@@ -550,14 +551,30 @@ export interface SceneryPlacement {
   /** Position in the painter order — a monotone integer, so a query can restore
    *  the order with a numeric sort and never re-derive it. */
   order: number;
+  /** UNDER A ROOF OR CAVE DECK — the furniture of a house or a cave. render3
+   *  drops these from its overview (drawing one put a bush on the meadow
+   *  house's roof), and so did this index until 2026-09-02, which is why no
+   *  interior on the_game had any furniture in the GAME either: 136 of 1,263
+   *  placements — every bed, cupboard, hearth, table, chair, brazier and rug —
+   *  existed only in the collision grid, which the server stamps from
+   *  `world.scenery` whole (maintainer: "it feels like something is invisible
+   *  inside this house" — it was this).
+   *
+   *  A cut-away is not an overview: indoors the roof over MY building is
+   *  removed, and what it covered is exactly what the player came to see. So
+   *  the placement is KEPT and flagged, and the scene draws it only while that
+   *  roof is actually cut away (WorldScene.roofCutAwayAt) — outdoors, and
+   *  inside the neighbour's still-roofed house, it stays hidden as before. */
+  roofed?: boolean;
 }
 
 export interface PlacementOptions {
   frame: Frame;
   /** Level per cell — `World3View.levelAt`, which reads the WHOLE doc. */
   levelAt: (x: number, y: number) => number;
-  /** `roofedCells(...)` keys, plus the world width they were keyed with. Omit
-   *  to keep every piece (a world with no roof deck). */
+  /** `roofedCells(...)` keys, plus the world width they were keyed with. A
+   *  placement on one of these cells is FLAGGED `roofed`, not dropped — see
+   *  SceneryPlacement.roofed. Omit for a world with no roof deck. */
   roofed?: Set<number>;
   width?: number;
   /** render3's window filter, on continuous coordinates. Defaults to the
@@ -565,8 +582,12 @@ export interface PlacementOptions {
   bounds?: Bounds;
 }
 
-/** Resolve a world's `scenery[]` into painter-ordered placements. Drops what
- *  render3 drops: outside the window, and under a roof/cave deck. */
+/** Resolve a world's `scenery[]` into painter-ordered placements, in render3's
+ *  painter order. Drops what render3 drops for a reason the GAME shares — a
+ *  placement outside the window, or malformed — and FLAGS what render3 drops
+ *  because it is drawing an overview from above: a piece under a roof or cave
+ *  deck (`roofed`), which a cut-away must be able to show. A consumer wanting
+ *  render3's exact survivor set filters `!p.roofed`. */
 export function buildPlacements(
   scenery: readonly ScenerySpec[] | undefined,
   o: PlacementOptions,
@@ -577,8 +598,6 @@ export function buildPlacements(
   (scenery ?? []).forEach((p, i) => {
     if (!p || !p.piece || !Number.isFinite(p.x) || !Number.isFinite(p.y)) return;
     if (!inBounds(p, b)) return;
-    const [cx, cy] = anchorCell(p);
-    if (o.roofed && o.roofed.has(cy * width + cx)) return;
     kept.push({ p, i });
   });
   // Stable sort on x+y — Node's Array.sort is stable, matching Python's.
@@ -594,6 +613,7 @@ export function buildPlacements(
       hflip: !!p.hflip,
       lit: !!p.lit,
       ...(p.dir ? { dir: p.dir } : {}),
+      ...(o.roofed?.has(cy * width + cx) ? { roofed: true as const } : {}),
       cx,
       cy,
       level,
