@@ -11930,6 +11930,89 @@ function viewSearch() {
         h("div", { class: "card-sub" }, label(domain))))));
 }
 
+/* ------------------------------------------------- "what am I next to?" */
+/* THE 🔍 BUTTON'S PAGE (maintainer 2026-09-02, through the games-ui agent:
+ * "To the left of the Wiki in-game button will be a square search icon that
+ * will also take you to the wiki, but will go directly to the search with the
+ * results sorted by how far away they are from the player. This is a way to
+ * fast find what you stand next to.").
+ *
+ * The contract is games2/spec/WIKI_NEAR.md and the seam is a postMessage: the
+ * game sends one `wiki:near` snapshot when the drawer opens, and this page may
+ * ask for a fresh one with `wiki:wantNear` at any time. The game FREEZES its
+ * loop behind the drawer, so a snapshot is exact and cannot go stale while he
+ * reads it.
+ *
+ * WHAT THIS PAGE DOES NOT DO: invent. Every row is (domain, id) straight from
+ * the game — its route is `#/<domain>/<id>` — so a row that fails to resolve
+ * is a row whose id this build has never heard of (a roster entry newer than
+ * the last data.json), and it is shown PLAINLY rather than dropped. Dropping
+ * it would hide the very thing he is standing next to. */
+let nearSnap = null;            // the last wiki:near, or null before one lands
+let nearAsked = false;          // one wantNear per visit, not one per render
+const nearDist = (d) => {
+  if (!(d > 0)) return "under you";
+  // Never "0 cells" for something a step away, and never "1 cells".
+  const n = Math.max(1, Math.round(d));
+  return `${n} cell${n === 1 ? "" : "s"}`;
+};
+/** The card for one row: the wiki's own art and name where the id is known. */
+function nearRow(it) {
+  const dom = String(it?.domain ?? ""), id = String(it?.id ?? "");
+  let name = id, art = null, href = `#/${dom}/${encodeURIComponent(id)}`, where = label(dom);
+  if (dom === "monsters")      { const m = monsterById(id);   if (m) { name = m.name; art = m.preview; } }
+  else if (dom === "characters") { const c = characterById(id); if (c) { name = c.name; art = c.preview; } }
+  else if (dom === "objects")  { const o = objectById(id);    if (o) { name = o.name; art = o.preview; } }
+  else if (dom === "items")    { const t = itemById(id);      if (t) { name = itemLabel(t); art = t.preview; } }
+  else if (dom === "tiles")    {
+    const t = tileTypeById(id);
+    // The instance the player is standing on, when the game names the file.
+    if (it.path) href = `#/tiles/${encodeURIComponent(id)}`;
+    if (t) { name = t.name; art = it.path ?? (t.groups?.[0] ? `${t.groups[0].dir}/${t.groups[0].tiles[0]}` : null); }
+    else if (it.path) art = it.path;
+  } else if (dom === "world")  {
+    const g = (worldMeta().groundTypes ?? []).find((x) => x.id === id);
+    if (g) { name = g.name ?? id; }
+    where = "Ground";
+  }
+  const unknown = name === id && !art && dom !== "world";
+  return h("a", { class: "card", href },
+    art ? h("div", { class: "thumb checker" }, h("img", { src: assetUrl(art), loading: "lazy", alt: name })) : null,
+    h("div", { class: "card-name" }, name),
+    h("div", { class: "card-sub" },
+      h("span", { class: "pill" }, nearDist(+it.dist)),
+      it.n > 1 ? h("span", { class: "muted" }, ` ×${it.n}`) : null,
+      h("span", { class: "muted" }, ` · ${where}`),
+      // An id this build does not know is SHOWN, and named as what it is.
+      unknown ? h("span", { class: "pill warn", title: "This build's data.json has never seen this id — it is newer than the wiki's last rebuild. The page may be empty." }, "new") : null));
+}
+function viewNear() {
+  const rows = nearSnap?.items ?? [];
+  const inGame = window.parent !== window;
+  if (!nearSnap && inGame && !nearAsked) { nearAsked = true; askNear(); }
+  return h("div", {},
+    h("h1", {}, "What you are standing next to"),
+    !inGame
+      ? h("p", { class: "muted" }, "This page works from inside the game — tap the 🔍 button beside the Wiki button and it lists what is around you, nearest first.")
+      : !nearSnap
+      ? h("p", { class: "muted" }, "Asking the game what is around you…")
+      : nearSnap.world === null
+      ? h("p", { class: "muted" }, "You are on the select screen, so there is nothing around you yet. Enter a world and tap 🔍 again.")
+      : !rows.length
+      ? h("p", { class: "muted" }, `Nothing within ${nearSnap.radius ?? 12} cells — open water, or a long way from anything.`)
+      : h("div", {},
+        h("p", { class: "muted" }, `${rows.length} within ${nearSnap.radius ?? 12} cells, nearest first`),
+        h("div", { class: "grid" }, ...rows.map(nearRow))),
+    // A snapshot is frozen by design; this is how he takes another one without
+    // closing the drawer and tapping 🔍 again.
+    inGame && nearSnap ? h("p", {},
+      h("button", { class: "ghost-btn", onclick: () => { nearSnap = null; askNear(); route(); } }, "↻ look again")) : null);
+}
+function askNear() {
+  if (window.parent === window) return;
+  try { window.parent.postMessage({ type: "wiki:wantNear" }, location.origin); } catch {}
+}
+
 /* ---------------------------------------------------------------- router */
 function route() {
   destroyPlayers();
@@ -11949,6 +12032,7 @@ function route() {
   else if (page === "world") view = id === "transition" && sub ? viewWorldTransition(sub)
     : id ? (sub ? viewWorldPair(id, sub) : viewWorldType(id)) : viewWorld();
   else if (page === "objects") view = id ? viewObject(id) : viewObjects();
+  else if (page === "near") view = viewNear();
   else if (page === "sounds") view = viewSounds();
   else if (page === "music") { if (id === "dynamic" && state.admin) musicTab = "dynamic"; view = viewMusic(); }
   else if (page === "items") view = id ? viewItem(id) : viewItems();
@@ -12111,7 +12195,23 @@ function initChrome() {
     location.replace(a.getAttribute("href"));
   });
   window.addEventListener("message", (e) => {
-    if (e.origin === location.origin && e.data?.type === "wiki:closeMenu") setMenu(false);
+    if (e.origin !== location.origin) return;
+    if (e.data?.type === "wiki:closeMenu") { setMenu(false); return; }
+    /* THE SNAPSHOT (games2/spec/WIKI_NEAR.md). Same origin + same source as
+     * the menu traffic. It is kept even when the reader is elsewhere in the
+     * wiki, so walking Overview → back to #/near shows what the game sent
+     * rather than asking again for a list that cannot have changed: the game
+     * is frozen behind the drawer. */
+    if (e.data?.type === "wiki:near") {
+      if (window.parent !== window && e.source !== window.parent) return;
+      const d = e.data;
+      nearSnap = {
+        world: d.world ?? null, at: d.at ?? null, radius: d.radius ?? 12,
+        items: Array.isArray(d.items) ? d.items.filter((x) => x && x.domain && x.id) : [],
+      };
+      nearAsked = false;
+      if (location.hash.replace(/^#\/?/, "").split("/")[0] === "near") route();
+    }
   });
   // search
   let debounce = null;
