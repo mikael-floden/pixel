@@ -824,7 +824,15 @@ const TILE_DIAMOND_TOP = 5;
  * into the depth instead: creation index × 1e-6 reproduces "insertion order
  * among equals" exactly, and tops out at ~0.006 over a 6,000-image rebuild —
  * far inside the ≥0.3 every body and light keeps from a column's depth
- * (resolveBodyDepth: +0.5 / above+0.6 / below−0.3; lights +0.1/+0.2). */
+ * (resolveBodyDepth: +0.5 / above+0.6 / below−0.3; lights +0.1/+0.2).
+ *
+ * A BASE-BAND QUANTITY ONLY. `litDepth` compresses painter depth into the lit
+ * band by ×1e-5, where the same 0.3 of body margin is 3e-6 — so 1e-6 per index
+ * there is 0.1 world px of painter depth, and 5,000 indices put a tree's lit
+ * copy 500 px in front of a body standing before it (caught in review,
+ * 2026-09-02). Nothing that goes through litDepth takes the epsilon: lit copies
+ * are never pooled, are recreated in creation order every rebuild, and the
+ * stable sort resolves their ties exactly as it always did. */
 const OCC_DEPTH_EPS = 1e-6;
 
 /* THE LOADING BAR'S BANDS — a stage gets the share of the BAR that matches its
@@ -3452,10 +3460,15 @@ export class WorldScene extends Phaser.Scene {
         const list = this.children.list;
         const pos = new Map<Phaser.GameObjects.GameObject, number>();
         list.forEach((o, i) => pos.set(o, i));
-        return this.occluders
-          .map((im) => ({ im, i: pos.get(im) ?? -1 }))
-          .sort((a, b) => a.im.depth - b.im.depth || a.i - b.i)
-          .map(({ im }) => [im.texture.key, im.x, im.y, Math.round(im.depth * 10) / 10, im.getData("oc"), im.getData("or")]);
+        const order = (ims: readonly Phaser.GameObjects.Image[]) =>
+          ims
+            .map((im) => ({ im, i: pos.get(im) ?? -1 }))
+            .sort((a, b) => a.im.depth - b.im.depth || a.i - b.i)
+            .map(({ im }) => [im.texture.key, im.x, im.y, Math.round(im.depth * 10) / 10, im.getData("oc"), im.getData("or")]);
+        // Three bands, each in its own painter order: the terrain occluders
+        // (pooled), the scenery base images, and the LIT copies (never pooled,
+        // and where review found the epsilon must not go — so parity covers it).
+        return { occluders: order(this.occluders), scenery: order(this.sceneryImgs), lit: order(this.litOccluders.map((lo) => lo.img)) };
       },
       occRebuild: (mode?: "legacy" | "bulk" | "pool") => {
         if (mode === "legacy") {
@@ -11856,6 +11869,9 @@ export class WorldScene extends Phaser.Scene {
       // compositions = 25 MB of canvas for the whole 512x512 world, and a
       // camera window holds ~400.
       limit: 0,
+      // THE OCCLUDER POOL HOLDS TEXTURE OBJECTS ACROSS REBUILDS (occImage), so any
+      // future eviction must also clear occPool/occNext or a pooled image renders
+      // from a destroyed texture — legacy's per-rebuild recreate no longer re-resolves the key.
     });
     return this.t3tex;
   }
@@ -12647,7 +12663,7 @@ export class WorldScene extends Phaser.Scene {
             .setOrigin(0, 0)
             .setDisplaySize(fit.w, fit.h)
             .setFlipX(fit.flipX)
-            .setDepth(litDepth(hbDepth) + this.occSeq++ * OCC_DEPTH_EPS),
+            .setDepth(litDepth(hbDepth)), // NO epsilon here — see OCC_DEPTH_EPS: this is the lit band
           col: p.x,
           row: p.y,
           z: (world.rows[srow]?.[scol]?.l ?? 0) + 0.5,
@@ -13370,8 +13386,22 @@ export class WorldScene extends Phaser.Scene {
     if (this.maps3 && this.occPoolOn) {
       /* THE CURRENT SET BECOMES THE POOL. Every maps3 occluder is created by
        * occImage and therefore lives in occNext; what this rebuild does not
-       * take back out is destroyed at the end of the maps3 branch. The lit
-       * copies are not pooled (an emissive maps2 feature; none on a v3 world). */
+       * take back out is destroyed at the end of the maps3 branch. LIT COPIES
+       * ARE DELIBERATELY OUTSIDE THE POOL — maps2 emissive art AND the maps3
+       * scenery silhouettes rebuildScenery pushes per drawn piece — and are
+       * destroyed and recreated in creation order every rebuild; that order is
+       * what keeps their ties right without any depth epsilon (see
+       * OCC_DEPTH_EPS). Do not drop this destroy as dead: it is one image per
+       * tree per rebuild. */
+      /* SELF-HEALING: a throw between the swap and the drain (tiles3draw's
+       * composeBoundary documents one) would leave images in occPool with no
+       * other reference — alive, drawn every frame, never re-sorted for a cut.
+       * Normally occPool is empty here and this costs nothing. */
+      if (this.occPool.size) {
+        const stray: Phaser.GameObjects.Image[] = [];
+        for (const arr of this.occPool.values()) for (const im of arr) stray.push(im);
+        this.destroyBatch(stray);
+      }
       this.occPool = this.occNext;
       this.occNext = new Map();
       this.destroyBatch(this.litOccluders.map((lo) => lo.img));

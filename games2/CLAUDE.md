@@ -456,8 +456,9 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   CELL) + the WHITE OCCLUSION OUTLINE (one image per covered body). The
   `"ot"`/`"od"` occluder tags went with it; `tagOccluder` stamps the cell
   only. History in git.
-- **Occluder view-cull + deck exposure** (`rebuildOccluders` destroys and
-  recreates the whole set when the camera drifts `OCC_STEP` = 96px):
+- **Occluder view-cull + deck exposure** (`rebuildOccluders` rebuilds the set
+  when the camera drifts `OCC_STEP` = 96px — pooled on maps3, see THE OCCLUDER
+  SET IS POOLED below; the maps2 branch still destroys and recreates):
   - Deck cells get the exposed-face rule via `deckCoverFrom`, comparing BANDS
     (a slab covers `[level-thickness, level]`; only a CONTIGUOUS run reaching
     my own bottom hides my faces). Without it every face level of every deck
@@ -513,9 +514,16 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     (`resolveBodyDepth` +0.5 / above+0.6 / below−0.3; lights +0.1). The
     metadata (`occluderMeta`, `emissiveLights`, the cover index) is still
     rebuilt in full every time: it is data, and the cover index's staleness
-    contract is unchanged. The maps2 branch (the_island2) creates images the
-    old way and never sees the pool. A pooled image the scene has destroyed
-    (`scene` gone) is dropped, never reused.
+    contract is unchanged. **The epsilon is a BASE-band quantity: nothing that
+    goes through `litDepth` (×1e-5) takes it** — lit copies are never pooled
+    and keep their creation order, and 1e-6 in the lit band is 0.1 world px
+    per index (review caught scenery lit copies 165-540 px in front of the
+    bodies before them). The maps2 branch (the_island2) creates images the old
+    way and never sees the pool. A pooled image the scene has destroyed
+    (`scene` gone) is dropped, never reused; anything a throw strands in the
+    pool is drained at the next rebuild. The pool holds TEXTURE OBJECTS across
+    rebuilds, so tiles3's `limit: 0` cache must stay unbounded, or an eviction
+    must clear the pool too.
   - STILL OPEN after the pool: `redrawGround` is still a full repaint of the
     ground RT with an unconditional deck face loop (31-55% of its blits land
     entirely OUTSIDE the texture — measured 1,739 of 3,892 at the forest, 6,623
