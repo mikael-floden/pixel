@@ -356,6 +356,19 @@ try {
       : fail(`the ground under the feet does not route: ${under ? `${under.domain}/${under.id}` : "none"}`);
     const dup = new Set(items.map((it) => `${it.domain}/${it.id}`)).size !== items.length;
     !dup ? ok("one row per (domain, id)") : fail("duplicate (domain, id) rows");
+    // …and the WIKI'S HALF renders it: the drawer shows one card per row,
+    // nearest first, the ground under the feet reading "under you". This is
+    // the end-to-end the maintainer sees; the page's own behaviours are the
+    // wiki's gate (wiki/tools/check-near.mjs).
+    await wiki().waitForFunction((n) => document.querySelectorAll("#content a.card").length >= n, items.length, { timeout: 10000 }).catch(() => {});
+    const cards = await wiki().evaluate(() => [...document.querySelectorAll("#content a.card")].map((a) => ({
+      href: a.getAttribute("href"), sub: a.querySelector(".card-sub")?.textContent ?? "" })));
+    cards.length === items.length
+      ? ok(`the wiki renders the snapshot — ${cards.length} cards on #/near`)
+      : fail(`#/near shows ${cards.length} cards for ${items.length} rows`);
+    cards[0] && /under you/.test(cards[0].sub) && cards[0].href === `#/${items[0].domain}/${encodeURIComponent(items[0].id)}`
+      ? ok(`the first card is the ground under the feet (${cards[0].href} — "${cards[0].sub}")`)
+      : fail(`first card wrong: ${JSON.stringify(cards[0])} for ${items[0]?.domain}/${items[0]?.id}`);
   }
   await page.evaluate(() => document.querySelector(".ml-wikiback")?.click());
   await page.waitForFunction(() => !document.querySelector(".ml-wikiroot"), null, { timeout: 5000 });

@@ -121,6 +121,30 @@ await p.waitForTimeout(2200);
 const standalone = await p.evaluate(() => document.querySelector("#content")?.textContent ?? "");
 ok(/works from inside the game/.test(standalone), `opened as a plain page it explains itself instead of hanging (“${standalone.slice(0, 60).trim()}”)`);
 
+// ---- 7. THE GAME'S OWN TIMING: the snapshot lands BEFORE data.json -------
+// The game does not wait to be asked — it pushes wiki:near on the iframe's
+// `load`, which fires before the page's data.json fetch resolves. The
+// handler used to route() on arrival regardless, and in the real drawer that
+// ran nearRow over state.data === null and threw at worldMeta() (games-ui's
+// end-to-end gate, 2026-09-02). Played here exactly that way: push on load,
+// answer nothing else, and the page must neither throw nor stay empty.
+const errsBefore = errs.length;
+await p.evaluate(({ url, snap }) => {
+  document.querySelectorAll("iframe.near-test").forEach((f) => f.remove());
+  window.__snap = null; // the host answers NO wantNear this time — push only
+  const f = document.createElement("iframe");
+  f.className = "near-test";
+  f.style.cssText = "position:fixed;left:0;top:0;width:900px;height:1500px;z-index:99999;background:#fff";
+  f.addEventListener("load", () => f.contentWindow.postMessage({ type: "wiki:near", ...snap }, location.origin));
+  f.src = `${url}#/near`;
+  window.__frame = f;
+  document.body.appendChild(f);
+}, { url, snap: SNAP });
+await p.waitForTimeout(3000);
+const pushed = await (await frame()).evaluate(() => document.querySelectorAll("#content a.card").length);
+ok(errs.length === errsBefore, `a snapshot pushed on load, before data.json, does not throw (${errs.slice(errsBefore).join(" | ") || "clean"})`);
+ok(pushed === SNAP.items.length, `…and the page still draws it once the index is in (${pushed} of ${SNAP.items.length} rows)`);
+
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 await b.close();
 console.log(fails.length ? `\nNEAR CHECKS FAILED (${fails.length})` : "\nALL NEAR CHECKS PASSED");

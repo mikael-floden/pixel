@@ -5,7 +5,9 @@ square search icon that will also take you to the wiki, but will go directly
 to the search with the results sorted by how far away they are from the
 player. This is a way to fast find what you stand next to."*
 
-Two agents build this. The **games-ui** agent owns the button, the snapshot
+Both halves shipped 2026-09-02 (game: `wikinear.ts` + `__ml.nearby()`; wiki:
+`viewNear` in `wiki/site/wiki.js`, gate `wiki/tools/check-near.mjs`). Two agents
+build this. The **games-ui** agent owns the button, the snapshot
 of what surrounds the player, and the messaging (`client/src/wikinear.ts`).
 The **wiki** agent owns the page that shows it. This file is the seam; change
 it in the same commit as either side.

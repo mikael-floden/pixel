@@ -12210,7 +12210,12 @@ function initChrome() {
         items: Array.isArray(d.items) ? d.items.filter((x) => x && x.domain && x.id) : [],
       };
       nearAsked = false;
-      if (location.hash.replace(/^#\/?/, "").split("/")[0] === "near") route();
+      // NOT before the index is in. The game pushes its snapshot on the
+      // iframe's `load`, and that beats the data.json fetch every time — in
+      // the real drawer this route() ran on state.data === null and nearRow
+      // threw at worldMeta() (games-ui, 2026-09-02, caught by their end-to-end
+      // gate). Boot's own route() draws the snapshot already in hand.
+      if (state.data && location.hash.replace(/^#\/?/, "").split("/")[0] === "near") route();
     }
   });
   // search
