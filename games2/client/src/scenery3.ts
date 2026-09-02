@@ -189,6 +189,11 @@ export interface SceneryPiece {
    *  sp.height`). Read from the PIECE even when a lit STATE is drawn — a lit
    *  variant is the same object, at the same size. */
   worldPxHeight: number | null;
+  /** `placement.character_height_px` — the person the contract sized this
+   *  piece against (64 on every published piece). The SCENE re-bases
+   *  worldPxHeight to the game's own person with it (shared sceneryDrawnPx);
+   *  this module stays render3-identical and never applies it. */
+  contractCharacterPx: number | null;
   /** `must_be_imbplemented_with_random_hflip` (sic — the shipped key name).
    *  FALSE where left and right already mean something: every `windows` piece
    *  and the three legacy 8-direction pieces. The world's own `hflip` is still
@@ -301,12 +306,15 @@ export function parsePiece(
   else if (!Object.keys(states[baseState].rotations).length && Object.keys(pieceRot).length)
     states[baseState] = { ...states[baseState], rotations: pieceRot };
 
-  const ph = json.placement && typeof json.placement === "object" ? json.placement.world_px_height : null;
+  const placement = json.placement && typeof json.placement === "object" ? json.placement : null;
+  const ph = placement ? placement.world_px_height : null;
+  const cpx = placement ? placement.character_height_px : null;
   return {
     id,
     sprite,
     // `or sp.height` in render3: 0 falls back too, and so does a non-number.
     worldPxHeight: typeof ph === "number" && ph > 0 ? ph : null,
+    contractCharacterPx: typeof cpx === "number" && cpx > 0 ? cpx : null,
     hflipOk: json.must_be_imbplemented_with_random_hflip !== false,
     states,
     baseState: base,

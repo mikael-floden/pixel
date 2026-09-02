@@ -4069,9 +4069,56 @@ export * from "./chess";
 
 /** games2/config/scenery-bbox.json — built by scripts/build-scenery-bbox.py. */
 export type SceneryBboxDoc = {
-  pieces?: Record<string, { wph?: number | null; sprite?: string | null; states?: Record<string, string> }>;
+  pieces?: Record<
+    string,
+    {
+      wph?: number | null;
+      /** The piece's own `placement.character_height_px` — see sceneryDrawnPx. */
+      cpx?: number | null;
+      sprite?: string | null;
+      states?: Record<string, string>;
+    }
+  >;
   boxes?: Record<string, [number, number, number, number, number, number]>;
 };
+
+/** THE PERSON EVERY SCENERY PIECE IS SIZED AGAINST — art pixels, measured.
+ *
+ *  A piece's placement contract (scenery/<piece>/scenery.json `placement`)
+ *  gives its height in METRES and, derived from that, `world_px_height`: "render
+ *  the sprite scaled so its height == world_px_height; a character is
+ *  character_height_px tall". Every one of the 707 published pieces says a
+ *  character is 64 px. The people this game draws are not: both heroes and all
+ *  191 NPCs are 112-px PixelLab frames whose bodies measure 90 (default_boy)
+ *  and 86 (default_girl) px — mean 88. Drawn at `world_px_height` verbatim, a
+ *  1.29 m bed stood 49 px beside a 90 px man: 0.54 of him where the metres say
+ *  0.76 (maintainer 2026-09-02, wiki beside game: "someone is rendering in the
+ *  wrong scale"). The contract's own note is the rule, so the game keeps the
+ *  metres and swaps in the person it actually has. Pinned against the art by
+ *  server/test/characterscale.test.ts. */
+export const CHARACTER_BODY_PX = 88;
+
+/** The contract's default when a piece does not say (every published piece
+ *  does, and says 64). */
+export const SCENERY_CONTRACT_CHARACTER_PX = 64;
+
+/** The height a piece is DRAWN at, in art px: its `world_px_height` re-based
+ *  from the contract's character to the game's. Draw and collision both go
+ *  through here — the earlier lesson stands, a placement drawn at one scale and
+ *  stamped at another puts the footprint off its art. Reads the contract's
+ *  character from the piece, so if the scenery domain ever publishes the true
+ *  height at the source this collapses to identity rather than doubling. */
+export function sceneryDrawnPx(
+  worldPx: number | null | undefined,
+  contractCharacterPx?: number | null,
+): number | null {
+  if (typeof worldPx !== "number" || !(worldPx > 0)) return null;
+  const c =
+    typeof contractCharacterPx === "number" && contractCharacterPx > 0
+      ? contractCharacterPx
+      : SCENERY_CONTRACT_CHARACTER_PX;
+  return (worldPx * CHARACTER_BODY_PX) / c;
+}
 /** live/tuning/scenery_hitbox.json `.overrides`. */
 export type SceneryHitboxDoc = Record<
   string,
@@ -4144,8 +4191,9 @@ export function stampSceneryCollision(
   for (let pi = 0; pi < scenery.length; pi++) {
     const pl = scenery[pi];
     const facts = bbox.pieces[pl.piece];
-    const wph = facts?.wph;
-    if (!facts || !wph || wph <= 0) continue;
+    // The DRAWN height, never the contract's raw px — see sceneryDrawnPx.
+    const wph = sceneryDrawnPx(facts?.wph, facts?.cpx);
+    if (!facts || !wph) continue;
     /* THE PIECE'S RECORD. Keyed per variation ("<path>#<state>"); collision does
      * not resolve which variation is drawn — they differ by a pixel or two of
      * footprint — so the piece-level record answers first and any variation's

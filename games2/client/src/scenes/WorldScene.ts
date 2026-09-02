@@ -14,6 +14,7 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   stampSceneryCollision,
+  sceneryDrawnPx,
   footprintsInCells,
   MIN_FOOTPRINT_SEMI,
   ISO_GEOMETRY_MAPS3,
@@ -12220,7 +12221,20 @@ export class WorldScene extends Phaser.Scene {
       const baseSprite = this.sceneryBboxDoc?.pieces?.[p.piece]?.sprite ?? null;
       const baseBox = baseSprite ? this.sceneryBboxDoc?.boxes?.[baseSprite] : undefined;
       const baseH = baseBox ? Math.max(1, baseBox[3] - baseBox[1]) : undefined;
-      const fit = fitSprite(art.bbox, art.canvas, piece.worldPxHeight, p.ax, p.ay, p.hflip, baseH);
+      /* THE PERSON'S SCALE, NOT THE CONTRACT'S: world_px_height was derived for
+       * a 64 px character and this game's people are 88 — a bed drawn at the raw
+       * number stood at 0.54 of the man where its metres say 0.76. The stamp
+       * re-bases through the same function, so outline and art still share one
+       * scale (shared sceneryDrawnPx). */
+      const fit = fitSprite(
+        art.bbox,
+        art.canvas,
+        sceneryDrawnPx(piece.worldPxHeight, piece.contractCharacterPx),
+        p.ax,
+        p.ay,
+        p.hflip,
+        baseH,
+      );
       if (fit.x + fit.w < rect.x || fit.x > rect.x + rect.w || fit.y + fit.h < rect.y || fit.y > rect.y + rect.h)
         continue;
       // INDOORS a piece outside my room still DRAWS — it renders below the

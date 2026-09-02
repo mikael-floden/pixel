@@ -56,12 +56,15 @@ def main() -> int:
             continue
         pid = os.path.relpath(root, SRC).replace(os.sep, "/")
         wph = ((man.get("placement") or {}).get("world_px_height"))
+        # The contract's own character height, so the stamp re-bases wph to the
+        # game's person exactly as the draw does (shared sceneryDrawnPx).
+        cpx = ((man.get("placement") or {}).get("character_height_px"))
         states = {}
         for k, st in (man.get("states") or {}).items():
             spr = (st or {}).get("rotations", {}).get("south") or (st or {}).get("sprite")
             if spr:
                 states[k] = spr
-        pieces[pid] = {"wph": wph, "sprite": man.get("sprite"), "states": states}
+        pieces[pid] = {"wph": wph, "cpx": cpx, "sprite": man.get("sprite"), "states": states}
 
     doc = {
         "format": "games2-scenery-bbox@2",

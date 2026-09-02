@@ -247,6 +247,33 @@ by construction, so no existing branch changed.
   maintainer's other tuned sets never appear. Fixing it is a RESOLUTION change
   (tiles3.ts + its fixture), not a wiring one, which is why this run did not
   make it.
+- **SCENERY IS SIZED AGAINST THE PERSON THIS GAME DRAWS, NOT THE ONE THE
+  CONTRACT ASSUMES** (`shared/CHARACTER_BODY_PX` = 88, `sceneryDrawnPx`). A
+  piece's `placement` gives its height in metres and a derived
+  `world_px_height` with the note "a character is character_height_px tall" —
+  and every one of the 707 published pieces says 64. The people here are
+  112-px PixelLab frames whose bodies measure 90 (default_boy) and 86
+  (default_girl) — mean 88 — and all 191 NPCs share the frame. Drawn at the raw
+  `world_px_height`, a 1.29 m bed stood 49 px beside a 90 px man: 0.54 of him
+  where its metres say 0.76 (maintainer 2026-09-02, wiki beside game:
+  "someone is rendering in the wrong scale"). So the game keeps the metres and
+  re-bases: drawn px = `world_px_height × 88 / character_height_px`, applied
+  in ONE function to the draw (`rebuildScenery` → `fitSprite`) AND the
+  collision stamp (`stampSceneryCollision` via the bbox doc's `cpx`, which
+  `build-scenery-bbox.py` now emits per piece), so outline and art cannot
+  drift apart. `parsePiece`/`fitSprite` themselves stay render3-identical
+  (their parity fixtures hold); the re-basing is the scene's decision. Reading
+  the contract's own character from the piece means that if the scenery domain
+  publishes the true height at the source, this collapses to identity instead
+  of doubling. NEITHER RENDERER WAS RIGHT: the wiki's size reference draws the
+  piece at its NATIVE sprite pixels beside the man at his ("the comparison
+  needs no math at all"), so a bed read as 1.14 of him — that is what made the
+  beds look big there and small here. Gate:
+  `server/test/characterscale.test.ts` (the constant is re-measured off the
+  heroes' art within ±3 px; the stamp scales by exactly 88/64; every piece in
+  the bbox doc carries `cpx`). Synthetic collision fixtures declare
+  `cpx: CHARACTER_BODY_PX` — a piece sized against our own person, identity
+  scale — never omit it or they silently grow 1.375×.
 - **INDOOR SCENERY IS DRAWN WHILE ITS ROOF IS CUT AWAY** — the furniture of
   every house and cave. `buildPlacements` FLAGS a placement under a roof/cave
   deck (`SceneryPlacement.roofed`) instead of dropping it: render3 drops those

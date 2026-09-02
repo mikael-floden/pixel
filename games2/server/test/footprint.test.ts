@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  CHARACTER_BODY_PX,
   buildTerrainGrid, stampSceneryCollision, stepMovement, makeBlocked, makeSideBlocked,
   makeBlockedElev, canEnterElev, isBlockedAtWorld, resolveElevAt, footprintBlocks,
   footprintContact, screenToWorldVector, findSpawn,
@@ -31,7 +32,7 @@ function oneFootprint(rx: number, ry: number, at: { x: number; y: number }[]): T
   const rows = Array.from({ length: H }, () => Array.from({ length: W }, () => ({ t: "grass", l: 0 })));
   const grid = buildTerrainGrid(W, H, rows, [], []);
   const bbox: SceneryBboxDoc = {
-    pieces: { p: { wph: 100, sprite: "s" } },
+    pieces: { p: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" } },
     boxes: { s: [0, 0, 100, 100, 100, 100] }, // bx0,by0,bx1,by1,frameW,frameH
   };
   const hitbox: SceneryHitboxDoc = { "scenery/p": { boxes: [{ ax: 0, ay: -50, rx, ry }] } };
