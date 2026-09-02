@@ -161,6 +161,9 @@ import {
   measureStoreyPitch,
   type Frame as T3Frame,
   type PatternsDoc,
+  type Tiles3Boundary,
+  type Tiles3Cell,
+  type Tiles3DeckCell,
 } from "../tiles3";
 import {
   Tiles3Textures,
@@ -1339,6 +1342,10 @@ export class WorldScene extends Phaser.Scene {
    * `__ml.groundRedraw`; nothing in play reads it. */
   private groundCull = true;
   private groundCulled = 0;
+  /* THE PER-CELL RESOLUTION CACHE — see t3resolve. A/B switch for
+   * `__ml.groundRedraw`; nothing in play reads it. */
+  private groundCacheOn = true;
+  private t3cells = new Map<number, { cell?: Tiles3Cell | null; boundary?: Tiles3Boundary | null; decks?: Tiles3DeckCell[] }>();
   private t3pitchChecked = false;
   private t3regionMs = 0;
   private t3Failed = new Set<string>(); // see t3Try — one line per distinct resolver failure
@@ -3458,17 +3465,32 @@ export class WorldScene extends Phaser.Scene {
       /** MICRO-BENCH: force one full ground redraw right now — the latch
        *  poisoned as repaintWorld does — and report its pure-JS cost with the
        *  pass's counters. `cull` flips the off-texture cull for an A/B. */
-      groundRedraw: (cull?: boolean) => {
-        // The switch is applied for THIS forced redraw only and restored after,
-        // so an A/B never leaves the game running with the cull off.
+      /** The resolution cache's switch, for the occluder-pass parity check. */
+      groundCache: (on: boolean) => {
+        this.groundCacheOn = on;
+        if (!on) this.t3cells.clear();
+        return on;
+      },
+      groundRedraw: (cull?: boolean, cache?: boolean) => {
+        // The switches are applied for THIS forced redraw only and restored
+        // after, so an A/B never leaves the game running with either off.
         const prevCull = this.groundCull;
+        const prevCache = this.groundCacheOn;
         if (typeof cull === "boolean") this.groundCull = cull;
+        if (typeof cache === "boolean") this.groundCacheOn = cache;
         this.lastGround = { x: NaN, y: NaN };
         const t0 = performance.now();
         this.redrawGround();
         // The pass's own counters (incl. its `ms`) plus the whole redraw's wall clock.
-        const out = { ...this.t3stats, cull: this.groundCull, totalMs: +(performance.now() - t0).toFixed(1) };
+        const out = {
+          ...this.t3stats,
+          cull: this.groundCull,
+          cache: this.groundCacheOn,
+          cached: this.t3cells.size,
+          totalMs: +(performance.now() - t0).toFixed(1),
+        };
         this.groundCull = prevCull;
+        this.groundCacheOn = prevCache;
         return out;
       },
       /** THE LIGHTING PASSES' A/B: arm/disarm the surface-march block skip. */
@@ -11848,6 +11870,7 @@ export class WorldScene extends Phaser.Scene {
     // component gets a different id, a different set, and different art every
     // time the camera moves, and the ground visibly reshuffles as you walk.
     const t0 = performance.now();
+    this.t3cells.clear(); // a new resolver: nothing cached against the old one may survive
     this.t3 = new Tiles3World({ view, tiles, frame: this.tiles3Frame(), patterns: data.patterns });
     this.t3regionMs = +(performance.now() - t0).toFixed(1);
     this.t3load = new Tiles3Loader({
@@ -12088,6 +12111,57 @@ export class WorldScene extends Phaser.Scene {
     rt.batchDrawFrame(op.key, name, dx, dy, 1, tint);
   }
 
+  /** ONE CELL'S RESOLUTION, REMEMBERED — PER MEMBER, LAZILY. `t3.cell` /
+   *  `t3.boundary` / `t3.decks` are pure functions of static world data (the
+   *  view, the frame, the fills, the deck map) — nothing in a session changes
+   *  their answer — yet the ground pass and the occluder pass each re-ran them
+   *  for every cell of the window on every rebuild: ~4,267 cells per ground
+   *  redraw, ~82% of them resolved by the redraw before (a 256 px step exposes
+   *  ~18% of the texture), and the same cells again for the occluders every
+   *  96 px. Measured after the draw cull, the resolver was the larger share of
+   *  a redraw. Each member memoises on its own, so a caller that never asked
+   *  for a boundary (a void cell) or decks (a cut column) still never pays for
+   *  one — and with the cache OFF these are exactly the old calls, which is
+   *  what makes the A/B honest. The OPS built from a resolution (`cellBlits`,
+   *  `opsFor*`) are NOT cached: they depend on which art is resident and on
+   *  the indoor cut. Failures cache as the same null/[] `t3Try` answered
+   *  (warned once). BOUNDED: pruned to the last ground window after every
+   *  ground redraw (t3pruneCache — the occluder window lies inside it), so the
+   *  Map holds ~4-5k entries, a few MB, never the world; cleared when a new
+   *  resolver is built. The resolver's own stats counters now count once per
+   *  session per cell, not per redraw. */
+  private t3entry(col: number, row: number) {
+    const i = row * (this.world?.width ?? 1) + col;
+    let e = this.t3cells.get(i);
+    if (!e) this.t3cells.set(i, (e = {}));
+    return e;
+  }
+  private t3cellOf(t3: Tiles3World, col: number, row: number): Tiles3Cell | null {
+    if (!this.groundCacheOn) return this.t3Try(`cell ${col},${row}`, () => t3.cell(col, row), null);
+    const e = this.t3entry(col, row);
+    if (e.cell === undefined) e.cell = this.t3Try(`cell ${col},${row}`, () => t3.cell(col, row), null);
+    return e.cell;
+  }
+  private t3boundaryOf(t3: Tiles3World, col: number, row: number): Tiles3Boundary | null {
+    if (!this.groundCacheOn) return this.t3Try(`boundary ${col},${row}`, () => t3.boundary(col, row), null);
+    const e = this.t3entry(col, row);
+    if (e.boundary === undefined) e.boundary = this.t3Try(`boundary ${col},${row}`, () => t3.boundary(col, row), null);
+    return e.boundary;
+  }
+  private t3decksOf(t3: Tiles3World, col: number, row: number): Tiles3DeckCell[] {
+    if (!this.groundCacheOn) return this.t3Try(`decks ${col},${row}`, () => t3.decks(col, row), [] as Tiles3DeckCell[]);
+    const e = this.t3entry(col, row);
+    if (e.decks === undefined) e.decks = this.t3Try(`decks ${col},${row}`, () => t3.decks(col, row), [] as Tiles3DeckCell[]);
+    return e.decks;
+  }
+  /** Keep only the cells of the window just drawn (see t3cellOf). */
+  private t3pruneCache(keep: readonly [number, number][]) {
+    const W = this.world?.width ?? 1;
+    const live = new Set<number>();
+    for (const [c, r] of keep) live.add(r * W + c);
+    for (const k of this.t3cells.keys()) if (!live.has(k)) this.t3cells.delete(k);
+  }
+
   /** THE MAPS3 GROUND PASS, in render3's own order: every cell (painter-sorted
    *  by the u/v sweep), then the composed boundaries on the corner lattice
    *  above them, then the deck slabs.
@@ -12237,9 +12311,9 @@ export class WorldScene extends Phaser.Scene {
     this.groundCulled = 0;
     this.t3stats = stats;
     const t0 = performance.now();
-    const cellOf = (c: number, r: number) => this.t3Try(`cell ${c},${r}`, () => t3.cell(c, r), null);
-    const boundaryOf = (c: number, r: number) => this.t3Try(`boundary ${c},${r}`, () => t3.boundary(c, r), null);
-    const decksOf = (c: number, r: number) => this.t3Try(`decks ${c},${r}`, () => t3.decks(c, r), []);
+    const cellOf = (c: number, r: number) => this.t3cellOf(t3, c, r);
+    const boundaryOf = (c: number, r: number) => this.t3boundaryOf(t3, c, r);
+    const decksOf = (c: number, r: number) => this.t3decksOf(t3, c, r);
 
     // The window, once — all three passes walk the same cells.
     const cells: [number, number][] = [];
@@ -12326,6 +12400,7 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     rt.endDraw();
+    if (this.groundCacheOn) this.t3pruneCache(cells);
     stats.culled = this.groundCulled;
     stats.ms = +(performance.now() - t0).toFixed(1);
     load?.flush();
@@ -12402,7 +12477,7 @@ export class WorldScene extends Phaser.Scene {
         // A deck slab floating ABOVE its base must occlude whoever walks under
         // it. Same rule as world@2: skip it entirely on a constrained column.
         if (occCut === undefined)
-          for (const d of this.t3Try(`decks ${col},${row}`, () => t3.decks(col, row), [])) {
+          for (const d of this.t3decksOf(t3, col, row)) {
             const base = world.rows[row]?.[col]?.l ?? 0;
             if (d.level <= base) continue; // the terrain occluder already covers it
             /* THE DECK TOP IS NEVER EXPOSURE-CULLED — world@2's rule, which this
@@ -12432,7 +12507,7 @@ export class WorldScene extends Phaser.Scene {
             });
           }
 
-        const cell = this.t3Try(`cell ${col},${row}`, () => t3.cell(col, row), null);
+        const cell = this.t3cellOf(t3, col, row);
         if (!cell) continue; // void cells never occlude
         /* ANY RAISED COLUMN OCCLUDES — world@2's rule, restored.
          *

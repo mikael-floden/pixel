@@ -564,11 +564,39 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     `cellBlits`/`opsFor*` through `t3Try`, boundary composition) is the rest.
     A/B: `__ml.groundRedraw(cull?)` (the pass's counters + whole-redraw wall
     clock; `culled` is counted beside `blits`, which counts attempts).
-  - STILL OPEN after all three: a ground redraw is still a FULL repaint every
-    256 px of camera travel — ~4,267 cells re-resolved and re-drawn when a step
-    exposes ~18% of the texture. Next: scroll the world-anchored RT and
-    resolve + paint only the newly exposed band (the RT trim is NOT a drop-in:
-    it skips void cells, and painter order across the seam must hold).
+  - **THE TERRAIN RESOLUTION IS CACHED PER CELL** (`t3resolve`, 2026-09-02).
+    `t3.cell` / `t3.boundary` / `t3.decks` are pure functions of static
+    per-world data (view, frame, fills, deck map) — nothing in a session changes
+    their answer — yet the ground pass AND the occluder pass each re-ran them for
+    every cell of the window on every rebuild: ~4,267 cells per ground redraw,
+    ~82% of them resolved by the redraw before (a 256 px step exposes ~18% of
+    the texture), and the same cells again for the occluders every 96 px.
+    Measured after the draw cull, the resolver was the larger share of the
+    redraw. Both passes now read one Map keyed by cell index; the OPS built
+    from a resolution (`cellBlits`, `opsFor*`) are NOT cached — they depend on
+    which art is resident and on the indoor cut, and are cheap beside the
+    resolve. Each member memoises LAZILY on its own (a void cell never pays for
+    a boundary, a cut column never for decks — and with the cache off the calls
+    are exactly the old ones, which keeps the A/B honest). Failures cache as
+    the same null/[] `t3Try` answered (warned once). BOUNDED: pruned to the
+    last ground window after every ground redraw (the occluder window lies
+    inside it) — ~4,267 entries, a few MB, never the world (~576 B per entry
+    measured; the whole map would be 75-145 MB on a phone); cleared when a
+    new resolver is built.
+    Measured per ground redraw with the cull on, cache off → on (medians,
+    same camera; the off arm is exactly the old calls): forest 29.0 → 10.1 ms,
+    autumn wood 44.1 → 14.9, snow cliffs 28.9 → 15.4, snow shore 32.8 → 13.3 —
+    pixel-identical (`__ml.groundHash` parity) and the occluder SET identical
+    (`__ml.occDump`, cache off vs on) at all four spots. The first redraw
+    after a teleport still resolves every cell; the wins are the walking
+    redraws, whose cells are ~82% already known. A/B: `__ml.groundRedraw(cull?, cache?)` (both switches restored
+    after the forced redraw; `cached` = entries held).
+  - STILL OPEN after all four: a ground redraw is still a FULL repaint every
+    256 px of camera travel — every op of ~4,267 cells re-drawn when a step
+    exposes ~18% of the texture, and the per-cell ops still re-derived. Next:
+    scroll the world-anchored RT and paint only the newly exposed band (the RT
+    trim is NOT a drop-in: it skips void cells, and painter order across the
+    seam must hold), or cache the ops with a residency epoch.
 - `stairs` tiles are ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower,
   cactus, lava) are impassable — `SURFACES`/`surfaceFor` (`road_*` by prefix).
