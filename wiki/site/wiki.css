@@ -1829,3 +1829,10 @@ input[type="range"] { accent-color: var(--accent); }
 .thumb-play { left: 5px; color: var(--accent, #c9a227); border-color: color-mix(in srgb, var(--accent, #c9a227) 55%, var(--border)); }
 .obj-shape { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .obj-shape .pill { font-size: 11px; padding: 1px 6px; }
+
+/* The 🔍 page's Hearing rows have no art: a glyph in the thumb slot keeps the
+   grid's rhythm. .spot is the card a #/sounds/<id> or #/music/<id> link
+   landed on — lit for a moment, then ordinary. */
+.near-glyph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 30px; opacity: 0.8; }
+.near-hearing { margin-top: 18px; }
+.panel.spot, .sfx-event.spot { outline: 2px solid var(--accent, #d97757); outline-offset: 2px; transition: outline-color 1.2s ease 1.2s; }

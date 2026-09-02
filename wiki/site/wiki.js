@@ -11375,7 +11375,7 @@ function musicPanel(t) {
   const master = t.files.wav ?? t.files.ogg ?? t.files.m4a ?? t.files.mp3;
   const dir = master.split("/").slice(0, -1).join("/");
   const takeId = master.split("/").pop().replace(/\.\w+$/, "");
-  return h("div", { class: "panel" },
+  return h("div", { class: "panel", "data-track": t.id },
     h("div", { class: "panel-title" }, t.name,
       h("span", { class: "pill" }, fmtDur(t.duration_s)),
       t.bpm ? h("span", { class: "pill" }, `${t.bpm} bpm`) : null,
@@ -11986,8 +11986,39 @@ function nearRow(it) {
       // An id this build does not know is SHOWN, and named as what it is.
       unknown ? h("span", { class: "pill warn", title: "This build's data.json has never seen this id — it is newer than the wiki's last rebuild. The page may be empty." }, "new") : null));
 }
+/* HEARING (maintainer 2026-09-02: "Does the #/near also contain music playing
+ * right now and sound effects triggered the last 30s? (filtered on how
+ * recently the sound effect was played)?"). Audio rows ride in the same items
+ * array under two more domains — music, the bed playing now, and sounds, the
+ * EVENTS fired in the last 30 s — carrying `ago` in seconds instead of `dist`.
+ * They are their own section: seconds must never sit in a list of cells, and
+ * "what is that noise" is a different question from "what is that thing". */
+const isAudioRow = (it) => it?.domain === "music" || it?.domain === "sounds";
+const nearAgo = (a) => (!(a > 0.5) ? "playing now" : a < 60 ? `${Math.round(a)} s ago` : `${Math.round(a / 60)} min ago`);
+function nearAudioRow(it) {
+  const dom = String(it.domain), id = String(it.id);
+  let name = id, sub = label(dom), known = false;
+  if (dom === "music") {
+    const t = (state.data.domains.music ?? []).find((x) => x.id === id);
+    if (t) { name = t.name ?? id; known = true; }
+  } else {
+    const ev = (state.data.sfx?.events ?? []).find((x) => x.id === id);
+    if (ev) { name = ev.name ?? id; sub = ev.group ? `${ev.group} · ${label(dom)}` : label(dom); known = true; }
+  }
+  return h("a", { class: "card", href: `#/${dom}/${encodeURIComponent(id)}` },
+    h("div", { class: "thumb" }, h("span", { class: "near-glyph" }, dom === "music" ? "♪" : "🔊")),
+    h("div", { class: "card-name" }, name),
+    h("div", { class: "card-sub" },
+      h("span", { class: "pill" }, nearAgo(+it.ago)),
+      it.n > 1 ? h("span", { class: "muted" }, ` ×${it.n}`) : null,
+      h("span", { class: "muted" }, ` · ${sub}`),
+      known ? null : h("span", { class: "pill warn", title: "This build has never seen this id — newer than the wiki's last rebuild." }, "new")));
+}
 function viewNear() {
-  const rows = nearSnap?.items ?? [];
+  const all = nearSnap?.items ?? [];
+  const rows = all.filter((it) => !isAudioRow(it));
+  // Newest first, whatever order they arrived in; music (playing now) leads.
+  const heard = all.filter(isAudioRow).sort((a, b2) => (a.domain === "music") - (b2.domain === "music") ? (a.domain === "music" ? -1 : 1) : (+a.ago || 0) - (+b2.ago || 0));
   const inGame = window.parent !== window;
   if (!nearSnap && inGame && !nearAsked) { nearAsked = true; askNear(); }
   return h("div", {},
@@ -11998,11 +12029,16 @@ function viewNear() {
       ? h("p", { class: "muted" }, "Asking the game what is around you…")
       : nearSnap.world === null
       ? h("p", { class: "muted" }, "You are on the select screen, so there is nothing around you yet. Enter a world and tap 🔍 again.")
-      : !rows.length
-      ? h("p", { class: "muted" }, `Nothing within ${nearSnap.radius ?? 12} cells — open water, or a long way from anything.`)
       : h("div", {},
-        h("p", { class: "muted" }, `${rows.length} within ${nearSnap.radius ?? 12} cells, nearest first`),
-        h("div", { class: "grid" }, ...rows.map(nearRow))),
+        !rows.length
+          ? h("p", { class: "muted" }, `Nothing within ${nearSnap.radius ?? 12} cells — open water, or a long way from anything.`)
+          : h("div", {},
+            h("p", { class: "muted" }, `${rows.length} within ${nearSnap.radius ?? 12} cells, nearest first`),
+            h("div", { class: "grid" }, ...rows.map(nearRow))),
+        heard.length ? h("div", { class: "near-hearing" },
+          h("h2", {}, "Hearing"),
+          h("p", { class: "muted" }, "The music playing now, and every sound fired in the last 30 seconds, newest first."),
+          h("div", { class: "grid" }, ...heard.map(nearAudioRow))) : null),
     // A snapshot is frozen by design; this is how he takes another one without
     // closing the drawer and tapping 🔍 again.
     inGame && nearSnap ? h("p", {},
@@ -12013,6 +12049,16 @@ function askNear() {
   try { window.parent.postMessage({ type: "wiki:wantNear" }, location.origin); } catch {}
 }
 
+/** Scroll one card into view and flash it — after the view is in the DOM. */
+function spotlight(sel) {
+  requestAnimationFrame(() => {
+    const el = document.querySelector(sel);
+    if (!el) return;
+    el.classList.add("spot");
+    el.scrollIntoView({ block: "center" });
+    setTimeout(() => el.classList.remove("spot"), 2400);
+  });
+}
 /* ---------------------------------------------------------------- router */
 function route() {
   destroyPlayers();
@@ -12033,8 +12079,14 @@ function route() {
     : id ? (sub ? viewWorldPair(id, sub) : viewWorldType(id)) : viewWorld();
   else if (page === "objects") view = id ? viewObject(id) : viewObjects();
   else if (page === "near") view = viewNear();
-  else if (page === "sounds") view = viewSounds();
-  else if (page === "music") { if (id === "dynamic" && state.admin) musicTab = "dynamic"; view = viewMusic(); }
+  // #/sounds/<event> and #/music/<track> open the page and light that card —
+  // the 🔍 page's audio rows land here (2026-09-02). "dynamic" stays the tab.
+  else if (page === "sounds") { view = viewSounds(); if (id) spotlight(`[data-event="${CSS.escape(id)}"]`); }
+  else if (page === "music") {
+    if (id === "dynamic" && state.admin) musicTab = "dynamic";
+    view = viewMusic();
+    if (id && id !== "dynamic") spotlight(`[data-track="${CSS.escape(id)}"]`);
+  }
   else if (page === "items") view = id ? viewItem(id) : viewItems();
   else if (page === "lore") {
     // Resolve the ENTRY first so a future entry can never be shadowed by the

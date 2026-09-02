@@ -145,6 +145,64 @@ const pushed = await (await frame()).evaluate(() => document.querySelectorAll("#
 ok(errs.length === errsBefore, `a snapshot pushed on load, before data.json, does not throw (${errs.slice(errsBefore).join(" | ") || "clean"})`);
 ok(pushed === SNAP.items.length, `…and the page still draws it once the index is in (${pushed} of ${SNAP.items.length} rows)`);
 
+
+// ---- 8. HEARING: the music playing now and the sounds of the last 30 s -----
+/* Maintainer 2026-09-02: "Does the #/near also contain music playing right now
+ * and sound effects triggered the last 30s? (filtered on how recently the
+ * sound effect was played)?" Audio rows ride in the same items array with
+ * `ago` seconds instead of `dist`; they get their own section, newest first,
+ * music leading, and their cards land on the Sounds / Music page with the
+ * matching card lit. */
+{
+  const EV = D.sfx?.events?.find((e) => e.id === "combat.cross_off") ?? D.sfx?.events?.[0];
+  const BED = (D.domains.music ?? []).find((t) => t.id === "night") ?? D.domains.music[0];
+  const AUDIO = {
+    world: "the_game", at: { col: 3, row: 3 }, radius: 12,
+    items: [
+      { domain: "objects", id: OBJ.id, dist: 2.1, n: 1 },
+      { domain: "sounds", id: "an_event_this_build_never_saw", ago: 12.4, n: 1 },
+      { domain: "sounds", id: EV.id, ago: 3.2, n: 2 },
+      { domain: "music", id: BED.id, ago: 0 },
+    ],
+  };
+  await p.goto(W, { waitUntil: "load" });
+  await p.waitForTimeout(1200);
+  await p.evaluate(() => { window.__wired = false; });
+  await install(AUDIO);
+  await p.waitForTimeout(2600);
+  const f8 = await frame();
+  const hear = await f8.evaluate(() => {
+    const sec = document.querySelector(".near-hearing");
+    return {
+      present: !!sec,
+      h2: sec?.querySelector("h2")?.textContent ?? "",
+      rows: [...(sec?.querySelectorAll("a.card") ?? [])].map((a) => ({
+        href: a.getAttribute("href"), name: a.querySelector(".card-name")?.textContent ?? "",
+        sub: (a.querySelector(".card-sub")?.textContent ?? "").replace(/\s+/g, " ").trim(),
+      })),
+      spatial: [...document.querySelectorAll(".grid a.card")].filter((a) => !a.closest(".near-hearing")).length,
+    };
+  });
+  ok(hear.present && /Hearing/.test(hear.h2), `audio rows get their own section (“${hear.h2}”)`);
+  ok(hear.spatial === 1, `and stay OUT of the spatial list — seconds never sit next to cells (${hear.spatial} spatial row)`);
+  ok(hear.rows.length === 3 && hear.rows[0].href === `#/music/${BED.id}` && /playing now/.test(hear.rows[0].sub),
+    `the bed playing now leads, as "playing now" (${hear.rows[0]?.href} — “${hear.rows[0]?.sub}”)`);
+  ok(hear.rows[1]?.href === `#/sounds/${EV.id}` && /3 s ago/.test(hear.rows[1].sub) && /×2/.test(hear.rows[1].sub),
+    `then the sounds newest first, with how long ago and how often (“${hear.rows[1]?.name}” — “${hear.rows[1]?.sub}”)`);
+  ok(hear.rows[1]?.name === EV.name, `a known event shows the wiki's NAME (“${hear.rows[1]?.name}” for ${EV.id})`);
+  ok(/12 s ago/.test(hear.rows[2]?.sub ?? "") && /new/.test(hear.rows[2]?.sub ?? ""),
+    `an event this build never saw is shown and marked new (“${hear.rows[2]?.name}” — “${hear.rows[2]?.sub}”)`);
+  // Tapping a sound lands on the Sounds page with THAT card lit.
+  await f8.evaluate(() => [...document.querySelectorAll(".near-hearing a.card")][1].click());
+  await p.waitForTimeout(1500);
+  const landedS = await f8.evaluate(() => ({ hash: location.hash, lit: document.querySelector(".sfx-event.spot")?.getAttribute("data-event") ?? null }));
+  ok(landedS.hash === `#/sounds/${EV.id}` && landedS.lit === EV.id, `tapping a sound opens the Sounds page with that card lit (${landedS.hash}, lit: ${landedS.lit})`);
+  // ...and a bed lands on the Music page the same way.
+  await f8.evaluate((id) => { location.hash = `#/music/${id}`; }, BED.id);
+  await p.waitForTimeout(1500);
+  const landedM = await f8.evaluate(() => ({ hash: location.hash, lit: document.querySelector(".panel.spot")?.getAttribute("data-track") ?? null }));
+  ok(landedM.lit === BED.id, `and a bed opens the Music page with its track lit (${landedM.hash}, lit: ${landedM.lit})`);
+}
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 await b.close();
 console.log(fails.length ? `\nNEAR CHECKS FAILED (${fails.length})` : "\nALL NEAR CHECKS PASSED");
