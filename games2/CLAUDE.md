@@ -204,7 +204,8 @@ by construction, so no existing branch changed.
   sourcePixels). Null means "not resident yet"; caching it makes every plate
   that missed its first frame miss forever.
 - Diagnostics: `window.__ml.tiles3()` reports what resolved, what drew, what is
-  still loading and what composed — a gate cannot tell a correct dark frame
+  still loading and what composed, plus `hold` — the boot hold's raw inputs,
+  the only way to tell why a loading screen ran to its deadline — a gate cannot tell a correct dark frame
   from a black one by pixels, so the counters are the instrument.
   `window.__ml.t3at(col,row)` is the same question for ONE cell: the resolver's
   verdict plus the blits the texture factory can hand the RT right now, so a
@@ -227,12 +228,16 @@ by construction, so no existing branch changed.
   Comparing a ground lit at 1.0 with one lit at 0.55 as raw pixels compares
   nothing, so every sample is divided by `__ml.lightAtCell` first — measured, not
   asserted, because the gate is about terrain, not about lighting tuning.
-  **SCENERY CONVERGES ONLY WHILE THE CAMERA MOVES**, which is why that section
-  walks there instead of flying `lookAt`: the first rebuild over a fresh window
-  can only request the piece manifests, the second only their art, and nothing
-  schedules a rebuild when a MANIFEST lands (a texture batch does). A parked
-  camera can sit on a half-populated window; measured, 1 sprite where a moving
-  one reaches 91.
+  **A LANDED SCENERY MANIFEST SCHEDULES ITS OWN REBUILD** (`SceneryPieces`
+  `onLanded` → `WorldScene.onSceneryManifest`, coalesced to one rebuild per
+  `SCENERY_MANIFEST_SETTLE_MS` = 120 ms): the first rebuild over a fresh window
+  can only request the piece manifests, and only a rebuild that SEES them
+  queues their art. (Nothing but camera drift used to schedule that rebuild: a
+  parked camera sat on a half-populated window — measured 1 sprite where a
+  moving one reached 91 — and the boot hold's `scenery` condition came true
+  with the art still unrequested, which is the pop-in the hold was built to
+  stop. verify-tiles3 still walks to its scenery window instead of `lookAt`;
+  that is belt and braces now, not a requirement.)
 - **THE RESOLVER'S REGION RULE IS STALE AGAINST render3, and it is visible.**
   `tiles3.computeRegions` uses 4-connected COMPONENTS (proven against the parity
   fixture); render3 now keys a region on a 24-cell CHUNK, having found that

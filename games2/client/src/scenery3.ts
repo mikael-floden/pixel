@@ -822,14 +822,21 @@ export class SceneryPieces {
   private fetchJson: (url: string) => Promise<any>;
   private route?: UrlRoute;
   private warn: (m: string) => void;
+  private onLanded?: () => void;
 
   constructor(o: {
     fetchJson: (url: string) => Promise<any>;
     route?: UrlRoute;
     warn?: (m: string) => void;
+    /** A manifest LANDED (parsed or tombstoned) — once per piece, after the
+     *  cache holds the verdict. The scene rebuilds off this to queue the art
+     *  the manifest names; without it the art waited for the next
+     *  camera-driven rebuild. */
+    onLanded?: () => void;
   }) {
     this.fetchJson = o.fetchJson;
     this.route = o.route;
+    this.onLanded = o.onLanded;
     // ONCE PER PIECE, not once per placement: a broken manifest on a piece
     // placed 26 times must not put 26 lines in the console every frame.
     const warned = new Set<string>();
@@ -874,6 +881,7 @@ export class SceneryPieces {
       })
       .finally(() => {
         this.inflight.delete(id);
+        this.onLanded?.();
       });
     this.inflight.set(id, p);
     return p;

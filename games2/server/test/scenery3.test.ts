@@ -574,3 +574,26 @@ test("manifests load once per piece, failures tombstone, warnings fire once", { 
   assert.deepEqual(store.stats, { requested: 2, loaded: 1, failed: 1 });
   assert.equal(warns.length, 1, "one line for a dead piece, not one per frame");
 });
+
+test("a landed manifest fires onLanded once per piece, after the verdict, tombstones included", async () => {
+  const verdicts: unknown[] = [];
+  const store = new SceneryPieces({
+    fetchJson: async (url) => {
+      if (url.includes("/dead/")) throw new Error("404");
+      return { sprite: "g/p/sprite.webp" };
+    },
+    warn: () => {},
+    // What the scene's rebuild reads must already be there when this fires.
+    onLanded: () => verdicts.push([store.get("g/p"), store.get("g/dead")]),
+  });
+  await Promise.all([store.request("g/p"), store.request("g/p"), store.request("g/p")]);
+  assert.equal(verdicts.length, 1, "three requests, one landing");
+  assert.equal((verdicts[0] as any)[0].sprite, "g/p/sprite.webp", "the cache holds the manifest before the hook");
+  await store.request("g/dead");
+  assert.equal(verdicts.length, 2, "a tombstone lands too — a rebuild must stop waiting on it");
+  assert.equal((verdicts[1] as any)[1], null, "the tombstone is in the cache before the hook");
+  await store.request("g/p");
+  await store.request("g/dead");
+  await store.ensure(["g/p", "g/dead"]);
+  assert.equal(verdicts.length, 2, "a cached verdict never re-fires");
+});

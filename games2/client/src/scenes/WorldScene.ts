@@ -1133,6 +1133,12 @@ interface CoverSlot {
   owner?: BodyVisual;
 }
 
+/** At most one manifest-landed scenery rebuild per this many ms. The timer
+ *  arms on the FIRST landing of a burst and is not pushed back by the rest,
+ *  so a trickle of ~200 manifests costs a bounded number of rebuilds and the
+ *  first art request is never more than this late. */
+const SCENERY_MANIFEST_SETTLE_MS = 120;
+
 export class WorldScene extends Phaser.Scene {
   private manifest!: Manifest;
   private myCharacter!: CharacterDef;
@@ -1293,6 +1299,7 @@ export class WorldScene extends Phaser.Scene {
   private sceneryAsked = new Set<string>();
   private sceneryQueue: [string, string][] = [];
   private sceneryRebuilds = 0; // the boot hold waits for the first one
+  private sceneryManifestTimer: Phaser.Time.TimerEvent | null = null; // a manifest-landed rebuild is pending
   /** games2/config/scenery-bbox.json, or null until it lands. */
   private sceneryBboxDoc: SceneryBboxDoc | null = null;
   /** live/tuning/scenery_hitbox.json `.overrides`, or null until it lands. */
@@ -2439,6 +2446,16 @@ export class WorldScene extends Phaser.Scene {
         placements: this.scenery?.placements.length ?? 0,
         pieces: this.sceneryPieces ? { ...this.sceneryPieces.stats } : null,
         occluders: this.occluders.length,
+        // THE BOOT HOLD'S OWN INPUTS, raw — which of them is still false is
+        // the only way to tell why a loading screen ran to its deadline.
+        hold: {
+          rebuilds: this.sceneryRebuilds,
+          queued: this.sceneryQueue.length,
+          piecesIdle: !this.sceneryPieces || this.sceneryPieces.idle,
+          artIdle: !this.t3load || this.t3load.idle,
+          loaderBusy: this.tiles3Loader().isLoading(),
+          manifestTimer: !!this.sceneryManifestTimer,
+        },
       }),
       /** MAPS3, ONE CELL: what tiles3 resolves at (col,row) and what it can
        *  actually blit there right now.
@@ -11572,7 +11589,9 @@ export class WorldScene extends Phaser.Scene {
          * existence after the game has already started"). Scenery does not ride
          * the terrain loader's queue: placements are bucketed per screen anchor,
          * each piece's MANIFEST is fetched lazily on the first rebuild that sees
-         * it (205 fetches for 1,388 placements) and only then is its art queued.
+         * it (205 fetches for 1,388 placements), and its landing schedules the
+         * rebuild that queues its art (onSceneryManifest — before that hook the
+         * art waited for camera drift and this hold always ran to its deadline).
          * So the wait is: the first rebuild has run, no manifest is in flight,
          * nothing is queued, and the shared Phaser loader is quiet. */
         const scenery =
@@ -11929,6 +11948,7 @@ export class WorldScene extends Phaser.Scene {
           return r.json();
         }),
       route: this.t3route,
+      onLanded: () => this.onSceneryManifest(),
     });
     /* THE COLLISION DOCUMENTS, FROM THE AUTHORITY THAT STAMPS WITH THEM.
      * Footprints become blocked cells from two documents, and the prediction
@@ -12022,6 +12042,25 @@ export class WorldScene extends Phaser.Scene {
 
   /** The visible scenery for this camera window. Rebuilt on the occluder
    *  latch, with the props, so the two terrain-adjacent layers stay atomic. */
+  /** A scenery MANIFEST landed: rebuild, so the art it names is queued NOW.
+   *  The first rebuild over a fresh window can only request manifests; only a
+   *  rebuild that SEES them queues their art. Nothing scheduled that second
+   *  rebuild except camera drift past the occluder latch, so on a maps3 join
+   *  the manifests landed onto a parked camera and their art sat unrequested
+   *  until the loading screen gave up on its deadline (the boot hold's
+   *  `scenery` condition could not come true before it). Coalesced: one
+   *  rebuild per SCENERY_MANIFEST_SETTLE_MS, the camera latch poisoned because
+   *  the window did not move — its contents did. */
+  private onSceneryManifest() {
+    if (this.sceneryManifestTimer || this.unloading || !this.world) return;
+    this.sceneryManifestTimer = this.time.delayedCall(SCENERY_MANIFEST_SETTLE_MS, () => {
+      this.sceneryManifestTimer = null;
+      if (this.unloading || !this.world) return;
+      this.lastOccl = { x: NaN, y: NaN };
+      this.rebuildOccluders();
+    });
+  }
+
   private rebuildScenery(cam: Phaser.Cameras.Scene2D.Camera) {
     for (const im of this.sceneryImgs) im.destroy();
     this.sceneryImgs = [];
@@ -12057,7 +12096,7 @@ export class WorldScene extends Phaser.Scene {
     for (const p of idx.query(reach)) {
       const piece = pieces.get(p.piece);
       if (piece === undefined) {
-        void pieces.request(p.piece); // 205 fetches for 1,388 placements, lazily
+        void pieces.request(p.piece); // 205 fetches for 1,388 placements, lazily; landing → onSceneryManifest
         continue;
       }
       if (piece === null) continue; // tombstoned: the manifest 404'd or is broken
