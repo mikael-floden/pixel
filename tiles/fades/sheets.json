@@ -16,8 +16,8 @@
   "with": "{a} with {b}",
   "and": "{a} and {b}"
  },
- "n_sheets": 1633,
- "n_tiles": 26128,
+ "n_sheets": 1635,
+ "n_tiles": 26160,
  "sheets": [
   {
    "schema": "tiles3/fades@1",
@@ -48662,6 +48662,48 @@
    "use_for": "transition",
    "dominant": "light_soil",
    "minor": "grass",
+   "prompt": "grass spots on light soil",
+   "phrasing": "spots",
+   "rep": 1,
+   "seed": 40034,
+   "tile_id": "cf0df7e4-f516-4cab-a556-f7f97f5b8d12",
+   "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+   },
+   "n_tiles": 16,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "dir": "tiles/fades/light_soil__with__grass/spots_1"
+  },
+  {
+   "schema": "tiles3/fades@1",
+   "kind": "fade_top_only",
+   "wall_is_meaningless": true,
+   "use_for": "transition",
+   "dominant": "light_soil",
+   "minor": "grass",
    "prompt": "light soil with grass",
    "phrasing": "with",
    "rep": 1,
@@ -49620,6 +49662,48 @@
     "tile_15.webp"
    ],
    "dir": "tiles/fades/light_soil__with__ice/piles_1"
+  },
+  {
+   "schema": "tiles3/fades@1",
+   "kind": "fade_top_only",
+   "wall_is_meaningless": true,
+   "use_for": "transition",
+   "dominant": "light_soil",
+   "minor": "ice",
+   "prompt": "ice spots on light soil",
+   "phrasing": "spots",
+   "rep": 1,
+   "seed": 57702,
+   "tile_id": "1d51d32a-8afa-4b06-bb21-14e36c3cf3a7",
+   "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+   },
+   "n_tiles": 16,
+   "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+   ],
+   "dir": "tiles/fades/light_soil__with__ice/spots_1"
   },
   {
    "schema": "tiles3/fades@1",
