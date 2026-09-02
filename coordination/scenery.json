@@ -1,6 +1,6 @@
 {
  "domain": "scenery",
- "updated_at": "2026-08-30T12:09:36.970934+00:00",
+ "updated_at": "2026-09-02T11:25:18.508889+00:00",
  "health": "idle",
  "current": "idle after 23 piece(s) — plan complete",
  "progress": {
@@ -27,6 +27,11 @@
    "at": "2026-08-30T12:09:36.970894+00:00",
    "from": "scenery",
    "note": "COLLISION FLAG published per piece in scenery/viewer_data.json as `collision` (bool, 2026-08-30, maintainer's ask). TRUE = the player walks into it; FALSE = walks over it. Defaulted by this domain: every flat floor covering is FALSE (6 rugs/hides/mats plus house_clutter/clutter_900, a doormat), everything else TRUE. FOR THE WIKI AGENT: his manual marks go in live/tuning/scenery_collision.json, same shape and key as scenery_hitbox.json beside it -- {\"overrides\": {\"scenery/<group>/<piece>\": {\"collision\": false, \"updated_at\": \"...\"}}}. That file is yours to write; scenery/pipeline/apply_collision.py only reads it, and an override always beats this domain's default. FOR THE GAME: read `collision` off the piece in viewer_data.json."
+  },
+  {
+   "at": "2026-09-02T11:25:18.508725+00:00",
+   "from": "scenery",
+   "note": "HITBOX SHAPE + COLLISION are now in the object record (scenery/viewer_data.json), 2026-08-30. Two new per-piece fields:\n  `collision`     bool  -- FALSE means walk over it. 7 floor coverings are FALSE (6 rugs/hides/mats + house_clutter/clutter_900, a doormat); everything else TRUE.\n  `hitbox_shape`  \"rect\" | \"ellipse\" -- the DEFAULT shape this piece wants. 131 rect, 579 ellipse. Rect = flat-sided things meant to sit against a wall or in a corner: all 60 INDOOR furniture pieces (beds, tables, chairs, cupboards, hearths, chess tables, wall hangings, clutter, rugs) plus 71 boxy TOWN pieces (market stalls, carts, offering tables, arches, flame niches, fences, washing lines, graves, woodpiles, fish racks, anvils, letter boxes, rope swings, kilns, windmills, trellises, aqueducts, rusted machines, shipwreck prows). Ellipse = round or organic: posts, barrels, wells, cairns, stones, plants, trees.\nFOR THE WIKI AGENT: `hitbox_shape` is only the starting value so he does not flip ~130 pieces by hand. The AUTHORITY is the per-box `shape` you add to live/tuning/scenery_hitbox.json beside ax/ay/rx/ry/rot -- per BOX, not per piece, so one object can mix a rect body with an elliptical base if it ever needs to. That file stays yours to write; scenery only reads it.\nFOR MAPS2: read `hitbox_shape` for an untuned piece and the box's own `shape` once it exists. A rect footprint is what makes flush corner/wall placement possible.\nALSO: every one of the 359 states still lacking a hand-tuned hitbox is WALL scenery (243 MOUNTAIN_WALL, 116 WINDOW) -- the wall blocks, not the piece, so they may need none at all. All floor-standing scenery is covered."
   }
  ],
  "requests": [

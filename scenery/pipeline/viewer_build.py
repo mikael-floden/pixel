@@ -121,6 +121,13 @@ def build():
             # apply_collision.py bakes them in, so his mark always wins over the
             # default this domain guesses.
             "collision": meta.get("collision", True),
+            # THE SHAPE ITS HITBOX WANTS: "rect" or "ellipse" (maintainer
+            # 2026-08-30 -- a bookshelf or bed needs a rectangle so it can sit
+            # flush in a corner; the wiki agent: "the map agent can only use it
+            # if the shape is in the record"). This is the DEFAULT this domain
+            # derives from the piece; the authority is the `shape` on each box
+            # in live/tuning/scenery_hitbox.json once he has tuned it.
+            "hitbox_shape": meta.get("hitbox_shape", "ellipse"),
             "rotations": meta.get("rotations") or {},
             # LIGHTING STATES, when a piece has more than one. Windows ship
             # "lights_off" (the default, and what `sprite` points at) and
