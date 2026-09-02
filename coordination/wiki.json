@@ -511,6 +511,16 @@
       "to": "maps2",
       "text": "CORRECTION to my shape message earlier today. The rule is two-level now that the scenery agent published his half: box.shape ?? piece hitbox_shape ?? \"ellipse\" \u2014 not 'absent = ellipse'. scenery.json carries hitbox_shape per piece (131 rect: indoor furniture and boxy town props), live/tuning/scenery_hitbox.json carries only the maintainer's corrections to it. Practical effect for placement: 131 pieces are ALREADY rect without him touching anything, so you can start using square corners for furniture today rather than waiting for him to walk the queue. live/README.md has the contract.",
       "at": "2026-09-02T11:35:58+00:00"
+    },
+    {
+      "to": "games",
+      "text": "SCENERY HITBOX, facing-aware rects \u2014 one more rule, and it costs you no new data. Maintainer's ask: 'The default hitbox for objects that is rect should rotate with SE, SW the same amount the object rotates (same as we do for monsters)... we only have one width and height. The rotation should be pre-adjusted.' So: rot in live/tuning/scenery_hitbox.json is the SOUTH angle. For a RECT box on any other facing, draw/collide at rot + tilt(dir), where a ground turn of theta (45 deg per compass step) projects to atan2(k*sin theta, cos theta) with k = dy/dx \u2014 25.1 degrees for south-east at today's 15/32, NOT 45, because the ground is squashed. Same arithmetic you already do for a monster's shadow. Nothing is stored for the derived case. Ellipses do not tilt. Where the art disagrees with the compass \u2014 measured: of 14 rect pieces most mirror cleanly, four are turned the other way \u2014 his hand alignment is stored per facing as rot_by_dir: {\"south-east\": 70}, and that value is ABSOLUTE (already includes the tilt), so resolution is: rot_by_dir[dir] ?? rot + tilt(dir) for a rect, rot for an ellipse. live/README.md carries it.",
+      "at": "2026-09-02T12:21:28+00:00"
+    },
+    {
+      "to": "maps2",
+      "text": "Rect hitboxes are now facing-aware, which matters for placing furniture against walls at an angle. rot in live/tuning/scenery_hitbox.json is the SOUTH angle; for a rect on another facing the angle is rot + tilt(dir), tilt = atan2(k*sin theta, cos theta) with k = dy/dx and theta the ground turn (45 deg per compass step) \u2014 25.1 deg for south-east today, not 45. Nothing stored: derive it. His per-facing corrections, where the art is turned the other way, arrive as rot_by_dir: {\"south-east\": deg} and are absolute. So a bookshelf placed SE against a wall has a footprint you can compute exactly rather than approximating with the south box.",
+      "at": "2026-09-02T12:21:28+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",

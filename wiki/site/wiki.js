@@ -936,7 +936,8 @@ function hitboxes(entity, state) {
      * ellipse — every record written before today, and every round footprint
      * since, so nothing has to be migrated and no consumer has to guess. */
     .map((b) => ({ ax: +b.ax, ay: +b.ay, rx: +b.rx, ry: +b.ry, rot: isFinite(b.rot) ? +b.rot : 0,
-      ...(b.shape === "rect" || b.shape === "ellipse" ? { shape: b.shape } : {}) }));
+      ...(b.shape === "rect" || b.shape === "ellipse" ? { shape: b.shape } : {}),
+      ...(b.rot_by_dir && typeof b.rot_by_dir === "object" ? { rot_by_dir: { ...b.rot_by_dir } } : {}) }));
 }
 /* WHERE A FIRST ELLIPSE STARTS, from the art's own measured content box —
  * `bb` [x0,y0,x1,y1] in frame pixels, published per state+direction. A piece
@@ -982,6 +983,12 @@ function setHitboxes(entity, boxes, state) {
       // already on it stay byte-identical. Both spellings are meaningful:
       // "ellipse" on a rect-tagged bookshelf is a real correction.
       ...(b.shape === "rect" || b.shape === "ellipse" ? { shape: b.shape } : {}),
+      // Only the facings he has aligned BY HAND; every other facing is the
+      // derived tilt and stays out of the file.
+      ...(b.rot_by_dir && Object.keys(b.rot_by_dir).length
+        ? { rot_by_dir: Object.fromEntries(Object.entries(b.rot_by_dir)
+            .filter(([, v]) => isFinite(v)).map(([d2, v]) => [d2, +(+v).toFixed(1)])) }
+        : {}),
     })),
     updated_at: new Date().toISOString(),
   };
@@ -1041,6 +1048,43 @@ const taggedFlat = (o) => o?.noCollision === true;
  * file outranks it, exactly as with the collision flag. Resolution, for every
  * consumer: box.shape ?? piece.hitbox_shape ?? "ellipse". */
 const taggedShape = (o) => (o?.hitboxShape === "rect" ? "rect" : "ellipse");
+/* A RECT TURNS WITH THE PIECE (maintainer 2026-09-02: "The default hitbox for
+ * objects that is rect should rotate with SE, SW the same amount the object
+ * rotates (same as we do for monsters) ... we only have one width and height.
+ * The rotation should be pre-adjusted").
+ *
+ * The ground turn is 45° per step of the compass; on screen that is NOT 45°,
+ * because the ground is squashed. A ground direction (cosθ, sinθ) lands at
+ * (cosθ, k·sinθ) with k = dy/dx, so the screen angle is atan2(k·sinθ, cosθ) —
+ * 25.1° for a south-east turn at today's 15/32, not 45°. The same arithmetic
+ * the game already does for a monster's shadow, read from data.json's own iso
+ * block so the day the projection changes this follows it.
+ *
+ * ELLIPSES ARE LEFT ALONE: a footprint with no corners reads the same turned,
+ * and he asked for this about rects. */
+const DIR_GROUND_DEG = {
+  south: 0, "south-east": 45, east: 90, "north-east": 135,
+  north: 180, "north-west": -135, west: -90, "south-west": -45,
+};
+function facingTilt(dir) {
+  const th = DIR_GROUND_DEG[dir];
+  if (!th) return 0;                       // south, or a facing we do not know
+  const k = (state.data?.iso?.dy ?? 15) / (state.data?.iso?.dx ?? 32);
+  const r = th * Math.PI / 180;
+  return Math.atan2(k * Math.sin(r), Math.cos(r)) * 180 / Math.PI;
+}
+/* THE ANGLE THIS BOX IS DRAWN AT, for one facing. `rot` is the SOUTH angle he
+ * tuned; a rect adds the facing's tilt. `rot_by_dir` is his correction for one
+ * facing — the art is not always turned the way the compass says (measured
+ * 2026-09-02 across 14 rect pieces: most mirror cleanly, four are turned the
+ * other way), so aligning one facing by hand must be storable without moving
+ * the others. */
+function boxRot(o, b, dir) {
+  const own = b?.rot_by_dir?.[dir];
+  if (isFinite(own)) return +own;
+  const base = isFinite(b?.rot) ? +b.rot : 0;
+  return boxShape(o, b) === "rect" ? base + facingTilt(dir) : base;
+}
 const boxShape = (o, b) => (b?.shape === "rect" || b?.shape === "ellipse" ? b.shape : taggedShape(o));
 const hitboxFlat = (entity) => {
   const ov = hitboxDoc().overrides?.[hitboxKey(entity)]?.no_collision;
@@ -1614,7 +1658,7 @@ function makePlayer(entity, kind, opts = {}) {
         // rx·cos t·cos th − ry·sin t·sin th over t. Cheaper and tighter than
         // walking the outline, and it must be exact or the rim clips again at
         // some angles and not others, which reads as a flicker.
-        const th = (b.rot || 0) * Math.PI / 180;
+        const th = boxRot(entity, b, cur.dir) * Math.PI / 180;
         const hx = Math.hypot(b.rx * Math.cos(th), b.ry * Math.sin(th));
         const hy = Math.hypot(b.rx * Math.sin(th), b.ry * Math.cos(th));
         const cx = fw / 2 + b.ax, cy = fh / 2 + b.ay;
@@ -1715,7 +1759,7 @@ function makePlayer(entity, kind, opts = {}) {
       boxes.forEach((b, i) => {
         const on = i === hitSel;
         const ex = dx + (fw / 2 + b.ax) * s, ey = dy + (fh / 2 + b.ay) * s;
-        const th = (b.rot || 0) * Math.PI / 180;
+        const th = boxRot(entity, b, cur.dir) * Math.PI / 180;
         // The unselected ones stay visible but quiet: with two pillars he must
         // see both to judge the pair, and know which one the rails drive.
         ctx.strokeStyle = on ? "rgba(217,119,87,1)" : "rgba(217,119,87,0.45)";
@@ -1750,6 +1794,12 @@ function makePlayer(entity, kind, opts = {}) {
       // QA probe: what the page believes about the hitbox, for the gate.
       window.__wikiHitbox = {
         state: hitboxState(entity, cur.state), variation: cur.state, sel: hitSel, n: boxes.length, s, dx, dy,
+        // The facing on screen and the angle each box is DRAWN at — a rect
+        // adds this facing's tilt to the tuned angle, so the record alone does
+        // not say what he is looking at.
+        dir: cur.dir, tilt: +facingTilt(cur.dir).toFixed(2),
+        drawn: boxes.map((b) => +boxRot(entity, b, cur.dir).toFixed(2)),
+        shapes: boxes.map((b) => boxShape(entity, b)),
         W: canvas.width, H: canvas.height,
         boxes: boxes.map((b) => ({ ...b })),
         screen: boxes.map((b) => ({ ex: +(dx + (fw / 2 + b.ax) * s).toFixed(2), ey: +(dy + (fh / 2 + b.ay) * s).toFixed(2) })),
@@ -1827,7 +1877,10 @@ function makePlayer(entity, kind, opts = {}) {
         // regenerate an animation for a direction, you don't regenerate for
         // all directions … maybe the SE direction on the state LIGHTS_ON is
         // bad"), so the feedback row follows this click as well as the state.
-        onclick: () => { cur.dir = d; loadClip(); renderDirPad(); refreshShadowBar(); onFacetChange?.(); },
+        // ...and the HITBOX bar, because a rect's angle is per facing: without
+        // this the ⟳ rail kept showing south's number while a turned box was
+        // on screen (2026-09-02).
+        onclick: () => { cur.dir = d; loadClip(); renderDirPad(); refreshShadowBar(); refreshHitBar(); onFacetChange?.(); },
       }, DIR_LABEL[d]);
     }));
   }
@@ -2108,7 +2161,17 @@ function makePlayer(entity, kind, opts = {}) {
         editHit(hitSel, { ry: v / 2, ay: +(bottom - v / 2).toFixed(2) });
         return;
       }
-      editHit(hitSel, key === "w" ? { rx: v / 2 } : { rot: v });
+      if (key === "r") {
+        /* ALIGNING A FACING TOUCHES ONLY THAT FACING. South is the base angle
+         * the others are derived from; on any other facing the rail stores
+         * that facing's own angle, so a bookshelf he squares up on south-east
+         * does not drag south and south-west out of true. */
+        const b2 = hitList()[hitSel];
+        if (cur.dir === "south" || !DIR_GROUND_DEG[cur.dir]) { editHit(hitSel, { rot: v }); return; }
+        editHit(hitSel, { rot_by_dir: { ...(b2?.rot_by_dir ?? {}), [cur.dir]: v } });
+        return;
+      }
+      editHit(hitSel, { rx: v / 2 });
     });
     /* A DRAG IS HELD, AND THE SCALE CANNOT MOVE UNDER IT. Tracked with pointer
      * events rather than focus, because a touch on a range input does not
@@ -2369,7 +2432,9 @@ function makePlayer(entity, kind, opts = {}) {
     if (b) {
       if (document.activeElement !== hitW) hitW.value = String(b.rx * 2);
       if (document.activeElement !== hitH) hitH.value = String(b.ry * 2);
-      if (document.activeElement !== hitRot) hitRot.value = String(Math.round(b.rot) % 180);
+      // The rail shows the angle IN FORCE for the facing on screen, which on a
+      // rect is the tuned angle plus that facing's tilt.
+      if (document.activeElement !== hitRot) hitRot.value = String(((Math.round(boxRot(entity, b, cur.dir)) % 180) + 180) % 180);
     }
     const signed = (n) => `${n < 0 ? "−" : "+"}${Math.abs(n).toFixed(1)}`;
     hitRead.replaceChildren(
@@ -2380,7 +2445,7 @@ function makePlayer(entity, kind, opts = {}) {
         // "box", not "ellipse": with two shapes on offer the count can span
         // both, and the glyph says which one the rails are driving.
         : h("b", {}, `${boxes.length} box${boxes.length === 1 ? "" : "es"} · #${hitSel + 1} ${boxShape(entity, b) === "rect" ? "▭" : "◯"} ${(b.rx * 2).toFixed(1)} × ${(b.ry * 2).toFixed(1)} px`),
-      st === "none" || st === "flat" ? "" : ` · at ${signed(b.ax)}, ${signed(b.ay)}${b.rot ? ` · turned ${Math.round(b.rot)}°` : ""}`,
+      st === "none" || st === "flat" ? "" : ` · at ${signed(b.ax)}, ${signed(b.ay)}${Math.round(boxRot(entity, b, cur.dir)) ? ` · turned ${Math.round(boxRot(entity, b, cur.dir))}°` : ""}`,
       /* NO STATUS PROSE ON THIS LINE (maintainer 2026-08-29: "you draw this
        * text 'proposed default not set until you accept or adjust it' and
        * then I try to click on the Width slider and then you remove that text

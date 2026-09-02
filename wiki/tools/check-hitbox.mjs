@@ -895,6 +895,70 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
     ok(!lay.hint, "with no help text under them");
   }
 }
+/* A RECT TURNS WITH THE FACING (maintainer 2026-09-02: "The default hitbox for
+ * objects that is rect should rotate with SE, SW the same amount the object
+ * rotates (same as we do for monsters) ... The rotation should be
+ * pre-adjusted. Yes I should still be able to align the rect so it fit
+ * perfectly"). Three claims: the tilt is the ISO one and not 45°, it costs
+ * nothing in the file, and aligning one facing leaves the others alone. */
+{
+  const piece = DATAOBJ.find((o) => o.hitboxShape === "rect"
+    && Object.values(o.animations ?? {}).some((a) => (a.dirs ?? {})["south-east"] && (a.dirs ?? {})["south-west"])
+    && !["MOUNTAIN_WALL", "WINDOW"].includes(o.type));
+  ok(!!piece, "a rect piece with south-east and south-west art to measure on");
+  if (piece) {
+    await p.goto(`${W}#/objects/${piece.id}`, { waitUntil: "load" });
+    await p.waitForTimeout(2400);
+    await p.evaluate((k) => {
+      const d = window.__wiki?.state?.tuning?.scenery_hitbox;
+      if (d?.overrides) for (const key of Object.keys(d.overrides)) {
+        if (key === k || key.startsWith(`${k}#`)) delete d.overrides[key];
+      }
+    }, piece.path);
+    await p.evaluate(() => { delete window.__wikiHitbox; });
+    await p.evaluate(() => {
+      if (!document.querySelector(".hit-bar:not(.hidden)")) {
+        [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click();
+      }
+    });
+    await p.waitForTimeout(1400);
+    const face = async (d2) => {
+      await p.evaluate((dd) => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent.trim().toUpperCase() === dd)?.click(), d2);
+      await p.waitForTimeout(700);
+      return p.evaluate(() => ({ ...window.__wikiHitbox, read: document.querySelector(".hit-bar .shadow-read")?.textContent ?? "",
+        rail: +([...document.querySelectorAll(".hit-bar .shadow-slider")][2]?.value ?? -1) }));
+    };
+    const S = await face("S"), SE = await face("SE"), SW = await face("SW");
+    const K = (D.iso?.dy ?? 15) / (D.iso?.dx ?? 32);
+    const want = Math.atan(K) * 180 / Math.PI;         // a 45° ground turn, projected
+    ok(Math.abs(SE.drawn[0] - (S.drawn[0] + want)) < 0.6 && Math.abs(SW.drawn[0] - (S.drawn[0] - want)) < 0.6,
+      `SE and SW are pre-turned by the ISO angle, not by 45° (${S.drawn[0]}° → ${SE.drawn[0]}° / ${SW.drawn[0]}°, want ±${want.toFixed(1)}°)`);
+    ok(Math.abs(want - 25.1) < 0.2, `which today is 25.1° from iso ${D.iso?.dx}/${D.iso?.dy} (${want.toFixed(2)}°)`);
+    ok(SE.rail === Math.round(((SE.drawn[0] % 180) + 180) % 180),
+      `and the rail shows the angle in force for the facing on screen (rail ${SE.rail}, drawn ${SE.drawn[0]})`);
+    const storedAfterLook = await p.evaluate((path) => {
+      const ov = window.__wiki?.state?.tuning?.scenery_hitbox?.overrides ?? {};
+      return Object.keys(ov).filter((x) => x === path || x.startsWith(`${path}#`)).length;
+    }, piece.path);
+    ok(storedAfterLook === 0, `looking at three facings stores NOTHING — the tilt is derived, not written (${storedAfterLook} records)`);
+    // Aligning south-east by hand: only that facing moves. (Stand ON south-east
+    // first — the rail always writes the facing that is on screen.)
+    await face("SE");
+    await p.evaluate(() => { const r = [...document.querySelectorAll(".hit-bar .shadow-slider")][2]; r.value = "70"; r.dispatchEvent(new Event("input", { bubbles: true })); r.dispatchEvent(new Event("change", { bubbles: true })); });
+    await p.waitForTimeout(800);
+    const rec = await p.evaluate((path) => {
+      const ov = window.__wiki?.state?.tuning?.scenery_hitbox?.overrides ?? {};
+      const k = Object.keys(ov).find((x) => x === path || x.startsWith(`${path}#`));
+      return ov[k]?.boxes?.[0] ?? null;
+    }, piece.path);
+    ok(rec?.rot_by_dir?.["south-east"] === 70, `aligning a facing stores THAT facing (${JSON.stringify(rec?.rot_by_dir)})`);
+    ok(Math.abs((rec?.rot ?? 0) - S.drawn[0]) < 0.6, `and leaves the south angle alone (rot ${rec?.rot}, south was ${S.drawn[0]})`);
+    const SW2 = await face("SW");
+    ok(Math.abs(SW2.drawn[0] - SW.drawn[0]) < 0.6, `so south-west is where it was (${SW.drawn[0]}° → ${SW2.drawn[0]}°)`);
+    const SE2 = await face("SE");
+    ok(Math.abs(SE2.drawn[0] - 70) < 0.6, `and south-east keeps what he set (${SE2.drawn[0]}°)`);
+  }
+}
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 
 await b.close();
