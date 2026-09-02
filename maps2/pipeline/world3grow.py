@@ -997,6 +997,17 @@ class Grow:
     # the game's own numbers for maps3 scenery collision
     # (games2/shared/src/index.ts, ISO_GEOMETRY_MAPS3)
     HIT_DX, HIT_DY = 32, 14
+    # THE HITBOX CENTRE STAYS ON THE CELL CENTRE, and the offset the
+    # maintainer sees ("I feel like you place the objects a bit to far up") is
+    # NOT fixable here. I tried: dropping every placement down-screen by the
+    # 10 px that separates a tile's drawn top face from the projection of its
+    # centre moves the hitbox centre to 0.857 of the way across its cell, and
+    # a footprint that small stops covering ANY cell centre - measured, pieces
+    # blocking nothing went from 1% to 71% and cells blocked from 3,240 to
+    # 477. The nav footprint is the whole reason the rule exists, so the data
+    # keeps the exact centre and the alignment is the RENDERERS' to fix: the
+    # art plane and the nav plane have to be the same plane. Reported.
+    HITBOX_DROP = 0.0    # screen px, down-screen - see above before changing
 
     def _hitbox_offset(self, p):
         """Where a piece's HITBOX CENTRE sits, in world cells, relative to the
@@ -1061,7 +1072,8 @@ class Grow:
                 continue
             wx, wy = p["x"] + off[0], p["y"] + off[1]
             cx, cy = math.floor(wx), math.floor(wy)
-            nx, ny = cx + 0.5 - off[0], cy + 0.5 - off[1]
+            t = 0.5 + self.HITBOX_DROP / (2.0 * self.HIT_DY)
+            nx, ny = cx + t - off[0], cy + t - off[1]
             # the nudge may not walk a piece off its own ground or into a wall
             if not (0 <= cx < NEW and 0 <= cy < NEW) or self.liquid(cx, cy) \
                     or not self.g(int(nx), int(ny)):
@@ -1088,8 +1100,9 @@ class Grow:
                 continue
             # 1e-3 of a cell is 0.03 screen px - the coordinates are rounded
             # to 4 decimals in the file, and the projection amplifies that.
-            assert abs(wx - math.floor(wx) - 0.5) < 1e-3 \
-                and abs(wy - math.floor(wy) - 0.5) < 1e-3, \
+            t = 0.5 + self.HITBOX_DROP / (2.0 * self.HIT_DY)
+            assert abs(wx - math.floor(wx) - t) < 1e-3 \
+                and abs(wy - math.floor(wy) - t) < 1e-3, \
                 f"{p['piece']} at {p['x']},{p['y']}: hitbox centre {wx},{wy} " \
                 "is not on a tile centre"
         self.placed += [("hitboxes centred on a tile", moved),

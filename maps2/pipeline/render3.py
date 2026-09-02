@@ -1393,9 +1393,19 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
         art = art.resize((max(1, round(art.width * k)), max(1, round(art.height * k))), Image.NEAREST)
         if p.get("hflip"):
             art = art.transpose(Image.FLIP_LEFT_RIGHT)
+        # ONE GROUND PLANE FOR TERRAIN AND SCENERY. A tile's top face is
+        # composited at col_y - TOP_Y, so the drawn ground sits TOP_Y px above
+        # the bare projection - and scenery anchored at the bare projection
+        # therefore stood 10 px below the tile it is on. Measured with both
+        # markers drawn: tile-top centre at y 820, hitbox centre at 830. The
+        # maintainer sees the same disagreement in the game, the other way up
+        # ("I feel like you place the objects a bit to far up"). The placement
+        # data is exact - the hitbox centre is ON the cell centre to 0.0000
+        # cells - so this is the renderer's to fix, and a renderer fixes it by
+        # putting both on the same plane, not by moving the data.
         z = L(int(px), int(py))
         sx = ox + (px - x0 - (py - y0)) * DX
-        sy = oy + (px - x0 + py - y0) * DY - z * LP
+        sy = oy + (px - x0 + py - y0) * DY - z * LP - TOP_Y
         img.alpha_composite(art, (int(sx - art.width / 2), int(sy - art.height)))
 
     if scale != 1:
