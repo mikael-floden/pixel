@@ -2189,18 +2189,26 @@ function makePlayer(entity, kind, opts = {}) {
     onclick: () => { hitSel = 0; clearHitbox(entity, cur.state); onShadowEdit?.(); refreshHitBar(); draw(); },
   }, "Reset");
 
+  /* THE INSTRUMENT FIRST (maintainer 2026-09-02: "When editing hitboxes I want
+   * the sliders and move tool to be the first thing after the preview", with
+   * the read line and the piece-level buttons circled as what goes under
+   * them). He drags the rails and the pad on every piece and presses those
+   * buttons once or never, so the order matches the frequency — and the rails
+   * sit directly under the art they change, where his thumb already is.
+   *
+   * NO HELP TEXT ("You can also remove the text 'The ground this piece stands
+   * on…'. I don't need help text like that."). What it explained lives in
+   * live/README.md, which is where the consuming agents read. */
   const hitBar = h("div", { class: "shadow-bar hit-bar hidden" },
-    h("div", { class: "player-controls" }, hitRead),
-    h("div", { class: "player-controls hit-shape-row" }, hitChips, hitShape),
-    h("div", { class: "player-controls" }, hitAddBtn, hitDelBtn, hitNoneBtn, hitFlatBtn, hitResetBtn),
     h("div", { class: "shadow-tools" },
       h("div", { class: "shadow-sliders" },
         h("label", {}, h("span", {}, "W"), hitW),
         h("label", {}, h("span", {}, "D"), hitH),
         h("label", {}, h("span", {}, "⟳"), hitRot)),
       hitPad),
-    h("span", { class: "muted shadow-hint" },
-      "The ground this piece stands on. Its centre line is the render order: a player above it is drawn behind the piece, below it in front. Never drawn in game."));
+    h("div", { class: "player-controls" }, hitRead),
+    h("div", { class: "player-controls hit-shape-row" }, hitChips, hitShape),
+    h("div", { class: "player-controls" }, hitAddBtn, hitDelBtn, hitNoneBtn, hitFlatBtn, hitResetBtn));
   // Absent, not disabled: a control that can never do anything is a worse
   // answer than none (the Base-tab lesson). The card's type pill says why.
   const hitBtn = state.admin && kind === "object" && !isWallScenery(entity)

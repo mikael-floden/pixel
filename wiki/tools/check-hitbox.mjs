@@ -859,6 +859,42 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
     ok(agree && !("shape" in agree), `and agreeing with the domain deletes the correction (${JSON.stringify(agree)})`);
   }
 }
+/* THE ORDER INSIDE THE BAR, PINNED (maintainer 2026-09-02: "I want the sliders
+ * and move tool to be the first thing after the preview"). Asserted in
+ * geometry rather than in markup order, because what he asked about is what
+ * his thumb reaches first. This exists because the reorder was written, gated
+ * green, and then lost to a `git reset --hard` I ran while reading another
+ * domain's files — it shipped as nothing, and I told him it had shipped. */
+{
+  await p.goto(`${W}#/objects/${PIECE.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  await p.evaluate(() => {
+    if (!document.querySelector(".hit-bar:not(.hidden)")) {
+      [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click();
+    }
+  });
+  await p.waitForTimeout(1200);
+  const lay = await p.evaluate(() => {
+    const bar = document.querySelector(".hit-bar:not(.hidden)");
+    if (!bar) return null;
+    const top = (sel) => { const e = bar.querySelector(sel); return e ? Math.round(e.getBoundingClientRect().top) : null; };
+    return {
+      tools: top(".shadow-tools"), pad: top(".shadow-pad"), read: top(".shadow-read"),
+      buttons: top(".player-controls .ghost-btn")
+        ?? (() => { const b2 = [...bar.querySelectorAll("button")].find((x) => /needs none/.test(x.textContent)); return b2 ? Math.round(b2.getBoundingClientRect().top) : null; })(),
+      hint: bar.textContent.includes("The ground this piece stands on"),
+      stage: (() => { const c = document.querySelector(".player-stage"); return c ? Math.round(c.getBoundingClientRect().bottom) : null; })(),
+    };
+  });
+  ok(!!lay && lay.tools !== null, "the editor bar is open with its tools");
+  if (lay) {
+    ok(lay.tools < lay.read && lay.tools < lay.buttons,
+      `the rails and the pad come FIRST, above the read line and the buttons (tools ${lay.tools}, read ${lay.read}, buttons ${lay.buttons})`);
+    ok(lay.pad !== null && lay.stage !== null && lay.pad - lay.stage < 260,
+      `and they sit right under the preview (${lay.pad - lay.stage}px below the art)`);
+    ok(!lay.hint, "with no help text under them");
+  }
+}
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 
 await b.close();
