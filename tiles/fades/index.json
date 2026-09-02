@@ -23,13 +23,13 @@
  "review": {
   "source": "live/feedback/tiles.json entries[<key>].status",
   "rule": "rejected -> not listed; anything else -> listed if it passes the gate",
-  "n_removed_by_review": 194
+  "n_removed_by_review": 292
  },
  "classifier": "region-arbitrated texture+colour meter (mixmeter.py, model cache/meter.npz): every ground described by prototype MIXTURES learned from tiles/tops (never the palette), pixels judged by 35 neighbourhood statistics, texture arbitrated per region with per-pair fitted trust, windows straddling two grounds rejected by a likelihood gate. Survives the four historical traps: brightness-split black_rock, chroma-free grounds, palette-vs-art grass, partner-dependent rendition.",
- "n_valid": 10754,
+ "n_valid": 10799,
  "n_rejected": {
-  "no real mixture": 8934,
-  "edges mixed": 1384,
+  "no real mixture": 9006,
+  "edges mixed": 1409,
   "no diamond": 286
  },
  "pairs": {
@@ -375,6 +375,57 @@
     "prompt": "patches of brown paving stone on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/tile_07",
+    "file": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/post/tile_07.c1cc46cb.webp",
+    "pct": {
+     "black_rock": 88,
+     "brown_paving_stone": 12
+    },
+    "area_pct": {
+     "black_rock": 75.0,
+     "brown_paving_stone": 25.0
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.2535,
+    "border_impurity": 0.0389,
+    "phrasing": "piles",
+    "prompt": "a few piles of brown paving stone on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/tile_13",
+    "file": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/post/tile_13.46fac6a8.webp",
+    "pct": {
+     "black_rock": 88,
+     "brown_paving_stone": 12
+    },
+    "area_pct": {
+     "black_rock": 74.7,
+     "brown_paving_stone": 25.3
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.3521,
+    "border_impurity": 0.1667,
+    "phrasing": "piles",
+    "prompt": "a few piles of brown paving stone on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/tile_10",
+    "file": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/post/tile_10.62fe39f1.webp",
+    "pct": {
+     "black_rock": 87,
+     "brown_paving_stone": 13
+    },
+    "area_pct": {
+     "black_rock": 74.0,
+     "brown_paving_stone": 26.0
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.3766,
+    "border_impurity": 0.1389,
+    "phrasing": "piles",
+    "prompt": "a few piles of brown paving stone on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__brown_paving_stone/with_1/tile_11",
     "file": "tiles/fades/black_rock__with__brown_paving_stone/with_1/post/tile_11.a26b6eb9.webp",
     "pct": {
@@ -426,6 +477,40 @@
     "prompt": "patches of brown paving stone on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/tile_06",
+    "file": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/post/tile_06.a0ccdd61.webp",
+    "pct": {
+     "black_rock": 86,
+     "brown_paving_stone": 14
+    },
+    "area_pct": {
+     "black_rock": 71.5,
+     "brown_paving_stone": 28.5
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.303,
+    "border_impurity": 0.0944,
+    "phrasing": "piles",
+    "prompt": "a few piles of brown paving stone on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/tile_14",
+    "file": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/post/tile_14.a47ec7ae.webp",
+    "pct": {
+     "black_rock": 86,
+     "brown_paving_stone": 14
+    },
+    "area_pct": {
+     "black_rock": 72.0,
+     "brown_paving_stone": 28.0
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.4035,
+    "border_impurity": 0.2111,
+    "phrasing": "piles",
+    "prompt": "a few piles of brown paving stone on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__brown_paving_stone/with_1/tile_13",
     "file": "tiles/fades/black_rock__with__brown_paving_stone/with_1/post/tile_13.87505fb0.webp",
     "pct": {
@@ -441,6 +526,74 @@
     "border_impurity": 0.0056,
     "phrasing": "with",
     "prompt": "black rock with brown paving stone"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/tile_01",
+    "file": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/post/tile_01.c0b3b9d3.webp",
+    "pct": {
+     "black_rock": 85,
+     "brown_paving_stone": 15
+    },
+    "area_pct": {
+     "black_rock": 70.3,
+     "brown_paving_stone": 29.7
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.2816,
+    "border_impurity": 0.0861,
+    "phrasing": "piles",
+    "prompt": "a few piles of brown paving stone on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/tile_02",
+    "file": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/post/tile_02.3bc4868c.webp",
+    "pct": {
+     "black_rock": 85,
+     "brown_paving_stone": 15
+    },
+    "area_pct": {
+     "black_rock": 70.2,
+     "brown_paving_stone": 29.8
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.3603,
+    "border_impurity": 0.2472,
+    "phrasing": "piles",
+    "prompt": "a few piles of brown paving stone on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/tile_04",
+    "file": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/post/tile_04.0606acce.webp",
+    "pct": {
+     "black_rock": 85,
+     "brown_paving_stone": 15
+    },
+    "area_pct": {
+     "black_rock": 70.3,
+     "brown_paving_stone": 29.7
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.3516,
+    "border_impurity": 0.1,
+    "phrasing": "piles",
+    "prompt": "a few piles of brown paving stone on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/tile_00",
+    "file": "tiles/fades/black_rock__with__brown_paving_stone/piles_1/post/tile_00.5388a490.webp",
+    "pct": {
+     "black_rock": 84,
+     "brown_paving_stone": 16
+    },
+    "area_pct": {
+     "black_rock": 67.4,
+     "brown_paving_stone": 32.6
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.4101,
+    "border_impurity": 0.2056,
+    "phrasing": "piles",
+    "prompt": "a few piles of brown paving stone on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__brown_paving_stone/and_1/tile_12",
@@ -1380,6 +1533,159 @@
     "prompt": "a few dark mud lumps on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__dark_mud/piles_1/tile_03",
+    "file": "tiles/fades/black_rock__with__dark_mud/piles_1/post/tile_03.bb930d61.webp",
+    "pct": {
+     "black_rock": 99,
+     "dark_mud": 1
+    },
+    "area_pct": {
+     "black_rock": 97.9,
+     "dark_mud": 2.1
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0134,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of dark mud on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__dark_mud/piles_1/tile_04",
+    "file": "tiles/fades/black_rock__with__dark_mud/piles_1/post/tile_04.abd7c478.webp",
+    "pct": {
+     "black_rock": 99,
+     "dark_mud": 1
+    },
+    "area_pct": {
+     "black_rock": 97.0,
+     "dark_mud": 3.0
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0035,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of dark mud on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__dark_mud/piles_1/tile_05",
+    "file": "tiles/fades/black_rock__with__dark_mud/piles_1/post/tile_05.4e5e71cf.webp",
+    "pct": {
+     "black_rock": 99,
+     "dark_mud": 1
+    },
+    "area_pct": {
+     "black_rock": 97.0,
+     "dark_mud": 3.0
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0037,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of dark mud on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__dark_mud/piles_1/tile_07",
+    "file": "tiles/fades/black_rock__with__dark_mud/piles_1/post/tile_07.e664f24d.webp",
+    "pct": {
+     "black_rock": 99,
+     "dark_mud": 1
+    },
+    "area_pct": {
+     "black_rock": 97.4,
+     "dark_mud": 2.6
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0191,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of dark mud on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__dark_mud/piles_1/tile_08",
+    "file": "tiles/fades/black_rock__with__dark_mud/piles_1/post/tile_08.ea369e7b.webp",
+    "pct": {
+     "black_rock": 99,
+     "dark_mud": 1
+    },
+    "area_pct": {
+     "black_rock": 97.7,
+     "dark_mud": 2.3
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0035,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of dark mud on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__dark_mud/piles_1/tile_09",
+    "file": "tiles/fades/black_rock__with__dark_mud/piles_1/post/tile_09.75f6208d.webp",
+    "pct": {
+     "black_rock": 99,
+     "dark_mud": 1
+    },
+    "area_pct": {
+     "black_rock": 97.6,
+     "dark_mud": 2.4
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0212,
+    "border_impurity": 0.0056,
+    "phrasing": "piles",
+    "prompt": "a few piles of dark mud on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__dark_mud/piles_1/tile_12",
+    "file": "tiles/fades/black_rock__with__dark_mud/piles_1/post/tile_12.39c26728.webp",
+    "pct": {
+     "black_rock": 99,
+     "dark_mud": 1
+    },
+    "area_pct": {
+     "black_rock": 98.0,
+     "dark_mud": 2.0
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0014,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of dark mud on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__dark_mud/piles_1/tile_13",
+    "file": "tiles/fades/black_rock__with__dark_mud/piles_1/post/tile_13.b8f9b358.webp",
+    "pct": {
+     "black_rock": 99,
+     "dark_mud": 1
+    },
+    "area_pct": {
+     "black_rock": 97.7,
+     "dark_mud": 2.3
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0007,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of dark mud on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__dark_mud/piles_1/tile_15",
+    "file": "tiles/fades/black_rock__with__dark_mud/piles_1/post/tile_15.2160a6b3.webp",
+    "pct": {
+     "black_rock": 99,
+     "dark_mud": 1
+    },
+    "area_pct": {
+     "black_rock": 97.8,
+     "dark_mud": 2.2
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0076,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of dark mud on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__dark_mud/and_1/tile_08",
     "file": "tiles/fades/black_rock__with__dark_mud/and_1/post/tile_08.8a8d59c5.webp",
     "pct": {
@@ -1446,6 +1752,57 @@
     "border_impurity": 0.0,
     "phrasing": "patches",
     "prompt": "patches of dark mud on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__dark_mud/piles_1/tile_06",
+    "file": "tiles/fades/black_rock__with__dark_mud/piles_1/post/tile_06.6552b6fc.webp",
+    "pct": {
+     "black_rock": 98,
+     "dark_mud": 2
+    },
+    "area_pct": {
+     "black_rock": 95.3,
+     "dark_mud": 4.7
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0141,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of dark mud on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__dark_mud/piles_1/tile_10",
+    "file": "tiles/fades/black_rock__with__dark_mud/piles_1/post/tile_10.a5e97dc1.webp",
+    "pct": {
+     "black_rock": 98,
+     "dark_mud": 2
+    },
+    "area_pct": {
+     "black_rock": 96.1,
+     "dark_mud": 3.9
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0284,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of dark mud on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__dark_mud/piles_1/tile_14",
+    "file": "tiles/fades/black_rock__with__dark_mud/piles_1/post/tile_14.0e9892bd.webp",
+    "pct": {
+     "black_rock": 98,
+     "dark_mud": 2
+    },
+    "area_pct": {
+     "black_rock": 95.4,
+     "dark_mud": 4.6
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0278,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of dark mud on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__dark_mud/and_1/tile_01",
@@ -2844,6 +3201,57 @@
     "prompt": "black rock and deep water"
    },
    {
+    "key": "tiles/fades/black_rock__with__deep_water/piles_1/tile_09",
+    "file": "tiles/fades/black_rock__with__deep_water/piles_1/post/tile_09.c8a3f142.webp",
+    "pct": {
+     "deep_water": 71,
+     "black_rock": 29
+    },
+    "area_pct": {
+     "black_rock": 59.9,
+     "deep_water": 40.1
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.5961,
+    "border_impurity": 0.0028,
+    "phrasing": "piles",
+    "prompt": "a few piles of deep water on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__deep_water/piles_1/tile_10",
+    "file": "tiles/fades/black_rock__with__deep_water/piles_1/post/tile_10.5fd8c54f.webp",
+    "pct": {
+     "deep_water": 71,
+     "black_rock": 29
+    },
+    "area_pct": {
+     "black_rock": 59.4,
+     "deep_water": 40.6
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.6158,
+    "border_impurity": 0.0056,
+    "phrasing": "piles",
+    "prompt": "a few piles of deep water on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__deep_water/piles_1/tile_15",
+    "file": "tiles/fades/black_rock__with__deep_water/piles_1/post/tile_15.fc7510f6.webp",
+    "pct": {
+     "deep_water": 72,
+     "black_rock": 28
+    },
+    "area_pct": {
+     "black_rock": 58.0,
+     "deep_water": 42.0
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.6477,
+    "border_impurity": 0.0028,
+    "phrasing": "piles",
+    "prompt": "a few piles of deep water on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__deep_water/and_1/tile_04",
     "file": "tiles/fades/black_rock__with__deep_water/and_1/post/tile_04.b6657771.webp",
     "pct": {
@@ -2859,6 +3267,40 @@
     "border_impurity": 0.0,
     "phrasing": "and",
     "prompt": "black rock and deep water"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__deep_water/piles_1/tile_07",
+    "file": "tiles/fades/black_rock__with__deep_water/piles_1/post/tile_07.8da547f5.webp",
+    "pct": {
+     "deep_water": 73,
+     "black_rock": 27
+    },
+    "area_pct": {
+     "black_rock": 55.6,
+     "deep_water": 44.4
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.5233,
+    "border_impurity": 0.0084,
+    "phrasing": "piles",
+    "prompt": "a few piles of deep water on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__deep_water/piles_1/tile_12",
+    "file": "tiles/fades/black_rock__with__deep_water/piles_1/post/tile_12.bcc0ffbd.webp",
+    "pct": {
+     "deep_water": 73,
+     "black_rock": 27
+    },
+    "area_pct": {
+     "black_rock": 55.7,
+     "deep_water": 44.3
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.5761,
+    "border_impurity": 0.0028,
+    "phrasing": "piles",
+    "prompt": "a few piles of deep water on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__deep_water/and_1/tile_06",
@@ -2895,6 +3337,40 @@
     "prompt": "black rock and deep water"
    },
    {
+    "key": "tiles/fades/black_rock__with__deep_water/piles_1/tile_00",
+    "file": "tiles/fades/black_rock__with__deep_water/piles_1/post/tile_00.115e2a72.webp",
+    "pct": {
+     "deep_water": 74,
+     "black_rock": 26
+    },
+    "area_pct": {
+     "black_rock": 53.0,
+     "deep_water": 47.0
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.5341,
+    "border_impurity": 0.0028,
+    "phrasing": "piles",
+    "prompt": "a few piles of deep water on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__deep_water/piles_1/tile_04",
+    "file": "tiles/fades/black_rock__with__deep_water/piles_1/post/tile_04.d6ab13e0.webp",
+    "pct": {
+     "deep_water": 74,
+     "black_rock": 26
+    },
+    "area_pct": {
+     "black_rock": 53.5,
+     "deep_water": 46.5
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.5717,
+    "border_impurity": 0.0056,
+    "phrasing": "piles",
+    "prompt": "a few piles of deep water on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__deep_water/patches_1/tile_06",
     "file": "tiles/fades/black_rock__with__deep_water/patches_1/post/tile_06.44587a9c.webp",
     "pct": {
@@ -2910,6 +3386,23 @@
     "border_impurity": 0.0028,
     "phrasing": "patches",
     "prompt": "patches of deep water on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__deep_water/piles_1/tile_02",
+    "file": "tiles/fades/black_rock__with__deep_water/piles_1/post/tile_02.abd0fd40.webp",
+    "pct": {
+     "deep_water": 76,
+     "black_rock": 24
+    },
+    "area_pct": {
+     "black_rock": 48.6,
+     "deep_water": 51.4
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.5781,
+    "border_impurity": 0.0028,
+    "phrasing": "piles",
+    "prompt": "a few piles of deep water on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__deep_water/and_1/tile_01",
@@ -3133,6 +3626,23 @@
     "border_impurity": 0.0111,
     "phrasing": "and",
     "prompt": "black rock and grass"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__grass/piles_1/tile_11",
+    "file": "tiles/fades/black_rock__with__grass/piles_1/post/tile_11.037935b9.webp",
+    "pct": {
+     "black_rock": 93,
+     "grass": 7
+    },
+    "area_pct": {
+     "black_rock": 86.1,
+     "grass": 13.9
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.1462,
+    "border_impurity": 0.0334,
+    "phrasing": "piles",
+    "prompt": "a few piles of grass on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__grass/and_1/tile_04",
@@ -3541,6 +4051,23 @@
     "border_impurity": 0.1417,
     "phrasing": "with",
     "prompt": "black rock with grass"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__grass/piles_1/tile_04",
+    "file": "tiles/fades/black_rock__with__grass/piles_1/post/tile_04.46674868.webp",
+    "pct": {
+     "grass": 93,
+     "black_rock": 7
+    },
+    "area_pct": {
+     "black_rock": 13.6,
+     "grass": 86.4
+    },
+    "edge_ground": "grass",
+    "edge_contact": 0.0479,
+    "border_impurity": 0.0028,
+    "phrasing": "piles",
+    "prompt": "a few piles of grass on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__grass/one_rock_1/tile_06",
@@ -6048,6 +6575,23 @@
     "prompt": "a few ice lumps on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_12",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_12.4cbf59a8.webp",
+    "pct": {
+     "black_rock": 98,
+     "ice": 2
+    },
+    "area_pct": {
+     "black_rock": 95.5,
+     "ice": 4.5
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.087,
+    "border_impurity": 0.0472,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__ice/with_1/tile_00",
     "file": "tiles/fades/black_rock__with__ice/with_1/post/tile_00.63502274.webp",
     "pct": {
@@ -6082,6 +6626,40 @@
     "prompt": "patches of ice on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_07",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_07.891056aa.webp",
+    "pct": {
+     "black_rock": 97,
+     "ice": 3
+    },
+    "area_pct": {
+     "black_rock": 94.3,
+     "ice": 5.7
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.1475,
+    "border_impurity": 0.0833,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_08",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_08.79965c23.webp",
+    "pct": {
+     "black_rock": 97,
+     "ice": 3
+    },
+    "area_pct": {
+     "black_rock": 93.9,
+     "ice": 6.1
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.083,
+    "border_impurity": 0.0028,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__ice/with_1/tile_12",
     "file": "tiles/fades/black_rock__with__ice/with_1/post/tile_12.54c9b2d1.webp",
     "pct": {
@@ -6114,6 +6692,40 @@
     "border_impurity": 0.1444,
     "phrasing": "patches",
     "prompt": "patches of ice on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_14",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_14.0f2cea98.webp",
+    "pct": {
+     "black_rock": 96,
+     "ice": 4
+    },
+    "area_pct": {
+     "black_rock": 91.3,
+     "ice": 8.7
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.1569,
+    "border_impurity": 0.025,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_00",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_00.a2a20a2f.webp",
+    "pct": {
+     "black_rock": 95,
+     "ice": 5
+    },
+    "area_pct": {
+     "black_rock": 90.7,
+     "ice": 9.3
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.1556,
+    "border_impurity": 0.1083,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__ice/patches_1/tile_13",
@@ -6267,6 +6879,57 @@
     "border_impurity": 0.2702,
     "phrasing": "patches",
     "prompt": "patches of ice on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_02",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_02.8fbdd522.webp",
+    "pct": {
+     "black_rock": 90,
+     "ice": 10
+    },
+    "area_pct": {
+     "black_rock": 79.3,
+     "ice": 20.7
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.3102,
+    "border_impurity": 0.1433,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_04",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_04.0a4fd604.webp",
+    "pct": {
+     "black_rock": 88,
+     "ice": 12
+    },
+    "area_pct": {
+     "black_rock": 75.9,
+     "ice": 24.1
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.2553,
+    "border_impurity": 0.1778,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_13",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_13.a9ea1850.webp",
+    "pct": {
+     "black_rock": 88,
+     "ice": 12
+    },
+    "area_pct": {
+     "black_rock": 75.3,
+     "ice": 24.7
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.2329,
+    "border_impurity": 0.2417,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__ice/patches_1/tile_05",
@@ -6524,6 +7187,40 @@
     "prompt": "one ice rock on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_01",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_01.ffdd85d3.webp",
+    "pct": {
+     "ice": 75,
+     "black_rock": 25
+    },
+    "area_pct": {
+     "black_rock": 50.1,
+     "ice": 49.9
+    },
+    "edge_ground": "ice",
+    "edge_contact": 0.562,
+    "border_impurity": 0.5389,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_06",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_06.63e235ea.webp",
+    "pct": {
+     "ice": 75,
+     "black_rock": 25
+    },
+    "area_pct": {
+     "black_rock": 51.9,
+     "ice": 48.1
+    },
+    "edge_ground": "ice",
+    "edge_contact": 0.3837,
+    "border_impurity": 0.3167,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__ice/with_1/tile_13",
     "file": "tiles/fades/black_rock__with__ice/with_1/post/tile_13.9df6ba3e.webp",
     "pct": {
@@ -6575,6 +7272,23 @@
     "prompt": "a few ice lumps on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_15",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_15.adf5a9d2.webp",
+    "pct": {
+     "ice": 83,
+     "black_rock": 17
+    },
+    "area_pct": {
+     "black_rock": 33.9,
+     "ice": 66.1
+    },
+    "edge_ground": "ice",
+    "edge_contact": 0.152,
+    "border_impurity": 0.1713,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__ice/on_top_of_1/tile_10",
     "file": "tiles/fades/black_rock__with__ice/on_top_of_1/post/tile_10.090bf356.webp",
     "pct": {
@@ -6590,6 +7304,23 @@
     "border_impurity": 0.1648,
     "phrasing": "on_top_of",
     "prompt": "ice on top of black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_09",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_09.11a7b858.webp",
+    "pct": {
+     "ice": 84,
+     "black_rock": 16
+    },
+    "area_pct": {
+     "black_rock": 33.6,
+     "ice": 66.4
+    },
+    "edge_ground": "ice",
+    "edge_contact": 0.3289,
+    "border_impurity": 0.3056,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__ice/with_1/tile_08",
@@ -6658,6 +7389,40 @@
     "border_impurity": 0.0,
     "phrasing": "one_rock",
     "prompt": "one ice rock on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_03",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_03.34370da8.webp",
+    "pct": {
+     "ice": 90,
+     "black_rock": 10
+    },
+    "area_pct": {
+     "black_rock": 20.1,
+     "ice": 79.9
+    },
+    "edge_ground": "ice",
+    "edge_contact": 0.1404,
+    "border_impurity": 0.0794,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__ice/piles_1/tile_11",
+    "file": "tiles/fades/black_rock__with__ice/piles_1/post/tile_11.0e601a8b.webp",
+    "pct": {
+     "ice": 91,
+     "black_rock": 9
+    },
+    "area_pct": {
+     "black_rock": 17.6,
+     "ice": 82.4
+    },
+    "edge_ground": "ice",
+    "edge_contact": 0.2219,
+    "border_impurity": 0.1671,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__ice/on_top_of_1/tile_03",
@@ -7223,6 +7988,74 @@
     "prompt": "a few lava lumps on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_00",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_00.b391c452.webp",
+    "pct": {
+     "black_rock": 86,
+     "lava": 14
+    },
+    "area_pct": {
+     "black_rock": 71.5,
+     "lava": 28.5
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_01",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_01.ab79301f.webp",
+    "pct": {
+     "black_rock": 86,
+     "lava": 14
+    },
+    "area_pct": {
+     "black_rock": 71.0,
+     "lava": 29.0
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_08",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_08.f427192b.webp",
+    "pct": {
+     "black_rock": 86,
+     "lava": 14
+    },
+    "area_pct": {
+     "black_rock": 72.0,
+     "lava": 28.0
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_13",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_13.1c8807f3.webp",
+    "pct": {
+     "black_rock": 86,
+     "lava": 14
+    },
+    "area_pct": {
+     "black_rock": 72.1,
+     "lava": 27.9
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.1749,
+    "border_impurity": 0.1496,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__lava/and_1/tile_00",
     "file": "tiles/fades/black_rock__with__lava/and_1/post/tile_00.032673fa.webp",
     "pct": {
@@ -7272,6 +8105,23 @@
     "border_impurity": 0.1306,
     "phrasing": "lumps",
     "prompt": "a few lava lumps on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_06",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_06.3ba26c8f.webp",
+    "pct": {
+     "black_rock": 85,
+     "lava": 15
+    },
+    "area_pct": {
+     "black_rock": 68.5,
+     "lava": 31.5
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.2735,
+    "border_impurity": 0.2061,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__lava/with_1/tile_03",
@@ -7444,6 +8294,23 @@
     "prompt": "one lava rock on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_04",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_04.f3840d51.webp",
+    "pct": {
+     "black_rock": 82,
+     "lava": 18
+    },
+    "area_pct": {
+     "black_rock": 62.9,
+     "lava": 37.1
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__lava/one_rock_1/tile_00",
     "file": "tiles/fades/black_rock__with__lava/one_rock_1/post/tile_00.441dd880.webp",
     "pct": {
@@ -7546,6 +8413,23 @@
     "prompt": "black rock and lava"
    },
    {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_12",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_12.0e81c3a0.webp",
+    "pct": {
+     "black_rock": 80,
+     "lava": 20
+    },
+    "area_pct": {
+     "black_rock": 58.3,
+     "lava": 41.7
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.2944,
+    "border_impurity": 0.2715,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__lava/with_1/tile_12",
     "file": "tiles/fades/black_rock__with__lava/with_1/post/tile_12.1ba1811d.webp",
     "pct": {
@@ -7578,6 +8462,23 @@
     "border_impurity": 0.4722,
     "phrasing": "patches",
     "prompt": "patches of lava on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_02",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_02.3b44b361.webp",
+    "pct": {
+     "black_rock": 78,
+     "lava": 22
+    },
+    "area_pct": {
+     "black_rock": 54.4,
+     "lava": 45.6
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.3491,
+    "border_impurity": 0.3333,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__lava/with_1/tile_04",
@@ -7665,6 +8566,23 @@
     "prompt": "patches of lava on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_05",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_05.1c539fd4.webp",
+    "pct": {
+     "black_rock": 75,
+     "lava": 25
+    },
+    "area_pct": {
+     "black_rock": 49.5,
+     "lava": 50.5
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.3469,
+    "border_impurity": 0.2694,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__lava/with_1/tile_08",
     "file": "tiles/fades/black_rock__with__lava/with_1/post/tile_08.593afc82.webp",
     "pct": {
@@ -7680,6 +8598,40 @@
     "border_impurity": 0.9944,
     "phrasing": "with",
     "prompt": "black rock with lava"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_09",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_09.a5f31523.webp",
+    "pct": {
+     "black_rock": 74,
+     "lava": 26
+    },
+    "area_pct": {
+     "black_rock": 46.6,
+     "lava": 53.4
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.2468,
+    "border_impurity": 0.9333,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_11",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_11.85c0ccef.webp",
+    "pct": {
+     "black_rock": 74,
+     "lava": 26
+    },
+    "area_pct": {
+     "black_rock": 46.7,
+     "lava": 53.3
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.2978,
+    "border_impurity": 0.7333,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__lava/and_1/tile_14",
@@ -7699,6 +8651,23 @@
     "prompt": "black rock and lava"
    },
    {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_07",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_07.303437f7.webp",
+    "pct": {
+     "black_rock": 71,
+     "lava": 29
+    },
+    "area_pct": {
+     "black_rock": 41.5,
+     "lava": 58.5
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.3898,
+    "border_impurity": 0.725,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__lava/with_1/tile_01",
     "file": "tiles/fades/black_rock__with__lava/with_1/post/tile_01.083ed2e9.webp",
     "pct": {
@@ -7714,6 +8683,40 @@
     "border_impurity": 0.7626,
     "phrasing": "with",
     "prompt": "black rock with lava"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_15",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_15.6043ddab.webp",
+    "pct": {
+     "black_rock": 67,
+     "lava": 33
+    },
+    "area_pct": {
+     "black_rock": 32.6,
+     "lava": 67.4
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.3519,
+    "border_impurity": 0.7855,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__lava/piles_1/tile_10",
+    "file": "tiles/fades/black_rock__with__lava/piles_1/post/tile_10.ba8058bb.webp",
+    "pct": {
+     "lava": 70,
+     "black_rock": 30
+    },
+    "area_pct": {
+     "black_rock": 60.5,
+     "lava": 39.5
+    },
+    "edge_ground": "lava",
+    "edge_contact": 0.7357,
+    "border_impurity": 0.3028,
+    "phrasing": "piles",
+    "prompt": "a few piles of lava on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__lava/one_rock_1/tile_10",
@@ -7973,6 +8976,40 @@
     "prompt": "a few light beach lumps on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_11",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_11.c91e74df.webp",
+    "pct": {
+     "light_beach": 79,
+     "black_rock": 21
+    },
+    "area_pct": {
+     "black_rock": 42.8,
+     "light_beach": 57.2
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.3112,
+    "border_impurity": 0.3715,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_13",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_13.9806f6eb.webp",
+    "pct": {
+     "light_beach": 81,
+     "black_rock": 19
+    },
+    "area_pct": {
+     "black_rock": 38.0,
+     "light_beach": 62.0
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.3341,
+    "border_impurity": 0.3771,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__light_beach/lumps_1/tile_08",
     "file": "tiles/fades/black_rock__with__light_beach/lumps_1/post/tile_08.5acae112.webp",
     "pct": {
@@ -8022,6 +9059,23 @@
     "border_impurity": 0.2083,
     "phrasing": "patches",
     "prompt": "patches of light beach on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_12",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_12.0d1d9a4d.webp",
+    "pct": {
+     "light_beach": 86,
+     "black_rock": 14
+    },
+    "area_pct": {
+     "black_rock": 28.4,
+     "light_beach": 71.6
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.244,
+    "border_impurity": 0.2933,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__light_beach/lumps_1/tile_03",
@@ -8126,6 +9180,74 @@
     "prompt": "one light beach rock on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_06",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_06.397a57d6.webp",
+    "pct": {
+     "light_beach": 89,
+     "black_rock": 11
+    },
+    "area_pct": {
+     "black_rock": 22.6,
+     "light_beach": 77.4
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.3017,
+    "border_impurity": 0.3268,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_01",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_01.9912a291.webp",
+    "pct": {
+     "light_beach": 90,
+     "black_rock": 10
+    },
+    "area_pct": {
+     "black_rock": 20.5,
+     "light_beach": 79.5
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.2557,
+    "border_impurity": 0.3101,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_04",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_04.f83293f7.webp",
+    "pct": {
+     "light_beach": 90,
+     "black_rock": 10
+    },
+    "area_pct": {
+     "black_rock": 21.0,
+     "light_beach": 79.0
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.2816,
+    "border_impurity": 0.3212,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_07",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_07.67dda494.webp",
+    "pct": {
+     "light_beach": 90,
+     "black_rock": 10
+    },
+    "area_pct": {
+     "black_rock": 21.4,
+     "light_beach": 78.6
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.22,
+    "border_impurity": 0.2849,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__light_beach/patches_1/tile_03",
     "file": "tiles/fades/black_rock__with__light_beach/patches_1/post/tile_03.93004f91.webp",
     "pct": {
@@ -8143,6 +9265,23 @@
     "prompt": "patches of light beach on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_15",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_15.cf9da49a.webp",
+    "pct": {
+     "light_beach": 91,
+     "black_rock": 9
+    },
+    "area_pct": {
+     "black_rock": 19.2,
+     "light_beach": 80.8
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.242,
+    "border_impurity": 0.3045,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__light_beach/lumps_1/tile_04",
     "file": "tiles/fades/black_rock__with__light_beach/lumps_1/post/tile_04.13b11ecb.webp",
     "pct": {
@@ -8158,6 +9297,23 @@
     "border_impurity": 0.0698,
     "phrasing": "lumps",
     "prompt": "a few light beach lumps on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_03",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_03.4fd157ec.webp",
+    "pct": {
+     "light_beach": 92,
+     "black_rock": 8
+    },
+    "area_pct": {
+     "black_rock": 16.6,
+     "light_beach": 83.4
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.2751,
+    "border_impurity": 0.338,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__light_beach/patches_1/tile_06",
@@ -8192,6 +9348,57 @@
     "border_impurity": 0.0278,
     "phrasing": "patches",
     "prompt": "patches of light beach on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_05",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_05.5125702a.webp",
+    "pct": {
+     "light_beach": 93,
+     "black_rock": 7
+    },
+    "area_pct": {
+     "black_rock": 13.9,
+     "light_beach": 86.1
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.1814,
+    "border_impurity": 0.2374,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_08",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_08.0072ffbb.webp",
+    "pct": {
+     "light_beach": 93,
+     "black_rock": 7
+    },
+    "area_pct": {
+     "black_rock": 14.8,
+     "light_beach": 85.2
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.1811,
+    "border_impurity": 0.2374,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_00",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_00.dd4dbfb0.webp",
+    "pct": {
+     "light_beach": 94,
+     "black_rock": 6
+    },
+    "area_pct": {
+     "black_rock": 13.0,
+     "light_beach": 87.0
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.158,
+    "border_impurity": 0.2067,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__light_beach/on_top_of_1/tile_12",
@@ -8277,6 +9484,23 @@
     "border_impurity": 0.0,
     "phrasing": "one_rock",
     "prompt": "one light beach rock on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_02",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_02.8967f685.webp",
+    "pct": {
+     "light_beach": 96,
+     "black_rock": 4
+    },
+    "area_pct": {
+     "black_rock": 7.6,
+     "light_beach": 92.4
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.1624,
+    "border_impurity": 0.2235,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__light_beach/lumps_1/tile_10",
@@ -8379,6 +9603,23 @@
     "border_impurity": 0.0,
     "phrasing": "patches",
     "prompt": "patches of light beach on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_10",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_10.a61667ed.webp",
+    "pct": {
+     "light_beach": 97,
+     "black_rock": 3
+    },
+    "area_pct": {
+     "black_rock": 6.2,
+     "light_beach": 93.8
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.1479,
+    "border_impurity": 0.2011,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__light_beach/lumps_1/tile_02",
@@ -8566,6 +9807,23 @@
     "border_impurity": 0.0,
     "phrasing": "one_rock",
     "prompt": "one light beach rock on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__light_beach/piles_1/tile_09",
+    "file": "tiles/fades/black_rock__with__light_beach/piles_1/post/tile_09.28772400.webp",
+    "pct": {
+     "light_beach": 98,
+     "black_rock": 2
+    },
+    "area_pct": {
+     "black_rock": 4.5,
+     "light_beach": 95.5
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.1372,
+    "border_impurity": 0.1816,
+    "phrasing": "piles",
+    "prompt": "a few piles of light beach on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__light_beach/lumps_1/tile_00",
@@ -10240,6 +11498,23 @@
     "prompt": "patches of slime on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_04",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_04.96337e00.webp",
+    "pct": {
+     "black_rock": 95,
+     "slime": 5
+    },
+    "area_pct": {
+     "black_rock": 89.3,
+     "slime": 10.7
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.002,
+    "border_impurity": 0.0418,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__slime/and_1/tile_01",
     "file": "tiles/fades/black_rock__with__slime/and_1/post/tile_01.d3412342.webp",
     "pct": {
@@ -10291,6 +11566,23 @@
     "prompt": "patches of slime on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_10",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_10.ef200039.webp",
+    "pct": {
+     "black_rock": 94,
+     "slime": 6
+    },
+    "area_pct": {
+     "black_rock": 88.3,
+     "slime": 11.7
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0939,
+    "border_impurity": 0.1003,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__slime/lumps_1/tile_00",
     "file": "tiles/fades/black_rock__with__slime/lumps_1/post/tile_00.498b573d.webp",
     "pct": {
@@ -10306,6 +11598,91 @@
     "border_impurity": 0.1031,
     "phrasing": "lumps",
     "prompt": "a few slime lumps on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_02",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_02.aa4dccd9.webp",
+    "pct": {
+     "black_rock": 93,
+     "slime": 7
+    },
+    "area_pct": {
+     "black_rock": 86.6,
+     "slime": 13.4
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0101,
+    "border_impurity": 0.039,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_09",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_09.0cb383ef.webp",
+    "pct": {
+     "black_rock": 93,
+     "slime": 7
+    },
+    "area_pct": {
+     "black_rock": 84.8,
+     "slime": 15.2
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0018,
+    "border_impurity": 0.0334,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_13",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_13.0b759048.webp",
+    "pct": {
+     "black_rock": 93,
+     "slime": 7
+    },
+    "area_pct": {
+     "black_rock": 84.9,
+     "slime": 15.1
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0736,
+    "border_impurity": 0.0947,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_14",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_14.378d342f.webp",
+    "pct": {
+     "black_rock": 93,
+     "slime": 7
+    },
+    "area_pct": {
+     "black_rock": 84.8,
+     "slime": 15.2
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0305,
+    "border_impurity": 0.0808,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_15",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_15.bc1e146d.webp",
+    "pct": {
+     "black_rock": 93,
+     "slime": 7
+    },
+    "area_pct": {
+     "black_rock": 85.2,
+     "slime": 14.8
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0875,
+    "border_impurity": 0.0891,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__slime/lumps_1/tile_07",
@@ -10340,6 +11717,23 @@
     "border_impurity": 0.1369,
     "phrasing": "patches",
     "prompt": "patches of slime on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_01",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_01.955ea521.webp",
+    "pct": {
+     "black_rock": 92,
+     "slime": 8
+    },
+    "area_pct": {
+     "black_rock": 84.4,
+     "slime": 15.6
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.1096,
+    "border_impurity": 0.1365,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__slime/patches_1/tile_04",
@@ -10393,6 +11787,40 @@
     "prompt": "black rock and slime"
    },
    {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_03",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_03.a7b593aa.webp",
+    "pct": {
+     "black_rock": 90,
+     "slime": 10
+    },
+    "area_pct": {
+     "black_rock": 79.8,
+     "slime": 20.2
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.1232,
+    "border_impurity": 0.1699,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_07",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_07.c510c286.webp",
+    "pct": {
+     "black_rock": 90,
+     "slime": 10
+    },
+    "area_pct": {
+     "black_rock": 80.2,
+     "slime": 19.8
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.1185,
+    "border_impurity": 0.156,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__slime/with_1/tile_03",
     "file": "tiles/fades/black_rock__with__slime/with_1/post/tile_03.5bb56849.webp",
     "pct": {
@@ -10427,6 +11855,57 @@
     "prompt": "patches of slime on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_06",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_06.d8508041.webp",
+    "pct": {
+     "black_rock": 89,
+     "slime": 11
+    },
+    "area_pct": {
+     "black_rock": 78.4,
+     "slime": 21.6
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.1122,
+    "border_impurity": 0.1086,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_12",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_12.8f13d108.webp",
+    "pct": {
+     "black_rock": 89,
+     "slime": 11
+    },
+    "area_pct": {
+     "black_rock": 78.0,
+     "slime": 22.0
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.1262,
+    "border_impurity": 0.1086,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_08",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_08.ded56a75.webp",
+    "pct": {
+     "black_rock": 88,
+     "slime": 12
+    },
+    "area_pct": {
+     "black_rock": 75.1,
+     "slime": 24.9
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.1191,
+    "border_impurity": 0.1086,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__slime/patches_1/tile_08",
     "file": "tiles/fades/black_rock__with__slime/patches_1/post/tile_08.dcea7b0b.webp",
     "pct": {
@@ -10444,6 +11923,23 @@
     "prompt": "patches of slime on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_00",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_00.fadeeb94.webp",
+    "pct": {
+     "black_rock": 86,
+     "slime": 14
+    },
+    "area_pct": {
+     "black_rock": 72.0,
+     "slime": 28.0
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0101,
+    "border_impurity": 0.0223,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__slime/patches_1/tile_03",
     "file": "tiles/fades/black_rock__with__slime/patches_1/post/tile_03.8a736516.webp",
     "pct": {
@@ -10459,6 +11955,40 @@
     "border_impurity": 0.5528,
     "phrasing": "patches",
     "prompt": "patches of slime on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_05",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_05.c3205dcb.webp",
+    "pct": {
+     "black_rock": 85,
+     "slime": 15
+    },
+    "area_pct": {
+     "black_rock": 68.9,
+     "slime": 31.1
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.1241,
+    "border_impurity": 0.1616,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__slime/piles_1/tile_11",
+    "file": "tiles/fades/black_rock__with__slime/piles_1/post/tile_11.1f60560d.webp",
+    "pct": {
+     "black_rock": 85,
+     "slime": 15
+    },
+    "area_pct": {
+     "black_rock": 69.9,
+     "slime": 30.1
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0147,
+    "border_impurity": 0.0111,
+    "phrasing": "piles",
+    "prompt": "a few piles of slime on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__slime/patches_1/tile_10",
@@ -11689,6 +13219,23 @@
     "prompt": "a few water lumps on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__water/piles_1/tile_02",
+    "file": "tiles/fades/black_rock__with__water/piles_1/post/tile_02.e429b805.webp",
+    "pct": {
+     "black_rock": 99,
+     "water": 1
+    },
+    "area_pct": {
+     "black_rock": 97.0,
+     "water": 3.0
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of water on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__water/lumps_1/tile_10",
     "file": "tiles/fades/black_rock__with__water/lumps_1/post/tile_10.3c426502.webp",
     "pct": {
@@ -11704,6 +13251,57 @@
     "border_impurity": 0.0,
     "phrasing": "lumps",
     "prompt": "a few water lumps on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__water/piles_1/tile_07",
+    "file": "tiles/fades/black_rock__with__water/piles_1/post/tile_07.3dbde680.webp",
+    "pct": {
+     "black_rock": 98,
+     "water": 2
+    },
+    "area_pct": {
+     "black_rock": 95.1,
+     "water": 4.9
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0368,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of water on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__water/piles_1/tile_00",
+    "file": "tiles/fades/black_rock__with__water/piles_1/post/tile_00.62710490.webp",
+    "pct": {
+     "black_rock": 97,
+     "water": 3
+    },
+    "area_pct": {
+     "black_rock": 93.9,
+     "water": 6.1
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of water on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__water/piles_1/tile_14",
+    "file": "tiles/fades/black_rock__with__water/piles_1/post/tile_14.7e06f4cb.webp",
+    "pct": {
+     "black_rock": 97,
+     "water": 3
+    },
+    "area_pct": {
+     "black_rock": 93.1,
+     "water": 6.9
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of water on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__water/lumps_1/tile_01",
@@ -11740,6 +13338,23 @@
     "prompt": "a few water lumps on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__water/piles_1/tile_05",
+    "file": "tiles/fades/black_rock__with__water/piles_1/post/tile_05.752b17a9.webp",
+    "pct": {
+     "black_rock": 96,
+     "water": 4
+    },
+    "area_pct": {
+     "black_rock": 92.1,
+     "water": 7.9
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0283,
+    "border_impurity": 0.0328,
+    "phrasing": "piles",
+    "prompt": "a few piles of water on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__water/lumps_1/tile_13",
     "file": "tiles/fades/black_rock__with__water/lumps_1/post/tile_13.46038793.webp",
     "pct": {
@@ -11772,6 +13387,23 @@
     "border_impurity": 0.0,
     "phrasing": "lumps",
     "prompt": "a few water lumps on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__water/piles_1/tile_04",
+    "file": "tiles/fades/black_rock__with__water/piles_1/post/tile_04.a2d6cbbf.webp",
+    "pct": {
+     "black_rock": 94,
+     "water": 6
+    },
+    "area_pct": {
+     "black_rock": 86.9,
+     "water": 13.1
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of water on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__water/on_top_of_1/tile_01",
@@ -11842,6 +13474,23 @@
     "prompt": "one water rock on black rock"
    },
    {
+    "key": "tiles/fades/black_rock__with__water/piles_1/tile_15",
+    "file": "tiles/fades/black_rock__with__water/piles_1/post/tile_15.fdee54a1.webp",
+    "pct": {
+     "black_rock": 88,
+     "water": 12
+    },
+    "area_pct": {
+     "black_rock": 75.1,
+     "water": 24.9
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of water on black rock"
+   },
+   {
     "key": "tiles/fades/black_rock__with__water/one_rock_1/tile_11",
     "file": "tiles/fades/black_rock__with__water/one_rock_1/post/tile_11.5423be53.webp",
     "pct": {
@@ -11857,6 +13506,23 @@
     "border_impurity": 0.0722,
     "phrasing": "one_rock",
     "prompt": "one water rock on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__water/piles_1/tile_10",
+    "file": "tiles/fades/black_rock__with__water/piles_1/post/tile_10.df45f507.webp",
+    "pct": {
+     "black_rock": 87,
+     "water": 13
+    },
+    "area_pct": {
+     "black_rock": 73.4,
+     "water": 26.6
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of water on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__water/on_top_of_1/tile_10",
@@ -11993,6 +13659,23 @@
     "border_impurity": 0.3472,
     "phrasing": "one_rock",
     "prompt": "one water rock on black rock"
+   },
+   {
+    "key": "tiles/fades/black_rock__with__water/piles_1/tile_01",
+    "file": "tiles/fades/black_rock__with__water/piles_1/post/tile_01.d57dc489.webp",
+    "pct": {
+     "black_rock": 80,
+     "water": 20
+    },
+    "area_pct": {
+     "black_rock": 59.3,
+     "water": 40.7
+    },
+    "edge_ground": "black_rock",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of water on black rock"
    },
    {
     "key": "tiles/fades/black_rock__with__water/on_top_of_1/tile_05",
@@ -25697,108 +27380,6 @@
   ],
   "dark_mud__to__deep_water": [
    {
-    "key": "tiles/fades/dark_mud__with__deep_water/and_1/tile_01",
-    "file": "tiles/fades/dark_mud__with__deep_water/and_1/post/tile_01.93f3a0aa.webp",
-    "pct": {
-     "dark_mud": 99,
-     "deep_water": 1
-    },
-    "area_pct": {
-     "dark_mud": 97.2,
-     "deep_water": 2.8
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0567,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "dark mud and deep water"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/one_rock_1/tile_14",
-    "file": "tiles/fades/dark_mud__with__deep_water/one_rock_1/post/tile_14.03012297.webp",
-    "pct": {
-     "dark_mud": 99,
-     "deep_water": 1
-    },
-    "area_pct": {
-     "dark_mud": 97.5,
-     "deep_water": 2.5
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0007,
-    "border_impurity": 0.0,
-    "phrasing": "one_rock",
-    "prompt": "one deep water rock on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/with_1/tile_10",
-    "file": "tiles/fades/dark_mud__with__deep_water/with_1/post/tile_10.20efeb87.webp",
-    "pct": {
-     "dark_mud": 99,
-     "deep_water": 1
-    },
-    "area_pct": {
-     "dark_mud": 97.6,
-     "deep_water": 2.4
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0091,
-    "border_impurity": 0.0,
-    "phrasing": "with",
-    "prompt": "dark mud with deep water"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/and_1/tile_06",
-    "file": "tiles/fades/dark_mud__with__deep_water/and_1/post/tile_06.8c91a524.webp",
-    "pct": {
-     "dark_mud": 98,
-     "deep_water": 2
-    },
-    "area_pct": {
-     "dark_mud": 95.3,
-     "deep_water": 4.7
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0312,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "dark mud and deep water"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/lumps_1/tile_12",
-    "file": "tiles/fades/dark_mud__with__deep_water/lumps_1/post/tile_12.8ff2f0e9.webp",
-    "pct": {
-     "dark_mud": 98,
-     "deep_water": 2
-    },
-    "area_pct": {
-     "dark_mud": 95.5,
-     "deep_water": 4.5
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0529,
-    "border_impurity": 0.0,
-    "phrasing": "lumps",
-    "prompt": "a few deep water lumps on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/lumps_1/tile_13",
-    "file": "tiles/fades/dark_mud__with__deep_water/lumps_1/post/tile_13.94974ec5.webp",
-    "pct": {
-     "dark_mud": 98,
-     "deep_water": 2
-    },
-    "area_pct": {
-     "dark_mud": 95.7,
-     "deep_water": 4.3
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0557,
-    "border_impurity": 0.0,
-    "phrasing": "lumps",
-    "prompt": "a few deep water lumps on dark mud"
-   },
-   {
     "key": "tiles/fades/dark_mud__with__deep_water/lumps_1/tile_15",
     "file": "tiles/fades/dark_mud__with__deep_water/lumps_1/post/tile_15.d7f4298d.webp",
     "pct": {
@@ -25816,91 +27397,6 @@
     "prompt": "a few deep water lumps on dark mud"
    },
    {
-    "key": "tiles/fades/dark_mud__with__deep_water/one_rock_1/tile_02",
-    "file": "tiles/fades/dark_mud__with__deep_water/one_rock_1/post/tile_02.97120e4c.webp",
-    "pct": {
-     "dark_mud": 98,
-     "deep_water": 2
-    },
-    "area_pct": {
-     "dark_mud": 96.4,
-     "deep_water": 3.6
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0091,
-    "border_impurity": 0.0,
-    "phrasing": "one_rock",
-    "prompt": "one deep water rock on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/and_1/tile_08",
-    "file": "tiles/fades/dark_mud__with__deep_water/and_1/post/tile_08.5ca2c804.webp",
-    "pct": {
-     "dark_mud": 97,
-     "deep_water": 3
-    },
-    "area_pct": {
-     "dark_mud": 92.9,
-     "deep_water": 7.1
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.1712,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "dark mud and deep water"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/and_1/tile_07",
-    "file": "tiles/fades/dark_mud__with__deep_water/and_1/post/tile_07.1c917cba.webp",
-    "pct": {
-     "dark_mud": 96,
-     "deep_water": 4
-    },
-    "area_pct": {
-     "dark_mud": 90.9,
-     "deep_water": 9.1
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0843,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "dark mud and deep water"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/and_1/tile_09",
-    "file": "tiles/fades/dark_mud__with__deep_water/and_1/post/tile_09.5fd5d642.webp",
-    "pct": {
-     "dark_mud": 96,
-     "deep_water": 4
-    },
-    "area_pct": {
-     "dark_mud": 92.5,
-     "deep_water": 7.5
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0812,
-    "border_impurity": 0.0028,
-    "phrasing": "and",
-    "prompt": "dark mud and deep water"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/and_1/tile_10",
-    "file": "tiles/fades/dark_mud__with__deep_water/and_1/post/tile_10.9d8a5734.webp",
-    "pct": {
-     "dark_mud": 96,
-     "deep_water": 4
-    },
-    "area_pct": {
-     "dark_mud": 91.4,
-     "deep_water": 8.6
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.1358,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "dark mud and deep water"
-   },
-   {
     "key": "tiles/fades/dark_mud__with__deep_water/and_1/tile_02",
     "file": "tiles/fades/dark_mud__with__deep_water/and_1/post/tile_02.af16f60a.webp",
     "pct": {
@@ -25913,23 +27409,6 @@
     },
     "edge_ground": "dark_mud",
     "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "dark mud and deep water"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/and_1/tile_05",
-    "file": "tiles/fades/dark_mud__with__deep_water/and_1/post/tile_05.a0db2b74.webp",
-    "pct": {
-     "dark_mud": 94,
-     "deep_water": 6
-    },
-    "area_pct": {
-     "dark_mud": 88.4,
-     "deep_water": 11.6
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0765,
     "border_impurity": 0.0,
     "phrasing": "and",
     "prompt": "dark mud and deep water"
@@ -26103,40 +27582,6 @@
     "border_impurity": 0.0,
     "phrasing": "and",
     "prompt": "dark mud and deep water"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/patches_1/tile_11",
-    "file": "tiles/fades/dark_mud__with__deep_water/patches_1/post/tile_11.6e18adb0.webp",
-    "pct": {
-     "dark_mud": 88,
-     "deep_water": 12
-    },
-    "area_pct": {
-     "dark_mud": 76.4,
-     "deep_water": 23.6
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.121,
-    "border_impurity": 0.0404,
-    "phrasing": "patches",
-    "prompt": "patches of deep water on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/lumps_1/tile_02",
-    "file": "tiles/fades/dark_mud__with__deep_water/lumps_1/post/tile_02.6de5c984.webp",
-    "pct": {
-     "dark_mud": 87,
-     "deep_water": 13
-    },
-    "area_pct": {
-     "dark_mud": 72.7,
-     "deep_water": 27.3
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.1861,
-    "border_impurity": 0.0028,
-    "phrasing": "lumps",
-    "prompt": "a few deep water lumps on dark mud"
    },
    {
     "key": "tiles/fades/dark_mud__with__deep_water/with_1/tile_09",
@@ -26428,40 +27873,6 @@
     "prompt": "dark mud with deep water"
    },
    {
-    "key": "tiles/fades/dark_mud__with__deep_water/lumps_1/tile_01",
-    "file": "tiles/fades/dark_mud__with__deep_water/lumps_1/post/tile_01.062887d4.webp",
-    "pct": {
-     "dark_mud": 77,
-     "deep_water": 23
-    },
-    "area_pct": {
-     "dark_mud": 53.6,
-     "deep_water": 46.4
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0159,
-    "border_impurity": 0.0361,
-    "phrasing": "lumps",
-    "prompt": "a few deep water lumps on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/with_1/tile_05",
-    "file": "tiles/fades/dark_mud__with__deep_water/with_1/post/tile_05.b1af255e.webp",
-    "pct": {
-     "dark_mud": 70,
-     "deep_water": 30
-    },
-    "area_pct": {
-     "dark_mud": 38.4,
-     "deep_water": 61.6
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0992,
-    "border_impurity": 0.9556,
-    "phrasing": "with",
-    "prompt": "dark mud with deep water"
-   },
-   {
     "key": "tiles/fades/dark_mud__with__deep_water/patches_1/tile_01",
     "file": "tiles/fades/dark_mud__with__deep_water/patches_1/post/tile_01.e4195618.webp",
     "pct": {
@@ -26475,159 +27886,6 @@
     "edge_ground": "dark_mud",
     "edge_contact": 0.114,
     "border_impurity": 0.875,
-    "phrasing": "patches",
-    "prompt": "patches of deep water on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/lumps_1/tile_06",
-    "file": "tiles/fades/dark_mud__with__deep_water/lumps_1/post/tile_06.364b6c8d.webp",
-    "pct": {
-     "deep_water": 71,
-     "dark_mud": 29
-    },
-    "area_pct": {
-     "dark_mud": 58.7,
-     "deep_water": 41.3
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.6959,
-    "border_impurity": 0.3575,
-    "phrasing": "lumps",
-    "prompt": "a few deep water lumps on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/lumps_1/tile_05",
-    "file": "tiles/fades/dark_mud__with__deep_water/lumps_1/post/tile_05.d8f95aba.webp",
-    "pct": {
-     "deep_water": 78,
-     "dark_mud": 22
-    },
-    "area_pct": {
-     "dark_mud": 44.1,
-     "deep_water": 55.9
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.4781,
-    "border_impurity": 0.1421,
-    "phrasing": "lumps",
-    "prompt": "a few deep water lumps on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/lumps_1/tile_04",
-    "file": "tiles/fades/dark_mud__with__deep_water/lumps_1/post/tile_04.65e87162.webp",
-    "pct": {
-     "deep_water": 79,
-     "dark_mud": 21
-    },
-    "area_pct": {
-     "dark_mud": 42.8,
-     "deep_water": 57.2
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.5128,
-    "border_impurity": 0.2861,
-    "phrasing": "lumps",
-    "prompt": "a few deep water lumps on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/with_1/tile_14",
-    "file": "tiles/fades/dark_mud__with__deep_water/with_1/post/tile_14.ec7ddc7e.webp",
-    "pct": {
-     "deep_water": 84,
-     "dark_mud": 16
-    },
-    "area_pct": {
-     "dark_mud": 32.6,
-     "deep_water": 67.4
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.4347,
-    "border_impurity": 0.0806,
-    "phrasing": "with",
-    "prompt": "dark mud with deep water"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/one_rock_1/tile_07",
-    "file": "tiles/fades/dark_mud__with__deep_water/one_rock_1/post/tile_07.4b5b91e6.webp",
-    "pct": {
-     "deep_water": 86,
-     "dark_mud": 14
-    },
-    "area_pct": {
-     "dark_mud": 27.6,
-     "deep_water": 72.4
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.3625,
-    "border_impurity": 0.0,
-    "phrasing": "one_rock",
-    "prompt": "one deep water rock on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/patches_1/tile_04",
-    "file": "tiles/fades/dark_mud__with__deep_water/patches_1/post/tile_04.d1bcad68.webp",
-    "pct": {
-     "deep_water": 87,
-     "dark_mud": 13
-    },
-    "area_pct": {
-     "dark_mud": 25.7,
-     "deep_water": 74.3
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.1409,
-    "border_impurity": 0.0278,
-    "phrasing": "patches",
-    "prompt": "patches of deep water on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/one_rock_1/tile_00",
-    "file": "tiles/fades/dark_mud__with__deep_water/one_rock_1/post/tile_00.575eedd2.webp",
-    "pct": {
-     "deep_water": 90,
-     "dark_mud": 10
-    },
-    "area_pct": {
-     "dark_mud": 19.7,
-     "deep_water": 80.3
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.2614,
-    "border_impurity": 0.0,
-    "phrasing": "one_rock",
-    "prompt": "one deep water rock on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/one_rock_1/tile_11",
-    "file": "tiles/fades/dark_mud__with__deep_water/one_rock_1/post/tile_11.d9960440.webp",
-    "pct": {
-     "deep_water": 90,
-     "dark_mud": 10
-    },
-    "area_pct": {
-     "dark_mud": 20.0,
-     "deep_water": 80.0
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.1001,
-    "border_impurity": 0.0,
-    "phrasing": "one_rock",
-    "prompt": "one deep water rock on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/patches_1/tile_08",
-    "file": "tiles/fades/dark_mud__with__deep_water/patches_1/post/tile_08.5246bd92.webp",
-    "pct": {
-     "deep_water": 90,
-     "dark_mud": 10
-    },
-    "area_pct": {
-     "dark_mud": 20.1,
-     "deep_water": 79.9
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.3121,
-    "border_impurity": 0.0778,
     "phrasing": "patches",
     "prompt": "patches of deep water on dark mud"
    },
@@ -26649,74 +27907,6 @@
     "prompt": "a few deep water lumps on dark mud"
    },
    {
-    "key": "tiles/fades/dark_mud__with__deep_water/patches_1/tile_07",
-    "file": "tiles/fades/dark_mud__with__deep_water/patches_1/post/tile_07.c0c8c4f3.webp",
-    "pct": {
-     "deep_water": 92,
-     "dark_mud": 8
-    },
-    "area_pct": {
-     "dark_mud": 16.6,
-     "deep_water": 83.4
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.2651,
-    "border_impurity": 0.0556,
-    "phrasing": "patches",
-    "prompt": "patches of deep water on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/patches_1/tile_12",
-    "file": "tiles/fades/dark_mud__with__deep_water/patches_1/post/tile_12.0ab4f1d9.webp",
-    "pct": {
-     "deep_water": 92,
-     "dark_mud": 8
-    },
-    "area_pct": {
-     "dark_mud": 16.8,
-     "deep_water": 83.2
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.0705,
-    "border_impurity": 0.0056,
-    "phrasing": "patches",
-    "prompt": "patches of deep water on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/on_top_of_1/tile_07",
-    "file": "tiles/fades/dark_mud__with__deep_water/on_top_of_1/post/tile_07.8d6d1e24.webp",
-    "pct": {
-     "deep_water": 93,
-     "dark_mud": 7
-    },
-    "area_pct": {
-     "dark_mud": 14.1,
-     "deep_water": 85.9
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.0455,
-    "border_impurity": 0.0139,
-    "phrasing": "on_top_of",
-    "prompt": "deep water on top of dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/patches_1/tile_10",
-    "file": "tiles/fades/dark_mud__with__deep_water/patches_1/post/tile_10.0492dc81.webp",
-    "pct": {
-     "deep_water": 96,
-     "dark_mud": 4
-    },
-    "area_pct": {
-     "dark_mud": 9.0,
-     "deep_water": 91.0
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.0034,
-    "border_impurity": 0.0,
-    "phrasing": "patches",
-    "prompt": "patches of deep water on dark mud"
-   },
-   {
     "key": "tiles/fades/dark_mud__with__deep_water/patches_1/tile_14",
     "file": "tiles/fades/dark_mud__with__deep_water/patches_1/post/tile_14.d216ccf6.webp",
     "pct": {
@@ -26734,23 +27924,6 @@
     "prompt": "patches of deep water on dark mud"
    },
    {
-    "key": "tiles/fades/dark_mud__with__deep_water/one_rock_1/tile_03",
-    "file": "tiles/fades/dark_mud__with__deep_water/one_rock_1/post/tile_03.11702ea3.webp",
-    "pct": {
-     "deep_water": 97,
-     "dark_mud": 3
-    },
-    "area_pct": {
-     "dark_mud": 5.1,
-     "deep_water": 94.9
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.0666,
-    "border_impurity": 0.0,
-    "phrasing": "one_rock",
-    "prompt": "one deep water rock on dark mud"
-   },
-   {
     "key": "tiles/fades/dark_mud__with__deep_water/patches_1/tile_00",
     "file": "tiles/fades/dark_mud__with__deep_water/patches_1/post/tile_00.074a755a.webp",
     "pct": {
@@ -26766,60 +27939,9 @@
     "border_impurity": 0.0,
     "phrasing": "patches",
     "prompt": "patches of deep water on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/patches_1/tile_03",
-    "file": "tiles/fades/dark_mud__with__deep_water/patches_1/post/tile_03.d587b033.webp",
-    "pct": {
-     "deep_water": 99,
-     "dark_mud": 1
-    },
-    "area_pct": {
-     "dark_mud": 2.9,
-     "deep_water": 97.1
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.0008,
-    "border_impurity": 0.0,
-    "phrasing": "patches",
-    "prompt": "patches of deep water on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__deep_water/with_1/tile_06",
-    "file": "tiles/fades/dark_mud__with__deep_water/with_1/post/tile_06.8cdfaffb.webp",
-    "pct": {
-     "deep_water": 99,
-     "dark_mud": 1
-    },
-    "area_pct": {
-     "dark_mud": 2.8,
-     "deep_water": 97.2
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.0018,
-    "border_impurity": 0.0,
-    "phrasing": "with",
-    "prompt": "dark mud with deep water"
    }
   ],
   "dark_mud__to__grass": [
-   {
-    "key": "tiles/fades/dark_mud__with__grass/and_1/tile_14",
-    "file": "tiles/fades/dark_mud__with__grass/and_1/post/tile_14.a0c8cf70.webp",
-    "pct": {
-     "dark_mud": 97,
-     "grass": 3
-    },
-    "area_pct": {
-     "dark_mud": 93.0,
-     "grass": 7.0
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.0703,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "dark mud and grass"
-   },
    {
     "key": "tiles/fades/dark_mud__with__grass/and_1/tile_06",
     "file": "tiles/fades/dark_mud__with__grass/and_1/post/tile_06.9096a5bc.webp",
@@ -26889,23 +28011,6 @@
     "prompt": "grass spots on dark mud"
    },
    {
-    "key": "tiles/fades/dark_mud__with__grass/and_1/tile_11",
-    "file": "tiles/fades/dark_mud__with__grass/and_1/post/tile_11.755f1bf7.webp",
-    "pct": {
-     "dark_mud": 85,
-     "grass": 15
-    },
-    "area_pct": {
-     "dark_mud": 70.2,
-     "grass": 29.8
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.4736,
-    "border_impurity": 0.0944,
-    "phrasing": "and",
-    "prompt": "dark mud and grass"
-   },
-   {
     "key": "tiles/fades/dark_mud__with__grass/spots_1/tile_02",
     "file": "tiles/fades/dark_mud__with__grass/spots_1/post/tile_02.16dd0394.webp",
     "pct": {
@@ -26921,23 +28026,6 @@
     "border_impurity": 0.0417,
     "phrasing": "spots",
     "prompt": "grass spots on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/and_1/tile_03",
-    "file": "tiles/fades/dark_mud__with__grass/and_1/post/tile_03.d023aa7b.webp",
-    "pct": {
-     "dark_mud": 82,
-     "grass": 18
-    },
-    "area_pct": {
-     "dark_mud": 62.6,
-     "grass": 37.4
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.5909,
-    "border_impurity": 0.1083,
-    "phrasing": "and",
-    "prompt": "dark mud and grass"
    },
    {
     "key": "tiles/fades/dark_mud__with__grass/patches_1/tile_00",
@@ -26957,23 +28045,6 @@
     "prompt": "patches of grass on dark mud"
    },
    {
-    "key": "tiles/fades/dark_mud__with__grass/with_1/tile_13",
-    "file": "tiles/fades/dark_mud__with__grass/with_1/post/tile_13.152b8ce4.webp",
-    "pct": {
-     "dark_mud": 80,
-     "grass": 20
-    },
-    "area_pct": {
-     "dark_mud": 59.5,
-     "grass": 40.5
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.5017,
-    "border_impurity": 0.2306,
-    "phrasing": "with",
-    "prompt": "dark mud with grass"
-   },
-   {
     "key": "tiles/fades/dark_mud__with__grass/patches_1/tile_04",
     "file": "tiles/fades/dark_mud__with__grass/patches_1/post/tile_04.ab452b27.webp",
     "pct": {
@@ -26991,23 +28062,6 @@
     "prompt": "patches of grass on dark mud"
    },
    {
-    "key": "tiles/fades/dark_mud__with__grass/with_1/tile_10",
-    "file": "tiles/fades/dark_mud__with__grass/with_1/post/tile_10.f975529f.webp",
-    "pct": {
-     "dark_mud": 79,
-     "grass": 21
-    },
-    "area_pct": {
-     "dark_mud": 57.3,
-     "grass": 42.7
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.4579,
-    "border_impurity": 0.1031,
-    "phrasing": "with",
-    "prompt": "dark mud with grass"
-   },
-   {
     "key": "tiles/fades/dark_mud__with__grass/with_1/tile_07",
     "file": "tiles/fades/dark_mud__with__grass/with_1/post/tile_07.d1a4ad3c.webp",
     "pct": {
@@ -27023,23 +28077,6 @@
     "border_impurity": 0.1194,
     "phrasing": "with",
     "prompt": "dark mud with grass"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/and_1/tile_01",
-    "file": "tiles/fades/dark_mud__with__grass/and_1/post/tile_01.a92a6cfd.webp",
-    "pct": {
-     "dark_mud": 75,
-     "grass": 25
-    },
-    "area_pct": {
-     "dark_mud": 49.5,
-     "grass": 50.5
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.58,
-    "border_impurity": 0.1944,
-    "phrasing": "and",
-    "prompt": "dark mud and grass"
    },
    {
     "key": "tiles/fades/dark_mud__with__grass/and_1/tile_07",
@@ -27178,40 +28215,6 @@
     "prompt": "dark mud with grass"
    },
    {
-    "key": "tiles/fades/dark_mud__with__grass/lumps_1/tile_14",
-    "file": "tiles/fades/dark_mud__with__grass/lumps_1/post/tile_14.804773ab.webp",
-    "pct": {
-     "grass": 90,
-     "dark_mud": 10
-    },
-    "area_pct": {
-     "dark_mud": 21.2,
-     "grass": 78.8
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.1025,
-    "border_impurity": 0.0639,
-    "phrasing": "lumps",
-    "prompt": "a few grass lumps on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/spots_1/tile_06",
-    "file": "tiles/fades/dark_mud__with__grass/spots_1/post/tile_06.58589f7e.webp",
-    "pct": {
-     "grass": 90,
-     "dark_mud": 10
-    },
-    "area_pct": {
-     "dark_mud": 19.8,
-     "grass": 80.2
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.3452,
-    "border_impurity": 0.025,
-    "phrasing": "spots",
-    "prompt": "grass spots on dark mud"
-   },
-   {
     "key": "tiles/fades/dark_mud__with__grass/piles_1/tile_02",
     "file": "tiles/fades/dark_mud__with__grass/piles_1/post/tile_02.3cac095f.webp",
     "pct": {
@@ -27225,74 +28228,6 @@
     "edge_ground": "grass",
     "edge_contact": 0.1862,
     "border_impurity": 0.0315,
-    "phrasing": "piles",
-    "prompt": "a few piles of grass on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/lumps_1/tile_03",
-    "file": "tiles/fades/dark_mud__with__grass/lumps_1/post/tile_03.6fbd93a8.webp",
-    "pct": {
-     "grass": 92,
-     "dark_mud": 8
-    },
-    "area_pct": {
-     "dark_mud": 16.7,
-     "grass": 83.3
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.084,
-    "border_impurity": 0.0278,
-    "phrasing": "lumps",
-    "prompt": "a few grass lumps on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/lumps_1/tile_06",
-    "file": "tiles/fades/dark_mud__with__grass/lumps_1/post/tile_06.dfd889c2.webp",
-    "pct": {
-     "grass": 94,
-     "dark_mud": 6
-    },
-    "area_pct": {
-     "dark_mud": 12.3,
-     "grass": 87.7
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0214,
-    "border_impurity": 0.0,
-    "phrasing": "lumps",
-    "prompt": "a few grass lumps on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/lumps_1/tile_11",
-    "file": "tiles/fades/dark_mud__with__grass/lumps_1/post/tile_11.eadae7ea.webp",
-    "pct": {
-     "grass": 94,
-     "dark_mud": 6
-    },
-    "area_pct": {
-     "dark_mud": 12.0,
-     "grass": 88.0
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.047,
-    "border_impurity": 0.0139,
-    "phrasing": "lumps",
-    "prompt": "a few grass lumps on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/piles_1/tile_00",
-    "file": "tiles/fades/dark_mud__with__grass/piles_1/post/tile_00.99abbbac.webp",
-    "pct": {
-     "grass": 94,
-     "dark_mud": 6
-    },
-    "area_pct": {
-     "dark_mud": 12.9,
-     "grass": 87.1
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.115,
-    "border_impurity": 0.0722,
     "phrasing": "piles",
     "prompt": "a few piles of grass on dark mud"
    },
@@ -27312,57 +28247,6 @@
     "border_impurity": 0.0,
     "phrasing": "with",
     "prompt": "dark mud with grass"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/and_1/tile_13",
-    "file": "tiles/fades/dark_mud__with__grass/and_1/post/tile_13.34f08fe4.webp",
-    "pct": {
-     "grass": 95,
-     "dark_mud": 5
-    },
-    "area_pct": {
-     "dark_mud": 9.8,
-     "grass": 90.2
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0563,
-    "border_impurity": 0.0083,
-    "phrasing": "and",
-    "prompt": "dark mud and grass"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/patches_1/tile_10",
-    "file": "tiles/fades/dark_mud__with__grass/patches_1/post/tile_10.ad160189.webp",
-    "pct": {
-     "grass": 95,
-     "dark_mud": 5
-    },
-    "area_pct": {
-     "dark_mud": 9.8,
-     "grass": 90.2
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.1433,
-    "border_impurity": 0.0417,
-    "phrasing": "patches",
-    "prompt": "patches of grass on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/spots_1/tile_05",
-    "file": "tiles/fades/dark_mud__with__grass/spots_1/post/tile_05.4d11f60f.webp",
-    "pct": {
-     "grass": 96,
-     "dark_mud": 4
-    },
-    "area_pct": {
-     "dark_mud": 9.1,
-     "grass": 90.9
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.1594,
-    "border_impurity": 0.0,
-    "phrasing": "spots",
-    "prompt": "grass spots on dark mud"
    },
    {
     "key": "tiles/fades/dark_mud__with__grass/with_1/tile_12",
@@ -27399,193 +28283,6 @@
     "prompt": "dark mud and grass"
    },
    {
-    "key": "tiles/fades/dark_mud__with__grass/lumps_1/tile_01",
-    "file": "tiles/fades/dark_mud__with__grass/lumps_1/post/tile_01.bb45c63b.webp",
-    "pct": {
-     "grass": 98,
-     "dark_mud": 2
-    },
-    "area_pct": {
-     "dark_mud": 3.3,
-     "grass": 96.7
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0554,
-    "border_impurity": 0.0,
-    "phrasing": "lumps",
-    "prompt": "a few grass lumps on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/one_rock_1/tile_07",
-    "file": "tiles/fades/dark_mud__with__grass/one_rock_1/post/tile_07.1ed13b2e.webp",
-    "pct": {
-     "grass": 98,
-     "dark_mud": 2
-    },
-    "area_pct": {
-     "dark_mud": 3.6,
-     "grass": 96.4
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0028,
-    "phrasing": "one_rock",
-    "prompt": "one grass rock on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/one_rock_1/tile_08",
-    "file": "tiles/fades/dark_mud__with__grass/one_rock_1/post/tile_08.93e973e1.webp",
-    "pct": {
-     "grass": 98,
-     "dark_mud": 2
-    },
-    "area_pct": {
-     "dark_mud": 4.2,
-     "grass": 95.8
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "one_rock",
-    "prompt": "one grass rock on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/one_rock_1/tile_14",
-    "file": "tiles/fades/dark_mud__with__grass/one_rock_1/post/tile_14.b06ade9f.webp",
-    "pct": {
-     "grass": 98,
-     "dark_mud": 2
-    },
-    "area_pct": {
-     "dark_mud": 3.8,
-     "grass": 96.2
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "one_rock",
-    "prompt": "one grass rock on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/piles_1/tile_07",
-    "file": "tiles/fades/dark_mud__with__grass/piles_1/post/tile_07.5b2d7b0c.webp",
-    "pct": {
-     "grass": 98,
-     "dark_mud": 2
-    },
-    "area_pct": {
-     "dark_mud": 4.7,
-     "grass": 95.3
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.13,
-    "border_impurity": 0.1293,
-    "phrasing": "piles",
-    "prompt": "a few piles of grass on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/piles_1/tile_15",
-    "file": "tiles/fades/dark_mud__with__grass/piles_1/post/tile_15.11d10ea0.webp",
-    "pct": {
-     "grass": 98,
-     "dark_mud": 2
-    },
-    "area_pct": {
-     "dark_mud": 3.7,
-     "grass": 96.3
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0159,
-    "border_impurity": 0.0665,
-    "phrasing": "piles",
-    "prompt": "a few piles of grass on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/spots_1/tile_08",
-    "file": "tiles/fades/dark_mud__with__grass/spots_1/post/tile_08.d04ea3a5.webp",
-    "pct": {
-     "grass": 98,
-     "dark_mud": 2
-    },
-    "area_pct": {
-     "dark_mud": 3.6,
-     "grass": 96.4
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0912,
-    "border_impurity": 0.0,
-    "phrasing": "spots",
-    "prompt": "grass spots on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/spots_1/tile_10",
-    "file": "tiles/fades/dark_mud__with__grass/spots_1/post/tile_10.a1f6129d.webp",
-    "pct": {
-     "grass": 98,
-     "dark_mud": 2
-    },
-    "area_pct": {
-     "dark_mud": 3.2,
-     "grass": 96.8
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0136,
-    "border_impurity": 0.0,
-    "phrasing": "spots",
-    "prompt": "grass spots on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/spots_1/tile_11",
-    "file": "tiles/fades/dark_mud__with__grass/spots_1/post/tile_11.16c6ac41.webp",
-    "pct": {
-     "grass": 98,
-     "dark_mud": 2
-    },
-    "area_pct": {
-     "dark_mud": 3.9,
-     "grass": 96.1
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0732,
-    "border_impurity": 0.0083,
-    "phrasing": "spots",
-    "prompt": "grass spots on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/piles_1/tile_04",
-    "file": "tiles/fades/dark_mud__with__grass/piles_1/post/tile_04.f90276e2.webp",
-    "pct": {
-     "grass": 99,
-     "dark_mud": 1
-    },
-    "area_pct": {
-     "dark_mud": 2.2,
-     "grass": 97.8
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0312,
-    "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of grass on dark mud"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/piles_1/tile_06",
-    "file": "tiles/fades/dark_mud__with__grass/piles_1/post/tile_06.7b1c51f1.webp",
-    "pct": {
-     "grass": 99,
-     "dark_mud": 1
-    },
-    "area_pct": {
-     "dark_mud": 2.0,
-     "grass": 98.0
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0355,
-    "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of grass on dark mud"
-   },
-   {
     "key": "tiles/fades/dark_mud__with__grass/with_1/tile_01",
     "file": "tiles/fades/dark_mud__with__grass/with_1/post/tile_01.812baf2d.webp",
     "pct": {
@@ -27598,23 +28295,6 @@
     },
     "edge_ground": "grass",
     "edge_contact": 0.0045,
-    "border_impurity": 0.0,
-    "phrasing": "with",
-    "prompt": "dark mud with grass"
-   },
-   {
-    "key": "tiles/fades/dark_mud__with__grass/with_1/tile_11",
-    "file": "tiles/fades/dark_mud__with__grass/with_1/post/tile_11.320e1c28.webp",
-    "pct": {
-     "grass": 99,
-     "dark_mud": 1
-    },
-    "area_pct": {
-     "dark_mud": 2.6,
-     "grass": 97.4
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0,
     "border_impurity": 0.0,
     "phrasing": "with",
     "prompt": "dark mud with grass"
@@ -38492,142 +39172,6 @@
   ],
   "deep_water__to__dark_mud": [
    {
-    "key": "tiles/fades/deep_water__with__dark_mud/on_top_of_1/tile_14",
-    "file": "tiles/fades/deep_water__with__dark_mud/on_top_of_1/post/tile_14.fcdcafd1.webp",
-    "pct": {
-     "deep_water": 95,
-     "dark_mud": 5
-    },
-    "area_pct": {
-     "deep_water": 90.0,
-     "dark_mud": 10.0
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.1693,
-    "border_impurity": 0.025,
-    "phrasing": "on_top_of",
-    "prompt": "dark mud on top of deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/patches_1/tile_13",
-    "file": "tiles/fades/deep_water__with__dark_mud/patches_1/post/tile_13.d44bc8fd.webp",
-    "pct": {
-     "deep_water": 95,
-     "dark_mud": 5
-    },
-    "area_pct": {
-     "deep_water": 90.4,
-     "dark_mud": 9.6
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.0491,
-    "border_impurity": 0.0,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/lumps_1/tile_08",
-    "file": "tiles/fades/deep_water__with__dark_mud/lumps_1/post/tile_08.b9a7d0f3.webp",
-    "pct": {
-     "deep_water": 94,
-     "dark_mud": 6
-    },
-    "area_pct": {
-     "deep_water": 88.2,
-     "dark_mud": 11.8
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.0235,
-    "border_impurity": 0.0167,
-    "phrasing": "lumps",
-    "prompt": "a few dark mud lumps on deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/lumps_1/tile_15",
-    "file": "tiles/fades/deep_water__with__dark_mud/lumps_1/post/tile_15.9d588266.webp",
-    "pct": {
-     "deep_water": 94,
-     "dark_mud": 6
-    },
-    "area_pct": {
-     "deep_water": 88.7,
-     "dark_mud": 11.3
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.0042,
-    "border_impurity": 0.0,
-    "phrasing": "lumps",
-    "prompt": "a few dark mud lumps on deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/patches_1/tile_02",
-    "file": "tiles/fades/deep_water__with__dark_mud/patches_1/post/tile_02.ee452174.webp",
-    "pct": {
-     "deep_water": 94,
-     "dark_mud": 6
-    },
-    "area_pct": {
-     "deep_water": 87.2,
-     "dark_mud": 12.8
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.0634,
-    "border_impurity": 0.0,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/patches_1/tile_06",
-    "file": "tiles/fades/deep_water__with__dark_mud/patches_1/post/tile_06.08f80a88.webp",
-    "pct": {
-     "deep_water": 94,
-     "dark_mud": 6
-    },
-    "area_pct": {
-     "deep_water": 88.4,
-     "dark_mud": 11.6
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.2908,
-    "border_impurity": 0.0111,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/on_top_of_1/tile_07",
-    "file": "tiles/fades/deep_water__with__dark_mud/on_top_of_1/post/tile_07.e2dedcee.webp",
-    "pct": {
-     "deep_water": 93,
-     "dark_mud": 7
-    },
-    "area_pct": {
-     "deep_water": 85.6,
-     "dark_mud": 14.4
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.3194,
-    "border_impurity": 0.0111,
-    "phrasing": "on_top_of",
-    "prompt": "dark mud on top of deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/lumps_1/tile_06",
-    "file": "tiles/fades/deep_water__with__dark_mud/lumps_1/post/tile_06.c9d74ee3.webp",
-    "pct": {
-     "deep_water": 92,
-     "dark_mud": 8
-    },
-    "area_pct": {
-     "deep_water": 82.7,
-     "dark_mud": 17.3
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.0309,
-    "border_impurity": 0.0,
-    "phrasing": "lumps",
-    "prompt": "a few dark mud lumps on deep water"
-   },
-   {
     "key": "tiles/fades/deep_water__with__dark_mud/lumps_1/tile_00",
     "file": "tiles/fades/deep_water__with__dark_mud/lumps_1/post/tile_00.7921bebe.webp",
     "pct": {
@@ -38694,40 +39238,6 @@
     "border_impurity": 0.0,
     "phrasing": "lumps",
     "prompt": "a few dark mud lumps on deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/on_top_of_1/tile_06",
-    "file": "tiles/fades/deep_water__with__dark_mud/on_top_of_1/post/tile_06.5ecb5735.webp",
-    "pct": {
-     "deep_water": 91,
-     "dark_mud": 9
-    },
-    "area_pct": {
-     "deep_water": 81.9,
-     "dark_mud": 18.1
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.3252,
-    "border_impurity": 0.0307,
-    "phrasing": "on_top_of",
-    "prompt": "dark mud on top of deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/patches_1/tile_05",
-    "file": "tiles/fades/deep_water__with__dark_mud/patches_1/post/tile_05.ce872651.webp",
-    "pct": {
-     "deep_water": 91,
-     "dark_mud": 9
-    },
-    "area_pct": {
-     "deep_water": 81.6,
-     "dark_mud": 18.4
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.0696,
-    "border_impurity": 0.0,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on deep water"
    },
    {
     "key": "tiles/fades/deep_water__with__dark_mud/lumps_1/tile_02",
@@ -38883,23 +39393,6 @@
     "prompt": "dark mud on top of deep water"
    },
    {
-    "key": "tiles/fades/deep_water__with__dark_mud/on_top_of_1/tile_13",
-    "file": "tiles/fades/deep_water__with__dark_mud/on_top_of_1/post/tile_13.8b1f3be9.webp",
-    "pct": {
-     "deep_water": 87,
-     "dark_mud": 13
-    },
-    "area_pct": {
-     "deep_water": 74.0,
-     "dark_mud": 26.0
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.389,
-    "border_impurity": 0.1194,
-    "phrasing": "on_top_of",
-    "prompt": "dark mud on top of deep water"
-   },
-   {
     "key": "tiles/fades/deep_water__with__dark_mud/lumps_1/tile_09",
     "file": "tiles/fades/deep_water__with__dark_mud/lumps_1/post/tile_09.caf0792c.webp",
     "pct": {
@@ -38917,57 +39410,6 @@
     "prompt": "a few dark mud lumps on deep water"
    },
    {
-    "key": "tiles/fades/deep_water__with__dark_mud/patches_1/tile_07",
-    "file": "tiles/fades/deep_water__with__dark_mud/patches_1/post/tile_07.d8bb16eb.webp",
-    "pct": {
-     "deep_water": 84,
-     "dark_mud": 16
-    },
-    "area_pct": {
-     "deep_water": 67.7,
-     "dark_mud": 32.3
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.2884,
-    "border_impurity": 0.0444,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/patches_1/tile_15",
-    "file": "tiles/fades/deep_water__with__dark_mud/patches_1/post/tile_15.eec6dd90.webp",
-    "pct": {
-     "deep_water": 84,
-     "dark_mud": 16
-    },
-    "area_pct": {
-     "deep_water": 66.7,
-     "dark_mud": 33.3
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.3664,
-    "border_impurity": 0.0167,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/on_top_of_1/tile_15",
-    "file": "tiles/fades/deep_water__with__dark_mud/on_top_of_1/post/tile_15.f7db02af.webp",
-    "pct": {
-     "deep_water": 80,
-     "dark_mud": 20
-    },
-    "area_pct": {
-     "deep_water": 59.2,
-     "dark_mud": 40.8
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.5227,
-    "border_impurity": 0.0833,
-    "phrasing": "on_top_of",
-    "prompt": "dark mud on top of deep water"
-   },
-   {
     "key": "tiles/fades/deep_water__with__dark_mud/patches_1/tile_03",
     "file": "tiles/fades/deep_water__with__dark_mud/patches_1/post/tile_03.281862c2.webp",
     "pct": {
@@ -38983,23 +39425,6 @@
     "border_impurity": 0.0,
     "phrasing": "patches",
     "prompt": "patches of dark mud on deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/on_top_of_1/tile_03",
-    "file": "tiles/fades/deep_water__with__dark_mud/on_top_of_1/post/tile_03.8434c6f8.webp",
-    "pct": {
-     "deep_water": 71,
-     "dark_mud": 29
-    },
-    "area_pct": {
-     "deep_water": 40.1,
-     "dark_mud": 59.9
-    },
-    "edge_ground": "deep_water",
-    "edge_contact": 0.3631,
-    "border_impurity": 0.0864,
-    "phrasing": "on_top_of",
-    "prompt": "dark mud on top of deep water"
    },
    {
     "key": "tiles/fades/deep_water__with__dark_mud/patches_1/tile_09",
@@ -39051,23 +39476,6 @@
     "border_impurity": 0.1,
     "phrasing": "on_top_of",
     "prompt": "dark mud on top of deep water"
-   },
-   {
-    "key": "tiles/fades/deep_water__with__dark_mud/patches_1/tile_04",
-    "file": "tiles/fades/deep_water__with__dark_mud/patches_1/post/tile_04.fa8fe986.webp",
-    "pct": {
-     "dark_mud": 84,
-     "deep_water": 16
-    },
-    "area_pct": {
-     "deep_water": 32.8,
-     "dark_mud": 67.2
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.3378,
-    "border_impurity": 0.1444,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on deep water"
    },
    {
     "key": "tiles/fades/deep_water__with__dark_mud/patches_1/tile_12",
@@ -41781,6 +42189,40 @@
     "prompt": "one ice rock on deep water"
    },
    {
+    "key": "tiles/fades/deep_water__with__ice/piles_1/tile_08",
+    "file": "tiles/fades/deep_water__with__ice/piles_1/post/tile_08.46638477.webp",
+    "pct": {
+     "deep_water": 99,
+     "ice": 1
+    },
+    "area_pct": {
+     "deep_water": 97.1,
+     "ice": 2.9
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__ice/piles_1/tile_11",
+    "file": "tiles/fades/deep_water__with__ice/piles_1/post/tile_11.ecadd2c9.webp",
+    "pct": {
+     "deep_water": 99,
+     "ice": 1
+    },
+    "area_pct": {
+     "deep_water": 97.6,
+     "ice": 2.4
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.0471,
+    "border_impurity": 0.0419,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on deep water"
+   },
+   {
     "key": "tiles/fades/deep_water__with__ice/lumps_1/tile_11",
     "file": "tiles/fades/deep_water__with__ice/lumps_1/post/tile_11.5c7d8e8a.webp",
     "pct": {
@@ -41864,6 +42306,91 @@
     "border_impurity": 0.0644,
     "phrasing": "patches",
     "prompt": "patches of ice on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__ice/piles_1/tile_00",
+    "file": "tiles/fades/deep_water__with__ice/piles_1/post/tile_00.2062fd01.webp",
+    "pct": {
+     "deep_water": 98,
+     "ice": 2
+    },
+    "area_pct": {
+     "deep_water": 96.8,
+     "ice": 3.2
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__ice/piles_1/tile_06",
+    "file": "tiles/fades/deep_water__with__ice/piles_1/post/tile_06.0a5a4569.webp",
+    "pct": {
+     "deep_water": 98,
+     "ice": 2
+    },
+    "area_pct": {
+     "deep_water": 96.4,
+     "ice": 3.6
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.0507,
+    "border_impurity": 0.0196,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__ice/piles_1/tile_09",
+    "file": "tiles/fades/deep_water__with__ice/piles_1/post/tile_09.f57c5a58.webp",
+    "pct": {
+     "deep_water": 98,
+     "ice": 2
+    },
+    "area_pct": {
+     "deep_water": 96.2,
+     "ice": 3.8
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.0686,
+    "border_impurity": 0.0503,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__ice/piles_1/tile_10",
+    "file": "tiles/fades/deep_water__with__ice/piles_1/post/tile_10.bea005d9.webp",
+    "pct": {
+     "deep_water": 98,
+     "ice": 2
+    },
+    "area_pct": {
+     "deep_water": 95.7,
+     "ice": 4.3
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.0609,
+    "border_impurity": 0.0503,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__ice/piles_1/tile_15",
+    "file": "tiles/fades/deep_water__with__ice/piles_1/post/tile_15.4014fcd3.webp",
+    "pct": {
+     "deep_water": 98,
+     "ice": 2
+    },
+    "area_pct": {
+     "deep_water": 96.6,
+     "ice": 3.4
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.0115,
+    "border_impurity": 0.0,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on deep water"
    },
    {
     "key": "tiles/fades/deep_water__with__ice/on_top_of_1/tile_04",
@@ -42425,6 +42952,23 @@
     "border_impurity": 0.5056,
     "phrasing": "patches",
     "prompt": "patches of ice on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__ice/piles_1/tile_03",
+    "file": "tiles/fades/deep_water__with__ice/piles_1/post/tile_03.54ce2627.webp",
+    "pct": {
+     "deep_water": 81,
+     "ice": 19
+    },
+    "area_pct": {
+     "deep_water": 62.0,
+     "ice": 38.0
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.4811,
+    "border_impurity": 0.4763,
+    "phrasing": "piles",
+    "prompt": "a few piles of ice on deep water"
    },
    {
     "key": "tiles/fades/deep_water__with__ice/with_1/tile_02",
@@ -45703,6 +46247,74 @@
     "prompt": "a few snow lumps on deep water"
    },
    {
+    "key": "tiles/fades/deep_water__with__snow/piles_1/tile_02",
+    "file": "tiles/fades/deep_water__with__snow/piles_1/post/tile_02.d98932d2.webp",
+    "pct": {
+     "deep_water": 98,
+     "snow": 2
+    },
+    "area_pct": {
+     "deep_water": 95.3,
+     "snow": 4.7
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.0159,
+    "border_impurity": 0.0083,
+    "phrasing": "piles",
+    "prompt": "a few piles of snow on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__snow/piles_1/tile_10",
+    "file": "tiles/fades/deep_water__with__snow/piles_1/post/tile_10.66148bce.webp",
+    "pct": {
+     "deep_water": 97,
+     "snow": 3
+    },
+    "area_pct": {
+     "deep_water": 93.6,
+     "snow": 6.4
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.1284,
+    "border_impurity": 0.0889,
+    "phrasing": "piles",
+    "prompt": "a few piles of snow on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__snow/piles_1/tile_06",
+    "file": "tiles/fades/deep_water__with__snow/piles_1/post/tile_06.f0cd8fc4.webp",
+    "pct": {
+     "deep_water": 96,
+     "snow": 4
+    },
+    "area_pct": {
+     "deep_water": 91.5,
+     "snow": 8.5
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.0372,
+    "border_impurity": 0.0168,
+    "phrasing": "piles",
+    "prompt": "a few piles of snow on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__snow/piles_1/tile_12",
+    "file": "tiles/fades/deep_water__with__snow/piles_1/post/tile_12.46e4f6b5.webp",
+    "pct": {
+     "deep_water": 96,
+     "snow": 4
+    },
+    "area_pct": {
+     "deep_water": 91.2,
+     "snow": 8.8
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.0774,
+    "border_impurity": 0.0529,
+    "phrasing": "piles",
+    "prompt": "a few piles of snow on deep water"
+   },
+   {
     "key": "tiles/fades/deep_water__with__snow/with_1/tile_12",
     "file": "tiles/fades/deep_water__with__snow/with_1/post/tile_12.5beb0dff.webp",
     "pct": {
@@ -45890,6 +46502,23 @@
     "prompt": "a few snow lumps on deep water"
    },
    {
+    "key": "tiles/fades/deep_water__with__snow/piles_1/tile_15",
+    "file": "tiles/fades/deep_water__with__snow/piles_1/post/tile_15.b7a9da3b.webp",
+    "pct": {
+     "deep_water": 91,
+     "snow": 9
+    },
+    "area_pct": {
+     "deep_water": 82.3,
+     "snow": 17.7
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.3309,
+    "border_impurity": 0.2972,
+    "phrasing": "piles",
+    "prompt": "a few piles of snow on deep water"
+   },
+   {
     "key": "tiles/fades/deep_water__with__snow/with_1/tile_11",
     "file": "tiles/fades/deep_water__with__snow/with_1/post/tile_11.acec51af.webp",
     "pct": {
@@ -45956,6 +46585,23 @@
     "border_impurity": 0.0861,
     "phrasing": "lumps",
     "prompt": "a few snow lumps on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__snow/piles_1/tile_03",
+    "file": "tiles/fades/deep_water__with__snow/piles_1/post/tile_03.435e2587.webp",
+    "pct": {
+     "deep_water": 89,
+     "snow": 11
+    },
+    "area_pct": {
+     "deep_water": 77.8,
+     "snow": 22.2
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.3743,
+    "border_impurity": 0.4039,
+    "phrasing": "piles",
+    "prompt": "a few piles of snow on deep water"
    },
    {
     "key": "tiles/fades/deep_water__with__snow/and_1/tile_05",
@@ -46075,6 +46721,23 @@
     "border_impurity": 0.2417,
     "phrasing": "lumps",
     "prompt": "a few snow lumps on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__snow/piles_1/tile_14",
+    "file": "tiles/fades/deep_water__with__snow/piles_1/post/tile_14.b5a4edb9.webp",
+    "pct": {
+     "deep_water": 82,
+     "snow": 18
+    },
+    "area_pct": {
+     "deep_water": 62.8,
+     "snow": 37.2
+    },
+    "edge_ground": "deep_water",
+    "edge_contact": 0.2169,
+    "border_impurity": 0.2396,
+    "phrasing": "piles",
+    "prompt": "a few piles of snow on deep water"
    },
    {
     "key": "tiles/fades/deep_water__with__snow/lumps_1/tile_09",
@@ -46211,6 +46874,23 @@
     "border_impurity": 0.8296,
     "phrasing": "and",
     "prompt": "deep water and snow"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__snow/piles_1/tile_09",
+    "file": "tiles/fades/deep_water__with__snow/piles_1/post/tile_09.b5140653.webp",
+    "pct": {
+     "snow": 72,
+     "deep_water": 28
+    },
+    "area_pct": {
+     "deep_water": 57.0,
+     "snow": 43.0
+    },
+    "edge_ground": "snow",
+    "edge_contact": 0.6528,
+    "border_impurity": 0.4262,
+    "phrasing": "piles",
+    "prompt": "a few piles of snow on deep water"
    },
    {
     "key": "tiles/fades/deep_water__with__snow/with_1/tile_08",
@@ -46432,6 +47112,23 @@
     "border_impurity": 0.1722,
     "phrasing": "one_rock",
     "prompt": "one snow rock on deep water"
+   },
+   {
+    "key": "tiles/fades/deep_water__with__snow/piles_1/tile_05",
+    "file": "tiles/fades/deep_water__with__snow/piles_1/post/tile_05.1ece344d.webp",
+    "pct": {
+     "snow": 83,
+     "deep_water": 17
+    },
+    "area_pct": {
+     "deep_water": 34.4,
+     "snow": 65.6
+    },
+    "edge_ground": "snow",
+    "edge_contact": 0.3871,
+    "border_impurity": 0.3565,
+    "phrasing": "piles",
+    "prompt": "a few piles of snow on deep water"
    },
    {
     "key": "tiles/fades/deep_water__with__snow/and_1/tile_08",
@@ -50029,23 +50726,6 @@
     "prompt": "a few piles of dark mud on grass"
    },
    {
-    "key": "tiles/fades/grass__with__dark_mud/spots_1/tile_01",
-    "file": "tiles/fades/grass__with__dark_mud/spots_1/post/tile_01.a3ddfed9.webp",
-    "pct": {
-     "grass": 99,
-     "dark_mud": 1
-    },
-    "area_pct": {
-     "grass": 97.0,
-     "dark_mud": 3.0
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "spots",
-    "prompt": "dark mud spots on grass"
-   },
-   {
     "key": "tiles/fades/grass__with__dark_mud/spots_1/tile_02",
     "file": "tiles/fades/grass__with__dark_mud/spots_1/post/tile_02.8c280424.webp",
     "pct": {
@@ -50114,23 +50794,6 @@
     "prompt": "dark mud spots on grass"
    },
    {
-    "key": "tiles/fades/grass__with__dark_mud/and_1/tile_04",
-    "file": "tiles/fades/grass__with__dark_mud/and_1/post/tile_04.ff1e3ffb.webp",
-    "pct": {
-     "grass": 98,
-     "dark_mud": 2
-    },
-    "area_pct": {
-     "grass": 96.0,
-     "dark_mud": 4.0
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0028,
-    "phrasing": "and",
-    "prompt": "grass and dark mud"
-   },
-   {
     "key": "tiles/fades/grass__with__dark_mud/one_rock_1/tile_11",
     "file": "tiles/fades/grass__with__dark_mud/one_rock_1/post/tile_11.d605fcec.webp",
     "pct": {
@@ -50182,40 +50845,6 @@
     "prompt": "dark mud spots on grass"
    },
    {
-    "key": "tiles/fades/grass__with__dark_mud/lumps_1/tile_15",
-    "file": "tiles/fades/grass__with__dark_mud/lumps_1/post/tile_15.087303fe.webp",
-    "pct": {
-     "grass": 97,
-     "dark_mud": 3
-    },
-    "area_pct": {
-     "grass": 93.5,
-     "dark_mud": 6.5
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "lumps",
-    "prompt": "a few dark mud lumps on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/one_rock_1/tile_15",
-    "file": "tiles/fades/grass__with__dark_mud/one_rock_1/post/tile_15.39f4d252.webp",
-    "pct": {
-     "grass": 97,
-     "dark_mud": 3
-    },
-    "area_pct": {
-     "grass": 93.2,
-     "dark_mud": 6.8
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0207,
-    "border_impurity": 0.1278,
-    "phrasing": "one_rock",
-    "prompt": "one dark mud rock on grass"
-   },
-   {
     "key": "tiles/fades/grass__with__dark_mud/patches_1/tile_13",
     "file": "tiles/fades/grass__with__dark_mud/patches_1/post/tile_13.2086a043.webp",
     "pct": {
@@ -50246,23 +50875,6 @@
     "edge_ground": "grass",
     "edge_contact": 0.0,
     "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of dark mud on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/piles_1/tile_08",
-    "file": "tiles/fades/grass__with__dark_mud/piles_1/post/tile_08.00ea54d6.webp",
-    "pct": {
-     "grass": 97,
-     "dark_mud": 3
-    },
-    "area_pct": {
-     "grass": 94.4,
-     "dark_mud": 5.6
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0804,
-    "border_impurity": 0.0333,
     "phrasing": "piles",
     "prompt": "a few piles of dark mud on grass"
    },
@@ -50333,23 +50945,6 @@
     "border_impurity": 0.0,
     "phrasing": "piles",
     "prompt": "a few piles of dark mud on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/patches_1/tile_09",
-    "file": "tiles/fades/grass__with__dark_mud/patches_1/post/tile_09.fbdeeef4.webp",
-    "pct": {
-     "grass": 95,
-     "dark_mud": 5
-    },
-    "area_pct": {
-     "grass": 89.3,
-     "dark_mud": 10.7
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0772,
-    "border_impurity": 0.0278,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on grass"
    },
    {
     "key": "tiles/fades/grass__with__dark_mud/piles_1/tile_00",
@@ -50471,40 +51066,6 @@
     "prompt": "one dark mud rock on grass"
    },
    {
-    "key": "tiles/fades/grass__with__dark_mud/patches_1/tile_06",
-    "file": "tiles/fades/grass__with__dark_mud/patches_1/post/tile_06.e62079c4.webp",
-    "pct": {
-     "grass": 92,
-     "dark_mud": 8
-    },
-    "area_pct": {
-     "grass": 83.0,
-     "dark_mud": 17.0
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.2846,
-    "border_impurity": 0.0667,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/patches_1/tile_15",
-    "file": "tiles/fades/grass__with__dark_mud/patches_1/post/tile_15.54a54d12.webp",
-    "pct": {
-     "grass": 92,
-     "dark_mud": 8
-    },
-    "area_pct": {
-     "grass": 83.5,
-     "dark_mud": 16.5
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.1633,
-    "border_impurity": 0.0528,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on grass"
-   },
-   {
     "key": "tiles/fades/grass__with__dark_mud/one_rock_1/tile_14",
     "file": "tiles/fades/grass__with__dark_mud/one_rock_1/post/tile_14.7e31c563.webp",
     "pct": {
@@ -50520,23 +51081,6 @@
     "border_impurity": 0.0,
     "phrasing": "one_rock",
     "prompt": "one dark mud rock on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/piles_1/tile_03",
-    "file": "tiles/fades/grass__with__dark_mud/piles_1/post/tile_03.f33aa7c9.webp",
-    "pct": {
-     "grass": 91,
-     "dark_mud": 9
-    },
-    "area_pct": {
-     "grass": 80.8,
-     "dark_mud": 19.2
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0598,
-    "border_impurity": 0.1139,
-    "phrasing": "piles",
-    "prompt": "a few piles of dark mud on grass"
    },
    {
     "key": "tiles/fades/grass__with__dark_mud/piles_1/tile_12",
@@ -50573,57 +51117,6 @@
     "prompt": "one dark mud rock on grass"
    },
    {
-    "key": "tiles/fades/grass__with__dark_mud/one_rock_1/tile_08",
-    "file": "tiles/fades/grass__with__dark_mud/one_rock_1/post/tile_08.edfeaaf6.webp",
-    "pct": {
-     "grass": 89,
-     "dark_mud": 11
-    },
-    "area_pct": {
-     "grass": 78.4,
-     "dark_mud": 21.6
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.2628,
-    "border_impurity": 0.1861,
-    "phrasing": "one_rock",
-    "prompt": "one dark mud rock on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/patches_1/tile_00",
-    "file": "tiles/fades/grass__with__dark_mud/patches_1/post/tile_00.59f93f5f.webp",
-    "pct": {
-     "grass": 89,
-     "dark_mud": 11
-    },
-    "area_pct": {
-     "grass": 76.9,
-     "dark_mud": 23.1
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/patches_1/tile_03",
-    "file": "tiles/fades/grass__with__dark_mud/patches_1/post/tile_03.dce48a4a.webp",
-    "pct": {
-     "grass": 89,
-     "dark_mud": 11
-    },
-    "area_pct": {
-     "grass": 77.4,
-     "dark_mud": 22.6
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.1312,
-    "border_impurity": 0.0444,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on grass"
-   },
-   {
     "key": "tiles/fades/grass__with__dark_mud/piles_1/tile_06",
     "file": "tiles/fades/grass__with__dark_mud/piles_1/post/tile_06.58dccacd.webp",
     "pct": {
@@ -50641,91 +51134,6 @@
     "prompt": "a few piles of dark mud on grass"
    },
    {
-    "key": "tiles/fades/grass__with__dark_mud/one_rock_1/tile_13",
-    "file": "tiles/fades/grass__with__dark_mud/one_rock_1/post/tile_13.6fbf0c9c.webp",
-    "pct": {
-     "grass": 88,
-     "dark_mud": 12
-    },
-    "area_pct": {
-     "grass": 76.2,
-     "dark_mud": 23.8
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.1383,
-    "border_impurity": 0.2806,
-    "phrasing": "one_rock",
-    "prompt": "one dark mud rock on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/patches_1/tile_05",
-    "file": "tiles/fades/grass__with__dark_mud/patches_1/post/tile_05.752630b6.webp",
-    "pct": {
-     "grass": 88,
-     "dark_mud": 12
-    },
-    "area_pct": {
-     "grass": 75.7,
-     "dark_mud": 24.3
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/patches_1/tile_08",
-    "file": "tiles/fades/grass__with__dark_mud/patches_1/post/tile_08.b0d0416f.webp",
-    "pct": {
-     "grass": 87,
-     "dark_mud": 13
-    },
-    "area_pct": {
-     "grass": 73.2,
-     "dark_mud": 26.8
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/patches_1/tile_10",
-    "file": "tiles/fades/grass__with__dark_mud/patches_1/post/tile_10.5647a648.webp",
-    "pct": {
-     "grass": 85,
-     "dark_mud": 15
-    },
-    "area_pct": {
-     "grass": 69.7,
-     "dark_mud": 30.3
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.2076,
-    "border_impurity": 0.05,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/patches_1/tile_14",
-    "file": "tiles/fades/grass__with__dark_mud/patches_1/post/tile_14.c87190c9.webp",
-    "pct": {
-     "grass": 85,
-     "dark_mud": 15
-    },
-    "area_pct": {
-     "grass": 68.5,
-     "dark_mud": 31.5
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.0738,
-    "border_impurity": 0.0222,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on grass"
-   },
-   {
     "key": "tiles/fades/grass__with__dark_mud/one_rock_1/tile_01",
     "file": "tiles/fades/grass__with__dark_mud/one_rock_1/post/tile_01.a705c0bc.webp",
     "pct": {
@@ -50741,40 +51149,6 @@
     "border_impurity": 0.2,
     "phrasing": "one_rock",
     "prompt": "one dark mud rock on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/patches_1/tile_11",
-    "file": "tiles/fades/grass__with__dark_mud/patches_1/post/tile_11.f3e77a47.webp",
-    "pct": {
-     "grass": 84,
-     "dark_mud": 16
-    },
-    "area_pct": {
-     "grass": 68.4,
-     "dark_mud": 31.6
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.1745,
-    "border_impurity": 0.0639,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/patches_1/tile_07",
-    "file": "tiles/fades/grass__with__dark_mud/patches_1/post/tile_07.e1534091.webp",
-    "pct": {
-     "grass": 83,
-     "dark_mud": 17
-    },
-    "area_pct": {
-     "grass": 65.2,
-     "dark_mud": 34.8
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.1814,
-    "border_impurity": 0.0611,
-    "phrasing": "patches",
-    "prompt": "patches of dark mud on grass"
    },
    {
     "key": "tiles/fades/grass__with__dark_mud/on_top_of_1/tile_13",
@@ -50809,23 +51183,6 @@
     "border_impurity": 0.0,
     "phrasing": "on_top_of",
     "prompt": "dark mud on top of grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/one_rock_1/tile_06",
-    "file": "tiles/fades/grass__with__dark_mud/one_rock_1/post/tile_06.c919cd9f.webp",
-    "pct": {
-     "grass": 80,
-     "dark_mud": 20
-    },
-    "area_pct": {
-     "grass": 58.4,
-     "dark_mud": 41.6
-    },
-    "edge_ground": "grass",
-    "edge_contact": 0.2967,
-    "border_impurity": 0.1611,
-    "phrasing": "one_rock",
-    "prompt": "one dark mud rock on grass"
    },
    {
     "key": "tiles/fades/grass__with__dark_mud/one_rock_1/tile_12",
@@ -50913,23 +51270,6 @@
     "prompt": "dark mud on top of grass"
    },
    {
-    "key": "tiles/fades/grass__with__dark_mud/on_top_of_1/tile_09",
-    "file": "tiles/fades/grass__with__dark_mud/on_top_of_1/post/tile_09.cd3b1343.webp",
-    "pct": {
-     "dark_mud": 81,
-     "grass": 19
-    },
-    "area_pct": {
-     "grass": 39.0,
-     "dark_mud": 61.0
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.4903,
-    "border_impurity": 0.0389,
-    "phrasing": "on_top_of",
-    "prompt": "dark mud on top of grass"
-   },
-   {
     "key": "tiles/fades/grass__with__dark_mud/on_top_of_1/tile_06",
     "file": "tiles/fades/grass__with__dark_mud/on_top_of_1/post/tile_06.70b7051e.webp",
     "pct": {
@@ -50960,40 +51300,6 @@
     "edge_ground": "dark_mud",
     "edge_contact": 0.3274,
     "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "dark mud on top of grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/one_rock_1/tile_03",
-    "file": "tiles/fades/grass__with__dark_mud/one_rock_1/post/tile_03.3776fe34.webp",
-    "pct": {
-     "dark_mud": 86,
-     "grass": 14
-    },
-    "area_pct": {
-     "grass": 28.9,
-     "dark_mud": 71.1
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.3549,
-    "border_impurity": 0.0223,
-    "phrasing": "one_rock",
-    "prompt": "one dark mud rock on grass"
-   },
-   {
-    "key": "tiles/fades/grass__with__dark_mud/on_top_of_1/tile_07",
-    "file": "tiles/fades/grass__with__dark_mud/on_top_of_1/post/tile_07.90b6589f.webp",
-    "pct": {
-     "dark_mud": 90,
-     "grass": 10
-    },
-    "area_pct": {
-     "grass": 21.3,
-     "dark_mud": 78.7
-    },
-    "edge_ground": "dark_mud",
-    "edge_contact": 0.3116,
-    "border_impurity": 0.0139,
     "phrasing": "on_top_of",
     "prompt": "dark mud on top of grass"
    },
@@ -176468,6 +176774,40 @@
     "prompt": "water and deep water"
    },
    {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_00",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_00.db78825a.webp",
+    "pct": {
+     "water": 92,
+     "deep_water": 8
+    },
+    "area_pct": {
+     "water": 83.4,
+     "deep_water": 16.6
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0078,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_05",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_05.1f846c74.webp",
+    "pct": {
+     "water": 92,
+     "deep_water": 8
+    },
+    "area_pct": {
+     "water": 84.6,
+     "deep_water": 15.4
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.017,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
     "key": "tiles/fades/water__with__deep_water/with_1/tile_11",
     "file": "tiles/fades/water__with__deep_water/with_1/post/tile_11.55a7da5e.webp",
     "pct": {
@@ -176536,6 +176876,74 @@
     "prompt": "water and deep water"
    },
    {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_02",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_02.75235c74.webp",
+    "pct": {
+     "water": 89,
+     "deep_water": 11
+    },
+    "area_pct": {
+     "water": 78.1,
+     "deep_water": 21.9
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0068,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_11",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_11.ee077374.webp",
+    "pct": {
+     "water": 87,
+     "deep_water": 13
+    },
+    "area_pct": {
+     "water": 72.9,
+     "deep_water": 27.1
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0082,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_15",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_15.699c2146.webp",
+    "pct": {
+     "water": 87,
+     "deep_water": 13
+    },
+    "area_pct": {
+     "water": 73.0,
+     "deep_water": 27.0
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0006,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_10",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_10.156bfeb9.webp",
+    "pct": {
+     "water": 86,
+     "deep_water": 14
+    },
+    "area_pct": {
+     "water": 70.6,
+     "deep_water": 29.4
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0095,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
     "key": "tiles/fades/water__with__deep_water/with_1/tile_08",
     "file": "tiles/fades/water__with__deep_water/with_1/post/tile_08.0010b951.webp",
     "pct": {
@@ -176570,6 +176978,57 @@
     "prompt": "water and deep water"
    },
    {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_07",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_07.bf1b5adc.webp",
+    "pct": {
+     "water": 84,
+     "deep_water": 16
+    },
+    "area_pct": {
+     "water": 66.3,
+     "deep_water": 33.7
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0103,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_08",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_08.d1db303f.webp",
+    "pct": {
+     "water": 81,
+     "deep_water": 19
+    },
+    "area_pct": {
+     "water": 61.7,
+     "deep_water": 38.3
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0097,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_13",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_13.bf9e9b59.webp",
+    "pct": {
+     "water": 80,
+     "deep_water": 20
+    },
+    "area_pct": {
+     "water": 58.9,
+     "deep_water": 41.1
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0002,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
     "key": "tiles/fades/water__with__deep_water/with_1/tile_10",
     "file": "tiles/fades/water__with__deep_water/with_1/post/tile_10.d1b99615.webp",
     "pct": {
@@ -176585,6 +177044,125 @@
     "border_impurity": 0.0111,
     "phrasing": "with",
     "prompt": "water with deep water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_06",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_06.0fd741f7.webp",
+    "pct": {
+     "water": 77,
+     "deep_water": 23
+    },
+    "area_pct": {
+     "water": 53.8,
+     "deep_water": 46.2
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0307,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_01",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_01.68c4b9a7.webp",
+    "pct": {
+     "water": 76,
+     "deep_water": 24
+    },
+    "area_pct": {
+     "water": 50.9,
+     "deep_water": 49.1
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0054,
+    "border_impurity": 0.0056,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_03",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_03.4b8e04bc.webp",
+    "pct": {
+     "water": 76,
+     "deep_water": 24
+    },
+    "area_pct": {
+     "water": 50.8,
+     "deep_water": 49.2
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.002,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_04",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_04.e8183d5d.webp",
+    "pct": {
+     "water": 76,
+     "deep_water": 24
+    },
+    "area_pct": {
+     "water": 51.5,
+     "deep_water": 48.5
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0274,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_14",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_14.19f56a8f.webp",
+    "pct": {
+     "water": 76,
+     "deep_water": 24
+    },
+    "area_pct": {
+     "water": 50.5,
+     "deep_water": 49.5
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0311,
+    "border_impurity": 0.0278,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_12",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_12.282dc977.webp",
+    "pct": {
+     "water": 75,
+     "deep_water": 25
+    },
+    "area_pct": {
+     "water": 48.1,
+     "deep_water": 51.9
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0407,
+    "border_impurity": 0.0418,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
+   },
+   {
+    "key": "tiles/fades/water__with__deep_water/patches_1/tile_09",
+    "file": "tiles/fades/water__with__deep_water/patches_1/post/tile_09.010cb8f9.webp",
+    "pct": {
+     "water": 73,
+     "deep_water": 27
+    },
+    "area_pct": {
+     "water": 45.0,
+     "deep_water": 55.0
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0226,
+    "border_impurity": 0.9833,
+    "phrasing": "patches",
+    "prompt": "patches of deep water on water"
    },
    {
     "key": "tiles/fades/water__with__deep_water/and_1/tile_12",
@@ -179914,6 +180492,23 @@
     "prompt": "a few light beach lumps on water"
    },
    {
+    "key": "tiles/fades/water__with__light_beach/patches_1/tile_13",
+    "file": "tiles/fades/water__with__light_beach/patches_1/post/tile_13.7872d3ca.webp",
+    "pct": {
+     "water": 84,
+     "light_beach": 16
+    },
+    "area_pct": {
+     "water": 67.2,
+     "light_beach": 32.8
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.0,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of light beach on water"
+   },
+   {
     "key": "tiles/fades/water__with__light_beach/and_1/tile_10",
     "file": "tiles/fades/water__with__light_beach/and_1/post/tile_10.0f919c9d.webp",
     "pct": {
@@ -179929,6 +180524,23 @@
     "border_impurity": 0.405,
     "phrasing": "and",
     "prompt": "water and light beach"
+   },
+   {
+    "key": "tiles/fades/water__with__light_beach/patches_1/tile_05",
+    "file": "tiles/fades/water__with__light_beach/patches_1/post/tile_05.7da501d8.webp",
+    "pct": {
+     "water": 81,
+     "light_beach": 19
+    },
+    "area_pct": {
+     "water": 60.4,
+     "light_beach": 39.6
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.1918,
+    "border_impurity": 0.0917,
+    "phrasing": "patches",
+    "prompt": "patches of light beach on water"
    },
    {
     "key": "tiles/fades/water__with__light_beach/and_1/tile_04",
@@ -179980,6 +180592,40 @@
     "border_impurity": 0.5014,
     "phrasing": "and",
     "prompt": "water and light beach"
+   },
+   {
+    "key": "tiles/fades/water__with__light_beach/patches_1/tile_00",
+    "file": "tiles/fades/water__with__light_beach/patches_1/post/tile_00.2b141370.webp",
+    "pct": {
+     "water": 74,
+     "light_beach": 26
+    },
+    "area_pct": {
+     "water": 46.4,
+     "light_beach": 53.6
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.3293,
+    "border_impurity": 0.1592,
+    "phrasing": "patches",
+    "prompt": "patches of light beach on water"
+   },
+   {
+    "key": "tiles/fades/water__with__light_beach/patches_1/tile_03",
+    "file": "tiles/fades/water__with__light_beach/patches_1/post/tile_03.5c0a0edc.webp",
+    "pct": {
+     "water": 72,
+     "light_beach": 28
+    },
+    "area_pct": {
+     "water": 42.8,
+     "light_beach": 57.2
+    },
+    "edge_ground": "water",
+    "edge_contact": 0.4407,
+    "border_impurity": 0.324,
+    "phrasing": "patches",
+    "prompt": "patches of light beach on water"
    },
    {
     "key": "tiles/fades/water__with__light_beach/and_1/tile_02",
@@ -180305,6 +180951,40 @@
     "prompt": "water and light beach"
    },
    {
+    "key": "tiles/fades/water__with__light_beach/patches_1/tile_02",
+    "file": "tiles/fades/water__with__light_beach/patches_1/post/tile_02.4548fe51.webp",
+    "pct": {
+     "light_beach": 91,
+     "water": 9
+    },
+    "area_pct": {
+     "water": 18.4,
+     "light_beach": 81.6
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.3596,
+    "border_impurity": 0.1899,
+    "phrasing": "patches",
+    "prompt": "patches of light beach on water"
+   },
+   {
+    "key": "tiles/fades/water__with__light_beach/patches_1/tile_08",
+    "file": "tiles/fades/water__with__light_beach/patches_1/post/tile_08.528f3c04.webp",
+    "pct": {
+     "light_beach": 91,
+     "water": 9
+    },
+    "area_pct": {
+     "water": 17.5,
+     "light_beach": 82.5
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.1951,
+    "border_impurity": 0.0754,
+    "phrasing": "patches",
+    "prompt": "patches of light beach on water"
+   },
+   {
     "key": "tiles/fades/water__with__light_beach/on_top_of_1/tile_15",
     "file": "tiles/fades/water__with__light_beach/on_top_of_1/post/tile_15.a1f0c27a.webp",
     "pct": {
@@ -180320,6 +181000,40 @@
     "border_impurity": 0.1333,
     "phrasing": "on_top_of",
     "prompt": "light beach on top of water"
+   },
+   {
+    "key": "tiles/fades/water__with__light_beach/patches_1/tile_04",
+    "file": "tiles/fades/water__with__light_beach/patches_1/post/tile_04.a2253c69.webp",
+    "pct": {
+     "light_beach": 96,
+     "water": 4
+    },
+    "area_pct": {
+     "water": 7.8,
+     "light_beach": 92.2
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.119,
+    "border_impurity": 0.0503,
+    "phrasing": "patches",
+    "prompt": "patches of light beach on water"
+   },
+   {
+    "key": "tiles/fades/water__with__light_beach/patches_1/tile_15",
+    "file": "tiles/fades/water__with__light_beach/patches_1/post/tile_15.6032e554.webp",
+    "pct": {
+     "light_beach": 96,
+     "water": 4
+    },
+    "area_pct": {
+     "water": 7.3,
+     "light_beach": 92.7
+    },
+    "edge_ground": "light_beach",
+    "edge_contact": 0.2156,
+    "border_impurity": 0.1592,
+    "phrasing": "patches",
+    "prompt": "patches of light beach on water"
    },
    {
     "key": "tiles/fades/water__with__light_beach/on_top_of_1/tile_02",
@@ -182247,6 +182961,57 @@
     "border_impurity": 0.0722,
     "phrasing": "on_top_of",
     "prompt": "slime on top of water"
+   },
+   {
+    "key": "tiles/fades/water__with__slime/patches_1/tile_05",
+    "file": "tiles/fades/water__with__slime/patches_1/post/tile_05.38449ca8.webp",
+    "pct": {
+     "slime": 95,
+     "water": 5
+    },
+    "area_pct": {
+     "water": 10.5,
+     "slime": 89.5
+    },
+    "edge_ground": "slime",
+    "edge_contact": 0.0955,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of slime on water"
+   },
+   {
+    "key": "tiles/fades/water__with__slime/patches_1/tile_10",
+    "file": "tiles/fades/water__with__slime/patches_1/post/tile_10.2f41528d.webp",
+    "pct": {
+     "slime": 95,
+     "water": 5
+    },
+    "area_pct": {
+     "water": 10.7,
+     "slime": 89.3
+    },
+    "edge_ground": "slime",
+    "edge_contact": 0.0875,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of slime on water"
+   },
+   {
+    "key": "tiles/fades/water__with__slime/patches_1/tile_01",
+    "file": "tiles/fades/water__with__slime/patches_1/post/tile_01.2a518bf3.webp",
+    "pct": {
+     "slime": 97,
+     "water": 3
+    },
+    "area_pct": {
+     "water": 5.5,
+     "slime": 94.5
+    },
+    "edge_ground": "slime",
+    "edge_contact": 0.0134,
+    "border_impurity": 0.0,
+    "phrasing": "patches",
+    "prompt": "patches of slime on water"
    }
   ],
   "water__to__snow": [
