@@ -42,13 +42,11 @@ reimplementation is CLOSE TO BUT NOT the wiki's. The metric is theirs verbatim; 
 differs is the measurement feeding it - their build measures tm/tflat/tk in its own pass
 over its own chosen art, and this pass re-measures the textured top here.
 
-That gap is currently harmless and must not be allowed to become invisible: every
-top_only tile today carries an explicit override, so `borrow_wall_auto` is used by ZERO
-tiles and every published value is the maintainer's own. It matters only for the next
-tile he marks top_only without stepping the wall. The fix is for the wiki to publish the
-measured stats (or the auto pick itself) so the value is theirs rather than an
-approximation of theirs - asked for on the board. Until then `borrow_wall_auto: true`
-marks exactly which values are not his.
+That gap must not be allowed to become invisible: 34 of 98 top_only tiles (2026-09-02)
+carry no override, so their `borrow_wall` is this approximation and is flagged
+`borrow_wall_auto: true` - a consumer can tell a measured choice from a chosen one. The
+fix is for the wiki to publish the measured stats (or the auto pick itself) so the value
+is theirs rather than an approximation of theirs - asked for on the board.
 """
 
 from __future__ import annotations
