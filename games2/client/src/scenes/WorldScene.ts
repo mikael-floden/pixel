@@ -1334,7 +1334,11 @@ export class WorldScene extends Phaser.Scene {
   // What the last ground pass resolved and drew, plus how long it took. The
   // pass runs on the ground RT's own latch (every GROUND_MARGIN/2 of camera
   // drift), never per frame — `ms` is what makes that budget checkable.
-  private t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: 0, ms: 0 };
+  private t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: 0, ms: 0, culled: 0 };
+  /* THE GROUND CULL — see t3Blit. `groundCull` is the A/B switch for
+   * `__ml.groundRedraw`; nothing in play reads it. */
+  private groundCull = true;
+  private groundCulled = 0;
   private t3pitchChecked = false;
   private t3regionMs = 0;
   private t3Failed = new Set<string>(); // see t3Try — one line per distinct resolver failure
@@ -3451,6 +3455,50 @@ export class WorldScene extends Phaser.Scene {
       lastInput: () => this.lastInput,
       // Monster render-state probe (shared body pipeline QA): per monster the
       // resolved depth, cover line, shadow anchor and lit-copy state.
+      /** MICRO-BENCH: force one full ground redraw right now — the latch
+       *  poisoned as repaintWorld does — and report its pure-JS cost with the
+       *  pass's counters. `cull` flips the off-texture cull for an A/B. */
+      groundRedraw: (cull?: boolean) => {
+        // The switch is applied for THIS forced redraw only and restored after,
+        // so an A/B never leaves the game running with the cull off.
+        const prevCull = this.groundCull;
+        if (typeof cull === "boolean") this.groundCull = cull;
+        this.lastGround = { x: NaN, y: NaN };
+        const t0 = performance.now();
+        this.redrawGround();
+        // The pass's own counters (incl. its `ms`) plus the whole redraw's wall clock.
+        const out = { ...this.t3stats, cull: this.groundCull, totalMs: +(performance.now() - t0).toFixed(1) };
+        this.groundCull = prevCull;
+        return out;
+      },
+      /** PARITY: a hash of the ground render texture's ACTUAL PIXELS (read
+       *  back through Phaser's snapshot), so two modes can be proven to draw
+       *  the same picture rather than argued to. Exact because the RT is
+       *  OPAQUE (redrawGround fills alpha 1 before drawing): the canvas
+       *  round-trip would quantise alpha<255 pixels. Carries the RT's world
+       *  anchor, so a mismatch between two redraws can be told apart from the
+       *  camera having moved between them. */
+      groundHash: () =>
+        new Promise<{ hash: string; w: number; h: number; anchor: { x: number; y: number } }>((resolve, reject) => {
+          const rt = this.groundRT;
+          if (!rt) return reject(new Error("no ground RT"));
+          rt.snapshot((img) => {
+            try {
+              const el = img as HTMLImageElement;
+              const c = document.createElement("canvas");
+              c.width = el.width;
+              c.height = el.height;
+              const g = c.getContext("2d")!;
+              g.drawImage(el, 0, 0);
+              const d = g.getImageData(0, 0, c.width, c.height).data;
+              let h = 0x811c9dc5;
+              for (let i = 0; i < d.length; i++) h = Math.imul(h ^ d[i], 0x01000193) >>> 0;
+              resolve({ hash: h.toString(16).padStart(8, "0"), w: c.width, h: c.height, anchor: { x: rt.x, y: rt.y } });
+            } catch (e) {
+              reject(e);
+            }
+          });
+        }),
       /** THE STREAMING REPAINTS: how many landings asked, how many passes ran.
        *  `coalesce` flips the A/B switch (legacy = every landing repaints
        *  synchronously). Counters reset on read. */
@@ -11988,17 +12036,47 @@ export class WorldScene extends Phaser.Scene {
     ay: number,
     tint: number,
   ) {
+    /* A DRAW ENTIRELY OUTSIDE THE TEXTURE CONTRIBUTES NOTHING — skip it before
+     * the texture lookup. The ground pass walks every cell of a window that is
+     * padded by a tile on each side and by the world's whole level range
+     * (maxLevel × lh) below, and issues every op of every cell whether or not
+     * its rectangle reaches the render texture; measured on the_game, 31-55%
+     * of a redraw's blits landed entirely outside it (forest 1,739 of 3,892;
+     * autumn wood 6,623 of 12,067; snow cliffs 3,915 of 12,564 — the deck
+     * face stacks rise 360-480 px above their cell and are most of them). The
+     * RT clips them to nothing at the cost of a batchDraw each. This test is
+     * the same rectangle-vs-box test the occluder pass already applies; it is
+     * pixel-identical by construction and the parity probe (__ml.groundHash)
+     * checks that on the real pixels. Scale is 1 here, so the drawn size IS
+     * the crop size (op.sw × op.sh) — and the test assumes POSITIVE sw/sh
+     * (every producer passes real file dimensions; a negative-width op would
+     * rasterise a mirrored quad the four-way test misjudges, so such an op is
+     * simply never culled). Anchoring is the frame's top-left at (dx, dy) and
+     * the texture is exactly [0, rt.width) × [0, rt.height) in these units
+     * (identity camera, rt.width is the texel size) — verified in review
+     * against Phaser 3.90's MultiPipeline.batchTextureFrame. */
+    const dx = op.x - ax;
+    const dy = op.y - ay;
+    if (
+      this.groundCull &&
+      op.sw > 0 &&
+      op.sh > 0 &&
+      (dx + op.sw <= 0 || dy + op.sh <= 0 || dx >= rt.width || dy >= rt.height)
+    ) {
+      this.groundCulled++;
+      return;
+    }
     const tex = this.textures.get(op.key);
     const src = tex?.getSourceImage() as { width?: number; height?: number } | undefined;
     const fw = src?.width ?? op.sw;
     const fh = src?.height ?? op.sh;
     if (op.sx === 0 && op.sy === 0 && op.sw === fw && op.sh === fh) {
-      rt.batchDraw(op.key, op.x - ax, op.y - ay, 1, tint);
+      rt.batchDraw(op.key, dx, dy, 1, tint);
       return;
     }
     const name = `t3c:${op.sx},${op.sy},${op.sw},${op.sh}`;
     if (!tex.has(name)) tex.add(name, 0, op.sx, op.sy, op.sw, op.sh);
-    rt.batchDrawFrame(op.key, name, op.x - ax, op.y - ay, 1, tint);
+    rt.batchDrawFrame(op.key, name, dx, dy, 1, tint);
   }
 
   /** THE MAPS3 GROUND PASS, in render3's own order: every cell (painter-sorted
@@ -12146,7 +12224,8 @@ export class WorldScene extends Phaser.Scene {
     // Published BEFORE the passes and mutated in place: a gate reads these
     // counters to tell a correct dark frame from a black one, and an exception
     // mid-pass must leave what actually drew visible, not last frame's numbers.
-    const stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0 };
+    const stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0 };
+    this.groundCulled = 0;
     this.t3stats = stats;
     const t0 = performance.now();
     const cellOf = (c: number, r: number) => this.t3Try(`cell ${c},${r}`, () => t3.cell(c, r), null);
@@ -12238,6 +12317,7 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     rt.endDraw();
+    stats.culled = this.groundCulled;
     stats.ms = +(performance.now() - t0).toFixed(1);
     load?.flush();
     this.checkTiles3Pitch();

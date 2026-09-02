@@ -547,11 +547,28 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     update()), so the visible frame is identical to legacy — the deferral is
     zero frames. Probe: `__ml.repaints(coalesce?)` (landings by kind vs passes
     run; the switch reproduces legacy for an A/B).
-  - STILL OPEN after both: `redrawGround` is a full repaint of the ground RT
-    with an unconditional deck face loop, and 31-55% of its blits land entirely
-    OUTSIDE the texture (measured 1,739 of 3,892 at the forest, 6,623 of 12,067
-    at the autumn wood). Next: the per-op RT bounds test, then scrolling the
-    world-anchored RT instead of clearing it.
+  - **THE GROUND PASS CULLS OFF-TEXTURE DRAWS** (`t3Blit`, 2026-09-02). The
+    pass walks a window padded by a tile on each side and by the whole level
+    range below, and issued every op of every cell whether or not its
+    rectangle reached the render texture — 31-55% of a redraw's draws landed
+    entirely outside it (forest 1,739 of 3,892; autumn wood 6,873 of 12,520;
+    snow cliffs 3,915 of 12,542 — mostly the deck face stacks, which rise
+    360-480 px above their cell). The RT clipped them to nothing at the cost
+    of a batchDraw each. `t3Blit` now skips an op whose rectangle misses
+    `[0,rt.width) × [0,rt.height)` before the texture lookup — pixel-identical
+    by construction, and PROVEN on the pixels: `__ml.groundHash()` hashes the
+    RT's readback and matched exactly between modes at all four spots. Measured
+    per redraw, legacy → culled: autumn wood 48.7 → 40.1 ms, snow cliffs
+    37.6 → 32.4, snow shore 38.3 → 31.4, forest ×1.17 — i.e. the draw calls
+    were only ~20% of the pass's JS; the RESOLVER (what each cell draws:
+    `cellBlits`/`opsFor*` through `t3Try`, boundary composition) is the rest.
+    A/B: `__ml.groundRedraw(cull?)` (the pass's counters + whole-redraw wall
+    clock; `culled` is counted beside `blits`, which counts attempts).
+  - STILL OPEN after all three: a ground redraw is still a FULL repaint every
+    256 px of camera travel — ~4,267 cells re-resolved and re-drawn when a step
+    exposes ~18% of the texture. Next: scroll the world-anchored RT and
+    resolve + paint only the newly exposed band (the RT trim is NOT a drop-in:
+    it skips void cells, and painter order across the seam must hold).
 - `stairs` tiles are ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower,
   cactus, lava) are impassable — `SURFACES`/`surfaceFor` (`road_*` by prefix).
