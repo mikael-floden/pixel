@@ -1815,80 +1815,209 @@ class Grow:
         self.placed += [("signposts", n_s), ("waystones", n_w)]
 
     # -- nature ---------------------------------------------------------------
+    # ---- scenery stands in PLACES, not on a field -------------------------
+    # (maintainer 2026-09-02) "The outdoor scenery placement still feel random
+    # and not clustered enough. You should think about the placement.
+    # Different places should be remembered and never feel random."
+    #
+    # HE WAS RIGHT AND THE FIELD PASS WAS MEASURABLY RANDOM. Clark-Evans on
+    # the previous build: R = 1.122, where 1.0 IS a random Poisson pattern and
+    # below 1 is clustered - so the old nature pass was very slightly MORE
+    # EVEN than random, the opposite of clustered, and 81% of all placeable
+    # 8-cell blocks held something. Two things caused it: sampling a cell grid
+    # spreads by construction, and the anti-burial rule refuses exactly the
+    # close pairs that make a cluster.
+    #
+    # A PLACE IS COMPOSED, NOT SAMPLED. Sites are scattered with a minimum
+    # separation, each site is one KIND chosen from its own terrain, and a
+    # kind is a recipe: a dominant family, an optional HERO piece at the
+    # centre, a radius, and a count. Density falls off from the middle, so a
+    # place reads as a thing with an inside and an edge. Between places the
+    # ground is EMPTY, which is what makes a cluster legible at all.
+    #
+    # The province theming above still chooses WHICH family a place draws
+    # from, so neighbouring places differ and a region keeps one character.
+    PLACE_KINDS = (
+        # name             groups (dominant first)              hero                  n      radius
+        ("boulder field",  ("stones",),                         "stones",            (7, 14), (3.5, 6.0)),
+        ("cairn ridge",    ("cairns", "stones"),                "cairns",            (4, 8),  (3.0, 5.0)),
+        ("fern hollow",    ("ferns", "moss_clumps"),            None,                (9, 16), (3.0, 5.5)),
+        ("mushroom ring",  ("mushrooms", "toadstool_rings"),    "toadstool_rings",   (6, 12), (2.5, 4.0)),
+        ("deadfall",       ("fallen_logs", "stumps"),           "fallen_logs",       (4, 8),  (3.0, 5.0)),
+        ("thicket",        ("bushes",),                         None,                (8, 15), (3.0, 5.5)),
+        ("tussock meadow", ("grass_tufts", "bushes"),           None,                (10, 18),(4.0, 7.0)),
+        ("reed bed",       ("reed_beds", "cattail_clumps"),     None,                (8, 15), (3.0, 5.5)),
+        ("driftwood spit", ("driftwood_logs",),                 None,                (3, 6),  (3.0, 5.0)),
+        ("lily pool",      ("water_lily_clumps",),              None,                (4, 8),  (2.5, 4.0)),
+    )
+    # CELLS BETWEEN TWO PLACES, and the setting that matters. Measured with
+    # Clark-Evans, where 1.0 is a random Poisson pattern and below 1 is
+    # clustered - the empty ground between places is what makes each one read
+    # as one place:
+    #     the old field pass        R = 1.122  (MORE EVEN than random)
+    #     gap 26, places tiled land R = 1.024  (still random)
+    #     gap 30, 70 places         R = 0.476  <- shipped, 720 pieces
+    #     gap 36, 48 places         R = 0.455  (barer for little gain)
+    # Land is only 13% of this map, so the gap is a LAND packing limit: past
+    # ~36 the island runs out of room and goes bare rather than clustered.
+    PLACE_GAP = 30
+    SCATTER = 0.006       # a few loose pieces outside every place, so the map
+                          # is not sterile between them
+
+    def _kind_for(self, x, y, wet, shore, wooded, high):
+        """A place is what its ground makes it."""
+        if shore:
+            return "lily pool" if self.liquid(x, y) else "driftwood spit"
+        if wet:
+            return "reed bed"
+        if high:
+            return "cairn ridge" if (x + y) % 3 == 0 else "boulder field"
+        if wooded:
+            return ("fern hollow", "mushroom ring", "deadfall",
+                    "fern hollow", "thicket")[(x * 7 + y) % 5]
+        # THE OPEN GROUND STILL GETS VARIETY. Keying only on terrain gave 38
+        # boulder fields against 1 deadfall and no fern hollow at all, because
+        # almost nothing outside the woods read as anything but open - and a
+        # map of boulder fields is the same complaint in a different shape.
+        return ("thicket", "tussock meadow", "boulder field", "fern hollow",
+                "mushroom ring", "boulder field", "deadfall",
+                "tussock meadow")[(x * 5 + y * 3) % 8]
+
     def nature(self):
-        """NATURE, THEMED. Every family is one sculpt varied within itself,
-        every family drifts on its own field, and the two strongest at any
-        spot share it in proportion - so a place has a look, neighbouring
-        places have different looks, and the change between them is a band
-        rather than a line. See theme_pick and _fam_w above for the why.
+        """Compose places. See PLACE_KINDS above for the why and the recipe."""
+        kinds = {k[0]: k for k in self.PLACE_KINDS}
+        trees = {(int(p["x"]) // 3, int(p["y"]) // 3)
+                 for p in self.doc["scenery"] if p["piece"].startswith("trees/")}
+        pools = {}
 
-        Density drifts too, on a field of its own: a wood is thick in places
-        and open in others, which is the other half of not feeling random."""
-        floor = self.pool("ferns") + self.pool("mushrooms") \
-            + self.pool("moss_clumps") + self.pool("toadstool_rings") \
-            + self.pool("fallen_logs") + self.pool("stumps")
-        open_ = self.pool("stones") + self.pool("grass_tufts") \
-            + self.pool("bushes")
-        wet = self.pool("cattail_clumps") + self.pool("reed_beds")
-        dry = self.pool("cup_fungi")
-        lily = self.pool("water_lily_clumps")
-        beach = self.pool("driftwood_logs") + self.pool("giant_snail_shells")
-        trees = [(p["x"], p["y"]) for p in self.doc["scenery"]
-                 if p["piece"].startswith("trees/")]
-        tset = set()
-        for tx, ty in trees:
-            tset.add((int(tx) // 3, int(ty) // 3))
+        def pool(group):
+            if group not in pools:
+                try:
+                    pools[group] = [g for g in self.pool(group)
+                                    if self._rated(g)[0]]
+                except FileNotFoundError:
+                    pools[group] = []
+            return pools[group]
 
-        def near_trees(jx, jy):
-            return sum(1 for dx in (-1, 0, 1) for dy in (-1, 0, 1)
-                       if (int(jx) // 3 + dx, int(jy) // 3 + dy) in tset)
+        # 1) SITES, with a minimum separation. Scanned on a coarse lattice with
+        #    jitter so the sites themselves are not on a grid.
+        sites = []
+        # CANDIDATES MUST OUTNUMBER PLACES. The separation test does the real
+        # work, so the lattice only has to offer enough dry candidates to fill
+        # the land: at step = gap//3 over a map that is 87% ocean, only 28
+        # places survived and the island went bare.
+        step = max(4, self.PLACE_GAP // 6)
+        for y in range(4, NEW - 4, step):
+            for x in range(4, NEW - 4, step):
+                r = _rng32((x * 2246822519) ^ (y * 3266489917) ^ 0x9A17E)
+                jx = x + int(r() * step); jy = y + int(r() * step)
+                if not (0 <= jx < NEW and 0 <= jy < NEW):
+                    continue
+                g = self.g(jx, jy)
+                if not g or g in ("parquet_floor", "brown_paving_stone",
+                                  "grey_paving_stone", "light_soil"):
+                    continue
+                if (int(jx), int(jy)) in getattr(self, "no_place", set()):
+                    continue
+                if r() > 0.85:
+                    continue
+                if any((jx - sx) ** 2 + (jy - sy) ** 2
+                       < self.PLACE_GAP * self.PLACE_GAP for sx, sy, _ in sites):
+                    continue
+                # A PLACE STANDS ON LAND unless it is a water place. Without
+                # this the open-ground rotation composed thickets, fern
+                # hollows and boulder fields OUT AT SEA - the kind test only
+                # ever diverted SHORE cells, and a deep-water cell is not
+                # shore, so it fell through to the land recipes.
+                wet = g == "dark_mud"
+                # SHORE MEANS SHORE. Accepting any water cell put lily pools
+                # out in open sea, tens of cells from land - a cluster nobody
+                # will ever stand next to. Water qualifies only with land
+                # within two cells; beach always does.
+                shore = g == "light_beach" or (
+                    g == "water" and any(
+                        not self.liquid(jx + dx, jy + dy)
+                        for dx in (-2, -1, 0, 1, 2)
+                        for dy in (-2, -1, 0, 1, 2)))
+                wooded = any((jx // 3 + dx, jy // 3 + dy) in trees
+                             for dx in (-2, -1, 0, 1, 2)
+                             for dy in (-2, -1, 0, 1, 2))
+                high = self.lvl[jy][jx] >= 6 or self.near_ground(jx, jy) if False \
+                    else self.lvl[jy][jx] >= 6
+                if self.liquid(jx, jy) and not shore:
+                    continue
+                kind = self._kind_for(jx, jy, wet, shore, wooded, high)
+                # and a land recipe never runs on liquid ground
+                if self.liquid(jx, jy) and kind != "lily pool":
+                    continue
+                sites.append((jx, jy, kind))
 
-        n = {"floor": 0, "open": 0, "fen": 0, "lily": 0, "beach": 0}
-        hid = 0
-        for y in range(0, NEW, 3):
-            for x in range(0, NEW, 3):
-                r = _rng32((x * 40503) ^ (y * 2654435761) ^ 0xf10a)
-                jx, jy = x + r() * 2, y + r() * 2
-                g = self.g(int(jx), int(jy))
-                # THE DENSITY OF A PLACE IS ITSELF A FIELD
-                dens = _fbm(jx * 0.021 + 11.0, jy * 0.021 + 11.0, 0xD3115)
-                kind = pool = None
-                if g == "grass":
-                    if near_trees(jx, jy) >= 2:
-                        kind, pool, base = "floor", floor, 0.62
-                    else:
-                        kind, pool, base = "open", open_, 0.20
-                elif g == "dark_mud":
-                    swampy = any(self.liquid(int(jx) + dx, int(jy) + dy)
-                                 for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
-                    kind, pool, base = "fen", (wet if swampy else dry), 0.42
-                elif g == "water" and n["lily"] < 24:
-                    shore = sum(not self.liquid(int(jx) + dx, int(jy) + dy)
-                                for dx in (-1, 0, 1) for dy in (-1, 0, 1))
-                    if shore >= 2:
-                        kind, pool, base = "lily", lily, 0.14
-                elif g == "light_beach" and n["beach"] < 14:
-                    kind, pool, base = "beach", beach, 0.06
-                if not kind or not pool:
+        # 2) COMPOSE each site.
+        tally = {}
+        placed = 0
+        for (sx, sy, kind) in sites:
+            name, groups, hero, (n0, n1), (r0, r1) = kinds[kind]
+            r = _rng32((sx * 40503) ^ (sy * 2654435761) ^ 0xC0FFEE)
+            fams = [p for grp in groups for p in pool(grp)]
+            if not fams:
+                continue
+            # the province decides WHICH family this place is built from
+            piece, state = self.theme_pick(fams, sx, sy, r)
+            if not piece:
+                continue
+            rad = r0 + r() * (r1 - r0)
+            want = n0 + int(r() * (n1 - n0 + 1))
+            ground = (self.g(sx, sy),)
+            got = 0
+            if hero:
+                hp = pool(hero)
+                if hp:
+                    h, hs = self.theme_pick(hp, sx, sy, r)
+                    if h and self.put(h, sx + 0.5, sy + 0.5, on=ground,
+                                      hflip=r() < 0.5, state=hs):
+                        got += 1
+            for _ in range(want * 3):
+                if got >= want:
+                    break
+                # DENSER IN THE MIDDLE: u**0.8 pulls samples toward the centre
+                # (u**0.5 would be a flat disc), so a place has a core.
+                a = r() * 6.28318
+                rr = rad * (r() ** 0.8)
+                px, py = sx + 0.5 + math.cos(a) * rr, sy + 0.5 + math.sin(a) * rr
+                if not (0 <= px < NEW and 0 <= py < NEW):
                     continue
-                # OUTCROPS, NOT POLKA DOTS. A linear density field spread the
-                # rocks evenly over a whole field; cubed, the field spends most
-                # of its range near zero, so bare ground stays bare and the
-                # thick patches get thicker. Same total, clustered.
-                if r() > min(1.0, base * 7.0 * dens ** 3):
+                if self.g(int(px), int(py)) not in ground:
                     continue
-                piece, state = self.theme_pick(pool, jx, jy, r)
-                if not piece:
-                    continue
-                px, py = jx + 0.5, jy + 0.5
+                # inside a place things MAY overlap - a cluster is meant to.
+                # The anti-burial rule still stops one piece swallowing another.
                 if self._hidden(piece, px, py):
-                    hid += 1
                     continue
-                if self.put(piece, px, py, on=(g,), hflip=r() < 0.5,
+                if self.put(piece, px, py, on=ground, hflip=r() < 0.5,
                             state=state):
-                    n[kind] += 1
-        self.placed += sorted(n.items())
-        self.placed += [("refused: would be hidden", hid)]
+                    got += 1
+            if got:
+                placed += 1
+                tally[name] = tally.get(name, 0) + 1
+
+        # 3) A LITTLE LOOSE SCATTER so the ground between places is not sterile.
+        loose = 0
+        for y in range(0, NEW, 5):
+            for x in range(0, NEW, 5):
+                r = _rng32((x * 668265263) ^ (y * 374761393) ^ 0x5CA7)
+                if r() > self.SCATTER:
+                    continue
+                jx, jy = x + int(r() * 5), y + int(r() * 5)
+                g = self.g(jx, jy)
+                if g not in ("grass", "dark_mud"):
+                    continue
+                fams = pool("stones") + pool("grass_tufts") + pool("ferns")
+                piece, state = self.theme_pick(fams, jx, jy, r)
+                if piece and not self._hidden(piece, jx + 0.5, jy + 0.5) \
+                        and self.put(piece, jx + 0.5, jy + 0.5, on=(g,),
+                                     hflip=r() < 0.5, state=state):
+                    loose += 1
+        self.placed += [("places composed", placed), ("loose scatter", loose)]
+        self.placed += sorted(tally.items())
 
     # -- islet dressing -------------------------------------------------------
     def dress_islets(self):
