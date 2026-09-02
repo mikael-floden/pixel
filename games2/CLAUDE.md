@@ -875,15 +875,35 @@ clip, no tint.
   `monsterInfo().culled` lets QA skip parked bodies (their state is
   deliberately stale). Gate: the monster block of verify-smoke asserts the
   invariants AND that culling REVERSES (pan away/back).
+- **THE GROUND PLANE — `projectCellCorner` IS THE ONE PROJECTION** for anything
+  that describes the WORLD: cell diamonds, footprint ellipses, body circles,
+  zone outlines. `projectFlat` answers a different question — where a BODY's
+  feet are DRAWN, i.e. the diamond's centre plus the character ground anchor
+  (+tile/2, +dy) — and feeding it ground coordinates has put an overlay off its
+  own world TWICE: the spawn zones half a cell down (2026-07-30) and the
+  collision overlay by a constant vertical term (2026-09-02 — the maintainer
+  annotated a screenshot with the collision centre and the tile-top centre, the
+  maps agent read the mechanism off it, and the two planes measure exactly
+  **DY − TOP_Y = 4 px** at 1× on a maps3 world, 0 px horizontally, the same at
+  four cells across the map). The ground plane is whichever renderer drew it: a
+  maps3 world's tiles3 FRAME by construction (the same `anchorX`/`anchorY`
+  every plate, boundary, deck and scenery sprite is placed through), a maps2
+  world's lattice plus `TILE_DIAMOND_TOP`. The LEVEL is the caller's, because
+  the overlays differ on purpose — the collision floor plan flattens every mark
+  to the player's plane (a wall's marker must not fly up to the roof), a spawn
+  zone traces the rim it sits on. **The 4 px left between the ground plane and
+  `projectFlat` is the BODY-SEAT convention** (a character is drawn standing in
+  the cell, not on its centre line): deliberate, and never to be "fixed" by
+  moving the ground under every body. Probe: `__ml.planes(col,row)`; gate:
+  `scripts/verify-collisionplane.mjs` (pins cornerVsArt == 0 AND that
+  projectFlat still differs vertically-only by a constant, so neither half can
+  drift back).
 - **Zone DEBUG overlay** — Settings "spawn areas", OFF by default (maintainer)
   in `ml-spawn-areas`. Draws each zone's REAL polygon, lazy-fetched from
   spawns.json on first switch-on — NOT the synced bbox (zones are concave).
-  Corners go through `projectZoneCorner`, NOT `project()`/`projectFlat()` —
-  those append the CHARACTER GROUND ANCHOR (+tile/2, +dy); feeding them
-  tile-corner vertices drew the outline a half-cell (dy = 15px) down-screen.
-  A corner keeps +tile/2 but sits dy ABOVE the diamond centre. (~4 world-px
-  residual = the documented tile-art inset, see artLift.) Probe:
-  `__ml.spawnOverlay(on?)`.
+  Corners go through `projectZoneCorner` (which delegates to
+  `projectCellCorner`), NOT `project()`/`projectFlat()` — see THE GROUND PLANE
+  below. Probe: `__ml.spawnOverlay(on?)`.
 - **The spawn BONFIRE** (`placeCampfire`) anchors to the world's DECLARED
   spawn (`world.json spawn` — the cell `placeAtSpawn` scatters around), 1.6-
   2.6 cells out. NOT the world centre (every maps2 world declares a spawn far
