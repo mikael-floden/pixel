@@ -318,12 +318,18 @@ test("a registered maps3 world addresses its own tree, and junk cannot register"
 
 /* -- the policy names it, the picker manifest carries the tree -------------- */
 
-test("publish.json offers the_game as a DEV world and ships nothing for it", () => {
+test("publish.json publishes the_game as a USER world, and the tiles/ domain still never ships wholesale", () => {
   const pol = JSON.parse(readFileSync(join(REPO, "games2", "config", "publish.json"), "utf8"));
-  assert.deepEqual(pol.devWorlds3, ["the_game"]);
-  assert.ok(!pol.userWorlds.includes("the_game"), "a maps3 world must never be in the ship-set roots");
-  assert.ok(!(pol.alwaysShip ?? []).includes("tiles"), "tiles3 art must not enter the image");
-  assert.ok(!(pol.entityDomains ?? []).includes("tiles"), "tiles3 art must not enter the image");
+  // the_game is baked into the image (maintainer 2026-09-02: the default map,
+  // and once he is happy with it the only playable one). A published name may
+  // live in either world tree; shipset resolves it by probing.
+  assert.ok(pol.userWorlds.includes("the_game"), "the_game is a published world");
+  assert.ok(!(pol.devWorlds3 ?? []).includes("the_game"), "a world is published OR staging, never both");
+  // Its terrain art enters the image ONLY as the resolver's closure
+  // (scripts/ship-tiles3.ts in the Dockerfile's build stage) — the ~400 MB
+  // tiles/ domain must never be shipped as a whole or per entity.
+  assert.ok(!(pol.alwaysShip ?? []).includes("tiles"), "tiles/ must not ship wholesale");
+  assert.ok(!(pol.entityDomains ?? []).includes("tiles"), "tiles/ must not ship per entity");
 });
 
 test("worlds.json carries the tree for a maps3 world and omits it for maps2", () => {
@@ -333,7 +339,7 @@ test("worlds.json carries the tree for a maps3 world and omits it for maps2", ()
   const game = wl.find((w: { name: string }) => w.name === "the_game");
   if (!game) return test.skip("maps2/worlds3 not checked out");
   assert.equal(game.root, "maps2/worlds3");
-  assert.equal(game.dev, true, "a maps3 world is never offered to a normal player");
+  assert.equal(game.dev, undefined, "a published world is offered to every player, whichever tree holds it");
   assert.equal(game.schema, "pixel-maps3/world@1");
 });
 
