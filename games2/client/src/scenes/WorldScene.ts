@@ -13974,11 +13974,18 @@ export class WorldScene extends Phaser.Scene {
      * world from the CDN is exactly the case the soft deadline used to hit
      * (maintainer 2026-08-29: "the game started without texture again"). */
     /* How long "everything is loaded" must stay true before the screen lifts.
-     * 1.2 s covers several loader passes, so a flush window cannot masquerade
-     * as an idle loader. */
-    const HOLD_SETTLE_MS = 1200;
-    const SOFT_DEADLINE_MS = 20000;
-    const HARD_DEADLINE_MS = 60000;
+     * TEMPORARILY 5 s, AND THE DEADLINES RAISED WITH IT — this is a TEST the
+     * maintainer asked for ("I just want to test if loading everything works"),
+     * not a shipping value. It makes the loading screen wait until the terrain
+     * loader has been quiet for five continuous seconds, and stops the soft
+     * deadline (was 20 s) from releasing while art is still arriving. If the
+     * artefact is absent at spawn under this, the cause is art that had not
+     * landed when the ground was painted; if it is still there, it is not.
+     * PUT THESE BACK to 1200 / 20000 / 60000 once that question is answered —
+     * a 90 s worst-case loading screen is not shippable. */
+    const HOLD_SETTLE_MS = 5000;
+    const SOFT_DEADLINE_MS = 90000;
+    const HARD_DEADLINE_MS = 150000;
     const t0 = performance.now();
     /* MONOTONIC. The denominator GROWS as the window discovers art — a scenery
      * manifest arrives and queues its sprites — so the raw fraction can fall,
