@@ -267,6 +267,17 @@ process, starts a new one and reloads.
 }
 ```
 
+**A star IS an approval** (maintainer 2026-09-03: "This way I only have to
+click once on the star"). Tapping a star writes `rating` AND
+`status: "approved"` in one press — carrying the same art stamp the approve
+button beside it would write, so the verdict is never born stale. Tapping the
+lit star again withdraws both, and un-approving with the button clears the
+rating with it: the stars are how the approval was given, so they never outlive
+it. Remove is untouched by the stars — starring something rejected re-judges it
+as approved, un-starring leaves it undecided rather than resurrecting the
+rejection. A verdict row with no approve button (the per-take unbind) leaves
+its stars a plain rating. Pinned by `check-facet.mjs`.
+
 **Asset ids** are repo-relative file paths without extension for individual
 files (a sound take, a tile variant PNG), the entity's directory path for whole
 entities (`monsters/mammoth`), and `<entity>#<state>` for one animation state

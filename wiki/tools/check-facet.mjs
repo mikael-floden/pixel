@@ -593,6 +593,80 @@ await pub.close();
   const redoElsewhere = await p.evaluate(() => [...document.querySelectorAll(".verdict button")].some((x) => /redo-btn/.test(x.className)));
   ok(!redoElsewhere, "and Redo appears nowhere but a scenery state");
 }
+/* ONE TAP, NOT TWO (maintainer 2026-09-03: "you should click approve for me
+ * when I click on a star and unapprove when/if I press that same star again.
+ * Also if I unapprove you should remove the star. This way I only have to
+ * click once on the star"). Driven through the real controls on the scenery
+ * facet row, which is the one row that also carries an art stamp — a star that
+ * approved WITHOUT the stamp would be written stale, and the row would tell
+ * him to judge again the moment he judged. */
+{
+  // Back to the window — the checks above walk other pages, and this one wants
+  // a facet row that carries an art stamp.
+  await p.goto(`${W}#/objects/window_058`, { waitUntil: "load" });
+  await p.waitForTimeout(2600);
+  await p.evaluate(() => {
+    const e = window.__wiki.state.feedback.objects?.entries ?? {};
+    for (const k of Object.keys(e)) if (/^scenery\/windows\/window_058#/.test(k)) delete e[k];
+    window.__wiki.route();
+  });
+  await p.waitForTimeout(1200);
+  const row = () => p.evaluate(() => {
+    const r = document.querySelector(".facet-head .fb-row");
+    const approve = [...r.querySelectorAll("button")].find((x) => /approve/i.test(x.textContent));
+    // The FACET's own stars — the piece is judged by a second row further up
+    // the page, and reading that one measured his week instead of the click.
+    const key = r.querySelector(".stars")?.__fbk?.split("\u0000") ?? null;
+    const rec = key ? (window.__wiki.state.feedback[key[0]]?.entries?.[key[1]] ?? {}) : {};
+    return {
+      lit: r.querySelectorAll(".stars button.lit").length,
+      approved: !!approve?.classList.contains("approved"),
+      status: rec.status ?? null, rating: rec.rating ?? null, stamped: !!rec.art,
+      stale: /regenerated since/i.test(r.textContent),
+    };
+  });
+  const star = (n) => p.evaluate((k) => document.querySelectorAll(".facet-head .fb-row .stars button")[k - 1].click(), n)
+    .then(() => p.waitForTimeout(250));
+
+  await star(4);
+  const a = await row();
+  console.log("after tapping star 4 :", JSON.stringify(a));
+  ok(a.lit === 4 && a.rating === 4, `a star still rates (${a.lit} lit, rating ${a.rating})`);
+  ok(a.approved && a.status === "approved", "...and approves in the same tap — no second press");
+  ok(a.stamped && !a.stale, "...stamped with the art on screen, so it is not born stale");
+
+  await star(4);
+  const b = await row();
+  console.log("after tapping star 4 again:", JSON.stringify(b));
+  ok(!b.approved && b.status === null, "pressing that same star again un-approves");
+  ok(b.lit === 0 && b.rating === null, "...and takes the stars with it");
+
+  await star(3);
+  await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /approve/i.test(x.textContent)).click());
+  await p.waitForTimeout(250);
+  const c = await row();
+  console.log("after un-approving by button:", JSON.stringify(c));
+  ok(!c.approved && c.status === null, "un-approving with the button clears the verdict");
+  ok(c.lit === 0 && c.rating === null, `...and removes the star (${c.lit} lit) — "if I unapprove you should remove the star"`);
+
+  /* A REJECTION IS NOT A STAR'S TO UNDO: he asked for star -> approve, and
+   * nothing about remove. Rating something he rejected must not silently
+   * un-reject... it re-judges it as approved (that is what a star says), but
+   * un-starring it must not resurrect the rejection either. */
+  await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].find((x) => /✕ remove/i.test(x.textContent)).click());
+  await p.waitForTimeout(250);
+  await star(2);
+  const d = await row();
+  ok(d.status === "approved" && d.rating === 2, `starring a removed state judges it approved (${d.status}, ${d.rating} stars)`);
+  await star(2);
+  const e2 = await row();
+  ok(e2.status === null && e2.rating === null, "and un-starring leaves it undecided, not re-rejected");
+  await p.evaluate(() => {
+    const ee = window.__wiki.state.feedback.objects?.entries ?? {};
+    for (const k of Object.keys(ee)) if (/^scenery\/windows\/window_058#/.test(k)) delete ee[k];
+  });
+}
+
 /* ...AND THE SAME ON EVERY OTHER REVIEW PAGE, walked rather than assumed. */
 {
   const DD2 = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));

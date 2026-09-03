@@ -576,6 +576,34 @@ function updateSavebar() {
 
 // Every feedback widget has two faces: interactive for the signed-in admin,
 // a quiet read-only badge (or nothing) for players.
+/* STAR = APPROVE (maintainer 2026-09-03: "you should click approve for me when
+ * I click on a star and unapprove when/if I press that same star again. Also
+ * if I unapprove you should remove the star. This way I only have to click
+ * once on the star").
+ *
+ * The stars and the verdict judge the SAME id, so they are kept in step
+ * through the DOM rather than through a shared closure — they are built by two
+ * independent functions and every page arranges them differently. Each widget
+ * tags its wrapper with the id it judges and parks its own render; a click on
+ * one re-renders the other. The verdict widget also parks its `stamp`, its
+ * `onchange` and whether it even HAS an approve button, so a star approves
+ * exactly as the button beside it would: with the same art stamp (an unstamped
+ * approval would read as "regenerated since" the instant it was written) and
+ * the same page hooks. A verdict row with no approve button (a per-take
+ * unbind) leaves the stars a plain rating. Detached widgets from a previous
+ * render are not in the document, so they are never found — no registry to
+ * clean up. */
+const fbPeerKey = (domain, id) => `${domain}\u0000${id}`;
+function fbTag(wrap, domain, id, kind, render) {
+  wrap.dataset.fbk = kind;
+  wrap.__fbk = fbPeerKey(domain, id);
+  wrap.__render = render;
+  return wrap;
+}
+function fbPeers(domain, id, kind) {
+  const k = fbPeerKey(domain, id);
+  return [...document.querySelectorAll(`[data-fbk="${kind}"]`)].filter((el) => el.__fbk === k);
+}
 /** `onStars` fires after a rating is written — the World's inbox filter needs
  *  it, because a tile that has just been starred must LEAVE the list it is
  *  standing in (and nothing else on the page can know that happened). Kept
@@ -596,11 +624,27 @@ function starsWidget(domain, id, onStars, glyph) {
     wrap.replaceChildren(...[1, 2, 3, 4, 5].map((n) =>
       h("button", {
         class: n <= val ? "lit" : "", title: `${n} ${g.name}${n > 1 ? "s" : ""}`,
-        onclick: (e) => { e.preventDefault(); e.stopPropagation(); setFb(domain, id, { rating: fb(domain, id).rating === n ? null : n }); render(); onStars?.(); },
+        onclick: (e) => {
+          e.preventDefault(); e.stopPropagation();
+          const cur = fb(domain, id);
+          const off = cur.rating === n;        // pressing the star that is already lit
+          const v = fbPeers(domain, id, "verdict")[0];
+          const patch = { rating: off ? null : n };
+          if (v?.__approves !== false) {
+            // Un-starring un-approves, but only an approval — a rejection was
+            // a separate decision and a star was never what made it.
+            if (off) { if (cur.status === "approved") patch.status = null; }
+            else { patch.status = "approved"; Object.assign(patch, v?.__stamp ?? {}); }
+          }
+          setFb(domain, id, patch);
+          render();
+          if ("status" in patch) { for (const el of fbPeers(domain, id, "verdict")) el.__render?.(); v?.__onchange?.(); }
+          onStars?.();
+        },
       }, n <= val ? g.lit : g.dim)));
   };
   render();
-  return wrap;
+  return fbTag(wrap, domain, id, "stars", render);
 }
 // `stamp` rides into every verdict this widget writes — the scenery pages
 // pass { art: <sprite hash> } so a verdict records the exact bytes it judged
@@ -648,7 +692,18 @@ function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitl
     wrap.replaceChildren(...[
       // rejectOnly: a per-take unbind on an already-narrow row, where the
       // approval of the binding as a whole lives one row up.
-      rejectOnly ? null : h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "approved" ? null : "approved", ...(stamp ?? {}) }); render(); onchange?.(); } }, "✓ approve"),
+      // Un-approving clears the rating with it (same request): the stars are
+      // how the approval was given, so they cannot outlive it. The art stamp
+      // rides only when a verdict is actually being SET — an un-approval is
+      // not a judgement of any art.
+      rejectOnly ? null : h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => {
+        e.stopPropagation();
+        const un = st === "approved";
+        setFb(domain, id, un ? { status: null, rating: null } : { status: "approved", ...(stamp ?? {}) });
+        render();
+        for (const el of fbPeers(domain, id, "stars")) el.__render?.();
+        onchange?.();
+      } }, "✓ approve"),
       h("button", { class: `reject-btn${st === "rejected" ? " rejected" : ""}`, title: rejectTitle, onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "rejected" ? null : "rejected", ...(stamp ?? {}) }); render(); onchange?.(); } }, reject),
       redo ? h("button", { class: `redo-btn${st === "redo" ? " redo" : ""}`, title: redo.title ?? "Keep this, and ask for another variant of it",
         onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "redo" ? null : "redo", ...(stamp ?? {}) }); render(); onchange?.(); } }, redo.label ?? "↻ redo") : null,
@@ -656,6 +711,10 @@ function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitl
     ].filter(Boolean));
   };
   render();
+  fbTag(wrap, domain, id, "verdict", render);
+  wrap.__approves = !rejectOnly;
+  wrap.__stamp = stamp;
+  wrap.__onchange = onchange;
   return wrap;
 }
 function noteWidget(domain, id) {
