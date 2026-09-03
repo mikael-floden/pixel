@@ -17,8 +17,8 @@
   },
   "sheet_usd": 0.096,
   "top_face_note": "mean_colours / mean_dominant_share measure the TOP FACE only (transition_render.top_face). Reference: a deliberately flat matrix top is 4 colours / 0.95, a textured base candidate 9-14 / 0.30-0.67.",
-  "n_sheets": 610,
-  "n_tiles": 9760,
+  "n_sheets": 615,
+  "n_tiles": 9840,
   "counts": {
     "black_rock": {
       "subtle": 3,
@@ -30,7 +30,7 @@
     },
     "dark_mud": {
       "subtle": 3,
-      "detail": 36
+      "detail": 38
     },
     "deep_water": {
       "subtle": 3,
@@ -42,11 +42,11 @@
     },
     "grey_paving_stone": {
       "subtle": 3,
-      "detail": 37
+      "detail": 38
     },
     "grey_stone": {
       "subtle": 3,
-      "detail": 36
+      "detail": 38
     },
     "ice": {
       "subtle": 3,
@@ -3061,6 +3061,38 @@
     {
       "ground": "dark_mud",
       "flavour": "detail",
+      "seed": 45907,
+      "prompt": "dark mud, a cracked ridge in the middle, dark mud all around the edge",
+      "palette_top": "#514137",
+      "tile_id": "3b6e3755-e22e-4405-8934-9a349458e183",
+      "dir": "tiles/tops/dark_mud/sheet_129_detail_45907",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 14.5,
+        "mean_dominant_share": 0.4877
+      }
+    },
+    {
+      "ground": "dark_mud",
+      "flavour": "detail",
       "seed": 46028,
       "prompt": "dark mud, a sunken stick in the middle, dark mud all around the edge",
       "palette_top": "#514137",
@@ -3792,6 +3824,38 @@
       "top_face": {
         "mean_colours": 17.38,
         "mean_dominant_share": 0.2743
+      }
+    },
+    {
+      "ground": "dark_mud",
+      "flavour": "detail",
+      "seed": 96754,
+      "prompt": "dark mud, a rotting leaf in the middle, dark mud all around the edge",
+      "palette_top": "#514137",
+      "tile_id": "b3edd137-a5c6-4479-9f94-3e5baebea233",
+      "dir": "tiles/tops/dark_mud/sheet_119_detail_96754",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 22.25,
+        "mean_dominant_share": 0.223
       }
     },
     {
@@ -6965,6 +7029,38 @@
     {
       "ground": "grey_paving_stone",
       "flavour": "detail",
+      "seed": 42786,
+      "prompt": "grey paving stone, a scatter of leaves in the middle, grey paving stone all around the edge",
+      "palette_top": "#a8a8a8",
+      "tile_id": "37c6a52a-51bd-4947-9997-12d4f49db471",
+      "dir": "tiles/tops/grey_paving_stone/sheet_109_detail_42786",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 26.25,
+        "mean_dominant_share": 0.6016
+      }
+    },
+    {
+      "ground": "grey_paving_stone",
+      "flavour": "detail",
       "seed": 48534,
       "prompt": "grey paving stone, a scuff of white paint in the middle, grey paving stone all around the edge",
       "palette_top": "#a8a8a8",
@@ -8181,6 +8277,38 @@
     {
       "ground": "grey_stone",
       "flavour": "detail",
+      "seed": 33381,
+      "prompt": "grey stone, a bird dropping in the middle, grey stone all around the edge",
+      "palette_top": "#808082",
+      "tile_id": "954f5bc3-2bbe-48bd-aa37-d44e1f885901",
+      "dir": "tiles/tops/grey_stone/sheet_126_detail_33381",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.56,
+        "mean_dominant_share": 0.7008
+      }
+    },
+    {
+      "ground": "grey_stone",
+      "flavour": "detail",
       "seed": 34584,
       "prompt": "grey stone, a pocket of sand in the middle, grey stone all around the edge",
       "palette_top": "#808082",
@@ -8624,6 +8752,38 @@
       "top_face": {
         "mean_colours": 13.0,
         "mean_dominant_share": 0.44
+      }
+    },
+    {
+      "ground": "grey_stone",
+      "flavour": "detail",
+      "seed": 58521,
+      "prompt": "grey stone, a dropped coin in the middle, grey stone all around the edge",
+      "palette_top": "#808082",
+      "tile_id": "a9ca3686-805c-4c7f-846a-200114b5e74e",
+      "dir": "tiles/tops/grey_stone/sheet_125_detail_58521",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 22.38,
+        "mean_dominant_share": 0.4889
       }
     },
     {
