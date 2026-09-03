@@ -88,7 +88,7 @@ import {
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { indoorAmbient, indoorLight, setIndoorLight } from "../indoorlight";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
-import { withV } from "../assetver";
+import { withV, assetIndexInfo } from "../assetver";
 import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -701,6 +701,10 @@ const GROUND_SEAM = 1;
 // OCC_STEP of camera travel — every cull box below is grown by at least this
 // much (plus a tile) or geometry would wink in at the leading screen edge.
 const OCC_STEP = 96;
+/** How long a perf-beacon window is (see perfBeaconTick). Long enough that a
+ *  report covers several ground latches, short enough that a run into fresh
+ *  terrain is not averaged away. */
+const PERF_BEACON_MS = 30_000;
 // Extra cull margin beyond OCC_STEP: one tile of art, plus room for the
 // biggest body art box that resolveBodyDepth can test against a column
 // (a mammoth spans ~190px) — a column that could still sort against an
@@ -739,6 +743,19 @@ const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
 const SCENERY_FLAT_DEPTH = -500_000;
 /** `?ground=legacy` (remembered) selects the pre-rework ground path — see the
  *  `groundScroll` field. Returns TRUE for the current path. */
+/** `?perf=1` arms the client perf beacon (remembered; `?perf=0` clears it).
+ *  OFF for everyone else: it turns on the per-section timers and posts a
+ *  report every PERF_BEACON_MS to /api/perf. See perfBeaconTick. */
+function perfBeaconArmed(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("perf");
+    if (q === "1" || q === "0") localStorage.setItem("ml-perf-beacon", q);
+    return (localStorage.getItem("ml-perf-beacon") ?? "0") === "1";
+  } catch {
+    return false;
+  }
+}
+
 function groundPathFast(): boolean {
   try {
     const q = new URLSearchParams(location.search).get("ground");
@@ -1431,7 +1448,23 @@ export class WorldScene extends Phaser.Scene {
    * section of update() owned the long frames, and how many objects it was
    * walking when it did. Sections nest (rebuildOccluders contains
    * rebuildScenery), hence the stack. */
-  private perfOn = false;
+  private perfOn = perfBeaconArmed();
+  /* THE PERF BEACON — the maintainer's own device, reporting to live/.
+   *
+   * His idea (2026-09-03), and it is the right instrument: the headless
+   * harness runs software GL at 1-3 fps and WALKS ABOUT ONE CELL PER 24
+   * SECONDS, so the paths that only fire on fresh terrain — the cell repaint,
+   * first-sight plate/boundary composition — never execute in it. Every
+   * "cannot reproduce" measured there was a test of code that never ran. He
+   * plays on a phone and tests in production, so the numbers that matter can
+   * only be taken there. `?perf=1` (remembered; `?perf=0` clears) arms the
+   * section profiler and posts a summary to /api/perf, which commits it to
+   * live/telemetry/perf.json — the channel agents already read from GitHub.
+   * Reports only go out after the player has actually MOVED, so a phone left
+   * idle on a bench does not fill the file with nothing. */
+  private perfBeacon = perfBeaconArmed();
+  private perfBeaconAt = 0;
+  private perfBeaconFrom: { x: number; y: number } | null = null;
   private perfStack: number[] = [];
   private perfAcc: Record<string, { n: number; ms: number; max: number }> = {};
   private perfFrames: number[] = [];
@@ -1494,6 +1527,73 @@ export class WorldScene extends Phaser.Scene {
   private ps(): void {
     if (this.perfOn) this.perfStack.push(performance.now());
   }
+  /** One beacon tick: every PERF_BEACON_MS, if the player has moved, post the
+   *  window's numbers and start a new one. Everything it reports is what
+   *  `__ml.perf()` already computes, so the beacon adds no measurement cost of
+   *  its own — only the section timers `?perf=1` already turned on. */
+  private perfBeaconTick(now: number): void {
+    if (!this.perfBeaconAt) {
+      this.perfBeaconAt = now;
+      this.perfBeaconFrom = this.mePos();
+      return;
+    }
+    if (now - this.perfBeaconAt < PERF_BEACON_MS) return;
+    const from = this.perfBeaconFrom;
+    const at = this.mePos();
+    const secs = (now - this.perfBeaconAt) / 1000;
+    this.perfBeaconAt = now;
+    this.perfBeaconFrom = at;
+    // MOVED? A stationary window says nothing about the lag he reports while
+    // running, and would evict a useful report from the file's tail.
+    if (!from || !at || Math.hypot(at.x - from.x, at.y - from.y) < 2) return;
+    let snap: Record<string, unknown> | null = null;
+    try {
+      snap = (window as unknown as { __ml?: { perf?: () => Record<string, unknown> } }).__ml?.perf?.() ?? null;
+    } catch {
+      snap = null;
+    }
+    if (!snap) return;
+    const sec = snap.sections as Record<string, { totalMs?: number }> | undefined;
+    const perFrame: Record<string, number> = {};
+    const frames = (snap.frames as { n?: number } | undefined)?.n || 1;
+    for (const [k, v] of Object.entries(sec ?? {})) perFrame[k] = +(((v?.totalMs ?? 0) / frames)).toFixed(3);
+    const cam = this.cameras.main;
+    const body = {
+      build: assetIndexInfo().buildSha,
+      where: `${at.x.toFixed(1)},${at.y.toFixed(1)}`,
+      tod: TIME_PHASES[this.timeIdx].name,
+      zoom: cam.zoom,
+      dpr: window.devicePixelRatio || 1,
+      view: `${this.scale.width}x${this.scale.height}`,
+      secs: +secs.toFixed(1),
+      frames: snap.frames,
+      sections: perFrame,
+      counts: { ...(snap.counts as Record<string, number>), texturesAdded: snap.texturesAdded as number },
+      worst: (() => {
+        try {
+          const h = (window as unknown as { __ml?: { hitch?: () => { worst?: unknown[] } } }).__ml?.hitch?.();
+          return h?.worst?.slice(0, 5) ?? null;
+        } catch {
+          return null;
+        }
+      })(),
+    };
+    // Fire and forget: a failed report must never disturb the frame it rode on.
+    void fetch("/api/perf", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      keepalive: true,
+    }).catch(() => {});
+  }
+
+  /** The local player's cell, or null before the join lands. */
+  private mePos(): { x: number; y: number } | null {
+    const m = this.avatars.get(this.room?.sessionId ?? "");
+    if (!m) return null;
+    return { x: m.sprite.x / CELL_WU, y: m.sprite.y / CELL_WU };
+  }
+
   private pe(key: string): void {
     if (!this.perfOn) return;
     const t0 = this.perfStack.pop();
@@ -7834,6 +7934,7 @@ export class WorldScene extends Phaser.Scene {
       this.perfLast = now;
       if (this.perfTexFrame > this.perfTexFrameMax) this.perfTexFrameMax = this.perfTexFrame;
       this.perfTexFrame = 0;
+      if (this.perfBeacon) this.perfBeaconTick(now);
     }
     this.ps();
     const groundBefore = this.groundSliceStats.runs + this.repaintStats.groundRuns;

@@ -354,6 +354,12 @@ function isAdmin(req: express.Request): boolean {
 // silently revert the agent's commit. The blob sha from the same GET makes
 // the PUT conditional — a mid-flight racing commit 409s and we re-merge.
 let commitChain: Promise<void> = Promise.resolve();
+/** Client perf telemetry: how many reports live/telemetry/perf.json keeps, and
+ *  the floor between commits. One player on a phone, so this is about not
+ *  writing a commit per frame, not about contention. */
+const PERF_KEEP = 40;
+const PERF_MIN_GAP_MS = 20_000;
+let lastPerfCommit = 0;
 
 function ghHeaders(): Record<string, string> {
   return {
@@ -476,6 +482,102 @@ export function registerLiveRoutes(app: express.Application): void {
       },
       feedback: Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [d, docs.get(`feedback/${d}`)])),
     });
+  });
+
+  /* CLIENT PERFORMANCE TELEMETRY — the maintainer's own device, measured.
+   *
+   * His phone is the only machine that reproduces the lag and the render
+   * artefacts; the headless harness runs software GL at 1-3 fps and WALKS AT
+   * ABOUT ONE CELL PER 24 SECONDS, so the code paths that only fire on fresh
+   * terrain (the cell repaint, first-sight composition) never execute there and
+   * every "cannot reproduce" from it was a test of code that never ran. His
+   * idea (2026-09-03): let the CLIENT measure and commit the numbers to live/,
+   * which agents already read straight from GitHub.
+   *
+   * OPT-IN and rate-limited: the client only posts with ?perf=1, at most one
+   * report per PERF_MIN_GAP_MS, and the file keeps the last PERF_KEEP reports.
+   * The payload is clamped here rather than trusted — it arrives from a browser
+   * and lands in a committed file. No identity is stored beyond a random
+   * per-session id the client makes up. */
+  app.post("/api/perf", async (req, res) => {
+    res.setHeader("Cache-Control", "no-store");
+    if (!ghToken()) { res.status(503).json({ error: "no token" }); return; }
+    const now = Date.now();
+    if (now - lastPerfCommit < PERF_MIN_GAP_MS) { res.status(429).json({ error: "too soon" }); return; }
+    const body = (req.body ?? {}) as Record<string, unknown>;
+    const num = (v: unknown, lo: number, hi: number) =>
+      typeof v === "number" && isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v * 100) / 100)) : null;
+    const str = (v: unknown, n: number) => (typeof v === "string" ? v.slice(0, n) : null);
+    const flat = (v: unknown, keys: number, hi: number) => {
+      if (!v || typeof v !== "object") return null;
+      const out: Record<string, number> = {};
+      for (const [k, val] of Object.entries(v as Record<string, unknown>).slice(0, keys)) {
+        const n = num(val, 0, hi);
+        if (n !== null) out[k.slice(0, 40)] = n;
+      }
+      return out;
+    };
+    const report = {
+      at: new Date(now).toISOString(),
+      build: str(body.build, 40),
+      where: str(body.where, 60),
+      tod: str(body.tod, 16),
+      zoom: num(body.zoom, 0, 16),
+      dpr: num(body.dpr, 0, 8),
+      view: str(body.view, 24),
+      secs: num(body.secs, 0, 3600),
+      frames: flat(body.frames, 12, 100000),
+      sections: flat(body.sections, 40, 100000),
+      counts: flat(body.counts, 40, 1e9),
+      worst: Array.isArray(body.worst)
+        ? (body.worst as unknown[]).slice(0, 8).map((w) => str(JSON.stringify(w), 400))
+        : null,
+    };
+    if (report.frames === null && report.sections === null) { res.status(400).json({ error: "empty report" }); return; }
+    lastPerfCommit = now;
+    const id = `${report.at.replace(/[:.]/g, "-")}-${Math.random().toString(36).slice(2, 8)}`;
+    const run = async () => {
+      const url = `${GH_API}/repos/${REPO}/contents/live/telemetry/perf.json`;
+      for (let attempt = 0; ; attempt++) {
+        const got = await fetch(`${url}?ref=${BRANCH}`, { headers: ghHeaders(), signal: AbortSignal.timeout(15000) });
+        let cur: { reports?: unknown[] } = {};
+        let sha: string | undefined;
+        if (got.ok) {
+          const j = (await got.json()) as { content?: string; sha?: string };
+          sha = j.sha;
+          try { cur = JSON.parse(Buffer.from(j.content ?? "", "base64").toString("utf8")); } catch { cur = {}; }
+        } else if (got.status !== 404) {
+          throw new Error(`GET perf.json: HTTP ${got.status}`);
+        }
+        const reports = Array.isArray(cur.reports) ? cur.reports : [];
+        reports.push({ id, ...report });
+        const doc = {
+          format: "nangijala-client-perf@1",
+          _comment:
+            "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here " +
+            "by the server. The maintainer plays on a phone and tests in production; the headless " +
+            "harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these " +
+            "are the only honest numbers for the paths that matter. Newest last; the file keeps the " +
+            "most recent reports only.",
+          updated_at: new Date(now).toISOString(),
+          reports: reports.slice(-PERF_KEEP),
+        };
+        const body2: Record<string, unknown> = {
+          message: "live: client perf report",
+          content: Buffer.from(JSON.stringify(doc, null, 2) + "\n", "utf8").toString("base64"),
+          branch: BRANCH,
+        };
+        if (sha) body2.sha = sha;
+        const put = await fetch(url, { method: "PUT", headers: ghHeaders(), body: JSON.stringify(body2), signal: AbortSignal.timeout(15000) });
+        if (put.ok) return;
+        if ((put.status === 409 || put.status === 422) && attempt < 2) continue;
+        throw new Error(`PUT perf.json: HTTP ${put.status}`);
+      }
+    };
+    const job = commitChain.then(run, run);
+    commitChain = job.then(() => undefined, () => undefined);
+    try { await job; res.json({ ok: true, id }); }
+    catch (e) { res.status(502).json({ error: String((e as Error).message).slice(0, 200) }); }
   });
 
   app.post("/api/live/refresh", (_req, res) => {
