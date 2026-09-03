@@ -683,18 +683,45 @@ test("topFaceOnly drops the wall band and touches nothing else", { skip: skip ||
     const out = topFaceOnly(SHEETS, src);
     assert.equal(out.w, SHEETS.fw, "keeps plate geometry");
     assert.equal(out.h, SHEETS.fh, "keeps plate geometry");
+    // the bottom surface row of each column, which the margin replicates
+    const rep = new Set<number>();
+    for (let x = 0; x < SHEETS.fw; x++) {
+      let bottom = -1;
+      for (let y = 0; y < SHEETS.fh; y++) if (SHEETS.libTop[y * SHEETS.fw + x]) bottom = y;
+      if (bottom >= 0 && bottom + 1 < SHEETS.fh && a.data[(bottom * SHEETS.fw + x) * 4 + 3] > 0)
+        rep.add((bottom + 1) * SHEETS.fw + x);
+    }
     let kept = 0;
+    let margin = 0;
     for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++) {
       if (SHEETS.libTop[i]) {
         // the top face survives byte for byte
         for (let c = 0; c < 4; c++) assert.equal(out.data[i * 4 + c], a.data[i * 4 + c], `${path} top px ${i} ch ${c}`);
         if (out.data[i * 4 + 3] > 0) kept++;
+      } else if (rep.has(i)) {
+        /* THE ONE ROW OF MARGIN, AND IT IS SURFACE, NOT WALL. A top-face-only
+         * plate interlocks with its neighbour by exactly one row at dy=14 — the
+         * only zero-slack seam in the game — so each column carries one more
+         * row, copied from ITS OWN bottom surface pixel. Copying the plate's
+         * next row instead is copying the WALL BAND, which is what put 76
+         * (76,138,152) texels per plate onto the sea as the maintainer's dark
+         * dotted zigzag. This asserts the difference. */
+        const src = i - SHEETS.fw;
+        for (let c = 0; c < 4; c++) assert.equal(out.data[i * 4 + c], a.data[src * 4 + c], `${path} margin px ${i} ch ${c}`);
+        margin++;
       } else {
-        // and NOTHING outside it does — render3's `out = zeros; out[top] = a[top]`
+        // and NOTHING else outside it does — render3's `out = zeros; out[top] = a[top]`
         for (let c = 0; c < 4; c++) assert.equal(out.data[i * 4 + c], 0, `${path} wall px ${i} ch ${c}`);
       }
     }
     assert.equal(kept, 924, `${path} keeps its whole top face`);
+    assert.equal(margin, 64, `${path} carries one margin row per column`);
+    // NO WALL PIXEL SURVIVES ANYWHERE: every out-of-mask texel is a byte-exact
+    // copy of the surface texel directly above it.
+    for (const i of rep) {
+      const src = i - SHEETS.fw;
+      assert.ok(SHEETS.libTop[src], `${path} margin ${i} must copy a top-face texel`);
+    }
   }
 });
 

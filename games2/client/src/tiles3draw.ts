@@ -438,34 +438,36 @@ export function topFaceOnly(sheets: PatternSheets, src: Pixels): Pixels {
     out.data[i * 4 + 2] = a.data[i * 4 + 2];
     out.data[i * 4 + 3] = a.data[i * 4 + 3];
   }
-  /* ONE ROW OF MARGIN, and this is the whole reason a liquid needs it.
+  /* ONE ROW OF MARGIN, REPLICATED FROM THE SURFACE — never the wall band.
    *
-   * A top face is the 29-row diamond, and the ground lays tiles at dy=14, so
-   * two neighbours overlap by EXACTLY ONE ROW. Every other ground keeps its
-   * 46-row plate — wall included — and overlaps by seventeen, which hides any
-   * error. A liquid drops the wall and is left with the minimum overlap the
-   * geometry allows: zero margin, so any per-op slip of a single pixel opens a
-   * hole, and a hole on water shows the bare fill because there is no wall
-   * behind it. That is the maintainer's dotted zigzag — measured on his own
-   * device, present on water long after the same artefact left sand, with the
-   * raster (924 px / 29 rows), the mask and the pitch (+28 per diagonal step)
-   * all verified correct.
+   * A top face is the 29-row diamond and the ground lays tiles at dy=14, so two
+   * neighbours interlock with an overlap of EXACTLY ONE ROW. Every other ground
+   * keeps its whole 46-row plate — wall included — and overlaps by seventeen;
+   * a tiles2 world's tile art is 64 px tall and overlaps by forty-nine, which
+   * is why the old maps never had a seam to get wrong at all (maintainer
+   * 2026-09-03, the_island2 beside the_game: "0 zigzag. it just works"). A
+   * top-face-only plate is the ONLY thing in the game with zero slack, and at a
+   * one-row interlock any single missing row is a line of whatever lies behind
+   * the sea. That is the class, and it is why only liquids still show it.
    *
-   * So carry the row BELOW each column's top face when the art has one. It is
-   * covered by the tile in front either way (that tile spans rows 14..42 of
-   * this one), so nothing new is ever visible; it only restores the margin the
-   * wall used to provide. Honest about what this is: the residual per-op cause
-   * is still unnamed, and this removes the class rather than that instance. */
+   * So each column carries ONE more row, and it is a COPY OF THAT COLUMN'S OWN
+   * BOTTOM SURFACE PIXEL. Copying the art's next row instead — the plate's wall
+   * band — is what put 76 wall texels per plate back onto the sea: (76,138,152)
+   * against a (126,183,199) top face, i.e. the dark dotted line itself, and the
+   * maintainer's device measured 146 px of exactly that colour along the tile
+   * edges with ZERO background texels in the same sample. Replicating the
+   * surface cannot do that in either direction: where the tile in front covers
+   * the row it is invisible, and where nothing covers it the sea is one pixel
+   * deeper. `topFaceOnly` therefore still carries no wall pixel anywhere —
+   * pinned by its gate, which the wall-copying version failed. */
   for (let x = 0; x < fw; x++) {
     let bottom = -1;
     for (let y = 0; y < fh; y++) if (libTop[y * fw + x]) bottom = y;
     if (bottom < 0 || bottom + 1 >= fh) continue;
-    const si = (bottom + 1) * fw + x;
-    if (a.data[si * 4 + 3] === 0) continue;
-    out.data[si * 4] = a.data[si * 4];
-    out.data[si * 4 + 1] = a.data[si * 4 + 1];
-    out.data[si * 4 + 2] = a.data[si * 4 + 2];
-    out.data[si * 4 + 3] = a.data[si * 4 + 3];
+    const from = bottom * fw + x;
+    if (out.data[from * 4 + 3] === 0) continue;
+    const to = (bottom + 1) * fw + x;
+    for (let c = 0; c < 4; c++) out.data[to * 4 + c] = out.data[from * 4 + c];
   }
   return out;
 }
@@ -896,7 +898,9 @@ export class Tiles3Textures {
       const liquidGround = LIQUID_TILE_GROUNDS.includes(cell.ground);
       if (art && art.kind === "liquid") key = this.liquid(art.topRGB);
       else if (art && (art.kind === "conform" || art.topOnly || liquidGround))
-        key = this.plate({ ...art, topOnly: true }, cell.ground);
+        // a CONFORM repaints its own wall band and must keep it (see plateKey's
+        // note); only a liquid ground is forced onto the top-face path.
+        key = this.plate(liquidGround ? { ...art, topOnly: true } : art, cell.ground);
       else key = this.o.textures.exists(op.key) ? op.key : null;
       if (key) out.push(key === op.key ? op : { ...op, key });
     }

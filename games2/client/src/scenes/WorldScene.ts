@@ -1807,6 +1807,43 @@ export class WorldScene extends Phaser.Scene {
        * device is the only one that can say otherwise, which is the whole point
        * of reporting it rather than shipping another silent guess. */
       nonInt: this.groundNonInt,
+      /* THE TOP-FACE TEXTURE HIS DEVICE ACTUALLY BUILT. A liquid draws
+       * top-face-only: 924 opaque px over 29 rows, the wall stripped. If HIS
+       * build carries more rows, the wall is in the texture and every correct
+       * placement in the world cannot help — which would explain the 146 px of
+       * water WALL colour (76,138,152) his last sample carried along the tile
+       * edges. Mine measures 924/29; this is the one thing about his that I
+       * have never measured. */
+      topFace: (() => {
+        try {
+          const k = Object.keys(this.textures.list).find((n) => n.startsWith("t3f:"));
+          if (!k) return "none";
+          const src = this.textures.get(k).getSourceImage() as CanvasImageSource & { width: number; height: number };
+          const cv = document.createElement("canvas");
+          cv.width = src.width;
+          cv.height = src.height;
+          const g2 = cv.getContext("2d");
+          if (!g2) return "no-ctx";
+          g2.clearRect(0, 0, cv.width, cv.height);
+          g2.drawImage(src, 0, 0);
+          const dd = g2.getImageData(0, 0, cv.width, cv.height).data;
+          let opaque = 0;
+          let rows = 0;
+          let last = -1;
+          for (let y = 0; y < cv.height; y++) {
+            let n = 0;
+            for (let x = 0; x < cv.width; x++) if (dd[(y * cv.width + x) * 4 + 3] > 0) n++;
+            if (n) {
+              rows++;
+              last = y;
+              opaque += n;
+            }
+          }
+          return `${cv.width}x${cv.height} opaque=${opaque} rows=${rows} lastRow=${last} (expect 924/29/28)`;
+        } catch {
+          return "err";
+        }
+      })(),
       anchorFrac: this.groundAnchor
         ? +(Math.abs(this.groundAnchor.ax % 1) + Math.abs(this.groundAnchor.ay % 1)).toFixed(3)
         : -1,
