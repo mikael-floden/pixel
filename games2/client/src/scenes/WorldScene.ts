@@ -1694,6 +1694,15 @@ export class WorldScene extends Phaser.Scene {
      *  line — exact, and not the grid diagonal with its cell-sized slack. */
     point?: boolean;
     depth: number;
+    /** Where the thing is actually DRAWN, when that differs from its anchor
+     *  line: a scenery piece is LIFTED over the tiles it overlaps (the shared
+     *  rule's `above`), and a body that must pass in front of it has to clear
+     *  what is drawn, not the anchor. Terrain draws at its anchor and leaves
+     *  this undefined. NEVER fold this into `depth` — `depth` answers "is it
+     *  in front of me", and a lifted value there reads a body standing in
+     *  FRONT of a tree as standing behind it (maintainer 2026-09-03: "when I
+     *  stand under this tree the player's head is not visible"). */
+    drawDepth?: number;
     x0: number;
     x1: number;
     y0: number;
@@ -10329,6 +10338,7 @@ export class WorldScene extends Phaser.Scene {
       for (const o of this.occluderMeta) {
         if (o === self) continue; // never occlude yourself — see the note above
         if (o.x1 < sx0 || o.x0 > sx1 || o.y1 < sy0 || o.y0 > sy1) continue;
+        const od = o.drawDepth ?? o.depth; // what it DRAWS at — see drawDepth
         const higher = o.top > lvl;
         // (a) Wall genuinely between the camera and the feet point.
         const t0 = Math.max(o.col - colf, o.row - rowf);
@@ -10380,9 +10390,17 @@ export class WorldScene extends Phaser.Scene {
           b.lx >= o.x0 - 6 &&
           b.lx <= o.x1 + 6;
         if (rayBlocked || faceOverFeet || solidArtOver) {
-          below = Math.min(below, o.depth);
+          below = Math.min(below, od);
           coverY = Math.min(coverY, o.y0);
-        } else if (!o.solid || colf + rowf > o.col + o.row + 1) {
+        } else if (
+          !o.solid ||
+          // POINT-ANCHORED (scenery): its own anchor line is the exact
+          // comparison — the cell+1 rule is a whole cell of slack, and a body
+          // standing under a tree's canopy but in front of its trunk sits
+          // inside that slack, so it never lifted and the (lifted) tree drew
+          // over its head. Grid-anchored terrain keeps the cell rule.
+          (o.point ? b.lyFlat > o.depth : colf + rowf > o.col + o.row + 1)
+        ) {
           // Overlapping, not covering → lift the sprite above it. For
           // STANDABLE terrain this must stay unconditional: the flat tile
           // in FRONT of the feet has a higher painter depth and would
@@ -10391,7 +10409,7 @@ export class WorldScene extends Phaser.Scene {
           // of their front corner — their bottom-anchored tall art
           // (128px spires) overlaps characters standing well BEHIND
           // them, and the blanket lift drew those on top of the pillar.
-          above = Math.max(above, o.depth);
+          above = Math.max(above, od);
         }
       }
       if (above > -Infinity) depth = Math.max(depth, above + 0.6);
@@ -13911,7 +13929,7 @@ export class WorldScene extends Phaser.Scene {
         r.meta,
       );
       r.img.setDepth(d.depth + (r.img.depth - r.hbDepth)); // keep this rebuild's tie-breaking epsilon
-      if (r.meta) r.meta.depth = d.depth;
+      if (r.meta) r.meta.drawDepth = d.depth; // the anchor line in `depth` stays put
       if (r.lo) {
         r.lo.pd = d.depth;
         r.lo.cover = d.coverY ?? Infinity;
