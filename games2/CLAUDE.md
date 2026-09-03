@@ -656,6 +656,58 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     full-height column band). Dev A/B:
     `__ml.groundPartial(on)`, `__ml.groundPrefetch(on)`; `__ml.groundScroll()`
     reports the cell-repaint counters and the ring's queue.
+  - **THE BAND IS PAINTED IN SLICES, AND THE RING COMPOSES AHEAD (#9).** The
+    scroll made the ground redraw cheaper but left it a SPIKE: measured with a
+    per-frame hitch recorder on a held-key straight run into fresh terrain
+    (`scripts/_tmp-hitchrun.mjs`, `__ml.hitch(true)` then `__ml.hitch()`), one
+    frame in every ~1.5 s carried 60-98 ms of JS — the ~256 px latch at run
+    speed (GROUND_MARGIN/2 over ~175 px per second) — of which 33-44 ms was
+    COMPOSING 66-98 brand-new boundary/plate textures (a canvas blend plus a GPU
+    upload each, ~0.45 ms here and 2-4 ms on a phone). That one frame IS the
+    freeze the maintainer felt all day; every earlier win reduced average cost
+    and left the spike standing.
+    Two changes remove it: (1) the exposed band is QUEUED, not painted — the
+    texture reaches GROUND_MARGIN (512 px) past the screen and a step exposes at
+    most 256 px, so a fresh band is invisible for ~2.9 s at run speed; it is cut
+    into `GROUND_SLICE_PX` (384 px) slices along its long axis and one is painted
+    per frame (`t3paintSliceStep`). Identical pixels (the slices are disjoint
+    rects through the same clipped pass the bands used). THE SLICE SIZE IS A
+    GPU TRADE, not just a JS one: every `beginDraw`/`endDraw` bracket costs a
+    full capture-target clear AND a full-texture blit whatever it draws
+    (`DynamicTexture.beginDraw` → `RenderTarget.bind`, `endDraw` → `blitFrame`),
+    so more slices spread the JS but multiply whole-texture GPU passes; 384 px
+    gives 4-8 slices, which keeps the GPU within ~2x the unsliced scroll.
+    A new scroll FLUSHES what is owed before copying the picture forward, a full
+    paint drops it, and every probe that reads the texture back flushes first —
+    so a slice can never paint into a swapped texture or a stale anchor.
+    (2) `t3prefetchStep` now also COMPOSES the ring's cells, `GROUND_RING_COMPOSE`
+    (6) per frame, so the band's compositions are cache hits by the time it is
+    painted; the ring stands down entirely on any frame that scrolled or painted
+    a slice, so its work never stacks onto a frame the player would feel.
+    (3) THE RING'S OWN ALLOCATIONS: `t3armRing` used to materialise the grown
+    window as ~11,000 `[col,row]` PAIRS on every latch just to filter them, and
+    the prune rebuilt an 11,000-entry Set from them. It now walks the window
+    ONCE, keeps a Set of cell INDICES (what the prune tests) and materialises
+    only the cells outside the drawn window — ~11,000 fewer short-lived arrays
+    per latch, which is GC pressure arriving on exactly the periodic frames.
+    Dev A/B: `__ml.groundSlices(on)` (off = the whole band in the scroll's own
+    frame); `__ml.hitch()` returns the worst frames of a run with each one's
+    profiled sections, its compositions, and `other` = frame total minus every
+    section (render + GPU + unprofiled JS — the discriminator that told us the
+    harness is 99% GPU-starved and the spike is ours).
+  - **A LIT COPY IS CROPPED BY COVERING TERRAIN — scenery and props too.** Every
+    scenery piece and solid prop draws twice: the base image in the world layer
+    (painter-sorted, correctly hidden behind terrain) and a LIT COPY at
+    `litDepth` (900_001+), above every terrain occluder. Bodies have always
+    cropped that copy at the covering wall's top line (`coverY` in
+    `syncLitCopy`); scenery never did, so a tree standing behind a hill drew its
+    whole self over the hill (maintainer 2026-09-03, with a screenshot: "the
+    trees around the player should be covered by the hill"). `litCoverY` is the
+    piece twin of that test — the smallest top line among TERRAIN columns that
+    draw in front of the piece (painter depth) and stand higher than its ground;
+    other billboards are skipped (`point`), because two billboards interleave by
+    painter order exactly as bodies do. Cached per rebuild: both the piece and
+    the terrain are static.
   - **The light fields have a resolution switch (dev A/B, phone-testable).**
     The three full-screen passes (light, mist, depth fog) render at the canvas
     size — device pixels at rs>1 (~1.8 M fragments each on a 891x2000 phone,
