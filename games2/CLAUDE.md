@@ -656,6 +656,16 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     full-height column band). Dev A/B:
     `__ml.groundPartial(on)`, `__ml.groundPrefetch(on)`; `__ml.groundScroll()`
     reports the cell-repaint counters and the ring's queue.
+  - **The light fields have a resolution switch (dev A/B, phone-testable).**
+    The three full-screen passes (light, mist, depth fog) render at the canvas
+    size — device pixels at rs>1 (~1.8 M fragments each on a 891x2000 phone,
+    the light one marching the heightmap) — and are the GPU's whole bill.
+    `?light=0.5` builds them at half size (a quarter of the fragments) and
+    upsamples the overlays LINEAR (`lightScale()` in nightlight.ts; remembered
+    in localStorage `ml-light-scale`, `?light=1` restores). Phaser sets the
+    shader's `resolution` to its own size and every pass samples normalised
+    over uCam, so nothing else moves; shadow edges go ~2 px soft. The default
+    stays 1 until the maintainer's `?fps=1` numbers say the GPU is the bill.
   - **The deferred animation batch is PACED (#7).** `loadDeferredAnims` (every
     character's non-boot states, every NPC rotation/idle frame, 525 monster
     combat strips, ~1,000 files) streams behind the live world, and each landed

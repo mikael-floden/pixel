@@ -1091,6 +1091,30 @@ const FIELD_KEY = "night-light-field";
  * BLOCK×BLOCK cells holding the maximum of uHeight's R over the block, in the
  * same byte packing, so a march can prove a whole block cannot be hit and skip
  * its fetches. Built beside the heightmaps in buildHeightmap. */
+/** THE LIGHT FIELDS' RESOLUTION, as a fraction of the canvas (dev A/B for the
+ *  maintainer's phone): `?light=0.5` renders the three full-screen passes
+ *  (light, mist, depth fog) at half size and upsamples them LINEAR, i.e. a
+ *  quarter of the fragments; remembered in localStorage `ml-light-scale`,
+ *  `?light=1` restores. The passes sample everything normalised over uCam and
+ *  Phaser sets `resolution` to the shader's own size, so nothing else moves. */
+function lightScale(): number {
+  try {
+    const q = new URLSearchParams(location.search).get("light");
+    if (q !== null) {
+      const v = Number(q);
+      if (Number.isFinite(v) && v > 0 && v <= 1) {
+        localStorage.setItem("ml-light-scale", String(v));
+        return v;
+      }
+    }
+    const v = Number(localStorage.getItem("ml-light-scale"));
+    if (Number.isFinite(v) && v > 0 && v <= 1) return v;
+  } catch {
+    /* storage/location blocked: full size */
+  }
+  return 1;
+}
+
 const BLOCK = 8;
 const BLOCK_KEY = "world-heightmap-blockmax";
 
@@ -1961,6 +1985,10 @@ export class NightLights {
    * the main field: fresh key per size, rebuilt on resize). */
   private buildMistShader(width: number, height: number) {
     if (!this.mistBase || width <= 0 || height <= 0) return;
+    const full = { width, height };
+    const ls = lightScale();
+    width = Math.max(1, Math.round(width * ls));
+    height = Math.max(1, Math.round(height * ls));
     this.mistShader?.destroy();
     const key = `${MIST_KEY}-${this.fieldCount++}`;
     const s = this.scene.add
@@ -1977,12 +2005,13 @@ export class NightLights {
       s.setUniform("uSkip.value", this.skipOn ? 1 : 0);
     } else s.setUniform("uSkip.value", 0);
     s.setRenderToTexture(key);
+    if (ls !== 1) this.scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
     this.mistShader = s;
     const old = this.mistOverlay!.texture.key;
     this.mistOverlay!
       .setTexture(key)
-      .setPosition(width / 2, height / 2)
-      .setScale(1);
+      .setPosition(full.width / 2, full.height / 2)
+      .setScale(full.width / width, full.height / height);
     if (old.startsWith(MIST_KEY) && this.scene.textures.exists(old)) {
       this.scene.textures.remove(old);
     }
@@ -1991,6 +2020,10 @@ export class NightLights {
   /** (Re)create the depth-fog shader + render target (same lifecycle rules). */
   private buildDepthFogShader(width: number, height: number) {
     if (!this.depthFogBase || width <= 0 || height <= 0) return;
+    const full = { width, height };
+    const ls = lightScale();
+    width = Math.max(1, Math.round(width * ls));
+    height = Math.max(1, Math.round(height * ls));
     this.depthFogShader?.destroy();
     const key = `${DEPTHFOG_KEY}-${this.fieldCount++}`;
     const s = this.scene.add
@@ -2016,9 +2049,13 @@ export class NightLights {
     this.fogRoomBound = this.scene.textures.exists(ROOM_KEY);
     if (this.fogRoomBound) s.setSampler2D("uRoom", ROOM_KEY, 2);
     s.setRenderToTexture(key);
+    if (ls !== 1) this.scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
     this.depthFogShader = s;
     const old = this.depthFogOverlay!.texture.key;
-    this.depthFogOverlay!.setTexture(key).setPosition(width / 2, height / 2).setScale(1);
+    this.depthFogOverlay!
+      .setTexture(key)
+      .setPosition(full.width / 2, full.height / 2)
+      .setScale(full.width / width, full.height / height);
     if (old.startsWith(DEPTHFOG_KEY) && this.scene.textures.exists(old)) {
       this.scene.textures.remove(old);
     }
@@ -2027,6 +2064,10 @@ export class NightLights {
   /** (Re)create the shader + its render target at the given size. */
   private buildShader(width: number, height: number) {
     if (!this.base || width <= 0 || height <= 0) return;
+    const full = { width, height };
+    const ls = lightScale();
+    width = Math.max(1, Math.round(width * ls));
+    height = Math.max(1, Math.round(height * ls));
     this.shader?.destroy();
     // A fresh texture key per size: destroying a shader doesn't unregister
     // its render target, and re-binding an existing key throws.
@@ -2065,12 +2106,13 @@ export class NightLights {
     this.roomBound = this.scene.textures.exists(ROOM_KEY);
     if (this.roomBound) s.setSampler2D("uRoom", ROOM_KEY, 4);
     s.setRenderToTexture(key);
+    if (ls !== 1) this.scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
     this.shader = s;
     const old = this.overlay!.texture.key;
     this.overlay!
       .setTexture(key)
-      .setPosition(width / 2, height / 2)
-      .setScale(1);
+      .setPosition(full.width / 2, full.height / 2)
+      .setScale(full.width / width, full.height / height);
     if (old.startsWith(FIELD_KEY) && this.scene.textures.exists(old)) {
       this.scene.textures.remove(old);
     }
