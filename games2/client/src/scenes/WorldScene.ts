@@ -733,8 +733,10 @@ const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
  *  player/monsters/npcs/other scenery"). Its own painter line is kept as a
  *  small offset so two overlapping rugs still sort against each other. */
 const SCENERY_FLAT_DEPTH = -500_000;
+/** How far AHEAD the prefetch reaches when the direction of travel is not yet
+ *  known (the first paint after a join or a teleport) — see t3armRing. */
 const GROUND_RING = 512;
-const GROUND_RING_STEP = 150;
+const GROUND_RING_STEP = 80;
 /** THE BAND IS PAINTED IN SLICES, one per frame — see t3paintSliceStep. Slice
  *  depth in texture px along the band's long axis. The texture reaches
  *  GROUND_MARGIN (512 px) beyond the view and a step exposes at most 256 px, so
@@ -747,7 +749,7 @@ const GROUND_RING_STEP = 150;
  *  while the whole-texture GPU work stays within ~2x the unsliced scroll. */
 const GROUND_SLICE_PX = 384;
 /** Composed boundary/plate textures the PREFETCH RING may build per frame. */
-const GROUND_RING_COMPOSE = 6;
+const GROUND_RING_COMPOSE = 3;
 /** Files in flight for the DEFERRED animation batch — see loadDeferredAnims.
  *  Dev A/B: localStorage `ml-deferred-parallel` overrides (0 = the loader's own). */
 const DEFERRED_PARALLEL = 2;
@@ -1635,6 +1637,9 @@ export class WorldScene extends Phaser.Scene {
   private groundSliceQ: { x0: number; y0: number; x1: number; y1: number }[] = [];
   private groundSliceCtx: { ax: number; ay: number; mask: Map<number, number> | null; cuts: Map<number, number> | null; top: number } | null = null;
   private groundSliceStats = { runs: 0, slices: 0, ms: 0, flushes: 0 };
+  /** The last anchor shift — the direction the world is travelling, which is
+   *  the only direction worth prefetching (t3armRing). */
+  private groundLastShift = { x: 0, y: 0 };
   private groundSliced = true;
   private groundRedrewThisFrame = false;
   private worldUp = false;
@@ -3658,7 +3663,7 @@ export class WorldScene extends Phaser.Scene {
           this.groundSliced = on;
           this.t3flushSlices();
         }
-        return { on: this.groundSliced, pending: this.groundSliceQ.length, ...this.groundSliceStats, ms: +this.groundSliceStats.ms.toFixed(1) };
+        return { on: this.groundSliced, pending: this.groundSliceQ.length, ...this.groundSliceStats, ms: +this.groundSliceStats.ms.toFixed(1), shift: this.groundLastShift, ring: this.t3ringQueue.length - this.t3ringAt };
       },
       groundRedraw: (cull?: boolean, cache?: boolean) => {
         // The switches are applied for THIS forced redraw only and restored
@@ -12784,6 +12789,7 @@ export class WorldScene extends Phaser.Scene {
      * screen and a step exposes at most half of that, so nothing in the band
      * can be seen for ~2.9 s. It is QUEUED in slices and painted one per frame
      * (t3paintSliceStep) — identical pixels, none of the frames long. */
+    this.groundLastShift = { x: sx, y: sy };
     this.groundSliceCtx = { ax, ay, mask, cuts, top };
     this.groundSliceQ = [];
     for (const b of bands) {
@@ -12991,7 +12997,23 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     const win = this.t3groundWindow(ax, ay, 0, 0, w, h);
-    const ring = this.t3groundWindow(ax, ay, -GROUND_RING, -GROUND_RING, w + 2 * GROUND_RING, h + 2 * GROUND_RING);
+    /* ONLY WHAT THE NEXT STEP WILL ACTUALLY NEED — the window as it will stand
+     * after ANOTHER step of the same size, minus what is drawn now. A RING
+     * around all four sides prefetched three sides nobody was walking towards:
+     * ~6,100 cells to grind at 150 a frame, which is ~41 frames — longer than
+     * the 1.46 s between latches at run speed, so the ring never stopped
+     * working and its per-frame cost (resolves plus compositions) was paid on
+     * EVERY frame of a run. Measured, that was the sustained bill the
+     * maintainer felt as "I cannot get a smooth FPS" after the spike itself was
+     * spread. The leading strip is a quarter to a half of the ring and is
+     * exactly what the next band paints. Direction unknown (first paint after a
+     * join or teleport) falls back to the symmetric ring. */
+    const dx0 = this.groundLastShift.x;
+    const dy0 = this.groundLastShift.y;
+    const ring =
+      dx0 === 0 && dy0 === 0
+        ? this.t3groundWindow(ax, ay, -GROUND_RING, -GROUND_RING, w + 2 * GROUND_RING, h + 2 * GROUND_RING)
+        : this.t3groundWindow(ax + dx0, ay + dy0, 0, 0, w, h);
     /* ONE WALK, TWO OUTPUTS, NO INTERMEDIATE ARRAY. This ran on every ground
      * latch (~1.5 s at run speed) and used to materialise the grown window as
      * ~11,000 [col,row] PAIRS just to filter them — 11,000 arrays plus the

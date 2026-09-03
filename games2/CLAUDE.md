@@ -681,7 +681,7 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     paint drops it, and every probe that reads the texture back flushes first —
     so a slice can never paint into a swapped texture or a stale anchor.
     (2) `t3prefetchStep` now also COMPOSES the ring's cells, `GROUND_RING_COMPOSE`
-    (6) per frame, so the band's compositions are cache hits by the time it is
+    (3) per frame, so the band's compositions are cache hits by the time it is
     painted; the ring stands down entirely on any frame that scrolled or painted
     a slice, so its work never stacks onto a frame the player would feel.
     (3) THE RING'S OWN ALLOCATIONS: `t3armRing` used to materialise the grown
@@ -690,6 +690,23 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     ONCE, keeps a Set of cell INDICES (what the prune tests) and materialises
     only the cells outside the drawn window — ~11,000 fewer short-lived arrays
     per latch, which is GC pressure arriving on exactly the periodic frames.
+    THE PREFETCH IS DIRECTIONAL, not a ring (2026-09-03). A ring around all four
+    sides prefetched three sides nobody was walking towards: ~6,100 cells at 150
+    a frame is ~41 frames, longer than the 1.46 s between latches, so it never
+    stopped working and its per-frame cost was paid on EVERY frame of a run.
+    `t3armRing` now queues the window as it will stand after ANOTHER step of the
+    same anchor shift, minus what is drawn — exactly the strip the next band
+    paints (direction unknown, i.e. the first paint after a join or teleport,
+    falls back to the symmetric ring). Measured on the same bench: prefetch fell
+    from 536-687 ms per run (3.5 ms/frame, max 25) to ~300 ms (1.7 ms/frame, max
+    13-16). SLICING ONLY REDISTRIBUTES, and the numbers say so: the band totals
+    249 ms unsliced against 287 ms sliced, with the worst frame moving 81 -> 33
+    ms (maintainer 2026-09-03: "you replaced a 0.5s lag each 1.5s with a longer
+    lag that spans a greater period … I cannot get a smooth FPS"). The sustained
+    floor measured on this machine is 6.5-7.0 ms of JS per frame — x3-6 on a
+    phone against a 16.7 ms budget — spread across the sliced band, the ring,
+    the occluder+scenery rebuild and the per-frame fog/lit-copy pass. Reducing
+    that floor, not spreading it, is the open work.
     Dev A/B: `__ml.groundSlices(on)` (off = the whole band in the scroll's own
     frame); `__ml.hitch()` returns the worst frames of a run with each one's
     profiled sections, its compositions, and `other` = frame total minus every
@@ -758,6 +775,19 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     cross, chess pieces) queues behind it, as before — FIFO — only later. Dev
     A/B: localStorage `ml-deferred-parallel` (0 = the loader's own);
     `__ml.perf()` reports texture adds by key family and the per-frame max.
+- **A DECK'S `thickness` IS THE CONTRACT — never force a course.** `deckCell`
+  draws the slab from `lo = dl - thickness` (or `dl` where `frontCovered`), and
+  `thickness` means "EXTRA face tiles below the top; 0 = the top only"
+  (`shared/src/index.ts`). It used to read `dl - Math.max(1, th)`, which
+  overrode a declared 0 and hung ONE EXTRA STOREY under the deck's whole front
+  row. Over a wall cell that course hides behind the wall and reads as the
+  roof's fascia; over a DOORWAY there is no wall under it, so it hung into the
+  opening and a 5-level door measured 4 — the player hit his forehead walking
+  in (maps2 2026-09-03). Verified against the world: the smithy's roof is deck
+  21, level 6, `thickness: 0`, `frontCovered` false at 430,372, so the old
+  expression drew courses [5,6] where the data says [6]. render3.py fixed the
+  same line on 2026-08-30. the_game ships 15 roof decks at thickness 0, so this
+  was every doorway on the map.
 - `stairs` tiles are ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower,
   cactus, lava) are impassable — `SURFACES`/`surfaceFor` (`road_*` by prefix).

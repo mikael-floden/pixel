@@ -2053,7 +2053,16 @@ export class Tiles3 {
     const th = Math.trunc(dk.thickness ?? 1);
     const set = new Set(dk.cells.map((c) => c.y * view.width + c.x));
     const frontCovered = set.has(y * view.width + x + 1) && set.has((y + 1) * view.width + x);
-    const lo = frontCovered ? dl : Math.max(0, dl - Math.max(1, th));
+    /* THE SLAB'S OWN THICKNESS, NOT A FORCED COURSE. `thickness` is "EXTRA face
+     * tiles below the top; 0 = the top only" (shared/src/index.ts), and every
+     * roof deck the_game ships declares 0 — `Math.max(1, th)` overrode the
+     * contract and hung one extra storey under the whole front row. Over a wall
+     * cell that course hides behind the wall and reads as the roof's fascia;
+     * over a DOORWAY there is no wall under it, so it hung a full storey into
+     * the opening and a 5-level door measured 4 (maps2 2026-09-03, from the
+     * smithy door at 430,372 under a level-6 roof; render3.py fixed the same
+     * line on 2026-08-30 and measures 5.07 levels of clear opening). */
+    const lo = frontCovered ? dl : Math.max(0, dl - th);
     /* A cave lid is rock from underneath whatever its top is made of. */
     const body = dk.kind === "cave" && dg !== "black_rock" && dg !== "grey_stone" ? "grey_stone" : dg;
     const cap = frontCovered ? this.flatTile(dg) : this.overTile(dg, body);
