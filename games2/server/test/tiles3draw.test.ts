@@ -635,12 +635,21 @@ test("a conformed plate is built once per ground, and a liquid once per colour",
   const other = Object.keys(GT).find((g) => g !== c.ground && GT[g]?.palette?.wall)!;
   assert.notEqual(T.plate(art, other), k1, "the wall colour is content");
   assert.equal(T.stats.built, 2);
-  // a published plate is drawn straight from its file: nothing is built
-  assert.equal(T.plate({ kind: "plate", path: c.path, w: TILE, h: PLATE_H } as any, c.ground), artKey(c.path));
-  assert.equal(T.stats.built, 2);
+  /* A PUBLISHED PLATE IS CAPPED: its wall band is repainted in its own surface
+   * colour, so it is a raster under `t3s:`. The raw file keeps `artKey` — that
+   * is what a raised cell's WALL STACK draws — and if the raster cannot be
+   * built the factory FALLS BACK to it, so this can never drop an op (which is
+   * what put tile-sized black holes on the map in cc2b41c975). */
+  const pk = T.plate({ kind: "plate", path: c.path, w: TILE, h: PLATE_H } as any, c.ground);
+  assert.equal(pk, `t3s:${artKey(c.path)}`);
+  assert.notEqual(pk, artKey(c.path));
+  assert.equal(T.stats.built, 3);
+  // the fallback: an unloaded source yields the raw key, never null-and-dropped
+  const T2 = new Tiles3Textures({ textures: fakeTextures().man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas });
+  assert.equal(T2.plate({ kind: "plate", path: "nope.webp", w: TILE, h: PLATE_H } as any, c.ground), null);
   const l1 = T.liquid([10, 20, 30]);
   T.liquid([10, 20, 30]);
-  assert.equal(T.stats.built, 3);
+  assert.equal(T.stats.built, 4);
   const src = fx.man.get(l1)!.getSourceImage() as { pix: Uint8ClampedArray };
   assert.equal(createHash("sha256").update(Buffer.from(src.pix.buffer, 0, src.pix.length)).digest("hex"), rasterSha(liquidDiamond([10, 20, 30], SHEETS)));
 });

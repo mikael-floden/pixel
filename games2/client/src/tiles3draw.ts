@@ -415,6 +415,40 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
   return out;
 }
 
+/** A PLATE'S WALL BAND, REPAINTED IN ITS OWN SURFACE COLOUR.
+ *
+ *  The maintainer's dots measure EXACTLY (171,146,116) — light_beach's palette
+ *  wall — on a (234,210,173) top, one texel wide, at diamond edges. That band
+ *  sits directly under the edge and is ~25% darker than the surface, so it is
+ *  what makes a one-texel error VISIBLE. It is never legitimately visible
+ *  itself: a raised cell is `topOnly` and the band is masked off (the cap's
+ *  x-over-y art is the wall); at level 0 nothing exists below, `exposed` is
+ *  provably false, and the band is overdraw the tiles in front cover (32 rows
+ *  against a 14-row lattice step). So its colour is free.
+ *
+ *  696adf092d did this for CONFORM plates only and his next screenshot still
+ *  measured that colour — the rest come from CLEAN plates, whose band is the
+ *  art file's own pixels. Hence a raster-level repaint, which reaches both. */
+export function capWallToSurface(sheets: PatternSheets, src: Pixels): Pixels {
+  const { fw, fh, libTop, libWall } = sheets;
+  const a = src.w === fw && src.h === fh ? src : cropToArt(src, fw, fh);
+  const out = newPixels(fw, fh);
+  out.data.set(a.data);
+  for (let x = 0; x < fw; x++) {
+    let bottom = -1;
+    for (let y = 0; y < fh; y++) if (libTop[y * fw + x]) bottom = y;
+    if (bottom < 0) continue;
+    const from = bottom * fw + x;
+    if (a.data[from * 4 + 3] === 0) continue;
+    for (let y = 0; y < fh; y++) {
+      const i2 = y * fw + x;
+      if (!libWall[i2] || a.data[i2 * 4 + 3] === 0) continue;
+      for (let c = 0; c < 4; c++) out.data[i2 * 4 + c] = a.data[from * 4 + c];
+    }
+  }
+  return out;
+}
+
 /** render3's `top_face_only`: the surface's TOP FACE alone, the wall band
  *  dropped so the cell's own x-over-y wall shows through — and on a liquid, so
  *  that nothing shows there at all. THE WALL IS NEVER THE SURFACE'S.
@@ -919,7 +953,16 @@ export class Tiles3Textures {
     /* A published or clean plate is drawn straight from its loaded file and is
      * never copied — UNLESS it is top-only, which is a different picture and so
      * a built raster under its own key. */
-    if (art.kind !== "conform" && !art.topOnly) return this.o.textures.exists(key) ? key : null;
+    if (art.kind !== "conform" && !art.topOnly) {
+      /* THE CAPPED RASTER IF IT CAN BE BUILT, THE RAW FILE IF IT CANNOT.
+       * cc2b41c975 forced the build and returned null when the pixel readback
+       * failed — which dropped the op and put TILE-SIZED black holes across the
+       * whole map. The fallback makes this strictly no worse than drawing the
+       * file: worst case is exactly today's picture. */
+      const capped = this.ensure(`t3s:${key}`, () => this.platePixels(art, ground));
+      if (capped) return capped;
+      return this.o.textures.exists(key) ? key : null;
+    }
     return this.ensure(key, () => this.platePixels(art, ground));
   }
 
@@ -1075,6 +1118,7 @@ export class Tiles3Textures {
     /* LAST, over the conformed raster too: conforming REPAINTS the wall band
      * from the ground palette, so masking first would hand it back. */
     if (out && art.topOnly) out = topFaceOnly(this.o.sheets, out);
+    else if (out) out = capWallToSurface(this.o.sheets, out);
     if (out) this.pix.set(key, out);
     return out;
   }
