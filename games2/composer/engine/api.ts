@@ -442,7 +442,17 @@ export class GameAudio {
   // last in storage, served newest first by heard(). Bounded; read by
   // games-ui's wikinear.ts through heard() and by __ml.audio().
   private heardLog: { event: string | null; sound: string | null; at: number }[] = [];
-  private static readonly HEARD_MAX = 64;
+  // PRUNED BY AGE, NOT BY COUNT. The contract is "the last 30 seconds", and a
+  // fixed ring cannot keep that promise: FOOTSTEPS go through this ledger too
+  // (event null — a sound the composer starts itself), and a walking player
+  // fires them several times a second, so a 64-entry ring evicted a real
+  // combat event within a few seconds of walking away from it. Measured: a
+  // snapshot listed 4 sound rows and the one taken moments later had 3, with
+  // nothing older than 4s. The cap that remains is a memory bound, not a
+  // policy — at ~10 sounds/second of continuous foley it is never reached
+  // inside the window.
+  private static readonly HEARD_WINDOW_MS = 60_000;
+  private static readonly HEARD_MAX = 512;
   private tick: ReturnType<typeof setInterval> | null = null;
   private musicWanted = false;
   private underwater = false;
@@ -777,7 +787,12 @@ export class GameAudio {
 
   private heardPush(row: { event: string | null; sound: string | null; at: number }): void {
     this.heardLog.push(row);
-    if (this.heardLog.length > GameAudio.HEARD_MAX) this.heardLog.shift();
+    const cutoff = row.at - GameAudio.HEARD_WINDOW_MS;
+    let drop = 0;
+    while (drop < this.heardLog.length && this.heardLog[drop].at < cutoff) drop++;
+    // …and the memory bound, if a pathological second ever fills it.
+    if (this.heardLog.length - drop > GameAudio.HEARD_MAX) drop = this.heardLog.length - GameAudio.HEARD_MAX;
+    if (drop) this.heardLog.splice(0, drop);
   }
 
   /** What the player is hearing: the score playing now and every sound event

@@ -454,13 +454,23 @@ try {
       ? ok(`the first card is the ground under the feet (${cards[0].href} — "${cards[0].sub}")`)
       : fail(`first card wrong: ${JSON.stringify(cards[0])} for ${items[0]?.domain}/${items[0]?.id}`);
     if (audioUp) {
+      // COUNTED IN THE PAGE'S OWN HEARING SECTION, not by href prefix. Where a
+      // row LINKS is the wiki's business and it changes: `player.jump` is
+      // emitted unscoped but the wiki lists it per hero, so that card now
+      // routes to #/characters/<hero>/player.jump@<hero> — a prefix test on
+      // #/sounds/ called a working card a missing one.
       const audioRows = items.filter((it) => it.domain === "music" || it.domain === "sounds");
-      const audioCards = cards.filter((c) => /^#\/(music|sounds)\//.test(c.href));
-      audioRows.length >= 2 && audioCards.length === audioRows.length
-        ? ok(`the wiki's hearing section renders the audio rows (${audioCards.map((c) => c.href.replace("#/", "")).slice(0, 4).join(", ")})`)
-        : fail(`audio rows ${audioRows.length} vs audio cards ${audioCards.length}: ${JSON.stringify(audioCards)}`);
-      const kick = cards.find((c) => c.href === "#/sounds/combat.kick");
-      kick && /s ago|playing now/.test(kick.sub) ? ok(`the kick card says when (${kick.sub.trim()})`) : fail(`kick card: ${JSON.stringify(kick)}`);
+      const heardCards = await wiki().evaluate(() =>
+        [...document.querySelectorAll(".near-hearing a.card")].map((a) => ({
+          href: a.getAttribute("href"), name: a.querySelector(".card-name")?.textContent ?? "",
+          sub: a.querySelector(".card-sub")?.textContent ?? "" })));
+      audioRows.length >= 2 && heardCards.length === audioRows.length
+        ? ok(`the wiki's hearing section renders every audio row (${heardCards.map((c) => c.name).join(", ")})`)
+        : fail(`${audioRows.length} audio rows sent, ${heardCards.length} cards in .near-hearing: ${JSON.stringify(heardCards)}`);
+      const kick = heardCards.find((c) => /kick/i.test(c.name) || (c.href ?? "").includes("combat.kick"));
+      kick && /s ago|playing now/.test(kick.sub) ? ok(`the kick card says when (${kick.sub.trim()})`) : fail(`kick card: ${JSON.stringify(heardCards)}`);
+      const music = heardCards.find((c) => /playing now/.test(c.sub));
+      music ? ok(`…and the score leads it (${music.name})`) : fail(`no "playing now" row: ${JSON.stringify(heardCards)}`);
     }
   }
   await page.evaluate(() => document.querySelector(".ml-wikiback")?.click());
