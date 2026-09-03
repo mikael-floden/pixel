@@ -1789,6 +1789,14 @@ export class NightLights {
    *  and the right one: a line that survives mode 1 is in the ground texture,
    *  a line that turns red in mode 2 is this pass. */
   shadowDbg = 0;
+  /** OVERLAY ISOLATION (debug switch, 0 = normal). The zigzag is provably NOT
+   *  in the ground texture — an exact unlit palette census at the maintainer's
+   *  own cell and zoom found zero wall-coloured texels — so whatever draws it
+   *  is one of the three full-screen overlays or the sampling to the display.
+   *  1 drops the depth fog, 2 also the mist, 3 also the multiply light pass.
+   *  A line that survives 3 is in the texture or the resample; one that
+   *  disappears at a step names the pass that paints it. */
+  dbgOverlays = 0;
 
   constructor(
     scene: Phaser.Scene,
@@ -3230,6 +3238,21 @@ export class NightLights {
       f.setUniform("uAmbient.value.z", ambient[2]);
       f.setUniform("uRoomOn.value", this.fogRoomBound ? 1 : 0);
       f.setUniform("uIndoorMix.value", this.indoorMix);
+    }
+
+    /* The isolation switch is applied LAST, over whatever the passes above
+     * decided, so no future visibility rule can slip past it. */
+    if (this.dbgOverlays >= 1) {
+      this.depthFogShader?.setVisible(false);
+      this.depthFogOverlay?.setVisible(false);
+    }
+    if (this.dbgOverlays >= 2) {
+      this.mistShader?.setVisible(false);
+      this.mistOverlay?.setVisible(false);
+    }
+    if (this.dbgOverlays >= 3) {
+      this.shader?.setVisible(false);
+      this.overlay?.setVisible(false);
     }
   }
 

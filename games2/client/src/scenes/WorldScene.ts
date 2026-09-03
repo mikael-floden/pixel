@@ -2880,6 +2880,25 @@ export class WorldScene extends Phaser.Scene {
           get: () => !!this.night && this.night.shadowDbg !== 0,
           state: () => ["on", "off", "red"][this.night?.shadowDbg ?? 0],
         },
+        /* OVERLAYS — the same idea as the shadows switch, for the three
+         * full-screen passes. The zigzag is NOT in the ground texture (exact
+         * unlit palette census at his cell and zoom: zero wall-coloured
+         * texels), so it is painted downstream. Each tap removes one pass:
+         * all -> no depth-fog -> no mist -> no light. The step where the line
+         * disappears names the pass; a line that survives "none" is the
+         * texture reaching the display, not the lighting. Four taps instead of
+         * four deploys. */
+        {
+          label: "overlays",
+          act: () => {
+            const n = this.night;
+            if (!n) return;
+            n.dbgOverlays = (n.dbgOverlays + 1) % 4;
+            this.chat.addLog("—", `overlays: ${["all", "no depth-fog", "no mist", "NONE"][n.dbgOverlays]}`);
+          },
+          get: () => !!this.night && this.night.dbgOverlays !== 0,
+          state: () => ["all", "no fog", "no mist", "none"][this.night?.dbgOverlays ?? 0],
+        },
         /* THE PERF BEACON, as a BUTTON — because the maintainer plays from an
          * INSTALLED HOME-SCREEN APP, which has no address bar, so `?perf=1`
          * cannot be typed there at all (his question, 2026-09-03). Same law as
