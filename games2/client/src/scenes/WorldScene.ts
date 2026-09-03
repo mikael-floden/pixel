@@ -12766,11 +12766,15 @@ export class WorldScene extends Phaser.Scene {
     // prevAy + py), which in the new texture is (px - sx, py - sy). Opaque, so
     // under NORMAL blending it replaces the fill exactly.
     next.drawFrame(cur.texture.key, "__BASE", -sx, -sy);
+    // Integer texels — see makeGroundRT. A fractional edge here is a sub-texel
+    // crop, and sub-texel crops are what left background-coloured columns.
     const bands: { x0: number; y0: number; x1: number; y1: number }[] = [];
-    if (sx > 0) bands.push({ x0: W - sx, y0: 0, x1: W, y1: H });
-    else if (sx < 0) bands.push({ x0: 0, y0: 0, x1: -sx, y1: H });
-    if (sy > 0) bands.push({ x0: 0, y0: H - sy, x1: W, y1: H });
-    else if (sy < 0) bands.push({ x0: 0, y0: 0, x1: W, y1: -sy });
+    const IW = Math.ceil(W);
+    const IH = Math.ceil(H);
+    if (sx > 0) bands.push({ x0: IW - sx, y0: 0, x1: IW, y1: IH });
+    else if (sx < 0) bands.push({ x0: 0, y0: 0, x1: -sx, y1: IH });
+    if (sy > 0) bands.push({ x0: 0, y0: IH - sy, x1: IW, y1: IH });
+    else if (sy < 0) bands.push({ x0: 0, y0: 0, x1: IW, y1: -sy });
     /* THE BAND IS NOT PAINTED HERE. Painting it cost 60-98 ms of JS in ONE
      * frame on fresh terrain (measured: ~3,000 blits plus 66-98 texture
      * compositions) — the freeze felt every ~1.5 s while running straight
@@ -13958,8 +13962,17 @@ export class WorldScene extends Phaser.Scene {
     // World-space texture (1 texel = 1 world px): size it in WORLD px so it
     // covers the same view regardless of the device render scale — scale.width
     // is device px (= CSS·rs), so /rs gives the CSS/world width. rs=1 → unchanged.
-    const w = this.scale.width / rs + GROUND_MARGIN * 2;
-    const h = this.scale.height / rs + GROUND_MARGIN * 2;
+    /* INTEGER TEXELS, ALWAYS. `scale.width / rs` is fractional on a real phone
+     * (1080 device px at rs 2.75 = 392.727), and a fractional texture width
+     * makes every rectangle derived from it fractional too: the scroll's band
+     * (x0 = W - sx), the slice rects and the clip crops in t3Blit. A crop on a
+     * fractional edge samples a sub-texel column, and repeated over successive
+     * scrolls those columns stack into the BACKGROUND-COLOURED vertical lines
+     * the maintainer photographed (measured: 2 device px wide, exactly
+     * 0x181c28, the ground fill). The whole-texture paint never showed it —
+     * only the clipped passes do — which is why it arrived with the scroll. */
+    const w = Math.ceil(this.scale.width / rs) + GROUND_MARGIN * 2;
+    const h = Math.ceil(this.scale.height / rs) + GROUND_MARGIN * 2;
     const make = (key: string) => {
       const rt = this.add.renderTexture(0, 0, w, h).setOrigin(0, 0).setDepth(-1_000_000);
       // A key, so the OTHER texture can draw this one's picture (the scroll copy).
