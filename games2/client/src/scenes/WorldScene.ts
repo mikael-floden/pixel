@@ -14930,7 +14930,13 @@ export class WorldScene extends Phaser.Scene {
    *  MAGENTA is a HOLE — nothing painted there — while a line that stays dark is
    *  something drawn (a wall band, a seam, or a full-screen pass). Same shape of
    *  tool as his shadows switch, and it found this bug. */
-  private groundBg(mask: boolean): number {
+  private groundBg(mask: unknown): number {
+    /* `mask` is the indoor cut's own Map (or null) at every call site and is
+     * read for TRUTHINESS only, exactly as the literal it replaced was — hence
+     * `unknown`, not `boolean`. Declaring it boolean is what broke the deploy of
+     * 75aa1e7dba: `npm run typecheck --workspaces` runs the WORKSPACES' own
+     * scripts and silently checks nothing, while CI runs the ROOT script
+     * (`tsc -p shared|server|client`). Run `npm run typecheck` from games2. */
     if (this.groundFillDbg) return 0xff00ff;
     return mask ? 0x000000 : 0x181c28;
   }
