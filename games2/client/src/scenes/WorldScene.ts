@@ -2066,6 +2066,8 @@ export class WorldScene extends Phaser.Scene {
    *  photographs while standing still. When the loader finally goes idle, repaint
    *  once. Bounded by construction: it fires at most once per idle transition. */
   private groundDropsPending = false;
+  /** The terrain loader was busy on a previous frame — see t3drainDrops. */
+  private t3loadWasBusy = false;
   private t3sheetPaths = new Set<string>();
   private groundDirtyCells: number[] = [];
   private repaintGroundPartial = false;
@@ -14203,11 +14205,38 @@ export class WorldScene extends Phaser.Scene {
    *  dropped and cleared the moment the repaint is issued, so a cell whose art
    *  genuinely never arrives costs one repaint, not one per frame. */
   private t3drainDrops(): void {
-    if (!this.groundDropsPending || !this.maps3) return;
+    if (!this.maps3) return;
     const load = this.t3load;
-    if (!load || load.queuedCount > 0 || !load.idle) return;
-    this.groundDropsPending = false;
-    this.repaintWorld();
+    if (!load) return;
+    const idle = load.queuedCount === 0 && load.idle;
+    /* EVERY busy -> idle TRANSITION REPAINTS THE GROUND ONCE.
+     *
+     * THE MAINTAINER FOUND THIS, not me (2026-09-03, after three days): the
+     * zigzag DISAPPEARS when he toggles a Settings switch whose only other
+     * effect is `repaintWorld()`. So a fresh full paint produces the correct
+     * picture and the standing texture does not — the texture was painted while
+     * art was still arriving, and nothing repaints it afterwards while he stands
+     * still, because a repaint is driven by CAMERA LATCHES and a parked camera
+     * never latches. That is why the artefact is intermittent, why tabbing out
+     * and in shrinks it (the return repaints), and why it never reproduced on
+     * this machine, where every plate is resident before the first paint.
+     *
+     * NOT GATED ON DROPPED OPS. It was, and it did not fire: `droppedOps` only
+     * counts ops whose TEXTURE was absent, and the artefact survives with that
+     * count at zero — pressing his button would have painted it magenta
+     * otherwise. Whatever the paint got wrong, a later paint gets right, so the
+     * trigger is simply "the art finished arriving".
+     *
+     * BOUNDED: it fires on the EDGE, not the level — one repaint per transition
+     * out of busy, so a settled world costs nothing and a streaming one costs
+     * one repaint per batch that completes. */
+    if (idle && this.t3loadWasBusy) {
+      this.t3loadWasBusy = false;
+      this.groundDropsPending = false;
+      this.repaintWorld();
+      return;
+    }
+    if (!idle) this.t3loadWasBusy = true;
   }
 
   /** RESOLVE, BUT NEVER TAKE THE FRAME DOWN. `Tiles3.overTile` THROWS when the
