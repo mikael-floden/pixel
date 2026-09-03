@@ -583,6 +583,23 @@ def main():
         for _t in _EXPAND.get(mtop, [mtop]):
             for _s in _EXPAND.get(mside, [mside]):
                 jobs.append((d, f"{_t}__over__{_s}", _t, _s))
+    # REFUSE TO PUBLISH FROM A MISSING SOURCE. Every cell - including the ones a
+    # partial run only means to CARRY OVER - is reached by iterating tiles/matrix/
+    # below, so an absent matrix makes `jobs` empty, writes a manifest with ZERO
+    # cells, and exits 0. Measured 2026-09-03: the raw matrix art is not in every
+    # clone (it is generator input, not published output), and one
+    # `publish.py --cells ...` there emptied the 225-cell manifest and then took
+    # 3,685 plates with it, because transition_plates found no approved keys and
+    # deleted them. Restored from git; nothing reached main. A run with nothing to
+    # publish must be an ERROR, never a silent wipe.
+    if not jobs:
+        ap.error(f"no source cells found under {MATRIX} - refusing to write a manifest "
+                 f"with 0 cells. The raw matrix art is generator input and is absent "
+                 f"from this clone, so nothing can be published or carried over here. "
+                 f"To repaint published art toward a changed palette use "
+                 f"textured_pass.write_textured(manifest), which works off the review "
+                 f"art already on disk.")
+
     for d, cell, top, side in jobs:
         if os.path.basename(d).replace("__over__", "_over_") in dead:
             continue

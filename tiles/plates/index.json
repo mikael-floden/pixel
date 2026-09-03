@@ -1,7 +1,7 @@
 {
  "schema": "tiles3/base-plates@1",
  "domain": "tiles",
- "generated_at": "2026-09-03T14:34:42Z",
+ "generated_at": "2026-09-03T14:58:17Z",
  "generator": "tiles/pipeline/transition_plates.py",
  "_comment": [
   "THE TWO GROUNDS A TRANSITION DIVIDES. tiles/patterns/ publishes the",
@@ -14580,7 +14580,7 @@
    },
    "approved": 253,
    "n_plates": 237,
-   "bytes": 40060,
+   "bytes": 40148,
    "plates": {
     "light_beach__over__black_rock": [
      "0c970059",
@@ -15214,7 +15214,22 @@
      "e3db1074"
     ]
    ],
-   "plates_identical_to_clean": []
+   "plates_identical_to_clean": [
+    "07af856e",
+    "2bdf018e",
+    "325d260d",
+    "3c4829eb",
+    "5f296dd6",
+    "62a611ad",
+    "74ca4593",
+    "7601f94b",
+    "7dc4d39b",
+    "8e222436",
+    "a6a0804f",
+    "a797812e",
+    "be9e2a0e",
+    "ec267864"
+   ]
   },
   "light_soil": {
    "clean": {
@@ -18343,7 +18358,7 @@
    },
    "approved": 210,
    "n_plates": 202,
-   "bytes": 34006,
+   "bytes": 33826,
    "plates": {
     "water__over__black_rock": [
      "023a73fc",
@@ -18832,7 +18847,9 @@
      "faeab321"
     ]
    ],
-   "plates_identical_to_clean": []
+   "plates_identical_to_clean": [
+    "4412e7b5"
+   ]
   }
  }
 }
