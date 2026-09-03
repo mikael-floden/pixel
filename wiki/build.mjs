@@ -2802,19 +2802,29 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
  *
  * On a turned facing a box's base is a parallelogram whose two FRONT edges are
  * the bottom of the silhouette, and those edges run along the ground axes — so
- * each is a line of known slope ±dy/dx, and only its offset has to be found.
- * The offset is taken as the MEDIAN of (y ∓ Kx) over the branch, which is what
- * makes this survive real furniture: a leg or a foot that dips below the base
- * board moves a few columns, never the median.
+ * each is a line of known slope ±dy/dx whose offset is the MEDIAN of (y ∓ Kx)
+ * over that branch: a leg or a foot proud of the base board moves a few
+ * columns, never the median.
  *
- * NOT ANCHORED ON THE LOWEST PIXEL, which is what the first cut did and what
- * he caught within the hour ("Open shelf unit of jars and crocks 008" — a leg
- * 4px proud of the board tilted the whole box and its right edge ran outside
- * the art). NOT SLOPE-MATCHED EITHER: pixel art misses the exact iso line by
- * tenths and the error accumulates over a 60px edge.
+ * THE CORNER IS THEN WALKED TO, NOT FILTERED FOR — and that distinction is the
+ * whole feature. He reported the corners twice: first the box was tilted by a
+ * leg (anchored on the lowest pixel), then it "didn't extend the rect all the
+ * way to the 3 corners" because a strict ±2.5px line membership dropped the
+ * far end of the edge. MEASURED on his own hand fits: along a real base edge
+ * the contour drifts up to 4.6px, while the break where an overhanging top
+ * begins is 28px. So the walk goes outward from the bottom corner while the
+ * drift stays under 6px, tolerates two noisy columns, and stops at the break —
+ * and the corner it returns is the RAW PIXEL there, because that is what he
+ * means by "the rect should literally be on the pixel at the 3 corners".
+ *
+ * Filtering instead of walking is also unsafe in the other direction: taking
+ * the extreme in-tolerance column can jump PAST a break to an unrelated one.
+ *
+ * Reproduces his seven hand-fitted boxes to a mean 0.97px in width, 0.56px in
+ * depth and 1.19px in centre.
  *
  * Per STATE, not per piece: the states of one piece are often different
- * variants — "Open shelf 008" has one 5px wider and 5px lower than the rest.
+ * variants — "Open shelf 008" has one 5px wider and lower than the rest.
  * Cached under each clip's own published art hash, in its own map, so the main
  * 9,983-clip measurement cache is untouched. */
 {
@@ -2823,6 +2833,7 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
   const bases = {};
   let baseMeasured = 0, baseCached = 0, basePieces = 0;
   const median = (xs) => { const a = [...xs].sort((p, q) => p - q); const n = a.length; return n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2; };
+  const TOL = 6;            // drift along a real base edge: 4.6px measured; a break: 28px
   const footprint = (relStrip, fw, fh, turned) => {
     const { w, pix } = decodeWebP(readFileSync(join(ROOT, relStrip)));
     const bottom = new Map();                          // x -> lowest opaque y (first frame)
@@ -2834,20 +2845,27 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
       // South shows no depth at all: only the front edge and how wide it is.
       const band = xs.filter((x) => bottom.get(x) >= lowest - 1.5);
       if (band.length < 4) return null;
-      const l = band[0], r = band[band.length - 1];
-      return [l, lowest, (l + r) / 2, lowest, r, lowest].map((v) => +v.toFixed(1));
+      return [band[0], lowest, (band[0] + band[band.length - 1]) / 2, lowest, band[band.length - 1], lowest].map((v) => +v.toFixed(1));
     }
-    let bx = xs[0]; for (const x of xs) if (bottom.get(x) > bottom.get(bx)) bx = x;
-    const right = xs.filter((x) => x > bx + 2), left = xs.filter((x) => x < bx - 2);
-    if (right.length < 6 || left.length < 6) return null;
-    const cR = median(right.map((x) => bottom.get(x) + K * x));      // the −K front edge
-    const cL = median(left.map((x) => bottom.get(x) - K * x));       // the +K front edge
-    const onR = right.filter((x) => Math.abs(bottom.get(x) + K * x - cR) <= 2.5);
-    const onL = left.filter((x) => Math.abs(bottom.get(x) - K * x - cL) <= 2.5);
-    if (!onR.length || !onL.length) return null;
-    const Rx = Math.max(...onR), Lx = Math.min(...onL);
-    if (Rx - Lx < 6) return null;
-    return [Lx, cL + K * Lx, (cR - cL) / (2 * K), (cR + cL) / 2, Rx, cR - K * Rx].map((v) => +v.toFixed(1));
+    const run = xs.filter((x) => bottom.get(x) >= lowest - 0.5);
+    const bx = (run[0] + run[run.length - 1]) / 2;
+    const right = xs.filter((x) => x > run[run.length - 1] + 1);
+    const left = xs.filter((x) => x < run[0] - 1).reverse();
+    if (right.length < 4 || left.length < 4) return null;
+    const cR = median(right.map((x) => bottom.get(x) + K * x));
+    const cL = median(left.map((x) => bottom.get(x) - K * x));
+    const walk = (cols, at, off) => {
+      let last = null, bad = 0;
+      for (const x of cols) {
+        if (Math.abs(at(x) - off) <= TOL) { last = x; bad = 0; }
+        else if (++bad > 2) break;
+      }
+      return last;
+    };
+    const Rx = walk(right, (x) => bottom.get(x) + K * x, cR);
+    const Lx = walk(left, (x) => bottom.get(x) - K * x, cL);
+    if (Rx === null || Lx === null || Rx - Lx < 6) return null;
+    return [Lx, bottom.get(Lx), bx, lowest, Rx, bottom.get(Rx)].map((v) => +v.toFixed(1));
   };
   for (const o of objects) {
     if (o.hitboxShape !== "rect" || !o.animations) continue;

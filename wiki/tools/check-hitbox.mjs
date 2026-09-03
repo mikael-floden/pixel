@@ -1138,6 +1138,43 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
     ok(se?.shape === "rect", `the default comes up as a RECT, unprompted (${se?.shape})`);
     ok(Math.abs(se.rx - HIS.rx) < 3 && Math.abs(se.ry - HIS.ry) < 1.5,
       `and its SIZE matches the box he fitted by hand within 3px (fitted ${se.rx} × ${se.ry}, his ${HIS.rx} × ${HIS.ry})`);
+    /* THE RECT REACHES THE CORNERS (maintainer 2026-09-03: "you didn't extend
+     * the rect all the way to the 3 corners, the rect should literally be on
+     * the pixel at the 3 corners"). Measured against EVERY box he has fitted
+     * by hand — the only ground truth there is — rather than against the
+     * measurement that produced them. */
+    {
+      const live = JSON.parse((await import("node:fs")).readFileSync(new URL("../../live/tuning/scenery_hitbox.json", import.meta.url), "utf8")).overrides ?? {};
+      const K2 = (D.iso?.dy ?? 15) / (D.iso?.dx ?? 32);
+      const GROUND = { south: 0, "south-east": 45, "south-west": -45 };
+      const solve = (b, dname) => {
+        const [Lx, Ly, , , Rx, Ry] = b;
+        const th = -GROUND[dname] * Math.PI / 180;
+        const eu = [Math.cos(th), Math.sin(th) * K2], ev = [-Math.sin(th), Math.cos(th) * K2];
+        const C = [(Lx + Rx) / 2, (Ly + Ry) / 2], d = [Rx - C[0], Ry - C[1]];
+        const det = eu[0] * ev[1] - eu[1] * ev[0];
+        return { rx: Math.abs((d[0] * ev[1] - d[1] * ev[0]) / det), ry: Math.abs((eu[0] * d[1] - eu[1] * d[0]) / det) * K2, C };
+      };
+      const errs2 = [];
+      for (const [key, rec] of Object.entries(live)) {
+        // A piece TAGGED rect is drawn as one whether or not the record spells
+        // it out — his oldest hand fits were made before the shape key existed.
+        if (rec.auto || !key.includes("#") || !rec.boxes?.length) continue;
+        const [path, st] = key.split("#");
+        const o2 = DATAOBJ.find((x) => x.path === path);
+        if (o2?.hitboxShape !== "rect" && rec.boxes[0].shape !== "rect") continue;
+        const clip = o2?.animations?.[st]?.dirs?.["south-east"];
+        if (!clip?.base) continue;
+        const f = solve(clip.base, "south-east"), b = rec.boxes[0];
+        const pos = b.pos_by_dir?.["south-east"] ?? { ax: b.ax, ay: b.ay };
+        errs2.push({ key, drx: Math.abs(f.rx - b.rx), dry: Math.abs(f.ry - b.ry),
+          dc: Math.hypot(f.C[0] - (clip.fw / 2 + pos.ax), f.C[1] - (clip.fh / 2 + pos.ay)) });
+      }
+      const mean = (k) => errs2.reduce((n, e) => n + e[k], 0) / (errs2.length || 1);
+      const worst = errs2.slice().sort((a, b) => (b.drx + b.dc) - (a.drx + a.dc))[0];
+      ok(errs2.length >= 6 && mean("drx") < 2 && mean("dry") < 1.2 && mean("dc") < 2.5,
+        `the measurement reproduces every box he fitted BY HAND (${errs2.length} of them: mean width ${mean("drx").toFixed(2)}px, depth ${mean("dry").toFixed(2)}px, centre ${mean("dc").toFixed(2)}px; worst ${worst?.key.split("/").pop()})`);
+    }
     const sePos = se.pos_by_dir?.["south-east"];
     ok(sePos && Math.abs(sePos.ax - HIS.se.ax) < 3 && Math.abs(sePos.ay - HIS.se.ay) < 3,
       `and it stands where he stood it on south-east, within 3px (${JSON.stringify(sePos)} vs ${JSON.stringify(HIS.se)})`);
