@@ -1927,6 +1927,13 @@ function makePlayer(entity, kind, opts = {}) {
         // not say what he is looking at.
         dir: cur.dir, tilt: +facingTilt(cur.dir).toFixed(2),
         drawn: boxes.map((b) => +boxRot(entity, b, cur.dir).toFixed(2)),
+        /* The same four corners in FRAME px — canvas-independent. The canvas is
+         * fitted to the box, so its origin moves when the box does and canvas
+         * coordinates cannot be compared across an edit (measured 2026-09-03,
+         * twice: a pinned edge read as "moved 58px" when nothing had moved). */
+        cornersFrame: boxes.map((b) => boxShape(entity, b) === "rect"
+          ? rectCorners(entity, b, cur.dir).map(([x, y]) => [+(fw / 2 + boxPos(b, cur.dir).ax + x).toFixed(3), +(fh / 2 + boxPos(b, cur.dir).ay + y).toFixed(3)])
+          : null),
         // A rect's four corners on the canvas (px) — the perspective, measurable.
         corners: boxes.map((b) => boxShape(entity, b) === "rect"
           ? rectCorners(entity, b, cur.dir).map(([x, y]) => [+(dx + (fw / 2 + boxPos(b, cur.dir).ax) * s + x * s).toFixed(2), +(dy + (fh / 2 + boxPos(b, cur.dir).ay) * s + y * s).toFixed(2)])
@@ -2307,6 +2314,37 @@ function makePlayer(entity, kind, opts = {}) {
         const bottom = (b?.ay ?? 0) + (b?.ry ?? 0);
         editHit(hitSel, { ry: v / 2, ay: +(bottom - v / 2).toFixed(2) });
         return;
+      }
+      /* W GROWS UPWARD FROM ITS LOWER EDGE, ON A RECT (maintainer 2026-09-03:
+       * "The pivot when changing W should be at the center of the bottom-left
+       * edge so that the width always extends upwards. This makes it easy for
+       * me to place the hitbox correct at the bottom and drag the W slider
+       * until it's correct at the top as well").
+       *
+       * W is the extent along the ground's x axis, so the two edges it moves
+       * are the ones at ±rx. Which of them is LOWER on screen depends on the
+       * facing — south-east puts the −x edge at the bottom left, south-west
+       * puts the +x edge at the bottom right — so the pinned edge is chosen by
+       * measuring, never by naming a corner: the sign of sin(angle) says which
+       * edge the projection pushes down. On south the two edges are level and
+       * the left one is pinned, which is the same gesture with nothing to
+       * disambiguate.
+       *
+       * D still pivots on the centre (2026-09-03, earlier the same day) — he
+       * asked for the two rails to behave differently and they do. */
+      if (key === "w") {
+        const b = hitList()[hitSel];
+        if (boxShape(entity, b) === "rect") {
+          const th = boxRot(entity, b, cur.dir) * Math.PI / 180, k = ISO_K();
+          const sigma = Math.sin(th) > 1e-9 ? 1 : -1;          // +1 → the +x edge is the lower one
+          const d = v / 2 - b.rx;                               // half-width delta
+          const pos = boxPos(b, cur.dir);
+          const ax2 = +(pos.ax - sigma * d * Math.cos(th)).toFixed(2);
+          const ay2 = +(pos.ay - sigma * d * Math.sin(th) * k).toFixed(2);
+          if (cur.dir === "south" || !DIR_GROUND_DEG[cur.dir]) editHit(hitSel, { rx: v / 2, ax: ax2, ay: ay2 });
+          else editHit(hitSel, { rx: v / 2, pos_by_dir: { ...(b?.pos_by_dir ?? {}), [cur.dir]: { ax: ax2, ay: ay2 } } });
+          return;
+        }
       }
       if (key === "r") {
         /* ALIGNING A FACING TOUCHES ONLY THAT FACING. South is the base angle

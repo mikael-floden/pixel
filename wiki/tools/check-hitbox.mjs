@@ -865,6 +865,43 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   ok(Math.abs(sAfter.rx - seBefore.rx) < 0.01 && Math.abs(swAfter.ry - seBefore.ry) < 0.01,
     `while W and D stay identical on every facing — one size for the piece (rx ${sAfter.rx}, ry ${swAfter.ry})`);
   await placeOn("S");
+  /* W GROWS UPWARD FROM ITS LOWER EDGE, ON A RECT (maintainer 2026-09-03:
+   * "The pivot when changing W should be at the center of the bottom-left edge
+   * so that the width always extends upwards ... place the hitbox correct at
+   * the bottom and drag the W slider until it's correct at the top as well").
+   * Measured on the drawn corners: of the two edges W moves, the LOWER
+   * midpoint must not move and the box must grow away from it, upward. */
+  {
+    const edges = () => p.evaluate(() => {
+      const hb = window.__wikiHitbox; const c = hb.cornersFrame[hb.sel];   // FRAME px: the canvas re-fits when the box grows
+      if (!c) return null;
+      const mid = (a, b2) => [(c[a][0] + c[b2][0]) / 2, (c[a][1] + c[b2][1]) / 2];
+      return { minus: mid(0, 3), plus: mid(1, 2), w: hb.boxes[hb.sel].rx * 2, dir: hb.dir };
+    });
+    const driveW = (v2) => p.evaluate((v3) => { const w2 = [...document.querySelectorAll(".hit-bar .shadow-slider")][0]; w2.value = String(v3); w2.dispatchEvent(new Event("input", { bubbles: true })); w2.dispatchEvent(new Event("change", { bubbles: true })); }, v2);
+    for (const face of ["SE", "SW", "S"]) {
+      await p.evaluate((dd) => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent.trim().toUpperCase() === dd)?.click(), face);
+      await p.waitForTimeout(700);
+      const e0 = await edges();
+      if (!e0) { ok(false, `${face}: the rect publishes its corners`); continue; }
+      const lowFirst = e0.minus[1] >= e0.plus[1] ? "minus" : "plus";
+      await driveW(Math.round(e0.w) + 24);
+      await p.waitForTimeout(800);
+      const e1 = await edges();
+      const moved = (a, b2) => Math.hypot(b2[0] - a[0], b2[1] - a[1]);
+      const pinned = moved(e0[lowFirst], e1[lowFirst]), other = moved(e0[lowFirst === "minus" ? "plus" : "minus"], e1[lowFirst === "minus" ? "plus" : "minus"]);
+      ok(pinned < 1.2 && other > 8,
+        `${face}: W pins the LOWER edge and grows away from it (pinned edge moved ${pinned.toFixed(2)}px, far edge ${other.toFixed(1)}px)`);
+      if (face !== "S") {
+        const up = e1[lowFirst === "minus" ? "plus" : "minus"][1] < e0[lowFirst === "minus" ? "plus" : "minus"][1];
+        ok(up, `${face}: and it grows UPWARD — the far edge rose (${e0[lowFirst === "minus" ? "plus" : "minus"][1].toFixed(1)} → ${e1[lowFirst === "minus" ? "plus" : "minus"][1].toFixed(1)}px)`);
+      }
+      await driveW(Math.round(e0.w));
+      await p.waitForTimeout(600);
+    }
+    await p.evaluate(() => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent.trim().toUpperCase() === "S")?.click());
+    await p.waitForTimeout(500);
+  }
   // ...and back: an ellipse carries NO shape key, so the 3,673 records already
   // on file stay exactly as they are.
   await p.evaluate(() => [...document.querySelectorAll(".hit-shape button")].find((x) => /ellipse/.test(x.textContent))?.click());
