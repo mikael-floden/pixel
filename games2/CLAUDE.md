@@ -216,7 +216,30 @@ by construction, so no existing branch changed.
   cap's REAL x-over-y wall art. **A gate that recomputes the mask itself cannot
   catch this** — the flag being dead is the bug — so
   `server/test/tiles3draw.test.ts` asserts it through the real factory; with the
-  one line reverted, three of its gates fail.
+  one line reverted, three of its gates fail. Measured on the finished picture,
+  not just the texture: rendering his real patch (1,089 cells / 74 boundaries) in
+  painter order gives **18,321 visible texels of (171,146,116) before and 0
+  after**.
+  **THIS IS render3's OWN ANSWER, checked against it**: at a raised level
+  `render3.py` draws `top_face_only(wang_surface())`, and at level 0 it draws
+  `wang_surface()` as THE CELL'S OWN PLATE in the cell's painter slot — where the
+  cells in front cover its wall band — so render3's VISIBLE output is top-face
+  only at every level, which is what this fix reproduces. Its header states the
+  geometry law too: `DY=14 … 15 leaks a 1px wall band per boundary`.
+  **THE STRUCTURAL DIVERGENCE THAT REMAINS, stated so nobody re-derives it**:
+  render3 draws the Wang tile *instead of* the cell's plate (`wang_surface()`
+  returns the composed boundary OR the surface, never both) and its separate
+  corner-lattice pass is dead code — `for s in []: # the boundary is drawn WITH
+  the cell now`. The game still draws the plate and then the boundary over it in
+  a later pass. render3's own comment says why that was abandoned: "the field
+  kept its hard diamond edge while the transition repainted a whole cell from a
+  DIFFERENT set member, which is the zigzag seam one cell off the real edge that
+  he marked in red … fixed by drawing the Wang tile INSTEAD of the plate, never
+  over it." With the boundary masked to exactly `libTop` the blend now covers the
+  cell's whole diamond, so the two can no longer fight on the visible face and
+  the remaining difference is a wasted plate draw — but the three-pass order is
+  the deeper divergence and the note above ("Interleaving is wrong") is stale
+  against the reference renderer.
 - **TWO PHASER TRAPS, both silent, both paid for here.**
   `textures.get(key)` returns the built-in `__MISSING` 32x32 checker for an
   unknown key, NOT undefined — handed to the composer an unloaded 64x46 plate
