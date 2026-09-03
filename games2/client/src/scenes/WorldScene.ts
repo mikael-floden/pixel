@@ -13180,16 +13180,37 @@ export class WorldScene extends Phaser.Scene {
         // distinct rect per texture for the whole session.
         // (Texture.get(name) answers a MISSING name with the base frame — a
         // `?? add` would re-aim the base frame of every art texture. has() first.)
+        /* A NAMED FRAME PER CROP RECT — never one shared frame re-aimed.
+         *
+         * This used to keep ONE `t3clip` frame per texture and `setSize` it
+         * before every cropped draw, on the reasoning that a batch copies a
+         * frame's UVs as each draw is QUEUED, so mutating it between draws is
+         * safe. The maintainer's own device disproved it: sampling the ground
+         * texture on his phone, the streamed picture carried 131 fill-coloured
+         * texels along the tile edges and a FORCED FULL REPAINT of the same
+         * ground carried ZERO — and the clipped passes (the scroll band, the
+         * cell repaint) are the only thing the two paths differ by. Every op of
+         * a band shares one texture and therefore shared one frame, so the
+         * crops did not all land where they were aimed.
+         *
+         * Named frames are what the UNCROPPED sub-rect path a few lines below
+         * has always done (`t3c:`), and they cannot be re-aimed underneath a
+         * queued draw. The cost the old comment feared — a frame per distinct
+         * rect per texture — is bounded in practice because band geometry
+         * repeats: the same crops recur every latch. Correctness first; if the
+         * frame count ever matters, cap it the way the plate cache is capped.
+         *
+         * Texture.add makes the first added frame the texture's DEFAULT frame
+         * (Texture.get(undefined) answers firstFrame once frameTotal > 1), so a
+         * bare-key draw of this art — an occluder Image, the whole-frame path —
+         * would show the crop. The default stays the base. */
         const ctex = this.textures.get(op.key);
-        const cf = ctex.has("t3clip") ? ctex.get("t3clip") : ctex.add("t3clip", 0, 0, 0, 1, 1);
-        if (!cf) return;
-        // Texture.add makes the first added frame the texture's DEFAULT frame
-        // (Texture.get(undefined) answers firstFrame once frameTotal > 1), so a
-        // bare-key draw of this art — an occluder Image, the whole-frame path —
-        // would show the crop. The default stays the base.
-        ctex.firstFrame = "__BASE";
-        cf.setSize(csw, csh, csx, csy);
-        rt.batchDrawFrame(op.key, "t3clip", ix0, iy0, 1, tint);
+        const cname = `t3k:${csx},${csy},${csw},${csh}`;
+        if (!ctex.has(cname)) {
+          ctex.add(cname, 0, csx, csy, csw, csh);
+          ctex.firstFrame = "__BASE";
+        }
+        rt.batchDrawFrame(op.key, cname, ix0, iy0, 1, tint);
         return;
       }
     }
