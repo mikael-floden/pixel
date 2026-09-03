@@ -427,7 +427,7 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
  *
  *  Zeroed, not cropped: the result keeps 64x46 plate geometry so it pastes at
  *  the offset every other surface does. */
-export function topFaceOnly(sheets: PatternSheets, src: Pixels): Pixels {
+export function topFaceOnly(sheets: PatternSheets, src: Pixels, opts?: { margin?: boolean }): Pixels {
   const { fw, fh, libTop } = sheets;
   const a = cropToArt(src, fw, fh);
   const out = newPixels(fw, fh);
@@ -460,6 +460,7 @@ export function topFaceOnly(sheets: PatternSheets, src: Pixels): Pixels {
    * the row it is invisible, and where nothing covers it the sea is one pixel
    * deeper. `topFaceOnly` therefore still carries no wall pixel anywhere —
    * pinned by its gate, which the wall-copying version failed. */
+  if (opts?.margin === false) return out;
   for (let x = 0; x < fw; x++) {
     let bottom = -1;
     for (let y = 0; y < fh; y++) if (libTop[y * fw + x]) bottom = y;
@@ -844,7 +845,54 @@ export class Tiles3Textures {
       const a = this.platePixels(b.plateA, b.a);
       const bb = this.platePixels(b.plateB, b.b);
       if (!a || !bb) return null;
-      return composeBoundary(this.o.sheets, b.maskFrame as number, a, bb, { seam: this.o.seam !== false });
+      const out = composeBoundary(this.o.sheets, b.maskFrame as number, a, bb, { seam: this.o.seam !== false });
+      /* A COMPOSED BOUNDARY IS TOP FACE ONLY, ALWAYS — and this is the
+       * maintainer's zigzag on the beach (2026-09-03).
+       *
+       * A boundary is a SURFACE blend on the corner lattice and has no lawful
+       * wall source at any level: at a raised level the cap's own x-over-y art
+       * is the wall (which is why the resolver already sets `topOnly` there),
+       * and at level 0 there is no wall and nothing below to hide. But the flag
+       * was DEAD on this path — nothing here read it and `boundaryKeyFor` never
+       * carried it — so every boundary in the game painted its whole 46-row
+       * plate, wall band included.
+       *
+       * That is fatal here and nowhere else, because of PAINTER ORDER: cells,
+       * then boundaries, then decks. A cell's own wall band is harmless — the
+       * cells in front are painted after it and cover it (measured: 0 texels
+       * uncovered). A boundary is painted AFTER every cell, so its wall band
+       * lands on top of the very tiles that would have hidden it, and only a
+       * LATER BOUNDARY can cover it. Boundaries exist only where the Wang index
+       * is mixed, so along a transition band most of that wall band is covered
+       * by nothing at all — a partial, dotted chevron rather than a solid
+       * course, which is exactly the "zag zag zag" he photographed.
+       *
+       * MEASURED on his own cell (458.9,378.8 of the_game, every cell level 0):
+       * all 112 boundaries in the window keep the band; a real
+       * light_beach<->grass composition is 1088/1088 OPAQUE wall texels of
+       * which 800 are exactly (171,146,116) — light_beach's palette wall. On
+       * his screenshot the dots measure 0.750/0.747/0.779 of the sand beside
+       * them, and light_beach wall/top is 0.7500/0.7449/0.7785. Divide out the
+       * evening light and they are (171,146,116) on (228,196,149). His words
+       * were exact: "it's the edge right before the wall begins."
+       *
+       * NO MARGIN ROW here, unlike a liquid's: a boundary paints last, over a
+       * cell that has already painted its own top AND wall, so there is no hole
+       * to fill and one extra row would only bleed the blend a pixel into the
+       * tile in front.
+       *
+       * WHY NO OTHER SURFACE SHOWS THIS: open water composes no boundary at all
+       * ("NO LIQUID may touch the quad — a coast is a hard edge"), which is why
+       * the sea's zigzag was a different defect (its own zero-slack top-face
+       * interlock, fixed in 55f1d43b) and why fixing it left the beach alone;
+       * and a tiles2 world has no composed boundaries whatsoever, which is why
+       * the_island2 has never shown it ("0 zigzag. it just works").
+       *
+       * The key needs no new input: it is a runtime Phaser texture key that
+       * never names a file (`boundaryArtPaths` names the SOURCES, which do not
+       * move), so one key still maps to one picture and no cache can hold a
+       * stale one. */
+      return topFaceOnly(this.o.sheets, out, { margin: false });
     });
   }
 
