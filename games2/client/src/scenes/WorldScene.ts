@@ -803,6 +803,17 @@ const GROUND_RING_COMPOSE = 3;
  *  composition, this machine still gets its eighty. The counts stay as upper
  *  bounds so a pathologically cheap frame cannot run away. */
 const GROUND_RING_MS = 2;
+/** ONE COMPOSITION IS AN ATOM, AND ON HIS PHONE IT IS ~13 ms.
+ *
+ *  Measured: with GROUND_RING_MS already in force, `prefetch` still cost 15.64
+ *  ms/frame, because the budget is tested BEFORE a composition and cannot stop
+ *  one halfway — a canvas blend plus a GPU upload either happens or does not.
+ *  So the budget has to be spent across FRAMES instead: track what a
+ *  composition actually costs here and let the ring attempt one only every
+ *  ceil(cost / GROUND_RING_MS) frames. On this machine that is every frame; on
+ *  his it is one every seven, which is what holds the average at the budget
+ *  instead of the atom. */
+const GROUND_RING_COMPOSE_EMA = 0.25;
 /** Files in flight for the DEFERRED animation batch — see loadDeferredAnims.
  *  Dev A/B: localStorage `ml-deferred-parallel` overrides (0 = the loader's own). */
 const DEFERRED_PARALLEL = 2;
@@ -1899,6 +1910,10 @@ export class WorldScene extends Phaser.Scene {
   /** The slice size in force, steered toward GROUND_SLICE_MS by what slices
    *  actually cost on THIS device (see t3paintSliceStep). */
   private groundSlicePx = GROUND_SLICE_PX;
+  /** What one prefetch composition costs on THIS device (ms, EMA), and how many
+   *  frames have passed since the last one — see GROUND_RING_COMPOSE_EMA. */
+  private ringComposeMs = 0;
+  private ringSinceCompose = 0;
   /* THE GROUND PATH, SWITCHABLE FROM THE PHONE. `?ground=legacy` turns the
    * whole 2026-09-02/03 ground rework off — no scroll, no sliced band, no
    * landing repaints, no prefetch: every camera latch paints the texture in
@@ -13431,6 +13446,13 @@ export class WorldScene extends Phaser.Scene {
     if (this.groundRedrewThisFrame || this.groundSliceQ.length) return;
     const built0 = tex.stats.built;
     const ringT0 = performance.now();
+    /* MAY THIS FRAME COMPOSE AT ALL? A composition cannot be interrupted, so
+     * the only way to hold a per-frame average below its own cost is to skip
+     * frames. Resolution work (paths, cells) still runs every frame — it is
+     * cheap and it is what feeds the loader. */
+    this.ringSinceCompose++;
+    const everyN = Math.max(1, Math.ceil(this.ringComposeMs / GROUND_RING_MS));
+    const mayCompose = this.ringSinceCompose >= everyN;
     const end = Math.min(this.t3ringQueue.length, this.t3ringAt + GROUND_RING_STEP);
     const need = (p: string | null | undefined) => {
       if (p) load.need(p);
@@ -13457,8 +13479,21 @@ export class WorldScene extends Phaser.Scene {
         i++;
         break;
       }
+      if (!mayCompose) continue; // resolution only this frame; composing waits
+      const cT0 = performance.now();
+      const before = tex.stats.built;
       if (b) this.t3Try(`prewarm boundary ${col},${row}`, () => tex.opsForBoundary(b), null);
       this.t3Try(`prewarm blits ${col},${row}`, () => cellBlits(tex, this.t3tm, cell, undefined), []);
+      if (tex.stats.built > before) {
+        // LEARN WHAT IT COSTS HERE. One sample per composition, eased, so a
+        // single slow blend cannot lock the ring out for a second.
+        const ms = performance.now() - cT0;
+        this.ringComposeMs = this.ringComposeMs
+          ? this.ringComposeMs * (1 - GROUND_RING_COMPOSE_EMA) + ms * GROUND_RING_COMPOSE_EMA
+          : ms;
+        this.ringSinceCompose = 0;
+        break; // one composition is this frame's whole share
+      }
     }
     this.t3ringAt = i;
     if (load.stats.pending === 0) load.flush();
