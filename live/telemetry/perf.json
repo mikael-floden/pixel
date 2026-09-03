@@ -1,7 +1,7 @@
 {
   "format": "nangijala-client-perf@1",
   "_comment": "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here by the server. The maintainer plays on a phone and tests in production; the headless harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these are the only honest numbers for the paths that matter. Newest last; the file keeps the most recent reports only.",
-  "updated_at": "2026-09-03T10:29:01.290Z",
+  "updated_at": "2026-09-03T13:16:29.607Z",
   "reports": [
     {
       "id": "2026-09-03T09-18-53-926Z-i0k047",
@@ -778,6 +778,92 @@
           "24,5:3",
           "25,5:3"
         ]
+      },
+      "worst": []
+    },
+    {
+      "id": "2026-09-03T13-16-29-607Z-mm20cv",
+      "at": "2026-09-03T13:16:29.607Z",
+      "build": "d270a8f2243bf17751aa827d7065547c5c14af92",
+      "where": "576.3,387.5",
+      "tod": "Evening",
+      "zoom": 2,
+      "dpr": 2.23,
+      "view": "1079x1404",
+      "secs": 13.9,
+      "final": true,
+      "frames": {
+        "n": 557,
+        "p50": 18.1,
+        "p90": 43.7,
+        "p99": 78.5,
+        "max": 157.3
+      },
+      "sections": {
+        "avatarLoop": 1.4,
+        "groundSlice": 0.66,
+        "rebuildOccluders": 0.5,
+        "rebuildScenery": 0.41,
+        "prefetch": 0.35,
+        "stepNpcs": 0.12,
+        "redrawGround": 0.12
+      },
+      "counts": {
+        "occluders": 214,
+        "litOccluders": 19,
+        "occluderMeta": 78,
+        "sceneryImgs": 19,
+        "propImgs": 0,
+        "monsters": 146,
+        "monstersActive": 0,
+        "avatars": 1,
+        "npcs": 33,
+        "displayList": 881,
+        "textures": 3471,
+        "texturesAdded": 0
+      },
+      "ground": {
+        "png": "data:image/png;base64,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",
+        "rt": "1510x1656",
+        "block": "256x192@627,732",
+        "anchor": "17704,11452",
+        "mode": "scroll",
+        "cellRuns": 0,
+        "medianSum": 508,
+        "nonInt": 0,
+        "anchorFrac": 0,
+        "rtPosFrac": 0,
+        "fill": 0,
+        "dark": 3458,
+        "clear": 0,
+        "topBins": [
+          "7,26:4",
+          "8,26:4",
+          "9,26:4",
+          "10,26:4",
+          "13,26:4",
+          "6,25:4",
+          "7,25:4",
+          "8,25:4",
+          "9,25:4",
+          "10,25:4"
+        ]
+      },
+      "groundFull": {
+        "png": "data:image/png;base64,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",
+        "rt": "1510x1656",
+        "block": "256x192@627,732",
+        "anchor": "17685,11570",
+        "mode": "full",
+        "cellRuns": 0,
+        "medianSum": 508,
+        "nonInt": 0,
+        "anchorFrac": 0,
+        "rtPosFrac": 0,
+        "fill": 0,
+        "dark": 0,
+        "clear": 0,
+        "topBins": []
       },
       "worst": []
     }
