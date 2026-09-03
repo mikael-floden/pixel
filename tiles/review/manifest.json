@@ -130439,5 +130439,13 @@
       "borrow_wall_override": 64,
       "borrow_wall_auto": 34
     }
+  },
+  "geometry": {
+    "tile_w": 64,
+    "tile_h": 46,
+    "dx": 32,
+    "dy": 14,
+    "wall_d": 17,
+    "_comment": "dy 14 is REQUIRED, not a preference: at 15 a sliver of each tile's wall stays visible along the next tile's top edge and reads as a dotted grid. Identical to tiles/plates/index.json and tiles/patterns/index.json geometry."
   }
 }

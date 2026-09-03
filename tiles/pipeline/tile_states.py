@@ -208,6 +208,20 @@ def build(verbose=True):
             n_auto += 1
 
     man["schema"] = SCHEMA
+    # THE PROJECTION THE ART IS BUILT FOR, published so a consumer follows the art
+    # instead of hardcoding a pitch. A 3.0 top diamond is 64x28, so 14 is the largest
+    # vertical pitch at which each tile's wall is fully covered by the tile in front:
+    # measured interior-wall pixels are 0 at 14 and 960 at 15 (tiles/docs/GEOMETRY.md).
+    # Drawn at 15 that leak is a dotted grid along every tile's top edge - the artefact
+    # the maintainer reported on sand and water, 2026-09-03. The wiki already draws 3.0
+    # at 14 (WORLD_DY) and asked for this number rather than tracking it by hand.
+    man["geometry"] = {
+        "tile_w": 64, "tile_h": 46, "dx": 32, "dy": 14, "wall_d": 17,
+        "_comment": "dy 14 is REQUIRED, not a preference: at 15 a sliver of each "
+                    "tile's wall stays visible along the next tile's top edge and "
+                    "reads as a dotted grid. Identical to tiles/plates/index.json and "
+                    "tiles/patterns/index.json geometry.",
+    }
     man["tile_states"] = {
         "source": "live/tuning/{tile_walls,tile_tops,top_walls}.json, folded on publish",
         "top_only": "the tile is only ever the top of a column; `borrow_wall` names the "
