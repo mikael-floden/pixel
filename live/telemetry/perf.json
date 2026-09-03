@@ -1,7 +1,7 @@
 {
   "format": "nangijala-client-perf@1",
   "_comment": "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here by the server. The maintainer plays on a phone and tests in production; the headless harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these are the only honest numbers for the paths that matter. Newest last; the file keeps the most recent reports only.",
-  "updated_at": "2026-09-03T10:10:10.938Z",
+  "updated_at": "2026-09-03T10:12:14.367Z",
   "reports": [
     {
       "id": "2026-09-03T09-18-53-926Z-i0k047",
@@ -550,6 +550,72 @@
           "49,15:15",
           "45,14:15",
           "46,14:15"
+        ]
+      },
+      "worst": []
+    },
+    {
+      "id": "2026-09-03T10-12-14-367Z-kjhtv0",
+      "at": "2026-09-03T10:12:14.367Z",
+      "build": "719875f9460511f8faa1f7f1365d94055888fbcd",
+      "where": "585.9,390.0",
+      "tod": "Day",
+      "zoom": 2,
+      "dpr": 2.23,
+      "view": "1079x1404",
+      "secs": 2.1,
+      "final": true,
+      "frames": {
+        "n": 77,
+        "p50": 18.3,
+        "p90": 50,
+        "p99": 81.5,
+        "max": 81.5
+      },
+      "sections": {
+        "avatarLoop": 0.26,
+        "stepNpcs": 0.04,
+        "redrawGround": 0.01,
+        "rebuildOccluders": 0.01,
+        "prefetch": 0,
+        "groundSlice": 0
+      },
+      "counts": {
+        "occluders": 104,
+        "litOccluders": 27,
+        "occluderMeta": 56,
+        "sceneryImgs": 27,
+        "propImgs": 0,
+        "monsters": 146,
+        "monstersActive": 0,
+        "avatars": 1,
+        "npcs": 33,
+        "displayList": 712,
+        "textures": 5095,
+        "texturesAdded": 1117
+      },
+      "ground": {
+        "png": "data:image/png;base64,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",
+        "rt": "1510x1656",
+        "block": "256x192@627,732",
+        "anchor": "18021,11552",
+        "mode": "scroll",
+        "cellRuns": 0,
+        "medianSum": 508,
+        "fill": 290,
+        "dark": 621,
+        "clear": 0,
+        "topBins": [
+          "33,20:5",
+          "40,20:5",
+          "35,19:5",
+          "38,19:5",
+          "62,2:4",
+          "10,2:4",
+          "15,0:4",
+          "17,27:4",
+          "53,26:4",
+          "19,26:4"
         ]
       },
       "worst": []
