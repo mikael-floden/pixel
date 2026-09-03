@@ -14957,9 +14957,36 @@ export class WorldScene extends Phaser.Scene {
     const h = Math.ceil(this.scale.height / rs) + GROUND_MARGIN * 2;
     const make = (key: string) => {
       const rt = this.add.renderTexture(0, 0, w, h).setOrigin(0, 0).setDepth(-1_000_000);
+      /* NEAREST, EXPLICITLY — the same trap this file already documents twice
+       * for `addCanvas` and `addDynamicTexture` ("does not inherit pixelArt's
+       * default, and LINEAR smears…"), and never applied to the one texture the
+       * whole world is drawn from.
+       *
+       * WHY THIS IS THE SUSPECT (maintainer 2026-09-03, after three days): the
+       * zigzag DISAPPEARS when he opens the app switcher, which renders the
+       * window at a different scale, and returns at full size. Combined with
+       * repeated censuses of this texture finding ZERO artefact texels — screen
+       * and texture, at his exact geometry — that says the dots are created when
+       * the texture is SAMPLED to the display, not stored in it. LINEAR sampling
+       * of a pixel-art texture at a fractional device scale does precisely that:
+       * it blends each texel with its neighbour, so a diamond edge picks up the
+       * darker wall band directly beneath it and the unpainted background beyond
+       * it — which are the two exact colours he measured, (171,146,116) and
+       * (24,28,40), one texel wide, at tile edges only.
+       *
+       * It also explains what nothing else did: why it never reproduces here
+       * (this machine's device scale is an integer, so LINEAR samples texel
+       * centres and looks identical to NEAREST), and why it is worst on his
+       * phone at dpr 2.23.
+       *
+       * COSTS NOTHING IF WRONG: if Phaser already resolved this texture to
+       * NEAREST via `pixelArt: true` — TextureSource.init does call setFilter(1)
+       * when antialias is false — then this is a no-op. */
+      rt.texture?.setFilter(Phaser.Textures.FilterMode.NEAREST);
       // A key, so the OTHER texture can draw this one's picture (the scroll copy).
       if (this.textures.exists(key)) this.textures.remove(key);
       rt.saveTexture(key);
+      rt.texture?.setFilter(Phaser.Textures.FilterMode.NEAREST); // ...and after saveTexture rewires it
       return rt;
     };
     this.groundRT = make("ground-rt-a");
