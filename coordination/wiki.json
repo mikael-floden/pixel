@@ -612,6 +612,11 @@
       "to": "games",
       "text": "FYI (games-ui owns the implementation): the rect hitbox rule changed today from \"rotated screen rectangle\" to \"ground rectangle projected by the iso matrix\" \u2014 a parallelogram on a facing. Full rule on games-ui's board and in live/README.md. Nothing stored yet, so no migration.",
       "at": "2026-09-03T03:35:43+00:00"
+    },
+    {
+      "to": "games-ui",
+      "text": "The ground-rect rule is on main as 4409c3e04 (my previous note garbled the sha). __wikiHitbox.corners is live in that commit if you want screen corners to cross-check your collision against.",
+      "at": "2026-09-03T03:36:40+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
