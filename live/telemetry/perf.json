@@ -1,7 +1,7 @@
 {
   "format": "nangijala-client-perf@1",
   "_comment": "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here by the server. The maintainer plays on a phone and tests in production; the headless harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these are the only honest numbers for the paths that matter. Newest last; the file keeps the most recent reports only.",
-  "updated_at": "2026-09-03T09:46:46.045Z",
+  "updated_at": "2026-09-03T10:10:10.938Z",
   "reports": [
     {
       "id": "2026-09-03T09-18-53-926Z-i0k047",
@@ -484,6 +484,72 @@
           "7,3:7",
           "12,14:6",
           "14,13:6"
+        ]
+      },
+      "worst": []
+    },
+    {
+      "id": "2026-09-03T10-10-10-938Z-f2ou8c",
+      "at": "2026-09-03T10:10:10.938Z",
+      "build": "719875f9460511f8faa1f7f1365d94055888fbcd",
+      "where": "587.8,385.1",
+      "tod": "Day",
+      "zoom": 2,
+      "dpr": 2.23,
+      "view": "1079x1404",
+      "secs": 10.9,
+      "final": true,
+      "frames": {
+        "n": 511,
+        "p50": 16.9,
+        "p90": 36.7,
+        "p99": 64.6,
+        "max": 78.7
+      },
+      "sections": {
+        "avatarLoop": 0.13,
+        "stepNpcs": 0.11,
+        "redrawGround": 0.01,
+        "rebuildOccluders": 0,
+        "prefetch": 0,
+        "groundSlice": 0
+      },
+      "counts": {
+        "occluders": 180,
+        "litOccluders": 27,
+        "occluderMeta": 77,
+        "sceneryImgs": 27,
+        "propImgs": 0,
+        "monsters": 146,
+        "monstersActive": 0,
+        "avatars": 1,
+        "npcs": 33,
+        "displayList": 831,
+        "textures": 4003,
+        "texturesAdded": 0
+      },
+      "ground": {
+        "png": "data:image/png;base64,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",
+        "rt": "1510x1656",
+        "block": "256x192@627,732",
+        "anchor": "18055,11293",
+        "mode": "scroll",
+        "cellRuns": 0,
+        "medianSum": 498,
+        "fill": 0,
+        "dark": 19323,
+        "clear": 0,
+        "topBins": [
+          "49,17:15",
+          "47,16:15",
+          "48,16:15",
+          "49,16:15",
+          "46,15:15",
+          "47,15:15",
+          "48,15:15",
+          "49,15:15",
+          "45,14:15",
+          "46,14:15"
         ]
       },
       "worst": []
