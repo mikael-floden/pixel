@@ -289,3 +289,53 @@ answer *this is still grass, but lava is coming*.
   whole-top median — at p50 that lands between the grounds and drags the tile off BOTH
   palettes. Not per-side snapping — that flattens the drift into two flat colours, which
   is the very thing the ladder exists to avoid.)
+
+## Spot fades: which wording, measured on the maintainer's verdicts
+
+The full matrix shipped 2026-09-03: 105 ground pairs x both directions x 5 wordings,
+1,050 sheets, ~$101. Every pair of grounds now has fade tiles in both directions.
+
+WORDING IS RANKED BY HIS KEEP-RATE, NEVER BY YIELD. Over 4,931 review verdicts:
+
+    {b} spots on {a}            71% kept   <- best, and the LOWEST yielding
+    a few {b} lumps on {a}      62%
+    a few piles of {b} on {a}   61%
+    patches of {b} on {a}       53%
+    one {b} rock on {a}         50%        <- twice reported as the winner. It is not.
+    the older with/and/on_top_of wordings   47-48%
+
+The trap, paid for in hours: GENERATION YIELD MEASURES WHAT THE GATE ACCEPTS, NOT WHAT
+HE KEEPS. Ranking by tile count made `lumps` and `one_rock` look strongest because they
+produced the most art, while `spots` - the highest keep-rate of all eight - looked
+worthless at 174 tiles. Two different questions; only the verdicts answer the one that
+matters. Any future wording experiment reports keep-rate per wording, and reports it only
+once he has reviewed enough of each to compare.
+
+Spend the next run on spots/lumps/piles. All five spot wordings beat all three original
+wordings, so the object-noun shape ("a rock ON snow", not "snow and rock") is what buys
+the improvement; `one_rock` is the one to drop.
+
+## Review verdicts are honoured on publish - and the three ways that broke
+
+`tiles/fades/index.json` drops any tile the maintainer marked remove, on every publish.
+Three separate faults hit this in one day; each fix was correct and left the next one
+exposed, so all three are recorded:
+
+1. THE VERDICTS WERE NEVER READ. Every other review state was folded in on publish;
+   fades were not. 772 removals sat applied-to-nothing while he re-reported the bug.
+2. READING THEM ERASED THEM. Dropping a tile from the index made the wiki prune its
+   feedback entry, so the verdict vanished and the next publish re-listed the tile - all
+   772 verdicts gone, 770 tiles back, and he reviewed them twice. Removals therefore live
+   in `tiles/fades/removed.json`, a file this domain owns. An explicit approve clears an
+   entry; an entry merely going missing never does, because absence is the wiki
+   forgetting rather than him changing his mind.
+3. THE FILE BEING READ WAS STALE. He reviews through the wiki, which commits straight to
+   `main`; the pass read its local clone and pulled only when a push collided, so it
+   re-applied an old file and truthfully reported "0 pending" with 164 fresh removals
+   unread. The publish loop now pulls before every round.
+
+Plus the failure that hid all of it: one malformed tile raised inside the meter and
+aborted the whole pass, and because the loop discards output and finds the OLD index
+still self-consistent, it committed nothing and looked healthy. ANALYSIS FAILURE BELONGS
+TO THE TILE - a tile that throws is rejected with a reason, so no single tile can block
+every removal again.
