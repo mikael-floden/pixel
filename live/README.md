@@ -259,6 +259,13 @@ The laws around the flow:
   the start of every run and act on it (rejected → remove/replace the asset
   and delete the feedback entry once handled; stars steer style). Written by
   the wiki (admin verdicts) and by agents (clearing handled entries).
+  - **`status: "redo"` — scenery only, piece level** (2026-09-03, maintainer:
+    *"I will go over all scenery and delete everything that is not good
+    enough. But sometimes I might think the object is so good we should try
+    to generate another variant/version"*). KEEP the piece and generate
+    another variant of it. Distinct from `rejected` (= remove the piece) and
+    from a per-state `rejected` under `<path>#<state>#<dir>` (= regenerate
+    that one state). Any other domain still knows only approved / rejected.
 - `live/feedback/bindings.json` — same format, but its ids are
   **`<eventId>#<sound>` PAIRS**, not assets: `player.water_enter#splash`,
   `ui.press#composer/ui_tick`. It rates an ATTACHMENT — is this the right

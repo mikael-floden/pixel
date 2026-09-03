@@ -517,6 +517,69 @@ await pub.close();
       `and with the Man hidden the piece is back at its own scale (canvas ${off.canvasH} → ${on.canvasH} → ${back.canvasH})`);
   }
 }
+/* REMOVE IS RED, REDO IS SCENERY'S THIRD VERDICT (maintainer 2026-09-03: "The
+ * scenery review should have both a 'Remove' and a 'Redo' button ... The
+ * 'Remove'/'Reject' button should be made red on all review pages ... the CSS
+ * we have closest to red that still follow the CSS styling"). Red = the
+ * theme's --bad token, measured as the button's computed colour, on the
+ * scenery page AND on a page that is not scenery. */
+{
+  const rgb = (s) => { const m = /(\d+),\s*(\d+),\s*(\d+)/.exec(s ?? ""); return m ? m.slice(1, 4).map(Number).join(",") : null; };
+  const tokenBad = async () => p.evaluate(() => {
+    const el = document.createElement("span"); el.style.color = "var(--bad)"; document.body.appendChild(el);
+    const c = getComputedStyle(el).color; el.remove(); return c;
+  });
+  await p.goto(`${W}#/objects/ancient_tree_001`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  await p.evaluate(() => { const e = window.__wiki?.state?.feedback?.objects?.entries; if (e) delete e["scenery/ancient_trees/ancient_tree_001"]; });
+  await p.evaluate(() => { location.hash = "#/objects/ancient_tree_002"; }); await p.waitForTimeout(600);
+  await p.evaluate(() => { location.hash = "#/objects/ancient_tree_001"; }); await p.waitForTimeout(2000);
+  const row = await p.evaluate(() => {
+    const r = document.querySelector(".detail-head .fb-row .verdict");
+    const btns = [...(r?.querySelectorAll("button") ?? [])].map((b2) => ({ text: b2.textContent.trim(), cls: b2.className, color: getComputedStyle(b2).color }));
+    return { btns };
+  });
+  const remove = row.btns.find((b2) => /remove/.test(b2.text)), redo = row.btns.find((b2) => /redo/.test(b2.text));
+  ok(!!remove && !!redo, `the scenery review offers BOTH Remove and Redo (${row.btns.map((b2) => b2.text).join(" | ")})`);
+  const bad = await tokenBad();
+  ok(remove && /reject-btn/.test(remove.cls) && rgb(remove.color) === rgb(bad),
+    `Remove wears the theme's danger token at rest — --bad, not a literal red (${remove?.color} vs ${bad})`);
+  // redo: kept, another variant requested
+  await p.evaluate(() => [...document.querySelectorAll(".detail-head .fb-row .verdict button")].find((b2) => /redo/.test(b2.textContent))?.click());
+  await p.waitForTimeout(400);
+  const after = await p.evaluate(() => ({
+    status: window.__wiki.state.feedback.objects.entries["scenery/ancient_trees/ancient_tree_001"]?.status ?? null,
+    on: [...document.querySelectorAll(".detail-head .fb-row .verdict button")].find((b2) => /redo/.test(b2.textContent))?.className ?? "",
+  }));
+  ok(after.status === "redo" && /\bredo\b/.test(after.on), `Redo stores status "redo" — kept, another variant requested (${after.status}, ${after.on})`);
+  // The verdict shows on the piece's CARD in the list (the detail header never
+  // carried approve/remove pills either), and the list grows a "redo" filter.
+  await p.evaluate(() => { location.hash = "#/objects"; }); await p.waitForTimeout(2200);
+  await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-obj-filter"] button')].find((x) => /^redo/.test(x.textContent.trim()))?.click());
+  await p.waitForTimeout(1500);
+  const listed = await p.evaluate(() => {
+    const cards = [...document.querySelectorAll("a.card")];
+    const mine = cards.find((a) => a.getAttribute("href") === "#/objects/ancient_tree_001");
+    return { n: cards.length, mine: !!mine, pill: [...(mine?.querySelectorAll(".pill") ?? [])].map((x) => x.textContent.trim()) };
+  });
+  ok(listed.mine && listed.pill.includes("redo") && listed.n === 1, `and the piece's card carries a redo badge, alone under the new "redo" filter (${listed.n} listed; pills ${listed.pill.join("/")})`);
+  await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-obj-filter"] button')].find((x) => /^all/.test(x.textContent.trim()))?.click());
+  await p.waitForTimeout(600);
+  await p.evaluate(() => { location.hash = "#/objects/ancient_tree_001"; }); await p.waitForTimeout(2000);
+  await p.evaluate(() => [...document.querySelectorAll(".detail-head .fb-row .verdict button")].find((b2) => /redo/.test(b2.textContent))?.click());
+  await p.waitForTimeout(300);
+  ok(await p.evaluate(() => (window.__wiki.state.feedback.objects.entries["scenery/ancient_trees/ancient_tree_001"]?.status ?? null) === null), "pressing Redo again withdraws it");
+  // site-wide: a verdict row that is NOT scenery — the tiles review on a pair page
+  await p.goto(`${W}#/world/transition/grass__to__ice`, { waitUntil: "load" });
+  await p.waitForTimeout(4500);
+  const tileBtn = await p.evaluate(() => {
+    const b2 = [...document.querySelectorAll(".fade-tile .verdict button, .world-cand .verdict button, .verdict button")].find((x) => /reject-btn/.test(x.className));
+    return b2 ? { text: b2.textContent.trim(), color: getComputedStyle(b2).color, page: location.hash } : null;
+  });
+  ok(tileBtn && rgb(tileBtn.color) === rgb(bad), `and on a page that is not scenery the reject button is the same --bad (${tileBtn?.text} on ${tileBtn?.page})`);
+  const anyRedoElsewhere = await p.evaluate(() => [...document.querySelectorAll(".verdict button")].some((x) => /redo-btn/.test(x.className)));
+  ok(!anyRedoElsewhere, "while Redo stays scenery-only for now");
+}
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");
 await b.close();

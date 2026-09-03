@@ -593,7 +593,13 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   padding: 2px 9px; font-size: 12.5px; color: var(--muted);
 }
 .verdict button.approved { background: var(--good-soft); color: var(--good); border-color: transparent; font-weight: 600; }
+/* Remove/Reject wears the theme's danger token at rest, everywhere (maintainer
+   2026-09-03: "the CSS we have closest to red that still follow the CSS
+   styling") — filled once it is the verdict. */
+.verdict button.reject-btn { color: var(--bad); border-color: var(--bad); }
 .verdict button.rejected { background: var(--bad-soft); color: var(--bad); border-color: transparent; font-weight: 600; }
+/* Redo (scenery): kept AND asked for another variant — neither green nor red. */
+.verdict button.redo { background: var(--surface); color: var(--ink); border-color: var(--ink); font-weight: 600; }
 /* min-height reserves the verdict line whether or not there IS a verdict: to a
    reader the row is a pill or nothing, so it collapsed to 0px on an unjudged
    piece and stood 22px on an approved one — and paging ‹ › through a

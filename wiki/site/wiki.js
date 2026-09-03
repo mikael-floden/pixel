@@ -614,11 +614,24 @@ function starsWidget(domain, id, onStars, glyph) {
  * rides in from the same facetStale() the chip uses: the buttons drop their
  * current-verdict paint and the row says why, so one tap re-judges the art
  * that is actually on screen and the chip goes green with it. */
-function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal", rejectOnly = false, stamp = null, stale = false } = {}) {
+/* REMOVE IS RED, EVERYWHERE (maintainer 2026-09-03: "The Remove/Reject button
+ * should be made red on all review pages ... I mean the CSS we have closest to
+ * red that still follow the CSS styling"). That is the theme's own --bad
+ * token, the one the judged-no chips already wear — carried by the
+ * `reject-btn` class on every reject button this widget draws.
+ *
+ * REDO, on the scenery review only for now (same day: "I will go over all
+ * scenery and delete everything that is not good enough. But sometimes I
+ * might think the object is so good we should try to generate another
+ * variant/version"). A third verdict, status "redo": KEEP the piece and ask
+ * the producing agent for another variant of it. Distinct from rejected
+ * (= remove) and from the per-state "✕ redo", which regenerates ONE state. */
+function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal", rejectOnly = false, stamp = null, stale = false, redo = null } = {}) {
   if (!state.admin) {
     const st = fb(domain, id).status;
     if (st === "approved") return h("span", { class: "pill ok" }, "approved");
     if (st === "rejected") return h("span", { class: "pill err" }, rejectedLabel);
+    if (st === "redo") return h("span", { class: "pill warn" }, redo?.doneLabel ?? "another variant requested");
     return h("span");
   }
   const wrap = h("span", { class: "verdict" });
@@ -636,7 +649,9 @@ function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitl
       // rejectOnly: a per-take unbind on an already-narrow row, where the
       // approval of the binding as a whole lives one row up.
       rejectOnly ? null : h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "approved" ? null : "approved", ...(stamp ?? {}) }); render(); onchange?.(); } }, "✓ approve"),
-      h("button", { class: st === "rejected" ? "rejected" : "", title: rejectTitle, onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "rejected" ? null : "rejected", ...(stamp ?? {}) }); render(); onchange?.(); } }, reject),
+      h("button", { class: `reject-btn${st === "rejected" ? " rejected" : ""}`, title: rejectTitle, onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "rejected" ? null : "rejected", ...(stamp ?? {}) }); render(); onchange?.(); } }, reject),
+      redo ? h("button", { class: `redo-btn${st === "redo" ? " redo" : ""}`, title: redo.title ?? "Keep this, and ask for another variant of it",
+        onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "redo" ? null : "redo", ...(stamp ?? {}) }); render(); onchange?.(); } }, redo.label ?? "↻ redo") : null,
       gone ? h("span", { class: "pill warn", title: "You judged this state before the art was regenerated, so the verdict is about a picture that no longer exists — judge the one on screen and it counts again." }, "regenerated since — judge again") : null,
     ].filter(Boolean));
   };
@@ -3041,6 +3056,7 @@ function entityBadge(domain, id) {
   if (e.rating) out.push(h("span", { class: "pill warn" }, `${"★".repeat(e.rating)}`));
   if (e.status === "approved") out.push(h("span", { class: "pill ok" }, "approved"));
   if (e.status === "rejected") out.push(h("span", { class: "pill err" }, "remove"));
+  if (e.status === "redo") out.push(h("span", { class: "pill warn", title: "Kept — another variant of it is requested" }, "redo"));
   return out;
 }
 
@@ -10285,6 +10301,8 @@ const OBJ_FILTERS = {
     empty: "No piece is approved yet." },
   rejected: { label: "rejected", title: "Slated for removal, and the art has not changed since", match: (v) => v.status === "rejected" && !v.stale,
     empty: "No piece is waiting to be removed — the scenery agent has cleared them." },
+  redo: { label: "redo", title: "Kept, with another variant requested from the scenery agent", match: (v) => v.status === "redo" && !v.stale,
+    empty: "No piece is waiting for another variant." },
 };
 const OBJ_SORTS = {
   group: { label: "by group", title: "Grouped by kind, alphabetical — the classic view" },
@@ -10519,7 +10537,9 @@ function objectHead(o) {
         })(),
         moreBtn),
       descP,
-      feedbackRow("objects", o.path, { stamp: { art: o.artHash ?? null } })));
+      feedbackRow("objects", o.path, { stamp: { art: o.artHash ?? null },
+        reject: "✕ remove", rejectTitle: "Remove = not good enough; the scenery agent deletes this piece on its next run",
+        redo: { label: "↻ redo", title: "Good enough to keep — and worth another variant. The scenery agent generates one; this piece stays.", doneLabel: "another variant requested" } })));
 }
 // The Man's idle/south frame 0 + measured content box — everything the size
 // reference needs to draw him by the viewer's own rules. Null when the
