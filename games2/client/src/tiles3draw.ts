@@ -1109,9 +1109,34 @@ export class Tiles3Textures {
     return out;
   }
 
+  /** THE COLOUR A CONFORMED PLATE PAINTS ITS WALL BAND — the ground's own TOP,
+   *  not its wall. This is the maintainer's zigzag fix, and it is his own
+   *  instruction: "make sure the tile in front covers it… why do you have to
+   *  make it so exact?" — answered by making exactness stop mattering.
+   *
+   *  A conformed plate's wall band is NEVER legitimately visible. At a raised
+   *  level the cell is `topOnly`, so the band is masked off entirely and the
+   *  cap's own x-over-y art is the wall. At level 0 nothing exists below, so
+   *  `exposed` is provably false and the band is pure overdraw the tiles in
+   *  front cover (measured: 32 rows of overlap against a 14-row lattice step,
+   *  0 uncovered texels). Its colour is therefore FREE — and it was the one
+   *  thing that made a one-row leak VISIBLE, because it sits directly under the
+   *  diamond's lower edge and is 25% darker than the surface. Measured on his
+   *  screen: the dots are exactly (171,146,116) on (228,196,149) — light_beach's
+   *  palette wall on its top.
+   *
+   *  Painting the band in the TOP colour makes any leak the ground's own colour,
+   *  i.e. invisible, whatever caused it — a placement slip, a late tile, a cull,
+   *  a crop. Nine hours went into finding which of those it is; this stops
+   *  needing to know. Free by construction: no new texture keys, no extra
+   *  compositions (a conform is already a built raster), and nothing that is
+   *  ever drawn changes colour.
+   *
+   *  IF THE BAND EVER BECOMES VISIBLE — a renderer that draws a flat cell's wall
+   *  — this must go back to `palette.wall` and the leak fixed properly. */
   private wallRGB(ground: string): [number, number, number] {
     const g = this.o.groundTypes[ground];
-    return hexRGB(g?.palette?.wall ?? g?.base_color ?? "#808080");
+    return hexRGB(g?.palette?.top ?? g?.palette?.wall ?? g?.base_color ?? "#808080");
   }
 }
 
