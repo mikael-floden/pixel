@@ -22,6 +22,7 @@
  */
 
 import { openWikiPanel } from "./wikipanel";
+import { withV } from "./assetver";
 
 // The pill's box: 40x16 art pixels at x2 (clock.ts AW/AH/SCALE), content-box
 // with a 1px border. The gate asserts this against the REAL pill's rect, so
@@ -41,7 +42,22 @@ export function mountWikiButton(): void {
   root.className = "ml-wikibtn";
   root.type = "button";
   root.title = "Game wiki — all monsters, characters, tiles, sounds & tuning";
-  root.innerHTML = `<span class="ml-wikibtn-icon">&#128214;</span>Wiki`;
+  // HIS OWN ART, not a font vendor's glyph (maintainer 2026-09-03) — the
+  // PixelLab open old book, an exact 2x bake rendered at its authored 24px
+  // grid by the shared /ui2 rule (naturalWidth/2, see hud.ts).
+  const icon = document.createElement("img");
+  icon.className = "ml-wikibtn-icon";
+  icon.src = withV("/ui2/icon-wiki.webp");
+  icon.alt = "";
+  icon.draggable = false;
+  const fit = () => {
+    if (!icon.naturalWidth) return;
+    icon.style.width = `${icon.naturalWidth / 2}px`;
+    icon.style.height = `${icon.naturalHeight / 2}px`;
+  };
+  icon.addEventListener("load", fit);
+  fit();
+  root.append(icon, document.createTextNode("Wiki"));
   root.addEventListener("click", () => openWikiPanel());
   // CSS :active is hover-only on mobile — the HUD buttons' same press look.
   root.addEventListener("touchstart", () => root?.classList.add("press"), { passive: true });
@@ -71,7 +87,7 @@ function injectStyles(): void {
     font:600 12px var(--sans);letter-spacing:.03em;color:var(--ink);
     transition:bottom .15s ease-out,right .3s ease,top .3s ease;
     -webkit-tap-highlight-color:transparent;user-select:none}
-  .ml-wikibtn-icon{font-size:14px;line-height:1}
+  .ml-wikibtn-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   .ml-wikibtn.press,.ml-wikibtn:active{transform:scale(.96)}
   /* RIGHT-HANDED LANDSCAPE: the pill is top-anchored under the XP chip, so
      the button flips BELOW it — the pill's rule plus one step. */

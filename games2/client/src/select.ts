@@ -211,11 +211,11 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       <button id="ml-install" class="ml-corner ml-install" hidden type="button"
         title="Install game" aria-label="Install game">⤓ Install</button>
       <button id="ml-wiki" class="ml-corner ml-wiki" type="button"
-         title="Game wiki — all monsters, characters, tiles, sounds &amp; tuning"><span
-         class="ml-cicon">&#128214;</span>Wiki</button>
+         title="Game wiki — all monsters, characters, tiles, sounds &amp; tuning"><img
+         class="ml-cicon ml-cicon-img" alt="" draggable="false">Wiki</button>
       <button id="ml-theme-btn" class="ml-corner ml-theme" type="button"
-         title="Switch light/dark — one theme for the game and the wiki"><span
-         class="ml-cicon">&#127767;</span>Theme</button>`;
+         title="Switch light/dark — one theme for the game and the wiki"><img
+         class="ml-cicon ml-cicon-img" alt="" draggable="false">Theme</button>`;
     document.body.appendChild(overlay);
     // Arm the title theme the moment the screen mounts — NOT only on a button
     // press (maintainer 2026-07-19). Browser autoplay still needs one gesture,
@@ -427,6 +427,10 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     // The in-game wiki (wiki agent): opens the LEFT DRAWER over this screen —
     // never a browser tab (maintainer 2026-07-30).
     const wikiBtn = overlay.querySelector("#ml-wiki") as HTMLButtonElement;
+    // The book is set HERE, not in the markup above: the URL has to go through
+    // withV() (cache stamping), which the template string cannot call.
+    const wikiIcon = wikiBtn.querySelector(".ml-cicon-img") as HTMLImageElement;
+    wikiIcon.src = withV("/ui2/icon-wiki.webp");
     pressFx(wikiBtn);
     wikiBtn.addEventListener("click", () => openWikiPanel());
     // The wiki's #/near page asks the game what is around the player; from
@@ -437,6 +441,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     // the SAME shared theme the game HUD and the wiki read (theme.ts), so
     // one press restyles all three, including an open wiki drawer.
     const themeBtn = overlay.querySelector("#ml-theme-btn") as HTMLButtonElement;
+    (themeBtn.querySelector(".ml-cicon-img") as HTMLImageElement).src = withV("/ui2/icon-theme.webp");
     pressFx(themeBtn);
     themeBtn.addEventListener("click", () => toggleTheme());
 
@@ -684,13 +689,27 @@ function injectStyles() {
      in a column, a matched pair reads deliberate. */
   .ml-wiki,.ml-theme{left:12px;padding:10px 16px;font-size:15px;border-radius:11px;
     min-width:118px;display:flex;align-items:center;justify-content:flex-start;gap:8px}
-  /* Both leading glyphs are EMOJI in a fixed box, so the pair can't differ in
+  /* The two leading glyphs share ONE FIXED BOX, so the pair can't differ in
      size or baseline (maintainer 2026-07-30: "the icon has different size and
      is not aligned") — the old ◐ was a thin TEXT glyph next to a colour emoji,
-     which no font pairing renders alike. */
-  .ml-cicon{flex:none;width:19px;height:19px;font-size:16px;line-height:19px;
+     which no font pairing renders alike. BOTH are the maintainer's own pixel
+     art now (2026-09-03), so the box is the art's authored 24px GRID rather
+     than the 19 that would squeeze and resample it. Changing the SHARED box
+     is what keeps the pair matched; sizing one of them alone is the bug he
+     reported. The theme disc's export framed its ink flush to two canvas
+     edges while the book's sits centred — side by side that is 2px of exactly
+     the misalignment this box exists to prevent, so the bake centres it (a
+     pure integer translation; the untouched export is the source of record in
+     client/ui-src). */
+  .ml-cicon{flex:none;width:24px;height:24px;font-size:16px;line-height:24px;
     text-align:center;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
-  .ml-theme{top:62px}
+  .ml-cicon-img{image-rendering:pixelated;-webkit-user-drag:none}
+  /* Wiki's bottom + the 9px the pair has always been spaced by. It is an
+     absolute offset, so it does NOT follow the Wiki button when that grows:
+     the 24px icon box below made these two 5px taller and silently closed the
+     gap to 4px. If .ml-cicon or the button padding changes again, re-measure
+     this with it — #ml-wiki's bottom edge is 12 + its height. */
+  .ml-theme{top:67px}
   .ml-install{right:12px}
   .ml-install[hidden]{display:none}`;
   const s = document.createElement("style");

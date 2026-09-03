@@ -60,6 +60,9 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `spec/WIKI_NEAR.md`: it opens the drawer on `#/near` and hands the wiki a
   nearest-first snapshot keyed by the wiki's own ids (from WorldScene's
   `__ml.nearby()`), answering `wiki:wantNear` for as long as a drawer is up.
+- `client/src/wikibtn.ts` — the in-game Wiki button; its face is the
+  maintainer's own PixelLab open old book (`/ui2/icon-wiki.webp`), the same
+  one the select screen's Wiki button wears.
 - `client/src/select.ts` — character/world select screen.
 - `client/src/loading.ts` — loading overlay.
 - `client/src/roster.ts` — player roster overlay (currently unmounted).
@@ -205,7 +208,8 @@ from the games agent), #18 (title/landing screen).
 - **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
   The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
   own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font
-  vendor drew that year, and it cannot be pixel art. The recipe, same as every
+  vendor drew that year, and it cannot be pixel art. The 📖 and 🌗 on the Wiki
+  and Theme buttons went the same way the next day. The recipe, same as every
   `/ui2` icon: keep the untouched export as the PIXEL SOURCE in
   `client/ui-src/`, bake an EXACT 2x nearest-neighbour upscale to
   `/ui2/<name>.webp` through `scripts/to-webp.py` (which verifies the
@@ -213,8 +217,21 @@ from the games agent), #18 (title/landing screen).
   it on its authored grid on every screen, and it is ONE rule shared with
   hud.ts rather than a hardcoded box per icon. Stamp the URL with `withV()`.
   A transform is worth asserting in the bake script itself: a mirror must be a
-  pure mirror and a 2x must reproduce the source in every 2x2 block, or you
-  have resampled pixel art without noticing.
+  pure mirror, a 2x must reproduce the source in every 2x2 block, and a
+  re-centring must move the same pixels it started with — or you have
+  resampled pixel art without noticing.
+  WHEN AN ICON SHARES A BOX, GROW THE BOX — never squeeze the art. The select
+  screen's Wiki and Theme glyphs sit in one fixed `.ml-cicon` exactly so the
+  pair cannot differ in size or baseline (his 2026-07-30 report), so it went
+  19px -> the art's authored 24px and BOTH kept their alignment; sizing one of
+  a matched pair alone re-creates the very bug the box exists for. Then check
+  what the growth PUSHED: 5px of extra button height silently closed the 9px
+  gap to the Theme button below, because `.ml-theme{top}` is an absolute
+  offset that does not follow a taller neighbour. And mind the FRAMING of
+  what you are given — the theme disc's export sat flush to two canvas edges
+  while the book beside it was centred, which reads as 2px of misalignment in
+  a shared box; the bake centres the ink (pure integer translation, export
+  kept as the source of record).
 - **A MISSING `/ui2` FILE IS AN EMPTY BOX, NOT AN ERROR.** Nothing throws, the
   button keeps its shape, and a screenshot at a glance looks like a design
   choice. The only honest gate is the DECODED bitmap — `naturalWidth` is 0 for
