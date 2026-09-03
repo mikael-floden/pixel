@@ -13699,6 +13699,16 @@ export class WorldScene extends Phaser.Scene {
     }
     const mask = a.mask;
     const cuts = mask ? this.indoorCut : null;
+    const bgKey = mask ? "ground-bg-black" : "ground-bg-navy";
+    if (!this.textures.exists(bgKey)) {
+      const cv = document.createElement("canvas");
+      cv.width = 1;
+      cv.height = 1;
+      const g = cv.getContext("2d")!;
+      g.fillStyle = mask ? "#000000" : "#181c28";
+      g.fillRect(0, 0, 1, 1);
+      this.textures.addCanvas(bgKey, cv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    }
     /* THE CLIP IS THE STAMP GROWN BY `GROUND_SEAM`, and that is what keeps the
      * repaint from eating a texel of its own border.
      *
@@ -13725,35 +13735,27 @@ export class WorldScene extends Phaser.Scene {
       x1: Math.min(W, x1 + GROUND_SEAM),
       y1: Math.min(H, y1 + GROUND_SEAM),
     };
+    /* THE BACKGROUND UNDER THIS RECT — a 1x1 texture of the exact background
+     * colour scaled to the rect, NEAREST, because a partial `fill` is not
+     * texel-exact here (see the scroll's traps).
+     *
+     * REMOVING IT WAS TRIED AND REVERTED THE SAME HOUR (2026-09-03). The theory
+     * was that the stamp's own rounding spills past the GROUND_SEAM-grown clip
+     * and leaves a one-texel line of bare fill along the rect's edge — the
+     * comment below still describes that mechanism and it may well be real. But
+     * the stamp is what CLEARS the rect: the replay only draws the cells that
+     * landed, so without it every part of the rect no redrawn cell covers keeps
+     * pixels from a PREVIOUS camera position. The maintainer photographed the
+     * result within minutes — a vertical column of dark triangles down a slice
+     * edge, one per tile row, which is stale terrain showing through, and worse
+     * than the line it was meant to remove. A hypothesis I had not reproduced,
+     * shipped to production; that is the whole lesson.
+     *
+     * If the spill is ever chased again: raise GROUND_SEAM (a repaint of pixels
+     * that are already right, so it is safe), or make the background exact by
+     * some means other than deleting it. Do not delete it. */
     this.groundLastRect = { stamp: { x0, y0, x1, y1 }, clip: { ...b }, W, H, cells: cells.length };
-    /* NO BACKGROUND STAMP. This is the maintainer's beach zigzag (2026-09-03),
-     * and the comment above already described the mechanism without drawing the
-     * conclusion: a 1x1 texture scaled to the rect goes through the SAME
-     * projection machinery this file documents as NOT texel-exact — measured 3
-     * px off at 412/1436 — while the clip that repairs it is grown by
-     * GROUND_SEAM = 1. One texel of margin against a three-texel spill, and the
-     * spill lands where the replay can never paint it back: a one-texel line of
-     * bare 0x181c28 along the rect's edge. The rects follow CELL BOUNDARIES and
-     * this pass runs WHEREVER ART LANDS, so the lines accumulate into a lattice
-     * on the tile grid — which is why it is intermittent, why tabbing out and
-     * in brings it back SMALLER as more art lands, and why the_island2 never
-     * shows it (one committed atlas, every tile resident, almost no landing
-     * repaints) while a maps3 world streams plates per file.
-     *
-     * THE STAMP IS NOT NEEDED. The replay below redraws the terrain over the
-     * whole rect and the plate lattice is gapless (measured: 0 uncovered
-     * texels), so every texel of the rect is repainted by art. The only case
-     * the stamp served is a cell whose art STILL has not landed — and there,
-     * keeping the previous coherent pixels is strictly better than laying bare
-     * fill: it is the same principle as this repo's cache law, a stale whole
-     * picture over a mixed one. And this pass only ever runs on ART LANDING,
-     * where the new picture is strictly MORE complete than what is there; every
-     * caller that changes state (the indoor cut, a resize, a landed hitbox doc)
-     * goes through repaintWorld() and a full paint, which still fills.
-     *
-     * Raising GROUND_SEAM instead was rejected: it repairs a spill of a size
-     * nothing measures or bounds, and a stamp that cannot spill needs no
-     * repair. Removing an operation beats widening a patch. */
+    rt.stamp(bgKey, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
     const win = this.t3groundWindow(a.ax, a.ay, b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
     this.groundClip = b;
     try {
