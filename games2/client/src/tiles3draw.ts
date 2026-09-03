@@ -427,37 +427,7 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
  *
  *  Zeroed, not cropped: the result keeps 64x46 plate geometry so it pastes at
  *  the offset every other surface does. */
-/** Rows of SURFACE the top-face mask carries below its diamond — pure slack.
- *
- *  TOLERANCE, NOT EXACTNESS (maintainer 2026-09-03: "make sure the tile in
- *  front covers it… why do you have to make it so exact?"). A top-face-only
- *  plate is the one thing in this game that interlocks with no overlap to
- *  spare: 29 rows on a dy=14 lattice meet by exactly one row, where a full
- *  plate's wall band gives 32 and a tiles2 tile gives 49. Measured uncovered
- *  top-face texels on a 24x24 field:
- *
- *    margin   exact   1-row slip   1 in 20 ops dropped
- *      0          0          864                  6960
- *      1          0            0                  6464
- *      2          0            0                  6000
- *      3          0            0                  5536
- *
- *  ONE ROW, and 2 IS REJECTED — measured on the maintainer's screen, not at a
- *  desk. One row is what a slip needs (the table above). The second row is NOT
- *  free, which is what the "it can only paint surface where surface belongs"
- *  argument missed: on a RAISED cap the rows below the diamond are the top of
- *  the cell's own WALL COURSE, and a ground whose top is DARKER than its wall
- *  then wears a band of the wrong colour along every raised edge. grass is
- *  exactly that — top (20,82,59) against wall (20,100,78) — and at 2 rows the
- *  maintainer photographed dark green bands along every raised grass edge
- *  ("WTF?! What is this new border bug?!", 2026-09-03), measured at
- *  0.95/0.92/0.87 of the grass around them. At 1 row it had been live and
- *  unremarked all afternoon. The margin buys tolerance against a one-row slip
- *  and nothing more; it is not the place to buy margin against the streaming
- *  case, which is a repaint bug (see repaintTiles3Cells). */
-export const TOP_FACE_MARGIN = 1;
-
-export function topFaceOnly(sheets: PatternSheets, src: Pixels, opts?: { margin?: number }): Pixels {
+export function topFaceOnly(sheets: PatternSheets, src: Pixels, opts?: { margin?: boolean }): Pixels {
   const { fw, fh, libTop } = sheets;
   const a = cropToArt(src, fw, fh);
   const out = newPixels(fw, fh);
@@ -490,21 +460,15 @@ export function topFaceOnly(sheets: PatternSheets, src: Pixels, opts?: { margin?
    * the row it is invisible, and where nothing covers it the sea is one pixel
    * deeper. `topFaceOnly` therefore still carries no wall pixel anywhere —
    * pinned by its gate, which the wall-copying version failed. */
-  const rows = opts?.margin ?? TOP_FACE_MARGIN;
+  if (opts?.margin === false) return out;
   for (let x = 0; x < fw; x++) {
     let bottom = -1;
     for (let y = 0; y < fh; y++) if (libTop[y * fw + x]) bottom = y;
-    if (bottom < 0) continue;
+    if (bottom < 0 || bottom + 1 >= fh) continue;
     const from = bottom * fw + x;
     if (out.data[from * 4 + 3] === 0) continue;
-    // ...extended DOWNWARD `rows` times, every row a copy of the SAME bottom
-    // surface texel. Never the art's next row: that is the wall band.
-    for (let k = 1; k <= rows; k++) {
-      const y = bottom + k;
-      if (y >= fh) break;
-      const to = y * fw + x;
-      for (let c = 0; c < 4; c++) out.data[to * 4 + c] = out.data[from * 4 + c];
-    }
+    const to = (bottom + 1) * fw + x;
+    for (let c = 0; c < 4; c++) out.data[to * 4 + c] = out.data[from * 4 + c];
   }
   return out;
 }
@@ -881,34 +845,54 @@ export class Tiles3Textures {
       const a = this.platePixels(b.plateA, b.a);
       const bb = this.platePixels(b.plateB, b.b);
       if (!a || !bb) return null;
-      /* THE RAW COMPOSITION — the full 46-row plate, wall band and all.
+      const out = composeBoundary(this.o.sheets, b.maskFrame as number, a, bb, { seam: this.o.seam !== false });
+      /* A COMPOSED BOUNDARY IS TOP FACE ONLY, ALWAYS — and this is the
+       * maintainer's zigzag on the beach (2026-09-03).
        *
-       * TOLERANCE IS THE POINT, NOT EXACTNESS (maintainer 2026-09-03: "why
-       * don't you fix the code so it can't appear — make sure the tile in front
-       * covers it? Why do you have to make it so exact?"). Measured on a 24x24
-       * field, uncovered top-face texels under three adversities:
+       * A boundary is a SURFACE blend on the corner lattice and has no lawful
+       * wall source at any level: at a raised level the cap's own x-over-y art
+       * is the wall (which is why the resolver already sets `topOnly` there),
+       * and at level 0 there is no wall and nothing below to hide. But the flag
+       * was DEAD on this path — nothing here read it and `boundaryKeyFor` never
+       * carried it — so every boundary in the game painted its whole 46-row
+       * plate, wall band included.
        *
-       *   variant                exact   1-row slip   1 in 20 ops dropped
-       *   FULL plate                 0            0                  1056
-       *   top face, margin 0         0          864                  6960
-       *   top face, margin 1         0            0                  6464
-       *   top face, margin 2         0            0                  6000
+       * That is fatal here and nowhere else, because of PAINTER ORDER: cells,
+       * then boundaries, then decks. A cell's own wall band is harmless — the
+       * cells in front are painted after it and cover it (measured: 0 texels
+       * uncovered). A boundary is painted AFTER every cell, so its wall band
+       * lands on top of the very tiles that would have hidden it, and only a
+       * LATER BOUNDARY can cover it. Boundaries exist only where the Wang index
+       * is mixed, so along a transition band most of that wall band is covered
+       * by nothing at all — a partial, dotted chevron rather than a solid
+       * course, which is exactly the "zag zag zag" he photographed.
        *
-       * The full plate wins on BOTH adversities: its 17-row wall band gives 32
-       * rows of overlap, which is the same reason a tiles2 world (64-px tiles,
-       * 49 rows of overlap) has never shown a seam artefact in its life.
-       * `Tiles3Boundary.topOnly` therefore stays UNREAD here, deliberately.
+       * MEASURED on his own cell (458.9,378.8 of the_game, every cell level 0):
+       * all 112 boundaries in the window keep the band; a real
+       * light_beach<->grass composition is 1088/1088 OPAQUE wall texels of
+       * which 800 are exactly (171,146,116) — light_beach's palette wall. On
+       * his screenshot the dots measure 0.750/0.747/0.779 of the sand beside
+       * them, and light_beach wall/top is 0.7500/0.7449/0.7785. Divide out the
+       * evening light and they are (171,146,116) on (228,196,149). His words
+       * were exact: "it's the edge right before the wall begins."
        *
-       * REJECTED, and this is why the note exists: masking a boundary to its top
-       * face. It was justified by "boundaries paint after every cell, so their
-       * wall band lands on top" — WRONG, the boundary is drawn WITH its cell
-       * (see the note at the boundary draw in WorldScene and render3.py's dead
-       * `for s in []` pass), so its wall band is covered by the cells in front
-       * exactly like any cell's. With `{ margin: false }` it also created the
-       * margin-0 row of that table at exactly the light_beach<->grass cells
-       * where the maintainer photographs the artefact. Two days of this bug went
-       * into making the geometry more exact; the answer was more slack. */
-      return composeBoundary(this.o.sheets, b.maskFrame as number, a, bb, { seam: this.o.seam !== false });
+       * NO MARGIN ROW here, unlike a liquid's: a boundary paints last, over a
+       * cell that has already painted its own top AND wall, so there is no hole
+       * to fill and one extra row would only bleed the blend a pixel into the
+       * tile in front.
+       *
+       * WHY NO OTHER SURFACE SHOWS THIS: open water composes no boundary at all
+       * ("NO LIQUID may touch the quad — a coast is a hard edge"), which is why
+       * the sea's zigzag was a different defect (its own zero-slack top-face
+       * interlock, fixed in 55f1d43b) and why fixing it left the beach alone;
+       * and a tiles2 world has no composed boundaries whatsoever, which is why
+       * the_island2 has never shown it ("0 zigzag. it just works").
+       *
+       * The key needs no new input: it is a runtime Phaser texture key that
+       * never names a file (`boundaryArtPaths` names the SOURCES, which do not
+       * move), so one key still maps to one picture and no cache can hold a
+       * stale one. */
+      return topFaceOnly(this.o.sheets, out, { margin: false });
     });
   }
 

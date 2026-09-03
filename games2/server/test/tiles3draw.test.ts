@@ -39,7 +39,6 @@ import {
   cropToArt,
   topFaceMask,
   topFaceOnly,
-  TOP_FACE_MARGIN,
   liquidDiamond,
   rint,
   artKey,
@@ -517,115 +516,65 @@ test("the factory builds a composition once and NEAREST-filters every canvas", {
   const src = fx.man.get(k1 as string)!.getSourceImage() as { pix: Uint8ClampedArray };
   const pa = px(c.a.path);
   const pb = conformPlate(SHEETS, px(c.b.path), wallRGB(c.b.ground));
-  assert.equal(createHash("sha256").update(Buffer.from(src.pix.buffer, 0, src.pix.length)).digest("hex"), rasterSha(composeBoundary(SHEETS, c.frame, pa, pb)));
+  // ...THROUGH the top-face mask: a boundary paints last and must carry no wall
+  // band (see "a composed boundary carries NO wall band" below).
+  assert.equal(
+    createHash("sha256").update(Buffer.from(src.pix.buffer, 0, src.pix.length)).digest("hex"),
+    rasterSha(topFaceOnly(SHEETS, composeBoundary(SHEETS, c.frame, pa, pb), { margin: false })),
+  );
 });
 
-/* THE BOUNDARY KEEPS ITS WALL BAND, and that is the tolerant choice.
- *
- * REJECTED (built, shipped, measured, reverted the same day): masking a composed
- * boundary to its top face. Justified by "boundaries paint after every cell so
- * their wall band lands on top" — WRONG, the boundary is drawn WITH its cell
- * (render3's separate pass is dead code, spelled `for s in []`). And with zero
- * margin it produced the most fragile geometry in the renderer at exactly the
- * cells where the maintainer photographs the artefact. This gate pins the raw
- * composition so that cannot be re-attempted by reasoning. */
-test("a composed boundary is the RAW composition — wall band included", { skip }, () => {
+/* THE BEACH ZIGZAG (maintainer 2026-09-03). A boundary is a SURFACE blend on the
+ * corner lattice with no lawful wall source at any level, and PAINTER ORDER makes
+ * a wall band on it fatal: cells, then boundaries, then decks. A cell's own wall
+ * band is covered by the cells painted in front of it (measured: 0 texels
+ * uncovered); a boundary is painted AFTER every cell, so only a LATER BOUNDARY
+ * can cover its wall band — and boundaries exist only where the Wang index is
+ * mixed, so along a transition band most of it is covered by nothing.
+ * Measured before the fix, on his own cell: a real light_beach<->grass
+ * composition carried 1088/1088 OPAQUE wall texels, 800 of them exactly
+ * (171,146,116) = light_beach's palette wall; the dots on his screenshot measure
+ * 0.750/0.747/0.779 of the sand beside them against a wall/top ratio of
+ * 0.7500/0.7449/0.7785. This gate is why that cannot come back. */
+test("a composed boundary carries NO wall band, and its top face is untouched", { skip }, () => {
   let checked = 0;
-  for (const c of (F.boundary as any[]).slice(0, 8)) {
+  for (const c of (F.boundary as any[]).slice(0, 12)) {
     const pa = c.a.kind === "conform" ? conformPlate(SHEETS, px(c.a.path), wallRGB(c.a.ground)) : px(c.a.path);
     const pb = c.b.kind === "conform" ? conformPlate(SHEETS, px(c.b.path), wallRGB(c.b.ground)) : px(c.b.path);
+    const raw = composeBoundary(SHEETS, c.frame, pa, pb);
+    /* THROUGH THE REAL FACTORY — this gate is about the WIRING, not about
+     * topFaceOnly. `Tiles3Boundary.topOnly` was a DEAD FLAG here: the resolver
+     * set it and `boundary()` never read it, so recomputing the mask in the test
+     * would pass against the very bug it is meant to catch. */
     const fx = fakeTextures();
     fx.put(artKey(c.a.path), px(c.a.path));
     fx.put(artKey(c.b.path), px(c.b.path));
     const T = new Tiles3Textures({ textures: fx.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas });
-    for (const topOnly of [undefined, true]) {
-      const key = T.boundary({ maskFrame: c.frame, a: c.a.ground, b: c.b.ground, plateA: c.a, plateB: c.b, topOnly } as any);
-      assert.ok(key);
-      const reg = (fx.man.get(key as string)!.getSourceImage() as { pix: Uint8ClampedArray }).pix;
-      let wall = 0;
-      for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++) if (!SHEETS.libTop[i] && reg[i * 4 + 3] > 0) wall++;
-      assert.ok(wall > 1000, `${c.a.ground}/${c.b.ground} topOnly=${topOnly} lost its wall band (${wall})`);
+    const key = T.boundary({ maskFrame: c.frame, a: c.a.ground, b: c.b.ground, plateA: c.a, plateB: c.b } as any);
+    assert.ok(key, `${c.a.ground}/${c.b.ground} composed nothing`);
+    const reg = fx.man.get(key as string)!.getSourceImage() as { pix: Uint8ClampedArray };
+    const out: Pixels = { w: SHEETS.fw, h: SHEETS.fh, data: reg.pix };
+    let rawWall = 0;
+    let outWall = 0;
+    let top = 0;
+    for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++) {
+      if (SHEETS.libTop[i]) {
+        // the blend itself survives byte for byte
+        for (let ch = 0; ch < 4; ch++) assert.equal(out.data[i * 4 + ch], raw.data[i * 4 + ch], `${c.a.ground}/${c.b.ground} top px ${i}`);
+        if (out.data[i * 4 + 3] > 0) top++;
+        continue;
+      }
+      if (raw.data[i * 4 + 3] > 0) rawWall++;
+      if (out.data[i * 4 + 3] > 0) outWall++;
     }
-    // ONE KEY, ONE PICTURE: topOnly changes nothing here, so it must not split
-    // the key either (a key is a function of the content and of nothing else).
-    const k1 = T.boundary({ maskFrame: c.frame, a: c.a.ground, b: c.b.ground, plateA: c.a, plateB: c.b } as any);
-    const k2 = T.boundary({ maskFrame: c.frame, a: c.a.ground, b: c.b.ground, plateA: c.a, plateB: c.b, topOnly: true } as any);
-    assert.equal(k1, k2, "topOnly does not change the picture, so it must not change the key");
+    // NON-VACUOUS: the raw composition really does carry a full wall band, so a
+    // gate that passes here is testing the mask and not an empty plate.
+    assert.ok(rawWall > 1000, `${c.a.ground}/${c.b.ground} raw wall band is only ${rawWall} texels — fixture drifted`);
+    assert.equal(outWall, 0, `${c.a.ground}/${c.b.ground} still paints ${outWall} wall texels`);
+    assert.equal(top, 924, `${c.a.ground}/${c.b.ground} keeps its whole top face`);
     checked++;
   }
-  assert.ok(checked >= 6, `${checked} boundary cases`);
-});
-
-/* THE TOLERANCE LAW — the durable result of a two-day bug (maintainer: "why
- * don't you fix the code so it CAN'T appear … why do you have to make it so
- * exact?"). Every seam artefact in this renderer has been a geometry with no
- * overlap to spare, and every fix that made the geometry more EXACT left the
- * class alive. So the property under test is not exactness — the ideal lattice
- * is already exact — but what survives a one-row placement slip and a missing
- * neighbour. A tiles2 world overlaps by 49 rows and has never shown a seam;
- * a full tiles3 plate overlaps by 32; a top-face-only plate by ONE, which is
- * why liquids carry TOP_FACE_MARGIN rows of surface below the diamond.
- * If this gate ever fails, something took slack OUT of the geometry. */
-test("the geometry has slack: a one-row slip cannot open a hole", { skip }, () => {
-  const { fw, fh, libTop, libWall } = SHEETS;
-  const DXX = 32;
-  const DYY = 14;
-  const maskTop = (margin: number): Uint8Array => {
-    const m = new Uint8Array(fw * fh);
-    for (let i = 0; i < fw * fh; i++) m[i] = libTop[i] ? 1 : 0;
-    for (let x = 0; x < fw; x++) {
-      let b = -1;
-      for (let y = 0; y < fh; y++) if (libTop[y * fw + x]) b = y;
-      if (b < 0) continue;
-      for (let k = 1; k <= margin && b + k < fh; k++) m[(b + k) * fw + x] = 1;
-    }
-    return m;
-  };
-  const full = new Uint8Array(fw * fh);
-  for (let i = 0; i < fw * fh; i++) full[i] = libTop[i] || libWall[i] ? 1 : 0;
-  const N = 24;
-  const OX = N * DXX + 96;
-  const OY = 96;
-  const W = 2 * OX + 96;
-  const H = 2 * N * DYY + fh + 2 * OY;
-  const tile = (mask: ArrayLike<number>, slipEvery: number): number => {
-    const buf = new Uint8Array(W * H);
-    let n = 0;
-    for (let col = 0; col < N; col++)
-      for (let row = 0; row < N; row++) {
-        n++;
-        const slip = slipEvery && n % slipEvery === 0 ? 1 : 0;
-        const x0 = OX + (col - row) * DXX;
-        const y0 = OY + (col + row) * DYY + slip;
-        for (let v = 0; v < fh; v++) for (let u = 0; u < fw; u++) {
-          if (!mask[v * fw + u]) continue;
-          const x = x0 + u;
-          const y = y0 + v;
-          if (x < 0 || y < 0 || x >= W || y >= H) continue;
-          buf[y * W + x] = 1;
-        }
-      }
-    let bad = 0;
-    for (let col = 6; col < N - 6; col++)
-      for (let row = 6; row < N - 6; row++) {
-        const x0 = OX + (col - row) * DXX;
-        const y0 = OY + (col + row) * DYY;
-        for (let v = 0; v < fh; v++) for (let u = 0; u < fw; u++) {
-          if (!libTop[v * fw + u]) continue;
-          if (!buf[(y0 + v) * W + x0 + u]) bad++;
-        }
-      }
-    return bad;
-  };
-  // CONTROL FIRST: the exact lattice must be exact, or every number below is
-  // noise. Five instrument bugs went into this hunt; this is the guard.
-  assert.equal(tile(full, 0), 0, "harness broken: the full plate on the exact lattice must cover everything");
-  assert.equal(tile(maskTop(TOP_FACE_MARGIN), 0), 0, "the shipped top-face mask must be exact too");
-  // THE PROPERTY: slack absorbs a slip.
-  assert.equal(tile(full, 3), 0, "a full plate absorbs a one-row slip");
-  assert.equal(tile(maskTop(TOP_FACE_MARGIN), 3), 0, `margin ${TOP_FACE_MARGIN} absorbs a one-row slip`);
-  // NON-VACUOUS: zero margin does NOT, which is what makes the constant load-bearing.
-  assert.ok(tile(maskTop(0), 3) > 500, "a zero-margin top face must fail this, or the test proves nothing");
+  assert.ok(checked >= 8, `${checked} boundary cases`);
 });
 
 
@@ -658,7 +607,19 @@ test("eviction is safe because a rebuilt key is byte-identical", { skip }, () =>
   const again = T.boundary({ maskFrame: first.frame, a: first.a.ground, b: first.b.ground, plateA: first.a, plateB: first.b } as any);
   assert.equal(again, keys[0], "the same content mints the same key, never a new one");
   const src = fx.man.get(again as string)!.getSourceImage() as { pix: Uint8ClampedArray };
-  assert.equal(createHash("sha256").update(Buffer.from(src.pix.buffer, 0, src.pix.length)).digest("hex"), first.sha);
+  /* Still anchored to the fixture, through the mask the factory now applies: a
+   * boundary is TOP FACE ONLY (it paints after every cell and may carry no wall
+   * band). fixture sha -> raw compose -> topFaceOnly is one chain, so a drifted
+   * port still fails the parity gate above and eviction safety is what THIS
+   * gate measures. */
+  const pa = first.a.kind === "conform" ? conformPlate(SHEETS, px(first.a.path), wallRGB(first.a.ground)) : px(first.a.path);
+  const pb = first.b.kind === "conform" ? conformPlate(SHEETS, px(first.b.path), wallRGB(first.b.ground)) : px(first.b.path);
+  const raw = composeBoundary(SHEETS, first.frame, pa, pb);
+  assert.equal(rasterSha(raw), first.sha, "the fixture still pins the raw composition");
+  assert.equal(
+    createHash("sha256").update(Buffer.from(src.pix.buffer, 0, src.pix.length)).digest("hex"),
+    rasterSha(topFaceOnly(SHEETS, raw, { margin: false })),
+  );
 });
 
 test("a conformed plate is built once per ground, and a liquid once per colour", { skip }, () => {
@@ -794,17 +755,13 @@ test("topFaceOnly drops the wall band and touches nothing else", { skip: skip ||
     const out = topFaceOnly(SHEETS, src);
     assert.equal(out.w, SHEETS.fw, "keeps plate geometry");
     assert.equal(out.h, SHEETS.fh, "keeps plate geometry");
-    // the TOP_FACE_MARGIN rows below each column, every one a copy of that
-    // column's own bottom SURFACE texel — never the art's next row, which is
-    // the wall band.
-    const rep = new Map<number, number>(); // margin index -> the texel it copies
+    // the bottom surface row of each column, which the margin replicates
+    const rep = new Set<number>();
     for (let x = 0; x < SHEETS.fw; x++) {
       let bottom = -1;
       for (let y = 0; y < SHEETS.fh; y++) if (SHEETS.libTop[y * SHEETS.fw + x]) bottom = y;
-      if (bottom < 0) continue;
-      const from = bottom * SHEETS.fw + x;
-      if (a.data[from * 4 + 3] === 0) continue;
-      for (let k = 1; k <= TOP_FACE_MARGIN && bottom + k < SHEETS.fh; k++) rep.set((bottom + k) * SHEETS.fw + x, from);
+      if (bottom >= 0 && bottom + 1 < SHEETS.fh && a.data[(bottom * SHEETS.fw + x) * 4 + 3] > 0)
+        rep.add((bottom + 1) * SHEETS.fw + x);
     }
     let kept = 0;
     let margin = 0;
@@ -821,7 +778,7 @@ test("topFaceOnly drops the wall band and touches nothing else", { skip: skip ||
          * next row instead is copying the WALL BAND, which is what put 76
          * (76,138,152) texels per plate onto the sea as the maintainer's dark
          * dotted zigzag. This asserts the difference. */
-        const src = rep.get(i)!;
+        const src = i - SHEETS.fw;
         for (let c = 0; c < 4; c++) assert.equal(out.data[i * 4 + c], a.data[src * 4 + c], `${path} margin px ${i} ch ${c}`);
         margin++;
       } else {
@@ -830,10 +787,13 @@ test("topFaceOnly drops the wall band and touches nothing else", { skip: skip ||
       }
     }
     assert.equal(kept, 924, `${path} keeps its whole top face`);
-    assert.equal(margin, 64 * TOP_FACE_MARGIN, `${path} carries ${TOP_FACE_MARGIN} margin rows per column`);
+    assert.equal(margin, 64, `${path} carries one margin row per column`);
     // NO WALL PIXEL SURVIVES ANYWHERE: every out-of-mask texel is a byte-exact
     // copy of the surface texel directly above it.
-    for (const [i, src] of rep) assert.ok(SHEETS.libTop[src], `${path} margin ${i} must copy a top-face texel, not a wall one`);
+    for (const i of rep) {
+      const src = i - SHEETS.fw;
+      assert.ok(SHEETS.libTop[src], `${path} margin ${i} must copy a top-face texel`);
+    }
   }
 });
 
@@ -893,10 +853,10 @@ test("the flat liquid diamond TILES the sea with no holes", { skip }, () => {
  * over a cell that has already painted its own top AND wall, so there is no hole
  * to fill and an extra row would bleed the blend one pixel into the tile in
  * front. The liquid path keeps its margin — that is what fixed the sea. */
-test("topFaceOnly's margin is TOP_FACE_MARGIN rows of SURFACE, and opt-out-able", { skip: skip || !haveWater }, () => {
+test("topFaceOnly's margin row is opt-out, and the liquid default keeps it", { skip: skip || !haveWater }, () => {
   const src = px(WATER_PLATES[0]);
   const withM = topFaceOnly(SHEETS, src);
-  const without = topFaceOnly(SHEETS, src, { margin: 0 });
+  const without = topFaceOnly(SHEETS, src, { margin: false });
   let m = 0;
   let n = 0;
   for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++) {
@@ -904,8 +864,8 @@ test("topFaceOnly's margin is TOP_FACE_MARGIN rows of SURFACE, and opt-out-able"
     if (withM.data[i * 4 + 3] > 0) m++;
     if (without.data[i * 4 + 3] > 0) n++;
   }
-  assert.equal(m, 64 * TOP_FACE_MARGIN, `the default carries ${TOP_FACE_MARGIN} margin texels per column`);
-  assert.equal(n, 0, "margin:0 carries none");
+  assert.equal(m, 64, "the default carries one margin texel per column");
+  assert.equal(n, 0, "margin:false carries none");
   // and the default is byte-identical to what shipped for the sea
   for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++)
     if (SHEETS.libTop[i]) for (let ch = 0; ch < 4; ch++) assert.equal(withM.data[i * 4 + ch], without.data[i * 4 + ch]);

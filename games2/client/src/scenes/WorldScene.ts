@@ -2038,9 +2038,6 @@ export class WorldScene extends Phaser.Scene {
    * full paint, extended by band paints); the cells a landed batch made drawable;
    * the ring of cells beyond the texture whose art is asked for ahead of time. */
   private t3missing = new Map<string, Set<number>>();
-  /** Settings -> "ground fill": paint the ground background MAGENTA so a hole is
-   *  unmistakable on a phone screenshot. See groundBg. */
-  private groundFillDbg = false;
   private t3sheetPaths = new Set<string>();
   private groundDirtyCells: number[] = [];
   private repaintGroundPartial = false;
@@ -2901,20 +2898,6 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => !!this.night && this.night.dbgOverlays !== 0,
           state: () => ["all", "no fog", "no mist", "none"][this.night?.dbgOverlays ?? 0],
-        },
-        /* THE MAINTAINER'S PINK TEST — his idea, and it is what found the
-         * landing-repaint stamp. A zigzag that turns MAGENTA is a hole; one that
-         * stays dark is painted. Forces a full repaint so the answer is
-         * immediate. */
-        {
-          label: "ground fill",
-          act: () => {
-            this.groundFillDbg = !this.groundFillDbg;
-            this.chat.addLog("—", `ground fill: ${this.groundFillDbg ? "PINK (a hole shows magenta)" : "normal"}`);
-            this.repaintWorld();
-          },
-          get: () => this.groundFillDbg,
-          state: () => (this.groundFillDbg ? "pink" : "normal"),
         },
         /* THE PERF BEACON, as a BUTTON — because the maintainer plays from an
          * INSTALLED HOME-SCREEN APP, which has no address bar, so `?perf=1`
@@ -13465,7 +13448,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.groundScrollLog.length > 16) this.groundScrollLog.shift();
     const W = cur.width;
     const H = cur.height;
-    const bg = this.groundBg(mask);
+    const bg = mask ? 0x000000 : 0x181c28;
     next.setPosition(ax, ay);
     next.clear();
     // The background under everything, as the full paint lays it: a WHOLE-
@@ -13735,25 +13718,6 @@ export class WorldScene extends Phaser.Scene {
       x1: Math.min(W, x1 + GROUND_SEAM),
       y1: Math.min(H, y1 + GROUND_SEAM),
     };
-    /* THE BACKGROUND UNDER THIS RECT — a 1x1 texture of the exact background
-     * colour scaled to the rect, NEAREST, because a partial `fill` is not
-     * texel-exact here (see the scroll's traps).
-     *
-     * REMOVING IT WAS TRIED AND REVERTED THE SAME HOUR (2026-09-03). The theory
-     * was that the stamp's own rounding spills past the GROUND_SEAM-grown clip
-     * and leaves a one-texel line of bare fill along the rect's edge — the
-     * comment below still describes that mechanism and it may well be real. But
-     * the stamp is what CLEARS the rect: the replay only draws the cells that
-     * landed, so without it every part of the rect no redrawn cell covers keeps
-     * pixels from a PREVIOUS camera position. The maintainer photographed the
-     * result within minutes — a vertical column of dark triangles down a slice
-     * edge, one per tile row, which is stale terrain showing through, and worse
-     * than the line it was meant to remove. A hypothesis I had not reproduced,
-     * shipped to production; that is the whole lesson.
-     *
-     * If the spill is ever chased again: raise GROUND_SEAM (a repaint of pixels
-     * that are already right, so it is safe), or make the background exact by
-     * some means other than deleting it. Do not delete it. */
     this.groundLastRect = { stamp: { x0, y0, x1, y1 }, clip: { ...b }, W, H, cells: cells.length };
     rt.stamp(bgKey, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
     const win = this.t3groundWindow(a.ax, a.ay, b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
@@ -14923,26 +14887,6 @@ export class WorldScene extends Phaser.Scene {
    *  returns the image unflipped and reads as a missing edge row. An earlier
    *  round mistook that readback for a real defect and overscanned this fill to
    *  "fix" it; the overscan was a no-op and the row it chased was the probe. */
-  /** THE GROUND'S BACKGROUND COLOUR — or MAGENTA while the debug switch is on.
-   *
-   *  The maintainer's own instrument (2026-09-03): "lets say we clear the screen
-   *  with pink before we draw. Then we know if the pixels are still pink it
-   *  means the black border is the pink background." It settles in ONE
-   *  screenshot what a day of colour arithmetic could not: a line that turns
-   *  MAGENTA is a HOLE — nothing painted there — while a line that stays dark is
-   *  something drawn (a wall band, a seam, or a full-screen pass). Same shape of
-   *  tool as his shadows switch, and it found this bug. */
-  private groundBg(mask: unknown): number {
-    /* `mask` is the indoor cut's own Map (or null) at every call site and is
-     * read for TRUTHINESS only, exactly as the literal it replaced was — hence
-     * `unknown`, not `boolean`. Declaring it boolean is what broke the deploy of
-     * 75aa1e7dba: `npm run typecheck --workspaces` runs the WORKSPACES' own
-     * scripts and silently checks nothing, while CI runs the ROOT script
-     * (`tsc -p shared|server|client`). Run `npm run typecheck` from games2. */
-    if (this.groundFillDbg) return 0xff00ff;
-    return mask ? 0x000000 : 0x181c28;
-  }
-
   private fillGround(rt: Phaser.GameObjects.RenderTexture, rgb: number): void {
     rt.fill(rgb, 1);
   }
@@ -15007,7 +14951,7 @@ export class WorldScene extends Phaser.Scene {
       this.groundSliceCtx = null;
       rt.setPosition(ax, ay);
       rt.clear();
-      this.fillGround(rt, this.groundBg(mask));
+      this.fillGround(rt, mask ? 0x000000 : 0x181c28);
       const win = this.t3groundWindow(ax, ay, 0, 0, rt.width, rt.height);
       this.groundClip = null;
       this.drawTiles3Ground(rt, ax, ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, top);
@@ -15017,7 +14961,7 @@ export class WorldScene extends Phaser.Scene {
     }
     rt.setPosition(ax, ay);
     rt.clear();
-    this.fillGround(rt, this.groundBg(mask));
+    this.fillGround(rt, mask ? 0x000000 : 0x181c28);
 
     // Covered rect in virtual-canvas coords, padded for tile size + max lift.
     const x0 = ax - tile;
