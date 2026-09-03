@@ -591,12 +591,43 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     after a teleport still resolves every cell; the wins are the walking
     redraws, whose cells are ~82% already known. A/B: `__ml.groundRedraw(cull?, cache?)` (both switches restored
     after the forced redraw; `cached` = entries held).
-  - STILL OPEN after all four: a ground redraw is still a FULL repaint every
-    256 px of camera travel — every op of ~4,267 cells re-drawn when a step
-    exposes ~18% of the texture, and the per-cell ops still re-derived. Next:
-    scroll the world-anchored RT and paint only the newly exposed band (the RT
-    trim is NOT a drop-in: it skips void cells, and painter order across the
-    seam must hold), or cache the ops with a residency epoch.
+  - **The ground SCROLLS (#6).** A camera-latched redraw no longer repaints the
+    whole texture: the kept picture is copied into a second render texture
+    shifted by the anchor delta (`drawFrame(key, "__BASE", -sx, -sy)`; the two
+    swap roles) and only the newly exposed L-shaped band is painted, through
+    the SAME painter pass clipped to the band (`groundClip`: an op crossing the
+    band edge is cropped to an integer sub-rect at scale 1, so band pixels see
+    exactly the full paint's sequence). Pixel-identical: `__ml.groundHash()` /
+    `__ml.groundSnap()` after a scroll equal a forced full paint at the same
+    anchor (8 of 8 moves at four spots, `scripts/_tmp-scrollab.mjs`). Measured
+    on the_game: a 576 px step issues 2,876-3,966 blits instead of 5,949-8,843
+    (the band window still resolves and culls, so JS cost falls ~40-60%, not
+    ~80%). Only a camera latch scrolls — a poisoned latch (repaintWorld, a
+    landed batch, a resize, the indoor mask/cut, the first `caveDepth`) paints
+    in full, so the kept picture and the band can never disagree on state.
+    After a scroll `t3stats` counts the BANDS (cells/culled with the corner
+    twice); the boot hold reads the sticky `groundPainted` instead of blits.
+    Three Phaser 3.90 traps this paid for, each a wrong picture, none an error:
+    - `DynamicTexture.fill(rgb, a, x, y, w, h)` with a rect is NOT texel-exact
+      on a texture larger than the canvas — it keeps the renderer's projection,
+      scales the rect by canvas/texture and floors it (3 px seam measured at
+      412/1436). Only the whole-texture fill is exact: fill all, then copy.
+    - `Texture.add()` makes the FIRST added frame the texture's default
+      (`get(undefined)` answers `firstFrame` once `frameTotal > 1`), so a bare-key
+      draw (`add.image(x, y, key)`, `batchDraw(key)`) shows that sub-rect. Every
+      frame add here resets `firstFrame = "__BASE"` and the ground pass draws
+      `"__BASE"` explicitly; `Texture.get(name)` of a MISSING name returns the
+      base frame with a warning, never null — test with `has()` first.
+    - A `saveTexture`d render texture outlives its game object (`destroy()`
+      skips the texture): drop it through `textures.remove(key)` or every
+      resize leaks two viewport-sized GL targets.
+  - STILL OPEN after the scroll: fresh terrain. The ground pass requests art
+    JUST IN TIME (a cell's files are asked for when it enters the window) and
+    every landed batch poisons the latch — running into new ground is still
+    request → land → FULL paint every ~256 px. Next: prefetch a ring ahead and
+    repaint only the landed cells through `groundClip`. And the deferred
+    animation batch (NPC rotations/idles, monster combat strips: ~1,000 files)
+    uploads 30-60 textures per step with no per-frame pacing while you run.
 - `stairs` tiles are ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower,
   cactus, lava) are impassable — `SURFACES`/`surfaceFor` (`road_*` by prefix).

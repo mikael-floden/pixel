@@ -1337,7 +1337,10 @@ export class WorldScene extends Phaser.Scene {
   // What the last ground pass resolved and drew, plus how long it took. The
   // pass runs on the ground RT's own latch (every GROUND_MARGIN/2 of camera
   // drift), never per frame — `ms` is what makes that budget checkable.
-  private t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: 0, ms: 0, culled: 0 };
+  private t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: 0, ms: 0, culled: 0, composed: 0, composeMs: 0 };
+  /** The ground has drawn SOMETHING this world — sticky, because after a
+   *  scroll t3stats counts only the exposed bands (which can be all void). */
+  private groundPainted = false;
   /* THE GROUND CULL — see t3Blit. `groundCull` is the A/B switch for
    * `__ml.groundRedraw`; nothing in play reads it. */
   private groundCull = true;
@@ -1370,6 +1373,9 @@ export class WorldScene extends Phaser.Scene {
   private perfAcc: Record<string, { n: number; ms: number; max: number }> = {};
   private perfFrames: number[] = [];
   private perfLast = 0;
+  private perfTexAdded = 0;
+  private perfTexFam: Record<string, number> = {};
+  private perfTexHooked = false;
   private ps(): void {
     if (this.perfOn) this.perfStack.push(performance.now());
   }
@@ -1503,6 +1509,17 @@ export class WorldScene extends Phaser.Scene {
   private indoorComputes = 0; // QA: findIndoorSpace calls (never per frame)
   // Streaming ground renderer state.
   private groundRT?: Phaser.GameObjects.RenderTexture;
+  /* THE GROUND SCROLL — see scrollTiles3Ground. A second texture to scroll
+   * into (the two swap roles every scrolled redraw), the anchor + indoor state
+   * of the picture the visible one holds (null = nothing valid: a full paint is
+   * due), the band a scrolled pass clips its ops to, and the A/B switch. */
+  private groundScratch?: Phaser.GameObjects.RenderTexture;
+  private groundAnchor: { ax: number; ay: number; mask: Map<number, number> | null; top: number } | null = null;
+  private groundClip: { x0: number; y0: number; x1: number; y1: number } | null = null;
+  private groundScroll = true;
+  private groundLastMode: "full" | "scroll" = "full";
+  /** DIAGNOSTIC ring: the last scrolls' (prevAx, prevAy, ax, ay, sx, sy). */
+  private groundScrollLog: number[][] = [];
   // Chase-cam state: eased world centre + eased zoom; detached while a debug
   // lookAt holds the camera elsewhere.
   private camChase = { x: 0, y: 0, zoom: 0, init: false };
@@ -3465,6 +3482,16 @@ export class WorldScene extends Phaser.Scene {
       /** MICRO-BENCH: force one full ground redraw right now — the latch
        *  poisoned as repaintWorld does — and report its pure-JS cost with the
        *  pass's counters. `cull` flips the off-texture cull for an A/B. */
+      /** The ground scroll's switch (A/B) and what the last redraw did. */
+      groundScroll: (on?: boolean) => {
+        if (typeof on === "boolean") {
+          this.groundScroll = on;
+          this.groundAnchor = null; // the next redraw paints in full either way
+        }
+        const log = this.groundScrollLog;
+        this.groundScrollLog = [];
+        return { on: this.groundScroll, lastMode: this.groundLastMode, anchor: this.groundAnchor ? { ax: this.groundAnchor.ax, ay: this.groundAnchor.ay } : null, log };
+      },
       /** The resolution cache's switch, for the occluder-pass parity check. */
       groundCache: (on: boolean) => {
         this.groundCacheOn = on;
@@ -3487,6 +3514,7 @@ export class WorldScene extends Phaser.Scene {
           cull: this.groundCull,
           cache: this.groundCacheOn,
           cached: this.t3cells.size,
+          mode: this.groundLastMode,
           totalMs: +(performance.now() - t0).toFixed(1),
         };
         this.groundCull = prevCull;
@@ -3525,6 +3553,25 @@ export class WorldScene extends Phaser.Scene {
               let h = 0x811c9dc5;
               for (let i = 0; i < d.length; i++) h = Math.imul(h ^ d[i], 0x01000193) >>> 0;
               resolve({ hash: h.toString(16).padStart(8, "0"), w: c.width, h: c.height, anchor: { x: rt.x, y: rt.y } });
+            } catch (e) {
+              reject(e);
+            }
+          });
+        }),
+      /** DIAGNOSTIC: the ground render texture's pixels as a PNG data URL (with
+       *  its world anchor), so two redraws can be diffed pixel by pixel. */
+      groundSnap: () =>
+        new Promise<{ png: string; w: number; h: number; anchor: { x: number; y: number } }>((resolve, reject) => {
+          const rt = this.groundRT;
+          if (!rt) return reject(new Error("no ground RT"));
+          rt.snapshot((img) => {
+            try {
+              const el = img as HTMLImageElement;
+              const c = document.createElement("canvas");
+              c.width = el.width;
+              c.height = el.height;
+              c.getContext("2d")!.drawImage(el, 0, 0);
+              resolve({ png: c.toDataURL("image/png"), w: c.width, h: c.height, anchor: { x: rt.x, y: rt.y } });
             } catch (e) {
               reject(e);
             }
@@ -3592,7 +3639,18 @@ export class WorldScene extends Phaser.Scene {
        *  the scene was carrying when they ran. Frame deltas are the scene's own
        *  update cadence, so they include Phaser's render. */
       perf: (on?: boolean) => {
+        if (!this.perfTexHooked) {
+          this.perfTexHooked = true;
+          this.textures.on(Phaser.Textures.Events.ADD, (key: string) => {
+            this.perfTexAdded++;
+            // WHAT is being added, by key family (the first path-ish segment).
+            const fam = String(key).replace(/^([a-z0-9_-]+[:/]).*$/i, "$1").slice(0, 16);
+            this.perfTexFam[fam] = (this.perfTexFam[fam] ?? 0) + 1;
+          });
+        }
         if (on !== undefined) {
+          this.perfTexAdded = 0;
+          this.perfTexFam = {};
           this.perfOn = on;
           this.perfAcc = {};
           this.perfFrames = [];
@@ -3626,7 +3684,11 @@ export class WorldScene extends Phaser.Scene {
             drawCount: r?.drawCount ?? null,
           },
           window: { ms: +this.perfFrames.reduce((a, b) => a + b, 0).toFixed(0) },
+          texturesAdded: this.perfTexAdded,
+          texFamilies: this.perfTexFam,
+          groundLast: { composed: this.t3stats.composed, composeMs: this.t3stats.composeMs, ms: this.t3stats.ms },
         };
+        this.perfTexAdded = 0;
         this.perfAcc = {};
         this.perfFrames = [];
         return out;
@@ -10882,6 +10944,9 @@ export class WorldScene extends Phaser.Scene {
     // exists for. Once per world; setRoom early-returns on every later call.
     if (!this.caveDepth && g && this.world) {
       this.caveDepth = this.buildCaveDepth();
+      // A draw-time input (caveTint) the kept ground picture may predate: the
+      // next redraw paints in full rather than scrolling an untinted picture.
+      this.lastGround = { x: NaN, y: NaN };
       this.night?.setRoom(this.roomMask ? this.roomMask.keys() : null, this.caveDepth, this.caveUnder);
     }
     const av = this.avatars.get(this.room?.sessionId ?? "");
@@ -11870,6 +11935,7 @@ export class WorldScene extends Phaser.Scene {
     // component gets a different id, a different set, and different art every
     // time the camera moves, and the ground visibly reshuffles as you walk.
     const t0 = performance.now();
+    this.groundPainted = false;
     this.t3cells.clear(); // a new resolver: nothing cached against the old one may survive
     this.t3 = new Tiles3World({ view, tiles, frame: this.tiles3Frame(), patterns: data.patterns });
     this.t3regionMs = +(performance.now() - t0).toFixed(1);
@@ -12098,16 +12164,57 @@ export class WorldScene extends Phaser.Scene {
       this.groundCulled++;
       return;
     }
+    const clip = this.groundClip;
+    if (clip && op.sw > 0 && op.sh > 0) {
+      // A BAND PASS (the ground scroll): nothing outside the band may be
+      // touched, so an op that crosses its edge is CROPPED to it — an integer
+      // sub-rect of the same frame at scale 1, hence pixel-exact.
+      const ix0 = Math.max(dx, clip.x0);
+      const iy0 = Math.max(dy, clip.y0);
+      const ix1 = Math.min(dx + op.sw, clip.x1);
+      const iy1 = Math.min(dy + op.sh, clip.y1);
+      if (ix1 <= ix0 || iy1 <= iy0) {
+        this.groundCulled++;
+        return;
+      }
+      if (ix0 !== dx || iy0 !== dy || ix1 !== dx + op.sw || iy1 !== dy + op.sh) {
+        const csx = op.sx + (ix0 - dx);
+        const csy = op.sy + (iy0 - dy);
+        const csw = ix1 - ix0;
+        const csh = iy1 - iy0;
+        // ONE scratch frame per texture, re-aimed per crop: the batch copies
+        // the frame's UVs into the vertex buffer as each draw is queued, so
+        // mutating it between queued draws is safe — and the edges sit at
+        // arbitrary texel offsets, so naming each crop would grow a frame per
+        // distinct rect per texture for the whole session.
+        // (Texture.get(name) answers a MISSING name with the base frame — a
+        // `?? add` would re-aim the base frame of every art texture. has() first.)
+        const ctex = this.textures.get(op.key);
+        const cf = ctex.has("t3clip") ? ctex.get("t3clip") : ctex.add("t3clip", 0, 0, 0, 1, 1);
+        if (!cf) return;
+        // Texture.add makes the first added frame the texture's DEFAULT frame
+        // (Texture.get(undefined) answers firstFrame once frameTotal > 1), so a
+        // bare-key draw of this art — an occluder Image, the whole-frame path —
+        // would show the crop. The default stays the base.
+        ctex.firstFrame = "__BASE";
+        cf.setSize(csw, csh, csx, csy);
+        rt.batchDrawFrame(op.key, "t3clip", ix0, iy0, 1, tint);
+        return;
+      }
+    }
     const tex = this.textures.get(op.key);
     const src = tex?.getSourceImage() as { width?: number; height?: number } | undefined;
     const fw = src?.width ?? op.sw;
     const fh = src?.height ?? op.sh;
     if (op.sx === 0 && op.sy === 0 && op.sw === fw && op.sh === fh) {
-      rt.batchDraw(op.key, dx, dy, 1, tint);
+      rt.batchDrawFrame(op.key, "__BASE", dx, dy, 1, tint); // explicit: never the texture's default frame
       return;
     }
     const name = `t3c:${op.sx},${op.sy},${op.sw},${op.sh}`;
-    if (!tex.has(name)) tex.add(name, 0, op.sx, op.sy, op.sw, op.sh);
+    if (!tex.has(name)) {
+      tex.add(name, 0, op.sx, op.sy, op.sw, op.sh);
+      tex.firstFrame = "__BASE"; // see the clip path: added frames must not become the default
+    }
     rt.batchDrawFrame(op.key, name, dx, dy, 1, tint);
   }
 
@@ -12160,6 +12267,129 @@ export class WorldScene extends Phaser.Scene {
     const live = new Set<number>();
     for (const [c, r] of keep) live.add(r * W + c);
     for (const k of this.t3cells.keys()) if (!live.has(k)) this.t3cells.delete(k);
+  }
+
+  /** The cell window whose art can reach a rectangle of the ground texture
+   *  (RT-relative [x, x+w) × [y, y+h)): a tile on each side and the world's
+   *  whole level range BELOW, because a column's art rises above its cell.
+   *  The full-texture rule the pass always used, now also applied to a band. */
+  private t3groundWindow(ax: number, ay: number, x: number, y: number, w: number, h: number) {
+    const { dx, dy, lh, tile } = this.geom;
+    const x0 = ax + x - tile;
+    const x1 = ax + x + w + tile;
+    const y0 = ay + y - tile;
+    const y1 = ay + y + h + tile + this.maxLevel * lh;
+    return {
+      u0: Math.floor((x0 - this.iso.ox) / dx) - 1,
+      u1: Math.ceil((x1 - this.iso.ox) / dx) + 1,
+      v0: Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1),
+      v1: Math.ceil((y1 - this.iso.oy) / dy) + 1,
+    };
+  }
+
+  /** THE GROUND SCROLL. A camera-latched redraw used to repaint the whole
+   *  ground texture — every op of ~4,267 cells — when a 256 px step exposes
+   *  ~18% of it (measured 30-75 ms of JS per step while running, after the
+   *  cull and the resolution cache; the walking hitch). The texture is
+   *  world-anchored, so the picture it holds is still right, just displaced:
+   *  the kept part is copied into the other texture shifted by the anchor
+   *  delta, only the newly exposed L-shaped band (a vertical strip, a
+   *  horizontal strip; their corner twice, which is idempotent — each band is
+   *  filled, then the whole painter sequence replayed into it) is painted, and
+   *  the two textures swap roles. EXACT, because the band pass is the same pass
+   *  clipped: every op that crosses the band edge is CROPPED to it (t3Blit,
+   *  integer texel rects at scale 1), so the band's pixels see the same painter
+   *  sequence a full paint gives them and nothing outside the band is touched.
+   *  (Not a GL scissor: endDraw flushes into a capture target and blits it
+   *  whole, so a scissor would clip the wrong stage.) Only camera latches
+   *  scroll: a poisoned latch — repaintWorld, a landed batch, a resize, any
+   *  indoor change — takes the full path, so the indoor state can never differ
+   *  between the kept picture and the band. Parity: `__ml.groundHash()` after a
+   *  scroll equals a forced full repaint at the same anchor (dev A/B:
+   *  `__ml.groundScroll(on)`). */
+  private scrollTiles3Ground(
+    ax: number,
+    ay: number,
+    sx: number,
+    sy: number,
+    mask: Map<number, number> | null,
+    cuts: Map<number, number> | null,
+    top: number,
+  ) {
+    const cur = this.groundRT!;
+    const next = this.groundScratch!;
+    this.groundScrollLog.push([ax - sx, ay - sy, ax, ay, sx, sy, cur.x, cur.y]);
+    if (this.groundScrollLog.length > 16) this.groundScrollLog.shift();
+    const W = cur.width;
+    const H = cur.height;
+    const bg = mask ? 0x000000 : 0x181c28;
+    next.setPosition(ax, ay);
+    next.clear();
+    // The background under everything, as the full paint lays it: a WHOLE-
+    // texture fill, the one fill that is texel-exact. (DynamicTexture.fill with
+    // a rect is NOT: it keeps the renderer's projection over the texture's
+    // viewport, scales the rect by canvas/texture and floors it — up to 1/scale
+    // texels off per edge, measured as a 3 px navy seam bleeding into the kept
+    // picture at 412/1436. So the bands get no fill of their own.)
+    next.fill(bg, 1);
+    // The kept picture, moved: old texel (px, py) is world (prevAx + px,
+    // prevAy + py), which in the new texture is (px - sx, py - sy). Opaque, so
+    // under NORMAL blending it replaces the fill exactly.
+    next.drawFrame(cur.texture.key, "__BASE", -sx, -sy);
+    const bands: { x0: number; y0: number; x1: number; y1: number }[] = [];
+    if (sx > 0) bands.push({ x0: W - sx, y0: 0, x1: W, y1: H });
+    else if (sx < 0) bands.push({ x0: 0, y0: 0, x1: -sx, y1: H });
+    if (sy > 0) bands.push({ x0: 0, y0: H - sy, x1: W, y1: H });
+    else if (sy < 0) bands.push({ x0: 0, y0: 0, x1: W, y1: -sy });
+    const sum = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0 };
+    const t0 = performance.now();
+    try {
+      for (const b of bands) {
+        const win = this.t3groundWindow(ax, ay, b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
+        this.groundClip = b;
+        this.drawTiles3Ground(next, ax, ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, top);
+        const st = this.t3stats;
+        sum.cells += st.cells;
+        sum.blits += st.blits;
+        sum.boundaries += st.boundaries;
+        sum.decks += st.decks;
+        sum.culled += st.culled;
+        sum.composed += st.composed;
+        sum.composeMs += st.composeMs;
+      }
+    } finally {
+      this.groundClip = null;
+      sum.ms = +(performance.now() - t0).toFixed(1);
+      this.t3stats = sum;
+    }
+    // The cache keeps the FULL window's cells, not the band's — the next step
+    // wants the ~82% it already knows.
+    if (this.groundCacheOn) {
+      const full = this.t3groundWindow(ax, ay, 0, 0, W, H);
+      this.t3pruneCache(this.t3windowCells(full.u0, full.u1, full.v0, full.v1));
+    }
+    this.groundRT = next;
+    this.groundScratch = cur;
+    next.setVisible(true).setDepth(-1_000_000);
+    cur.setVisible(false);
+    this.groundAnchor = { ax, ay, mask, top };
+    this.groundLastMode = "scroll";
+  }
+
+  /** The (col,row) list of a cell window, in the pass's own order. */
+  private t3windowCells(u0: number, u1: number, v0: number, v1: number): [number, number][] {
+    const world = this.world;
+    const cells: [number, number][] = [];
+    if (!world) return cells;
+    for (let v = v0; v <= v1; v++)
+      for (let u = u0; u <= u1; u++) {
+        if ((u + v) & 1) continue;
+        const col = (u + v) / 2;
+        const row = (v - u) / 2;
+        if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
+        cells.push([col, row]);
+      }
+    return cells;
   }
 
   /** THE MAPS3 GROUND PASS, in render3's own order: every cell (painter-sorted
@@ -12240,10 +12470,10 @@ export class WorldScene extends Phaser.Scene {
           (!this.sceneryPieces || this.sceneryPieces.idle) &&
           !this.tiles3Loader().isLoading();
         const painted =
-          this.t3stats.blits > 0 && (!load || load.idle) && scenery && !this.repaintGroundPending && !this.repaintOccPending;
+          this.groundPainted && (!load || load.idle) && scenery && !this.repaintGroundPending && !this.repaintOccPending;
         // The ground has drawn SOMETHING — the only fact that makes giving up
         // on the rest reasonable.
-        const anyGround = this.t3stats.blits > 0;
+        const anyGround = this.groundPainted;
         const done = painted || this.unloading || waited >= (anyGround ? SOFT_DEADLINE_MS : HARD_DEADLINE_MS);
         if (!done) {
           /* REAL WORK, REAL BAR: terrain files plus scenery manifests plus the
@@ -12307,8 +12537,10 @@ export class WorldScene extends Phaser.Scene {
     // Published BEFORE the passes and mutated in place: a gate reads these
     // counters to tell a correct dark frame from a black one, and an exception
     // mid-pass must leave what actually drew visible, not last frame's numbers.
-    const stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0 };
+    const stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0 };
     this.groundCulled = 0;
+    const built0 = tex?.stats.built ?? 0;
+    const buildMs0 = tex?.stats.buildMs ?? 0;
     this.t3stats = stats;
     const t0 = performance.now();
     const cellOf = (c: number, r: number) => this.t3cellOf(t3, c, r);
@@ -12316,15 +12548,7 @@ export class WorldScene extends Phaser.Scene {
     const decksOf = (c: number, r: number) => this.t3decksOf(t3, c, r);
 
     // The window, once — all three passes walk the same cells.
-    const cells: [number, number][] = [];
-    for (let v = v0; v <= v1; v++)
-      for (let u = u0; u <= u1; u++) {
-        if ((u + v) & 1) continue;
-        const col = (u + v) / 2;
-        const row = (v - u) / 2;
-        if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
-        cells.push([col, row]);
-      }
+    const cells = this.t3windowCells(u0, u1, v0, v1);
 
     rt.beginDraw();
     for (const [col, row] of cells) {
@@ -12400,9 +12624,14 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     rt.endDraw();
-    if (this.groundCacheOn) this.t3pruneCache(cells);
+    if (this.groundCacheOn && !this.groundClip) this.t3pruneCache(cells); // a band pass prunes to the full window after (scrollTiles3Ground)
     stats.culled = this.groundCulled;
+    // COMPOSITIONS this redraw paid for: boundaries/plates built on the fly
+    // (pixels read, blended on a canvas, uploaded) — the streaming stall.
+    stats.composed = (tex?.stats.built ?? 0) - built0;
+    stats.composeMs = +((tex?.stats.buildMs ?? 0) - buildMs0).toFixed(1);
     stats.ms = +(performance.now() - t0).toFixed(1);
+    if (stats.blits > 0) this.groundPainted = true;
     load?.flush();
     this.checkTiles3Pitch();
   }
@@ -12948,15 +13177,32 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private makeGroundRT() {
-    this.groundRT?.destroy();
+    // A SAVED texture outlives its game object (RenderTexture.preDestroy skips
+    // texture.destroy() once saveTexture ran), so drop both through the
+    // manager — that is what frees the GL render target. Every resize comes
+    // through here (a phone's URL bar alone fires it), so a leak here would be
+    // two viewport-sized textures per event.
+    for (const rt of [this.groundRT, this.groundScratch]) {
+      const key = rt?.texture?.key;
+      rt?.destroy();
+      if (key && this.textures.exists(key)) this.textures.remove(key);
+    }
+    this.groundAnchor = null;
     const rs = this.renderScale();
     // World-space texture (1 texel = 1 world px): size it in WORLD px so it
     // covers the same view regardless of the device render scale — scale.width
     // is device px (= CSS·rs), so /rs gives the CSS/world width. rs=1 → unchanged.
-    this.groundRT = this.add
-      .renderTexture(0, 0, this.scale.width / rs + GROUND_MARGIN * 2, this.scale.height / rs + GROUND_MARGIN * 2)
-      .setOrigin(0, 0)
-      .setDepth(-1_000_000);
+    const w = this.scale.width / rs + GROUND_MARGIN * 2;
+    const h = this.scale.height / rs + GROUND_MARGIN * 2;
+    const make = (key: string) => {
+      const rt = this.add.renderTexture(0, 0, w, h).setOrigin(0, 0).setDepth(-1_000_000);
+      // A key, so the OTHER texture can draw this one's picture (the scroll copy).
+      if (this.textures.exists(key)) this.textures.remove(key);
+      rt.saveTexture(key);
+      return rt;
+    };
+    this.groundRT = make("ground-rt-a");
+    this.groundScratch = make("ground-rt-b").setVisible(false);
     this.lastGround = { x: NaN, y: NaN };
   }
 
@@ -12996,6 +13242,10 @@ export class WorldScene extends Phaser.Scene {
       Math.abs(ccy - this.lastGround.y) < GROUND_MARGIN / 2
     )
       return;
+    // POISONED (repaintWorld, a landed batch, a resize, the indoor cut): the
+    // picture is not to be trusted and a full paint is due. Read before the
+    // latch is overwritten.
+    const poisoned = Number.isNaN(this.lastGround.x);
     this.lastGround = { x: ccx, y: ccy };
 
     const world = this.world;
@@ -13004,8 +13254,6 @@ export class WorldScene extends Phaser.Scene {
     // Anchor the texture in world space around the camera centre.
     const ax = Math.round(ccx - rt.width / 2);
     const ay = Math.round(ccy - rt.height / 2);
-    rt.setPosition(ax, ay);
-    rt.clear();
     const mask = this.indoorInside ? this.indoorMask : null;
     const top = this.indoorTop; // the cut: highest level any column still draws
     const cuts = mask ? this.indoorCut : null; // per-wall raises past it
@@ -13013,6 +13261,36 @@ export class WorldScene extends Phaser.Scene {
     // BLACK, because indoors this fill is what shows through the sky band
     // above the cut-away and in genuine void cells — and navy times the indoor
     // ambient still reads as a faintly lit sky over an unlit world.
+    if (this.maps3) {
+      const prev = this.groundAnchor;
+      const sx = prev ? ax - prev.ax : 0;
+      const sy = prev ? ay - prev.ay : 0;
+      const canScroll =
+        this.groundScroll &&
+        !!prev &&
+        !poisoned &&
+        !!this.groundScratch &&
+        prev.mask === mask &&
+        prev.top === top &&
+        (sx !== 0 || sy !== 0) &&
+        Math.abs(sx) < rt.width &&
+        Math.abs(sy) < rt.height;
+      if (canScroll) {
+        this.scrollTiles3Ground(ax, ay, sx, sy, mask, cuts, top);
+        return;
+      }
+      rt.setPosition(ax, ay);
+      rt.clear();
+      rt.fill(mask ? 0x000000 : 0x181c28, 1);
+      const win = this.t3groundWindow(ax, ay, 0, 0, rt.width, rt.height);
+      this.groundClip = null;
+      this.drawTiles3Ground(rt, ax, ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, top);
+      this.groundAnchor = { ax, ay, mask, top };
+      this.groundLastMode = "full";
+      return;
+    }
+    rt.setPosition(ax, ay);
+    rt.clear();
     rt.fill(mask ? 0x000000 : 0x181c28, 1);
 
     // Covered rect in virtual-canvas coords, padded for tile size + max lift.
@@ -13028,11 +13306,6 @@ export class WorldScene extends Phaser.Scene {
 
     // MAPS3: no cell carries a baked path, so the whole pass is the tiles3
     // resolution — three ordered sub-passes with their own begin/endDraw.
-    if (this.maps3) {
-      this.drawTiles3Ground(rt, ax, ay, u0, u1, v0, v1, mask, cuts, top);
-      return;
-    }
-
     rt.beginDraw();
     for (let v = v0; v <= v1; v++) {
       for (let u = u0; u <= u1; u++) {

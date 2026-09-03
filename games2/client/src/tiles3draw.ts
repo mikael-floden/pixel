@@ -751,6 +751,8 @@ export interface Tiles3TexturesOpts {
 export interface Tiles3TexturesStats {
   /** Compositions actually rasterised. */
   built: number;
+  /** Milliseconds spent building (composing + uploading) — the streaming stall. */
+  buildMs: number;
   /** Requests served by an already-registered texture. */
   reused: number;
   /** Live composed textures right now. */
@@ -769,7 +771,7 @@ export interface Tiles3TexturesStats {
  * atlas bake.
  */
 export class Tiles3Textures {
-  readonly stats: Tiles3TexturesStats = { built: 0, reused: 0, live: 0, evicted: 0, missing: 0 };
+  readonly stats: Tiles3TexturesStats = { built: 0, buildMs: 0, reused: 0, live: 0, evicted: 0, missing: 0 };
 
   private o: Tiles3TexturesOpts;
   /** key -> nothing; a Map because insertion order IS the LRU order. */
@@ -871,6 +873,7 @@ export class Tiles3Textures {
       this.stats.reused++;
       return key;
     }
+    const t0 = typeof performance !== "undefined" ? performance.now() : 0;
     const px = build();
     if (!px) {
       this.stats.missing++;
@@ -890,6 +893,7 @@ export class Tiles3Textures {
     this.o.textures.addCanvas(key, cv)?.setFilter(NEAREST);
     this.mine.set(key, true);
     this.stats.built++;
+    this.stats.buildMs += typeof performance !== "undefined" ? performance.now() - t0 : 0;
     this.stats.live = this.mine.size;
     const limit = this.o.limit ?? 0;
     if (limit > 0) {
