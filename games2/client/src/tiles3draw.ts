@@ -46,6 +46,7 @@ import {
   TILE,
   TOP_Y,
   PLATE_H,
+  LIQUID_TILE_GROUNDS,
   hexRGB,
   type PatternsDoc,
   type Tiles3Boundary,
@@ -874,8 +875,28 @@ export class Tiles3Textures {
     for (const op of cellOps(cell)) {
       const art = cell.kind === "field" ? cell.art : undefined;
       let key: string | null;
+      /* A LIQUID NEVER SHOWS A WALL — enforced HERE, not trusted from a flag.
+       *
+       * The last branch draws the art's RAW key, wall band and all, and it is
+       * reached whenever `topOnly` is not set. The resolver does set it for a
+       * liquid, but the maintainer's device says something gets through: his
+       * ground texture carries 146 px of (76,138,152) — `water`'s palette WALL
+       * colour, against a top face of (126,183,199) — laid along the tile edges
+       * as the dotted zigzag he has been reporting all day, with ZERO
+       * background-coloured texels in the same sample. So it was never a hole;
+       * it is a water tile's own wall, drawn where it should have been masked.
+       * (His readings also cleared the alternatives: `nonInt` 0 — no op on a
+       * fractional texel — and no `t3c:water` conform texture and no composed
+       * boundary exists to have painted it.)
+       *
+       * The rule is already stated three times in this file and in the
+       * resolver; a ground in LIQUID_TILE_GROUNDS now takes the top-face path
+       * whatever its art says, so no future resolver change can leak a wall
+       * onto the sea again. */
+      const liquidGround = LIQUID_TILE_GROUNDS.includes(cell.ground);
       if (art && art.kind === "liquid") key = this.liquid(art.topRGB);
-      else if (art && (art.kind === "conform" || art.topOnly)) key = this.plate(art, cell.ground);
+      else if (art && (art.kind === "conform" || art.topOnly || liquidGround))
+        key = this.plate({ ...art, topOnly: true }, cell.ground);
       else key = this.o.textures.exists(op.key) ? op.key : null;
       if (key) out.push(key === op.key ? op : { ...op, key });
     }
