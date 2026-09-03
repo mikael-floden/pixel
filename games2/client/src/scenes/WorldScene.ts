@@ -694,6 +694,29 @@ const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 /** Texels the exposed band overlaps back into the kept picture (see
  *  scrollTiles3Ground). 1 is what the measured artefact needed; it is a
  *  repaint of pixels that are already right, so it is safe to raise. */
+/** THE GROUND TEXTURE'S BACKGROUND — a MID-TONE, so a hole is not a black dot.
+ *
+ *  MITIGATION, NOT A FIX, and the maintainer asked for it from the first hour
+ *  ("make sure the tile in front covers it… why do you have to make it so
+ *  exact?"). Three days went into the cause instead and did not find it.
+ *
+ *  What IS known: on his device the ground texture really does contain
+ *  unpainted texels — measured off his own screenshot as 0x181c28 under the
+ *  evening light, in 2-device-px runs, i.e. ONE TEXEL wide, along tile edges.
+ *  On this machine the same texture censuses with ZERO of them, screen and
+ *  texture alike, at his exact geometry, so the cause is not reachable here.
+ *
+ *  What made a one-texel hole VISIBLE was the colour. 0x181c28 is near-black:
+ *  its worst-case distance to a ground palette top is 633, and 525 against
+ *  light_beach, where he photographs it. The MEDIAN of the 15 ground tops is
+ *  (128,128,117) — worst case 352, and 244 against light_beach — so the same
+ *  hole reads as a faint speck rather than a black dot. Nothing that is ever
+ *  legitimately drawn changes: this colour is seen ONLY where nothing painted.
+ *
+ *  IF THE CAUSE IS FOUND, put it back to 0x181c28 — a dark background makes a
+ *  real hole obvious, which is exactly what you want while debugging one. */
+const GROUND_FILL = 0x808075;
+
 const GROUND_SEAM = 1;
 // Occluder rebuild cadence, and the slack every occluder cull margin is
 // derived FROM. The set is only re-evaluated once the camera centre has
@@ -13501,7 +13524,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.groundScrollLog.length > 16) this.groundScrollLog.shift();
     const W = cur.width;
     const H = cur.height;
-    const bg = mask ? 0x000000 : 0x181c28;
+    const bg = mask ? 0x000000 : GROUND_FILL;
     next.setPosition(ax, ay);
     next.clear();
     // The background under everything, as the full paint lays it: a WHOLE-
@@ -13741,7 +13764,7 @@ export class WorldScene extends Phaser.Scene {
       cv.width = 1;
       cv.height = 1;
       const g = cv.getContext("2d")!;
-      g.fillStyle = mask ? "#000000" : "#181c28";
+      g.fillStyle = mask ? "#000000" : `#${GROUND_FILL.toString(16).padStart(6, "0")}`;
       g.fillRect(0, 0, 1, 1);
       this.textures.addCanvas(bgKey, cv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
     }
@@ -15086,7 +15109,7 @@ export class WorldScene extends Phaser.Scene {
       this.groundSliceCtx = null;
       rt.setPosition(ax, ay);
       rt.clear();
-      this.fillGround(rt, mask ? 0x000000 : 0x181c28);
+      this.fillGround(rt, mask ? 0x000000 : GROUND_FILL);
       const win = this.t3groundWindow(ax, ay, 0, 0, rt.width, rt.height);
       this.groundClip = null;
       this.drawTiles3Ground(rt, ax, ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, top);
@@ -15096,7 +15119,7 @@ export class WorldScene extends Phaser.Scene {
     }
     rt.setPosition(ax, ay);
     rt.clear();
-    this.fillGround(rt, mask ? 0x000000 : 0x181c28);
+    this.fillGround(rt, mask ? 0x000000 : GROUND_FILL);
 
     // Covered rect in virtual-canvas coords, padded for tile size + max lift.
     const x0 = ax - tile;
