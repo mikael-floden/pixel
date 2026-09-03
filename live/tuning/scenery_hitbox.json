@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
   "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
-  "updated_at": "2026-09-03T06:49:08.415649Z",
+  "updated_at": "2026-09-03T06:58:52.322Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -671,11 +671,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 16.0
+              "ay": 16
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 16.0
+              "ay": 16
             }
           }
         }
@@ -695,11 +695,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 16.0
+              "ay": 16
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 16.0
+              "ay": 16
             }
           }
         }
@@ -710,9 +710,9 @@
     "scenery/anvils/anvil_003#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 23.5,
-          "rx": 11.0,
+          "rx": 11,
           "ry": 3.5,
           "rot": 0,
           "shape": "rect"
@@ -724,7 +724,7 @@
     "scenery/anvils/anvil_003#not_lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 19.22,
           "rx": 13.84,
           "ry": 5.78,
@@ -748,7 +748,7 @@
     "scenery/anvils/anvil_004#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.43,
           "rx": 10.38,
           "ry": 5.57,
@@ -757,11 +757,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 16.0
+              "ay": 16
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 15.0
+              "ax": 0,
+              "ay": 15
             }
           }
         }
@@ -772,7 +772,7 @@
     "scenery/anvils/anvil_004#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.43,
           "rx": 10.38,
           "ry": 5.57,
@@ -781,11 +781,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 16.0
+              "ay": 16
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 15.0
+              "ax": 0,
+              "ay": 15
             }
           }
         }
@@ -796,7 +796,7 @@
     "scenery/anvils/anvil_004#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.7,
           "rx": 11.31,
           "ry": 5.3,
@@ -804,12 +804,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
-              "ay": 15.0
+              "ax": -1,
+              "ay": 15
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 15.0
+              "ax": 0,
+              "ay": 15
             }
           }
         }
@@ -828,12 +828,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 15.0
+              "ax": 0,
+              "ay": 15
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 15.0
+              "ax": 0,
+              "ay": 15
             }
           }
         }
@@ -844,7 +844,7 @@
     "scenery/anvils/anvil_004#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.7,
           "rx": 11.31,
           "ry": 5.3,
@@ -852,12 +852,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 15.0
+              "ax": 0,
+              "ay": 15
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 15.0
+              "ax": 0,
+              "ay": 15
             }
           }
         }
@@ -974,9 +974,9 @@
     "scenery/aqueduct_fragments/aqueduct_fragment_901#not_lit_1": {
       "boxes": [
         {
-          "ax": 13.0,
+          "ax": 13,
           "ay": 85.09,
-          "rx": 6.0,
+          "rx": 6,
           "ry": 2,
           "rot": 0,
           "shape": "rect"
@@ -988,9 +988,9 @@
     "scenery/aqueduct_fragments/aqueduct_fragment_901#not_lit_2": {
       "boxes": [
         {
-          "ax": 13.0,
+          "ax": 13,
           "ay": 85.09,
-          "rx": 6.0,
+          "rx": 6,
           "ry": 2,
           "rot": 0,
           "shape": "rect"
@@ -1002,9 +1002,9 @@
     "scenery/aqueduct_fragments/aqueduct_fragment_901#not_lit_3": {
       "boxes": [
         {
-          "ax": 13.0,
+          "ax": 13,
           "ay": 85.09,
-          "rx": 6.0,
+          "rx": 6,
           "ry": 2,
           "rot": 0,
           "shape": "rect"
@@ -1016,9 +1016,9 @@
     "scenery/aqueduct_fragments/aqueduct_fragment_901#not_lit_4": {
       "boxes": [
         {
-          "ax": 13.0,
+          "ax": 13,
           "ay": 85.09,
-          "rx": 6.0,
+          "rx": 6,
           "ry": 2,
           "rot": 0,
           "shape": "rect"
@@ -1030,9 +1030,9 @@
     "scenery/aqueduct_fragments/aqueduct_fragment_901#lit_2": {
       "boxes": [
         {
-          "ax": 13.0,
+          "ax": 13,
           "ay": 85.09,
-          "rx": 6.0,
+          "rx": 6,
           "ry": 2,
           "rot": 0,
           "shape": "rect"
@@ -2374,9 +2374,9 @@
     "scenery/beds/bed_001#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 40.91,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 12.09,
           "rot": 0,
           "shape": "rect"
@@ -2388,9 +2388,9 @@
     "scenery/beds/bed_001#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 40.91,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 12.09,
           "rot": 0,
           "shape": "rect"
@@ -2402,9 +2402,9 @@
     "scenery/beds/bed_001#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 40.91,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 12.09,
           "rot": 0,
           "shape": "rect"
@@ -2416,9 +2416,9 @@
     "scenery/beds/bed_001#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 40.91,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 12.09,
           "rot": 0,
           "shape": "rect"
@@ -2430,9 +2430,9 @@
     "scenery/beds/bed_001#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 40.91,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 12.09,
           "rot": 0,
           "shape": "rect"
@@ -2444,9 +2444,9 @@
     "scenery/beds/bed_002#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 41.86,
-          "rx": 35.0,
+          "rx": 35,
           "ry": 11.14,
           "rot": 0,
           "shape": "rect"
@@ -2458,9 +2458,9 @@
     "scenery/beds/bed_002#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 42.86,
-          "rx": 35.0,
+          "rx": 35,
           "ry": 11.14,
           "rot": 0,
           "shape": "rect"
@@ -2472,9 +2472,9 @@
     "scenery/beds/bed_002#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 41.86,
-          "rx": 35.0,
+          "rx": 35,
           "ry": 11.14,
           "rot": 0,
           "shape": "rect"
@@ -2486,9 +2486,9 @@
     "scenery/beds/bed_002#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 41.86,
-          "rx": 35.0,
+          "rx": 35,
           "ry": 11.14,
           "rot": 0,
           "shape": "rect"
@@ -2500,7 +2500,7 @@
     "scenery/beds/bed_002#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 38.89,
           "rx": 51.22,
           "ry": 14.11,
@@ -2509,11 +2509,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 17.0
+              "ay": 17
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 17.0
+              "ay": 17
             }
           }
         }
@@ -2524,9 +2524,9 @@
     "scenery/beds/bed_002#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 41.86,
-          "rx": 35.0,
+          "rx": 35,
           "ry": 11.14,
           "rot": 0,
           "shape": "rect"
@@ -2538,7 +2538,7 @@
     "scenery/beds/bed_005#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 29.05,
           "rx": 32.36,
           "ry": 22.95,
@@ -2558,7 +2558,7 @@
     "scenery/beds/bed_005#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 29.23,
           "rx": 32.74,
           "ry": 22.77,
@@ -2571,7 +2571,7 @@
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 21.0
+              "ay": 21
             }
           }
         }
@@ -2590,11 +2590,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 20.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 20.5
             }
           }
@@ -2606,7 +2606,7 @@
     "scenery/beds/bed_005#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 28.97,
           "rx": 32.54,
           "ry": 23.03,
@@ -2614,7 +2614,7 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 21.5
             },
             "south-west": {
@@ -2630,7 +2630,7 @@
     "scenery/beds/bed_005#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 29.05,
           "rx": 32.36,
           "ry": 22.95,
@@ -2658,12 +2658,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 32.0
+              "ax": 0,
+              "ay": 32
             },
             "south-west": {
-              "ax": 1.0,
-              "ay": 32.0
+              "ax": 1,
+              "ay": 32
             }
           }
         }
@@ -2674,7 +2674,7 @@
     "scenery/beds/bed_006#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 38.19,
           "rx": 32.33,
           "ry": 20.81,
@@ -2682,12 +2682,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 31.0
+              "ax": 0,
+              "ay": 31
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 29.0
+              "ay": 29
             }
           }
         }
@@ -2706,12 +2706,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 32.0
+              "ax": 0,
+              "ay": 32
             },
             "south-west": {
-              "ax": 1.0,
-              "ay": 32.0
+              "ax": 1,
+              "ay": 32
             }
           }
         }
@@ -2736,7 +2736,7 @@
     "scenery/beds/bed_006#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 37.98,
           "rx": 33.66,
           "ry": 20.02,
@@ -2744,12 +2744,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 32.0
+              "ax": 0,
+              "ay": 32
             },
             "south-west": {
-              "ax": 1.0,
-              "ay": 32.0
+              "ax": 1,
+              "ay": 32
             }
           }
         }
@@ -2760,7 +2760,7 @@
     "scenery/beds/bed_006#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 42.58,
           "rx": 38.17,
           "ry": 15.42,
@@ -2769,10 +2769,10 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 4.5,
-              "ay": 37.0
+              "ay": 37
             },
             "south-west": {
-              "ax": -5.0,
+              "ax": -5,
               "ay": 36.5
             }
           }
@@ -6141,9 +6141,9 @@
     "scenery/carts/cart_004#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 53.63,
-          "rx": 20.0,
+          "rx": 20,
           "ry": 6.37,
           "rot": 0,
           "shape": "rect"
@@ -6169,9 +6169,9 @@
     "scenery/carts/cart_005#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 51.27,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.73,
           "rot": 0,
           "shape": "rect"
@@ -6183,9 +6183,9 @@
     "scenery/carts/cart_005#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 51.27,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.73,
           "rot": 0,
           "shape": "rect"
@@ -6197,9 +6197,9 @@
     "scenery/carts/cart_005#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 51.27,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.73,
           "rot": 0,
           "shape": "rect"
@@ -6211,9 +6211,9 @@
     "scenery/carts/cart_005#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 51.27,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.73,
           "rot": 0,
           "shape": "rect"
@@ -6225,9 +6225,9 @@
     "scenery/carts/cart_011#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 43.91,
-          "rx": 16.0,
+          "rx": 16,
           "ry": 5.09,
           "rot": 0,
           "shape": "rect"
@@ -6239,9 +6239,9 @@
     "scenery/carts/cart_011#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 43.91,
-          "rx": 16.0,
+          "rx": 16,
           "ry": 5.09,
           "rot": 0,
           "shape": "rect"
@@ -6253,9 +6253,9 @@
     "scenery/carts/cart_011#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 46.27,
-          "rx": 18.0,
+          "rx": 18,
           "ry": 5.73,
           "rot": 0,
           "shape": "rect"
@@ -6267,9 +6267,9 @@
     "scenery/carts/cart_011#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 43.91,
-          "rx": 16.0,
+          "rx": 16,
           "ry": 5.09,
           "rot": 0,
           "shape": "rect"
@@ -6281,9 +6281,9 @@
     "scenery/carts/cart_011#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 43.91,
-          "rx": 16.0,
+          "rx": 16,
           "ry": 5.09,
           "rot": 0,
           "shape": "rect"
@@ -6295,10 +6295,10 @@
     "scenery/carts/cart_016#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 56.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 56,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -6309,7 +6309,7 @@
     "scenery/carts/cart_016#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 54.48,
           "rx": 18.94,
           "ry": 8.52,
@@ -6321,8 +6321,8 @@
               "ay": 32.5
             },
             "south-west": {
-              "ax": 28.0,
-              "ay": 33.0
+              "ax": 28,
+              "ay": 33
             }
           }
         }
@@ -6333,10 +6333,10 @@
     "scenery/carts/cart_016#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 56.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 56,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -6347,10 +6347,10 @@
     "scenery/carts/cart_016#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 56.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 56,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -6361,10 +6361,10 @@
     "scenery/carts/cart_016#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 56.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 56,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -6375,9 +6375,9 @@
     "scenery/carts/cart_022#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 51.95,
-          "rx": 19.0,
+          "rx": 19,
           "ry": 6.05,
           "rot": 0,
           "shape": "rect"
@@ -6389,9 +6389,9 @@
     "scenery/carts/cart_022#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 51.95,
-          "rx": 19.0,
+          "rx": 19,
           "ry": 6.05,
           "rot": 0,
           "shape": "rect"
@@ -6403,9 +6403,9 @@
     "scenery/carts/cart_022#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 51.95,
-          "rx": 19.0,
+          "rx": 19,
           "ry": 6.05,
           "rot": 0,
           "shape": "rect"
@@ -6417,9 +6417,9 @@
     "scenery/carts/cart_022#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 51.95,
-          "rx": 19.0,
+          "rx": 19,
           "ry": 6.05,
           "rot": 0,
           "shape": "rect"
@@ -6822,7 +6822,7 @@
     "scenery/chairs_and_benches/chair_001#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.86,
           "rx": 10.96,
           "ry": 5.14,
@@ -6831,11 +6831,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -2.5,
-              "ay": 15.0
+              "ay": 15
             },
             "south-west": {
               "ax": 2.5,
-              "ay": 15.0
+              "ay": 15
             }
           }
         }
@@ -6846,7 +6846,7 @@
     "scenery/chairs_and_benches/chair_001#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.87,
           "rx": 13.08,
           "ry": 6.13,
@@ -6855,11 +6855,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 18.0
+              "ay": 18
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 18.0
+              "ay": 18
             }
           }
         }
@@ -6879,11 +6879,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 15.0
+              "ay": 15
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 15.0
+              "ay": 15
             }
           }
         }
@@ -6918,9 +6918,9 @@
     "scenery/chairs_and_benches/chair_003#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 14.32,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.68,
           "rot": 0,
           "shape": "rect"
@@ -6932,7 +6932,7 @@
     "scenery/chairs_and_benches/chair_003#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 21.51,
           "rx": 3.18,
           "ry": 2,
@@ -6941,11 +6941,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 25.0
+              "ay": 25
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 25.0
+              "ay": 25
             }
           }
         }
@@ -6980,7 +6980,7 @@
     "scenery/chairs_and_benches/chair_003#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 21.41,
           "rx": 14.94,
           "ry": 5.59,
@@ -6988,12 +6988,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 2.0,
-              "ay": 18.0
+              "ax": 2,
+              "ay": 18
             },
             "south-west": {
-              "ax": -2.0,
-              "ay": 18.0
+              "ax": -2,
+              "ay": 18
             }
           }
         }
@@ -7028,7 +7028,7 @@
     "scenery/chairs_and_benches/chair_005#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 24.51,
           "rx": 3.18,
           "ry": 2,
@@ -7037,11 +7037,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 26.0
+              "ay": 26
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 26.0
+              "ay": 26
             }
           }
         }
@@ -7052,9 +7052,9 @@
     "scenery/chairs_and_benches/chair_005#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.59,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.41,
           "rot": 0,
           "shape": "rect",
@@ -7085,11 +7085,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 19.0
+              "ay": 19
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 19.0
+              "ay": 19
             }
           }
         }
@@ -7124,7 +7124,7 @@
     "scenery/chairs_and_benches/chair_006#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.35,
           "rx": 14.8,
           "ry": 7.65,
@@ -7132,11 +7132,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 16.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 16.5
             }
           }
@@ -7148,20 +7148,20 @@
     "scenery/chairs_and_benches/chair_006#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.91,
-          "rx": 16.0,
+          "rx": 16,
           "ry": 5.09,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -10.0,
-              "ay": 21.0
+              "ax": -10,
+              "ay": 21
             },
             "south-west": {
-              "ax": 10.0,
-              "ay": 21.0
+              "ax": 10,
+              "ay": 21
             }
           }
         }
@@ -7172,7 +7172,7 @@
     "scenery/chairs_and_benches/chair_006#not_lit_5": {
       "boxes": [
         {
-          "ax": -11.0,
+          "ax": -11,
           "ay": 19.08,
           "rx": 17.77,
           "ry": 6.92,
@@ -7180,12 +7180,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 14.0
+              "ax": 0,
+              "ay": 14
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 14.0
+              "ax": 0,
+              "ay": 14
             }
           }
         }
@@ -7204,11 +7204,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 16.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 16.5
             }
           }
@@ -7228,12 +7228,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -3.0,
-              "ay": 22.0
+              "ax": -3,
+              "ay": 22
             },
             "south-west": {
-              "ax": 2.0,
-              "ay": 22.0
+              "ax": 2,
+              "ay": 22
             }
           }
         }
@@ -7292,7 +7292,7 @@
     "scenery/chairs_and_benches/chair_012#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.2,
           "rx": 12.37,
           "ry": 5.8,
@@ -7301,11 +7301,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 18.0
+              "ay": 18
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 18.0
+              "ay": 18
             }
           }
         }
@@ -7316,7 +7316,7 @@
     "scenery/chairs_and_benches/chair_012#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.2,
           "rx": 12.37,
           "ry": 5.8,
@@ -7325,11 +7325,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 18.0
+              "ay": 18
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 18.0
+              "ay": 18
             }
           }
         }
@@ -7340,7 +7340,7 @@
     "scenery/chairs_and_benches/chair_012#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.2,
           "rx": 12.37,
           "ry": 5.8,
@@ -7349,11 +7349,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 18.0
+              "ay": 18
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 18.0
+              "ay": 18
             }
           }
         }
@@ -7364,7 +7364,7 @@
     "scenery/chairs_and_benches/chair_012#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 21.54,
           "rx": 13.79,
           "ry": 6.46,
@@ -7373,11 +7373,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 21.0
+              "ay": 21
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 21.0
+              "ay": 21
             }
           }
         }
@@ -7397,11 +7397,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 8.5,
-              "ay": 19.0
+              "ay": 19
             },
             "south-west": {
-              "ax": 9.0,
-              "ay": 22.0
+              "ax": 9,
+              "ay": 22
             }
           }
         }
@@ -7412,7 +7412,7 @@
     "scenery/chairs_and_benches/chair_012#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.55,
           "rx": 13.13,
           "ry": 5.45,
@@ -7436,7 +7436,7 @@
     "scenery/chairs_and_benches/chair_014#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 15.09,
           "rx": 19.89,
           "ry": 7.91,
@@ -7444,12 +7444,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 6.0
+              "ax": 0,
+              "ay": 6
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 6.0
+              "ax": 0,
+              "ay": 6
             }
           }
         }
@@ -7460,7 +7460,7 @@
     "scenery/chairs_and_benches/chair_014#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 15.09,
           "rx": 19.89,
           "ry": 7.91,
@@ -7468,12 +7468,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 6.0
+              "ax": 0,
+              "ay": 6
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 6.0
+              "ax": 0,
+              "ay": 6
             }
           }
         }
@@ -7484,7 +7484,7 @@
     "scenery/chairs_and_benches/chair_014#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 15.09,
           "rx": 19.89,
           "ry": 7.91,
@@ -7492,12 +7492,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 7.0
+              "ax": 0,
+              "ay": 7
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 7.0
+              "ax": 0,
+              "ay": 7
             }
           }
         }
@@ -7508,7 +7508,7 @@
     "scenery/chairs_and_benches/chair_014#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 15.09,
           "rx": 19.89,
           "ry": 7.91,
@@ -7516,12 +7516,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 6.0
+              "ax": 0,
+              "ay": 6
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 6.0
+              "ax": 0,
+              "ay": 6
             }
           }
         }
@@ -7532,9 +7532,9 @@
     "scenery/charcoal_kilns/charcoal_kiln_002#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 58.23,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 4.77,
           "rot": 0,
           "shape": "rect"
@@ -7546,9 +7546,9 @@
     "scenery/charcoal_kilns/charcoal_kiln_002#not_lit_1": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 56.59,
-          "rx": 17.0,
+          "rx": 17,
           "ry": 5.41,
           "rot": 0,
           "shape": "rect"
@@ -7560,9 +7560,9 @@
     "scenery/charcoal_kilns/charcoal_kiln_002#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 57.91,
-          "rx": 16.0,
+          "rx": 16,
           "ry": 5.09,
           "rot": 0,
           "shape": "rect"
@@ -7574,9 +7574,9 @@
     "scenery/charcoal_kilns/charcoal_kiln_002#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 57.91,
-          "rx": 16.0,
+          "rx": 16,
           "ry": 5.09,
           "rot": 0,
           "shape": "rect"
@@ -7588,9 +7588,9 @@
     "scenery/charcoal_kilns/charcoal_kiln_002#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 57.91,
-          "rx": 16.0,
+          "rx": 16,
           "ry": 5.09,
           "rot": 0,
           "shape": "rect"
@@ -7602,9 +7602,9 @@
     "scenery/charcoal_kilns/charcoal_kiln_002#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 57.91,
-          "rx": 16.0,
+          "rx": 16,
           "ry": 5.09,
           "rot": 0,
           "shape": "rect"
@@ -7616,10 +7616,10 @@
     "scenery/chess_tables/chess_table_006#static": {
       "boxes": [
         {
-          "ax": -1.0,
-          "ay": 17.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": -1,
+          "ay": 17,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -7630,9 +7630,9 @@
     "scenery/chess_tables/chess_table_009#static": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.32,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.68,
           "rot": 0,
           "shape": "rect"
@@ -9864,7 +9864,7 @@
     "scenery/cupboards_and_shelves/cupboard_001#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 45.61,
           "rx": 39.02,
           "ry": 8.39,
@@ -9873,11 +9873,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -3.5,
-              "ay": 38.0
+              "ay": 38
             },
             "south-west": {
-              "ax": 3.0,
-              "ay": 42.0
+              "ax": 3,
+              "ay": 42
             }
           }
         }
@@ -9888,7 +9888,7 @@
     "scenery/cupboards_and_shelves/cupboard_001#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 46.23,
           "rx": 40.71,
           "ry": 7.77,
@@ -9897,11 +9897,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -2.5,
-              "ay": 42.0
+              "ay": 42
             },
             "south-west": {
               "ax": 2.5,
-              "ay": 42.0
+              "ay": 42
             }
           }
         }
@@ -9912,7 +9912,7 @@
     "scenery/cupboards_and_shelves/cupboard_001#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 46.05,
           "rx": 39.6,
           "ry": 7.95,
@@ -9920,11 +9920,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -3.0,
+              "ax": -3,
               "ay": 38.5
             },
             "south-west": {
-              "ax": 3.0,
+              "ax": 3,
               "ay": 38.5
             }
           }
@@ -9936,7 +9936,7 @@
     "scenery/cupboards_and_shelves/cupboard_001#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 45.61,
           "rx": 39.02,
           "ry": 8.39,
@@ -9945,11 +9945,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -3.5,
-              "ay": 38.0
+              "ay": 38
             },
             "south-west": {
-              "ax": 3.0,
-              "ay": 42.0
+              "ax": 3,
+              "ay": 42
             }
           }
         }
@@ -9960,7 +9960,7 @@
     "scenery/cupboards_and_shelves/cupboard_001#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 45.61,
           "rx": 39.02,
           "ry": 8.39,
@@ -9969,11 +9969,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -3.5,
-              "ay": 38.0
+              "ay": 38
             },
             "south-west": {
-              "ax": 3.0,
-              "ay": 42.0
+              "ax": 3,
+              "ay": 42
             }
           }
         }
@@ -9992,12 +9992,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 43.0
+              "ax": 0,
+              "ay": 43
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 43.0
+              "ay": 43
             }
           }
         }
@@ -10016,12 +10016,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 43.0
+              "ax": 0,
+              "ay": 43
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 43.0
+              "ay": 43
             }
           }
         }
@@ -10041,11 +10041,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 43.0
+              "ay": 43
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 43.0
+              "ay": 43
             }
           }
         }
@@ -10056,7 +10056,7 @@
     "scenery/cupboards_and_shelves/cupboard_002#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 40.82,
           "rx": 28.11,
           "ry": 13.18,
@@ -10064,12 +10064,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 43.0
+              "ax": 0,
+              "ay": 43
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 43.0
+              "ay": 43
             }
           }
         }
@@ -10112,12 +10112,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 43.0
+              "ax": 0,
+              "ay": 43
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 43.0
+              "ay": 43
             }
           }
         }
@@ -10136,11 +10136,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 42.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 42.5
             }
           }
@@ -10154,17 +10154,17 @@
         {
           "ax": 0.5,
           "ay": 39.97,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 10.03,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 42.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 42.5
             }
           }
@@ -10184,11 +10184,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 42.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 42.5
             }
           }
@@ -10202,17 +10202,17 @@
         {
           "ax": 0.5,
           "ay": 39.97,
-          "rx": 38.0,
+          "rx": 38,
           "ry": 10.03,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 42.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 42.5
             }
           }
@@ -10224,7 +10224,7 @@
     "scenery/cupboards_and_shelves/cupboard_004#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 42.98,
           "rx": 29.14,
           "ry": 14.02,
@@ -10232,8 +10232,8 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 44.0
+              "ax": 0,
+              "ay": 44
             },
             "south-west": {
               "ax": 0.5,
@@ -10248,7 +10248,7 @@
     "scenery/cupboards_and_shelves/cupboard_004#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 42.98,
           "rx": 29.14,
           "ry": 14.02,
@@ -10256,8 +10256,8 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 44.0
+              "ax": 0,
+              "ay": 44
             },
             "south-west": {
               "ax": 0.5,
@@ -10272,7 +10272,7 @@
     "scenery/cupboards_and_shelves/cupboard_004#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 42.98,
           "rx": 29.14,
           "ry": 14.02,
@@ -10280,8 +10280,8 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 44.0
+              "ax": 0,
+              "ay": 44
             },
             "south-west": {
               "ax": 0.5,
@@ -10296,7 +10296,7 @@
     "scenery/cupboards_and_shelves/cupboard_004#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 43.16,
           "rx": 29.52,
           "ry": 13.84,
@@ -10304,12 +10304,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 45.0
+              "ax": 0,
+              "ay": 45
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 45.0
+              "ay": 45
             }
           }
         }
@@ -10320,7 +10320,7 @@
     "scenery/cupboards_and_shelves/cupboard_005#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 43.16,
           "rx": 45.13,
           "ry": 9.84,
@@ -10328,12 +10328,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 42.0
+              "ax": 0,
+              "ay": 42
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 42.0
+              "ay": 42
             }
           }
         }
@@ -10344,7 +10344,7 @@
     "scenery/cupboards_and_shelves/cupboard_005#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 47.1,
           "rx": 46.76,
           "ry": 9.9,
@@ -10352,11 +10352,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 46.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 46.5
             }
           }
@@ -10368,7 +10368,7 @@
     "scenery/cupboards_and_shelves/cupboard_005#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 44.61,
           "rx": 46.43,
           "ry": 9.39,
@@ -10376,11 +10376,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 44.0
+              "ax": 0,
+              "ay": 44
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 43.5
             }
           }
@@ -10392,7 +10392,7 @@
     "scenery/cupboards_and_shelves/cupboard_005#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 43.16,
           "rx": 45.13,
           "ry": 9.84,
@@ -10400,12 +10400,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 42.0
+              "ax": 0,
+              "ay": 42
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 42.0
+              "ay": 42
             }
           }
         }
@@ -10416,7 +10416,7 @@
     "scenery/cupboards_and_shelves/cupboard_005#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 43.16,
           "rx": 45.13,
           "ry": 9.84,
@@ -10424,12 +10424,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 42.0
+              "ax": 0,
+              "ay": 42
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 42.0
+              "ay": 42
             }
           }
         }
@@ -10471,26 +10471,25 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -2.0,
+              "ax": -2,
               "ay": 40.5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 40.5
             }
           }
         }
       ],
-      "auto": true,
-      "updated_at": "2026-09-03T06:49:08.415649Z"
+      "updated_at": "2026-09-03T06:58:39.365Z"
     },
     "scenery/cupboards_and_shelves/cupboard_008#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 47.0,
+          "ax": 0,
+          "ay": 47,
           "rx": 40.58,
-          "ry": 7.0,
+          "ry": 7,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
@@ -10499,19 +10498,18 @@
               "ay": 43.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 43.5
             }
           }
         }
       ],
-      "auto": true,
-      "updated_at": "2026-09-03T06:49:08.415649Z"
+      "updated_at": "2026-09-03T06:58:52.334Z"
     },
     "scenery/cupboards_and_shelves/cupboard_008#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 46.04,
           "rx": 37.48,
           "ry": 6.96,
@@ -10519,11 +10517,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -2.0,
+              "ax": -2,
               "ay": 40.5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 40.5
             }
           }
@@ -12407,9 +12405,9 @@
     "scenery/fences/fence_001#not_lit_1": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 18.77,
-          "rx": 51.0,
+          "rx": 51,
           "ry": 16.23,
           "rot": 0,
           "shape": "rect"
@@ -12421,9 +12419,9 @@
     "scenery/fences/fence_001#not_lit_2": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 20.45,
-          "rx": 52.0,
+          "rx": 52,
           "ry": 16.55,
           "rot": 0,
           "shape": "rect"
@@ -12435,9 +12433,9 @@
     "scenery/fences/fence_001#lit_1": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 18.77,
-          "rx": 51.0,
+          "rx": 51,
           "ry": 16.23,
           "rot": 0,
           "shape": "rect"
@@ -12519,9 +12517,9 @@
     "scenery/fences/fence_006#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.09,
-          "rx": 50.0,
+          "rx": 50,
           "ry": 15.91,
           "rot": 0,
           "shape": "rect"
@@ -12533,9 +12531,9 @@
     "scenery/fences/fence_006#lit_3": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 17.36,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.64,
           "rot": 0,
           "shape": "rect"
@@ -13071,7 +13069,7 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 21.5
             },
             "south-west": {
@@ -13095,7 +13093,7 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 21.5
             },
             "south-west": {
@@ -13119,11 +13117,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 21.5
             },
             "south-west": {
-              "ax": 2.0,
+              "ax": 2,
               "ay": 21.5
             }
           }
@@ -13167,8 +13165,8 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
-              "ay": 22.0
+              "ax": -1,
+              "ay": 22
             },
             "south-west": {
               "ax": 2.5,
@@ -13312,7 +13310,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 23.0
+              "ay": 23
             },
             "south-west": {
               "ax": -0.5,
@@ -13336,7 +13334,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 23.0
+              "ay": 23
             },
             "south-west": {
               "ax": -0.5,
@@ -13364,7 +13362,7 @@
             },
             "south-west": {
               "ax": 1.5,
-              "ay": 23.0
+              "ay": 23
             }
           }
         }
@@ -13375,7 +13373,7 @@
     "scenery/fish_drying_racks/fish_drying_rack_005#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.11,
           "rx": 24.09,
           "ry": 15.89,
@@ -13384,7 +13382,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 23.0
+              "ay": 23
             },
             "south-west": {
               "ax": -0.5,
@@ -13408,7 +13406,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 23.0
+              "ay": 23
             },
             "south-west": {
               "ax": -0.5,
@@ -13423,7 +13421,7 @@
     "scenery/flame_niches/flame_niche_005#lit_3": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 31.37,
           "rx": 28.97,
           "ry": 8.63,
@@ -13447,7 +13445,7 @@
     "scenery/flame_niches/flame_niche_005#not_lit_3": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 31.37,
           "rx": 28.97,
           "ry": 8.63,
@@ -13471,7 +13469,7 @@
     "scenery/flame_niches/flame_niche_005#lit_1": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 31.75,
           "rx": 31.18,
           "ry": 8.25,
@@ -13495,7 +13493,7 @@
     "scenery/flame_niches/flame_niche_005#lit_2": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 31.37,
           "rx": 28.97,
           "ry": 8.63,
@@ -13519,7 +13517,7 @@
     "scenery/flame_niches/flame_niche_005#lit_4": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 31.37,
           "rx": 28.97,
           "ry": 8.63,
@@ -13543,7 +13541,7 @@
     "scenery/flame_niches/flame_niche_005#lit_5": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 35.37,
           "rx": 28.97,
           "ry": 8.63,
@@ -13576,11 +13574,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 21.0
+              "ay": 21
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 21.0
+              "ay": 21
             }
           }
         }
@@ -13600,11 +13598,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 21.0
+              "ay": 21
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 21.0
+              "ay": 21
             }
           }
         }
@@ -13615,7 +13613,7 @@
     "scenery/flame_niches/flame_niche_006#not_lit_2": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 21.33,
           "rx": 21.14,
           "ry": 5.67,
@@ -13624,11 +13622,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 21.0
+              "ay": 21
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 21.0
+              "ay": 21
             }
           }
         }
@@ -13639,7 +13637,7 @@
     "scenery/flame_niches/flame_niche_006#lit_2": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 24.26,
           "rx": 21.66,
           "ry": 8.74,
@@ -13648,11 +13646,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 22.0
+              "ay": 22
             },
             "south-west": {
               "ax": 1.5,
-              "ay": 22.0
+              "ay": 22
             }
           }
         }
@@ -13663,7 +13661,7 @@
     "scenery/flame_niches/flame_niche_006#lit_3": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 22.48,
           "rx": 21.45,
           "ry": 6.52,
@@ -13671,11 +13669,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 20.5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 20.5
             }
           }
@@ -13695,11 +13693,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 24.5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 24.5
             }
           }
@@ -13719,12 +13717,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
-              "ay": 28.0
+              "ax": 1,
+              "ay": 28
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 28.0
+              "ay": 28
             }
           }
         }
@@ -13744,11 +13742,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 24.0
+              "ay": 24
             },
             "south-west": {
               "ax": 1.5,
-              "ay": 24.0
+              "ay": 24
             }
           }
         }
@@ -13768,11 +13766,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 1.5,
-              "ay": 28.0
+              "ay": 28
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 28.0
+              "ay": 28
             }
           }
         }
@@ -13791,12 +13789,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
-              "ay": 28.0
+              "ax": 1,
+              "ay": 28
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 28.0
+              "ay": 28
             }
           }
         }
@@ -13807,7 +13805,7 @@
     "scenery/flame_niches/flame_niche_007#lit_2": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 30.29,
           "rx": 27.37,
           "ry": 10.71,
@@ -13840,11 +13838,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 1.5,
-              "ay": 28.0
+              "ay": 28
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 28.0
+              "ay": 28
             }
           }
         }
@@ -13855,7 +13853,7 @@
     "scenery/flame_niches/flame_niche_012#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.02,
           "rx": 21.19,
           "ry": 4.98,
@@ -13888,11 +13886,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 16.0
+              "ay": 16
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 16.0
+              "ax": -1,
+              "ay": 16
             }
           }
         }
@@ -13911,12 +13909,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 16.0
+              "ax": 0,
+              "ay": 16
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 16.0
+              "ax": -1,
+              "ay": 16
             }
           }
         }
@@ -13936,11 +13934,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 10.0
+              "ay": 10
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 10.0
+              "ay": 10
             }
           }
         }
@@ -13951,7 +13949,7 @@
     "scenery/flame_niches/flame_niche_012#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.21,
           "rx": 18.4,
           "ry": 5.79,
@@ -13959,12 +13957,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 16.0
+              "ax": 0,
+              "ay": 16
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 16.0
+              "ay": 16
             }
           }
         }
@@ -13975,7 +13973,7 @@
     "scenery/flame_niches/flame_niche_015#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.61,
           "rx": 18.9,
           "ry": 6.39,
@@ -13983,11 +13981,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 19.0
+              "ax": 0,
+              "ay": 19
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 19.5
             }
           }
@@ -13999,7 +13997,7 @@
     "scenery/flame_niches/flame_niche_015#not_lit_2": {
       "boxes": [
         {
-          "ax": -5.0,
+          "ax": -5,
           "ay": 20.32,
           "rx": 21.8,
           "ry": 6.68,
@@ -14031,11 +14029,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 19.0
+              "ax": 0,
+              "ay": 19
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 19.5
             }
           }
@@ -14059,7 +14057,7 @@
               "ay": 18.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 18.5
             }
           }
@@ -14071,7 +14069,7 @@
     "scenery/flame_niches/flame_niche_017#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.98,
           "rx": 20.39,
           "ry": 6.02,
@@ -14095,7 +14093,7 @@
     "scenery/flame_niches/flame_niche_017#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.13,
           "rx": 20.69,
           "ry": 6.87,
@@ -14103,12 +14101,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 17.0
+              "ax": 0,
+              "ay": 17
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 17.0
+              "ax": -1,
+              "ay": 17
             }
           }
         }
@@ -14119,7 +14117,7 @@
     "scenery/flame_niches/flame_niche_017#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.98,
           "rx": 20.39,
           "ry": 6.02,
@@ -14143,7 +14141,7 @@
     "scenery/flame_niches/flame_niche_017#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.98,
           "rx": 20.39,
           "ry": 6.02,
@@ -14167,7 +14165,7 @@
     "scenery/flame_niches/flame_niche_018#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 14.87,
           "rx": 15.2,
           "ry": 7.13,
@@ -14176,11 +14174,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 15.0
+              "ay": 15
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 15.0
+              "ay": 15
             }
           }
         }
@@ -14191,7 +14189,7 @@
     "scenery/flame_niches/flame_niche_018#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 14.87,
           "rx": 15.2,
           "ry": 7.13,
@@ -14200,11 +14198,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 15.0
+              "ay": 15
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 15.0
+              "ay": 15
             }
           }
         }
@@ -14247,11 +14245,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -2.0,
+              "ax": -2,
               "ay": 14.5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 14.5
             }
           }
@@ -14287,7 +14285,7 @@
     "scenery/flame_niches/flame_niche_900#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.29,
           "rx": 18.22,
           "ry": 5.71,
@@ -14296,11 +14294,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 19.0
+              "ay": 19
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 19.0
+              "ay": 19
             }
           }
         }
@@ -14311,7 +14309,7 @@
     "scenery/flame_niches/flame_niche_900#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.29,
           "rx": 18.22,
           "ry": 5.71,
@@ -14320,11 +14318,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 19.0
+              "ay": 19
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 19.0
+              "ay": 19
             }
           }
         }
@@ -14335,7 +14333,7 @@
     "scenery/flame_niches/flame_niche_900#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.29,
           "rx": 18.22,
           "ry": 5.71,
@@ -14344,11 +14342,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 19.0
+              "ay": 19
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 19.0
+              "ay": 19
             }
           }
         }
@@ -14391,11 +14389,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 17.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 17.5
             }
           }
@@ -14415,11 +14413,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 18.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 18.5
             }
           }
@@ -14678,7 +14676,7 @@
     "scenery/flower_trellises/flower_trellis_001#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 47.61,
           "rx": 45.82,
           "ry": 2.39,
@@ -14686,7 +14684,7 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-west": {
-              "ax": 8.0,
+              "ax": 8,
               "ay": 33.5
             }
           }
@@ -14698,7 +14696,7 @@
     "scenery/flower_trellises/flower_trellis_001#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 47.34,
           "rx": 44.89,
           "ry": 2.66,
@@ -14706,12 +14704,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -7.0,
-              "ay": 34.0
+              "ax": -7,
+              "ay": 34
             },
             "south-west": {
               "ax": 8.5,
-              "ay": 34.0
+              "ay": 34
             }
           }
         }
@@ -14722,7 +14720,7 @@
     "scenery/flower_trellises/flower_trellis_001#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 48.73,
           "rx": 40.42,
           "ry": 2,
@@ -14742,7 +14740,7 @@
     "scenery/flower_trellises/flower_trellis_001#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 47.97,
           "rx": 46.57,
           "ry": 2.03,
@@ -14750,11 +14748,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -7.0,
+              "ax": -7,
               "ay": 32.5
             },
             "south-west": {
-              "ax": 8.0,
+              "ax": 8,
               "ay": 33.5
             }
           }
@@ -14766,7 +14764,7 @@
     "scenery/flower_trellises/flower_trellis_001#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 47.97,
           "rx": 46.57,
           "ry": 2.03,
@@ -14774,11 +14772,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -7.0,
+              "ax": -7,
               "ay": 32.5
             },
             "south-west": {
-              "ax": 8.0,
+              "ax": 8,
               "ay": 33.5
             }
           }
@@ -14813,7 +14811,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 43.0
+              "ay": 43
             },
             "south-west": {
               "ax": 1.5,
@@ -15708,7 +15706,7 @@
     "scenery/graves/grave_001#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 15.3,
           "rx": 18.56,
           "ry": 8.7,
@@ -15717,11 +15715,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 13.0
+              "ay": 13
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 13.0
+              "ax": 0,
+              "ay": 13
             }
           }
         }
@@ -15732,7 +15730,7 @@
     "scenery/graves/grave_001#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 15.3,
           "rx": 18.56,
           "ry": 8.7,
@@ -15741,11 +15739,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 13.0
+              "ay": 13
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 13.0
+              "ax": 0,
+              "ay": 13
             }
           }
         }
@@ -15756,7 +15754,7 @@
     "scenery/graves/grave_001#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 15.3,
           "rx": 18.56,
           "ry": 8.7,
@@ -15765,11 +15763,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 13.0
+              "ay": 13
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 13.0
+              "ax": 0,
+              "ay": 13
             }
           }
         }
@@ -15780,7 +15778,7 @@
     "scenery/graves/grave_001#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 15.77,
           "rx": 21.33,
           "ry": 8.23,
@@ -15788,12 +15786,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 13.5
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 13.0
+              "ax": 0,
+              "ay": 13
             }
           }
         }
@@ -15804,7 +15802,7 @@
     "scenery/graves/grave_001#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 15.3,
           "rx": 18.56,
           "ry": 8.7,
@@ -15813,11 +15811,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 13.0
+              "ay": 13
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 13.0
+              "ax": 0,
+              "ay": 13
             }
           }
         }
@@ -15828,7 +15826,7 @@
     "scenery/graves/grave_003#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.48,
           "rx": 21.45,
           "ry": 6.52,
@@ -15836,11 +15834,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 15.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 15.5
             }
           }
@@ -15852,7 +15850,7 @@
     "scenery/graves/grave_003#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.48,
           "rx": 21.45,
           "ry": 6.52,
@@ -15860,11 +15858,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 15.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 15.5
             }
           }
@@ -15876,7 +15874,7 @@
     "scenery/graves/grave_003#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.48,
           "rx": 21.45,
           "ry": 6.52,
@@ -15884,11 +15882,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 15.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 15.5
             }
           }
@@ -15900,7 +15898,7 @@
     "scenery/graves/grave_003#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.48,
           "rx": 21.45,
           "ry": 6.52,
@@ -15908,11 +15906,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 15.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 15.5
             }
           }
@@ -15924,7 +15922,7 @@
     "scenery/graves/grave_003#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.48,
           "rx": 21.45,
           "ry": 6.52,
@@ -15932,11 +15930,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 15.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 15.5
             }
           }
@@ -15948,7 +15946,7 @@
     "scenery/graves/grave_003#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.48,
           "rx": 21.45,
           "ry": 6.52,
@@ -15956,11 +15954,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 15.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 15.5
             }
           }
@@ -15972,7 +15970,7 @@
     "scenery/graves/grave_004#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.4,
           "rx": 19.85,
           "ry": 8.6,
@@ -15980,11 +15978,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 16.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 16.5
             }
           }
@@ -15996,7 +15994,7 @@
     "scenery/graves/grave_004#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.4,
           "rx": 19.85,
           "ry": 8.6,
@@ -16004,11 +16002,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 16.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 16.5
             }
           }
@@ -16020,7 +16018,7 @@
     "scenery/graves/grave_004#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.4,
           "rx": 19.85,
           "ry": 8.6,
@@ -16028,11 +16026,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 16.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 16.5
             }
           }
@@ -16044,7 +16042,7 @@
     "scenery/graves/grave_005#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.63,
           "rx": 21.76,
           "ry": 7.37,
@@ -16053,11 +16051,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 15.0
+              "ay": 15
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 15.0
+              "ay": 15
             }
           }
         }
@@ -16068,7 +16066,7 @@
     "scenery/graves/grave_005#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.63,
           "rx": 21.76,
           "ry": 7.37,
@@ -16077,11 +16075,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 15.0
+              "ay": 15
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 15.0
+              "ay": 15
             }
           }
         }
@@ -16092,7 +16090,7 @@
     "scenery/graves/grave_005#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.63,
           "rx": 21.76,
           "ry": 7.37,
@@ -16101,11 +16099,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 15.0
+              "ay": 15
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 15.0
+              "ay": 15
             }
           }
         }
@@ -16116,7 +16114,7 @@
     "scenery/graves/grave_005#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.63,
           "rx": 21.76,
           "ry": 7.37,
@@ -16125,11 +16123,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 15.0
+              "ay": 15
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 15.0
+              "ay": 15
             }
           }
         }
@@ -16140,7 +16138,7 @@
     "scenery/graves/grave_005#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.63,
           "rx": 21.76,
           "ry": 7.37,
@@ -16149,11 +16147,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 15.0
+              "ay": 15
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 15.0
+              "ay": 15
             }
           }
         }
@@ -16164,7 +16162,7 @@
     "scenery/graves/grave_017#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.71,
           "rx": 23.36,
           "ry": 5.29,
@@ -16173,11 +16171,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 16.0
+              "ay": 16
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 16.0
+              "ay": 16
             }
           }
         }
@@ -16188,7 +16186,7 @@
     "scenery/graves/grave_017#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.71,
           "rx": 23.36,
           "ry": 5.29,
@@ -16197,11 +16195,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 16.0
+              "ay": 16
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 16.0
+              "ay": 16
             }
           }
         }
@@ -16212,7 +16210,7 @@
     "scenery/graves/grave_017#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.71,
           "rx": 23.36,
           "ry": 5.29,
@@ -16221,11 +16219,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 16.0
+              "ay": 16
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 16.0
+              "ay": 16
             }
           }
         }
@@ -16236,7 +16234,7 @@
     "scenery/graves/grave_020#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.98,
           "rx": 20.39,
           "ry": 6.02,
@@ -16260,7 +16258,7 @@
     "scenery/graves/grave_020#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.98,
           "rx": 20.39,
           "ry": 6.02,
@@ -16284,7 +16282,7 @@
     "scenery/graves/grave_020#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.98,
           "rx": 20.39,
           "ry": 6.02,
@@ -16308,7 +16306,7 @@
     "scenery/graves/grave_020#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.98,
           "rx": 20.39,
           "ry": 6.02,
@@ -16340,11 +16338,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 16.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 16.5
             }
           }
@@ -16364,11 +16362,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 16.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 16.5
             }
           }
@@ -16380,7 +16378,7 @@
     "scenery/graves/grave_026#lit_3": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 20.44,
           "rx": 20.65,
           "ry": 7.56,
@@ -16388,11 +16386,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 16.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 16.5
             }
           }
@@ -16404,7 +16402,7 @@
     "scenery/graves/grave_028#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.27,
           "rx": 18.88,
           "ry": 6.73,
@@ -16428,7 +16426,7 @@
     "scenery/graves/grave_028#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.27,
           "rx": 18.88,
           "ry": 6.73,
@@ -16452,7 +16450,7 @@
     "scenery/graves/grave_028#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.27,
           "rx": 18.88,
           "ry": 6.73,
@@ -16500,7 +16498,7 @@
     "scenery/graves/grave_028#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.27,
           "rx": 18.88,
           "ry": 6.73,
@@ -16524,7 +16522,7 @@
     "scenery/graves/grave_028#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.27,
           "rx": 18.88,
           "ry": 6.73,
@@ -16556,12 +16554,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 19.0
+              "ax": 0,
+              "ay": 19
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 19.0
+              "ax": -1,
+              "ay": 19
             }
           }
         }
@@ -16580,12 +16578,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 19.0
+              "ax": 0,
+              "ay": 19
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 19.0
+              "ax": -1,
+              "ay": 19
             }
           }
         }
@@ -16604,12 +16602,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 19.0
+              "ax": 0,
+              "ay": 19
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 19.0
+              "ax": -1,
+              "ay": 19
             }
           }
         }
@@ -16628,12 +16626,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 19.0
+              "ax": 0,
+              "ay": 19
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 19.0
+              "ax": -1,
+              "ay": 19
             }
           }
         }
@@ -16652,12 +16650,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 19.0
+              "ax": 0,
+              "ay": 19
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 19.0
+              "ax": -1,
+              "ay": 19
             }
           }
         }
@@ -17095,7 +17093,7 @@
     "scenery/harvest_altars/harvest_altar_002#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.23,
           "rx": 21.98,
           "ry": 6.77,
@@ -17107,7 +17105,7 @@
               "ay": 15.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 15.5
             }
           }
@@ -17119,7 +17117,7 @@
     "scenery/harvest_altars/harvest_altar_002#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.23,
           "rx": 21.98,
           "ry": 6.77,
@@ -17131,7 +17129,7 @@
               "ay": 15.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 15.5
             }
           }
@@ -17143,7 +17141,7 @@
     "scenery/harvest_altars/harvest_altar_002#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.23,
           "rx": 21.98,
           "ry": 6.77,
@@ -17155,7 +17153,7 @@
               "ay": 15.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 15.5
             }
           }
@@ -17167,7 +17165,7 @@
     "scenery/harvest_altars/harvest_altar_002#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.23,
           "rx": 21.98,
           "ry": 6.77,
@@ -17179,7 +17177,7 @@
               "ay": 15.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 15.5
             }
           }
@@ -17385,7 +17383,7 @@
               "ay": 52.5
             },
             "south-west": {
-              "ax": 11.0,
+              "ax": 11,
               "ay": 37.5
             }
           }
@@ -17409,7 +17407,7 @@
               "ay": 36.5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 33.5
             }
           }
@@ -17429,8 +17427,8 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -2.0,
-              "ay": 37.0
+              "ax": -2,
+              "ay": 37
             },
             "south-west": {
               "ax": 1.5,
@@ -17457,7 +17455,7 @@
               "ay": 52.5
             },
             "south-west": {
-              "ax": 11.0,
+              "ax": 11,
               "ay": 37.5
             }
           }
@@ -17469,7 +17467,7 @@
     "scenery/hearths/hearth_001#lit_2": {
       "boxes": [
         {
-          "ax": 4.0,
+          "ax": 4,
           "ay": 38.9,
           "rx": 50.22,
           "ry": 10.1,
@@ -17481,7 +17479,7 @@
               "ay": 35.5
             },
             "south-west": {
-              "ax": 2.0,
+              "ax": 2,
               "ay": 35.5
             }
           }
@@ -17501,8 +17499,8 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -2.0,
-              "ay": 37.0
+              "ax": -2,
+              "ay": 37
             },
             "south-west": {
               "ax": 1.5,
@@ -17529,7 +17527,7 @@
               "ay": 35.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 35.5
             }
           }
@@ -17541,7 +17539,7 @@
     "scenery/hearths/hearth_002#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 45.03,
           "rx": 49.79,
           "ry": 10.97,
@@ -17549,12 +17547,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 35.5
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 36.0
+              "ay": 36
             }
           }
         }
@@ -17565,7 +17563,7 @@
     "scenery/hearths/hearth_002#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 42.37,
           "rx": 58.62,
           "ry": 12.63,
@@ -17598,11 +17596,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 36.0
+              "ay": 36
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 36.0
+              "ax": 0,
+              "ay": 36
             }
           }
         }
@@ -17621,12 +17619,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
-              "ay": 32.0
+              "ax": 1,
+              "ay": 32
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 32.0
+              "ax": 0,
+              "ay": 32
             }
           }
         }
@@ -17669,12 +17667,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
-              "ay": 32.0
+              "ax": 1,
+              "ay": 32
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 32.0
+              "ax": 0,
+              "ay": 32
             }
           }
         }
@@ -17694,11 +17692,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 36.0
+              "ay": 36
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 36.0
+              "ax": 0,
+              "ay": 36
             }
           }
         }
@@ -17717,11 +17715,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 31.5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 31.5
             }
           }
@@ -17741,12 +17739,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
-              "ay": 32.0
+              "ax": 1,
+              "ay": 32
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 32.0
+              "ax": 0,
+              "ay": 32
             }
           }
         }
@@ -17765,12 +17763,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 3.0,
-              "ay": 35.0
+              "ax": 3,
+              "ay": 35
             },
             "south-west": {
               "ax": -1.5,
-              "ay": 35.0
+              "ay": 35
             }
           }
         }
@@ -17789,12 +17787,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 3.0,
-              "ay": 35.0
+              "ax": 3,
+              "ay": 35
             },
             "south-west": {
               "ax": -1.5,
-              "ay": 35.0
+              "ay": 35
             }
           }
         }
@@ -17813,12 +17811,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 2.0,
-              "ay": 35.0
+              "ax": 2,
+              "ay": 35
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 35.0
+              "ax": -1,
+              "ay": 35
             }
           }
         }
@@ -17853,7 +17851,7 @@
     "scenery/hearths/hearth_004#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 40.86,
           "rx": 47.64,
           "ry": 13.14,
@@ -17877,7 +17875,7 @@
     "scenery/hearths/hearth_008#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 41.83,
           "rx": 33.74,
           "ry": 16.17,
@@ -17889,8 +17887,8 @@
               "ay": 39.5
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 40.0
+              "ax": 0,
+              "ay": 40
             }
           }
         }
@@ -17901,7 +17899,7 @@
     "scenery/hearths/hearth_008#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 41.83,
           "rx": 33.74,
           "ry": 16.17,
@@ -17913,8 +17911,8 @@
               "ay": 39.5
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 40.0
+              "ax": 0,
+              "ay": 40
             }
           }
         }
@@ -17925,7 +17923,7 @@
     "scenery/hearths/hearth_008#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 47.17,
           "rx": 33.76,
           "ry": 15.83,
@@ -17933,7 +17931,7 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 40.5
             },
             "south-west": {
@@ -17949,7 +17947,7 @@
     "scenery/hearths/hearth_008#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 41.91,
           "rx": 33.56,
           "ry": 16.09,
@@ -17957,11 +17955,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -2.0,
-              "ay": 40.0
+              "ax": -2,
+              "ay": 40
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 40.5
             }
           }
@@ -17973,7 +17971,7 @@
     "scenery/hearths/hearth_008#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 41.92,
           "rx": 34.29,
           "ry": 16.08,
@@ -17981,12 +17979,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -2.0,
-              "ay": 40.0
+              "ax": -2,
+              "ay": 40
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 40.0
+              "ax": 0,
+              "ay": 40
             }
           }
         }
@@ -18005,12 +18003,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
-              "ay": 33.0
+              "ax": -1,
+              "ay": 33
             },
             "south-west": {
               "ax": 1.5,
-              "ay": 33.0
+              "ay": 33
             }
           }
         }
@@ -18029,12 +18027,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
-              "ay": 33.0
+              "ax": -1,
+              "ay": 33
             },
             "south-west": {
               "ax": 1.5,
-              "ay": 33.0
+              "ay": 33
             }
           }
         }
@@ -18058,7 +18056,7 @@
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 33.0
+              "ay": 33
             }
           }
         }
@@ -18113,7 +18111,7 @@
     "scenery/hearths/hearth_900#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 33.35,
           "rx": 45.84,
           "ry": 12.65,
@@ -18122,7 +18120,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 30.0
+              "ay": 30
             },
             "south-west": {
               "ax": -0.5,
@@ -18145,11 +18143,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 34.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 34.5
             }
           }
@@ -18169,11 +18167,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 34.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 34.5
             }
           }
@@ -18185,7 +18183,7 @@
     "scenery/hearths/hearth_901#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 36.17,
           "rx": 53.27,
           "ry": 10.83,
@@ -18193,12 +18191,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 34.0
+              "ax": 0,
+              "ay": 34
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 34.0
+              "ax": 0,
+              "ay": 34
             }
           }
         }
@@ -18209,7 +18207,7 @@
     "scenery/hearths/hearth_901#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 35.82,
           "rx": 52.51,
           "ry": 11.18,
@@ -18217,11 +18215,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 34.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 34.5
             }
           }
@@ -18241,11 +18239,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 34.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 34.5
             }
           }
@@ -18593,7 +18591,7 @@
     "scenery/house_clutter/clutter_001#not_lit_1": {
       "boxes": [
         {
-          "ax": -11.0,
+          "ax": -11,
           "ay": 20.55,
           "rx": 17.03,
           "ry": 4.45,
@@ -18602,11 +18600,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -11.5,
-              "ay": 19.0
+              "ay": 19
             },
             "south-west": {
-              "ax": -2.0,
-              "ay": 12.0
+              "ax": -2,
+              "ay": 12
             }
           }
         }
@@ -18617,7 +18615,7 @@
     "scenery/house_clutter/clutter_001#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 6.86,
           "rx": 11.96,
           "ry": 9.14,
@@ -18625,12 +18623,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 5.0,
-              "ay": 11.0
+              "ax": 5,
+              "ay": 11
             },
             "south-west": {
               "ax": -5.5,
-              "ay": 4.0
+              "ay": 4
             }
           }
         }
@@ -18641,7 +18639,7 @@
     "scenery/house_clutter/clutter_001#not_lit_3": {
       "boxes": [
         {
-          "ax": -11.0,
+          "ax": -11,
           "ay": 20.55,
           "rx": 17.03,
           "ry": 4.45,
@@ -18650,11 +18648,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -11.5,
-              "ay": 19.0
+              "ay": 19
             },
             "south-west": {
-              "ax": -2.0,
-              "ay": 12.0
+              "ax": -2,
+              "ay": 12
             }
           }
         }
@@ -18665,7 +18663,7 @@
     "scenery/house_clutter/clutter_001#not_lit_4": {
       "boxes": [
         {
-          "ax": -11.0,
+          "ax": -11,
           "ay": 17.27,
           "rx": 14.98,
           "ry": 7.73,
@@ -18677,7 +18675,7 @@
               "ay": 19.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 17.5
             }
           }
@@ -18697,12 +18695,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
-              "ay": 6.0
+              "ax": -1,
+              "ay": 6
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 6.0
+              "ax": 0,
+              "ay": 6
             }
           }
         }
@@ -18713,19 +18711,19 @@
     "scenery/house_clutter/clutter_001#lit_2": {
       "boxes": [
         {
-          "ax": 20.0,
+          "ax": 20,
           "ay": 17.72,
-          "rx": 11.0,
+          "rx": 11,
           "ry": 6.28,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -2.0,
-              "ay": 5.0
+              "ax": -2,
+              "ay": 5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 10.5
             }
           }
@@ -18737,7 +18735,7 @@
     "scenery/house_clutter/clutter_002#lit_1": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 17.28,
           "rx": 15.71,
           "ry": 7.72,
@@ -18746,10 +18744,10 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 11.0
+              "ay": 11
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 12.5
             }
           }
@@ -18761,7 +18759,7 @@
     "scenery/house_clutter/clutter_002#not_lit_1": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 17.28,
           "rx": 15.71,
           "ry": 7.72,
@@ -18770,10 +18768,10 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 11.0
+              "ay": 11
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 12.5
             }
           }
@@ -18809,7 +18807,7 @@
     "scenery/house_clutter/clutter_002#lit_2": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 17.2,
           "rx": 15.89,
           "ry": 7.8,
@@ -18817,11 +18815,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
-              "ay": 11.0
+              "ax": -1,
+              "ay": 11
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 12.5
             }
           }
@@ -18833,7 +18831,7 @@
     "scenery/house_clutter/clutter_002#lit_3": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 17.03,
           "rx": 16.24,
           "ry": 7.97,
@@ -18842,7 +18840,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 11.0
+              "ay": 11
             },
             "south-west": {
               "ax": -0.5,
@@ -18857,7 +18855,7 @@
     "scenery/house_clutter/clutter_002#lit_4": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 19.37,
           "rx": 19.43,
           "ry": 6.63,
@@ -18865,8 +18863,8 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
-              "ay": 8.0
+              "ax": 1,
+              "ay": 8
             },
             "south-west": {
               "ax": 0.5,
@@ -18905,7 +18903,7 @@
     "scenery/house_clutter/clutter_003#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 25.59,
           "rx": 21.34,
           "ry": 5.41,
@@ -18913,8 +18911,8 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 5.0,
-              "ay": 17.0
+              "ax": 5,
+              "ay": 17
             },
             "south-west": {
               "ax": -1.5,
@@ -18938,11 +18936,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -2.5,
-              "ay": 14.0
+              "ay": 14
             },
             "south-west": {
               "ax": 2.5,
-              "ay": 14.0
+              "ay": 14
             }
           }
         }
@@ -19001,7 +18999,7 @@
     "scenery/house_clutter/clutter_005#not_lit_3": {
       "boxes": [
         {
-          "ax": -9.0,
+          "ax": -9,
           "ay": 16.26,
           "rx": 21.66,
           "ry": 8.74,
@@ -19009,11 +19007,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 7.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 11.5
             }
           }
@@ -19025,7 +19023,7 @@
     "scenery/house_clutter/clutter_005#not_lit_4": {
       "boxes": [
         {
-          "ax": -5.0,
+          "ax": -5,
           "ay": 26.12,
           "rx": 15.06,
           "ry": 3.88,
@@ -19033,12 +19031,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 7.0,
+              "ax": 7,
               "ay": 26.5
             },
             "south-west": {
-              "ax": -5.0,
-              "ay": 19.0
+              "ax": -5,
+              "ay": 19
             }
           }
         }
@@ -19049,9 +19047,9 @@
     "scenery/house_clutter/clutter_005#lit_2": {
       "boxes": [
         {
-          "ax": -21.0,
+          "ax": -21,
           "ay": 20.66,
-          "rx": 10.0,
+          "rx": 10,
           "ry": 8.34,
           "rot": 0,
           "shape": "rect",
@@ -19141,7 +19139,7 @@
     "scenery/house_clutter/clutter_006#not_lit_5": {
       "boxes": [
         {
-          "ax": 15.0,
+          "ax": 15,
           "ay": 19.86,
           "rx": 15.86,
           "ry": 8.14,
@@ -19161,15 +19159,15 @@
     "scenery/house_clutter/clutter_006#not_lit_6": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 19.91,
-          "rx": 16.0,
+          "rx": 16,
           "ry": 5.09,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-west": {
-              "ax": 10.0,
+              "ax": 10,
               "ay": 18.5
             }
           }
@@ -19181,7 +19179,7 @@
     "scenery/house_clutter/clutter_007#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 10.9,
           "rx": 18.79,
           "ry": 8.1,
@@ -19205,7 +19203,7 @@
     "scenery/house_clutter/clutter_007#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 10.9,
           "rx": 18.79,
           "ry": 8.1,
@@ -19229,7 +19227,7 @@
     "scenery/house_clutter/clutter_007#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 10.9,
           "rx": 18.79,
           "ry": 8.1,
@@ -19253,7 +19251,7 @@
     "scenery/house_clutter/clutter_007#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 10.9,
           "rx": 18.79,
           "ry": 8.1,
@@ -19277,7 +19275,7 @@
     "scenery/house_clutter/clutter_007#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 10.9,
           "rx": 18.79,
           "ry": 8.1,
@@ -19301,7 +19299,7 @@
     "scenery/house_clutter/clutter_007#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 10.9,
           "rx": 18.79,
           "ry": 8.1,
@@ -19325,7 +19323,7 @@
     "scenery/house_clutter/clutter_008#lit_1": {
       "boxes": [
         {
-          "ax": 5.0,
+          "ax": 5,
           "ay": 17.46,
           "rx": 14.7,
           "ry": 6.54,
@@ -19333,12 +19331,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -2.0,
+              "ax": -2,
               "ay": 16.5
             },
             "south-west": {
               "ax": 1.5,
-              "ay": 15.0
+              "ay": 15
             }
           }
         }
@@ -19349,7 +19347,7 @@
     "scenery/house_clutter/clutter_008#not_lit_3": {
       "boxes": [
         {
-          "ax": -6.0,
+          "ax": -6,
           "ay": 24.92,
           "rx": 13.22,
           "ry": 4.08,
@@ -19361,8 +19359,8 @@
               "ay": 15.5
             },
             "south-west": {
-              "ax": 5.0,
-              "ay": 21.0
+              "ax": 5,
+              "ay": 21
             }
           }
         }
@@ -19381,11 +19379,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 12.5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 14.5
             }
           }
@@ -19397,9 +19395,9 @@
     "scenery/house_clutter/clutter_008#lit_2": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 18.32,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.68,
           "rot": 0,
           "shape": "rect"
@@ -19411,7 +19409,7 @@
     "scenery/house_clutter/clutter_012#lit_1": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 14.72,
           "rx": 21.92,
           "ry": 10.28,
@@ -19419,11 +19417,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 8.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 8.5
             }
           }
@@ -19435,7 +19433,7 @@
     "scenery/house_clutter/clutter_012#not_lit_2": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 14.72,
           "rx": 21.92,
           "ry": 10.28,
@@ -19443,11 +19441,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 8.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 8.5
             }
           }
@@ -19459,7 +19457,7 @@
     "scenery/house_clutter/clutter_012#not_lit_3": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 14.72,
           "rx": 21.92,
           "ry": 10.28,
@@ -19467,11 +19465,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 8.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 8.5
             }
           }
@@ -19483,7 +19481,7 @@
     "scenery/house_clutter/clutter_012#not_lit_4": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 14.72,
           "rx": 21.92,
           "ry": 10.28,
@@ -19491,11 +19489,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 8.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 8.5
             }
           }
@@ -19507,7 +19505,7 @@
     "scenery/house_clutter/clutter_012#not_lit_5": {
       "boxes": [
         {
-          "ax": -7.0,
+          "ax": -7,
           "ay": 14.72,
           "rx": 21.92,
           "ry": 10.28,
@@ -19515,11 +19513,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 8.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 8.5
             }
           }
@@ -20701,7 +20699,7 @@
     "scenery/letter_boxes/letter_box_003#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.35,
           "rx": 7.78,
           "ry": 3.65,
@@ -20709,12 +20707,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
-              "ay": 21.0
+              "ax": -1,
+              "ay": 21
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 21.0
+              "ax": 0,
+              "ay": 21
             }
           }
         }
@@ -20725,9 +20723,9 @@
     "scenery/letter_boxes/letter_box_003#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 21.45,
-          "rx": 8.0,
+          "rx": 8,
           "ry": 2.55,
           "rot": 0,
           "shape": "rect"
@@ -20739,9 +20737,9 @@
     "scenery/letter_boxes/letter_box_003#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 21.45,
-          "rx": 8.0,
+          "rx": 8,
           "ry": 2.55,
           "rot": 0,
           "shape": "rect"
@@ -20753,7 +20751,7 @@
     "scenery/letter_boxes/letter_box_003#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.35,
           "rx": 7.78,
           "ry": 3.65,
@@ -20761,12 +20759,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
-              "ay": 21.0
+              "ax": -1,
+              "ay": 21
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 21.0
+              "ax": 0,
+              "ay": 21
             }
           }
         }
@@ -20785,11 +20783,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 10.0,
+              "ax": 10,
               "ay": 33.5
             },
             "south-west": {
-              "ax": -9.0,
+              "ax": -9,
               "ay": 33.5
             }
           }
@@ -20809,11 +20807,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 10.0,
+              "ax": 10,
               "ay": 33.5
             },
             "south-west": {
-              "ax": -9.0,
+              "ax": -9,
               "ay": 33.5
             }
           }
@@ -20825,7 +20823,7 @@
     "scenery/market_stalls/market_stall_001#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 37.09,
           "rx": 33.94,
           "ry": 15.91,
@@ -20833,12 +20831,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 2.0,
-              "ay": 30.0
+              "ax": 2,
+              "ay": 30
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 30.0
+              "ax": -1,
+              "ay": 30
             }
           }
         }
@@ -20857,11 +20855,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 10.0,
+              "ax": 10,
               "ay": 33.5
             },
             "south-west": {
-              "ax": -9.0,
+              "ax": -9,
               "ay": 33.5
             }
           }
@@ -20881,11 +20879,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 10.0,
+              "ax": 10,
               "ay": 33.5
             },
             "south-west": {
-              "ax": -9.0,
+              "ax": -9,
               "ay": 33.5
             }
           }
@@ -20905,12 +20903,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 9.0,
+              "ax": 9,
               "ay": 36.5
             },
             "south-west": {
-              "ax": -3.0,
-              "ay": 37.0
+              "ax": -3,
+              "ay": 37
             }
           }
         }
@@ -20929,12 +20927,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 9.0,
+              "ax": 9,
               "ay": 36.5
             },
             "south-west": {
-              "ax": -3.0,
-              "ay": 37.0
+              "ax": -3,
+              "ay": 37
             }
           }
         }
@@ -20953,12 +20951,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 9.0,
+              "ax": 9,
               "ay": 36.5
             },
             "south-west": {
-              "ax": -3.0,
-              "ay": 37.0
+              "ax": -3,
+              "ay": 37
             }
           }
         }
@@ -20969,7 +20967,7 @@
     "scenery/market_stalls/market_stall_003#not_lit_4": {
       "boxes": [
         {
-          "ax": 25.0,
+          "ax": 25,
           "ay": 47.47,
           "rx": 29.52,
           "ry": 8.53,
@@ -20981,8 +20979,8 @@
               "ay": 49.5
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 47.0
+              "ax": -1,
+              "ay": 47
             }
           }
         }
@@ -20993,7 +20991,7 @@
     "scenery/market_stalls/market_stall_003#not_lit_3": {
       "boxes": [
         {
-          "ax": -27.0,
+          "ax": -27,
           "ay": 38.38,
           "rx": 15.49,
           "ry": 13.62,
@@ -21002,11 +21000,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -23.5,
-              "ay": 45.0
+              "ay": 45
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 41.0
+              "ay": 41
             }
           }
         }
@@ -21017,7 +21015,7 @@
     "scenery/market_stalls/market_stall_004#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 41.02,
           "rx": 46.55,
           "ry": 12.98,
@@ -21026,7 +21024,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 34.0
+              "ay": 34
             },
             "south-west": {
               "ax": 0.5,
@@ -21041,7 +21039,7 @@
     "scenery/market_stalls/market_stall_004#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 41.02,
           "rx": 46.55,
           "ry": 12.98,
@@ -21050,7 +21048,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 34.0
+              "ay": 34
             },
             "south-west": {
               "ax": 0.5,
@@ -21065,7 +21063,7 @@
     "scenery/market_stalls/market_stall_004#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 41.02,
           "rx": 46.55,
           "ry": 12.98,
@@ -21074,7 +21072,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 34.0
+              "ay": 34
             },
             "south-west": {
               "ax": 0.5,
@@ -21089,7 +21087,7 @@
     "scenery/market_stalls/market_stall_004#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 41.02,
           "rx": 46.55,
           "ry": 12.98,
@@ -21098,7 +21096,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 34.0
+              "ay": 34
             },
             "south-west": {
               "ax": 0.5,
@@ -22226,7 +22224,7 @@
     "scenery/offering_tables/offering_table_001#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.31,
           "rx": 19.68,
           "ry": 5.69,
@@ -22250,7 +22248,7 @@
     "scenery/offering_tables/offering_table_001#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.31,
           "rx": 19.68,
           "ry": 5.69,
@@ -22274,7 +22272,7 @@
     "scenery/offering_tables/offering_table_001#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.31,
           "rx": 19.68,
           "ry": 5.69,
@@ -22298,7 +22296,7 @@
     "scenery/offering_tables/offering_table_001#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.31,
           "rx": 19.68,
           "ry": 5.69,
@@ -22322,7 +22320,7 @@
     "scenery/offering_tables/offering_table_001#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 12.83,
           "rx": 22.2,
           "ry": 6.17,
@@ -22330,12 +22328,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             }
           }
         }
@@ -22346,7 +22344,7 @@
     "scenery/offering_tables/offering_table_001#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 12.83,
           "rx": 22.2,
           "ry": 6.17,
@@ -22354,12 +22352,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             }
           }
         }
@@ -22490,19 +22488,19 @@
     "scenery/offering_tables/offering_table_003#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.4,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 3.6,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 4.5
             },
             "south-west": {
-              "ax": -0.0,
+              "ax": 0,
               "ay": 4.5
             }
           }
@@ -22514,20 +22512,20 @@
     "scenery/offering_tables/offering_table_003#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.58,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 2.42,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 5.0
+              "ax": 0,
+              "ay": 5
             },
             "south-west": {
-              "ax": -0.0,
-              "ay": 5.0
+              "ax": 0,
+              "ay": 5
             }
           }
         }
@@ -22538,19 +22536,19 @@
     "scenery/offering_tables/offering_table_003#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.4,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 3.6,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 4.5
             },
             "south-west": {
-              "ax": -0.0,
+              "ax": 0,
               "ay": 4.5
             }
           }
@@ -22562,19 +22560,19 @@
     "scenery/offering_tables/offering_table_003#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.4,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 3.6,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 4.5
             },
             "south-west": {
-              "ax": -0.0,
+              "ax": 0,
               "ay": 4.5
             }
           }
@@ -22586,19 +22584,19 @@
     "scenery/offering_tables/offering_table_003#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.4,
-          "rx": 31.0,
+          "rx": 31,
           "ry": 3.6,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 4.5
             },
             "south-west": {
-              "ax": -0.0,
+              "ax": 0,
               "ay": 4.5
             }
           }
@@ -22610,7 +22608,7 @@
     "scenery/offering_tables/offering_table_004#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 9.77,
           "rx": 12.14,
           "ry": 9.23,
@@ -22634,7 +22632,7 @@
     "scenery/offering_tables/offering_table_004#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 9.77,
           "rx": 12.14,
           "ry": 9.23,
@@ -22658,7 +22656,7 @@
     "scenery/offering_tables/offering_table_004#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 9.77,
           "rx": 12.14,
           "ry": 9.23,
@@ -22682,7 +22680,7 @@
     "scenery/offering_tables/offering_table_004#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 9.77,
           "rx": 12.14,
           "ry": 9.23,
@@ -22706,7 +22704,7 @@
     "scenery/offering_tables/offering_table_007#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.1,
           "rx": 24.91,
           "ry": 3.9,
@@ -22730,7 +22728,7 @@
     "scenery/offering_tables/offering_table_007#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.1,
           "rx": 24.91,
           "ry": 3.9,
@@ -22754,7 +22752,7 @@
     "scenery/offering_tables/offering_table_007#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.1,
           "rx": 24.91,
           "ry": 3.9,
@@ -22778,7 +22776,7 @@
     "scenery/offering_tables/offering_table_009#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 10.42,
           "rx": 23.09,
           "ry": 6.58,
@@ -22787,11 +22785,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 10.0
+              "ay": 10
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 10.0
+              "ax": 0,
+              "ay": 10
             }
           }
         }
@@ -22802,7 +22800,7 @@
     "scenery/offering_tables/offering_table_009#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 10.42,
           "rx": 23.09,
           "ry": 6.58,
@@ -22811,11 +22809,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 10.0
+              "ay": 10
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 10.0
+              "ax": 0,
+              "ay": 10
             }
           }
         }
@@ -22826,7 +22824,7 @@
     "scenery/offering_tables/offering_table_009#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 10.42,
           "rx": 23.09,
           "ry": 6.58,
@@ -22835,11 +22833,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 10.0
+              "ay": 10
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 10.0
+              "ax": 0,
+              "ay": 10
             }
           }
         }
@@ -22850,7 +22848,7 @@
     "scenery/offering_tables/offering_table_009#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 11.86,
           "rx": 23.66,
           "ry": 6.14,
@@ -22858,11 +22856,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 10.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 10.5
             }
           }
@@ -22874,7 +22872,7 @@
     "scenery/offering_tables/offering_table_009#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 10.42,
           "rx": 23.09,
           "ry": 6.58,
@@ -22883,11 +22881,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 10.0
+              "ay": 10
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 10.0
+              "ax": 0,
+              "ay": 10
             }
           }
         }
@@ -22898,7 +22896,7 @@
     "scenery/offering_tables/offering_table_009#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 10.42,
           "rx": 23.09,
           "ry": 6.58,
@@ -22907,11 +22905,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 10.0
+              "ay": 10
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 10.0
+              "ax": 0,
+              "ay": 10
             }
           }
         }
@@ -22922,7 +22920,7 @@
     "scenery/offering_tables/offering_table_012#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 11.74,
           "rx": 5.66,
           "ry": 13.26,
@@ -22930,11 +22928,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 3.0,
+              "ax": 3,
               "ay": 9.5
             },
             "south-west": {
-              "ax": -4.0,
+              "ax": -4,
               "ay": 9.5
             }
           }
@@ -22946,7 +22944,7 @@
     "scenery/offering_tables/offering_table_012#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 14.4,
           "rx": 12.04,
           "ry": 10.6,
@@ -22970,7 +22968,7 @@
     "scenery/offering_tables/offering_table_012#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 14.4,
           "rx": 12.04,
           "ry": 10.6,
@@ -22994,7 +22992,7 @@
     "scenery/offering_tables/offering_table_012#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 15.58,
           "rx": 10.3,
           "ry": 9.42,
@@ -23003,7 +23001,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 4.0
+              "ay": 4
             },
             "south-west": {
               "ax": 0.5,
@@ -23018,7 +23016,7 @@
     "scenery/offering_tables/offering_table_016#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.06,
           "rx": 21.99,
           "ry": 3.94,
@@ -23042,7 +23040,7 @@
     "scenery/offering_tables/offering_table_016#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.06,
           "rx": 21.99,
           "ry": 3.94,
@@ -23090,7 +23088,7 @@
     "scenery/offering_tables/offering_table_016#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.06,
           "rx": 21.99,
           "ry": 3.94,
@@ -23114,7 +23112,7 @@
     "scenery/offering_tables/offering_table_016#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.06,
           "rx": 21.99,
           "ry": 3.94,
@@ -23138,7 +23136,7 @@
     "scenery/offering_tables/offering_table_018#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 12.02,
           "rx": 21.19,
           "ry": 4.98,
@@ -23146,11 +23144,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 3.5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 7.5
             }
           }
@@ -23162,7 +23160,7 @@
     "scenery/offering_tables/offering_table_018#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.27,
           "rx": 24.56,
           "ry": 3.73,
@@ -23170,11 +23168,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 3.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 3.5
             }
           }
@@ -23194,11 +23192,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 15.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 15.5
             }
           }
@@ -23210,9 +23208,9 @@
     "scenery/offering_tables/offering_table_018#not_lit_5": {
       "boxes": [
         {
-          "ax": -4.0,
+          "ax": -4,
           "ay": 14.87,
-          "rx": 23.0,
+          "rx": 23,
           "ry": 5.13,
           "rot": 0,
           "shape": "rect",
@@ -23234,7 +23232,7 @@
     "scenery/offering_tables/offering_table_018#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.27,
           "rx": 24.56,
           "ry": 3.73,
@@ -23242,11 +23240,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 3.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 3.5
             }
           }
@@ -23258,7 +23256,7 @@
     "scenery/offering_tables/offering_table_020#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 14.31,
           "rx": 19.68,
           "ry": 5.69,
@@ -23282,7 +23280,7 @@
     "scenery/offering_tables/offering_table_020#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 14.31,
           "rx": 19.68,
           "ry": 5.69,
@@ -23314,12 +23312,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
-              "ay": 1.0
+              "ax": -1,
+              "ay": 1
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 1.0
+              "ax": 0,
+              "ay": 1
             }
           }
         }
@@ -23330,7 +23328,7 @@
     "scenery/offering_tables/offering_table_020#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 14.31,
           "rx": 19.68,
           "ry": 5.69,
@@ -23354,9 +23352,9 @@
     "scenery/overgrown_archways/overgrown_archway_001#not_lit_1": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 50.31,
-          "rx": 65.0,
+          "rx": 65,
           "ry": 20.69,
           "rot": 0,
           "shape": "rect"
@@ -23368,9 +23366,9 @@
     "scenery/overgrown_archways/overgrown_archway_001#not_lit_3": {
       "boxes": [
         {
-          "ax": -49.0,
+          "ax": -49,
           "ay": 68.82,
-          "rx": 10.0,
+          "rx": 10,
           "ry": 3.18,
           "rot": 0,
           "shape": "rect"
@@ -23382,9 +23380,9 @@
     "scenery/overgrown_archways/overgrown_archway_001#not_lit_4": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 50.31,
-          "rx": 65.0,
+          "rx": 65,
           "ry": 20.69,
           "rot": 0,
           "shape": "rect"
@@ -23396,9 +23394,9 @@
     "scenery/overgrown_archways/overgrown_archway_001#lit_2": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 50.31,
-          "rx": 65.0,
+          "rx": 65,
           "ry": 20.69,
           "rot": 0,
           "shape": "rect"
@@ -23410,7 +23408,7 @@
     "scenery/overgrown_archways/overgrown_archway_002#lit_1": {
       "boxes": [
         {
-          "ax": -50.0,
+          "ax": -50,
           "ay": 61.75,
           "rx": 16.36,
           "ry": 6.25,
@@ -23418,12 +23416,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -31.0,
-              "ay": 69.0
+              "ax": -31,
+              "ay": 69
             },
             "south-west": {
-              "ax": 32.0,
-              "ay": 69.0
+              "ax": 32,
+              "ay": 69
             }
           }
         }
@@ -23434,7 +23432,7 @@
     "scenery/overgrown_archways/overgrown_archway_002#not_lit_3": {
       "boxes": [
         {
-          "ax": -50.0,
+          "ax": -50,
           "ay": 61.75,
           "rx": 16.36,
           "ry": 6.25,
@@ -23442,12 +23440,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -31.0,
-              "ay": 69.0
+              "ax": -31,
+              "ay": 69
             },
             "south-west": {
-              "ax": 32.0,
-              "ay": 69.0
+              "ax": 32,
+              "ay": 69
             }
           }
         }
@@ -24460,9 +24458,9 @@
     "scenery/rope_swings/rope_swing_001#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 35.36,
-          "rx": 46.0,
+          "rx": 46,
           "ry": 14.64,
           "rot": 0,
           "shape": "rect"
@@ -24474,9 +24472,9 @@
     "scenery/rope_swings/rope_swing_002#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 31.77,
-          "rx": 51.0,
+          "rx": 51,
           "ry": 16.23,
           "rot": 0,
           "shape": "rect"
@@ -24488,9 +24486,9 @@
     "scenery/rope_swings/rope_swing_002#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 30.81,
-          "rx": 54.0,
+          "rx": 54,
           "ry": 17.19,
           "rot": 0,
           "shape": "rect"
@@ -24502,9 +24500,9 @@
     "scenery/rope_swings/rope_swing_002#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 32.09,
-          "rx": 50.0,
+          "rx": 50,
           "ry": 15.91,
           "rot": 0,
           "shape": "rect"
@@ -24516,9 +24514,9 @@
     "scenery/rope_swings/rope_swing_002#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 31.09,
-          "rx": 50.0,
+          "rx": 50,
           "ry": 15.91,
           "rot": 0,
           "shape": "rect"
@@ -24530,7 +24528,7 @@
     "scenery/ruined_arches/ruined_arch_001#not_lit_3": {
       "boxes": [
         {
-          "ax": 32.0,
+          "ax": 32,
           "ay": 66.35,
           "rx": 34.53,
           "ry": 12.65,
@@ -24538,11 +24536,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -14.0,
+              "ax": -14,
               "ay": 67.5
             },
             "south-west": {
-              "ax": 29.0,
+              "ax": 29,
               "ay": 72.5
             }
           }
@@ -24567,7 +24565,7 @@
             },
             "south-west": {
               "ax": 7.5,
-              "ay": 63.0
+              "ay": 63
             }
           }
         }
@@ -24586,12 +24584,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -14.0,
+              "ax": -14,
               "ay": 67.5
             },
             "south-west": {
               "ax": 29.5,
-              "ay": 72.0
+              "ay": 72
             }
           }
         }
@@ -24610,12 +24608,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -13.0,
-              "ay": 68.0
+              "ax": -13,
+              "ay": 68
             },
             "south-west": {
               "ax": 29.5,
-              "ay": 74.0
+              "ay": 74
             }
           }
         }
@@ -24635,7 +24633,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -27.5,
-              "ay": 67.0
+              "ay": 67
             }
           }
         }
@@ -24646,7 +24644,7 @@
     "scenery/ruined_arches/ruined_arch_002#not_lit_3": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 63.44,
           "rx": 19.87,
           "ry": 13.56,
@@ -24655,7 +24653,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -27.5,
-              "ay": 67.0
+              "ay": 67
             }
           }
         }
@@ -24680,7 +24678,7 @@
     "scenery/rusted_machines/rusted_machine_001#not_lit_2": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 46.84,
           "rx": 40.15,
           "ry": 13.16,
@@ -24688,12 +24686,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 2.0,
-              "ay": 32.0
+              "ax": 2,
+              "ay": 32
             },
             "south-west": {
               "ax": -3.5,
-              "ay": 32.0
+              "ay": 32
             }
           }
         }
@@ -24704,9 +24702,9 @@
     "scenery/rusted_machines/rusted_machine_001#not_lit_3": {
       "boxes": [
         {
-          "ax": 1.0,
+          "ax": 1,
           "ay": 42.95,
-          "rx": 41.0,
+          "rx": 41,
           "ry": 13.05,
           "rot": 0,
           "shape": "rect"
@@ -24718,7 +24716,7 @@
     "scenery/rusted_machines/rusted_machine_001#not_lit_4": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 41.98,
           "rx": 41.85,
           "ry": 15.02,
@@ -24727,10 +24725,10 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 30.0
+              "ay": 30
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 29.5
             }
           }
@@ -24751,11 +24749,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -2.5,
-              "ay": 31.0
+              "ay": 31
             },
             "south-west": {
-              "ax": 1.0,
-              "ay": 31.0
+              "ax": 1,
+              "ay": 31
             }
           }
         }
@@ -24789,7 +24787,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -7.5,
-              "ay": 41.0
+              "ay": 41
             },
             "south-west": {
               "ax": 0.5,
@@ -24817,7 +24815,7 @@
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 33.0
+              "ay": 33
             }
           }
         }
@@ -24861,11 +24859,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 9.5,
-              "ay": 40.0
+              "ay": 40
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 33.0
+              "ay": 33
             }
           }
         }
@@ -25279,9 +25277,9 @@
     "scenery/shipwreck_prows/shipwreck_prow_002#not_lit_3": {
       "boxes": [
         {
-          "ax": -10.0,
+          "ax": -10,
           "ay": 57.86,
-          "rx": 13.0,
+          "rx": 13,
           "ry": 4.14,
           "rot": 0,
           "shape": "rect"
@@ -25293,9 +25291,9 @@
     "scenery/shipwreck_prows/shipwreck_prow_002#not_lit_4": {
       "boxes": [
         {
-          "ax": -10.0,
+          "ax": -10,
           "ay": 57.86,
-          "rx": 13.0,
+          "rx": 13,
           "ry": 4.14,
           "rot": 0,
           "shape": "rect"
@@ -25307,9 +25305,9 @@
     "scenery/shipwreck_prows/shipwreck_prow_002#not_lit_5": {
       "boxes": [
         {
-          "ax": -10.0,
+          "ax": -10,
           "ay": 57.86,
-          "rx": 13.0,
+          "rx": 13,
           "ry": 4.14,
           "rot": 0,
           "shape": "rect"
@@ -25321,9 +25319,9 @@
     "scenery/shipwreck_prows/shipwreck_prow_002#not_lit_6": {
       "boxes": [
         {
-          "ax": -10.0,
+          "ax": -10,
           "ay": 57.86,
-          "rx": 13.0,
+          "rx": 13,
           "ry": 4.14,
           "rot": 0,
           "shape": "rect"
@@ -31054,7 +31052,7 @@
     "scenery/tables/table_003#not_lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 13.79,
           "rx": 17.16,
           "ry": 5.21,
@@ -31062,12 +31060,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
-              "ay": 11.0
+              "ax": -1,
+              "ay": 11
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             }
           }
         }
@@ -31087,11 +31085,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -4.5,
-              "ay": 12.0
+              "ay": 12
             },
             "south-west": {
               "ax": 3.5,
-              "ay": 12.0
+              "ay": 12
             }
           }
         }
@@ -31110,11 +31108,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -3.0,
+              "ax": -3,
               "ay": 12.5
             },
             "south-west": {
-              "ax": 2.0,
+              "ax": 2,
               "ay": 12.5
             }
           }
@@ -31150,7 +31148,7 @@
     "scenery/tables/table_005#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 23.28,
           "rx": 21.78,
           "ry": 2,
@@ -31158,12 +31156,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             }
           }
         }
@@ -31174,7 +31172,7 @@
     "scenery/tables/table_005#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 23.28,
           "rx": 21.78,
           "ry": 2,
@@ -31182,12 +31180,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             }
           }
         }
@@ -31198,7 +31196,7 @@
     "scenery/tables/table_005#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.08,
           "rx": 15.65,
           "ry": 5.92,
@@ -31206,12 +31204,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
-              "ay": 10.0
+              "ax": 1,
+              "ay": 10
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 10.0
+              "ax": -1,
+              "ay": 10
             }
           }
         }
@@ -31236,7 +31234,7 @@
     "scenery/tables/table_005#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 23.28,
           "rx": 21.78,
           "ry": 2,
@@ -31244,12 +31242,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             }
           }
         }
@@ -31260,7 +31258,7 @@
     "scenery/tables/table_005#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 23.28,
           "rx": 21.78,
           "ry": 2,
@@ -31268,12 +31266,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 11.0
+              "ax": 0,
+              "ay": 11
             }
           }
         }
@@ -31284,7 +31282,7 @@
     "scenery/tables/table_007#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.55,
           "rx": 17.03,
           "ry": 4.45,
@@ -31296,7 +31294,7 @@
               "ay": 2.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 2.5
             }
           }
@@ -31308,7 +31306,7 @@
     "scenery/tables/table_007#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.55,
           "rx": 17.03,
           "ry": 4.45,
@@ -31320,7 +31318,7 @@
               "ay": 2.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 2.5
             }
           }
@@ -31332,7 +31330,7 @@
     "scenery/tables/table_007#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.46,
           "rx": 22.11,
           "ry": 7.54,
@@ -31340,12 +31338,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 13.0
+              "ax": 0,
+              "ay": 13
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 13.0
+              "ax": 0,
+              "ay": 13
             }
           }
         }
@@ -31356,7 +31354,7 @@
     "scenery/tables/table_007#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 14.46,
           "rx": 22.11,
           "ry": 7.54,
@@ -31364,12 +31362,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 13.0
+              "ax": 0,
+              "ay": 13
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 13.0
+              "ax": 0,
+              "ay": 13
             }
           }
         }
@@ -31380,7 +31378,7 @@
     "scenery/tables/table_007#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.55,
           "rx": 17.03,
           "ry": 4.45,
@@ -31392,7 +31390,7 @@
               "ay": 2.5
             },
             "south-west": {
-              "ax": 0.0,
+              "ax": 0,
               "ay": 2.5
             }
           }
@@ -31404,7 +31402,7 @@
     "scenery/tables/table_008#lit_1": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 18.24,
           "rx": 15.3,
           "ry": 5.76,
@@ -31413,7 +31411,7 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 17.0
+              "ay": 17
             }
           }
         }
@@ -31472,7 +31470,7 @@
     "scenery/tables/table_008#lit_3": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 16.59,
           "rx": 18.83,
           "ry": 7.41,
@@ -31481,11 +31479,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 16.0
+              "ay": 16
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 16.0
+              "ay": 16
             }
           }
         }
@@ -31496,7 +31494,7 @@
     "scenery/tables/table_008#lit_4": {
       "boxes": [
         {
-          "ax": -1.0,
+          "ax": -1,
           "ay": 16.59,
           "rx": 18.83,
           "ry": 7.41,
@@ -31505,11 +31503,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 16.0
+              "ay": 16
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 16.0
+              "ay": 16
             }
           }
         }
@@ -31520,7 +31518,7 @@
     "scenery/tables/table_009#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.6,
           "rx": 16.05,
           "ry": 5.4,
@@ -31544,7 +31542,7 @@
     "scenery/tables/table_009#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.95,
           "rx": 23.83,
           "ry": 9.05,
@@ -31568,7 +31566,7 @@
     "scenery/tables/table_009#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.58,
           "rx": 16.71,
           "ry": 6.42,
@@ -31577,11 +31575,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 1.0
+              "ay": 1
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 1.0
+              "ay": 1
             }
           }
         }
@@ -31592,7 +31590,7 @@
     "scenery/tables/table_009#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.6,
           "rx": 16.05,
           "ry": 5.4,
@@ -31616,7 +31614,7 @@
     "scenery/tables/table_009#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.95,
           "rx": 16.81,
           "ry": 5.05,
@@ -31625,11 +31623,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 2.0
+              "ay": 2
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 2.0
+              "ay": 2
             }
           }
         }
@@ -31640,7 +31638,7 @@
     "scenery/tables/table_010#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.62,
           "rx": 13.61,
           "ry": 6.38,
@@ -31649,11 +31647,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 4.0
+              "ay": 4
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 4.0
+              "ax": 0,
+              "ay": 4
             }
           }
         }
@@ -31664,7 +31662,7 @@
     "scenery/tables/table_010#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.62,
           "rx": 13.61,
           "ry": 6.38,
@@ -31673,11 +31671,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 4.0
+              "ay": 4
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 4.0
+              "ax": 0,
+              "ay": 4
             }
           }
         }
@@ -31688,7 +31686,7 @@
     "scenery/tables/table_010#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.54,
           "rx": 13.79,
           "ry": 6.46,
@@ -31697,11 +31695,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 4.0
+              "ay": 4
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 4.0
+              "ay": 4
             }
           }
         }
@@ -31712,7 +31710,7 @@
     "scenery/tables/table_010#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.37,
           "rx": 14.14,
           "ry": 6.63,
@@ -31720,12 +31718,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 4.0
+              "ax": 0,
+              "ay": 4
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 4.0
+              "ax": 0,
+              "ay": 4
             }
           }
         }
@@ -31736,7 +31734,7 @@
     "scenery/tables/table_010#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.14,
           "rx": 20.03,
           "ry": 5.86,
@@ -31744,11 +31742,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -4.0,
+              "ax": -4,
               "ay": 10.5
             },
             "south-west": {
-              "ax": 3.0,
+              "ax": 3,
               "ay": 10.5
             }
           }
@@ -31760,7 +31758,7 @@
     "scenery/tables/table_011#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.11,
           "rx": 10.04,
           "ry": 7.89,
@@ -31773,7 +31771,7 @@
             },
             "south-west": {
               "ax": -2.5,
-              "ay": 12.0
+              "ay": 12
             }
           }
         }
@@ -31784,7 +31782,7 @@
     "scenery/tables/table_011#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.11,
           "rx": 10.04,
           "ry": 7.89,
@@ -31797,7 +31795,7 @@
             },
             "south-west": {
               "ax": -2.5,
-              "ay": 12.0
+              "ay": 12
             }
           }
         }
@@ -31816,11 +31814,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 3.0,
+              "ax": 3,
               "ay": 11.5
             },
             "south-west": {
-              "ax": -4.0,
+              "ax": -4,
               "ay": 11.5
             }
           }
@@ -31832,7 +31830,7 @@
     "scenery/tables/table_011#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.11,
           "rx": 10.04,
           "ry": 7.89,
@@ -31845,7 +31843,7 @@
             },
             "south-west": {
               "ax": -2.5,
-              "ay": 12.0
+              "ay": 12
             }
           }
         }
@@ -31856,7 +31854,7 @@
     "scenery/tables/table_012#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 14.28,
           "rx": 16.1,
           "ry": 4.72,
@@ -31865,11 +31863,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 12.0
+              "ay": 12
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 12.0
+              "ay": 12
             }
           }
         }
@@ -31880,7 +31878,7 @@
     "scenery/tables/table_012#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 14.28,
           "rx": 16.1,
           "ry": 4.72,
@@ -31889,11 +31887,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 12.0
+              "ay": 12
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 12.0
+              "ay": 12
             }
           }
         }
@@ -31904,7 +31902,7 @@
     "scenery/tables/table_012#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 14.28,
           "rx": 16.1,
           "ry": 4.72,
@@ -31913,11 +31911,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 12.0
+              "ay": 12
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 12.0
+              "ay": 12
             }
           }
         }
@@ -31928,7 +31926,7 @@
     "scenery/tables/table_012#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 14.28,
           "rx": 16.1,
           "ry": 4.72,
@@ -31937,11 +31935,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 12.0
+              "ay": 12
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 12.0
+              "ay": 12
             }
           }
         }
@@ -31952,7 +31950,7 @@
     "scenery/tables/table_014#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 21.66,
           "rx": 26.12,
           "ry": 2.34,
@@ -31960,12 +31958,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -4.0,
-              "ay": 9.0
+              "ax": -4,
+              "ay": 9
             },
             "south-west": {
-              "ax": 4.0,
-              "ay": 9.0
+              "ax": 4,
+              "ay": 9
             }
           }
         }
@@ -31976,7 +31974,7 @@
     "scenery/tables/table_014#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.28,
           "rx": 21.39,
           "ry": 4.72,
@@ -31988,8 +31986,8 @@
               "ay": 11.5
             },
             "south-west": {
-              "ax": 3.0,
-              "ay": 11.0
+              "ax": 3,
+              "ay": 11
             }
           }
         }
@@ -32000,7 +31998,7 @@
     "scenery/tables/table_014#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 22.84,
           "rx": 25.1,
           "ry": 2,
@@ -32024,7 +32022,7 @@
     "scenery/tables/table_014#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.22,
           "rx": 21.64,
           "ry": 3.78,
@@ -32032,11 +32030,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -4.0,
+              "ax": -4,
               "ay": 13.5
             },
             "south-west": {
-              "ax": 4.0,
+              "ax": 4,
               "ay": 13.5
             }
           }
@@ -32048,7 +32046,7 @@
     "scenery/tables/table_016#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.66,
           "rx": 18.31,
           "ry": 4.34,
@@ -32057,11 +32055,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 6.0
+              "ay": 6
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 6.0
+              "ay": 6
             }
           }
         }
@@ -32072,7 +32070,7 @@
     "scenery/tables/table_016#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.67,
           "rx": 22.56,
           "ry": 6.33,
@@ -32081,11 +32079,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -3.5,
-              "ay": 15.0
+              "ay": 15
             },
             "south-west": {
               "ax": 3.5,
-              "ay": 15.0
+              "ay": 15
             }
           }
         }
@@ -32096,7 +32094,7 @@
     "scenery/tables/table_016#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.66,
           "rx": 18.31,
           "ry": 4.34,
@@ -32105,11 +32103,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 6.0
+              "ay": 6
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 6.0
+              "ay": 6
             }
           }
         }
@@ -32120,7 +32118,7 @@
     "scenery/tables/table_016#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.83,
           "rx": 20.08,
           "ry": 5.17,
@@ -32128,12 +32126,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 0.0,
-              "ay": 6.0
+              "ax": 0,
+              "ay": 6
             },
             "south-west": {
-              "ax": 0.0,
-              "ay": 6.0
+              "ax": 0,
+              "ay": 6
             }
           }
         }
@@ -46125,10 +46123,10 @@
     "scenery/wall_hangings/wall_hanging_009#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 14.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 14,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -46139,9 +46137,9 @@
     "scenery/wall_hangings/wall_hanging_009#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.36,
-          "rx": 24.0,
+          "rx": 24,
           "ry": 7.64,
           "rot": 0,
           "shape": "rect"
@@ -46153,10 +46151,10 @@
     "scenery/wall_hangings/wall_hanging_009#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 14.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 14,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -46167,9 +46165,9 @@
     "scenery/wall_hangings/wall_hanging_009#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 12.95,
-          "rx": 19.0,
+          "rx": 19,
           "ry": 6.05,
           "rot": 0,
           "shape": "rect"
@@ -46181,10 +46179,10 @@
     "scenery/wall_hangings/wall_hanging_009#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 14.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 14,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -46195,9 +46193,9 @@
     "scenery/wall_hangings/wall_hanging_010#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 22.73,
-          "rx": 4.0,
+          "rx": 4,
           "ry": 2,
           "rot": 0,
           "shape": "rect"
@@ -46209,9 +46207,9 @@
     "scenery/wall_hangings/wall_hanging_010#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 22.73,
-          "rx": 4.0,
+          "rx": 4,
           "ry": 2,
           "rot": 0,
           "shape": "rect"
@@ -46247,9 +46245,9 @@
     "scenery/wall_hangings/wall_hanging_010#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 22.73,
-          "rx": 4.0,
+          "rx": 4,
           "ry": 2,
           "rot": 0,
           "shape": "rect"
@@ -46261,7 +46259,7 @@
     "scenery/wall_hangings/wall_hanging_011#not_lit_1": {
       "boxes": [
         {
-          "ax": 2.0,
+          "ax": 2,
           "ay": 25.95,
           "rx": 9.78,
           "ry": 2,
@@ -46273,7 +46271,7 @@
               "ay": 20.5
             },
             "south-west": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 20.5
             }
           }
@@ -46285,20 +46283,20 @@
     "scenery/wall_hangings/wall_hanging_011#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 25.73,
-          "rx": 4.0,
+          "rx": 4,
           "ry": 2,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 19.0
+              "ay": 19
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 19.0
+              "ay": 19
             }
           }
         }
@@ -46309,7 +46307,7 @@
     "scenery/wall_hangings/wall_hanging_011#not_lit_3": {
       "boxes": [
         {
-          "ax": -3.0,
+          "ax": -3,
           "ay": 25.58,
           "rx": 9.69,
           "ry": 2.42,
@@ -46333,7 +46331,7 @@
     "scenery/wall_hangings/wall_hanging_011#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 22.91,
           "rx": 12.49,
           "ry": 4.09,
@@ -46341,12 +46339,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 12.5
             },
             "south-west": {
-              "ax": -1.0,
-              "ay": 13.0
+              "ax": -1,
+              "ay": 13
             }
           }
         }
@@ -46357,7 +46355,7 @@
     "scenery/wall_hangings/wall_hanging_012#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.94,
           "rx": 16.07,
           "ry": 5.06,
@@ -46365,11 +46363,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -3.0,
-              "ay": 16.0
+              "ax": -3,
+              "ay": 16
             },
             "south-west": {
-              "ax": 3.0,
+              "ax": 3,
               "ay": 16.5
             }
           }
@@ -46403,12 +46401,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
-              "ay": 14.0
+              "ax": -1,
+              "ay": 14
             },
             "south-west": {
-              "ax": 1.0,
-              "ay": 14.0
+              "ax": 1,
+              "ay": 14
             }
           }
         }
@@ -46419,7 +46417,7 @@
     "scenery/wall_hangings/wall_hanging_014#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.72,
           "rx": 14.9,
           "ry": 6.28,
@@ -46427,11 +46425,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 11.5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 11.5
             }
           }
@@ -46443,7 +46441,7 @@
     "scenery/wall_hangings/wall_hanging_014#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.27,
           "rx": 16.76,
           "ry": 5.73,
@@ -46467,7 +46465,7 @@
     "scenery/wall_hangings/wall_hanging_014#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.72,
           "rx": 14.9,
           "ry": 6.28,
@@ -46475,11 +46473,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -1.0,
+              "ax": -1,
               "ay": 11.5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 11.5
             }
           }
@@ -46567,11 +46565,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -2.0,
+              "ax": -2,
               "ay": 10.5
             },
             "south-west": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 10.5
             }
           }
@@ -46583,7 +46581,7 @@
     "scenery/wall_hangings/wall_hanging_017#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.04,
           "rx": 26.55,
           "ry": 3.96,
@@ -46592,11 +46590,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 18.0
+              "ay": 18
             },
             "south-west": {
-              "ax": 1.0,
-              "ay": 18.0
+              "ax": 1,
+              "ay": 18
             }
           }
         }
@@ -46607,7 +46605,7 @@
     "scenery/wall_hangings/wall_hanging_017#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.04,
           "rx": 26.55,
           "ry": 3.96,
@@ -46616,11 +46614,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 18.0
+              "ay": 18
             },
             "south-west": {
-              "ax": 1.0,
-              "ay": 18.0
+              "ax": 1,
+              "ay": 18
             }
           }
         }
@@ -46644,7 +46642,7 @@
     "scenery/wall_hangings/wall_hanging_017#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.04,
           "rx": 26.55,
           "ry": 3.96,
@@ -46653,11 +46651,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 18.0
+              "ay": 18
             },
             "south-west": {
-              "ax": 1.0,
-              "ay": 18.0
+              "ax": 1,
+              "ay": 18
             }
           }
         }
@@ -46668,7 +46666,7 @@
     "scenery/wall_hangings/wall_hanging_017#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 18.04,
           "rx": 26.55,
           "ry": 3.96,
@@ -46677,11 +46675,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 18.0
+              "ay": 18
             },
             "south-west": {
-              "ax": 1.0,
-              "ay": 18.0
+              "ax": 1,
+              "ay": 18
             }
           }
         }
@@ -46701,11 +46699,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 20.0
+              "ay": 20
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 20.0
+              "ay": 20
             }
           }
         }
@@ -46773,11 +46771,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 14.0
+              "ay": 14
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 14.0
+              "ay": 14
             }
           }
         }
@@ -46800,8 +46798,8 @@
               "ay": 12.5
             },
             "south-west": {
-              "ax": -2.0,
-              "ay": 15.0
+              "ax": -2,
+              "ay": 15
             }
           }
         }
@@ -46812,9 +46810,9 @@
     "scenery/washing_lines/washing_line_001#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.18,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.82,
           "rot": 0,
           "shape": "rect"
@@ -46826,9 +46824,9 @@
     "scenery/washing_lines/washing_line_001#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.18,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.82,
           "rot": 0,
           "shape": "rect"
@@ -46840,9 +46838,9 @@
     "scenery/washing_lines/washing_line_001#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.18,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.82,
           "rot": 0,
           "shape": "rect"
@@ -46854,9 +46852,9 @@
     "scenery/washing_lines/washing_line_001#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.18,
-          "rx": 56.0,
+          "rx": 56,
           "ry": 17.82,
           "rot": 0,
           "shape": "rect"
@@ -46910,9 +46908,9 @@
     "scenery/washing_lines/washing_line_007#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.72,
-          "rx": 48.0,
+          "rx": 48,
           "ry": 15.28,
           "rot": 0,
           "shape": "rect"
@@ -46924,9 +46922,9 @@
     "scenery/washing_lines/washing_line_007#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.72,
-          "rx": 48.0,
+          "rx": 48,
           "ry": 15.28,
           "rot": 0,
           "shape": "rect"
@@ -46938,9 +46936,9 @@
     "scenery/washing_lines/washing_line_007#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.72,
-          "rx": 48.0,
+          "rx": 48,
           "ry": 15.28,
           "rot": 0,
           "shape": "rect"
@@ -46952,9 +46950,9 @@
     "scenery/washing_lines/washing_line_007#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 20.72,
-          "rx": 48.0,
+          "rx": 48,
           "ry": 15.28,
           "rot": 0,
           "shape": "rect"
@@ -46966,9 +46964,9 @@
     "scenery/washing_lines/washing_line_007#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 21.09,
-          "rx": 50.0,
+          "rx": 50,
           "ry": 15.91,
           "rot": 0,
           "shape": "rect"
@@ -47022,7 +47020,7 @@
     "scenery/washing_lines/washing_line_009#not_lit_5": {
       "boxes": [
         {
-          "ax": -50.0,
+          "ax": -50,
           "ay": 39.61,
           "rx": 7.98,
           "ry": 3.39,
@@ -47030,12 +47028,12 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -35.0,
+              "ax": -35,
               "ay": 55.5
             },
             "south-west": {
               "ax": 36.5,
-              "ay": 56.0
+              "ay": 56
             }
           }
         }
@@ -47046,9 +47044,9 @@
     "scenery/washing_lines/washing_line_010#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.81,
-          "rx": 54.0,
+          "rx": 54,
           "ry": 17.19,
           "rot": 0,
           "shape": "rect"
@@ -47060,9 +47058,9 @@
     "scenery/washing_lines/washing_line_010#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.81,
-          "rx": 54.0,
+          "rx": 54,
           "ry": 17.19,
           "rot": 0,
           "shape": "rect"
@@ -47074,9 +47072,9 @@
     "scenery/washing_lines/washing_line_010#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.81,
-          "rx": 54.0,
+          "rx": 54,
           "ry": 17.19,
           "rot": 0,
           "shape": "rect"
@@ -47088,9 +47086,9 @@
     "scenery/washing_lines/washing_line_010#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.81,
-          "rx": 54.0,
+          "rx": 54,
           "ry": 17.19,
           "rot": 0,
           "shape": "rect"
@@ -49847,9 +49845,9 @@
     "scenery/windmills/windmill_009#not_lit_2": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 82.91,
-          "rx": 16.0,
+          "rx": 16,
           "ry": 5.09,
           "rot": 0,
           "shape": "rect"
@@ -49875,9 +49873,9 @@
     "scenery/windmills/windmill_009#not_lit_4": {
       "boxes": [
         {
-          "ax": -2.0,
+          "ax": -2,
           "ay": 81.63,
-          "rx": 20.0,
+          "rx": 20,
           "ry": 6.37,
           "rot": 0,
           "shape": "rect"
@@ -50122,16 +50120,16 @@
     "scenery/woodpiles/woodpile_001#not_lit_1": {
       "boxes": [
         {
-          "ax": -19.0,
+          "ax": -19,
           "ay": 14.38,
-          "rx": 12.0,
+          "rx": 12,
           "ry": 7.62,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-west": {
-              "ax": 5.0,
-              "ay": 14.0
+              "ax": 5,
+              "ay": 14
             }
           }
         }
@@ -50151,11 +50149,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 6.0
+              "ay": 6
             },
             "south-west": {
               "ax": 0.5,
-              "ay": 7.0
+              "ay": 7
             }
           }
         }
@@ -50166,15 +50164,15 @@
     "scenery/woodpiles/woodpile_001#not_lit_3": {
       "boxes": [
         {
-          "ax": -9.0,
+          "ax": -9,
           "ay": 27.09,
-          "rx": 6.0,
+          "rx": 6,
           "ry": 2,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-west": {
-              "ax": 19.0,
+              "ax": 19,
               "ay": 16.5
             }
           }
@@ -50186,7 +50184,7 @@
     "scenery/woodpiles/woodpile_001#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.63,
           "rx": 11.44,
           "ry": 11.37,
@@ -50198,8 +50196,8 @@
               "ay": 16.5
             },
             "south-west": {
-              "ax": 6.0,
-              "ay": 20.0
+              "ax": 6,
+              "ay": 20
             }
           }
         }
@@ -50210,9 +50208,9 @@
     "scenery/woodpiles/woodpile_008#not_lit_3": {
       "boxes": [
         {
-          "ax": 16.0,
+          "ax": 16,
           "ay": 22.77,
-          "rx": 7.0,
+          "rx": 7,
           "ry": 2.23,
           "rot": 0,
           "shape": "rect"
@@ -50224,7 +50222,7 @@
     "scenery/woodpiles/woodpile_008#not_lit_4": {
       "boxes": [
         {
-          "ax": 16.0,
+          "ax": 16,
           "ay": 22.56,
           "rx": 8.23,
           "ry": 2.44,
@@ -50233,11 +50231,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 17.5,
-              "ay": 22.0
+              "ay": 22
             },
             "south-west": {
               "ax": -17.5,
-              "ay": 22.0
+              "ay": 22
             }
           }
         }
@@ -50248,9 +50246,9 @@
     "scenery/woodpiles/woodpile_008#not_lit_5": {
       "boxes": [
         {
-          "ax": 16.0,
+          "ax": 16,
           "ay": 22.77,
-          "rx": 7.0,
+          "rx": 7,
           "ry": 2.23,
           "rot": 0,
           "shape": "rect"
@@ -50262,15 +50260,15 @@
     "scenery/woodpiles/woodpile_008#not_lit_6": {
       "boxes": [
         {
-          "ax": 16.0,
+          "ax": 16,
           "ay": 18.11,
-          "rx": 15.0,
+          "rx": 15,
           "ry": 6.89,
           "rot": 0,
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -6.0,
+              "ax": -6,
               "ay": 12.5
             }
           }
@@ -50282,7 +50280,7 @@
     "scenery/house_clutter/clutter_900#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.72,
           "rx": 27.6,
           "ry": 7.28,
@@ -50291,11 +50289,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -0.5,
-              "ay": 12.0
+              "ay": 12
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 12.0
+              "ay": 12
             }
           }
         }
@@ -50315,11 +50313,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 0.5,
-              "ay": 9.0
+              "ay": 9
             },
             "south-west": {
               "ax": -0.5,
-              "ay": 9.0
+              "ay": 9
             }
           }
         }
@@ -50378,10 +50376,10 @@
     "scenery/rugs_and_hides/rug_009#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 19.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 19,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -50392,10 +50390,10 @@
     "scenery/rugs_and_hides/rug_009#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 19.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 19,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -50406,10 +50404,10 @@
     "scenery/rugs_and_hides/rug_009#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 19.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 19,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -50420,10 +50418,10 @@
     "scenery/rugs_and_hides/rug_009#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 19.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 19,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -50434,10 +50432,10 @@
     "scenery/rugs_and_hides/rug_009#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 19.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 19,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -50448,7 +50446,7 @@
     "scenery/rugs_and_hides/rug_011#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.22,
           "rx": 22.64,
           "ry": 7.78,
@@ -50457,11 +50455,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 9.0
+              "ay": 9
             },
             "south-west": {
-              "ax": 1.0,
-              "ay": 9.0
+              "ax": 1,
+              "ay": 9
             }
           }
         }
@@ -50472,7 +50470,7 @@
     "scenery/rugs_and_hides/rug_011#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.22,
           "rx": 22.64,
           "ry": 7.78,
@@ -50481,11 +50479,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 9.0
+              "ay": 9
             },
             "south-west": {
-              "ax": 1.0,
-              "ay": 9.0
+              "ax": 1,
+              "ay": 9
             }
           }
         }
@@ -50496,7 +50494,7 @@
     "scenery/rugs_and_hides/rug_011#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 16.22,
           "rx": 22.64,
           "ry": 7.78,
@@ -50505,11 +50503,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -1.5,
-              "ay": 9.0
+              "ay": 9
             },
             "south-west": {
-              "ax": 1.0,
-              "ay": 9.0
+              "ax": 1,
+              "ay": 9
             }
           }
         }
@@ -50520,7 +50518,7 @@
     "scenery/rugs_and_hides/rug_012#lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 7.7,
           "rx": 4.86,
           "ry": 14.3,
@@ -50528,11 +50526,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -6.0,
+              "ax": -6,
               "ay": 7.5
             },
             "south-west": {
-              "ax": 6.0,
+              "ax": 6,
               "ay": 7.5
             }
           }
@@ -50544,7 +50542,7 @@
     "scenery/rugs_and_hides/rug_012#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 7.7,
           "rx": 4.86,
           "ry": 14.3,
@@ -50552,11 +50550,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -6.0,
+              "ax": -6,
               "ay": 7.5
             },
             "south-west": {
-              "ax": 6.0,
+              "ax": 6,
               "ay": 7.5
             }
           }
@@ -50568,7 +50566,7 @@
     "scenery/rugs_and_hides/rug_012#lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 7.7,
           "rx": 4.86,
           "ry": 14.3,
@@ -50576,11 +50574,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": -6.0,
+              "ax": -6,
               "ay": 7.5
             },
             "south-west": {
-              "ax": 6.0,
+              "ax": 6,
               "ay": 7.5
             }
           }
@@ -50592,7 +50590,7 @@
     "scenery/rugs_and_hides/rug_012#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 6.85,
           "rx": 5.16,
           "ry": 15.15,
@@ -50601,11 +50599,11 @@
           "pos_by_dir": {
             "south-east": {
               "ax": -4.5,
-              "ay": 8.0
+              "ay": 8
             },
             "south-west": {
               "ax": 4.5,
-              "ay": 8.0
+              "ay": 8
             }
           }
         }
@@ -50616,10 +50614,10 @@
     "scenery/rugs_and_hides/rug_014#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 21.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 21,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -50630,10 +50628,10 @@
     "scenery/rugs_and_hides/rug_014#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 21.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 21,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -50644,10 +50642,10 @@
     "scenery/rugs_and_hides/rug_014#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 21.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 21,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -50658,10 +50656,10 @@
     "scenery/rugs_and_hides/rug_014#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 21.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 21,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -50672,10 +50670,10 @@
     "scenery/rugs_and_hides/rug_014#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
-          "ay": 21.0,
-          "rx": 22.0,
-          "ry": 7.0,
+          "ax": 0,
+          "ay": 21,
+          "rx": 22,
+          "ry": 7,
           "rot": 0,
           "shape": "rect"
         }
@@ -50686,9 +50684,9 @@
     "scenery/rugs_and_hides/rug_016#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.32,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.68,
           "rot": 0,
           "shape": "rect"
@@ -50700,9 +50698,9 @@
     "scenery/rugs_and_hides/rug_016#lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 19.32,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.68,
           "rot": 0,
           "shape": "rect"
@@ -50728,9 +50726,9 @@
     "scenery/rugs_and_hides/rug_016#lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 17.32,
-          "rx": 21.0,
+          "rx": 21,
           "ry": 6.68,
           "rot": 0,
           "shape": "rect"
@@ -50742,7 +50740,7 @@
     "scenery/rugs_and_hides/rug_017#not_lit_1": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 7.52,
           "rx": 13.67,
           "ry": 13.48,
@@ -50750,11 +50748,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 2.5
             },
             "south-west": {
-              "ax": -2.0,
+              "ax": -2,
               "ay": 2.5
             }
           }
@@ -50766,7 +50764,7 @@
     "scenery/rugs_and_hides/rug_017#not_lit_2": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 7.52,
           "rx": 13.67,
           "ry": 13.48,
@@ -50774,11 +50772,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 2.5
             },
             "south-west": {
-              "ax": -2.0,
+              "ax": -2,
               "ay": 2.5
             }
           }
@@ -50790,7 +50788,7 @@
     "scenery/rugs_and_hides/rug_017#not_lit_3": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 7.78,
           "rx": 13.87,
           "ry": 13.22,
@@ -50799,10 +50797,10 @@
           "pos_by_dir": {
             "south-east": {
               "ax": 1.5,
-              "ay": 3.0
+              "ay": 3
             },
             "south-west": {
-              "ax": -2.0,
+              "ax": -2,
               "ay": 2.5
             }
           }
@@ -50814,7 +50812,7 @@
     "scenery/rugs_and_hides/rug_017#not_lit_4": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 7.52,
           "rx": 13.67,
           "ry": 13.48,
@@ -50822,11 +50820,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 2.5
             },
             "south-west": {
-              "ax": -2.0,
+              "ax": -2,
               "ay": 2.5
             }
           }
@@ -50838,7 +50836,7 @@
     "scenery/rugs_and_hides/rug_017#not_lit_5": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 7.52,
           "rx": 13.67,
           "ry": 13.48,
@@ -50846,11 +50844,11 @@
           "shape": "rect",
           "pos_by_dir": {
             "south-east": {
-              "ax": 1.0,
+              "ax": 1,
               "ay": 2.5
             },
             "south-west": {
-              "ax": -2.0,
+              "ax": -2,
               "ay": 2.5
             }
           }
@@ -50862,9 +50860,9 @@
     "scenery/rugs_and_hides/rug_017#not_lit_6": {
       "boxes": [
         {
-          "ax": 0.0,
+          "ax": 0,
           "ay": 13.72,
-          "rx": 26.0,
+          "rx": 26,
           "ry": 8.28,
           "rot": 0,
           "shape": "rect"
