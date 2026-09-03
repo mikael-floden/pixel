@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "dark_mud",
+  "flavour": "detail",
+  "index": 102,
+  "seed": 61542,
+  "prompt": "dark mud, an earthworm in the middle, dark mud all around the edge",
+  "palette_top": "#514137",
+  "tile_id": "76a8136f-0c66-4c25-badf-feceaff1667c",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:06:13+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 21,
+        "dominant_share": 0.2851,
+        "px": 926
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.2718,
+        "px": 942
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.323,
+        "px": 935
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.3237,
+        "px": 933
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.2727,
+        "px": 935
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.3337,
+        "px": 938
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.2291,
+        "px": 943
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.254,
+        "px": 933
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.276,
+        "px": 942
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.1645,
+        "px": 930
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.2534,
+        "px": 943
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.3714,
+        "px": 937
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.264,
+        "px": 928
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.3079,
+        "px": 929
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.3557,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.1762,
+        "px": 931
+      }
+    ],
+    "mean_colours": 21.94,
+    "mean_dominant_share": 0.2789
+  },
+  "motif": "an earthworm",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

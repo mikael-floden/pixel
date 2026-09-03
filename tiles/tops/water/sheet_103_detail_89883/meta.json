@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "water",
+  "flavour": "detail",
+  "index": 103,
+  "seed": 89883,
+  "prompt": "water, a fish shadow in the middle, water all around the edge",
+  "palette_top": "#7eb7c7",
+  "tile_id": "956080dd-90f5-4cc2-bc4f-95acc3e0cdfe",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:10:34+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 6,
+        "dominant_share": 0.7885,
+        "px": 922
+      },
+      {
+        "colours": 6,
+        "dominant_share": 0.7668,
+        "px": 922
+      },
+      {
+        "colours": 6,
+        "dominant_share": 0.7885,
+        "px": 922
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.7505,
+        "px": 922
+      },
+      {
+        "colours": 7,
+        "dominant_share": 0.7842,
+        "px": 922
+      },
+      {
+        "colours": 7,
+        "dominant_share": 0.692,
+        "px": 922
+      },
+      {
+        "colours": 6,
+        "dominant_share": 0.7473,
+        "px": 922
+      },
+      {
+        "colours": 5,
+        "dominant_share": 0.7473,
+        "px": 922
+      },
+      {
+        "colours": 6,
+        "dominant_share": 0.7495,
+        "px": 922
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.808,
+        "px": 922
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.7169,
+        "px": 922
+      },
+      {
+        "colours": 7,
+        "dominant_share": 0.756,
+        "px": 922
+      },
+      {
+        "colours": 5,
+        "dominant_share": 0.7809,
+        "px": 922
+      },
+      {
+        "colours": 6,
+        "dominant_share": 0.705,
+        "px": 922
+      },
+      {
+        "colours": 6,
+        "dominant_share": 0.7603,
+        "px": 922
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.769,
+        "px": 922
+      }
+    ],
+    "mean_colours": 6.62,
+    "mean_dominant_share": 0.7569
+  },
+  "motif": "a fish shadow",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

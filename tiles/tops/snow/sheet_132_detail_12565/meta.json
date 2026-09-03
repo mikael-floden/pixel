@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "snow",
+  "flavour": "detail",
+  "index": 132,
+  "seed": 12565,
+  "prompt": "snow, a scattering of ash in the middle, snow all around the edge",
+  "palette_top": "#ebf4f6",
+  "tile_id": "eeab63b6-5abe-4c82-ade0-198124ea43e9",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:00:22+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 17,
+        "dominant_share": 0.5575,
+        "px": 922
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4892,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5542,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.5347,
+        "px": 922
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.3818,
+        "px": 922
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5249,
+        "px": 922
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.5683,
+        "px": 922
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.4729,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5575,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5976,
+        "px": 922
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2495,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5835,
+        "px": 922
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5954,
+        "px": 922
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3547,
+        "px": 922
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.5336,
+        "px": 922
+      },
+      {
+        "colours": 6,
+        "dominant_share": 0.7289,
+        "px": 922
+      }
+    ],
+    "mean_colours": 16.75,
+    "mean_dominant_share": 0.5178
+  },
+  "motif": "a scattering of ash",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}
