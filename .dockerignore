@@ -9,6 +9,12 @@
 # 97 MB measured 2026-08-22. foley/*/pool stays IN: assigned takes live there
 # (thunder__cand07..17) and the engine's take lookup searches it.
 games2/composer/music/pool
+# The maintainer's hand-drawn SOURCE art (5.6 MB): build INPUTS for the bake
+# scripts, which are run offline and commit their output — the Dockerfile
+# never invokes them and nothing serves ui-src, so every image carried it for
+# nothing. The bakes it produces (client/public/ui2) ship as they always did.
+# — games-ui 2026-09-03
+games2/client/ui-src
 games2/node_modules
 games2/client/dist
 games2/**/*.tsbuildinfo
