@@ -413,7 +413,7 @@ class Grow:
         return piece, (var[int(r() * len(var)) % len(var)] if var else None)
 
     def put(self, piece, x, y, on=None, hflip=False, lit=False, dir=None,
-            state=None):
+            state=None, flush=False):
         """One validated placement: the piece dir must exist, the ground must
         be in `on` (if given), the spot must be free. `lit` selects the
         piece's LIT_* state (the piece must ship one) and spends a slot of
@@ -446,19 +446,27 @@ class Grow:
                 REPO, "games2", "config", "scenery-bbox.json")))
             self._hit = json.load(open(os.path.join(
                 REPO, "live", "tuning", "scenery_hitbox.json")))["overrides"]
-        geo = self._hitbox_geom({"piece": piece, "x": x, "y": y,
-                                 "hflip": hflip, "state": state})
-        if geo:
-            dwx, dwy, R = geo
-            cx, cy = math.floor(x + dwx), math.floor(y + dwy)
-            x, y = cx + 0.5 - dwx, cy + 0.5 - dwy
-            wx, wy = cx + 0.5, cy + 0.5
+        probe = {"piece": piece, "x": x, "y": y, "hflip": hflip,
+                 "state": state, "dir": dir}
+        sh = self._fp_shape(probe)
+        if sh:
+            kind, dwx, dwy, hx, hy = sh
+            if flush:
+                # PIXEL-PERFECT AGAINST THE WALL: the caller has already put
+                # the footprint exactly where it wants it, so do not snap.
+                wx, wy = x + dwx, y + dwy
+            else:
+                cx, cy = math.floor(x + dwx), math.floor(y + dwy)
+                x, y = cx + 0.5 - dwx, cy + 0.5 - dwy
+                wx, wy = cx + 0.5, cy + 0.5
+            R, HY = (hx, hy) if kind == "rect" else (hx, None)
         else:
-            wx, wy, R = int(x) + 0.5, int(y) + 0.5, self.FP_DEFAULT
+            wx, wy = int(x) + 0.5, int(y) + 0.5
+            R, HY = self.FP_DEFAULT, None
         if on is not None and self.g(int(x), int(y)) not in on:
             self.fail += 1
             return False
-        if not self._footprint_ok(wx, wy, R):
+        if not self._footprint_ok(wx, wy, R, HY, flush=flush):
             self.fail += 1
             self.fp_refused = getattr(self, "fp_refused", 0) + 1
             return False
@@ -475,7 +483,15 @@ class Grow:
             p["dir"] = dir      # not every piece ships rotations; the base
                                 # south sprite is the fallback
         self.doc["scenery"].append(p)
-        self._fp_add(wx, wy, R)
+        if flush:
+            # SNAPPING WOULD UNDO THE FLUSH PLACEMENT. snap_hitboxes centres
+            # every footprint on a cell centre; a piece put deliberately
+            # against a wall is already exactly where it belongs, and snapping
+            # it moved the back edge up to a quarter cell off the wall.
+            if not hasattr(self, "_flush_ids"):
+                self._flush_ids = set()
+            self._flush_ids.add(id(p))
+        self._fp_add(wx, wy, R, HY)
         if not hasattr(self, "occ"):
             self._reindex()
         else:
@@ -993,31 +1009,44 @@ class Grow:
         for r in out:
             r["cells"].sort(key=lambda c: (c["x"], c["y"]))
         self.doc["rooms"] = out
-        # BUILD ASSERT: no piece points into the room. A piece standing on a
-        # room's low-x edge must look south-east and one on its low-y edge
-        # south-west - the mapping above, checked against the published rooms
-        # so an inversion can never ship again. It shipped once, by eye
-        # (maintainer: "a shelf pointing straight out into the room").
+        # BUILD ASSERT: THE LONG EDGE IS ON THE WALL AND THE PIECE IS FLUSH.
+        # Judges exactly what against() placed - not every rect piece in the
+        # room, since the table chairs stand in the middle by design. This
+        # replaces an assert that pinned a GLOBAL facing convention (low-x
+        # edge means south-east): the rect supersedes it, because cupboard_001
+        # and bed_002 do not agree on which named facing lies which way, and
+        # asking the piece is the only rule that survives both.
         bad = []
-        for room in out:
-            cs = [(c["x"], c["y"]) for c in room["cells"]]
-            mnx, mny = min(c[0] for c in cs), min(c[1] for c in cs)
-            cells = set(cs)
-            for pl in self.doc["scenery"]:
-                c = (int(pl["x"]), int(pl["y"]))
-                if c not in cells or not pl.get("dir"):
-                    continue
-                # A CORNER CELL TOUCHES BOTH WALLS and either rotation backs
-                # onto one of them, so it is not a mistake - the assert only
-                # judges a piece standing on exactly one of the two edges.
-                if (c[0] == mnx) == (c[1] == mny):
-                    continue
-                want = "south-east" if c[0] == mnx else "south-west"
-                if want and pl["dir"] != want:
-                    bad.append((pl["piece"], c, pl["dir"], want))
-        assert not bad, ("furniture facing the wrong way: "
-                         + "; ".join(f"{p} at {c} is {d}, want {w}"
-                                     for p, c, d, w in bad[:6]))
+        for (piece, px, py, d, axis, face) in getattr(self, "_against", []):
+            sh = self._fp_shape({"piece": piece, "x": px, "y": py, "dir": d})
+            if not sh or sh[0] != "rect":
+                continue
+            _, cx, cy, hx, hy = sh
+            # THE CHOSEN FACING IS THE BETTER OF THE PIECE'S TWO. Demanding
+            # span >= deep outright is wrong: some pieces are deeper than they
+            # are wide in BOTH facings (wall hangings, some hearths), and then
+            # "the long edge on the wall" has nothing to choose between. The
+            # rule that always means something is that we took the facing that
+            # lies the longer way along this wall.
+            def lie(dd):
+                q = self._fp_shape({"piece": piece, "x": px, "y": py,
+                                    "dir": dd})
+                if not q or q[0] != "rect":
+                    return None
+                return (q[4] - q[3]) if axis == "x" else (q[3] - q[4])
+            mine, other = lie(d), lie("south-west" if d == "south-east"
+                                      else "south-east")
+            if mine is not None and other is not None and mine < other - 1e-9:
+                bad.append((piece, (px, py),
+                            f"the other facing lies longer on this wall"))
+                continue
+            edge = (px + cx - hx) if axis == "x" else (py + cy - hy)
+            if abs(edge - face) > 0.02:
+                bad.append((piece, (px, py),
+                            f"not flush: edge {edge:.3f} vs wall face {face}"))
+        assert not bad, ("furniture against the wall: "
+                         + "; ".join(f"{p} at {c}: {why}"
+                                     for p, c, why in bad[:6]))
         # every indoor floor cell belongs to exactly one room
         n = sum(len(r["cells"]) for r in out)
         assert n == len({(c["x"], c["y"]) for r in out for c in r["cells"]}), \
@@ -1046,6 +1075,80 @@ class Grow:
     # keeps the exact centre and the 4.2 px belongs to whichever renderer draws
     # the sprite and the nav tile on different planes. Reported to games.
     HITBOX_DROP = 0.0    # screen px, down-screen - see above before changing
+
+    # ---- the rect footprint -------------------------------------------------
+    # (maintainer 2026-09-03) "The scenery now has a special hitbox called rect
+    # for things like tables and bookshelfs. Use this rect to make sure the
+    # back of the shelf (the long edge) is against the wall, and to place the
+    # rect furniture exactly at the wall/corner."
+    #
+    # A rect box carries shape:"rect" and half-extents rx, ry along the piece's
+    # OWN GROUND AXES for its facing - the wiki solves them that way
+    # (wiki/tools/rect-hitbox-pass.py: GROUND = south 0, south-east +45,
+    # south-west -45; K = dy/dx). pos_by_dir gives the centre per facing. So
+    # the four corners are centre +- rx*eu +- (ry/K)*ev in frame px, and each
+    # corner maps to world cells through the same projection the game inverts
+    # to place the footprint. The world axis-aligned box of those corners is
+    # the footprint: for the two wall facings it IS axis-aligned, because eu at
+    # +-45 degrees is exactly the world x or y axis on screen.
+    _K = 14.0 / 32.0
+
+    def _rect_boxes(self, p):
+        """The piece's rect boxes for its placed facing, or None."""
+        rec = None
+        if p.get("state"):
+            rec = self._hit.get(f"scenery/{p['piece']}#{p['state'].lower()}")
+        rec = rec or self._hit.get("scenery/" + p["piece"]) or next(
+            (v for k, v in self._hit.items()
+             if k.startswith("scenery/" + p["piece"] + "#")), None)
+        if not rec:
+            return None
+        boxes = [b for b in (rec.get("boxes") or [])
+                 if (b.get("shape") or "").lower() == "rect"]
+        return boxes or None
+
+    def _fp_shape(self, p):
+        """(kind, cx, cy, hx, hy) in world cells relative to the PLACEMENT:
+        a rect piece gives its world box, anything else its circle."""
+        geo = self._hitbox_geom(p)
+        if geo is None:
+            return None
+        boxes = self._rect_boxes(p)
+        if not boxes:
+            return ("circle", geo[0], geo[1], geo[2], geo[2])
+        facts = self._bbox["pieces"][p["piece"]]
+        bb = self._bbox["boxes"][facts["sprite"]]
+        bx0, by0, bx1, by1, fw, fh = bb[:6]
+        k = facts["wph"] / max(1, by1 - by0)
+        afx, afy = bx0 + (bx1 - bx0) / 2, by1
+        d = p.get("dir") or "south"
+        # THE SIGN IS NEGATIVE, and getting it wrong rotates every rect 90
+        # degrees off its own art (maintainer 2026-09-03, looking at my own
+        # overlay: "It looks like you are rotating the rect hitbox the wrong
+        # way"). The wiki solves with th = radians(-GROUND[dir]) where GROUND
+        # is south 0, south-east +45, south-west -45
+        # (wiki/tools/rect-hitbox-pass.py) - so south-east is -45 here.
+        th = math.radians(-{"south": 0.0, "south-east": 45.0,
+                            "south-west": -45.0}.get(d, 0.0))
+        eu = (math.cos(th), math.sin(th) * self._K)
+        ev = (-math.sin(th), math.cos(th) * self._K)
+        xs, ys = [], []
+        for b in boxes:
+            pos = (b.get("pos_by_dir") or {}).get(d) or b
+            ax = pos.get("ax", b.get("ax", 0.0))
+            ay = pos.get("ay", b.get("ay", 0.0))
+            if p.get("hflip"):
+                ax = -ax
+            rx, ry = b.get("rx", 0.0), b.get("ry", 0.0)
+            for su in (-1, 1):
+                for sv in (-1, 1):
+                    fx = fw / 2 + ax + su * rx * eu[0] + sv * (ry / self._K) * ev[0]
+                    fy = fh / 2 + ay + su * rx * eu[1] + sv * (ry / self._K) * ev[1]
+                    sx, sy = (fx - afx) * k, (fy - afy) * k
+                    xs.append((sx / self.HIT_DX + sy / self.HIT_DY) / 2)
+                    ys.append((sy / self.HIT_DY - sx / self.HIT_DX) / 2)
+        cx, cy = (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
+        return ("rect", cx, cy, (max(xs) - min(xs)) / 2, (max(ys) - min(ys)) / 2)
 
     def _hitbox_geom(self, p):
         """(dwx, dwy, R): where the piece's footprint centre sits relative to
@@ -1102,29 +1205,42 @@ class Grow:
                 for e in g.get((int(wx) // 4 + dx, int(wy) // 4 + dy), ()):
                     yield e
 
-    def _fp_add(self, wx, wy, R):
+    def _fp_add(self, wx, wy, R, hy=None):
         if getattr(self, "_fp", None) is None:
             self._fp = {}
-        self._fp.setdefault((int(wx) // 4, int(wy) // 4), []).append((wx, wy, R))
+        self._fp.setdefault((int(wx) // 4, int(wy) // 4), []).append(
+            (wx, wy, R, R if hy is None else hy))
 
-    def _footprint_ok(self, wx, wy, R):
-        """The three rules, on one footprint circle."""
+    def _footprint_ok(self, wx, wy, R, hy=None, flush=False):
+        """The three rules on one footprint. A circle when hy is None, else a
+        world box of half-extents (R, hy). `flush` is for furniture placed
+        deliberately AGAINST a wall: the box may TOUCH the wall face but still
+        may not enter it (maintainer 2026-09-03: "place the rect furniture
+        exactly at the wall/corner, pixel perfect")."""
         cx, cy = int(wx), int(wy)
         if not (0 <= cx < NEW and 0 <= cy < NEW):
             return False
         lvl = self.lvl[cy][cx]
         wet = self.liquid(cx, cy)
         walls = self._walls()
-        Rm = R + self.FP_MARGIN
-        rr = int(math.ceil(Rm))
+        m = 0.0 if flush else self.FP_MARGIN
+        hxm, hym = R + m, (R if hy is None else hy) + m
+        rr = int(math.ceil(max(hxm, hym)))
+        eps = 1e-6
         for yy in range(cy - rr, cy + rr + 1):
             for xx in range(cx - rr, cx + rr + 1):
-                # nearest point of this cell to the centre: inside the circle
-                # means the footprint reaches into the cell
-                nx = min(max(wx, xx), xx + 1)
-                ny = min(max(wy, yy), yy + 1)
-                if (nx - wx) ** 2 + (ny - wy) ** 2 > Rm * Rm:
-                    continue
+                if hy is None:
+                    nx = min(max(wx, xx), xx + 1)
+                    ny = min(max(wy, yy), yy + 1)
+                    if (nx - wx) ** 2 + (ny - wy) ** 2 > hxm * hxm:
+                        continue
+                else:
+                    # a box overlaps the cell when the spans overlap; flush
+                    # placement touches the boundary, which is not an overlap
+                    if xx + 1 <= wx - hxm + eps or xx >= wx + hxm - eps:
+                        continue
+                    if yy + 1 <= wy - hym + eps or yy >= wy + hym - eps:
+                        continue
                 if not (0 <= xx < NEW and 0 <= yy < NEW):
                     return False
                 if (xx, yy) in walls:                 # touches a wall
@@ -1133,8 +1249,11 @@ class Grow:
                     return False
                 if self.liquid(xx, yy) != wet:        # straddles the shore
                     return False
-        for (ox, oy, orad) in self._fp_near(wx, wy):
-            if (ox - wx) ** 2 + (oy - wy) ** 2 < (R + orad) ** 2:
+        for (ox, oy, orx, ory) in self._fp_near(wx, wy):
+            # box vs box on the world axes; a circle is its own square here,
+            # which is conservative and keeps one test for every pair
+            if abs(ox - wx) < (R if hy is None else R) + orx - eps \
+                    and abs(oy - wy) < ((R if hy is None else hy) + ory) - eps:
                 return False                          # intersects a footprint
         return True
 
@@ -1206,6 +1325,8 @@ class Grow:
         moved = skipped = kept = 0
         worst = 0.0
         for p in self.doc["scenery"]:
+            if id(p) in getattr(self, "_flush_ids", ()):
+                continue                 # placed flush against a wall
             off = self._hitbox_offset(p)
             if off is None:
                 skipped += 1
@@ -1230,6 +1351,8 @@ class Grow:
         # from 550 of 1,421 (39%) to 11, while the total cells blocked barely
         # moves (3,158 -> 3,188), so the footprints got ACCURATE, not bigger.
         for p in self.doc["scenery"]:
+            if id(p) in getattr(self, "_flush_ids", ()):
+                continue
             off = self._hitbox_offset(p)
             if off is None:
                 continue
@@ -1264,15 +1387,17 @@ class Grow:
                                       self.doc["scenery"][i]["piece"]))
         for i in order:
             p = self.doc["scenery"][i]
-            geo = self._hitbox_geom(p)
-            if geo:
-                wx, wy = p["x"] + geo[0], p["y"] + geo[1]
-                R = geo[2]
+            sh = self._fp_shape(p)
+            if sh:
+                kind, dwx, dwy, hx, hy = sh
+                wx, wy = p["x"] + dwx, p["y"] + dwy
+                R, HY = (hx, hy) if kind == "rect" else (hx, None)
             else:
-                wx, wy, R = int(p["x"]) + 0.5, int(p["y"]) + 0.5, self.FP_DEFAULT
-            if self._footprint_ok(wx, wy, R):
+                wx, wy, R, HY = int(p["x"]) + 0.5, int(p["y"]) + 0.5, \
+                    self.FP_DEFAULT, None
+            if self._footprint_ok(wx, wy, R, HY, flush=True):
                 keep.append(i)
-                self._fp_add(wx, wy, R)
+                self._fp_add(wx, wy, R, HY)
             else:
                 dropped += 1
         keep.sort()
@@ -1284,14 +1409,17 @@ class Grow:
         # BUILD ASSERT: the world is clean under all three rules.
         self._fp = {}
         for p in self.doc["scenery"]:
-            geo = self._hitbox_geom(p)
-            if geo:
-                wx, wy, R = p["x"] + geo[0], p["y"] + geo[1], geo[2]
+            sh = self._fp_shape(p)
+            if sh:
+                kind, dwx, dwy, hx, hy = sh
+                wx, wy = p["x"] + dwx, p["y"] + dwy
+                R, HY = (hx, hy) if kind == "rect" else (hx, None)
             else:
-                wx, wy, R = int(p["x"]) + 0.5, int(p["y"]) + 0.5, self.FP_DEFAULT
-            assert self._footprint_ok(wx, wy, R), \
+                wx, wy, R, HY = int(p["x"]) + 0.5, int(p["y"]) + 0.5, \
+                    self.FP_DEFAULT, None
+            assert self._footprint_ok(wx, wy, R, HY, flush=True), \
                 f"{p['piece']} at {p['x']},{p['y']} breaks the footprint law"
-            self._fp_add(wx, wy, R)
+            self._fp_add(wx, wy, R, HY)
 
     def relight(self):
         """FILL THE LIGHT BUDGET, NEVER EXCEED IT (maintainer 2026-08-29:
@@ -1398,8 +1526,9 @@ class Grow:
                 c0 = int((ox0 - a[0]) / 36 * 32); c1 = int(math.ceil((ox1 - a[0]) / 36 * 32))
                 r0 = int((oy0 - a[1]) / 88 * 16); r1 = int(math.ceil((oy1 - a[1]) / 88 * 16))
                 m[max(0, r0):min(16, r1), max(0, c0):min(32, c1)] = True
-            on_fp = any((ox - x - 0.5) ** 2 + (oy - y - 0.5) ** 2 < orad ** 2
-                        for (ox, oy, orad) in self._fp_near(x + 0.5, y + 0.5))
+            on_fp = any(abs(ox - x - 0.5) < orx and abs(oy - y - 0.5) < ory
+                        for (ox, oy, orx, ory)
+                        in self._fp_near(x + 0.5, y + 0.5))
             return float(m.mean()), on_fp
 
         NPC_HIDE = 0.30       # more than this covered = hidden, move him
@@ -1858,6 +1987,7 @@ class Grow:
 
     # -- interiors ------------------------------------------------------------
     def interiors(self):
+        self._against = []
         """Furnish EVERY parquet room (the indoor-scenery ask). The renderer
         hides pieces under roofs; the GAME discards every roofed placement
         outright (scenery3.ts returns early for a cell under a roof or cave
@@ -1953,19 +2083,72 @@ class Grow:
             north.sort(key=lambda c: c[0])
 
             def against(group, wall, idx, **kw):
+                """THE LONG EDGE GOES AGAINST THE WALL, AND IT LANDS FLUSH
+                (maintainer 2026-09-03).
+
+                The piece's own RECT decides which way it lies - not a global
+                convention. A rect is solved per facing off the art itself
+                (wiki/tools/rect-hitbox-pass.py), so cupboard_001 measures
+                1.18 x 0.50 cells facing south-east and 0.50 x 1.18 facing
+                south-west. The west wall runs along Y, so it wants the facing
+                whose footprint is LONGER IN Y; the north wall runs along X and
+                wants the longer X. Asking the piece is also the only thing
+                that survives art whose facings do not follow the majority.
+
+                Then the back edge is put exactly ON the wall face: the wall
+                cells sit at x0 (or y0) and the floor starts one cell in, so a
+                flush piece has its footprint edge at that boundary - touching
+                it, never inside it, which is what the footprint law allows in
+                flush mode."""
                 if not wall:
                     return 0
-                x, y = wall[min(idx, len(wall) - 1)]
-                d = "south-east" if wall is west else "south-west"
-                piece = pk(group, d)
-                # AS CLOSE TO THE WALL AS ITS FOOTPRINT ALLOWS. The footprint
-                # law refuses a hitbox that touches the wall cell, so a wide
-                # piece steps into the room, a quarter cell at a time, until
-                # its footprint clears - "against the wall" now means the
-                # hitbox stops short of it, which is the rule.
+                wx, wy = wall[min(idx, len(wall) - 1)]
+                along_y = wall is west
+                # THE PIECE FIRST, THEN ITS FACING. pk() hashes the facing
+                # into its choice, so asking it per direction compared piece
+                # A's south-east against piece B's south-west and could take
+                # the worse orientation of the piece it then placed.
+                piece = pk(group)
+                best = None
+                for d in ("south-east", "south-west"):
+                    sh = self._fp_shape({"piece": piece, "x": 0, "y": 0,
+                                         "dir": d})
+                    if not sh:
+                        continue
+                    kind, cx, cy, hx, hy = sh
+                    span = hy if along_y else hx      # along the wall
+                    deep = hx if along_y else hy      # into the room
+                    if kind != "rect":
+                        span = deep = hx
+                    key = (-(span - deep), deep)      # longest edge on the wall
+                    if best is None or key < best[0]:
+                        best = (key, d, sh)
+                if best is None:
+                    return 0
+                _, d, (kind, cx, cy, hx, hy) = best
+                if kind == "rect":
+                    # flush: the near edge of the footprint sits on the wall
+                    # face, and the piece is centred on its cell along the wall
+                    # x0/y0 are the room's FIRST FLOOR column and row, so the
+                    # wall face they meet is x0 / y0 itself - not x0 + 1. The
+                    # off-by-one put every piece a whole cell into the room.
+                    if along_y:
+                        x = x0 + hx - cx
+                        y = wy + 0.5 - cy
+                    else:
+                        x = wx + 0.5 - cx
+                        y = y0 + hy - cy
+                    if self.put(piece, x, y, on=IN, dir=d, flush=True, **kw):
+                        self._against.append(
+                            (piece, round(x, 4), round(y, 4), d,
+                             "x" if along_y else "y",
+                             x0 if along_y else y0))
+                        return 1
+                    return 0
+                # not a rect piece: as close as its circle allows, as before
                 for inset in (0.0, 0.25, 0.5, 0.75, 1.0):
-                    px = x + 0.5 + (inset if wall is west else 0.0)
-                    py = y + 0.5 + (0.0 if wall is west else inset)
+                    px = wx + 0.5 + (inset if along_y else 0.0)
+                    py = wy + 0.5 + (0.0 if along_y else inset)
                     if self.put(piece, px, py, on=IN, dir=d, **kw):
                         return 1
                 return 0
