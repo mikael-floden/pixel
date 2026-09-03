@@ -188,6 +188,35 @@ by construction, so no existing branch changed.
   the corner lattice, then the deck slabs. Interleaving is wrong and looks
   nearly right: three of the four cells a boundary blends are drawn AFTER it,
   and would paint their own plates back over the transition.
+- **A COMPOSED BOUNDARY IS TOP FACE ONLY, ALWAYS — because it paints LAST**
+  (`Tiles3Textures.boundary`). A boundary is a surface blend on the corner
+  lattice with no lawful wall source at any level: at a raised level the cap's
+  own x-over-y art is the wall, and at level 0 there is no wall and nothing
+  below to hide. The asymmetry that makes this a rule rather than a tidy-up is
+  the pass order above. A CELL's wall band is harmless overdraw — the cells in
+  front are painted after it and cover it (measured with exact mask arithmetic:
+  0 texels uncovered, inland and at a shoreline, liquid neighbours or not). A
+  BOUNDARY is painted after every cell, so its wall band lands on top of the
+  tiles that would have hidden it and only a LATER BOUNDARY can cover it —
+  and boundaries exist only where the Wang index is mixed, so along a transition
+  band most of it is covered by nothing. That was the maintainer's zigzag on the
+  beach (2026-09-03), and `Tiles3Boundary.topOnly` was a **DEAD FLAG**: the
+  resolver set it (`topOnly: z0 > 0 || undefined`), `boundary()` never read it
+  and `boundaryKeyFor` never carried it. Measured at his own cell (458.9,378.8,
+  every cell level 0 so no exposed face can explain a wall): all 112 boundaries
+  in the window kept the band, a real `light_beach<->grass` composition is
+  1088/1088 OPAQUE wall texels with 800 of them exactly (171,146,116) =
+  light_beach's palette wall, and the dots on his screenshot measure
+  0.750/0.747/0.779 of the sand beside them against a wall/top ratio of
+  0.7500/0.7449/0.7785 — no other ground is close. NO MARGIN ROW here, unlike a
+  liquid's (`topFaceOnly(..., { margin: false })`): a boundary paints over a cell
+  that has already painted its own top AND wall, so there is no hole to fill and
+  an extra row would bleed the blend a pixel into the tile in front. The same
+  line also stops a boundary painting its flat palette wall band over a raised
+  cap's REAL x-over-y wall art. **A gate that recomputes the mask itself cannot
+  catch this** — the flag being dead is the bug — so
+  `server/test/tiles3draw.test.ts` asserts it through the real factory; with the
+  one line reverted, three of its gates fail.
 - **TWO PHASER TRAPS, both silent, both paid for here.**
   `textures.get(key)` returns the built-in `__MISSING` 32x32 checker for an
   unknown key, NOT undefined — handed to the composer an unloaded 64x46 plate
@@ -210,7 +239,12 @@ by construction, so no existing branch changed.
   still on that path, which is why sand stopped showing the artefact and water
   did not. The old renderer was TOLERANT BY CONSTRUCTION, not correct: every
   one-pixel error in the projection was always there and always hidden. So the
-  cure is slack, not a hunt for a slip (measured and cleared on his device:
+  cure is slack, not a hunt for a slip. THIS IS THE SEA'S DEFECT AND NOT THE
+  BEACH'S: the beach was a composed boundary's wall band painted in the last
+  pass (see A COMPOSED BOUNDARY IS TOP FACE ONLY above), which is why fixing
+  the interlock could not touch it and why open water — which composes no
+  boundary at all — was fixed by this and nothing else. (Measured and cleared
+  on his device:
   `nonInt` 0, `anchorFrac` 0, `rtPosFrac` 0, `sy` stepping exactly +28 per
   diagonal cell, the RT hash-identical to a forced full paint). `topFaceOnly`
   therefore carries ONE EXTRA ROW per column, copied from THAT COLUMN'S OWN
