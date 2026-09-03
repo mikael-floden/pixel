@@ -1018,6 +1018,31 @@ export class Tiles3Textures {
     return out;
   }
 
+  /** A flat diamond in PLATE geometry (fw x fh, `libTop` at its own rows) —
+   *  NOT `liquidDiamond`, which builds TILE x TILE with the diamond hung at
+   *  TOP_Y. Drawn at a plate's own y those two are ten rows apart, and the
+   *  first cut of the underlay used the liquid one: every grass cell's backing
+   *  poked out below its plate and into the beach, which the maintainer
+   *  measured as (20,82,59) — grass's palette top — specks inside the sand.
+   *  Same geometry as the art it backs, or it is not a backing. */
+  private flatPlate(rgb: readonly [number, number, number]): string {
+    const key = `t3u:${rgb[0]},${rgb[1]},${rgb[2]}`;
+    return (
+      this.ensure(key, () => {
+        const { fw, fh, libTop } = this.o.sheets;
+        const out = newPixels(fw, fh);
+        for (let i = 0; i < fw * fh; i++) {
+          if (!libTop[i]) continue;
+          out.data[i * 4] = rgb[0];
+          out.data[i * 4 + 1] = rgb[1];
+          out.data[i * 4 + 2] = rgb[2];
+          out.data[i * 4 + 3] = 255;
+        }
+        return out;
+      }) ?? key
+    );
+  }
+
   /** A FLAT DIAMOND OF THE CELL'S OWN GROUND COLOUR, to draw UNDER its art.
    *
    *  Insurance against a hole. Whatever fails to draw above it — a dropped op,
@@ -1033,8 +1058,8 @@ export class Tiles3Textures {
     const g = this.o.groundTypes[cell.ground];
     const hex = g?.palette?.top ?? g?.base_color;
     if (!hex) return null;
-    const key = this.liquid(hexRGB(hex));
-    return { key, x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: TILE, sh: TILE, role: "surface" };
+    const key = this.flatPlate(hexRGB(hex));
+    return { key, x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "surface" };
   }
 
   /** The composed boundary as a drawable blit, or null. */
