@@ -1107,7 +1107,7 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
     // Seven variations ship art the footprint walk cannot read at all (no
     // turned art AND no readable south base); they keep what they had and are
     // named rather than hidden.
-    ok(stale <= 8, `no rect piece is left carrying an ellipse-era proposal (${fitted} fitted, ${stale} unmeasurable, ${his} his own)`);
+    ok(stale <= 7, `no rect piece is left carrying an ellipse-era proposal (${fitted} fitted, ${stale} unmeasurable, ${his} his own)`);
     const shelf = live["scenery/cupboards_and_shelves/cupboard_008#not_lit_3"]?.boxes?.[0];
     ok(shelf?.shape === "rect" && shelf.ry < 9 && shelf.pos_by_dir?.["south-east"],
       `the shelf he reported is a fitted rect now, not a 16.55-deep ellipse (ry ${shelf?.ry})`);
@@ -1172,7 +1172,22 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
       }
       const mean = (k) => errs2.reduce((n, e) => n + e[k], 0) / (errs2.length || 1);
       const worst = errs2.slice().sort((a, b) => (b.drx + b.dc) - (a.drx + a.dc))[0];
-      ok(errs2.length >= 6 && mean("drx") < 2 && mean("dry") < 1.2 && mean("dc") < 2.5,
+      // Tightened as the measurement improved, and it must not slip back: the
+      // supporting-line fit reproduces his eleven boxes to 0.70/0.39/0.87px.
+        /* A TABLE'S LEGS, FOUND THROUGH THE GAP (maintainer 2026-09-03: "When
+       * finding the corners you should not care about transparency is in
+       * between the corners. Else you can't find the legs on a table!"). The
+       * footprint must reach the far feet, not stop at the first gap and not
+       * follow the tabletop. */
+      const tbl = DATAOBJ.find((o) => o.id === "table_009");
+      const tb = tbl?.animations?.not_lit_1?.dirs?.["south-east"]?.base;
+      const hisTbl = live["scenery/tables/table_009#not_lit_1"]?.boxes?.[0];
+      if (tb && hisTbl) {
+        const f = solve(tb, "south-east");
+        ok(Math.abs(f.rx - hisTbl.rx) < 1.5 && Math.abs(f.ry - hisTbl.ry) < 1,
+          `the table's LEGS are found through the transparent gap (fitted ${f.rx.toFixed(1)}×${f.ry.toFixed(2)}, his ${hisTbl.rx}×${hisTbl.ry})`);
+      }
+    ok(errs2.length >= 10 && mean("drx") < 1.2 && mean("dry") < 0.8 && mean("dc") < 1.5,
         `the measurement reproduces every box he fitted BY HAND (${errs2.length} of them: mean width ${mean("drx").toFixed(2)}px, depth ${mean("dry").toFixed(2)}px, centre ${mean("dc").toFixed(2)}px; worst ${worst?.key.split("/").pop()})`);
     }
     const sePos = se.pos_by_dir?.["south-east"];

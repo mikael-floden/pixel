@@ -2800,46 +2800,48 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
  * corners … By using this pattern, you should be able to place really really
  * good default hitboxes for rect objects").
  *
- * On a turned facing a box's base is a parallelogram whose two FRONT edges are
- * the bottom of the silhouette, and those edges run along the ground axes — so
- * each is a line of known slope ±dy/dx whose offset is the MEDIAN of (y ∓ Kx)
- * over that branch: a leg or a foot proud of the base board moves a few
- * columns, never the median.
+ * On a turned facing a box's base is a parallelogram whose four corners are
+ * the piece's contact points — the four feet of a table — and its two FRONT
+ * edges run along the ground axes. So each front edge is the SUPPORTING LINE
+ * of the silhouette in that direction: of every opaque column, the extreme of
+ * (y − Kx) is the front-left edge and the extreme of (y + Kx) the front-right,
+ * and every foot on that edge sits on it no matter what is transparent in
+ * between.
  *
- * THE CORNER IS THEN WALKED TO, NOT FILTERED FOR — and that distinction is the
- * whole feature. He reported the corners twice: first the box was tilted by a
- * leg (anchored on the lowest pixel), then it "didn't extend the rect all the
- * way to the 3 corners" because a strict ±2.5px line membership dropped the
- * far end of the edge. MEASURED on his own hand fits: along a real base edge
- * the contour drifts up to 4.6px, while the break where an overhanging top
- * begins is 28px. So the walk goes outward from the bottom corner while the
- * drift stays under 6px, tolerates two noisy columns, and stops at the break —
- * and the corner it returns is the RAW PIXEL there, because that is what he
- * means by "the rect should literally be on the pixel at the 3 corners".
+ * TRANSPARENCY BETWEEN THE CORNERS IS THE POINT (maintainer 2026-09-03, after
+ * fitting a supper table: "When finding the corners you should not care about
+ * transparency is in between the corners. Else you can't find the legs on a
+ * table!"). Two earlier cuts died on exactly that. Walking the bottom contour
+ * outward from the lowest pixel stops dead at the gap between two legs. And
+ * fitting the edge by the MEDIAN of the columns is worse on a table than no
+ * fit at all: most columns are the tabletop's underside, so the "front edge"
+ * came out along the tabletop and the box floated 12px above the floor.
  *
- * Filtering instead of walking is also unsafe in the other direction: taking
- * the extreme in-tolerance column can jump PAST a break to an unrelated one.
+ * The tolerance band is what makes a support line safe, and its width is
+ * measured, not chosen: along a real base edge the contour drifts up to 4.6px
+ * (pixel art misses the exact iso slope by tenths and it accumulates), while
+ * anything that is not the base — an overhanging hutch, a tabletop — sits 20px
+ * or more above it. Six.
  *
- * Reproduces his seven hand-fitted boxes to a mean 0.97px in width, 0.56px in
- * depth and 1.19px in centre.
+ * Reproduces all ELEVEN boxes he has fitted by hand to a mean 0.70px in width,
+ * 0.39px in depth and 0.87px in centre.
  *
  * Per STATE, not per piece: the states of one piece are often different
- * variants — "Open shelf 008" has one 5px wider and lower than the rest.
- * Cached under each clip's own published art hash, in its own map, so the main
- * 9,983-clip measurement cache is untouched. */
+ * variants. Cached under each clip's own published art hash, in its own map,
+ * so the main 9,983-clip measurement cache is untouched. */
 {
   const K = 15 / 32;                                   // the iso squash, dy/dx
   const priorBase = artPrior?.bases ?? {};
   const bases = {};
   let baseMeasured = 0, baseCached = 0, basePieces = 0;
   const median = (xs) => { const a = [...xs].sort((p, q) => p - q); const n = a.length; return n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2; };
-  const TOL = 6;            // drift along a real base edge: 4.6px measured; a break: 28px
+  const TOL = 6;            // drift along a real base edge: 4.6px measured; a tabletop or hutch: 20px+
   const footprint = (relStrip, fw, fh, turned) => {
     const { w, pix } = decodeWebP(readFileSync(join(ROOT, relStrip)));
     const bottom = new Map();                          // x -> lowest opaque y (first frame)
     for (let y = 0; y < fh; y++) for (let x = 0; x < fw && x < w; x++) if ((pix[y * w + x] >>> 24) > 40) bottom.set(x, y);
     const xs = [...bottom.keys()].sort((a, b) => a - b);
-    if (xs.length < 10) return null;
+    if (xs.length < 8) return null;
     let lowest = -1; for (const x of xs) if (bottom.get(x) > lowest) lowest = bottom.get(x);
     if (!turned) {
       // South shows no depth at all: only the front edge and how wide it is.
@@ -2847,25 +2849,21 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
       if (band.length < 4) return null;
       return [band[0], lowest, (band[0] + band[band.length - 1]) / 2, lowest, band[band.length - 1], lowest].map((v) => +v.toFixed(1));
     }
-    const run = xs.filter((x) => bottom.get(x) >= lowest - 0.5);
-    const bx = (run[0] + run[run.length - 1]) / 2;
-    const right = xs.filter((x) => x > run[run.length - 1] + 1);
-    const left = xs.filter((x) => x < run[0] - 1).reverse();
-    if (right.length < 4 || left.length < 4) return null;
-    const cR = median(right.map((x) => bottom.get(x) + K * x));
-    const cL = median(left.map((x) => bottom.get(x) - K * x));
-    const walk = (cols, at, off) => {
-      let last = null, bad = 0;
-      for (const x of cols) {
-        if (Math.abs(at(x) - off) <= TOL) { last = x; bad = 0; }
-        else if (++bad > 2) break;
-      }
-      return last;
-    };
-    const Rx = walk(right, (x) => bottom.get(x) + K * x, cR);
-    const Lx = walk(left, (x) => bottom.get(x) - K * x, cL);
-    if (Rx === null || Lx === null || Rx - Lx < 6) return null;
-    return [Lx, bottom.get(Lx), bx, lowest, Rx, bottom.get(Rx)].map((v) => +v.toFixed(1));
+    let aMax = -Infinity, bMax = -Infinity;
+    for (const x of xs) {
+      const y = bottom.get(x);
+      if (y - K * x > aMax) aMax = y - K * x;
+      if (y + K * x > bMax) bMax = y + K * x;
+    }
+    const onA = xs.filter((x) => bottom.get(x) - K * x >= aMax - TOL);
+    const onB = xs.filter((x) => bottom.get(x) + K * x >= bMax - TOL);
+    if (!onA.length || !onB.length) return null;
+    const Lx = onA[0], Rx = onB[onB.length - 1];
+    if (Rx - Lx < 6) return null;
+    // The corners are the RAW PIXELS there ("the rect should literally be on
+    // the pixel at the 3 corners"); the bottom corner is where the two
+    // supporting lines cross.
+    return [Lx, bottom.get(Lx), (bMax - aMax) / (2 * K), (aMax + bMax) / 2, Rx, bottom.get(Rx)].map((v) => +v.toFixed(1));
   };
   for (const o of objects) {
     if (o.hitboxShape !== "rect" || !o.animations) continue;
