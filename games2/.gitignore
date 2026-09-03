@@ -9,6 +9,13 @@ client/public/tile-bases.json
 client/public/worlds.json
 
 # Throwaway headless-probe scripts (session scratch; never ship)
+# One-off probes at the games2 root, the same convention as scripts/_tmp-*:
+# throwaway measurement files (mine and subagents') that must never be
+# committed. Anchored to this directory so nothing under client/ or server/ is
+# swept up by it.
+/_*.ts
+/_*.mjs
+/_*.json
 scripts/_tmp-*.mjs
 scripts/_tmp-*.mts
 scripts/_tmp-*.py
