@@ -1,7 +1,7 @@
 {
   "format": "nangijala-client-perf@1",
   "_comment": "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here by the server. The maintainer plays on a phone and tests in production; the headless harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these are the only honest numbers for the paths that matter. Newest last; the file keeps the most recent reports only.",
-  "updated_at": "2026-09-03T09:19:53.939Z",
+  "updated_at": "2026-09-03T09:20:24.037Z",
   "reports": [
     {
       "id": "2026-09-03T09-18-53-926Z-i0k047",
@@ -130,6 +130,49 @@
         "textures": 7583,
         "texturesAdded": 1292
       },
+      "worst": []
+    },
+    {
+      "id": "2026-09-03T09-20-24-037Z-cenb2i",
+      "at": "2026-09-03T09:20:24.037Z",
+      "build": "ab0b23d2dfd02ee637dca340691fbf18fe149f25",
+      "where": "542.5,300.8",
+      "tod": "Day",
+      "zoom": 1.43,
+      "dpr": 2.23,
+      "view": "1079x1404",
+      "secs": 30,
+      "frames": {
+        "n": 1084,
+        "p50": 24.5,
+        "p90": 41.1,
+        "p99": 76.2,
+        "max": 313
+      },
+      "sections": {
+        "prefetch": 1.08,
+        "rebuildOccluders": 1.07,
+        "groundSlice": 0.91,
+        "avatarLoop": 0.77,
+        "redrawGround": 0.41,
+        "rebuildScenery": 0.27,
+        "stepNpcs": 0.15
+      },
+      "counts": {
+        "occluders": 3769,
+        "litOccluders": 22,
+        "occluderMeta": 2634,
+        "sceneryImgs": 22,
+        "propImgs": 0,
+        "monsters": 146,
+        "monstersActive": 10,
+        "avatars": 1,
+        "npcs": 33,
+        "displayList": 4522,
+        "textures": 7671,
+        "texturesAdded": 88
+      },
+      "ground": null,
       "worst": []
     }
   ]
