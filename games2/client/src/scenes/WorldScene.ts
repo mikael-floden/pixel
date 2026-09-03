@@ -1527,6 +1527,27 @@ export class WorldScene extends Phaser.Scene {
   private ps(): void {
     if (this.perfOn) this.perfStack.push(performance.now());
   }
+  /** Arm or disarm the perf beacon from the settings panel, and remember it —
+   *  the installed app cannot be given a query parameter. Arming also turns on
+   *  the section timers the report is built from; disarming turns them off so
+   *  nobody pays for measurement they are not sending. */
+  private togglePerfBeacon(): void {
+    this.perfBeacon = !this.perfBeacon;
+    this.perfOn = this.perfBeacon;
+    this.perfBeaconAt = 0;
+    this.perfBeaconFrom = null;
+    this.perfAcc = {};
+    this.perfFrames = [];
+    this.perfStack = [];
+    this.perfLast = 0;
+    try {
+      localStorage.setItem("ml-perf-beacon", this.perfBeacon ? "1" : "0");
+    } catch {
+      /* storage blocked: the toggle still holds for this session */
+    }
+    this.chat.addLog("—", this.perfBeacon ? "perf beacon ON — run around for a minute" : "perf beacon off");
+  }
+
   /** One beacon tick: every PERF_BEACON_MS, if the player has moved, post the
    *  window's numbers and start a new one. Everything it reports is what
    *  `__ml.perf()` already computes, so the beacon adds no measurement cost of
@@ -2568,6 +2589,18 @@ export class WorldScene extends Phaser.Scene {
          * layers at once: the cells the nav plans around AND the real footprint
          * ellipses the body collides with (see drawCollisionDebug). */
         { label: "collision (hitbox)", act: () => this.toggleCollision(), get: () => this.collisionOn },
+        /* THE PERF BEACON, as a BUTTON — because the maintainer plays from an
+         * INSTALLED HOME-SCREEN APP, which has no address bar, so `?perf=1`
+         * cannot be typed there at all (his question, 2026-09-03). Same law as
+         * the repo's ops rule: a step that needs a URL he cannot enter will not
+         * happen. The switch is the same localStorage key the query param sets,
+         * so either route works and the app remembers it across launches. */
+        {
+          label: "perf beacon",
+          act: () => this.togglePerfBeacon(),
+          get: () => this.perfBeacon,
+          state: () => (this.perfBeacon ? "reporting" : "off"),
+        },
         // Disable aggro (maintainer 2026-08-07: "I will use this feature to
         // test walk around in the cave without dying"). Server-side and per
         // player — see the "noaggro" handler in WorldRoom.
