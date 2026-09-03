@@ -13023,9 +13023,34 @@ export class WorldScene extends Phaser.Scene {
       g.fillRect(0, 0, 1, 1);
       this.textures.addCanvas(bgKey, cv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
     }
-    const b = { x0, y0, x1, y1 };
+    /* THE CLIP IS THE STAMP GROWN BY `GROUND_SEAM`, and that is what keeps the
+     * repaint from eating a texel of its own border.
+     *
+     * The background under this rect is laid by `stamp` — a 1x1 texture scaled
+     * to the rect — because a partial `fill` is documented NOT texel-exact
+     * here. But a scaled stamp has its own rounding, and any spill lands
+     * OUTSIDE the clip, where the replay below can never paint it back: a
+     * one-texel line of bare 0x181c28 along the rect's edge, on terrain that
+     * was already correct. The rects follow cell boundaries and this pass runs
+     * wherever ART LANDS — i.e. all over ground the player is seeing for the
+     * first time — so the lines accumulate into a lattice on the tile grid,
+     * which is the maintainer's "zigzag on the water, and on the sand, and on
+     * the road" (2026-09-03; measured off his screenshot as 2-device-px runs at
+     * zoom 2 = exactly ONE TEXEL, so it is drawn at texel resolution, i.e. in
+     * this texture and not by any full-screen pass).
+     *
+     * Painting one texel MORE than was stamped is idempotent — the same painter
+     * sequence over pixels that already hold its output — so this can only
+     * repair, never change a correct pixel. Same argument, same constant, as
+     * the scroll band's seam overlap. */
+    const b = {
+      x0: Math.max(0, x0 - GROUND_SEAM),
+      y0: Math.max(0, y0 - GROUND_SEAM),
+      x1: Math.min(W, x1 + GROUND_SEAM),
+      y1: Math.min(H, y1 + GROUND_SEAM),
+    };
     rt.stamp(bgKey, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
-    const win = this.t3groundWindow(a.ax, a.ay, x0, y0, x1 - x0, y1 - y0);
+    const win = this.t3groundWindow(a.ax, a.ay, b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
     this.groundClip = b;
     try {
       this.drawTiles3Ground(rt, a.ax, a.ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, a.top);
