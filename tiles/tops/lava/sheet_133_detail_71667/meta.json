@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "lava",
+  "flavour": "detail",
+  "index": 133,
+  "seed": 71667,
+  "prompt": "lava, a curl of hardened lava in the middle, lava all around the edge",
+  "palette_top": "#fd5a02",
+  "tile_id": "1f38ae01-ea82-4281-a662-6876c1d89192",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:54:51+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 27,
+        "dominant_share": 0.1188,
+        "px": 926
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.1067,
+        "px": 928
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1045,
+        "px": 928
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.0978,
+        "px": 920
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.1348,
+        "px": 920
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.1413,
+        "px": 927
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1573,
+        "px": 928
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.132,
+        "px": 924
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.1306,
+        "px": 911
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.1441,
+        "px": 916
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.0979,
+        "px": 919
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.153,
+        "px": 915
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.1153,
+        "px": 919
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1261,
+        "px": 912
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.0826,
+        "px": 920
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.1287,
+        "px": 917
+      }
+    ],
+    "mean_colours": 26.94,
+    "mean_dominant_share": 0.1232
+  },
+  "motif": "a curl of hardened lava",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

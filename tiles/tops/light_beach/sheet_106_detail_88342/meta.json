@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "light_beach",
+  "flavour": "detail",
+  "index": 106,
+  "seed": 88342,
+  "prompt": "light beach, a buried bottle in the middle, light beach all around the edge",
+  "palette_top": "#e4c495",
+  "tile_id": "7a65537c-f4fa-49b8-9d89-33a5a833b805",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:05:06+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 21,
+        "dominant_share": 0.4372,
+        "px": 931
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.442,
+        "px": 939
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.4617,
+        "px": 940
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.4115,
+        "px": 943
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4935,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.4304,
+        "px": 927
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.39,
+        "px": 923
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4814,
+        "px": 939
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.4606,
+        "px": 938
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4802,
+        "px": 933
+      },
+      {
+        "colours": 26,
+        "dominant_share": 0.3731,
+        "px": 930
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.4198,
+        "px": 948
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.5016,
+        "px": 935
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.4643,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4217,
+        "px": 939
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.5016,
+        "px": 931
+      }
+    ],
+    "mean_colours": 21.88,
+    "mean_dominant_share": 0.4482
+  },
+  "motif": "a buried bottle",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

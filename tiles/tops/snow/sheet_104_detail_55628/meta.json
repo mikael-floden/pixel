@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "snow",
+  "flavour": "detail",
+  "index": 104,
+  "seed": 55628,
+  "prompt": "snow, grass tips poking through in the middle, snow all around the edge",
+  "palette_top": "#ebf4f6",
+  "tile_id": "d0c4e48c-5c48-4671-af55-9ecf1674a0c2",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:04:29+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 6,
+        "dominant_share": 0.759,
+        "px": 921
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7315,
+        "px": 920
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.4348,
+        "px": 920
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.4272,
+        "px": 920
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4543,
+        "px": 920
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.4446,
+        "px": 920
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.5613,
+        "px": 921
+      },
+      {
+        "colours": 7,
+        "dominant_share": 0.5103,
+        "px": 921
+      },
+      {
+        "colours": 7,
+        "dominant_share": 0.544,
+        "px": 921
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.4663,
+        "px": 920
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.571,
+        "px": 923
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.5428,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.5677,
+        "px": 923
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.4794,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.4595,
+        "px": 927
+      },
+      {
+        "colours": 7,
+        "dominant_share": 0.6263,
+        "px": 926
+      }
+    ],
+    "mean_colours": 12.19,
+    "mean_dominant_share": 0.5363
+  },
+  "motif": "grass tips poking through",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

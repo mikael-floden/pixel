@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "brown_paving_stone",
+  "flavour": "detail",
+  "index": 113,
+  "seed": 65797,
+  "prompt": "brown paving stone, a sunken stone in the middle, brown paving stone all around the edge",
+  "palette_top": "#7d7265",
+  "tile_id": "7b0cf9d4-88e3-4ed3-a93c-81c59606a1c6",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:16:39+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 14,
+        "dominant_share": 0.4913,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3604,
+        "px": 924
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3521,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3308,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.4837,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.4577,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.564,
+        "px": 922
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5445,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.5531,
+        "px": 922
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.5694,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6446,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.5976,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.5597,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.5965,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6291,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6497,
+        "px": 922
+      }
+    ],
+    "mean_colours": 14.5,
+    "mean_dominant_share": 0.524
+  },
+  "motif": "a sunken stone",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

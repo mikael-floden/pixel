@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "brown_paving_stone",
+  "flavour": "detail",
+  "index": 119,
+  "seed": 20406,
+  "prompt": "brown paving stone, a small drain grate in the middle, brown paving stone all around the edge",
+  "palette_top": "#7d7265",
+  "tile_id": "f23a9869-cddc-4c56-8bee-aac16dd70416",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:28:46+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 20,
+        "dominant_share": 0.5777,
+        "px": 1222
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5138,
+        "px": 1236
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.5905,
+        "px": 1216
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5365,
+        "px": 1165
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5341,
+        "px": 1230
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4976,
+        "px": 1248
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.4828,
+        "px": 1222
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5251,
+        "px": 1175
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5644,
+        "px": 1242
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5738,
+        "px": 1253
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5386,
+        "px": 1231
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5021,
+        "px": 1187
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5403,
+        "px": 1242
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.519,
+        "px": 1260
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.4737,
+        "px": 1235
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5743,
+        "px": 1184
+      }
+    ],
+    "mean_colours": 19.25,
+    "mean_dominant_share": 0.534
+  },
+  "motif": "a small drain grate",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

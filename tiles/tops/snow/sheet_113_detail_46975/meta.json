@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "snow",
+  "flavour": "detail",
+  "index": 113,
+  "seed": 46975,
+  "prompt": "snow, a snow angel mark in the middle, snow all around the edge",
+  "palette_top": "#ebf4f6",
+  "tile_id": "5114baf3-9b91-4e44-9af5-9c1e3beefd7d",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:19:35+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 12,
+        "dominant_share": 0.6221,
+        "px": 979
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.4936,
+        "px": 1011
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.655,
+        "px": 974
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.4589,
+        "px": 1046
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.7619,
+        "px": 970
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.5928,
+        "px": 1002
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.5911,
+        "px": 988
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.485,
+        "px": 1031
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.629,
+        "px": 981
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.5331,
+        "px": 968
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.5026,
+        "px": 969
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.5873,
+        "px": 979
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.5645,
+        "px": 976
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.4462,
+        "px": 986
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.6008,
+        "px": 977
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.5244,
+        "px": 984
+      }
+    ],
+    "mean_colours": 13.06,
+    "mean_dominant_share": 0.5655
+  },
+  "motif": "a snow angel mark",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "black_rock",
+  "flavour": "detail",
+  "index": 134,
+  "seed": 34343,
+  "prompt": "black rock, a glint of ore in the middle, black rock all around the edge",
+  "palette_top": "#1e1d1e",
+  "tile_id": "5131cf84-778d-436e-a13d-7563f29f64d9",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:53:38+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 24,
+        "dominant_share": 0.2652,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.2338,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.2468,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.2511,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2284,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.2262,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2522,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.211,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.2576,
+        "px": 924
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1558,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2208,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.195,
+        "px": 923
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.2543,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.2706,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2825,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.29,
+        "px": 924
+      }
+    ],
+    "mean_colours": 22.56,
+    "mean_dominant_share": 0.2401
+  },
+  "motif": "a glint of ore",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "brown_paving_stone",
+  "flavour": "detail",
+  "index": 115,
+  "seed": 29070,
+  "prompt": "brown paving stone, a cigarette of straw in the middle, brown paving stone all around the edge",
+  "palette_top": "#7d7265",
+  "tile_id": "69a30275-bea3-45a9-ad9f-d44dac4d443a",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:20:19+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 23,
+        "dominant_share": 0.286,
+        "px": 923
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2798,
+        "px": 922
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.3644,
+        "px": 922
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5796,
+        "px": 923
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.3564,
+        "px": 923
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4004,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2687,
+        "px": 923
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4193,
+        "px": 923
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2243,
+        "px": 923
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.3803,
+        "px": 923
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.3456,
+        "px": 923
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.3554,
+        "px": 923
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.3398,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.3799,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.355,
+        "px": 924
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.2478,
+        "px": 924
+      }
+    ],
+    "mean_colours": 20.94,
+    "mean_dominant_share": 0.3489
+  },
+  "motif": "a cigarette of straw",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

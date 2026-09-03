@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "light_beach",
+  "flavour": "detail",
+  "index": 123,
+  "seed": 76651,
+  "prompt": "light beach, a mound of sand in the middle, light beach all around the edge",
+  "palette_top": "#e4c495",
+  "tile_id": "0523e70c-df71-4811-8575-6c7b089447d0",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:34:43+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 12,
+        "dominant_share": 0.6406,
+        "px": 921
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.6004,
+        "px": 921
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.4908,
+        "px": 921
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.6526,
+        "px": 921
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.6478,
+        "px": 920
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.5359,
+        "px": 920
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.6022,
+        "px": 920
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.5707,
+        "px": 920
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.5565,
+        "px": 920
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.5689,
+        "px": 921
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.4315,
+        "px": 920
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5967,
+        "px": 920
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.494,
+        "px": 921
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.4633,
+        "px": 941
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.5668,
+        "px": 921
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.8697,
+        "px": 921
+      }
+    ],
+    "mean_colours": 13.0,
+    "mean_dominant_share": 0.5805
+  },
+  "motif": "a mound of sand",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}
