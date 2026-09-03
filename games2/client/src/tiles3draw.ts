@@ -575,8 +575,15 @@ export function plateKey(art: PlateLike, ground: string): string {
  *  library's canonical `side_order`, so which ground is side_b is decided
  *  upstream; sorting the key would let two callers agree on a key while drawing
  *  the boundary opposite ways round. */
-export function boundaryKey(frame: number, idA: string, idB: string, seam = true): string {
-  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}`;
+export function boundaryKey(frame: number, idA: string, idB: string, seam = true, topOnly = false): string {
+  /* `topOnly` IS AN INPUT TO THE PICTURE, so it is an input to the key. A
+   * level-0 boundary is masked to its top face and a raised one keeps its wall
+   * band (see the note in `boundary()`), which makes them two different
+   * rasters; leaving the flag out of the key put both under one name and served
+   * whichever composed first — the one cache bug this repo does not survive.
+   * Caught by "a RAISED boundary keeps its wall band", which asserts the two
+   * keys differ. Flat keeps the historical key shape, so no existing key moves. */
+  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}${topOnly ? "|top" : ""}`;
 }
 
 /** A painted liquid diamond, keyed by the colour that IS its content. */
@@ -590,7 +597,7 @@ export function liquidKey(rgb: readonly [number, number, number]): string {
  *  pre-3.0 look, not a hole. */
 export function boundaryKeyFor(b: Tiles3Boundary, seam = true): string | null {
   if (b.maskFrame === null) return null;
-  return boundaryKey(b.maskFrame, plateSourceId(b.plateA, b.a), plateSourceId(b.plateB, b.b), seam);
+  return boundaryKey(b.maskFrame, plateSourceId(b.plateA, b.a), plateSourceId(b.plateB, b.b), seam, !!b.topOnly);
 }
 
 /* -- the load list ---------------------------------------------------------- */
@@ -892,7 +899,30 @@ export class Tiles3Textures {
        * never names a file (`boundaryArtPaths` names the SOURCES, which do not
        * move), so one key still maps to one picture and no cache can hold a
        * stale one. */
-      return topFaceOnly(this.o.sheets, out, { margin: false });
+      /* AT LEVEL 0 ONLY — and the inversion is deliberate, measured, and
+       * temporary. `b.topOnly` is set by the resolver exactly when z0 > 0, so
+       * `!b.topOnly` IS "this boundary sits on flat ground".
+       *
+       * Level 0 is where the artefact lives and where the mask is FREE: a
+       * three-arm render of his own patch (1,089 cells / 74 boundaries, every
+       * cell level 0) gives interior unpainted texels 0/0/0 with the boundary
+       * drawn not-at-all / full / masked, and visible light_beach wall texels
+       * 0 / 18,321 / 0. Nothing depends on that band; it is pure overdraw that
+       * painter order leaves on top.
+       *
+       * A RAISED boundary keeps its band for now, even though the resolver
+       * asks for top-face-only there and render3 does apply
+       * `top_face_only(wang_surface())` at raised levels. Reason, measured on a
+       * 25x25 patch at (287,355) with 32 raised boundaries: the same three arms
+       * give 655 / 0 / 655 interior unpainted texels. The gap is PRE-EXISTING
+       * — it is there with no boundary drawn at all — and the boundary's wall
+       * band has been accidentally covering it. Masking it there would trade a
+       * dark hole on a cliff for a wall tick on a beach, so the cover stays
+       * until the terrain gap itself is closed (a raised cell is `exposed` only
+       * on its two FRONT neighbours, `front_low = min(L(x+1,y), L(x,y+1))`, so a
+       * cell that is lower only to the SIDE gets no wall course — render3 shares
+       * the rule and therefore the gap). Tracked in coordination/games.json. */
+      return b.topOnly ? out : topFaceOnly(this.o.sheets, out, { margin: false });
     });
   }
 

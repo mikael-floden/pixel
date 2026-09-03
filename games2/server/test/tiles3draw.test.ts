@@ -577,6 +577,37 @@ test("a composed boundary carries NO wall band, and its top face is untouched", 
   assert.ok(checked >= 8, `${checked} boundary cases`);
 });
 
+/* AND A RAISED BOUNDARY STILL KEEPS ITS BAND — deliberate, measured, temporary.
+ * The resolver asks for top-face-only when z0 > 0 and render3 applies
+ * `top_face_only(wang_surface())` there, but that band is currently covering a
+ * PRE-EXISTING terrain gap: a three-arm render of a 25x25 patch at (287,355)
+ * with 32 raised boundaries gives 655 / 0 / 655 interior unpainted texels with
+ * the boundary drawn not-at-all / full / masked. The gap is there with NO
+ * boundary at all, so masking would trade a dark hole on a cliff for a wall tick
+ * on a beach. This gate pins the exception so it cannot be "tidied up" before
+ * the gap is closed — and so that closing the gap makes this gate fail loudly
+ * and be removed on purpose. */
+test("a RAISED boundary keeps its wall band until the terrain gap is closed", { skip }, () => {
+  const c = (F.boundary as any[])[0];
+  const fx = fakeTextures();
+  fx.put(artKey(c.a.path), px(c.a.path));
+  fx.put(artKey(c.b.path), px(c.b.path));
+  const T = new Tiles3Textures({ textures: fx.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas });
+  const base: any = { maskFrame: c.frame, a: c.a.ground, b: c.b.ground, plateA: c.a, plateB: c.b };
+  const flat = T.boundary({ ...base });
+  const raised = T.boundary({ ...base, topOnly: true });
+  assert.ok(flat && raised);
+  const count = (k: string) => {
+    const p = (fx.man.get(k)!.getSourceImage() as { pix: Uint8ClampedArray }).pix;
+    let n = 0;
+    for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++) if (!SHEETS.libTop[i] && p[i * 4 + 3] > 0) n++;
+    return n;
+  };
+  assert.equal(count(flat as string), 0, "a level-0 boundary is masked");
+  assert.ok(count(raised as string) > 1000, "a raised boundary still carries its band");
+  assert.notEqual(flat, raised, "and the two are DIFFERENT pictures, so they must not share a key");
+});
+
 
 
 test("a missing source degrades to no boundary, never to a wrong one", { skip }, () => {
