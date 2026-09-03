@@ -1298,6 +1298,11 @@ uniform sampler2D uHeightL; // terrain height, LINEAR — smooth (bilinear) samp
 uniform sampler2D uRoom;    // the room mask (membership in the 128 bit — see setRoom)
 uniform float uRoomOn;      // 1 when uRoom is bound (unbound sampler = unit 0!)
 uniform float uIndoorMix;   // the eased indoor blend — fog outside MY room fades with it
+uniform sampler2D uBase;    // THE SCENERY BASE FIELD: each scenery silhouette stamped with
+                            // its base cell encoded (R + low G = col, B + high G = row), same
+                            // window as uCam — see stampSceneryBases
+uniform float uBaseOn;      // 1 when uBase is bound (unbound sampler = unit 0!)
+uniform float uBaseFlip;    // the field's y orientation (the glow field's)
 
 // Tunables (named consts). CEL-SHADED DEPTH FOG whose JOB is to HIGHLIGHT CLIFF EDGES
 // (maintainer: "see the exact edge where the cliff starts / the ground ends"). TWO
@@ -1394,6 +1399,27 @@ void main() {
   float z = 0.0;
   vec2 cell = vec2(0.0); // resolved surface cell (col,row) — for the horizontal dist
   bool found = false;
+  // A SCENERY PIXEL TAKES THE FOG OF THE CELL UNDER THE OBJECT'S FEET — the
+  // whole object one fog, its top as its bottom (maintainer 2026-09-03: fogged
+  // ground, crisp skulls and spires "pop out"; a tall object's top pixels used
+  // to resolve to whatever ground lay BEHIND it on screen, a different level
+  // and distance from its base). The base field says which object, if any,
+  // owns this pixel and where it stands; the march is skipped for it.
+  bool onBase = false;
+  if (uBaseOn > 0.5) {
+    vec2 buv = vec2((wx - uCam.x) / uCam.z, (wy - uCam.y) / uCam.w);
+    if (buv.x > 0.0 && buv.x < 1.0 && buv.y > 0.0 && buv.y < 1.0) {
+      vec4 sb = texture2D(uBase, vec2(buv.x, mix(buv.y, 1.0 - buv.y, uBaseFlip)));
+      if (sb.a > 0.5) {
+        float g = floor(sb.g * 255.0 + 0.5);
+        float bcol = floor(sb.r * 255.0 + 0.5) + mod(g, 16.0) * 256.0;
+        float brow = floor(sb.b * 255.0 + 0.5) + floor(g / 16.0) * 256.0;
+        cell = vec2(bcol + 0.5, brow + 0.5);
+        float H = heightAt(cell);
+        if (H < 90.0) { z = H; found = true; onBase = true; }
+      }
+    }
+  }
   float vHi = vTop;
   // WALK BUDGET: sweeping from the max-level candidate down to level 0 needs
   // about maxLevel*(lh/dy) iterations (~1.07 per level on maps2 geometry; the
@@ -1461,6 +1487,7 @@ void main() {
   float sv = v0 + sz * kk;            // col+row at the smooth surface height
   float scol = (u + sv) * 0.5;        // EXACT iso inverse (u, v0 already smooth)
   float srow = (sv - u) * 0.5;
+  if (onBase) { scol = cell.x; srow = cell.y; } // the object's feet, for every pixel of it
   float distH = length(vec2(scol - uPlayerXY.x, srow - uPlayerXY.y)); // 2D only
   // Same onset/spacing/cull as before: band 1 at FOG_D0, +1 every FOG_DW cells, full
   // fog (= the max view distance) at FOG_D0 + (BANDS-2)*FOG_DW ≈ 18.3 cells. The floor()
@@ -1746,6 +1773,14 @@ export class NightLights {
   // Measured (off-centre stamp probe): this stack's RT samples straight, no
   // y-flip — same family of ground truth as fieldFlip above.
   glowFlip = 0;
+  /** THE SCENERY BASE FIELD (see DEPTHFOG_FRAG uBase): the visible scenery
+   *  images, each carrying its base cell in data "fogBase" = [col, row]. */
+  private sceneryBases: Phaser.GameObjects.Image[] = [];
+  private baseRT?: Phaser.GameObjects.RenderTexture;
+  private baseKey: string | null = null;
+  private baseDirty = false;
+  /** Switch (dev A/B): stamp the field, or leave the fog to the marched ground. */
+  sceneryFog = true;
   active = false;
   // Live calibration (debug keys): rendering-path differences between GPUs
   // showed up as flipped/scaled fields that headless verification could not
@@ -1821,6 +1856,9 @@ export class NightLights {
       uHeightL: { type: "sampler2D", value: null },
       uHeightG: { type: "sampler2D", value: null },
       uRoom: { type: "sampler2D", value: null },
+      uBase: { type: "sampler2D", value: null },
+      uBaseOn: { type: "1f", value: 0 },
+      uBaseFlip: { type: "1f", value: 0 },
     });
     this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
@@ -2048,6 +2086,18 @@ export class NightLights {
     this.ensureRoomTexture();
     this.fogRoomBound = this.scene.textures.exists(ROOM_KEY);
     if (this.fogRoomBound) s.setSampler2D("uRoom", ROOM_KEY, 2);
+    // The scenery base field: the fog shader's own size (one texel per field
+    // pixel is all the encoding needs), NEAREST so the codes never blend.
+    this.baseRT?.destroy();
+    if (this.baseKey && this.scene.textures.exists(this.baseKey)) this.scene.textures.remove(this.baseKey);
+    this.baseRT = this.scene.make.renderTexture({ width, height }, false);
+    this.baseKey = `fog-base-${this.fieldCount}`;
+    this.baseRT.saveTexture(this.baseKey);
+    this.scene.textures.get(this.baseKey).setFilter(Phaser.Textures.FilterMode.NEAREST);
+    this.baseDirty = false;
+    s.setSampler2D("uBase", this.baseKey, 3);
+    s.setUniform("uBaseOn.value", 1);
+    s.setUniform("uBaseFlip.value", this.glowFlip);
     s.setRenderToTexture(key);
     if (ls !== 1) this.scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
     this.depthFogShader = s;
@@ -3156,7 +3206,59 @@ export class NightLights {
       f.setUniform("uAmbient.value.z", ambient[2]);
       f.setUniform("uRoomOn.value", this.fogRoomBound ? 1 : 0);
       f.setUniform("uIndoorMix.value", this.indoorMix);
+      f.setUniform("uBaseFlip.value", this.glowFlip);
+      // Like uGlowOn: an empty field is not fetched per pixel.
+      f.setUniform("uBaseOn.value", this.stampSceneryBases(camX, camY, wv.width * k) ? 1 : 0);
     }
+  }
+
+  /** The scenery images the fog may own pixels of — the scene hands over its
+   *  visible set after every scenery rebuild; each image carries data
+   *  "fogBase" = [col, row]. */
+  setSceneryBases(imgs: Phaser.GameObjects.Image[]): void {
+    // Stamped in PAINTER order (depth ascending): the last stamp owns an
+    // overlap pixel, and the nearer piece is what the screen shows there.
+    this.sceneryBases = [...imgs].sort((a, b) => a.depth - b.depth);
+  }
+
+  /** STAMP THE SCENERY BASE FIELD for this frame's window: every visible
+   *  scenery image drawn as a flat silhouette (tintFill) in the colour that
+   *  encodes its base cell, on the glow field's mapping (world -> texel via
+   *  gscale). Cleared only when there is something to draw or to erase. */
+  private stampSceneryBases(camX: number, camY: number, winW: number): boolean {
+    const rt = this.baseRT;
+    if (!rt) return false;
+    const list = this.sceneryFog ? this.sceneryBases : [];
+    const gscale = rt.width / winW;
+    let any = false;
+    for (const img of list) if (img.active && img.visible && img.getData("fogBase")) { any = true; break; }
+    if (any || this.baseDirty) rt.clear();
+    this.baseDirty = any;
+    if (!any) return false;
+    rt.beginDraw();
+    for (const img of list) {
+      if (!img.active || !img.visible) continue;
+      const base = img.getData("fogBase") as [number, number] | undefined;
+      if (!base) continue;
+      const col = Math.max(0, Math.min(4095, base[0]));
+      const row = Math.max(0, Math.min(4095, base[1]));
+      const enc = ((col & 255) << 16) | (((col >> 8) | ((row >> 8) << 4)) << 8) | (row & 255);
+      const sx = img.scaleX;
+      const sy = img.scaleY;
+      const alpha = img.alpha;
+      const tinted = img.isTinted;
+      const fill = img.tintFill;
+      const tint = img.tintTopLeft;
+      img.setTintFill(enc).setAlpha(1).setScale(sx * gscale, sy * gscale);
+      rt.batchDraw(img, (img.x - camX) * gscale, (img.y - camY) * gscale);
+      img.setScale(sx, sy).setAlpha(alpha);
+      // A pure round trip: whatever tint the image had comes back (none today).
+      if (!tinted) img.clearTint();
+      else if (fill) img.setTintFill(tint);
+      else img.setTint(tint);
+    }
+    rt.endDraw();
+    return true;
   }
 
   /** EXACT JS twin of the shader's mist density at a WORLD point (probes +

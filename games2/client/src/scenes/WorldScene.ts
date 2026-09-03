@@ -3572,6 +3572,13 @@ export class WorldScene extends Phaser.Scene {
         this.groundCacheOn = prevCache;
         return out;
       },
+      /** THE DEPTH FOG ON SCENERY: on = every scenery pixel takes the fog of
+       *  the cell under the object's feet; off = the fog of the ground behind it. */
+      sceneryFog: (on?: boolean) => {
+        if (!this.night) return null;
+        if (typeof on === "boolean") this.night.sceneryFog = on;
+        return this.night.sceneryFog;
+      },
       /** THE LIGHTING PASSES' A/B: arm/disarm the surface-march block skip. */
       nightSkip: (on: boolean) => this.night?.setSkip(on) ?? null,
       /** PARITY, same turn: the night or fog pass rendered with the skip off and on
@@ -8887,6 +8894,15 @@ export class WorldScene extends Phaser.Scene {
     for (const lo of this.litOccluders) {
       lo.img.setVisible(on);
       if (!on) continue;
+      // DEPTH-FOG applies to SCENERY and PROPS too (maintainer 2026-09-03:
+      // fogged ground, crisp skulls and spires "pop out"): the lit copy sits
+      // ABOVE the fog overlay, so it bypassed the wash. Fading the copy by the
+      // fog at the piece's OWN cell cross-fades it into the fogged under-overlay
+      // image — the same construction bodies use (syncLitCopy) — and under it
+      // the fog pass paints the whole object with that one cell's fog (the
+      // scenery base field, nightlight stampSceneryBases), so top and base
+      // read the same. Fog 0 → the unchanged crisp copy.
+      lo.img.setAlpha(1 - Math.min(1, Math.max(0, night!.depthFogAt(lo.col, lo.row, lo.z).a)));
       let tint = night!.tintAt(lo.col, lo.row, lo.z, true);
       if (lo.emission) {
         // Self-glow floor on the copy's tint — same semantics as the
@@ -13250,6 +13266,9 @@ export class WorldScene extends Phaser.Scene {
   private rebuildScenery(cam: Phaser.Cameras.Scene2D.Camera) {
     this.destroyBatch(this.sceneryImgs);
     this.sceneryImgs = [];
+    // The fog's scenery base field stamps THIS array (shared reference, filled
+    // below) — handed over here so every exit path leaves it on the live set.
+    this.night?.setSceneryBases(this.sceneryImgs);
     /* COUNTED BEFORE THE GUARD: the boot hold waits for this pass to have RUN,
      * and a world with no scenery index runs it and finds nothing. Counting
      * after the early return would make every such join sit out the hold's full
@@ -13393,7 +13412,10 @@ export class WorldScene extends Phaser.Scene {
            * at 802.5, four tenths of a cell in front of it (maintainer
            * 2026-08-29: "I'm standing under the scenery, but the scenery is
            * still rendered on top of me"). */
-          .setDepth(hbDepth + this.occSeq++ * OCC_DEPTH_EPS),
+          .setDepth(hbDepth + this.occSeq++ * OCC_DEPTH_EPS)
+          // THE CELL UNDER ITS FEET, for the depth fog: every pixel of the
+          // object takes that cell's fog (nightlight stampSceneryBases).
+          .setData("fogBase", [Math.max(0, Math.floor(p.x)), Math.max(0, Math.floor(p.y))]),
       );
       /* AND IT OCCLUDES. Scenery drew with the right painter depth but told
        * `resolveBodyDepth` nothing, so a body never sorted behind a tree — it
@@ -13471,6 +13493,7 @@ export class WorldScene extends Phaser.Scene {
     this.t3stats.scenery = drawn;
     this.sceneryRoofedDrawn = roofedDrawn;
     this.flushScenery();
+    this.night?.setSceneryBases(this.sceneryImgs); // re-sorted now that every piece is in
   }
 
   private makeGroundRT() {
