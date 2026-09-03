@@ -540,7 +540,15 @@ export function registerLiveRoutes(app: express.Application): void {
         ? Object.fromEntries(
             Object.entries(body.ground as Record<string, unknown>).slice(0, 16).map(([k, v]) => [
               k.slice(0, 24),
-              typeof v === "number" ? v : Array.isArray(v) ? v.slice(0, 12).map((x) => String(x).slice(0, 24)) : String(v).slice(0, 48),
+              typeof v === "number"
+                ? v
+                : Array.isArray(v)
+                  ? v.slice(0, 12).map((x) => String(x).slice(0, 24))
+                  // The texture crop is a data: URL and needs its own ceiling —
+                  // a few KB of PNG, which is the whole point of it.
+                  : k === "png"
+                    ? String(v).slice(0, 24000)
+                    : String(v).slice(0, 48),
             ]),
           )
         : null,

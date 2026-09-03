@@ -1654,7 +1654,7 @@ export class WorldScene extends Phaser.Scene {
       frames: snap.frames,
       sections: perFrame,
       counts: { ...(snap.counts as Record<string, number>), texturesAdded: snap.texturesAdded as number },
-      ground: this.groundTexelReport(),
+      ground: this.groundTexelReport(final),
       worst: (() => {
         try {
           const h = (window as unknown as { __ml?: { hitch?: () => { worst?: unknown[] } } }).__ml?.hitch?.();
@@ -1688,7 +1688,7 @@ export class WorldScene extends Phaser.Scene {
    *  Bounded on purpose: one 256x192 block, once per beacon window, is ~49k
    *  texels — a readback he will not feel, against a full-texture snapshot he
    *  would. */
-  private groundTexelReport(): Record<string, unknown> | null {
+  private groundTexelReport(wantPng: boolean): Record<string, unknown> | null {
     const rt = this.groundRT;
     const r = this.game.renderer as unknown as {
       gl?: WebGLRenderingContext;
@@ -1748,7 +1748,42 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     const top = Object.entries(bins).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    /* AND, ON A FINAL FLUSH, A PICTURE OF IT.
+     *
+     * Counts located the artefact — fill-coloured texels at the tile diamond's
+     * tips — but they cannot show its SHAPE, and every shape I have inferred
+     * from a phone screenshot today has been wrong, because a screenshot is the
+     * texture after zoom, lighting and whatever the panel drew. A 128x112 crop
+     * of the texture ITSELF is four tiles across and four down: enough to see
+     * whether the tips are missing, and small enough (a few KB of PNG) to ride
+     * in a JSON commit. Only on the flush, never per window. */
+    let png: string | null = null;
+    if (wantPng) {
+      try {
+        const cw = Math.min(128, W);
+        const ch = Math.min(112, H);
+        const cv = document.createElement("canvas");
+        cv.width = cw;
+        cv.height = ch;
+        const g2 = cv.getContext("2d");
+        if (g2) {
+          const id = g2.createImageData(cw, ch);
+          for (let y = 0; y < ch; y++) {
+            // readPixels is bottom-up; flip so the crop reads like the texture.
+            const src = (H - 1 - y) * W * 4;
+            const dst = y * cw * 4;
+            for (let x = 0; x < cw * 4; x++) id.data[dst + x] = px[src + x];
+          }
+          g2.putImageData(id, 0, 0);
+          png = cv.toDataURL("image/png");
+          if (png.length > 24000) png = null; // never bloat the committed file
+        }
+      } catch {
+        png = null;
+      }
+    }
     return {
+      png,
       rt: `${rt.width}x${rt.height}`,
       block: `${W}x${H}@${x0},${y0}`,
       anchor: `${Math.round(rt.x)},${Math.round(rt.y)}`,
@@ -1948,6 +1983,8 @@ export class WorldScene extends Phaser.Scene {
   private groundRedrewThisFrame = false;
   private worldUp = false;
   private groundCellStats = { runs: 0, full: 0, cells: 0, ms: 0 };
+  /** DEV: the last landing repaint's stamp rect and grown clip rect. */
+  private groundLastRect: unknown = null;
   /** DIAGNOSTIC ring: the last scrolls' (prevAx, prevAy, ax, ay, sx, sy). */
   private groundScrollLog: number[][] = [];
   // Chase-cam state: eased world centre + eased zoom; detached while a debug
@@ -4123,6 +4160,180 @@ export class WorldScene extends Phaser.Scene {
         this.repaintTiles3Cells(cells.map(([c, r]) => r * world.width + c));
         return { ...this.t3stats, mode: this.groundLastMode, runs: this.groundCellStats.runs - before.runs, full: this.groundCellStats.full - before.full, totalMs: +(this.groundCellStats.ms - before.ms).toFixed(1) };
       },
+      /** LENS: STAMP EXACTNESS. Clears the ground RT to opaque black straight
+       *  on its framebuffer, lays ONE `rt.stamp` of a 1x1 white texture over
+       *  the given texture-space rect exactly as repaintTiles3Cells lays its
+       *  background, then reads the framebuffer back and reports which texels
+       *  it actually covered. DEV ONLY — it destroys the ground picture; call
+       *  __ml.groundRedraw() after. */
+      stampProbe: (x0: number, y0: number, x1: number, y1: number, margin?: number) => {
+        const rt = this.groundRT;
+        const r = this.game.renderer as unknown as {
+          gl?: WebGLRenderingContext;
+          flush?: () => void;
+          pushFramebuffer?: (fb: WebGLFramebuffer, u?: boolean, s?: boolean) => void;
+          popFramebuffer?: () => void;
+        };
+        const fb = rt
+          ? (rt.texture as unknown as { renderTarget?: { framebuffer?: WebGLFramebuffer } })?.renderTarget?.framebuffer
+          : undefined;
+        if (!rt || !r?.gl || !fb || !r.pushFramebuffer || !r.popFramebuffer) return { err: "unavailable" };
+        const gl = r.gl;
+        const raw = (fb as unknown as { webGLFramebuffer?: WebGLFramebuffer }).webGLFramebuffer ?? (fb as unknown as WebGLFramebuffer);
+        const bindFb = () => gl.bindFramebuffer(gl.FRAMEBUFFER, raw);
+        const unbindFb = () => gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        const W = rt.width;
+        const H = rt.height;
+        const key = "probe-white";
+        if (!this.textures.exists(key)) {
+          const cv = document.createElement("canvas");
+          cv.width = 1;
+          cv.height = 1;
+          const g = cv.getContext("2d")!;
+          g.fillStyle = "#ffffff";
+          g.fillRect(0, 0, 1, 1);
+          this.textures.addCanvas(key, cv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+        }
+        r.flush?.();
+        bindFb();
+        gl.disable(gl.SCISSOR_TEST);
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        unbindFb();
+        rt.stamp(key, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
+        r.flush?.();
+        const m = margin ?? 4;
+        const tx0 = Math.max(0, x0 - m);
+        const ty0 = Math.max(0, y0 - m);
+        const tx1 = Math.min(W, x1 + m);
+        const ty1 = Math.min(H, y1 + m);
+        const w = tx1 - tx0;
+        const h = ty1 - ty0;
+        const px = new Uint8Array(w * h * 4);
+        bindFb();
+        gl.readPixels(tx0, H - ty1, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px);
+        unbindFb();
+        let lo = 255;
+        let hi = 0;
+        for (let i = 0; i < px.length; i += 4) { if (px[i] < lo) lo = px[i]; if (px[i] > hi) hi = px[i]; }
+        const cx = Math.floor((x0 + x1) / 2) - tx0;
+        const cyTex = Math.floor((y0 + y1) / 2);
+        const cy = ty1 - 1 - cyTex;
+        const centre = cx >= 0 && cx < w && cy >= 0 && cy < h ? Array.from(px.slice((cy * w + cx) * 4, (cy * w + cx) * 4 + 4)) : null;
+        // Map the bottom-up read back into TEXTURE space and classify.
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        let full = 0, partial = 0, none = 0;
+        const partVals: Record<string, number> = {};
+        const rowFull: Record<number, number> = {};
+        const colFull: Record<number, number> = {};
+        for (let ry = 0; ry < h; ry++) {
+          const ty = ty1 - 1 - ry; // texture-space row
+          for (let x = 0; x < w; x++) {
+            const v = px[(ry * w + x) * 4];
+            const txx = tx0 + x;
+            if (v === 0) { none++; continue; }
+            if (v === 255) {
+              full++;
+              rowFull[ty] = (rowFull[ty] ?? 0) + 1;
+              colFull[txx] = (colFull[txx] ?? 0) + 1;
+            } else {
+              partial++;
+              const k = String(v);
+              partVals[k] = (partVals[k] ?? 0) + 1;
+            }
+            if (txx < minX) minX = txx;
+            if (txx > maxX) maxX = txx;
+            if (ty < minY) minY = ty;
+            if (ty > maxY) maxY = ty;
+          }
+        }
+        return {
+          lo,
+          hi,
+          centre,
+          fbKind: (fb as unknown as { webGLFramebuffer?: unknown }).webGLFramebuffer ? "wrapped" : "raw",
+          asked: { x0, y0, x1, y1, w: x1 - x0, h: y1 - y0 },
+          covered: full ? { x0: minX, y0: minY, x1: maxX + 1, y1: maxY + 1 } : null,
+          full,
+          partial,
+          none,
+          expectFull: (x1 - x0) * (y1 - y0),
+          partVals,
+          rowSpans: Object.keys(rowFull).map(Number).sort((a, b) => a - b).map((k) => `${k}:${rowFull[k]}`),
+          colSpans: Object.keys(colFull).map(Number).sort((a, b) => a - b).map((k) => `${k}:${colFull[k]}`),
+        };
+      },
+      /** LENS: full-framebuffer scan after one stamp — no coordinate mapping
+       *  assumptions at all. Returns the bounding box of every non-black texel
+       *  in FRAMEBUFFER (bottom-up) rows and in texture (top-down) rows. */
+      stampScan: (x0: number, y0: number, x1: number, y1: number) => {
+        const rt = this.groundRT;
+        const r = this.game.renderer as unknown as { gl?: WebGLRenderingContext; flush?: () => void };
+        const fb = rt
+          ? (rt.texture as unknown as { renderTarget?: { framebuffer?: { webGLFramebuffer?: WebGLFramebuffer } | WebGLFramebuffer } })?.renderTarget?.framebuffer
+          : undefined;
+        if (!rt || !r?.gl || !fb) return { err: "unavailable" };
+        const gl = r.gl;
+        const raw = (fb as { webGLFramebuffer?: WebGLFramebuffer }).webGLFramebuffer ?? (fb as WebGLFramebuffer);
+        const tex = (rt.texture as unknown as { renderTarget?: { width: number; height: number } }).renderTarget!;
+        const W = tex.width;
+        const H = tex.height;
+        const key = "probe-white";
+        if (!this.textures.exists(key)) {
+          const cv = document.createElement("canvas");
+          cv.width = 1;
+          cv.height = 1;
+          const g = cv.getContext("2d")!;
+          g.fillStyle = "#ffffff";
+          g.fillRect(0, 0, 1, 1);
+          this.textures.addCanvas(key, cv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+        }
+        r.flush?.();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, raw);
+        gl.disable(gl.SCISSOR_TEST);
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        rt.stamp(key, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
+        r.flush?.();
+        const px = new Uint8Array(W * H * 4);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, raw);
+        gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, px);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let minR = Infinity;
+        let maxR = -Infinity;
+        let full = 0;
+        let partial = 0;
+        const partVals: Record<string, number> = {};
+        for (let row = 0; row < H; row++) {
+          for (let x = 0; x < W; x++) {
+            const v = px[(row * W + x) * 4];
+            if (v === 0) continue;
+            if (v === 255) full++;
+            else { partial++; partVals[String(v)] = (partVals[String(v)] ?? 0) + 1; }
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (row < minR) minR = row;
+            if (row > maxR) maxR = row;
+          }
+        }
+        return {
+          rtSize: `${rt.width}x${rt.height}`,
+          fbSize: `${W}x${H}`,
+          asked: { x0, y0, x1, y1 },
+          full,
+          partial,
+          partVals,
+          expect: (x1 - x0) * (y1 - y0),
+          fbBox: full + partial ? { x0: minX, x1: maxX + 1, row0: minR, row1: maxR + 1 } : null,
+          // the same box expressed in TEXTURE rows (top-down), assuming row = H-1-texY
+          texBox: full + partial ? { x0: minX, x1: maxX + 1, y0: H - 1 - maxR, y1: H - minR } : null,
+        };
+      },
+      /** The stamp rect and clip rect of the last landing repaint. */
+      lastRepaintRect: () => this.groundLastRect,
       /** DIAGNOSTIC: the ground render texture's pixels as a PNG data URL (with
        *  its world anchor), so two redraws can be diffed pixel by pixel. */
       groundSnap: () =>
@@ -13357,6 +13568,7 @@ export class WorldScene extends Phaser.Scene {
       x1: Math.min(W, x1 + GROUND_SEAM),
       y1: Math.min(H, y1 + GROUND_SEAM),
     };
+    this.groundLastRect = { stamp: { x0, y0, x1, y1 }, clip: { ...b }, W, H, cells: cells.length };
     rt.stamp(bgKey, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
     const win = this.t3groundWindow(a.ax, a.ay, b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
     this.groundClip = b;
