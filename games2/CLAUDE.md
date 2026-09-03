@@ -184,81 +184,62 @@ by construction, so no existing branch changed.
   minimum cell>`, so a window-local component gets a different id, a different
   set and different art every time the camera moves — the ground would visibly
   reshuffle as you walk.
-- **PAINTER ORDER IS THREE PASSES**: every cell, then the composed boundaries on
-  the corner lattice, then the deck slabs. Interleaving is wrong and looks
-  nearly right: three of the four cells a boundary blends are drawn AFTER it,
-  and would paint their own plates back over the transition.
-- **A COMPOSED BOUNDARY IS TOP FACE ONLY AT LEVEL 0 — because it paints LAST**
-  (`Tiles3Textures.boundary`). A boundary is a surface blend on the corner
-  lattice with no lawful wall source at any level: at a raised level the cap's
-  own x-over-y art is the wall, and at level 0 there is no wall and nothing
-  below to hide. The asymmetry that makes this a rule rather than a tidy-up is
-  the pass order above. A CELL's wall band is harmless overdraw — the cells in
-  front are painted after it and cover it (measured with exact mask arithmetic:
-  0 texels uncovered, inland and at a shoreline, liquid neighbours or not). A
-  BOUNDARY is painted after every cell, so its wall band lands on top of the
-  tiles that would have hidden it and only a LATER BOUNDARY can cover it —
-  and boundaries exist only where the Wang index is mixed, so along a transition
-  band most of it is covered by nothing. That was the maintainer's zigzag on the
-  beach (2026-09-03), and `Tiles3Boundary.topOnly` was a **DEAD FLAG**: the
-  resolver set it (`topOnly: z0 > 0 || undefined`), `boundary()` never read it
-  and `boundaryKeyFor` never carried it. Measured at his own cell (458.9,378.8,
-  every cell level 0 so no exposed face can explain a wall): all 112 boundaries
-  in the window kept the band, a real `light_beach<->grass` composition is
-  1088/1088 OPAQUE wall texels with 800 of them exactly (171,146,116) =
-  light_beach's palette wall, and the dots on his screenshot measure
-  0.750/0.747/0.779 of the sand beside them against a wall/top ratio of
-  0.7500/0.7449/0.7785 — no other ground is close. NO MARGIN ROW here, unlike a
-  liquid's (`topFaceOnly(..., { margin: false })`): a boundary paints over a cell
-  that has already painted its own top AND wall, so there is no hole to fill and
-  an extra row would bleed the blend a pixel into the tile in front. The same
-  line also stops a boundary painting its flat palette wall band over a raised
-  cap's REAL x-over-y wall art. **A gate that recomputes the mask itself cannot
-  catch this** — the flag being dead is the bug — so
-  `server/test/tiles3draw.test.ts` asserts it through the real factory; with the
-  one line reverted, three of its gates fail. Measured on the finished picture,
-  not just the texture: rendering his real patch (1,089 cells / 74 boundaries) in
-  painter order gives **18,321 visible texels of (171,146,116) before and 0
-  after**.
-  **THIS IS render3's OWN ANSWER, checked against it**: at a raised level
-  `render3.py` draws `top_face_only(wang_surface())`, and at level 0 it draws
-  `wang_surface()` as THE CELL'S OWN PLATE in the cell's painter slot — where the
-  cells in front cover its wall band — so render3's VISIBLE output is top-face
-  only at every level, which is what this fix reproduces. Its header states the
-  geometry law too: `DY=14 … 15 leaks a 1px wall band per boundary`.
-  **THE STRUCTURAL DIVERGENCE THAT REMAINS, stated so nobody re-derives it**:
-  render3 draws the Wang tile *instead of* the cell's plate (`wang_surface()`
-  returns the composed boundary OR the surface, never both) and its separate
-  corner-lattice pass is dead code — `for s in []: # the boundary is drawn WITH
-  the cell now`. The game still draws the plate and then the boundary over it in
-  a later pass. render3's own comment says why that was abandoned: "the field
-  kept its hard diamond edge while the transition repainted a whole cell from a
-  DIFFERENT set member, which is the zigzag seam one cell off the real edge that
-  he marked in red … fixed by drawing the Wang tile INSTEAD of the plate, never
-  over it." With the boundary masked to exactly `libTop` the blend now covers the
-  cell's whole diamond, so the two can no longer fight on the visible face and
-  the remaining difference is a wasted plate draw — but the three-pass order is
-  the deeper divergence and the note above ("Interleaving is wrong") is stale
-  against the reference renderer.
-  **LEVEL 0 ONLY, and the exception is measured, gated and temporary.** A RAISED
-  boundary keeps its band even though the resolver asks for top-face-only there
-  and render3 applies it, because that band is COVERING A PRE-EXISTING TERRAIN
-  GAP: a three-arm render (boundary not drawn / full / masked) of a 25x25 patch
-  at (287,355) with 32 raised boundaries gives **655 / 0 / 655** interior
-  unpainted texels — the gap is there with NO boundary drawn at all. The same
-  arms on the maintainer's level-0 patch give **0 / 0 / 0** holes and
-  **0 / 18,321 / 0** visible wall texels, so at level 0 the mask is free and
-  total. THE GAP'S OWN CAUSE, for whoever closes it: a raised cell is `exposed`
-  only against its two FRONT neighbours (`front_low = min(L(x+1,y), L(x,y+1))`),
-  so a cell lower only to the SIDE gets no wall course; `render3.py` shares the
-  rule and therefore the gap. Gate `a RAISED boundary keeps its wall band until
-  the terrain gap is closed` pins the exception and must be DELETED when the gap
-  is fixed.
-  **`topOnly` IS IN THE KEY** (`boundaryKey`, `|top` suffix; flat keeps the
-  historical shape so no existing key moves). Masked and unmasked are two
-  different rasters, and without it both sat under one name and whichever
-  composed first was served to both — the one cache bug this repo does not
-  survive. Caught only because the raised gate asserts the two keys differ.
+- **PAINTER ORDER: A CELL DRAWS ONCE, AND EVERYTHING THAT CELL WEARS DRAWS
+  INSIDE THAT SLOT.** Cells in painter order (`col+row`, then `col`), each one's
+  composed boundary WITH IT, then the deck slabs. **The boundary is NOT a second
+  pass** — it was, and that was a bug: a transition belonging to a far cell
+  painted on top of the nearer cliff faces in front of it and a cliff's column
+  came out shuffled (maintainer 2026-08-29: "the draw order is fucked up",
+  circling one cliff edge). render3 hit the identical bug and killed the same
+  pass; its loop is still there, spelled `for s in []`, with the note "the
+  boundary is drawn WITH the cell now" (render3.py:1190).
+  **THIS NOTE USED TO SAY "THREE PASSES … INTERLEAVING IS WRONG", AND THAT COST
+  A DAY**: reasoning from it produced a whole fix (mask the boundary to its top
+  face, because "it paints last so its wall band lands on top") plus a composite
+  measurement that reproduced the stale doc instead of the renderer and
+  "proved" 18,321 artefact texels removed while the artefact survived on the
+  maintainer's phone. A stale doc is worse than no doc.
+- **SLACK, NOT EXACTNESS — the law this renderer's seam artefacts keep teaching**
+  (maintainer 2026-09-03, after two days of them: "why don't you fix the code so
+  it can't appear (make sure the tile in front covers it)? Why do you have to
+  make it so exact?"). The ideal lattice is exact in every variant; OVERLAP is
+  what differs, and overlap is what survives reality. Measured uncovered
+  top-face texels on a 24x24 field:
+
+      variant                exact   1-row slip   1 in 20 ops dropped
+      FULL plate                 0            0                  1056
+      top face, margin 0         0          864                  6960
+      top face, margin 1         0            0                  6464
+      top face, margin 2         0            0                  6000
+
+  A full plate's 17-row wall band gives 32 rows of overlap; a tiles2 tile gives
+  49, which is the whole reason no tiles2 world has ever shown a seam artefact —
+  that renderer is TOLERANT BY CONSTRUCTION, not more correct. A top-face-only
+  plate gives ONE, so it is the only thing here a single-row slip can mark, and
+  it carries `TOP_FACE_MARGIN` (2) rows of its own SURFACE below the diamond —
+  never the art's next row, which is the WALL BAND and put 76 wall texels per
+  plate onto the sea when it was tried. Gate: `the geometry has slack: a one-row
+  slip cannot open a hole` (with a control, and non-vacuous — zero margin must
+  fail it). **A fix that makes the geometry more exact leaves the class alive;
+  every one tried here did.**
+  REJECTED, do not re-attempt by reasoning: masking a composed boundary to its
+  top face (`Tiles3Boundary.topOnly` is deliberately UNREAD in `boundary()`) —
+  the full plate is strictly more tolerant on both adversities above, and with
+  zero margin the mask created the most fragile geometry in the renderer at
+  exactly the `light_beach<->grass` cells the artefact is photographed on.
+  Gate: `a composed boundary is the RAW composition — wall band included`.
+- **THE ARTEFACT IS INTERMITTENT, AND THAT IS THE STREAMING, NOT THE GEOMETRY.**
+  The maintainer can make it come and go by tabbing out and in, and it returns
+  SMALLER as more art lands. `opsForCell` DROPS an op whose texture is not
+  resident (deliberately — a fallback tile is a wrong picture nothing corrects),
+  so a window painted while plates are in flight is missing art until a landing
+  repaints those cells (`t3missing` -> `onTerrainBatch` -> `repaintTiles3Cells`).
+  **the_island2 boots from ONE committed atlas sheet with every tile resident,
+  while a maps3 world streams plates per file** — which is the real reason the
+  old world never shows this and the new one does, and NOT dy=15 vs dy=14 or the
+  tile overlap. Any seam report from the phone should be reproduced against COLD
+  art, not a warm local cache.
+
 - **TWO PHASER TRAPS, both silent, both paid for here.**
   `textures.get(key)` returns the built-in `__MISSING` 32x32 checker for an
   unknown key, NOT undefined — handed to the composer an unloaded 64x46 plate
