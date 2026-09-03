@@ -9119,12 +9119,31 @@ function viewWorldTransition(pairId) {
           // top is never mistaken for an unreviewed one.
           i === fadeOrder.firstDone && fadeOrder.firstDone > 0 && i < ordered.length
             ? h("div", { class: "fade-divider muted" }, "already reviewed — same order") : null,
-          h("div", { class: `fade-tile${i >= fadeOrder.firstDone ? " reviewed" : ""}` },
-            h("div", { class: "player-controls" },
-              h("b", {}, `${Math.round(t.pctA)}% ${nameA.toLowerCase()} · ${Math.round(t.pctB)}% ${nameB.toLowerCase()}`),
-              h("span", { class: "muted mono fade-key", title: t.key }, t.key.split("/").pop())),
-            fadeScene(tr.a, tr.b, t),
-            feedbackRow("tiles", t.key, { onchange: paintLeft })),
+          /* THE CARD WEARS ITS VERDICT (maintainer 2026-09-03: "When I approved
+           * or rejected a tile before on the fade page — the card border
+           * became green/red. This made it easy for me to see what has been
+           * approved/rejected since the tile-agent looked at my review. A
+           * review in queue/just committed should have the card with a
+           * green/red border"). Same outline the world candidates already
+           * wear, painted from the local doc — so it appears the instant he
+           * taps, queued or committed alike, and it is still there when the
+           * page is reopened before the tiles agent has acted. */
+          (() => {
+            const card = h("div", { class: "fade-tile" },
+              h("div", { class: "player-controls" },
+                h("b", {}, `${Math.round(t.pctA)}% ${nameA.toLowerCase()} · ${Math.round(t.pctB)}% ${nameB.toLowerCase()}`),
+                h("span", { class: "muted mono fade-key", title: t.key }, t.key.split("/").pop())),
+              fadeScene(tr.a, tr.b, t));
+            const paintCard = () => {
+              const st = fb("tiles", t.key).status;
+              card.classList.toggle("reviewed", i >= fadeOrder.firstDone);
+              card.classList.toggle("picked", st === "approved");
+              card.classList.toggle("dropped", st === "rejected");
+            };
+            paintCard();
+            card.append(feedbackRow("tiles", t.key, { onchange: () => { paintCard(); paintLeft(); } }));
+            return card;
+          })(),
         ].filter(Boolean)),
         tiles2.length > shown ? h("button", {
           class: "ghost-btn", style: "margin-top:10px",

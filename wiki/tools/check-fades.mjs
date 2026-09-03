@@ -376,6 +376,49 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
   ok(/↔/.test(landedNext.h1), `and "next" lands on a real pair page, not a dead route (“${landedNext.h1 || landedNext.body}”)`);
   await p.evaluate(() => { try { localStorage.setItem("wiki-fade-order", "all"); } catch {} });
 }
+
+// ---- 9. a judged fade card wears its verdict ------------------------------
+/* Maintainer 2026-09-03: "When I approved or rejected a tile before on the
+ * fade page — the card border became green/red ... A review in queue/just
+ * committed should have the card with a green/red border." Measured as the
+ * card's computed outline colour against the resolved --good/--bad tokens,
+ * and asserted BEFORE any commit — the tap is what must paint it. */
+{
+  await reopen("#/world/transition/grass__to__ice");
+  const tok = await p.evaluate(() => {
+    const el = document.createElement("span"); document.body.appendChild(el);
+    const read = (v) => { el.style.color = `var(${v})`; return getComputedStyle(el).color; };
+    const out = { good: read("--good"), bad: read("--bad") }; el.remove(); return out;
+  });
+  const card = (i) => p.evaluate((n) => {
+    const c = [...document.querySelectorAll(".fade-tile")][n];
+    const cs = getComputedStyle(c);
+    return { cls: c.className, outline: cs.outlineColor, width: cs.outlineWidth };
+  }, i);
+  const before = await card(0);
+  ok(!/picked|dropped/.test(before.cls), `an unjudged fade card wears no verdict outline (“${before.cls}”)`);
+  await p.evaluate(() => { const r = document.querySelector(".fade-tile"); [...r.querySelectorAll(".verdict button")].find((x) => /approve/.test(x.textContent))?.click(); });
+  await p.waitForTimeout(500);
+  const ok1 = await card(0);
+  ok(/picked/.test(ok1.cls) && ok1.outline === tok.good && parseFloat(ok1.width) >= 2,
+    `approving paints the card GREEN immediately, before any commit (${ok1.outline} vs --good ${tok.good})`);
+  await p.evaluate(() => { const r = document.querySelector(".fade-tile"); [...r.querySelectorAll(".verdict button")].find((x) => /remove/.test(x.textContent))?.click(); });
+  await p.waitForTimeout(500);
+  const no1 = await card(0);
+  ok(/dropped/.test(no1.cls) && !/picked/.test(no1.cls) && no1.outline === tok.bad,
+    `and rejecting paints it RED, never both at once (${no1.outline} vs --bad ${tok.bad})`);
+  // ...and it survives leaving and coming back, which is what "since the tiles
+  // agent looked at my review" means in practice.
+  await p.evaluate(() => { location.hash = "#/world"; }); await p.waitForTimeout(900);
+  await p.evaluate(() => { location.hash = "#/world/transition/grass__to__ice"; }); await p.waitForTimeout(4000);
+  const kept = await p.evaluate(() => {
+    const c = [...document.querySelectorAll(".fade-tile")].find((x) => /dropped/.test(x.className));
+    return c ? { key: c.querySelector(".fade-key")?.title ?? null, outline: getComputedStyle(c).outlineColor } : null;
+  });
+  ok(kept && kept.outline === tok.bad, `the verdict outline is still there when he comes back (${kept?.key?.split("/").pop()})`);
+  await p.evaluate(() => { const r = [...document.querySelectorAll(".fade-tile")].find((x) => /dropped/.test(x.className)); [...r.querySelectorAll(".verdict button")].find((x) => /remove/.test(x.textContent))?.click(); });
+  await p.waitForTimeout(500);
+}
 await b.close();
 console.log(fails.length ? `\nFADE CHECKS FAILED (${fails.length})` : "\nALL FADE CHECKS PASSED");
 process.exit(fails.length ? 1 : 0);

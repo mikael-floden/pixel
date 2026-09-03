@@ -1846,3 +1846,9 @@ input[type="range"] { accent-color: var(--accent); }
 /* The fade list's seam between "still to review" and "already reviewed". */
 .fade-divider { margin: 14px 0 6px; padding-top: 8px; border-top: 1px dashed var(--border, #555); font-size: 13px; }
 .fade-tile.reviewed { opacity: 0.86; }
+/* A judged fade tile wears its verdict, the same outline the world candidates
+   use — visible the instant he taps, queued or committed. Not dimmed: seeing
+   what he rejected is the point. */
+.fade-tile.picked, .fade-tile.dropped { border-radius: 8px; outline-offset: 3px; }
+.fade-tile.picked { outline: 2px solid var(--good); }
+.fade-tile.dropped { outline: 2px solid var(--bad); }
