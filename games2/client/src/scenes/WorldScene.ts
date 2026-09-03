@@ -2085,6 +2085,9 @@ export class WorldScene extends Phaser.Scene {
   private groundSliced = groundPathFast();
   private groundRedrewThisFrame = false;
   private worldUp = false;
+  /** When the boot hold's readiness condition first became true — see
+   *  hideLoadingWhenTerrainIsUp. 0 while not ready. */
+  private holdReadySince = 0;
   private groundCellStats = { runs: 0, full: 0, cells: 0, ms: 0 };
   /** DEV: the last landing repaint's stamp rect and grown clip rect. */
   private groundLastRect: unknown = null;
@@ -13970,6 +13973,10 @@ export class WorldScene extends Phaser.Scene {
      * may release with NOTHING painted, which on a phone streaming a staging
      * world from the CDN is exactly the case the soft deadline used to hit
      * (maintainer 2026-08-29: "the game started without texture again"). */
+    /* How long "everything is loaded" must stay true before the screen lifts.
+     * 1.2 s covers several loader passes, so a flush window cannot masquerade
+     * as an idle loader. */
+    const HOLD_SETTLE_MS = 1200;
     const SOFT_DEADLINE_MS = 20000;
     const HARD_DEADLINE_MS = 60000;
     const t0 = performance.now();
@@ -14005,8 +14012,28 @@ export class WorldScene extends Phaser.Scene {
           this.sceneryQueue.length === 0 &&
           (!this.sceneryPieces || this.sceneryPieces.idle) &&
           !this.tiles3Loader().isLoading();
-        const painted =
+        const ready =
           this.groundPainted && (!load || load.idle) && scenery && !this.repaintGroundPending && !this.repaintOccPending;
+        /* AND IT HAS TO STAY READY (maintainer 2026-09-03: "can you try to make
+         * the loading a bit longer to make sure everything is loaded before we
+         * start the game?").
+         *
+         * `load.idle` is queued 0 AND pending 0, and `need()` only QUEUES — the
+         * queue does not become pending until `flush()`, which runs at the END
+         * of a pass. So there is a real window, every pass, where art is owed
+         * and the loader reads idle. One sample of `ready` can land in it and
+         * release the screen with files still to come; the ground then paints
+         * without them, and nothing repaints it afterwards while the player
+         * stands still, because repaints are driven by camera latches. That is
+         * the state he photographs.
+         *
+         * So require the condition CONTINUOUSLY for HOLD_SETTLE_MS. The tick is
+         * 100 ms, so this costs at most that much extra loading on a world that
+         * really is ready, and it cannot strand: both deadlines below still
+         * fire regardless. */
+        if (!ready) this.holdReadySince = 0;
+        else if (!this.holdReadySince) this.holdReadySince = performance.now();
+        const painted = ready && performance.now() - this.holdReadySince >= HOLD_SETTLE_MS;
         // The ground has drawn SOMETHING — the only fact that makes giving up
         // on the rest reasonable.
         const anyGround = this.groundPainted;
