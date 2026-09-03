@@ -1744,6 +1744,14 @@ export class WorldScene extends Phaser.Scene {
   private occPool = new Map<string, Phaser.GameObjects.Image[]>();
   private occNext = new Map<string, Phaser.GameObjects.Image[]>();
   private occPoolOn = true;
+  /* THE SCENERY POOL — the same two maps for the same reason; see `scnImage`.
+   * ART ONLY: the lit copies and their fog silhouettes are deliberately outside
+   * it, exactly as rebuildOccluders' destroy says. */
+  private scnPool = new Map<string, Phaser.GameObjects.Image[]>();
+  private scnNext = new Map<string, Phaser.GameObjects.Image[]>();
+  private scnPoolOn = true;
+  private scnReused = 0;
+  private scnCreated = 0;
   private occSeq = 0;
   private occReused = 0;
   private occCreated = 0;
@@ -3870,12 +3878,15 @@ export class WorldScene extends Phaser.Scene {
         if (mode === "legacy") {
           this.occFastDestroy = false;
           this.occPoolOn = false;
+          this.scnPoolOn = false;
         } else if (mode === "bulk") {
           this.occFastDestroy = true;
           this.occPoolOn = false;
+          this.scnPoolOn = false;
         } else if (mode === "pool") {
           this.occFastDestroy = true;
           this.occPoolOn = true;
+          this.scnPoolOn = true;
         }
         const before = this.occluders.length + this.litOccluders.length + this.sceneryImgs.length;
         this.lastOccl = { x: NaN, y: NaN };
@@ -3886,6 +3897,8 @@ export class WorldScene extends Phaser.Scene {
           mode: this.occPoolOn ? "pool" : this.occFastDestroy ? "bulk" : "legacy",
           reused: this.occReused,
           created: this.occCreated,
+          scnReused: this.scnReused,
+          scnCreated: this.scnCreated,
           destroyed: before,
           built: this.occluders.length + this.litOccluders.length + this.sceneryImgs.length,
           ms: +ms.toFixed(1),
@@ -13697,8 +13710,93 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
+  /** ONE SCENERY IMAGE, REUSED WHEN NOTHING ABOUT IT CHANGED — `occImage`'s
+   *  twin, for the same measured reason. rebuildScenery rides the SAME 96 px
+   *  latch as the occluders and destroyed and recreated every drawn piece's
+   *  image on each one: standing still in a forest, that is the identical
+   *  picture torn down and rebuilt about twice a second, and while running it
+   *  is 109-230 ms per second of a phone's frame budget.
+   *
+   *  The key is everything that makes the image what it is — texture, crop
+   *  frame, placed box and flip — so an image that comes back out of the pool
+   *  needs NOTHING re-set but its depth, which the caller assigns on every
+   *  piece anyway and the second pass overwrites. A multimap because two
+   *  placements can legitimately be identical, and a pooled image the scene has
+   *  since destroyed is dropped rather than reused.
+   *
+   *  ART ONLY, and this is a correctness boundary, not an oversight: the lit
+   *  band carries NO depth epsilon and breaks ties by DISPLAY-LIST order, which
+   *  is why the copies and their fog silhouettes are destroyed and recreated in
+   *  creation order every rebuild (see OCC_DEPTH_EPS and rebuildOccluders'
+   *  destroy). A pooled image keeps its old list position, so pooling those is
+   *  precisely what would let a fog silhouette sort over the wrong lit copy.
+   *  The art has its own `occSeq` epsilon and is therefore free to move. */
+  private scnImage(
+    tex: string,
+    frame: string,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    flip: boolean,
+  ): Phaser.GameObjects.Image {
+    const k = `${tex}|${frame}|${x},${y},${w},${h},${flip ? 1 : 0}`;
+    const have = this.scnPool.get(k);
+    let img: Phaser.GameObjects.Image | undefined;
+    while (have && have.length) {
+      const cand = have.pop()!;
+      if (cand.scene) {
+        img = cand;
+        break;
+      }
+    }
+    if (img) this.scnReused++;
+    else {
+      img = this.add
+        .image(x, y, tex, frame)
+        .setOrigin(0, 0)
+        .setDisplaySize(w, h)
+        // The mirror is about the CROP's centre, never the source canvas's:
+        // measured on the_game, 245 of 599 flipped placements shift a pixel
+        // or more the other way, tree_021 by 16. setFlipX on an origin-(0,0)
+        // image mirrors within its own displayed box, which IS the crop.
+        .setFlipX(flip);
+      this.scnCreated++;
+    }
+    let arr = this.scnNext.get(k);
+    if (!arr) this.scnNext.set(k, (arr = []));
+    arr.push(img);
+    return img;
+  }
+
+  /** Destroy every pooled scenery image this rebuild did not take back out.
+   *  Called at EVERY exit of rebuildScenery — an early return (no scenery
+   *  index yet) must still tear down the previous set, which is what the
+   *  unconditional destroy it replaced did. */
+  private scnDrain(): void {
+    if (!this.scnPool.size) return;
+    const left: Phaser.GameObjects.Image[] = [];
+    for (const arr of this.scnPool.values()) for (const im of arr) left.push(im);
+    this.scnPool.clear();
+    this.destroyBatch(left);
+  }
+
   private rebuildScenery(cam: Phaser.Cameras.Scene2D.Camera) {
-    this.destroyBatch(this.sceneryImgs);
+    /* THE CURRENT SET BECOMES THE POOL (see `scnImage`). Whatever this rebuild
+     * does not take back out is destroyed by `scnDrain` at every exit. The
+     * self-heal mirrors the occluders': a throw between the swap and the drain
+     * would otherwise leave images alive, drawn and never re-sorted. */
+    if (this.scnPoolOn) {
+      this.scnDrain();
+      this.scnPool = this.scnNext;
+      this.scnNext = new Map();
+    } else {
+      this.destroyBatch(this.sceneryImgs);
+      this.scnPool.clear();
+      this.scnNext.clear();
+    }
+    this.scnReused = 0;
+    this.scnCreated = 0;
     this.sceneryImgs = [];
     /* COUNTED BEFORE THE GUARD: the boot hold waits for this pass to have RUN,
      * and a world with no scenery index runs it and finds nothing. Counting
@@ -13708,7 +13806,10 @@ export class WorldScene extends Phaser.Scene {
     const idx = this.scenery;
     const pieces = this.sceneryPieces;
     const world = this.world;
-    if (!idx || !pieces || !world) return;
+    if (!idx || !pieces || !world) {
+      this.scnDrain();
+      return;
+    }
     const { dy, lh, tile: tileSize } = this.geom;
     /* TWO RADII: what is DRAWN, and what is FETCHED.
      *
@@ -13843,17 +13944,9 @@ export class WorldScene extends Phaser.Scene {
       const tex = this.textures.get(key);
       const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
       if (!tex.has(name)) tex.add(name, 0, fit.sx, fit.sy, fit.sw, fit.sh);
-      const img = this.add
-          .image(fit.x, fit.y, key, name);
+      const img = this.scnImage(key, name, fit.x, fit.y, fit.w, fit.h, fit.flipX);
       this.sceneryImgs.push(
         img
-          .setOrigin(0, 0)
-          .setDisplaySize(fit.w, fit.h)
-          // The mirror is about the CROP's centre, never the source canvas's:
-          // measured on the_game, 245 of 599 flipped placements shift a pixel
-          // or more the other way, tree_021 by 16. setFlipX on an origin-(0,0)
-          // image mirrors within its own displayed box, which IS the crop.
-          .setFlipX(fit.flipX)
           /* THE UNLIFTED PAINTER LINE AT THE ANCHOR — and NO cell-front `+dy`.
            * A terrain occluder adds it because a tile fills a whole cell and
            * must cover a body standing in that cell. Scenery is anchored at a
@@ -13983,6 +14076,7 @@ export class WorldScene extends Phaser.Scene {
     }
     this.t3stats.scenery = drawn;
     this.sceneryRoofedDrawn = roofedDrawn;
+    this.scnDrain();
     this.flushScenery();
   }
 
