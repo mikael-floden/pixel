@@ -1205,6 +1205,64 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
       `the drawn corners land on the art's own footprint (bottom ${fit?.low.toFixed(1)} vs ${artSE[3]}, left ${fit?.left.toFixed(1)} vs ${artSE[0]}, right ${fit?.right.toFixed(1)} vs ${artSE[4]})`);
   }
 }
+/* A FACING CAN OPT OUT OF THE SHARED SIZE (maintainer 2026-09-03: "Some art
+ * just looks that way and we can't do anything about it. We need a dedicated W
+ * and D for the S direction. But to make this good we should add that as an
+ * opt-in ... 'request unique size' when standing on the S direction. Or 'go
+ * back to shared size'"). Measured: 54 of the 131 rect pieces have a south
+ * view whose base is a different width from the one their turned views imply,
+ * so no single rectangle can be right on every facing. */
+{
+  const piece = DATAOBJ.find((o) => o.id === "bed_002");
+  await p.goto(`${W}#/objects/${piece.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2400);
+  await p.evaluate(() => {
+    if (!document.querySelector(".hit-bar:not(.hidden)")) {
+      [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click();
+    }
+  });
+  await p.waitForTimeout(1400);
+  const face = async (d2) => { await p.evaluate((dd) => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent.trim().toUpperCase() === dd)?.click(), d2); await p.waitForTimeout(700); };
+  const btn = () => p.evaluate(() => { const b2 = [...document.querySelectorAll(".hit-bar button")].find((x) => /unique size|shared size/.test(x.textContent)); return b2 ? { text: b2.textContent.trim(), on: b2.classList.contains("on"), hidden: b2.classList.contains("hidden") } : null; });
+  const box = () => p.evaluate(() => { const hb = window.__wikiHitbox; return { ...hb.boxes[hb.sel], dir: hb.dir, drawnW: hb.cornersFrame?.[hb.sel] ? Math.max(...hb.cornersFrame[hb.sel].map((c) => c[0])) - Math.min(...hb.cornersFrame[hb.sel].map((c) => c[0])) : null }; });
+  await face("SE");
+  const bSE = await btn();
+  ok(bSE && /unique size/.test(bSE.text) && !bSE.hidden, `the bar offers a facing its own size (“${bSE?.text}”)`);
+  await face("S");
+  const before = await box();
+  await p.evaluate(() => [...document.querySelectorAll(".hit-bar button")].find((x) => /unique size/.test(x.textContent))?.click());
+  await p.waitForTimeout(700);
+  const optedIn = await btn(), b2 = await box();
+  ok(/shared size/.test(optedIn?.text ?? "") && optedIn?.on, `pressing it hands that facing its own W and D, and offers the way back (“${optedIn?.text}”)`);
+  ok(b2.size_by_dir?.south && Math.abs(b2.size_by_dir.south.rx - before.rx) < 0.01,
+    `opting in SEEDS the size it already had — the box does not jump (${JSON.stringify(b2.size_by_dir?.south)})`);
+  // the W rail now moves ONLY this facing
+  await p.evaluate(() => { const w2 = [...document.querySelectorAll(".hit-bar .shadow-slider")][0]; w2.value = String(Math.round(+w2.value) - 24); w2.dispatchEvent(new Event("input", { bubbles: true })); w2.dispatchEvent(new Event("change", { bubbles: true })); });
+  await p.waitForTimeout(800);
+  const sNarrow = await box();
+  ok(sNarrow.size_by_dir.south.rx < before.rx - 8 && Math.abs(sNarrow.rx - before.rx) < 0.01,
+    `and W then narrows SOUTH alone, leaving the shared size alone (south ${sNarrow.size_by_dir.south.rx}, shared ${sNarrow.rx})`);
+  await face("SE");
+  const seAfter = await box();
+  ok(Math.abs(seAfter.drawnW - 0) > 0 && Math.abs(seAfter.rx - before.rx) < 0.01,
+    `south-east is untouched by it (rx ${seAfter.rx})`);
+  // ...and the way back
+  await face("S");
+  await p.evaluate(() => [...document.querySelectorAll(".hit-bar button")].find((x) => /shared size/.test(x.textContent))?.click());
+  await p.waitForTimeout(700);
+  const back = await box();
+  ok(!back.size_by_dir?.south && Math.abs(back.rx - before.rx) < 0.01,
+    `and "shared size" gives it back to the piece (${JSON.stringify(back.size_by_dir ?? null)})`);
+  /* The pass opts south out by itself where the art disagrees — his "when you
+   * run my formula and you see that the W is way off you just request a
+   * unique size and adjust the hitbox to fit better". */
+  const live = JSON.parse((await import("node:fs")).readFileSync(new URL("../../live/tuning/scenery_hitbox.json", import.meta.url), "utf8")).overrides ?? {};
+  const withOwn = Object.values(live).filter((r) => r.auto && r.boxes?.[0]?.size_by_dir?.south).length;
+  ok(withOwn > 50, `the pass hands south its own size wherever the art disagrees (${withOwn} variations)`);
+  const bed = live["scenery/beds/bed_002#lit_2"]?.boxes?.[0];
+  ok(bed?.size_by_dir?.south && bed.size_by_dir.south.rx < bed.rx - 10,
+    `bed_002's south is narrower than its turned facings, as its art is (south ${bed?.size_by_dir?.south?.rx} vs shared ${bed?.rx})`);
+}
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 
 await b.close();

@@ -982,7 +982,8 @@ function hitboxes(entity, state) {
     .map((b) => ({ ax: +b.ax, ay: +b.ay, rx: +b.rx, ry: +b.ry, rot: isFinite(b.rot) ? +b.rot : 0,
       ...(b.shape === "rect" || b.shape === "ellipse" ? { shape: b.shape } : {}),
       ...(b.rot_by_dir && typeof b.rot_by_dir === "object" ? { rot_by_dir: { ...b.rot_by_dir } } : {}),
-      ...(b.pos_by_dir && typeof b.pos_by_dir === "object" ? { pos_by_dir: { ...b.pos_by_dir } } : {}) }));
+      ...(b.pos_by_dir && typeof b.pos_by_dir === "object" ? { pos_by_dir: { ...b.pos_by_dir } } : {}),
+      ...(b.size_by_dir && typeof b.size_by_dir === "object" ? { size_by_dir: { ...b.size_by_dir } } : {}) }));
 }
 /* WHERE A FIRST ELLIPSE STARTS, from the art's own measured content box —
  * `bb` [x0,y0,x1,y1] in frame pixels, published per state+direction. A piece
@@ -1089,6 +1090,12 @@ function setHitboxes(entity, boxes, state) {
             .filter(([, v]) => isFinite(v)).map(([d2, v]) => [d2, +(+v).toFixed(1)])) }
         : {}),
       // Only the facings he has actually MOVED; the rest inherit ax/ay.
+      // Only the facings he has opted OUT of the shared size.
+      ...(b.size_by_dir && Object.keys(b.size_by_dir).length
+        ? { size_by_dir: Object.fromEntries(Object.entries(b.size_by_dir)
+            .filter(([, v]) => v && isFinite(v.rx) && isFinite(v.ry))
+            .map(([d2, v]) => [d2, { rx: +(+v.rx).toFixed(2), ry: +(+v.ry).toFixed(2) }])) }
+        : {}),
       ...(b.pos_by_dir && Object.keys(b.pos_by_dir).length
         ? { pos_by_dir: Object.fromEntries(Object.entries(b.pos_by_dir)
             .filter(([, v]) => v && isFinite(v.ax) && isFinite(v.ay))
@@ -1230,12 +1237,34 @@ function boxPos(b, dir) {
   if (own && isFinite(own.ax) && isFinite(own.ay)) return { ax: +own.ax, ay: +own.ay };
   return { ax: +(b?.ax ?? 0), ay: +(b?.ay ?? 0) };
 }
+/* SIZE IS SHARED UNTIL HE ASKS OTHERWISE (maintainer 2026-09-03, after his own
+ * formula produced a box that was right on south-east and wrong on south:
+ * "Some art just looks that way and we can't do anything about it. We need a
+ * dedicated W and D for the S direction. But to make this good we should add
+ * that as an opt-in ... 'request unique size' when standing on the S
+ * direction. Or 'go back to shared size'").
+ *
+ * MEASURED, and it is the art: 54 of the 131 rect pieces have a south view
+ * whose footprint disagrees with their own turned views — bed_002's turned
+ * views imply a base 105 wide, its south shows 70 — so one rectangle cannot
+ * satisfy every facing and no amount of fitting will make it. `size_by_dir`
+ * carries the exception for a facing he has opted in, and nothing else
+ * changes: absent means the shared rx/ry, which is still the rule for the
+ * three quarters of the library whose art agrees with itself. */
+/** "south-east" → "south-east", for a button's own words. */
+const dirWordOf = (d) => String(d ?? "").replace(/-/g, " ");
+function boxSize(b, dir) {
+  const own = b?.size_by_dir?.[dir];
+  if (own && isFinite(own.rx) && isFinite(own.ry)) return { rx: +own.rx, ry: +own.ry, unique: true };
+  return { rx: +(b?.rx ?? 0), ry: +(b?.ry ?? 0), unique: false };
+}
 /** The four corners of a rect box on screen, in frame px from the box centre. */
 function rectCorners(o, b, dir) {
   const k = ISO_K();
   const th = boxRot(o, b, dir) * Math.PI / 180;
   const c = Math.cos(th), sn = Math.sin(th);
-  const gx = b.rx, gy = b.ry / k;                       // ground half-extents
+  const sz = boxSize(b, dir);
+  const gx = sz.rx, gy = sz.ry / k;                    // ground half-extents
   return [[-gx, -gy], [gx, -gy], [gx, gy], [-gx, gy]].map(([x, y]) => {
     const rx2 = x * c - y * sn, ry2 = x * sn + y * c;   // turned on the ground
     return [rx2, ry2 * k];                                // projected
@@ -1836,8 +1865,9 @@ function makePlayer(entity, kind, opts = {}) {
         // walking the outline, and it must be exact or the rim clips again at
         // some angles and not others, which reads as a flicker.
         const th = boxRot(entity, b, cur.dir) * Math.PI / 180;
-        let hx = Math.hypot(b.rx * Math.cos(th), b.ry * Math.sin(th));
-        let hy = Math.hypot(b.rx * Math.sin(th), b.ry * Math.cos(th));
+        const szF = boxSize(b, cur.dir);
+        let hx = Math.hypot(szF.rx * Math.cos(th), szF.ry * Math.sin(th));
+        let hy = Math.hypot(szF.rx * Math.sin(th), szF.ry * Math.cos(th));
         if (boxShape(entity, b) === "rect") {
           const cs = rectCorners(entity, b, cur.dir);
           hx = Math.max(...cs.map(([x]) => Math.abs(x)));
@@ -1948,7 +1978,8 @@ function makePlayer(entity, kind, opts = {}) {
         // see both to judge the pair, and know which one the rails drive.
         ctx.strokeStyle = on ? "rgba(217,119,87,1)" : "rgba(217,119,87,0.45)";
         ctx.lineWidth = on ? 1.5 : 1;
-        const px = Math.max(1, b.rx * s), py = Math.max(1, b.ry * s);
+        const szD = boxSize(b, cur.dir);
+        const px = Math.max(1, szD.rx * s), py = Math.max(1, szD.ry * s);
         ctx.beginPath();
         // Same centre, same half-axes, same rotation — only the outline
         // differs, so switching shape never moves the footprint he placed.
@@ -2291,6 +2322,22 @@ function makePlayer(entity, kind, opts = {}) {
   // else a starting ellipse from THIS state's own measured content box.
   const hitList = () => hitboxes(entity, cur.state) ?? [hitboxDefault(entity, clip?.bb, clip?.fw ?? entity.frameW, clip?.fh ?? entity.frameH, cur.state)];
   const commitHit = (boxes) => { setHitboxes(entity, boxes, cur.state); onShadowEdit?.(); refreshHitBar(); draw(); };
+  /** Write a size for the facing on screen: its own when it has opted out of
+   *  the shared one, the shared one otherwise. */
+  const editSize = (i, part) => {
+    const b = hitList()[i];
+    if (!b?.size_by_dir?.[cur.dir]) { editHit(i, part); return; }
+    const own = { ...boxSize(b, cur.dir), ...part };
+    editHit(i, { size_by_dir: { ...b.size_by_dir, [cur.dir]: { rx: own.rx, ry: own.ry } } });
+  };
+  /** Write a placement for the facing on screen — its own on a turned facing,
+   *  the base one on south. Same rule the pad follows. */
+  const editPos = (i, part) => {
+    const b = hitList()[i];
+    if (cur.dir === "south" || !DIR_GROUND_DEG[cur.dir]) { editHit(i, part); return; }
+    const now = { ...boxPos(b, cur.dir), ...part };
+    editHit(i, { pos_by_dir: { ...(b?.pos_by_dir ?? {}), [cur.dir]: { ax: now.ax, ay: now.ay } } });
+  };
   const editHit = (i, patch) => {
     const boxes = hitList().map((b, n) => (n === i ? { ...b, ...patch } : b));
     commitHit(boxes);
@@ -2323,9 +2370,7 @@ function makePlayer(entity, kind, opts = {}) {
      * falls back to; on any other facing the pad writes that facing's own
      * placement, so squaring a chest up on south-east leaves south and
      * south-west exactly where they were. */
-    if (cur.dir === "south" || !DIR_GROUND_DEG[cur.dir]) { editHit(hitSel, { ax: nx, ay: ny }); return; }
-    const b2 = hitList()[hitSel];
-    editHit(hitSel, { pos_by_dir: { ...(b2?.pos_by_dir ?? {}), [cur.dir]: { ax: nx, ay: ny } } });
+    editPos(hitSel, { ax: nx, ay: ny });
   });
   const hitPadEnd = (ev) => {
     if (!hitDrag) return;
@@ -2364,9 +2409,10 @@ function makePlayer(entity, kind, opts = {}) {
        * bottom" is a corner rather than an edge at all. */
       if (key === "h") {
         const b = hitList()[hitSel];
-        if (boxShape(entity, b) === "rect") { editHit(hitSel, { ry: v / 2 }); return; }
-        const bottom = (b?.ay ?? 0) + (b?.ry ?? 0);
-        editHit(hitSel, { ry: v / 2, ay: +(bottom - v / 2).toFixed(2) });
+        if (boxShape(entity, b) === "rect") { editSize(hitSel, { ry: v / 2 }); return; }
+        const bottom = (boxPos(b, cur.dir).ay ?? 0) + boxSize(b, cur.dir).ry;
+        editSize(hitSel, { ry: v / 2 });
+        editPos(hitSel, { ay: +(bottom - v / 2).toFixed(2) });
         return;
       }
       /* W GROWS UPWARD FROM ITS LOWER EDGE, ON A RECT (maintainer 2026-09-03:
@@ -2391,12 +2437,13 @@ function makePlayer(entity, kind, opts = {}) {
         if (boxShape(entity, b) === "rect") {
           const th = boxRot(entity, b, cur.dir) * Math.PI / 180, k = ISO_K();
           const sigma = Math.sin(th) > 1e-9 ? 1 : -1;          // +1 → the +x edge is the lower one
-          const d = v / 2 - b.rx;                               // half-width delta
+          const d = v / 2 - boxSize(b, cur.dir).rx;             // half-width delta
           const pos = boxPos(b, cur.dir);
-          const ax2 = +(pos.ax - sigma * d * Math.cos(th)).toFixed(2);
-          const ay2 = +(pos.ay - sigma * d * Math.sin(th) * k).toFixed(2);
-          if (cur.dir === "south" || !DIR_GROUND_DEG[cur.dir]) editHit(hitSel, { rx: v / 2, ax: ax2, ay: ay2 });
-          else editHit(hitSel, { rx: v / 2, pos_by_dir: { ...(b?.pos_by_dir ?? {}), [cur.dir]: { ax: ax2, ay: ay2 } } });
+          editSize(hitSel, { rx: v / 2 });
+          editPos(hitSel, {
+            ax: +(pos.ax - sigma * d * Math.cos(th)).toFixed(2),
+            ay: +(pos.ay - sigma * d * Math.sin(th) * k).toFixed(2),
+          });
           return;
         }
       }
@@ -2410,7 +2457,7 @@ function makePlayer(entity, kind, opts = {}) {
         editHit(hitSel, { rot_by_dir: { ...(b2?.rot_by_dir ?? {}), [cur.dir]: v } });
         return;
       }
-      editHit(hitSel, { rx: v / 2 });
+      editSize(hitSel, { rx: v / 2 });
     });
     /* A DRAG IS HELD, AND THE SCALE CANNOT MOVE UNDER IT. Tracked with pointer
      * events rather than focus, because a touch on a range input does not
@@ -2485,6 +2532,24 @@ function makePlayer(entity, kind, opts = {}) {
     title: "Flat on the floor — a carpet, a rug, a puddle. The player WALKS OVER it: no collision, and it never comes between them and the camera. The scenery domain tags these; this corrects a wrong tag either way, for the whole piece.",
     onclick: () => { hitSel = 0; setHitboxFlat(entity, !hitboxFlat(entity)); onShadowEdit?.(); refreshHitBar(); draw(); },
   }, "⊘ no collision");
+  /* OPT IN, PER FACING (maintainer 2026-09-03: "Some art just looks that way
+   * and we can't do anything about it. We need a dedicated W and D for the S
+   * direction. But to make this good we should add that as an opt-in ... You
+   * can if you want 'request unique size' when standing on the S direction. Or
+   * 'go back to shared size'"). One button that says which state it is in and
+   * flips it, on the facing he is standing on. Opting in seeds the facing with
+   * the size it already had, so the box does not jump the moment he asks. */
+  const hitSizeBtn = h("button", {
+    class: "ghost-btn",
+    onclick: () => {
+      const b = hitList()[hitSel];
+      if (!b) return;
+      const own = { ...(b.size_by_dir ?? {}) };
+      if (own[cur.dir]) delete own[cur.dir];
+      else own[cur.dir] = { rx: +b.rx, ry: +b.ry };
+      editHit(hitSel, { size_by_dir: own });
+    },
+  });
   const hitResetBtn = h("button", {
     class: "ghost-btn",
     title: "Forget this piece's record entirely — it goes back to undecided and returns to the to-do queue",
@@ -2510,7 +2575,7 @@ function makePlayer(entity, kind, opts = {}) {
       hitPad),
     h("div", { class: "player-controls" }, hitRead),
     h("div", { class: "player-controls hit-shape-row" }, hitChips, hitShape),
-    h("div", { class: "player-controls" }, hitAddBtn, hitDelBtn, hitNoneBtn, hitFlatBtn, hitResetBtn));
+    h("div", { class: "player-controls" }, hitAddBtn, hitDelBtn, hitSizeBtn, hitNoneBtn, hitFlatBtn, hitResetBtn));
   // Absent, not disabled: a control that can never do anything is a worse
   // answer than none (the Base-tab lesson). The card's type pill says why.
   const hitBtn = state.admin && kind === "object" && !isWallScenery(entity)
@@ -2575,6 +2640,17 @@ function makePlayer(entity, kind, opts = {}) {
       }, `${i + 1}`);
     }));
     hitChips.classList.toggle("hidden", boxes.length < 2);
+    // The size button: what this facing is doing, and what pressing it does.
+    {
+      const own = !!b?.size_by_dir?.[cur.dir];
+      const many = Object.keys(entity?.animations?.[cur.state]?.dirs ?? {}).length > 1;
+      hitSizeBtn.classList.toggle("hidden", !many || !b);
+      hitSizeBtn.classList.toggle("on", own);
+      hitSizeBtn.textContent = own ? `↩ shared size` : `⤢ unique size`;
+      hitSizeBtn.title = own
+        ? `${dirWordOf(cur.dir)} has its own W and D. Press to go back to the size shared by every facing.`
+        : `W and D are shared by every facing. Press to give ${dirWordOf(cur.dir)} its own — for art whose facings genuinely disagree.`;
+    }
     const shapeNow = boxShape(entity, b);
     // Choosing the domain's own answer DELETES the correction — the tag stands
     // on its own, and the day scenery re-tags a piece the wiki follows.
@@ -2669,8 +2745,9 @@ function makePlayer(entity, kind, opts = {}) {
     hitW.max = String(railFor("w", hitW, b ? b.rx * 2 : 0));
     hitH.max = String(railFor("h", hitH, b ? b.ry * 2 : 0));
     if (b) {
-      if (document.activeElement !== hitW) hitW.value = String(b.rx * 2);
-      if (document.activeElement !== hitH) hitH.value = String(b.ry * 2);
+      const szR = boxSize(b, cur.dir);
+      if (document.activeElement !== hitW) hitW.value = String(szR.rx * 2);
+      if (document.activeElement !== hitH) hitH.value = String(szR.ry * 2);
       // The rail shows the angle IN FORCE for the facing on screen, which on a
       // rect is the tuned angle plus that facing's tilt.
       if (document.activeElement !== hitRot) hitRot.value = String(((Math.round(boxRot(entity, b, cur.dir)) % 180) + 180) % 180);
@@ -2683,7 +2760,7 @@ function makePlayer(entity, kind, opts = {}) {
         ? h("b", {}, "no hitbox — this piece hangs on a wall")
         // "box", not "ellipse": with two shapes on offer the count can span
         // both, and the glyph says which one the rails are driving.
-        : h("b", {}, `${boxes.length} box${boxes.length === 1 ? "" : "es"} · #${hitSel + 1} ${boxShape(entity, b) === "rect" ? "▭" : "◯"} ${(b.rx * 2).toFixed(1)} × ${(b.ry * 2).toFixed(1)} px`),
+        : h("b", {}, `${boxes.length} box${boxes.length === 1 ? "" : "es"} · #${hitSel + 1} ${boxShape(entity, b) === "rect" ? "▭" : "◯"} ${(boxSize(b, cur.dir).rx * 2).toFixed(1)} × ${(boxSize(b, cur.dir).ry * 2).toFixed(1)} px${boxSize(b, cur.dir).unique ? " · own size" : ""}`),
       st === "none" || st === "flat" ? "" : ` · at ${signed(boxPos(b, cur.dir).ax)}, ${signed(boxPos(b, cur.dir).ay)}${Math.round(boxRot(entity, b, cur.dir)) ? ` · turned ${Math.round(boxRot(entity, b, cur.dir))}°` : ""}`,
       /* NO STATUS PROSE ON THIS LINE (maintainer 2026-08-29: "you draw this
        * text 'proposed default not set until you accept or adjust it' and

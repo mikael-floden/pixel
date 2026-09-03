@@ -229,6 +229,16 @@ The laws around the flow:
       the same iso block the game already uses for a monster's shadow.
       Ellipses are left alone — a footprint with no corners reads the same
       turned.
+    - **`size_by_dir`: `{ "<dir>": {rx, ry} }`, a facing that has OPTED OUT of
+      the shared size** (2026-09-03, maintainer: *"Some art just looks that way
+      and we can't do anything about it. We need a dedicated W and D for the S
+      direction. But to make this good we should add that as an opt-in"*).
+      Measured: 54 of the 131 rect pieces have a SOUTH view whose base is a
+      different width from the one their own turned views imply — bed_002's
+      turned views give 105 units, its south shows 70 — so no single rectangle
+      is right on every facing of those pieces. Absent means the shared
+      `rx`/`ry`, which is still the rule for the rest of the library.
+      Resolution: `size_by_dir[dir] ?? {rx, ry}`.
     - **`pos_by_dir`: `{ "<dir>": {ax, ay} }`, the box's placement for ONE
       facing** (2026-09-03, maintainer: *"when I move the hitbox on the S
       direction it also moves on SE and SW. It's only the W and D that is

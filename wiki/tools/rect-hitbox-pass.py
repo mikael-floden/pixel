@@ -93,6 +93,22 @@ def fit(piece, state):
     if rx < 3 or ry < 1:
         return None
     box = {"ax": ax, "ay": ay, "rx": round(rx, 2), "ry": round(max(2, ry), 2), "rot": 0, "shape": "rect"}
+    # SOUTH OPTS OUT WHEN ITS OWN ART DISAGREES (2026-09-03, maintainer: "Some
+    # art just looks that way and we can't do anything about it ... when you
+    # run my formula and you see that the W is way off you just 'request a
+    # unique size' and adjust"). Measured: 54 of the 131 rect pieces have a
+    # south view whose base is a different width from the one their turned
+    # views imply — bed_002 shows 70 where its turned views say 105 — so the
+    # shared size is simply wrong there, whichever facing it is fitted to.
+    # South can measure its own WIDTH but never its depth, so it keeps the
+    # shared depth and takes its own width.
+    if turned and "south" in fits:
+        south_w = base_span(piece, state)
+        south_w = south_w[1] - south_w[0]
+        if south_w > 6 and abs(south_w / 2 - rx) / max(south_w / 2, rx) > 0.18:
+            own_rx = min(south_w / 2, W / 2 - abs(ax) - 1)
+            if own_rx >= 3:
+                box["size_by_dir"] = {"south": {"rx": round(own_rx, 2), "ry": round(max(2, ry), 2)}}
     if pos:
         for d, q in pos.items():
             q["ax"] = round(min(max(q["ax"], -(W / 2 - rx - 1)), W / 2 - rx - 1), 2)

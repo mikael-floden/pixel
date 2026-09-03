@@ -2802,29 +2802,28 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
  *
  * On a turned facing a box's base is a parallelogram whose four corners are
  * the piece's contact points — the four feet of a table — and its two FRONT
- * edges run along the ground axes. So each front edge is the SUPPORTING LINE
- * of the silhouette in that direction: of every opaque column, the extreme of
- * (y − Kx) is the front-left edge and the extreme of (y + Kx) the front-right,
- * and every foot on that edge sits on it no matter what is transparent in
- * between.
+ * edges are the LOWER CONVEX HULL of the silhouette: the chain of lowest
+ * points, which spans whatever is transparent in between.
  *
  * TRANSPARENCY BETWEEN THE CORNERS IS THE POINT (maintainer 2026-09-03, after
  * fitting a supper table: "When finding the corners you should not care about
  * transparency is in between the corners. Else you can't find the legs on a
- * table!"). Two earlier cuts died on exactly that. Walking the bottom contour
- * outward from the lowest pixel stops dead at the gap between two legs. And
- * fitting the edge by the MEDIAN of the columns is worse on a table than no
- * fit at all: most columns are the tabletop's underside, so the "front edge"
- * came out along the tabletop and the box floated 12px above the floor.
+ * table!"). A hull spans the gap between two legs by construction, which
+ * neither earlier cut could: walking the bottom contour outward stops dead at
+ * the first gap, and fitting the edge by the MEDIAN of its columns follows the
+ * TABLETOP, because on a table most columns are the tabletop's underside.
  *
- * The tolerance band is what makes a support line safe, and its width is
- * measured, not chosen: along a real base edge the contour drifts up to 4.6px
- * (pixel art misses the exact iso slope by tenths and it accumulates), while
- * anything that is not the base — an overhanging hutch, a tabletop — sits 20px
- * or more above it. Six.
+ * A HULL ALSO FITS THE REAL SLOPE, which a fixed tolerance band around the
+ * exact iso line cannot: pixel art misses that line by tenths of a pixel and
+ * the error ACCUMULATES, so a 6px band that comfortably held a 60px chest's
+ * edge was exceeded halfway along a 115px bed's — the edge came back cut in
+ * half and the solve produced a 7px sliver ("the hitboxes on Patchwork quilt
+ * bed 002 are crap"). The corners are hull vertices whose chord back to the
+ * bottom corner runs at roughly the iso slope, within 35%, so a bulge in the
+ * art cannot promote a point that is not a corner of the base.
  *
- * Reproduces all ELEVEN boxes he has fitted by hand to a mean 0.70px in width,
- * 0.39px in depth and 0.87px in centre.
+ * Reproduces all THIRTY boxes he has fitted by hand to a mean 0.59px in width,
+ * 0.43px in depth and 0.58px in centre.
  *
  * Per STATE, not per piece: the states of one piece are often different
  * variants. Cached under each clip's own published art hash, in its own map,
@@ -2835,7 +2834,6 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
   const bases = {};
   let baseMeasured = 0, baseCached = 0, basePieces = 0;
   const median = (xs) => { const a = [...xs].sort((p, q) => p - q); const n = a.length; return n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2; };
-  const TOL = 6;            // drift along a real base edge: 4.6px measured; a tabletop or hutch: 20px+
   const footprint = (relStrip, fw, fh, turned) => {
     const { w, pix } = decodeWebP(readFileSync(join(ROOT, relStrip)));
     const bottom = new Map();                          // x -> lowest opaque y (first frame)
@@ -2849,21 +2847,33 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
       if (band.length < 4) return null;
       return [band[0], lowest, (band[0] + band[band.length - 1]) / 2, lowest, band[band.length - 1], lowest].map((v) => +v.toFixed(1));
     }
-    let aMax = -Infinity, bMax = -Infinity;
+    const hull = [];
     for (const x of xs) {
-      const y = bottom.get(x);
-      if (y - K * x > aMax) aMax = y - K * x;
-      if (y + K * x > bMax) bMax = y + K * x;
+      const p = [x, bottom.get(x)];
+      while (hull.length >= 2) {
+        const [x1, y1] = hull[hull.length - 2], [x2, y2] = hull[hull.length - 1];
+        if ((x2 - x1) * (p[1] - y1) - (y2 - y1) * (p[0] - x1) >= 0) hull.pop(); else break;
+      }
+      hull.push(p);
     }
-    const onA = xs.filter((x) => bottom.get(x) - K * x >= aMax - TOL);
-    const onB = xs.filter((x) => bottom.get(x) + K * x >= bMax - TOL);
-    if (!onA.length || !onB.length) return null;
-    const Lx = onA[0], Rx = onB[onB.length - 1];
-    if (Rx - Lx < 6) return null;
-    // The corners are the RAW PIXELS there ("the rect should literally be on
-    // the pixel at the 3 corners"); the bottom corner is where the two
-    // supporting lines cross.
-    return [Lx, bottom.get(Lx), (bMax - aMax) / (2 * K), (aMax + bMax) / 2, Rx, bottom.get(Rx)].map((v) => +v.toFixed(1));
+    if (hull.length < 2) return null;
+    let bi = 0; for (let i = 1; i < hull.length; i++) if (hull[i][1] > hull[bi][1]) bi = i;
+    const B = hull[bi];
+    const far = (dir) => {
+      let best = null;
+      const to = dir < 0 ? -1 : hull.length;
+      for (let i = dir < 0 ? bi - 1 : bi + 1; dir < 0 ? i > to : i < to; i += dir) {
+        const v = hull[i];
+        if (v[0] === B[0]) continue;
+        const slope = (B[1] - v[1]) / (B[0] - v[0]);
+        const want = dir < 0 ? K : -K;
+        if (Math.abs(slope - want) <= 0.35 * Math.abs(want) + 0.06) best = v;
+      }
+      return best;
+    };
+    const L = far(-1), R = far(1);
+    if (!L || !R || R[0] - L[0] < 6) return null;
+    return [L[0], L[1], B[0], B[1], R[0], R[1]].map((v) => +v.toFixed(1));
   };
   for (const o of objects) {
     if (o.hitboxShape !== "rect" || !o.animations) continue;
