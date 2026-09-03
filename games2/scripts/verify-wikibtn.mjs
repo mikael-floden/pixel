@@ -108,16 +108,18 @@ const wiki = () => page.frames().find((f) => f.url().includes("/assets/wiki/"));
  * complete in a few ms and a query for the wiki's own markup finds an empty
  * shell. Anything reading the wiki's CONTENT must wait for the content. */
 const frameReady = async (needNav = false) => {
-  await page.waitForFunction(
-    () => {
-      const f = document.querySelector(".ml-wikipanel iframe");
-      return f && f.contentDocument && f.contentDocument.readyState === "complete";
-    },
-    null,
-    { timeout: 20000 },
-  );
+  // A FRESH IFRAME IS `about:blank`, AND about:blank IS ALREADY "complete".
+  // Waiting on readyState alone therefore returns before the wiki has even
+  // begun to load — page.frames() then holds no wiki frame at all and the
+  // next line throws (or, worse, a check runs against a blank document and
+  // passes). Wait for the frame whose URL IS the wiki first; only then is
+  // readyState a statement about the wiki.
+  for (let i = 0; i < 200 && !wiki(); i++) await page.waitForTimeout(100);
+  const f = wiki();
+  if (!f) throw new Error("the wiki iframe never navigated off about:blank");
+  await f.waitForFunction(() => document.readyState === "complete", null, { timeout: 20000 });
   if (!needNav) return;
-  await wiki().waitForFunction(
+  await f.waitForFunction(
     () => [...document.querySelectorAll('a[href^="#/"]')].some((a) => a.getAttribute("href").length > 3),
     null,
     { timeout: 20000 },
@@ -167,6 +169,43 @@ try {
 
   // ── 1. portrait: pill-sized, stacked ABOVE ─────────────────────────────
   assertStack(await rects(), "above", "portrait");
+
+  // ── 1b. THE 🔍 IS HIS OWN ART, and it actually arrived ──────────────────
+  // (maintainer 2026-09-03: his PixelLab antique magnifying glass, flipped.)
+  // A missing /ui2 file renders as an EMPTY BOX, not an error — the button
+  // keeps its shape and nothing throws — so the only honest test is the
+  // decoded bitmap: naturalWidth is 0 for a 404 and 48 for the real bake.
+  const ico = await page.evaluate(() => {
+    const i = document.querySelector(".ml-wikinear .ml-wikinear-icon");
+    if (!i) return null;
+    const r = i.getBoundingClientRect();
+    return {
+      tag: i.tagName, src: i.getAttribute("src"),
+      nat: [i.naturalWidth, i.naturalHeight], box: [Math.round(r.width), Math.round(r.height)],
+      rendering: getComputedStyle(i).imageRendering,
+    };
+  });
+  if (!ico) fail("the 🔍 button has no icon element");
+  else {
+    ico.tag === "IMG" && ico.nat[0] === 48 && ico.nat[1] === 48
+      ? ok(`the 🔍 wears the real bake (${ico.src.split("?")[0]}, decoded ${ico.nat.join("x")})`)
+      : fail(`icon missing or not decoded: ${JSON.stringify(ico)} — a 404 in /ui2 looks like an empty box, not an error`);
+    // The /ui2 rule: an exact 2x bake drawn at its authored grid, nearest.
+    ico.box[0] === 24 && ico.box[1] === 24 && ico.rendering === "pixelated"
+      ? ok(`…at its authored 24px grid, nearest-neighbour (${ico.box.join("x")}, ${ico.rendering})`)
+      : fail(`icon drawn at ${ico.box.join("x")} / ${ico.rendering}, wanted 24x24 pixelated`);
+    // CACHE STAMPING, asserted RELATIVE to the tab icons. withV() is a
+    // deliberate no-op in dev (no VITE_GIT_SHA), so "does it end in ?v=" is a
+    // test of the environment, not of the code. What must hold everywhere is
+    // that this icon is stamped exactly as every other /ui2 icon is — bare
+    // here, ?v=<sha> or ?h=<hash> on a deploy. A forgotten withV() shows up
+    // as a DIFFERENCE, in any environment.
+    const stamp = (u) => (u.split("?")[1] ?? "").replace(/=.*/, "=") || "(bare)";
+    const tabSrc = await page.evaluate(() => document.querySelector(".ml-tab-icon")?.getAttribute("src") ?? null);
+    tabSrc && stamp(ico.src) === stamp(tabSrc)
+      ? ok(`…cache-stamped like every other /ui2 icon (${stamp(ico.src)})`)
+      : fail(`icon stamping differs from the tab icons: ${stamp(ico.src)} vs ${tabSrc ? stamp(tabSrc) : "no tab icon found"} — withV() missing?`);
+  }
 
   // ── 2. the keyboard ride: both lift, the gap survives ──────────────────
   const before = await rects();

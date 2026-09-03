@@ -24,6 +24,7 @@
  */
 
 import { openWikiPanel } from "./wikipanel";
+import { withV } from "./assetver";
 import { gameAudio } from "../../composer/index";
 
 const NEAR_HASH = "#/near";
@@ -133,7 +134,29 @@ export function mountWikiNearButton(): void {
   root.type = "button";
   root.title = "What am I standing next to? — the wiki, sorted by distance";
   root.setAttribute("aria-label", "What is near me");
-  root.innerHTML = `<span class="ml-wikinear-icon">&#128269;</span>`;
+  // THE MAINTAINER'S OWN ICON (2026-09-03): his PixelLab antique magnifying
+  // glass, HORIZONTALLY FLIPPED — the export has the handle bottom-left, and
+  // mirrored it reads the way a search glass is always drawn, lens up and to
+  // the left. It replaced the 🔍 emoji, which was whatever glyph the phone
+  // happened to ship. Source art `client/ui-src/icon-search-src.png` (the
+  // export, unflipped); `/ui2/icon-search.webp` is the mirror at an exact 2x,
+  // so the /ui2 rule below renders it at its authored 24px grid.
+  const icon = document.createElement("img");
+  icon.className = "ml-wikinear-icon";
+  icon.src = withV("/ui2/icon-search.webp");
+  icon.alt = ""; // decorative: the button already carries title + aria-label
+  icon.draggable = false;
+  // TRUE PIXEL SCALE, the same rule every /ui2 icon follows (hud.ts): a bake
+  // is an exact 2x of its authored art, so natural/2 lands on that grid. A
+  // hardcoded box would be a second rule to keep in sync with the art.
+  const fit = () => {
+    if (!icon.naturalWidth) return;
+    icon.style.width = `${icon.naturalWidth / 2}px`;
+    icon.style.height = `${icon.naturalHeight / 2}px`;
+  };
+  icon.addEventListener("load", fit);
+  fit();
+  root.appendChild(icon);
   root.addEventListener("click", () => openWikiNear());
   root.addEventListener("touchstart", () => root?.classList.add("press"), { passive: true });
   const up = () => root?.classList.remove("press");
@@ -160,7 +183,7 @@ function injectStyles(): void {
     backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
     color:var(--ink);transition:bottom .15s ease-out,right .3s ease,top .3s ease;
     -webkit-tap-highlight-color:transparent;user-select:none}
-  .ml-wikinear-icon{font-size:16px;line-height:1}
+  .ml-wikinear-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   .ml-wikinear.press,.ml-wikinear:active{transform:scale(.96)}
   :root.ml-land:not(.ml-lh) .ml-wikinear{
     top:calc(var(--bars-r-h, 78px) + 20px + ${PILL_STEP}px);bottom:auto}

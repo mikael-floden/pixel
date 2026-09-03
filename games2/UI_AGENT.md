@@ -52,7 +52,10 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   full-screen reader is over the world (today: the wiki drawer). The seam
   between `wikipanel.ts`, which asks, and `main.ts`, which registers the
   game — neither has to know about the other. Probe `__mlFreeze`.
-- `client/src/wikinear.ts` — the 🔍 "what am I standing next to?" button,
+- `client/src/wikinear.ts` — the 🔍 "what am I standing next to?" button
+  (its face is the maintainer's own PixelLab antique magnifying glass,
+  MIRRORED — `/ui2/icon-search.webp`, an exact 2x of the flipped 24x24 export
+  kept at `client/ui-src/icon-search-src.png`),
   a pill-high square one gap left of the Wiki button, and the game's half of
   `spec/WIKI_NEAR.md`: it opens the drawer on `#/near` and hands the wiki a
   nearest-first snapshot keyed by the wiki's own ids (from WorldScene's
@@ -88,8 +91,8 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `scripts/verify-levelup.mjs` (the XP bar's level-up),
   `scripts/verify-tagline.mjs` (the logo's tagline pool + the erased art),
   `scripts/verify-wikibtn.mjs` (the in-game Wiki button, the wiki's
-  remembered reading spot, the game-loop freeze while it is open, and the
-  🔍 button + its `wiki:near` contract).
+  remembered reading spot, the game-loop freeze while it is open, the
+  🔍 button + its `wiki:near` contract, and that the 🔍 icon really decoded).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -199,6 +202,26 @@ from the games agent), #18 (title/landing screen).
   close and pagehide, applied on the next open — the hash rides the iframe
   src, the scroll waits for the page to be tall enough (the wiki fetches
   data.json before it renders).
+- **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
+  The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
+  own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font
+  vendor drew that year, and it cannot be pixel art. The recipe, same as every
+  `/ui2` icon: keep the untouched export as the PIXEL SOURCE in
+  `client/ui-src/`, bake an EXACT 2x nearest-neighbour upscale to
+  `/ui2/<name>.webp` through `scripts/to-webp.py` (which verifies the
+  round-trip), and let the runtime size it to `naturalWidth / 2` — that lands
+  it on its authored grid on every screen, and it is ONE rule shared with
+  hud.ts rather than a hardcoded box per icon. Stamp the URL with `withV()`.
+  A transform is worth asserting in the bake script itself: a mirror must be a
+  pure mirror and a 2x must reproduce the source in every 2x2 block, or you
+  have resampled pixel art without noticing.
+- **A MISSING `/ui2` FILE IS AN EMPTY BOX, NOT AN ERROR.** Nothing throws, the
+  button keeps its shape, and a screenshot at a glance looks like a design
+  choice. The only honest gate is the DECODED bitmap — `naturalWidth` is 0 for
+  a 404 and the bake's real width when it arrived. Assert cache stamping
+  RELATIVE to an icon that already has it (both bare, or both `?v=`/`?h=`):
+  `withV()` is a deliberate no-op in dev, so "does the URL end in ?v=" tests
+  the environment, not the code.
 - **THE 🔍 BUTTON IS THE WIKI'S SEARCH, SORTED BY DISTANCE** (`wikinear.ts`
   + `spec/WIKI_NEAR.md`, maintainer 2026-09-02: "a square search icon to the
   left of the Wiki button … directly to the search with the results sorted by
