@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "ice",
+  "flavour": "detail",
+  "index": 105,
+  "seed": 83238,
+  "prompt": "ice, a dusting of snow in the middle, ice all around the edge",
+  "palette_top": "#99ced1",
+  "tile_id": "1763403f-77ea-4450-a84f-ae1c0a2e8e9b",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T07:12:53+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 12,
+        "dominant_share": 0.2581,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.256,
+        "px": 922
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.2997,
+        "px": 921
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.263,
+        "px": 920
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.2017,
+        "px": 922
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.1848,
+        "px": 920
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3181,
+        "px": 921
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.6609,
+        "px": 923
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3989,
+        "px": 920
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.3826,
+        "px": 920
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.5098,
+        "px": 920
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.2772,
+        "px": 920
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.243,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.4043,
+        "px": 920
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.2628,
+        "px": 921
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.8384,
+        "px": 922
+      }
+    ],
+    "mean_colours": 13.5,
+    "mean_dominant_share": 0.36
+  },
+  "motif": "a dusting of snow",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

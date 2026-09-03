@@ -17,8 +17,8 @@
   },
   "sheet_usd": 0.096,
   "top_face_note": "mean_colours / mean_dominant_share measure the TOP FACE only (transition_render.top_face). Reference: a deliberately flat matrix top is 4 colours / 0.95, a textured base candidate 9-14 / 0.30-0.67.",
-  "n_sheets": 511,
-  "n_tiles": 8176,
+  "n_sheets": 609,
+  "n_tiles": 9744,
   "counts": {
     "black_rock": {
       "subtle": 3,
@@ -34,7 +34,7 @@
     },
     "deep_water": {
       "subtle": 3,
-      "detail": 4
+      "detail": 38
     },
     "grass": {
       "subtle": 3,
@@ -46,11 +46,11 @@
     },
     "grey_stone": {
       "subtle": 3,
-      "detail": 35
+      "detail": 36
     },
     "ice": {
       "subtle": 3,
-      "detail": 5
+      "detail": 37
     },
     "lava": {
       "subtle": 3,
@@ -66,7 +66,7 @@
     },
     "parquet_floor": {
       "subtle": 3,
-      "detail": 7
+      "detail": 38
     },
     "slime": {
       "subtle": 3,
@@ -3957,6 +3957,326 @@
     {
       "ground": "deep_water",
       "flavour": "detail",
+      "seed": 11458,
+      "prompt": "deep water, a drifting jellyfish in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "6fbd33e9-8cc3-4512-aa77-a9e3eb8ee435",
+      "dir": "tiles/tops/deep_water/sheet_104_detail_11458",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 25.94,
+        "mean_dominant_share": 0.1717
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 14747,
+      "prompt": "deep water, a moonlit shimmer in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "757424f7-8630-463a-8b7e-5130d2291fd7",
+      "dir": "tiles/tops/deep_water/sheet_119_detail_14747",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 3.62,
+        "mean_dominant_share": 0.4547
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 18688,
+      "prompt": "deep water, a ripple crossing in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "56ca0439-647e-41de-805a-82bd774fcc36",
+      "dir": "tiles/tops/deep_water/sheet_121_detail_18688",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 13.19,
+        "mean_dominant_share": 0.5467
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 18710,
+      "prompt": "deep water, a sunken stone in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "db43c1e5-b5af-482d-a2a0-083136f06623",
+      "dir": "tiles/tops/deep_water/sheet_105_detail_18710",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 25.38,
+        "mean_dominant_share": 0.3301
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 22756,
+      "prompt": "deep water, a school of dark shapes in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "e5784394-4834-48c6-bbde-d73693df1d77",
+      "dir": "tiles/tops/deep_water/sheet_107_detail_22756",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 12.31,
+        "mean_dominant_share": 0.3375
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 25700,
+      "prompt": "deep water, a cold dark eddy in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "9aeccbb8-c479-4859-baf1-c331ece8abcf",
+      "dir": "tiles/tops/deep_water/sheet_129_detail_25700",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 13.94,
+        "mean_dominant_share": 0.4124
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 27927,
+      "prompt": "deep water, a stretch of still water in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "a1951a1f-a72f-4eba-adce-b393254ce23e",
+      "dir": "tiles/tops/deep_water/sheet_120_detail_27927",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 10.88,
+        "mean_dominant_share": 0.5358
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 29058,
+      "prompt": "deep water, a strand of kelp in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "6a543c72-60a0-4ab2-8877-d4bfb7e9de5b",
+      "dir": "tiles/tops/deep_water/sheet_108_detail_29058",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 11.62,
+        "mean_dominant_share": 0.7713
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 30242,
+      "prompt": "deep water, a black depth in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "f2ba3a5b-a695-4509-88c5-28bb89f747ce",
+      "dir": "tiles/tops/deep_water/sheet_118_detail_30242",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 10.69,
+        "mean_dominant_share": 0.6509
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 30424,
+      "prompt": "deep water, a shadowed trough in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "1884cced-59f8-4361-9510-29567f0fff50",
+      "dir": "tiles/tops/deep_water/sheet_124_detail_30424",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 11.69,
+        "mean_dominant_share": 0.4581
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
       "seed": 30714,
       "prompt": "beautiful deep sea, dark navy, slow heavy swell, moonlit shimmer, rich detail",
       "palette_top": "#162843",
@@ -4021,6 +4341,70 @@
     {
       "ground": "deep_water",
       "flavour": "detail",
+      "seed": 44880,
+      "prompt": "deep water, a slick of oil sheen in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "743e657f-7e76-4fb5-a86d-98b5d5acb075",
+      "dir": "tiles/tops/deep_water/sheet_126_detail_44880",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 17.19,
+        "mean_dominant_share": 0.4872
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 46742,
+      "prompt": "deep water, a glint on the surface in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "04ba2ac5-514a-4d53-b533-be0fe7b7b6de",
+      "dir": "tiles/tops/deep_water/sheet_109_detail_46742",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 10.62,
+        "mean_dominant_share": 0.8584
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
       "seed": 46956,
       "prompt": "beautiful deep sea, dark navy, slow heavy swell, moonlit shimmer, rich detail",
       "palette_top": "#162843",
@@ -4053,6 +4437,518 @@
     {
       "ground": "deep_water",
       "flavour": "detail",
+      "seed": 51508,
+      "prompt": "deep water, a drifting petal in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "9554de05-1158-41e8-b697-e3e5f58f4af8",
+      "dir": "tiles/tops/deep_water/sheet_117_detail_51508",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.31,
+        "mean_dominant_share": 0.5526
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 54761,
+      "prompt": "deep water, a lone air bubble in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "9f5eaf4f-401f-4c8a-981c-65ce5208c057",
+      "dir": "tiles/tops/deep_water/sheet_125_detail_54761",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 12.12,
+        "mean_dominant_share": 0.443
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 54980,
+      "prompt": "deep water, a slow spiral in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "415ccc8b-89ae-432b-a9ec-946f8524f456",
+      "dir": "tiles/tops/deep_water/sheet_134_detail_54980",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 6.94,
+        "mean_dominant_share": 0.6308
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 58653,
+      "prompt": "deep water, a faint whirlpool in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "88a97e48-b198-48a9-bf08-adfed2b99a38",
+      "dir": "tiles/tops/deep_water/sheet_116_detail_58653",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 7.62,
+        "mean_dominant_share": 0.6529
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 65821,
+      "prompt": "deep water, a pale sand patch in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "e61c2029-d6ec-4be6-9a53-8f801a0576c9",
+      "dir": "tiles/tops/deep_water/sheet_123_detail_65821",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 14.38,
+        "mean_dominant_share": 0.3556
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 66128,
+      "prompt": "deep water, a dark shadow below in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "cd5bccb5-9ee9-460e-b043-560b6e891d3e",
+      "dir": "tiles/tops/deep_water/sheet_101_detail_66128",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 6.5,
+        "mean_dominant_share": 0.7607
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 71194,
+      "prompt": "deep water, a curl of current in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "5b47e8c6-559d-4d11-ae64-1bc7de675687",
+      "dir": "tiles/tops/deep_water/sheet_106_detail_71194",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 16.56,
+        "mean_dominant_share": 0.4244
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 73570,
+      "prompt": "deep water, a wave crest line in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "746d4f71-5994-4647-ad85-cde075070e14",
+      "dir": "tiles/tops/deep_water/sheet_130_detail_73570",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 10.81,
+        "mean_dominant_share": 0.4385
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 73614,
+      "prompt": "deep water, a pale shaft of light in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "db6556c5-6bf4-42b0-a20d-a0ae789c26af",
+      "dir": "tiles/tops/deep_water/sheet_103_detail_73614",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 14.69,
+        "mean_dominant_share": 0.2131
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 74281,
+      "prompt": "deep water, rising bubbles in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "39b7dd8c-c447-4e06-91df-40a413aeb28b",
+      "dir": "tiles/tops/deep_water/sheet_102_detail_74281",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 16.5,
+        "mean_dominant_share": 0.2886
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 76194,
+      "prompt": "deep water, a submerged wreck plank in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "b4549f84-9ad2-4218-b6ce-9432c4af4a4c",
+      "dir": "tiles/tops/deep_water/sheet_122_detail_76194",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 16.12,
+        "mean_dominant_share": 0.2298
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 78862,
+      "prompt": "deep water, a fish tail flick in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "515d5de0-8b80-43e9-9500-334751278379",
+      "dir": "tiles/tops/deep_water/sheet_114_detail_78862",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 10.62,
+        "mean_dominant_share": 0.7611
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 79765,
+      "prompt": "deep water, a phosphorescent glimmer in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "b2fa9fc2-7a01-45d7-b590-c8040f89c560",
+      "dir": "tiles/tops/deep_water/sheet_132_detail_79765",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 13.62,
+        "mean_dominant_share": 0.3147
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 82656,
+      "prompt": "deep water, a sunken timber in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "6d00d8d9-6fa3-47ec-89e7-17969a60d006",
+      "dir": "tiles/tops/deep_water/sheet_113_detail_82656",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 20.94,
+        "mean_dominant_share": 0.4261
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 83696,
+      "prompt": "deep water, a deep blue patch in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "ea0219c4-d790-4e20-a0a2-a973ba6cdbc6",
+      "dir": "tiles/tops/deep_water/sheet_112_detail_83696",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 7.38,
+        "mean_dominant_share": 0.5995
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 84829,
+      "prompt": "deep water, a barnacled stone in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "3e1dff1e-b831-41f1-aae8-7f18cb033621",
+      "dir": "tiles/tops/deep_water/sheet_133_detail_84829",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 25.25,
+        "mean_dominant_share": 0.4002
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
       "seed": 84831,
       "prompt": "beautiful deep sea, dark navy, slow heavy swell, moonlit shimmer, rich detail",
       "palette_top": "#162843",
@@ -4080,6 +4976,198 @@
       "top_face": {
         "mean_colours": 13.25,
         "mean_dominant_share": 0.2985
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 85582,
+      "prompt": "deep water, a chain of bubbles in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "2c63b9b0-736a-4a46-9cb9-4237ceca65a7",
+      "dir": "tiles/tops/deep_water/sheet_115_detail_85582",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 8.81,
+        "mean_dominant_share": 0.8867
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 89657,
+      "prompt": "deep water, a swirl of foam in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "ce39c02f-2807-4b3d-b3e5-053e89105919",
+      "dir": "tiles/tops/deep_water/sheet_110_detail_89657",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 20.69,
+        "mean_dominant_share": 0.5313
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 89890,
+      "prompt": "deep water, a floating leaf in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "55b9f8dc-7669-4a3e-adf7-bcbeba7c33a3",
+      "dir": "tiles/tops/deep_water/sheet_111_detail_89890",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 9.94,
+        "mean_dominant_share": 0.8175
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 90046,
+      "prompt": "deep water, a rolling swell in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "e42b9816-038a-4e52-a157-b5b931af4ad7",
+      "dir": "tiles/tops/deep_water/sheet_127_detail_90046",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.12,
+        "mean_dominant_share": 0.2703
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 91562,
+      "prompt": "deep water, a sunken rope in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "8e1ee88e-2aa9-4b5f-8035-363b33e55ef9",
+      "dir": "tiles/tops/deep_water/sheet_131_detail_91562",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 11.06,
+        "mean_dominant_share": 0.8573
+      }
+    },
+    {
+      "ground": "deep_water",
+      "flavour": "detail",
+      "seed": 98311,
+      "prompt": "deep water, a drifting seed pod in the middle, deep water all around the edge",
+      "palette_top": "#162843",
+      "tile_id": "c5b09315-6523-4606-83ae-a15a61d83d8b",
+      "dir": "tiles/tops/deep_water/sheet_128_detail_98311",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 17.31,
+        "mean_dominant_share": 0.2164
       }
     },
     {
@@ -7029,6 +8117,38 @@
     {
       "ground": "grey_stone",
       "flavour": "detail",
+      "seed": 24433,
+      "prompt": "grey stone, a glint of mica in the middle, grey stone all around the edge",
+      "palette_top": "#808082",
+      "tile_id": "140e9fc9-e606-4161-9ac7-98e2e47b25ed",
+      "dir": "tiles/tops/grey_stone/sheet_134_detail_24433",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 14.69,
+        "mean_dominant_share": 0.6429
+      }
+    },
+    {
+      "ground": "grey_stone",
+      "flavour": "detail",
       "seed": 27331,
       "prompt": "grey stone, a spidering crack in the middle, grey stone all around the edge",
       "palette_top": "#808082",
@@ -7989,6 +9109,38 @@
     {
       "ground": "ice",
       "flavour": "detail",
+      "seed": 11508,
+      "prompt": "ice, a patch of rough ice in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "838ce092-6e3d-4936-b090-941fefbdabf2",
+      "dir": "tiles/tops/ice/sheet_119_detail_11508",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 13.75,
+        "mean_dominant_share": 0.2825
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
       "seed": 11646,
       "prompt": "ice, trapped air bubbles in the middle, ice all around the edge",
       "palette_top": "#99ced1",
@@ -8016,6 +9168,198 @@
       "top_face": {
         "mean_colours": 9.06,
         "mean_dominant_share": 0.5916
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 16928,
+      "prompt": "ice, a trapped feather in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "eb14fa99-c8a2-4986-bca4-45014ce3370d",
+      "dir": "tiles/tops/ice/sheet_132_detail_16928",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 11.19,
+        "mean_dominant_share": 0.7456
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 19007,
+      "prompt": "ice, a frozen wave line in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "48a984e6-f1c8-4d32-a56c-3360ec1e9a69",
+      "dir": "tiles/tops/ice/sheet_126_detail_19007",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 9.62,
+        "mean_dominant_share": 0.3823
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 20238,
+      "prompt": "ice, frost flowers in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "62f7e053-878f-4872-83bf-c356756f1954",
+      "dir": "tiles/tops/ice/sheet_102_detail_20238",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 12.81,
+        "mean_dominant_share": 0.364
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 20742,
+      "prompt": "ice, a skate mark in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "39f5809b-c379-4959-bde2-3904dee44715",
+      "dir": "tiles/tops/ice/sheet_112_detail_20742",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 11.0,
+        "mean_dominant_share": 0.4159
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 24031,
+      "prompt": "ice, small crystal shards in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "895e1785-9828-407b-b362-14b39f49f13f",
+      "dir": "tiles/tops/ice/sheet_103_detail_24031",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 18.56,
+        "mean_dominant_share": 0.3939
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 24503,
+      "prompt": "ice, a glint of light in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "a6e10fe9-60bf-4306-8eca-4b8fd1c57c33",
+      "dir": "tiles/tops/ice/sheet_121_detail_24503",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 11.56,
+        "mean_dominant_share": 0.3487
       }
     },
     {
@@ -8053,6 +9397,294 @@
     {
       "ground": "ice",
       "flavour": "detail",
+      "seed": 31117,
+      "prompt": "ice, a fine dusting of frost in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "37318e1f-208c-4b68-8dc5-1e53aa53e0ed",
+      "dir": "tiles/tops/ice/sheet_130_detail_31117",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 11.75,
+        "mean_dominant_share": 0.2672
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 31153,
+      "prompt": "ice, a frozen pebble in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "2e5f27c5-cfdf-415f-8044-f0f514b5bd07",
+      "dir": "tiles/tops/ice/sheet_117_detail_31153",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 21.62,
+        "mean_dominant_share": 0.4643
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 32041,
+      "prompt": "ice, a slush patch in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "45af2648-7385-45f2-a6a7-5843aa1a18f0",
+      "dir": "tiles/tops/ice/sheet_125_detail_32041",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 16.75,
+        "mean_dominant_share": 0.221
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 32960,
+      "prompt": "ice, a chip of stone in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "55ba4a1c-8911-4fa0-83aa-624079ed1c05",
+      "dir": "tiles/tops/ice/sheet_127_detail_32960",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 19.31,
+        "mean_dominant_share": 0.412
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 34219,
+      "prompt": "ice, a pale streak in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "3b29680d-8fd4-437d-a1c2-dd57f4062a6c",
+      "dir": "tiles/tops/ice/sheet_128_detail_34219",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 8.44,
+        "mean_dominant_share": 0.5649
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 41192,
+      "prompt": "ice, a frozen twig in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "30027c02-cd22-44d3-9673-fc92a528e4b3",
+      "dir": "tiles/tops/ice/sheet_113_detail_41192",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 23.44,
+        "mean_dominant_share": 0.3437
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 43078,
+      "prompt": "ice, a starburst crack in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "2d315b35-cc01-4b80-9903-f4d90a37bdb0",
+      "dir": "tiles/tops/ice/sheet_124_detail_43078",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 10.94,
+        "mean_dominant_share": 0.677
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 43772,
+      "prompt": "ice, a hairline fracture in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "daf6a042-308a-4e75-b063-67ff08fa7d5b",
+      "dir": "tiles/tops/ice/sheet_111_detail_43772",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 11.19,
+        "mean_dominant_share": 0.3961
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 44599,
+      "prompt": "ice, a chipped divot in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "b0c2c7f5-929d-4d48-a290-628795c5dfc3",
+      "dir": "tiles/tops/ice/sheet_110_detail_44599",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.81,
+        "mean_dominant_share": 0.3804
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
       "seed": 45153,
       "prompt": "beautiful glacial ice, pale blue, glassy translucent glow, bright glints, rich detail",
       "palette_top": "#99ced1",
@@ -8085,6 +9717,166 @@
     {
       "ground": "ice",
       "flavour": "detail",
+      "seed": 48218,
+      "prompt": "ice, a snowflake pattern in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "c4f59139-e685-4430-b3ed-ccdac374a70a",
+      "dir": "tiles/tops/ice/sheet_116_detail_48218",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.0,
+        "mean_dominant_share": 0.455
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 52321,
+      "prompt": "ice, a cluster of bubbles in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "b00d7bba-cc71-4c5c-9f8d-498a21ed1db9",
+      "dir": "tiles/tops/ice/sheet_114_detail_52321",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 20.31,
+        "mean_dominant_share": 0.2863
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 52516,
+      "prompt": "ice, a buried coin in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "035c74f8-875d-4921-bdec-10aa0ced4892",
+      "dir": "tiles/tops/ice/sheet_122_detail_52516",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 18.88,
+        "mean_dominant_share": 0.4576
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 54692,
+      "prompt": "ice, a small hole in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "934e0b29-0c11-4121-b286-c3eef56d04af",
+      "dir": "tiles/tops/ice/sheet_131_detail_54692",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 13.44,
+        "mean_dominant_share": 0.4164
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 69238,
+      "prompt": "ice, a frozen leaf in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "43f6f06b-8218-4c89-83e5-c12874089a2b",
+      "dir": "tiles/tops/ice/sheet_104_detail_69238",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 19.25,
+        "mean_dominant_share": 0.4419
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
       "seed": 71484,
       "prompt": "beautiful glacial ice, pale blue, glassy translucent glow, bright glints, rich detail",
       "palette_top": "#99ced1",
@@ -8112,6 +9904,358 @@
       "top_face": {
         "mean_colours": 17.19,
         "mean_dominant_share": 0.2833
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 72949,
+      "prompt": "ice, a thin crack in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "58ff0015-bdd0-48b7-b247-045271812929",
+      "dir": "tiles/tops/ice/sheet_118_detail_72949",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 8.31,
+        "mean_dominant_share": 0.7277
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 75780,
+      "prompt": "ice, a frozen droplet in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "80279943-f68c-42d0-8cc0-5c571e61839f",
+      "dir": "tiles/tops/ice/sheet_129_detail_75780",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 17.94,
+        "mean_dominant_share": 0.4483
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 75816,
+      "prompt": "ice, a shallow scratch in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "0e245b1b-c3bc-4395-b836-03d62e00fb7d",
+      "dir": "tiles/tops/ice/sheet_107_detail_75816",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 11.06,
+        "mean_dominant_share": 0.3741
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 76114,
+      "prompt": "ice, a blue vein in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "a04d276c-442b-429d-9a6b-ed28c603f455",
+      "dir": "tiles/tops/ice/sheet_115_detail_76114",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.19,
+        "mean_dominant_share": 0.4802
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 79310,
+      "prompt": "ice, a frozen ripple in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "ad539d2a-b76f-4579-8555-5518cf7f93ca",
+      "dir": "tiles/tops/ice/sheet_120_detail_79310",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 10.44,
+        "mean_dominant_share": 0.2684
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 79892,
+      "prompt": "ice, a frozen fish shadow in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "23883b5c-b12b-49db-b3ec-3d1e2feaaca5",
+      "dir": "tiles/tops/ice/sheet_108_detail_79892",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 14.81,
+        "mean_dominant_share": 0.3877
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 83238,
+      "prompt": "ice, a dusting of snow in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "1763403f-77ea-4450-a84f-ae1c0a2e8e9b",
+      "dir": "tiles/tops/ice/sheet_105_detail_83238",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 13.5,
+        "mean_dominant_share": 0.36
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 84790,
+      "prompt": "ice, a refrozen seam in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "fb2d30be-246c-4e80-87a1-32bf39bc2b6d",
+      "dir": "tiles/tops/ice/sheet_106_detail_84790",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 9.56,
+        "mean_dominant_share": 0.5884
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 88441,
+      "prompt": "ice, a milky white patch in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "fe4a3f76-3693-46f4-bf4c-d0ba2a7e1f5e",
+      "dir": "tiles/tops/ice/sheet_109_detail_88441",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 14.19,
+        "mean_dominant_share": 0.5016
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 92935,
+      "prompt": "ice, a pressure ridge in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "b744a90d-7b22-40d5-a2fa-02cdff592369",
+      "dir": "tiles/tops/ice/sheet_133_detail_92935",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 23.5,
+        "mean_dominant_share": 0.1934
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 95496,
+      "prompt": "ice, a frozen bud in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "444175a5-11bd-4ccd-a102-3bb38a4b61a6",
+      "dir": "tiles/tops/ice/sheet_123_detail_95496",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 23.25,
+        "mean_dominant_share": 0.1936
       }
     },
     {
@@ -12181,6 +14325,70 @@
     {
       "ground": "parquet_floor",
       "flavour": "detail",
+      "seed": 10594,
+      "prompt": "parquet floor, a chalk line in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "b82be112-3e18-43cf-a3ed-e0b8f974264d",
+      "dir": "tiles/tops/parquet_floor/sheet_110_detail_10594",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 14.31,
+        "mean_dominant_share": 0.3823
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 18493,
+      "prompt": "parquet floor, a dent in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "be93e271-5f45-4efe-8207-231bd8a0a0fb",
+      "dir": "tiles/tops/parquet_floor/sheet_119_detail_18493",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 18.0,
+        "mean_dominant_share": 0.2071
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
       "seed": 21373,
       "prompt": "parquet floor, a scratch mark in the middle, parquet floor all around the edge",
       "palette_top": "#a7754b",
@@ -12208,6 +14416,70 @@
       "top_face": {
         "mean_colours": 13.94,
         "mean_dominant_share": 0.2682
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 21461,
+      "prompt": "parquet floor, a dark burn mark in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "d7cc8f3f-92dd-4de5-97f9-64e654aae5e9",
+      "dir": "tiles/tops/parquet_floor/sheet_109_detail_21461",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 22.69,
+        "mean_dominant_share": 0.1764
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 22447,
+      "prompt": "parquet floor, a trail of crumbs in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "3039eca3-460f-484e-b873-bc572a424b85",
+      "dir": "tiles/tops/parquet_floor/sheet_127_detail_22447",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 25.5,
+        "mean_dominant_share": 0.5088
       }
     },
     {
@@ -12245,6 +14517,102 @@
     {
       "ground": "parquet_floor",
       "flavour": "detail",
+      "seed": 26787,
+      "prompt": "parquet floor, a claw scratch in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "cd71cc4e-c5d9-4117-8d77-664feb63948e",
+      "dir": "tiles/tops/parquet_floor/sheet_123_detail_26787",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 20.25,
+        "mean_dominant_share": 0.3867
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 28620,
+      "prompt": "parquet floor, a line of tacks in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "1598d0ed-d5af-40fa-b7a7-2d7ebe5b4213",
+      "dir": "tiles/tops/parquet_floor/sheet_120_detail_28620",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 18.5,
+        "mean_dominant_share": 0.2406
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 28791,
+      "prompt": "parquet floor, a faded rug mark in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "39fb54f4-8209-4a05-85c2-c32687027c8c",
+      "dir": "tiles/tops/parquet_floor/sheet_114_detail_28791",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 14.81,
+        "mean_dominant_share": 0.3207
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
       "seed": 31509,
       "prompt": "beautiful parquet wood floor, warm brown, polished sheen, richly patterned, lots of detail",
       "palette_top": "#a7754b",
@@ -12272,6 +14640,326 @@
       "top_face": {
         "mean_colours": 27.25,
         "mean_dominant_share": 0.1634
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 31810,
+      "prompt": "parquet floor, a mouse hole in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "a01132ce-5cb6-4869-98db-a6ce81bb78b3",
+      "dir": "tiles/tops/parquet_floor/sheet_116_detail_31810",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 20.69,
+        "mean_dominant_share": 0.2489
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 32803,
+      "prompt": "parquet floor, a splinter in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "35b36fe0-aad1-445b-98f1-f55d750659ed",
+      "dir": "tiles/tops/parquet_floor/sheet_115_detail_32803",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 17.12,
+        "mean_dominant_share": 0.3733
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 38357,
+      "prompt": "parquet floor, a scatter of sawdust in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "db30a51f-5811-4c18-b202-bf83795458ab",
+      "dir": "tiles/tops/parquet_floor/sheet_112_detail_38357",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.44,
+        "mean_dominant_share": 0.3157
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 40843,
+      "prompt": "parquet floor, a scuffed corner in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "ca1e3864-d81c-43e1-a7bd-b2bb490d2c22",
+      "dir": "tiles/tops/parquet_floor/sheet_131_detail_40843",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 12.56,
+        "mean_dominant_share": 0.4076
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 41601,
+      "prompt": "parquet floor, a bright polished spot in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "845128ed-d963-4f8a-97d1-a4c5827958a8",
+      "dir": "tiles/tops/parquet_floor/sheet_118_detail_41601",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 12.12,
+        "mean_dominant_share": 0.3489
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 41735,
+      "prompt": "parquet floor, a wax drip in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "54942dac-20f1-4177-a305-3bff535128a4",
+      "dir": "tiles/tops/parquet_floor/sheet_130_detail_41735",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 18.44,
+        "mean_dominant_share": 0.4581
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 41843,
+      "prompt": "parquet floor, a crack in the varnish in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "02dbd223-2118-45a7-b27b-b36d9d19bbda",
+      "dir": "tiles/tops/parquet_floor/sheet_111_detail_41843",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 20.5,
+        "mean_dominant_share": 0.1642
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 42228,
+      "prompt": "parquet floor, a knot ring in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "9ea0b275-0cfc-4d21-bdf4-821a7f6d774e",
+      "dir": "tiles/tops/parquet_floor/sheet_129_detail_42228",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.38,
+        "mean_dominant_share": 0.3003
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 51818,
+      "prompt": "parquet floor, a seam of darker wood in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "94a55800-0984-4c09-a378-7191dc22d41a",
+      "dir": "tiles/tops/parquet_floor/sheet_125_detail_51818",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 19.19,
+        "mean_dominant_share": 0.2954
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 52212,
+      "prompt": "parquet floor, a water stain in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "08038b60-3aea-4af8-b155-a3062609cdf4",
+      "dir": "tiles/tops/parquet_floor/sheet_108_detail_52212",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.31,
+        "mean_dominant_share": 0.3609
       }
     },
     {
@@ -12309,6 +14997,102 @@
     {
       "ground": "parquet_floor",
       "flavour": "detail",
+      "seed": 57975,
+      "prompt": "parquet floor, a scuff of dirt in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "88b1068e-4179-4064-92bc-b91f21334adf",
+      "dir": "tiles/tops/parquet_floor/sheet_105_detail_57975",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 20.62,
+        "mean_dominant_share": 0.2008
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 59859,
+      "prompt": "parquet floor, a worn threshold line in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "9da784c6-ea93-49c3-a2f3-ce858945db21",
+      "dir": "tiles/tops/parquet_floor/sheet_134_detail_59859",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 17.69,
+        "mean_dominant_share": 0.2084
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 60422,
+      "prompt": "parquet floor, a spilled ink stain in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "dd127625-a5c6-4c83-a5e0-fcadba5498b2",
+      "dir": "tiles/tops/parquet_floor/sheet_117_detail_60422",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 18.31,
+        "mean_dominant_share": 0.3818
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
       "seed": 60655,
       "prompt": "parquet floor, a worn patch in the middle, parquet floor all around the edge",
       "palette_top": "#a7754b",
@@ -12336,6 +15120,70 @@
       "top_face": {
         "mean_colours": 15.81,
         "mean_dominant_share": 0.2188
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 66303,
+      "prompt": "parquet floor, a dropped key in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "e00d4d26-2506-4ce2-ab7b-a37d75998cbf",
+      "dir": "tiles/tops/parquet_floor/sheet_104_detail_66303",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 23.62,
+        "mean_dominant_share": 0.3444
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 67459,
+      "prompt": "parquet floor, a grain swirl in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "521b1f5e-c842-48ac-9ad9-43a3ae70d23d",
+      "dir": "tiles/tops/parquet_floor/sheet_133_detail_67459",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 11.94,
+        "mean_dominant_share": 0.4141
       }
     },
     {
@@ -12373,6 +15221,102 @@
     {
       "ground": "parquet_floor",
       "flavour": "detail",
+      "seed": 72516,
+      "prompt": "parquet floor, a warped board in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "2ca1127a-559e-4279-865b-615b6ad2e062",
+      "dir": "tiles/tops/parquet_floor/sheet_121_detail_72516",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 16.31,
+        "mean_dominant_share": 0.1847
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 74976,
+      "prompt": "parquet floor, a dropped button in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "59fc9257-5032-4926-9dc7-b5f64000fb59",
+      "dir": "tiles/tops/parquet_floor/sheet_124_detail_74976",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 14.19,
+        "mean_dominant_share": 0.3673
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 75618,
+      "prompt": "parquet floor, a dropped coin in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "f9afa08a-daca-4886-beb4-754014d5b21e",
+      "dir": "tiles/tops/parquet_floor/sheet_113_detail_75618",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 22.25,
+        "mean_dominant_share": 0.3237
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
       "seed": 78994,
       "prompt": "parquet floor, brass nail heads in the middle, parquet floor all around the edge",
       "palette_top": "#a7754b",
@@ -12400,6 +15344,198 @@
       "top_face": {
         "mean_colours": 18.69,
         "mean_dominant_share": 0.4108
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 79625,
+      "prompt": "parquet floor, a shadow line in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "c4ce409b-5d39-4ef1-9c71-7aaa1d596c22",
+      "dir": "tiles/tops/parquet_floor/sheet_128_detail_79625",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 21.38,
+        "mean_dominant_share": 0.2721
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 84484,
+      "prompt": "parquet floor, a nail hole in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "d088dd09-3b30-4802-865b-538760eea05f",
+      "dir": "tiles/tops/parquet_floor/sheet_132_detail_84484",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 16.69,
+        "mean_dominant_share": 0.3196
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 87888,
+      "prompt": "parquet floor, a gap between boards in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "03945ab8-74f2-4235-960a-2f762f572e98",
+      "dir": "tiles/tops/parquet_floor/sheet_107_detail_87888",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 21.25,
+        "mean_dominant_share": 0.1881
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 90780,
+      "prompt": "parquet floor, a loose board in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "1ac3ef22-79b5-4fda-b090-5c05a74ed6e1",
+      "dir": "tiles/tops/parquet_floor/sheet_106_detail_90780",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.25,
+        "mean_dominant_share": 0.2545
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 92469,
+      "prompt": "parquet floor, a pale sun-bleached patch in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "d889ef44-8925-4592-bad6-9bcf366ebf73",
+      "dir": "tiles/tops/parquet_floor/sheet_122_detail_92469",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.06,
+        "mean_dominant_share": 0.3378
+      }
+    },
+    {
+      "ground": "parquet_floor",
+      "flavour": "detail",
+      "seed": 99957,
+      "prompt": "parquet floor, a chipped edge in the middle, parquet floor all around the edge",
+      "palette_top": "#a7754b",
+      "tile_id": "1804ccf4-f682-4e0c-a543-9c559f745e68",
+      "dir": "tiles/tops/parquet_floor/sheet_126_detail_99957",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.5,
+        "mean_dominant_share": 0.4434
       }
     },
     {

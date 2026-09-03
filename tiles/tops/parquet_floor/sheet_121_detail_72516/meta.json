@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "parquet_floor",
+  "flavour": "detail",
+  "index": 121,
+  "seed": 72516,
+  "prompt": "parquet floor, a warped board in the middle, parquet floor all around the edge",
+  "palette_top": "#a7754b",
+  "tile_id": "2ca1127a-559e-4279-865b-615b6ad2e062",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T07:38:01+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 13,
+        "dominant_share": 0.1952,
+        "px": 922
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2354,
+        "px": 922
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.1464,
+        "px": 922
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.1668,
+        "px": 923
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.1775,
+        "px": 924
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2004,
+        "px": 923
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.1419,
+        "px": 923
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.2178,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.2852,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.1312,
+        "px": 922
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.195,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.169,
+        "px": 923
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.1593,
+        "px": 923
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.2059,
+        "px": 923
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.143,
+        "px": 923
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.1851,
+        "px": 924
+      }
+    ],
+    "mean_colours": 16.31,
+    "mean_dominant_share": 0.1847
+  },
+  "motif": "a warped board",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

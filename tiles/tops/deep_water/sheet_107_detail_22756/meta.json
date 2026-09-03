@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "deep_water",
+  "flavour": "detail",
+  "index": 107,
+  "seed": 22756,
+  "prompt": "deep water, a school of dark shapes in the middle, deep water all around the edge",
+  "palette_top": "#162843",
+  "tile_id": "e5784394-4834-48c6-bbde-d73693df1d77",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T07:18:04+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 10,
+        "dominant_share": 0.257,
+        "px": 922
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.3373,
+        "px": 922
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.32,
+        "px": 922
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.2527,
+        "px": 922
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.338,
+        "px": 923
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.3142,
+        "px": 923
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.316,
+        "px": 924
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.351,
+        "px": 923
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.3636,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.3564,
+        "px": 923
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.2965,
+        "px": 924
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.3536,
+        "px": 922
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.3749,
+        "px": 923
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.4306,
+        "px": 922
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.3998,
+        "px": 923
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.338,
+        "px": 923
+      }
+    ],
+    "mean_colours": 12.31,
+    "mean_dominant_share": 0.3375
+  },
+  "motif": "a school of dark shapes",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

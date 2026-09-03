@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "ice",
+  "flavour": "detail",
+  "index": 117,
+  "seed": 31153,
+  "prompt": "ice, a frozen pebble in the middle, ice all around the edge",
+  "palette_top": "#99ced1",
+  "tile_id": "2e5f27c5-cfdf-415f-8044-f0f514b5bd07",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T07:35:12+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 18,
+        "dominant_share": 0.6678,
+        "px": 921
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4826,
+        "px": 922
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.2913,
+        "px": 920
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.5826,
+        "px": 920
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.3496,
+        "px": 921
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.3359,
+        "px": 923
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.4832,
+        "px": 923
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.2993,
+        "px": 922
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.5736,
+        "px": 924
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.4685,
+        "px": 922
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.4039,
+        "px": 921
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.3351,
+        "px": 922
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.2625,
+        "px": 922
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.566,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.675,
+        "px": 923
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.6522,
+        "px": 923
+      }
+    ],
+    "mean_colours": 21.62,
+    "mean_dominant_share": 0.4643
+  },
+  "motif": "a frozen pebble",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}
