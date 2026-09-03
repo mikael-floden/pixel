@@ -295,6 +295,26 @@ await fits("turned 60 degrees");
   const b2 = await p.evaluate(() => ({ ...window.__wikiHitbox.boxes[window.__wikiHitbox.sel] }));
   ok(Math.abs(b2.ry - b0.base / 2) < 0.03 && Math.abs((b2.ay + b2.ry) - (b0.ay + b0.ry)) < 0.05,
     "and shrinking D comes back down onto the very same bottom");
+  /* ...BUT A RECT PIVOTS ON ITS CENTRE (maintainer 2026-09-03: "When I
+   * change/draw the D slider on a rect hitbox - the hitbox should have the
+   * pivot in the center (it should behave like when I draw the W slider)").
+   * A ground rectangle is placed by its footprint, not hung off a contact
+   * point; growing it from one edge slides the far edge off the furniture,
+   * and on a turned rect "the bottom" is a corner, not an edge. */
+  await p.evaluate(() => [...document.querySelectorAll(".hit-shape button")].find((x) => /rect/.test(x.textContent))?.click());
+  await p.waitForTimeout(700);
+  const r0 = await p.evaluate(() => ({ ...window.__wikiHitbox.boxes[window.__wikiHitbox.sel] }));
+  await drive(Math.round(r0.ry * 2) + 16);
+  await p.waitForTimeout(700);
+  const r1 = await p.evaluate(() => ({ ...window.__wikiHitbox.boxes[window.__wikiHitbox.sel] }));
+  ok(r1.ry > r0.ry + 6 && Math.abs(r1.ay - r0.ay) < 0.02,
+    `on a RECT the D rail pivots on the CENTRE, like W (centre ${r0.ay} → ${r1.ay}, half-depth ${r0.ry} → ${r1.ry})`);
+  const topMove = (r1.ay - r1.ry) - (r0.ay - r0.ry), botMove = (r1.ay + r1.ry) - (r0.ay + r0.ry);
+  ok(Math.abs(topMove + botMove) < 0.03 && Math.abs(botMove - (r1.ry - r0.ry)) < 0.03,
+    `growing equally at both edges — top ${topMove.toFixed(1)}, bottom ${botMove.toFixed(1)} (${(r0.ay - r0.ry).toFixed(1)}..${(r0.ay + r0.ry).toFixed(1)} → ${(r1.ay - r1.ry).toFixed(1)}..${(r1.ay + r1.ry).toFixed(1)})`);
+  await p.evaluate(() => [...document.querySelectorAll(".hit-shape button")].find((x) => /ellipse/.test(x.textContent))?.click());
+  await p.waitForTimeout(600);
+
 }
 {
   const pb2 = await (await p.$(".hit-bar .shadow-pad")).boundingBox();

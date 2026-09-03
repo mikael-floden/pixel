@@ -2258,14 +2258,22 @@ function makePlayer(entity, kind, opts = {}) {
     const inp = h("input", { type: "range", class: "shadow-slider", "aria-label": label, ...cfg });
     inp.addEventListener("input", () => {
       const v = +inp.value;
-      /* D GROWS UPWARD ONLY (maintainer 2026-08-28: "you are good at finding
-       * the bottom, left and right - but you find it harder to know where in
-       * y the hitbox ends ... the scaling center is the bottom of the
-       * elipse"). The auto-placed bottom is the trustworthy edge, so the D
-       * rail keeps ay+ry fixed and moves only the top — one rail now fixes
-       * the one thing usually wrong. */
+      /* D GROWS UPWARD ONLY, ON AN ELLIPSE (maintainer 2026-08-28: "you are
+       * good at finding the bottom, left and right - but you find it harder to
+       * know where in y the hitbox ends ... the scaling center is the bottom
+       * of the elipse"). The auto-placed bottom is the trustworthy edge there,
+       * so the D rail keeps ay+ry fixed and moves only the top.
+       *
+       * A RECT PIVOTS ON ITS CENTRE, BOTH RAILS (maintainer 2026-09-03: "When
+       * I change/draw the D slider on a rect hitbox - the hitbox should have
+       * the pivot in the center (it should behave like when I draw the W
+       * slider)"). A rect is a ground rectangle he places by its footprint,
+       * not an ellipse hung off a contact point: growing it from one edge
+       * slides the far edge off the furniture, and on a turned rect "the
+       * bottom" is a corner rather than an edge at all. */
       if (key === "h") {
         const b = hitList()[hitSel];
+        if (boxShape(entity, b) === "rect") { editHit(hitSel, { ry: v / 2 }); return; }
         const bottom = (b?.ay ?? 0) + (b?.ry ?? 0);
         editHit(hitSel, { ry: v / 2, ay: +(bottom - v / 2).toFixed(2) });
         return;
