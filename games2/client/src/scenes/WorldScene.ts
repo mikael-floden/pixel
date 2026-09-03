@@ -1798,6 +1798,19 @@ export class WorldScene extends Phaser.Scene {
       mode: this.groundLastMode,
       cellRuns: this.groundCellStats.runs,
       medianSum: med,
+      /* PLACEMENT INTEGRITY — the maintainer's hypothesis, under test. How many
+       * ground ops were placed on a FRACTIONAL texel, and whether the texture's
+       * own anchor and position are whole. A tile diamond meets its neighbours
+       * along a 2:1 staircase with ONE texel of overlap, so half a texel of
+       * placement error opens a gap on some rows and not others — his "rounding
+       * error that sometimes creates an extra gap". Zero on this machine; his
+       * device is the only one that can say otherwise, which is the whole point
+       * of reporting it rather than shipping another silent guess. */
+      nonInt: this.groundNonInt,
+      anchorFrac: this.groundAnchor
+        ? +(Math.abs(this.groundAnchor.ax % 1) + Math.abs(this.groundAnchor.ay % 1)).toFixed(3)
+        : -1,
+      rtPosFrac: +(Math.abs((this.groundRT?.x ?? 0) % 1) + Math.abs((this.groundRT?.y ?? 0) % 1)).toFixed(3),
       fill,
       dark,
       clear,
@@ -1964,6 +1977,9 @@ export class WorldScene extends Phaser.Scene {
   private groundScratch?: Phaser.GameObjects.RenderTexture;
   private groundAnchor: { ax: number; ay: number; mask: Map<number, number> | null; top: number } | null = null;
   private groundClip: { x0: number; y0: number; x1: number; y1: number } | null = null;
+  /** Ground ops whose placement was NOT a whole texel — see t3Blit. Zero on
+   *  this machine; the maintainer's device is the one that can say otherwise. */
+  private groundNonInt = 0;
   /** The slice size in force, steered toward GROUND_SLICE_MS by what slices
    *  actually cost on THIS device (see t3paintSliceStep). */
   private groundSlicePx = GROUND_SLICE_PX;
@@ -13192,8 +13208,26 @@ export class WorldScene extends Phaser.Scene {
      * the texture is exactly [0, rt.width) × [0, rt.height) in these units
      * (identity camera, rt.width is the texel size) — verified in review
      * against Phaser 3.90's MultiPipeline.batchTextureFrame. */
-    const dx = op.x - ax;
-    const dy = op.y - ay;
+    /* EVERY GROUND OP LANDS ON A WHOLE TEXEL.
+     *
+     * The maintainer's read, and the one class of cause left standing after
+     * the art, the mask, the pitch, the shaders, the crop and the streaming
+     * were each measured innocent: "a rounding error that sometimes creates an
+     * extra gap due to not working with clean integers". A tile diamond meets
+     * its neighbours along a 2:1 staircase with ONE texel of overlap, so half a
+     * texel of placement error opens a gap on some rows and not others — which
+     * is exactly the shape he photographed: the same screen Y every time, the
+     * upper edges only, on every ground, and dotted rather than solid because
+     * the staircase steps two across for one down.
+     *
+     * On paper each term is whole (columnX/columnY step by DX=32 and DY=14 off
+     * an integer frame origin, the anchor is Math.round). On his device
+     * something in that chain is not, and rounding here is free where it is
+     * already true. `nonInt` counts what needed it, so the beacon can say
+     * whether this was the cause instead of leaving another guess in the tree. */
+    if (!Number.isInteger(op.x - ax) || !Number.isInteger(op.y - ay)) this.groundNonInt++;
+    const dx = Math.round(op.x - ax);
+    const dy = Math.round(op.y - ay);
     if (
       this.groundCull &&
       op.sw > 0 &&
