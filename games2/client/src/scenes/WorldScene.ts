@@ -1590,6 +1590,7 @@ export class WorldScene extends Phaser.Scene {
       frames: snap.frames,
       sections: perFrame,
       counts: { ...(snap.counts as Record<string, number>), texturesAdded: snap.texturesAdded as number },
+      ground: this.groundTexelReport(),
       worst: (() => {
         try {
           const h = (window as unknown as { __ml?: { hitch?: () => { worst?: unknown[] } } }).__ml?.hitch?.();
@@ -1606,6 +1607,86 @@ export class WorldScene extends Phaser.Scene {
       body: JSON.stringify(body),
       keepalive: true,
     }).catch(() => {});
+  }
+
+  /** THE GROUND TEXTURE, SAMPLED ON HIS DEVICE — the render half of the beacon.
+   *
+   *  The zigzag is a lattice of dark texels on the tile grid that the harness
+   *  has never once reproduced, because the harness walks ~1 cell per 24 s and
+   *  so never runs the paths that only fire on fresh terrain. His phone runs
+   *  them constantly. This reads a bounded block straight off the ground render
+   *  target with gl.readPixels — NOT through DynamicTexture.snapshot, whose
+   *  framebuffer branch returns the image unflipped and cost a wrong diagnosis
+   *  today — classifies each texel, and reports WHERE the dark ones sit modulo
+   *  the 64x28 tile lattice. A lattice shows up as a few (dx,dy) bins holding
+   *  nearly all the hits; scattered art detail does not.
+   *
+   *  Bounded on purpose: one 256x192 block, once per beacon window, is ~49k
+   *  texels — a readback he will not feel, against a full-texture snapshot he
+   *  would. */
+  private groundTexelReport(): Record<string, unknown> | null {
+    const rt = this.groundRT;
+    const r = this.game.renderer as unknown as {
+      gl?: WebGLRenderingContext;
+      pushFramebuffer?: (fb: WebGLFramebuffer, u?: boolean, s?: boolean) => void;
+      popFramebuffer?: () => void;
+    };
+    const fb = (rt as unknown as { renderTarget?: { framebuffer?: WebGLFramebuffer } })?.renderTarget?.framebuffer;
+    if (!rt || !r?.gl || !fb || !r.pushFramebuffer || !r.popFramebuffer) return null;
+    const gl = r.gl;
+    const W = Math.min(256, rt.width);
+    const H = Math.min(192, rt.height);
+    const x0 = Math.max(0, Math.floor((rt.width - W) / 2));
+    const y0 = Math.max(0, Math.floor((rt.height - H) / 2));
+    const px = new Uint8Array(W * H * 4);
+    try {
+      r.pushFramebuffer(fb, false, false);
+      gl.readPixels(x0, y0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, px);
+      r.popFramebuffer();
+    } catch {
+      try { r.popFramebuffer(); } catch { /* already popped */ }
+      return null;
+    }
+    // The fill this texture is painted over, and "much darker than the local
+    // median" — the dots read as one or the other depending on the ground.
+    let fill = 0;
+    let dark = 0;
+    let clear = 0;
+    const bins: Record<string, number> = {};
+    const sums = new Int32Array(W * H);
+    for (let i = 0, j = 0; i < px.length; i += 4, j++) sums[j] = px[i] + px[i + 1] + px[i + 2];
+    const sorted = Int32Array.from(sums).sort();
+    const med = sorted[sorted.length >> 1];
+    for (let y = 1; y < H - 1; y++) {
+      for (let x = 1; x < W - 1; x++) {
+        const j = y * W + x;
+        const i = j * 4;
+        if (px[i + 3] === 0) { clear++; continue; }
+        const isFill = px[i] === 0x18 && px[i + 1] === 0x1c && px[i + 2] === 0x28;
+        const isDark = sums[j] < med - 150;
+        if (!isFill && !isDark) continue;
+        if (isFill) fill++;
+        if (isDark) dark++;
+        // gl.readPixels is bottom-up, so give the bin in TEXTURE space.
+        const tx = (x0 + x) % 64;
+        const ty = (rt.height - 1 - (y0 + y)) % 28;
+        const k = `${tx},${ty}`;
+        bins[k] = (bins[k] ?? 0) + 1;
+      }
+    }
+    const top = Object.entries(bins).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    return {
+      rt: `${rt.width}x${rt.height}`,
+      block: `${W}x${H}@${x0},${y0}`,
+      anchor: `${Math.round(rt.x)},${Math.round(rt.y)}`,
+      mode: this.groundLastMode,
+      cellRuns: this.groundCellStats.runs,
+      medianSum: med,
+      fill,
+      dark,
+      clear,
+      topBins: top.map(([k, n]) => `${k}:${n}`),
+    };
   }
 
   /** The local player's cell, or null before the join lands. */

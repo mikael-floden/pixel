@@ -529,6 +529,16 @@ export function registerLiveRoutes(app: express.Application): void {
       frames: flat(body.frames, 12, 100000),
       sections: flat(body.sections, 40, 100000),
       counts: flat(body.counts, 40, 1e9),
+      // The ground-texture sample: where the dark texels sit on the tile
+      // lattice, measured on HIS device because the harness never reproduces it.
+      ground: body.ground && typeof body.ground === "object"
+        ? Object.fromEntries(
+            Object.entries(body.ground as Record<string, unknown>).slice(0, 16).map(([k, v]) => [
+              k.slice(0, 24),
+              typeof v === "number" ? v : Array.isArray(v) ? v.slice(0, 12).map((x) => String(x).slice(0, 24)) : String(v).slice(0, 48),
+            ]),
+          )
+        : null,
       worst: Array.isArray(body.worst)
         ? (body.worst as unknown[]).slice(0, 8).map((w) => str(JSON.stringify(w), 400))
         : null,
