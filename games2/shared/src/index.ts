@@ -178,7 +178,26 @@ export interface MoveResult {
 // maps2/tiles2 geometry: top diamond 30px tall × 64px wide, grid steps DX=32,
 // DY=15; one elevation level = 16px of vertical face (tiles2/docs/ELEVATION.md).
 export const ISO_DX = 32;
-export const ISO_DY = 15;
+// 14, NOT 15 — maintainer 2026-09-03: "ISO_DY SHOULD BE 14. EVERYTHING OTHER THAN 14
+// CREATES A ZIGZAG BUG! WE WANT TO GET RID OF ZIGZAG BUGS!"
+//
+// It is measured, not taste. A tiles3 top diamond is 64x28, so 14 is the largest
+// vertical pitch at which each tile's wall is fully covered by the tile in front of it.
+// Interior wall — a wall pixel that still has top surface below it — is ZERO at 14 and
+// 960 across a field at 15 (tiles/docs/GEOMETRY.md, re-measured 2026-09-03: 36 leaking
+// px on a single sand plate at 15, 0 at 14). Those slivers are the dotted grid he
+// photographed on sand and on water, dotted rather than solid because the diamond edge
+// is a staircase.
+//
+// This is the DEFAULT every world without its own `iso` falls back to, so it is the
+// value that decides what a world@1/@2 doc draws at and what any path that loses the
+// per-world geometry lands on. ISO_GEOMETRY_MAPS3 already said 14; making the default
+// agree means no code path can render a 3.0 tile at 15 by omission — which is what was
+// happening in production while the constant below it read correctly.
+//
+// His earlier verdict that "15 looks best on tiles2" is superseded by the instruction
+// above; the switch to 3.0 has landed in the live world.
+export const ISO_DY = 14;
 // Vertical face pixels per elevation level (maps2 LEVEL_PX).
 export const LEVEL_PX = 16;
 
