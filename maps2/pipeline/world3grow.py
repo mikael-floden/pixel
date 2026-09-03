@@ -438,7 +438,31 @@ class Grow:
             if (int(x), int(y)) in getattr(self, "no_place", set()):
                 self.fail += 1
                 return False
-        p = {"piece": piece, "x": round(x, 2), "y": round(y, 2)}
+        # SNAP THE FOOTPRINT TO A CELL CENTRE NOW, and judge the piece where
+        # it will actually stand. (snap_hitboxes still runs last for the
+        # pieces that do not come through put - the base build's trees.)
+        if not hasattr(self, "_bbox"):
+            self._bbox = json.load(open(os.path.join(
+                REPO, "games2", "config", "scenery-bbox.json")))
+            self._hit = json.load(open(os.path.join(
+                REPO, "live", "tuning", "scenery_hitbox.json")))["overrides"]
+        geo = self._hitbox_geom({"piece": piece, "x": x, "y": y,
+                                 "hflip": hflip, "state": state})
+        if geo:
+            dwx, dwy, R = geo
+            cx, cy = math.floor(x + dwx), math.floor(y + dwy)
+            x, y = cx + 0.5 - dwx, cy + 0.5 - dwy
+            wx, wy = cx + 0.5, cy + 0.5
+        else:
+            wx, wy, R = int(x) + 0.5, int(y) + 0.5, self.FP_DEFAULT
+        if on is not None and self.g(int(x), int(y)) not in on:
+            self.fail += 1
+            return False
+        if not self._footprint_ok(wx, wy, R):
+            self.fail += 1
+            self.fp_refused = getattr(self, "fp_refused", 0) + 1
+            return False
+        p = {"piece": piece, "x": round(x, 4), "y": round(y, 4)}
         if hflip:
             p["hflip"] = True
         if lit:
@@ -451,6 +475,7 @@ class Grow:
             p["dir"] = dir      # not every piece ships rotations; the base
                                 # south sprite is the fallback
         self.doc["scenery"].append(p)
+        self._fp_add(wx, wy, R)
         if not hasattr(self, "occ"):
             self._reindex()
         else:
@@ -1022,6 +1047,97 @@ class Grow:
     # the sprite and the nav tile on different planes. Reported to games.
     HITBOX_DROP = 0.0    # screen px, down-screen - see above before changing
 
+    def _hitbox_geom(self, p):
+        """(dwx, dwy, R): where the piece's footprint centre sits relative to
+        the placement, in cells, and the footprint's radius in cells. The
+        published ellipse is a WORLD CIRCLE seen in iso (the game's own
+        reading: rx = R*dx*sqrt2), so a circle is exact for round footprints
+        and conservative - the larger axis - for long ones. None when the
+        piece publishes no footprint."""
+        off = self._hitbox_offset(p)
+        if off is None:
+            return None
+        facts = self._bbox["pieces"][p["piece"]]
+        bb = self._bbox["boxes"][facts["sprite"]]
+        k = facts["wph"] / max(1, bb[3] - bb[1])
+        rec = None
+        if p.get("state"):
+            rec = self._hit.get(f"scenery/{p['piece']}#{p['state'].lower()}")
+        rec = rec or self._hit.get("scenery/" + p["piece"]) or next(
+            (v for kk, v in self._hit.items()
+             if kk.startswith("scenery/" + p["piece"] + "#")), None)
+        R = max(max(b["rx"] * k / (self.HIT_DX * math.sqrt(2)),
+                    b["ry"] * k / (self.HIT_DY * math.sqrt(2)))
+                for b in rec["boxes"])
+        return off[0], off[1], R
+
+    # ---- the footprint law -------------------------------------------------
+    # (maintainer 2026-09-02) "never place a scenery so that the scenery's
+    # hitbox interfere with another scenery hitbox or touches the wall or hang
+    # over a cliff. The scenery hitbox must be placed on ground in a way it
+    # doesn't touch a wall, hang over a cliff/slope or intersect another
+    # scenery's hitbox."
+    #
+    # Measured on the build before this: 68 intersecting pairs, 73 footprints
+    # touching a wall cell, 60 hanging over a level change - out of 1,046.
+    # All three are checked HERE, at placement, on the snapped footprint, so a
+    # violating piece is refused rather than shipped and policed later.
+    FP_MARGIN = 0.15      # cells of clearance; "touches" means within this
+    FP_DEFAULT = 0.30     # radius for a piece with no published footprint
+
+    def _walls(self):
+        n = sum(len(w["cells"]) for w in self.doc["walls"])
+        if getattr(self, "_wallset_n", -1) != n:
+            self._wallset = {(c["x"], c["y"]) for w in self.doc["walls"]
+                             for c in w["cells"]}
+            self._wallset_n = n
+        return self._wallset
+
+    def _fp_near(self, wx, wy):
+        g = getattr(self, "_fp", None)
+        if g is None:
+            self._fp = g = {}
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                for e in g.get((int(wx) // 4 + dx, int(wy) // 4 + dy), ()):
+                    yield e
+
+    def _fp_add(self, wx, wy, R):
+        if getattr(self, "_fp", None) is None:
+            self._fp = {}
+        self._fp.setdefault((int(wx) // 4, int(wy) // 4), []).append((wx, wy, R))
+
+    def _footprint_ok(self, wx, wy, R):
+        """The three rules, on one footprint circle."""
+        cx, cy = int(wx), int(wy)
+        if not (0 <= cx < NEW and 0 <= cy < NEW):
+            return False
+        lvl = self.lvl[cy][cx]
+        wet = self.liquid(cx, cy)
+        walls = self._walls()
+        Rm = R + self.FP_MARGIN
+        rr = int(math.ceil(Rm))
+        for yy in range(cy - rr, cy + rr + 1):
+            for xx in range(cx - rr, cx + rr + 1):
+                # nearest point of this cell to the centre: inside the circle
+                # means the footprint reaches into the cell
+                nx = min(max(wx, xx), xx + 1)
+                ny = min(max(wy, yy), yy + 1)
+                if (nx - wx) ** 2 + (ny - wy) ** 2 > Rm * Rm:
+                    continue
+                if not (0 <= xx < NEW and 0 <= yy < NEW):
+                    return False
+                if (xx, yy) in walls:                 # touches a wall
+                    return False
+                if self.lvl[yy][xx] != lvl:           # hangs over a cliff/slope
+                    return False
+                if self.liquid(xx, yy) != wet:        # straddles the shore
+                    return False
+        for (ox, oy, orad) in self._fp_near(wx, wy):
+            if (ox - wx) ** 2 + (oy - wy) ** 2 < (R + orad) ** 2:
+                return False                          # intersects a footprint
+        return True
+
     def _hitbox_offset(self, p):
         """Where a piece's HITBOX CENTRE sits, in world cells, relative to the
         placement itself. Straight port of the game's own arithmetic
@@ -1135,6 +1251,48 @@ class Grow:
         print(f"  [snap_hitboxes: {moved} centred, worst nudge "
               f"{worst:.2f} cells]", flush=True)
 
+    def police_footprints(self):
+        """The footprint law over EVERY piece, including the ones that never
+        came through put() - the base build's trees and the ported v2 props.
+        Deterministic: pieces are judged in (x+y, piece) order and the first
+        to claim ground keeps it. Ends with the audit that must read zero."""
+        self._fp = {}
+        keep, dropped = [], 0
+        order = sorted(range(len(self.doc["scenery"])),
+                       key=lambda i: (round(self.doc["scenery"][i]["x"]
+                                            + self.doc["scenery"][i]["y"], 3),
+                                      self.doc["scenery"][i]["piece"]))
+        for i in order:
+            p = self.doc["scenery"][i]
+            geo = self._hitbox_geom(p)
+            if geo:
+                wx, wy = p["x"] + geo[0], p["y"] + geo[1]
+                R = geo[2]
+            else:
+                wx, wy, R = int(p["x"]) + 0.5, int(p["y"]) + 0.5, self.FP_DEFAULT
+            if self._footprint_ok(wx, wy, R):
+                keep.append(i)
+                self._fp_add(wx, wy, R)
+            else:
+                dropped += 1
+        keep.sort()
+        self.doc["scenery"] = [self.doc["scenery"][i] for i in keep]
+        self._reindex()
+        self.placed += [("footprint law: pieces removed", dropped),
+                        ("footprint law: refused at placement",
+                         getattr(self, "fp_refused", 0))]
+        # BUILD ASSERT: the world is clean under all three rules.
+        self._fp = {}
+        for p in self.doc["scenery"]:
+            geo = self._hitbox_geom(p)
+            if geo:
+                wx, wy, R = p["x"] + geo[0], p["y"] + geo[1], geo[2]
+            else:
+                wx, wy, R = int(p["x"]) + 0.5, int(p["y"]) + 0.5, self.FP_DEFAULT
+            assert self._footprint_ok(wx, wy, R), \
+                f"{p['piece']} at {p['x']},{p['y']} breaks the footprint law"
+            self._fp_add(wx, wy, R)
+
     def relight(self):
         """FILL THE LIGHT BUDGET, NEVER EXCEED IT (maintainer 2026-08-29:
         "push the limit so we get as much light as we can before the tech
@@ -1217,12 +1375,106 @@ class Grow:
             g = self.g(x, y)
             return bool(g) and g not in ("water", "deep_water")
 
+        def covered(x, y):
+            """How much of a body standing at (x,y) is covered by scenery
+            drawn IN FRONT of it (larger x+y), plus whether it stands on a
+            footprint. Body is 36x88 screen px."""
+            sx, sy = (x + 0.5 - (y + 0.5)) * 32.0, (x + 0.5 + y + 0.5) * 14.0
+            a = (sx - 18, sy - 88, sx + 18, sy)
+            import numpy as np
+            m = np.zeros((16, 32), bool)
+            for q in self.doc["scenery"]:
+                if q["x"] + q["y"] <= x + 0.5 + y + 0.5:
+                    continue
+                if abs(q["x"] - x) > 7 or abs(q["y"] - y) > 7:
+                    continue
+                b = self._art_rect(q["piece"], q["x"], q["y"])
+                if b is None:
+                    continue
+                ox0, ox1 = max(a[0], b[0]), min(a[2], b[2])
+                oy0, oy1 = max(a[1], b[1]), min(a[3], b[3])
+                if ox1 <= ox0 or oy1 <= oy0:
+                    continue
+                c0 = int((ox0 - a[0]) / 36 * 32); c1 = int(math.ceil((ox1 - a[0]) / 36 * 32))
+                r0 = int((oy0 - a[1]) / 88 * 16); r1 = int(math.ceil((oy1 - a[1]) / 88 * 16))
+                m[max(0, r0):min(16, r1), max(0, c0):min(32, c1)] = True
+            on_fp = any((ox - x - 0.5) ** 2 + (oy - y - 0.5) ** 2 < orad ** 2
+                        for (ox, oy, orad) in self._fp_near(x + 0.5, y + 0.5))
+            return float(m.mean()), on_fp
+
+        NPC_HIDE = 0.30       # more than this covered = hidden, move him
+
+        def in_the_open(x, y):
+            """The nearest standable cell where the body is not hidden and
+            not on a footprint. Ties go to SCREEN-LEFT (smaller x - y) - the
+            chess player stands to the left of his board, not behind it
+            (maintainer 2026-09-02). Same level as the asked cell, so nobody
+            is moved off a terrace."""
+            x, y = int(x), int(y)
+            lvl = self.lvl[y][x]
+            best = None
+            for r in range(0, 5):
+                cands = [(x + dx, y + dy) for dx in range(-r, r + 1)
+                         for dy in range(-r, r + 1)
+                         if max(abs(dx), abs(dy)) == r]
+                scored = []
+                for (cx, cy) in cands:
+                    if not (0 <= cx < NEW and 0 <= cy < NEW):
+                        continue
+                    if not standable(cx, cy) or self.lvl[cy][cx] != lvl:
+                        continue
+                    if (cx, cy) in self._walls():
+                        continue
+                    cov, on_fp = covered(cx, cy)
+                    if on_fp:
+                        continue
+                    scored.append((cov > NPC_HIDE, cov, cx - cy, cx, cy))
+                scored.sort()
+                if scored and not scored[0][0]:
+                    return scored[0][3], scored[0][4]
+                if scored and best is None:
+                    best = (scored[0][3], scored[0][4])
+            return best or (x, y)
+
         def place(cid, kind, x, y, face, anchor, wares=None, idp="npc",
                   allow_reuse=False):
             if cid not in roster or not standable(x, y):
                 return False
             if cid in used and not allow_reuse:
                 return False
+            # NEVER BEHIND THE SCENERY (maintainer 2026-09-02: "you should
+            # also not place an NPC behind a scenery ... it's ok if the NPC is
+            # somewhat behind the scenery graphics, but they should not be
+            # hidden by it"). Measured before: 8 of 34 more than 30% covered,
+            # two of them fully.
+            x, y = in_the_open(x, y)
+            # THE CHESS PLAYER STANDS BESIDE HIS BOARD, NOT BEHIND IT - his
+            # example, verbatim: "that NPC can stand to the left side of the
+            # chess board in order to not stand behind". Of the cells around
+            # the table, take the least covered, ties to screen-left.
+            if anchor == "chess":
+                tables = [q for q in self.doc["scenery"]
+                          if q["piece"].startswith("chess_tables/")]
+                if tables:
+                    t = min(tables, key=lambda q: (q["x"] - x) ** 2 + (q["y"] - y) ** 2)
+                    tx, ty = int(t["x"]), int(t["y"])
+                    best = None
+                    for dx in (-1, 0, 1):
+                        for dy in (-1, 0, 1):
+                            cx, cy = tx + dx, ty + dy
+                            if (dx, dy) == (0, 0) or not standable(cx, cy):
+                                continue
+                            if self.lvl[cy][cx] != self.lvl[ty][tx]:
+                                continue
+                            cov, on_fp = covered(cx, cy)
+                            if on_fp:
+                                continue
+                            key = (cov > NPC_HIDE, cx - cy, cov)
+                            if best is None or key < best[0]:
+                                best = (key, cx, cy)
+                    if best:
+                        x, y = best[1], best[2]
+                        face = facing(tx - x, ty - y)     # and looks at it
             used.add(cid)
             e = {"id": f"{idp}-{len(out) + 1}", "character": cid,
                  "name": roster[cid]["display_name"], "type": kind,
@@ -1282,12 +1534,21 @@ class Grow:
         # EVERY REFERENCE RESOLVES AND EVERY ONE STANDS ON GROUND — asserted,
         # so a terrain change breaks the build instead of stranding somebody.
         seen = set()
+        hidden = 0
         for e in out:
             assert e["character"] in roster, e
             assert e["name"] == roster[e["character"]]["display_name"], e
             assert standable(e["x"], e["y"]), e
             assert e["id"] not in seen, e
             seen.add(e["id"])
+            cov, on_fp = covered(e["x"], e["y"])
+            if cov > NPC_HIDE or on_fp:
+                hidden += 1
+        # BUILD ASSERT: nobody is hidden. A cell may be boxed in on every side
+        # (the smithy floor is 3x3), so the rule is "nobody", measured, not
+        # "always found a spot" - if this fires, the scenery around that NPC
+        # is the thing to fix.
+        assert hidden == 0, f"{hidden} NPCs still hidden behind scenery"
         json.dump({"schema": "pixel-maps3/npcs@1", "world": "the_game",
                    "npcs": out},
                   open(os.path.join(OUT, "npcs.json"), "w"),
@@ -1696,8 +1957,18 @@ class Grow:
                     return 0
                 x, y = wall[min(idx, len(wall) - 1)]
                 d = "south-east" if wall is west else "south-west"
-                return self.put(pk(group, d), x + 0.5, y + 0.5,
-                                on=IN, dir=d, **kw)
+                piece = pk(group, d)
+                # AS CLOSE TO THE WALL AS ITS FOOTPRINT ALLOWS. The footprint
+                # law refuses a hitbox that touches the wall cell, so a wide
+                # piece steps into the room, a quarter cell at a time, until
+                # its footprint clears - "against the wall" now means the
+                # hitbox stops short of it, which is the rule.
+                for inset in (0.0, 0.25, 0.5, 0.75, 1.0):
+                    px = x + 0.5 + (inset if wall is west else 0.0)
+                    py = y + 0.5 + (0.0 if wall is west else inset)
+                    if self.put(piece, px, py, on=IN, dir=d, **kw):
+                        return 1
+                return 0
 
             # DRESS THE WHOLE WALL, not one piece of it: a room's furniture
             # count follows its size, so a hall is furnished like a hall.
@@ -2322,7 +2593,8 @@ class Grow:
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
-                     self.snap_hitboxes, self.relight, self.npcs,
+                     self.snap_hitboxes, self.police_footprints,
+                     self.relight, self.npcs,
                      self.rooms, self.spawns):
             t = time.time()
             step()
