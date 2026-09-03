@@ -2907,11 +2907,18 @@ export class NightLights {
    *  for that cell — the two must agree for the fog silhouettes to match the
    *  ground. `wx/wy` are the world point sampled, `px/py` the pass texel. */
   fogProbe(col: number, row: number): Record<string, unknown> {
-    const sh = this.depthFogShader;
-    if (!sh || !this.tArr) throw new Error("no fog pass");
-    const lvl = this.tArr[Math.floor(row) * this.world.width + Math.floor(col)] ?? 0;
+    const lvl = this.tArr?.[Math.floor(row) * this.world.width + Math.floor(col)] ?? 0;
     const wx = this.iso.ox + (col - row) * this.geo.dx + this.geo.dx;
     const wy = this.iso.oy + 8 + (col + row) * this.geo.dy + this.geo.dy - lvl * this.geo.lh;
+    return { ...this.fogProbeAt(wx, wy), cell: [col, row, lvl] };
+  }
+
+  /** DIAGNOSTIC: the fog PASS's pixel at a world point beside the foot-point twin there. */
+  fogProbeAt(wx: number, wy: number): Record<string, unknown> {
+    const sh = this.depthFogShader;
+    if (!sh || !this.tArr) throw new Error("no fog pass");
+    const sd = this.screenFogDist(wx, wy);
+    const lvl = this.tArr[Math.floor(sd.srow) * this.world.width + Math.floor(sd.scol)] ?? 0;
     const cam = (sh as unknown as { uniforms: Record<string, { value: { x: number; y: number; z: number; w: number } | number }> }).uniforms;
     const uCam = cam.uCam.value as { x: number; y: number; z: number; w: number };
     const flip = cam.uFlip.value as number;
@@ -2930,12 +2937,12 @@ export class NightLights {
     (r as unknown as { setFramebuffer: (f: unknown, s?: boolean) => void }).setFramebuffer(null, true);
     const a = buf[3] / 255;
     const un = (v: number) => (a > 0 ? +(v / 255 / a).toFixed(3) : 0);
-    const twin = this.depthFogAt(col + 0.5, row + 0.5, lvl + 0.5);
-    const twin0 = this.depthFogAt(col + 0.5, row + 0.5, lvl, true);
+    const foot = this.depthFogAtFoot(wx, wy, lvl, sd.scol, sd.srow);
+    const twin0 = this.depthFogAt(sd.scol, sd.srow, lvl, true);
     return {
-      cell: [col, row, lvl], wx, wy, px, py, inView: sx >= 0 && sx < 1 && sy >= 0 && sy < 1,
+      wx, wy, px, py, inView: sx >= 0 && sx < 1 && sy >= 0 && sy < 1, field: { scol: +sd.scol.toFixed(2), srow: +sd.srow.toFixed(2), distH: +sd.distH.toFixed(2), lvl },
       pass: { a: +a.toFixed(3), r: un(buf[0]), g: un(buf[1]), b: un(buf[2]) },
-      twin: { a: +twin.a.toFixed(3), r: +twin.r.toFixed(3), g: +twin.g.toFixed(3), b: +twin.b.toFixed(3) },
+      twin: { a: +foot.a.toFixed(3), r: +foot.r.toFixed(3), g: +foot.g.toFixed(3), b: +foot.b.toFixed(3) },
       twinSnap: { a: +twin0.a.toFixed(3), r: +twin0.r.toFixed(3), g: +twin0.g.toFixed(3), b: +twin0.b.toFixed(3) },
       player: { xy: this.curPlayerXY, z: this.curPlayerZ }, ambient: this.curAmbient,
     };
@@ -3257,7 +3264,88 @@ export class NightLights {
    * strobe — so both channels stay smooth; and faceMix is irrelevant (a point
    * has no cliff-face compression). Everything else mirrors DEPTHFOG_FRAG and
    * MUST be kept in sync with the GLSL consts atop it. */
+  /** THE FOG PASS's OWN HORIZONTAL DISTANCE for a screen point — its smooth
+   *  field, not the true cell distance. DEPTHFOG_FRAG seeds the surface height
+   *  at the PLAYER's level and drapes it three times through the blurred
+   *  terrain (`drape`), then inverts the iso projection: a plateau 8 levels up
+   *  drawn just below the player reads as NEAR ground, not as the 16 cells its
+   *  cell index says (measured: pass 0.04 vs a true-distance twin's 0.48 on
+   *  one tree — the maintainer's "this tree pops"). Same maths, same CPU
+   *  heights (hArr − pArr bilinear = the linear heightmap's R−G), so a JS
+   *  consumer at a screen point lands where the pass does. */
+  screenFogDist(wx: number, wy: number): { scol: number; srow: number; distH: number } {
+    const { dx, dy, lh } = this.geo;
+    const u = (wx - this.iso.ox) / dx - 1;
+    const v0 = (wy - (this.iso.oy + 8)) / dy;
+    const kk = lh / dy;
+    let sz = this.curPlayerZ;
+    for (let i = 0; i < 3; i++) {
+      const svi = v0 + sz * kk;
+      sz = this.drapeJS((u + svi) * 0.5, (svi - u) * 0.5);
+    }
+    const sv = v0 + sz * kk;
+    const scol = (u + sv) * 0.5;
+    const srow = (sv - u) * 0.5;
+    return { scol, srow, distH: Math.hypot(scol - this.curPlayerXY[0], srow - this.curPlayerXY[1]) };
+  }
+
+  /** `terrH` of the fragment: the LINEAR heightmap's (R − G), i.e. occlusion
+   *  height minus the prop share, bilinear at texel centres, in levels. */
+  private terrHJS(cx: number, cy: number): number {
+    const w = this.world.width;
+    const h = this.world.height;
+    if (!this.hArr || !this.pArr) return 0;
+    const x = Math.min(Math.max(cx, 0.5), w - 0.5) - 0.5;
+    const y = Math.min(Math.max(cy, 0.5), h - 0.5) - 0.5;
+    const x0 = Math.floor(x);
+    const y0 = Math.floor(y);
+    const x1 = Math.min(w - 1, x0 + 1);
+    const y1 = Math.min(h - 1, y0 + 1);
+    const fx = x - x0;
+    const fy = y - y0;
+    const v =
+      (this.terrByte(y0 * w + x0) * (1 - fx) + this.terrByte(y0 * w + x1) * fx) * (1 - fy) +
+      (this.terrByte(y1 * w + x0) * (1 - fx) + this.terrByte(y1 * w + x1) * fx) * fy;
+    return v / this.hScale;
+  }
+
+  /** One texel of the linear heightmap's R − G, in bytes (what the GPU holds). */
+  private terrByte(i: number): number {
+    const hs = this.hScale;
+    return Math.round(Math.min(255, this.hArr[i] * hs)) - Math.round(Math.min(255, this.pArr[i] * hs));
+  }
+
+  /** `drape` of the fragment: the anisotropic 5-tap blur along col+row. */
+  private drapeJS(cx: number, cy: number): number {
+    const R = 2.5; // DRAPE_RS
+    return (
+      0.24 * this.terrHJS(cx, cy) +
+      0.22 * this.terrHJS(cx + 0.25 * R, cy + 0.25 * R) +
+      0.22 * this.terrHJS(cx - 0.25 * R, cy - 0.25 * R) +
+      0.16 * this.terrHJS(cx + 0.5 * R, cy + 0.5 * R) +
+      0.16 * this.terrHJS(cx - 0.5 * R, cy - 0.5 * R)
+    );
+  }
+
+  /** THE FOG A STANDING THING WEARS, from its FOOT POINT on screen (world px)
+   *  and the level of the tread under it: the pass's own distance field
+   *  (screenFogDist) with the band CENTRED between the tread's snapped steps
+   *  (distCont − ½, unsnapped) — gradual with distance, never more than half a
+   *  band from the ground it stands on (maintainer 2026-09-03: "fade more
+   *  gradually with distance, but as close as possible to the fog on the
+   *  ground the scenery is standing on"). Used by scenery, props and bodies. */
+  depthFogAtFoot(wx: number, wy: number, z: number, col: number, row: number): { a: number; r: number; g: number; b: number } {
+    return this.fogFor(this.screenFogDist(wx, wy).distH - 0.5 * 1.2, z, false, col, row);
+  }
+
   depthFogAt(col: number, row: number, z: number, snap = false): { a: number; r: number; g: number; b: number } {
+    const px = this.curPlayerXY[0], py = this.curPlayerXY[1];
+    return this.fogFor(Math.hypot(col - px, row - py), z, snap, col, row);
+  }
+
+  /** The fog formula proper for a horizontal distance (cells), a surface level
+   *  and the cell the room test reads (the fragment's mix(1, roomAt, uIndoorMix)). */
+  private fogFor(distH: number, z: number, snap: boolean, col: number, row: number): { a: number; r: number; g: number; b: number } {
     const uFog = this.fogStrength * this.fogScale;
     const NONE = { a: 0, r: 0, g: 0, b: 0 };
     if (uFog <= 0.003) return NONE;
@@ -3265,9 +3353,7 @@ export class NightLights {
     const BANDS = 6, FOG_D0 = 11, FOG_DW = 1.2, FOG_MAX = 0.78, FOG_DEEP_MAX = 1.0, FOG_DEEP_RATE = 0.5;
     const ELEV_D0 = 7, ELEV_STEP = 0.5, SAME_LEVEL_FOG = 0.1, LEVEL_FADE_SPAN = 15;
     const NEAR = [0.3, 0.52, 0.5], FAR = [0.72, 0.88, 0.9];
-    const px = this.curPlayerXY[0], py = this.curPlayerXY[1], pz = this.curPlayerZ;
-    // (1) SMOOTH horizontal distance from the player (2D cells) — no cel-snap.
-    const distH = Math.hypot(col - px, row - py);
+    const pz = this.curPlayerZ;
     // `snap`: the fragment CEL-SNAPS the distance band on a flat tread
     // (faceMix 0 → floor(distCont)); a STATIC piece standing on that tread must
     // take the snapped band or it wears more fog than the ground under it
@@ -3285,7 +3371,14 @@ export class NightLights {
     const overflow = Math.max(0, rawBand - (BANDS - 1));
     const deep = overflow > 0 ? 1 - Math.exp(-overflow * FOG_DEEP_RATE) : 0;
     const density = bf * FOG_MAX * (1 - deep) + FOG_DEEP_MAX * deep;
-    const a = density * uFog * levelFade;
+    let a = density * uFog * levelFade;
+    // THE ROOM FADE, as the fragment: outside my room the fog eases out with
+    // the indoor mix (a silhouette would otherwise paint fog on a body the
+    // pass paints none on — a pale teal figure in the zero-ambient dark).
+    if (this.fogRoomBound && this.indoorMix > 0) {
+      const hit = this.roomCells.has(Math.floor(row) * this.world.width + Math.floor(col)) ? 1 : 0;
+      a *= 1 + (hit - 1) * this.indoorMix;
+    }
     if (a <= 0.002) return NONE;
     // Dim the fog tone with the ambient, same floor as the fragment.
     const amb = this.curAmbient;

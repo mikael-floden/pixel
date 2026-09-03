@@ -1696,37 +1696,61 @@ heavy fog you see the fog-painted body. The local player is fog-0 by
 definition. Probe: monsterInfo() lit.alpha (own level 1.0, teal band 0.735,
 saturated summit 0.001 — matches the terrain wash).
 
-## Depth-fog on SCENERY and PROPS (the fog silhouette)
+## Depth-fog on SCENERY, PROPS and BODIES (the fog silhouette)
 
-Every scenery piece and every solid prop is seen through its LIT COPY at
-`litDepth`, ABOVE the fog overlay, whenever the night shader is active (always
-under WebGL) — so the fog pass never reached it and a piece stood crisp on
-fogged ground (maintainer 2026-09-03: skulls, spires, tree roots "pop out";
-"a tall scenery object will have the same fog at the top as at the bottom").
-Mechanism (`applyObjectLights`): each lit copy gets a FOG SILHOUETTE — the
-same art, crop, flip and box, `setTintFill` in the fog's own colour, alpha =
-the fog amount, at the copy's depth and made after it (equal depth, stable
-sort: drawn right over its own copy) — and the fog is read ONCE per piece at
-ITS OWN cell through `depthFogAt(col,row,z,snap=true)`, the shader's JS twin,
-so the whole object wears one band, one colour, top as bottom. SNAPPED and at
-the tread's integer level: the fragment cel-snaps the distance band on a flat
-tread (`floor(distCont)`), so the smooth twin bodies use over-fogs a static
-piece by up to a band (measured 0.216 vs the pass's 0.129); with the snap the
-twin matches the pass on treads to ~0.01 (`__ml.fogProbe(col,row)` reads the
-pass's pixel over a cell beside both twins). EXACT by construction:
-copy·(1−a) + fogcol·a is what the pass paints on the ground under it.
-NOT the bodies' cross-fade (`syncLitCopy` fades the copy by a): the fog under
-a faded copy is itself weighted by a, so a piece composited to a·a fog against
-the ground's a — half the wash at a=0.5, a root still near-black beside grey
-ground (measured on the maintainer's phone at night). Bodies still use the
-cross-fade (their sprites are small; unchanged). Fog 0 → no silhouette drawn.
+Every scenery piece, solid prop, monster, NPC and remote player is seen through
+its LIT COPY at `litDepth`, ABOVE the fog overlay, whenever the night shader is
+active (always under WebGL) — so the fog pass never reached it and a piece stood
+crisp on fogged ground (maintainer 2026-09-03: skulls, spires, tree roots "pop
+out"; "the same fog at the top as at the bottom"; "monsters and NPCs should have
+the same effect"). Mechanism (`applyObjectLights` for pieces, `syncLitCopy` for
+bodies): each lit copy gets a FOG SILHOUETTE — the same art, frame, crop, flip
+and box, `setTintFill` in the fog's own colour, alpha = the fog amount, at the
+copy's depth and made after it (equal depth, stable sort: drawn right over its
+own copy). EXACT by construction: copy·(1−a) + fogcol·a is what the pass paints
+on the ground under it. NOT a faded copy (the old bodies' cross-fade): the fog
+under a faded copy is itself weighted by a, so a thing composited to a·a fog
+against the ground's a — a root still near-black beside grey ground (measured on
+the maintainer's phone at night). Fog 0 → no silhouette drawn.
+WHERE THE FOG IS READ — `depthFogAtFoot(wx, wy, level)`, the JS twin of the
+fragment, at the thing's FOOT POINT on screen (a piece's anchor, a prop's tread
+centre, a body's feet) and the tread's integer level:
+- The pass measures horizontal distance in a SMOOTH SCREEN-SPACE FIELD, not in
+  cells: it seeds the surface at the player's level, drapes it three times
+  through the blurred terrain (`drape`, the linear heightmap's R−G) and inverts
+  the iso projection — a plateau 8 levels up drawn just below the player is
+  NEAR ground to it. A twin using the true cell distance over-fogged such a tree
+  by 10x (pass 0.04 vs 0.48). `screenFogDist` mirrors that field from the CPU
+  height arrays (`hArr − pArr`, bilinear at texel centres, byte-rounded like the
+  texture), so the twin lands where the pass does.
+- The band is CENTRED between the tread's cel-snapped steps (distCont − ½,
+  unsnapped): gradual with distance, never more than half a band from the
+  ground under it (maintainer: "fade more gradually … but as close as possible
+  to the fog on the ground the scenery is standing on"). `depthFogAt(col,row,
+  z, snap)` — the cell-distance twin — remains for callers that own a cell.
+- The foot point IS the anchor: a body's `sprite.y` (its origin is the measured
+  foot line — the frame's bottom edge sits 17-19 px below it, ~0.7 band nearer
+  in the field), a prop's diamond centre (`by + margin + dy − l·lh`), a piece's
+  `p.ax/p.ay`. The twin carries the fragment's ROOM FADE (`a *= mix(1, inRoom,
+  indoorMix)` on the thing's own cell): without it a body outside my room wore
+  a pale fog figure over its zero-ambient black copy.
+- LIFECYCLE: a silhouette is made RIGHT AFTER its copy (`makeFogSilhouette`;
+  bodies at `b.lit` creation) so ties in the epsilon-free lit band keep
+  litA, fogA, litB, fogB — a silhouette made later would draw over the NEXT
+  copy. Every place that hides a lit copy without `syncLitCopy` (the monster
+  and NPC culls, `aboveCut`) hides the silhouette too, and a swimmer's
+  waterline mask is mirrored onto it (a distant swimmer wore fog legs over the
+  water).
+Probes: `__ml.fogProbe(col,row)` / `fogProbeAt(wx,wy)` read the pass's own pixel
+beside both twins; `__ml.fogPieces(radius)` lists every lit piece with its
+foot-point fog and the pass under it; `__ml.objectsIn(x0,y0,x1,y1)` dumps the
+display list in a world rect. Switch: `__ml.sceneryFog(on)` (bodies too).
 REJECTED (built, reviewed, removed the same night): a "scenery base field" —
-stamping every scenery silhouette with its base cell encoded into a texture
-the fog shader samples so the under-image took the base cell's fog. Correct,
-but invisible: the opaque lit copy covers the under-image, so nothing it
-changed could reach the screen. Switch: `__ml.sceneryFog(on)`;
-`scripts/_tmp-fogscenery.mjs` screenshots both. Cost: one extra Image per
-visible piece while its fog is non-zero.
+stamping every scenery silhouette with its base cell into a texture the fog
+shader samples so the under-image took the base cell's fog. Correct, but
+invisible: the opaque lit copy covers the under-image. Cost: one extra Image or
+Sprite per visible thing while its fog is non-zero, plus the twin's 15 bilinear
+height reads per thing per frame.
 
 ## Living camera (WorldScene.updateChaseCam)
 

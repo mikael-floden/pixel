@@ -767,6 +767,7 @@ interface Avatar {
   fx: number;
   fy: number;
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay
+  fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   // Screen y of the highest wall top drawn over the sprite this frame, or
   // undefined when nothing covers it — the lit copy is cropped BELOW this line.
@@ -1019,6 +1020,7 @@ interface MonsterAvatar {
   fx: number;
   fy: number;
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay (shared pipeline)
+  fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number; // wall-top line covering the sprite (lit copy cropped below it)
   // The pixel-exact cover surfaces (see BodyVisual / registerCoverSlot).
@@ -1135,6 +1137,7 @@ interface NpcAvatar {
   fx: number; // flat world position (fixed — they never walk)
   fy: number;
   lit?: Phaser.GameObjects.Sprite;
+  fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number;
   surfLevel?: number;
@@ -1174,6 +1177,7 @@ interface BodyVisual {
   fx: number;
   fy: number;
   lit?: Phaser.GameObjects.Sprite;
+  fog?: Phaser.GameObjects.Image; // the fog silhouette over the lit copy (syncLitCopy)
   hidden?: Phaser.GameObjects.Image; // white outline over the covered part (syncCoverOutline)
   coverY?: number;
   // The body's slot in the three cover atlases, held while it lives, and the
@@ -1592,6 +1596,9 @@ export class WorldScene extends Phaser.Scene {
     phase?: number;
     /** THE FOG SILHOUETTE — see applyObjectLights. Lazily made, same crop/flip/box. */
     fog?: Phaser.GameObjects.Image;
+    /** The FOOT POINT on screen (world px) the fog is read at — nightlight.depthFogAtFoot. */
+    bx: number;
+    by: number;
   }[] = [];
   private occluderMeta: {
     col: number;
@@ -3574,6 +3581,40 @@ export class WorldScene extends Phaser.Scene {
         this.groundCacheOn = prevCache;
         return out;
       },
+      /** DIAGNOSTIC: every lit piece within `radius` cells of the player, with
+       *  the cell it fogs by and the twin's answers (snapped / smooth) beside
+       *  the pass's pixel over that cell. */
+      fogPieces: (radius = 8) => {
+        const me = this.avatars.get(this.room?.sessionId ?? "");
+        const px = me ? me.fx / CELL_WU : 0;
+        const py = me ? me.fy / CELL_WU : 0;
+        const out: Record<string, unknown>[] = [];
+        for (const lo of this.litOccluders) {
+          if (Math.hypot(lo.col - px, lo.row - py) > radius) continue;
+          const foot = this.night!.depthFogAtFoot(lo.bx, lo.by, Math.floor(lo.z), lo.col, lo.row);
+          const cellTwin = this.night!.depthFogAt(lo.col, lo.row, Math.floor(lo.z), true);
+          let pass: unknown = null;
+          try {
+            pass = (this.night!.fogProbeAt(lo.bx, lo.by) as { pass: unknown }).pass;
+          } catch {
+            pass = null;
+          }
+          out.push({ key: lo.img.texture.key.slice(0, 40), col: +lo.col.toFixed(2), row: +lo.row.toFixed(2), z: lo.z, worldL: this.world?.rows[Math.floor(lo.row)]?.[Math.floor(lo.col)]?.l ?? null, x: Math.round(lo.img.x), y: Math.round(lo.img.y), h: Math.round(lo.img.displayHeight), footA: +foot.a.toFixed(3), footRGB: [+foot.r.toFixed(2), +foot.g.toFixed(2), +foot.b.toFixed(2)], cellA: +cellTwin.a.toFixed(3), pass });
+        }
+        return { player: [+px.toFixed(2), +py.toFixed(2)], pieces: out };
+      },
+      /** DIAGNOSTIC: every visible image/sprite whose box meets a world rect. */
+      objectsIn: (x0: number, y0: number, x1: number, y1: number) => {
+        const out: Record<string, unknown>[] = [];
+        for (const o of this.children.list) {
+          const im = o as unknown as Phaser.GameObjects.Image;
+          if (!(o instanceof Phaser.GameObjects.Image || o instanceof Phaser.GameObjects.Sprite) || !im.visible) continue;
+          const b = im.getBounds();
+          if (b.right < x0 || b.left > x1 || b.bottom < y0 || b.top > y1) continue;
+          out.push({ key: im.texture.key.slice(0, 44), frame: String(im.frame.name).slice(0, 24), depth: +im.depth.toFixed(3), alpha: +im.alpha.toFixed(2), tint: im.isTinted ? im.tintTopLeft.toString(16) : "-", fill: im.tintFill, x: Math.round(b.left), y: Math.round(b.top), w: Math.round(b.width), h: Math.round(b.height), scroll: im.scrollFactorX });
+        }
+        return out.sort((a, b) => (a.depth as number) - (b.depth as number));
+      },
       /** DIAGNOSTIC: the fog pass's pixel over a cell vs the JS twin. */
       fogProbe: (col: number, row: number) => this.night?.fogProbe(col, row) ?? null,
       /** THE DEPTH FOG ON SCENERY AND PROPS: on = each piece wears a fog
@@ -4620,6 +4661,7 @@ export class WorldScene extends Phaser.Scene {
     if (!av) return;
     av.sprite.destroy();
     av.lit?.destroy();
+    av.fog?.destroy();
     // BEFORE av.waterMask is destroyed below — the outline holds that mask now.
     this.releaseCoverSlot(av);
     av.hidden?.destroy();
@@ -6202,6 +6244,7 @@ export class WorldScene extends Phaser.Scene {
     const mv = this.monsters.get(id);
     if (!mv) return;
     mv.lit?.destroy();
+    mv.fog?.destroy();
     this.releaseCoverSlot(mv);
     mv.hidden?.destroy();
     mv.hpBg?.destroy();
@@ -7077,6 +7120,7 @@ export class WorldScene extends Phaser.Scene {
           sp.setVisible(false);
           npc.shadow.setVisible(false);
           npc.lit?.setVisible(false);
+          npc.fog?.setVisible(false);
           sp.anims.pause();
         }
         continue;
@@ -8240,6 +8284,7 @@ export class WorldScene extends Phaser.Scene {
             sp.setVisible(false);
             mv.shadow.setVisible(false);
             mv.lit?.setVisible(false);
+            mv.fog?.setVisible(false);
             mv.hpBg?.setVisible(false);
             mv.hpFill?.setVisible(false);
             mv.lvText?.setVisible(false);
@@ -8913,24 +8958,18 @@ export class WorldScene extends Phaser.Scene {
        * the fog's own colour, alpha a — drawn right over the opaque copy, which
        * composites to copy·(1-a) + fogcol·a, precisely what the pass paints on
        * the ground under it (g·light·(1-a) + fogcol·a). ONE a and ONE colour per
-       * piece, at ITS OWN cell (depthFogAt, the shader's JS twin — SNAPPED like
-       * the flat tread under it, and at the tread's integer level, which is
-       * what the pass computes there), so the whole object wears one fog, top
-       * as bottom. Fog 0 → nothing drawn. */
-      const f = night!.depthFogAt(lo.col, lo.row, Math.floor(lo.z), true);
+       * piece, read at ITS FOOT POINT through the pass's own distance field
+       * (depthFogAtFoot: the fragment's smooth screen-space field, NOT the true
+       * cell distance — a plateau tree drawn below the player is NEAR ground to
+       * the pass), band centred between the tread's snapped steps so it fades
+       * gradually and never more than half a band from the ground it stands
+       * on; at the tread's integer level. Fog 0 → nothing drawn. */
+      const f = night!.depthFogAtFoot(lo.bx, lo.by, Math.floor(lo.z), lo.col, lo.row);
       const fa = fogOn ? Math.min(1, Math.max(0, f.a)) : 0;
       if (fa > 0.002) {
-        if (!lo.fog) {
-          const im = lo.img;
-          lo.fog = this.add
-            .image(im.x, im.y, im.texture.key, im.frame.name)
-            .setOrigin(im.originX, im.originY)
-            .setScale(im.scaleX, im.scaleY)
-            .setFlipX(im.flipX)
-            .setDepth(im.depth); // equal depth, made later: drawn right after its own copy
-        }
+        if (!lo.fog) this.makeFogSilhouette(lo);
         const c = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
-        lo.fog.setTintFill((c(f.r) << 16) | (c(f.g) << 8) | c(f.b)).setAlpha(fa).setVisible(true);
+        lo.fog!.setTintFill((c(f.r) << 16) | (c(f.g) << 8) | c(f.b)).setAlpha(fa).setVisible(true);
       } else lo.fog?.setVisible(false);
       let tint = night!.tintAt(lo.col, lo.row, lo.z, true);
       if (lo.emission) {
@@ -8974,6 +9013,12 @@ export class WorldScene extends Phaser.Scene {
       // overlay (composes with the wall crop inside syncLitCopy).
       if (a.swimming && a.swimT > 0.001 && a.waterMask) a.lit!.setMask(a.waterMask);
       else if (a.lit!.mask) a.lit!.clearMask();
+      // ...and its fog silhouette, or a distant swimmer wears fog-coloured legs
+      // over the water.
+      if (a.fog) {
+        if (a.swimming && a.swimT > 0.001 && a.waterMask) a.fog.setMask(a.waterMask);
+        else if (a.fog.mask) a.fog.clearMask();
+      }
       // Foam draws ABOVE the night overlay (like the lit copy), so tint its
       // white crest by the same LOCAL light — otherwise it stays bright white
       // at full night. Light-only (the texture already carries its colours), so
@@ -10224,9 +10269,13 @@ export class WorldScene extends Phaser.Scene {
   private syncLitCopy(b: BodyVisual, on: boolean, baseTint: number): number[] | null {
     if (!b.lit) {
       b.lit = this.add.sprite(b.sprite.x, b.sprite.y, b.sprite.texture.key).setDepth(900_001);
+      // Its fog silhouette, made RIGHT AFTER it so the two keep the creation
+      // order the epsilon-free lit band sorts ties by (litA, fogA, litB, fogB).
+      b.fog = this.add.image(b.sprite.x, b.sprite.y, b.sprite.texture.key).setDepth(900_001).setVisible(false);
     }
     if (!on || !b.sprite.visible) {
       b.lit.setVisible(false);
+      b.fog?.setVisible(false);
       return null;
     }
     const lvl = this.litLevelOf(b);
@@ -10238,7 +10287,12 @@ export class WorldScene extends Phaser.Scene {
     // cross-fades it into the fogged under-overlay sprite — which composites
     // to exactly a strength-f fog on the body, same colour/wash as its
     // terrain (fog 0 → unchanged crisp copy).
-    const fog = this.night!.depthFogAt(b.fx / CELL_WU, b.fy / CELL_WU, lvl);
+    // ...read at the FEET through the pass's own distance field, like scenery
+    // (depthFogAtFoot) — and worn as a FOG SILHOUETTE over the opaque copy
+    // rather than by fading the copy: a faded copy composited to a·a fog
+    // against the ground's a (see applyObjectLights).
+    const sp0 = b.sprite;
+    const fog = this.night!.depthFogAtFoot(sp0.x, sp0.y, Math.floor(lvl), b.fx / CELL_WU, b.fy / CELL_WU);
     const r = Math.min(255, Math.round(((baseTint >> 16) & 0xff) * Math.min(1, l[0])));
     const g = Math.min(255, Math.round(((baseTint >> 8) & 0xff) * Math.min(1, l[1])));
     const bl = Math.min(255, Math.round((baseTint & 0xff) * Math.min(1, l[2])));
@@ -10263,7 +10317,7 @@ export class WorldScene extends Phaser.Scene {
       .setFlipX(slot ? false : sp.flipX)
       .setScale(sp.scaleX, sp.scaleY)
       .setDepth(litDepth(sp.depth))
-      .setAlpha(1 - Math.min(1, Math.max(0, fog.a)))
+      .setAlpha(1)
       .setTint((r << 16) | (g << 8) | bl);
     if (slot) {
       if (b.lit.isCropped) b.lit.setCrop();
@@ -10275,6 +10329,28 @@ export class WorldScene extends Phaser.Scene {
       if (cropH <= ab.y0 + 2) b.lit.setVisible(false); // wall covers the whole figure
       else b.lit.setCrop(0, 0, fw, cropH);
     } else if (b.lit.isCropped) b.lit.setCrop();
+    // THE FOG SILHOUETTE: the lit copy's exact twin (texture, frame, origin,
+    // flip, scale, crop) filled with the fog's colour at the fog's strength,
+    // equal depth and made later, so it draws right over its own copy.
+    const fa = this.night!.sceneryFog ? Math.min(1, Math.max(0, fog.a)) : 0;
+    if (fa > 0.002 && b.lit.visible) {
+      if (!b.fog) b.fog = this.add.image(b.lit.x, b.lit.y, b.lit.texture.key).setDepth(b.lit.depth);
+      const c = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
+      const fg = b.fog;
+      fg.setVisible(true)
+        .setTexture(b.lit.texture.key, b.lit.frame.name)
+        .setPosition(b.lit.x, b.lit.y)
+        .setOrigin(b.lit.originX, b.lit.originY)
+        .setFlipX(b.lit.flipX)
+        .setScale(b.lit.scaleX, b.lit.scaleY)
+        .setDepth(b.lit.depth)
+        .setAlpha(fa)
+        .setTintFill((c(fog.r) << 16) | (c(fog.g) << 8) | c(fog.b));
+      if (b.lit.isCropped) {
+        const cc = (b.lit as unknown as { _crop: { width: number; height: number } })._crop;
+        fg.setCrop(0, 0, cc?.width ?? b.lit.frame.cutWidth, cc?.height ?? b.lit.frame.cutHeight);
+      } else if (fg.isCropped) fg.setCrop();
+    } else b.fog?.setVisible(false);
     return l;
   }
 
@@ -12531,6 +12607,21 @@ export class WorldScene extends Phaser.Scene {
     this.groundLastMode = "scroll";
   }
 
+  /** A lit piece's FOG SILHOUETTE: the copy's twin (texture, frame, origin,
+   *  scale, flip) at the copy's depth, made RIGHT AFTER it so the two keep the
+   *  creation order the epsilon-free lit band sorts ties by (litA, fogA, litB,
+   *  fogB — never fogA over litB). Hidden until its fog is non-zero. */
+  private makeFogSilhouette(lo: (typeof this.litOccluders)[number]): void {
+    const im = lo.img;
+    lo.fog = this.add
+      .image(im.x, im.y, im.texture.key, im.frame.name)
+      .setOrigin(im.originX, im.originY)
+      .setScale(im.scaleX, im.scaleY)
+      .setFlipX(im.flipX)
+      .setDepth(im.depth)
+      .setVisible(false);
+  }
+
   /** A TERRAIN BATCH LANDED. The files it carried were wanted by known window
    *  cells (t3missing) or by nobody in the window (the prefetch ring, or cells
    *  that have since scrolled out) — so the repaint is scoped to the cells that
@@ -13477,7 +13568,10 @@ export class WorldScene extends Phaser.Scene {
           row: p.y,
           z: (world.rows[srow]?.[scol]?.l ?? 0) + 0.5,
           phase: ((((scol * 73856093) ^ (srow * 19349663)) >>> 0) % 628) / 100,
+          bx: p.ax,
+          by: p.ay,
         });
+        this.makeFogSilhouette(this.litOccluders[this.litOccluders.length - 1]);
       }
       this.occluderMeta.push({
         col: scol,
@@ -14587,7 +14681,10 @@ export class WorldScene extends Phaser.Scene {
             z: cell.l + 0.5,
             emission: em && variantGlows ? em : undefined,
             phase: ((((col * 73856093) ^ (row * 19349663)) >>> 0) % 628) / 100,
+            bx: bx + tileSize / 2,
+            by: by + this.geom.margin + dy - cell.l * lh, // the tread's diamond centre
           });
+          this.makeFogSilhouette(this.litOccluders[this.litOccluders.length - 1]);
         }
         this.occluderMeta.push({
           col,
