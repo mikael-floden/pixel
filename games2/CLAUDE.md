@@ -188,7 +188,7 @@ by construction, so no existing branch changed.
   the corner lattice, then the deck slabs. Interleaving is wrong and looks
   nearly right: three of the four cells a boundary blends are drawn AFTER it,
   and would paint their own plates back over the transition.
-- **A COMPOSED BOUNDARY IS TOP FACE ONLY, ALWAYS — because it paints LAST**
+- **A COMPOSED BOUNDARY IS TOP FACE ONLY AT LEVEL 0 — because it paints LAST**
   (`Tiles3Textures.boundary`). A boundary is a surface blend on the corner
   lattice with no lawful wall source at any level: at a raised level the cap's
   own x-over-y art is the wall, and at level 0 there is no wall and nothing
@@ -240,6 +240,25 @@ by construction, so no existing branch changed.
   the remaining difference is a wasted plate draw — but the three-pass order is
   the deeper divergence and the note above ("Interleaving is wrong") is stale
   against the reference renderer.
+  **LEVEL 0 ONLY, and the exception is measured, gated and temporary.** A RAISED
+  boundary keeps its band even though the resolver asks for top-face-only there
+  and render3 applies it, because that band is COVERING A PRE-EXISTING TERRAIN
+  GAP: a three-arm render (boundary not drawn / full / masked) of a 25x25 patch
+  at (287,355) with 32 raised boundaries gives **655 / 0 / 655** interior
+  unpainted texels — the gap is there with NO boundary drawn at all. The same
+  arms on the maintainer's level-0 patch give **0 / 0 / 0** holes and
+  **0 / 18,321 / 0** visible wall texels, so at level 0 the mask is free and
+  total. THE GAP'S OWN CAUSE, for whoever closes it: a raised cell is `exposed`
+  only against its two FRONT neighbours (`front_low = min(L(x+1,y), L(x,y+1))`),
+  so a cell lower only to the SIDE gets no wall course; `render3.py` shares the
+  rule and therefore the gap. Gate `a RAISED boundary keeps its wall band until
+  the terrain gap is closed` pins the exception and must be DELETED when the gap
+  is fixed.
+  **`topOnly` IS IN THE KEY** (`boundaryKey`, `|top` suffix; flat keeps the
+  historical shape so no existing key moves). Masked and unmasked are two
+  different rasters, and without it both sat under one name and whichever
+  composed first was served to both — the one cache bug this repo does not
+  survive. Caught only because the raised gate asserts the two keys differ.
 - **TWO PHASER TRAPS, both silent, both paid for here.**
   `textures.get(key)` returns the built-in `__MISSING` 32x32 checker for an
   unknown key, NOT undefined — handed to the composer an unloaded 64x46 plate
