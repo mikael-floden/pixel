@@ -26,12 +26,12 @@
  "review": {
   "source": "live/feedback/tiles.json entries[<key>].status, plus the durable record in tiles/fades/removed.json",
   "rule": "rejected -> removed and remembered; an explicit non-rejected status -> listed and the memory cleared; no entry -> the memory decides",
-  "n_removed_by_review": 2247,
-  "n_remembered": 2247,
-  "n_new_this_publish": 0
+  "n_removed_by_review": 2595,
+  "n_remembered": 2595,
+  "n_new_this_publish": 348
  },
  "classifier": "region-arbitrated texture+colour meter (mixmeter.py, model cache/meter.npz): every ground described by prototype MIXTURES learned from tiles/tops (never the palette), pixels judged by 35 neighbourhood statistics, texture arbitrated per region with per-pair fitted trust, windows straddling two grounds rejected by a likelihood gate. Survives the four historical traps: brightness-split black_rock, chroma-free grounds, palette-vs-art grass, partner-dependent rendition.",
- "n_valid": 12005,
+ "n_valid": 11657,
  "n_rejected": {
   "no real mixture": 10566,
   "edges mixed": 1771,
@@ -101926,40 +101926,6 @@
     "prompt": "one lava rock on ice"
    },
    {
-    "key": "tiles/fades/ice__with__lava/and_1/tile_09",
-    "file": "tiles/fades/ice__with__lava/and_1/post/tile_09.cbd9270f.webp",
-    "pct": {
-     "ice": 90,
-     "lava": 10
-    },
-    "area_pct": {
-     "ice": 79.4,
-     "lava": 20.6
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.0789,
-    "border_impurity": 0.0444,
-    "phrasing": "and",
-    "prompt": "ice and lava"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/one_rock_1/tile_04",
-    "file": "tiles/fades/ice__with__lava/one_rock_1/post/tile_04.f9545520.webp",
-    "pct": {
-     "ice": 90,
-     "lava": 10
-    },
-    "area_pct": {
-     "ice": 79.4,
-     "lava": 20.6
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.2508,
-    "border_impurity": 0.2682,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on ice"
-   },
-   {
     "key": "tiles/fades/ice__with__lava/one_rock_1/tile_07",
     "file": "tiles/fades/ice__with__lava/one_rock_1/post/tile_07.1c4506a3.webp",
     "pct": {
@@ -102147,40 +102113,6 @@
     "prompt": "one lava rock on ice"
    },
    {
-    "key": "tiles/fades/ice__with__lava/and_1/tile_03",
-    "file": "tiles/fades/ice__with__lava/and_1/post/tile_03.37e10819.webp",
-    "pct": {
-     "ice": 87,
-     "lava": 13
-    },
-    "area_pct": {
-     "ice": 73.5,
-     "lava": 26.5
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.2081,
-    "border_impurity": 0.1089,
-    "phrasing": "and",
-    "prompt": "ice and lava"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/spots_1/tile_13",
-    "file": "tiles/fades/ice__with__lava/spots_1/post/tile_13.49dec2d0.webp",
-    "pct": {
-     "ice": 87,
-     "lava": 13
-    },
-    "area_pct": {
-     "ice": 73.1,
-     "lava": 26.9
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.2555,
-    "border_impurity": 0.1167,
-    "phrasing": "spots",
-    "prompt": "lava spots on ice"
-   },
-   {
     "key": "tiles/fades/ice__with__lava/and_1/tile_01",
     "file": "tiles/fades/ice__with__lava/and_1/post/tile_01.ad416ebf.webp",
     "pct": {
@@ -102215,23 +102147,6 @@
     "prompt": "patches of lava on ice"
    },
    {
-    "key": "tiles/fades/ice__with__lava/patches_1/tile_11",
-    "file": "tiles/fades/ice__with__lava/patches_1/post/tile_11.b89df3eb.webp",
-    "pct": {
-     "ice": 86,
-     "lava": 14
-    },
-    "area_pct": {
-     "ice": 70.8,
-     "lava": 29.2
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.103,
-    "border_impurity": 0.0861,
-    "phrasing": "patches",
-    "prompt": "patches of lava on ice"
-   },
-   {
     "key": "tiles/fades/ice__with__lava/spots_1/tile_02",
     "file": "tiles/fades/ice__with__lava/spots_1/post/tile_02.1f556304.webp",
     "pct": {
@@ -102245,23 +102160,6 @@
     "edge_ground": "ice",
     "edge_contact": 0.1725,
     "border_impurity": 0.0587,
-    "phrasing": "spots",
-    "prompt": "lava spots on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/spots_1/tile_03",
-    "file": "tiles/fades/ice__with__lava/spots_1/post/tile_03.7358ac32.webp",
-    "pct": {
-     "ice": 86,
-     "lava": 14
-    },
-    "area_pct": {
-     "ice": 72.3,
-     "lava": 27.7
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.3128,
-    "border_impurity": 0.1765,
     "phrasing": "spots",
     "prompt": "lava spots on ice"
    },
@@ -102351,74 +102249,6 @@
     "prompt": "lava spots on ice"
    },
    {
-    "key": "tiles/fades/ice__with__lava/spots_1/tile_07",
-    "file": "tiles/fades/ice__with__lava/spots_1/post/tile_07.3d018298.webp",
-    "pct": {
-     "ice": 84,
-     "lava": 16
-    },
-    "area_pct": {
-     "ice": 67.1,
-     "lava": 32.9
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.3,
-    "border_impurity": 0.1296,
-    "phrasing": "spots",
-    "prompt": "lava spots on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/and_1/tile_14",
-    "file": "tiles/fades/ice__with__lava/and_1/post/tile_14.e127adc6.webp",
-    "pct": {
-     "ice": 83,
-     "lava": 17
-    },
-    "area_pct": {
-     "ice": 66.2,
-     "lava": 33.8
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.174,
-    "border_impurity": 0.1667,
-    "phrasing": "and",
-    "prompt": "ice and lava"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/spots_1/tile_11",
-    "file": "tiles/fades/ice__with__lava/spots_1/post/tile_11.32ac7258.webp",
-    "pct": {
-     "ice": 83,
-     "lava": 17
-    },
-    "area_pct": {
-     "ice": 65.8,
-     "lava": 34.2
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.3033,
-    "border_impurity": 0.098,
-    "phrasing": "spots",
-    "prompt": "lava spots on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/one_rock_1/tile_14",
-    "file": "tiles/fades/ice__with__lava/one_rock_1/post/tile_14.4c306570.webp",
-    "pct": {
-     "ice": 82,
-     "lava": 18
-    },
-    "area_pct": {
-     "ice": 63.9,
-     "lava": 36.1
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.022,
-    "border_impurity": 0.0139,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on ice"
-   },
-   {
     "key": "tiles/fades/ice__with__lava/piles_1/tile_03",
     "file": "tiles/fades/ice__with__lava/piles_1/post/tile_03.17a0ccf7.webp",
     "pct": {
@@ -102434,23 +102264,6 @@
     "border_impurity": 0.0279,
     "phrasing": "piles",
     "prompt": "a few piles of lava on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/spots_1/tile_08",
-    "file": "tiles/fades/ice__with__lava/spots_1/post/tile_08.e846cf10.webp",
-    "pct": {
-     "ice": 82,
-     "lava": 18
-    },
-    "area_pct": {
-     "ice": 62.7,
-     "lava": 37.3
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.1623,
-    "border_impurity": 0.0754,
-    "phrasing": "spots",
-    "prompt": "lava spots on ice"
    },
    {
     "key": "tiles/fades/ice__with__lava/spots_1/tile_12",
@@ -102470,23 +102283,6 @@
     "prompt": "lava spots on ice"
    },
    {
-    "key": "tiles/fades/ice__with__lava/one_rock_1/tile_00",
-    "file": "tiles/fades/ice__with__lava/one_rock_1/post/tile_00.430fad5a.webp",
-    "pct": {
-     "ice": 81,
-     "lava": 19
-    },
-    "area_pct": {
-     "ice": 61.0,
-     "lava": 39.0
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.0669,
-    "border_impurity": 0.0694,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on ice"
-   },
-   {
     "key": "tiles/fades/ice__with__lava/patches_1/tile_03",
     "file": "tiles/fades/ice__with__lava/patches_1/post/tile_03.576eef3e.webp",
     "pct": {
@@ -102502,23 +102298,6 @@
     "border_impurity": 0.0278,
     "phrasing": "patches",
     "prompt": "patches of lava on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/one_rock_1/tile_11",
-    "file": "tiles/fades/ice__with__lava/one_rock_1/post/tile_11.77d8affa.webp",
-    "pct": {
-     "ice": 80,
-     "lava": 20
-    },
-    "area_pct": {
-     "ice": 59.3,
-     "lava": 40.7
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.0852,
-    "border_impurity": 0.0615,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on ice"
    },
    {
     "key": "tiles/fades/ice__with__lava/patches_1/tile_00",
@@ -102555,91 +102334,6 @@
     "prompt": "a few piles of lava on ice"
    },
    {
-    "key": "tiles/fades/ice__with__lava/and_1/tile_06",
-    "file": "tiles/fades/ice__with__lava/and_1/post/tile_06.62cc4174.webp",
-    "pct": {
-     "ice": 79,
-     "lava": 21
-    },
-    "area_pct": {
-     "ice": 56.4,
-     "lava": 43.6
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.0192,
-    "border_impurity": 0.0139,
-    "phrasing": "and",
-    "prompt": "ice and lava"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/patches_1/tile_10",
-    "file": "tiles/fades/ice__with__lava/patches_1/post/tile_10.eadb4c36.webp",
-    "pct": {
-     "ice": 79,
-     "lava": 21
-    },
-    "area_pct": {
-     "ice": 57.5,
-     "lava": 42.5
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.2826,
-    "border_impurity": 0.2278,
-    "phrasing": "patches",
-    "prompt": "patches of lava on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/piles_1/tile_04",
-    "file": "tiles/fades/ice__with__lava/piles_1/post/tile_04.8295d866.webp",
-    "pct": {
-     "ice": 79,
-     "lava": 21
-    },
-    "area_pct": {
-     "ice": 56.2,
-     "lava": 43.8
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.1767,
-    "border_impurity": 0.1389,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/lumps_1/tile_14",
-    "file": "tiles/fades/ice__with__lava/lumps_1/post/tile_14.b7bdff03.webp",
-    "pct": {
-     "ice": 78,
-     "lava": 22
-    },
-    "area_pct": {
-     "ice": 55.1,
-     "lava": 44.9
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.3268,
-    "border_impurity": 0.3139,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/patches_1/tile_14",
-    "file": "tiles/fades/ice__with__lava/patches_1/post/tile_14.2151e6b5.webp",
-    "pct": {
-     "ice": 78,
-     "lava": 22
-    },
-    "area_pct": {
-     "ice": 55.8,
-     "lava": 44.2
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.1813,
-    "border_impurity": 0.1889,
-    "phrasing": "patches",
-    "prompt": "patches of lava on ice"
-   },
-   {
     "key": "tiles/fades/ice__with__lava/piles_1/tile_08",
     "file": "tiles/fades/ice__with__lava/piles_1/post/tile_08.0a47882c.webp",
     "pct": {
@@ -102653,23 +102347,6 @@
     "edge_ground": "ice",
     "edge_contact": 0.2415,
     "border_impurity": 0.2299,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/piles_1/tile_11",
-    "file": "tiles/fades/ice__with__lava/piles_1/post/tile_11.30fadf2a.webp",
-    "pct": {
-     "ice": 78,
-     "lava": 22
-    },
-    "area_pct": {
-     "ice": 54.7,
-     "lava": 45.3
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.1888,
-    "border_impurity": 0.1309,
     "phrasing": "piles",
     "prompt": "a few piles of lava on ice"
    },
@@ -102759,23 +102436,6 @@
     "prompt": "a few piles of lava on ice"
    },
    {
-    "key": "tiles/fades/ice__with__lava/lumps_1/tile_05",
-    "file": "tiles/fades/ice__with__lava/lumps_1/post/tile_05.6153b2a9.webp",
-    "pct": {
-     "ice": 75,
-     "lava": 25
-    },
-    "area_pct": {
-     "ice": 49.1,
-     "lava": 50.9
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.3961,
-    "border_impurity": 1.0,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on ice"
-   },
-   {
     "key": "tiles/fades/ice__with__lava/piles_1/tile_09",
     "file": "tiles/fades/ice__with__lava/piles_1/post/tile_09.19257494.webp",
     "pct": {
@@ -102791,23 +102451,6 @@
     "border_impurity": 1.0,
     "phrasing": "piles",
     "prompt": "a few piles of lava on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/and_1/tile_02",
-    "file": "tiles/fades/ice__with__lava/and_1/post/tile_02.e47ca3fd.webp",
-    "pct": {
-     "ice": 74,
-     "lava": 26
-    },
-    "area_pct": {
-     "ice": 46.0,
-     "lava": 54.0
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.1113,
-    "border_impurity": 0.9,
-    "phrasing": "and",
-    "prompt": "ice and lava"
    },
    {
     "key": "tiles/fades/ice__with__lava/and_1/tile_05",
@@ -102861,23 +102504,6 @@
     "prompt": "a few piles of lava on ice"
    },
    {
-    "key": "tiles/fades/ice__with__lava/piles_1/tile_13",
-    "file": "tiles/fades/ice__with__lava/piles_1/post/tile_13.9e206186.webp",
-    "pct": {
-     "ice": 74,
-     "lava": 26
-    },
-    "area_pct": {
-     "ice": 46.2,
-     "lava": 53.8
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.3188,
-    "border_impurity": 0.7632,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on ice"
-   },
-   {
     "key": "tiles/fades/ice__with__lava/lumps_1/tile_02",
     "file": "tiles/fades/ice__with__lava/lumps_1/post/tile_02.114c26cb.webp",
     "pct": {
@@ -102891,23 +102517,6 @@
     "edge_ground": "ice",
     "edge_contact": 0.3075,
     "border_impurity": 0.9972,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/lumps_1/tile_09",
-    "file": "tiles/fades/ice__with__lava/lumps_1/post/tile_09.a04f9d15.webp",
-    "pct": {
-     "ice": 73,
-     "lava": 27
-    },
-    "area_pct": {
-     "ice": 45.8,
-     "lava": 54.2
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.2719,
-    "border_impurity": 0.9167,
     "phrasing": "lumps",
     "prompt": "a few lava lumps on ice"
    },
@@ -102997,57 +102606,6 @@
     "prompt": "a few piles of lava on ice"
    },
    {
-    "key": "tiles/fades/ice__with__lava/patches_1/tile_09",
-    "file": "tiles/fades/ice__with__lava/patches_1/post/tile_09.9bbe09c6.webp",
-    "pct": {
-     "ice": 72,
-     "lava": 28
-    },
-    "area_pct": {
-     "ice": 43.0,
-     "lava": 57.0
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.5079,
-    "border_impurity": 0.8278,
-    "phrasing": "patches",
-    "prompt": "patches of lava on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/lumps_1/tile_13",
-    "file": "tiles/fades/ice__with__lava/lumps_1/post/tile_13.f0a7ef54.webp",
-    "pct": {
-     "ice": 71,
-     "lava": 29
-    },
-    "area_pct": {
-     "ice": 40.7,
-     "lava": 59.3
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.2997,
-    "border_impurity": 0.7667,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/lumps_1/tile_03",
-    "file": "tiles/fades/ice__with__lava/lumps_1/post/tile_03.58feab01.webp",
-    "pct": {
-     "ice": 69,
-     "lava": 31
-    },
-    "area_pct": {
-     "ice": 37.6,
-     "lava": 62.4
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.4626,
-    "border_impurity": 0.9056,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on ice"
-   },
-   {
     "key": "tiles/fades/ice__with__lava/piles_1/tile_10",
     "file": "tiles/fades/ice__with__lava/piles_1/post/tile_10.57a4d679.webp",
     "pct": {
@@ -103133,23 +102691,6 @@
     "prompt": "a few lava lumps on ice"
    },
    {
-    "key": "tiles/fades/ice__with__lava/lumps_1/tile_04",
-    "file": "tiles/fades/ice__with__lava/lumps_1/post/tile_04.3a220faf.webp",
-    "pct": {
-     "ice": 65,
-     "lava": 35
-    },
-    "area_pct": {
-     "ice": 29.1,
-     "lava": 70.9
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.4567,
-    "border_impurity": 0.6222,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on ice"
-   },
-   {
     "key": "tiles/fades/ice__with__lava/lumps_1/tile_12",
     "file": "tiles/fades/ice__with__lava/lumps_1/post/tile_12.fda96df9.webp",
     "pct": {
@@ -103216,91 +102757,6 @@
     "border_impurity": 0.875,
     "phrasing": "lumps",
     "prompt": "a few lava lumps on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/and_1/tile_10",
-    "file": "tiles/fades/ice__with__lava/and_1/post/tile_10.d765a81c.webp",
-    "pct": {
-     "lava": 75,
-     "ice": 25
-    },
-    "area_pct": {
-     "ice": 51.5,
-     "lava": 48.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.7103,
-    "border_impurity": 1.0,
-    "phrasing": "and",
-    "prompt": "ice and lava"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/one_rock_1/tile_02",
-    "file": "tiles/fades/ice__with__lava/one_rock_1/post/tile_02.2da9222b.webp",
-    "pct": {
-     "lava": 79,
-     "ice": 21
-    },
-    "area_pct": {
-     "ice": 43.2,
-     "lava": 56.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.8248,
-    "border_impurity": 0.8,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/one_rock_1/tile_08",
-    "file": "tiles/fades/ice__with__lava/one_rock_1/post/tile_08.08dcc6b0.webp",
-    "pct": {
-     "lava": 87,
-     "ice": 13
-    },
-    "area_pct": {
-     "ice": 25.6,
-     "lava": 74.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4961,
-    "border_impurity": 0.5894,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/patches_1/tile_08",
-    "file": "tiles/fades/ice__with__lava/patches_1/post/tile_08.306b58a8.webp",
-    "pct": {
-     "lava": 90,
-     "ice": 10
-    },
-    "area_pct": {
-     "ice": 19.5,
-     "lava": 80.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3175,
-    "border_impurity": 0.3296,
-    "phrasing": "patches",
-    "prompt": "patches of lava on ice"
-   },
-   {
-    "key": "tiles/fades/ice__with__lava/and_1/tile_07",
-    "file": "tiles/fades/ice__with__lava/and_1/post/tile_07.46700ed5.webp",
-    "pct": {
-     "lava": 93,
-     "ice": 7
-    },
-    "area_pct": {
-     "ice": 15.2,
-     "lava": 84.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4089,
-    "border_impurity": 0.5069,
-    "phrasing": "and",
-    "prompt": "ice and lava"
    }
   ],
   "ice__to__light_beach": [
@@ -116421,40 +115877,6 @@
     "prompt": "a few ice lumps on lava"
    },
    {
-    "key": "tiles/fades/lava__with__ice/with_1/tile_06",
-    "file": "tiles/fades/lava__with__ice/with_1/post/tile_06.4419e874.webp",
-    "pct": {
-     "lava": 98,
-     "ice": 2
-    },
-    "area_pct": {
-     "lava": 95.1,
-     "ice": 4.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0844,
-    "border_impurity": 0.0364,
-    "phrasing": "with",
-    "prompt": "lava with ice"
-   },
-   {
-    "key": "tiles/fades/lava__with__ice/with_1/tile_14",
-    "file": "tiles/fades/lava__with__ice/with_1/post/tile_14.eeb89349.webp",
-    "pct": {
-     "lava": 98,
-     "ice": 2
-    },
-    "area_pct": {
-     "lava": 96.9,
-     "ice": 3.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0434,
-    "border_impurity": 0.0084,
-    "phrasing": "with",
-    "prompt": "lava with ice"
-   },
-   {
     "key": "tiles/fades/lava__with__ice/spots_1/tile_08",
     "file": "tiles/fades/lava__with__ice/spots_1/post/tile_08.9e5e5a46.webp",
     "pct": {
@@ -116523,23 +115945,6 @@
     "prompt": "a few ice lumps on lava"
    },
    {
-    "key": "tiles/fades/lava__with__ice/spots_1/tile_02",
-    "file": "tiles/fades/lava__with__ice/spots_1/post/tile_02.99392044.webp",
-    "pct": {
-     "lava": 94,
-     "ice": 6
-    },
-    "area_pct": {
-     "lava": 87.1,
-     "ice": 12.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0701,
-    "border_impurity": 0.0475,
-    "phrasing": "spots",
-    "prompt": "ice spots on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__ice/spots_1/tile_12",
     "file": "tiles/fades/lava__with__ice/spots_1/post/tile_12.9e73bc16.webp",
     "pct": {
@@ -116589,40 +115994,6 @@
     "border_impurity": 0.1145,
     "phrasing": "piles",
     "prompt": "a few piles of ice on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__ice/spots_1/tile_04",
-    "file": "tiles/fades/lava__with__ice/spots_1/post/tile_04.b6eb38ab.webp",
-    "pct": {
-     "lava": 93,
-     "ice": 7
-    },
-    "area_pct": {
-     "lava": 86.4,
-     "ice": 13.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0807,
-    "border_impurity": 0.0917,
-    "phrasing": "spots",
-    "prompt": "ice spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__ice/spots_1/tile_15",
-    "file": "tiles/fades/lava__with__ice/spots_1/post/tile_15.f705ad04.webp",
-    "pct": {
-     "lava": 93,
-     "ice": 7
-    },
-    "area_pct": {
-     "lava": 85.8,
-     "ice": 14.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2073,
-    "border_impurity": 0.3444,
-    "phrasing": "spots",
-    "prompt": "ice spots on lava"
    },
    {
     "key": "tiles/fades/lava__with__ice/with_1/tile_12",
@@ -116693,23 +116064,6 @@
     "prompt": "a few ice lumps on lava"
    },
    {
-    "key": "tiles/fades/lava__with__ice/with_1/tile_04",
-    "file": "tiles/fades/lava__with__ice/with_1/post/tile_04.96e97340.webp",
-    "pct": {
-     "lava": 90,
-     "ice": 10
-    },
-    "area_pct": {
-     "lava": 79.0,
-     "ice": 21.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3498,
-    "border_impurity": 0.2981,
-    "phrasing": "with",
-    "prompt": "lava with ice"
-   },
-   {
     "key": "tiles/fades/lava__with__ice/lumps_1/tile_01",
     "file": "tiles/fades/lava__with__ice/lumps_1/post/tile_01.ffc2ca6a.webp",
     "pct": {
@@ -116744,40 +116098,6 @@
     "prompt": "a few ice lumps on lava"
    },
    {
-    "key": "tiles/fades/lava__with__ice/patches_1/tile_07",
-    "file": "tiles/fades/lava__with__ice/patches_1/post/tile_07.dfbd5034.webp",
-    "pct": {
-     "lava": 89,
-     "ice": 11
-    },
-    "area_pct": {
-     "lava": 77.1,
-     "ice": 22.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4892,
-    "border_impurity": 0.5866,
-    "phrasing": "patches",
-    "prompt": "patches of ice on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__ice/spots_1/tile_06",
-    "file": "tiles/fades/lava__with__ice/spots_1/post/tile_06.7bb9b9a6.webp",
-    "pct": {
-     "lava": 89,
-     "ice": 11
-    },
-    "area_pct": {
-     "lava": 78.4,
-     "ice": 21.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2613,
-    "border_impurity": 0.325,
-    "phrasing": "spots",
-    "prompt": "ice spots on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__ice/lumps_1/tile_00",
     "file": "tiles/fades/lava__with__ice/lumps_1/post/tile_00.922c3513.webp",
     "pct": {
@@ -116793,23 +116113,6 @@
     "border_impurity": 0.1639,
     "phrasing": "lumps",
     "prompt": "a few ice lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__ice/spots_1/tile_09",
-    "file": "tiles/fades/lava__with__ice/spots_1/post/tile_09.40f13367.webp",
-    "pct": {
-     "lava": 88,
-     "ice": 12
-    },
-    "area_pct": {
-     "lava": 74.6,
-     "ice": 25.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4429,
-    "border_impurity": 0.4708,
-    "phrasing": "spots",
-    "prompt": "ice spots on lava"
    },
    {
     "key": "tiles/fades/lava__with__ice/patches_1/tile_05",
@@ -116897,23 +116200,6 @@
     "prompt": "a few ice lumps on lava"
    },
    {
-    "key": "tiles/fades/lava__with__ice/patches_1/tile_14",
-    "file": "tiles/fades/lava__with__ice/patches_1/post/tile_14.a24ceb17.webp",
-    "pct": {
-     "lava": 82,
-     "ice": 18
-    },
-    "area_pct": {
-     "lava": 63.2,
-     "ice": 36.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.5811,
-    "border_impurity": 0.5592,
-    "phrasing": "patches",
-    "prompt": "patches of ice on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__ice/lumps_1/tile_08",
     "file": "tiles/fades/lava__with__ice/lumps_1/post/tile_08.1947cfc0.webp",
     "pct": {
@@ -116946,23 +116232,6 @@
     "border_impurity": 0.117,
     "phrasing": "spots",
     "prompt": "ice spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__ice/lumps_1/tile_03",
-    "file": "tiles/fades/lava__with__ice/lumps_1/post/tile_03.12aa1705.webp",
-    "pct": {
-     "lava": 69,
-     "ice": 31
-    },
-    "area_pct": {
-     "lava": 36.6,
-     "ice": 63.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.6529,
-    "border_impurity": 0.4178,
-    "phrasing": "lumps",
-    "prompt": "a few ice lumps on lava"
    },
    {
     "key": "tiles/fades/lava__with__ice/patches_1/tile_06",
@@ -116999,40 +116268,6 @@
     "prompt": "patches of ice on lava"
    },
    {
-    "key": "tiles/fades/lava__with__ice/piles_1/tile_10",
-    "file": "tiles/fades/lava__with__ice/piles_1/post/tile_10.0bfd89d1.webp",
-    "pct": {
-     "ice": 76,
-     "lava": 24
-    },
-    "area_pct": {
-     "lava": 48.5,
-     "ice": 51.5
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.6107,
-    "border_impurity": 0.4833,
-    "phrasing": "piles",
-    "prompt": "a few piles of ice on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__ice/piles_1/tile_06",
-    "file": "tiles/fades/lava__with__ice/piles_1/post/tile_06.3df078c3.webp",
-    "pct": {
-     "ice": 77,
-     "lava": 23
-    },
-    "area_pct": {
-     "lava": 46.5,
-     "ice": 53.5
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.2807,
-    "border_impurity": 0.2139,
-    "phrasing": "piles",
-    "prompt": "a few piles of ice on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__ice/lumps_1/tile_10",
     "file": "tiles/fades/lava__with__ice/lumps_1/post/tile_10.314716e0.webp",
     "pct": {
@@ -117065,23 +116300,6 @@
     "border_impurity": 0.0557,
     "phrasing": "patches",
     "prompt": "patches of ice on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__ice/piles_1/tile_07",
-    "file": "tiles/fades/lava__with__ice/piles_1/post/tile_07.48fdde23.webp",
-    "pct": {
-     "ice": 80,
-     "lava": 20
-    },
-    "area_pct": {
-     "lava": 41.8,
-     "ice": 58.2
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.2649,
-    "border_impurity": 0.2423,
-    "phrasing": "piles",
-    "prompt": "a few piles of ice on lava"
    },
    {
     "key": "tiles/fades/lava__with__ice/spots_1/tile_13",
@@ -117152,23 +116370,6 @@
     "prompt": "a few piles of ice on lava"
    },
    {
-    "key": "tiles/fades/lava__with__ice/piles_1/tile_15",
-    "file": "tiles/fades/lava__with__ice/piles_1/post/tile_15.8476a46e.webp",
-    "pct": {
-     "ice": 85,
-     "lava": 15
-    },
-    "area_pct": {
-     "lava": 29.7,
-     "ice": 70.3
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.2398,
-    "border_impurity": 0.3092,
-    "phrasing": "piles",
-    "prompt": "a few piles of ice on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__ice/on_top_of_1/tile_10",
     "file": "tiles/fades/lava__with__ice/on_top_of_1/post/tile_10.f28f93cb.webp",
     "pct": {
@@ -117199,23 +116400,6 @@
     "edge_ground": "ice",
     "edge_contact": 0.1661,
     "border_impurity": 0.1694,
-    "phrasing": "piles",
-    "prompt": "a few piles of ice on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__ice/piles_1/tile_02",
-    "file": "tiles/fades/lava__with__ice/piles_1/post/tile_02.12446489.webp",
-    "pct": {
-     "ice": 88,
-     "lava": 12
-    },
-    "area_pct": {
-     "lava": 23.9,
-     "ice": 76.1
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.2619,
-    "border_impurity": 0.2417,
     "phrasing": "piles",
     "prompt": "a few piles of ice on lava"
    },
@@ -117356,40 +116540,6 @@
     "prompt": "patches of ice on lava"
    },
    {
-    "key": "tiles/fades/lava__with__ice/piles_1/tile_01",
-    "file": "tiles/fades/lava__with__ice/piles_1/post/tile_01.036e21ac.webp",
-    "pct": {
-     "ice": 96,
-     "lava": 4
-    },
-    "area_pct": {
-     "lava": 7.9,
-     "ice": 92.1
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.0599,
-    "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of ice on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__ice/and_1/tile_13",
-    "file": "tiles/fades/lava__with__ice/and_1/post/tile_13.cd2a846d.webp",
-    "pct": {
-     "ice": 98,
-     "lava": 2
-    },
-    "area_pct": {
-     "lava": 4.7,
-     "ice": 95.3
-    },
-    "edge_ground": "ice",
-    "edge_contact": 0.0432,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "lava and ice"
-   },
-   {
     "key": "tiles/fades/lava__with__ice/and_1/tile_14",
     "file": "tiles/fades/lava__with__ice/and_1/post/tile_14.2611bd2c.webp",
     "pct": {
@@ -117443,40 +116593,6 @@
   ],
   "lava__to__light_beach": [
    {
-    "key": "tiles/fades/lava__with__light_beach/one_rock_1/tile_07",
-    "file": "tiles/fades/lava__with__light_beach/one_rock_1/post/tile_07.117f1e59.webp",
-    "pct": {
-     "lava": 99,
-     "light_beach": 1
-    },
-    "area_pct": {
-     "lava": 97.2,
-     "light_beach": 2.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0873,
-    "border_impurity": 0.0694,
-    "phrasing": "one_rock",
-    "prompt": "one light beach rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/with_1/tile_00",
-    "file": "tiles/fades/lava__with__light_beach/with_1/post/tile_00.d5869a69.webp",
-    "pct": {
-     "lava": 99,
-     "light_beach": 1
-    },
-    "area_pct": {
-     "lava": 97.8,
-     "light_beach": 2.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.07,
-    "border_impurity": 0.5083,
-    "phrasing": "with",
-    "prompt": "lava with light beach"
-   },
-   {
     "key": "tiles/fades/lava__with__light_beach/lumps_1/tile_14",
     "file": "tiles/fades/lava__with__light_beach/lumps_1/post/tile_14.aed05181.webp",
     "pct": {
@@ -117511,74 +116627,6 @@
     "prompt": "light beach on top of lava"
    },
    {
-    "key": "tiles/fades/lava__with__light_beach/on_top_of_1/tile_03",
-    "file": "tiles/fades/lava__with__light_beach/on_top_of_1/post/tile_03.3676e94d.webp",
-    "pct": {
-     "lava": 98,
-     "light_beach": 2
-    },
-    "area_pct": {
-     "lava": 95.2,
-     "light_beach": 4.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.005,
-    "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "light beach on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/one_rock_1/tile_03",
-    "file": "tiles/fades/lava__with__light_beach/one_rock_1/post/tile_03.86ceb9a1.webp",
-    "pct": {
-     "lava": 98,
-     "light_beach": 2
-    },
-    "area_pct": {
-     "lava": 95.8,
-     "light_beach": 4.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.124,
-    "border_impurity": 0.0944,
-    "phrasing": "one_rock",
-    "prompt": "one light beach rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/with_1/tile_05",
-    "file": "tiles/fades/lava__with__light_beach/with_1/post/tile_05.de3c1e71.webp",
-    "pct": {
-     "lava": 98,
-     "light_beach": 2
-    },
-    "area_pct": {
-     "lava": 95.9,
-     "light_beach": 4.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1008,
-    "border_impurity": 0.0861,
-    "phrasing": "with",
-    "prompt": "lava with light beach"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/with_1/tile_06",
-    "file": "tiles/fades/lava__with__light_beach/with_1/post/tile_06.e691e66b.webp",
-    "pct": {
-     "lava": 98,
-     "light_beach": 2
-    },
-    "area_pct": {
-     "lava": 95.6,
-     "light_beach": 4.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0,
-    "border_impurity": 0.1806,
-    "phrasing": "with",
-    "prompt": "lava with light beach"
-   },
-   {
     "key": "tiles/fades/lava__with__light_beach/lumps_1/tile_01",
     "file": "tiles/fades/lava__with__light_beach/lumps_1/post/tile_01.f69cd1c3.webp",
     "pct": {
@@ -117594,159 +116642,6 @@
     "border_impurity": 0.0056,
     "phrasing": "lumps",
     "prompt": "a few light beach lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/on_top_of_1/tile_11",
-    "file": "tiles/fades/lava__with__light_beach/on_top_of_1/post/tile_11.245cfe48.webp",
-    "pct": {
-     "lava": 97,
-     "light_beach": 3
-    },
-    "area_pct": {
-     "lava": 93.2,
-     "light_beach": 6.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0662,
-    "border_impurity": 0.006,
-    "phrasing": "on_top_of",
-    "prompt": "light beach on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/one_rock_1/tile_02",
-    "file": "tiles/fades/lava__with__light_beach/one_rock_1/post/tile_02.486396ed.webp",
-    "pct": {
-     "lava": 97,
-     "light_beach": 3
-    },
-    "area_pct": {
-     "lava": 93.7,
-     "light_beach": 6.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1224,
-    "border_impurity": 0.0836,
-    "phrasing": "one_rock",
-    "prompt": "one light beach rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/one_rock_1/tile_08",
-    "file": "tiles/fades/lava__with__light_beach/one_rock_1/post/tile_08.cb0e798f.webp",
-    "pct": {
-     "lava": 97,
-     "light_beach": 3
-    },
-    "area_pct": {
-     "lava": 94.3,
-     "light_beach": 5.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1461,
-    "border_impurity": 0.0641,
-    "phrasing": "one_rock",
-    "prompt": "one light beach rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/one_rock_1/tile_14",
-    "file": "tiles/fades/lava__with__light_beach/one_rock_1/post/tile_14.821425e6.webp",
-    "pct": {
-     "lava": 97,
-     "light_beach": 3
-    },
-    "area_pct": {
-     "lava": 94.2,
-     "light_beach": 5.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1204,
-    "border_impurity": 0.0833,
-    "phrasing": "one_rock",
-    "prompt": "one light beach rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/on_top_of_1/tile_09",
-    "file": "tiles/fades/lava__with__light_beach/on_top_of_1/post/tile_09.096ac7a9.webp",
-    "pct": {
-     "lava": 96,
-     "light_beach": 4
-    },
-    "area_pct": {
-     "lava": 91.7,
-     "light_beach": 8.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1067,
-    "border_impurity": 0.0419,
-    "phrasing": "on_top_of",
-    "prompt": "light beach on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/one_rock_1/tile_10",
-    "file": "tiles/fades/lava__with__light_beach/one_rock_1/post/tile_10.154d4f17.webp",
-    "pct": {
-     "lava": 96,
-     "light_beach": 4
-    },
-    "area_pct": {
-     "lava": 91.6,
-     "light_beach": 8.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2459,
-    "border_impurity": 0.1667,
-    "phrasing": "one_rock",
-    "prompt": "one light beach rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/with_1/tile_11",
-    "file": "tiles/fades/lava__with__light_beach/with_1/post/tile_11.fb586db1.webp",
-    "pct": {
-     "lava": 96,
-     "light_beach": 4
-    },
-    "area_pct": {
-     "lava": 92.8,
-     "light_beach": 7.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0,
-    "border_impurity": 0.159,
-    "phrasing": "with",
-    "prompt": "lava with light beach"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/on_top_of_1/tile_06",
-    "file": "tiles/fades/lava__with__light_beach/on_top_of_1/post/tile_06.b150b97e.webp",
-    "pct": {
-     "lava": 95,
-     "light_beach": 5
-    },
-    "area_pct": {
-     "lava": 90.8,
-     "light_beach": 9.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0004,
-    "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "light beach on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/on_top_of_1/tile_15",
-    "file": "tiles/fades/lava__with__light_beach/on_top_of_1/post/tile_15.e2cdffd1.webp",
-    "pct": {
-     "lava": 95,
-     "light_beach": 5
-    },
-    "area_pct": {
-     "lava": 88.8,
-     "light_beach": 11.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0068,
-    "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "light beach on top of lava"
    },
    {
     "key": "tiles/fades/lava__with__light_beach/with_1/tile_04",
@@ -117783,23 +116678,6 @@
     "prompt": "lava with light beach"
    },
    {
-    "key": "tiles/fades/lava__with__light_beach/lumps_1/tile_12",
-    "file": "tiles/fades/lava__with__light_beach/lumps_1/post/tile_12.a75ce126.webp",
-    "pct": {
-     "lava": 94,
-     "light_beach": 6
-    },
-    "area_pct": {
-     "lava": 88.3,
-     "light_beach": 11.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2176,
-    "border_impurity": 0.0833,
-    "phrasing": "lumps",
-    "prompt": "a few light beach lumps on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__light_beach/on_top_of_1/tile_05",
     "file": "tiles/fades/lava__with__light_beach/on_top_of_1/post/tile_05.32505abc.webp",
     "pct": {
@@ -117813,23 +116691,6 @@
     "edge_ground": "lava",
     "edge_contact": 0.0,
     "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "light beach on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/on_top_of_1/tile_07",
-    "file": "tiles/fades/lava__with__light_beach/on_top_of_1/post/tile_07.9f886364.webp",
-    "pct": {
-     "lava": 94,
-     "light_beach": 6
-    },
-    "area_pct": {
-     "lava": 87.6,
-     "light_beach": 12.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0319,
-    "border_impurity": 0.009,
     "phrasing": "on_top_of",
     "prompt": "light beach on top of lava"
    },
@@ -117849,23 +116710,6 @@
     "border_impurity": 0.1694,
     "phrasing": "one_rock",
     "prompt": "one light beach rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/with_1/tile_13",
-    "file": "tiles/fades/lava__with__light_beach/with_1/post/tile_13.4561ea33.webp",
-    "pct": {
-     "lava": 94,
-     "light_beach": 6
-    },
-    "area_pct": {
-     "lava": 87.6,
-     "light_beach": 12.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.32,
-    "border_impurity": 0.5889,
-    "phrasing": "with",
-    "prompt": "lava with light beach"
    },
    {
     "key": "tiles/fades/lava__with__light_beach/lumps_1/tile_06",
@@ -117902,40 +116746,6 @@
     "prompt": "light beach on top of lava"
    },
    {
-    "key": "tiles/fades/lava__with__light_beach/on_top_of_1/tile_04",
-    "file": "tiles/fades/lava__with__light_beach/on_top_of_1/post/tile_04.acf91e51.webp",
-    "pct": {
-     "lava": 91,
-     "light_beach": 9
-    },
-    "area_pct": {
-     "lava": 81.7,
-     "light_beach": 18.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "light beach on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/one_rock_1/tile_04",
-    "file": "tiles/fades/lava__with__light_beach/one_rock_1/post/tile_04.5728bb3e.webp",
-    "pct": {
-     "lava": 90,
-     "light_beach": 10
-    },
-    "area_pct": {
-     "lava": 80.0,
-     "light_beach": 20.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2325,
-    "border_impurity": 0.5222,
-    "phrasing": "one_rock",
-    "prompt": "one light beach rock on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__light_beach/one_rock_1/tile_13",
     "file": "tiles/fades/lava__with__light_beach/one_rock_1/post/tile_13.e5dd57a4.webp",
     "pct": {
@@ -117970,40 +116780,6 @@
     "prompt": "a few light beach lumps on lava"
    },
    {
-    "key": "tiles/fades/lava__with__light_beach/one_rock_1/tile_00",
-    "file": "tiles/fades/lava__with__light_beach/one_rock_1/post/tile_00.82688d9c.webp",
-    "pct": {
-     "lava": 89,
-     "light_beach": 11
-    },
-    "area_pct": {
-     "lava": 78.2,
-     "light_beach": 21.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3433,
-    "border_impurity": 0.3056,
-    "phrasing": "one_rock",
-    "prompt": "one light beach rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/lumps_1/tile_04",
-    "file": "tiles/fades/lava__with__light_beach/lumps_1/post/tile_04.b5fecc89.webp",
-    "pct": {
-     "lava": 88,
-     "light_beach": 12
-    },
-    "area_pct": {
-     "lava": 74.6,
-     "light_beach": 25.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4041,
-    "border_impurity": 0.4596,
-    "phrasing": "lumps",
-    "prompt": "a few light beach lumps on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__light_beach/one_rock_1/tile_09",
     "file": "tiles/fades/lava__with__light_beach/one_rock_1/post/tile_09.98e41965.webp",
     "pct": {
@@ -118019,74 +116795,6 @@
     "border_impurity": 0.0195,
     "phrasing": "one_rock",
     "prompt": "one light beach rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/one_rock_1/tile_06",
-    "file": "tiles/fades/lava__with__light_beach/one_rock_1/post/tile_06.be3674c4.webp",
-    "pct": {
-     "lava": 84,
-     "light_beach": 16
-    },
-    "area_pct": {
-     "lava": 67.5,
-     "light_beach": 32.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3217,
-    "border_impurity": 0.2528,
-    "phrasing": "one_rock",
-    "prompt": "one light beach rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/with_1/tile_02",
-    "file": "tiles/fades/lava__with__light_beach/with_1/post/tile_02.e4bf98b9.webp",
-    "pct": {
-     "lava": 84,
-     "light_beach": 16
-    },
-    "area_pct": {
-     "lava": 68.1,
-     "light_beach": 31.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0621,
-    "border_impurity": 0.3167,
-    "phrasing": "with",
-    "prompt": "lava with light beach"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/lumps_1/tile_02",
-    "file": "tiles/fades/lava__with__light_beach/lumps_1/post/tile_02.0b35dc14.webp",
-    "pct": {
-     "lava": 83,
-     "light_beach": 17
-    },
-    "area_pct": {
-     "lava": 64.7,
-     "light_beach": 35.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4893,
-    "border_impurity": 0.4389,
-    "phrasing": "lumps",
-    "prompt": "a few light beach lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/lumps_1/tile_13",
-    "file": "tiles/fades/lava__with__light_beach/lumps_1/post/tile_13.f27a4bee.webp",
-    "pct": {
-     "light_beach": 67,
-     "lava": 33
-    },
-    "area_pct": {
-     "lava": 67.3,
-     "light_beach": 32.7
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.48,
-    "border_impurity": 0.6944,
-    "phrasing": "lumps",
-    "prompt": "a few light beach lumps on lava"
    },
    {
     "key": "tiles/fades/lava__with__light_beach/lumps_1/tile_15",
@@ -118140,23 +116848,6 @@
     "prompt": "light beach spots on lava"
    },
    {
-    "key": "tiles/fades/lava__with__light_beach/spots_1/tile_05",
-    "file": "tiles/fades/lava__with__light_beach/spots_1/post/tile_05.f47e35a8.webp",
-    "pct": {
-     "light_beach": 92,
-     "lava": 8
-    },
-    "area_pct": {
-     "lava": 16.7,
-     "light_beach": 83.3
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.1149,
-    "border_impurity": 0.1201,
-    "phrasing": "spots",
-    "prompt": "light beach spots on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__light_beach/spots_1/tile_02",
     "file": "tiles/fades/lava__with__light_beach/spots_1/post/tile_02.535b2032.webp",
     "pct": {
@@ -118170,23 +116861,6 @@
     "edge_ground": "light_beach",
     "edge_contact": 0.11,
     "border_impurity": 0.1086,
-    "phrasing": "spots",
-    "prompt": "light beach spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/spots_1/tile_03",
-    "file": "tiles/fades/lava__with__light_beach/spots_1/post/tile_03.2fbb39ac.webp",
-    "pct": {
-     "light_beach": 94,
-     "lava": 6
-    },
-    "area_pct": {
-     "lava": 12.4,
-     "light_beach": 87.6
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
     "phrasing": "spots",
     "prompt": "light beach spots on lava"
    },
@@ -118259,23 +116933,6 @@
     "prompt": "light beach spots on lava"
    },
    {
-    "key": "tiles/fades/lava__with__light_beach/spots_1/tile_06",
-    "file": "tiles/fades/lava__with__light_beach/spots_1/post/tile_06.d7056632.webp",
-    "pct": {
-     "light_beach": 98,
-     "lava": 2
-    },
-    "area_pct": {
-     "lava": 4.2,
-     "light_beach": 95.8
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "spots",
-    "prompt": "light beach spots on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__light_beach/spots_1/tile_07",
     "file": "tiles/fades/lava__with__light_beach/spots_1/post/tile_07.ed141301.webp",
     "pct": {
@@ -118291,77 +116948,9 @@
     "border_impurity": 0.0557,
     "phrasing": "spots",
     "prompt": "light beach spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/spots_1/tile_11",
-    "file": "tiles/fades/lava__with__light_beach/spots_1/post/tile_11.f96bc98d.webp",
-    "pct": {
-     "light_beach": 98,
-     "lava": 2
-    },
-    "area_pct": {
-     "lava": 3.3,
-     "light_beach": 96.7
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.0104,
-    "border_impurity": 0.0,
-    "phrasing": "spots",
-    "prompt": "light beach spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_beach/spots_1/tile_09",
-    "file": "tiles/fades/lava__with__light_beach/spots_1/post/tile_09.9b65ae68.webp",
-    "pct": {
-     "light_beach": 99,
-     "lava": 1
-    },
-    "area_pct": {
-     "lava": 2.9,
-     "light_beach": 97.1
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "spots",
-    "prompt": "light beach spots on lava"
    }
   ],
   "lava__to__light_soil": [
-   {
-    "key": "tiles/fades/lava__with__light_soil/piles_1/tile_01",
-    "file": "tiles/fades/lava__with__light_soil/piles_1/post/tile_01.bf63a13a.webp",
-    "pct": {
-     "lava": 99,
-     "light_soil": 1
-    },
-    "area_pct": {
-     "lava": 97.1,
-     "light_soil": 2.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of light soil on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/piles_1/tile_06",
-    "file": "tiles/fades/lava__with__light_soil/piles_1/post/tile_06.c1a9f858.webp",
-    "pct": {
-     "lava": 99,
-     "light_soil": 1
-    },
-    "area_pct": {
-     "lava": 97.4,
-     "light_soil": 2.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0054,
-    "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of light soil on lava"
-   },
    {
     "key": "tiles/fades/lava__with__light_soil/patches_1/tile_04",
     "file": "tiles/fades/lava__with__light_soil/patches_1/post/tile_04.109625a6.webp",
@@ -118393,57 +116982,6 @@
     "edge_ground": "lava",
     "edge_contact": 0.0508,
     "border_impurity": 0.0,
-    "phrasing": "patches",
-    "prompt": "patches of light soil on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/patches_1/tile_10",
-    "file": "tiles/fades/lava__with__light_soil/patches_1/post/tile_10.d1b0caac.webp",
-    "pct": {
-     "lava": 97,
-     "light_soil": 3
-    },
-    "area_pct": {
-     "lava": 93.8,
-     "light_soil": 6.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0562,
-    "border_impurity": 0.0111,
-    "phrasing": "patches",
-    "prompt": "patches of light soil on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_07",
-    "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_07.80a070df.webp",
-    "pct": {
-     "lava": 96,
-     "light_soil": 4
-    },
-    "area_pct": {
-     "lava": 91.1,
-     "light_soil": 8.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0966,
-    "border_impurity": 0.0139,
-    "phrasing": "one_rock",
-    "prompt": "one light soil rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/patches_1/tile_11",
-    "file": "tiles/fades/lava__with__light_soil/patches_1/post/tile_11.b4399b28.webp",
-    "pct": {
-     "lava": 96,
-     "light_soil": 4
-    },
-    "area_pct": {
-     "lava": 91.7,
-     "light_soil": 8.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0473,
-    "border_impurity": 0.0167,
     "phrasing": "patches",
     "prompt": "patches of light soil on lava"
    },
@@ -118516,74 +117054,6 @@
     "prompt": "one light soil rock on lava"
    },
    {
-    "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_06",
-    "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_06.239bc4e8.webp",
-    "pct": {
-     "lava": 95,
-     "light_soil": 5
-    },
-    "area_pct": {
-     "lava": 89.0,
-     "light_soil": 11.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1216,
-    "border_impurity": 0.0306,
-    "phrasing": "one_rock",
-    "prompt": "one light soil rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_12",
-    "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_12.2878727c.webp",
-    "pct": {
-     "lava": 95,
-     "light_soil": 5
-    },
-    "area_pct": {
-     "lava": 89.9,
-     "light_soil": 10.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0864,
-    "border_impurity": 0.0,
-    "phrasing": "one_rock",
-    "prompt": "one light soil rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_13",
-    "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_13.2b02fafc.webp",
-    "pct": {
-     "lava": 95,
-     "light_soil": 5
-    },
-    "area_pct": {
-     "lava": 90.2,
-     "light_soil": 9.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0713,
-    "border_impurity": 0.0083,
-    "phrasing": "one_rock",
-    "prompt": "one light soil rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/piles_1/tile_00",
-    "file": "tiles/fades/lava__with__light_soil/piles_1/post/tile_00.8ce8bab6.webp",
-    "pct": {
-     "lava": 95,
-     "light_soil": 5
-    },
-    "area_pct": {
-     "lava": 89.2,
-     "light_soil": 10.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.041,
-    "border_impurity": 0.0393,
-    "phrasing": "piles",
-    "prompt": "a few piles of light soil on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__light_soil/spots_1/tile_01",
     "file": "tiles/fades/lava__with__light_soil/spots_1/post/tile_01.2818ce75.webp",
     "pct": {
@@ -118599,23 +117069,6 @@
     "border_impurity": 0.175,
     "phrasing": "spots",
     "prompt": "light soil spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/patches_1/tile_06",
-    "file": "tiles/fades/lava__with__light_soil/patches_1/post/tile_06.d517d546.webp",
-    "pct": {
-     "lava": 94,
-     "light_soil": 6
-    },
-    "area_pct": {
-     "lava": 87.0,
-     "light_soil": 13.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0564,
-    "border_impurity": 0.0472,
-    "phrasing": "patches",
-    "prompt": "patches of light soil on lava"
    },
    {
     "key": "tiles/fades/lava__with__light_soil/spots_1/tile_04",
@@ -118635,40 +117088,6 @@
     "prompt": "light soil spots on lava"
    },
    {
-    "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_09",
-    "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_09.51568da8.webp",
-    "pct": {
-     "lava": 93,
-     "light_soil": 7
-    },
-    "area_pct": {
-     "lava": 85.1,
-     "light_soil": 14.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1753,
-    "border_impurity": 0.0222,
-    "phrasing": "one_rock",
-    "prompt": "one light soil rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_08",
-    "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_08.b1ab77a4.webp",
-    "pct": {
-     "lava": 92,
-     "light_soil": 8
-    },
-    "area_pct": {
-     "lava": 84.6,
-     "light_soil": 15.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1944,
-    "border_impurity": 0.0722,
-    "phrasing": "one_rock",
-    "prompt": "one light soil rock on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_14",
     "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_14.3a311e01.webp",
     "pct": {
@@ -118684,176 +117103,6 @@
     "border_impurity": 0.0417,
     "phrasing": "one_rock",
     "prompt": "one light soil rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/patches_1/tile_09",
-    "file": "tiles/fades/lava__with__light_soil/patches_1/post/tile_09.cc666b7d.webp",
-    "pct": {
-     "lava": 91,
-     "light_soil": 9
-    },
-    "area_pct": {
-     "lava": 81.3,
-     "light_soil": 18.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.262,
-    "border_impurity": 0.1111,
-    "phrasing": "patches",
-    "prompt": "patches of light soil on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/patches_1/tile_00",
-    "file": "tiles/fades/lava__with__light_soil/patches_1/post/tile_00.92bb0a08.webp",
-    "pct": {
-     "lava": 89,
-     "light_soil": 11
-    },
-    "area_pct": {
-     "lava": 78.4,
-     "light_soil": 21.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2332,
-    "border_impurity": 0.0528,
-    "phrasing": "patches",
-    "prompt": "patches of light soil on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_03",
-    "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_03.5e72e355.webp",
-    "pct": {
-     "lava": 87,
-     "light_soil": 13
-    },
-    "area_pct": {
-     "lava": 73.9,
-     "light_soil": 26.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1771,
-    "border_impurity": 0.0861,
-    "phrasing": "one_rock",
-    "prompt": "one light soil rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_11",
-    "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_11.46cd1702.webp",
-    "pct": {
-     "lava": 87,
-     "light_soil": 13
-    },
-    "area_pct": {
-     "lava": 74.1,
-     "light_soil": 25.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2738,
-    "border_impurity": 0.1028,
-    "phrasing": "one_rock",
-    "prompt": "one light soil rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/patches_1/tile_03",
-    "file": "tiles/fades/lava__with__light_soil/patches_1/post/tile_03.9654b375.webp",
-    "pct": {
-     "lava": 87,
-     "light_soil": 13
-    },
-    "area_pct": {
-     "lava": 74.2,
-     "light_soil": 25.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.295,
-    "border_impurity": 0.05,
-    "phrasing": "patches",
-    "prompt": "patches of light soil on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_10",
-    "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_10.e04ef90e.webp",
-    "pct": {
-     "lava": 84,
-     "light_soil": 16
-    },
-    "area_pct": {
-     "lava": 67.3,
-     "light_soil": 32.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3435,
-    "border_impurity": 0.1583,
-    "phrasing": "one_rock",
-    "prompt": "one light soil rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_15",
-    "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_15.dcfe8d7a.webp",
-    "pct": {
-     "lava": 84,
-     "light_soil": 16
-    },
-    "area_pct": {
-     "lava": 68.3,
-     "light_soil": 31.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3349,
-    "border_impurity": 0.1417,
-    "phrasing": "one_rock",
-    "prompt": "one light soil rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_04",
-    "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_04.6f72a537.webp",
-    "pct": {
-     "lava": 83,
-     "light_soil": 17
-    },
-    "area_pct": {
-     "lava": 64.4,
-     "light_soil": 35.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3666,
-    "border_impurity": 0.1667,
-    "phrasing": "one_rock",
-    "prompt": "one light soil rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/one_rock_1/tile_05",
-    "file": "tiles/fades/lava__with__light_soil/one_rock_1/post/tile_05.b08184f3.webp",
-    "pct": {
-     "lava": 79,
-     "light_soil": 21
-    },
-    "area_pct": {
-     "lava": 57.7,
-     "light_soil": 42.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4467,
-    "border_impurity": 0.2389,
-    "phrasing": "one_rock",
-    "prompt": "one light soil rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__light_soil/on_top_of_1/tile_12",
-    "file": "tiles/fades/lava__with__light_soil/on_top_of_1/post/tile_12.be069acc.webp",
-    "pct": {
-     "light_soil": 82,
-     "lava": 18
-    },
-    "area_pct": {
-     "lava": 36.0,
-     "light_soil": 64.0
-    },
-    "edge_ground": "light_soil",
-    "edge_contact": 0.3352,
-    "border_impurity": 0.1111,
-    "phrasing": "on_top_of",
-    "prompt": "light soil on top of lava"
    },
    {
     "key": "tiles/fades/lava__with__light_soil/on_top_of_1/tile_15",
@@ -119028,57 +117277,6 @@
     "prompt": "parquet floor spots on lava"
    },
    {
-    "key": "tiles/fades/lava__with__parquet_floor/and_1/tile_02",
-    "file": "tiles/fades/lava__with__parquet_floor/and_1/post/tile_02.02031753.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "lava": 95.1,
-     "parquet_floor": 4.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.045,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "lava and parquet floor"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/and_1/tile_05",
-    "file": "tiles/fades/lava__with__parquet_floor/and_1/post/tile_05.9cf6e4a2.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "lava": 95.2,
-     "parquet_floor": 4.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0324,
-    "border_impurity": 0.0056,
-    "phrasing": "and",
-    "prompt": "lava and parquet floor"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/patches_1/tile_08",
-    "file": "tiles/fades/lava__with__parquet_floor/patches_1/post/tile_08.d254edc5.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "lava": 95.1,
-     "parquet_floor": 4.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1408,
-    "border_impurity": 0.0336,
-    "phrasing": "patches",
-    "prompt": "patches of parquet floor on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__parquet_floor/piles_1/tile_07",
     "file": "tiles/fades/lava__with__parquet_floor/piles_1/post/tile_07.f6cfaa28.webp",
     "pct": {
@@ -119096,278 +117294,6 @@
     "prompt": "a few piles of parquet floor on lava"
    },
    {
-    "key": "tiles/fades/lava__with__parquet_floor/piles_1/tile_09",
-    "file": "tiles/fades/lava__with__parquet_floor/piles_1/post/tile_09.4a97157d.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "lava": 96.4,
-     "parquet_floor": 3.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0004,
-    "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of parquet floor on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/piles_1/tile_11",
-    "file": "tiles/fades/lava__with__parquet_floor/piles_1/post/tile_11.023bf345.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "lava": 96.3,
-     "parquet_floor": 3.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0001,
-    "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of parquet floor on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/spots_1/tile_00",
-    "file": "tiles/fades/lava__with__parquet_floor/spots_1/post/tile_00.a5d8cef7.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "lava": 96.0,
-     "parquet_floor": 4.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1191,
-    "border_impurity": 0.0028,
-    "phrasing": "spots",
-    "prompt": "parquet floor spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/and_1/tile_01",
-    "file": "tiles/fades/lava__with__parquet_floor/and_1/post/tile_01.edeca2f5.webp",
-    "pct": {
-     "lava": 97,
-     "parquet_floor": 3
-    },
-    "area_pct": {
-     "lava": 93.6,
-     "parquet_floor": 6.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0549,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "lava and parquet floor"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/lumps_1/tile_12",
-    "file": "tiles/fades/lava__with__parquet_floor/lumps_1/post/tile_12.686a3985.webp",
-    "pct": {
-     "lava": 97,
-     "parquet_floor": 3
-    },
-    "area_pct": {
-     "lava": 94.4,
-     "parquet_floor": 5.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1596,
-    "border_impurity": 0.0446,
-    "phrasing": "lumps",
-    "prompt": "a few parquet floor lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/lumps_1/tile_13",
-    "file": "tiles/fades/lava__with__parquet_floor/lumps_1/post/tile_13.6ad4c932.webp",
-    "pct": {
-     "lava": 97,
-     "parquet_floor": 3
-    },
-    "area_pct": {
-     "lava": 94.3,
-     "parquet_floor": 5.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1635,
-    "border_impurity": 0.0476,
-    "phrasing": "lumps",
-    "prompt": "a few parquet floor lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/lumps_1/tile_15",
-    "file": "tiles/fades/lava__with__parquet_floor/lumps_1/post/tile_15.e0e14184.webp",
-    "pct": {
-     "lava": 97,
-     "parquet_floor": 3
-    },
-    "area_pct": {
-     "lava": 94.5,
-     "parquet_floor": 5.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1253,
-    "border_impurity": 0.0672,
-    "phrasing": "lumps",
-    "prompt": "a few parquet floor lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/patches_1/tile_12",
-    "file": "tiles/fades/lava__with__parquet_floor/patches_1/post/tile_12.f6539765.webp",
-    "pct": {
-     "lava": 97,
-     "parquet_floor": 3
-    },
-    "area_pct": {
-     "lava": 94.5,
-     "parquet_floor": 5.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1484,
-    "border_impurity": 0.1722,
-    "phrasing": "patches",
-    "prompt": "patches of parquet floor on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/and_1/tile_06",
-    "file": "tiles/fades/lava__with__parquet_floor/and_1/post/tile_06.919b201a.webp",
-    "pct": {
-     "lava": 96,
-     "parquet_floor": 4
-    },
-    "area_pct": {
-     "lava": 92.3,
-     "parquet_floor": 7.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0846,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "lava and parquet floor"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/lumps_1/tile_07",
-    "file": "tiles/fades/lava__with__parquet_floor/lumps_1/post/tile_07.28fcfaac.webp",
-    "pct": {
-     "lava": 96,
-     "parquet_floor": 4
-    },
-    "area_pct": {
-     "lava": 92.1,
-     "parquet_floor": 7.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1292,
-    "border_impurity": 0.0391,
-    "phrasing": "lumps",
-    "prompt": "a few parquet floor lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/lumps_1/tile_08",
-    "file": "tiles/fades/lava__with__parquet_floor/lumps_1/post/tile_08.aeb9671c.webp",
-    "pct": {
-     "lava": 96,
-     "parquet_floor": 4
-    },
-    "area_pct": {
-     "lava": 92.7,
-     "parquet_floor": 7.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1828,
-    "border_impurity": 0.0642,
-    "phrasing": "lumps",
-    "prompt": "a few parquet floor lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/and_1/tile_00",
-    "file": "tiles/fades/lava__with__parquet_floor/and_1/post/tile_00.fda254b1.webp",
-    "pct": {
-     "lava": 95,
-     "parquet_floor": 5
-    },
-    "area_pct": {
-     "lava": 89.9,
-     "parquet_floor": 10.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0733,
-    "border_impurity": 0.0056,
-    "phrasing": "and",
-    "prompt": "lava and parquet floor"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/and_1/tile_03",
-    "file": "tiles/fades/lava__with__parquet_floor/and_1/post/tile_03.c3890a0a.webp",
-    "pct": {
-     "lava": 95,
-     "parquet_floor": 5
-    },
-    "area_pct": {
-     "lava": 90.1,
-     "parquet_floor": 9.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.061,
-    "border_impurity": 0.0056,
-    "phrasing": "and",
-    "prompt": "lava and parquet floor"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/and_1/tile_04",
-    "file": "tiles/fades/lava__with__parquet_floor/and_1/post/tile_04.6fadf979.webp",
-    "pct": {
-     "lava": 95,
-     "parquet_floor": 5
-    },
-    "area_pct": {
-     "lava": 89.1,
-     "parquet_floor": 10.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0593,
-    "border_impurity": 0.0056,
-    "phrasing": "and",
-    "prompt": "lava and parquet floor"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/and_1/tile_07",
-    "file": "tiles/fades/lava__with__parquet_floor/and_1/post/tile_07.10aaf4e0.webp",
-    "pct": {
-     "lava": 95,
-     "parquet_floor": 5
-    },
-    "area_pct": {
-     "lava": 90.3,
-     "parquet_floor": 9.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0993,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "lava and parquet floor"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/lumps_1/tile_04",
-    "file": "tiles/fades/lava__with__parquet_floor/lumps_1/post/tile_04.a0b63513.webp",
-    "pct": {
-     "lava": 95,
-     "parquet_floor": 5
-    },
-    "area_pct": {
-     "lava": 89.8,
-     "parquet_floor": 10.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1962,
-    "border_impurity": 0.0978,
-    "phrasing": "lumps",
-    "prompt": "a few parquet floor lumps on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__parquet_floor/patches_1/tile_05",
     "file": "tiles/fades/lava__with__parquet_floor/patches_1/post/tile_05.24beebd2.webp",
     "pct": {
@@ -119380,108 +117306,6 @@
     },
     "edge_ground": "lava",
     "edge_contact": 0.2172,
-    "border_impurity": 0.1639,
-    "phrasing": "patches",
-    "prompt": "patches of parquet floor on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/patches_1/tile_09",
-    "file": "tiles/fades/lava__with__parquet_floor/patches_1/post/tile_09.553eadb8.webp",
-    "pct": {
-     "lava": 95,
-     "parquet_floor": 5
-    },
-    "area_pct": {
-     "lava": 90.5,
-     "parquet_floor": 9.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1265,
-    "border_impurity": 0.0944,
-    "phrasing": "patches",
-    "prompt": "patches of parquet floor on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/patches_1/tile_14",
-    "file": "tiles/fades/lava__with__parquet_floor/patches_1/post/tile_14.c84cf4e0.webp",
-    "pct": {
-     "lava": 95,
-     "parquet_floor": 5
-    },
-    "area_pct": {
-     "lava": 89.2,
-     "parquet_floor": 10.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0,
-    "border_impurity": 0.1278,
-    "phrasing": "patches",
-    "prompt": "patches of parquet floor on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/lumps_1/tile_01",
-    "file": "tiles/fades/lava__with__parquet_floor/lumps_1/post/tile_01.59b62863.webp",
-    "pct": {
-     "lava": 94,
-     "parquet_floor": 6
-    },
-    "area_pct": {
-     "lava": 88.5,
-     "parquet_floor": 11.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1883,
-    "border_impurity": 0.1833,
-    "phrasing": "lumps",
-    "prompt": "a few parquet floor lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/lumps_1/tile_10",
-    "file": "tiles/fades/lava__with__parquet_floor/lumps_1/post/tile_10.fe21a2cd.webp",
-    "pct": {
-     "lava": 94,
-     "parquet_floor": 6
-    },
-    "area_pct": {
-     "lava": 88.0,
-     "parquet_floor": 12.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2572,
-    "border_impurity": 0.1653,
-    "phrasing": "lumps",
-    "prompt": "a few parquet floor lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/lumps_1/tile_11",
-    "file": "tiles/fades/lava__with__parquet_floor/lumps_1/post/tile_11.00bc8d04.webp",
-    "pct": {
-     "lava": 94,
-     "parquet_floor": 6
-    },
-    "area_pct": {
-     "lava": 87.6,
-     "parquet_floor": 12.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2691,
-    "border_impurity": 0.1472,
-    "phrasing": "lumps",
-    "prompt": "a few parquet floor lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/patches_1/tile_11",
-    "file": "tiles/fades/lava__with__parquet_floor/patches_1/post/tile_11.87bcefaf.webp",
-    "pct": {
-     "lava": 94,
-     "parquet_floor": 6
-    },
-    "area_pct": {
-     "lava": 87.0,
-     "parquet_floor": 13.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2552,
     "border_impurity": 0.1639,
     "phrasing": "patches",
     "prompt": "patches of parquet floor on lava"
@@ -119504,40 +117328,6 @@
     "prompt": "a few parquet floor lumps on lava"
    },
    {
-    "key": "tiles/fades/lava__with__parquet_floor/patches_1/tile_06",
-    "file": "tiles/fades/lava__with__parquet_floor/patches_1/post/tile_06.5b2313fa.webp",
-    "pct": {
-     "lava": 88,
-     "parquet_floor": 12
-    },
-    "area_pct": {
-     "lava": 74.8,
-     "parquet_floor": 25.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3759,
-    "border_impurity": 0.3733,
-    "phrasing": "patches",
-    "prompt": "patches of parquet floor on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/spots_1/tile_08",
-    "file": "tiles/fades/lava__with__parquet_floor/spots_1/post/tile_08.ddd8281c.webp",
-    "pct": {
-     "parquet_floor": 58,
-     "lava": 42
-    },
-    "area_pct": {
-     "lava": 85.7,
-     "parquet_floor": 14.3
-    },
-    "edge_ground": "parquet_floor",
-    "edge_contact": 0.7447,
-    "border_impurity": 0.3872,
-    "phrasing": "spots",
-    "prompt": "parquet floor spots on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__parquet_floor/lumps_1/tile_09",
     "file": "tiles/fades/lava__with__parquet_floor/lumps_1/post/tile_09.ffb34bd2.webp",
     "pct": {
@@ -119553,40 +117343,6 @@
     "border_impurity": 0.6917,
     "phrasing": "lumps",
     "prompt": "a few parquet floor lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/patches_1/tile_04",
-    "file": "tiles/fades/lava__with__parquet_floor/patches_1/post/tile_04.7716af09.webp",
-    "pct": {
-     "parquet_floor": 72,
-     "lava": 28
-    },
-    "area_pct": {
-     "lava": 57.3,
-     "parquet_floor": 42.7
-    },
-    "edge_ground": "parquet_floor",
-    "edge_contact": 0.5358,
-    "border_impurity": 0.6861,
-    "phrasing": "patches",
-    "prompt": "patches of parquet floor on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__parquet_floor/patches_1/tile_13",
-    "file": "tiles/fades/lava__with__parquet_floor/patches_1/post/tile_13.572e7983.webp",
-    "pct": {
-     "parquet_floor": 76,
-     "lava": 24
-    },
-    "area_pct": {
-     "lava": 48.5,
-     "parquet_floor": 51.5
-    },
-    "edge_ground": "parquet_floor",
-    "edge_contact": 0.275,
-    "border_impurity": 0.2556,
-    "phrasing": "patches",
-    "prompt": "patches of parquet floor on lava"
    }
   ],
   "lava__to__slime": [
@@ -119659,23 +117415,6 @@
     "prompt": "slime spots on lava"
    },
    {
-    "key": "tiles/fades/lava__with__slime/piles_1/tile_07",
-    "file": "tiles/fades/lava__with__slime/piles_1/post/tile_07.e488ce72.webp",
-    "pct": {
-     "lava": 98,
-     "slime": 2
-    },
-    "area_pct": {
-     "lava": 95.1,
-     "slime": 4.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0518,
-    "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of slime on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__slime/spots_1/tile_00",
     "file": "tiles/fades/lava__with__slime/spots_1/post/tile_00.e7fec250.webp",
     "pct": {
@@ -119723,40 +117462,6 @@
     "edge_ground": "lava",
     "edge_contact": 0.0337,
     "border_impurity": 0.0194,
-    "phrasing": "spots",
-    "prompt": "slime spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__slime/on_top_of_1/tile_12",
-    "file": "tiles/fades/lava__with__slime/on_top_of_1/post/tile_12.da7dcb67.webp",
-    "pct": {
-     "lava": 97,
-     "slime": 3
-    },
-    "area_pct": {
-     "lava": 93.8,
-     "slime": 6.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0232,
-    "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "slime on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__slime/spots_1/tile_07",
-    "file": "tiles/fades/lava__with__slime/spots_1/post/tile_07.bf0d837f.webp",
-    "pct": {
-     "lava": 97,
-     "slime": 3
-    },
-    "area_pct": {
-     "lava": 93.6,
-     "slime": 6.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0226,
-    "border_impurity": 0.0028,
     "phrasing": "spots",
     "prompt": "slime spots on lava"
    },
@@ -120067,57 +117772,6 @@
     "prompt": "a few piles of slime on lava"
    },
    {
-    "key": "tiles/fades/lava__with__slime/piles_1/tile_02",
-    "file": "tiles/fades/lava__with__slime/piles_1/post/tile_02.65758c46.webp",
-    "pct": {
-     "lava": 75,
-     "slime": 25
-    },
-    "area_pct": {
-     "lava": 49.6,
-     "slime": 50.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3207,
-    "border_impurity": 0.3118,
-    "phrasing": "piles",
-    "prompt": "a few piles of slime on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__slime/piles_1/tile_04",
-    "file": "tiles/fades/lava__with__slime/piles_1/post/tile_04.09ed465b.webp",
-    "pct": {
-     "slime": 74,
-     "lava": 26
-    },
-    "area_pct": {
-     "lava": 53.3,
-     "slime": 46.7
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.4351,
-    "border_impurity": 0.419,
-    "phrasing": "piles",
-    "prompt": "a few piles of slime on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__slime/on_top_of_1/tile_06",
-    "file": "tiles/fades/lava__with__slime/on_top_of_1/post/tile_06.7fdc257e.webp",
-    "pct": {
-     "slime": 81,
-     "lava": 19
-    },
-    "area_pct": {
-     "lava": 39.7,
-     "slime": 60.3
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.2955,
-    "border_impurity": 0.3,
-    "phrasing": "on_top_of",
-    "prompt": "slime on top of lava"
-   },
-   {
     "key": "tiles/fades/lava__with__slime/on_top_of_1/tile_10",
     "file": "tiles/fades/lava__with__slime/on_top_of_1/post/tile_10.3d3df6d5.webp",
     "pct": {
@@ -120150,145 +117804,9 @@
     "border_impurity": 0.1056,
     "phrasing": "on_top_of",
     "prompt": "slime on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__slime/on_top_of_1/tile_11",
-    "file": "tiles/fades/lava__with__slime/on_top_of_1/post/tile_11.3a7da4a9.webp",
-    "pct": {
-     "slime": 95,
-     "lava": 5
-    },
-    "area_pct": {
-     "lava": 10.0,
-     "slime": 90.0
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.0345,
-    "border_impurity": 0.0306,
-    "phrasing": "on_top_of",
-    "prompt": "slime on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__slime/on_top_of_1/tile_08",
-    "file": "tiles/fades/lava__with__slime/on_top_of_1/post/tile_08.f0f5e986.webp",
-    "pct": {
-     "slime": 96,
-     "lava": 4
-    },
-    "area_pct": {
-     "lava": 7.9,
-     "slime": 92.1
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.002,
-    "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "slime on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__slime/on_top_of_1/tile_14",
-    "file": "tiles/fades/lava__with__slime/on_top_of_1/post/tile_14.2d4bf0d9.webp",
-    "pct": {
-     "slime": 98,
-     "lava": 2
-    },
-    "area_pct": {
-     "lava": 4.7,
-     "slime": 95.3
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.0265,
-    "border_impurity": 0.0028,
-    "phrasing": "on_top_of",
-    "prompt": "slime on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__slime/on_top_of_1/tile_05",
-    "file": "tiles/fades/lava__with__slime/on_top_of_1/post/tile_05.14ca05a2.webp",
-    "pct": {
-     "slime": 99,
-     "lava": 1
-    },
-    "area_pct": {
-     "lava": 2.4,
-     "slime": 97.6
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.0034,
-    "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "slime on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__slime/one_rock_1/tile_03",
-    "file": "tiles/fades/lava__with__slime/one_rock_1/post/tile_03.368a9644.webp",
-    "pct": {
-     "slime": 99,
-     "lava": 1
-    },
-    "area_pct": {
-     "lava": 2.6,
-     "slime": 97.4
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.0542,
-    "border_impurity": 0.0222,
-    "phrasing": "one_rock",
-    "prompt": "one slime rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__slime/one_rock_1/tile_07",
-    "file": "tiles/fades/lava__with__slime/one_rock_1/post/tile_07.7d67cae2.webp",
-    "pct": {
-     "slime": 99,
-     "lava": 1
-    },
-    "area_pct": {
-     "lava": 2.2,
-     "slime": 97.8
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.0628,
-    "border_impurity": 0.2194,
-    "phrasing": "one_rock",
-    "prompt": "one slime rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__slime/one_rock_1/tile_10",
-    "file": "tiles/fades/lava__with__slime/one_rock_1/post/tile_10.c65d1e68.webp",
-    "pct": {
-     "slime": 99,
-     "lava": 1
-    },
-    "area_pct": {
-     "lava": 2.3,
-     "slime": 97.7
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.0554,
-    "border_impurity": 0.1528,
-    "phrasing": "one_rock",
-    "prompt": "one slime rock on lava"
    }
   ],
   "lava__to__snow": [
-   {
-    "key": "tiles/fades/lava__with__snow/patches_1/tile_15",
-    "file": "tiles/fades/lava__with__snow/patches_1/post/tile_15.cc412e8d.webp",
-    "pct": {
-     "lava": 99,
-     "snow": 1
-    },
-    "area_pct": {
-     "lava": 98.0,
-     "snow": 2.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0112,
-    "border_impurity": 0.0694,
-    "phrasing": "patches",
-    "prompt": "patches of snow on lava"
-   },
    {
     "key": "tiles/fades/lava__with__snow/spots_1/tile_09",
     "file": "tiles/fades/lava__with__snow/spots_1/post/tile_09.c429eb6b.webp",
@@ -120305,40 +117823,6 @@
     "border_impurity": 0.0,
     "phrasing": "spots",
     "prompt": "snow spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/spots_1/tile_12",
-    "file": "tiles/fades/lava__with__snow/spots_1/post/tile_12.f2e20379.webp",
-    "pct": {
-     "lava": 98,
-     "snow": 2
-    },
-    "area_pct": {
-     "lava": 96.4,
-     "snow": 3.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.013,
-    "border_impurity": 0.0559,
-    "phrasing": "spots",
-    "prompt": "snow spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/with_1/tile_07",
-    "file": "tiles/fades/lava__with__snow/with_1/post/tile_07.27133bc3.webp",
-    "pct": {
-     "lava": 98,
-     "snow": 2
-    },
-    "area_pct": {
-     "lava": 95.1,
-     "snow": 4.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0376,
-    "border_impurity": 0.1167,
-    "phrasing": "with",
-    "prompt": "lava with snow"
    },
    {
     "key": "tiles/fades/lava__with__snow/spots_1/tile_05",
@@ -120358,23 +117842,6 @@
     "prompt": "snow spots on lava"
    },
    {
-    "key": "tiles/fades/lava__with__snow/with_1/tile_02",
-    "file": "tiles/fades/lava__with__snow/with_1/post/tile_02.7aca7a23.webp",
-    "pct": {
-     "lava": 96,
-     "snow": 4
-    },
-    "area_pct": {
-     "lava": 91.2,
-     "snow": 8.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2041,
-    "border_impurity": 0.3111,
-    "phrasing": "with",
-    "prompt": "lava with snow"
-   },
-   {
     "key": "tiles/fades/lava__with__snow/with_1/tile_06",
     "file": "tiles/fades/lava__with__snow/with_1/post/tile_06.a50553f1.webp",
     "pct": {
@@ -120392,40 +117859,6 @@
     "prompt": "lava with snow"
    },
    {
-    "key": "tiles/fades/lava__with__snow/with_1/tile_15",
-    "file": "tiles/fades/lava__with__snow/with_1/post/tile_15.5ad12f8a.webp",
-    "pct": {
-     "lava": 95,
-     "snow": 5
-    },
-    "area_pct": {
-     "lava": 90.4,
-     "snow": 9.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1809,
-    "border_impurity": 0.2361,
-    "phrasing": "with",
-    "prompt": "lava with snow"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/spots_1/tile_10",
-    "file": "tiles/fades/lava__with__snow/spots_1/post/tile_10.dbcca5cb.webp",
-    "pct": {
-     "lava": 94,
-     "snow": 6
-    },
-    "area_pct": {
-     "lava": 86.9,
-     "snow": 13.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3397,
-    "border_impurity": 0.441,
-    "phrasing": "spots",
-    "prompt": "snow spots on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__snow/patches_1/tile_09",
     "file": "tiles/fades/lava__with__snow/patches_1/post/tile_09.9eca3e74.webp",
     "pct": {
@@ -120441,125 +117874,6 @@
     "border_impurity": 0.0529,
     "phrasing": "patches",
     "prompt": "patches of snow on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/patches_1/tile_14",
-    "file": "tiles/fades/lava__with__snow/patches_1/post/tile_14.6761279c.webp",
-    "pct": {
-     "lava": 92,
-     "snow": 8
-    },
-    "area_pct": {
-     "lava": 83.4,
-     "snow": 16.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3759,
-    "border_impurity": 0.4178,
-    "phrasing": "patches",
-    "prompt": "patches of snow on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/with_1/tile_09",
-    "file": "tiles/fades/lava__with__snow/with_1/post/tile_09.58bb6726.webp",
-    "pct": {
-     "lava": 92,
-     "snow": 8
-    },
-    "area_pct": {
-     "lava": 83.5,
-     "snow": 16.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3521,
-    "border_impurity": 0.4889,
-    "phrasing": "with",
-    "prompt": "lava with snow"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/piles_1/tile_04",
-    "file": "tiles/fades/lava__with__snow/piles_1/post/tile_04.8d3a32c1.webp",
-    "pct": {
-     "lava": 91,
-     "snow": 9
-    },
-    "area_pct": {
-     "lava": 81.9,
-     "snow": 18.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2198,
-    "border_impurity": 0.3175,
-    "phrasing": "piles",
-    "prompt": "a few piles of snow on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/piles_1/tile_06",
-    "file": "tiles/fades/lava__with__snow/piles_1/post/tile_06.9ebf4485.webp",
-    "pct": {
-     "lava": 91,
-     "snow": 9
-    },
-    "area_pct": {
-     "lava": 81.4,
-     "snow": 18.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2313,
-    "border_impurity": 0.273,
-    "phrasing": "piles",
-    "prompt": "a few piles of snow on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/piles_1/tile_07",
-    "file": "tiles/fades/lava__with__snow/piles_1/post/tile_07.df530557.webp",
-    "pct": {
-     "lava": 91,
-     "snow": 9
-    },
-    "area_pct": {
-     "lava": 82.2,
-     "snow": 17.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.317,
-    "border_impurity": 0.337,
-    "phrasing": "piles",
-    "prompt": "a few piles of snow on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/spots_1/tile_03",
-    "file": "tiles/fades/lava__with__snow/spots_1/post/tile_03.a736a149.webp",
-    "pct": {
-     "lava": 91,
-     "snow": 9
-    },
-    "area_pct": {
-     "lava": 80.9,
-     "snow": 19.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3302,
-    "border_impurity": 0.4361,
-    "phrasing": "spots",
-    "prompt": "snow spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/spots_1/tile_06",
-    "file": "tiles/fades/lava__with__snow/spots_1/post/tile_06.5d6cd9f0.webp",
-    "pct": {
-     "lava": 91,
-     "snow": 9
-    },
-    "area_pct": {
-     "lava": 81.7,
-     "snow": 18.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4054,
-    "border_impurity": 0.5226,
-    "phrasing": "spots",
-    "prompt": "snow spots on lava"
    },
    {
     "key": "tiles/fades/lava__with__snow/one_rock_1/tile_08",
@@ -120630,23 +117944,6 @@
     "prompt": "patches of snow on lava"
    },
    {
-    "key": "tiles/fades/lava__with__snow/piles_1/tile_09",
-    "file": "tiles/fades/lava__with__snow/piles_1/post/tile_09.679b4ac4.webp",
-    "pct": {
-     "lava": 87,
-     "snow": 13
-    },
-    "area_pct": {
-     "lava": 73.3,
-     "snow": 26.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3993,
-    "border_impurity": 0.4278,
-    "phrasing": "piles",
-    "prompt": "a few piles of snow on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__snow/piles_1/tile_13",
     "file": "tiles/fades/lava__with__snow/piles_1/post/tile_13.0b9b19ee.webp",
     "pct": {
@@ -120660,57 +117957,6 @@
     "edge_ground": "lava",
     "edge_contact": 0.2915,
     "border_impurity": 0.3287,
-    "phrasing": "piles",
-    "prompt": "a few piles of snow on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/piles_1/tile_15",
-    "file": "tiles/fades/lava__with__snow/piles_1/post/tile_15.25a48897.webp",
-    "pct": {
-     "lava": 87,
-     "snow": 13
-    },
-    "area_pct": {
-     "lava": 73.0,
-     "snow": 27.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.417,
-    "border_impurity": 0.415,
-    "phrasing": "piles",
-    "prompt": "a few piles of snow on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/with_1/tile_11",
-    "file": "tiles/fades/lava__with__snow/with_1/post/tile_11.bab22c0f.webp",
-    "pct": {
-     "lava": 87,
-     "snow": 13
-    },
-    "area_pct": {
-     "lava": 74.1,
-     "snow": 25.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3813,
-    "border_impurity": 0.4222,
-    "phrasing": "with",
-    "prompt": "lava with snow"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/piles_1/tile_03",
-    "file": "tiles/fades/lava__with__snow/piles_1/post/tile_03.2a400b27.webp",
-    "pct": {
-     "lava": 85,
-     "snow": 15
-    },
-    "area_pct": {
-     "lava": 70.1,
-     "snow": 29.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4709,
-    "border_impurity": 0.5694,
     "phrasing": "piles",
     "prompt": "a few piles of snow on lava"
    },
@@ -120732,40 +117978,6 @@
     "prompt": "a few piles of snow on lava"
    },
    {
-    "key": "tiles/fades/lava__with__snow/spots_1/tile_01",
-    "file": "tiles/fades/lava__with__snow/spots_1/post/tile_01.c2fdf337.webp",
-    "pct": {
-     "lava": 85,
-     "snow": 15
-    },
-    "area_pct": {
-     "lava": 69.5,
-     "snow": 30.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4818,
-    "border_impurity": 0.567,
-    "phrasing": "spots",
-    "prompt": "snow spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/with_1/tile_04",
-    "file": "tiles/fades/lava__with__snow/with_1/post/tile_04.3679c840.webp",
-    "pct": {
-     "lava": 85,
-     "snow": 15
-    },
-    "area_pct": {
-     "lava": 68.8,
-     "snow": 31.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4572,
-    "border_impurity": 0.4667,
-    "phrasing": "with",
-    "prompt": "lava with snow"
-   },
-   {
     "key": "tiles/fades/lava__with__snow/spots_1/tile_08",
     "file": "tiles/fades/lava__with__snow/spots_1/post/tile_08.569ca3f3.webp",
     "pct": {
@@ -120781,74 +117993,6 @@
     "border_impurity": 0.5042,
     "phrasing": "spots",
     "prompt": "snow spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/with_1/tile_13",
-    "file": "tiles/fades/lava__with__snow/with_1/post/tile_13.a667fad5.webp",
-    "pct": {
-     "lava": 84,
-     "snow": 16
-    },
-    "area_pct": {
-     "lava": 68.2,
-     "snow": 31.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3639,
-    "border_impurity": 0.4417,
-    "phrasing": "with",
-    "prompt": "lava with snow"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/piles_1/tile_02",
-    "file": "tiles/fades/lava__with__snow/piles_1/post/tile_02.4396a8fd.webp",
-    "pct": {
-     "lava": 83,
-     "snow": 17
-    },
-    "area_pct": {
-     "lava": 65.8,
-     "snow": 34.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4155,
-    "border_impurity": 0.3036,
-    "phrasing": "piles",
-    "prompt": "a few piles of snow on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/patches_1/tile_07",
-    "file": "tiles/fades/lava__with__snow/patches_1/post/tile_07.df580702.webp",
-    "pct": {
-     "lava": 79,
-     "snow": 21
-    },
-    "area_pct": {
-     "lava": 57.3,
-     "snow": 42.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4917,
-    "border_impurity": 0.4888,
-    "phrasing": "patches",
-    "prompt": "patches of snow on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/piles_1/tile_05",
-    "file": "tiles/fades/lava__with__snow/piles_1/post/tile_05.d0cf3a2b.webp",
-    "pct": {
-     "lava": 79,
-     "snow": 21
-    },
-    "area_pct": {
-     "lava": 56.9,
-     "snow": 43.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4445,
-    "border_impurity": 0.3816,
-    "phrasing": "piles",
-    "prompt": "a few piles of snow on lava"
    },
    {
     "key": "tiles/fades/lava__with__snow/spots_1/tile_00",
@@ -120868,57 +118012,6 @@
     "prompt": "snow spots on lava"
    },
    {
-    "key": "tiles/fades/lava__with__snow/one_rock_1/tile_04",
-    "file": "tiles/fades/lava__with__snow/one_rock_1/post/tile_04.8cd40c8c.webp",
-    "pct": {
-     "lava": 70,
-     "snow": 30
-    },
-    "area_pct": {
-     "lava": 39.4,
-     "snow": 60.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.594,
-    "border_impurity": 0.4302,
-    "phrasing": "one_rock",
-    "prompt": "one snow rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/one_rock_1/tile_06",
-    "file": "tiles/fades/lava__with__snow/one_rock_1/post/tile_06.1039906f.webp",
-    "pct": {
-     "lava": 69,
-     "snow": 31
-    },
-    "area_pct": {
-     "lava": 35.7,
-     "snow": 64.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.7109,
-    "border_impurity": 0.4525,
-    "phrasing": "one_rock",
-    "prompt": "one snow rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/patches_1/tile_03",
-    "file": "tiles/fades/lava__with__snow/patches_1/post/tile_03.2e2f7966.webp",
-    "pct": {
-     "lava": 63,
-     "snow": 37
-    },
-    "area_pct": {
-     "lava": 24.6,
-     "snow": 75.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.7567,
-    "border_impurity": 0.2833,
-    "phrasing": "patches",
-    "prompt": "patches of snow on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__snow/one_rock_1/tile_11",
     "file": "tiles/fades/lava__with__snow/one_rock_1/post/tile_11.4f068cac.webp",
     "pct": {
@@ -120936,125 +118029,6 @@
     "prompt": "one snow rock on lava"
    },
    {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_12",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_12.69df5768.webp",
-    "pct": {
-     "snow": 86,
-     "lava": 14
-    },
-    "area_pct": {
-     "lava": 29.6,
-     "snow": 70.4
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.087,
-    "border_impurity": 0.0778,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/one_rock_1/tile_07",
-    "file": "tiles/fades/lava__with__snow/one_rock_1/post/tile_07.b6bdf3fe.webp",
-    "pct": {
-     "snow": 89,
-     "lava": 11
-    },
-    "area_pct": {
-     "lava": 22.6,
-     "snow": 77.4
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.1528,
-    "border_impurity": 0.1866,
-    "phrasing": "one_rock",
-    "prompt": "one snow rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/patches_1/tile_12",
-    "file": "tiles/fades/lava__with__snow/patches_1/post/tile_12.c3b8554b.webp",
-    "pct": {
-     "snow": 89,
-     "lava": 11
-    },
-    "area_pct": {
-     "lava": 22.7,
-     "snow": 77.3
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.2026,
-    "border_impurity": 0.1927,
-    "phrasing": "patches",
-    "prompt": "patches of snow on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_04",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_04.865fb3f5.webp",
-    "pct": {
-     "snow": 90,
-     "lava": 10
-    },
-    "area_pct": {
-     "lava": 20.5,
-     "snow": 79.5
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0688,
-    "border_impurity": 0.0417,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_15",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_15.71438bfe.webp",
-    "pct": {
-     "snow": 90,
-     "lava": 10
-    },
-    "area_pct": {
-     "lava": 19.5,
-     "snow": 80.5
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.1371,
-    "border_impurity": 0.1056,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_07",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_07.1d15a9c6.webp",
-    "pct": {
-     "snow": 91,
-     "lava": 9
-    },
-    "area_pct": {
-     "lava": 18.4,
-     "snow": 81.6
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.3178,
-    "border_impurity": 0.2111,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_13",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_13.500c8c37.webp",
-    "pct": {
-     "snow": 91,
-     "lava": 9
-    },
-    "area_pct": {
-     "lava": 18.4,
-     "snow": 81.6
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0958,
-    "border_impurity": 0.0778,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
-   },
-   {
     "key": "tiles/fades/lava__with__snow/on_top_of_1/tile_10",
     "file": "tiles/fades/lava__with__snow/on_top_of_1/post/tile_10.b551ba12.webp",
     "pct": {
@@ -121070,108 +118044,6 @@
     "border_impurity": 0.2139,
     "phrasing": "on_top_of",
     "prompt": "snow on top of lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_14",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_14.08a4c743.webp",
-    "pct": {
-     "snow": 92,
-     "lava": 8
-    },
-    "area_pct": {
-     "lava": 15.5,
-     "snow": 84.5
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.1648,
-    "border_impurity": 0.1528,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_00",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_00.2979f25e.webp",
-    "pct": {
-     "snow": 94,
-     "lava": 6
-    },
-    "area_pct": {
-     "lava": 12.2,
-     "snow": 87.8
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.1295,
-    "border_impurity": 0.1854,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_10",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_10.95fb5c1a.webp",
-    "pct": {
-     "snow": 94,
-     "lava": 6
-    },
-    "area_pct": {
-     "lava": 12.3,
-     "snow": 87.7
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0595,
-    "border_impurity": 0.0223,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/patches_1/tile_05",
-    "file": "tiles/fades/lava__with__snow/patches_1/post/tile_05.21bb789f.webp",
-    "pct": {
-     "snow": 94,
-     "lava": 6
-    },
-    "area_pct": {
-     "lava": 12.3,
-     "snow": 87.7
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0991,
-    "border_impurity": 0.1313,
-    "phrasing": "patches",
-    "prompt": "patches of snow on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_03",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_03.28138a18.webp",
-    "pct": {
-     "snow": 95,
-     "lava": 5
-    },
-    "area_pct": {
-     "lava": 10.7,
-     "snow": 89.3
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.1702,
-    "border_impurity": 0.2556,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_05",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_05.e1a5a730.webp",
-    "pct": {
-     "snow": 95,
-     "lava": 5
-    },
-    "area_pct": {
-     "lava": 9.6,
-     "snow": 90.4
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.1028,
-    "border_impurity": 0.0472,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
    },
    {
     "key": "tiles/fades/lava__with__snow/one_rock_1/tile_09",
@@ -121206,57 +118078,6 @@
     "border_impurity": 0.0421,
     "phrasing": "one_rock",
     "prompt": "one snow rock on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/spots_1/tile_04",
-    "file": "tiles/fades/lava__with__snow/spots_1/post/tile_04.1070b95a.webp",
-    "pct": {
-     "snow": 95,
-     "lava": 5
-    },
-    "area_pct": {
-     "lava": 11.1,
-     "snow": 88.9
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.2275,
-    "border_impurity": 0.3408,
-    "phrasing": "spots",
-    "prompt": "snow spots on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_01",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_01.0c60cdff.webp",
-    "pct": {
-     "snow": 96,
-     "lava": 4
-    },
-    "area_pct": {
-     "lava": 8.9,
-     "snow": 91.1
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0627,
-    "border_impurity": 0.132,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_09",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_09.6b1594b8.webp",
-    "pct": {
-     "snow": 96,
-     "lava": 4
-    },
-    "area_pct": {
-     "lava": 7.9,
-     "snow": 92.1
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0571,
-    "border_impurity": 0.0111,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
    },
    {
     "key": "tiles/fades/lava__with__snow/on_top_of_1/tile_07",
@@ -121327,23 +118148,6 @@
     "prompt": "a few snow lumps on lava"
    },
    {
-    "key": "tiles/fades/lava__with__snow/on_top_of_1/tile_06",
-    "file": "tiles/fades/lava__with__snow/on_top_of_1/post/tile_06.f2bbecce.webp",
-    "pct": {
-     "snow": 98,
-     "lava": 2
-    },
-    "area_pct": {
-     "lava": 3.3,
-     "snow": 96.7
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0965,
-    "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "snow on top of lava"
-   },
-   {
     "key": "tiles/fades/lava__with__snow/lumps_1/tile_02",
     "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_02.7fc04f69.webp",
     "pct": {
@@ -121357,23 +118161,6 @@
     "edge_ground": "snow",
     "edge_contact": 0.025,
     "border_impurity": 0.1264,
-    "phrasing": "lumps",
-    "prompt": "a few snow lumps on lava"
-   },
-   {
-    "key": "tiles/fades/lava__with__snow/lumps_1/tile_06",
-    "file": "tiles/fades/lava__with__snow/lumps_1/post/tile_06.dca801f8.webp",
-    "pct": {
-     "snow": 99,
-     "lava": 1
-    },
-    "area_pct": {
-     "lava": 2.0,
-     "snow": 98.0
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.028,
-    "border_impurity": 0.0056,
     "phrasing": "lumps",
     "prompt": "a few snow lumps on lava"
    }
@@ -130204,23 +126991,6 @@
   ],
   "light_beach__to__lava": [
    {
-    "key": "tiles/fades/light_beach__with__lava/with_1/tile_02",
-    "file": "tiles/fades/light_beach__with__lava/with_1/post/tile_02.67a7712e.webp",
-    "pct": {
-     "light_beach": 92,
-     "lava": 8
-    },
-    "area_pct": {
-     "light_beach": 83.9,
-     "lava": 16.1
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.0648,
-    "border_impurity": 0.0,
-    "phrasing": "with",
-    "prompt": "light beach with lava"
-   },
-   {
     "key": "tiles/fades/light_beach__with__lava/with_1/tile_01",
     "file": "tiles/fades/light_beach__with__lava/with_1/post/tile_01.0ac4844c.webp",
     "pct": {
@@ -130236,40 +127006,6 @@
     "border_impurity": 0.014,
     "phrasing": "with",
     "prompt": "light beach with lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/lumps_1/tile_08",
-    "file": "tiles/fades/light_beach__with__lava/lumps_1/post/tile_08.d0697313.webp",
-    "pct": {
-     "light_beach": 84,
-     "lava": 16
-    },
-    "area_pct": {
-     "light_beach": 68.0,
-     "lava": 32.0
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.0777,
-    "border_impurity": 0.0698,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/lumps_1/tile_04",
-    "file": "tiles/fades/light_beach__with__lava/lumps_1/post/tile_04.7e39984d.webp",
-    "pct": {
-     "light_beach": 83,
-     "lava": 17
-    },
-    "area_pct": {
-     "light_beach": 64.5,
-     "lava": 35.5
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.1389,
-    "border_impurity": 0.1448,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on light beach"
    },
    {
     "key": "tiles/fades/light_beach__with__lava/one_rock_1/tile_08",
@@ -130357,23 +127093,6 @@
     "prompt": "a few lava lumps on light beach"
    },
    {
-    "key": "tiles/fades/light_beach__with__lava/on_top_of_1/tile_15",
-    "file": "tiles/fades/light_beach__with__lava/on_top_of_1/post/tile_15.48b54e2d.webp",
-    "pct": {
-     "light_beach": 75,
-     "lava": 25
-    },
-    "area_pct": {
-     "light_beach": 49.4,
-     "lava": 50.6
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.5389,
-    "border_impurity": 0.4806,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of light beach"
-   },
-   {
     "key": "tiles/fades/light_beach__with__lava/piles_1/tile_12",
     "file": "tiles/fades/light_beach__with__lava/piles_1/post/tile_12.5a52f9ad.webp",
     "pct": {
@@ -130389,40 +127108,6 @@
     "border_impurity": 0.1317,
     "phrasing": "piles",
     "prompt": "a few piles of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/lumps_1/tile_09",
-    "file": "tiles/fades/light_beach__with__lava/lumps_1/post/tile_09.bb891775.webp",
-    "pct": {
-     "light_beach": 73,
-     "lava": 27
-    },
-    "area_pct": {
-     "light_beach": 45.4,
-     "lava": 54.6
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.402,
-    "border_impurity": 0.7402,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/one_rock_1/tile_03",
-    "file": "tiles/fades/light_beach__with__lava/one_rock_1/post/tile_03.f9d8dded.webp",
-    "pct": {
-     "light_beach": 73,
-     "lava": 27
-    },
-    "area_pct": {
-     "light_beach": 44.3,
-     "lava": 55.7
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.3346,
-    "border_impurity": 0.8532,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on light beach"
    },
    {
     "key": "tiles/fades/light_beach__with__lava/lumps_1/tile_05",
@@ -130476,57 +127161,6 @@
     "prompt": "a few piles of lava on light beach"
    },
    {
-    "key": "tiles/fades/light_beach__with__lava/on_top_of_1/tile_08",
-    "file": "tiles/fades/light_beach__with__lava/on_top_of_1/post/tile_08.a0973626.webp",
-    "pct": {
-     "light_beach": 70,
-     "lava": 30
-    },
-    "area_pct": {
-     "light_beach": 39.0,
-     "lava": 61.0
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.6226,
-    "border_impurity": 0.5222,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/one_rock_1/tile_01",
-    "file": "tiles/fades/light_beach__with__lava/one_rock_1/post/tile_01.df3860bb.webp",
-    "pct": {
-     "light_beach": 70,
-     "lava": 30
-    },
-    "area_pct": {
-     "light_beach": 38.5,
-     "lava": 61.5
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.3568,
-    "border_impurity": 0.8278,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/one_rock_1/tile_11",
-    "file": "tiles/fades/light_beach__with__lava/one_rock_1/post/tile_11.06a7b870.webp",
-    "pct": {
-     "light_beach": 70,
-     "lava": 30
-    },
-    "area_pct": {
-     "light_beach": 38.0,
-     "lava": 62.0
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.3165,
-    "border_impurity": 0.8408,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on light beach"
-   },
-   {
     "key": "tiles/fades/light_beach__with__lava/lumps_1/tile_13",
     "file": "tiles/fades/light_beach__with__lava/lumps_1/post/tile_13.6b878860.webp",
     "pct": {
@@ -130578,23 +127212,6 @@
     "prompt": "a few piles of lava on light beach"
    },
    {
-    "key": "tiles/fades/light_beach__with__lava/lumps_1/tile_02",
-    "file": "tiles/fades/light_beach__with__lava/lumps_1/post/tile_02.2b936358.webp",
-    "pct": {
-     "light_beach": 67,
-     "lava": 33
-    },
-    "area_pct": {
-     "light_beach": 32.2,
-     "lava": 67.8
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.3326,
-    "border_impurity": 1.0,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on light beach"
-   },
-   {
     "key": "tiles/fades/light_beach__with__lava/lumps_1/tile_06",
     "file": "tiles/fades/light_beach__with__lava/lumps_1/post/tile_06.d470975e.webp",
     "pct": {
@@ -130629,40 +127246,6 @@
     "prompt": "one lava rock on light beach"
    },
    {
-    "key": "tiles/fades/light_beach__with__lava/one_rock_1/tile_15",
-    "file": "tiles/fades/light_beach__with__lava/one_rock_1/post/tile_15.84788fdf.webp",
-    "pct": {
-     "light_beach": 67,
-     "lava": 33
-    },
-    "area_pct": {
-     "light_beach": 32.0,
-     "lava": 68.0
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.3864,
-    "border_impurity": 0.7486,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/one_rock_1/tile_00",
-    "file": "tiles/fades/light_beach__with__lava/one_rock_1/post/tile_00.d0968be6.webp",
-    "pct": {
-     "light_beach": 66,
-     "lava": 34
-    },
-    "area_pct": {
-     "light_beach": 31.0,
-     "lava": 69.0
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.4437,
-    "border_impurity": 0.7639,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on light beach"
-   },
-   {
     "key": "tiles/fades/light_beach__with__lava/one_rock_1/tile_06",
     "file": "tiles/fades/light_beach__with__lava/one_rock_1/post/tile_06.caa3b144.webp",
     "pct": {
@@ -130678,74 +127261,6 @@
     "border_impurity": 0.8156,
     "phrasing": "one_rock",
     "prompt": "one lava rock on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/one_rock_1/tile_12",
-    "file": "tiles/fades/light_beach__with__lava/one_rock_1/post/tile_12.6b861126.webp",
-    "pct": {
-     "light_beach": 66,
-     "lava": 34
-    },
-    "area_pct": {
-     "light_beach": 30.9,
-     "lava": 69.1
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.564,
-    "border_impurity": 0.7039,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/one_rock_1/tile_14",
-    "file": "tiles/fades/light_beach__with__lava/one_rock_1/post/tile_14.3d0a7983.webp",
-    "pct": {
-     "light_beach": 66,
-     "lava": 34
-    },
-    "area_pct": {
-     "light_beach": 29.6,
-     "lava": 70.4
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.4167,
-    "border_impurity": 0.7318,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/patches_1/tile_13",
-    "file": "tiles/fades/light_beach__with__lava/patches_1/post/tile_13.3516dfd2.webp",
-    "pct": {
-     "light_beach": 66,
-     "lava": 34
-    },
-    "area_pct": {
-     "light_beach": 30.4,
-     "lava": 69.6
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.352,
-    "border_impurity": 0.8753,
-    "phrasing": "patches",
-    "prompt": "patches of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/piles_1/tile_08",
-    "file": "tiles/fades/light_beach__with__lava/piles_1/post/tile_08.d3e9b4e2.webp",
-    "pct": {
-     "light_beach": 66,
-     "lava": 34
-    },
-    "area_pct": {
-     "light_beach": 29.9,
-     "lava": 70.1
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.3337,
-    "border_impurity": 0.9272,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on light beach"
    },
    {
     "key": "tiles/fades/light_beach__with__lava/piles_1/tile_11",
@@ -130799,23 +127314,6 @@
     "prompt": "a few lava lumps on light beach"
    },
    {
-    "key": "tiles/fades/light_beach__with__lava/on_top_of_1/tile_14",
-    "file": "tiles/fades/light_beach__with__lava/on_top_of_1/post/tile_14.0d546996.webp",
-    "pct": {
-     "light_beach": 65,
-     "lava": 35
-    },
-    "area_pct": {
-     "light_beach": 28.6,
-     "lava": 71.4
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.6332,
-    "border_impurity": 0.5417,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of light beach"
-   },
-   {
     "key": "tiles/fades/light_beach__with__lava/one_rock_1/tile_02",
     "file": "tiles/fades/light_beach__with__lava/one_rock_1/post/tile_02.c0352371.webp",
     "pct": {
@@ -130848,142 +127346,6 @@
     "border_impurity": 0.8972,
     "phrasing": "patches",
     "prompt": "patches of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/patches_1/tile_08",
-    "file": "tiles/fades/light_beach__with__lava/patches_1/post/tile_08.9b9f6318.webp",
-    "pct": {
-     "light_beach": 65,
-     "lava": 35
-    },
-    "area_pct": {
-     "light_beach": 28.4,
-     "lava": 71.6
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.361,
-    "border_impurity": 0.663,
-    "phrasing": "patches",
-    "prompt": "patches of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/piles_1/tile_06",
-    "file": "tiles/fades/light_beach__with__lava/piles_1/post/tile_06.0a1a7b4d.webp",
-    "pct": {
-     "light_beach": 65,
-     "lava": 35
-    },
-    "area_pct": {
-     "light_beach": 29.5,
-     "lava": 70.5
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.343,
-    "border_impurity": 1.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/piles_1/tile_09",
-    "file": "tiles/fades/light_beach__with__lava/piles_1/post/tile_09.3e62f227.webp",
-    "pct": {
-     "light_beach": 65,
-     "lava": 35
-    },
-    "area_pct": {
-     "light_beach": 27.9,
-     "lava": 72.1
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.3618,
-    "border_impurity": 0.9776,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/piles_1/tile_15",
-    "file": "tiles/fades/light_beach__with__lava/piles_1/post/tile_15.bd1824c3.webp",
-    "pct": {
-     "light_beach": 65,
-     "lava": 35
-    },
-    "area_pct": {
-     "light_beach": 29.2,
-     "lava": 70.8
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.3715,
-    "border_impurity": 0.986,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/lumps_1/tile_07",
-    "file": "tiles/fades/light_beach__with__lava/lumps_1/post/tile_07.5f75554d.webp",
-    "pct": {
-     "light_beach": 64,
-     "lava": 36
-    },
-    "area_pct": {
-     "light_beach": 26.3,
-     "lava": 73.7
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.454,
-    "border_impurity": 0.8134,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/on_top_of_1/tile_11",
-    "file": "tiles/fades/light_beach__with__lava/on_top_of_1/post/tile_11.01e534e1.webp",
-    "pct": {
-     "light_beach": 64,
-     "lava": 36
-    },
-    "area_pct": {
-     "light_beach": 25.6,
-     "lava": 74.4
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.6316,
-    "border_impurity": 0.6611,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/one_rock_1/tile_09",
-    "file": "tiles/fades/light_beach__with__lava/one_rock_1/post/tile_09.0ab19c43.webp",
-    "pct": {
-     "light_beach": 64,
-     "lava": 36
-    },
-    "area_pct": {
-     "light_beach": 27.2,
-     "lava": 72.8
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.5337,
-    "border_impurity": 0.6145,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/piles_1/tile_07",
-    "file": "tiles/fades/light_beach__with__lava/piles_1/post/tile_07.986cb138.webp",
-    "pct": {
-     "light_beach": 64,
-     "lava": 36
-    },
-    "area_pct": {
-     "light_beach": 27.5,
-     "lava": 72.5
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.3684,
-    "border_impurity": 0.9944,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on light beach"
    },
    {
     "key": "tiles/fades/light_beach__with__lava/with_1/tile_15",
@@ -131071,23 +127433,6 @@
     "prompt": "a few piles of lava on light beach"
    },
    {
-    "key": "tiles/fades/light_beach__with__lava/piles_1/tile_10",
-    "file": "tiles/fades/light_beach__with__lava/piles_1/post/tile_10.492ab6e9.webp",
-    "pct": {
-     "light_beach": 61,
-     "lava": 39
-    },
-    "area_pct": {
-     "light_beach": 21.2,
-     "lava": 78.8
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.5063,
-    "border_impurity": 0.5419,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on light beach"
-   },
-   {
     "key": "tiles/fades/light_beach__with__lava/with_1/tile_00",
     "file": "tiles/fades/light_beach__with__lava/with_1/post/tile_00.1c3a7fde.webp",
     "pct": {
@@ -131105,193 +127450,6 @@
     "prompt": "light beach with lava"
    },
    {
-    "key": "tiles/fades/light_beach__with__lava/on_top_of_1/tile_09",
-    "file": "tiles/fades/light_beach__with__lava/on_top_of_1/post/tile_09.76d0552b.webp",
-    "pct": {
-     "light_beach": 59,
-     "lava": 41
-    },
-    "area_pct": {
-     "light_beach": 15.8,
-     "lava": 84.2
-    },
-    "edge_ground": "light_beach",
-    "edge_contact": 0.6722,
-    "border_impurity": 0.4861,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/patches_1/tile_02",
-    "file": "tiles/fades/light_beach__with__lava/patches_1/post/tile_02.97bd803c.webp",
-    "pct": {
-     "lava": 78,
-     "light_beach": 22
-    },
-    "area_pct": {
-     "light_beach": 45.0,
-     "lava": 55.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4445,
-    "border_impurity": 0.4763,
-    "phrasing": "patches",
-    "prompt": "patches of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/lumps_1/tile_03",
-    "file": "tiles/fades/light_beach__with__lava/lumps_1/post/tile_03.a585b00c.webp",
-    "pct": {
-     "lava": 82,
-     "light_beach": 18
-    },
-    "area_pct": {
-     "light_beach": 37.3,
-     "lava": 62.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4545,
-    "border_impurity": 0.4262,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/on_top_of_1/tile_06",
-    "file": "tiles/fades/light_beach__with__lava/on_top_of_1/post/tile_06.dd2962e8.webp",
-    "pct": {
-     "lava": 85,
-     "light_beach": 15
-    },
-    "area_pct": {
-     "light_beach": 30.3,
-     "lava": 69.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.5414,
-    "border_impurity": 0.5503,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/spots_1/tile_05",
-    "file": "tiles/fades/light_beach__with__lava/spots_1/post/tile_05.b409efcc.webp",
-    "pct": {
-     "lava": 87,
-     "light_beach": 13
-    },
-    "area_pct": {
-     "light_beach": 26.7,
-     "lava": 73.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3443,
-    "border_impurity": 0.3109,
-    "phrasing": "spots",
-    "prompt": "lava spots on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/and_1/tile_04",
-    "file": "tiles/fades/light_beach__with__lava/and_1/post/tile_04.a207359d.webp",
-    "pct": {
-     "lava": 88,
-     "light_beach": 12
-    },
-    "area_pct": {
-     "light_beach": 25.5,
-     "lava": 74.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3621,
-    "border_impurity": 0.2626,
-    "phrasing": "and",
-    "prompt": "light beach and lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/and_1/tile_15",
-    "file": "tiles/fades/light_beach__with__lava/and_1/post/tile_15.4d20923d.webp",
-    "pct": {
-     "lava": 88,
-     "light_beach": 12
-    },
-    "area_pct": {
-     "light_beach": 24.4,
-     "lava": 75.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1912,
-    "border_impurity": 0.1003,
-    "phrasing": "and",
-    "prompt": "light beach and lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/piles_1/tile_01",
-    "file": "tiles/fades/light_beach__with__lava/piles_1/post/tile_01.baae9ca0.webp",
-    "pct": {
-     "lava": 88,
-     "light_beach": 12
-    },
-    "area_pct": {
-     "light_beach": 24.0,
-     "lava": 76.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4347,
-    "border_impurity": 0.514,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/with_1/tile_07",
-    "file": "tiles/fades/light_beach__with__lava/with_1/post/tile_07.c718fd82.webp",
-    "pct": {
-     "lava": 88,
-     "light_beach": 12
-    },
-    "area_pct": {
-     "light_beach": 24.3,
-     "lava": 75.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3998,
-    "border_impurity": 0.4194,
-    "phrasing": "with",
-    "prompt": "light beach with lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/with_1/tile_14",
-    "file": "tiles/fades/light_beach__with__lava/with_1/post/tile_14.f24d48ab.webp",
-    "pct": {
-     "lava": 88,
-     "light_beach": 12
-    },
-    "area_pct": {
-     "light_beach": 24.9,
-     "lava": 75.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4141,
-    "border_impurity": 0.3528,
-    "phrasing": "with",
-    "prompt": "light beach with lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/with_1/tile_11",
-    "file": "tiles/fades/light_beach__with__lava/with_1/post/tile_11.5f9ceb57.webp",
-    "pct": {
-     "lava": 89,
-     "light_beach": 11
-    },
-    "area_pct": {
-     "light_beach": 22.3,
-     "lava": 77.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3869,
-    "border_impurity": 0.3611,
-    "phrasing": "with",
-    "prompt": "light beach with lava"
-   },
-   {
     "key": "tiles/fades/light_beach__with__lava/and_1/tile_05",
     "file": "tiles/fades/light_beach__with__lava/and_1/post/tile_05.fe3a3d07.webp",
     "pct": {
@@ -131305,108 +127463,6 @@
     "edge_ground": "lava",
     "edge_contact": 0.4004,
     "border_impurity": 0.3175,
-    "phrasing": "and",
-    "prompt": "light beach and lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/spots_1/tile_00",
-    "file": "tiles/fades/light_beach__with__lava/spots_1/post/tile_00.7f98a1fd.webp",
-    "pct": {
-     "lava": 91,
-     "light_beach": 9
-    },
-    "area_pct": {
-     "light_beach": 17.8,
-     "lava": 82.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2886,
-    "border_impurity": 0.1667,
-    "phrasing": "spots",
-    "prompt": "lava spots on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/with_1/tile_03",
-    "file": "tiles/fades/light_beach__with__lava/with_1/post/tile_03.0e2ef4a9.webp",
-    "pct": {
-     "lava": 91,
-     "light_beach": 9
-    },
-    "area_pct": {
-     "light_beach": 17.8,
-     "lava": 82.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2176,
-    "border_impurity": 0.4361,
-    "phrasing": "with",
-    "prompt": "light beach with lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/piles_1/tile_05",
-    "file": "tiles/fades/light_beach__with__lava/piles_1/post/tile_05.d7939721.webp",
-    "pct": {
-     "lava": 92,
-     "light_beach": 8
-    },
-    "area_pct": {
-     "light_beach": 15.7,
-     "lava": 84.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4377,
-    "border_impurity": 0.5363,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/with_1/tile_12",
-    "file": "tiles/fades/light_beach__with__lava/with_1/post/tile_12.dc48aed7.webp",
-    "pct": {
-     "lava": 92,
-     "light_beach": 8
-    },
-    "area_pct": {
-     "light_beach": 16.6,
-     "lava": 83.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3599,
-    "border_impurity": 0.4611,
-    "phrasing": "with",
-    "prompt": "light beach with lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/and_1/tile_11",
-    "file": "tiles/fades/light_beach__with__lava/and_1/post/tile_11.20fff4f4.webp",
-    "pct": {
-     "lava": 93,
-     "light_beach": 7
-    },
-    "area_pct": {
-     "light_beach": 13.3,
-     "lava": 86.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1292,
-    "border_impurity": 0.0642,
-    "phrasing": "and",
-    "prompt": "light beach and lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/and_1/tile_13",
-    "file": "tiles/fades/light_beach__with__lava/and_1/post/tile_13.10872c88.webp",
-    "pct": {
-     "lava": 93,
-     "light_beach": 7
-    },
-    "area_pct": {
-     "light_beach": 14.7,
-     "lava": 85.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3273,
-    "border_impurity": 0.3827,
     "phrasing": "and",
     "prompt": "light beach and lava"
    },
@@ -131462,57 +127518,6 @@
     "prompt": "lava spots on light beach"
    },
    {
-    "key": "tiles/fades/light_beach__with__lava/and_1/tile_03",
-    "file": "tiles/fades/light_beach__with__lava/and_1/post/tile_03.40445f45.webp",
-    "pct": {
-     "lava": 94,
-     "light_beach": 6
-    },
-    "area_pct": {
-     "light_beach": 13.1,
-     "lava": 86.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1598,
-    "border_impurity": 0.0947,
-    "phrasing": "and",
-    "prompt": "light beach and lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/on_top_of_1/tile_04",
-    "file": "tiles/fades/light_beach__with__lava/on_top_of_1/post/tile_04.3b010d04.webp",
-    "pct": {
-     "lava": 94,
-     "light_beach": 6
-    },
-    "area_pct": {
-     "light_beach": 11.8,
-     "lava": 88.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2549,
-    "border_impurity": 0.4637,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/spots_1/tile_06",
-    "file": "tiles/fades/light_beach__with__lava/spots_1/post/tile_06.c0d1ba56.webp",
-    "pct": {
-     "lava": 94,
-     "light_beach": 6
-    },
-    "area_pct": {
-     "light_beach": 13.1,
-     "lava": 86.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3144,
-    "border_impurity": 0.2169,
-    "phrasing": "spots",
-    "prompt": "lava spots on light beach"
-   },
-   {
     "key": "tiles/fades/light_beach__with__lava/spots_1/tile_09",
     "file": "tiles/fades/light_beach__with__lava/spots_1/post/tile_09.010fe22c.webp",
     "pct": {
@@ -131547,57 +127552,6 @@
     "prompt": "light beach and lava"
    },
    {
-    "key": "tiles/fades/light_beach__with__lava/on_top_of_1/tile_05",
-    "file": "tiles/fades/light_beach__with__lava/on_top_of_1/post/tile_05.e60727f2.webp",
-    "pct": {
-     "lava": 95,
-     "light_beach": 5
-    },
-    "area_pct": {
-     "light_beach": 10.0,
-     "lava": 90.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2418,
-    "border_impurity": 0.3799,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/patches_1/tile_10",
-    "file": "tiles/fades/light_beach__with__lava/patches_1/post/tile_10.c75876d6.webp",
-    "pct": {
-     "lava": 95,
-     "light_beach": 5
-    },
-    "area_pct": {
-     "light_beach": 10.4,
-     "lava": 89.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2663,
-    "border_impurity": 0.3733,
-    "phrasing": "patches",
-    "prompt": "patches of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/spots_1/tile_14",
-    "file": "tiles/fades/light_beach__with__lava/spots_1/post/tile_14.2e1750c7.webp",
-    "pct": {
-     "lava": 95,
-     "light_beach": 5
-    },
-    "area_pct": {
-     "light_beach": 9.9,
-     "lava": 90.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1291,
-    "border_impurity": 0.0778,
-    "phrasing": "spots",
-    "prompt": "lava spots on light beach"
-   },
-   {
     "key": "tiles/fades/light_beach__with__lava/and_1/tile_07",
     "file": "tiles/fades/light_beach__with__lava/and_1/post/tile_07.c12d3b9a.webp",
     "pct": {
@@ -131615,142 +127569,6 @@
     "prompt": "light beach and lava"
    },
    {
-    "key": "tiles/fades/light_beach__with__lava/with_1/tile_06",
-    "file": "tiles/fades/light_beach__with__lava/with_1/post/tile_06.036ade39.webp",
-    "pct": {
-     "lava": 96,
-     "light_beach": 4
-    },
-    "area_pct": {
-     "light_beach": 7.2,
-     "lava": 92.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1625,
-    "border_impurity": 0.1833,
-    "phrasing": "with",
-    "prompt": "light beach with lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/and_1/tile_08",
-    "file": "tiles/fades/light_beach__with__lava/and_1/post/tile_08.ca2f3fb5.webp",
-    "pct": {
-     "lava": 97,
-     "light_beach": 3
-    },
-    "area_pct": {
-     "light_beach": 6.2,
-     "lava": 93.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.14,
-    "border_impurity": 0.1086,
-    "phrasing": "and",
-    "prompt": "light beach and lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/and_1/tile_14",
-    "file": "tiles/fades/light_beach__with__lava/and_1/post/tile_14.4d731137.webp",
-    "pct": {
-     "lava": 97,
-     "light_beach": 3
-    },
-    "area_pct": {
-     "light_beach": 7.0,
-     "lava": 93.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.087,
-    "border_impurity": 0.0474,
-    "phrasing": "and",
-    "prompt": "light beach and lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/patches_1/tile_15",
-    "file": "tiles/fades/light_beach__with__lava/patches_1/post/tile_15.c2259b03.webp",
-    "pct": {
-     "lava": 97,
-     "light_beach": 3
-    },
-    "area_pct": {
-     "light_beach": 6.8,
-     "lava": 93.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1751,
-    "border_impurity": 0.2925,
-    "phrasing": "patches",
-    "prompt": "patches of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/spots_1/tile_13",
-    "file": "tiles/fades/light_beach__with__lava/spots_1/post/tile_13.a7000b26.webp",
-    "pct": {
-     "lava": 97,
-     "light_beach": 3
-    },
-    "area_pct": {
-     "light_beach": 6.6,
-     "lava": 93.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1478,
-    "border_impurity": 0.0808,
-    "phrasing": "spots",
-    "prompt": "lava spots on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/and_1/tile_06",
-    "file": "tiles/fades/light_beach__with__lava/and_1/post/tile_06.47e085e3.webp",
-    "pct": {
-     "lava": 98,
-     "light_beach": 2
-    },
-    "area_pct": {
-     "light_beach": 3.9,
-     "lava": 96.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0601,
-    "border_impurity": 0.1226,
-    "phrasing": "and",
-    "prompt": "light beach and lava"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/one_rock_1/tile_07",
-    "file": "tiles/fades/light_beach__with__lava/one_rock_1/post/tile_07.016a701b.webp",
-    "pct": {
-     "lava": 98,
-     "light_beach": 2
-    },
-    "area_pct": {
-     "light_beach": 4.5,
-     "lava": 95.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1336,
-    "border_impurity": 0.3165,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/patches_1/tile_11",
-    "file": "tiles/fades/light_beach__with__lava/patches_1/post/tile_11.8f6882a3.webp",
-    "pct": {
-     "lava": 98,
-     "light_beach": 2
-    },
-    "area_pct": {
-     "light_beach": 3.7,
-     "lava": 96.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1124,
-    "border_impurity": 0.2089,
-    "phrasing": "patches",
-    "prompt": "patches of lava on light beach"
-   },
-   {
     "key": "tiles/fades/light_beach__with__lava/patches_1/tile_12",
     "file": "tiles/fades/light_beach__with__lava/patches_1/post/tile_12.cfb05b3b.webp",
     "pct": {
@@ -131766,57 +127584,6 @@
     "border_impurity": 0.2056,
     "phrasing": "patches",
     "prompt": "patches of lava on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/spots_1/tile_04",
-    "file": "tiles/fades/light_beach__with__lava/spots_1/post/tile_04.d40dfa1d.webp",
-    "pct": {
-     "lava": 98,
-     "light_beach": 2
-    },
-    "area_pct": {
-     "light_beach": 4.3,
-     "lava": 95.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1349,
-    "border_impurity": 0.0282,
-    "phrasing": "spots",
-    "prompt": "lava spots on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/spots_1/tile_15",
-    "file": "tiles/fades/light_beach__with__lava/spots_1/post/tile_15.2a2f5de5.webp",
-    "pct": {
-     "lava": 98,
-     "light_beach": 2
-    },
-    "area_pct": {
-     "light_beach": 3.4,
-     "lava": 96.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0696,
-    "border_impurity": 0.3148,
-    "phrasing": "spots",
-    "prompt": "lava spots on light beach"
-   },
-   {
-    "key": "tiles/fades/light_beach__with__lava/spots_1/tile_02",
-    "file": "tiles/fades/light_beach__with__lava/spots_1/post/tile_02.89d011c0.webp",
-    "pct": {
-     "lava": 99,
-     "light_beach": 1
-    },
-    "area_pct": {
-     "light_beach": 2.9,
-     "lava": 97.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0884,
-    "border_impurity": 0.1889,
-    "phrasing": "spots",
-    "prompt": "lava spots on light beach"
    },
    {
     "key": "tiles/fades/light_beach__with__lava/spots_1/tile_03",
@@ -145345,23 +141112,6 @@
     "prompt": "a few lava lumps on light soil"
    },
    {
-    "key": "tiles/fades/light_soil__with__lava/lumps_1/tile_14",
-    "file": "tiles/fades/light_soil__with__lava/lumps_1/post/tile_14.df298d9a.webp",
-    "pct": {
-     "light_soil": 80,
-     "lava": 20
-    },
-    "area_pct": {
-     "light_soil": 58.6,
-     "lava": 41.4
-    },
-    "edge_ground": "light_soil",
-    "edge_contact": 0.0009,
-    "border_impurity": 0.0,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on light soil"
-   },
-   {
     "key": "tiles/fades/light_soil__with__lava/lumps_1/tile_03",
     "file": "tiles/fades/light_soil__with__lava/lumps_1/post/tile_03.932fd234.webp",
     "pct": {
@@ -145668,57 +141418,6 @@
     "prompt": "one lava rock on light soil"
    },
    {
-    "key": "tiles/fades/light_soil__with__lava/lumps_1/tile_09",
-    "file": "tiles/fades/light_soil__with__lava/lumps_1/post/tile_09.0a18baf1.webp",
-    "pct": {
-     "lava": 89,
-     "light_soil": 11
-    },
-    "area_pct": {
-     "light_soil": 21.7,
-     "lava": 78.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.312,
-    "border_impurity": 0.3667,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on light soil"
-   },
-   {
-    "key": "tiles/fades/light_soil__with__lava/one_rock_1/tile_10",
-    "file": "tiles/fades/light_soil__with__lava/one_rock_1/post/tile_10.7e758934.webp",
-    "pct": {
-     "lava": 92,
-     "light_soil": 8
-    },
-    "area_pct": {
-     "light_soil": 15.9,
-     "lava": 84.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3376,
-    "border_impurity": 0.5822,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on light soil"
-   },
-   {
-    "key": "tiles/fades/light_soil__with__lava/piles_1/tile_06",
-    "file": "tiles/fades/light_soil__with__lava/piles_1/post/tile_06.524d0037.webp",
-    "pct": {
-     "lava": 92,
-     "light_soil": 8
-    },
-    "area_pct": {
-     "light_soil": 15.9,
-     "lava": 84.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1088,
-    "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on light soil"
-   },
-   {
     "key": "tiles/fades/light_soil__with__lava/lumps_1/tile_15",
     "file": "tiles/fades/light_soil__with__lava/lumps_1/post/tile_15.196a663d.webp",
     "pct": {
@@ -145736,23 +141435,6 @@
     "prompt": "a few lava lumps on light soil"
    },
    {
-    "key": "tiles/fades/light_soil__with__lava/and_1/tile_12",
-    "file": "tiles/fades/light_soil__with__lava/and_1/post/tile_12.9a6c22e9.webp",
-    "pct": {
-     "lava": 95,
-     "light_soil": 5
-    },
-    "area_pct": {
-     "light_soil": 10.1,
-     "lava": 89.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1095,
-    "border_impurity": 0.0362,
-    "phrasing": "and",
-    "prompt": "light soil and lava"
-   },
-   {
     "key": "tiles/fades/light_soil__with__lava/lumps_1/tile_11",
     "file": "tiles/fades/light_soil__with__lava/lumps_1/post/tile_11.8dccfa59.webp",
     "pct": {
@@ -145766,74 +141448,6 @@
     "edge_ground": "lava",
     "edge_contact": 0.2516,
     "border_impurity": 0.2,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on light soil"
-   },
-   {
-    "key": "tiles/fades/light_soil__with__lava/piles_1/tile_00",
-    "file": "tiles/fades/light_soil__with__lava/piles_1/post/tile_00.9006570b.webp",
-    "pct": {
-     "lava": 95,
-     "light_soil": 5
-    },
-    "area_pct": {
-     "light_soil": 10.6,
-     "lava": 89.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.063,
-    "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on light soil"
-   },
-   {
-    "key": "tiles/fades/light_soil__with__lava/and_1/tile_04",
-    "file": "tiles/fades/light_soil__with__lava/and_1/post/tile_04.32f6f6fd.webp",
-    "pct": {
-     "lava": 98,
-     "light_soil": 2
-    },
-    "area_pct": {
-     "light_soil": 4.6,
-     "lava": 95.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0375,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "light soil and lava"
-   },
-   {
-    "key": "tiles/fades/light_soil__with__lava/and_1/tile_14",
-    "file": "tiles/fades/light_soil__with__lava/and_1/post/tile_14.425c0278.webp",
-    "pct": {
-     "lava": 98,
-     "light_soil": 2
-    },
-    "area_pct": {
-     "light_soil": 3.5,
-     "lava": 96.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0542,
-    "border_impurity": 0.0028,
-    "phrasing": "and",
-    "prompt": "light soil and lava"
-   },
-   {
-    "key": "tiles/fades/light_soil__with__lava/lumps_1/tile_12",
-    "file": "tiles/fades/light_soil__with__lava/lumps_1/post/tile_12.b1077baa.webp",
-    "pct": {
-     "lava": 99,
-     "light_soil": 1
-    },
-    "area_pct": {
-     "light_soil": 2.1,
-     "lava": 97.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
     "phrasing": "lumps",
     "prompt": "a few lava lumps on light soil"
    }
@@ -158259,346 +153873,6 @@
   ],
   "parquet_floor__to__lava": [
    {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_08",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_08.7718ee16.webp",
-    "pct": {
-     "lava": 89,
-     "parquet_floor": 11
-    },
-    "area_pct": {
-     "parquet_floor": 23.4,
-     "lava": 76.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2603,
-    "border_impurity": 0.1226,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_00",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_00.fbb37e74.webp",
-    "pct": {
-     "lava": 90,
-     "parquet_floor": 10
-    },
-    "area_pct": {
-     "parquet_floor": 21.4,
-     "lava": 78.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2142,
-    "border_impurity": 0.0222,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_01",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_01.2483a737.webp",
-    "pct": {
-     "lava": 90,
-     "parquet_floor": 10
-    },
-    "area_pct": {
-     "parquet_floor": 20.5,
-     "lava": 79.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1788,
-    "border_impurity": 0.0167,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_14",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_14.ff237478.webp",
-    "pct": {
-     "lava": 91,
-     "parquet_floor": 9
-    },
-    "area_pct": {
-     "parquet_floor": 17.7,
-     "lava": 82.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1644,
-    "border_impurity": 0.0167,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_09",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_09.bc14b50e.webp",
-    "pct": {
-     "lava": 92,
-     "parquet_floor": 8
-    },
-    "area_pct": {
-     "parquet_floor": 17.2,
-     "lava": 82.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1526,
-    "border_impurity": 0.0975,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/with_1/tile_00",
-    "file": "tiles/fades/parquet_floor__with__lava/with_1/post/tile_00.332c9989.webp",
-    "pct": {
-     "lava": 92,
-     "parquet_floor": 8
-    },
-    "area_pct": {
-     "parquet_floor": 16.2,
-     "lava": 83.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1937,
-    "border_impurity": 0.0363,
-    "phrasing": "with",
-    "prompt": "parquet floor with lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_05",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_05.533ff3bb.webp",
-    "pct": {
-     "lava": 93,
-     "parquet_floor": 7
-    },
-    "area_pct": {
-     "parquet_floor": 15.1,
-     "lava": 84.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1214,
-    "border_impurity": 0.0111,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_07",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_07.419bc968.webp",
-    "pct": {
-     "lava": 93,
-     "parquet_floor": 7
-    },
-    "area_pct": {
-     "parquet_floor": 13.6,
-     "lava": 86.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1299,
-    "border_impurity": 0.0528,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_11",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_11.17cdb324.webp",
-    "pct": {
-     "lava": 93,
-     "parquet_floor": 7
-    },
-    "area_pct": {
-     "parquet_floor": 14.8,
-     "lava": 85.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1355,
-    "border_impurity": 0.0167,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_12",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_12.a83e647e.webp",
-    "pct": {
-     "lava": 93,
-     "parquet_floor": 7
-    },
-    "area_pct": {
-     "parquet_floor": 13.7,
-     "lava": 86.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1272,
-    "border_impurity": 0.0111,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_15",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_15.c441161a.webp",
-    "pct": {
-     "lava": 93,
-     "parquet_floor": 7
-    },
-    "area_pct": {
-     "parquet_floor": 14.3,
-     "lava": 85.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1436,
-    "border_impurity": 0.0194,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_03",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_03.efe117ce.webp",
-    "pct": {
-     "lava": 94,
-     "parquet_floor": 6
-    },
-    "area_pct": {
-     "parquet_floor": 12.9,
-     "lava": 87.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1406,
-    "border_impurity": 0.0556,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_06",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_06.0b0db1d8.webp",
-    "pct": {
-     "lava": 94,
-     "parquet_floor": 6
-    },
-    "area_pct": {
-     "parquet_floor": 12.8,
-     "lava": 87.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1124,
-    "border_impurity": 0.025,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_10",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_10.c7d432c4.webp",
-    "pct": {
-     "lava": 94,
-     "parquet_floor": 6
-    },
-    "area_pct": {
-     "parquet_floor": 11.8,
-     "lava": 88.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1062,
-    "border_impurity": 0.0194,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_13",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_13.1b7956d6.webp",
-    "pct": {
-     "lava": 94,
-     "parquet_floor": 6
-    },
-    "area_pct": {
-     "parquet_floor": 12.6,
-     "lava": 87.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1135,
-    "border_impurity": 0.0,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/one_rock_1/tile_09",
-    "file": "tiles/fades/parquet_floor__with__lava/one_rock_1/post/tile_09.3e8b516f.webp",
-    "pct": {
-     "lava": 94,
-     "parquet_floor": 6
-    },
-    "area_pct": {
-     "parquet_floor": 11.2,
-     "lava": 88.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2858,
-    "border_impurity": 0.2667,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/one_rock_1/tile_13",
-    "file": "tiles/fades/parquet_floor__with__lava/one_rock_1/post/tile_13.9e4faffe.webp",
-    "pct": {
-     "lava": 94,
-     "parquet_floor": 6
-    },
-    "area_pct": {
-     "parquet_floor": 11.4,
-     "lava": 88.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2958,
-    "border_impurity": 0.2528,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_06",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_06.67487801.webp",
-    "pct": {
-     "lava": 94,
-     "parquet_floor": 6
-    },
-    "area_pct": {
-     "parquet_floor": 11.5,
-     "lava": 88.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2517,
-    "border_impurity": 0.1866,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/spots_1/tile_07",
-    "file": "tiles/fades/parquet_floor__with__lava/spots_1/post/tile_07.7c17c0d9.webp",
-    "pct": {
-     "lava": 94,
-     "parquet_floor": 6
-    },
-    "area_pct": {
-     "parquet_floor": 11.3,
-     "lava": 88.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2754,
-    "border_impurity": 0.1722,
-    "phrasing": "spots",
-    "prompt": "lava spots on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_02",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_02.54e905f6.webp",
-    "pct": {
-     "lava": 95,
-     "parquet_floor": 5
-    },
-    "area_pct": {
-     "parquet_floor": 9.5,
-     "lava": 90.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0352,
-    "border_impurity": 0.0056,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
     "key": "tiles/fades/parquet_floor__with__lava/one_rock_1/tile_05",
     "file": "tiles/fades/parquet_floor__with__lava/one_rock_1/post/tile_05.72e21705.webp",
     "pct": {
@@ -158629,346 +153903,6 @@
     "edge_ground": "lava",
     "edge_contact": 0.1227,
     "border_impurity": 0.0446,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/spots_1/tile_15",
-    "file": "tiles/fades/parquet_floor__with__lava/spots_1/post/tile_15.62c54b67.webp",
-    "pct": {
-     "lava": 95,
-     "parquet_floor": 5
-    },
-    "area_pct": {
-     "parquet_floor": 11.0,
-     "lava": 89.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2664,
-    "border_impurity": 0.1028,
-    "phrasing": "spots",
-    "prompt": "lava spots on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/and_1/tile_04",
-    "file": "tiles/fades/parquet_floor__with__lava/and_1/post/tile_04.52372240.webp",
-    "pct": {
-     "lava": 96,
-     "parquet_floor": 4
-    },
-    "area_pct": {
-     "parquet_floor": 7.8,
-     "lava": 92.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0073,
-    "border_impurity": 0.1417,
-    "phrasing": "and",
-    "prompt": "parquet floor and lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/on_top_of_1/tile_10",
-    "file": "tiles/fades/parquet_floor__with__lava/on_top_of_1/post/tile_10.3f147c23.webp",
-    "pct": {
-     "lava": 96,
-     "parquet_floor": 4
-    },
-    "area_pct": {
-     "parquet_floor": 8.5,
-     "lava": 91.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0943,
-    "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/one_rock_1/tile_01",
-    "file": "tiles/fades/parquet_floor__with__lava/one_rock_1/post/tile_01.2acedc2a.webp",
-    "pct": {
-     "lava": 96,
-     "parquet_floor": 4
-    },
-    "area_pct": {
-     "parquet_floor": 9.0,
-     "lava": 91.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.2237,
-    "border_impurity": 0.1361,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_10",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_10.72d648c0.webp",
-    "pct": {
-     "lava": 96,
-     "parquet_floor": 4
-    },
-    "area_pct": {
-     "parquet_floor": 7.6,
-     "lava": 92.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1344,
-    "border_impurity": 0.0474,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/on_top_of_1/tile_05",
-    "file": "tiles/fades/parquet_floor__with__lava/on_top_of_1/post/tile_05.47962da7.webp",
-    "pct": {
-     "lava": 97,
-     "parquet_floor": 3
-    },
-    "area_pct": {
-     "parquet_floor": 5.3,
-     "lava": 94.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0133,
-    "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_00",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_00.628ed197.webp",
-    "pct": {
-     "lava": 97,
-     "parquet_floor": 3
-    },
-    "area_pct": {
-     "parquet_floor": 6.8,
-     "lava": 93.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0663,
-    "border_impurity": 0.0084,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_04",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_04.83715791.webp",
-    "pct": {
-     "lava": 97,
-     "parquet_floor": 3
-    },
-    "area_pct": {
-     "parquet_floor": 6.1,
-     "lava": 93.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1323,
-    "border_impurity": 0.1031,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_05",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_05.6c4d4bb2.webp",
-    "pct": {
-     "lava": 97,
-     "parquet_floor": 3
-    },
-    "area_pct": {
-     "parquet_floor": 5.9,
-     "lava": 94.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1791,
-    "border_impurity": 0.1142,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_07",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_07.8e83d7d5.webp",
-    "pct": {
-     "lava": 97,
-     "parquet_floor": 3
-    },
-    "area_pct": {
-     "parquet_floor": 5.5,
-     "lava": 94.5
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0813,
-    "border_impurity": 0.0361,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_13",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_13.0478b3e6.webp",
-    "pct": {
-     "lava": 97,
-     "parquet_floor": 3
-    },
-    "area_pct": {
-     "parquet_floor": 6.4,
-     "lava": 93.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1757,
-    "border_impurity": 0.1058,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_15",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_15.51418374.webp",
-    "pct": {
-     "lava": 97,
-     "parquet_floor": 3
-    },
-    "area_pct": {
-     "parquet_floor": 6.4,
-     "lava": 93.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1084,
-    "border_impurity": 0.078,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/on_top_of_1/tile_02",
-    "file": "tiles/fades/parquet_floor__with__lava/on_top_of_1/post/tile_02.7f182243.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "parquet_floor": 4.0,
-     "lava": 96.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0176,
-    "border_impurity": 0.0,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_01",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_01.67a939b0.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "parquet_floor": 4.4,
-     "lava": 95.6
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0988,
-    "border_impurity": 0.0836,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_02",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_02.a2a341d5.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "parquet_floor": 4.2,
-     "lava": 95.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1157,
-    "border_impurity": 0.0891,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_03",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_03.bc86d703.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "parquet_floor": 3.9,
-     "lava": 96.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0858,
-    "border_impurity": 0.0474,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_08",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_08.1e344747.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "parquet_floor": 5.0,
-     "lava": 95.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1282,
-    "border_impurity": 0.0474,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_09",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_09.ee714c67.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "parquet_floor": 4.8,
-     "lava": 95.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.1347,
-    "border_impurity": 0.0474,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_12",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_12.45fcd505.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "parquet_floor": 4.1,
-     "lava": 95.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0999,
-    "border_impurity": 0.05,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/piles_1/tile_14",
-    "file": "tiles/fades/parquet_floor__with__lava/piles_1/post/tile_14.5a3f8e44.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "parquet_floor": 4.6,
-     "lava": 95.4
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0859,
-    "border_impurity": 0.039,
     "phrasing": "piles",
     "prompt": "a few piles of lava on parquet floor"
    },
@@ -159005,91 +153939,6 @@
     "border_impurity": 0.0778,
     "phrasing": "spots",
     "prompt": "lava spots on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/with_1/tile_03",
-    "file": "tiles/fades/parquet_floor__with__lava/with_1/post/tile_03.91af89c0.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "parquet_floor": 3.7,
-     "lava": 96.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0136,
-    "border_impurity": 0.0808,
-    "phrasing": "with",
-    "prompt": "parquet floor with lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/with_1/tile_10",
-    "file": "tiles/fades/parquet_floor__with__lava/with_1/post/tile_10.b0ad98e0.webp",
-    "pct": {
-     "lava": 98,
-     "parquet_floor": 2
-    },
-    "area_pct": {
-     "parquet_floor": 4.9,
-     "lava": 95.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0873,
-    "border_impurity": 0.1393,
-    "phrasing": "with",
-    "prompt": "parquet floor with lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/spots_1/tile_06",
-    "file": "tiles/fades/parquet_floor__with__lava/spots_1/post/tile_06.810f0b7a.webp",
-    "pct": {
-     "lava": 99,
-     "parquet_floor": 1
-    },
-    "area_pct": {
-     "parquet_floor": 2.0,
-     "lava": 98.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0294,
-    "border_impurity": 0.0,
-    "phrasing": "spots",
-    "prompt": "lava spots on parquet floor"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/with_1/tile_01",
-    "file": "tiles/fades/parquet_floor__with__lava/with_1/post/tile_01.78f51f5c.webp",
-    "pct": {
-     "lava": 99,
-     "parquet_floor": 1
-    },
-    "area_pct": {
-     "parquet_floor": 2.3,
-     "lava": 97.7
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0093,
-    "border_impurity": 0.1,
-    "phrasing": "with",
-    "prompt": "parquet floor with lava"
-   },
-   {
-    "key": "tiles/fades/parquet_floor__with__lava/with_1/tile_11",
-    "file": "tiles/fades/parquet_floor__with__lava/with_1/post/tile_11.780c8553.webp",
-    "pct": {
-     "lava": 99,
-     "parquet_floor": 1
-    },
-    "area_pct": {
-     "parquet_floor": 2.0,
-     "lava": 98.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0084,
-    "border_impurity": 0.0806,
-    "phrasing": "with",
-    "prompt": "parquet floor with lava"
    }
   ],
   "parquet_floor__to__light_beach": [
@@ -174505,23 +169354,6 @@
   ],
   "slime__to__lava": [
    {
-    "key": "tiles/fades/slime__with__lava/with_1/tile_12",
-    "file": "tiles/fades/slime__with__lava/with_1/post/tile_12.f6d75a5b.webp",
-    "pct": {
-     "slime": 99,
-     "lava": 1
-    },
-    "area_pct": {
-     "slime": 97.0,
-     "lava": 3.0
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.0859,
-    "border_impurity": 0.0056,
-    "phrasing": "with",
-    "prompt": "slime with lava"
-   },
-   {
     "key": "tiles/fades/slime__with__lava/and_1/tile_12",
     "file": "tiles/fades/slime__with__lava/and_1/post/tile_12.53d523ec.webp",
     "pct": {
@@ -174537,40 +169369,6 @@
     "border_impurity": 0.0028,
     "phrasing": "and",
     "prompt": "slime and lava"
-   },
-   {
-    "key": "tiles/fades/slime__with__lava/with_1/tile_11",
-    "file": "tiles/fades/slime__with__lava/with_1/post/tile_11.79b394c9.webp",
-    "pct": {
-     "slime": 96,
-     "lava": 4
-    },
-    "area_pct": {
-     "slime": 91.9,
-     "lava": 8.1
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.1841,
-    "border_impurity": 0.025,
-    "phrasing": "with",
-    "prompt": "slime with lava"
-   },
-   {
-    "key": "tiles/fades/slime__with__lava/with_1/tile_05",
-    "file": "tiles/fades/slime__with__lava/with_1/post/tile_05.f9c61acc.webp",
-    "pct": {
-     "slime": 95,
-     "lava": 5
-    },
-    "area_pct": {
-     "slime": 89.2,
-     "lava": 10.8
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.1442,
-    "border_impurity": 0.175,
-    "phrasing": "with",
-    "prompt": "slime with lava"
    },
    {
     "key": "tiles/fades/slime__with__lava/with_1/tile_13",
@@ -174624,23 +169422,6 @@
     "prompt": "slime with lava"
    },
    {
-    "key": "tiles/fades/slime__with__lava/with_1/tile_03",
-    "file": "tiles/fades/slime__with__lava/with_1/post/tile_03.bfe62b90.webp",
-    "pct": {
-     "slime": 93,
-     "lava": 7
-    },
-    "area_pct": {
-     "slime": 85.2,
-     "lava": 14.8
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.356,
-    "border_impurity": 0.2444,
-    "phrasing": "with",
-    "prompt": "slime with lava"
-   },
-   {
     "key": "tiles/fades/slime__with__lava/with_1/tile_07",
     "file": "tiles/fades/slime__with__lava/with_1/post/tile_07.6e475a30.webp",
     "pct": {
@@ -174673,23 +169454,6 @@
     "border_impurity": 0.0472,
     "phrasing": "patches",
     "prompt": "patches of lava on slime"
-   },
-   {
-    "key": "tiles/fades/slime__with__lava/with_1/tile_01",
-    "file": "tiles/fades/slime__with__lava/with_1/post/tile_01.972206bf.webp",
-    "pct": {
-     "slime": 91,
-     "lava": 9
-    },
-    "area_pct": {
-     "slime": 82.0,
-     "lava": 18.0
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.2021,
-    "border_impurity": 0.2389,
-    "phrasing": "with",
-    "prompt": "slime with lava"
    },
    {
     "key": "tiles/fades/slime__with__lava/with_1/tile_08",
@@ -174828,40 +169592,6 @@
     "prompt": "a few lava lumps on slime"
    },
    {
-    "key": "tiles/fades/slime__with__lava/patches_1/tile_00",
-    "file": "tiles/fades/slime__with__lava/patches_1/post/tile_00.c505613b.webp",
-    "pct": {
-     "slime": 85,
-     "lava": 15
-    },
-    "area_pct": {
-     "slime": 68.9,
-     "lava": 31.1
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.3007,
-    "border_impurity": 0.2933,
-    "phrasing": "patches",
-    "prompt": "patches of lava on slime"
-   },
-   {
-    "key": "tiles/fades/slime__with__lava/with_1/tile_06",
-    "file": "tiles/fades/slime__with__lava/with_1/post/tile_06.384d56c4.webp",
-    "pct": {
-     "slime": 84,
-     "lava": 16
-    },
-    "area_pct": {
-     "slime": 66.7,
-     "lava": 33.3
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.3347,
-    "border_impurity": 0.1861,
-    "phrasing": "with",
-    "prompt": "slime with lava"
-   },
-   {
     "key": "tiles/fades/slime__with__lava/lumps_1/tile_15",
     "file": "tiles/fades/slime__with__lava/lumps_1/post/tile_15.de0ef5c3.webp",
     "pct": {
@@ -174911,23 +169641,6 @@
     "border_impurity": 0.0333,
     "phrasing": "patches",
     "prompt": "patches of lava on slime"
-   },
-   {
-    "key": "tiles/fades/slime__with__lava/lumps_1/tile_01",
-    "file": "tiles/fades/slime__with__lava/lumps_1/post/tile_01.0728e6ab.webp",
-    "pct": {
-     "slime": 81,
-     "lava": 19
-    },
-    "area_pct": {
-     "slime": 61.3,
-     "lava": 38.7
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.2361,
-    "border_impurity": 0.2972,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on slime"
    },
    {
     "key": "tiles/fades/slime__with__lava/lumps_1/tile_02",
@@ -175013,23 +169726,6 @@
     "border_impurity": 0.2107,
     "phrasing": "patches",
     "prompt": "patches of lava on slime"
-   },
-   {
-    "key": "tiles/fades/slime__with__lava/with_1/tile_15",
-    "file": "tiles/fades/slime__with__lava/with_1/post/tile_15.c139006d.webp",
-    "pct": {
-     "slime": 80,
-     "lava": 20
-    },
-    "area_pct": {
-     "slime": 58.2,
-     "lava": 41.8
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.2506,
-    "border_impurity": 0.1253,
-    "phrasing": "with",
-    "prompt": "slime with lava"
    },
    {
     "key": "tiles/fades/slime__with__lava/lumps_1/tile_00",
@@ -175183,57 +169879,6 @@
     "border_impurity": 0.5794,
     "phrasing": "lumps",
     "prompt": "a few lava lumps on slime"
-   },
-   {
-    "key": "tiles/fades/slime__with__lava/lumps_1/tile_07",
-    "file": "tiles/fades/slime__with__lava/lumps_1/post/tile_07.87482811.webp",
-    "pct": {
-     "slime": 68,
-     "lava": 32
-    },
-    "area_pct": {
-     "slime": 34.9,
-     "lava": 65.1
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.41,
-    "border_impurity": 0.8083,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on slime"
-   },
-   {
-    "key": "tiles/fades/slime__with__lava/one_rock_1/tile_06",
-    "file": "tiles/fades/slime__with__lava/one_rock_1/post/tile_06.72fdc227.webp",
-    "pct": {
-     "slime": 60,
-     "lava": 40
-    },
-    "area_pct": {
-     "slime": 18.8,
-     "lava": 81.2
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.6878,
-    "border_impurity": 0.7967,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on slime"
-   },
-   {
-    "key": "tiles/fades/slime__with__lava/one_rock_1/tile_03",
-    "file": "tiles/fades/slime__with__lava/one_rock_1/post/tile_03.4455a97c.webp",
-    "pct": {
-     "slime": 59,
-     "lava": 41
-    },
-    "area_pct": {
-     "slime": 15.7,
-     "lava": 84.3
-    },
-    "edge_ground": "slime",
-    "edge_contact": 0.737,
-    "border_impurity": 0.6184,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on slime"
    },
    {
     "key": "tiles/fades/slime__with__lava/one_rock_1/tile_11",
@@ -188473,40 +183118,6 @@
     "prompt": "lava spots on snow"
    },
    {
-    "key": "tiles/fades/snow__with__lava/and_1/tile_02",
-    "file": "tiles/fades/snow__with__lava/and_1/post/tile_02.08d6e1e9.webp",
-    "pct": {
-     "snow": 95,
-     "lava": 5
-    },
-    "area_pct": {
-     "snow": 89.6,
-     "lava": 10.4
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0067,
-    "border_impurity": 0.0111,
-    "phrasing": "and",
-    "prompt": "snow and lava"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/and_1/tile_03",
-    "file": "tiles/fades/snow__with__lava/and_1/post/tile_03.f7ae7766.webp",
-    "pct": {
-     "snow": 95,
-     "lava": 5
-    },
-    "area_pct": {
-     "snow": 90.5,
-     "lava": 9.5
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0623,
-    "border_impurity": 0.0944,
-    "phrasing": "and",
-    "prompt": "snow and lava"
-   },
-   {
     "key": "tiles/fades/snow__with__lava/and_1/tile_13",
     "file": "tiles/fades/snow__with__lava/and_1/post/tile_13.e40f14bc.webp",
     "pct": {
@@ -188539,23 +183150,6 @@
     "border_impurity": 0.0722,
     "phrasing": "and",
     "prompt": "snow and lava"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/piles_1/tile_15",
-    "file": "tiles/fades/snow__with__lava/piles_1/post/tile_15.6a608c12.webp",
-    "pct": {
-     "snow": 95,
-     "lava": 5
-    },
-    "area_pct": {
-     "snow": 90.1,
-     "lava": 9.9
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.1096,
-    "border_impurity": 0.1281,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on snow"
    },
    {
     "key": "tiles/fades/snow__with__lava/and_1/tile_07",
@@ -188626,23 +183220,6 @@
     "prompt": "snow and lava"
    },
    {
-    "key": "tiles/fades/snow__with__lava/piles_1/tile_12",
-    "file": "tiles/fades/snow__with__lava/piles_1/post/tile_12.07d28ef8.webp",
-    "pct": {
-     "snow": 91,
-     "lava": 9
-    },
-    "area_pct": {
-     "snow": 80.9,
-     "lava": 19.1
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on snow"
-   },
-   {
     "key": "tiles/fades/snow__with__lava/with_1/tile_14",
     "file": "tiles/fades/snow__with__lava/with_1/post/tile_14.a040d529.webp",
     "pct": {
@@ -188658,91 +183235,6 @@
     "border_impurity": 0.1145,
     "phrasing": "with",
     "prompt": "snow with lava"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/lumps_1/tile_01",
-    "file": "tiles/fades/snow__with__lava/lumps_1/post/tile_01.e5474d60.webp",
-    "pct": {
-     "snow": 90,
-     "lava": 10
-    },
-    "area_pct": {
-     "snow": 80.1,
-     "lava": 19.9
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.1106,
-    "border_impurity": 0.2256,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/piles_1/tile_08",
-    "file": "tiles/fades/snow__with__lava/piles_1/post/tile_08.b9857049.webp",
-    "pct": {
-     "snow": 90,
-     "lava": 10
-    },
-    "area_pct": {
-     "snow": 79.3,
-     "lava": 20.7
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0,
-    "border_impurity": 0.0,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/spots_1/tile_10",
-    "file": "tiles/fades/snow__with__lava/spots_1/post/tile_10.6a384399.webp",
-    "pct": {
-     "snow": 90,
-     "lava": 10
-    },
-    "area_pct": {
-     "snow": 78.6,
-     "lava": 21.4
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.1354,
-    "border_impurity": 0.2312,
-    "phrasing": "spots",
-    "prompt": "lava spots on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/spots_1/tile_15",
-    "file": "tiles/fades/snow__with__lava/spots_1/post/tile_15.8832d46a.webp",
-    "pct": {
-     "snow": 90,
-     "lava": 10
-    },
-    "area_pct": {
-     "snow": 78.7,
-     "lava": 21.3
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0355,
-    "border_impurity": 0.0501,
-    "phrasing": "spots",
-    "prompt": "lava spots on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/spots_1/tile_01",
-    "file": "tiles/fades/snow__with__lava/spots_1/post/tile_01.ffc6c004.webp",
-    "pct": {
-     "snow": 89,
-     "lava": 11
-    },
-    "area_pct": {
-     "snow": 76.9,
-     "lava": 23.1
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0127,
-    "border_impurity": 0.0501,
-    "phrasing": "spots",
-    "prompt": "lava spots on snow"
    },
    {
     "key": "tiles/fades/snow__with__lava/and_1/tile_06",
@@ -188830,23 +183322,6 @@
     "prompt": "snow and lava"
    },
    {
-    "key": "tiles/fades/snow__with__lava/spots_1/tile_02",
-    "file": "tiles/fades/snow__with__lava/spots_1/post/tile_02.06b42608.webp",
-    "pct": {
-     "snow": 86,
-     "lava": 14
-    },
-    "area_pct": {
-     "snow": 71.7,
-     "lava": 28.3
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0023,
-    "border_impurity": 0.0418,
-    "phrasing": "spots",
-    "prompt": "lava spots on snow"
-   },
-   {
     "key": "tiles/fades/snow__with__lava/lumps_1/tile_02",
     "file": "tiles/fades/snow__with__lava/lumps_1/post/tile_02.8d6efcb5.webp",
     "pct": {
@@ -188879,23 +183354,6 @@
     "border_impurity": 0.376,
     "phrasing": "and",
     "prompt": "snow and lava"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/on_top_of_1/tile_11",
-    "file": "tiles/fades/snow__with__lava/on_top_of_1/post/tile_11.253fb99f.webp",
-    "pct": {
-     "snow": 84,
-     "lava": 16
-    },
-    "area_pct": {
-     "snow": 67.8,
-     "lava": 32.2
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.1059,
-    "border_impurity": 0.1173,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of snow"
    },
    {
     "key": "tiles/fades/snow__with__lava/spots_1/tile_04",
@@ -189000,23 +183458,6 @@
     "prompt": "a few piles of lava on snow"
    },
    {
-    "key": "tiles/fades/snow__with__lava/one_rock_1/tile_03",
-    "file": "tiles/fades/snow__with__lava/one_rock_1/post/tile_03.39068763.webp",
-    "pct": {
-     "snow": 80,
-     "lava": 20
-    },
-    "area_pct": {
-     "snow": 58.2,
-     "lava": 41.8
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.2282,
-    "border_impurity": 0.1944,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on snow"
-   },
-   {
     "key": "tiles/fades/snow__with__lava/one_rock_1/tile_07",
     "file": "tiles/fades/snow__with__lava/one_rock_1/post/tile_07.a62e4039.webp",
     "pct": {
@@ -189064,23 +183505,6 @@
     "edge_ground": "snow",
     "edge_contact": 0.1537,
     "border_impurity": 0.1783,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/piles_1/tile_13",
-    "file": "tiles/fades/snow__with__lava/piles_1/post/tile_13.b4767607.webp",
-    "pct": {
-     "snow": 80,
-     "lava": 20
-    },
-    "area_pct": {
-     "snow": 59.1,
-     "lava": 40.9
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0408,
-    "border_impurity": 0.0389,
     "phrasing": "piles",
     "prompt": "a few piles of lava on snow"
    },
@@ -189134,23 +183558,6 @@
     "border_impurity": 0.2139,
     "phrasing": "one_rock",
     "prompt": "one lava rock on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/piles_1/tile_02",
-    "file": "tiles/fades/snow__with__lava/piles_1/post/tile_02.58ac5310.webp",
-    "pct": {
-     "snow": 79,
-     "lava": 21
-    },
-    "area_pct": {
-     "snow": 57.3,
-     "lava": 42.7
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.2116,
-    "border_impurity": 0.2639,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on snow"
    },
    {
     "key": "tiles/fades/snow__with__lava/spots_1/tile_03",
@@ -189357,40 +183764,6 @@
     "prompt": "lava spots on snow"
    },
    {
-    "key": "tiles/fades/snow__with__lava/lumps_1/tile_04",
-    "file": "tiles/fades/snow__with__lava/lumps_1/post/tile_04.398acedd.webp",
-    "pct": {
-     "snow": 76,
-     "lava": 24
-    },
-    "area_pct": {
-     "snow": 51.7,
-     "lava": 48.3
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.3164,
-    "border_impurity": 0.2813,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/lumps_1/tile_13",
-    "file": "tiles/fades/snow__with__lava/lumps_1/post/tile_13.b01fbc11.webp",
-    "pct": {
-     "snow": 76,
-     "lava": 24
-    },
-    "area_pct": {
-     "snow": 52.0,
-     "lava": 48.0
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.2423,
-    "border_impurity": 0.8217,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on snow"
-   },
-   {
     "key": "tiles/fades/snow__with__lava/one_rock_1/tile_12",
     "file": "tiles/fades/snow__with__lava/one_rock_1/post/tile_12.83ad92e0.webp",
     "pct": {
@@ -189425,108 +183798,6 @@
     "prompt": "one lava rock on snow"
    },
    {
-    "key": "tiles/fades/snow__with__lava/patches_1/tile_00",
-    "file": "tiles/fades/snow__with__lava/patches_1/post/tile_00.bed727d2.webp",
-    "pct": {
-     "snow": 76,
-     "lava": 24
-    },
-    "area_pct": {
-     "snow": 51.3,
-     "lava": 48.7
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.4514,
-    "border_impurity": 0.3583,
-    "phrasing": "patches",
-    "prompt": "patches of lava on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/piles_1/tile_06",
-    "file": "tiles/fades/snow__with__lava/piles_1/post/tile_06.61ebad79.webp",
-    "pct": {
-     "snow": 76,
-     "lava": 24
-    },
-    "area_pct": {
-     "snow": 51.1,
-     "lava": 48.9
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.1168,
-    "border_impurity": 0.1034,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/spots_1/tile_07",
-    "file": "tiles/fades/snow__with__lava/spots_1/post/tile_07.605fa0c2.webp",
-    "pct": {
-     "snow": 76,
-     "lava": 24
-    },
-    "area_pct": {
-     "snow": 51.7,
-     "lava": 48.3
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.0827,
-    "border_impurity": 1.0,
-    "phrasing": "spots",
-    "prompt": "lava spots on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/lumps_1/tile_08",
-    "file": "tiles/fades/snow__with__lava/lumps_1/post/tile_08.54fcd50b.webp",
-    "pct": {
-     "snow": 75,
-     "lava": 25
-    },
-    "area_pct": {
-     "snow": 48.3,
-     "lava": 51.7
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.374,
-    "border_impurity": 0.312,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/one_rock_1/tile_10",
-    "file": "tiles/fades/snow__with__lava/one_rock_1/post/tile_10.12b6a9ce.webp",
-    "pct": {
-     "snow": 75,
-     "lava": 25
-    },
-    "area_pct": {
-     "snow": 48.2,
-     "lava": 51.8
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.3451,
-    "border_impurity": 0.2917,
-    "phrasing": "one_rock",
-    "prompt": "one lava rock on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/patches_1/tile_04",
-    "file": "tiles/fades/snow__with__lava/patches_1/post/tile_04.0f6f0aff.webp",
-    "pct": {
-     "snow": 75,
-     "lava": 25
-    },
-    "area_pct": {
-     "snow": 49.1,
-     "lava": 50.9
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.5557,
-    "border_impurity": 0.4806,
-    "phrasing": "patches",
-    "prompt": "patches of lava on snow"
-   },
-   {
     "key": "tiles/fades/snow__with__lava/piles_1/tile_01",
     "file": "tiles/fades/snow__with__lava/piles_1/post/tile_01.89a87b0e.webp",
     "pct": {
@@ -189542,23 +183813,6 @@
     "border_impurity": 0.2694,
     "phrasing": "piles",
     "prompt": "a few piles of lava on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/patches_1/tile_09",
-    "file": "tiles/fades/snow__with__lava/patches_1/post/tile_09.587491dd.webp",
-    "pct": {
-     "snow": 73,
-     "lava": 27
-    },
-    "area_pct": {
-     "snow": 45.2,
-     "lava": 54.8
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.5897,
-    "border_impurity": 0.5111,
-    "phrasing": "patches",
-    "prompt": "patches of lava on snow"
    },
    {
     "key": "tiles/fades/snow__with__lava/spots_1/tile_13",
@@ -189680,108 +183934,6 @@
     "prompt": "lava spots on snow"
    },
    {
-    "key": "tiles/fades/snow__with__lava/patches_1/tile_12",
-    "file": "tiles/fades/snow__with__lava/patches_1/post/tile_12.8392baea.webp",
-    "pct": {
-     "snow": 64,
-     "lava": 36
-    },
-    "area_pct": {
-     "snow": 26.0,
-     "lava": 74.0
-    },
-    "edge_ground": "snow",
-    "edge_contact": 0.6164,
-    "border_impurity": 0.5278,
-    "phrasing": "patches",
-    "prompt": "patches of lava on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/lumps_1/tile_07",
-    "file": "tiles/fades/snow__with__lava/lumps_1/post/tile_07.0f9e1cc7.webp",
-    "pct": {
-     "lava": 62,
-     "snow": 38
-    },
-    "area_pct": {
-     "snow": 76.7,
-     "lava": 23.3
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.6509,
-    "border_impurity": 0.5084,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/lumps_1/tile_05",
-    "file": "tiles/fades/snow__with__lava/lumps_1/post/tile_05.98404382.webp",
-    "pct": {
-     "lava": 73,
-     "snow": 27
-    },
-    "area_pct": {
-     "snow": 54.8,
-     "lava": 45.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.6926,
-    "border_impurity": 0.6825,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/patches_1/tile_13",
-    "file": "tiles/fades/snow__with__lava/patches_1/post/tile_13.d4e26a5e.webp",
-    "pct": {
-     "lava": 81,
-     "snow": 19
-    },
-    "area_pct": {
-     "snow": 38.8,
-     "lava": 61.2
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.3721,
-    "border_impurity": 0.5222,
-    "phrasing": "patches",
-    "prompt": "patches of lava on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/piles_1/tile_14",
-    "file": "tiles/fades/snow__with__lava/piles_1/post/tile_14.17fe544c.webp",
-    "pct": {
-     "lava": 83,
-     "snow": 17
-    },
-    "area_pct": {
-     "snow": 34.1,
-     "lava": 65.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.6391,
-    "border_impurity": 0.6936,
-    "phrasing": "piles",
-    "prompt": "a few piles of lava on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/lumps_1/tile_06",
-    "file": "tiles/fades/snow__with__lava/lumps_1/post/tile_06.5a05b1da.webp",
-    "pct": {
-     "lava": 86,
-     "snow": 14
-    },
-    "area_pct": {
-     "snow": 29.1,
-     "lava": 70.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.4647,
-    "border_impurity": 0.5014,
-    "phrasing": "lumps",
-    "prompt": "a few lava lumps on snow"
-   },
-   {
     "key": "tiles/fades/snow__with__lava/lumps_1/tile_15",
     "file": "tiles/fades/snow__with__lava/lumps_1/post/tile_15.19b07f35.webp",
     "pct": {
@@ -189797,23 +183949,6 @@
     "border_impurity": 0.3426,
     "phrasing": "lumps",
     "prompt": "a few lava lumps on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/on_top_of_1/tile_09",
-    "file": "tiles/fades/snow__with__lava/on_top_of_1/post/tile_09.9126935a.webp",
-    "pct": {
-     "lava": 94,
-     "snow": 6
-    },
-    "area_pct": {
-     "snow": 12.1,
-     "lava": 87.9
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.313,
-    "border_impurity": 0.486,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of snow"
    },
    {
     "key": "tiles/fades/snow__with__lava/patches_1/tile_05",
@@ -189863,57 +183998,6 @@
     "edge_ground": "lava",
     "edge_contact": 0.087,
     "border_impurity": 0.2173,
-    "phrasing": "patches",
-    "prompt": "patches of lava on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/on_top_of_1/tile_15",
-    "file": "tiles/fades/snow__with__lava/on_top_of_1/post/tile_15.2dd9cd75.webp",
-    "pct": {
-     "lava": 99,
-     "snow": 1
-    },
-    "area_pct": {
-     "snow": 2.9,
-     "lava": 97.1
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.0006,
-    "border_impurity": 0.2139,
-    "phrasing": "on_top_of",
-    "prompt": "lava on top of snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/patches_1/tile_02",
-    "file": "tiles/fades/snow__with__lava/patches_1/post/tile_02.a634b5ce.webp",
-    "pct": {
-     "lava": 99,
-     "snow": 1
-    },
-    "area_pct": {
-     "snow": 2.2,
-     "lava": 97.8
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.051,
-    "border_impurity": 0.1806,
-    "phrasing": "patches",
-    "prompt": "patches of lava on snow"
-   },
-   {
-    "key": "tiles/fades/snow__with__lava/patches_1/tile_11",
-    "file": "tiles/fades/snow__with__lava/patches_1/post/tile_11.e31207d6.webp",
-    "pct": {
-     "lava": 99,
-     "snow": 1
-    },
-    "area_pct": {
-     "snow": 3.0,
-     "lava": 97.0
-    },
-    "edge_ground": "lava",
-    "edge_contact": 0.06,
-    "border_impurity": 0.0,
     "phrasing": "patches",
     "prompt": "patches of lava on snow"
    }
