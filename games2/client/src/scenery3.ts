@@ -198,6 +198,11 @@ export interface SceneryPiece {
    *  worldPxHeight to the game's own person with it (shared sceneryDrawnPx);
    *  this module stays render3-identical and never applies it. */
   contractCharacterPx: number | null;
+  /** `collision` — FALSE means the piece is FLAT ON THE GROUND (the rugs and
+   *  one clutter piece; maintainer 2026-09-03: "no collision means the object
+   *  is flat on the ground"). The scene draws those UNDER everything that
+   *  stands on them; nothing here changes, so render3 parity holds. */
+  collision: boolean;
   /** `must_be_imbplemented_with_random_hflip` (sic — the shipped key name).
    *  FALSE where left and right already mean something: every `windows` piece
    *  and the three legacy 8-direction pieces. The world's own `hflip` is still
@@ -319,6 +324,7 @@ export function parsePiece(
     // `or sp.height` in render3: 0 falls back too, and so does a non-number.
     worldPxHeight: typeof ph === "number" && ph > 0 ? ph : null,
     contractCharacterPx: typeof cpx === "number" && cpx > 0 ? cpx : null,
+    collision: json.collision !== false, // absent = solid, the published default
     hflipOk: json.must_be_imbplemented_with_random_hflip !== false,
     states,
     baseState: base,

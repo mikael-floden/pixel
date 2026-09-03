@@ -725,6 +725,14 @@ const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
 /** THE PREFETCH RING: how far beyond the ground texture art is asked for ahead
  *  of the camera (world px; the texture already reaches GROUND_MARGIN past the
  *  view), and how many ring cells one frame resolves — see t3prefetchStep. */
+/** FLAT SCENERY (a piece published `collision: false` — the rugs) draws in its
+ *  own band UNDER every body, every other piece and every terrain occluder, and
+ *  above the ground texture at -1,000,000: it lies ON the floor, so nothing it
+ *  is drawn beside can ever be behind it (maintainer 2026-09-03: "everything
+ *  marked as no collision should always be drawn under the
+ *  player/monsters/npcs/other scenery"). Its own painter line is kept as a
+ *  small offset so two overlapping rugs still sort against each other. */
+const SCENERY_FLAT_DEPTH = -500_000;
 const GROUND_RING = 512;
 const GROUND_RING_STEP = 150;
 /** THE BAND IS PAINTED IN SLICES, one per frame — see t3paintSliceStep. Slice
@@ -13751,6 +13759,15 @@ export class WorldScene extends Phaser.Scene {
        * centre). Expressed as an offset from the anchor's painter line so the
        * base stays the projection everything else uses. */
       const hbDepth = this.iso.oy + (p.x + p.y) * dy + (hbY - fit.ay);
+      /* FLAT ON THE GROUND (`collision: false`): a rug is floor, not an object.
+       * It draws in the flat band under everything, it gets NO LIT COPY (the
+       * copy exists to lift a standing object above the darkness overlay so it
+       * reads as its own silhouette — floor wants exactly the ground's own
+       * light, which is what being under the overlay gives it), and it
+       * registers NO occluder (its `top` rounded its 39-56 px art up to 3-4
+       * LEVELS, so a rug claimed to cover the player standing on it — the
+       * "wall hack border in open ground" this file already warns about). */
+      const flat = !piece.collision;
       const key = sceneryArtKey(sprite);
       const tex = this.textures.get(key);
       const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
@@ -13773,7 +13790,11 @@ export class WorldScene extends Phaser.Scene {
            * at 802.5, four tenths of a cell in front of it (maintainer
            * 2026-08-29: "I'm standing under the scenery, but the scenery is
            * still rendered on top of me"). */
-          .setDepth(hbDepth + this.occSeq++ * OCC_DEPTH_EPS),
+          .setDepth(
+            flat
+              ? SCENERY_FLAT_DEPTH + hbDepth * 1e-3 + this.occSeq++ * OCC_DEPTH_EPS
+              : hbDepth + this.occSeq++ * OCC_DEPTH_EPS,
+          ),
       );
       /* AND IT OCCLUDES. Scenery drew with the right painter depth but told
        * `resolveBodyDepth` nothing, so a body never sorted behind a tree — it
@@ -13800,7 +13821,7 @@ export class WorldScene extends Phaser.Scene {
        * see a black silhouette of the tree"). Same construction as the props'
        * copy — same crop, same flip, same displayed box, same depth band, no
        * new ordering rules. */
-      if (this.night) {
+      if (this.night && !flat) {
         this.litOccluders.push({
           img: this.add
             .image(fit.x, fit.y, key, name)
@@ -13818,7 +13839,7 @@ export class WorldScene extends Phaser.Scene {
         });
         this.makeFogSilhouette(this.litOccluders[this.litOccluders.length - 1]);
       }
-      this.occluderMeta.push({
+      if (!flat) this.occluderMeta.push({
         col: scol,
         row: srow,
         /* ITS OWN HEIGHT, from the piece's published `world_px_height`. A

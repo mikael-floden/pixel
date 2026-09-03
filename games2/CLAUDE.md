@@ -695,6 +695,23 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     profiled sections, its compositions, and `other` = frame total minus every
     section (render + GPU + unprofiled JS — the discriminator that told us the
     harness is 99% GPU-starved and the spike is ours).
+  - **FLAT SCENERY DRAWS UNDER EVERYTHING** (`collision: false` — the six rugs
+    and one clutter piece; maintainer 2026-09-03: "no collision means the object
+    is flat on the ground … everything marked as no collision should always be
+    drawn under the player/monsters/npcs/other scenery"). `parsePiece` publishes
+    the manifest's own `collision` (absent = solid), and a flat piece: draws at
+    `SCENERY_FLAT_DEPTH` (−500,000, plus its painter line ×1e-3 so two rugs
+    still sort against each other) — under every body, piece and terrain
+    occluder, above the ground texture at −1,000,000; gets NO LIT COPY (the copy
+    exists to lift a standing object above the darkness overlay so it reads as
+    its own silhouette; floor wants exactly the ground's light, which is what
+    being under the overlay gives it — and no copy means no cover crop and no
+    fog silhouette to keep in step); and registers NO occluderMeta. That last
+    one was a live bug: `top` rounds `world_px_height` (39-56 px) over `lh` (15)
+    to **3-4 LEVELS**, so a rug claimed to cover the player standing on it —
+    the "wall hack border in open ground" this file already warns about, from
+    the same maintainer report. (The note that "a rug rounds to 0 levels" was
+    wrong: it never did.)
   - **A LIT COPY IS CROPPED BY COVERING TERRAIN — scenery and props too.** Every
     scenery piece and solid prop draws twice: the base image in the world layer
     (painter-sorted, correctly hidden behind terrain) and a LIT COPY at
