@@ -787,7 +787,6 @@ const GROUND_SLICE_PX = 384;
  *  The size is now steered by the measured milliseconds of the slices actually
  *  painted, so the same code lands near the target on both machines. */
 const GROUND_SLICE_MS = 2;
-const GROUND_SLICE_MIN = 96;
 const GROUND_SLICE_MAX = 768;
 /** Composed boundary/plate textures the PREFETCH RING may build per frame. */
 const GROUND_RING_COMPOSE = 3;
@@ -1685,8 +1684,17 @@ export class WorldScene extends Phaser.Scene {
       pushFramebuffer?: (fb: WebGLFramebuffer, u?: boolean, s?: boolean) => void;
       popFramebuffer?: () => void;
     };
-    const fb = (rt as unknown as { renderTarget?: { framebuffer?: WebGLFramebuffer } })?.renderTarget?.framebuffer;
-    if (!rt || !r?.gl || !fb || !r.pushFramebuffer || !r.popFramebuffer) return null;
+    /* THE FRAMEBUFFER LIVES ON THE DYNAMIC TEXTURE, not on the game object.
+     * `groundRT` is a RenderTexture (an Image); its DynamicTexture is
+     * `rt.texture`, and that is what owns `renderTarget`. Reaching for
+     * `rt.renderTarget` silently returned undefined and the whole sample came
+     * back null — his first run carried no ground data at all because of it. */
+    const fb = rt
+      ? (rt.texture as unknown as { renderTarget?: { framebuffer?: WebGLFramebuffer } })?.renderTarget?.framebuffer
+      : undefined;
+    if (!rt || !r?.gl || !fb || !r.pushFramebuffer || !r.popFramebuffer) {
+      return { unavailable: `rt=${!!rt} gl=${!!r?.gl} fb=${!!fb} push=${!!r?.pushFramebuffer}` };
+    }
     const gl = r.gl;
     const W = Math.min(256, rt.width);
     const H = Math.min(192, rt.height);
@@ -13171,13 +13179,16 @@ export class WorldScene extends Phaser.Scene {
     const sliceMs = performance.now() - t0;
     this.groundSliceStats.slices++;
     this.groundSliceStats.ms += sliceMs;
-    /* STEER THE SIZE BY WHAT IT COST. A slice is one clipped pass over a rect,
-     * so cost scales with its area; halving the size roughly halves the frame
-     * it lands on. Geometric, damped, and clamped — an EMA would lag a device
-     * change and a proportional jump would oscillate on one slow slice. */
-    if (sliceMs > GROUND_SLICE_MS * 1.5) {
-      this.groundSlicePx = Math.max(GROUND_SLICE_MIN, Math.round(this.groundSlicePx * 0.7));
-    } else if (sliceMs < GROUND_SLICE_MS * 0.5) {
+    /* THE SIZE IS NOT THE LEVER, AND STEERING IT DOWNWARD BACKFIRED. Measured
+     * on his phone: shrinking slices took `groundSlice` from 6.48 ms/frame to
+     * 16.66 — two and a half times WORSE. The reason is already written down
+     * one screen up: every beginDraw/endDraw bracket costs a capture-target
+     * clear AND A FULL-TEXTURE BLIT whatever it draws, so cost is dominated by
+     * the number of BRACKETS, not by the area inside them. Smaller slices mean
+     * more brackets for the same band, and each one pays that fixed price.
+     * So the size only ever GROWS here, toward fewer brackets, and the floor is
+     * the size that was shipping. */
+    if (sliceMs < GROUND_SLICE_MS * 0.5) {
       this.groundSlicePx = Math.min(GROUND_SLICE_MAX, Math.round(this.groundSlicePx * 1.15));
     }
     if (!this.groundSliceQ.length) this.groundSliceCtx = null;
