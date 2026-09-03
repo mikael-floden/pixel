@@ -437,6 +437,35 @@ export function topFaceOnly(sheets: PatternSheets, src: Pixels): Pixels {
     out.data[i * 4 + 2] = a.data[i * 4 + 2];
     out.data[i * 4 + 3] = a.data[i * 4 + 3];
   }
+  /* ONE ROW OF MARGIN, and this is the whole reason a liquid needs it.
+   *
+   * A top face is the 29-row diamond, and the ground lays tiles at dy=14, so
+   * two neighbours overlap by EXACTLY ONE ROW. Every other ground keeps its
+   * 46-row plate — wall included — and overlaps by seventeen, which hides any
+   * error. A liquid drops the wall and is left with the minimum overlap the
+   * geometry allows: zero margin, so any per-op slip of a single pixel opens a
+   * hole, and a hole on water shows the bare fill because there is no wall
+   * behind it. That is the maintainer's dotted zigzag — measured on his own
+   * device, present on water long after the same artefact left sand, with the
+   * raster (924 px / 29 rows), the mask and the pitch (+28 per diagonal step)
+   * all verified correct.
+   *
+   * So carry the row BELOW each column's top face when the art has one. It is
+   * covered by the tile in front either way (that tile spans rows 14..42 of
+   * this one), so nothing new is ever visible; it only restores the margin the
+   * wall used to provide. Honest about what this is: the residual per-op cause
+   * is still unnamed, and this removes the class rather than that instance. */
+  for (let x = 0; x < fw; x++) {
+    let bottom = -1;
+    for (let y = 0; y < fh; y++) if (libTop[y * fw + x]) bottom = y;
+    if (bottom < 0 || bottom + 1 >= fh) continue;
+    const si = (bottom + 1) * fw + x;
+    if (a.data[si * 4 + 3] === 0) continue;
+    out.data[si * 4] = a.data[si * 4];
+    out.data[si * 4 + 1] = a.data[si * 4 + 1];
+    out.data[si * 4 + 2] = a.data[si * 4 + 2];
+    out.data[si * 4 + 3] = a.data[si * 4 + 3];
+  }
   return out;
 }
 

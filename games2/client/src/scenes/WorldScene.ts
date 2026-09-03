@@ -4405,6 +4405,36 @@ export class WorldScene extends Phaser.Scene {
         // and where review found the epsilon must not go — so parity covers it).
         return { occluders: order(this.occluders), scenery: order(this.sceneryImgs), lit: order(this.litOccluders.map((lo) => lo.img)) };
       },
+      /** THE ROW PROFILE OF A BUILT TEXTURE — how many opaque px per row.
+       *  For the terrain rasters the game COMPOSES (t3f: top-face-only,
+       *  t3c: conformed), which is the only way to see whether what was built
+       *  matches what the mask says it should be. A top face must be 29 rows
+       *  and 924 px; anything less is a hole the tiling cannot close. */
+      texRows: (key: string) => {
+        if (!this.textures.exists(key)) {
+          return { key, missing: true, like: Object.keys(this.textures.list).filter((k) => k.startsWith(key.slice(0, 6))).slice(0, 8) };
+        }
+        const src = this.textures.get(key).getSourceImage() as CanvasImageSource & { width: number; height: number };
+        const c = document.createElement("canvas");
+        c.width = src.width;
+        c.height = src.height;
+        const g = c.getContext("2d");
+        if (!g) return { key, err: "no 2d context" };
+        g.clearRect(0, 0, c.width, c.height);
+        g.drawImage(src, 0, 0);
+        const d = g.getImageData(0, 0, c.width, c.height).data;
+        const rows: string[] = [];
+        let opaque = 0;
+        for (let y = 0; y < c.height; y++) {
+          let n = 0;
+          for (let x = 0; x < c.width; x++) if (d[(y * c.width + x) * 4 + 3] > 0) n++;
+          if (n) rows.push(`${y}:${n}`);
+          opaque += n;
+        }
+        return { key, size: `${c.width}x${c.height}`, opaque, rowCount: rows.length, rows };
+      },
+      /** Every composed terrain texture the factory has built, by prefix. */
+      texKeys: (prefix: string) => Object.keys(this.textures.list).filter((k) => k.startsWith(prefix)).slice(0, 20),
       occRebuild: (mode?: "legacy" | "bulk" | "pool") => {
         if (mode === "legacy") {
           this.occFastDestroy = false;
