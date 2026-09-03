@@ -58,6 +58,24 @@ const after = (path) => {
 };
 for (const p of APPROVED) entries[p] = { status: "approved", updated_at: after(p) };
 for (const p of REJECTED) entries[p] = { status: "rejected", updated_at: after(p) };
+/* A PIECE LEAVES THE QUEUE WHEN ITS STATES ARE JUDGED, not when the piece is.
+ * The scenery agent changed that rule on 2026-08-16 (a piece verdict alone had
+ * emptied the review queue while 2,079 states sat unjudged), and this gate was
+ * still injecting only the old piece-level verdict — so it described a page
+ * that had moved on: "needs review 710" of 710 with three of them approved.
+ * Each fixture piece is now judged the way he judges one, every state ×
+ * direction, stamped with that clip's own hash so the verdict is about the art
+ * on file rather than something regenerated since. */
+const judgeStates = (path, status) => {
+  const o = objs.find((x) => x.path === path);
+  for (const [st, anim] of Object.entries(o?.animations ?? {})) {
+    for (const [dir, clip] of Object.entries(anim.dirs ?? {})) {
+      entries[`${path}#${st}#${dir}`] = { status, updated_at: after(path), ...(clip?.h ? { art: clip.h } : {}) };
+    }
+  }
+};
+for (const p of APPROVED) judgeStates(p, "approved");
+for (const p of REJECTED) judgeStates(p, "rejected");
 
 const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
 const p = await (await b.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 })).newPage();
@@ -397,7 +415,10 @@ ok(s.outside, "and is labelled as outside the current filter");
 // out. Simulated by approving EVERYTHING, which is the state he was in.
 {
   const saved = { ...entries };
-  for (const o of objs) entries[o.path] = { status: "approved", updated_at: after(o.path) };
+  // Approving the whole domain means approving every STATE of it — the same
+  // rule change as above: a piece-level approval alone leaves all 710 sitting
+  // in "needs review", which is not the state he was in when he reported this.
+  for (const o of objs) { entries[o.path] = { status: "approved", updated_at: after(o.path) }; judgeStates(o.path, "approved"); }
   await go("#/objects");
   await pick("unreviewed");
   const e = await p.evaluate(() => ({
