@@ -691,6 +691,10 @@ const CAVE_FALLOFF = 3.0;
 /** The draw-time floor tint is OFF: the shader covers the same pixels. */
 const CAVE_TINT_TILES = false;
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
+/** Texels the exposed band overlaps back into the kept picture (see
+ *  scrollTiles3Ground). 1 is what the measured artefact needed; it is a
+ *  repaint of pixels that are already right, so it is safe to raise. */
+const GROUND_SEAM = 1;
 // Occluder rebuild cadence, and the slack every occluder cull margin is
 // derived FROM. The set is only re-evaluated once the camera centre has
 // drifted this far, so anything culled must stay invisible for a whole
@@ -12807,10 +12811,27 @@ export class WorldScene extends Phaser.Scene {
     const bands: { x0: number; y0: number; x1: number; y1: number }[] = [];
     const IW = Math.ceil(W);
     const IH = Math.ceil(H);
-    if (sx > 0) bands.push({ x0: IW - sx, y0: 0, x1: IW, y1: IH });
-    else if (sx < 0) bands.push({ x0: 0, y0: 0, x1: -sx, y1: IH });
-    if (sy > 0) bands.push({ x0: 0, y0: IH - sy, x1: IW, y1: IH });
-    else if (sy < 0) bands.push({ x0: 0, y0: 0, x1: IW, y1: -sy });
+    /* THE BAND OVERLAPS THE KEPT PICTURE BY `GROUND_SEAM` TEXELS.
+     *
+     * Without it every latch left ONE texel row showing the bare fill, and the
+     * maintainer photographed the result: full-width bands of exactly 0x181c28
+     * — this fill's own colour, so the row is filled and simply has no terrain
+     * on it — spaced 512 device px apart at zoom 2, which is 256 world px, the
+     * GROUND_MARGIN/2 latch step EXACTLY. One line per scroll, and they ride
+     * up the screen and accumulate because the copy carries each one forward.
+     *
+     * Repainting a texel the copy already provided is IDEMPOTENT: the band pass
+     * is the same painter sequence clipped, so the overlap row is drawn with
+     * the ops it already had, and where the terrain is void the fill under it
+     * is the same fill. So this cannot change a pixel that was right, and it
+     * closes the seam whatever the sub-texel cause — which is the point: the
+     * exactness argument for the band said no gap was possible, and a gap was
+     * there anyway. One row of ops per latch is free. */
+    const seam = GROUND_SEAM;
+    if (sx > 0) bands.push({ x0: Math.max(0, IW - sx - seam), y0: 0, x1: IW, y1: IH });
+    else if (sx < 0) bands.push({ x0: 0, y0: 0, x1: Math.min(IW, -sx + seam), y1: IH });
+    if (sy > 0) bands.push({ x0: 0, y0: Math.max(0, IH - sy - seam), x1: IW, y1: IH });
+    else if (sy < 0) bands.push({ x0: 0, y0: 0, x1: IW, y1: Math.min(IH, -sy + seam) });
     /* THE BAND IS NOT PAINTED HERE. Painting it cost 60-98 ms of JS in ONE
      * frame on fresh terrain (measured: ~3,000 blits plus 66-98 texture
      * compositions) — the freeze felt every ~1.5 s while running straight
@@ -14138,35 +14159,17 @@ export class WorldScene extends Phaser.Scene {
     return (c << 16) | (c << 8) | c;
   }
 
-  /** THE BACKGROUND UNDER THE WHOLE GROUND TEXTURE, overscanned by one texel.
+  /** THE BACKGROUND UNDER THE WHOLE GROUND TEXTURE.
    *
-   *  `DynamicTexture.fill(rgb, a)` with NO rect does not cover the texture's
-   *  LAST ROW. It converts the rect into the renderer's projection
-   *  (`height * renderer.height / texture.height`, Phaser 3.90
-   *  DynamicTexture.js) and the round trip lands a hair short, so the bottom
-   *  texel row is left at alpha 0. Measured at the maintainer's geometry:
-   *  `fully TRANSPARENT rows: [H-1]`, `fully TRANSPARENT cols: []` — the loss
-   *  is VERTICAL ONLY, which is the whole shape of the bug below.
-   *
-   *  That one row is the maintainer's "straight horizontal lines" (2026-09-03).
-   *  It is invisible where it is born — GROUND_MARGIN puts it ~512 px below the
-   *  view — but the SCROLL copies the kept picture up by the anchor delta, so
-   *  it lands at H-1-sy, an INTERIOR row that the exposed band (rows H-sy…H-1)
-   *  never repaints. There the whole-texture fill under it shows through as a
-   *  full-width 0x181c28 line, and because the copy is opaque from then on the
-   *  row is carried forward for good. Every southward latch injects another;
-   *  at a 256 px step under a ~780 px view, two or three ride up the screen at
-   *  once — which is what he photographed. There is no vertical twin because no
-   *  column is ever left short, and that is why the lines went horizontal-only
-   *  once the fractional-crop cause of the vertical ones was fixed.
-   *
-   *  Overscanning every edge by a texel closes it. Over-covering a WHOLE-texture
-   *  background fill is free: it can only paint background where background
-   *  already belongs, and the viewport clips the rest. This is the exact
-   *  opposite of a BAND fill, which must be texel-exact and for that reason does
-   *  not exist — see scrollTiles3Ground. */
+   *  A WHOLE-texture fill, which is the only fill that is texel-exact, and it
+   *  covers EVERY row — verified directly off the framebuffer with
+   *  `gl.readPixels` (400/400 opaque on the first and last row of a probe
+   *  texture), not through `DynamicTexture.snapshot`, whose framebuffer branch
+   *  returns the image unflipped and reads as a missing edge row. An earlier
+   *  round mistook that readback for a real defect and overscanned this fill to
+   *  "fix" it; the overscan was a no-op and the row it chased was the probe. */
   private fillGround(rt: Phaser.GameObjects.RenderTexture, rgb: number): void {
-    rt.fill(rgb, 1, -1, -1, rt.width + 2, rt.height + 2);
+    rt.fill(rgb, 1);
   }
 
   private redrawGround() {
