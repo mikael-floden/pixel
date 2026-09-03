@@ -141,7 +141,7 @@
    "always_own_texture": false,
    "base_color": "#e4c495",
    "palette": {
-    "top": "#e4c495",
+    "top": "#ead2ad",
     "wall": "#ab9274"
    },
    "base_tiles": [],
@@ -204,10 +204,13 @@
    "always_own_texture": false,
    "base_color": "#7eb7c7",
    "palette": {
-    "top": "#7eb7c7",
-    "wall": "#4c8a98"
+    "top": "#4a98a1",
+    "wall": "#2c727b"
    },
    "base_tiles": []
   }
+ },
+ "_palette_notes": {
+  "light_beach+water 2026-09-03": "maintainer 2026-09-03, from the Shoreline Palette artifact: the tiles2 water read better than tiles3's, and the beach wanted to be slightly brighter. He chose 'Lightness +6' for the sand AND made it conditional on the water being corrected in the same change ('only if the water color is changed as well'), so the two move together and must never be split."
  }
 }

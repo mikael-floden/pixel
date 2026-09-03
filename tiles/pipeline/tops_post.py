@@ -182,8 +182,18 @@ def main():
     idx = json.load(open(idx_path))
     wrote = misfits = 0
     worst = []
+    # THE LIVE PALETTE WINS, NOT THE ONE BAKED AT GENERATION TIME. index.json carries
+    # each sheet's `palette_top` as it stood when the art was bought, so a palette edit
+    # used to leave every post/ tile painted toward the OLD colour while the game's flat
+    # fill (tiles/ground_types.json, read live) moved immediately - a bright new surface
+    # meeting old-coloured tiles of the same ground. Measured when the maintainer's
+    # water/sand change landed, 2026-09-03. config/palette.json is the source of truth
+    # for what a surface should be; the index value is only a fallback for a ground the
+    # palette no longer names.
+    live = json.load(open(os.path.join(ROOT, "config", "palette.json")))["types"]
     for sheet in idx["sheets"]:
-        clean = _hex(sheet["palette_top"])
+        g = sheet.get("ground")
+        clean = _hex((live.get(g) or {}).get("top") or sheet["palette_top"])
         d = os.path.join(REPO, sheet["dir"])
         post = os.path.join(d, "post")
         os.makedirs(post, exist_ok=True)

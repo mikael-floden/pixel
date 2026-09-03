@@ -43,15 +43,16 @@
    "top_extras_source": "maintainer verdict 2026-08-28: good as is, no extra top colour (measured: no common colour jumps far enough to earn a slot)"
   },
   "light_beach": {
-   "top": "#e4c495",
+   "top": "#ead2ad",
    "source": "reference tile tiles/matrix/light_beach__over__light_beach/sheet_02_same2_18712/tile_05.png \u2014 the maintainer's chosen look for this material",
    "wall": "#ab9274",
    "wall_n": 7,
    "transition_surface": "own",
    "top_extras": [
-    "#d1ad81"
+    "#d9bc97"
    ],
-   "top_extras_source": "maintainer +1 verdict 2026-08-28 on the Palette Headroom page: the common longest-jump colour (in 29/40 sampled tiles, mean jump 12.7dE). Top pixels snap to the NEAREST of [top]+top_extras in the background-aligned frame; walls untouched."
+   "top_extras_source": "maintainer +1 verdict 2026-08-28 on the Palette Headroom page: the common longest-jump colour (in 29/40 sampled tiles, mean jump 12.7dE). Top pixels snap to the NEAREST of [top]+top_extras in the background-aligned frame; walls untouched.",
+   "top_source": "maintainer 2026-09-03, from the Shoreline Palette artifact: the tiles2 water read better than tiles3's, and the beach wanted to be slightly brighter. He chose 'Lightness +6' for the sand AND made it conditional on the water being corrected in the same change ('only if the water color is changed as well'), so the two move together and must never be split."
   },
   "grey_stone": {
    "top": "#808082",
@@ -130,12 +131,13 @@
    ]
   },
   "water": {
-   "top": "#7eb7c7",
+   "top": "#4a98a1",
    "source": "reference tile tiles/matrix/water__over__water/sheet_01_same1_18719/tile_14.png \u2014 the maintainer's chosen look for this material",
-   "wall": "#4c8a98",
+   "wall": "#2c727b",
    "wall_n": 6,
    "transition_surface": "flat",
-   "top_extras_source": "maintainer verdict 2026-08-28: good as is, no extra top colour (measured: no common colour jumps far enough to earn a slot)"
+   "top_extras_source": "maintainer verdict 2026-08-28: good as is, no extra top colour (measured: no common colour jumps far enough to earn a slot)",
+   "top_source": "maintainer 2026-09-03, from the Shoreline Palette artifact: the tiles2 water read better than tiles3's, and the beach wanted to be slightly brighter. He chose 'Lightness +6' for the sand AND made it conditional on the water being corrected in the same change ('only if the water color is changed as well'), so the two move together and must never be split."
   },
   "deep_water": {
    "top": "#162843",
