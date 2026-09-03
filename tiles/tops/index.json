@@ -17,8 +17,8 @@
   },
   "sheet_usd": 0.096,
   "top_face_note": "mean_colours / mean_dominant_share measure the TOP FACE only (transition_render.top_face). Reference: a deliberately flat matrix top is 4 colours / 0.95, a textured base candidate 9-14 / 0.30-0.67.",
-  "n_sheets": 90,
-  "n_tiles": 1440,
+  "n_sheets": 98,
+  "n_tiles": 1568,
   "counts": {
     "black_rock": {
       "subtle": 3,
@@ -38,7 +38,7 @@
     },
     "grass": {
       "subtle": 3,
-      "detail": 3
+      "detail": 5
     },
     "grey_paving_stone": {
       "subtle": 3,
@@ -50,7 +50,7 @@
     },
     "ice": {
       "subtle": 3,
-      "detail": 3
+      "detail": 5
     },
     "lava": {
       "subtle": 3,
@@ -58,7 +58,7 @@
     },
     "light_beach": {
       "subtle": 3,
-      "detail": 3
+      "detail": 5
     },
     "light_soil": {
       "subtle": 3,
@@ -74,7 +74,7 @@
     },
     "snow": {
       "subtle": 3,
-      "detail": 3
+      "detail": 5
     },
     "water": {
       "subtle": 3,
@@ -853,6 +853,70 @@
     {
       "ground": "grass",
       "flavour": "detail",
+      "seed": 27437,
+      "prompt": "grass, white daisies in the middle, grass all around the edge",
+      "palette_top": "#14523b",
+      "tile_id": "b8c37794-da41-4ea2-a68a-d28e438f499d",
+      "dir": "tiles/tops/grass/sheet_100_detail_27437",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 18.75,
+        "mean_dominant_share": 0.4898
+      }
+    },
+    {
+      "ground": "grass",
+      "flavour": "detail",
+      "seed": 61215,
+      "prompt": "grass, yellow buttercups in the middle, grass all around the edge",
+      "palette_top": "#14523b",
+      "tile_id": "7185b129-34af-4ad0-a5a1-9d9ad6d25e9e",
+      "dir": "tiles/tops/grass/sheet_101_detail_61215",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 20.88,
+        "mean_dominant_share": 0.1981
+      }
+    },
+    {
+      "ground": "grass",
+      "flavour": "detail",
       "seed": 72634,
       "prompt": "beautiful meadow grass, deep green, sunlit, rich and varied, lots of detail",
       "palette_top": "#14523b",
@@ -1429,6 +1493,38 @@
     {
       "ground": "ice",
       "flavour": "detail",
+      "seed": 11646,
+      "prompt": "ice, trapped air bubbles in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "440d2c3e-57d7-4fd3-a5f2-236d4582de71",
+      "dir": "tiles/tops/ice/sheet_101_detail_11646",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 9.06,
+        "mean_dominant_share": 0.5916
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
       "seed": 30131,
       "prompt": "beautiful glacial ice, pale blue, glassy translucent glow, bright glints, rich detail",
       "palette_top": "#99ced1",
@@ -1520,6 +1616,38 @@
       "top_face": {
         "mean_colours": 17.19,
         "mean_dominant_share": 0.2833
+      }
+    },
+    {
+      "ground": "ice",
+      "flavour": "detail",
+      "seed": 98506,
+      "prompt": "ice, a spider-web crack in the middle, ice all around the edge",
+      "palette_top": "#99ced1",
+      "tile_id": "cf2554cf-608d-438c-84eb-ea5fbc8bdb74",
+      "dir": "tiles/tops/ice/sheet_100_detail_98506",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 15.06,
+        "mean_dominant_share": 0.79
       }
     },
     {
@@ -1808,6 +1936,70 @@
       "top_face": {
         "mean_colours": 6.0,
         "mean_dominant_share": 0.6122
+      }
+    },
+    {
+      "ground": "light_beach",
+      "flavour": "detail",
+      "seed": 19375,
+      "prompt": "light beach, a spiral seashell in the middle, light beach all around the edge",
+      "palette_top": "#e4c495",
+      "tile_id": "d6e5633b-6e4f-49cb-bb48-a431df8075c8",
+      "dir": "tiles/tops/light_beach/sheet_100_detail_19375",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 23.5,
+        "mean_dominant_share": 0.6429
+      }
+    },
+    {
+      "ground": "light_beach",
+      "flavour": "detail",
+      "seed": 48393,
+      "prompt": "light beach, a starfish in the middle, light beach all around the edge",
+      "palette_top": "#e4c495",
+      "tile_id": "e1ba8b02-2161-4d2c-945d-4527af3cd832",
+      "dir": "tiles/tops/light_beach/sheet_101_detail_48393",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 20.44,
+        "mean_dominant_share": 0.5997
       }
     },
     {
@@ -2613,6 +2805,38 @@
     {
       "ground": "snow",
       "flavour": "detail",
+      "seed": 41113,
+      "prompt": "snow, bird footprints in the middle, snow all around the edge",
+      "palette_top": "#ebf4f6",
+      "tile_id": "285b5c0f-f3ff-46f3-a2d5-14345e5ebe7d",
+      "dir": "tiles/tops/snow/sheet_101_detail_41113",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 14.06,
+        "mean_dominant_share": 0.7817
+      }
+    },
+    {
+      "ground": "snow",
+      "flavour": "detail",
       "seed": 41912,
       "prompt": "beautiful deep snow, bright white, wind shaped, sparkling, cold blue shadows, rich detail",
       "palette_top": "#ebf4f6",
@@ -2640,6 +2864,38 @@
       "top_face": {
         "mean_colours": 6.56,
         "mean_dominant_share": 0.4798
+      }
+    },
+    {
+      "ground": "snow",
+      "flavour": "detail",
+      "seed": 49695,
+      "prompt": "snow, boot prints in the middle, snow all around the edge",
+      "palette_top": "#ebf4f6",
+      "tile_id": "577e7b89-03d5-483b-b2c5-c0933d406105",
+      "dir": "tiles/tops/snow/sheet_100_detail_49695",
+      "n_tiles": 16,
+      "tiles": [
+        "tile_00.webp",
+        "tile_01.webp",
+        "tile_02.webp",
+        "tile_03.webp",
+        "tile_04.webp",
+        "tile_05.webp",
+        "tile_06.webp",
+        "tile_07.webp",
+        "tile_08.webp",
+        "tile_09.webp",
+        "tile_10.webp",
+        "tile_11.webp",
+        "tile_12.webp",
+        "tile_13.webp",
+        "tile_14.webp",
+        "tile_15.webp"
+      ],
+      "top_face": {
+        "mean_colours": 10.12,
+        "mean_dominant_share": 0.6271
       }
     },
     {
