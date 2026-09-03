@@ -1487,6 +1487,7 @@ export class WorldScene extends Phaser.Scene {
   private perfBeacon = perfBeaconArmed();
   private perfBeaconAt = 0;
   private perfBeaconFrom: { x: number; y: number } | null = null;
+  private perfHideHooked = false;
   private perfStack: number[] = [];
   private perfAcc: Record<string, { n: number; ms: number; max: number }> = {};
   private perfFrames: number[] = [];
@@ -1554,6 +1555,9 @@ export class WorldScene extends Phaser.Scene {
    *  the section timers the report is built from; disarming turns them off so
    *  nobody pays for measurement they are not sending. */
   private togglePerfBeacon(): void {
+    // TURNING OFF: send what has accumulated first, or the last window — the
+    // one he just finished reproducing something in — is thrown away.
+    if (this.perfBeacon) this.perfBeaconSend(performance.now(), true);
     this.perfBeacon = !this.perfBeacon;
     this.perfOn = this.perfBeacon;
     this.perfBeaconAt = 0;
@@ -1578,17 +1582,44 @@ export class WorldScene extends Phaser.Scene {
     if (!this.perfBeaconAt) {
       this.perfBeaconAt = now;
       this.perfBeaconFrom = this.mePos();
+      if (!this.perfHideHooked) {
+        this.perfHideHooked = true;
+        /* BACKGROUNDING IS A FLUSH TOO. He plays from an installed app and
+         * leaves by swiping it away, which fires visibilitychange and nothing
+         * else — `pagehide`/`unload` are unreliable on mobile. The POST already
+         * carries keepalive, which is what lets it outlive the hidden page. */
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "hidden" && this.perfBeacon) {
+            this.perfBeaconSend(performance.now(), true);
+          }
+        });
+      }
       return;
     }
     if (now - this.perfBeaconAt < PERF_BEACON_MS) return;
+    this.perfBeaconSend(now, false);
+  }
+
+  /** Send the window that has accumulated so far, and start a new one.
+   *
+   *  `final` is the flush: switching the beacon OFF, or the app going to the
+   *  background, would otherwise DISCARD the window in progress — and that is
+   *  routinely the interesting one, because he turns the beacon off right after
+   *  reproducing whatever he was chasing (his point, 2026-09-03). A final flush
+   *  drops the "have you moved" gate: at that moment even a short or stationary
+   *  window is the last thing he saw, and `keepalive` is what lets it survive
+   *  the page being hidden or torn down. */
+  private perfBeaconSend(now: number, final: boolean): void {
     const from = this.perfBeaconFrom;
     const at = this.mePos();
     const secs = (now - this.perfBeaconAt) / 1000;
     this.perfBeaconAt = now;
     this.perfBeaconFrom = at;
+    if (secs < 1) return; // nothing has accumulated worth a commit
     // MOVED? A stationary window says nothing about the lag he reports while
-    // running, and would evict a useful report from the file's tail.
-    if (!from || !at || Math.hypot(at.x - from.x, at.y - from.y) < 2) return;
+    // running, and would evict a useful report from the file's tail. A FINAL
+    // flush is exempt — see above.
+    if (!final && (!from || !at || Math.hypot(at.x - from.x, at.y - from.y) < 2)) return;
     let snap: Record<string, unknown> | null = null;
     try {
       snap = (window as unknown as { __ml?: { perf?: () => Record<string, unknown> } }).__ml?.perf?.() ?? null;
@@ -1603,12 +1634,13 @@ export class WorldScene extends Phaser.Scene {
     const cam = this.cameras.main;
     const body = {
       build: assetIndexInfo().buildSha,
-      where: `${at.x.toFixed(1)},${at.y.toFixed(1)}`,
+      where: at ? `${at.x.toFixed(1)},${at.y.toFixed(1)}` : "unknown",
       tod: TIME_PHASES[this.timeIdx].name,
       zoom: cam.zoom,
       dpr: window.devicePixelRatio || 1,
       view: `${this.scale.width}x${this.scale.height}`,
       secs: +secs.toFixed(1),
+      final,
       frames: snap.frames,
       sections: perFrame,
       counts: { ...(snap.counts as Record<string, number>), texturesAdded: snap.texturesAdded as number },

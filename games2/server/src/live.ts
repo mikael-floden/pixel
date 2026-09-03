@@ -358,7 +358,11 @@ let commitChain: Promise<void> = Promise.resolve();
  *  the floor between commits. One player on a phone, so this is about not
  *  writing a commit per frame, not about contention. */
 const PERF_KEEP = 40;
-const PERF_MIN_GAP_MS = 20_000;
+/* 5 s, not 20: the client only sends every 30 s by itself, so this gate is a
+ * guard against a rogue client, not a throttle on the honest one — and at 20 s
+ * it ATE the flush the client sends when the beacon is switched off, which is
+ * the most interesting window there is. */
+const PERF_MIN_GAP_MS = 5_000;
 let lastPerfCommit = 0;
 
 function ghHeaders(): Record<string, string> {
@@ -526,6 +530,7 @@ export function registerLiveRoutes(app: express.Application): void {
       dpr: num(body.dpr, 0, 8),
       view: str(body.view, 24),
       secs: num(body.secs, 0, 3600),
+      final: body.final === true,
       frames: flat(body.frames, 12, 100000),
       sections: flat(body.sections, 40, 100000),
       counts: flat(body.counts, 40, 1e9),
