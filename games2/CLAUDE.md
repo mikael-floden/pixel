@@ -625,9 +625,22 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     JUST IN TIME (a cell's files are asked for when it enters the window) and
     every landed batch poisons the latch — running into new ground is still
     request → land → FULL paint every ~256 px. Next: prefetch a ring ahead and
-    repaint only the landed cells through `groundClip`. And the deferred
-    animation batch (NPC rotations/idles, monster combat strips: ~1,000 files)
-    uploads 30-60 textures per step with no per-frame pacing while you run.
+    repaint only the landed cells through `groundClip`.
+  - **The deferred animation batch is PACED (#7).** `loadDeferredAnims` (every
+    character's non-boot states, every NPC rotation/idle frame, 525 monster
+    combat strips, ~1,000 files) streams behind the live world, and each landed
+    file is a decode + GPU upload on the main thread the moment it arrives. At
+    the loader's default parallelism (32; 6 on Android) a warm cache landed them
+    in bursts: measured on the north run, 32-105 textures added per step for
+    the whole run. The batch runs with `maxParallelDownloads = 2`
+    (`DEFERRED_PARALLEL`; restored on COMPLETE), which bounds arrivals to ~2 per
+    frame — measured 3-15 per step — at the price of the batch taking ~10-16 s
+    on a phone instead of ~3 s; nothing in it is needed in the first seconds
+    (my urgent clips are queued first and register per state as they land).
+    Anything appended to the scene loader meanwhile (item icons, the grave
+    cross, chess pieces) queues behind it, as before — FIFO — only later. Dev
+    A/B: localStorage `ml-deferred-parallel` (0 = the loader's own);
+    `__ml.perf()` reports texture adds by key family and the per-frame max.
 - `stairs` tiles are ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower,
   cactus, lava) are impassable — `SURFACES`/`surfaceFor` (`road_*` by prefix).

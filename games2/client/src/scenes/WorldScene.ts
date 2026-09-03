@@ -718,6 +718,18 @@ const THREAT_NEAR_WU = 220;
 const CAM_TAU = 0.3; // s — position smoothing (run trail ≈ 175px/s × τ ≈ 52px)
 const CAM_TRAIL_MAX = 70; // scene px — the player never outruns the frame
 const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
+/** Files in flight for the DEFERRED animation batch — see loadDeferredAnims.
+ *  Dev A/B: localStorage `ml-deferred-parallel` overrides (0 = the loader's own). */
+const DEFERRED_PARALLEL = 2;
+function deferredParallel(): number {
+  try {
+    const n = Number(localStorage.getItem("ml-deferred-parallel"));
+    if (Number.isFinite(n) && n >= 0 && localStorage.getItem("ml-deferred-parallel") !== null) return n;
+  } catch {
+    /* storage blocked: the constant */
+  }
+  return DEFERRED_PARALLEL;
+}
 const CAM_ZOOM_OUT = 0.32; // fraction of base zoom shed at full run speed (maintainer: "stronger", twice)
 const CAM_ZOOM_REF_WU = 124; // ≈ run world-speed (175 px/s side-view · √½)
 const CAM_ZOOM_TAU_OUT = 0.45; // s — ease toward zoomed-out while speeding up
@@ -1375,6 +1387,8 @@ export class WorldScene extends Phaser.Scene {
   private perfLast = 0;
   private perfTexAdded = 0;
   private perfTexFam: Record<string, number> = {};
+  private perfTexFrame = 0;
+  private perfTexFrameMax = 0;
   private perfTexHooked = false;
   private ps(): void {
     if (this.perfOn) this.perfStack.push(performance.now());
@@ -3643,6 +3657,7 @@ export class WorldScene extends Phaser.Scene {
           this.perfTexHooked = true;
           this.textures.on(Phaser.Textures.Events.ADD, (key: string) => {
             this.perfTexAdded++;
+            this.perfTexFrame++;
             // WHAT is being added, by key family (the first path-ish segment).
             const fam = String(key).replace(/^([a-z0-9_-]+[:/]).*$/i, "$1").slice(0, 16);
             this.perfTexFam[fam] = (this.perfTexFam[fam] ?? 0) + 1;
@@ -3651,6 +3666,8 @@ export class WorldScene extends Phaser.Scene {
         if (on !== undefined) {
           this.perfTexAdded = 0;
           this.perfTexFam = {};
+          this.perfTexFrame = 0;
+          this.perfTexFrameMax = 0;
           this.perfOn = on;
           this.perfAcc = {};
           this.perfFrames = [];
@@ -3686,9 +3703,12 @@ export class WorldScene extends Phaser.Scene {
           window: { ms: +this.perfFrames.reduce((a, b) => a + b, 0).toFixed(0) },
           texturesAdded: this.perfTexAdded,
           texFamilies: this.perfTexFam,
+          texFrameMax: this.perfTexFrameMax,
           groundLast: { composed: this.t3stats.composed, composeMs: this.t3stats.composeMs, ms: this.t3stats.ms },
         };
         this.perfTexAdded = 0;
+        this.perfTexFam = {};
+        this.perfTexFrameMax = 0;
         this.perfAcc = {};
         this.perfFrames = [];
         return out;
@@ -7534,6 +7554,8 @@ export class WorldScene extends Phaser.Scene {
       const now = performance.now();
       if (this.perfLast) this.perfFrames.push(now - this.perfLast);
       this.perfLast = now;
+      if (this.perfTexFrame > this.perfTexFrameMax) this.perfTexFrameMax = this.perfTexFrame;
+      this.perfTexFrame = 0;
     }
     this.ps();
     this.redrawGround();
@@ -10566,7 +10588,22 @@ export class WorldScene extends Phaser.Scene {
         for (const kind of [...leftOf.keys()]) this.onMonsterArtLanded(kind);
       });
     }
+    // PACED. This batch is ~1,000 files (every character's deferred states,
+    // every NPC rotation and idle frame, 525 monster combat strips) streaming
+    // behind a LIVE world, and each landed file is a decode + a GPU upload on
+    // the main thread the moment it arrives. With the loader's default
+    // parallelism (32; 6 on Android) a warm cache lands them in bursts —
+    // measured 565 textures added in ONE step of the north run, 30-60 per step
+    // for the rest of it — which is the "something is loading" hitch while
+    // running. Two in flight bounds the arrivals to ~2 per frame (~1,000 files
+    // in ~8 s at 60 fps), and nothing here is needed in the first second: my
+    // urgent clips are queued first and a state registers the moment its own
+    // frames are in (above). Restored on COMPLETE for whatever loads next.
+    const prevParallel = this.load.maxParallelDownloads;
+    const paced = deferredParallel();
+    if (paced > 0) this.load.maxParallelDownloads = paced;
     this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+      this.load.maxParallelDownloads = prevParallel;
       this.buildAnimations();
       // THE SINGLE-CALL-SITE TRAP (see CLAUDE.md): textures.exists turning
       // true does NOT register anims — without this re-run every late-loaded
