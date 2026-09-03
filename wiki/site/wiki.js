@@ -1007,12 +1007,12 @@ function hitboxes(entity, state) {
  *
  * Checked against his own hand-made box on cupboard_010: fitted rx 40.8 / ry
  * 7.08 against his 41.25 / 7.75, centre within 0.2px on south-east. */
-function fittedRectDefault(entity, W, H) {
-  const base = entity?.hitboxBase;
-  if (!base || taggedShape(entity) !== "rect") return null;
+function fittedRectDefault(entity, state, W, H) {
+  if (taggedShape(entity) !== "rect") return null;
+  const dirs = entity?.animations?.[state]?.dirs ?? {};
   const k = ISO_K();
   const fitOne = (dname) => {
-    const b = base[dname];
+    const b = dirs[dname]?.base;
     if (!Array.isArray(b) || b.length !== 6) return null;
     const [Lx, Ly, Bx, By, Rx, Ry] = b;
     const th = -(DIR_GROUND_DEG[dname] ?? 0) * Math.PI / 180;
@@ -1027,13 +1027,12 @@ function fittedRectDefault(entity, W, H) {
   if (!turned.length) return null;
   const rx = turned.reduce((n, f) => n + f.rx, 0) / turned.length;
   const ry = turned.reduce((n, f) => n + f.ry, 0) / turned.length;
-  const south = fitOne("south");
   const pos = {};
   for (const dname of ["south-east", "south-west"]) {
     const f = fitOne(dname);
     if (f) pos[dname] = { ax: +(f.cx - W / 2).toFixed(2), ay: +(f.cy - H / 2).toFixed(2) };
   }
-  // South's own placement: centred on its base, standing on its lowest pixel.
+  const south = fitOne("south");
   const sx = south ? south.cx : W / 2, sy = south ? south.by - ry : H * 0.75;
   return {
     ax: +(sx - W / 2).toFixed(2), ay: +(sy - H / 2).toFixed(2),
@@ -1041,9 +1040,11 @@ function fittedRectDefault(entity, W, H) {
     ...(Object.keys(pos).length ? { pos_by_dir: pos } : {}),
   };
 }
-function hitboxDefault(entity, bb, fw, fh) {
+function hitboxDefault(entity, bb, fw, fh, state) {
   const W = fw ?? entity.size ?? 96, H = fh ?? entity.size ?? 96;
-  const fitted = fittedRectDefault(entity, W, H);
+  // A rect piece is fitted to the footprint measured on THIS state's own art —
+  // the states of one piece are often different variants.
+  const fitted = fittedRectDefault(entity, state, W, H);
   if (fitted) return fitted;
   const box = Array.isArray(bb) && bb.length === 4 ? bb : [W * 0.2, H * 0.2, W * 0.8, H * 0.9];
   const cx = (box[0] + box[2]) / 2, foot = box[3];
@@ -2288,7 +2289,7 @@ function makePlayer(entity, kind, opts = {}) {
    * it — a piece that merely got looked at must still count as "to do". */
   // ALWAYS THIS VARIATION: its own record, else the piece-level default,
   // else a starting ellipse from THIS state's own measured content box.
-  const hitList = () => hitboxes(entity, cur.state) ?? [hitboxDefault(entity, clip?.bb, clip?.fw ?? entity.frameW, clip?.fh ?? entity.frameH)];
+  const hitList = () => hitboxes(entity, cur.state) ?? [hitboxDefault(entity, clip?.bb, clip?.fw ?? entity.frameW, clip?.fh ?? entity.frameH, cur.state)];
   const commitHit = (boxes) => { setHitboxes(entity, boxes, cur.state); onShadowEdit?.(); refreshHitBar(); draw(); };
   const editHit = (i, patch) => {
     const boxes = hitList().map((b, n) => (n === i ? { ...b, ...patch } : b));
@@ -2454,7 +2455,7 @@ function makePlayer(entity, kind, opts = {}) {
     title: "Add a second box — an entrance with two pillars touches the ground twice, an L-shaped counter is two rects",
     onclick: () => {
       const boxes = hitList();
-      const b = boxes[hitSel] ?? hitboxDefault(entity, clip?.bb, clip?.fw, clip?.fh);
+      const b = boxes[hitSel] ?? hitboxDefault(entity, clip?.bb, clip?.fw, clip?.fh, cur.state);
       // Offset from the one it was copied from, so the new one is visible
       // instead of hiding exactly behind its parent.
       boxes.push({ ...b, ax: +(b.ax + b.rx * 1.2).toFixed(2) });

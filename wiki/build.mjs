@@ -2800,82 +2800,73 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
  * corners … By using this pattern, you should be able to place really really
  * good default hitboxes for rect objects").
  *
- * His three corners are exactly the three the art shows: on a turned facing a
- * box's base is a parallelogram, and its two FRONT edges are the bottom of the
- * silhouette. So walk the bottom contour out from its lowest point until the
- * boundary stops following the base and turns up into the body — that break is
- * the left corner one way and the right corner the other. The fourth corner is
- * hidden behind the piece and is implied: L + R − B.
+ * On a turned facing a box's base is a parallelogram whose two FRONT edges are
+ * the bottom of the silhouette, and those edges run along the ground axes — so
+ * each is a line of known slope ±dy/dx, and only its offset has to be found.
+ * The offset is taken as the MEDIAN of (y ∓ Kx) over the branch, which is what
+ * makes this survive real furniture: a leg or a foot that dips below the base
+ * board moves a few columns, never the median.
  *
- * NOT SLOPE-MATCHED. The first cut kept only contour points within 1.5px of
- * the exact iso line (±atan(dy/dx)); pixel art misses that by a few tenths, the
- * error accumulates over a 60px edge, and the left corner came back as the
- * bottom corner (measured on this very chest). The walk tolerates a drifting
- * slope and stops on a real break instead.
+ * NOT ANCHORED ON THE LOWEST PIXEL, which is what the first cut did and what
+ * he caught within the hour ("Open shelf unit of jars and crocks 008" — a leg
+ * 4px proud of the board tilted the whole box and its right edge ran outside
+ * the art). NOT SLOPE-MATCHED EITHER: pixel art misses the exact iso line by
+ * tenths and the error accumulates over a 60px edge.
  *
- * Measured once per PIECE (one state, three facings), not per state: lighting
- * changes the pixels, not where the furniture stands. Cached under the clip's
- * own published art hash, in its own map, so the main measurement cache — and
- * the 9,983 clips behind it — is untouched. */
+ * Per STATE, not per piece: the states of one piece are often different
+ * variants — "Open shelf 008" has one 5px wider and 5px lower than the rest.
+ * Cached under each clip's own published art hash, in its own map, so the main
+ * 9,983-clip measurement cache is untouched. */
 {
   const K = 15 / 32;                                   // the iso squash, dy/dx
   const priorBase = artPrior?.bases ?? {};
   const bases = {};
-  let baseMeasured = 0, baseCached = 0;
-  const footprint = (relStrip, fw, fh, frames) => {
-    const d = decodeWebP(readFileSync(join(ROOT, relStrip)));
-    const { w, pix } = d;
-    const bottom = new Map();                          // x -> lowest opaque y, first frame only
-    for (let y = 0; y < fh; y++) {
-      for (let x = 0; x < fw; x++) {
-        if (x >= w) continue;
-        if ((pix[y * w + x] >>> 24) > 40) bottom.set(x, y);
-      }
-    }
+  let baseMeasured = 0, baseCached = 0, basePieces = 0;
+  const median = (xs) => { const a = [...xs].sort((p, q) => p - q); const n = a.length; return n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2; };
+  const footprint = (relStrip, fw, fh, turned) => {
+    const { w, pix } = decodeWebP(readFileSync(join(ROOT, relStrip)));
+    const bottom = new Map();                          // x -> lowest opaque y (first frame)
+    for (let y = 0; y < fh; y++) for (let x = 0; x < fw && x < w; x++) if ((pix[y * w + x] >>> 24) > 40) bottom.set(x, y);
     const xs = [...bottom.keys()].sort((a, b) => a - b);
-    if (xs.length < 8) return null;
-    let bx = xs[0];
-    for (const x of xs) if (bottom.get(x) > bottom.get(bx)) bx = x;
-    const by = bottom.get(bx);
-    // Walk out from the lowest point while the boundary keeps falling away at
-    // roughly the iso slope; stop where it breaks upward into the body.
-    const walk = (dir) => {
-      let x = bx, y = by, gap = 0;
-      for (let n = x + dir; dir < 0 ? n >= xs[0] : n <= xs[xs.length - 1]; n += dir) {
-        const yn = bottom.get(n);
-        if (yn === undefined) { if (++gap > 2) break; continue; }
-        gap = 0;
-        const rise = y - yn;                            // px the contour climbs per column
-        if (rise > 3 * Math.max(1, K) + 1) break;       // a real break, not the base edge
-        x = n; y = yn;
-      }
-      return [x, y];
-    };
-    const L = walk(-1), R = walk(1);
-    if (R[0] - L[0] < 6) return null;
-    return [L[0], L[1], bx, by, R[0], R[1]].map((v) => +v.toFixed(1));
+    if (xs.length < 10) return null;
+    let lowest = -1; for (const x of xs) if (bottom.get(x) > lowest) lowest = bottom.get(x);
+    if (!turned) {
+      // South shows no depth at all: only the front edge and how wide it is.
+      const band = xs.filter((x) => bottom.get(x) >= lowest - 1.5);
+      if (band.length < 4) return null;
+      const l = band[0], r = band[band.length - 1];
+      return [l, lowest, (l + r) / 2, lowest, r, lowest].map((v) => +v.toFixed(1));
+    }
+    let bx = xs[0]; for (const x of xs) if (bottom.get(x) > bottom.get(bx)) bx = x;
+    const right = xs.filter((x) => x > bx + 2), left = xs.filter((x) => x < bx - 2);
+    if (right.length < 6 || left.length < 6) return null;
+    const cR = median(right.map((x) => bottom.get(x) + K * x));      // the −K front edge
+    const cL = median(left.map((x) => bottom.get(x) - K * x));       // the +K front edge
+    const onR = right.filter((x) => Math.abs(bottom.get(x) + K * x - cR) <= 2.5);
+    const onL = left.filter((x) => Math.abs(bottom.get(x) - K * x - cL) <= 2.5);
+    if (!onR.length || !onL.length) return null;
+    const Rx = Math.max(...onR), Lx = Math.min(...onL);
+    if (Rx - Lx < 6) return null;
+    return [Lx, cL + K * Lx, (cR - cL) / (2 * K), (cR + cL) / 2, Rx, cR - K * Rx].map((v) => +v.toFixed(1));
   };
   for (const o of objects) {
     if (o.hitboxShape !== "rect" || !o.animations) continue;
-    const st = Object.keys(o.animations).find((k) => {
-      const ds = o.animations[k]?.dirs ?? {};
-      return ds.south || ds["south-east"] || ds["south-west"];
-    });
-    if (!st) continue;
-    const out = {};
-    for (const dname of ["south", "south-east", "south-west"]) {
-      const c = o.animations[st]?.dirs?.[dname];
-      if (!c?.strip || !c.h) continue;
-      if (priorBase[c.h] !== undefined) { if (priorBase[c.h]) out[dname] = priorBase[c.h]; bases[c.h] = priorBase[c.h]; baseCached++; continue; }
-      let m = null;
-      try { m = footprint(c.strip, c.fw, c.fh, c.frames ?? 1); } catch { m = null; }
-      bases[c.h] = m; baseMeasured++;
-      if (m) out[dname] = m;
+    let any = false;
+    for (const st of Object.keys(o.animations)) {
+      for (const dname of ["south", "south-east", "south-west"]) {
+        const c = o.animations[st]?.dirs?.[dname];
+        if (!c?.strip || !c.h) continue;
+        if (priorBase[c.h] !== undefined) { bases[c.h] = priorBase[c.h]; if (priorBase[c.h]) { c.base = priorBase[c.h]; any = true; } baseCached++; continue; }
+        let m = null;
+        try { m = footprint(c.strip, c.fw, c.fh, dname !== "south"); } catch { m = null; }
+        bases[c.h] = m; baseMeasured++;
+        if (m) { c.base = m; any = true; }
+      }
     }
-    if (Object.keys(out).length) o.hitboxBase = out;
+    if (any) basePieces++;
   }
   artBases = bases;
-  console.log(`[wiki] rect footprints: ${objects.filter((o) => o.hitboxBase).length} pieces — measured ${baseMeasured} clips now, ${baseCached} from cache`);
+  console.log(`[wiki] rect footprints: ${basePieces} pieces — measured ${baseMeasured} clips now, ${baseCached} from cache`);
 }
 
 // Rewrite the cache only when the measurements moved — a no-change build must

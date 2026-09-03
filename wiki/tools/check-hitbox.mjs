@@ -1086,10 +1086,37 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
  * cleared in the page so the default is what is measured, not his answer. */
 {
   const HIS = { rx: 41.25, ry: 7.75, se: { ax: 0.78, ay: 42.67 } };   // his not_lit_1, 2026-09-03
+  /* AND THE STALE PROPOSALS ARE GONE (maintainer 2026-09-03: "how come 'Open
+   * shelf unit of jars and crocks 008' has a mega bad hitbox? Doesn't look
+   * like you followed my steps at all"). He was right and it was not the fit:
+   * 546 of 583 rect variations still carried an ELLIPSE-era proposal — one
+   * with ry 16.55, a footprint three times too deep — and a piece tagged rect
+   * draws that old ellipse AS a rectangle. A default only applies where there
+   * is no record, so the fit never ran. wiki/tools/rect-hitbox-pass.py
+   * rewrote every auto proposal and left his own decisions alone. */
+  {
+    const live = JSON.parse((await import("node:fs")).readFileSync(new URL("../../live/tuning/scenery_hitbox.json", import.meta.url), "utf8")).overrides ?? {};
+    const rect = DATAOBJ.filter((o) => o.hitboxShape === "rect");
+    let stale = 0, fitted = 0, his = 0;
+    for (const o of rect) for (const st of Object.keys(o.animations ?? {})) {
+      const r = live[`${o.path}#${st}`] ?? live[o.path];
+      if (!r?.boxes?.length) continue;
+      if (!r.auto) { his++; continue; }
+      if (r.boxes[0].shape === "rect") fitted++; else stale++;
+    }
+    // Seven variations ship art the footprint walk cannot read at all (no
+    // turned art AND no readable south base); they keep what they had and are
+    // named rather than hidden.
+    ok(stale <= 8, `no rect piece is left carrying an ellipse-era proposal (${fitted} fitted, ${stale} unmeasurable, ${his} his own)`);
+    const shelf = live["scenery/cupboards_and_shelves/cupboard_008#not_lit_3"]?.boxes?.[0];
+    ok(shelf?.shape === "rect" && shelf.ry < 9 && shelf.pos_by_dir?.["south-east"],
+      `the shelf he reported is a fitted rect now, not a 16.55-deep ellipse (ry ${shelf?.ry})`);
+  }
   const piece = DATAOBJ.find((o) => o.id === "cupboard_010");
-  ok(!!piece?.hitboxBase, `the build publishes a measured footprint for the chest (${JSON.stringify(piece?.hitboxBase?.["south-east"])})`);
+  const clipBase = (o, d2) => { const st = Object.keys(o?.animations ?? {})[0]; return o?.animations?.[st]?.dirs?.[d2]?.base ?? null; };
+  ok(!!clipBase(piece, "south-east"), `the build publishes a measured footprint for the chest (${JSON.stringify(clipBase(piece, "south-east"))})`);
   const nRect = DATAOBJ.filter((o) => o.hitboxShape === "rect").length;
-  const nBase = DATAOBJ.filter((o) => o.hitboxBase).length;
+  const nBase = DATAOBJ.filter((o) => clipBase(o, "south-east") || clipBase(o, "south")).length;
   ok(nBase >= nRect * 0.9, `and for the rect-tagged library at large (${nBase} of ${nRect} rect pieces)`);
   if (piece) {
     await p.goto(`${W}#/objects/${piece.id}`, { waitUntil: "load" });
@@ -1121,7 +1148,7 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
       const hb = window.__wikiHitbox; const c = hb.cornersFrame[hb.sel];
       return c ? { low: Math.max(...c.map((q) => q[1])), left: Math.min(...c.map((q) => q[0])), right: Math.max(...c.map((q) => q[0])) } : null;
     });
-    const artSE = piece.hitboxBase["south-east"];
+    const artSE = clipBase(piece, "south-east");
     ok(fit && Math.abs(fit.low - artSE[3]) < 2.5 && Math.abs(fit.left - artSE[0]) < 3 && Math.abs(fit.right - artSE[4]) < 3,
       `the drawn corners land on the art's own footprint (bottom ${fit?.low.toFixed(1)} vs ${artSE[3]}, left ${fit?.left.toFixed(1)} vs ${artSE[0]}, right ${fit?.right.toFixed(1)} vs ${artSE[4]})`);
   }
