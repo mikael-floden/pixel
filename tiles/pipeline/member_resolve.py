@@ -45,10 +45,50 @@ SETS = os.path.join(REPO, "live", "tuning", "base_tile_sets.json")
 OUT = os.path.join(ROOT, "resolve.json")
 
 KEY = re.compile(r"^tiles/([^/]+)/([0-9a-f]{8})$")
+POST = re.compile(r"^(tiles/tops/.+/post)/(tile_\d\d)\.[0-9a-f]{8}\.webp$")
+
+
+def _current_post():
+    """(sheet post dir, tile_NN) -> the CURRENT hashed file, from tops/index.json.
+
+    A REGENERATED TILE GETS A NEW NAME, which is the cache law working: post art is
+    content-addressed, so repainting a sheet onto a changed palette writes
+    tile_NN.<newsha>.webp and leaves the old name in place for pages already open.
+    A base-tile-set member, though, names the file it was PICKED as - so after the
+    2026-09-03 water/beach palette change every sand and water member still pointed at
+    the superseded file and the live game drew the OLD colours while ground_types.json
+    served the new ones. Measured live: the served member tile was byte-identical to
+    the old hash.
+
+    A member names a TILE, not a byte sequence, so this map resolves it to that tile's
+    current art. That is exactly what this file exists for ("ask the map, never parse
+    the string") and it needs no change from the wiki, which owns the member list.
+    The superseded path is still reported per entry so the drift stays visible.
+    """
+    out = {}
+    idx = os.path.join(ROOT, "tops", "index.json")
+    if not os.path.isfile(idx):
+        return out
+    try:
+        doc = json.load(open(idx))
+    except Exception:
+        return out
+    for sh in (doc.get("sheets") or []):
+        d = sh.get("dir")
+        for name in (sh.get("post_files") or []):
+            if not isinstance(name, str):
+                continue
+            stem = name.split(".")[0]
+            out[(f"{d}/post", stem)] = f"{d}/post/{name}"
+    return out
+
+
+CURRENT = None
 
 
 def resolve(member):
     """(kind, repo-relative art path) for one member string, or (None, reason)."""
+    global CURRENT
     m = KEY.match(member)
     if m:
         cell, k8 = m.groups()
@@ -57,6 +97,13 @@ def resolve(member):
     if member.endswith(".webp"):
         # NOT "top": this bucket holds tops/post art AND base_candidates ballot files.
         # Naming it for one of them is how a consumer ends up special-casing the other.
+        pm = POST.match(member)
+        if pm:
+            if CURRENT is None:
+                CURRENT = _current_post()
+            cur = CURRENT.get((pm.group(1), pm.group(2)))
+            if cur and cur != member:
+                return "file", cur       # the tile's CURRENT art, not the picked bytes
         return "file", member
     return None, "unrecognised form"
 
@@ -78,7 +125,12 @@ def main():
                 if not os.path.isfile(os.path.join(REPO, art)):
                     missing.append({"member": t, "why": f"no file at {art}"})
                     continue
-                members[t] = {"kind": kind, "art": art}
+                entry = {"kind": kind, "art": art}
+                if kind == "file" and art != t:
+                    # a plate member's art path ALWAYS differs from its key, which is
+                    # the plate rule, not drift - only a file member that moved counts
+                    entry["superseded"] = t
+                members[t] = entry
     dupes = seen - len(members) - len(missing)
     doc = {
         "schema": "tiles3/member-resolve@1",
