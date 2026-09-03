@@ -570,7 +570,7 @@ test("a conformed plate is built once per ground, and a liquid once per colour",
   T.liquid([10, 20, 30]);
   assert.equal(T.stats.built, 3);
   const src = fx.man.get(l1)!.getSourceImage() as { pix: Uint8ClampedArray };
-  assert.equal(createHash("sha256").update(Buffer.from(src.pix.buffer, 0, src.pix.length)).digest("hex"), rasterSha(liquidDiamond([10, 20, 30])));
+  assert.equal(createHash("sha256").update(Buffer.from(src.pix.buffer, 0, src.pix.length)).digest("hex"), rasterSha(liquidDiamond([10, 20, 30], SHEETS)));
 });
 
 test("every op the factory hands back is drawable; the rest are dropped", { skip }, () => {
@@ -709,15 +709,18 @@ test("a top-only plate never shares a texture key with the full tile", { skip },
 });
 
 // WHY WATER MUST DRAW ITS SET AND NOT THE FLAT DIAMOND. `flat_tile`'s diamond
-// does not TILE: its widest row is 64 px but its first row is empty (half = 0
-// at y = 0), so a field of them laid on the iso step leaves a regular diagonal
-// lattice of holes — measured below at 252 px in a 100x100 interior patch, 2.5%
-// of the area, with the page's dark ground showing through every one. That is
-// the "visible edges" on the sea and the dark line along the shore. render3
-// draws a liquid as top_face_only(surface()) — real plates, whole silhouettes,
-// no holes — and the client follows it.
-test("the flat liquid diamond does NOT tile, which is why a liquid draws its set", { skip }, () => {
-  const d = liquidDiamond([255, 255, 255]);
+// TILES, with zero holes. It wears `sheets.libTop` — the same top-face mask a
+// real plate's top wears, 29 rows overlapping their neighbours by one — because
+// water is NOT a fallback path: `water` ships `base_tiles: []` and has no
+// base_candidates set, so every water cell on the map paints this diamond. The
+// old hand-derived `trunc(DX*(1-|y-DY|/DY))` formula left a regular diagonal
+// lattice of single-pixel holes (252 px per 100x100 of sea, 2.5%, the dark page
+// ground through every one) — the maintainer's "zigzag pattern at the tile edge
+// on all water tiles", and before that the "visible edges" on the sea and the
+// dark line along the shore. render3 draws a liquid as top_face_only(surface())
+// — real plates, whole silhouettes, no holes — and the client now matches it.
+test("the flat liquid diamond TILES the sea with no holes", { skip }, () => {
+  const d = liquidDiamond([255, 255, 255], SHEETS);
   const W = 400;
   const H = 400;
   const cov = new Int16Array(W * H);
@@ -734,5 +737,15 @@ test("the flat liquid diamond does NOT tile, which is why a liquid draws its set
     }
   let holes = 0;
   for (let y = 150; y < 250; y++) for (let x = 150; x < 250; x++) if (cov[y * W + x] === 0) holes++;
-  assert.equal(holes, 252, "the diamond lattice leaks exactly this many pixels per 100x100 of sea");
+  assert.equal(holes, 0, "a sea of these diamonds shows no page ground through it");
+  // The widest row is where it always was, so switching the mask moved no water.
+  let widest = -1;
+  let best = -1;
+  for (let y = 0; y < d.h; y++) {
+    let n = 0;
+    for (let x = 0; x < d.w; x++) if (d.data[(y * d.w + x) * 4 + 3] > 0) n++;
+    if (n > best) { best = n; widest = y; }
+  }
+  assert.equal(widest, TOP_Y + DY, "the diamond still hangs from TOP_Y");
+  assert.equal(best, 2 * DX, "and its widest row still spans the whole tile");
 });

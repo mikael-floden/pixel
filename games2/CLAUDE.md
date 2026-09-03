@@ -200,6 +200,20 @@ by construction, so no existing branch changed.
   "anonymous"`, which a staging join depends on: a composed boundary reads its
   plates back with `getImageData`, and a cross-origin image loaded without the
   attribute taints the canvas and makes every boundary in the world vanish.
+- **A LIQUID'S DIAMOND WEARS `sheets.libTop`, NEVER A FORMULA** — and the sea
+  is its ORDINARY path, not a fallback: `water` ships `base_tiles: []` and has
+  no `tiles/base_candidates/water` set, so `surface()` resolves no plate and
+  every water cell on the map paints `liquidDiamond`. The old hand-derived
+  `trunc(DX * (1 - |y-DY| / DY))` shape does not TILE — half-widths stepping
+  32,30,28,25,… and an empty first row leave 30 single-pixel holes per tile
+  marching along every edge (252 px per 100x100 of sea, 2.5%, the dark page
+  ground through each). That was the maintainer's "zigzag pattern at the tile
+  edge on all water tiles" (2026-09-03) and, earlier, the "visible edges" on the
+  sea. `libTop` is the same top-face mask every real plate wears — 29 rows that
+  OVERLAP their neighbours by one, so it is gapless by construction (measured: 0
+  holes) — and its widest row still lands on `TOP_Y + DY`, so no water moved.
+  The general rule: a mask that has to interlock with the art's masks IS the
+  art's mask; re-deriving the diamond is how the gaps get in.
 - **A NOT-YET-LOADED PLATE IS NEVER CACHED AS NULL** (`tiles3draw` platePixels /
   sourcePixels). Null means "not resident yet"; caching it makes every plate
   that missed its first frame miss forever.
@@ -2504,6 +2518,25 @@ height reads per thing per frame.
   isMobile:true, hasTouch:true}`; check light AND dark when touching themed
   surfaces. Movement-timing e2e stays on the small fast viewport — the
   starvation rule outranks realism.
+- **A ONE-PIXEL BUG IS REPRODUCED ON HIS EXACT SCREEN, AND ON THE SCREEN**
+  (maintainer law, 2026-09-03: "Please recreate my exact screen when testing
+  off by 1 pixel bugs like this one"). Two halves, and both are load-bearing:
+  - `{viewport:{width:393,height:851}, deviceScaleFactor:2.75, isMobile:true,
+    hasTouch:true}` — 1080x2340 backing. **`deviceScaleFactor` is the half
+    that decides the bug**: it sets `renderScale`, hence the camera zoom
+    (`cameraZoom(1080, 2.75)` = 3 exactly at rest) and the ground texture's
+    `ceil(1080/2.75)=393 (+2*512)` texels. Any other dpr changes the texel
+    grid and the sub-pixel phase, so the artefact simply is not there to find
+    — a default-dpr viewport at the same CSS size is a DIFFERENT screen.
+  - Compare the SCREENSHOT, not the render texture. A ground-RT dump was
+    clean through every scroll while the phone showed lines, because a
+    sampling artefact lives in how the texture reaches the display, not in
+    the texture. Dump the RT to localise a defect you have already seen on
+    the screen; never to argue one away.
+  - Shoot MOVING as well as at rest. At rest the zoom is the crisp integer;
+    the speed zoom-out sheds up to `CAM_ZOOM_OUT` of it, so every frame he
+    actually plays is at a fractional zoom where a NEAREST texel is 2 or 3
+    device px. Any straight-edge artefact belongs to that state.
 - Rule of thumb: no pixels/pointers/websockets/Phaser anims needed → it
   belongs in `server/test` (3s), not a browser (minutes).
 - **Deploy** (push to main → live): the workflow runs `test` (typecheck +

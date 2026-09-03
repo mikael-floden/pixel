@@ -442,13 +442,32 @@ export function topFaceOnly(sheets: PatternSheets, src: Pixels): Pixels {
 
 /** A liquid's flat-colour diamond — render3's `flat_tile` for the four liquid
  *  grounds, which never show a wall. 64x64 with the diamond hung from TOP_Y, so
- *  it pastes at the same offset a review tile does. */
-export function liquidDiamond(rgb: readonly [number, number, number]): Pixels {
+ *  it pastes at the same offset a review tile does.
+ *
+ *  THE MASK IS THE SHEETS' OWN TOP FACE, never a formula. The hand-derived
+ *  `trunc(DX * (1 - |y-DY| / DY))` diamond does NOT TILE: its half-widths step
+ *  32,30,28,25,... (32/14 per row, truncated) and its first row is empty, so a
+ *  field of them laid on the iso step leaks a regular diagonal lattice of
+ *  single pixels along every edge — 30 per tile, 252 px per 100x100 of sea
+ *  (2.5%), each showing the dark page ground through. That is the maintainer's
+ *  "zigzag pattern at the tile edge on all water tiles" (2026-09-03).
+ *
+ *  And it is the SEA'S ORDINARY PATH, not a fallback: `water` ships
+ *  `base_tiles: []` with no `tiles/base_candidates/water` set, so `surface()`
+ *  can never resolve a plate for a water cell and every one of them paints this
+ *  diamond. `sheets.libTop` is the same top-face mask every real plate wears —
+ *  29 rows that OVERLAP their neighbours by one, hence gapless by construction
+ *  (measured: 0 holes, against 30 for the formula). Its widest row lands on
+ *  TOP_Y + DY exactly where the formula's did, so the water does not move. */
+export function liquidDiamond(rgb: readonly [number, number, number], sheets: PatternSheets): Pixels {
+  const { fw, fh, libTop } = sheets;
   const out = newPixels(TILE, TILE);
-  for (let y = 0; y < 2 * DY; y++) {
-    const half = Math.trunc(DX * (1 - Math.abs(y - DY) / DY));
-    for (let x = DX - half; x < DX + half; x++) {
-      const i = ((TOP_Y + y) * TILE + x) * 4;
+  for (let y = 0; y < fh; y++) {
+    const dy = TOP_Y + y;
+    if (dy >= TILE) break;
+    for (let x = 0; x < fw && x < TILE; x++) {
+      if (!libTop[y * fw + x]) continue;
+      const i = (dy * TILE + x) * 4;
       out.data[i] = rgb[0];
       out.data[i + 1] = rgb[1];
       out.data[i + 2] = rgb[2];
@@ -812,7 +831,7 @@ export class Tiles3Textures {
   /** A liquid's painted diamond. */
   liquid(rgb: readonly [number, number, number]): string {
     const key = liquidKey(rgb);
-    return this.ensure(key, () => liquidDiamond(rgb)) ?? key;
+    return this.ensure(key, () => liquidDiamond(rgb, this.o.sheets)) ?? key;
   }
 
   /** THE STREAMING ENTRY POINT: one cell in, DRAWABLE blits out. Every op it
