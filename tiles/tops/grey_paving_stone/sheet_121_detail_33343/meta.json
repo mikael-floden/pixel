@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grey_paving_stone",
+  "flavour": "detail",
+  "index": 121,
+  "seed": 33343,
+  "prompt": "grey paving stone, a tuft of grass in the middle, grey paving stone all around the edge",
+  "palette_top": "#a8a8a8",
+  "tile_id": "37e7f20b-73e3-4e43-a764-f42a846fb761",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T05:37:13+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 19,
+        "dominant_share": 0.5766,
+        "px": 933
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5125,
+        "px": 921
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.493,
+        "px": 925
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4038,
+        "px": 936
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.4382,
+        "px": 931
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.6432,
+        "px": 922
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5353,
+        "px": 921
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5103,
+        "px": 923
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5582,
+        "px": 937
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5905,
+        "px": 923
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.3881,
+        "px": 925
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.3445,
+        "px": 929
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.3433,
+        "px": 935
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2373,
+        "px": 923
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2297,
+        "px": 923
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.2554,
+        "px": 924
+      }
+    ],
+    "mean_colours": 19.38,
+    "mean_dominant_share": 0.4412
+  },
+  "motif": "a tuft of grass",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}
