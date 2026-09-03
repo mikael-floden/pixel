@@ -200,6 +200,29 @@ by construction, so no existing branch changed.
   "anonymous"`, which a staging join depends on: a composed boundary reads its
   plates back with `getImageData`, and a cross-origin image loaded without the
   attribute taints the canvas and makes every boundary in the world vanish.
+- **A TOP-FACE-ONLY PLATE IS THE ONLY ZERO-SLACK SEAM IN THE GAME, and it is
+  the whole reason the sea zigzags where no old map ever did** (maintainer
+  2026-09-03, the_island2 beside the_game: "0 zigzag. it just works"). A tiles2
+  world draws a 64-px-tall tile per cell on a dy=15 lattice, so neighbours
+  overlap by FORTY-NINE rows and there is no seam to get wrong at all; a full
+  tiles3 plate is 46 rows at dy=14 and overlaps by SEVENTEEN. A top-face-only
+  plate is 29 rows overlapping by exactly ONE — and liquids are the only grounds
+  still on that path, which is why sand stopped showing the artefact and water
+  did not. The old renderer was TOLERANT BY CONSTRUCTION, not correct: every
+  one-pixel error in the projection was always there and always hidden. So the
+  cure is slack, not a hunt for a slip (measured and cleared on his device:
+  `nonInt` 0, `anchorFrac` 0, `rtPosFrac` 0, `sy` stepping exactly +28 per
+  diagonal cell, the RT hash-identical to a forced full paint). `topFaceOnly`
+  therefore carries ONE EXTRA ROW per column, copied from THAT COLUMN'S OWN
+  BOTTOM SURFACE PIXEL — covered by the tile in front where there is one, one
+  pixel of deeper sea where there is not. **Never source that row from the art's
+  next row**: that is the plate's WALL BAND, and it put 76 wall texels per plate
+  (water `#4c8a98` = 76,138,152 against a 126,183,199 top face) along exactly
+  the tile edges as the dark dotted line it was added to remove — his device
+  measured 146 px of that colour there with ZERO background texels. The gate
+  (`topFaceOnly drops the wall band and touches nothing else`) pins that no wall
+  texel survives anywhere. A CONFORM is not a liquid: it repaints its own wall
+  band and keeps it — only `LIQUID_TILE_GROUNDS` is forced onto this path.
 - **A LIQUID'S DIAMOND WEARS `sheets.libTop`, NEVER A FORMULA** — and the sea
   is its ORDINARY path, not a fallback: `water` ships `base_tiles: []` and has
   no `tiles/base_candidates/water` set, so `surface()` resolves no plate and
