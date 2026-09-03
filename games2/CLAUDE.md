@@ -712,19 +712,27 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     the "wall hack border in open ground" this file already warns about, from
     the same maintainer report. (The note that "a rug rounds to 0 levels" was
     wrong: it never did.)
-  - **A LIT COPY IS CROPPED BY COVERING TERRAIN — scenery and props too.** Every
-    scenery piece and solid prop draws twice: the base image in the world layer
-    (painter-sorted, correctly hidden behind terrain) and a LIT COPY at
-    `litDepth` (900_001+), above every terrain occluder. Bodies have always
-    cropped that copy at the covering wall's top line (`coverY` in
-    `syncLitCopy`); scenery never did, so a tree standing behind a hill drew its
-    whole self over the hill (maintainer 2026-09-03, with a screenshot: "the
-    trees around the player should be covered by the hill"). `litCoverY` is the
-    piece twin of that test — the smallest top line among TERRAIN columns that
-    draw in front of the piece (painter depth) and stand higher than its ground;
-    other billboards are skipped (`point`), because two billboards interleave by
-    painter order exactly as bodies do. Cached per rebuild: both the piece and
-    the terrain are static.
+  - **SCENERY RESOLVES THROUGH THE BODY RULE — `resolveDrawDepth`, ONE
+    implementation, four callers** (players, monsters, NPCs, scenery). This is
+    the standing law of this file — *never hand-roll a second depth/shadow/
+    lighting path for a new entity type* — and scenery broke it twice in one
+    night before it was obeyed: a piece-only depth (no LIFT above the flat tile
+    in front, so grass drew over a tree) and a piece-only cover test
+    (`litCoverY`, deleted). Both are gone; the scan that answers "what painter
+    depth, and where does terrain cover me" lives in `resolveDrawDepth` and
+    `resolveBodyDepth` is now a thin wrapper over it (setDepth + the cover
+    slot). Maintainer 2026-09-03, with the screenshot: "this is a classic
+    'let's implement the player's renderer again' bug … in the end we will end
+    up with the player's renderer, because that code is what is needed to not
+    have any bugs."
+    TWO THINGS SCENERY NEEDS THAT BODIES DO NOT. (1) It resolves in a SECOND
+    PASS, after every piece has registered its occluder record, so a piece
+    sorts against its neighbours and not just against terrain — a one-pass
+    resolve only ever sees the pieces drawn before it. (2) Its OWN record is
+    excluded (`self`): scenery is IN `occluderMeta` and bodies are not, so
+    without it a tree reads itself as a solid covering itself and crops its own
+    lit copy to nothing. The lit copy then takes `litDepth(resolved)` and the
+    cover line the same call returned, so copy and base can never disagree.
   - **The light fields have a resolution switch (dev A/B, phone-testable).**
     The three full-screen passes (light, mist, depth fog) render at the canvas
     size — device pixels at rs>1 (~1.8 M fragments each on a 891x2000 phone,

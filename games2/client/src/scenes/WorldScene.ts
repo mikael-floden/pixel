@@ -1680,8 +1680,8 @@ export class WorldScene extends Phaser.Scene {
     by: number;
     /** Its own painter depth (the base image's), for the cover test. */
     pd: number;
-    /** THE COVER LINE — see litCoverY. Cached: scenery and terrain are both
-     *  static, so it is a constant of this rebuild. Infinity = uncovered. */
+    /** THE COVER LINE the SHARED rule returned for this piece (resolveDrawDepth,
+     *  the same call bodies make). Infinity = uncovered; set once per rebuild. */
     cover?: number;
   }[] = [];
   private occluderMeta: {
@@ -9094,8 +9094,7 @@ export class WorldScene extends Phaser.Scene {
        * layer; the copy just has to show the same part of it, which is exactly
        * what bodies do with `coverY` in syncLitCopy. Computed ONCE per rebuild:
        * both the piece and the terrain are static. */
-      if (lo.cover === undefined) lo.cover = this.litCoverY(lo);
-      if (lo.cover !== Infinity) {
+      if (lo.cover !== undefined && lo.cover !== Infinity) {
         const im = lo.img;
         const cropH = (lo.cover - im.y) / (im.scaleY || 1);
         if (cropH <= 0) {
@@ -10160,7 +10159,7 @@ export class WorldScene extends Phaser.Scene {
    * tests against the full frame hit walls tiles away from the body. */
   private artBoundsCache = new Map<string, { x0: number; y0: number; x1: number; y1: number }>();
 
-  private artBounds(sprite: Phaser.GameObjects.Sprite) {
+  private artBounds(sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image) {
     const frame = sprite.frame;
     const key = `${frame.texture.key}#${frame.name}`;
     let b = this.artBoundsCache.get(key);
@@ -10277,7 +10276,38 @@ export class WorldScene extends Phaser.Scene {
    * occluder. `lvl` = the SURFACE level the body stands on, in LEVELS.
    * Sets sprite depth + b.coverY (wall-top line for the lit-copy crop). */
   private resolveBodyDepth(b: BodyVisual, lvl: number) {
+    const r = this.resolveDrawDepth(b, lvl);
+    b.coverY = r.coverY;
+    b.sprite.setDepth(r.depth);
+    // The depth is final here, and `depth > sprite.depth` is what the cover
+    // surfaces filter occluders on — so the slot registers LAST, and in this
+    // one function rather than in either consumer (see registerCoverSlot).
+    this.registerCoverSlot(b);
+  }
+
+  /** THE ONE DEPTH-AND-COVER RULE, for ANYTHING drawn standing in the world —
+   *  players, monsters, NPCs and SCENERY. It answers two questions off the same
+   *  occluder scan: what painter depth puts this thing in the right place
+   *  among the terrain around it, and (if terrain covers it) the screen line
+   *  where it stops being visible.
+   *
+   *  SCENERY IS A CALLER, NOT A COPY (maintainer 2026-09-03, after grass drew
+   *  over a tree: "I told you to reuse the player/monster/npc rendering … this
+   *  is a classic 'let's implement the player's renderer again' bug"). The
+   *  piece-only version this replaced had no `above` LIFT, which is exactly
+   *  what puts a body in front of the flat tile drawn at a higher painter
+   *  depth than its own anchor — so every piece sat behind the ground in front
+   *  of it. `self` is the caller's OWN occluder record, skipped: scenery is in
+   *  `occluderMeta` (bodies are not), and without it a tree reads itself as a
+   *  solid covering itself and crops its own lit copy away. */
+  private resolveDrawDepth(
+    v: { sprite: Phaser.GameObjects.Image; lx: number; lyFlat: number; ly: number; fx: number; fy: number },
+    lvl: number,
+    self?: unknown,
+  ): { depth: number; coverY: number | undefined } {
+    const b = v;
     let depth = b.lyFlat + 0.5; // painter y at the flat (unlifted) ground
+    let coverOut: number | undefined;
     if (this.world) {
       const colf = b.fx / CELL_WU; // 1 cell = CELL_WU world units (any world size)
       const rowf = b.fy / CELL_WU;
@@ -10297,6 +10327,7 @@ export class WorldScene extends Phaser.Scene {
       let coverY = Infinity;
       const feetY = b.ly;
       for (const o of this.occluderMeta) {
+        if (o === self) continue; // never occlude yourself — see the note above
         if (o.x1 < sx0 || o.x0 > sx1 || o.y1 < sy0 || o.y0 > sy1) continue;
         const higher = o.top > lvl;
         // (a) Wall genuinely between the camera and the feet point.
@@ -10365,15 +10396,9 @@ export class WorldScene extends Phaser.Scene {
       }
       if (above > -Infinity) depth = Math.max(depth, above + 0.6);
       if (below < Infinity) depth = Math.min(depth, below - 0.3); // walls win conflicts
-      b.coverY = below < Infinity ? coverY : undefined;
-    } else {
-      b.coverY = undefined;
+      coverOut = below < Infinity ? coverY : undefined;
     }
-    b.sprite.setDepth(depth);
-    // The depth is final here, and `depth > sprite.depth` is what the cover
-    // surfaces filter occluders on — so the slot registers LAST, and in this
-    // one function rather than in either consumer (see registerCoverSlot).
-    this.registerCoverSlot(b);
+    return { depth, coverY: coverOut };
   }
 
   /** Shadow for ANY body: cast on the LANDING ground (flat − target
@@ -12805,31 +12830,6 @@ export class WorldScene extends Phaser.Scene {
     while (this.groundSliceQ.length && guard-- > 0) this.t3paintSliceStep();
   }
 
-  /** THE LINE COVERING TERRAIN DRAWS AT, over a lit piece's art box — the
-   *  scenery/prop twin of the body `coverY` the shared pipeline computes. A
-   *  TERRAIN column counts when it draws IN FRONT of the piece (painter depth)
-   *  and stands HIGHER than the ground the piece is on; the smallest such top
-   *  line is where the piece stops being visible. Other scenery is skipped
-   *  (`point`): two billboards interleave by painter order like bodies do.
-   *  Infinity = nothing covers it. */
-  private litCoverY(lo: (typeof this.litOccluders)[number]): number {
-    const im = lo.img;
-    const x0 = im.x;
-    const x1 = im.x + im.displayWidth;
-    const y0 = im.y;
-    const y1 = im.y + im.displayHeight;
-    const lvl = Math.floor(lo.z);
-    let cover = Infinity;
-    for (const o of this.occluderMeta) {
-      if (o.point) continue; // billboards (scenery/props) sort, they do not crop
-      if (o.depth <= lo.pd) continue; // behind the piece: cannot cover it
-      if (o.top <= lvl) continue; // not taller than the ground it stands on
-      if (o.x1 < x0 || o.x0 > x1 || o.y1 < y0 || o.y0 > y1) continue;
-      if (o.y0 < cover) cover = o.y0;
-    }
-    return cover;
-  }
-
   /** A lit piece's FOG SILHOUETTE: the copy's twin (texture, frame, origin,
    *  scale, flip) at the copy's depth, made RIGHT AFTER it so the two keep the
    *  creation order the epsilon-free lit band sorts ties by (litA, fogA, litB,
@@ -13667,7 +13667,14 @@ export class WorldScene extends Phaser.Scene {
     const rect = { x: view.x - pad, y: view.y - pad, w: view.width + pad * 2, h: view.height + pad * 2 };
     const reach = { x: view.x - view.width, y: view.y - view.height, w: view.width * 3, h: view.height * 3 };
     let drawn = 0;
-    let roofedDrawn = 0; // indoor furniture the cut let through — see roofCutAwayAt
+    let roofedDrawn = 0;
+    /* Pieces awaiting the SHARED depth/cover resolve (second pass, below). */
+    const resolve: {
+      img: Phaser.GameObjects.Image;
+      meta: WorldScene["occluderMeta"][number] | null;
+      lo: WorldScene["litOccluders"][number] | null;
+      hbX: number; hbY: number; hbDepth: number; lvl: number; fx: number; fy: number;
+    }[] = []; // indoor furniture the cut let through — see roofCutAwayAt
     for (const p of idx.query(reach)) {
       const piece = pieces.get(p.piece);
       if (piece === undefined) {
@@ -13769,12 +13776,15 @@ export class WorldScene extends Phaser.Scene {
        * "wall hack border in open ground" this file already warns about). */
       const flat = !piece.collision;
       const key = sceneryArtKey(sprite);
+      // Resolved in a SECOND PASS below, once every piece has registered — a
+      // piece must sort against its neighbours, not only against terrain.
       const tex = this.textures.get(key);
       const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
       if (!tex.has(name)) tex.add(name, 0, fit.sx, fit.sy, fit.sw, fit.sh);
+      const img = this.add
+          .image(fit.x, fit.y, key, name);
       this.sceneryImgs.push(
-        this.add
-          .image(fit.x, fit.y, key, name)
+        img
           .setOrigin(0, 0)
           .setDisplaySize(fit.w, fit.h)
           // The mirror is about the CROP's centre, never the source canvas's:
@@ -13839,7 +13849,7 @@ export class WorldScene extends Phaser.Scene {
         });
         this.makeFogSilhouette(this.litOccluders[this.litOccluders.length - 1]);
       }
-      if (!flat) this.occluderMeta.push({
+      const meta = flat ? null : {
         col: scol,
         row: srow,
         /* ITS OWN HEIGHT, from the piece's published `world_px_height`. A
@@ -13869,9 +13879,45 @@ export class WorldScene extends Phaser.Scene {
         x1: box0 ? hbX + box0.rx * fit.kx : fit.x + fit.w / 2 + Math.min(tileSize, fit.w) / 2,
         y0: fit.y,
         y1: box0 ? hbY + box0.ry * fit.ky : fit.y + fit.h,
-      });
+      };
+      if (meta) this.occluderMeta.push(meta);
+      if (!flat)
+        resolve.push({
+          img,
+          meta,
+          lo: this.night ? this.litOccluders[this.litOccluders.length - 1] : null,
+          hbX,
+          hbY,
+          hbDepth,
+          lvl: world.rows[srow]?.[scol]?.l ?? 0,
+          fx: p.x * CELL_WU,
+          fy: p.y * CELL_WU,
+        });
       drawn++;
       if (p.roofed) roofedDrawn++;
+    }
+    /* SECOND PASS — THE SHARED RULE. Every piece is registered now, so each one
+     * resolves against the complete occluder set (terrain AND the other pieces)
+     * through `resolveDrawDepth`, the very function players, monsters and NPCs
+     * use. That is where the LIFT above the flat tile in front comes from — the
+     * thing the piece-only code lacked, which drew grass over a tree — and
+     * where the cover line comes from, so a piece's lit copy is cropped by the
+     * same test that crops a body's. Its own record is excluded or it would
+     * read itself as covering itself. */
+    for (const r of resolve) {
+      const d = this.resolveDrawDepth(
+        { sprite: r.img, lx: r.hbX, lyFlat: r.hbDepth - 0.5, ly: r.hbY, fx: r.fx, fy: r.fy },
+        r.lvl,
+        r.meta,
+      );
+      r.img.setDepth(d.depth + (r.img.depth - r.hbDepth)); // keep this rebuild's tie-breaking epsilon
+      if (r.meta) r.meta.depth = d.depth;
+      if (r.lo) {
+        r.lo.pd = d.depth;
+        r.lo.cover = d.coverY ?? Infinity;
+        r.lo.img.setDepth(litDepth(d.depth));
+        r.lo.fog?.setDepth(litDepth(d.depth));
+      }
     }
     this.t3stats.scenery = drawn;
     this.sceneryRoofedDrawn = roofedDrawn;
