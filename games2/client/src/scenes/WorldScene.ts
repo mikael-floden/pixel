@@ -13205,60 +13205,29 @@ export class WorldScene extends Phaser.Scene {
     }
     const clip = this.groundClip;
     if (clip && op.sw > 0 && op.sh > 0) {
-      // A BAND PASS (the ground scroll): nothing outside the band may be
-      // touched, so an op that crosses its edge is CROPPED to it — an integer
-      // sub-rect of the same frame at scale 1, hence pixel-exact.
-      const ix0 = Math.max(dx, clip.x0);
-      const iy0 = Math.max(dy, clip.y0);
-      const ix1 = Math.min(dx + op.sw, clip.x1);
-      const iy1 = Math.min(dy + op.sh, clip.y1);
-      if (ix1 <= ix0 || iy1 <= iy0) {
+      /* A BAND PASS (the ground scroll, the cell repaint). THE CLIP DECIDES
+       * WHETHER TO DRAW, NEVER WHAT TO DRAW: an op with no pixels inside the
+       * band is skipped, and every other op is drawn WHOLE.
+       *
+       * It used to CROP an op that crossed the edge to an exact sub-rect. That
+       * was the zigzag, and the maintainer is who found it — his red-shadow
+       * switch killed the shadow theory in one tap (the shadow goes red, the
+       * artefact stays black), and he then saw that it is POSITIONAL: ground
+       * either side of a straight screen-space line differs, clean on one side
+       * and dotted on the other, on sand as well as water. Those lines are the
+       * BAND EDGES. Measured the same way: full-painted ground carries 0
+       * fill-coloured texels where the same ground streamed carries 131.
+       *
+       * Drawing whole is safe by construction. The band's window is already
+       * padded by a tile and the world's level range; the painter is
+       * deterministic and world-anchored; and the kept picture outside the band
+       * came from that same painter at that same anchor. So the pixels an
+       * uncropped op lays outside the band are the pixels already there — it
+       * repaints them and cannot change them. What was never safe was sub-rect
+       * arithmetic in a path with one texel of margin, which is exactly what a
+       * liquid has, and why water showed this worst and longest. */
+      if (dx + op.sw <= clip.x0 || dy + op.sh <= clip.y0 || dx >= clip.x1 || dy >= clip.y1) {
         this.groundCulled++;
-        return;
-      }
-      if (ix0 !== dx || iy0 !== dy || ix1 !== dx + op.sw || iy1 !== dy + op.sh) {
-        const csx = op.sx + (ix0 - dx);
-        const csy = op.sy + (iy0 - dy);
-        const csw = ix1 - ix0;
-        const csh = iy1 - iy0;
-        // ONE scratch frame per texture, re-aimed per crop: the batch copies
-        // the frame's UVs into the vertex buffer as each draw is queued, so
-        // mutating it between queued draws is safe — and the edges sit at
-        // arbitrary texel offsets, so naming each crop would grow a frame per
-        // distinct rect per texture for the whole session.
-        // (Texture.get(name) answers a MISSING name with the base frame — a
-        // `?? add` would re-aim the base frame of every art texture. has() first.)
-        /* A NAMED FRAME PER CROP RECT — never one shared frame re-aimed.
-         *
-         * This used to keep ONE `t3clip` frame per texture and `setSize` it
-         * before every cropped draw, on the reasoning that a batch copies a
-         * frame's UVs as each draw is QUEUED, so mutating it between draws is
-         * safe. The maintainer's own device disproved it: sampling the ground
-         * texture on his phone, the streamed picture carried 131 fill-coloured
-         * texels along the tile edges and a FORCED FULL REPAINT of the same
-         * ground carried ZERO — and the clipped passes (the scroll band, the
-         * cell repaint) are the only thing the two paths differ by. Every op of
-         * a band shares one texture and therefore shared one frame, so the
-         * crops did not all land where they were aimed.
-         *
-         * Named frames are what the UNCROPPED sub-rect path a few lines below
-         * has always done (`t3c:`), and they cannot be re-aimed underneath a
-         * queued draw. The cost the old comment feared — a frame per distinct
-         * rect per texture — is bounded in practice because band geometry
-         * repeats: the same crops recur every latch. Correctness first; if the
-         * frame count ever matters, cap it the way the plate cache is capped.
-         *
-         * Texture.add makes the first added frame the texture's DEFAULT frame
-         * (Texture.get(undefined) answers firstFrame once frameTotal > 1), so a
-         * bare-key draw of this art — an occluder Image, the whole-frame path —
-         * would show the crop. The default stays the base. */
-        const ctex = this.textures.get(op.key);
-        const cname = `t3k:${csx},${csy},${csw},${csh}`;
-        if (!ctex.has(cname)) {
-          ctex.add(cname, 0, csx, csy, csw, csh);
-          ctex.firstFrame = "__BASE";
-        }
-        rt.batchDrawFrame(op.key, cname, ix0, iy0, 1, tint);
         return;
       }
     }
