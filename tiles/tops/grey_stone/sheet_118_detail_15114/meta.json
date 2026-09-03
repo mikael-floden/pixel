@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grey_stone",
+  "flavour": "detail",
+  "index": 118,
+  "seed": 15114,
+  "prompt": "grey stone, a quartz seam in the middle, grey stone all around the edge",
+  "palette_top": "#808082",
+  "tile_id": "a30b4f5d-2a37-4ac8-869f-d73e0f19312f",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:33:40+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 20,
+        "dominant_share": 0.6795,
+        "px": 858
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6515,
+        "px": 858
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.7485,
+        "px": 859
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.7179,
+        "px": 858
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.6874,
+        "px": 915
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.65,
+        "px": 920
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.3681,
+        "px": 921
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.662,
+        "px": 920
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6703,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.6063,
+        "px": 922
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.6526,
+        "px": 921
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.662,
+        "px": 920
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.6935,
+        "px": 920
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.6826,
+        "px": 920
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.6486,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5972,
+        "px": 921
+      }
+    ],
+    "mean_colours": 17.75,
+    "mean_dominant_share": 0.6486
+  },
+  "motif": "a quartz seam",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

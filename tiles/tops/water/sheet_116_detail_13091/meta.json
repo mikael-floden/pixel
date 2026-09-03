@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "water",
+  "flavour": "detail",
+  "index": 116,
+  "seed": 13091,
+  "prompt": "water, a school of tiny fish in the middle, water all around the edge",
+  "palette_top": "#7eb7c7",
+  "tile_id": "498db3b9-e1c4-471b-ab05-8d31c8d7c4c0",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:33:36+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 20,
+        "dominant_share": 0.5055,
+        "px": 916
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.4618,
+        "px": 916
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.459,
+        "px": 915
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5147,
+        "px": 917
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4711,
+        "px": 917
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.4401,
+        "px": 918
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5033,
+        "px": 918
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.5387,
+        "px": 917
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4323,
+        "px": 916
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.4842,
+        "px": 917
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4733,
+        "px": 917
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5795,
+        "px": 918
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.4331,
+        "px": 919
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.4168,
+        "px": 919
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.6351,
+        "px": 918
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.5185,
+        "px": 920
+      }
+    ],
+    "mean_colours": 19.25,
+    "mean_dominant_share": 0.4917
+  },
+  "motif": "a school of tiny fish",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

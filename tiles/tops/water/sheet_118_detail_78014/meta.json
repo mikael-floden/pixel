@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "water",
+  "flavour": "detail",
+  "index": 118,
+  "seed": 78014,
+  "prompt": "water, a shallow ford in the middle, water all around the edge",
+  "palette_top": "#7eb7c7",
+  "tile_id": "72abb424-6958-48a2-b6fd-8b28f89c3e56",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:36:14+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 2,
+        "dominant_share": 0.8837,
+        "px": 920
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4301,
+        "px": 923
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3391,
+        "px": 920
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.562,
+        "px": 920
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4631,
+        "px": 922
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3391,
+        "px": 917
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.494,
+        "px": 923
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.3621,
+        "px": 917
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.3637,
+        "px": 921
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.2835,
+        "px": 917
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3855,
+        "px": 921
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.4783,
+        "px": 920
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5282,
+        "px": 922
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.3174,
+        "px": 923
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.4306,
+        "px": 922
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.4419,
+        "px": 921
+      }
+    ],
+    "mean_colours": 17.19,
+    "mean_dominant_share": 0.4439
+  },
+  "motif": "a shallow ford",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}
