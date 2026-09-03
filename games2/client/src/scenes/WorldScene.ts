@@ -2055,6 +2055,17 @@ export class WorldScene extends Phaser.Scene {
    * full paint, extended by band paints); the cells a landed batch made drawable;
    * the ring of cells beyond the texture whose art is asked for ahead of time. */
   private t3missing = new Map<string, Set<number>>();
+  /** A paint DROPPED at least one op (its texture was not registered) and the
+   *  loader has not gone idle since. THE GUESS, shipped at the maintainer's
+   *  explicit request ("PLEASE PUSH YOUR GUESS! we might be able to save time
+   *  if it works"): a dropped op leaves the render texture's background showing
+   *  and nothing is guaranteed to come back for it — t3missing only remembers
+   *  ops whose FILE is still coming, so a drop for any other reason (a
+   *  tombstoned 404, a composition that returned null, a resolution cached as
+   *  empty) is permanent, through every full paint, which is exactly what he
+   *  photographs while standing still. When the loader finally goes idle, repaint
+   *  once. Bounded by construction: it fires at most once per idle transition. */
+  private groundDropsPending = false;
   private t3sheetPaths = new Set<string>();
   private groundDirtyCells: number[] = [];
   private repaintGroundPartial = false;
@@ -2915,6 +2926,26 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => !!this.night && this.night.dbgOverlays !== 0,
           state: () => ["all", "no fog", "no mist", "none"][this.night?.dbgOverlays ?? 0],
+        },
+        /* DROPPED OPS, PAINTED MAGENTA. The maintainer's artefact is bare
+         * ground fill inside the painted field on a FULL paint, and neighbours
+         * overlap by 32 rows, so the only way to expose the background is a
+         * tile that never drew — which `opsForCell` has always done silently.
+         * This paints those spots magenta instead. A zigzag that turns MAGENTA
+         * is dropped ops and the cause is a missing texture; one that stays
+         * dark is not, and that kills this whole line of enquiry in one tap.
+         * His idea, from the pink-background test. */
+        {
+          label: "dropped ops",
+          act: () => {
+            const t = this.t3tex;
+            if (!t) return;
+            t.debugDrops = !t.debugDrops;
+            this.chat.addLog("—", `dropped ops: ${t.debugDrops ? "MAGENTA" : "hidden"} (dropped so far: ${t.droppedOps})`);
+            this.repaintWorld();
+          },
+          get: () => !!this.t3tex?.debugDrops,
+          state: () => (this.t3tex?.debugDrops ? "magenta" : "off"),
         },
         /* THE PERF BEACON, as a BUTTON — because the maintainer plays from an
          * INSTALLED HOME-SCREEN APP, which has no address bar, so `?perf=1`
@@ -8516,6 +8547,8 @@ export class WorldScene extends Phaser.Scene {
     this.ps();
     this.t3prefetchStep();
     this.pe("prefetch");
+    // ...and, once the art has settled, repair anything a paint dropped.
+    this.t3drainDrops();
     if (!this.room) return;
     const dt = delta / 1000;
     const myId = this.room.sessionId;
@@ -14057,6 +14090,7 @@ export class WorldScene extends Phaser.Scene {
     const built0 = tex?.stats.built ?? 0;
     const buildMs0 = tex?.stats.buildMs ?? 0;
     this.t3stats = stats;
+    const drops0 = tex?.droppedOps ?? 0;
     const t0 = performance.now();
     const cellOf = (c: number, r: number) => this.t3cellOf(t3, c, r);
     const boundaryOf = (c: number, r: number) => this.t3boundaryOf(t3, c, r);
@@ -14149,8 +14183,31 @@ export class WorldScene extends Phaser.Scene {
     stats.composeMs = +((tex?.stats.buildMs ?? 0) - buildMs0).toFixed(1);
     stats.ms = +(performance.now() - t0).toFixed(1);
     if (stats.blits > 0) this.groundPainted = true;
+    /* DID THIS PAINT DROP ANYTHING? See groundDropsPending. */
+    if ((tex?.droppedOps ?? 0) > drops0) this.groundDropsPending = true;
     load?.flush();
     this.checkTiles3Pitch();
+  }
+
+  /** ONE REPAINT AFTER THE ART SETTLES, IF ANY OP WAS EVER DROPPED.
+   *
+   *  Called from update(). A dropped op leaves the render texture's own
+   *  background showing — the maintainer's dotted line — and the existing
+   *  repair path (t3missing -> onTerrainBatch) only covers ops whose FILE is
+   *  still in flight. Anything else that drops (a tombstoned 404, a null
+   *  composition, a resolution cached as empty) is never repainted at all, so
+   *  it survives every later paint and he sees it while standing still, which
+   *  no camera latch will ever clear.
+   *
+   *  Fires at most once per idle transition: the flag is set by a paint that
+   *  dropped and cleared the moment the repaint is issued, so a cell whose art
+   *  genuinely never arrives costs one repaint, not one per frame. */
+  private t3drainDrops(): void {
+    if (!this.groundDropsPending || !this.maps3) return;
+    const load = this.t3load;
+    if (!load || load.queuedCount > 0 || !load.idle) return;
+    this.groundDropsPending = false;
+    this.repaintWorld();
   }
 
   /** RESOLVE, BUT NEVER TAKE THE FRAME DOWN. `Tiles3.overTile` THROWS when the

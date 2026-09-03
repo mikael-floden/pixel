@@ -824,6 +824,21 @@ export interface Tiles3TexturesStats {
  */
 export class Tiles3Textures {
   readonly stats: Tiles3TexturesStats = { built: 0, buildMs: 0, reused: 0, live: 0, evicted: 0, missing: 0 };
+  /** Ops `opsForCell` DROPPED because their texture was not registered. It has
+   *  always dropped them silently; nothing counted it, so "a tile simply never
+   *  drew" was invisible to every probe. The maintainer's artefact is bare
+   *  ground fill INSIDE the painted field on a FULL paint (build 4a02b7a24,
+   *  legacy path — no scroll, band, landing repaint or prefetch runs), and with
+   *  a 32-row overlap between neighbours the only way to expose the background
+   *  is an op that never drew. This counts them. */
+  droppedOps = 0;
+  /** DIAGNOSTIC: paint a MAGENTA diamond where an op was dropped instead of
+   *  leaving the background showing (the maintainer's own idea, sharpened —
+   *  "clear the screen with pink before we draw, then we know if the pixels are
+   *  still pink"). A zigzag that turns magenta IS dropped ops; one that stays
+   *  dark is something else and this whole line of enquiry is wrong. Off by
+   *  default; Settings -> "dropped ops". */
+  debugDrops = false;
 
   private o: Tiles3TexturesOpts;
   /** key -> nothing; a Map because insertion order IS the LRU order. */
@@ -950,6 +965,11 @@ export class Tiles3Textures {
         // note); only a liquid ground is forced onto the top-face path.
         key = this.plate(liquidGround ? { ...art, topOnly: true } : art, cell.ground);
       else key = this.o.textures.exists(op.key) ? op.key : null;
+      if (!key) {
+        this.droppedOps++;
+        // ...and, while the switch is on, draw the hole instead of leaving it.
+        if (this.debugDrops) key = this.liquid([255, 0, 255]);
+      }
       if (key) out.push(key === op.key ? op : { ...op, key });
     }
     return out;
