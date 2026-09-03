@@ -2694,6 +2694,7 @@ const constants = buildConstants();
 // produces identical numbers, just a few seconds slower.
 const artBoundsPath = join(ROOT, "wiki", "art_bounds.json");
 const artPrior = readJson(artBoundsPath);
+let artBases = artPrior?.bases ?? {};    // rect footprint cache, keyed by the clip's art hash
 const artClips = {}, artHashes = {};
 const artFailed = [];
 let artCachedN = 0, artMeasuredN = 0;
@@ -2792,12 +2793,98 @@ for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
 const artOpenMax = Math.max(...artOpens, 64);
 const artScale = Math.max(1, Math.min(6, Math.floor(300 / artOpenMax) || 1));
 const artBox = Object.keys(artBoxes).length ? artBoxes : null;
+/* THE FOOTPRINT OF A RECT PIECE, MEASURED FROM ITS OWN SILHOUETTE (maintainer
+ * 2026-09-03, after fitting "Map chest of wide flat drawers 010" by hand: "In
+ * SE it's easy to find the back-left (left), front-left (bottom) and
+ * front-right (right) corners. I adjusted the hitbox to perfectly capture all
+ * corners … By using this pattern, you should be able to place really really
+ * good default hitboxes for rect objects").
+ *
+ * His three corners are exactly the three the art shows: on a turned facing a
+ * box's base is a parallelogram, and its two FRONT edges are the bottom of the
+ * silhouette. So walk the bottom contour out from its lowest point until the
+ * boundary stops following the base and turns up into the body — that break is
+ * the left corner one way and the right corner the other. The fourth corner is
+ * hidden behind the piece and is implied: L + R − B.
+ *
+ * NOT SLOPE-MATCHED. The first cut kept only contour points within 1.5px of
+ * the exact iso line (±atan(dy/dx)); pixel art misses that by a few tenths, the
+ * error accumulates over a 60px edge, and the left corner came back as the
+ * bottom corner (measured on this very chest). The walk tolerates a drifting
+ * slope and stops on a real break instead.
+ *
+ * Measured once per PIECE (one state, three facings), not per state: lighting
+ * changes the pixels, not where the furniture stands. Cached under the clip's
+ * own published art hash, in its own map, so the main measurement cache — and
+ * the 9,983 clips behind it — is untouched. */
+{
+  const K = 15 / 32;                                   // the iso squash, dy/dx
+  const priorBase = artPrior?.bases ?? {};
+  const bases = {};
+  let baseMeasured = 0, baseCached = 0;
+  const footprint = (relStrip, fw, fh, frames) => {
+    const d = decodeWebP(readFileSync(join(ROOT, relStrip)));
+    const { w, pix } = d;
+    const bottom = new Map();                          // x -> lowest opaque y, first frame only
+    for (let y = 0; y < fh; y++) {
+      for (let x = 0; x < fw; x++) {
+        if (x >= w) continue;
+        if ((pix[y * w + x] >>> 24) > 40) bottom.set(x, y);
+      }
+    }
+    const xs = [...bottom.keys()].sort((a, b) => a - b);
+    if (xs.length < 8) return null;
+    let bx = xs[0];
+    for (const x of xs) if (bottom.get(x) > bottom.get(bx)) bx = x;
+    const by = bottom.get(bx);
+    // Walk out from the lowest point while the boundary keeps falling away at
+    // roughly the iso slope; stop where it breaks upward into the body.
+    const walk = (dir) => {
+      let x = bx, y = by, gap = 0;
+      for (let n = x + dir; dir < 0 ? n >= xs[0] : n <= xs[xs.length - 1]; n += dir) {
+        const yn = bottom.get(n);
+        if (yn === undefined) { if (++gap > 2) break; continue; }
+        gap = 0;
+        const rise = y - yn;                            // px the contour climbs per column
+        if (rise > 3 * Math.max(1, K) + 1) break;       // a real break, not the base edge
+        x = n; y = yn;
+      }
+      return [x, y];
+    };
+    const L = walk(-1), R = walk(1);
+    if (R[0] - L[0] < 6) return null;
+    return [L[0], L[1], bx, by, R[0], R[1]].map((v) => +v.toFixed(1));
+  };
+  for (const o of objects) {
+    if (o.hitboxShape !== "rect" || !o.animations) continue;
+    const st = Object.keys(o.animations).find((k) => {
+      const ds = o.animations[k]?.dirs ?? {};
+      return ds.south || ds["south-east"] || ds["south-west"];
+    });
+    if (!st) continue;
+    const out = {};
+    for (const dname of ["south", "south-east", "south-west"]) {
+      const c = o.animations[st]?.dirs?.[dname];
+      if (!c?.strip || !c.h) continue;
+      if (priorBase[c.h] !== undefined) { if (priorBase[c.h]) out[dname] = priorBase[c.h]; bases[c.h] = priorBase[c.h]; baseCached++; continue; }
+      let m = null;
+      try { m = footprint(c.strip, c.fw, c.fh, c.frames ?? 1); } catch { m = null; }
+      bases[c.h] = m; baseMeasured++;
+      if (m) out[dname] = m;
+    }
+    if (Object.keys(out).length) o.hitboxBase = out;
+  }
+  artBases = bases;
+  console.log(`[wiki] rect footprints: ${objects.filter((o) => o.hitboxBase).length} pieces — measured ${baseMeasured} clips now, ${baseCached} from cache`);
+}
+
 // Rewrite the cache only when the measurements moved — a no-change build must
 // not churn generated_at.
 {
   const sorted = (o) => Object.fromEntries(Object.entries(o).sort(([a], [b]) => a.localeCompare(b)));
   const same = artPrior && JSON.stringify({ s: artPrior.scale, b: artPrior.boxes, c: artPrior.clips, h: artPrior.hashes })
-    === JSON.stringify({ s: artScale, b: artBoxes, c: sorted(artClips), h: sorted(artHashes) });
+    === JSON.stringify({ s: artScale, b: artBoxes, c: sorted(artClips), h: sorted(artHashes) })
+    && JSON.stringify(artPrior.bases ?? {}) === JSON.stringify(sorted(artBases));
   if (!same) {
     try {
       writeFileSync(artBoundsPath, JSON.stringify({
@@ -2805,6 +2892,7 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
         generated_at: new Date().toISOString(),
         note: "content-hash cache of build.mjs's own measurements — safe to delete, the build remeasures",
         scale: artScale, boxes: artBoxes, clips: sorted(artClips), hashes: sorted(artHashes),
+        bases: sorted(artBases),
       }) + "\n");
     } catch { /* read-only fs (Docker image build) is fine — the numbers are already in data.json */ }
   }

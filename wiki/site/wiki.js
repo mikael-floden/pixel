@@ -990,8 +990,61 @@ function hitboxes(entity, state) {
  * the box horizontally, sitting at its foot, as wide as the box and squashed
  * by the iso foreshortening the ground actually has. It is a starting point to
  * drag from, never a decision: nothing is stored until he touches it. */
+/* A RECT PIECE'S DEFAULT IS FITTED TO ITS OWN FOOTPRINT (maintainer
+ * 2026-09-03, after fitting a chest by hand: "In SE it's easy to find the
+ * back-left (left), front-left (bottom) and front-right (right) corners. I
+ * adjusted the hitbox to perfectly capture all corners … By using this
+ * pattern, you should be able to place really really good default hitboxes
+ * for rect objects").
+ *
+ * build.mjs measures those three corners off the silhouette and publishes them
+ * per facing (`hitboxBase`). Here they become the box: the centre is the
+ * midpoint of the left and right corners, and the two ground extents come from
+ * solving the corner against the facing's own projection — one small 2×2, no
+ * guessing. SIZE is taken from the turned facings, where the depth is actually
+ * visible; SOUTH cannot show depth at all, so it inherits the size and only
+ * its placement is measured (bottom edge on the lowest contact pixel).
+ *
+ * Checked against his own hand-made box on cupboard_010: fitted rx 40.8 / ry
+ * 7.08 against his 41.25 / 7.75, centre within 0.2px on south-east. */
+function fittedRectDefault(entity, W, H) {
+  const base = entity?.hitboxBase;
+  if (!base || taggedShape(entity) !== "rect") return null;
+  const k = ISO_K();
+  const fitOne = (dname) => {
+    const b = base[dname];
+    if (!Array.isArray(b) || b.length !== 6) return null;
+    const [Lx, Ly, Bx, By, Rx, Ry] = b;
+    const th = -(DIR_GROUND_DEG[dname] ?? 0) * Math.PI / 180;
+    const eu = [Math.cos(th), Math.sin(th) * k], ev = [-Math.sin(th), Math.cos(th) * k];
+    const C = [(Lx + Rx) / 2, (Ly + Ry) / 2], d = [Rx - C[0], Ry - C[1]];
+    const det = eu[0] * ev[1] - eu[1] * ev[0];
+    if (!det) return null;
+    const p = (d[0] * ev[1] - d[1] * ev[0]) / det, q = (eu[0] * d[1] - eu[1] * d[0]) / det;
+    return { rx: Math.abs(p), ry: Math.abs(q) * k, cx: C[0], cy: C[1], by: By };
+  };
+  const turned = ["south-east", "south-west"].map(fitOne).filter((f) => f && f.rx > 3 && f.ry > 1);
+  if (!turned.length) return null;
+  const rx = turned.reduce((n, f) => n + f.rx, 0) / turned.length;
+  const ry = turned.reduce((n, f) => n + f.ry, 0) / turned.length;
+  const south = fitOne("south");
+  const pos = {};
+  for (const dname of ["south-east", "south-west"]) {
+    const f = fitOne(dname);
+    if (f) pos[dname] = { ax: +(f.cx - W / 2).toFixed(2), ay: +(f.cy - H / 2).toFixed(2) };
+  }
+  // South's own placement: centred on its base, standing on its lowest pixel.
+  const sx = south ? south.cx : W / 2, sy = south ? south.by - ry : H * 0.75;
+  return {
+    ax: +(sx - W / 2).toFixed(2), ay: +(sy - H / 2).toFixed(2),
+    rx: +rx.toFixed(2), ry: +Math.max(2, ry).toFixed(2), rot: 0, shape: "rect",
+    ...(Object.keys(pos).length ? { pos_by_dir: pos } : {}),
+  };
+}
 function hitboxDefault(entity, bb, fw, fh) {
   const W = fw ?? entity.size ?? 96, H = fh ?? entity.size ?? 96;
+  const fitted = fittedRectDefault(entity, W, H);
+  if (fitted) return fitted;
   const box = Array.isArray(bb) && bb.length === 4 ? bb : [W * 0.2, H * 0.2, W * 0.8, H * 0.9];
   const cx = (box[0] + box[2]) / 2, foot = box[3];
   const w = Math.max(6, box[2] - box[0]);

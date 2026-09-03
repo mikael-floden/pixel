@@ -1079,6 +1079,53 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
     ok(Math.abs(SE2.drawn[0] - 70) < 0.6, `and south-east keeps what he set (${SE2.drawn[0]}°)`);
   }
 }
+/* THE DEFAULT FOR A RECT PIECE IS FITTED TO ITS OWN FOOTPRINT (maintainer
+ * 2026-09-03: "By using this pattern, you should be able to place really
+ * really good default hitboxes for rect objects"). Checked against the box he
+ * fitted BY HAND on cupboard_010 — the piece he described — with his record
+ * cleared in the page so the default is what is measured, not his answer. */
+{
+  const HIS = { rx: 41.25, ry: 7.75, se: { ax: 0.78, ay: 42.67 } };   // his not_lit_1, 2026-09-03
+  const piece = DATAOBJ.find((o) => o.id === "cupboard_010");
+  ok(!!piece?.hitboxBase, `the build publishes a measured footprint for the chest (${JSON.stringify(piece?.hitboxBase?.["south-east"])})`);
+  const nRect = DATAOBJ.filter((o) => o.hitboxShape === "rect").length;
+  const nBase = DATAOBJ.filter((o) => o.hitboxBase).length;
+  ok(nBase >= nRect * 0.9, `and for the rect-tagged library at large (${nBase} of ${nRect} rect pieces)`);
+  if (piece) {
+    await p.goto(`${W}#/objects/${piece.id}`, { waitUntil: "load" });
+    await p.waitForTimeout(2400);
+    await p.evaluate((k) => {
+      const d = window.__wiki?.state?.tuning?.scenery_hitbox;
+      if (d?.overrides) for (const key of Object.keys(d.overrides)) if (key === k || key.startsWith(`${k}#`)) delete d.overrides[key];
+    }, piece.path);
+    await p.evaluate(() => { delete window.__wikiHitbox; });
+    await p.evaluate(() => {
+      if (!document.querySelector(".hit-bar:not(.hidden)")) {
+        [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click();
+      }
+    });
+    await p.waitForTimeout(1400);
+    const read = () => p.evaluate(() => { const hb = window.__wikiHitbox; return hb ? { ...hb.boxes[hb.sel], dir: hb.dir, shape: hb.shapes?.[hb.sel] } : null; });
+    const face = async (d2) => { await p.evaluate((dd) => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent.trim().toUpperCase() === dd)?.click(), d2); await p.waitForTimeout(700); return read(); };
+    const se = await face("SE");
+    ok(se?.shape === "rect", `the default comes up as a RECT, unprompted (${se?.shape})`);
+    ok(Math.abs(se.rx - HIS.rx) < 3 && Math.abs(se.ry - HIS.ry) < 1.5,
+      `and its SIZE matches the box he fitted by hand within 3px (fitted ${se.rx} × ${se.ry}, his ${HIS.rx} × ${HIS.ry})`);
+    const sePos = se.pos_by_dir?.["south-east"];
+    ok(sePos && Math.abs(sePos.ax - HIS.se.ax) < 3 && Math.abs(sePos.ay - HIS.se.ay) < 3,
+      `and it stands where he stood it on south-east, within 3px (${JSON.stringify(sePos)} vs ${JSON.stringify(HIS.se)})`);
+    ok(se.pos_by_dir?.["south-west"], "with south-west measured on its own art too");
+    // the fitted corners really sit on the art: the bottom corner is at the
+    // silhouette's lowest contact pixel, not floating above or below it
+    const fit = await p.evaluate(() => {
+      const hb = window.__wikiHitbox; const c = hb.cornersFrame[hb.sel];
+      return c ? { low: Math.max(...c.map((q) => q[1])), left: Math.min(...c.map((q) => q[0])), right: Math.max(...c.map((q) => q[0])) } : null;
+    });
+    const artSE = piece.hitboxBase["south-east"];
+    ok(fit && Math.abs(fit.low - artSE[3]) < 2.5 && Math.abs(fit.left - artSE[0]) < 3 && Math.abs(fit.right - artSE[4]) < 3,
+      `the drawn corners land on the art's own footprint (bottom ${fit?.low.toFixed(1)} vs ${artSE[3]}, left ${fit?.left.toFixed(1)} vs ${artSE[0]}, right ${fit?.right.toFixed(1)} vs ${artSE[4]})`);
+  }
+}
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
 
 await b.close();
