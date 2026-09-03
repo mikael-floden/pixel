@@ -1,3012 +1,3012 @@
 {
-  "format": "pixel-wiki-base-tile-sets@1",
-  "_comment": "THE GROUND'S LOOK, per ground type, as the maintainer configures it (2026-08-25). Each ground owns an ordered list of SETS. A set is 'a list of tiles that look extremely good when used togather', each member carrying a weight for how often it is drawn, plus a 'clean' member for the ground's flat palette colour ('Setting this to 0% will always draw with texture. Setting this to 100% will always draw a clean tile'). The SET carries its own weight for how likely that set is chosen for a region: a world agent picks one set per area and stays with it, so an area stays coherent, and varies only within that set. SET 0 IS RESERVED: it is named Clean, may hold nothing but the clean member, and is never deleted - it is switched off by setting its weight to 0, which also guarantees there is always one set that can draw. Ids are stable and are never renumbered when a set is deleted; the display name is '<name> #<id>'. Weights are raw non-negative numbers normalised at read time, not stored percentages - adding a tile must not silently rescale the others, and 0 has to keep meaning never. THIS REPLACES the per-material transition_surface / always_own_texture / flat_top flags. Reference implementation and the deterministic pick (FNV-1a/32) in wiki/lib/basesets.mjs, with TEST_VECTORS to prove a port. Written by the wiki's ground-type pages; read by the game, the maps/world agent and the tiles agent.",
-  "pick": {
-    "hash": "fnv1a-32",
-    "set_key": "bts1|set|<ground>|<region>",
-    "tile_key": "bts1|tile|<set_id>|<x>|<y>",
-    "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
-  },
-  "updated_at": "2026-08-28T06:54:22.135Z",
-  "grounds": {
-    "black_rock": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 0,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 3
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_beach/f9d36b7a",
-              "tile": "tiles/black_rock__over__light_beach/f9d36b7a",
-              "weight": 0.5
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__black_rock/1f0977ec",
-              "tile": "tiles/black_rock__over__black_rock/1f0977ec",
-              "weight": 0.6
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__ice/da81461b",
-              "tile": "tiles/black_rock__over__ice/da81461b",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__ice/f6310449",
-              "tile": "tiles/black_rock__over__ice/f6310449",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__lava/82cca49d",
-              "tile": "tiles/black_rock__over__lava/82cca49d",
-              "weight": 0.8
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_beach/15a42aca",
-              "tile": "tiles/black_rock__over__light_beach/15a42aca",
-              "weight": 2
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__snow/b7bb8617",
-              "tile": "tiles/black_rock__over__snow/b7bb8617",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__grey_stone/3367ecc5",
-              "tile": "tiles/black_rock__over__grey_stone/3367ecc5",
-              "weight": 0.1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__grey_stone/41f494b1",
-              "tile": "tiles/black_rock__over__grey_stone/41f494b1",
-              "weight": 0.2
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__grey_stone/6683b4ae",
-              "tile": "tiles/black_rock__over__grey_stone/6683b4ae",
-              "weight": 0.05
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__grey_stone/8aea997b",
-              "tile": "tiles/black_rock__over__grey_stone/8aea997b",
-              "weight": 0.05
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__grey_stone/ac1f8e7b",
-              "tile": "tiles/black_rock__over__grey_stone/ac1f8e7b",
-              "weight": 0.2
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__lava/4d39233f",
-              "tile": "tiles/black_rock__over__lava/4d39233f",
-              "weight": 0.1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_soil/0f4ada16",
-              "tile": "tiles/black_rock__over__light_soil/0f4ada16",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_soil/2568d91b",
-              "tile": "tiles/black_rock__over__light_soil/2568d91b",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_soil/8a1e4960",
-              "tile": "tiles/black_rock__over__light_soil/8a1e4960",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__parquet_floor/02aa9c38",
-              "tile": "tiles/black_rock__over__parquet_floor/02aa9c38",
-              "weight": 0.1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__parquet_floor/444f6f79",
-              "tile": "tiles/black_rock__over__parquet_floor/444f6f79",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__parquet_floor/7129860b",
-              "tile": "tiles/black_rock__over__parquet_floor/7129860b",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__parquet_floor/83ea63da",
-              "tile": "tiles/black_rock__over__parquet_floor/83ea63da",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__parquet_floor/c0b3caf7",
-              "tile": "tiles/black_rock__over__parquet_floor/c0b3caf7",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__water/33193dcc",
-              "tile": "tiles/black_rock__over__water/33193dcc",
-              "weight": 0.05
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__black_rock/80252263",
-              "tile": "tiles/black_rock__over__black_rock/80252263",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__dark_mud/eab63e38",
-              "tile": "tiles/black_rock__over__dark_mud/eab63e38",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__deep_water/42595f95",
-              "tile": "tiles/black_rock__over__deep_water/42595f95",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__deep_water/f2ac692a",
-              "tile": "tiles/black_rock__over__deep_water/f2ac692a",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__grey_stone/3aa2ad39",
-              "tile": "tiles/black_rock__over__grey_stone/3aa2ad39",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__grey_stone/737963dd",
-              "tile": "tiles/black_rock__over__grey_stone/737963dd",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_soil/672aeefe",
-              "tile": "tiles/black_rock__over__light_soil/672aeefe",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__parquet_floor/1e9599ce",
-              "tile": "tiles/black_rock__over__parquet_floor/1e9599ce",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__parquet_floor/4a9f2898",
-              "tile": "tiles/black_rock__over__parquet_floor/4a9f2898",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__parquet_floor/74d0a524",
-              "tile": "tiles/black_rock__over__parquet_floor/74d0a524",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__parquet_floor/ea68dd6a",
-              "tile": "tiles/black_rock__over__parquet_floor/ea68dd6a",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_beach/53afa117",
-              "tile": "tiles/black_rock__over__light_beach/53afa117",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_beach/b8e87572",
-              "tile": "tiles/black_rock__over__light_beach/b8e87572",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_beach/f9d36b7a",
-              "tile": "tiles/black_rock__over__light_beach/f9d36b7a",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__light_soil/3aff11ff",
-              "tile": "tiles/black_rock__over__light_soil/3aff11ff",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__snow/b7bb8617",
-              "tile": "tiles/black_rock__over__snow/b7bb8617",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "name": "Set",
-          "weight": 5,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/black_rock/sheet_00_subtle_12334/tile_05.webp",
-              "tile": "tiles/tops/black_rock/sheet_00_subtle_12334/post/tile_05.d4c1d5e2.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/black_rock/sheet_00_subtle_12334/tile_06.webp",
-              "tile": "tiles/tops/black_rock/sheet_00_subtle_12334/post/tile_06.042183f1.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/black_rock__over__snow/107d54e4",
-              "tile": "tiles/black_rock__over__snow/107d54e4",
-              "weight": 1
-            }
-          ]
-        }
-      ]
+ "format": "pixel-wiki-base-tile-sets@1",
+ "_comment": "THE GROUND'S LOOK, per ground type, as the maintainer configures it (2026-08-25). Each ground owns an ordered list of SETS. A set is 'a list of tiles that look extremely good when used togather', each member carrying a weight for how often it is drawn, plus a 'clean' member for the ground's flat palette colour ('Setting this to 0% will always draw with texture. Setting this to 100% will always draw a clean tile'). The SET carries its own weight for how likely that set is chosen for a region: a world agent picks one set per area and stays with it, so an area stays coherent, and varies only within that set. SET 0 IS RESERVED: it is named Clean, may hold nothing but the clean member, and is never deleted - it is switched off by setting its weight to 0, which also guarantees there is always one set that can draw. Ids are stable and are never renumbered when a set is deleted; the display name is '<name> #<id>'. Weights are raw non-negative numbers normalised at read time, not stored percentages - adding a tile must not silently rescale the others, and 0 has to keep meaning never. THIS REPLACES the per-material transition_surface / always_own_texture / flat_top flags. Reference implementation and the deterministic pick (FNV-1a/32) in wiki/lib/basesets.mjs, with TEST_VECTORS to prove a port. Written by the wiki's ground-type pages; read by the game, the maps/world agent and the tiles agent.",
+ "pick": {
+  "hash": "fnv1a-32",
+  "set_key": "bts1|set|<ground>|<region>",
+  "tile_key": "bts1|tile|<set_id>|<x>|<y>",
+  "note": "A SET is picked per REGION and a MEMBER per CELL - picking the set per cell would shuffle three different grasses into one meadow and undo the point of grouping them. Both picks must be identical in the game, the wiki preview and the tiles renders or the ground shimmers between reloads; port wiki/lib/basesets.mjs and check it against TEST_VECTORS."
+ },
+ "updated_at": "2026-08-28T06:54:22.135Z",
+ "grounds": {
+  "black_rock": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 0,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
     },
-    "brown_paving_stone": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 0,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__lava/0bc3171e",
-              "tile": "tiles/brown_paving_stone__over__lava/0bc3171e",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__lava/67b7d402",
-              "tile": "tiles/brown_paving_stone__over__lava/67b7d402",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__lava/832ecaf0",
-              "tile": "tiles/brown_paving_stone__over__lava/832ecaf0",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__grey_stone/b5b9ccb9",
-              "tile": "tiles/brown_paving_stone__over__grey_stone/b5b9ccb9",
-              "weight": 0.2
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 1,
-          "rejected": [
-            "tiles/tops/brown_paving_stone/sheet_02_subtle_72275/tile_02.webp"
-          ],
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__lava/bc531fba",
-              "tile": "tiles/brown_paving_stone__over__lava/bc531fba",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__grey_stone/0f64ba68",
-              "tile": "tiles/brown_paving_stone__over__grey_stone/0f64ba68",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__grey_stone/acff38a4",
-              "tile": "tiles/brown_paving_stone__over__grey_stone/acff38a4",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__lava/67b7d402",
-              "tile": "tiles/brown_paving_stone__over__lava/67b7d402",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__light_soil/07035aff",
-              "tile": "tiles/brown_paving_stone__over__light_soil/07035aff",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 4,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__grass/53d54774",
-              "tile": "tiles/brown_paving_stone__over__grass/53d54774",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__deep_water/ce7e2aab",
-              "tile": "tiles/brown_paving_stone__over__deep_water/ce7e2aab",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__grass/25b85d82",
-              "tile": "tiles/brown_paving_stone__over__grass/25b85d82",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__grass/effec18e",
-              "tile": "tiles/brown_paving_stone__over__grass/effec18e",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 5,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/brown_paving_stone/sheet_04_detail_54925/tile_05.webp",
-              "tile": "tiles/tops/brown_paving_stone/sheet_04_detail_54925/post/tile_05.36000560.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 6,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__light_beach/3b4a6c5d",
-              "tile": "tiles/brown_paving_stone__over__light_beach/3b4a6c5d",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 7,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__grey_stone/6f958287",
-              "tile": "tiles/brown_paving_stone__over__grey_stone/6f958287",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__ice/5142e4b2",
-              "tile": "tiles/brown_paving_stone__over__ice/5142e4b2",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__parquet_floor/7f4c6d83",
-              "tile": "tiles/brown_paving_stone__over__parquet_floor/7f4c6d83",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 8,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__grey_stone/0f64ba68",
-              "tile": "tiles/brown_paving_stone__over__grey_stone/0f64ba68",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__lava/0bc3171e",
-              "tile": "tiles/brown_paving_stone__over__lava/0bc3171e",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 9,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__grey_stone/6f958287",
-              "tile": "tiles/brown_paving_stone__over__grey_stone/6f958287",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__deep_water/b783fcd7",
-              "tile": "tiles/brown_paving_stone__over__deep_water/b783fcd7",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__light_beach/2f0a71c6",
-              "tile": "tiles/brown_paving_stone__over__light_beach/2f0a71c6",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__water/d283cb9f",
-              "tile": "tiles/brown_paving_stone__over__water/d283cb9f",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__water/3ca1ff1a",
-              "tile": "tiles/brown_paving_stone__over__water/3ca1ff1a",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 10,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/brown_paving_stone/sheet_05_detail_28659/tile_15.webp",
-              "tile": "tiles/tops/brown_paving_stone/sheet_05_detail_28659/post/tile_15.e9e13e95.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 11,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__grass/c0570fe6",
-              "tile": "tiles/brown_paving_stone__over__grass/c0570fe6",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__lava/0bc3171e",
-              "tile": "tiles/brown_paving_stone__over__lava/0bc3171e",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/brown_paving_stone__over__water/d327742b",
-              "tile": "tiles/brown_paving_stone__over__water/d327742b",
-              "weight": 1
-            }
-          ]
-        }
-      ]
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 3
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__light_beach/f9d36b7a",
+       "tile": "tiles/black_rock__over__light_beach/f9d36b7a",
+       "weight": 0.5
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__black_rock/1f0977ec",
+       "tile": "tiles/black_rock__over__black_rock/1f0977ec",
+       "weight": 0.6
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__ice/da81461b",
+       "tile": "tiles/black_rock__over__ice/da81461b",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__ice/f6310449",
+       "tile": "tiles/black_rock__over__ice/f6310449",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__lava/82cca49d",
+       "tile": "tiles/black_rock__over__lava/82cca49d",
+       "weight": 0.8
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__light_beach/15a42aca",
+       "tile": "tiles/black_rock__over__light_beach/15a42aca",
+       "weight": 2
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__snow/b7bb8617",
+       "tile": "tiles/black_rock__over__snow/b7bb8617",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__grey_stone/3367ecc5",
+       "tile": "tiles/black_rock__over__grey_stone/3367ecc5",
+       "weight": 0.1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__grey_stone/41f494b1",
+       "tile": "tiles/black_rock__over__grey_stone/41f494b1",
+       "weight": 0.2
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__grey_stone/6683b4ae",
+       "tile": "tiles/black_rock__over__grey_stone/6683b4ae",
+       "weight": 0.05
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__grey_stone/8aea997b",
+       "tile": "tiles/black_rock__over__grey_stone/8aea997b",
+       "weight": 0.05
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__grey_stone/ac1f8e7b",
+       "tile": "tiles/black_rock__over__grey_stone/ac1f8e7b",
+       "weight": 0.2
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__lava/4d39233f",
+       "tile": "tiles/black_rock__over__lava/4d39233f",
+       "weight": 0.1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__light_soil/0f4ada16",
+       "tile": "tiles/black_rock__over__light_soil/0f4ada16",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__light_soil/2568d91b",
+       "tile": "tiles/black_rock__over__light_soil/2568d91b",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__light_soil/8a1e4960",
+       "tile": "tiles/black_rock__over__light_soil/8a1e4960",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__parquet_floor/02aa9c38",
+       "tile": "tiles/black_rock__over__parquet_floor/02aa9c38",
+       "weight": 0.1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__parquet_floor/444f6f79",
+       "tile": "tiles/black_rock__over__parquet_floor/444f6f79",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__parquet_floor/7129860b",
+       "tile": "tiles/black_rock__over__parquet_floor/7129860b",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__parquet_floor/83ea63da",
+       "tile": "tiles/black_rock__over__parquet_floor/83ea63da",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__parquet_floor/c0b3caf7",
+       "tile": "tiles/black_rock__over__parquet_floor/c0b3caf7",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__water/33193dcc",
+       "tile": "tiles/black_rock__over__water/33193dcc",
+       "weight": 0.05
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__black_rock/80252263",
+       "tile": "tiles/black_rock__over__black_rock/80252263",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__dark_mud/eab63e38",
+       "tile": "tiles/black_rock__over__dark_mud/eab63e38",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__deep_water/42595f95",
+       "tile": "tiles/black_rock__over__deep_water/42595f95",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__deep_water/f2ac692a",
+       "tile": "tiles/black_rock__over__deep_water/f2ac692a",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__grey_stone/3aa2ad39",
+       "tile": "tiles/black_rock__over__grey_stone/3aa2ad39",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__grey_stone/737963dd",
+       "tile": "tiles/black_rock__over__grey_stone/737963dd",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__light_soil/672aeefe",
+       "tile": "tiles/black_rock__over__light_soil/672aeefe",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__parquet_floor/1e9599ce",
+       "tile": "tiles/black_rock__over__parquet_floor/1e9599ce",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__parquet_floor/4a9f2898",
+       "tile": "tiles/black_rock__over__parquet_floor/4a9f2898",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__parquet_floor/74d0a524",
+       "tile": "tiles/black_rock__over__parquet_floor/74d0a524",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__parquet_floor/ea68dd6a",
+       "tile": "tiles/black_rock__over__parquet_floor/ea68dd6a",
+       "weight": 1
+      }
+     ]
     },
-    "dark_mud": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 0.25,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 1,
-          "rejected": [
-            "tiles/dark_mud__over__brown_paving_stone/b84883a6",
-            "tiles/dark_mud__over__dark_mud/ad6144bf"
-          ],
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/dark_mud/sheet_00_subtle_10237/tile_02.webp",
-              "tile": "tiles/tops/dark_mud/sheet_00_subtle_10237/post/tile_02.3f1b7f30.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/dark_mud/sheet_00_subtle_10237/tile_03.webp",
-              "tile": "tiles/tops/dark_mud/sheet_00_subtle_10237/post/tile_03.995c7187.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/dark_mud/sheet_02_subtle_20485/tile_01.webp",
-              "tile": "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_01.c5823413.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/dark_mud/sheet_02_subtle_20485/tile_05.webp",
-              "tile": "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_05.976baf2f.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/dark_mud/sheet_02_subtle_20485/tile_10.webp",
-              "tile": "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_10.1345c257.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__grey_paving_stone/1da6fffd",
-              "tile": "tiles/dark_mud__over__grey_paving_stone/1da6fffd",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 3,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__black_rock/0ce9376f",
-              "tile": "tiles/dark_mud__over__black_rock/0ce9376f",
-              "weight": 0.5
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__black_rock/1a8d00c1",
-              "tile": "tiles/dark_mud__over__black_rock/1a8d00c1",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__black_rock/2c2c77ae",
-              "tile": "tiles/dark_mud__over__black_rock/2c2c77ae",
-              "weight": 0.2
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__black_rock/f9e52b1e",
-              "tile": "tiles/dark_mud__over__black_rock/f9e52b1e",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__dark_mud/24775ad5",
-              "tile": "tiles/dark_mud__over__dark_mud/24775ad5",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__dark_mud/350fb069",
-              "tile": "tiles/dark_mud__over__dark_mud/350fb069",
-              "weight": 0.3
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__dark_mud/684a8f83",
-              "tile": "tiles/dark_mud__over__dark_mud/684a8f83",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__dark_mud/7ab43073",
-              "tile": "tiles/dark_mud__over__dark_mud/7ab43073",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__dark_mud/8ab05341",
-              "tile": "tiles/dark_mud__over__dark_mud/8ab05341",
-              "weight": 0.1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__dark_mud/8ea65088",
-              "tile": "tiles/dark_mud__over__dark_mud/8ea65088",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__dark_mud/985608cb",
-              "tile": "tiles/dark_mud__over__dark_mud/985608cb",
-              "weight": 0.2
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__dark_mud/a37e7ce5",
-              "tile": "tiles/dark_mud__over__dark_mud/a37e7ce5",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__dark_mud/ad6144bf",
-              "tile": "tiles/dark_mud__over__dark_mud/ad6144bf",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__dark_mud/ce7a9e75",
-              "tile": "tiles/dark_mud__over__dark_mud/ce7a9e75",
-              "weight": 1.5
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__dark_mud/f409eb74",
-              "tile": "tiles/dark_mud__over__dark_mud/f409eb74",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__dark_mud/f927588d",
-              "tile": "tiles/dark_mud__over__dark_mud/f927588d",
-              "weight": 0.8
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__grey_stone/70bd19df",
-              "tile": "tiles/dark_mud__over__grey_stone/70bd19df",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__ice/984d6ad5",
-              "tile": "tiles/dark_mud__over__ice/984d6ad5",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/dark_mud__over__snow/3bce5308",
-              "tile": "tiles/dark_mud__over__snow/3bce5308",
-              "weight": 2
-            }
-          ]
-        }
-      ]
+    {
+     "id": 2,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__light_beach/53afa117",
+       "tile": "tiles/black_rock__over__light_beach/53afa117",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__light_beach/b8e87572",
+       "tile": "tiles/black_rock__over__light_beach/b8e87572",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__light_beach/f9d36b7a",
+       "tile": "tiles/black_rock__over__light_beach/f9d36b7a",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__light_soil/3aff11ff",
+       "tile": "tiles/black_rock__over__light_soil/3aff11ff",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__snow/b7bb8617",
+       "tile": "tiles/black_rock__over__snow/b7bb8617",
+       "weight": 1
+      }
+     ]
     },
-    "deep_water": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        }
-      ]
-    },
-    "grass": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 0.1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__lava__a24_s6",
-              "tile": "tiles/base_candidates/grass/grass__to__lava__a24_s6.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__slime__a23_s4",
-              "tile": "tiles/base_candidates/grass/grass__to__slime__a23_s4.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__parquet_floor__a12_s4",
-              "tile": "tiles/base_candidates/grass/grass__to__parquet_floor__a12_s4.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 10,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__slime__a23_s1",
-              "tile": "tiles/base_candidates/grass/grass__to__slime__a23_s1.webp",
-              "weight": 9
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__snow__a14_s5",
-              "tile": "tiles/base_candidates/grass/grass__to__snow__a14_s5.webp",
-              "weight": 0.2
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__lava__a05_s1",
-              "tile": "tiles/base_candidates/grass/grass__to__lava__a05_s1.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__ice__a18_s4",
-              "tile": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__grey_stone__a30_s1",
-              "tile": "tiles/base_candidates/grass/grass__to__grey_stone__a30_s1.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__lava__a14_s1",
-              "tile": "tiles/base_candidates/grass/grass__to__lava__a14_s1.webp",
-              "weight": 0.1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__grey_paving_stone__a14_s5",
-              "tile": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a14_s5.webp",
-              "weight": 0.1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__water__a24_s6",
-              "tile": "tiles/base_candidates/grass/grass__to__water__a24_s6.webp",
-              "weight": 0.1
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "name": "Set",
-          "weight": 3,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0.5
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__slime__a24_s6",
-              "tile": "tiles/base_candidates/grass/grass__to__slime__a24_s6.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__lava__a05_s1",
-              "tile": "tiles/base_candidates/grass/grass__to__lava__a05_s1.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__snow__a03_s5",
-              "tile": "tiles/base_candidates/grass/grass__to__snow__a03_s5.webp",
-              "weight": 1
-            }
-          ]
-        }
-      ]
-    },
-    "grey_paving_stone": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 0,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_03.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_03.c6929ccf.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_14.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_14.3cfc5b8d.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__parquet_floor/017a6bf3",
-              "tile": "tiles/grey_paving_stone__over__parquet_floor/017a6bf3",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_06.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_06.da1bad47.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_00.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_00.e67e8fcf.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_02.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_02.f4b13a9f.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_04.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_04.6ab721a4.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_08.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_08.2823add8.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_14.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_14.3cfc5b8d.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 4,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__grass/39f82763",
-              "tile": "tiles/grey_paving_stone__over__grass/39f82763",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__deep_water/ce7e2aab",
-              "tile": "tiles/grey_paving_stone__over__deep_water/ce7e2aab",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__grass/f7ab174c",
-              "tile": "tiles/grey_paving_stone__over__grass/f7ab174c",
-              "weight": 0.5
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__grass/4b6eb7e5",
-              "tile": "tiles/grey_paving_stone__over__grass/4b6eb7e5",
-              "weight": 0.6
-            }
-          ]
-        },
-        {
-          "id": 5,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__brown_paving_stone/0a8e9085",
-              "tile": "tiles/grey_paving_stone__over__brown_paving_stone/0a8e9085",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__brown_paving_stone/d6404111",
-              "tile": "tiles/grey_paving_stone__over__brown_paving_stone/d6404111",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 6,
-          "name": "Set",
-          "weight": 1,
-          "rejected": [
-            "tiles/grey_paving_stone__over__parquet_floor/064991b3",
-            "tiles/grey_paving_stone__over__parquet_floor/f29f21c6",
-            "tiles/grey_paving_stone__over__parquet_floor/f13cf9b2",
-            "tiles/grey_paving_stone__over__parquet_floor/52a6e917",
-            "tiles/grey_paving_stone__over__parquet_floor/0fbe6f4f",
-            "tiles/grey_paving_stone__over__parquet_floor/017a6bf3"
-          ],
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__grass/25b85d82",
-              "tile": "tiles/grey_paving_stone__over__grass/25b85d82",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__grass/ef10735e",
-              "tile": "tiles/grey_paving_stone__over__grass/ef10735e",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__grass/53d54774",
-              "tile": "tiles/grey_paving_stone__over__grass/53d54774",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__grass/26a88fbf",
-              "tile": "tiles/grey_paving_stone__over__grass/26a88fbf",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__deep_water/ce7e2aab",
-              "tile": "tiles/grey_paving_stone__over__deep_water/ce7e2aab",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__deep_water/16e692cd",
-              "tile": "tiles/grey_paving_stone__over__deep_water/16e692cd",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 8,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_01.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_01.164bc71c.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_09.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_09.754ea45f.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 9,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__ice/d7e4c10f",
-              "tile": "tiles/grey_paving_stone__over__ice/d7e4c10f",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__ice/86845cc7",
-              "tile": "tiles/grey_paving_stone__over__ice/86845cc7",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 10,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_07.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_07.df7c12c0.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_08.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_08.7edde4a9.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_10.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_10.aef9b872.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_05_detail_67911/tile_01.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_05_detail_67911/post/tile_01.b245a564.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_04.webp",
-              "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_04.f6ee74bd.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 11,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__lava/131fca10",
-              "tile": "tiles/grey_paving_stone__over__lava/131fca10",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__lava/bc531fba",
-              "tile": "tiles/grey_paving_stone__over__lava/bc531fba",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_paving_stone__over__lava/2a0e1436",
-              "tile": "tiles/grey_paving_stone__over__lava/2a0e1436",
-              "weight": 1
-            }
-          ]
-        }
-      ]
-    },
-    "grey_stone": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 0.5,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_stone/sheet_01_subtle_27653/tile_00.webp",
-              "tile": "tiles/tops/grey_stone/sheet_01_subtle_27653/post/tile_00.93c8e759.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_stone/sheet_01_subtle_27653/tile_01.webp",
-              "tile": "tiles/tops/grey_stone/sheet_01_subtle_27653/post/tile_01.87c9b1e3.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_stone/sheet_00_subtle_11961/tile_01.webp",
-              "tile": "tiles/tops/grey_stone/sheet_00_subtle_11961/post/tile_01.32efce9a.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/grey_stone/sheet_00_subtle_11961/tile_06.webp",
-              "tile": "tiles/tops/grey_stone/sheet_00_subtle_11961/post/tile_06.daf6be4a.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/e0dbc557",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/e0dbc557",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/ce3a4b04",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/ce3a4b04",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/c5567391",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/c5567391",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/4f395de3",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/4f395de3",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/6f10e076",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/6f10e076",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/438bdb69",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/438bdb69",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/2c5605ea",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/2c5605ea",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/1ee69582",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/1ee69582",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/1e95e202",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/1e95e202",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/1d3bfc82",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/1d3bfc82",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__brown_paving_stone/180fcb2c",
-              "tile": "tiles/grey_stone__over__brown_paving_stone/180fcb2c",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "name": "Set",
-          "weight": 1,
-          "rejected": [
-            "tiles/grey_stone__over__light_beach/01daeb30",
-            "tiles/grey_stone__over__light_beach/0a71e8d9",
-            "tiles/grey_stone__over__light_beach/1a4e784a",
-            "tiles/grey_stone__over__light_beach/34b56b14",
-            "tiles/grey_stone__over__light_beach/5683154c",
-            "tiles/grey_stone__over__light_beach/6df751f7",
-            "tiles/grey_stone__over__light_beach/879a155a",
-            "tiles/grey_stone__over__light_beach/a7329be8",
-            "tiles/grey_stone__over__light_beach/c0a5cfaa"
-          ],
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__lava/fcc813fc",
-              "tile": "tiles/grey_stone__over__lava/fcc813fc",
-              "weight": 0.05
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__light_beach/083312a3",
-              "tile": "tiles/grey_stone__over__light_beach/083312a3",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__grey_stone/0dfea6f7",
-              "tile": "tiles/grey_stone__over__grey_stone/0dfea6f7",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__grey_stone/240d6c60",
-              "tile": "tiles/grey_stone__over__grey_stone/240d6c60",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__grey_stone/76892932",
-              "tile": "tiles/grey_stone__over__grey_stone/76892932",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__grey_stone/c672fd45",
-              "tile": "tiles/grey_stone__over__grey_stone/c672fd45",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__light_beach/54716e94",
-              "tile": "tiles/grey_stone__over__light_beach/54716e94",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/grey_stone__over__light_beach/e9cdb04a",
-              "tile": "tiles/grey_stone__over__light_beach/e9cdb04a",
-              "weight": 1
-            }
-          ]
-        }
-      ]
-    },
-    "ice": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__ice__a21_s2",
-              "tile": "tiles/base_candidates/ice/grass__to__ice__a21_s2.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__ice__a05_s1",
-              "tile": "tiles/base_candidates/ice/grass__to__ice__a05_s1.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__ice__a24_s6",
-              "tile": "tiles/base_candidates/ice/grass__to__ice__a24_s6.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__ice__a12_s4",
-              "tile": "tiles/base_candidates/ice/grass__to__ice__a12_s4.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__ice__a14_s1",
-              "tile": "tiles/base_candidates/ice/grass__to__ice__a14_s1.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__ice__a03_s5",
-              "tile": "tiles/base_candidates/ice/grass__to__ice__a03_s5.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__ice__a23_s4",
-              "tile": "tiles/base_candidates/ice/grass__to__ice__a23_s4.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__ice__a30_s1",
-              "tile": "tiles/base_candidates/ice/grass__to__ice__a30_s1.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grass__to__ice__a15_s2",
-              "tile": "tiles/base_candidates/ice/grass__to__ice__a15_s2.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__dark_mud/fc0e50cf",
-              "tile": "tiles/ice__over__dark_mud/fc0e50cf",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__dark_mud/d46debf7",
-              "tile": "tiles/ice__over__dark_mud/d46debf7",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__deep_water/2eef499a",
-              "tile": "tiles/ice__over__deep_water/2eef499a",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__deep_water/6a4537b9",
-              "tile": "tiles/ice__over__deep_water/6a4537b9",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__deep_water/7fd7b6ba",
-              "tile": "tiles/ice__over__deep_water/7fd7b6ba",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__deep_water/a943ee96",
-              "tile": "tiles/ice__over__deep_water/a943ee96",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__deep_water/d79e1bf5",
-              "tile": "tiles/ice__over__deep_water/d79e1bf5",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__black_rock/e55c554b",
-              "tile": "tiles/ice__over__black_rock/e55c554b",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__black_rock/bd8235cc",
-              "tile": "tiles/ice__over__black_rock/bd8235cc",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__black_rock/708f240a",
-              "tile": "tiles/ice__over__black_rock/708f240a",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 4,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__parquet_floor/4984046c",
-              "tile": "tiles/ice__over__parquet_floor/4984046c",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__parquet_floor/4230ffbb",
-              "tile": "tiles/ice__over__parquet_floor/4230ffbb",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__parquet_floor/41928a39",
-              "tile": "tiles/ice__over__parquet_floor/41928a39",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__parquet_floor/41557ff5",
-              "tile": "tiles/ice__over__parquet_floor/41557ff5",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__parquet_floor/3bb25d40",
-              "tile": "tiles/ice__over__parquet_floor/3bb25d40",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__parquet_floor/2f6b883a",
-              "tile": "tiles/ice__over__parquet_floor/2f6b883a",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__parquet_floor/225b36b0",
-              "tile": "tiles/ice__over__parquet_floor/225b36b0",
-              "weight": 0.05
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__deep_water/24580b09",
-              "tile": "tiles/ice__over__deep_water/24580b09",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__deep_water/da6ab2eb",
-              "tile": "tiles/ice__over__deep_water/da6ab2eb",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 5,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__ice/0f27267a",
-              "tile": "tiles/ice__over__ice/0f27267a",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__parquet_floor/f19cc8f8",
-              "tile": "tiles/ice__over__parquet_floor/f19cc8f8",
-              "weight": 0.1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__ice/221a91ff",
-              "tile": "tiles/ice__over__ice/221a91ff",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__dark_mud/09e36499",
-              "tile": "tiles/ice__over__dark_mud/09e36499",
-              "weight": 0.2
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__dark_mud/62698477",
-              "tile": "tiles/ice__over__dark_mud/62698477",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__dark_mud/fc0e50cf",
-              "tile": "tiles/ice__over__dark_mud/fc0e50cf",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__deep_water/07940ebc",
-              "tile": "tiles/ice__over__deep_water/07940ebc",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/ice__over__deep_water/2eef499a",
-              "tile": "tiles/ice__over__deep_water/2eef499a",
-              "weight": 1
-            }
-          ]
-        }
-      ]
-    },
-    "lava": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/lava/sheet_01_subtle_87577/tile_14.webp",
-              "tile": "tiles/tops/lava/sheet_01_subtle_87577/post/tile_14.69898f97.webp",
-              "weight": 0.05
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_03.webp",
-              "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_03.28e13b4e.webp",
-              "weight": 0.05
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_06.webp",
-              "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_06.5219108d.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_07.webp",
-              "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_07.cc580ed5.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_09.webp",
-              "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_09.5bd3df45.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_11.webp",
-              "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_11.1198a3d3.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_02.webp",
-              "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_02.3ad0c679.webp",
-              "weight": 0.05
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_01.webp",
-              "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_01.7edf62df.webp",
-              "weight": 0.05
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_08.webp",
-              "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_08.737de89d.webp",
-              "weight": 1
-            }
-          ]
-        }
-      ]
-    },
-    "light_beach": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 3,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 2
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_beach/sheet_02_subtle_32520/tile_10.webp",
-              "tile": "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_10.b5e132c4.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_beach/sheet_02_subtle_32520/tile_09.webp",
-              "tile": "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_09.170e860e.webp",
-              "weight": 0.1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_beach/sheet_02_subtle_32520/tile_11.webp",
-              "tile": "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_11.9daca272.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_beach/sheet_02_subtle_32520/tile_14.webp",
-              "tile": "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_14.36810af4.webp",
-              "weight": 0.1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_beach/sheet_00_subtle_69153/tile_12.webp",
-              "tile": "tiles/tops/light_beach/sheet_00_subtle_69153/post/tile_12.0bf22de6.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_beach/sheet_01_subtle_91060/tile_01.webp",
-              "tile": "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_01.4248f79d.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_beach/sheet_01_subtle_91060/tile_05.webp",
-              "tile": "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_05.c4d23240.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_beach/sheet_01_subtle_91060/tile_08.webp",
-              "tile": "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_08.388ab0af.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 3,
-          "rejected": [
-            "tiles/light_beach__over__black_rock/27023f0a",
-            "tiles/light_beach__over__black_rock/25fa84f2"
-          ],
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 5
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_beach__over__snow/761459c2",
-              "tile": "tiles/light_beach__over__snow/761459c2",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_beach__over__dark_mud/187ce242",
-              "tile": "tiles/light_beach__over__dark_mud/187ce242",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_beach__over__black_rock/518c7ad3",
-              "tile": "tiles/light_beach__over__black_rock/518c7ad3",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_beach__over__light_beach/3c4829eb",
-              "tile": "tiles/light_beach__over__light_beach/3c4829eb",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_beach__over__parquet_floor/57a39967",
-              "tile": "tiles/light_beach__over__parquet_floor/57a39967",
-              "weight": 1
-            }
-          ]
-        }
-      ]
-    },
-    "light_soil": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_03.webp",
-              "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_03.45b26d9b.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_04.webp",
-              "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_04.fb64d441.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_05.webp",
-              "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_05.03ea54d5.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_06.webp",
-              "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_06.2efffd31.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_10.webp",
-              "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_10.d2b588db.webp",
-              "weight": 0.5
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/light_soil/sheet_00_subtle_30072/tile_08.webp",
-              "tile": "tiles/tops/light_soil/sheet_00_subtle_30072/post/tile_08.baeef302.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "grey_stone__to__light_soil__a18_s6",
-              "tile": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a18_s6.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "light_soil__to__water__a00_s3",
-              "tile": "tiles/base_candidates/light_soil/light_soil__to__water__a00_s3.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "brown_paving_stone__to__light_soil__a21_s5",
-              "tile": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s5.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "light_soil__to__snow__a18_s4",
-              "tile": "tiles/base_candidates/light_soil/light_soil__to__snow__a18_s4.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "dark_mud__to__light_soil__a21_s2",
-              "tile": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a21_s2.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "brown_paving_stone__to__light_soil__a21_s4",
-              "tile": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s4.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "light_soil__to__snow__a21_s5",
-              "tile": "tiles/base_candidates/light_soil/light_soil__to__snow__a21_s5.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "dark_mud__to__light_soil__a00_s5",
-              "tile": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a00_s5.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "brown_paving_stone__to__light_soil__a15_s2",
-              "tile": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a15_s2.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__brown_paving_stone/b6e5527b",
-              "tile": "tiles/light_soil__over__brown_paving_stone/b6e5527b",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__dark_mud/01a51c4e",
-              "tile": "tiles/light_soil__over__dark_mud/01a51c4e",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__water/9118a674",
-              "tile": "tiles/light_soil__over__water/9118a674",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__water/77fa2b9e",
-              "tile": "tiles/light_soil__over__water/77fa2b9e",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__water/285316e9",
-              "tile": "tiles/light_soil__over__water/285316e9",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__light_beach/f168a348",
-              "tile": "tiles/light_soil__over__light_beach/f168a348",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__light_beach/61b9eeb4",
-              "tile": "tiles/light_soil__over__light_beach/61b9eeb4",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__dark_mud/bab407c9",
-              "tile": "tiles/light_soil__over__dark_mud/bab407c9",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 4,
-          "name": "Set",
-          "weight": 0.2,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__lava/c799d325",
-              "tile": "tiles/light_soil__over__lava/c799d325",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__lava/ca803557",
-              "tile": "tiles/light_soil__over__lava/ca803557",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__lava/e0643375",
-              "tile": "tiles/light_soil__over__lava/e0643375",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/light_soil__over__lava/f970e2b1",
-              "tile": "tiles/light_soil__over__lava/f970e2b1",
-              "weight": 1
-            }
-          ]
-        }
-      ]
-    },
-    "parquet_floor": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 0,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__parquet_floor/f63edc1c",
-              "tile": "tiles/parquet_floor__over__parquet_floor/f63edc1c",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_00.webp",
-              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_00.317106f6.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_01.webp",
-              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_01.8e8886a6.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_06.webp",
-              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_06.d7cf16fb.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_07.webp",
-              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_07.5cd1f419.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_08.webp",
-              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_08.5b626834.webp",
-              "weight": 0.2
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_09.webp",
-              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_09.4ba87040.webp",
-              "weight": 0.1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_10.webp",
-              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_10.987c8e65.webp",
-              "weight": 0.1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_11.webp",
-              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_11.7f453ed9.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_12.webp",
-              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_12.6fe9fdba.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_13.webp",
-              "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_13.e3c8f939.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/parquet_floor/sheet_00_subtle_80398/tile_05.webp",
-              "tile": "tiles/tops/parquet_floor/sheet_00_subtle_80398/post/tile_05.65a0ec0b.webp",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 4,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__deep_water/9bd17aed",
-              "tile": "tiles/parquet_floor__over__deep_water/9bd17aed",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 5,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__brown_paving_stone/29441cb2",
-              "tile": "tiles/parquet_floor__over__brown_paving_stone/29441cb2",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 6,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__parquet_floor/463e86ab",
-              "tile": "tiles/parquet_floor__over__parquet_floor/463e86ab",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 7,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__grey_stone/8e655b56",
-              "tile": "tiles/parquet_floor__over__grey_stone/8e655b56",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 8,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__snow/1e102008",
-              "tile": "tiles/parquet_floor__over__snow/1e102008",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__snow/8d3d27ee",
-              "tile": "tiles/parquet_floor__over__snow/8d3d27ee",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 9,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__light_soil/9effa0aa",
-              "tile": "tiles/parquet_floor__over__light_soil/9effa0aa",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 10,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__ice/5c025eb6",
-              "tile": "tiles/parquet_floor__over__ice/5c025eb6",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 11,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__deep_water/8c9a859b",
-              "tile": "tiles/parquet_floor__over__deep_water/8c9a859b",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 12,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__light_beach/e86527a6",
-              "tile": "tiles/parquet_floor__over__light_beach/e86527a6",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__slime/8b069607",
-              "tile": "tiles/parquet_floor__over__slime/8b069607",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 13,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__parquet_floor/81ce862b",
-              "tile": "tiles/parquet_floor__over__parquet_floor/81ce862b",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 14,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/parquet_floor__over__parquet_floor/362be2e1",
-              "tile": "tiles/parquet_floor__over__parquet_floor/362be2e1",
-              "weight": 1
-            }
-          ]
-        }
-      ]
-    },
-    "slime": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 0,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/slime/sheet_00_subtle_22942/tile_00.webp",
-              "tile": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_00.fab2d647.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/slime/sheet_00_subtle_22942/tile_07.webp",
-              "tile": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_07.2ed3c5fa.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/slime/sheet_00_subtle_22942/tile_08.webp",
-              "tile": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_08.2c145646.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__grey_stone/4b474eb9",
-              "tile": "tiles/slime__over__grey_stone/4b474eb9",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__grey_stone/0bbe0cc8",
-              "tile": "tiles/slime__over__grey_stone/0bbe0cc8",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__light_beach/cfa5d5b3",
-              "tile": "tiles/slime__over__light_beach/cfa5d5b3",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/09f2ba3a",
-              "tile": "tiles/slime__over__black_rock/09f2ba3a",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/33c6314c",
-              "tile": "tiles/slime__over__black_rock/33c6314c",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/57f9eedd",
-              "tile": "tiles/slime__over__black_rock/57f9eedd",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/6884e45b",
-              "tile": "tiles/slime__over__black_rock/6884e45b",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/7e7c7606",
-              "tile": "tiles/slime__over__black_rock/7e7c7606",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/8316c17d",
-              "tile": "tiles/slime__over__black_rock/8316c17d",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/8846643f",
-              "tile": "tiles/slime__over__black_rock/8846643f",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/939614f7",
-              "tile": "tiles/slime__over__black_rock/939614f7",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/a60ef340",
-              "tile": "tiles/slime__over__black_rock/a60ef340",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/b6f30cff",
-              "tile": "tiles/slime__over__black_rock/b6f30cff",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/bc695ac6",
-              "tile": "tiles/slime__over__black_rock/bc695ac6",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/c3847a78",
-              "tile": "tiles/slime__over__black_rock/c3847a78",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/d842fce1",
-              "tile": "tiles/slime__over__black_rock/d842fce1",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/dc9687a1",
-              "tile": "tiles/slime__over__black_rock/dc9687a1",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/ed3f67a2",
-              "tile": "tiles/slime__over__black_rock/ed3f67a2",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__brown_paving_stone/02e6f3f4",
-              "tile": "tiles/slime__over__brown_paving_stone/02e6f3f4",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__brown_paving_stone/d3b8c193",
-              "tile": "tiles/slime__over__brown_paving_stone/d3b8c193",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__brown_paving_stone/d522eeda",
-              "tile": "tiles/slime__over__brown_paving_stone/d522eeda",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__brown_paving_stone/e2edd071",
-              "tile": "tiles/slime__over__brown_paving_stone/e2edd071",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 12
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__parquet_floor/7afab2e4",
-              "tile": "tiles/slime__over__parquet_floor/7afab2e4",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__parquet_floor/79d34f43",
-              "tile": "tiles/slime__over__parquet_floor/79d34f43",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__parquet_floor/79637f5b",
-              "tile": "tiles/slime__over__parquet_floor/79637f5b",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__parquet_floor/76f22137",
-              "tile": "tiles/slime__over__parquet_floor/76f22137",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__parquet_floor/767921e1",
-              "tile": "tiles/slime__over__parquet_floor/767921e1",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "name": "Set",
-          "weight": 5,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/24b6bd8b",
-              "tile": "tiles/slime__over__black_rock/24b6bd8b",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__snow/a27706be",
-              "tile": "tiles/slime__over__snow/a27706be",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__snow/2a0abb5d",
-              "tile": "tiles/slime__over__snow/2a0abb5d",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__light_beach/cfa5d5b3",
-              "tile": "tiles/slime__over__light_beach/cfa5d5b3",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__black_rock/7e7c7606",
-              "tile": "tiles/slime__over__black_rock/7e7c7606",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__brown_paving_stone/e2edd071",
-              "tile": "tiles/slime__over__brown_paving_stone/e2edd071",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__light_soil/480079e1",
-              "tile": "tiles/slime__over__light_soil/480079e1",
-              "weight": 0.3
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/slime__over__snow/8104ec8d",
-              "tile": "tiles/slime__over__snow/8104ec8d",
-              "weight": 1
-            }
-          ]
-        }
-      ]
-    },
-    "snow": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/snow/sheet_02_subtle_44656/tile_03.webp",
-              "tile": "tiles/tops/snow/sheet_02_subtle_44656/post/tile_03.ee3f3b9a.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/snow/sheet_01_subtle_98258/tile_12.webp",
-              "tile": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_12.5ccd1495.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/snow/sheet_01_subtle_98258/tile_13.webp",
-              "tile": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_13.af7d65e2.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/snow__over__black_rock/52c71e6a",
-              "tile": "tiles/snow__over__black_rock/52c71e6a",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/snow__over__deep_water/bd8247ed",
-              "tile": "tiles/snow__over__deep_water/bd8247ed",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/snow__over__deep_water/37bb52da",
-              "tile": "tiles/snow__over__deep_water/37bb52da",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/snow__over__black_rock/e52434f5",
-              "tile": "tiles/snow__over__black_rock/e52434f5",
-              "weight": 0.1
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 0
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/snow/sheet_03_detail_25767/tile_03.webp",
-              "tile": "tiles/tops/snow/sheet_03_detail_25767/post/tile_03.72d58680.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/snow/sheet_03_detail_25767/tile_10.webp",
-              "tile": "tiles/tops/snow/sheet_03_detail_25767/post/tile_10.85b4e794.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/tops/snow/sheet_05_detail_41912/tile_02.webp",
-              "tile": "tiles/tops/snow/sheet_05_detail_41912/post/tile_02.5e0101b2.webp",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "light_soil__to__snow__a24_s6",
-              "tile": "tiles/base_candidates/snow/light_soil__to__snow__a24_s6.webp",
-              "weight": 1
-            }
-          ]
-        }
-      ]
-    },
-    "water": {
-      "sets": [
-        {
-          "id": 0,
-          "name": "Clean",
-          "weight": 0,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 1
-            }
-          ]
-        },
-        {
-          "id": 1,
-          "name": "Set",
-          "weight": 1,
-          "members": [
-            {
-              "kind": "clean",
-              "weight": 30
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__light_beach/aa3287b9",
-              "tile": "tiles/water__over__light_beach/aa3287b9",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__light_soil/60141780",
-              "tile": "tiles/water__over__light_soil/60141780",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__light_soil/688cb16f",
-              "tile": "tiles/water__over__light_soil/688cb16f",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__black_rock/5d55ad2d",
-              "tile": "tiles/water__over__black_rock/5d55ad2d",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__black_rock/e453c50b",
-              "tile": "tiles/water__over__black_rock/e453c50b",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__grey_stone/3c0aeddc",
-              "tile": "tiles/water__over__grey_stone/3c0aeddc",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__grey_stone/775b3c7c",
-              "tile": "tiles/water__over__grey_stone/775b3c7c",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__grey_stone/a774baca",
-              "tile": "tiles/water__over__grey_stone/a774baca",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__grey_stone/b90126c9",
-              "tile": "tiles/water__over__grey_stone/b90126c9",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__grey_stone/ccf68cd7",
-              "tile": "tiles/water__over__grey_stone/ccf68cd7",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__light_beach/4b2608c8",
-              "tile": "tiles/water__over__light_beach/4b2608c8",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__light_soil/20228e4e",
-              "tile": "tiles/water__over__light_soil/20228e4e",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__light_soil/7b8be427",
-              "tile": "tiles/water__over__light_soil/7b8be427",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__light_soil/cf10cb1f",
-              "tile": "tiles/water__over__light_soil/cf10cb1f",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__slime/f1e42f16",
-              "tile": "tiles/water__over__slime/f1e42f16",
-              "weight": 1
-            },
-            {
-              "kind": "tile",
-              "id": "tiles/water__over__snow/fff46f2e",
-              "tile": "tiles/water__over__snow/fff46f2e",
-              "weight": 1
-            }
-          ]
-        }
-      ]
+    {
+     "id": 3,
+     "name": "Set",
+     "weight": 5,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/black_rock/sheet_00_subtle_12334/tile_05.webp",
+       "tile": "tiles/tops/black_rock/sheet_00_subtle_12334/post/tile_05.d4c1d5e2.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/black_rock/sheet_00_subtle_12334/tile_06.webp",
+       "tile": "tiles/tops/black_rock/sheet_00_subtle_12334/post/tile_06.042183f1.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/black_rock__over__snow/107d54e4",
+       "tile": "tiles/black_rock__over__snow/107d54e4",
+       "weight": 1
+      }
+     ]
     }
+   ]
+  },
+  "brown_paving_stone": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 0,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__lava/0bc3171e",
+       "tile": "tiles/brown_paving_stone__over__lava/0bc3171e",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__lava/67b7d402",
+       "tile": "tiles/brown_paving_stone__over__lava/67b7d402",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__lava/832ecaf0",
+       "tile": "tiles/brown_paving_stone__over__lava/832ecaf0",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__grey_stone/b5b9ccb9",
+       "tile": "tiles/brown_paving_stone__over__grey_stone/b5b9ccb9",
+       "weight": 0.2
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "Set",
+     "weight": 1,
+     "rejected": [
+      "tiles/tops/brown_paving_stone/sheet_02_subtle_72275/tile_02.webp"
+     ],
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__lava/bc531fba",
+       "tile": "tiles/brown_paving_stone__over__lava/bc531fba",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__grey_stone/0f64ba68",
+       "tile": "tiles/brown_paving_stone__over__grey_stone/0f64ba68",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__grey_stone/acff38a4",
+       "tile": "tiles/brown_paving_stone__over__grey_stone/acff38a4",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__lava/67b7d402",
+       "tile": "tiles/brown_paving_stone__over__lava/67b7d402",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__light_soil/07035aff",
+       "tile": "tiles/brown_paving_stone__over__light_soil/07035aff",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 4,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__grass/53d54774",
+       "tile": "tiles/brown_paving_stone__over__grass/53d54774",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__deep_water/ce7e2aab",
+       "tile": "tiles/brown_paving_stone__over__deep_water/ce7e2aab",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__grass/25b85d82",
+       "tile": "tiles/brown_paving_stone__over__grass/25b85d82",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__grass/effec18e",
+       "tile": "tiles/brown_paving_stone__over__grass/effec18e",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 5,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/brown_paving_stone/sheet_04_detail_54925/tile_05.webp",
+       "tile": "tiles/tops/brown_paving_stone/sheet_04_detail_54925/post/tile_05.36000560.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 6,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__light_beach/3b4a6c5d",
+       "tile": "tiles/brown_paving_stone__over__light_beach/3b4a6c5d",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 7,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__grey_stone/6f958287",
+       "tile": "tiles/brown_paving_stone__over__grey_stone/6f958287",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__ice/5142e4b2",
+       "tile": "tiles/brown_paving_stone__over__ice/5142e4b2",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__parquet_floor/7f4c6d83",
+       "tile": "tiles/brown_paving_stone__over__parquet_floor/7f4c6d83",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 8,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__grey_stone/0f64ba68",
+       "tile": "tiles/brown_paving_stone__over__grey_stone/0f64ba68",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__lava/0bc3171e",
+       "tile": "tiles/brown_paving_stone__over__lava/0bc3171e",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 9,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__grey_stone/6f958287",
+       "tile": "tiles/brown_paving_stone__over__grey_stone/6f958287",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__deep_water/b783fcd7",
+       "tile": "tiles/brown_paving_stone__over__deep_water/b783fcd7",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__light_beach/2f0a71c6",
+       "tile": "tiles/brown_paving_stone__over__light_beach/2f0a71c6",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__water/d283cb9f",
+       "tile": "tiles/brown_paving_stone__over__water/d283cb9f",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__water/3ca1ff1a",
+       "tile": "tiles/brown_paving_stone__over__water/3ca1ff1a",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 10,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/brown_paving_stone/sheet_05_detail_28659/tile_15.webp",
+       "tile": "tiles/tops/brown_paving_stone/sheet_05_detail_28659/post/tile_15.e9e13e95.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 11,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__grass/c0570fe6",
+       "tile": "tiles/brown_paving_stone__over__grass/c0570fe6",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__lava/0bc3171e",
+       "tile": "tiles/brown_paving_stone__over__lava/0bc3171e",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/brown_paving_stone__over__water/d327742b",
+       "tile": "tiles/brown_paving_stone__over__water/d327742b",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "dark_mud": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 0.25,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "rejected": [
+      "tiles/dark_mud__over__brown_paving_stone/b84883a6",
+      "tiles/dark_mud__over__dark_mud/ad6144bf"
+     ],
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/dark_mud/sheet_00_subtle_10237/tile_02.webp",
+       "tile": "tiles/tops/dark_mud/sheet_00_subtle_10237/post/tile_02.3f1b7f30.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/dark_mud/sheet_00_subtle_10237/tile_03.webp",
+       "tile": "tiles/tops/dark_mud/sheet_00_subtle_10237/post/tile_03.995c7187.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/dark_mud/sheet_02_subtle_20485/tile_01.webp",
+       "tile": "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_01.c5823413.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/dark_mud/sheet_02_subtle_20485/tile_05.webp",
+       "tile": "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_05.976baf2f.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/dark_mud/sheet_02_subtle_20485/tile_10.webp",
+       "tile": "tiles/tops/dark_mud/sheet_02_subtle_20485/post/tile_10.1345c257.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__grey_paving_stone/1da6fffd",
+       "tile": "tiles/dark_mud__over__grey_paving_stone/1da6fffd",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "Set",
+     "weight": 3,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__black_rock/0ce9376f",
+       "tile": "tiles/dark_mud__over__black_rock/0ce9376f",
+       "weight": 0.5
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__black_rock/1a8d00c1",
+       "tile": "tiles/dark_mud__over__black_rock/1a8d00c1",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__black_rock/2c2c77ae",
+       "tile": "tiles/dark_mud__over__black_rock/2c2c77ae",
+       "weight": 0.2
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__black_rock/f9e52b1e",
+       "tile": "tiles/dark_mud__over__black_rock/f9e52b1e",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__dark_mud/24775ad5",
+       "tile": "tiles/dark_mud__over__dark_mud/24775ad5",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__dark_mud/350fb069",
+       "tile": "tiles/dark_mud__over__dark_mud/350fb069",
+       "weight": 0.3
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__dark_mud/684a8f83",
+       "tile": "tiles/dark_mud__over__dark_mud/684a8f83",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__dark_mud/7ab43073",
+       "tile": "tiles/dark_mud__over__dark_mud/7ab43073",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__dark_mud/8ab05341",
+       "tile": "tiles/dark_mud__over__dark_mud/8ab05341",
+       "weight": 0.1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__dark_mud/8ea65088",
+       "tile": "tiles/dark_mud__over__dark_mud/8ea65088",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__dark_mud/985608cb",
+       "tile": "tiles/dark_mud__over__dark_mud/985608cb",
+       "weight": 0.2
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__dark_mud/a37e7ce5",
+       "tile": "tiles/dark_mud__over__dark_mud/a37e7ce5",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__dark_mud/ad6144bf",
+       "tile": "tiles/dark_mud__over__dark_mud/ad6144bf",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__dark_mud/ce7a9e75",
+       "tile": "tiles/dark_mud__over__dark_mud/ce7a9e75",
+       "weight": 1.5
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__dark_mud/f409eb74",
+       "tile": "tiles/dark_mud__over__dark_mud/f409eb74",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__dark_mud/f927588d",
+       "tile": "tiles/dark_mud__over__dark_mud/f927588d",
+       "weight": 0.8
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__grey_stone/70bd19df",
+       "tile": "tiles/dark_mud__over__grey_stone/70bd19df",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__ice/984d6ad5",
+       "tile": "tiles/dark_mud__over__ice/984d6ad5",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/dark_mud__over__snow/3bce5308",
+       "tile": "tiles/dark_mud__over__snow/3bce5308",
+       "weight": 2
+      }
+     ]
+    }
+   ]
+  },
+  "deep_water": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "grass": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 0.1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__lava__a24_s6",
+       "tile": "tiles/base_candidates/grass/grass__to__lava__a24_s6.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__slime__a23_s4",
+       "tile": "tiles/base_candidates/grass/grass__to__slime__a23_s4.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__parquet_floor__a12_s4",
+       "tile": "tiles/base_candidates/grass/grass__to__parquet_floor__a12_s4.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "Set",
+     "weight": 10,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__slime__a23_s1",
+       "tile": "tiles/base_candidates/grass/grass__to__slime__a23_s1.webp",
+       "weight": 9
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__snow__a14_s5",
+       "tile": "tiles/base_candidates/grass/grass__to__snow__a14_s5.webp",
+       "weight": 0.2
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__lava__a05_s1",
+       "tile": "tiles/base_candidates/grass/grass__to__lava__a05_s1.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__ice__a18_s4",
+       "tile": "tiles/base_candidates/grass/grass__to__ice__a18_s4.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__grey_stone__a30_s1",
+       "tile": "tiles/base_candidates/grass/grass__to__grey_stone__a30_s1.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__lava__a14_s1",
+       "tile": "tiles/base_candidates/grass/grass__to__lava__a14_s1.webp",
+       "weight": 0.1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__grey_paving_stone__a14_s5",
+       "tile": "tiles/base_candidates/grass/grass__to__grey_paving_stone__a14_s5.webp",
+       "weight": 0.1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__water__a24_s6",
+       "tile": "tiles/base_candidates/grass/grass__to__water__a24_s6.webp",
+       "weight": 0.1
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "Set",
+     "weight": 3,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0.5
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__slime__a24_s6",
+       "tile": "tiles/base_candidates/grass/grass__to__slime__a24_s6.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__lava__a05_s1",
+       "tile": "tiles/base_candidates/grass/grass__to__lava__a05_s1.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__snow__a03_s5",
+       "tile": "tiles/base_candidates/grass/grass__to__snow__a03_s5.webp",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "grey_paving_stone": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 0,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_03.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_03.c6929ccf.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_14.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_14.3cfc5b8d.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__parquet_floor/017a6bf3",
+       "tile": "tiles/grey_paving_stone__over__parquet_floor/017a6bf3",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_06.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_06.da1bad47.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_00.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_00.e67e8fcf.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_02.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_02.f4b13a9f.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_04.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_04.6ab721a4.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_08.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_08.2823add8.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/tile_14.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_01_subtle_97167/post/tile_14.3cfc5b8d.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 4,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__grass/39f82763",
+       "tile": "tiles/grey_paving_stone__over__grass/39f82763",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__deep_water/ce7e2aab",
+       "tile": "tiles/grey_paving_stone__over__deep_water/ce7e2aab",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__grass/f7ab174c",
+       "tile": "tiles/grey_paving_stone__over__grass/f7ab174c",
+       "weight": 0.5
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__grass/4b6eb7e5",
+       "tile": "tiles/grey_paving_stone__over__grass/4b6eb7e5",
+       "weight": 0.6
+      }
+     ]
+    },
+    {
+     "id": 5,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__brown_paving_stone/0a8e9085",
+       "tile": "tiles/grey_paving_stone__over__brown_paving_stone/0a8e9085",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__brown_paving_stone/d6404111",
+       "tile": "tiles/grey_paving_stone__over__brown_paving_stone/d6404111",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 6,
+     "name": "Set",
+     "weight": 1,
+     "rejected": [
+      "tiles/grey_paving_stone__over__parquet_floor/064991b3",
+      "tiles/grey_paving_stone__over__parquet_floor/f29f21c6",
+      "tiles/grey_paving_stone__over__parquet_floor/f13cf9b2",
+      "tiles/grey_paving_stone__over__parquet_floor/52a6e917",
+      "tiles/grey_paving_stone__over__parquet_floor/0fbe6f4f",
+      "tiles/grey_paving_stone__over__parquet_floor/017a6bf3"
+     ],
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__grass/25b85d82",
+       "tile": "tiles/grey_paving_stone__over__grass/25b85d82",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__grass/ef10735e",
+       "tile": "tiles/grey_paving_stone__over__grass/ef10735e",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__grass/53d54774",
+       "tile": "tiles/grey_paving_stone__over__grass/53d54774",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__grass/26a88fbf",
+       "tile": "tiles/grey_paving_stone__over__grass/26a88fbf",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__deep_water/ce7e2aab",
+       "tile": "tiles/grey_paving_stone__over__deep_water/ce7e2aab",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__deep_water/16e692cd",
+       "tile": "tiles/grey_paving_stone__over__deep_water/16e692cd",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 8,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_01.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_01.164bc71c.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_09.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_09.754ea45f.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 9,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__ice/d7e4c10f",
+       "tile": "tiles/grey_paving_stone__over__ice/d7e4c10f",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__ice/86845cc7",
+       "tile": "tiles/grey_paving_stone__over__ice/86845cc7",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 10,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_07.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_07.df7c12c0.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_08.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_08.7edde4a9.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_10.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_10.aef9b872.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_05_detail_67911/tile_01.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_05_detail_67911/post/tile_01.b245a564.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/tile_04.webp",
+       "tile": "tiles/tops/grey_paving_stone/sheet_04_detail_82570/post/tile_04.f6ee74bd.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 11,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__lava/131fca10",
+       "tile": "tiles/grey_paving_stone__over__lava/131fca10",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__lava/bc531fba",
+       "tile": "tiles/grey_paving_stone__over__lava/bc531fba",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_paving_stone__over__lava/2a0e1436",
+       "tile": "tiles/grey_paving_stone__over__lava/2a0e1436",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "grey_stone": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 0.5,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_stone/sheet_01_subtle_27653/tile_00.webp",
+       "tile": "tiles/tops/grey_stone/sheet_01_subtle_27653/post/tile_00.93c8e759.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_stone/sheet_01_subtle_27653/tile_01.webp",
+       "tile": "tiles/tops/grey_stone/sheet_01_subtle_27653/post/tile_01.87c9b1e3.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_stone/sheet_00_subtle_11961/tile_01.webp",
+       "tile": "tiles/tops/grey_stone/sheet_00_subtle_11961/post/tile_01.32efce9a.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/grey_stone/sheet_00_subtle_11961/tile_06.webp",
+       "tile": "tiles/tops/grey_stone/sheet_00_subtle_11961/post/tile_06.daf6be4a.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__brown_paving_stone/e0dbc557",
+       "tile": "tiles/grey_stone__over__brown_paving_stone/e0dbc557",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__brown_paving_stone/ce3a4b04",
+       "tile": "tiles/grey_stone__over__brown_paving_stone/ce3a4b04",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__brown_paving_stone/c5567391",
+       "tile": "tiles/grey_stone__over__brown_paving_stone/c5567391",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__brown_paving_stone/4f395de3",
+       "tile": "tiles/grey_stone__over__brown_paving_stone/4f395de3",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__brown_paving_stone/6f10e076",
+       "tile": "tiles/grey_stone__over__brown_paving_stone/6f10e076",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__brown_paving_stone/438bdb69",
+       "tile": "tiles/grey_stone__over__brown_paving_stone/438bdb69",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__brown_paving_stone/2c5605ea",
+       "tile": "tiles/grey_stone__over__brown_paving_stone/2c5605ea",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__brown_paving_stone/1ee69582",
+       "tile": "tiles/grey_stone__over__brown_paving_stone/1ee69582",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__brown_paving_stone/1e95e202",
+       "tile": "tiles/grey_stone__over__brown_paving_stone/1e95e202",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__brown_paving_stone/1d3bfc82",
+       "tile": "tiles/grey_stone__over__brown_paving_stone/1d3bfc82",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__brown_paving_stone/180fcb2c",
+       "tile": "tiles/grey_stone__over__brown_paving_stone/180fcb2c",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "Set",
+     "weight": 1,
+     "rejected": [
+      "tiles/grey_stone__over__light_beach/01daeb30",
+      "tiles/grey_stone__over__light_beach/0a71e8d9",
+      "tiles/grey_stone__over__light_beach/1a4e784a",
+      "tiles/grey_stone__over__light_beach/34b56b14",
+      "tiles/grey_stone__over__light_beach/5683154c",
+      "tiles/grey_stone__over__light_beach/6df751f7",
+      "tiles/grey_stone__over__light_beach/879a155a",
+      "tiles/grey_stone__over__light_beach/a7329be8",
+      "tiles/grey_stone__over__light_beach/c0a5cfaa"
+     ],
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__lava/fcc813fc",
+       "tile": "tiles/grey_stone__over__lava/fcc813fc",
+       "weight": 0.05
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__light_beach/083312a3",
+       "tile": "tiles/grey_stone__over__light_beach/083312a3",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__grey_stone/0dfea6f7",
+       "tile": "tiles/grey_stone__over__grey_stone/0dfea6f7",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__grey_stone/240d6c60",
+       "tile": "tiles/grey_stone__over__grey_stone/240d6c60",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__grey_stone/76892932",
+       "tile": "tiles/grey_stone__over__grey_stone/76892932",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__grey_stone/c672fd45",
+       "tile": "tiles/grey_stone__over__grey_stone/c672fd45",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__light_beach/54716e94",
+       "tile": "tiles/grey_stone__over__light_beach/54716e94",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/grey_stone__over__light_beach/e9cdb04a",
+       "tile": "tiles/grey_stone__over__light_beach/e9cdb04a",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "ice": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__ice__a21_s2",
+       "tile": "tiles/base_candidates/ice/grass__to__ice__a21_s2.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__ice__a05_s1",
+       "tile": "tiles/base_candidates/ice/grass__to__ice__a05_s1.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__ice__a24_s6",
+       "tile": "tiles/base_candidates/ice/grass__to__ice__a24_s6.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__ice__a12_s4",
+       "tile": "tiles/base_candidates/ice/grass__to__ice__a12_s4.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__ice__a14_s1",
+       "tile": "tiles/base_candidates/ice/grass__to__ice__a14_s1.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__ice__a03_s5",
+       "tile": "tiles/base_candidates/ice/grass__to__ice__a03_s5.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__ice__a23_s4",
+       "tile": "tiles/base_candidates/ice/grass__to__ice__a23_s4.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__ice__a30_s1",
+       "tile": "tiles/base_candidates/ice/grass__to__ice__a30_s1.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grass__to__ice__a15_s2",
+       "tile": "tiles/base_candidates/ice/grass__to__ice__a15_s2.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__dark_mud/fc0e50cf",
+       "tile": "tiles/ice__over__dark_mud/fc0e50cf",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__dark_mud/d46debf7",
+       "tile": "tiles/ice__over__dark_mud/d46debf7",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__deep_water/2eef499a",
+       "tile": "tiles/ice__over__deep_water/2eef499a",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__deep_water/6a4537b9",
+       "tile": "tiles/ice__over__deep_water/6a4537b9",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__deep_water/7fd7b6ba",
+       "tile": "tiles/ice__over__deep_water/7fd7b6ba",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__deep_water/a943ee96",
+       "tile": "tiles/ice__over__deep_water/a943ee96",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__deep_water/d79e1bf5",
+       "tile": "tiles/ice__over__deep_water/d79e1bf5",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__black_rock/e55c554b",
+       "tile": "tiles/ice__over__black_rock/e55c554b",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__black_rock/bd8235cc",
+       "tile": "tiles/ice__over__black_rock/bd8235cc",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__black_rock/708f240a",
+       "tile": "tiles/ice__over__black_rock/708f240a",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 4,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__parquet_floor/4984046c",
+       "tile": "tiles/ice__over__parquet_floor/4984046c",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__parquet_floor/4230ffbb",
+       "tile": "tiles/ice__over__parquet_floor/4230ffbb",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__parquet_floor/41928a39",
+       "tile": "tiles/ice__over__parquet_floor/41928a39",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__parquet_floor/41557ff5",
+       "tile": "tiles/ice__over__parquet_floor/41557ff5",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__parquet_floor/3bb25d40",
+       "tile": "tiles/ice__over__parquet_floor/3bb25d40",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__parquet_floor/2f6b883a",
+       "tile": "tiles/ice__over__parquet_floor/2f6b883a",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__parquet_floor/225b36b0",
+       "tile": "tiles/ice__over__parquet_floor/225b36b0",
+       "weight": 0.05
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__deep_water/24580b09",
+       "tile": "tiles/ice__over__deep_water/24580b09",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__deep_water/da6ab2eb",
+       "tile": "tiles/ice__over__deep_water/da6ab2eb",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 5,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__ice/0f27267a",
+       "tile": "tiles/ice__over__ice/0f27267a",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__parquet_floor/f19cc8f8",
+       "tile": "tiles/ice__over__parquet_floor/f19cc8f8",
+       "weight": 0.1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__ice/221a91ff",
+       "tile": "tiles/ice__over__ice/221a91ff",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__dark_mud/09e36499",
+       "tile": "tiles/ice__over__dark_mud/09e36499",
+       "weight": 0.2
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__dark_mud/62698477",
+       "tile": "tiles/ice__over__dark_mud/62698477",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__dark_mud/fc0e50cf",
+       "tile": "tiles/ice__over__dark_mud/fc0e50cf",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__deep_water/07940ebc",
+       "tile": "tiles/ice__over__deep_water/07940ebc",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/ice__over__deep_water/2eef499a",
+       "tile": "tiles/ice__over__deep_water/2eef499a",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "lava": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/lava/sheet_01_subtle_87577/tile_14.webp",
+       "tile": "tiles/tops/lava/sheet_01_subtle_87577/post/tile_14.69898f97.webp",
+       "weight": 0.05
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_03.webp",
+       "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_03.28e13b4e.webp",
+       "weight": 0.05
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_06.webp",
+       "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_06.5219108d.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_07.webp",
+       "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_07.cc580ed5.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_09.webp",
+       "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_09.5bd3df45.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_11.webp",
+       "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_11.1198a3d3.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_02.webp",
+       "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_02.3ad0c679.webp",
+       "weight": 0.05
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_01.webp",
+       "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_01.7edf62df.webp",
+       "weight": 0.05
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/lava/sheet_00_subtle_91565/tile_08.webp",
+       "tile": "tiles/tops/lava/sheet_00_subtle_91565/post/tile_08.737de89d.webp",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "light_beach": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 3,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 2
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_beach/sheet_02_subtle_32520/tile_10.webp",
+       "tile": "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_10.527461a9.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_beach/sheet_02_subtle_32520/tile_09.webp",
+       "tile": "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_09.1941c744.webp",
+       "weight": 0.1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_beach/sheet_02_subtle_32520/tile_11.webp",
+       "tile": "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_11.128394ae.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_beach/sheet_02_subtle_32520/tile_14.webp",
+       "tile": "tiles/tops/light_beach/sheet_02_subtle_32520/post/tile_14.125f62d2.webp",
+       "weight": 0.1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_beach/sheet_00_subtle_69153/tile_12.webp",
+       "tile": "tiles/tops/light_beach/sheet_00_subtle_69153/post/tile_12.5bac577b.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_beach/sheet_01_subtle_91060/tile_01.webp",
+       "tile": "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_01.6190f6cd.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_beach/sheet_01_subtle_91060/tile_05.webp",
+       "tile": "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_05.27ffe8a2.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_beach/sheet_01_subtle_91060/tile_08.webp",
+       "tile": "tiles/tops/light_beach/sheet_01_subtle_91060/post/tile_08.0b91d290.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "Set",
+     "weight": 3,
+     "rejected": [
+      "tiles/light_beach__over__black_rock/27023f0a",
+      "tiles/light_beach__over__black_rock/25fa84f2"
+     ],
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 5
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_beach__over__snow/761459c2",
+       "tile": "tiles/light_beach__over__snow/761459c2",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_beach__over__dark_mud/187ce242",
+       "tile": "tiles/light_beach__over__dark_mud/187ce242",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_beach__over__black_rock/518c7ad3",
+       "tile": "tiles/light_beach__over__black_rock/518c7ad3",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_beach__over__light_beach/3c4829eb",
+       "tile": "tiles/light_beach__over__light_beach/3c4829eb",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_beach__over__parquet_floor/57a39967",
+       "tile": "tiles/light_beach__over__parquet_floor/57a39967",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "light_soil": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_03.webp",
+       "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_03.45b26d9b.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_04.webp",
+       "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_04.fb64d441.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_05.webp",
+       "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_05.03ea54d5.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_06.webp",
+       "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_06.2efffd31.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_soil/sheet_01_subtle_48370/tile_10.webp",
+       "tile": "tiles/tops/light_soil/sheet_01_subtle_48370/post/tile_10.d2b588db.webp",
+       "weight": 0.5
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/light_soil/sheet_00_subtle_30072/tile_08.webp",
+       "tile": "tiles/tops/light_soil/sheet_00_subtle_30072/post/tile_08.baeef302.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "grey_stone__to__light_soil__a18_s6",
+       "tile": "tiles/base_candidates/light_soil/grey_stone__to__light_soil__a18_s6.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "light_soil__to__water__a00_s3",
+       "tile": "tiles/base_candidates/light_soil/light_soil__to__water__a00_s3.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "brown_paving_stone__to__light_soil__a21_s5",
+       "tile": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s5.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "light_soil__to__snow__a18_s4",
+       "tile": "tiles/base_candidates/light_soil/light_soil__to__snow__a18_s4.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "dark_mud__to__light_soil__a21_s2",
+       "tile": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a21_s2.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "brown_paving_stone__to__light_soil__a21_s4",
+       "tile": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a21_s4.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "light_soil__to__snow__a21_s5",
+       "tile": "tiles/base_candidates/light_soil/light_soil__to__snow__a21_s5.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "dark_mud__to__light_soil__a00_s5",
+       "tile": "tiles/base_candidates/light_soil/dark_mud__to__light_soil__a00_s5.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "brown_paving_stone__to__light_soil__a15_s2",
+       "tile": "tiles/base_candidates/light_soil/brown_paving_stone__to__light_soil__a15_s2.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_soil__over__brown_paving_stone/b6e5527b",
+       "tile": "tiles/light_soil__over__brown_paving_stone/b6e5527b",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_soil__over__dark_mud/01a51c4e",
+       "tile": "tiles/light_soil__over__dark_mud/01a51c4e",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_soil__over__water/9118a674",
+       "tile": "tiles/light_soil__over__water/9118a674",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_soil__over__water/77fa2b9e",
+       "tile": "tiles/light_soil__over__water/77fa2b9e",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_soil__over__water/285316e9",
+       "tile": "tiles/light_soil__over__water/285316e9",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_soil__over__light_beach/f168a348",
+       "tile": "tiles/light_soil__over__light_beach/f168a348",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_soil__over__light_beach/61b9eeb4",
+       "tile": "tiles/light_soil__over__light_beach/61b9eeb4",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_soil__over__dark_mud/bab407c9",
+       "tile": "tiles/light_soil__over__dark_mud/bab407c9",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 4,
+     "name": "Set",
+     "weight": 0.2,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_soil__over__lava/c799d325",
+       "tile": "tiles/light_soil__over__lava/c799d325",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_soil__over__lava/ca803557",
+       "tile": "tiles/light_soil__over__lava/ca803557",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_soil__over__lava/e0643375",
+       "tile": "tiles/light_soil__over__lava/e0643375",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/light_soil__over__lava/f970e2b1",
+       "tile": "tiles/light_soil__over__lava/f970e2b1",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "parquet_floor": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 0,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__parquet_floor/f63edc1c",
+       "tile": "tiles/parquet_floor__over__parquet_floor/f63edc1c",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_00.webp",
+       "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_00.317106f6.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_01.webp",
+       "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_01.8e8886a6.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_06.webp",
+       "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_06.d7cf16fb.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_07.webp",
+       "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_07.5cd1f419.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_08.webp",
+       "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_08.5b626834.webp",
+       "weight": 0.2
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_09.webp",
+       "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_09.4ba87040.webp",
+       "weight": 0.1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_10.webp",
+       "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_10.987c8e65.webp",
+       "weight": 0.1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_11.webp",
+       "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_11.7f453ed9.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_12.webp",
+       "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_12.6fe9fdba.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/parquet_floor/sheet_02_subtle_76267/tile_13.webp",
+       "tile": "tiles/tops/parquet_floor/sheet_02_subtle_76267/post/tile_13.e3c8f939.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/parquet_floor/sheet_00_subtle_80398/tile_05.webp",
+       "tile": "tiles/tops/parquet_floor/sheet_00_subtle_80398/post/tile_05.65a0ec0b.webp",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 4,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__deep_water/9bd17aed",
+       "tile": "tiles/parquet_floor__over__deep_water/9bd17aed",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 5,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__brown_paving_stone/29441cb2",
+       "tile": "tiles/parquet_floor__over__brown_paving_stone/29441cb2",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 6,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__parquet_floor/463e86ab",
+       "tile": "tiles/parquet_floor__over__parquet_floor/463e86ab",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 7,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__grey_stone/8e655b56",
+       "tile": "tiles/parquet_floor__over__grey_stone/8e655b56",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 8,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__snow/1e102008",
+       "tile": "tiles/parquet_floor__over__snow/1e102008",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__snow/8d3d27ee",
+       "tile": "tiles/parquet_floor__over__snow/8d3d27ee",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 9,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__light_soil/9effa0aa",
+       "tile": "tiles/parquet_floor__over__light_soil/9effa0aa",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 10,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__ice/5c025eb6",
+       "tile": "tiles/parquet_floor__over__ice/5c025eb6",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 11,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__deep_water/8c9a859b",
+       "tile": "tiles/parquet_floor__over__deep_water/8c9a859b",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 12,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__light_beach/e86527a6",
+       "tile": "tiles/parquet_floor__over__light_beach/e86527a6",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__slime/8b069607",
+       "tile": "tiles/parquet_floor__over__slime/8b069607",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 13,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__parquet_floor/81ce862b",
+       "tile": "tiles/parquet_floor__over__parquet_floor/81ce862b",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 14,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/parquet_floor__over__parquet_floor/362be2e1",
+       "tile": "tiles/parquet_floor__over__parquet_floor/362be2e1",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "slime": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 0,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/slime/sheet_00_subtle_22942/tile_00.webp",
+       "tile": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_00.fab2d647.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/slime/sheet_00_subtle_22942/tile_07.webp",
+       "tile": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_07.2ed3c5fa.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/slime/sheet_00_subtle_22942/tile_08.webp",
+       "tile": "tiles/tops/slime/sheet_00_subtle_22942/post/tile_08.2c145646.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__grey_stone/4b474eb9",
+       "tile": "tiles/slime__over__grey_stone/4b474eb9",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__grey_stone/0bbe0cc8",
+       "tile": "tiles/slime__over__grey_stone/0bbe0cc8",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__light_beach/cfa5d5b3",
+       "tile": "tiles/slime__over__light_beach/cfa5d5b3",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/09f2ba3a",
+       "tile": "tiles/slime__over__black_rock/09f2ba3a",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/33c6314c",
+       "tile": "tiles/slime__over__black_rock/33c6314c",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/57f9eedd",
+       "tile": "tiles/slime__over__black_rock/57f9eedd",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/6884e45b",
+       "tile": "tiles/slime__over__black_rock/6884e45b",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/7e7c7606",
+       "tile": "tiles/slime__over__black_rock/7e7c7606",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/8316c17d",
+       "tile": "tiles/slime__over__black_rock/8316c17d",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/8846643f",
+       "tile": "tiles/slime__over__black_rock/8846643f",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/939614f7",
+       "tile": "tiles/slime__over__black_rock/939614f7",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/a60ef340",
+       "tile": "tiles/slime__over__black_rock/a60ef340",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/b6f30cff",
+       "tile": "tiles/slime__over__black_rock/b6f30cff",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/bc695ac6",
+       "tile": "tiles/slime__over__black_rock/bc695ac6",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/c3847a78",
+       "tile": "tiles/slime__over__black_rock/c3847a78",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/d842fce1",
+       "tile": "tiles/slime__over__black_rock/d842fce1",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/dc9687a1",
+       "tile": "tiles/slime__over__black_rock/dc9687a1",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/ed3f67a2",
+       "tile": "tiles/slime__over__black_rock/ed3f67a2",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__brown_paving_stone/02e6f3f4",
+       "tile": "tiles/slime__over__brown_paving_stone/02e6f3f4",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__brown_paving_stone/d3b8c193",
+       "tile": "tiles/slime__over__brown_paving_stone/d3b8c193",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__brown_paving_stone/d522eeda",
+       "tile": "tiles/slime__over__brown_paving_stone/d522eeda",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__brown_paving_stone/e2edd071",
+       "tile": "tiles/slime__over__brown_paving_stone/e2edd071",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 12
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__parquet_floor/7afab2e4",
+       "tile": "tiles/slime__over__parquet_floor/7afab2e4",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__parquet_floor/79d34f43",
+       "tile": "tiles/slime__over__parquet_floor/79d34f43",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__parquet_floor/79637f5b",
+       "tile": "tiles/slime__over__parquet_floor/79637f5b",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__parquet_floor/76f22137",
+       "tile": "tiles/slime__over__parquet_floor/76f22137",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__parquet_floor/767921e1",
+       "tile": "tiles/slime__over__parquet_floor/767921e1",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 3,
+     "name": "Set",
+     "weight": 5,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/24b6bd8b",
+       "tile": "tiles/slime__over__black_rock/24b6bd8b",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__snow/a27706be",
+       "tile": "tiles/slime__over__snow/a27706be",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__snow/2a0abb5d",
+       "tile": "tiles/slime__over__snow/2a0abb5d",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__light_beach/cfa5d5b3",
+       "tile": "tiles/slime__over__light_beach/cfa5d5b3",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__black_rock/7e7c7606",
+       "tile": "tiles/slime__over__black_rock/7e7c7606",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__brown_paving_stone/e2edd071",
+       "tile": "tiles/slime__over__brown_paving_stone/e2edd071",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__light_soil/480079e1",
+       "tile": "tiles/slime__over__light_soil/480079e1",
+       "weight": 0.3
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/slime__over__snow/8104ec8d",
+       "tile": "tiles/slime__over__snow/8104ec8d",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "snow": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/snow/sheet_02_subtle_44656/tile_03.webp",
+       "tile": "tiles/tops/snow/sheet_02_subtle_44656/post/tile_03.ee3f3b9a.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/snow/sheet_01_subtle_98258/tile_12.webp",
+       "tile": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_12.5ccd1495.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/snow/sheet_01_subtle_98258/tile_13.webp",
+       "tile": "tiles/tops/snow/sheet_01_subtle_98258/post/tile_13.af7d65e2.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/snow__over__black_rock/52c71e6a",
+       "tile": "tiles/snow__over__black_rock/52c71e6a",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/snow__over__deep_water/bd8247ed",
+       "tile": "tiles/snow__over__deep_water/bd8247ed",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/snow__over__deep_water/37bb52da",
+       "tile": "tiles/snow__over__deep_water/37bb52da",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/snow__over__black_rock/e52434f5",
+       "tile": "tiles/snow__over__black_rock/e52434f5",
+       "weight": 0.1
+      }
+     ]
+    },
+    {
+     "id": 2,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 0
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/snow/sheet_03_detail_25767/tile_03.webp",
+       "tile": "tiles/tops/snow/sheet_03_detail_25767/post/tile_03.72d58680.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/snow/sheet_03_detail_25767/tile_10.webp",
+       "tile": "tiles/tops/snow/sheet_03_detail_25767/post/tile_10.85b4e794.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/tops/snow/sheet_05_detail_41912/tile_02.webp",
+       "tile": "tiles/tops/snow/sheet_05_detail_41912/post/tile_02.5e0101b2.webp",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "light_soil__to__snow__a24_s6",
+       "tile": "tiles/base_candidates/snow/light_soil__to__snow__a24_s6.webp",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  "water": {
+   "sets": [
+    {
+     "id": 0,
+     "name": "Clean",
+     "weight": 0,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 1
+      }
+     ]
+    },
+    {
+     "id": 1,
+     "name": "Set",
+     "weight": 1,
+     "members": [
+      {
+       "kind": "clean",
+       "weight": 30
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__light_beach/aa3287b9",
+       "tile": "tiles/water__over__light_beach/aa3287b9",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__light_soil/60141780",
+       "tile": "tiles/water__over__light_soil/60141780",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__light_soil/688cb16f",
+       "tile": "tiles/water__over__light_soil/688cb16f",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__black_rock/5d55ad2d",
+       "tile": "tiles/water__over__black_rock/5d55ad2d",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__black_rock/e453c50b",
+       "tile": "tiles/water__over__black_rock/e453c50b",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__grey_stone/3c0aeddc",
+       "tile": "tiles/water__over__grey_stone/3c0aeddc",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__grey_stone/775b3c7c",
+       "tile": "tiles/water__over__grey_stone/775b3c7c",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__grey_stone/a774baca",
+       "tile": "tiles/water__over__grey_stone/a774baca",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__grey_stone/b90126c9",
+       "tile": "tiles/water__over__grey_stone/b90126c9",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__grey_stone/ccf68cd7",
+       "tile": "tiles/water__over__grey_stone/ccf68cd7",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__light_beach/4b2608c8",
+       "tile": "tiles/water__over__light_beach/4b2608c8",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__light_soil/20228e4e",
+       "tile": "tiles/water__over__light_soil/20228e4e",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__light_soil/7b8be427",
+       "tile": "tiles/water__over__light_soil/7b8be427",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__light_soil/cf10cb1f",
+       "tile": "tiles/water__over__light_soil/cf10cb1f",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__slime/f1e42f16",
+       "tile": "tiles/water__over__slime/f1e42f16",
+       "weight": 1
+      },
+      {
+       "kind": "tile",
+       "id": "tiles/water__over__snow/fff46f2e",
+       "tile": "tiles/water__over__snow/fff46f2e",
+       "weight": 1
+      }
+     ]
+    }
+   ]
   }
+ }
 }
