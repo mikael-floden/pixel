@@ -27,7 +27,7 @@
  "n_grounds": 15,
  "n_motifs_per_ground": {
   "black_rock": 35,
-  "brown_paving_stone": 35,
+  "brown_paving_stone": 34,
   "dark_mud": 35,
   "deep_water": 35,
   "grass": 35,
@@ -42,7 +42,7 @@
   "snow": 35,
   "water": 35
  },
- "n_sheets": 525,
+ "n_sheets": 524,
  "motifs": {
   "black_rock": [
    "a jagged crack",
@@ -97,7 +97,6 @@
    "a chipped corner",
    "a sunken stone",
    "a trail of ants",
-   "a cigarette of straw",
    "a carved initial",
    "a pale mortar seam",
    "a spilled stain",
@@ -599,5 +598,8 @@
    "a wake line",
    "a glimmer of scales"
   ]
+ },
+ "_retired_motifs": {
+  "a cigarette of straw": "brown_paving_stone. A typo of mine for 'a scattering of straw' - PixelLab drew a literal cigarette. Retired rather than reworded, because its sheet is already bought and on disk; the maintainer's review is what removes the art."
  }
 }

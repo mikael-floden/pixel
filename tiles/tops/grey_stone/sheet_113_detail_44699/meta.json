@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grey_stone",
+  "flavour": "detail",
+  "index": 113,
+  "seed": 44699,
+  "prompt": "grey stone, a dark water stain in the middle, grey stone all around the edge",
+  "palette_top": "#808082",
+  "tile_id": "9ed1c79b-445c-4f29-adce-1c3b0ae88b15",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:27:21+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 18,
+        "dominant_share": 0.3837,
+        "px": 1389
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.4133,
+        "px": 1401
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.4361,
+        "px": 1378
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3311,
+        "px": 1326
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.3202,
+        "px": 1399
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.4011,
+        "px": 1411
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3271,
+        "px": 1385
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.3298,
+        "px": 1334
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5398,
+        "px": 1408
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.6938,
+        "px": 1427
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.6184,
+        "px": 1394
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.4915,
+        "px": 1349
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5712,
+        "px": 1425
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4951,
+        "px": 1440
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.4791,
+        "px": 1413
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.4269,
+        "px": 1354
+      }
+    ],
+    "mean_colours": 18.81,
+    "mean_dominant_share": 0.4536
+  },
+  "motif": "a dark water stain",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

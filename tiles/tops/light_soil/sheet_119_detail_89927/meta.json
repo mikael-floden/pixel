@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "light_soil",
+  "flavour": "detail",
+  "index": 119,
+  "seed": 89927,
+  "prompt": "light soil, a damp dark spot in the middle, light soil all around the edge",
+  "palette_top": "#c9ab7e",
+  "tile_id": "82c3fabc-b9ae-4a0f-a701-f450eda87389",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:32:20+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 12,
+        "dominant_share": 0.2527,
+        "px": 922
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.5179,
+        "px": 923
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.3724,
+        "px": 921
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.3041,
+        "px": 924
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.4388,
+        "px": 923
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.2189,
+        "px": 923
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.4024,
+        "px": 922
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.6013,
+        "px": 923
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.4329,
+        "px": 924
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.3883,
+        "px": 922
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.3619,
+        "px": 923
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.5174,
+        "px": 922
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.4583,
+        "px": 923
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.4756,
+        "px": 923
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4459,
+        "px": 924
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.3857,
+        "px": 923
+      }
+    ],
+    "mean_colours": 15.0,
+    "mean_dominant_share": 0.4109
+  },
+  "motif": "a damp dark spot",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

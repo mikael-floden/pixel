@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grey_stone",
+  "flavour": "detail",
+  "index": 116,
+  "seed": 76259,
+  "prompt": "grey stone, a tuft of weeds in a crack in the middle, grey stone all around the edge",
+  "palette_top": "#808082",
+  "tile_id": "835d0432-6d62-4d93-ab33-3d4c7386a6c0",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:30:56+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 19,
+        "dominant_share": 0.6507,
+        "px": 916
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.6897,
+        "px": 925
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.5943,
+        "px": 917
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5961,
+        "px": 916
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.765,
+        "px": 915
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.7548,
+        "px": 930
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.6456,
+        "px": 934
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.6743,
+        "px": 921
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.7126,
+        "px": 936
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.7036,
+        "px": 921
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.7408,
+        "px": 922
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.7755,
+        "px": 940
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.574,
+        "px": 932
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.7443,
+        "px": 923
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.6182,
+        "px": 922
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.6623,
+        "px": 924
+      }
+    ],
+    "mean_colours": 21.06,
+    "mean_dominant_share": 0.6814
+  },
+  "motif": "a tuft of weeds in a crack",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

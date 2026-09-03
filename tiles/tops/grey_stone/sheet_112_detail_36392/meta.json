@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grey_stone",
+  "flavour": "detail",
+  "index": 112,
+  "seed": 36392,
+  "prompt": "grey stone, a hairline fracture in the middle, grey stone all around the edge",
+  "palette_top": "#808082",
+  "tile_id": "1b2649ae-96af-495c-8dbc-ea2ab031f186",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T06:25:32+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 12,
+        "dominant_share": 0.9717,
+        "px": 920
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.9052,
+        "px": 918
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.3645,
+        "px": 919
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.9019,
+        "px": 917
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.7698,
+        "px": 921
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.3221,
+        "px": 922
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.8634,
+        "px": 915
+      },
+      {
+        "colours": 6,
+        "dominant_share": 0.863,
+        "px": 920
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.8731,
+        "px": 922
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.5803,
+        "px": 922
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.402,
+        "px": 923
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.7021,
+        "px": 923
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.8777,
+        "px": 924
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.8126,
+        "px": 923
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.3743,
+        "px": 919
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.2842,
+        "px": 922
+      }
+    ],
+    "mean_colours": 13.19,
+    "mean_dominant_share": 0.6792
+  },
+  "motif": "a hairline fracture",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}
