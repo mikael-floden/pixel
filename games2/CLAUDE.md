@@ -621,11 +621,41 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     - A `saveTexture`d render texture outlives its game object (`destroy()`
       skips the texture): drop it through `textures.remove(key)` or every
       resize leaks two viewport-sized GL targets.
-  - STILL OPEN after the scroll: fresh terrain. The ground pass requests art
-    JUST IN TIME (a cell's files are asked for when it enters the window) and
-    every landed batch poisons the latch — running into new ground is still
-    request → land → FULL paint every ~256 px. Next: prefetch a ring ahead and
-    repaint only the landed cells through `groundClip`.
+  - **Landings repaint only their cells, and art is asked for AHEAD (#8).** The
+    ground pass used to request a cell's art the moment the cell entered the
+    texture window, and every landed batch poisoned the latch — running into
+    fresh ground was request → land → FULL paint every ~256 px, whatever the
+    scroll saved. Now: (1) the pass records which window cell wanted each
+    missing file (`t3missing`; rebuilt by a full paint, extended by clipped
+    ones); `Tiles3Loader.onBatch(paths)` names what landed; `onTerrainBatch`
+    maps it to cells and `repaintTiles3Cells` repaints just their rectangle
+    (each cell's 64-wide column from the world's top storey down past its base)
+    through the SAME clipped pass the scroll's bands use, after resetting the
+    rect with a 1x1 texture of the exact background colour stamped to size
+    (NEAREST: every texel that colour; not `fill`, see the scroll's traps). A
+    landing no window cell wanted paints nothing; a landing whose cells span
+    more than half the texture paints in full. Pixel-identical: 12 of 12 cell
+    repaints over a fresh full paint hash equal (`__ml.groundCellsRepaint`,
+    `scripts/_tmp-cellsparity.mjs`). (2) THE PREFETCH RING: every ground
+    redraw queues the cells of the window grown by `GROUND_RING` (512 px) on
+    every side, minus the window's own; `t3prefetchStep` resolves
+    `GROUND_RING_STEP` (150) of them per frame through the cached resolvers
+    and asks the loader for their art — only once the loading hold released
+    (`worldUp`; the hold counts terrain requests). Flushed PER SLICE and only
+    while nothing is in flight: Phaser's loader merges files added mid-cycle
+    into the running cycle and fires one complete for all, so a ring flush on
+    top of a pass-owned batch would delay the landing the player is looking
+    at; small ring batches one at a time bound the merge the other way. The
+    resolution cache keeps the grown window. A pattern-sheet landing (the
+    composer's own dependency, wanted by no cell) is always a full paint. A
+    tombstoned (404) path is never recorded as missing (it never lands). Measured on the north run from
+    spawn (30 cell steps): 17 landings → 1 ground paint (the join's) and 0
+    cell repaints — every later landing arrived for cells still outside the
+    texture — vs 9 landings → 8 full paints (18-78 ms each) before. A cell
+    repaint, when one is needed, is 4-19 ms for 1-12 cells (the rect is a
+    full-height column band). Dev A/B:
+    `__ml.groundPartial(on)`, `__ml.groundPrefetch(on)`; `__ml.groundScroll()`
+    reports the cell-repaint counters and the ring's queue.
   - **The deferred animation batch is PACED (#7).** `loadDeferredAnims` (every
     character's non-boot states, every NPC rotation/idle frame, 525 monster
     combat strips, ~1,000 files) streams behind the live world, and each landed

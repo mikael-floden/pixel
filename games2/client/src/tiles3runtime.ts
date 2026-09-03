@@ -220,7 +220,8 @@ export interface LoaderLike {
 
 /** THE STREAMING ART CACHE. A draw pass asks for the files a window needs; this
  *  queues the ones that are not resident, starts the loader at most once per
- *  pass, and calls `onBatch` when a batch lands so the caller can repaint.
+ *  pass, and calls `onBatch(paths)` when a batch lands so the caller can repaint
+ *  what those files were wanted for.
  *
  *  A PATH IS REQUESTED ONCE, EVER. A 404 (a stale index, an unpublished tile)
  *  would otherwise re-fire on every redraw the cell is on screen — the requested
@@ -243,7 +244,7 @@ export class Tiles3Loader {
       loader: LoaderLike;
       textures: TextureManagerLike;
       route?: UrlRoute;
-      onBatch: () => void;
+      onBatch: (paths: string[]) => void;
     },
   ) {
     this.o.loader.onFile?.((key) => {
@@ -264,6 +265,17 @@ export class Tiles3Loader {
       this.queued.push(path);
     }
     return false;
+  }
+
+  /** Is this path still coming — queued or in flight? False for a resident
+   *  texture and for a tombstoned (404) path, which will never land. */
+  wanted(path: string): boolean {
+    return this.inflight.has(artKey(path)) || this.queued.includes(path);
+  }
+
+  /** Files asked for and not yet started (`flush()` starts them). */
+  get queuedCount(): number {
+    return this.queued.length;
   }
 
   /** NOTHING QUEUED AND NOTHING IN FLIGHT — every path `need()` has been shown
@@ -302,7 +314,7 @@ export class Tiles3Loader {
       for (const path of batch) this.inflight.delete(artKey(path));
       this.stats.done = Math.max(this.stats.done, Math.min(upTo, this.stats.requested));
       this.stats.pending = Math.max(0, this.stats.requested - this.stats.done);
-      this.o.onBatch();
+      this.o.onBatch(batch);
     });
     if (!this.o.loader.isLoading()) this.o.loader.start();
   }

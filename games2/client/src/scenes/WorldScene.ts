@@ -158,6 +158,10 @@ import {
   Tiles3,
   DX as T3_DX,
   TOP_Y as T3_TOP_Y,
+  TILE as T3_TILE,
+  PLATE_H as T3_PLATE_H,
+  columnX as t3columnX,
+  columnY as t3columnY,
   measureStoreyPitch,
   type Frame as T3Frame,
   type PatternsDoc,
@@ -718,6 +722,11 @@ const THREAT_NEAR_WU = 220;
 const CAM_TAU = 0.3; // s — position smoothing (run trail ≈ 175px/s × τ ≈ 52px)
 const CAM_TRAIL_MAX = 70; // scene px — the player never outruns the frame
 const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
+/** THE PREFETCH RING: how far beyond the ground texture art is asked for ahead
+ *  of the camera (world px; the texture already reaches GROUND_MARGIN past the
+ *  view), and how many ring cells one frame resolves — see t3prefetchStep. */
+const GROUND_RING = 512;
+const GROUND_RING_STEP = 150;
 /** Files in flight for the DEFERRED animation batch — see loadDeferredAnims.
  *  Dev A/B: localStorage `ml-deferred-parallel` overrides (0 = the loader's own). */
 const DEFERRED_PARALLEL = 2;
@@ -1531,7 +1540,22 @@ export class WorldScene extends Phaser.Scene {
   private groundAnchor: { ax: number; ay: number; mask: Map<number, number> | null; top: number } | null = null;
   private groundClip: { x0: number; y0: number; x1: number; y1: number } | null = null;
   private groundScroll = true;
-  private groundLastMode: "full" | "scroll" = "full";
+  private groundLastMode: "full" | "scroll" | "cells" = "full";
+  /* THE LANDING REPAINT + THE PREFETCH RING — see onTerrainBatch, repaintTiles3Cells,
+   * t3prefetchStep. Which window cells wanted which missing file (rebuilt by every
+   * full paint, extended by band paints); the cells a landed batch made drawable;
+   * the ring of cells beyond the texture whose art is asked for ahead of time. */
+  private t3missing = new Map<string, Set<number>>();
+  private t3sheetPaths = new Set<string>();
+  private groundDirtyCells: number[] = [];
+  private repaintGroundPartial = false;
+  private groundPartial = true;
+  private groundPrefetch = true;
+  private t3ringQueue: [number, number][] = [];
+  private t3ringAt = 0;
+  private t3keepCells: readonly [number, number][] | null = null;
+  private worldUp = false;
+  private groundCellStats = { runs: 0, full: 0, cells: 0, ms: 0 };
   /** DIAGNOSTIC ring: the last scrolls' (prevAx, prevAy, ax, ay, sx, sy). */
   private groundScrollLog: number[][] = [];
   // Chase-cam state: eased world centre + eased zoom; detached while a debug
@@ -3504,7 +3528,20 @@ export class WorldScene extends Phaser.Scene {
         }
         const log = this.groundScrollLog;
         this.groundScrollLog = [];
-        return { on: this.groundScroll, lastMode: this.groundLastMode, anchor: this.groundAnchor ? { ax: this.groundAnchor.ax, ay: this.groundAnchor.ay } : null, log };
+        return { on: this.groundScroll, lastMode: this.groundLastMode, anchor: this.groundAnchor ? { ax: this.groundAnchor.ax, ay: this.groundAnchor.ay } : null, log, cells: { ...this.groundCellStats }, ring: { queued: this.t3ringQueue.length - this.t3ringAt, missing: this.t3missing.size } };
+      },
+      /** THE LANDING REPAINT's switch (off = a landed batch paints in full) and
+       *  THE PREFETCH RING's (off = art is asked for only by the window). */
+      groundPartial: (on?: boolean) => {
+        if (typeof on === "boolean") this.groundPartial = on;
+        return this.groundPartial;
+      },
+      groundPrefetch: (on?: boolean) => {
+        if (typeof on === "boolean") {
+          this.groundPrefetch = on;
+          if (!on) this.t3ringQueue = [];
+        }
+        return this.groundPrefetch;
       },
       /** The resolution cache's switch, for the occluder-pass parity check. */
       groundCache: (on: boolean) => {
@@ -3572,6 +3609,17 @@ export class WorldScene extends Phaser.Scene {
             }
           });
         }),
+      /** PARITY for the landing repaint: repaint these cells (col,row pairs)
+       *  of the current window through repaintTiles3Cells — over a fresh full
+       *  paint this must leave every pixel as it was (__ml.groundHash before
+       *  and after). Returns what it did. */
+      groundCellsRepaint: (cells: [number, number][]) => {
+        const world = this.world;
+        if (!world) return null;
+        const before = { ...this.groundCellStats };
+        this.repaintTiles3Cells(cells.map(([c, r]) => r * world.width + c));
+        return { ...this.t3stats, mode: this.groundLastMode, runs: this.groundCellStats.runs - before.runs, full: this.groundCellStats.full - before.full, totalMs: +(this.groundCellStats.ms - before.ms).toFixed(1) };
+      },
       /** DIAGNOSTIC: the ground render texture's pixels as a PNG data URL (with
        *  its world anchor), so two redraws can be diffed pixel by pixel. */
       groundSnap: () =>
@@ -7539,10 +7587,20 @@ export class WorldScene extends Phaser.Scene {
     // run — bumping it in the flush instead would make every probe read
     // "this body has no surface" one tick too early.
     this.coverTick++;
-    // The coalesced streaming repaints — see requestRepaint.
+    // The coalesced streaming repaints — see requestRepaint / onTerrainBatch.
     if (this.repaintGroundPending) {
       this.repaintGroundPending = false;
+      this.repaintGroundPartial = false; // the full paint covers the landed cells
+      this.groundDirtyCells = [];
       this.lastGround = { x: NaN, y: NaN };
+      this.repaintStats.groundRuns++;
+    } else if (this.repaintGroundPartial) {
+      this.repaintGroundPartial = false;
+      const dirty = this.groundDirtyCells;
+      this.groundDirtyCells = [];
+      this.ps();
+      this.repaintTiles3Cells(dirty);
+      this.pe("repaintCells");
       this.repaintStats.groundRuns++;
     }
     if (this.repaintOccPending) {
@@ -7563,6 +7621,9 @@ export class WorldScene extends Phaser.Scene {
     this.ps();
     this.rebuildOccluders();
     this.pe("rebuildOccluders");
+    this.ps();
+    this.t3prefetchStep();
+    this.pe("prefetch");
     if (!this.room) return;
     const dt = delta / 1000;
     const myId = this.room.sessionId;
@@ -11278,6 +11339,8 @@ export class WorldScene extends Phaser.Scene {
   private repaintWorld() {
     this.repaintGroundPending = false;
     this.repaintOccPending = false;
+    this.repaintGroundPartial = false; // the full paint covers the landed cells
+    this.groundDirtyCells = [];
     this.lastGround = { x: NaN, y: NaN };
     this.lastOccl = { x: NaN, y: NaN };
     this.ps();
@@ -11973,6 +12036,12 @@ export class WorldScene extends Phaser.Scene {
     // time the camera moves, and the ground visibly reshuffles as you walk.
     const t0 = performance.now();
     this.groundPainted = false;
+    this.worldUp = false;
+    this.t3missing.clear();
+    this.groundDirtyCells = [];
+    this.repaintGroundPartial = false;
+    this.t3ringQueue = [];
+    this.t3keepCells = null;
     this.t3cells.clear(); // a new resolver: nothing cached against the old one may survive
     this.t3 = new Tiles3World({ view, tiles, frame: this.tiles3Frame(), patterns: data.patterns });
     this.t3regionMs = +(performance.now() - t0).toFixed(1);
@@ -11980,11 +12049,15 @@ export class WorldScene extends Phaser.Scene {
       loader: this.tiles3LoaderAdapter(),
       textures: this.t3tm,
       route: this.t3route,
-      onBatch: () => this.requestRepaint("terrain"),
+      onBatch: (paths) => this.onTerrainBatch(paths),
     });
     // The index decides which sheets to fetch; preload queued the library's
     // published names, so this is a no-op unless a republish renamed one.
-    for (const path of sheetPaths(data.patterns)) this.t3load.need(path);
+    // The pattern sheets are a dependency of EVERY composed op (ensureTiles3Textures
+    // returns null without them, and the pass then draws nothing): a batch that
+    // carries one is a full repaint, whatever cells recorded (onTerrainBatch).
+    this.t3sheetPaths = new Set(sheetPaths(data.patterns));
+    for (const path of this.t3sheetPaths) this.t3load.need(path);
     this.t3load.flush();
     this.initScenery(view);
     // A LoaderPlugin constructed after the scene has booted never sees BOOT, so
@@ -12403,7 +12476,7 @@ export class WorldScene extends Phaser.Scene {
     // wants the ~82% it already knows.
     if (this.groundCacheOn) {
       const full = this.t3groundWindow(ax, ay, 0, 0, W, H);
-      this.t3pruneCache(this.t3windowCells(full.u0, full.u1, full.v0, full.v1));
+      this.t3pruneCache(this.t3keepCells ?? this.t3windowCells(full.u0, full.u1, full.v0, full.v1));
     }
     this.groundRT = next;
     this.groundScratch = cur;
@@ -12411,6 +12484,178 @@ export class WorldScene extends Phaser.Scene {
     cur.setVisible(false);
     this.groundAnchor = { ax, ay, mask, top };
     this.groundLastMode = "scroll";
+  }
+
+  /** A TERRAIN BATCH LANDED. The files it carried were wanted by known window
+   *  cells (t3missing) or by nobody in the window (the prefetch ring, or cells
+   *  that have since scrolled out) — so the repaint is scoped to the cells that
+   *  can now draw, and a landing that changes nothing on the texture paints
+   *  nothing. The occluders rebuild either way (they draw the same art). Legacy
+   *  (coalesce off) and the switch off keep the old full repaint. */
+  private onTerrainBatch(paths: string[]): void {
+    this.repaintStats.terrain++;
+    if (!this.repaintCoalesce) {
+      this.repaintWorld();
+      this.repaintStats.groundRuns++;
+      this.repaintStats.occRuns++;
+      return;
+    }
+    const cells = new Set<number>();
+    let sheets = false;
+    for (const p of paths) {
+      if (this.t3sheetPaths.has(p)) sheets = true;
+      const set = this.t3missing.get(p);
+      if (!set) continue;
+      for (const i of set) cells.add(i);
+      this.t3missing.delete(p);
+    }
+    if (!this.groundPartial || !this.groundScroll || sheets) this.repaintGroundPending = true;
+    else if (cells.size) {
+      for (const i of cells) this.groundDirtyCells.push(i);
+      this.repaintGroundPartial = true;
+    }
+    this.repaintOccPending = true;
+    // Ring paths a slice left queued while this batch was in flight go now.
+    const load = this.t3load;
+    if (load && load.stats.pending === 0 && load.queuedCount > 0) load.flush();
+  }
+
+  /** REPAINT THE CELLS A LANDING MADE DRAWABLE — their rectangle (each cell's
+   *  64-wide column from the world's highest storey down past its base, the
+   *  same reach the window rule assumes) is reset to the background through
+   *  the capture path (a 1x1 texture of the exact colour, scaled: NEAREST makes
+   *  every texel that colour — not DynamicTexture.fill, which is not
+   *  texel-exact for a rect) and repainted through the SAME clipped pass the
+   *  scroll's bands use, so it equals a full paint pixel for pixel. A landing
+   *  whose cells span more than half the texture paints in full instead, and
+   *  so does one that arrives with no valid anchor. */
+  private repaintTiles3Cells(cells: number[]): void {
+    const rt = this.groundRT;
+    const a = this.groundAnchor;
+    const f = this.t3?.frame;
+    const world = this.world;
+    if (!cells.length) return;
+    if (!rt || !a || !f || !world || !this.maps3 || Number.isNaN(this.lastGround.x)) {
+      this.lastGround = { x: NaN, y: NaN }; // the next latch paints in full
+      return;
+    }
+    const t0 = performance.now();
+    const { lh } = this.geom;
+    const W = rt.width;
+    const H = rt.height;
+    let x0 = Infinity;
+    let y0 = Infinity;
+    let x1 = -Infinity;
+    let y1 = -Infinity;
+    for (const idx of cells) {
+      const col = idx % world.width;
+      const row = (idx - col) / world.width;
+      const cx = t3columnX(f, col, row) - a.ax;
+      const top = t3columnY(f, col, row, this.maxLevel) - T3_TOP_Y - lh - a.ay;
+      const bot = t3columnY(f, col, row, 0) + T3_TILE + lh - a.ay;
+      // A cell that has scrolled off the texture since it asked (t3missing
+      // outlives the window until the next full paint) must not stretch the
+      // rectangle from there to the visible ones.
+      if (cx + T3_TILE <= 0 || cx >= W || bot <= 0 || top >= H) continue;
+      if (cx < x0) x0 = cx;
+      if (cx + T3_TILE > x1) x1 = cx + T3_TILE;
+      if (top < y0) y0 = top;
+      if (bot > y1) y1 = bot;
+    }
+    x0 = Math.max(0, Math.floor(x0));
+    y0 = Math.max(0, Math.floor(y0));
+    x1 = Math.min(W, Math.ceil(x1));
+    y1 = Math.min(H, Math.ceil(y1));
+    if (x1 <= x0 || y1 <= y0) return; // every landed cell lies off the texture
+    if ((x1 - x0) * (y1 - y0) > 0.5 * W * H) {
+      this.groundCellStats.full++;
+      this.lastGround = { x: NaN, y: NaN };
+      return;
+    }
+    const mask = a.mask;
+    const cuts = mask ? this.indoorCut : null;
+    const bgKey = mask ? "ground-bg-black" : "ground-bg-navy";
+    if (!this.textures.exists(bgKey)) {
+      const cv = document.createElement("canvas");
+      cv.width = 1;
+      cv.height = 1;
+      const g = cv.getContext("2d")!;
+      g.fillStyle = mask ? "#000000" : "#181c28";
+      g.fillRect(0, 0, 1, 1);
+      this.textures.addCanvas(bgKey, cv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    }
+    const b = { x0, y0, x1, y1 };
+    rt.stamp(bgKey, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
+    const win = this.t3groundWindow(a.ax, a.ay, x0, y0, x1 - x0, y1 - y0);
+    this.groundClip = b;
+    try {
+      this.drawTiles3Ground(rt, a.ax, a.ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, a.top);
+    } finally {
+      this.groundClip = null;
+    }
+    this.groundLastMode = "cells";
+    this.groundCellStats.runs++;
+    this.groundCellStats.cells += cells.length;
+    this.groundCellStats.ms += performance.now() - t0;
+  }
+
+  /** THE PREFETCH RING, armed by every ground redraw: the cells of the texture
+   *  window grown by GROUND_RING on every side, minus the window's own (the
+   *  pass asks for those itself), queued for t3prefetchStep. The grown window
+   *  is also what the resolution cache keeps, so a ring cell's resolution is
+   *  still there when the cell scrolls in. */
+  private t3armRing(ax: number, ay: number, w: number, h: number): void {
+    if (!this.groundPrefetch || !this.maps3) {
+      this.t3keepCells = null;
+      return;
+    }
+    const win = this.t3groundWindow(ax, ay, 0, 0, w, h);
+    const ring = this.t3groundWindow(ax, ay, -GROUND_RING, -GROUND_RING, w + 2 * GROUND_RING, h + 2 * GROUND_RING);
+    const all = this.t3windowCells(ring.u0, ring.u1, ring.v0, ring.v1);
+    this.t3keepCells = all;
+    const queue: [number, number][] = [];
+    for (const c of all) {
+      const [col, row] = c;
+      const u = col - row;
+      const v = col + row;
+      if (u >= win.u0 && u <= win.u1 && v >= win.v0 && v <= win.v1) continue;
+      queue.push(c);
+    }
+    this.t3ringQueue = queue;
+    this.t3ringAt = 0;
+  }
+
+  /** A SLICE of the ring per frame: resolve (cached) and ask for the art, so it
+   *  lands BEFORE its cell enters the texture and a landing then repaints
+   *  nothing. Only once the world is up (the loading hold counts terrain
+   *  requests). FLUSHED PER SLICE AND ONLY WHILE NOTHING IS IN FLIGHT: Phaser's
+   *  loader merges files added mid-cycle into the running cycle and fires ONE
+   *  complete for all of them, so a ring flush on top of a pass-owned batch
+   *  would delay the landing the player is looking at until the ring's files
+   *  were in too. Small ring batches, one at a time, bound that merge the other
+   *  way round (a pass flush joins at most one slice's files); what a slice
+   *  could not flush stays queued for the next slice, the next pass, or the
+   *  landing (onTerrainBatch). */
+  private t3prefetchStep(): void {
+    const load = this.t3load;
+    const t3 = this.t3;
+    if (!load || !t3 || !this.worldUp || this.t3ringAt >= this.t3ringQueue.length) return;
+    if (!this.ensureTiles3Textures()) return; // no composer yet (the pattern sheets): nothing to ask for
+    const end = Math.min(this.t3ringQueue.length, this.t3ringAt + GROUND_RING_STEP);
+    const need = (p: string | null | undefined) => {
+      if (p) load.need(p);
+    };
+    for (let i = this.t3ringAt; i < end; i++) {
+      const [col, row] = this.t3ringQueue[i];
+      const cell = this.t3cellOf(t3, col, row);
+      if (!cell) continue;
+      cellArtPaths(cell, need);
+      const b = this.t3boundaryOf(t3, col, row);
+      if (b) boundaryArtPaths(b, need);
+      for (const d of this.t3decksOf(t3, col, row)) deckArtPaths(d, need);
+    }
+    this.t3ringAt = end;
+    if (load.stats.pending === 0) load.flush();
   }
 
   /** The (col,row) list of a cell window, in the pass's own order. */
@@ -12462,6 +12707,7 @@ export class WorldScene extends Phaser.Scene {
   private hideLoadingWhenTerrainIsUp(): void {
     if (!this.maps3) {
       hideLoading(); // image art: the avatar arriving IS the world being up
+      this.worldUp = true;
       return;
     }
     /* TWO DEADLINES, because releasing onto a BLACK world is the one outcome
@@ -12547,6 +12793,7 @@ export class WorldScene extends Phaser.Scene {
           );
         setLoadingProgress(1, "Ready");
         hideLoading();
+        this.worldUp = true;
       },
     });
   }
@@ -12568,8 +12815,19 @@ export class WorldScene extends Phaser.Scene {
     if (!t3 || !world) return;
     const tex = this.ensureTiles3Textures();
     const load = this.t3load;
+    // A file the pass wanted and does not have yet is remembered AGAINST THE
+    // CELL that wanted it — a landed batch then repaints those cells' rectangle
+    // and nothing else (onTerrainBatch). Rebuilt by a full paint (the window is
+    // new), extended by a band paint.
+    if (!this.groundClip) this.t3missing.clear();
+    let needIdx = -1;
     const need = (p: string | null | undefined) => {
-      if (p) load?.need(p);
+      if (!p || !load) return;
+      if (load.need(p) || needIdx < 0) return;
+      if (!load.wanted(p)) return; // tombstoned (404): it never lands, so never a repaint
+      let set = this.t3missing.get(p);
+      if (!set) this.t3missing.set(p, (set = new Set()));
+      set.add(needIdx);
     };
     // Published BEFORE the passes and mutated in place: a gate reads these
     // counters to tell a correct dark frame from a black one, and an exception
@@ -12592,6 +12850,7 @@ export class WorldScene extends Phaser.Scene {
       const cell = cellOf(col, row);
       if (!cell) continue;
       stats.cells++;
+      needIdx = row * world.width + col;
       cellArtPaths(cell, need);
       // THE COMPOSED BOUNDARY — `mask ? plateB : plateA` under the published
       // silhouette with a mandatory 1px darkened seam, which is why 18 shapes x
@@ -12650,6 +12909,7 @@ export class WorldScene extends Phaser.Scene {
     for (const [col, row] of cells) {
       const idx = row * world.width + col;
       if (mask && (cuts ? cuts.get(idx) : top) !== undefined) continue; // my roof, or a lid over my floor
+      needIdx = idx;
       for (const d of decksOf(col, row)) {
         deckArtPaths(d, need);
         if (!tex) continue;
@@ -12661,7 +12921,7 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     rt.endDraw();
-    if (this.groundCacheOn && !this.groundClip) this.t3pruneCache(cells); // a band pass prunes to the full window after (scrollTiles3Ground)
+    if (this.groundCacheOn && !this.groundClip) this.t3pruneCache(this.t3keepCells ?? cells); // a band pass prunes after (scrollTiles3Ground); the ring keeps its cells
     stats.culled = this.groundCulled;
     // COMPOSITIONS this redraw paid for: boundaries/plates built on the fly
     // (pixels read, blended on a canvas, uploaded) — the streaming stall.
@@ -13312,6 +13572,7 @@ export class WorldScene extends Phaser.Scene {
         (sx !== 0 || sy !== 0) &&
         Math.abs(sx) < rt.width &&
         Math.abs(sy) < rt.height;
+      this.t3armRing(ax, ay, rt.width, rt.height);
       if (canScroll) {
         this.scrollTiles3Ground(ax, ay, sx, sy, mask, cuts, top);
         return;
