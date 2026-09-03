@@ -1129,11 +1129,42 @@ function facingTilt(dir) {
  * 2026-09-02 across 14 rect pieces: most mirror cleanly, four are turned the
  * other way), so aligning one facing by hand must be storable without moving
  * the others. */
+/* A RECT IS A GROUND RECTANGLE, DRAWN IN PERSPECTIVE (maintainer 2026-09-03,
+ * with a drawing on "Map chest of wide flat drawers 010" facing SE: "The
+ * hitbox you made by default was not rotated enough and the 3D perspective
+ * requires the shape to be a bit different ... I want the hitbox to transform
+ * into this perspective so it can capture the furniture's contour").
+ *
+ * What he drew is a PARALLELOGRAM, and that is what the geometry says: a box
+ * standing on the ground, turned 45°, does not project to a rotated screen
+ * rectangle under the iso squash — its edges follow the two ground axes, one
+ * down-right at atan(dy/dx) = 25.1°, one up-right at the same. The old model
+ * rotated a screen rectangle by that 25.1° and could never meet the drawer
+ * front and the side at once.
+ *
+ * So for a rect, `rot` and `rot_by_dir` are GROUND degrees, the half-extents
+ * are ground half-extents (rx as stored, ry/k), the corners are rotated on the
+ * ground and projected by (x, k·y). South, unturned, projects to the screen
+ * rectangle rx × ry that was always stored — every existing record means what
+ * it meant. A facing adds its 45° step on the ground (south-east −45°, the
+ * sign measured the same way the tilt's was). Ellipses are untouched. */
+const ISO_K = () => (state.data?.iso?.dy ?? 15) / (state.data?.iso?.dx ?? 32);
 function boxRot(o, b, dir) {
   const own = b?.rot_by_dir?.[dir];
   if (isFinite(own)) return +own;
   const base = isFinite(b?.rot) ? +b.rot : 0;
-  return boxShape(o, b) === "rect" ? base + facingTilt(dir) : base;
+  return boxShape(o, b) === "rect" ? base - (DIR_GROUND_DEG[dir] ?? 0) : base;
+}
+/** The four corners of a rect box on screen, in frame px from the box centre. */
+function rectCorners(o, b, dir) {
+  const k = ISO_K();
+  const th = boxRot(o, b, dir) * Math.PI / 180;
+  const c = Math.cos(th), sn = Math.sin(th);
+  const gx = b.rx, gy = b.ry / k;                       // ground half-extents
+  return [[-gx, -gy], [gx, -gy], [gx, gy], [-gx, gy]].map(([x, y]) => {
+    const rx2 = x * c - y * sn, ry2 = x * sn + y * c;   // turned on the ground
+    return [rx2, ry2 * k];                                // projected
+  });
 }
 const boxShape = (o, b) => (b?.shape === "rect" || b?.shape === "ellipse" ? b.shape : taggedShape(o));
 const hitboxFlat = (entity) => {
@@ -1730,8 +1761,13 @@ function makePlayer(entity, kind, opts = {}) {
         // walking the outline, and it must be exact or the rim clips again at
         // some angles and not others, which reads as a flicker.
         const th = boxRot(entity, b, cur.dir) * Math.PI / 180;
-        const hx = Math.hypot(b.rx * Math.cos(th), b.ry * Math.sin(th));
-        const hy = Math.hypot(b.rx * Math.sin(th), b.ry * Math.cos(th));
+        let hx = Math.hypot(b.rx * Math.cos(th), b.ry * Math.sin(th));
+        let hy = Math.hypot(b.rx * Math.sin(th), b.ry * Math.cos(th));
+        if (boxShape(entity, b) === "rect") {
+          const cs = rectCorners(entity, b, cur.dir);
+          hx = Math.max(...cs.map(([x]) => Math.abs(x)));
+          hy = Math.max(...cs.map(([, y]) => Math.abs(y)));
+        }
         const cx = fw / 2 + b.ax, cy = fh / 2 + b.ay;
         x0 = Math.min(x0, cx - hx); x1 = Math.max(x1, cx + hx);
         y0 = Math.min(y0, cy - hy); y1 = Math.max(y1, cy + hy);
@@ -1840,11 +1876,9 @@ function makePlayer(entity, kind, opts = {}) {
         // Same centre, same half-axes, same rotation — only the outline
         // differs, so switching shape never moves the footprint he placed.
         if (boxShape(entity, b) === "rect") {
-          ctx.save();
-          ctx.translate(ex, ey);
-          ctx.rotate(th);
-          ctx.rect(-px, -py, px * 2, py * 2);
-          ctx.restore();
+          const cs = rectCorners(entity, b, cur.dir);
+          cs.forEach(([x, y], n) => (n ? ctx.lineTo(ex + x * s, ey + y * s) : ctx.moveTo(ex + x * s, ey + y * s)));
+          ctx.closePath();
         } else {
           ctx.ellipse(ex, ey, px, py, th, 0, Math.PI * 2);
         }
@@ -1870,6 +1904,10 @@ function makePlayer(entity, kind, opts = {}) {
         // not say what he is looking at.
         dir: cur.dir, tilt: +facingTilt(cur.dir).toFixed(2),
         drawn: boxes.map((b) => +boxRot(entity, b, cur.dir).toFixed(2)),
+        // A rect's four corners on the canvas (px) — the perspective, measurable.
+        corners: boxes.map((b) => boxShape(entity, b) === "rect"
+          ? rectCorners(entity, b, cur.dir).map(([x, y]) => [+(dx + (fw / 2 + b.ax) * s + x * s).toFixed(2), +(dy + (fh / 2 + b.ay) * s + y * s).toFixed(2)])
+          : null),
         shapes: boxes.map((b) => boxShape(entity, b)),
         W: canvas.width, H: canvas.height,
         boxes: boxes.map((b) => ({ ...b })),

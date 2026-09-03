@@ -935,9 +935,23 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
      * it mirrored because it was derived from the silhouette's bottom edge,
      * which on a turned box is the front face, not the footprint's long
      * axis. */
-    ok(Math.abs(SE.drawn[0] - (S.drawn[0] - want)) < 0.6 && Math.abs(SW.drawn[0] - (S.drawn[0] + want)) < 0.6,
-      `SE turns one way and SW the other, by the ISO angle and not by 45° (${S.drawn[0]}° → SE ${SE.drawn[0]}° / SW ${SW.drawn[0]}°, want ∓${want.toFixed(1)}°)`);
-    ok(Math.abs(want - 25.1) < 0.2, `which today is 25.1° from iso ${D.iso?.dx}/${D.iso?.dy} (${want.toFixed(2)}°)`);
+    /* A RECT LIVES ON THE GROUND (maintainer 2026-09-03, with a drawing): on a
+     * facing it is a PARALLELOGRAM whose edges follow the two ground axes —
+     * one down-right at atan(dy/dx), one up-right at the same — not a screen
+     * rectangle rotated by that angle. Measured from the corners the probe
+     * publishes. */
+    const edgeAngles = (cs) => cs.map((c, i) => { const n = cs[(i + 1) % 4]; return Math.atan2(n[1] - c[1], n[0] - c[0]) * 180 / Math.PI; });
+    const norm = (a) => ((a % 180) + 180) % 180;
+    const sAngles = edgeAngles(S.corners[0]).map(norm);
+    ok(sAngles.every((a) => Math.min(a, 180 - a) < 0.5 || Math.abs(a - 90) < 0.5),
+      `facing south a rect is the screen rectangle that was always stored (edges ${sAngles.map((a) => a.toFixed(0)).join("/")}°)`);
+    const seAngles = edgeAngles(SE.corners[0]).map(norm);
+    const hasIso = (as) => as.some((a) => Math.abs(a - norm(want)) < 0.6) && as.some((a) => Math.abs(a - norm(-want)) < 0.6);
+    ok(hasIso(seAngles), `facing south-east it is a PARALLELOGRAM on the iso axes — edges at ±${want.toFixed(1)}°, his drawing (${seAngles.map((a) => a.toFixed(1)).join("/")}°)`);
+    ok(hasIso(edgeAngles(SW.corners[0]).map(norm)), "and so facing south-west");
+    ok(Math.abs(SE.drawn[0] - (S.drawn[0] - 45)) < 0.6 && Math.abs(SW.drawn[0] - (S.drawn[0] + 45)) < 0.6,
+      `the turn itself is the full 45° on the ground, SE one way and SW the other (${S.drawn[0]}° → SE ${SE.drawn[0]}° / SW ${SW.drawn[0]}°)`);
+    ok(Math.abs(want - 25.1) < 0.2, `which the squash of iso ${D.iso?.dx}/${D.iso?.dy} shows as 25.1° edges (${want.toFixed(2)}°)`);
     ok(SE.rail === Math.round(((SE.drawn[0] % 180) + 180) % 180),
       `and the rail shows the angle in force for the facing on screen (rail ${SE.rail}, drawn ${SE.drawn[0]})`);
     const storedAfterLook = await p.evaluate((path) => {

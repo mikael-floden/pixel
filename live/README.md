@@ -193,6 +193,26 @@ The laws around the flow:
     - Both spellings are therefore meaningful: `"ellipse"` on a rect-tagged
       bookshelf is a real correction, not a default written out. **Absent does
       NOT mean ellipse** — ask the piece.
+    - **A RECT IS A GROUND RECTANGLE, DRAWN IN PERSPECTIVE** (2026-09-03,
+      maintainer, with a drawing of a chest facing SE: *"the 3D perspective
+      requires the shape to be a bit different … I want the hitbox to
+      transform into this perspective so it can capture the furniture's
+      contour"*). For a rect, `rot` and `rot_by_dir` are **ground degrees**,
+      `rx` is the ground half-width and `ry/k` the ground half-depth
+      (`k = dy/dx`). Corners: rotate `(±rx, ±ry/k)` by the ground angle, then
+      project `(x, y) → (x, k·y)`. Facing south and unturned that is exactly
+      the screen rectangle `rx × ry` every record already stores; on a facing
+      it is a **parallelogram** whose edges follow the two ground axes
+      (down-right and up-right at `atan(k)` = 25.1° today) — what a box on the
+      ground actually looks like. A consumer that keeps drawing a rotated
+      screen rectangle will miss the drawer front and the side at once.
+    - **The facing's turn is 45° on the ground**, derived: `angle(dir) =
+      rot_by_dir[dir] ?? rot − ground(dir)` with `ground(south-east) = 45`,
+      `ground(south-west) = −45` (…east 90, west −90, north 180) — the sign
+      as measured 2026-09-02. Nothing is stored for the derived case.
+    - *(Superseded 2026-09-03 — kept one line so nobody re-implements it: the
+      earlier rule rotated a SCREEN rectangle by `−atan2(k·sinθ, cosθ)`,
+      25.1°; it could not match the perspective.)*
     - **A rect TURNS WITH THE FACING, and the turn is derived** (2026-09-02,
       maintainer: *"The default hitbox for objects that is rect should rotate
       with SE, SW the same amount the object rotates (same as we do for

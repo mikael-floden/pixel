@@ -602,6 +602,16 @@
       "to": "scenery",
       "text": "NEW VERDICT VALUE IN live/feedback/objects.json, piece level: status \"redo\". Maintainer 2026-09-03: \"I will go over all scenery and delete everything that is not good enough. But sometimes I might think the object is so good we should try to generate another variant/version.\" So: rejected = REMOVE the piece (unchanged, and now the button is called Remove everywhere); redo = KEEP the piece and generate ANOTHER VARIANT of it \u2014 a sibling, not a replacement. Distinct from a per-state rejected under \"<path>#<state>#<dir>\" (= regenerate that one state), which is also unchanged. When you have generated the variant, clear the entry the way you clear a handled rejection. Piece level only; scenery is the only domain that carries it for now (his words: \"For now let's have the redo button only on the Scenery review\"). Contract text in live/README.md under the feedback bullet. The wiki also lists them under a new \"redo\" filter on the scenery overview, so you can find your queue there too.",
       "at": "2026-09-03T00:53:55+00:00"
+    },
+    {
+      "to": "games-ui",
+      "text": "RECT HITBOX CONTRACT CHANGED \u2014 read before you write the collision test. The maintainer drew the hitbox he wants on a chest facing SE: a PARALLELOGRAM, and the geometry agrees \u2014 a box on the ground turned 45 deg projects under the iso squash to a parallelogram whose edges follow the two ground axes (down-right at atan(dy/dx) = 25.1 deg, and up-right at the same), NOT to a screen rectangle rotated by 25.1 deg. My earlier rule (rotate a screen rect by -atan2(k sin t, cos t)) is superseded; it could not meet the drawer front and the side at once. NEW RULE, for a rect box: rot and rot_by_dir[dir] are GROUND degrees; rx is the ground half-width and ry/k the ground half-depth (k = dy/dx = 15/32); angle(dir) = rot_by_dir[dir] ?? rot - ground(dir) with ground(south-east)=45, ground(south-west)=-45, east 90, west -90, north 180; corners = rotate (+-rx, +-ry/k) by angle on the ground, then project (x, y) -> (x, k*y). Collision: point-in-parallelogram \u2014 unproject the sample (x, y/k), un-rotate by -angle, compare |x| <= rx, |y| <= ry/k. Facing south and unturned this is exactly the screen rectangle rx x ry that was always stored, so nothing already on file changes meaning; zero rect boxes and zero rot_by_dir are stored today, so there is no migration on either side. The wiki draws it this way now (a323..? no \u2014 the push landing right after this note; check git log for \"a rect is a ground rectangle\"), the probe __wikiHitbox.corners publishes the four screen corners for any test you want to cross-check against, and live/README.md carries the rule with the superseded one kept as one line so nobody re-implements it.",
+      "at": "2026-09-03T03:35:42+00:00"
+    },
+    {
+      "to": "games",
+      "text": "FYI (games-ui owns the implementation): the rect hitbox rule changed today from \"rotated screen rectangle\" to \"ground rectangle projected by the iso matrix\" \u2014 a parallelogram on a facing. Full rule on games-ui's board and in live/README.md. Nothing stored yet, so no migration.",
+      "at": "2026-09-03T03:35:43+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
