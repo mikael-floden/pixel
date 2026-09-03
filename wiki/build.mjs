@@ -2025,12 +2025,28 @@ function buildSfx(soundEntries, entityIds = {}) {
   const foleyDir = comp ? join(comp, "foley") : null;
   const foleyMeta = foleyDir ? readJson(join(foleyDir, "foley.json")) ?? {} : {};
   const composerSets = {};
+  /* PUBLISH THE FILE THAT IS THERE, not the one the manifest remembers.
+   * foley.json names every take `.wav`; the composer converted its foley to
+   * `.ogg` (673 ogg on disk against 5 wav) and left the manifest alone. The
+   * wiki republished those names verbatim, so every composer layer — the grass
+   * and snow footsteps, both jump voices — resolved to a 404 and played
+   * NOTHING, silently, in production. Found by check-sfx on 2026-09-03; the
+   * paths are resolved against disk now, so the same drift in either direction
+   * fixes itself at the next build. */
+  const foleyDisk = (rel) => {
+    if (!foleyDir || existsSync(join(foleyDir, rel))) return rel;
+    for (const ext of ["ogg", "m4a", "mp3", "wav"]) {
+      const alt = rel.replace(/\.[^./]+$/, `.${ext}`);
+      if (existsSync(join(foleyDir, alt))) return alt;
+    }
+    return rel;               // nothing on disk: publish what it said, and the row reports a missing file
+  };
   for (const [set, meta] of Object.entries(foleyMeta)) {
     if (!meta?.takes) continue;
     composerSets[set] = {
       takes: meta.takes.map((t, i) => ({
-        name: t.split("/").pop(),
-        file: `composer/foley/${t}`,
+        name: foleyDisk(t).split("/").pop(),
+        file: `composer/foley/${foleyDisk(t)}`,
         dur: meta.durations_s?.[i] ?? null,
       })),
       // ---- THE GENERATION POOL — the takes' unpicked siblings ----------
@@ -2047,13 +2063,16 @@ function buildSfx(soundEntries, entityIds = {}) {
       // Game Master can say so (maintainer 2026-08-06: "Every single
       // generated sound?"). Best-scoring first; `rank` ascends.
       alts: (() => {
-        const takeBytes = new Set(meta.takes.map((t) => fileHash(join(foleyDir, t))).filter(Boolean));
+        // Hashed through the same resolver, or the dedupe compares a take
+        // that is not on disk against a candidate that is, and every chosen
+        // take comes back a second time as its own alternative.
+        const takeBytes = new Set(meta.takes.map((t) => fileHash(join(foleyDir, foleyDisk(t)))).filter(Boolean));
         return (meta.pool_candidates ?? [])
-          .filter((c) => c?.file && !takeBytes.has(fileHash(join(foleyDir, c.file))))
+          .filter((c) => c?.file && !takeBytes.has(fileHash(join(foleyDir, foleyDisk(c.file)))))
           .sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
           .map((c) => ({
-            name: c.file.split("/").pop(),
-            file: `composer/foley/${c.file}`,
+            name: foleyDisk(c.file).split("/").pop(),
+            file: `composer/foley/${foleyDisk(c.file)}`,
             dur: c.features?.duration_s ?? null,
           }));
       })(),

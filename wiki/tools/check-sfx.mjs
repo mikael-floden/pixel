@@ -6,6 +6,15 @@ const { chromium } = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../..
 const D = JSON.parse(readFileSync("/home/user/pixel/wiki/site/data.json", "utf8"));
 const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome", args: ["--autoplay-policy=no-user-gesture-required"] });
 const p = await (await b.newContext({ viewport: { width: 426, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 })).newPage();
+/* COMPOSER AUDIO IS NOT IN THE IMAGE — the wiki streams it from the repo, and
+ * resolving that base needs a GitHub call this sandbox cannot make. Without a
+ * base, the composer layers are never even REQUESTED, and this gate scored an
+ * event as "one layer" while the page plays two. The override is the REPO
+ * ROOT, exactly like the real base, so the paths it exercises are the paths
+ * production uses (games2/composer/... appended by the page itself). Pointing
+ * it at games2/ would make every path work and prove nothing — that mistake is
+ * recorded in wiki.js and cost the music bench a month of silence. */
+await p.addInitScript(() => localStorage.setItem("ml-staging-base", `${location.origin}/assets/`));
 const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
 const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
 const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
@@ -100,14 +109,24 @@ ok(single.length > 0 && single.every((c) => c.buttons === 1),
 ok(!(await p.evaluate(() => [...document.querySelectorAll(".sfx-event p.muted")].some((x) => /Game Master/.test(x.textContent)))),
   "players are not told which sounds the Game Master assigned");
 
+/* WAIT FOR THE SOUND, don't guess at it. A composer layer is fetched from the
+ * staging root, and resolving that root makes a GitHub call that has to TIME
+ * OUT before the local override is used — so a fixed 800ms window captured the
+ * repo-served layer and missed the composer one, and the gate read a
+ * one-layer event where the page plays two. */
+const played = async (click, want, ms = 9000) => {
+  await p.evaluate(() => { window.__sfxPlays.length = 0; });
+  await p.evaluate(click);
+  await p.waitForFunction((n) => window.__sfxPlays.length >= n, want, { timeout: ms }).catch(() => {});
+  await p.waitForTimeout(300);                       // a late extra layer would be a failure, so give it room to arrive
+  return p.evaluate(() => window.__sfxPlays.slice());
+};
+
 // ---------- the engine mirror computes the game's numbers
-const grassPlay = await p.evaluate(async () => {
-  window.__sfxPlays.length = 0;
-  const card = [...document.querySelectorAll(".sfx-event")].find((c) => /Footsteps · Grass/.test(c.querySelector(".panel-title").textContent));
-  card.querySelector(".play-event").click();
-  await new Promise((r) => setTimeout(r, 900));
-  return window.__sfxPlays.slice();
-});
+const grassPlay = await played(() => {
+  [...document.querySelectorAll(".sfx-event")].find((c) => /Footsteps · Grass/.test(c.querySelector(".panel-title").textContent))
+    .querySelector(".play-event").click();
+}, 2);
 console.log("grass event played:", JSON.stringify(grassPlay));
 const eng = sfx.engine;
 const gLayer = grass.sounds[0], dLayer = grass.sounds[1];
@@ -126,12 +145,9 @@ await p.goto(W + "#/characters/default_boy", { waitUntil: "load" });
 await p.waitForTimeout(1800);
 const heroCards = await p.evaluate(() => [...document.querySelectorAll(".sfx-event .panel-title")].map((x) => x.textContent.replace(/▶?\s*/, "").trim()));
 ok(heroCards.some((t) => /^Jump/.test(t)) && heroCards.some((t) => /^Fall/.test(t)), `the hero page carries Jump and Fall (${heroCards.join(", ")})`);
-const jumpPlay = await p.evaluate(async () => {
-  window.__sfxPlays.length = 0;
+const jumpPlay = await played(() => {
   [...document.querySelectorAll(".sfx-event")].find((c) => /Jump/.test(c.querySelector(".panel-title").textContent)).querySelector(".play-event").click();
-  await new Promise((r) => setTimeout(r, 800));
-  return window.__sfxPlays.slice();
-});
+}, 1);
 ok(jumpPlay.length === 1 && /jump_voice_boy/.test(jumpPlay[0].file), `HIS voice alone plays (${jumpPlay.map((x) => x.file.split("/").pop())})`);
 ok(jumpPlay[0].rate === 2 && jumpPlay[0].db === +(eng.voiceGainDb + eng.busDb.sfx).toFixed(2), `at ×2, ${eng.voiceGainDb} + sfx bus dB (${jumpPlay[0].rate}, ${jumpPlay[0].db})`);
 await p.goto(W + "#/sounds", { waitUntil: "load" });
