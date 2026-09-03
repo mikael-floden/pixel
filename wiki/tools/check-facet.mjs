@@ -114,8 +114,15 @@ ok(s1.headAboveStates, "the label sits above the state/direction selectors");
 // STARS BIG ENOUGH FOR A THUMB (maintainer 2026-08-14: "I also want all stars
 // in the entire application to be a bit bigger, hard to click").
 console.log("star hit box:", JSON.stringify(s1.starBox));
-ok(s1.starBox && s1.starBox.w >= 28 && s1.starBox.h >= 32,
-  `each star is a real tap target (${s1.starBox?.w}x${s1.starBox?.h}px)`);
+/* BIGGER, ON EVERY REVIEW PAGE (maintainer 2026-09-03: "Can you make the
+ * rating (the stars) and the approve/remove/redo buttons a little bit bigger
+ * on all review pages? Also add a little spacing to the comment/note so I
+ * don't press that text input by mistake"). 44px is the platform guidance for
+ * a thumb; the note has to CLEAR the buttons above it, because a mistaken
+ * verdict is one tap to undo while a mistaken textarea opens the keyboard over
+ * the art. Measured on screen, not read from the stylesheet. */
+ok(s1.starBox && s1.starBox.w >= 34 && s1.starBox.h >= 40,
+  `each star is a thumb-sized tap target (${s1.starBox?.w}x${s1.starBox?.h}px)`);
 // The chip is a bare variant number and a lamp now, not prose (2026-08-14): a
 // window's unlit state reads "1", its lit one "💡1".
 ok(s1.pill === "1 · S", `and NAMES the one file it judges — state and direction (“${s1.pill}”)`);
@@ -159,7 +166,10 @@ await p.evaluate(() => {
   }
 });
 await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => /lights on/i.test(x.title)).click());
-await p.waitForTimeout(500);
+/* WAIT FOR THE SWITCH, don't guess at it — a fixed 500ms lost the race often
+ * enough to fail a run that had nothing wrong with it. */
+await p.waitForFunction(() => /lights on/i.test(document.querySelector(".seg-states button.on")?.title ?? ""), null, { timeout: 6000 }).catch(() => {});
+await p.waitForTimeout(250);
 const s2 = await facet();
 console.log("scenery, Lights On :", JSON.stringify({ facetName: s2.facetName, verdictClasses: s2.verdictClasses }));
 ok(s2.facetName === "💡1", `switching state switches what the row judges (${s2.facetName})`);
@@ -582,6 +592,38 @@ await pub.close();
   ok(offenders.length === 0, offenders.length ? `a page still names it something else — ${offenders[0]}` : "no review page names it anything but remove");
   const redoElsewhere = await p.evaluate(() => [...document.querySelectorAll(".verdict button")].some((x) => /redo-btn/.test(x.className)));
   ok(!redoElsewhere, "and Redo appears nowhere but a scenery state");
+}
+/* ...AND THE SAME ON EVERY OTHER REVIEW PAGE, walked rather than assumed. */
+{
+  const DD2 = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
+  const pages = [["#/objects/ancient_tree_001", "scenery"],
+                 ["#/monsters/" + (DD2.domains.monsters?.[0]?.id ?? ""), "a monster"],
+                 ["#/world/transition/grass__to__ice", "a fade pair"],
+                 ["#/items/" + (DD2.domains.items?.[0]?.id ?? ""), "an item"]];
+  const small = [];
+  for (const [hash, what] of pages) {
+    await p.goto(`${W}${hash}`, { waitUntil: "load" });
+    await p.waitForTimeout(hash.includes("transition") ? 4500 : 2600);
+    const m = await p.evaluate(() => {
+      const box = (el) => { const r = el.getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height), top: r.top, bottom: r.bottom }; };
+      const star = document.querySelector(".stars button");
+      const verdict = document.querySelector(".verdict button");
+      const note = document.querySelector(".fb-note");
+      const row = note?.closest(".fb-row") ?? null;
+      const above = row ? [...row.querySelectorAll(".verdict button, .stars button")].map((b2) => b2.getBoundingClientRect().bottom) : [];
+      return {
+        star: star ? box(star) : null, verdict: verdict ? box(verdict) : null,
+        gap: note && above.length ? Math.round(note.getBoundingClientRect().top - Math.max(...above)) : null,
+      };
+    });
+    if (m.star && (m.star.w < 34 || m.star.h < 40)) small.push(`${what}: star ${m.star.w}x${m.star.h}`);
+    if (m.verdict && m.verdict.h < 38) small.push(`${what}: verdict ${m.verdict.w}x${m.verdict.h}`);
+    if (m.star || m.verdict) {
+      ok(!small.length, `${what}: the stars and verdict buttons are thumb-sized (star ${m.star?.w}x${m.star?.h}, button ${m.verdict?.w}x${m.verdict?.h})`);
+    }
+    if (m.gap !== null) ok(m.gap >= 8, `${what}: the note sits clear of the buttons above it (${m.gap}px)`);
+  }
+  ok(small.length === 0, small.length ? `a control is still small — ${small[0]}` : "no review page has a small control left");
 }
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");

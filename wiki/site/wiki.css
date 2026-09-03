@@ -580,17 +580,22 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
    tap area grows more; touch-action kills the double-tap zoom that a quick
    second star press would otherwise trigger. */
 .stars { display: inline-flex; gap: 2px; }
+/* THUMB-SIZED, ON EVERY REVIEW PAGE (maintainer 2026-09-03: "Can you make the
+   rating (the stars) and the approve/remove/redo buttons a little bit bigger
+   on all review pages?"). He reviews on a phone and these three are the
+   controls he presses hundreds of times a day. */
 .stars button {
-  background: none; border: none; padding: 4px 3px; font-size: 21px; line-height: 1;
-  min-width: 30px; min-height: 34px; touch-action: manipulation;
+  background: none; border: none; padding: 5px 4px; font-size: 25px; line-height: 1;
+  min-width: 36px; min-height: 40px; touch-action: manipulation;
   color: var(--border-strong);
 }
 .stars button.lit { color: var(--star); }
 .stars button:hover { transform: scale(1.15); }
-.verdict { display: inline-flex; gap: 4px; }
+.verdict { display: inline-flex; gap: 6px; }
 .verdict button {
-  border: 1px solid var(--border); background: var(--surface); border-radius: 7px;
-  padding: 2px 9px; font-size: 12.5px; color: var(--muted);
+  border: 1px solid var(--border); background: var(--surface); border-radius: 8px;
+  padding: 7px 13px; font-size: 14px; min-height: 40px; color: var(--muted);
+  touch-action: manipulation;
 }
 .verdict button.approved { background: var(--good-soft); color: var(--good); border-color: transparent; font-weight: 600; }
 /* Remove/Reject wears the theme's danger token at rest, everywhere (maintainer
@@ -606,7 +611,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
    half-reviewed library moved the animation viewer by exactly that, the
    jumping this page was rebuilt to stop (maintainer 2026-08-07). Admin rows
    hold buttons and are taller; a minimum can only ever help them. */
-.fb-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 24px; }
+.fb-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-height: 30px; }
 /* JUDGING THE FACET ON SCREEN — above the preview and above the selectors
    (maintainer 2026-08-14: "I want it in the same card but OVER the preview").
    The whole entity is judged further up the page, outside this card; this
@@ -616,10 +621,15 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .facet-head-line { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; min-height: 22px; }
 .facet-head .facet-label { font-size: 12.5px; white-space: nowrap; }
 .facet-head .fb-row { flex: 1; min-width: 0; }
+/* THE NOTE SITS AWAY FROM THE BUTTONS (maintainer 2026-09-03: "add a little
+   spacing to the comment/note so I don't press that text input by mistake").
+   A wrongly-pressed verdict is one tap to undo; a wrongly-focused textarea
+   opens the phone keyboard over the art he is judging. */
 .fb-note {
   width: 100%; background: var(--surface); color: var(--ink);
   border: 1px solid var(--border); border-radius: 8px; padding: 6px 9px;
   font: 13px/1.4 var(--sans); resize: vertical; min-height: 30px;
+  margin-top: 12px;
 }
 
 /* ---- detail pages ---- */
