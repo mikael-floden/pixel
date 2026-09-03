@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grey_stone",
+  "flavour": "detail",
+  "index": 134,
+  "seed": 24433,
+  "prompt": "grey stone, a glint of mica in the middle, grey stone all around the edge",
+  "palette_top": "#808082",
+  "tile_id": "140e9fc9-e606-4161-9ac7-98e2e47b25ed",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T07:05:51+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 18,
+        "dominant_share": 0.6313,
+        "px": 876
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6518,
+        "px": 876
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.6751,
+        "px": 874
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.6347,
+        "px": 876
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.694,
+        "px": 889
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.6025,
+        "px": 888
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6952,
+        "px": 876
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.6041,
+        "px": 879
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6942,
+        "px": 873
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.6149,
+        "px": 875
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.646,
+        "px": 873
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.6411,
+        "px": 872
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.6518,
+        "px": 876
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6114,
+        "px": 880
+      },
+      {
+        "colours": 15,
+        "dominant_share": 0.6005,
+        "px": 876
+      },
+      {
+        "colours": 14,
+        "dominant_share": 0.6371,
+        "px": 879
+      }
+    ],
+    "mean_colours": 14.69,
+    "mean_dominant_share": 0.6429
+  },
+  "motif": "a glint of mica",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}
