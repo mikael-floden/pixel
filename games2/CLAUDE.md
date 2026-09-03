@@ -1696,39 +1696,37 @@ heavy fog you see the fog-painted body. The local player is fog-0 by
 definition. Probe: monsterInfo() lit.alpha (own level 1.0, teal band 0.735,
 saturated summit 0.001 — matches the terrain wash).
 
-## Depth-fog on SCENERY (the base field)
+## Depth-fog on SCENERY and PROPS (the fog silhouette)
 
-Scenery draws UNDER the fog overlay at painter depth, so the fog pass paints
-over it — but a pixel's fog came from the ground the march resolved BEHIND
-it on screen, and a tall object standing on fogged low ground got a crisp top
-over a fogged base (maintainer 2026-09-03: skulls and spires "pop out"; "a
-tall scenery object will have the same fog at the top as at the bottom").
-Now every pixel of a scenery object takes the fog of THE CELL UNDER ITS FEET.
-Mechanism (`nightlight.stampSceneryBases` + `DEPTHFOG_FRAG` uBase): each
-scenery image carries data `fogBase = [col, row]` (`floor(p.x), floor(p.y)`
-at placement) and the scene hands the visible set to the night module after
-every scenery rebuild; each frame the fog pass stamps every visible image as
-a flat silhouette (`setTintFill`) whose colour ENCODES its base cell (R + low
-G nibble = col, B + high G nibble = row, up to 4095) into a NEAREST render
-texture on the glow field's window mapping; the shader samples it first and,
-where a silhouette owns the pixel, skips the march and runs the unchanged fog
-maths with cell = that base cell, z = its terrain height and the horizontal
-distance taken from the base — so every pixel of the object gets one band,
-one level fade, one room test. AND the piece's lit copy (every scenery and
-prop image has one at `litDepth`, ABOVE the overlay, whenever the night
-shader is active — it is what the eye sees) fades by
-`depthFogAt(col,row,z).a` at its own cell in `applyObjectLights`, exactly as
-bodies do in `syncLitCopy`, so the fogged under-image shows through; without
-that fade the fog under it was invisible and no shader change could matter.
-Stamps go in painter order (depth ascending) so an overlap's owner is the
-piece the screen shows. Bodies keep `syncLitCopy`; the local player stays
-crisp.
-Switch: `__ml.sceneryFog(on)`; `scripts/_tmp-fogscenery.mjs` screenshots both.
-Cost: one texture fetch per fog fragment (none while the field is empty —
-`uBaseOn` follows the stamp, like `uGlowOn`) plus one silhouette draw per
-visible scenery image per frame; object pixels skip the march entirely. (The
-unit index passed to `setSampler2D` is documentary: Phaser binds samplers in
-the BaseShader config's declaration order, so no "collision" exists to fix.)
+Every scenery piece and every solid prop is seen through its LIT COPY at
+`litDepth`, ABOVE the fog overlay, whenever the night shader is active (always
+under WebGL) — so the fog pass never reached it and a piece stood crisp on
+fogged ground (maintainer 2026-09-03: skulls, spires, tree roots "pop out";
+"a tall scenery object will have the same fog at the top as at the bottom").
+Mechanism (`applyObjectLights`): each lit copy gets a FOG SILHOUETTE — the
+same art, crop, flip and box, `setTintFill` in the fog's own colour, alpha =
+the fog amount, at the copy's depth and made after it (equal depth, stable
+sort: drawn right over its own copy) — and the fog is read ONCE per piece at
+ITS OWN cell through `depthFogAt(col,row,z,snap=true)`, the shader's JS twin,
+so the whole object wears one band, one colour, top as bottom. SNAPPED and at
+the tread's integer level: the fragment cel-snaps the distance band on a flat
+tread (`floor(distCont)`), so the smooth twin bodies use over-fogs a static
+piece by up to a band (measured 0.216 vs the pass's 0.129); with the snap the
+twin matches the pass on treads to ~0.01 (`__ml.fogProbe(col,row)` reads the
+pass's pixel over a cell beside both twins). EXACT by construction:
+copy·(1−a) + fogcol·a is what the pass paints on the ground under it.
+NOT the bodies' cross-fade (`syncLitCopy` fades the copy by a): the fog under
+a faded copy is itself weighted by a, so a piece composited to a·a fog against
+the ground's a — half the wash at a=0.5, a root still near-black beside grey
+ground (measured on the maintainer's phone at night). Bodies still use the
+cross-fade (their sprites are small; unchanged). Fog 0 → no silhouette drawn.
+REJECTED (built, reviewed, removed the same night): a "scenery base field" —
+stamping every scenery silhouette with its base cell encoded into a texture
+the fog shader samples so the under-image took the base cell's fog. Correct,
+but invisible: the opaque lit copy covers the under-image, so nothing it
+changed could reach the screen. Switch: `__ml.sceneryFog(on)`;
+`scripts/_tmp-fogscenery.mjs` screenshots both. Cost: one extra Image per
+visible piece while its fog is non-zero.
 
 ## Living camera (WorldScene.updateChaseCam)
 
