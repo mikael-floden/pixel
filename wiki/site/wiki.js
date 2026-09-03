@@ -3560,8 +3560,8 @@ function viewBench(opts = {}) {
     const box = h("span", { class: "bench-fb" });
     const draw = () => box.replaceChildren(feedbackRow("composer-music", id, {
       onchange: () => { draw(); after?.(id); }, onStars: () => { draw(); after?.(id); },
-      reject: "✕ reject", rejectTitle: "Tell the composer this one is not good enough",
-      rejectedLabel: "rejected",
+      rejectTitle: "Tell the composer this one is not good enough",
+      rejectedLabel: "slated for removal",
     }));
     draw();
     return box;
@@ -5054,9 +5054,8 @@ function viewMonster(id) {
       // since regenerated.
       stamp: { art: m.animations?.[st]?.dirs?.[dir]?.h ?? null },
       stale: () => facetStale(m, st, dir, fb("monsters", `${m.path}#${st}#${dir}`)),
-      reject: "✕ redo",
       rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the monsters agent to regenerate`,
-      rejectedLabel: "to be redone",
+      rejectedLabel: "slated for removal",
     }));
   };
   player.onFacetChange = renderFacet;
@@ -5275,9 +5274,8 @@ function viewCharacter(id) {
       // since regenerated.
       stamp: { art: c.animations?.[st]?.dirs?.[dir]?.h ?? null },
       stale: () => facetStale(c, st, dir, fb("characters", `${c.path}#${st}#${dir}`)),
-      reject: "✕ redo",
       rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the characters agent to regenerate`,
-      rejectedLabel: "to be redone",
+      rejectedLabel: "slated for removal",
     }));
   };
   player.onFacetChange = renderFacet;
@@ -8638,9 +8636,9 @@ function viewWorldType(top) {
           x.cliff ? h("span", { class: "pill warn", title: "The tiles agent's post pass detected this cliff face as ANOTHER ground and palettized it that way — judge whether that reads right" },
             `cliff reads ${typeLabelWorld(x.cliff).toLowerCase()}`) : null),
         state.admin ? feedbackRow("tiles", x.key, {
-          reject: "✕ regenerate",
+
           rejectTitle: "Not slope material — the tiles agent regenerates it on its next run",
-          rejectedLabel: "slated for regeneration",
+          rejectedLabel: "slated for removal",
         }) : null))),
       list.length > shown ? h("button", {
         class: "ghost-btn", style: "margin-top:10px",
@@ -9833,9 +9831,8 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
           // canvas previews on every star press would be a stutter for no gain
           // — so `onStars` is only wired when a filter is on.
           onStars: starFilter() !== "all" ? (onStars ?? onVerdict) : undefined,
-          reject: "✕ redo",
           rejectTitle: "Reject this generation — the agent deletes it on PixelLab and generates another",
-          rejectedLabel: "to be redone",
+          rejectedLabel: "slated for removal",
         }),
     ].filter(Boolean));
   };
@@ -10396,8 +10393,12 @@ const OBJ_FILTERS = {
     empty: "No piece is approved yet." },
   rejected: { label: "rejected", title: "Slated for removal, and the art has not changed since", match: (v) => v.status === "rejected" && !v.stale,
     empty: "No piece is waiting to be removed — the scenery agent has cleared them." },
-  redo: { label: "redo", title: "Kept, with another variant requested from the scenery agent", match: (v) => v.status === "redo" && !v.stale,
-    empty: "No piece is waiting for another variant." },
+  // Redo lives on a STATE now, so a piece is in this queue when any of its
+  // states carries one (2026-09-03).
+  redo: { label: "redo", title: "A state of this piece is waiting for another take from the scenery agent",
+    match: (v, o) => Object.entries(o?.animations ?? {}).some(([st2, a2]) =>
+      Object.keys(a2?.dirs ?? {}).some((d2) => fb("objects", `${o.path}#${st2}#${d2}`).status === "redo")),
+    empty: "No state is waiting for another take." },
 };
 const OBJ_SORTS = {
   group: { label: "by group", title: "Grouped by kind, alphabetical — the classic view" },
@@ -10632,9 +10633,12 @@ function objectHead(o) {
         })(),
         moreBtn),
       descP,
+      /* THE PIECE ITSELF TAKES ONE VERDICT (maintainer 2026-09-03: "You added
+       * 2 buttons (the redo button) on the scenery object itself. That object
+       * should only have a remove button"). Redo belongs to a STATE — see the
+       * facet row below. */
       feedbackRow("objects", o.path, { stamp: { art: o.artHash ?? null },
-        reject: "✕ remove", rejectTitle: "Remove = not good enough; the scenery agent deletes this piece on its next run",
-        redo: { label: "↻ redo", title: "Good enough to keep — and worth another variant. The scenery agent generates one; this piece stays.", doneLabel: "another variant requested" } })));
+        rejectTitle: "Remove = not good enough; the scenery agent deletes this piece on its next run" })));
 }
 // The Man's idle/south frame 0 + measured content box — everything the size
 // reference needs to draw him by the viewer's own rules. Null when the
@@ -10702,9 +10706,14 @@ function viewObject(id) {
         // the piece's while a clip is still unmeasured.
         stamp: { art: o.animations?.[st]?.dirs?.[dir]?.h ?? o.artHash ?? null },
         stale: () => facetStale(o, st, dir, fb("objects", `${o.path}#${st}#${dir}`)),
-        reject: "✕ redo",
-        rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — the scenery agent regenerates it, the piece stays`,
-        rejectedLabel: "to be redone",
+        /* THE STATE IS THE ONE REVIEW WITH BOTH (maintainer 2026-09-03: "The
+         * scenery states is the only review that should have both a 'remove'
+         * and 'redo' button"). Remove deletes this state; Redo keeps it and
+         * asks for another take of it. The button was labelled "✕ redo" while
+         * it was the only one, which made a lone red button read as a redo —
+         * "If only one button exist it is a 'remove' button". */
+        rejectTitle: `Remove just this one — ${stateLabel(st)} facing ${dir}. The scenery agent deletes this state; the piece stays.`,
+        redo: { label: "↻ redo", title: `Keep this state and generate another take of it — ${stateLabel(st)} facing ${dir}. Nothing is deleted.`, doneLabel: "another take requested" },
       }),
     ].filter(Boolean));
   };
@@ -11032,7 +11041,10 @@ function sfxLayerRow(ev, layer, { soleLayer = false } = {}) {
       h("span", { class: "spacer" }),
       starsWidget("bindings", bid),
       verdictWidget("bindings", bid, {
-        reject: multi ? "✕ unbind all" : "✕ unbind",
+        // "REMOVE", like every other reject button (maintainer 2026-09-03).
+        // What it removes is the SOUND FROM THIS EVENT; the title says so and
+        // the recording stays in the library.
+        reject: multi ? "✕ remove all" : "✕ remove",
         rejectTitle: multi
           ? `Detach all ${n} recordings from THIS event — they stay in the library. To drop just one, use the ✕ on its own row.`
           : "Detach this sound from THIS event only — the recording stays in the library. To retire the recording itself, reject it under All sounds.",
@@ -11053,7 +11065,11 @@ function sfxLayerRow(ev, layer, { soleLayer = false } = {}) {
     const tid = bindingId(ev, layer, t);
     const drop = multi && state.admin
       ? verdictWidget("bindings", tid, {
-        reject: "✕ unbind", rejectOnly: true, rejectedLabel: "to be unbound",
+        /* "REMOVE", NOT "UNBIND" (maintainer 2026-09-03: every reject button
+         * "should be called 'remove' and nothing else"). What it removes is
+         * this SOUND FROM THIS EVENT — the recording is untouched, which the
+         * title says. */
+        rejectOnly: true, rejectedLabel: "to be unbound",
         rejectTitle: `Remove ONLY ${t.name} from this event — the other ${n - 1} recording(s) keep playing and the file stays in the library.`,
       })
       : null;

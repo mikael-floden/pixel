@@ -106,7 +106,9 @@ ok(s1.underTitle && s1.headAboveStates, "at the very top of the card — under t
 ok(s1.nothingBelowStage, "and nothing of it is left below the art");
 ok(s1.entityAbove, "while the whole-piece verdict stays above it, in the header");
 ok(s1.stars === 5 && s1.approve && s1.comment, `with rate, accept and comment (${s1.stars} stars, approve=${s1.approve}, comment=${s1.comment})`);
-ok(/redo/.test(s1.reject ?? ""), `and a reject that says what it means for ONE state (“${s1.reject}”)`);
+// A lone red button reads as REMOVE (2026-09-03) — the state's second button
+// is the redo, asserted with the rest of the shape further down.
+ok(/^✕ remove$/.test(s1.reject ?? ""), `and a reject that says plainly what it does (“${s1.reject}”)`);
 ok(/Judging/.test(s1.label ?? ""), `labelled for what it judges (“${s1.label}”)`);
 ok(s1.headAboveStates, "the label sits above the state/direction selectors");
 // STARS BIG ENOUGH FOR A THUMB (maintainer 2026-08-14: "I also want all stars
@@ -517,68 +519,69 @@ await pub.close();
       `and with the Man hidden the piece is back at its own scale (canvas ${off.canvasH} → ${on.canvasH} → ${back.canvasH})`);
   }
 }
-/* REMOVE IS RED, REDO IS SCENERY'S THIRD VERDICT (maintainer 2026-09-03: "The
- * scenery review should have both a 'Remove' and a 'Redo' button ... The
- * 'Remove'/'Reject' button should be made red on all review pages ... the CSS
- * we have closest to red that still follow the CSS styling"). Red = the
- * theme's --bad token, measured as the button's computed colour, on the
- * scenery page AND on a page that is not scenery. */
+/* ONE VERDICT ON THE PIECE, TWO ON A STATE, AND EVERY OTHER PAGE SAYS "REMOVE"
+ * (maintainer 2026-09-03: "You added 2 buttons (the redo button) on the
+ * scenery object itself. That object should only have a remove button ... The
+ * scenery states is the only review that should have both a 'remove' and
+ * 'redo' button. All other review pages should only have the red 'remove'
+ * button and it should be called 'remove' and nothing else!" — and the reason:
+ * "If only one button exist it is a 'remove' button"). */
 {
   const rgb = (s) => { const m = /(\d+),\s*(\d+),\s*(\d+)/.exec(s ?? ""); return m ? m.slice(1, 4).map(Number).join(",") : null; };
-  const tokenBad = async () => p.evaluate(() => {
-    const el = document.createElement("span"); el.style.color = "var(--bad)"; document.body.appendChild(el);
-    const c = getComputedStyle(el).color; el.remove(); return c;
-  });
+  const bad = await p.evaluate(() => { const el = document.createElement("span"); el.style.color = "var(--bad)"; document.body.appendChild(el); const c = getComputedStyle(el).color; el.remove(); return c; });
   await p.goto(`${W}#/objects/ancient_tree_001`, { waitUntil: "load" });
-  await p.waitForTimeout(2400);
-  await p.evaluate(() => { const e = window.__wiki?.state?.feedback?.objects?.entries; if (e) delete e["scenery/ancient_trees/ancient_tree_001"]; });
-  await p.evaluate(() => { location.hash = "#/objects/ancient_tree_002"; }); await p.waitForTimeout(600);
-  await p.evaluate(() => { location.hash = "#/objects/ancient_tree_001"; }); await p.waitForTimeout(2000);
-  const row = await p.evaluate(() => {
-    const r = document.querySelector(".detail-head .fb-row .verdict");
-    const btns = [...(r?.querySelectorAll("button") ?? [])].map((b2) => ({ text: b2.textContent.trim(), cls: b2.className, color: getComputedStyle(b2).color }));
-    return { btns };
+  await p.waitForTimeout(2600);
+  const rows = await p.evaluate(() => {
+    const btns = (sel) => [...document.querySelectorAll(`${sel} .verdict button`)].map((b2) => ({ text: b2.textContent.trim(), cls: b2.className, color: getComputedStyle(b2).color }));
+    return { piece: btns(".detail-head .fb-row"), facet: btns(".facet-head .fb-row") };
   });
-  const remove = row.btns.find((b2) => /remove/.test(b2.text)), redo = row.btns.find((b2) => /redo/.test(b2.text));
-  ok(!!remove && !!redo, `the scenery review offers BOTH Remove and Redo (${row.btns.map((b2) => b2.text).join(" | ")})`);
-  const bad = await tokenBad();
-  ok(remove && /reject-btn/.test(remove.cls) && rgb(remove.color) === rgb(bad),
-    `Remove wears the theme's danger token at rest — --bad, not a literal red (${remove?.color} vs ${bad})`);
-  // redo: kept, another variant requested
-  await p.evaluate(() => [...document.querySelectorAll(".detail-head .fb-row .verdict button")].find((b2) => /redo/.test(b2.textContent))?.click());
+  ok(rows.piece.length === 2 && /remove/.test(rows.piece[1]?.text) && !rows.piece.some((b2) => /redo/.test(b2.text)),
+    `the PIECE takes approve and remove, no redo (${rows.piece.map((b2) => b2.text).join(" | ")})`);
+  ok(rows.facet.length === 3 && /remove/.test(rows.facet[1]?.text) && /redo/.test(rows.facet[2]?.text),
+    `a STATE takes approve, remove AND redo (${rows.facet.map((b2) => b2.text).join(" | ")})`);
+  ok(rgb(rows.facet[1].color) === rgb(bad) && rgb(rows.piece[1].color) === rgb(bad),
+    `both remove buttons wear --bad (${rows.facet[1].color})`);
+  ok(!/redo/.test(rows.facet[1].text), `and the state's remove is not called redo — a lone red button must read as remove (“${rows.facet[1].text}”)`);
+  // the state's redo stores "redo" on the FACET key, and withdraws
+  const facetKey = await p.evaluate(() => { const pill = document.querySelector(".facet-head .pill")?.textContent ?? ""; return pill; });
+  await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row .verdict button")].find((b2) => /redo/.test(b2.textContent))?.click());
   await p.waitForTimeout(400);
-  const after = await p.evaluate(() => ({
-    status: window.__wiki.state.feedback.objects.entries["scenery/ancient_trees/ancient_tree_001"]?.status ?? null,
-    on: [...document.querySelectorAll(".detail-head .fb-row .verdict button")].find((b2) => /redo/.test(b2.textContent))?.className ?? "",
-  }));
-  ok(after.status === "redo" && /\bredo\b/.test(after.on), `Redo stores status "redo" — kept, another variant requested (${after.status}, ${after.on})`);
-  // The verdict shows on the piece's CARD in the list (the detail header never
-  // carried approve/remove pills either), and the list grows a "redo" filter.
-  await p.evaluate(() => { location.hash = "#/objects"; }); await p.waitForTimeout(2200);
-  await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-obj-filter"] button')].find((x) => /^redo/.test(x.textContent.trim()))?.click());
-  await p.waitForTimeout(1500);
-  const listed = await p.evaluate(() => {
-    const cards = [...document.querySelectorAll("a.card")];
-    const mine = cards.find((a) => a.getAttribute("href") === "#/objects/ancient_tree_001");
-    return { n: cards.length, mine: !!mine, pill: [...(mine?.querySelectorAll(".pill") ?? [])].map((x) => x.textContent.trim()) };
+  const stored = await p.evaluate(() => {
+    const e = window.__wiki.state.feedback.objects.entries;
+    const k = Object.keys(e).find((x) => x.startsWith("scenery/ancient_trees/ancient_tree_001#") && e[x].status === "redo");
+    return { k, piece: e["scenery/ancient_trees/ancient_tree_001"]?.status ?? null };
   });
-  ok(listed.mine && listed.pill.includes("redo") && listed.n === 1, `and the piece's card carries a redo badge, alone under the new "redo" filter (${listed.n} listed; pills ${listed.pill.join("/")})`);
-  await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-obj-filter"] button')].find((x) => /^all/.test(x.textContent.trim()))?.click());
-  await p.waitForTimeout(600);
-  await p.evaluate(() => { location.hash = "#/objects/ancient_tree_001"; }); await p.waitForTimeout(2000);
-  await p.evaluate(() => [...document.querySelectorAll(".detail-head .fb-row .verdict button")].find((b2) => /redo/.test(b2.textContent))?.click());
+  // The piece may legitimately carry its own verdict (an earlier section
+  // approves it); what must never happen is REDO landing on the piece.
+  ok(stored.k && stored.k.split("#").length === 3 && stored.piece !== "redo",
+    `Redo is stored on the STATE's own key, never on the piece (${stored.k}; piece verdict: ${stored.piece})`);
+  await p.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row .verdict button")].find((b2) => /redo/.test(b2.textContent))?.click());
   await p.waitForTimeout(300);
-  ok(await p.evaluate(() => (window.__wiki.state.feedback.objects.entries["scenery/ancient_trees/ancient_tree_001"]?.status ?? null) === null), "pressing Redo again withdraws it");
-  // site-wide: a verdict row that is NOT scenery — the tiles review on a pair page
-  await p.goto(`${W}#/world/transition/grass__to__ice`, { waitUntil: "load" });
-  await p.waitForTimeout(4500);
-  const tileBtn = await p.evaluate(() => {
-    const b2 = [...document.querySelectorAll(".fade-tile .verdict button, .world-cand .verdict button, .verdict button")].find((x) => /reject-btn/.test(x.className));
-    return b2 ? { text: b2.textContent.trim(), color: getComputedStyle(b2).color, page: location.hash } : null;
-  });
-  ok(tileBtn && rgb(tileBtn.color) === rgb(bad), `and on a page that is not scenery the reject button is the same --bad (${tileBtn?.text} on ${tileBtn?.page})`);
-  const anyRedoElsewhere = await p.evaluate(() => [...document.querySelectorAll(".verdict button")].some((x) => /redo-btn/.test(x.className)));
-  ok(!anyRedoElsewhere, "while Redo stays scenery-only for now");
+  ok(await p.evaluate(() => !Object.entries(window.__wiki.state.feedback.objects.entries).some(([k, v]) => k.startsWith("scenery/ancient_trees/ancient_tree_001#") && v.status === "redo")),
+    "pressing it again withdraws the redo");
+  /* AND NO OTHER REVIEW PAGE OFFERS ANYTHING BUT REMOVE. Walked, not assumed:
+   * a monster facet, a character facet, a tiles pair and the music bench. The
+   * two designation toggles are deliberately NOT reject buttons — a `#top`
+   * "not a detail" and a binding's "unbind" leave the asset untouched, so
+   * calling either "remove" would say the opposite of what it does; they are
+   * reported to the maintainer rather than silently renamed. */
+  const DD = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
+  const pages = [["#/monsters/" + (DD.domains.monsters?.[0]?.id ?? ""), "a monster"],
+                 ["#/characters/" + (DD.domains.characters?.find((c) => c.kind === "npc")?.id ?? ""), "an NPC"],
+                 ["#/world/transition/grass__to__ice", "a fade pair"],
+                 ["#/music", "the music page"]];
+  const offenders = [];
+  for (const [hash, what] of pages) {
+    await p.goto(`${W}${hash}`, { waitUntil: "load" });
+    await p.waitForTimeout(hash.includes("transition") ? 4500 : 2600);
+    const labels = await p.evaluate(() => [...document.querySelectorAll(".verdict button")]
+      .filter((b2) => /reject-btn/.test(b2.className)).map((b2) => b2.textContent.trim()));
+    for (const l of labels) if (!/^✕ remove$/.test(l)) offenders.push(`${what}: “${l}”`);
+    if (labels.length) ok(labels.every((l) => /^✕ remove$/.test(l)), `${what}: every reject button is called “✕ remove” (${[...new Set(labels)].join(", ")})`);
+  }
+  ok(offenders.length === 0, offenders.length ? `a page still names it something else — ${offenders[0]}` : "no review page names it anything but remove");
+  const redoElsewhere = await p.evaluate(() => [...document.querySelectorAll(".verdict button")].some((x) => /redo-btn/.test(x.className)));
+  ok(!redoElsewhere, "and Redo appears nowhere but a scenery state");
 }
 console.log("page errors:", errs.length ? errs : "none");
 if (errs.length) fails.push("errors");
