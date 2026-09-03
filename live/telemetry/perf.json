@@ -1,7 +1,7 @@
 {
   "format": "nangijala-client-perf@1",
   "_comment": "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here by the server. The maintainer plays on a phone and tests in production; the headless harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these are the only honest numbers for the paths that matter. Newest last; the file keeps the most recent reports only.",
-  "updated_at": "2026-09-03T10:12:14.367Z",
+  "updated_at": "2026-09-03T10:28:55.273Z",
   "reports": [
     {
       "id": "2026-09-03T09-18-53-926Z-i0k047",
@@ -618,6 +618,75 @@
           "19,26:4"
         ]
       },
+      "worst": []
+    },
+    {
+      "id": "2026-09-03T10-28-55-273Z-9mci9a",
+      "at": "2026-09-03T10:28:55.273Z",
+      "build": "7373edf81de2cf192df7d2de9765c022e5b0e849",
+      "where": "606.7,359.6",
+      "tod": "Day",
+      "zoom": 1.65,
+      "dpr": 2.23,
+      "view": "1079x1404",
+      "secs": 30,
+      "final": false,
+      "frames": {
+        "n": 826,
+        "p50": 31.6,
+        "p90": 57.9,
+        "p99": 211.6,
+        "max": 414.4
+      },
+      "sections": {
+        "groundSlice": 5.62,
+        "avatarLoop": 2.34,
+        "rebuildOccluders": 2.09,
+        "redrawGround": 0.79,
+        "rebuildScenery": 0.73,
+        "prefetch": 0.49,
+        "stepNpcs": 0.22,
+        "repaintCells": 0.06
+      },
+      "counts": {
+        "occluders": 128,
+        "litOccluders": 31,
+        "occluderMeta": 72,
+        "sceneryImgs": 31,
+        "propImgs": 0,
+        "monsters": 146,
+        "monstersActive": 1,
+        "avatars": 1,
+        "npcs": 33,
+        "displayList": 861,
+        "textures": 4939,
+        "texturesAdded": 0
+      },
+      "ground": {
+        "png": "null",
+        "rt": "1510x1656",
+        "block": "256x192@627,732",
+        "anchor": "18409,10662",
+        "mode": "scroll",
+        "cellRuns": 1,
+        "medianSum": 508,
+        "fill": 153,
+        "dark": 20489,
+        "clear": 0,
+        "topBins": [
+          "17,5:17",
+          "56,26:16",
+          "52,25:16",
+          "52,24:16",
+          "53,24:16",
+          "52,23:16",
+          "6,17:16",
+          "7,17:16",
+          "8,17:16",
+          "9,17:16"
+        ]
+      },
+      "groundFull": null,
       "worst": []
     }
   ]
