@@ -471,10 +471,9 @@ export function surfaceKey(t3: Tiles3Textures, tex: TextureManagerLike, cell: Ti
   if (art.kind === "liquid") return t3.liquid(art.topRGB);
   /* `topOnly` too: an occluder copy that drew the unmasked tile would put the
    * wall band back on the water this pass exists to keep clean. */
-  /* EVERY plate goes through the factory now: a level-0 plate has its wall band
-   * repainted in its own surface colour, and drawing the raw file here would put
-   * the dark band back on exactly the edges the cap exists to hide. */
-  return t3.plate(art, cell.ground);
+  if (art.kind === "conform" || art.topOnly) return t3.plate(art, cell.ground);
+  const k = plateKey(art, cell.ground);
+  return tex.exists(k) ? k : null;
 }
 
 /** The repeated storey tile's key for a cell's column — the FACE an occluder

@@ -415,45 +415,6 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
   return out;
 }
 
-/** A PLATE'S WALL BAND, REPAINTED IN ITS OWN SURFACE COLOUR.
- *
- *  Recolouring only the CONFORM path (696adf092d) fixed half the tiles, and the
- *  maintainer's next screenshot proved it: the dots measured (171,146,116) x180
- *  — light_beach's wall — on a (234,210,173) top, plus (24,28,40) x74 of bare
- *  fill. His window draws ~590 `clean` plates beside ~486 conform ones, and a
- *  clean plate's wall band is the ART FILE'S OWN PIXELS, which carry that colour
- *  because the art was generated from the same palette. So the band must be
- *  repainted on the RASTER, for every kind, not chosen at conform time.
- *
- *  The band's colour is free because it is never legitimately visible: a raised
- *  cell is `topOnly`, so the band is masked off and the cap's x-over-y art is
- *  the wall; at level 0 nothing exists below, `exposed` is provably false, and
- *  the band is overdraw the tiles in front cover (32 rows against a 14-row
- *  lattice step, measured 0 uncovered). It was simply the thing that made a
- *  one-row leak VISIBLE, sitting directly under the diamond edge at ~25% darker
- *  than the surface.
- *
- *  IF A RENDERER EVER DRAWS A FLAT CELL'S WALL, this must go and the leak be
- *  fixed properly. Nothing does today. */
-export function capWallToSurface(sheets: PatternSheets, src: Pixels): Pixels {
-  const { fw, fh, libTop, libWall } = sheets;
-  const out = newPixels(fw, fh);
-  out.data.set(src.data);
-  for (let x = 0; x < fw; x++) {
-    let bottom = -1;
-    for (let y = 0; y < fh; y++) if (libTop[y * fw + x]) bottom = y;
-    if (bottom < 0) continue;
-    const from = bottom * fw + x;
-    if (src.data[from * 4 + 3] === 0) continue;
-    for (let y = 0; y < fh; y++) {
-      const i = y * fw + x;
-      if (!libWall[i] || src.data[i * 4 + 3] === 0) continue;
-      for (let c = 0; c < 4; c++) out.data[i * 4 + c] = src.data[from * 4 + c];
-    }
-  }
-  return out;
-}
-
 /** render3's `top_face_only`: the surface's TOP FACE alone, the wall band
  *  dropped so the cell's own x-over-y wall shows through — and on a liquid, so
  *  that nothing shows there at all. THE WALL IS NEVER THE SURFACE'S.
@@ -601,12 +562,7 @@ export function plateSourceId(art: PlateLike, ground: string): string {
  *  copied; a conformed plate is a derived raster and gets its own. */
 export function plateKey(art: PlateLike, ground: string): string {
   const base = art.kind === "conform" ? `t3c:${ground}|${art.path}` : artKey(art.path);
-  /* THREE PICTURES, THREE NAMES. A level-0 plate's wall band is repainted in its
-   * own surface colour, which is NOT the raw art file — and the raw file is
-   * still what a raised cell's WALL STACK draws under `artKey`. Sharing a name
-   * would serve a capped plate as a wall course: the one cache bug this repo
-   * does not survive. */
-  return art.topOnly ? `t3f:${base}` : `t3s:${base}`;
+  return art.topOnly ? `t3f:${base}` : base;
 }
 
 /** The composed boundary's key: mask frame + both plate identities + the pass.
@@ -963,10 +919,7 @@ export class Tiles3Textures {
     /* A published or clean plate is drawn straight from its loaded file and is
      * never copied — UNLESS it is top-only, which is a different picture and so
      * a built raster under its own key. */
-    /* EVERY plate is a built raster now — a clean or published plate used to be
-     * drawn straight from its file and cannot be, because its wall band is
-     * repainted. Cost: one 64x46 canvas blend per distinct ART FILE, not per
-     * cell (~144 in a window). */
+    if (art.kind !== "conform" && !art.topOnly) return this.o.textures.exists(key) ? key : null;
     return this.ensure(key, () => this.platePixels(art, ground));
   }
 
@@ -1117,21 +1070,11 @@ export class Tiles3Textures {
       const src = this.sourcePixels(artKey(art.path));
       out = src ? conformPlate(this.o.sheets, src, this.wallRGB(ground)) : null;
     } else {
-      /* CROPPED TO PLATE GEOMETRY FIRST. A published/clean plate's FILE is the
-       * 64x64 tile, and the draw only ever showed its top 64x46 (cellOps sets
-       * sw/sh from the resolver's w/h, and t3Blit took the sub-rect path). The
-       * wall-band repaint below indexes plate geometry, so the crop has to
-       * happen here — without it, `set()` throws "offset is out of bounds" on
-       * the first clean plate, which is what the factory gate caught. Cropping
-       * also removes the sub-rect frame from the draw: the built raster now IS
-       * the frame. */
-      const src = this.sourcePixels(artKey(art.path));
-      out = src ? cropToArt(src, this.o.sheets.fw, this.o.sheets.fh) : null;
+      out = this.sourcePixels(artKey(art.path));
     }
     /* LAST, over the conformed raster too: conforming REPAINTS the wall band
      * from the ground palette, so masking first would hand it back. */
     if (out && art.topOnly) out = topFaceOnly(this.o.sheets, out);
-    else if (out) out = capWallToSurface(this.o.sheets, out);
     if (out) this.pix.set(key, out);
     return out;
   }
@@ -1166,16 +1109,35 @@ export class Tiles3Textures {
     return out;
   }
 
-  /** The colour `conformPlate` paints a wall band — render3's own rule, kept
-   *  faithful so the parity fixture still pins the composition. The band is then
-   *  repainted in the plate's own surface colour by `capWallToSurface` at the
-   *  raster stage, which is where that belongs: it applies to CLEAN plates too,
-   *  whose band is the art file's pixels and which conformPlate never touches. */
+  /** THE COLOUR A CONFORMED PLATE PAINTS ITS WALL BAND — the ground's own TOP,
+   *  not its wall. This is the maintainer's zigzag fix, and it is his own
+   *  instruction: "make sure the tile in front covers it… why do you have to
+   *  make it so exact?" — answered by making exactness stop mattering.
+   *
+   *  A conformed plate's wall band is NEVER legitimately visible. At a raised
+   *  level the cell is `topOnly`, so the band is masked off entirely and the
+   *  cap's own x-over-y art is the wall. At level 0 nothing exists below, so
+   *  `exposed` is provably false and the band is pure overdraw the tiles in
+   *  front cover (measured: 32 rows of overlap against a 14-row lattice step,
+   *  0 uncovered texels). Its colour is therefore FREE — and it was the one
+   *  thing that made a one-row leak VISIBLE, because it sits directly under the
+   *  diamond's lower edge and is 25% darker than the surface. Measured on his
+   *  screen: the dots are exactly (171,146,116) on (228,196,149) — light_beach's
+   *  palette wall on its top.
+   *
+   *  Painting the band in the TOP colour makes any leak the ground's own colour,
+   *  i.e. invisible, whatever caused it — a placement slip, a late tile, a cull,
+   *  a crop. Nine hours went into finding which of those it is; this stops
+   *  needing to know. Free by construction: no new texture keys, no extra
+   *  compositions (a conform is already a built raster), and nothing that is
+   *  ever drawn changes colour.
+   *
+   *  IF THE BAND EVER BECOMES VISIBLE — a renderer that draws a flat cell's wall
+   *  — this must go back to `palette.wall` and the leak fixed properly. */
   private wallRGB(ground: string): [number, number, number] {
     const g = this.o.groundTypes[ground];
-    return hexRGB(g?.palette?.wall ?? g?.base_color ?? "#808080");
+    return hexRGB(g?.palette?.top ?? g?.palette?.wall ?? g?.base_color ?? "#808080");
   }
-
 }
 
 function domCanvas(w: number, h: number): CanvasLike {

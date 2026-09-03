@@ -365,21 +365,15 @@ test("a key is a function of the content and of nothing else", () => {
   // A conformed plate's ground is content: it supplies the wall colour.
   assert.notEqual(plateSourceId(PC, "grass"), plateSourceId(PC, "snow"));
   assert.notEqual(plateKey(PC, "grass"), plateKey(PC, "snow"));
-  // A published plate's ground is still NOT content: the wall-band repaint takes
-  // each column's OWN bottom surface texel, never the ground palette.
+  // A published plate's ground is NOT content — the file is already the pixels.
   assert.equal(plateKey(PA, "grass"), plateKey(PA, "snow"));
-  // ...but the plate is no longer the FILE's pixels — its wall band is repainted
-  // in its own surface colour (capWallToSurface) — and the raw file is still what
-  // a raised cell's WALL STACK draws. Two pictures, two names, or a capped plate
-  // gets served as a wall course.
-  assert.equal(plateKey(PA, "grass"), `t3s:${artKey(PA.path)}`);
-  assert.notEqual(plateKey(PA, "grass"), artKey(PA.path));
+  assert.equal(plateKey(PA, "grass"), artKey(PA.path));
   // Painted diamonds are keyed by the colour that is their whole content.
   assert.equal(liquidKey([1, 2, 3]), liquidKey([1, 2, 3]));
   assert.notEqual(liquidKey([1, 2, 3]), liquidKey([1, 2, 4]));
   // and no key is a mutable name: each carries its inputs verbatim
   assert.match(base, /^t3x:145\|p:a\|p:b$/);
-  assert.match(plateKey(PC, "grass"), /^t3s:t3c:grass\|tiles\/tops\/grass\/x\.webp$/);
+  assert.match(plateKey(PC, "grass"), /^t3c:grass\|tiles\/tops\/grass\/x\.webp$/);
 });
 
 test("the art key namespace is the renderer's existing one", () => {
@@ -439,10 +433,7 @@ test("the pattern sheets come from the index, not from a spelled-out path", { sk
 
 test("a cell's ops carry the resolver's own geometry", () => {
   const field: any = { kind: "field", ground: "grass", sx: 100, sy: 50, pasteY: 50, art: { kind: "plate", path: "p.webp", w: 64, h: 46 } };
-  // the SURFACE key is the plate's own raster (`t3s:` — its wall band repainted
-  // in its surface colour), not the raw file, which is what a wall stack draws.
-  assert.deepEqual(cellOps(field), [{ key: plateKey(field.art, "grass"), x: 100, y: 50, sx: 0, sy: 0, sw: 64, sh: 46, role: "surface" }]);
-  assert.equal(cellOps(field)[0].key, `t3s:${artKey("p.webp")}`);
+  assert.deepEqual(cellOps(field), [{ key: artKey("p.webp"), x: 100, y: 50, sx: 0, sy: 0, sw: 64, sh: 46, role: "surface" }]);
   // a fade is cropped to the top diamond: the op carries the crop, not a guess
   const fade: any = { kind: "field", ground: "grass", sx: 0, sy: 0, pasteY: -TOP_Y, art: { kind: "fade", path: "f.webp", w: TILE, h: TOP_Y + 2 * DY + 2 } };
   assert.equal(cellOps(fade)[0].sh, TOP_Y + 2 * DY + 2);
@@ -644,18 +635,12 @@ test("a conformed plate is built once per ground, and a liquid once per colour",
   const other = Object.keys(GT).find((g) => g !== c.ground && GT[g]?.palette?.wall)!;
   assert.notEqual(T.plate(art, other), k1, "the wall colour is content");
   assert.equal(T.stats.built, 2);
-  /* A PUBLISHED PLATE IS BUILT TOO, and no longer drawn straight from its file:
-   * its wall band is repainted in its own surface colour (capWallToSurface) and
-   * it is cropped to plate geometry, so it is a raster under its own `t3s:` key.
-   * The raw file keeps `artKey` because that is what a raised cell's WALL STACK
-   * draws — two pictures, two names. */
-  const pk = T.plate({ kind: "plate", path: c.path, w: TILE, h: PLATE_H } as any, c.ground);
-  assert.equal(pk, `t3s:${artKey(c.path)}`);
-  assert.notEqual(pk, artKey(c.path));
-  assert.equal(T.stats.built, 3);
+  // a published plate is drawn straight from its file: nothing is built
+  assert.equal(T.plate({ kind: "plate", path: c.path, w: TILE, h: PLATE_H } as any, c.ground), artKey(c.path));
+  assert.equal(T.stats.built, 2);
   const l1 = T.liquid([10, 20, 30]);
   T.liquid([10, 20, 30]);
-  assert.equal(T.stats.built, 4);
+  assert.equal(T.stats.built, 3);
   const src = fx.man.get(l1)!.getSourceImage() as { pix: Uint8ClampedArray };
   assert.equal(createHash("sha256").update(Buffer.from(src.pix.buffer, 0, src.pix.length)).digest("hex"), rasterSha(liquidDiamond([10, 20, 30], SHEETS)));
 });
