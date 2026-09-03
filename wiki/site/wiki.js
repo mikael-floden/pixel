@@ -696,15 +696,31 @@ function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitl
       // how the approval was given, so they cannot outlive it. The art stamp
       // rides only when a verdict is actually being SET — an un-approval is
       // not a judgement of any art.
+      // APPROVING WITHOUT STARS IS WORTH ONE (maintainer 2026-09-03: "accept
+      // should give 1 star if no star has been given already"). An approved
+      // piece is never left unrated, so the star filters and the review queue
+      // see it; a rating he already gave is never overwritten.
       rejectOnly ? null : h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => {
         e.stopPropagation();
         const un = st === "approved";
-        setFb(domain, id, un ? { status: null, rating: null } : { status: "approved", ...(stamp ?? {}) });
+        setFb(domain, id, un ? { status: null, rating: null }
+          : { status: "approved", ...(fb(domain, id).rating ? {} : { rating: 1 }), ...(stamp ?? {}) });
         render();
         for (const el of fbPeers(domain, id, "stars")) el.__render?.();
         onchange?.();
       } }, "✓ approve"),
-      h("button", { class: `reject-btn${st === "rejected" ? " rejected" : ""}`, title: rejectTitle, onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "rejected" ? null : "rejected", ...(stamp ?? {}) }); render(); onchange?.(); } }, reject),
+      // REMOVE ALWAYS UNSTARS (maintainer 2026-09-03: "Remove should also
+      // always 'unstar'"). Removing it is the last thing he will say about it,
+      // so a rating left behind would outlive the thing it rated — and on the
+      // star filters it would keep reading as a piece he liked.
+      h("button", { class: `reject-btn${st === "rejected" ? " rejected" : ""}`, title: rejectTitle, onclick: (e) => {
+        e.stopPropagation();
+        const on = st === "rejected";
+        setFb(domain, id, on ? { status: null } : { status: "rejected", rating: null, ...(stamp ?? {}) });
+        render();
+        for (const el of fbPeers(domain, id, "stars")) el.__render?.();
+        onchange?.();
+      } }, reject),
       redo ? h("button", { class: `redo-btn${st === "redo" ? " redo" : ""}`, title: redo.title ?? "Keep this, and ask for another variant of it",
         onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "redo" ? null : "redo", ...(stamp ?? {}) }); render(); onchange?.(); } }, redo.label ?? "↻ redo") : null,
       gone ? h("span", { class: "pill warn", title: "You judged this state before the art was regenerated, so the verdict is about a picture that no longer exists — judge the one on screen and it counts again." }, "regenerated since — judge again") : null,
@@ -10189,7 +10205,13 @@ function tileCell(type, group, file) {
     starsWidget("tiles", id),
     state.admin ? h("button", {
       class: "tile-x", title: "Reject this tile (toggles)",
-      onclick: () => { setFb("tiles", id, { status: fb("tiles", id).status === "rejected" ? null : "rejected" }); sync(); },
+      // The grid's own ✕ is a remove button like any other, so it unstars too.
+      onclick: () => {
+        const on = fb("tiles", id).status === "rejected";
+        setFb("tiles", id, on ? { status: null } : { status: "rejected", rating: null });
+        for (const el of fbPeers("tiles", id, "stars")) el.__render?.();
+        sync();
+      },
     }, "✕") : null,
   ]) if (c) cell.append(c);
   sync();

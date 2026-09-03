@@ -661,6 +661,44 @@ await pub.close();
   await star(2);
   const e2 = await row();
   ok(e2.status === null && e2.rating === null, "and un-starring leaves it undecided, not re-rejected");
+
+  /* REMOVE ALWAYS UNSTARS, AND APPROVE IS WORTH A STAR (maintainer 2026-09-03:
+   * "Remove should also always 'unstar' and accept should give 1 star if no
+   * star has been given already"). */
+  const press = (re) => p.evaluate((r) => [...document.querySelectorAll(".facet-head .fb-row button")]
+    .find((x) => new RegExp(r, "i").test(x.textContent)).click(), re.source).then(() => p.waitForTimeout(250));
+  await star(5);
+  await press(/✕ remove/);
+  const f = await row();
+  console.log("after removing a 5-star state:", JSON.stringify(f));
+  ok(f.status === "rejected", "remove still removes");
+  ok(f.lit === 0 && f.rating === null, `...and always unstars (${f.lit} lit) — a rating must not outlive the thing it rated`);
+
+  await press(/✕ remove/);                       // withdraw it, back to undecided
+  await press(/approve/);
+  const g2 = await row();
+  console.log("after approving an unrated state:", JSON.stringify(g2));
+  ok(g2.status === "approved" && g2.rating === 1 && g2.lit === 1,
+    `approving something unrated gives it one star (${g2.rating})`);
+
+  await press(/approve/);                        // clear
+  /* A RATING HE ALREADY GAVE SURVIVES THE APPROVAL. Rated-but-unjudged is a
+   * real record — it is what every star he gave before today looks like — so
+   * it is written straight into the store rather than clicked into being. */
+  await p.evaluate(() => {
+    const key = document.querySelector(".facet-head .fb-row .stars").__fbk.split("\u0000");
+    window.__wiki.setFb(key[0], key[1], { rating: 4, status: null });
+    window.__wiki.route();
+  });
+  await p.waitForTimeout(1200);
+  await press(/approve/);
+  const h2 = await row();
+  console.log("after approving a 4-star state:", JSON.stringify(h2));
+  ok(h2.status === "approved" && h2.rating === 4, `and a rating he DID give is never overwritten by that 1 (${h2.rating} stars)`);
+  await star(3);                                 // a DIFFERENT star: changing his mind, not withdrawing
+  const i2 = await row();
+  ok(i2.rating === 3 && i2.status === "approved", `moving to another star re-rates without withdrawing the approval (${i2.rating} stars, ${i2.status})`);
+
   await p.evaluate(() => {
     const ee = window.__wiki.state.feedback.objects?.entries ?? {};
     for (const k of Object.keys(ee)) if (/^scenery\/windows\/window_058#/.test(k)) delete ee[k];

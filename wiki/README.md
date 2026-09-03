@@ -273,10 +273,14 @@ click once on the star"). Tapping a star writes `rating` AND
 button beside it would write, so the verdict is never born stale. Tapping the
 lit star again withdraws both, and un-approving with the button clears the
 rating with it: the stars are how the approval was given, so they never outlive
-it. Remove is untouched by the stars — starring something rejected re-judges it
-as approved, un-starring leaves it undecided rather than resurrecting the
-rejection. A verdict row with no approve button (the per-take unbind) leaves
-its stars a plain rating. Pinned by `check-facet.mjs`.
+it. **Remove always unstars** and **approve is worth a star**: removing
+something clears its rating with it (a rating must not outlive the thing it
+rated, or the star filters go on reading it as liked), and approving something
+unrated gives it one star, while a rating he already gave is never overwritten.
+Starring something removed re-judges it as approved; un-starring it leaves it
+undecided rather than resurrecting the rejection. A verdict row with no approve
+button (the per-take unbind) leaves its stars a plain rating. Pinned by
+`check-facet.mjs`.
 
 **Asset ids** are repo-relative file paths without extension for individual
 files (a sound take, a tile variant PNG), the entity's directory path for whole
