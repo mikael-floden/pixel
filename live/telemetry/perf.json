@@ -1,7 +1,7 @@
 {
   "format": "nangijala-client-perf@1",
   "_comment": "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here by the server. The maintainer plays on a phone and tests in production; the headless harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these are the only honest numbers for the paths that matter. Newest last; the file keeps the most recent reports only.",
-  "updated_at": "2026-09-03T09:35:35.625Z",
+  "updated_at": "2026-09-03T09:46:33.897Z",
   "reports": [
     {
       "id": "2026-09-03T09-18-53-926Z-i0k047",
@@ -352,6 +352,73 @@
         "texturesAdded": 13
       },
       "ground": null,
+      "worst": []
+    },
+    {
+      "id": "2026-09-03T09-46-33-897Z-k4pzpo",
+      "at": "2026-09-03T09:46:33.897Z",
+      "build": "ae9a13955a152eb70709ce4313ac387c0d233743",
+      "where": "529.5,344.8",
+      "tod": "Night",
+      "zoom": 1.36,
+      "dpr": 2.23,
+      "view": "1079x1404",
+      "secs": 30,
+      "final": false,
+      "frames": {
+        "n": 608,
+        "p50": 43.3,
+        "p90": 79.7,
+        "p99": 253.2,
+        "max": 393.6
+      },
+      "sections": {
+        "prefetch": 15.64,
+        "groundSlice": 10.09,
+        "rebuildOccluders": 3.57,
+        "repaintCells": 1.55,
+        "rebuildScenery": 1.15,
+        "avatarLoop": 0.77,
+        "redrawGround": 0.31,
+        "stepNpcs": 0.13
+      },
+      "counts": {
+        "occluders": 2328,
+        "litOccluders": 9,
+        "occluderMeta": 1506,
+        "sceneryImgs": 9,
+        "propImgs": 0,
+        "monsters": 146,
+        "monstersActive": 1,
+        "avatars": 1,
+        "npcs": 33,
+        "displayList": 2960,
+        "textures": 3980,
+        "texturesAdded": 0
+      },
+      "ground": {
+        "rt": "1510x1656",
+        "block": "256x192@627,732",
+        "anchor": "16241,10048",
+        "mode": "cells",
+        "cellRuns": 9,
+        "medianSum": 161,
+        "fill": 556,
+        "dark": 15,
+        "clear": 0,
+        "topBins": [
+          "21,1:8",
+          "24,1:8",
+          "19,0:8",
+          "26,0:8",
+          "16,27:8",
+          "17,27:8",
+          "28,27:8",
+          "29,27:8",
+          "14,26:8",
+          "31,26:8"
+        ]
+      },
       "worst": []
     }
   ]
