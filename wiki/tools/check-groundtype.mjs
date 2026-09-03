@@ -1395,6 +1395,27 @@ ok(tGone.leftovers === 0 && tGone.stars && tGone.roofs === 0 && tGone.view === "
   ok(!off.stepper && off.wallpick === "", "under own-wall the Wall row offers no stepper — there is nothing to choose");
   ok(await p.evaluate(() => ![...document.querySelectorAll(".wall-mode")].some((r) => /\bnull\b/.test(r.textContent))),
     'and no wall row ever prints a literal "null" — the replaceChildren trap');
+  /* HIS OWN WALL PICKS MUST NOT BE WHAT THIS MEASURES (2026-09-03): the first
+   * grass card carries his real top_walls override from 29 August, so "top
+   * only" opened straight on "your pick" and the "clears the override"
+   * assertion demanded an EMPTY map he has 64 entries in. The fixture's own
+   * two records are cleared in the page (never committed — nothing here
+   * presses Commit) and the clear is asserted on that key alone. */
+  // The first card IS the first grass-over-grass candidate (the same ordering
+  // the assertions below already lean on), so its key comes from the build.
+  const fixtureKey = (D.domains.world ?? []).find((c2) => c2.top === "grass" && c2.side === "grass")?.candidates?.[0]?.key ?? null;
+  await p.evaluate((key) => {
+    const st = window.__wiki?.state?.tuning ?? {};
+    for (const doc of [st.top_walls, st.tile_walls]) if (doc?.overrides && key) delete doc.overrides[key];
+    // ...and the PUBLISHED borrow_wall: the tiles agent folds his override into
+    // the manifest on publish (tiles3/review@3), and bestWall treats a
+    // published pick exactly like a stored one (ov ?? pub), so the fixture
+    // would still open on "your pick" with his record gone.
+    for (const cell of window.__wiki?.state?.data?.domains?.world ?? []) {
+      for (const c2 of cell.candidates ?? []) if (c2.key === key) { c2.borrowWall = null; c2.borrow_wall = null; }
+    }
+  }, fixtureKey);
+  await p.evaluate(() => { keepScrollY = window.scrollY; });
   await p.evaluate(() => { const r = document.querySelector(".world-cand .wall-mode"); r.scrollIntoView({ block: "center" }); [...r.querySelectorAll("button")].find((b2) => b2.textContent.trim() === "top only")?.click(); });
   await p.waitForTimeout(1800);
   const on = await card0();
@@ -1431,9 +1452,9 @@ ok(tGone.leftovers === 0 && tGone.stars && tGone.roofs === 0 && tGone.view === "
   await p.evaluate(() => { const r = document.querySelector(".world-cand .wall-step"); [...r.querySelectorAll("button")].find((b2) => b2.textContent === "‹")?.click(); });
   await p.waitForTimeout(1800);
   const back = await card0();
-  ok(back.wallpick === on.wallpick && /auto · best match/.test(back.label)
-    && await p.evaluate(() => Object.keys(window.__wiki.state.tuning.top_walls?.overrides ?? {}).length === 0),
-    "stepping back onto the best CLEARS the override");
+  const stillStored = await p.evaluate((k) => !!(k && window.__wiki.state.tuning.top_walls?.overrides?.[k]), fixtureKey);
+  ok(back.wallpick === on.wallpick && /auto · best match/.test(back.label) && !stillStored,
+    `stepping back onto the best CLEARS the override — for THIS tile, his other ${await p.evaluate(() => Object.keys(window.__wiki.state.tuning.top_walls?.overrides ?? {}).length)} picks untouched`);
   await p.evaluate(() => { const r = document.querySelector(".world-cand .wall-mode"); [...r.querySelectorAll("button")].find((b2) => b2.textContent.trim() === "own wall")?.click(); });
   await p.waitForTimeout(1400);
   await p.evaluate(() => document.querySelector("#save-btn")?.click());
