@@ -442,12 +442,20 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
  *      2          0            0                  6000
  *      3          0            0                  5536
  *
- *  One row is what a slip needs; TWO is what is shipped, because the extra row
- *  is free (it can only ever paint surface colour where surface belongs, and it
- *  is covered by the tile in front wherever there is one) and it buys margin
- *  against the streaming case, which is the one that made this artefact
- *  intermittent. Beyond 2 the return is small. */
-export const TOP_FACE_MARGIN = 2;
+ *  ONE ROW, and 2 IS REJECTED — measured on the maintainer's screen, not at a
+ *  desk. One row is what a slip needs (the table above). The second row is NOT
+ *  free, which is what the "it can only paint surface where surface belongs"
+ *  argument missed: on a RAISED cap the rows below the diamond are the top of
+ *  the cell's own WALL COURSE, and a ground whose top is DARKER than its wall
+ *  then wears a band of the wrong colour along every raised edge. grass is
+ *  exactly that — top (20,82,59) against wall (20,100,78) — and at 2 rows the
+ *  maintainer photographed dark green bands along every raised grass edge
+ *  ("WTF?! What is this new border bug?!", 2026-09-03), measured at
+ *  0.95/0.92/0.87 of the grass around them. At 1 row it had been live and
+ *  unremarked all afternoon. The margin buys tolerance against a one-row slip
+ *  and nothing more; it is not the place to buy margin against the streaming
+ *  case, which is a repaint bug (see repaintTiles3Cells). */
+export const TOP_FACE_MARGIN = 1;
 
 export function topFaceOnly(sheets: PatternSheets, src: Pixels, opts?: { margin?: number }): Pixels {
   const { fw, fh, libTop } = sheets;
