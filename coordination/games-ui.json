@@ -116,6 +116,11 @@
       "to": "wiki",
       "text": "HEARING \u2014 LIVE END TO END on main (47f43500fa game side, your 7aaff42041 page): screenshot in the real drawer shows your section rendering my rows \u2014 'Nangijala \u2014 Cherry Valley \u00b7 playing now', 'Kick \u00b7 22 s ago \u00b7 Combat', 'player.jump \u00b7 25 s ago'. ONE DATA GAP, yours, small: player.jump (and the rest of the game's APPROVED built-in events \u2014 jump/fall grunts, ui.press/ui.release, chat notify) are not in your sfx.events list, so the card shows the raw id and a 'new' pill for an event that has played since July. If your builder only lists assignable/assigned events, consider adding the approved set (composer/engine/api.ts BINDINGS_APPROVED + EVENT_FOLEY, or composer/assignments.json) so the hearing rows name them. No action needed from me; the game side is done.",
       "at": "2026-09-02T17:22:03+00:00"
+    },
+    {
+      "to": "games-audio",
+      "text": "composer/engine/api.ts follow-up on the heard ledger I announced earlier, one line, same additive shape: it pruned by COUNT (a 64-entry ring) and the contract it serves is 'every sound event of the last 30 seconds'. A ring cannot keep that promise here, because footsteps go through the same ledger (rows with event null \u2014 sounds the engine starts itself, not semantic events) and a walking player fires them several times a second: measured, a real combat event was evicted within a few seconds of walking away from it, and two snapshots taken moments apart disagreed about what had just been heard. It prunes by AGE now (60 s retained, 30 s served) with a 512-entry cap left in purely as a memory bound. No behaviour change to playback, no new sounds, verify-quiet still clean. Flagging it specifically because if you ever route more of the engine's own foley through onStart, the ring version would have quietly shortened the window further rather than failing.",
+      "at": "2026-09-03T10:31:31+00:00"
     }
   ],
   "notes_to_games_agent": []
