@@ -1655,6 +1655,14 @@ export class WorldScene extends Phaser.Scene {
       sections: perFrame,
       counts: { ...(snap.counts as Record<string, number>), texturesAdded: snap.texturesAdded as number },
       ground: this.groundTexelReport(final),
+      /* THE DISCRIMINATOR. On a flush, sample the texture, then FORCE a full
+       * repaint and sample it again. The zigzag is in the ground texture (his
+       * crop shows it), but nothing offline reproduces it: clean tiles tile
+       * with zero holes, and so do clean mixed with conform. So either the
+       * SCROLL/band/cell-repaint machinery puts the gaps there — in which case
+       * a full repaint wipes them — or the base painting does, and they
+       * survive. Two numbers, one answer, and no more of my theories. */
+      groundFull: final ? this.groundAfterFullPaint() : null,
       worst: (() => {
         try {
           const h = (window as unknown as { __ml?: { hitch?: () => { worst?: unknown[] } } }).__ml?.hitch?.();
@@ -1795,6 +1803,20 @@ export class WorldScene extends Phaser.Scene {
       clear,
       topBins: top.map(([k, n]) => `${k}:${n}`),
     };
+  }
+
+  /** Force a full ground repaint and re-sample the texture — see groundFull.
+   *  Costs one paint, on a flush only, on a device that is about to stop
+   *  reporting anyway. */
+  private groundAfterFullPaint(): Record<string, unknown> | null {
+    try {
+      this.t3flushSlices();
+      this.lastGround = { x: NaN, y: NaN }; // poison the latch: the next pass is FULL
+      this.redrawGround();
+      return this.groundTexelReport(true);
+    } catch {
+      return null;
+    }
   }
 
   /** The local player's cell, or null before the join lands. */

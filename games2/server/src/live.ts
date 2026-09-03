@@ -552,6 +552,14 @@ export function registerLiveRoutes(app: express.Application): void {
             ]),
           )
         : null,
+      groundFull: body.groundFull && typeof body.groundFull === "object"
+        ? Object.fromEntries(
+            Object.entries(body.groundFull as Record<string, unknown>).slice(0, 16).map(([k, v]) => [
+              k.slice(0, 24),
+              typeof v === "number" ? v : Array.isArray(v) ? v.slice(0, 12).map((x) => String(x).slice(0, 24)) : k === "png" ? String(v).slice(0, 24000) : String(v).slice(0, 48),
+            ]),
+          )
+        : null,
       worst: Array.isArray(body.worst)
         ? (body.worst as unknown[]).slice(0, 8).map((w) => str(JSON.stringify(w), 400))
         : null,
