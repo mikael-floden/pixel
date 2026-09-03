@@ -419,6 +419,54 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
   await p.evaluate(() => { const r = [...document.querySelectorAll(".fade-tile")].find((x) => /dropped/.test(x.className)); [...r.querySelectorAll(".verdict button")].find((x) => /remove/.test(x.textContent))?.click(); });
   await p.waitForTimeout(500);
 }
+/* THE TONE PILL (maintainer 2026-09-03, on grey paving ↔ light beach: "I feel
+ * as if the grey tone is slightly wrong. The Grey Paving Stone has a very
+ * small blue tint and I don't see that [in the fade tile] ... it's almost as
+ * if the stone belongs to brown paving stone").
+ *
+ * He was right and the pill exists to say so per card. It must MEASURE, not
+ * decorate: the same page reads 0 dE on a neutral plate set and 11 dE on a
+ * blue one, because the difference is real in the second and absent in the
+ * first. A pill that always says "matches" would look identical on screen and
+ * hide exactly what he asked to see — an earlier cut of this did precisely
+ * that by comparing the tile against a field composed from the very palette
+ * colour it was flattened onto. */
+{
+  const read = async (side) => {
+    const cx = await b.newContext({ viewport: { width: 393, height: 1600 } });
+    const pg = await cx.newPage();
+    await pg.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+    await pg.addInitScript((s) => {
+      localStorage.setItem("wiki-admin-token", "gate");
+      localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+      localStorage.setItem("wiki-trans-sides", JSON.stringify({ grey_paving_stone: s, light_beach: s }));
+    }, side);
+    await pg.goto(`${W}#/world/transition/grey_paving_stone__to__light_beach`, { waitUntil: "load" });
+    await pg.waitForTimeout(11000);
+    const r = await pg.evaluate(() => {
+      const t2 = (window.__wikiTone ?? []).filter((x) => x.tile);
+      const chips = [...document.querySelectorAll(".tone-chip")];
+      return { cards: document.querySelectorAll(".fade-tile").length, chips: chips.length,
+               dE: chips.map((x) => +x.dataset.de), words: [...new Set(chips.map((x) => x.textContent))].slice(0, 3),
+               field: t2[0]?.field ?? null, tile: t2[0]?.tile ?? null };
+    });
+    await cx.close();
+    return r;
+  };
+  const clean = await read("clean");
+  const blue = await read("set:2");
+  console.log("tone on clean #0:", JSON.stringify({ field: clean.field, tile: clean.tile, dE: clean.dE.slice(0, 3), words: clean.words }));
+  console.log("tone on set #2  :", JSON.stringify({ field: blue.field, tile: blue.tile, dE: blue.dE.slice(0, 3), words: blue.words }));
+  ok(clean.chips > 0 && clean.chips === clean.cards, `every fade card carries a tone reading (${clean.chips}/${clean.cards})`);
+  ok(clean.dE.every((d) => d < 1), `on the flat clean plate the tile and its field ARE the same grey, and it says so (max ${Math.max(...clean.dE)} dE)`);
+  ok(blue.field && blue.field[2] - blue.field[0] >= 10,
+    `the set #2 paving really is blue — that is his "very small blue tint" (${JSON.stringify(blue.field)}, B−R ${blue.field[2] - blue.field[0]})`);
+  ok(blue.tile && Math.abs(blue.tile[2] - blue.tile[0]) <= 2,
+    `and the fade tile's paving is dead neutral beside it (${JSON.stringify(blue.tile)})`);
+  ok(blue.dE.length && Math.min(...blue.dE) > 5,
+    `so every card on that set reports the difference instead of hiding it (min ${Math.min(...blue.dE)} dE)`);
+  ok(blue.words.some((w) => /off/.test(w)), `and the pill says which way it is off (${blue.words.join(" | ")})`);
+}
 await b.close();
 console.log(fails.length ? `\nFADE CHECKS FAILED (${fails.length})` : "\nALL FADE CHECKS PASSED");
 process.exit(fails.length ? 1 : 0);

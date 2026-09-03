@@ -9167,6 +9167,67 @@ function orderTransitions(list, mode) {
  * is >= 50%" — dressed in that ground's own x-over-x wall like everything
  * else, and the boundary composed as it really is. A field, not a lone tile,
  * because a tile the map agent will scatter is judged by how it repeats. */
+/* DOES THIS TILE'S GROUND MATCH THE GROUND IT LANDS ON? (maintainer
+ * 2026-09-03, on grey paving ↔ light beach: "I really feel the Grey Paving
+ * Stone is fading into the wrong grey colour ... the grey always feels out of
+ * touch ... it's almost as if the stone belongs to brown paving stone.")
+ *
+ * He was right, and it is measurable: the paving field is RGB(167,166,170) —
+ * a slight BLUE cast — while all 67 fade tiles that stand in it are warmer,
+ * the worst by b* +17, which is 18% of the way to brown paving stone. The
+ * cause is in the tiles domain (palette.json defines that ground as perfectly
+ * neutral, #a8a8a8, so a normalized tile is neutral at best and drifts warm
+ * from there) and is posted to their board — but the JUDGEMENT is his, every
+ * card, and an eye cannot hold a 2-point b* difference across a scroll.
+ *
+ * So the card says it. Measured off the COMPOSED CANVAS, never from the
+ * manifest: the fade tile's own diamond against a pure field diamond in the
+ * same scene, which is exactly the comparison his eye is making. Median, not
+ * mean — one bright rock must not move the reading. */
+const medianRgb = (px) => [0, 1, 2].map((k) => {
+  const v = px.map((p) => p[k]).sort((a, b) => a - b);
+  return v[v.length >> 1];      // median, never mean: one bright rock must not move the reading
+});
+function srgbToLab([r, g, b]) {
+  const f = (v) => { v /= 255; return v > 0.04045 ? ((v + 0.055) / 1.055) ** 2.4 : v / 12.92; };
+  const [R, G, B] = [f(r), f(g), f(b)];
+  const xyz = [(0.4124 * R + 0.3576 * G + 0.1805 * B) / 0.95047,
+               (0.2126 * R + 0.7152 * G + 0.0722 * B),
+               (0.0193 * R + 0.1192 * G + 0.9505 * B) / 1.08883];
+  const t3 = (v) => (v > 0.008856 ? Math.cbrt(v) : 7.787 * v + 16 / 116);
+  const [fx, fy, fz] = xyz.map(t3);
+  return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];   // b* is the warm/cool axis
+}
+/** One cell's TOP FACE, off the scene that was just drawn. The rim is left out
+ *  — those pixels belong to neither cell — and a tainted canvas throws here,
+ *  which the caller reads as "no reading" rather than as a match. */
+function diamondPixels(ctx, iso, pad, c, r, N) {
+  const x0 = (c - r) * iso.dx + (N - 1) * iso.dx + pad;      // px(cell) − minX + pad
+  const y0 = (c + r) * iso.dy + pad;                          // py(cell) − minY + pad
+  const cx = x0 + iso.tilePx / 2, cy = y0 + iso.dy;
+  const w = Math.round(iso.dx), hgt = Math.round(iso.dy);
+  let d;
+  try { d = ctx.getImageData(Math.round(cx - w), Math.round(cy - hgt), w * 2, hgt * 2).data; } catch { return null; }
+  const out = [];
+  for (let y = 0; y < hgt * 2; y++) for (let x = 0; x < w * 2; x++) {
+    if (Math.abs(x - w) / w + Math.abs(y - hgt) / hgt > 0.7) continue;
+    const i = (y * w * 2 + x) * 4;
+    if (d[i + 3] > 200) out.push([d[i], d[i + 1], d[i + 2]]);
+  }
+  return out.length > 60 ? out : null;
+}
+/** The chip: how far this tile's ground is from the ground around it, and
+ *  WHICH WAY — "warm" and "cool" are the words he used, so they are the words
+ *  it says. Under 3 dE is a match; a difference he can see starts around 5. */
+function toneChip(tileLab, fieldLab, ground) {
+  const dE = Math.hypot(tileLab[0] - fieldLab[0], tileLab[1] - fieldLab[1], tileLab[2] - fieldLab[2]);
+  const db = tileLab[2] - fieldLab[2];
+  const way = Math.abs(db) < 1 ? "" : db > 0 ? " warm" : " cool";
+  const title = `This tile's ${ground.replace(/_/g, " ")} reads L*${tileLab[0].toFixed(1)} b*${tileLab[2].toFixed(1)}; the ground it stands on reads L*${fieldLab[0].toFixed(1)} b*${fieldLab[2].toFixed(1)}. Positive b* is warmer (toward brown), negative is cooler (toward blue). Measured off this very scene, top face against top face.`;
+  const cls = dE < 3 ? "ok" : dE < 6 ? "" : "warn";
+  return h("span", { class: `pill ${cls} tone-chip`, "data-de": dE.toFixed(1), "data-db": db.toFixed(1), title },
+    dE < 3 ? "tone: matches the field" : `tone: ${dE.toFixed(0)} off${way}`);
+}
 const FADE_PATTERN = "a12_s4";
 function fadeScene(a, b, tile) {
   const N = 6;
@@ -9216,8 +9277,34 @@ function fadeScene(a, b, tile) {
     fadeOnMinority: cells.filter((x, i) => x.img === dressed && grid[i].pure && !grid[i].isMaj).length,
     spot: spot ? { c: spot.c, r: spot.r, dist: +Math.hypot(spot.c - mid, spot.r - mid).toFixed(2) } : null,
   });
-  loadImages([...new Set(cells.map((x) => x.img).filter(Boolean))], (images) =>
-    box.replaceChildren(isoScene(cells.filter((x) => x.img), images, 1, 2, worldIso())));
+  loadImages([...new Set(cells.map((x) => x.img).filter(Boolean))], (images) => {
+    const iso = worldIso();
+    const canvas = isoScene(cells.filter((x) => x.img), images, 1, 2, iso);
+    box.replaceChildren(canvas);
+    /* THE TILE AGAINST THE FIELD IT STANDS IN, off the pixels just drawn —
+     * which follows whatever plate set he has chosen, because that is the grey
+     * his eye is comparing against. On Clean #0 both sides are the palette
+     * colour and it honestly reads as a match; pick a textured set and the
+     * difference he can see is the number it shows. */
+    if (!spot) return;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const mine = diamondPixels(ctx, iso, 2, spot.c, spot.r, N);
+    const around = grid.filter((g) => g.pure && g.isMaj && g !== spot)
+      .map((g) => diamondPixels(ctx, iso, 2, g.c, g.r, N)).filter(Boolean);
+    if (!mine || !around.length) return;
+    const fLab = srgbToLab(medianRgb(around.flat()));
+    // Only this tile's rendition of THAT ground: a fade tile carries two, and
+    // the other one is supposed to look different.
+    const near = mine.filter((p) => {
+      const l = srgbToLab(p);
+      return Math.hypot(l[0] - fLab[0], l[1] - fLab[1], l[2] - fLab[2]) < 30;
+    });
+    if (near.length < 60) return;
+    const tLab = srgbToLab(medianRgb(near));
+    box.append(toneChip(tLab, fLab, majority));
+    (window.__wikiTone ??= []).push({ key: tile.key, majority,
+      tile: medianRgb(near), field: medianRgb(around.flat()) });
+  });
   return box;
 }
 

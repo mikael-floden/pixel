@@ -1862,3 +1862,9 @@ input[type="range"] { accent-color: var(--accent); }
 .fade-tile.picked, .fade-tile.dropped { border-radius: 8px; outline-offset: 3px; }
 .fade-tile.picked { outline: 2px solid var(--good); }
 .fade-tile.dropped { outline: 2px solid var(--bad); }
+
+/* THE TONE CHIP on a fade card (maintainer 2026-09-03: "I feel as if the grey
+   tone is slightly wrong ... it's almost as if the stone belongs to brown
+   paving stone"). Sits under the scene, out of the art's way; the colour is
+   the verdict — green matches, amber is a difference he can see. */
+.fade-tile .tone-chip { display: inline-block; margin: 6px 0 0; font-variant-numeric: tabular-nums; }
