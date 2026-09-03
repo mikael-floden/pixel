@@ -1319,15 +1319,51 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
             # face only, and the doorway runs the full height of the wall.
             doorway = not front_covered and (x, y) not in wall_over \
                 and L(x, y) < dl
+            # AND THE ROOF CELL BEHIND A DOORWAY, whose underside is exactly
+            # what you see THROUGH the opening: uncropped it hangs its own
+            # band into the top of the door and costs another third of a
+            # level.
+            behind = any((nx, ny) in cellset and (nx, ny) not in wall_over
+                         and L(nx, ny) < dl
+                         for (nx, ny) in ((x, y + 1), (x + 1, y)))
             cap = over_tile(dg, body) if (body != dg or not front_covered) \
                 else flat_tile(dg)
             mid = storey_tile(body)
             for f in range(lo, dl + 1):
-                # over a doorway the top course is the ROOF'S OWN EDGE, so it
-                # is roof-over-roof: dropping it entirely opened a sliver of
-                # grass through the top of the door, and leaving it as
-                # roof-over-wall hung a storey of timber there instead.
-                t = (over_tile(dg, dg) if doorway else cap) if f == dl else mid
+                # OVER A DOORWAY THE ROOF IS EXACTLY ONE STOREY. An x-over-y
+                # cap is a top face PLUS a wall band, and that band is taller
+                # than a storey - measured on the door column, the cap ate
+                # 1.87 levels and left the opening 4.13 ("your doorway is 4
+                # levels high so the player will hit his forhead", maintainer
+                # 2026-09-02). storey_tile is one course exactly, and the
+                # deck's own top face is composited below this loop, so the
+                # two together are one level of roof and the doorway stands
+                # the full 5. Dropping the course instead opened a sliver of
+                # grass through the top of every door - the band is what
+                # closes the roofline.
+                t = cap if f == dl else mid
+                if f == dl and (doorway or behind):
+                    # ONE LEVEL OF ROOF OVER A DOORWAY, NOT TWO. A cap tile is
+                    # a top-face diamond PLUS a storey band, 45 px of opaque
+                    # art. Over the wall ring the band is hidden by the course
+                    # below it and only the diamond reads; over a DOORWAY
+                    # there is no course below, so the whole 45 px hangs into
+                    # the opening and costs the player a level - measured, the
+                    # doorway stood 4.13 levels of a 6-level house
+                    # (maintainer 2026-09-02: "your doorway is 4 levels high
+                    # so the player will hit his forhead ... the roof over the
+                    # doorway is 2 levels and should only be 1"). Cropping the
+                    # band away leaves the diamond, which IS the one level of
+                    # roof he asked for, and still closes the roofline -
+                    # dropping the tile entirely opened a sliver of grass.
+                    # SWEPT AND MEASURED on the smithy door, in levels of
+                    # clear opening against a 6-level wall:
+                    #     uncropped            4.13
+                    #     TOP_Y + 2*DY (38px)  4.67
+                    #     TOP_Y + DY + 8 (32)  5.07   <- shipped
+                    # 32 is the largest crop that reaches 5, so it takes the
+                    # least off the diamond.
+                    t = t.crop((0, 0, t.width, TOP_Y + DY + 8))
                 img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
             # a roof, a bridge and a cave lid are GROUND too: the slab top
             # wears the maintainer's base tile set like any other surface
