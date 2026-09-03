@@ -670,6 +670,21 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     full-height column band). Dev A/B:
     `__ml.groundPartial(on)`, `__ml.groundPrefetch(on)`; `__ml.groundScroll()`
     reports the cell-repaint counters and the ring's queue.
+  - **THE GROUND BACKGROUND IS FILLED WITH A ONE-TEXEL OVERSCAN** (`fillGround`).
+    `DynamicTexture.fill(rgb, a)` with no rect does NOT cover the texture's last
+    row — it converts the rect into the renderer's projection and the round trip
+    lands a hair short (measured at the maintainer's geometry: `fully
+    TRANSPARENT rows: [H-1]`, `fully TRANSPARENT cols: []` — VERTICAL ONLY).
+    That row was the "straight horizontal lines" (maintainer 2026-09-03). It is
+    born 512 px below the view, but the SCROLL copies the kept picture up by the
+    anchor delta, so it lands at H-1-sy — an interior row the exposed band
+    (H-sy…H-1) never repaints — where the fill under it shows as a full-width
+    0x181c28 line, carried forward opaque from then on. One per southward latch,
+    two or three riding up a ~780 px view at a 256 px step, which is what he
+    photographed. Fixed by filling `(-1, -1, W+2, H+2)`: over-covering a WHOLE-
+    texture background fill is free (it can only paint background where
+    background belongs, and the viewport clips the rest) — the exact opposite of
+    a BAND fill, which must be texel-exact and for that reason does not exist.
   - **THE BAND IS PAINTED IN SLICES, AND THE RING COMPOSES AHEAD (#9).** The
     scroll made the ground redraw cheaper but left it a SPIKE: measured with a
     per-frame hitch recorder on a held-key straight run into fresh terrain
@@ -726,13 +741,17 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     ground rework off in one page load — no scroll, no sliced band, no landing
     repaints, no prefetch, every latch a full paint — so an artefact reported
     from the phone can be attributed or cleared without a harness reproduction.
-    Added because two artefacts (background-coloured vertical lines, then
-    horizontal ones) were reported from the phone and did NOT reproduce here
-    across teleport walks, continuous camera motion and the maintainer's exact
-    device geometry: the harness runs at renderScale 1 and cannot see whatever
-    the device does. KNOWN AND UNRELATED: the ground texture's LAST ROW is black
-    after even a forced full paint (measured; the whole-texture fill misses it)
-    — it sits 512 px outside the view and has never been visible.
+    Added while two artefacts (background-coloured vertical lines, then
+    horizontal ones) were reported from the phone and had not yet reproduced
+    here. BOTH ARE NOW FOUND AND FIXED, and the second was the texture's LAST
+    ROW all along — the thing this note used to dismiss as "known and unrelated,
+    512 px outside the view". It is 512 px outside the view only until the next
+    SCROLL copies the kept picture past it; see `fillGround`. Two lessons worth
+    more than the bug: an unpainted edge texel in a texture that SCROLLS is
+    never off-screen, it is merely early; and reproduce a one-pixel report at
+    the maintainer's EXACT device geometry (`deviceScaleFactor: 2.75` — it sets
+    renderScale, the camera zoom and the texel grid) and judge it on the
+    SCREENSHOT, never on a render-texture dump.
     Dev A/B: `__ml.groundSlices(on)` (off = the whole band in the scroll's own
     frame); `__ml.hitch()` returns the worst frames of a run with each one's
     profiled sections, its compositions, and `other` = frame total minus every

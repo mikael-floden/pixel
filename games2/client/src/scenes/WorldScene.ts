@@ -12784,7 +12784,7 @@ export class WorldScene extends Phaser.Scene {
     // viewport, scales the rect by canvas/texture and floors it — up to 1/scale
     // texels off per edge, measured as a 3 px navy seam bleeding into the kept
     // picture at 412/1436. So the bands get no fill of their own.)
-    next.fill(bg, 1);
+    this.fillGround(next, bg);
     // The kept picture, moved: old texel (px, py) is world (prevAx + px,
     // prevAy + py), which in the new texture is (px - sx, py - sy). Opaque, so
     // under NORMAL blending it replaces the fill exactly.
@@ -14044,6 +14044,37 @@ export class WorldScene extends Phaser.Scene {
     return (c << 16) | (c << 8) | c;
   }
 
+  /** THE BACKGROUND UNDER THE WHOLE GROUND TEXTURE, overscanned by one texel.
+   *
+   *  `DynamicTexture.fill(rgb, a)` with NO rect does not cover the texture's
+   *  LAST ROW. It converts the rect into the renderer's projection
+   *  (`height * renderer.height / texture.height`, Phaser 3.90
+   *  DynamicTexture.js) and the round trip lands a hair short, so the bottom
+   *  texel row is left at alpha 0. Measured at the maintainer's geometry:
+   *  `fully TRANSPARENT rows: [H-1]`, `fully TRANSPARENT cols: []` — the loss
+   *  is VERTICAL ONLY, which is the whole shape of the bug below.
+   *
+   *  That one row is the maintainer's "straight horizontal lines" (2026-09-03).
+   *  It is invisible where it is born — GROUND_MARGIN puts it ~512 px below the
+   *  view — but the SCROLL copies the kept picture up by the anchor delta, so
+   *  it lands at H-1-sy, an INTERIOR row that the exposed band (rows H-sy…H-1)
+   *  never repaints. There the whole-texture fill under it shows through as a
+   *  full-width 0x181c28 line, and because the copy is opaque from then on the
+   *  row is carried forward for good. Every southward latch injects another;
+   *  at a 256 px step under a ~780 px view, two or three ride up the screen at
+   *  once — which is what he photographed. There is no vertical twin because no
+   *  column is ever left short, and that is why the lines went horizontal-only
+   *  once the fractional-crop cause of the vertical ones was fixed.
+   *
+   *  Overscanning every edge by a texel closes it. Over-covering a WHOLE-texture
+   *  background fill is free: it can only paint background where background
+   *  already belongs, and the viewport clips the rest. This is the exact
+   *  opposite of a BAND fill, which must be texel-exact and for that reason does
+   *  not exist — see scrollTiles3Ground. */
+  private fillGround(rt: Phaser.GameObjects.RenderTexture, rgb: number): void {
+    rt.fill(rgb, 1, -1, -1, rt.width + 2, rt.height + 2);
+  }
+
   private redrawGround() {
     if (!this.world || !this.groundRT) return;
     const cam = this.cameras.main;
@@ -14104,7 +14135,7 @@ export class WorldScene extends Phaser.Scene {
       this.groundSliceCtx = null;
       rt.setPosition(ax, ay);
       rt.clear();
-      rt.fill(mask ? 0x000000 : 0x181c28, 1);
+      this.fillGround(rt, mask ? 0x000000 : 0x181c28);
       const win = this.t3groundWindow(ax, ay, 0, 0, rt.width, rt.height);
       this.groundClip = null;
       this.drawTiles3Ground(rt, ax, ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, top);
@@ -14114,7 +14145,7 @@ export class WorldScene extends Phaser.Scene {
     }
     rt.setPosition(ax, ay);
     rt.clear();
-    rt.fill(mask ? 0x000000 : 0x181c28, 1);
+    this.fillGround(rt, mask ? 0x000000 : 0x181c28);
 
     // Covered rect in virtual-canvas coords, padded for tile size + max lift.
     const x0 = ax - tile;
