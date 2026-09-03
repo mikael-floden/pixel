@@ -707,6 +707,18 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     phone against a 16.7 ms budget — spread across the sliced band, the ring,
     the occluder+scenery rebuild and the per-frame fog/lit-copy pass. Reducing
     that floor, not spreading it, is the open work.
+    **`?ground=legacy` IS THE BISECT** (remembered in localStorage
+    `ml-ground-path`; `?ground=fast` restores). It turns the whole 2026-09-02/03
+    ground rework off in one page load — no scroll, no sliced band, no landing
+    repaints, no prefetch, every latch a full paint — so an artefact reported
+    from the phone can be attributed or cleared without a harness reproduction.
+    Added because two artefacts (background-coloured vertical lines, then
+    horizontal ones) were reported from the phone and did NOT reproduce here
+    across teleport walks, continuous camera motion and the maintainer's exact
+    device geometry: the harness runs at renderScale 1 and cannot see whatever
+    the device does. KNOWN AND UNRELATED: the ground texture's LAST ROW is black
+    after even a forced full paint (measured; the whole-texture fill misses it)
+    — it sits 512 px outside the view and has never been visible.
     Dev A/B: `__ml.groundSlices(on)` (off = the whole band in the scroll's own
     frame); `__ml.hitch()` returns the worst frames of a run with each one's
     profiled sections, its compositions, and `other` = frame total minus every

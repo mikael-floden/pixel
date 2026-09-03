@@ -733,6 +733,17 @@ const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
  *  player/monsters/npcs/other scenery"). Its own painter line is kept as a
  *  small offset so two overlapping rugs still sort against each other. */
 const SCENERY_FLAT_DEPTH = -500_000;
+/** `?ground=legacy` (remembered) selects the pre-rework ground path — see the
+ *  `groundScroll` field. Returns TRUE for the current path. */
+function groundPathFast(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("ground");
+    if (q === "legacy" || q === "fast") localStorage.setItem("ml-ground-path", q);
+    return (localStorage.getItem("ml-ground-path") ?? "fast") !== "legacy";
+  } catch {
+    return true; // storage or location blocked: the shipping path
+  }
+}
 /** How far AHEAD the prefetch reaches when the direction of travel is not yet
  *  known (the first paint after a join or a teleport) — see t3armRing. */
 const GROUND_RING = 512;
@@ -1617,7 +1628,14 @@ export class WorldScene extends Phaser.Scene {
   private groundScratch?: Phaser.GameObjects.RenderTexture;
   private groundAnchor: { ax: number; ay: number; mask: Map<number, number> | null; top: number } | null = null;
   private groundClip: { x0: number; y0: number; x1: number; y1: number } | null = null;
-  private groundScroll = true;
+  /* THE GROUND PATH, SWITCHABLE FROM THE PHONE. `?ground=legacy` turns the
+   * whole 2026-09-02/03 ground rework off — no scroll, no sliced band, no
+   * landing repaints, no prefetch: every camera latch paints the texture in
+   * full, exactly as it did before that work. It is a BISECT the maintainer can
+   * run in one page load: if an artefact survives `?ground=legacy` it is not
+   * from the rework, and if it vanishes it is. Remembered in localStorage
+   * (`ml-ground-path`) so it survives the reload; `?ground=fast` restores. */
+  private groundScroll = groundPathFast();
   private groundLastMode: "full" | "scroll" | "cells" = "full";
   /* THE LANDING REPAINT + THE PREFETCH RING — see onTerrainBatch, repaintTiles3Cells,
    * t3prefetchStep. Which window cells wanted which missing file (rebuilt by every
@@ -1627,8 +1645,8 @@ export class WorldScene extends Phaser.Scene {
   private t3sheetPaths = new Set<string>();
   private groundDirtyCells: number[] = [];
   private repaintGroundPartial = false;
-  private groundPartial = true;
-  private groundPrefetch = true;
+  private groundPartial = groundPathFast();
+  private groundPrefetch = groundPathFast();
   private t3ringQueue: [number, number][] = [];
   private t3ringAt = 0;
   /** The grown window's cell INDICES, for the prune — see t3armRing. */
@@ -1640,7 +1658,7 @@ export class WorldScene extends Phaser.Scene {
   /** The last anchor shift — the direction the world is travelling, which is
    *  the only direction worth prefetching (t3armRing). */
   private groundLastShift = { x: 0, y: 0 };
-  private groundSliced = true;
+  private groundSliced = groundPathFast();
   private groundRedrewThisFrame = false;
   private worldUp = false;
   private groundCellStats = { runs: 0, full: 0, cells: 0, ms: 0 };
