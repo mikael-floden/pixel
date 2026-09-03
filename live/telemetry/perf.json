@@ -1,0 +1,50 @@
+{
+  "format": "nangijala-client-perf@1",
+  "_comment": "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here by the server. The maintainer plays on a phone and tests in production; the headless harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these are the only honest numbers for the paths that matter. Newest last; the file keeps the most recent reports only.",
+  "updated_at": "2026-09-03T09:18:53.926Z",
+  "reports": [
+    {
+      "id": "2026-09-03T09-18-53-926Z-i0k047",
+      "at": "2026-09-03T09:18:53.926Z",
+      "build": "ab0b23d2dfd02ee637dca340691fbf18fe149f25",
+      "where": "526.8,339.0",
+      "tod": "Night",
+      "zoom": 1.36,
+      "dpr": 2.23,
+      "view": "1079x1404",
+      "secs": 30,
+      "frames": {
+        "n": 642,
+        "p50": 42.7,
+        "p90": 76.9,
+        "p99": 174.2,
+        "max": 278.4
+      },
+      "sections": {
+        "prefetch": 15.65,
+        "groundSlice": 6.48,
+        "rebuildOccluders": 3.06,
+        "rebuildScenery": 1.07,
+        "redrawGround": 0.9,
+        "repaintCells": 0.78,
+        "avatarLoop": 0.71,
+        "stepNpcs": 0.19
+      },
+      "counts": {
+        "occluders": 2828,
+        "litOccluders": 7,
+        "occluderMeta": 1748,
+        "sceneryImgs": 7,
+        "propImgs": 0,
+        "monsters": 146,
+        "monstersActive": 1,
+        "avatars": 1,
+        "npcs": 33,
+        "displayList": 3483,
+        "textures": 4164,
+        "texturesAdded": 0
+      },
+      "worst": []
+    }
+  ]
+}
