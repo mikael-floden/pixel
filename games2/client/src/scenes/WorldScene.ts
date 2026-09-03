@@ -780,8 +780,30 @@ const GROUND_RING_STEP = 80;
  *  brackets. 384 px gives ~4-8 slices: the JS of a latch lands in 4-8 pieces
  *  while the whole-texture GPU work stays within ~2x the unsliced scroll. */
 const GROUND_SLICE_PX = 384;
+/** What ONE painted slice should cost, and the range the slice size may take to
+ *  hit it. Same lesson as GROUND_RING_MS, same source: `groundSlice` measured
+ *  6.48 ms per frame on the maintainer's phone against ~1.7 ms here, because a
+ *  384 px slice is a SIZE budget and size does not predict cost across devices.
+ *  The size is now steered by the measured milliseconds of the slices actually
+ *  painted, so the same code lands near the target on both machines. */
+const GROUND_SLICE_MS = 2;
+const GROUND_SLICE_MIN = 96;
+const GROUND_SLICE_MAX = 768;
 /** Composed boundary/plate textures the PREFETCH RING may build per frame. */
 const GROUND_RING_COMPOSE = 3;
+/** THE PREFETCH'S REAL BUDGET: MILLISECONDS, not counts.
+ *
+ *  Measured on the maintainer's own phone (live/telemetry/perf.json, the client
+ *  beacon, 2026-09-03): `prefetch` cost **15.65 ms per frame** in his worst
+ *  window and 5.96 in the next — on a 16.7 ms budget, the prefetch ALONE could
+ *  exceed the whole frame. The same section measures ~1.7 ms here, so the
+ *  count-based budget above is roughly NINE TIMES too large on the device that
+ *  matters, which is exactly what a count tuned on a dev box does.
+ *
+ *  A time budget adapts by construction: a phone gets fewer cells and one
+ *  composition, this machine still gets its eighty. The counts stay as upper
+ *  bounds so a pathologically cheap frame cannot run away. */
+const GROUND_RING_MS = 2;
 /** Files in flight for the DEFERRED animation batch — see loadDeferredAnims.
  *  Dev A/B: localStorage `ml-deferred-parallel` overrides (0 = the loader's own). */
 const DEFERRED_PARALLEL = 2;
@@ -1834,6 +1856,9 @@ export class WorldScene extends Phaser.Scene {
   private groundScratch?: Phaser.GameObjects.RenderTexture;
   private groundAnchor: { ax: number; ay: number; mask: Map<number, number> | null; top: number } | null = null;
   private groundClip: { x0: number; y0: number; x1: number; y1: number } | null = null;
+  /** The slice size in force, steered toward GROUND_SLICE_MS by what slices
+   *  actually cost on THIS device (see t3paintSliceStep). */
+  private groundSlicePx = GROUND_SLICE_PX;
   /* THE GROUND PATH, SWITCHABLE FROM THE PHONE. `?ground=legacy` turns the
    * whole 2026-09-02/03 ground rework off — no scroll, no sliced band, no
    * landing repaints, no prefetch: every camera latch paints the texture in
@@ -13068,7 +13093,7 @@ export class WorldScene extends Phaser.Scene {
       // change a pixel (the same argument the two bands already rest on).
       const vertical = b.y1 - b.y0 >= b.x1 - b.x0;
       const span = vertical ? b.y1 - b.y0 : b.x1 - b.x0;
-      const n = Math.max(1, Math.ceil(span / GROUND_SLICE_PX));
+      const n = Math.max(1, Math.ceil(span / this.groundSlicePx));
       for (let i = 0; i < n; i++) {
         if (vertical) {
           const lo = b.y0 + Math.round(((b.y1 - b.y0) * i) / n);
@@ -13111,8 +13136,18 @@ export class WorldScene extends Phaser.Scene {
     } finally {
       this.groundClip = null;
     }
+    const sliceMs = performance.now() - t0;
     this.groundSliceStats.slices++;
-    this.groundSliceStats.ms += performance.now() - t0;
+    this.groundSliceStats.ms += sliceMs;
+    /* STEER THE SIZE BY WHAT IT COST. A slice is one clipped pass over a rect,
+     * so cost scales with its area; halving the size roughly halves the frame
+     * it lands on. Geometric, damped, and clamped — an EMA would lag a device
+     * change and a proportional jump would oscillate on one slow slice. */
+    if (sliceMs > GROUND_SLICE_MS * 1.5) {
+      this.groundSlicePx = Math.max(GROUND_SLICE_MIN, Math.round(this.groundSlicePx * 0.7));
+    } else if (sliceMs < GROUND_SLICE_MS * 0.5) {
+      this.groundSlicePx = Math.min(GROUND_SLICE_MAX, Math.round(this.groundSlicePx * 1.15));
+    }
     if (!this.groundSliceQ.length) this.groundSliceCtx = null;
   }
 
@@ -13352,6 +13387,7 @@ export class WorldScene extends Phaser.Scene {
     // those are the frames the player would feel.
     if (this.groundRedrewThisFrame || this.groundSliceQ.length) return;
     const built0 = tex.stats.built;
+    const ringT0 = performance.now();
     const end = Math.min(this.t3ringQueue.length, this.t3ringAt + GROUND_RING_STEP);
     const need = (p: string | null | undefined) => {
       if (p) load.need(p);
@@ -13371,8 +13407,11 @@ export class WorldScene extends Phaser.Scene {
        * ms of the 60-98 ms spike). Built here, ahead of the camera and budgeted
        * per frame, they are cache hits by the time the band is painted. The ops
        * are discarded; only the textures they build are wanted. */
-      if (tex.stats.built - built0 >= GROUND_RING_COMPOSE) {
-        i++; // budget spent — resume here next frame
+      // BUDGET SPENT — resume here next frame. The MILLISECOND test is the one
+      // that binds on a phone (see GROUND_RING_MS); the compose count is an
+      // upper bound for machines fast enough never to reach it.
+      if (tex.stats.built - built0 >= GROUND_RING_COMPOSE || performance.now() - ringT0 >= GROUND_RING_MS) {
+        i++;
         break;
       }
       if (b) this.t3Try(`prewarm boundary ${col},${row}`, () => tex.opsForBoundary(b), null);
