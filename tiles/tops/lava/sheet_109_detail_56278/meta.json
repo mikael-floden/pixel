@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "lava",
+  "flavour": "detail",
+  "index": 109,
+  "seed": 56278,
+  "prompt": "lava, a charred stone in the middle, lava all around the edge",
+  "palette_top": "#fd5a02",
+  "tile_id": "917c2556-df91-4e98-b373-8d61ee504ab1",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:09:49+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 28,
+        "dominant_share": 0.1159,
+        "px": 923
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.0942,
+        "px": 924
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.1024,
+        "px": 977
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.1148,
+        "px": 923
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1099,
+        "px": 1010
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1353,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1212,
+        "px": 924
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.0963,
+        "px": 924
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1353,
+        "px": 924
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1002,
+        "px": 958
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.145,
+        "px": 924
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.1775,
+        "px": 924
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.0801,
+        "px": 924
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1213,
+        "px": 923
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.1025,
+        "px": 956
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.1203,
+        "px": 923
+      }
+    ],
+    "mean_colours": 25.0,
+    "mean_dominant_share": 0.117
+  },
+  "motif": "a charred stone",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

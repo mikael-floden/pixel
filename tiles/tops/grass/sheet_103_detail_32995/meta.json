@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grass",
+  "flavour": "detail",
+  "index": 103,
+  "seed": 32995,
+  "prompt": "grass, a dandelion clock in the middle, grass all around the edge",
+  "palette_top": "#14523b",
+  "tile_id": "5a73da8c-b8f9-471c-87f7-8bc751301caa",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T03:59:19+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 18,
+        "dominant_share": 0.6532,
+        "px": 943
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.5418,
+        "px": 958
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.2201,
+        "px": 1013
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.4363,
+        "px": 942
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.4686,
+        "px": 986
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.1429,
+        "px": 1036
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.5673,
+        "px": 943
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2885,
+        "px": 967
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.3542,
+        "px": 1036
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.5678,
+        "px": 951
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.3967,
+        "px": 963
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3064,
+        "px": 953
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4031,
+        "px": 975
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.2122,
+        "px": 1046
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.3638,
+        "px": 973
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.161,
+        "px": 1037
+      }
+    ],
+    "mean_colours": 20.44,
+    "mean_dominant_share": 0.3802
+  },
+  "motif": "a dandelion clock",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

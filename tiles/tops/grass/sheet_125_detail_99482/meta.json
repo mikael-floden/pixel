@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grass",
+  "flavour": "detail",
+  "index": 125,
+  "seed": 99482,
+  "prompt": "grass, a snail shell in the middle, grass all around the edge",
+  "palette_top": "#14523b",
+  "tile_id": "4f732891-8637-4bcf-8d3d-12cbda5cf2e0",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:36:07+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 28,
+        "dominant_share": 0.1564,
+        "px": 1138
+      },
+      {
+        "colours": 30,
+        "dominant_share": 0.142,
+        "px": 1176
+      },
+      {
+        "colours": 30,
+        "dominant_share": 0.167,
+        "px": 1144
+      },
+      {
+        "colours": 31,
+        "dominant_share": 0.2053,
+        "px": 1101
+      },
+      {
+        "colours": 27,
+        "dominant_share": 0.1635,
+        "px": 1205
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.1767,
+        "px": 1217
+      },
+      {
+        "colours": 30,
+        "dominant_share": 0.1742,
+        "px": 1188
+      },
+      {
+        "colours": 31,
+        "dominant_share": 0.2044,
+        "px": 1169
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.2055,
+        "px": 1246
+      },
+      {
+        "colours": 30,
+        "dominant_share": 0.1987,
+        "px": 1218
+      },
+      {
+        "colours": 30,
+        "dominant_share": 0.1663,
+        "px": 1233
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.144,
+        "px": 1174
+      },
+      {
+        "colours": 28,
+        "dominant_share": 0.1627,
+        "px": 1229
+      },
+      {
+        "colours": 30,
+        "dominant_share": 0.1303,
+        "px": 1243
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.1852,
+        "px": 1220
+      },
+      {
+        "colours": 29,
+        "dominant_share": 0.1536,
+        "px": 1172
+      }
+    ],
+    "mean_colours": 29.31,
+    "mean_dominant_share": 0.171
+  },
+  "motif": "a snail shell",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

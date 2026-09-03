@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "grass",
+  "flavour": "detail",
+  "index": 109,
+  "seed": 22106,
+  "prompt": "grass, a fallen twig in the middle, grass all around the edge",
+  "palette_top": "#14523b",
+  "tile_id": "b96feb13-e4d3-432d-8e2c-8879ba1a8d9b",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:09:37+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 23,
+        "dominant_share": 0.715,
+        "px": 951
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6828,
+        "px": 971
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.7471,
+        "px": 945
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6415,
+        "px": 954
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.75,
+        "px": 932
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.7102,
+        "px": 980
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.7225,
+        "px": 944
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.6348,
+        "px": 961
+      },
+      {
+        "colours": 23,
+        "dominant_share": 0.7121,
+        "px": 962
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.698,
+        "px": 957
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.6629,
+        "px": 967
+      },
+      {
+        "colours": 25,
+        "dominant_share": 0.711,
+        "px": 955
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.6758,
+        "px": 953
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.7203,
+        "px": 944
+      },
+      {
+        "colours": 24,
+        "dominant_share": 0.6801,
+        "px": 966
+      },
+      {
+        "colours": 22,
+        "dominant_share": 0.667,
+        "px": 961
+      }
+    ],
+    "mean_colours": 20.94,
+    "mean_dominant_share": 0.6957
+  },
+  "motif": "a fallen twig",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}

@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "black_rock",
+  "flavour": "detail",
+  "index": 115,
+  "seed": 29884,
+  "prompt": "black rock, a rust stain in the middle, black rock all around the edge",
+  "palette_top": "#1e1d1e",
+  "tile_id": "10d8907e-7cea-477c-8e84-eeb826b3c316",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:19:20+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 14,
+        "dominant_share": 0.3961,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3723,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.4729,
+        "px": 924
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.4004,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.2933,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.2716,
+        "px": 924
+      },
+      {
+        "colours": 18,
+        "dominant_share": 0.4091,
+        "px": 924
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.4329,
+        "px": 924
+      },
+      {
+        "colours": 17,
+        "dominant_share": 0.4221,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.316,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.4102,
+        "px": 924
+      },
+      {
+        "colours": 19,
+        "dominant_share": 0.3452,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.3366,
+        "px": 924
+      },
+      {
+        "colours": 20,
+        "dominant_share": 0.5184,
+        "px": 924
+      },
+      {
+        "colours": 8,
+        "dominant_share": 0.5476,
+        "px": 924
+      },
+      {
+        "colours": 6,
+        "dominant_share": 0.5087,
+        "px": 924
+      }
+    ],
+    "mean_colours": 17.25,
+    "mean_dominant_share": 0.4033
+  },
+  "motif": "a rust stain",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}
