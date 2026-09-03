@@ -2809,6 +2809,24 @@ export class WorldScene extends Phaser.Scene {
          * layers at once: the cells the nav plans around AND the real footprint
          * ellipses the body collides with (see drawCollisionDebug). */
         { label: "collision (hitbox)", act: () => this.toggleCollision(), get: () => this.collisionOn },
+        /* SHADOWS: on / off / RED — the maintainer's instrument for telling a
+         * SHADOW from a TILE (2026-09-03, on the dotted zigzag: "make a
+         * settings button that switches between shadows enabled, disabled, red
+         * shadows. This will make it easy to see what is a shadow and what is
+         * a tile"). A line that SURVIVES "off" is painted into the ground
+         * texture; a line that turns RED is the light pass. It settles in one
+         * tap what I spent a day inferring from screenshots. */
+        {
+          label: "shadows",
+          act: () => {
+            const n = this.night;
+            if (!n) return;
+            n.shadowDbg = (n.shadowDbg + 1) % 3;
+            this.chat.addLog("—", `shadows: ${["on", "OFF", "RED"][n.shadowDbg]}`);
+          },
+          get: () => !!this.night && this.night.shadowDbg !== 0,
+          state: () => ["on", "off", "red"][this.night?.shadowDbg ?? 0],
+        },
         /* THE PERF BEACON, as a BUTTON — because the maintainer plays from an
          * INSTALLED HOME-SCREEN APP, which has no address bar, so `?perf=1`
          * cannot be typed there at all (his question, 2026-09-03). Same law as

@@ -172,6 +172,7 @@ uniform float uCloud;     // weather: cloud cover 0..1 (world-anchored drifting 
 uniform float uAurora;    // aurora night 0..1: northern-light curtains ADD colour to the ambient
 uniform float uFlip;      // 1 = invert fragment y (GL bottom-up), 0 = direct
 uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
+uniform float uShadowDbg; // 0 = normal, 1 = shadows OFF, 2 = shadows RED (settings switch)
 uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
@@ -718,6 +719,7 @@ void main() {
   // with the point lights' soft penumbra family; faces turned away from
   // the sun shade via a Lambert gate. Point lights still add in shadow.
   float sunF = 1.0;
+  float dbgShadow = 0.0; // see the shadow debug switch below
   if (uSun.w > 0.001) {
     // Terrain marches multiplicatively (long straight ridges project as
     // TERRAIN: the original multiplicative march, byte-identical to the
@@ -784,6 +786,15 @@ void main() {
     }
     float sunShare = 0.45 * uSun.w; // the sun's slice of the phase ambient
     sunF = (1.0 - sunShare) + sunShare * clamp(sunVis, 0.0, 1.0);
+    /* THE SHADOW DEBUG SWITCH (settings: "shadows"). The maintainer's tool for
+     * telling a SHADOW from a TILE: a dotted line that survives mode 1 is
+     * painted into the ground texture, and one that turns red in mode 2 is
+     * this pass. Cheap and exact — the same term either way, only neutralised
+     * or reported. */
+    if (uShadowDbg > 0.5) {
+      dbgShadow = 1.0 - clamp(sunVis, 0.0, 1.0); // how shadowed this pixel is
+      sunF = 1.0;                                 // and never darken by it
+    }
   }
   // Cloud shadows ride between the sun and the ground: world-anchored blobs
   // drifting on the wind, shading the ambient like the sun march does. The
@@ -1080,6 +1091,12 @@ void main() {
   // sitting pinned at the saturation ceiling. No-op (1.0) for non-emitters.
   light *= emSelf;
 
+  // MODE 2 paints the shadow itself, over the unshadowed scene, so what is a
+  // shadow is unmistakable and what is a tile is untouched.
+  if (uShadowDbg > 1.5 && dbgShadow > 0.002) {
+    gl_FragColor = vec4(mix(min(light, vec3(1.25)), vec3(1.6, 0.0, 0.0), clamp(dbgShadow * 1.6, 0.0, 1.0)), 1.0);
+    return;
+  }
   gl_FragColor = vec4(min(light, vec3(1.25)), 1.0);
 }
 `;
@@ -1767,6 +1784,11 @@ export class NightLights {
   // edge at night (maintainer, device screenshot).
   spanScale = 1.02;
   testPattern = 0; // 1 = world-y gradient, 2 = cell grid vs art tiles
+  /** Settings switch "shadows": 0 normal, 1 off, 2 red. Tells a SHADOW from a
+   *  TILE at a glance — the maintainer's own instrument for the dotted zigzag,
+   *  and the right one: a line that survives mode 1 is in the ground texture,
+   *  a line that turns red in mode 2 is this pass. */
+  shadowDbg = 0;
 
   constructor(
     scene: Phaser.Scene,
@@ -1844,6 +1866,7 @@ export class NightLights {
       uAurora: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
       uTest: { type: "1f", value: 0 },
+      uShadowDbg: { type: "1f", value: 0 },
       // Animation clock (seconds). MUST be driven every frame from the SAME
       // clock as the JS emission layers (stamps/lit copies, scene.time.now/
       // 1000) or the shader floor/fire flicker either freezes (the long-
@@ -3101,6 +3124,7 @@ export class NightLights {
     // (blend rule below keys off >= 3) — a screenshot then reads the RAW
     // light field, free of the art underneath.
     s.setUniform("uTest.value", this.testPattern === 5 ? 0 : this.testPattern);
+    s.setUniform("uShadowDbg.value", this.shadowDbg);
     this.overlay?.setFlipY(this.overlayFlip);
     // Raw-readback test mode draws opaque (multiply would mix in the art).
     this.overlay?.setBlendMode(
