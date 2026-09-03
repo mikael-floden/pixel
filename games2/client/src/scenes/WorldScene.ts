@@ -2038,6 +2038,9 @@ export class WorldScene extends Phaser.Scene {
    * full paint, extended by band paints); the cells a landed batch made drawable;
    * the ring of cells beyond the texture whose art is asked for ahead of time. */
   private t3missing = new Map<string, Set<number>>();
+  /** Settings -> "ground fill": paint the ground background MAGENTA so a hole is
+   *  unmistakable on a phone screenshot. See groundBg. */
+  private groundFillDbg = false;
   private t3sheetPaths = new Set<string>();
   private groundDirtyCells: number[] = [];
   private repaintGroundPartial = false;
@@ -2898,6 +2901,20 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => !!this.night && this.night.dbgOverlays !== 0,
           state: () => ["all", "no fog", "no mist", "none"][this.night?.dbgOverlays ?? 0],
+        },
+        /* THE MAINTAINER'S PINK TEST — his idea, and it is what found the
+         * landing-repaint stamp. A zigzag that turns MAGENTA is a hole; one that
+         * stays dark is painted. Forces a full repaint so the answer is
+         * immediate. */
+        {
+          label: "ground fill",
+          act: () => {
+            this.groundFillDbg = !this.groundFillDbg;
+            this.chat.addLog("—", `ground fill: ${this.groundFillDbg ? "PINK (a hole shows magenta)" : "normal"}`);
+            this.repaintWorld();
+          },
+          get: () => this.groundFillDbg,
+          state: () => (this.groundFillDbg ? "pink" : "normal"),
         },
         /* THE PERF BEACON, as a BUTTON — because the maintainer plays from an
          * INSTALLED HOME-SCREEN APP, which has no address bar, so `?perf=1`
@@ -13448,7 +13465,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.groundScrollLog.length > 16) this.groundScrollLog.shift();
     const W = cur.width;
     const H = cur.height;
-    const bg = mask ? 0x000000 : 0x181c28;
+    const bg = this.groundBg(mask);
     next.setPosition(ax, ay);
     next.clear();
     // The background under everything, as the full paint lays it: a WHOLE-
@@ -13682,16 +13699,6 @@ export class WorldScene extends Phaser.Scene {
     }
     const mask = a.mask;
     const cuts = mask ? this.indoorCut : null;
-    const bgKey = mask ? "ground-bg-black" : "ground-bg-navy";
-    if (!this.textures.exists(bgKey)) {
-      const cv = document.createElement("canvas");
-      cv.width = 1;
-      cv.height = 1;
-      const g = cv.getContext("2d")!;
-      g.fillStyle = mask ? "#000000" : "#181c28";
-      g.fillRect(0, 0, 1, 1);
-      this.textures.addCanvas(bgKey, cv)?.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    }
     /* THE CLIP IS THE STAMP GROWN BY `GROUND_SEAM`, and that is what keeps the
      * repaint from eating a texel of its own border.
      *
@@ -13719,7 +13726,34 @@ export class WorldScene extends Phaser.Scene {
       y1: Math.min(H, y1 + GROUND_SEAM),
     };
     this.groundLastRect = { stamp: { x0, y0, x1, y1 }, clip: { ...b }, W, H, cells: cells.length };
-    rt.stamp(bgKey, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
+    /* NO BACKGROUND STAMP. This is the maintainer's beach zigzag (2026-09-03),
+     * and the comment above already described the mechanism without drawing the
+     * conclusion: a 1x1 texture scaled to the rect goes through the SAME
+     * projection machinery this file documents as NOT texel-exact — measured 3
+     * px off at 412/1436 — while the clip that repairs it is grown by
+     * GROUND_SEAM = 1. One texel of margin against a three-texel spill, and the
+     * spill lands where the replay can never paint it back: a one-texel line of
+     * bare 0x181c28 along the rect's edge. The rects follow CELL BOUNDARIES and
+     * this pass runs WHEREVER ART LANDS, so the lines accumulate into a lattice
+     * on the tile grid — which is why it is intermittent, why tabbing out and
+     * in brings it back SMALLER as more art lands, and why the_island2 never
+     * shows it (one committed atlas, every tile resident, almost no landing
+     * repaints) while a maps3 world streams plates per file.
+     *
+     * THE STAMP IS NOT NEEDED. The replay below redraws the terrain over the
+     * whole rect and the plate lattice is gapless (measured: 0 uncovered
+     * texels), so every texel of the rect is repainted by art. The only case
+     * the stamp served is a cell whose art STILL has not landed — and there,
+     * keeping the previous coherent pixels is strictly better than laying bare
+     * fill: it is the same principle as this repo's cache law, a stale whole
+     * picture over a mixed one. And this pass only ever runs on ART LANDING,
+     * where the new picture is strictly MORE complete than what is there; every
+     * caller that changes state (the indoor cut, a resize, a landed hitbox doc)
+     * goes through repaintWorld() and a full paint, which still fills.
+     *
+     * Raising GROUND_SEAM instead was rejected: it repairs a spill of a size
+     * nothing measures or bounds, and a stamp that cannot spill needs no
+     * repair. Removing an operation beats widening a patch. */
     const win = this.t3groundWindow(a.ax, a.ay, b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
     this.groundClip = b;
     try {
@@ -14887,6 +14921,20 @@ export class WorldScene extends Phaser.Scene {
    *  returns the image unflipped and reads as a missing edge row. An earlier
    *  round mistook that readback for a real defect and overscanned this fill to
    *  "fix" it; the overscan was a no-op and the row it chased was the probe. */
+  /** THE GROUND'S BACKGROUND COLOUR — or MAGENTA while the debug switch is on.
+   *
+   *  The maintainer's own instrument (2026-09-03): "lets say we clear the screen
+   *  with pink before we draw. Then we know if the pixels are still pink it
+   *  means the black border is the pink background." It settles in ONE
+   *  screenshot what a day of colour arithmetic could not: a line that turns
+   *  MAGENTA is a HOLE — nothing painted there — while a line that stays dark is
+   *  something drawn (a wall band, a seam, or a full-screen pass). Same shape of
+   *  tool as his shadows switch, and it found this bug. */
+  private groundBg(mask: boolean): number {
+    if (this.groundFillDbg) return 0xff00ff;
+    return mask ? 0x000000 : 0x181c28;
+  }
+
   private fillGround(rt: Phaser.GameObjects.RenderTexture, rgb: number): void {
     rt.fill(rgb, 1);
   }
@@ -14951,7 +14999,7 @@ export class WorldScene extends Phaser.Scene {
       this.groundSliceCtx = null;
       rt.setPosition(ax, ay);
       rt.clear();
-      this.fillGround(rt, mask ? 0x000000 : 0x181c28);
+      this.fillGround(rt, this.groundBg(mask));
       const win = this.t3groundWindow(ax, ay, 0, 0, rt.width, rt.height);
       this.groundClip = null;
       this.drawTiles3Ground(rt, ax, ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, top);
@@ -14961,7 +15009,7 @@ export class WorldScene extends Phaser.Scene {
     }
     rt.setPosition(ax, ay);
     rt.clear();
-    this.fillGround(rt, mask ? 0x000000 : 0x181c28);
+    this.fillGround(rt, this.groundBg(mask));
 
     // Covered rect in virtual-canvas coords, padded for tile size + max lift.
     const x0 = ax - tile;
