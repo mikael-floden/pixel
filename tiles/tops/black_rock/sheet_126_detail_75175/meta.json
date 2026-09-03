@@ -1,0 +1,132 @@
+{
+  "schema": "tiles3/tops@1",
+  "kind": "top_only",
+  "wall_is_meaningless": true,
+  "not_a_candidate_for": "x over y",
+  "ground": "black_rock",
+  "flavour": "detail",
+  "index": 126,
+  "seed": 75175,
+  "prompt": "black rock, a sunken stone in the middle, black rock all around the edge",
+  "palette_top": "#1e1d1e",
+  "tile_id": "57e4e218-71da-457d-8e75-49bd806fef5e",
+  "n_tiles": 16,
+  "tiles": [
+    "tile_00.webp",
+    "tile_01.webp",
+    "tile_02.webp",
+    "tile_03.webp",
+    "tile_04.webp",
+    "tile_05.webp",
+    "tile_06.webp",
+    "tile_07.webp",
+    "tile_08.webp",
+    "tile_09.webp",
+    "tile_10.webp",
+    "tile_11.webp",
+    "tile_12.webp",
+    "tile_13.webp",
+    "tile_14.webp",
+    "tile_15.webp"
+  ],
+  "settings": {
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "view_angle": 28.0,
+    "depth_ratio": 0.5,
+    "tile_type": "isometric",
+    "flat_top_px": 2,
+    "outline_mode": "segmentation"
+  },
+  "usd": 0.096,
+  "created": "2026-09-03T04:40:15+00:00",
+  "top_face": {
+    "per_tile": [
+      {
+        "colours": 10,
+        "dominant_share": 0.5,
+        "px": 924
+      },
+      {
+        "colours": 12,
+        "dominant_share": 0.5022,
+        "px": 924
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.4686,
+        "px": 924
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.4411,
+        "px": 925
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.4935,
+        "px": 924
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.3961,
+        "px": 924
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.3593,
+        "px": 924
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.4524,
+        "px": 924
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.3766,
+        "px": 924
+      },
+      {
+        "colours": 9,
+        "dominant_share": 0.4015,
+        "px": 924
+      },
+      {
+        "colours": 11,
+        "dominant_share": 0.3788,
+        "px": 924
+      },
+      {
+        "colours": 16,
+        "dominant_share": 0.4102,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.46,
+        "px": 924
+      },
+      {
+        "colours": 10,
+        "dominant_share": 0.3214,
+        "px": 924
+      },
+      {
+        "colours": 21,
+        "dominant_share": 0.3366,
+        "px": 924
+      },
+      {
+        "colours": 13,
+        "dominant_share": 0.3333,
+        "px": 924
+      }
+    ],
+    "mean_colours": 11.75,
+    "mean_dominant_share": 0.4145
+  },
+  "motif": "a sunken stone",
+  "motif_source": "tiles/config/details.json",
+  "walkable": true
+}
