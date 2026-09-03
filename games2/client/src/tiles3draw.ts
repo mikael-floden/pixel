@@ -1018,6 +1018,25 @@ export class Tiles3Textures {
     return out;
   }
 
+  /** A FLAT DIAMOND OF THE CELL'S OWN GROUND COLOUR, to draw UNDER its art.
+   *
+   *  Insurance against a hole. Whatever fails to draw above it — a dropped op,
+   *  a cell the pass never issued, a one-texel seam nobody has explained — then
+   *  exposes the ground's own colour instead of the render texture's
+   *  background, which is what the maintainer photographs as a dotted dark line
+   *  along tile edges. It cannot change a correct pixel: the art above is
+   *  opaque across its whole silhouette.
+   *
+   *  Uses the liquid diamond, which is already a cached flat diamond per RGB
+   *  and exactly the right shape (a plate's own top-face mask). */
+  groundUnderlay(cell: Tiles3Cell): Tiles3Blit | null {
+    const g = this.o.groundTypes[cell.ground];
+    const hex = g?.palette?.top ?? g?.base_color;
+    if (!hex) return null;
+    const key = this.liquid(hexRGB(hex));
+    return { key, x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: TILE, sh: TILE, role: "surface" };
+  }
+
   /** The composed boundary as a drawable blit, or null. */
   opsForBoundary(b: Tiles3Boundary): Tiles3Blit | null {
     const op = boundaryOp(b, this.o.seam !== false);

@@ -14177,6 +14177,36 @@ export class WorldScene extends Phaser.Scene {
       // was pure overdraw, and render3 composites exactly one tile here
       // (`wang_surface()`). A raised cell still draws its wall column first and
       // wears the transition on the cap, which is render3's own order.
+      /* THE GROUND'S OWN COLOUR UNDER EVERY FLAT CELL, FIRST.
+       *
+       * A hole in this texture is a texel no op painted, and the maintainer's
+       * dots are exactly that: measured off his screenshot, the ground fill
+       * 0x181c28 in ONE-TEXEL runs along tile edges — and when the fill colour
+       * was changed the dots changed with it, which is direct proof. The plate
+       * lattice is provably gapless when every op draws (0 uncovered texels),
+       * so a hole means an op did not draw; three days did not establish which
+       * op or why, and it does not reproduce on this machine at his exact
+       * geometry, screen or texture.
+       *
+       * So stop needing to know. A flat diamond of the cell's OWN top colour,
+       * drawn before its art, means whatever fails to draw above it exposes the
+       * ground's colour instead of the background: a missing tile reads as flat
+       * ground, and a one-texel gap is invisible. It cannot change a correct
+       * pixel — the art is opaque over its whole silhouette and paints straight
+       * over this.
+       *
+       * CHEAP: `liquid()` caches one flat diamond per RGB (it is how water is
+       * drawn), so this is one extra batchDrawFrame per flat cell against a
+       * pass whose draw calls measured ~20% of its cost. Skipped for liquids,
+       * which already ARE that diamond, and for raised cells, whose wall stack
+       * is drawn from its own art. */
+      if (cell.kind === "field" && cell.art?.kind !== "liquid") {
+        const under = this.t3Try(`under ${col},${row}`, () => tex.groundUnderlay(cell), null);
+        if (under) {
+          this.t3Blit(rt, under, ax, ay, tint);
+          stats.blits++;
+        }
+      }
       if (bop && cell.kind === "field") {
         this.t3Blit(rt, bop, ax, ay, tint);
         stats.blits++;
