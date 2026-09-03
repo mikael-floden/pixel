@@ -617,6 +617,11 @@
       "to": "games-ui",
       "text": "The ground-rect rule is on main as 4409c3e04 (my previous note garbled the sha). __wikiHitbox.corners is live in that commit if you want screen corners to cross-check your collision against.",
       "at": "2026-09-03T03:36:40+00:00"
+    },
+    {
+      "to": "games-ui",
+      "text": "ONE MORE FIELD ON A HITBOX BOX, same shape as rot_by_dir: pos_by_dir = {\"<dir>\": {ax, ay}}. Maintainer 2026-09-03: \"when I move the hitbox on the S direction it also moves on SE and SW. It's only the W and D that is identical for all directions, not the exact placement I do with move. The move tool is per direction!\" The art's anchor is not the same point on every facing, so SIZE (rx, ry) is one decision for the piece and PLACEMENT is one per facing. Resolution, for a box on facing d: centre = pos_by_dir[d] ?? {ax, ay}; angle = rot_by_dir[d] ?? (rect ? rot - ground(d) : rot); shape = box.shape ?? piece hitbox_shape ?? \"ellipse\"; rect corners = rotate (+-rx, +-ry/k) on the ground, project (x, k*y). ax/ay stay the base and the fallback, so nothing already stored changes meaning and there is still nothing to migrate. Type: pos_by_dir?: Record<string, {ax: number; ay: number}> next to rot_by_dir in SceneryHitboxDoc. Landing on main now; live/README.md updated.",
+      "at": "2026-09-03T04:48:44+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",

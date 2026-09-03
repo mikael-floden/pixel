@@ -229,6 +229,15 @@ The laws around the flow:
       the same iso block the game already uses for a monster's shadow.
       Ellipses are left alone — a footprint with no corners reads the same
       turned.
+    - **`pos_by_dir`: `{ "<dir>": {ax, ay} }`, the box's placement for ONE
+      facing** (2026-09-03, maintainer: *"when I move the hitbox on the S
+      direction it also moves on SE and SW. It's only the W and D that is
+      identical for all directions, not the exact placement I do with move.
+      The move tool is per direction!"*). The art's anchor is not the same
+      point on every facing, so SIZE (`rx`, `ry`) is one decision for the
+      piece and PLACEMENT is one per facing. `ax`/`ay` are the base (south)
+      and the fallback; an entry here exists only for a facing he has moved.
+      Resolution: `pos_by_dir[dir] ?? {ax, ay}`.
     - **`rot_by_dir`: `{ "<dir>": deg }`, his correction for ONE facing.** The
       art is not always turned the way the compass says (across 14 rect pieces
       most mirror cleanly, a few do not), so

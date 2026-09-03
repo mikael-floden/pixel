@@ -981,7 +981,8 @@ function hitboxes(entity, state) {
      * since, so nothing has to be migrated and no consumer has to guess. */
     .map((b) => ({ ax: +b.ax, ay: +b.ay, rx: +b.rx, ry: +b.ry, rot: isFinite(b.rot) ? +b.rot : 0,
       ...(b.shape === "rect" || b.shape === "ellipse" ? { shape: b.shape } : {}),
-      ...(b.rot_by_dir && typeof b.rot_by_dir === "object" ? { rot_by_dir: { ...b.rot_by_dir } } : {}) }));
+      ...(b.rot_by_dir && typeof b.rot_by_dir === "object" ? { rot_by_dir: { ...b.rot_by_dir } } : {}),
+      ...(b.pos_by_dir && typeof b.pos_by_dir === "object" ? { pos_by_dir: { ...b.pos_by_dir } } : {}) }));
 }
 /* WHERE A FIRST ELLIPSE STARTS, from the art's own measured content box —
  * `bb` [x0,y0,x1,y1] in frame pixels, published per state+direction. A piece
@@ -1032,6 +1033,12 @@ function setHitboxes(entity, boxes, state) {
       ...(b.rot_by_dir && Object.keys(b.rot_by_dir).length
         ? { rot_by_dir: Object.fromEntries(Object.entries(b.rot_by_dir)
             .filter(([, v]) => isFinite(v)).map(([d2, v]) => [d2, +(+v).toFixed(1)])) }
+        : {}),
+      // Only the facings he has actually MOVED; the rest inherit ax/ay.
+      ...(b.pos_by_dir && Object.keys(b.pos_by_dir).length
+        ? { pos_by_dir: Object.fromEntries(Object.entries(b.pos_by_dir)
+            .filter(([, v]) => v && isFinite(v.ax) && isFinite(v.ay))
+            .map(([d2, v]) => [d2, { ax: +(+v.ax).toFixed(2), ay: +(+v.ay).toFixed(2) }])) }
         : {}),
     })),
     updated_at: new Date().toISOString(),
@@ -1154,6 +1161,20 @@ function boxRot(o, b, dir) {
   if (isFinite(own)) return +own;
   const base = isFinite(b?.rot) ? +b.rot : 0;
   return boxShape(o, b) === "rect" ? base - (DIR_GROUND_DEG[dir] ?? 0) : base;
+}
+/* WHERE THE BOX SITS IS PER FACING (maintainer 2026-09-03: "when I move the
+ * hitbox on the S direction it also moves on SE and SW. It's only the W and D
+ * that is identical for all directions, not the exact placement I do with
+ * move. The move tool is per direction!"). The art's anchor is not the same
+ * point on every facing — a chest drawn facing south-east stands a few pixels
+ * off where its south frame puts it — so the SIZE is one decision for the
+ * piece and the PLACEMENT is one per facing. `ax`/`ay` are the base (south);
+ * `pos_by_dir[dir]` is his placement for that facing, written only where he
+ * has moved it. Same arrangement as rot_by_dir. */
+function boxPos(b, dir) {
+  const own = b?.pos_by_dir?.[dir];
+  if (own && isFinite(own.ax) && isFinite(own.ay)) return { ax: +own.ax, ay: +own.ay };
+  return { ax: +(b?.ax ?? 0), ay: +(b?.ay ?? 0) };
 }
 /** The four corners of a rect box on screen, in frame px from the box centre. */
 function rectCorners(o, b, dir) {
@@ -1768,7 +1789,8 @@ function makePlayer(entity, kind, opts = {}) {
           hx = Math.max(...cs.map(([x]) => Math.abs(x)));
           hy = Math.max(...cs.map(([, y]) => Math.abs(y)));
         }
-        const cx = fw / 2 + b.ax, cy = fh / 2 + b.ay;
+        const bp0 = boxPos(b, cur.dir);
+        const cx = fw / 2 + bp0.ax, cy = fh / 2 + bp0.ay;
         x0 = Math.min(x0, cx - hx); x1 = Math.max(x1, cx + hx);
         y0 = Math.min(y0, cy - hy); y1 = Math.max(y1, cy + hy);
       }
@@ -1865,7 +1887,8 @@ function makePlayer(entity, kind, opts = {}) {
       ctx.save();
       boxes.forEach((b, i) => {
         const on = i === hitSel;
-        const ex = dx + (fw / 2 + b.ax) * s, ey = dy + (fh / 2 + b.ay) * s;
+        const bp = boxPos(b, cur.dir);
+        const ex = dx + (fw / 2 + bp.ax) * s, ey = dy + (fh / 2 + bp.ay) * s;
         const th = boxRot(entity, b, cur.dir) * Math.PI / 180;
         // The unselected ones stay visible but quiet: with two pillars he must
         // see both to judge the pair, and know which one the rails drive.
@@ -1906,12 +1929,12 @@ function makePlayer(entity, kind, opts = {}) {
         drawn: boxes.map((b) => +boxRot(entity, b, cur.dir).toFixed(2)),
         // A rect's four corners on the canvas (px) — the perspective, measurable.
         corners: boxes.map((b) => boxShape(entity, b) === "rect"
-          ? rectCorners(entity, b, cur.dir).map(([x, y]) => [+(dx + (fw / 2 + b.ax) * s + x * s).toFixed(2), +(dy + (fh / 2 + b.ay) * s + y * s).toFixed(2)])
+          ? rectCorners(entity, b, cur.dir).map(([x, y]) => [+(dx + (fw / 2 + boxPos(b, cur.dir).ax) * s + x * s).toFixed(2), +(dy + (fh / 2 + boxPos(b, cur.dir).ay) * s + y * s).toFixed(2)])
           : null),
         shapes: boxes.map((b) => boxShape(entity, b)),
         W: canvas.width, H: canvas.height,
         boxes: boxes.map((b) => ({ ...b })),
-        screen: boxes.map((b) => ({ ex: +(dx + (fw / 2 + b.ax) * s).toFixed(2), ey: +(dy + (fh / 2 + b.ay) * s).toFixed(2) })),
+        screen: boxes.map((b) => ({ ex: +(dx + (fw / 2 + boxPos(b, cur.dir).ax) * s).toFixed(2), ey: +(dy + (fh / 2 + boxPos(b, cur.dir).ay) * s).toFixed(2) })),
       };
     }
     frameNo.textContent = `${f + 1} / ${clip.frames}`;
@@ -2222,7 +2245,7 @@ function makePlayer(entity, kind, opts = {}) {
     hitPad.setPointerCapture(ev.pointerId);
     hitPad.classList.add("held");
     const b = hitList()[hitSel];
-    hitDrag = { x: ev.clientX, y: ev.clientY, from: { ax: b.ax, ay: b.ay }, k: 1 / (cur.zoom || (state.data.artScale || 2)) };
+    hitDrag = { x: ev.clientX, y: ev.clientY, from: boxPos(b, cur.dir), k: 1 / (cur.zoom || (state.data.artScale || 2)) };
   });
   hitPad.addEventListener("pointermove", (ev) => {
     if (!hitDrag) return;
@@ -2234,7 +2257,14 @@ function makePlayer(entity, kind, opts = {}) {
     const lim = Math.max(8, Math.min(r.width, r.height) / 2 - 20);
     const knob = (d) => Math.max(-lim, Math.min(lim, (d / PAD_FINE_ZONE) * lim));
     hitPadKnob.style.transform = `translate(${knob(ev.clientX - hitDrag.x)}px, ${knob(ev.clientY - hitDrag.y)}px)`;
-    editHit(hitSel, { ax: hitDrag.from.ax + dx * hitDrag.k, ay: hitDrag.from.ay + dy * hitDrag.k });
+    const nx = hitDrag.from.ax + dx * hitDrag.k, ny = hitDrag.from.ay + dy * hitDrag.k;
+    /* MOVING TOUCHES ONLY THIS FACING. South is the base every other facing
+     * falls back to; on any other facing the pad writes that facing's own
+     * placement, so squaring a chest up on south-east leaves south and
+     * south-west exactly where they were. */
+    if (cur.dir === "south" || !DIR_GROUND_DEG[cur.dir]) { editHit(hitSel, { ax: nx, ay: ny }); return; }
+    const b2 = hitList()[hitSel];
+    editHit(hitSel, { pos_by_dir: { ...(b2?.pos_by_dir ?? {}), [cur.dir]: { ax: nx, ay: ny } } });
   });
   const hitPadEnd = (ev) => {
     if (!hitDrag) return;
@@ -2562,7 +2592,7 @@ function makePlayer(entity, kind, opts = {}) {
         // "box", not "ellipse": with two shapes on offer the count can span
         // both, and the glyph says which one the rails are driving.
         : h("b", {}, `${boxes.length} box${boxes.length === 1 ? "" : "es"} · #${hitSel + 1} ${boxShape(entity, b) === "rect" ? "▭" : "◯"} ${(b.rx * 2).toFixed(1)} × ${(b.ry * 2).toFixed(1)} px`),
-      st === "none" || st === "flat" ? "" : ` · at ${signed(b.ax)}, ${signed(b.ay)}${Math.round(boxRot(entity, b, cur.dir)) ? ` · turned ${Math.round(boxRot(entity, b, cur.dir))}°` : ""}`,
+      st === "none" || st === "flat" ? "" : ` · at ${signed(boxPos(b, cur.dir).ax)}, ${signed(boxPos(b, cur.dir).ay)}${Math.round(boxRot(entity, b, cur.dir)) ? ` · turned ${Math.round(boxRot(entity, b, cur.dir))}°` : ""}`,
       /* NO STATUS PROSE ON THIS LINE (maintainer 2026-08-29: "you draw this
        * text 'proposed default not set until you accept or adjust it' and
        * then I try to click on the Width slider and then you remove that text

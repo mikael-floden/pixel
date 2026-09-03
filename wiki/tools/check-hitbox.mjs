@@ -820,6 +820,51 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   }, PIECE.path);
   ok(turned?.shape === "rect" && Math.abs(turned.rot - 40) < 0.6,
     `a rect turns like an ellipse does (rot ${turned?.rot}, still ${turned?.shape})`);
+  /* AND MOVING TOUCHES ONLY THE FACING HE IS ON (maintainer 2026-09-03: "when
+   * I move the hitbox on the S direction it also moves on SE and SW. It's
+   * only the W and D that is identical for all directions ... The move tool
+   * is per direction!"). Size stays one decision for the piece; placement is
+   * one per facing. */
+  const DIRKEY = { S: "south", SE: "south-east", SW: "south-west" };
+  /* Measured from the RECORD, not from screen pixels: the canvas is fitted to
+   * the box, so its origin moves when the box does and screen coordinates are
+   * not comparable across facings. */
+  const placeOn = async (d2) => {
+    await p.evaluate((dd) => [...document.querySelectorAll(".dirpad button")].find((x) => x.textContent.trim().toUpperCase() === dd)?.click(), d2);
+    await p.waitForTimeout(700);
+    return p.evaluate((dk) => {
+      const hb = window.__wikiHitbox; const b2 = hb.boxes[hb.sel];
+      const own = b2.pos_by_dir?.[dk];
+      return { ax: own?.ax ?? b2.ax, ay: own?.ay ?? b2.ay, rx: b2.rx, ry: b2.ry, dir: hb.dir, pbd: b2.pos_by_dir ?? null };
+    }, DIRKEY[d2]);
+  };
+  const sBefore = await placeOn("S"), swBefore = await placeOn("SW"), seBefore = await placeOn("SE");
+  // move with the PAD, on south-east, the way he does
+  await p.evaluate(() => document.querySelector(".hit-bar .shadow-pad")?.scrollIntoView({ block: "center" }));
+  await p.waitForTimeout(400);
+  const padB = await (await p.$(".hit-bar .shadow-pad")).boundingBox();
+  await p.mouse.move(padB.x + padB.width / 2, padB.y + padB.height / 2);
+  await p.mouse.down();
+  await p.mouse.move(padB.x + padB.width / 2 + 70, padB.y + padB.height / 2 + 30, { steps: 8 });
+  await p.mouse.up();
+  await p.waitForTimeout(800);
+  const seAfter = await p.evaluate(() => {
+    const hb = window.__wikiHitbox; const b2 = hb.boxes[hb.sel];
+    const own = b2.pos_by_dir?.["south-east"];
+    return { ax: own?.ax ?? b2.ax, ay: own?.ay ?? b2.ay, pbd: b2.pos_by_dir ?? null, dir: hb.dir };
+  });
+  ok(seAfter.dir === "south-east" && Math.abs(seAfter.ax - seBefore.ax) > 4,
+    `the pad moves the box on south-east (ax ${seBefore.ax} → ${seAfter.ax})`);
+  ok(seAfter.pbd && seAfter.pbd["south-east"] && !seAfter.pbd.south && !seAfter.pbd["south-west"],
+    `and stores it as THAT facing's placement, alone (${JSON.stringify(seAfter.pbd)})`);
+  const sAfter = await placeOn("S"), swAfter = await placeOn("SW");
+  ok(Math.abs(sAfter.ax - sBefore.ax) < 0.01 && Math.abs(sAfter.ay - sBefore.ay) < 0.01,
+    `south did not move (${sBefore.ax},${sBefore.ay} → ${sAfter.ax},${sAfter.ay})`);
+  ok(Math.abs(swAfter.ax - swBefore.ax) < 0.01 && Math.abs(swAfter.ay - swBefore.ay) < 0.01,
+    `nor south-west (${swBefore.ax},${swBefore.ay} → ${swAfter.ax},${swAfter.ay})`);
+  ok(Math.abs(sAfter.rx - seBefore.rx) < 0.01 && Math.abs(swAfter.ry - seBefore.ry) < 0.01,
+    `while W and D stay identical on every facing — one size for the piece (rx ${sAfter.rx}, ry ${swAfter.ry})`);
+  await placeOn("S");
   // ...and back: an ellipse carries NO shape key, so the 3,673 records already
   // on file stay exactly as they are.
   await p.evaluate(() => [...document.querySelectorAll(".hit-shape button")].find((x) => /ellipse/.test(x.textContent))?.click());
