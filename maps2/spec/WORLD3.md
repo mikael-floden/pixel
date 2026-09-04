@@ -117,19 +117,42 @@ every piece that publishes a footprint (always less than one cell) so its
 hitbox centre lands on a cell centre, which the game writes as
 `(col + 0.5, row + 0.5)`.
 
-The centre is computed with the game's own arithmetic
-(`stampSceneryCollision`, `games2/shared/src/index.ts`) and the game's own
+The centre is computed with the game's own arithmetic (client `fitSprite` +
+the overlay's `hbX/hbY`, `games2/client/src/scenery3.ts`) and the game's own
 maps3 geometry (dx 32, dy 14): ellipse in FRAME pixels from the frame centre,
-art scaled so its bbox height is `wph`, anchored at the bbox's bottom-centre,
-screen offset back through the projection. Several ellipses on one piece are
-centred by their area-weighted centroid. Sources: `games2/config/scenery-bbox.json`
-and `live/tuning/scenery_hitbox.json` (his overrides win, and a piece with no
+anchored at the DRAWN sprite's bbox bottom-centre, screen offset back through
+the projection. Several ellipses on one piece are centred by their
+area-weighted centroid. Sources: `games2/config/scenery-bbox.json` and
+`live/tuning/scenery_hitbox.json` (his overrides win, and a piece with no
 record is left alone).
+
+**THE SCALE IS THE DRAWN ONE, AND IT IS NOT `world_px_height`.** The contract
+sizes every piece against a 64-px character; the game's people are 88, so it
+draws — and stamps collision with — `world_px_height × 88 / character_height_px`
+(`sceneryDrawnPx`). The ellipse sits at a SCALED offset from the art's anchor,
+so reading the raw contract number centred the footprint at 1/1.375 of the real
+offset and left it **up-screen of the cell it blocks: median 3.0 screen px over
+892 placements, always up** (maintainer 2026-09-04, overlay screenshot: *"the
+hitbox touches the top and have a small distance left to the bottom"*). One
+rule, one place: `maps2/pipeline/sceneryscale.py`, which PARSES
+`CHARACTER_BODY_PX` out of games2's source rather than copying it. The same
+number is what a reference render must draw at — at the contract's number every
+piece in `render3.py` was 27% small, so no render of mine showed the crowding
+the game shows.
 
 Measured on the_game with the game's own cell test: pieces whose ellipse covers
 no cell centre — and which therefore block **nothing** — fall from **550 of
-1,421 (39%) to 11**, while total cells blocked barely moves (3,158 → 3,240).
+1,421 (39%) to 11**, and the centring error from median 3.0 px to **0.00**.
 The footprints got accurate, not bigger. Build-asserted every run.
+
+**games2 divergence, reported not worked around:** the client draws (and sorts)
+a variation through `k = drawnPx / BASE bbox height` (`fitSprite`'s `scaleH`,
+which is what keeps a rotation's own proportions), while the collision stamp
+divides by the DRAWN sprite's own bbox height. For the 337 placements here
+whose variation is not the base's height the two disagree — worst
+`driftwood_log_901#NOT_LIT_8`, 91 px against 64, a 42% error on the ellipse's
+offset. maps2 aims at the ART (the draw path): it is what he sees through the
+overlay and what draw order uses.
 
 ### `ramps` — the contract with the game
 
@@ -169,7 +192,7 @@ legal, so the game does not have to infer one from the heightfield.
 | details | `live/feedback/tiles.json` `<key>#top` approvals | **478 approvals.** The wiki's roof glyph is "rating the TOP as a once-in-a-while ground detail", and a tile **rejected as a pair** (bad wall) can still be a top-approved detail — the two reviews are independent by design. Drawn from the `textured` pass and conformed, so a detail's foreign lava/ice/sand wall never leaks into a field. |
 | slopes | `tiles/slopes` (`tiles3/slopes@1`) | a Wang set on **elevation** (bit = that corner is raised), same 64x46 frame as a plate. A cell takes the graded tile when its **own** ground rises beside it. **Gated per tile on his verdicts** — he has judged 15 of 225 sets, so `light_soil` and `water` get no slope rather than an invented one. Every published set is a **4px sub-storey** grade: it softens the foot of a rise, it cannot bridge a 17px storey (storey-height sets requested from tiles). |
 | toggles | `live/tuning/tile_walls.json`, `top_walls.json`, `tile_tops.json` | `top_only` (this tile's wall is unusable) **paired with** `wall:` (the wall it borrows instead) — two files, and reading only the first left the mark dead. `own_top` keeps the x-over-y tile's own top instead of painting the set surface over it. |
-| scenery | `scenery/<piece>/scenery.json` | sprite scaled so height = `placement.world_px_height`; feet at (x,y); `hflip` honoured (`must_be_imbplemented_with_random_hflip`); pieces under roof/cave decks skip (indoors). Hitbox: no canonical field ships in scenery yet — flagged; collision should be art-measured from the sprite base until scenery publishes one. |
+| scenery | `scenery/<piece>/scenery.json` + `live/tuning/scenery_hitbox.json` | sprite scaled to the height the GAME draws, `world_px_height × 88 / character_height_px` — **never the raw contract number** (`maps2/pipeline/sceneryscale.py`); feet at (x,y); `hflip` honoured (`must_be_imbplemented_with_random_hflip`); pieces under roof/cave decks skip (indoors). The hitbox is the wiki's, keyed `<path>#<state>` per variation, and the placement is centred on it — see above. |
 
 ## the_game's translation (world3.py, all rules)
 

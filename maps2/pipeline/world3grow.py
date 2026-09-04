@@ -63,6 +63,7 @@ TOWN_AT = (168, 176)      # fallback town target; the real one derives from
                           # where the ridge ends and the valley opens
 
 import world3
+from sceneryscale import drawn_px_for
 
 
 def _rng32(seed):
@@ -270,7 +271,10 @@ class Grow:
         if not facts or not facts.get("wph") or not bb:
             return None
         bx0, by0, bx1, by1 = bb[:4]
-        h = facts["wph"]
+        # THE SIZE THE GAME DRAWS, not the contract's raw number - see
+        # sceneryscale.drawn_px. At the contract's number every piece in this
+        # test was 27% small and nothing ever looked buried.
+        h = drawn_px_for(facts)
         w = max(1, bx1 - bx0) * h / max(1, by1 - by0)
         sx = (x - y) * 32.0
         sy = (x + y) * 14.0
@@ -1057,23 +1061,21 @@ class Grow:
     # the game's own numbers for maps3 scenery collision
     # (games2/shared/src/index.ts, ISO_GEOMETRY_MAPS3)
     HIT_DX, HIT_DY = 32, 14
-    # THE HITBOX CENTRE STAYS ON THE CELL CENTRE. The offset the maintainer
-    # sees with the overlay on is REAL and now measured from his own annotated
-    # screenshot: he marked the collision centre and the tile-top centre, and
-    # they are 11 px apart on a 2.57x zoom - 4.2 SCREEN PX AT 1x, straight
-    # down, with no horizontal error at all. That is exactly DY - TOP_Y
-    # (14 - 10), the same term that separates a tile's drawn top face from the
-    # projection of its cell in this renderer.
+    # THE HITBOX CENTRE STANDS ON THE CELL CENTRE, AND THE SCALE IS WHAT PUT
+    # IT OFF. The offset the maintainer keeps seeing with the overlay on -
+    # "the hitbox touches the top and have a small distance left to the
+    # bottom" (2026-09-04), 4.2 screen px straight down on his earlier
+    # annotated screenshot - was maps2 reading `world_px_height` raw while the
+    # game re-bases every piece to its 88-px person. The ellipse sits at a
+    # SCALED offset from the art's anchor, so at 1/1.375 of the real scale the
+    # footprint landed up-screen of the cell it blocks: measured over
+    # the_game's 892 placements, median 3.0 px, always up. `_fit` now uses the
+    # drawn height (sceneryscale.drawn_px) and the error is 0.00.
     #
-    # IT CANNOT BE COMPENSATED HERE, measured twice. Dropping every placement
-    # down-screen to chase it moves the hitbox centre off the cell centre, and
-    # published footprints are thin enough that they then cover no cell centre
-    # at all:
-    #       drop 10 px  -> pieces blocking NOTHING 1% -> 71%, cells 3240 -> 477
-    #       drop 4.2 px -> pieces blocking NOTHING 1% -> 16.5%, cells -> 1132
-    # The nav footprint is the entire reason the centring exists, so the data
-    # keeps the exact centre and the 4.2 px belongs to whichever renderer draws
-    # the sprite and the nav tile on different planes. Reported to games.
+    # DO NOT COMPENSATE WITH A DROP - measured twice, before the cause was
+    # found. Dropping every placement down-screen moves the centre OFF the cell
+    # centre and thin footprints then cover no cell centre at all: 10 px ->
+    # 71% of pieces block nothing (3240 cells -> 477), 4.2 px -> 16.5% (1132).
     HITBOX_DROP = 0.0    # screen px, down-screen - see above before changing
 
     # ---- the rect footprint -------------------------------------------------
@@ -1093,14 +1095,61 @@ class Grow:
     # +-45 degrees is exactly the world x or y axis on screen.
     _K = 14.0 / 32.0
 
-    def _rect_boxes(self, p):
-        """The piece's rect boxes for its placed facing, or None."""
+    def _rec(self, p):
+        """The hitbox record the game will resolve for this placement: the
+        drawn variation first, then the piece, then any variation's - the same
+        order and the same fallbacks as games2 (sceneryHitboxFor and the
+        stamp's recCache)."""
         rec = None
         if p.get("state"):
-            rec = self._hit.get(f"scenery/{p['piece']}#{p['state'].lower()}")
-        rec = rec or self._hit.get("scenery/" + p["piece"]) or next(
-            (v for k, v in self._hit.items()
-             if k.startswith("scenery/" + p["piece"] + "#")), None)
+            rec = self._hit.get(f"scenery/{p['piece']}#{p['state']}") \
+                or self._hit.get(f"scenery/{p['piece']}#{p['state'].lower()}")
+        rec = rec or self._hit.get("scenery/" + p["piece"])
+        if not rec:
+            pfx = "scenery/" + p["piece"] + "#"
+            rec = next((v for k, v in self._hit.items() if k.startswith(pfx)),
+                       None)
+        return rec
+
+    def _fit(self, p):
+        """(k, anchor_fx, anchor_fy, fw, fh): the transform that carries this
+        placement's published ellipse from FRAME px to SCREEN px, and it is
+        the game's own (client fitSprite + the overlay's hbX/hbY), copied
+        exactly:
+
+          * k is the DRAWN height over the BASE sprite's bbox height. Both
+            halves matter. The drawn height is `world_px_height` re-based to
+            the game's 88-px person (sceneryscale.drawn_px) - reading the raw
+            contract number put every footprint ~3 screen px up-screen of the
+            cell it blocks. The BASE bbox is what keeps a variation's own size
+            difference: dividing by the drawn sprite's own height would squash
+            every variation to one height (fitSprite's `scaleH`).
+          * the anchor is the DRAWN sprite's bbox - bottom-centre - and its
+            frame is the drawn sprite's canvas, because the ellipse was
+            measured on that art.
+
+        (games2's collision stamp divides by the DRAWN sprite's bbox instead,
+        so for the 337 placements here whose variation is not the base height
+        its ellipse lands somewhere the art is not - up to 42% off on
+        driftwood_log_901. Reported; the art is what maps2 aims at, because
+        the art is what the maintainer sees and what draw order uses.)"""
+        facts = (self._bbox.get("pieces") or {}).get(p["piece"])
+        if not facts:
+            return None
+        base = (self._bbox.get("boxes") or {}).get(facts.get("sprite"))
+        want = drawn_px_for(facts)
+        if not base or not want:
+            return None
+        spr = (facts.get("states") or {}).get(p["state"]) if p.get("state") \
+            else None
+        bb = (self._bbox.get("boxes") or {}).get(spr or facts["sprite"]) or base
+        bx0, by0, bx1, by1, fw, fh = bb[:6]
+        return (want / max(1, base[3] - base[1]),
+                bx0 + (bx1 - bx0) / 2.0, float(by1), float(fw), float(fh))
+
+    def _rect_boxes(self, p):
+        """The piece's rect boxes for its placed facing, or None."""
+        rec = self._rec(p)
         if not rec:
             return None
         boxes = [b for b in (rec.get("boxes") or [])
@@ -1116,11 +1165,10 @@ class Grow:
         boxes = self._rect_boxes(p)
         if not boxes:
             return ("circle", geo[0], geo[1], geo[2], geo[2])
-        facts = self._bbox["pieces"][p["piece"]]
-        bb = self._bbox["boxes"][facts["sprite"]]
-        bx0, by0, bx1, by1, fw, fh = bb[:6]
-        k = facts["wph"] / max(1, by1 - by0)
-        afx, afy = bx0 + (bx1 - bx0) / 2, by1
+        fit = self._fit(p)
+        if fit is None:
+            return ("circle", geo[0], geo[1], geo[2], geo[2])
+        k, afx, afy, fw, fh = fit
         d = p.get("dir") or "south"
         # THE SIGN IS NEGATIVE, and getting it wrong rotates every rect 90
         # degrees off its own art (maintainer 2026-09-03, looking at my own
@@ -1160,15 +1208,8 @@ class Grow:
         off = self._hitbox_offset(p)
         if off is None:
             return None
-        facts = self._bbox["pieces"][p["piece"]]
-        bb = self._bbox["boxes"][facts["sprite"]]
-        k = facts["wph"] / max(1, bb[3] - bb[1])
-        rec = None
-        if p.get("state"):
-            rec = self._hit.get(f"scenery/{p['piece']}#{p['state'].lower()}")
-        rec = rec or self._hit.get("scenery/" + p["piece"]) or next(
-            (v for kk, v in self._hit.items()
-             if kk.startswith("scenery/" + p["piece"] + "#")), None)
+        k = self._fit(p)[0]
+        rec = self._rec(p)
         R = max(max(b["rx"] * k / (self.HIT_DX * math.sqrt(2)),
                     b["ry"] * k / (self.HIT_DY * math.sqrt(2)))
                 for b in rec["boxes"])
@@ -1259,17 +1300,12 @@ class Grow:
 
     def _hitbox_offset(self, p):
         """Where a piece's HITBOX CENTRE sits, in world cells, relative to the
-        placement itself. Straight port of the game's own arithmetic
-        (stampSceneryCollision): a hitbox is an ellipse in FRAME pixels from
-        the frame's centre, the art is drawn so its alpha-bbox height equals
-        wph and anchored at the bbox's bottom-centre, and a screen offset comes
-        back through the projection. Returns None when the piece publishes no
-        footprint - then there is nothing to centre."""
-        facts = (self._bbox.get("pieces") or {}).get(p["piece"])
-        if not facts or not facts.get("wph"):
-            return None
-        bb = (self._bbox.get("boxes") or {}).get(facts.get("sprite"))
-        if not bb:
+        placement itself. A hitbox is an ellipse in FRAME pixels from the
+        frame's centre; `_fit` carries it to screen px exactly as the game
+        does, and the projection brings it back to cells. Returns None when the
+        piece publishes no footprint - then there is nothing to centre."""
+        fit = self._fit(p)
+        if fit is None:
             return None
         # THE RECORD THE GAME WILL ACTUALLY USE. The hitbox channel is keyed
         # per variation ("scenery/stones/stone_013#not_lit_2") and the game
@@ -1278,21 +1314,10 @@ class Grow:
         # on the_game: 19 placements differ, all fallen_log_020, by up to 7
         # frame px - small, but it is exactly the kind of drift that shows up
         # as "the hitbox is off" with the overlay on.
-        rec = None
-        if p.get("state"):
-            rec = self._hit.get(f"scenery/{p['piece']}#{p['state'].lower()}")
-        if not rec:
-            rec = self._hit.get("scenery/" + p["piece"])
-        if not rec:
-            pfx = "scenery/" + p["piece"] + "#"
-            rec = next((v for k, v in self._hit.items() if k.startswith(pfx)),
-                       None)
-        boxes = (rec or {}).get("boxes")
+        boxes = (self._rec(p) or {}).get("boxes")
         if not boxes:
             return None
-        bx0, by0, bx1, by1, fw, fh = bb[:6]
-        k = facts["wph"] / max(1, by1 - by0)
-        anchor_fx, anchor_fy = bx0 + (bx1 - bx0) / 2, by1
+        k, anchor_fx, anchor_fy, fw, fh = fit
         # SEVERAL ELLIPSES ARE ONE FOOTPRINT (an entrance with two pillars is
         # two): centre the AREA-WEIGHTED centroid, which is the single ellipse
         # for the common case and the sensible middle for the rest.

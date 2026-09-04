@@ -62,6 +62,8 @@ MAPS2 = os.path.dirname(_HERE)
 REPO = os.path.dirname(MAPS2)
 OUT = os.path.join(MAPS2, "worlds3", "the_game")
 
+from sceneryscale import drawn_px      # the size the GAME draws scenery at
+
 SCHEMA = "pixel-maps3/world@1"
 
 V2_TO_V3 = {
@@ -517,8 +519,11 @@ def _tree_states(piece):
 # own clearance. Enforced after retype_woods, since that is where a tree
 # finally learns what it is.
 TREE_R_K = 0.87        # calibrated so the aspen wood he liked opens slightly
-                       # (3.0 -> 3.6 cells) and the hawthorn wood nearly
-                       # doubles (3.0 -> 5.9)
+                       # and the hawthorn wood nearly doubles. Measured on the
+                       # crowns the GAME draws (drawn_px, 1.375x the contract):
+                       # aspen 3.0 -> 5.0 cells, hawthorn 3.0 -> 8.1, and the
+                       # island keeps 142 trees where the contract's own
+                       # (wrong, 27% narrow) crowns left 203.
 _TR_CACHE = {}
 
 
@@ -536,7 +541,16 @@ def tree_radius(piece):
         y0, y1, x0, x1 = ys.min(), ys.max(), xs.min(), xs.max()
         box = al[y0:y1 + 1, x0:x1 + 1]
         fill = float(box[:max(1, int(box.shape[0] * 0.6))].mean())
-        wph = (j.get("placement") or {}).get("world_px_height") or (y1 - y0 + 1)
+        # THE DRAWN WIDTH, in cells. The height is the one the GAME draws the
+        # piece at - `world_px_height` re-based from the contract's 64px
+        # character to the game's 88px one (sceneryscale.drawn_px) - so a
+        # crown measured here is the crown he sees. Measured at the contract's
+        # raw number every tree was 27% narrower than it stands in the game,
+        # which is a third of the reason the forests read tighter there than
+        # in any render of mine.
+        pl = j.get("placement") or {}
+        wph = drawn_px(pl.get("world_px_height"),
+                       pl.get("character_height_px")) or (y1 - y0 + 1)
         wide = (x1 - x0 + 1) * wph / max(1, y1 - y0 + 1) / 64.0
         _TR_CACHE[piece] = TREE_R_K * wide * (0.6 + 0.8 * fill)
     return _TR_CACHE[piece]

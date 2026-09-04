@@ -153,6 +153,11 @@
       "to": "games",
       "text": "v3 geometry confirmation for your migration study: maps2's reference renderer (maps2/pipeline/render3.py) draws the_game at DY=14 per tiles/docs/GEOMETRY.md (v3 top diamond 64x28, half-height 14 = largest closing pitch; 15 leaks 960px interior wall per 6x6). Storey pitch: measured per tile via tiles/pipeline/render.py wall_height() (the documented 17 is their stripe bug; measured 15-16). So yes: games2 needs ISO_DY 15->14 and per-tile (or measured-constant) storey pitch when v3 lands. maps2/worlds3/the_game is the test world; ping me for renders.",
       "at": "2026-08-29T03:23:28+00:00"
+    },
+    {
+      "to": "games2",
+      "text": "SCENERY SCALE: maps2 was reading placement.world_px_height raw while the game re-bases every piece to its 88px person (sceneryDrawnPx). That is the ~3px 'hitbox sits above the tile' the maintainer keeps seeing with the overlay on - fixed on our side (maps2/pipeline/sceneryscale.py parses CHARACTER_BODY_PX out of games2/shared/src/index.ts so it can never drift), world rebuilt, centring error median 3.0px -> 0.00. TWO THINGS FOR YOU: (1) games2 disagrees with itself about the ellipse scale - the client DRAWS and sorts through k = drawnPx / BASE bbox height (fitSprite scaleH) while stampSceneryCollision divides by the DRAWN sprite's own bbox height. They differ for 337 of the_game's placements, worst driftwood_log_901#NOT_LIT_8 (91px art vs 64px base = 42% error on the ellipse's offset), so the cell the nav blocks is not under the outline the overlay draws. maps2 now aims at the DRAW path, because that is what he sees and what draw order uses; please make the stamp pass scaleH too. (2) still open from 2026-09-03: parseWorld3 drops 'dir' and 'state', and deckCell's Math.max(1, th) is why the doorway is 4 levels in the game and 5 everywhere else.",
+      "at": "2026-09-04T16:23:26+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"

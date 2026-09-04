@@ -43,7 +43,8 @@ semantics only — see world3.py):
     unusable) PAIRED WITH live/tuning/top_walls.json `wall` (the wall it
     borrows instead), and live/tuning/tile_tops.json `own_top` (keep the
     x-over-y tile's own top; do not paint the set surface over it).
-  * scenery: sprite scaled so height == placement.world_px_height, feet at
+  * scenery: sprite scaled to the height the GAME draws it at (see
+    sceneryscale.drawn_px - world_px_height re-based to the 88px person), feet at
     the piece's (x,y) cell front vertex, hflip honoured, painter-ordered
     with the terrain.
 
@@ -69,6 +70,7 @@ sys.path.insert(0, os.path.join(REPO, "tiles", "pipeline"))
 import transition_render as TR          # the lab's own composer — reused, not copied
 import render as TILE_RENDER            # tiles/pipeline/render.py — wall_height
 import transition_patterns as TPAT      # .plate() — the ONLY lawful conformer
+from sceneryscale import drawn_px       # the size the GAME draws scenery at
 
 DX, DY, WALL, TILE = 32, 14, 17, 64
 TOP_Y = 10                              # review tiles: diamond apex row in the 64-box
@@ -1422,7 +1424,16 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
         base = Image.open(os.path.join(REPO, "scenery", meta["sprite"])) \
             .convert("RGBA")
         bb0 = base.getbbox() or (0, 0, base.width, base.height)
-        want = meta.get("placement", {}).get("world_px_height") or base.height
+        # AND THE HEIGHT IS THE ONE THE GAME DRAWS, not the contract's raw
+        # world_px_height: the game re-bases every piece from the contract's
+        # 64px character to its own 88px one, so drawing the raw number made
+        # this renderer show every piece at 73% of its size in the game
+        # (sceneryscale.drawn_px). A reference render that disagrees with the
+        # game about how much room a bush takes is worse than no render - the
+        # forests looked airy here and crowded there for exactly this reason.
+        place = meta.get("placement", {})
+        want = drawn_px(place.get("world_px_height"),
+                        place.get("character_height_px")) or base.height
         k = want / max(1, bb0[3] - bb0[1])
         bb = sp.getbbox() or (0, 0, sp.width, sp.height)
         art = sp.crop(bb)
