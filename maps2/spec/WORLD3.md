@@ -166,7 +166,15 @@ ground here than in the tool he tunes in. Raised with wiki.
 
 maps2 uses the rect twice: the facing whose footprint lies LONGER along the
 wall is the one placed (so a shelf's back is against it), and the piece is then
-put flush — `x = x0 + hx − cx` — instead of snapped to a cell centre.
+put flush — `x = x0 + hx − cx` — instead of snapped to a cell centre. **It also
+slides along that wall, into the corner first**: centring a piece on the wall
+cell it was handed is only right for a piece shorter than one cell, and a bed
+is 1.4 cells long, so on the first cell of a wall half of it lay in the wall
+round the corner and the footprint law refused the whole piece — a bedroom with
+no bed in it (maintainer 2026-09-04: *"I told you to place furnitures edge to
+edge with the wall/corner"*). The along-wall centre is clamped inside the wall's
+own run, which IS the corner at either end, then walked outward in half cells
+until the whole footprint is on free floor.
 
 **A NO-COLLISION PIECE IS FLOOR** (maintainer 2026-09-04, on the collision
 overlay: *"Why does the show collision mode show the collision on a carpet that

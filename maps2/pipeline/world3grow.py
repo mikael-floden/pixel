@@ -2235,18 +2235,47 @@ class Grow:
                     # x0/y0 are the room's FIRST FLOOR column and row, so the
                     # wall face they meet is x0 / y0 itself - not x0 + 1. The
                     # off-by-one put every piece a whole cell into the room.
-                    if along_y:
-                        x = x0 + hx - cx
-                        y = wy + 0.5 - cy
-                    else:
-                        x = wx + 0.5 - cx
-                        y = y0 + hy - cy
-                    if self.put(piece, x, y, on=IN, dir=d, flush=True, **kw):
-                        self._against.append(
-                            (piece, round(x, 4), round(y, 4), d,
-                             "x" if along_y else "y",
-                             x0 if along_y else y0))
-                        return 1
+                    #
+                    # AND IT SLIDES ALONG THE WALL UNTIL IT FITS, INTO THE
+                    # CORNER FIRST (maintainer 2026-09-04, on a bed standing
+                    # in the middle of his bedroom: "I told you to place
+                    # furnitures edge to edge with the wall/corner"). Centring
+                    # the piece on the wall cell it was handed is only right
+                    # for a piece shorter than one cell: a bed is 1.4 cells
+                    # long, so on the first cell of the wall half of it lay in
+                    # the wall ROUND THE CORNER, the footprint law refused it,
+                    # and the room lost its bed altogether - which is how one
+                    # ended up placed by an older, looser pass instead. The
+                    # along-wall centre is therefore clamped inside the wall's
+                    # own run - which IS the corner when the slot asked for is
+                    # the end of it - and then walked outward in half cells
+                    # until the whole footprint is on free floor.
+                    span = hy if along_y else hx      # half-extent along wall
+                    run = [c[1] if along_y else c[0] for c in wall]
+                    lo, hi = min(run) + span, max(run) + 1 - span
+                    if lo > hi:                       # too long for this wall
+                        return 0
+                    want = (wy if along_y else wx) + 0.5
+                    first = min(max(want, lo), hi)
+                    cands, t = [first], 0.5
+                    while t <= hi - lo:
+                        for sgn in (1, -1):
+                            v = first + sgn * t
+                            if lo - 1e-9 <= v <= hi + 1e-9:
+                                cands.append(v)
+                        t += 0.5
+                    for v in cands:
+                        if along_y:
+                            x, y = x0 + hx - cx, v - cy
+                        else:
+                            x, y = v - cx, y0 + hy - cy
+                        if self.put(piece, x, y, on=IN, dir=d, flush=True,
+                                    **kw):
+                            self._against.append(
+                                (piece, round(x, 4), round(y, 4), d,
+                                 "x" if along_y else "y",
+                                 x0 if along_y else y0))
+                            return 1
                     return 0
                 # not a rect piece: as close as its circle allows, as before
                 for inset in (0.0, 0.25, 0.5, 0.75, 1.0):
