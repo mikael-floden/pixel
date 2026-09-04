@@ -373,6 +373,53 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
     for (let y = 0; y < tLo; y++) copyRGB(y * fw + x, tLo * fw + x);
     for (let y = cHi + 1; y < fh; y++) copyRGB(y * fw + x, cHi * fw + x);
     for (let y = tHi + 1; y < fh; y++) if (libTop[y * fw + x]) copyRGB(y * fw + x, tHi * fw + x);
+    /* AND THE HOLES *INSIDE* THE COLUMN — THE ZIGZAG.
+     *
+     * The three loops above extend a column OUTWARD: above its top face, below
+     * its silhouette, and into the row the library's top face runs deeper than
+     * the source's. None of them reaches a texel that is transparent BETWEEN
+     * opaque ones, and the alpha pass below then forces every silhouette texel
+     * opaque. So that texel ships the RGB the source stored UNDER its
+     * transparency — preserved byte-for-byte by the repo's `exact=True` WebP
+     * law — as a solid pixel of a colour nobody chose.
+     *
+     * A base tile's columns are solid, so it never shows. A FADE tile is a
+     * scatter (patches/spots/piles/lumps) that is full of holes by
+     * construction, so it always can — which is exactly where the maintainer
+     * put it: "On this screenshot I got the zigzag on the fade-tiles only."
+     * Measured over his window (the_game, 416.9/340.8): 18 of 66 fade arts,
+     * 153 texels, 65 cells, every one on rows 1-15 — the diamond's upper ramp
+     * — and every one dark against its own ground: (89,59,46) on grass,
+     * (78,101,70) on light_soil, (84,57,33) on light_beach. A dark dotted line
+     * one texel wide tracing the tile diamonds.
+     *
+     * Fill from the nearest row in this same column that the source did paint.
+     * This only ever writes a texel that no rule painted, so nothing already
+     * correct can move.
+     *
+     * The python reference has the same gap: transition_patterns.plate() fixes
+     * only the EMPTY-column case and claims "every silhouette pixel has a real
+     * colour" on the strength of it. Raised with the tiles agent — until they
+     * land it, render3's output and the client's disagree on these texels. */
+    for (let y = tLo; y <= cHi; y++) {
+      const i = y * fw + x;
+      if (sil[i] === 0 || libWall[i] || opaque(i)) continue;
+      if (y > tHi && libTop[i]) continue; // already taken from tHi above
+      let up = -1;
+      let dn = -1;
+      for (let k = y - 1; k >= tLo; k--)
+        if (opaque(k * fw + x)) {
+          up = k;
+          break;
+        }
+      for (let k = y + 1; k <= cHi; k++)
+        if (opaque(k * fw + x)) {
+          dn = k;
+          break;
+        }
+      const from = up < 0 ? dn : dn < 0 ? up : y - up <= dn - y ? up : dn;
+      if (from >= 0) copyRGB(i, from * fw + x);
+    }
   }
   if (empty.length) {
     const isEmpty = new Set(empty);

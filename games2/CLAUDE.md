@@ -294,6 +294,32 @@ by construction, so no existing branch changed.
   holes) — and its widest row still lands on `TOP_Y + DY`, so no water moved.
   The general rule: a mask that has to interlock with the art's masks IS the
   art's mask; re-deriving the diamond is how the gaps get in.
+- **A CONFORMED PLATE FILLS EVERY SILHOUETTE TEXEL, INCLUDING HOLES INSIDE A
+  COLUMN** (`conformPlate`). Conforming assigns the library silhouette as the
+  ALPHA CHANNEL — every silhouette texel comes out opaque — but it fills RGB
+  per column by extending the art OUTWARD: above the top face, below the
+  silhouette, and into the row the library's top face runs deeper than the
+  source's. None of those reaches a texel that is transparent BETWEEN opaque
+  ones, so it shipped the RGB the source stored under its own transparency
+  (preserved byte-for-byte by the repo's `exact=True` WebP law) as a solid
+  pixel of a colour nobody chose. **This was the land half of the zigzag**, and
+  it is why the artefact tracked the fade band exactly: a base tile's columns
+  are solid and never hit it, while a FADE tile is a scatter
+  (patches/spots/piles/lumps) full of holes by construction. Measured in the
+  maintainer's window (the_game 416.9/340.8): 18 of 66 fade arts, 153 texels,
+  65 cells, every one on rows 1-15 — the diamond's upper ramp — and every one
+  dark against its own ground: (84,57,33) on light_beach's (234,210,173) sand,
+  (89,59,46) on grass, (78,101,70) on light_soil. His own three-way
+  localisation is the same fact from outside: a fade is dressed ONLY at level 0
+  on non-liquid ground (a raised cap and a liquid both take the `topOnly` path,
+  which carries no fade, no slope, no boundary), and he reports the artefact
+  100% absent on raised ground and 100% absent on water. Fill from the nearest
+  painted row in the same column; the fix can only write a texel no rule wrote.
+  The python reference has the SAME gap — `transition_patterns.plate()` repairs
+  only the EMPTY-column case and claims "every silhouette pixel has a real
+  colour" on the strength of it — so until the tiles agent lands the same rule,
+  render3 and the client disagree on exactly these texels (raised on
+  `coordination/tiles.json`).
 - **A NOT-YET-LOADED PLATE IS NEVER CACHED AS NULL** (`tiles3draw` platePixels /
   sourcePixels). Null means "not resident yet"; caching it makes every plate
   that missed its first frame miss forever.
