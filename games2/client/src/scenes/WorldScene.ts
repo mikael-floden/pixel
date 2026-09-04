@@ -756,30 +756,29 @@ function perfBeaconArmed(): boolean {
   }
 }
 
-/** THE SLEDGEHAMMER, TEMPORARILY THE DEFAULT (maintainer 2026-09-03: "can't you
- *  just try something crazy that will for sure fix it and then step back to the
- *  minimum fix needed afterwards — just to get rid of the 3 day long bug hunt").
+/** THE STREAMING GROUND PATH IS THE DEFAULT AGAIN (2026-09-04). The 2026-09-03
+ *  sledgehammer — LEGACY, a full texture repaint per camera latch — was a
+ *  DIAGNOSTIC, taken on his instruction ("try something crazy that will for
+ *  sure fix it and then step back to the minimum fix needed afterwards"), and
+ *  its own note said to bisect it back once the artefact was gone. It is: all
+ *  four causes of the zigzag were in RASTER CONSTRUCTION, none in this
+ *  machinery — conformPlate leaving silhouette texels unpainted, level-0 plates
+ *  drawing their own wall band, the transition seam, and a transition tile
+ *  covering 924 texels where the plate it replaces covers 2012. The legacy
+ *  default cleared none of them, which is exactly the evidence that this path
+ *  was never the cause.
  *
- *  LEGACY turns the whole 2026-09-02/03 ground rework off in one go: no scroll,
- *  no sliced band, no landing repaints, no prefetch — every camera latch paints
- *  the whole texture. If the zigzag lives anywhere in that machinery it cannot
- *  survive this, and if it DOES survive, every conclusion drawn from the
- *  incremental path is wrong and the search moves elsewhere. Either answer is
- *  worth more than another minimal guess: seven of those were shipped and all
- *  seven were wrong.
- *
- *  It costs what the rework bought — a full repaint per latch, measured 18-78 ms
- *  on this machine and worse on a phone — so this default is a DIAGNOSTIC and
- *  must be bisected back to the minimum once the artefact is confirmed gone.
- *  `?ground=fast` restores the streaming path for anyone who wants to compare,
- *  and the choice is still remembered in `ml-ground-path`. */
+ *  It costs 18-78 ms per latch measured here and worse on his phone, against a
+ *  16.7 ms frame, so leaving it on is a frame-rate bug of its own — and he is
+ *  now reporting lag. `?ground=legacy` still pins the full repaint for anyone
+ *  bisecting, and the choice is remembered in `ml-ground-path`. */
 function groundPathFast(): boolean {
   try {
     const q = new URLSearchParams(location.search).get("ground");
     if (q === "legacy" || q === "fast") localStorage.setItem("ml-ground-path", q);
-    return localStorage.getItem("ml-ground-path") === "fast";
+    return localStorage.getItem("ml-ground-path") !== "legacy";
   } catch {
-    return false; // storage or location blocked: the diagnostic path, for now
+    return true; // storage or location blocked: the fast path, which is the default
   }
 }
 /** How far AHEAD the prefetch reaches when the direction of travel is not yet
