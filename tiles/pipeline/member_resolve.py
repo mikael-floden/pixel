@@ -4,7 +4,7 @@ The bug this ends, reported by the game agent 2026-08-28 and by the maintainer b
 that: a base-tile-set member string has TWO legal forms with two different resolutions,
 and every consumer re-implements the choice.
 
-    kind "plate"  tiles/<cell>/<key8>                    -> tiles/plates/<ground>/<key8>.webp
+    kind "conform" tiles/<cell>/<key8>                   -> that candidate's TEXTURED art
     kind "file"   tiles/tops/.../post/tile_NN.<sha8>.webp -> itself (also ballot files)
 
 The wiki got it right, the map renderer applied the plate rule to a literal path, and
@@ -45,6 +45,36 @@ SETS = os.path.join(REPO, "live", "tuning", "base_tile_sets.json")
 OUT = os.path.join(ROOT, "resolve.json")
 
 KEY = re.compile(r"^tiles/([^/]+)/([0-9a-f]{8})$")
+MANIFEST = os.path.join(ROOT, "review", "manifest.json")
+_TEX = None
+
+
+def _textured():
+    """review key -> the candidate's TEXTURED art, which is what render3 draws.
+
+    THIS FILE USED TO SEND A REVIEW KEY TO THE FLATTENED PLATE, and the game agent
+    recorded the disagreement on 2026-08-29: render3 resolves a review-key member to
+    the candidate's textured art and consults this map only for the file form, so the
+    published rule was stale for all 236 review-key members. A resolver that disagrees
+    with the renderer is worse than no resolver - it is a second answer that looks
+    authoritative - so the map now states what is actually drawn.
+
+    The plate is still the fallback for a candidate with no textured art, which is the
+    only case the old rule got right, and `forms` says so.
+    """
+    global _TEX
+    if _TEX is None:
+        _TEX = {}
+        try:
+            man = json.load(open(MANIFEST))
+        except Exception:
+            return _TEX
+        for c in (man.get("cells") or {}).values():
+            for e in (c.get("candidates") or []):
+                t = e.get("textured")
+                if e.get("key") and t:
+                    _TEX[e["key"]] = t
+    return _TEX
 POST = re.compile(r"^(tiles/tops/.+/post)/(tile_\d\d)\.[0-9a-f]{8}\.webp$")
 
 
@@ -92,6 +122,9 @@ def resolve(member):
     m = KEY.match(member)
     if m:
         cell, k8 = m.groups()
+        tex = _textured().get(member)
+        if tex:
+            return "conform", tex        # what render3 actually draws
         ground = cell.split("__over__")[0]
         return "plate", f"tiles/plates/{ground}/{k8}.webp"
     if member.endswith(".webp"):
@@ -145,9 +178,16 @@ def main():
             "Every `art` here was verified to exist on disk when this file was written.",
         ],
         "forms": {
-            "plate": {
+            "conform": {
                 "match": r"^tiles/([^/]+)/([0-9a-f]{8})$",
-                "resolve": "tiles/plates/<the cell's ground, i.e. group 1 before '__over__'>/<group 2>.webp",
+                "resolve": "the review manifest candidate's `textured` art for that key",
+                "why": "render3 draws the TEXTURED art for a review-key member; this "
+                       "file used to send it to the flattened plate and was stale "
+                       "against the renderer for all 236 of them (game agent, "
+                       "2026-08-29). A resolver that disagrees with the renderer is a "
+                       "second answer that looks authoritative.",
+                "fallback": "tiles/plates/<ground>/<key8>.webp when the candidate has "
+                            "no textured art",
             },
             "file": {
                 "match": r"\.webp$",
@@ -159,7 +199,7 @@ def main():
         "n_referenced": seen,
         "n_shared_members": dupes,   # one string used by more than one set/ground
         "by_kind": {k: sum(1 for v in members.values() if v["kind"] == k)
-                    for k in ("plate", "file")},
+                    for k in ("plate", "conform", "file")},
         "unresolved": missing,
         "members": dict(sorted(members.items())),
     }
