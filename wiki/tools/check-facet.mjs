@@ -705,6 +705,31 @@ await pub.close();
   });
 }
 
+/* THE PIECE SAYS WHETHER IT IS DRAWN AT ITS OWN PIXELS (maintainer 2026-09-04:
+ * "what I want is for the scenery to be drawn in the same scale as the player
+ * is drawn ... I don't want any smart logic here"). Until the art is
+ * regenerated at the size its metres imply, the game resamples it, and the
+ * only honest thing this page can do is print the number. Read off a piece
+ * whose disagreement is known and large, and off one drawn the other way. */
+{
+  for (const [id, want] of [["bed_002", "under"], ["ancient_tree_001", "over"]]) {
+    await p.goto(`${W}#/objects/${id}`, { waitUntil: "load" });
+    await p.waitForTimeout(3200);
+    const s = await p.evaluate(() => {
+      const el = document.querySelector(".scale-pill");
+      return el ? { text: el.textContent, f: +el.dataset.factor, warn: el.classList.contains("warn"), title: el.title } : null;
+    });
+    console.log(`${id} scale pill:`, JSON.stringify(s && { text: s.text, f: s.f, warn: s.warn }));
+    ok(!!s, `${id} says what scale it is drawn at`);
+    if (!s) continue;
+    ok(want === "under" ? s.f < 0.98 : s.f > 1.02,
+      `${id} is resampled ${want === "under" ? "down" : "up"} and the pill agrees (${s.f}×)`);
+    ok(s.warn && /→ drawn/.test(s.text), `and it reads as a fault, not a decoration ("${s.text}")`);
+    ok(/resampled/.test(s.title) && /art wants to be/.test(s.title),
+      "and says what the art should have been, which is the fix");
+  }
+}
+
 /* ...AND THE SAME ON EVERY OTHER REVIEW PAGE, walked rather than assumed. */
 {
   const DD2 = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));

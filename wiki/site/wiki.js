@@ -11055,10 +11055,41 @@ function viewObject(id) {
   // came out wrong is now rejectable without condemning the whole piece.
   const facetBox = h("div", {});
   const facetPill = h("span", {});
+  /* IS THIS PIECE DRAWN AT ITS OWN PIXELS? (maintainer 2026-09-04: "what I
+   * want is for the scenery to be drawn in the same scale as the player is
+   * drawn ... if the player is 100px and a table is 50px I want the player to
+   * be twice as high as the table. I don't want any smart logic here.")
+   *
+   * That is the law, and today the game does not obey it: a piece declares a
+   * height in METRES, the game renders to it (world_px_height re-based from
+   * the contract's 64px person to the game's 88px one), and the art is
+   * resampled to fit. Measured across all 707 published pieces, only 31 land
+   * within 2% of their own pixels. The fix is the ART — regenerate each piece
+   * at the size the metres imply, and the scale factor becomes 1 by itself —
+   * so what this page owes him is the NUMBER, per piece, while that happens:
+   * what the art is, what the game will draw, and how far apart they are. */
+  const scalePill = () => {
+    const pl = o.placement, sc = state.data.sceneryScale;
+    const st2 = player?.getState(), dir2 = player?.getDir();
+    const bb = o.animations?.[st2]?.dirs?.[dir2]?.bb;
+    const wph = +pl?.world_px_height;
+    if (!bb || !(wph > 0) || !sc) return null;
+    const cpx = +pl?.character_height_px > 0 ? +pl.character_height_px : sc.contractCharacterPx;
+    const native = bb[3] - bb[1], drawn = (wph * sc.characterBodyPx) / cpx;
+    const f = drawn / native;
+    if (!(native > 0) || !isFinite(f)) return null;
+    const off = Math.abs(f - 1) > 0.02;
+    return h("span", {
+      class: `pill ${off ? "warn" : "ok"} scale-pill`, "data-factor": f.toFixed(3),
+      title: off
+        ? `The art is ${Math.round(native)}px tall. The game draws this piece ${Math.round(drawn)}px tall, because its placement declares ${pl.world_height_m} m and a character is ${sc.characterBodyPx}px. So every pixel is resampled at ${f.toFixed(2)}× — nearest-neighbour, so nothing blurs, but ${Math.round(Math.abs(1 - f) * 100)}% of the rows and columns are dropped or doubled. The art wants to be ${Math.round(drawn)}px, not ${Math.round(native)}px.`
+        : `The art is ${Math.round(native)}px tall and the game draws it ${Math.round(drawn)}px tall — its own pixels, one to one, which is the rule.`,
+    }, off ? `art ${Math.round(native)}px → drawn ${Math.round(drawn)}px · ${f.toFixed(2)}×` : `1:1 · ${Math.round(native)}px`);
+  };
   const renderFacet = () => {
     const st = player?.getState(), dir = player?.getDir();
     if (!st || !dir) return;
-    facetPill.replaceChildren(facetName(st, dir));
+    facetPill.replaceChildren(...[facetName(st, dir), scalePill()].filter(Boolean));
     // IS IT REALLY LIT? Above the verdict, because it is not one: a LIT_2 that
     // came out dark is not art to reject, it is art filed under the wrong name
     // (maintainer 2026-08-17). Per STATE, not per direction — the light is a
