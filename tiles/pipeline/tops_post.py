@@ -47,6 +47,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
 from PIL import Image
 
+import palette_snap as PS
 import transition_render as TR
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -209,6 +210,63 @@ def rim_suppress(rgb, top, clean_rgb, width=RIM_W, snap=RIM_SNAP):
 MOTIF_NEAR, MOTIF_FAR = 30.0, 60.0
 
 
+# THE LOWER RIM, and how far in it is pulled onto the palette. Ring 0 goes all the way,
+# ring 1 half, so the fix dies out instead of leaving a band of its own.
+LOWER_RIM = (1.0, 0.5)
+# GROUND vs MOTIF on the rim uses RIM_SNAP, the SAME rule rim_suppress applies to the
+# upper edges - L1 over RGB, "the faint edge shading always is, a sparkle or a flower
+# crossing the edge never is". Inventing a stricter number here left 28% of grass rim
+# pixels untreated and the lower rim at 11.6 against the upper's 0.7; the two edges
+# should be judged by one rule, and this is the one already approved.
+
+
+def lower_rim_to_palette(rgb, top, clean_rgb, rings=LOWER_RIM):
+    """Pull the GROUND along the bottom-left and bottom-right edges onto the palette.
+
+    The maintainer, 2026-09-03: "close to the left-bottom edge and close to the
+    right-bottom edge. If that color is green it should be transformed to the green
+    palette in a way this creates a seamless tile."
+
+    Measured on the detail tiles, ground pixels only, distance from the clean colour by
+    ring depth - the anomaly is exactly one ring deep and only on the lower edges:
+
+        grass       LOWER 20.6  2.9  0.8  then 13-17 (the tile's own texture)
+                    upper  0.7  4.3 15.4
+        black_rock  LOWER 23.5  3.1  1.8
+                    upper  1.0  2.0 10.8
+
+    The upper rim is already on the palette because rim_suppress snaps rim pixels within
+    L1 120 of clean; the lower rim carries the generator's bevel shading, sits further
+    out than that, and is skipped - so every detail wears a dark line along the two edges
+    that meet the tiles in front of it, and reads as its own diamond.
+
+    Only the LOWER edges, deliberately: art with height legitimately crosses the upper
+    ones (his reason, and the reason this is not symmetric). Only ground-coloured pixels:
+    a berry or a crystal sitting on the rim keeps its colour.
+    """
+    ys, _ = np.nonzero(top)
+    if not len(ys):
+        return 0
+    widest = np.bincount(ys).argmax()
+    lower = np.zeros_like(top)
+    lower[widest + 1:, :] = True
+    cur, n = top, 0
+    for strength in rings:
+        nxt = np.zeros_like(cur)
+        nxt[1:-1, 1:-1] = (cur[1:-1, 1:-1] & cur[:-2, 1:-1] & cur[2:, 1:-1]
+                           & cur[1:-1, :-2] & cur[1:-1, 2:])
+        ring = cur & ~nxt & lower
+        cur = nxt
+        if not ring.any():
+            continue
+        ground = ring & (np.abs(rgb - clean_rgb).sum(2) < RIM_SNAP)
+        if not ground.any():
+            continue
+        rgb[ground] += (clean_rgb - rgb[ground]) * strength
+        n += int(ground.sum())
+    return n
+
+
 def align(img, clean_rgb, protect_motif=False):
     """(aligned image, background before, clipped fraction of top pixels).
 
@@ -271,6 +329,13 @@ def align(img, clean_rgb, protect_motif=False):
     else:
         clipped = shift_mask_to_clean(rgb, opaque, clean_rgb, measure=top)
     rim_suppress(rgb, top, clean_rgb)
+    if protect_motif:
+        # AFTER rim_suppress, and on the VISIBLE silhouette's top face rather than
+        # TR.top_face: the two disagree by ~70px exactly at the boundary, and the line
+        # he sees lives in the ring the other definition calls wall. Measuring one and
+        # correcting the other is why the first attempt at this changed nothing.
+        vis = PS._regions(np.asarray(a, float))
+        lower_rim_to_palette(rgb, vis["top"] if vis else top, clean_rgb)
     out = a.copy()
     out[..., :3] = np.clip(np.rint(rgb), 0, 255).astype(int)
     return Image.fromarray(out.astype(np.uint8), "RGBA"), bg, clipped
