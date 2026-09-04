@@ -294,6 +294,24 @@ by construction, so no existing branch changed.
   holes) — and its widest row still lands on `TOP_Y + DY`, so no water moved.
   The general rule: a mask that has to interlock with the art's masks IS the
   art's mask; re-deriving the diamond is how the gaps get in.
+- **THE GAME DRAWS NO SEAM** (`WorldScene` Tiles3Textures `seam: false`). The
+  tile pipeline's `compose()` darkens every texel of the border mask to
+  `border.tone` (0.82) of what it already is — a deliberate one-texel line
+  along every ground transition so it reads as a soft edge, not a 0-100 hard
+  cut (maintainer verdict in `tiles/patterns/index.json`, 2026-08-27). It does
+  not survive the device: at camera zoom 2 one texel is two screen px, and 18%
+  darker reads as a dotted dark line tracing the diamonds. **This was the rest
+  of his zigzag**, and unlike the wall band it was never a defect. MEASURED two
+  ways that agree: off his screenshot at 441.3/374.0, 4,923 dot texels on sand,
+  median dot/sand ratio 0.825/0.819/0.820 — a FLAT multiply, where the wall
+  band's signature is 0.731/0.695/0.671 and cooler in blue; and rendering his
+  window with the seam on vs off differs by 8,846 texels at median
+  0.821/0.819/0.817. It fits his three-way localisation like the wall band did:
+  a boundary is dressed only at level 0 on non-liquid ground, and he reports
+  the artefact absent on raised ground and on water. The LIBRARY and the WIKI
+  preview are untouched — this is the game only, which is what the `seam`
+  option exists for, and `boundaryKey` appends `|noseam` so a seamed and an
+  unseamed composition can never share a key. One word restores it.
 - **EVERY FIELD ART GOES THROUGH `plate()`, INCLUDING A PUBLISHED OR CLEAN
   ONE** (`tiles3draw` opsForCell). Its last branch drew `op.key` — the RAW FILE
   — for any field art that was not conform, not `topOnly` and not a liquid
