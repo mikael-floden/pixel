@@ -122,6 +122,12 @@ interface WorldClock {
 }
 const worldClocks = new Map<string, WorldClock>();
 
+/** HOW LONG A DROPPED SEAT IS HELD. Long enough to ride out a tunnel, short
+ *  enough that a genuine disconnect frees the body before anyone wonders why it
+ *  is standing there. The client gives up and reloads after six backoff retries
+ *  (~30 s), so this covers the whole of its own recovery. */
+const RECONNECT_GRACE_S = 45;
+
 /** Tests share one process per file; clock persistence must not leak between them. */
 export function resetWorldClocks() {
   worldClocks.clear();
@@ -752,6 +758,10 @@ export class WorldRoom extends Room<WorldState> {
     player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
   }
 
+  /** Sessions this room ejected on purpose (the one-token-one-session rule).
+   *  They leave for good; only a DROPPED link gets its seat held. */
+  private kicked = new Set<string>();
+
   onJoin(client: Client, options: JoinOptions = {}) {
     // Current live tuning straight to the joiner (updates arrive as broadcasts).
     client.send("live:update", liveTuning());
@@ -773,6 +783,11 @@ export class WorldRoom extends Room<WorldState> {
       if (oldSid) {
         const oldPlayer = this.state.players.get(oldSid);
         if (oldPlayer) this.savePlayer(oldPlayer); // flush the live state the newcomer restores
+        /* A KICK IS NOT A DROPPED LINK. `onLeave` holds a seat open for a
+         * reconnect, and a kicked session must not hold one — the whole point
+         * is that ONE token means one live session, and a reclaimable ghost
+         * would leave two. Marked before the leave, read inside it. */
+        this.kicked.add(oldSid);
         this.clients.find((c) => c.sessionId === oldSid)?.leave(4001); // its onLeave re-saves the same values
       }
     }
@@ -817,9 +832,35 @@ export class WorldRoom extends Room<WorldState> {
     this.broadcast("star", { name: player.name });
   }
 
-  onLeave(client: Client) {
+  /** A DROPPED LINK IS NOT A DEPARTURE — the seat is held open (2026-09-04,
+   *  the maintainer on a train: "the player was flying around like I don't know
+   *  what... the network connection goes up/down all the time").
+   *
+   *  Without this, every blip destroyed the player entity. The server's x/y
+   *  freeze at the last ACKED input the moment the socket dies, the client keeps
+   *  predicting and you keep walking on screen, and the rejoin then built a
+   *  BRAND NEW player anchored back at the frozen position while the client
+   *  threw away every unacked input. So each blip snapped him back to wherever
+   *  the link died — and on a train that is every few seconds, which is the
+   *  flying. His eight screenshots are all places he had just been.
+   *
+   *  Holding the seat means the reconnecting client reclaims the SAME session:
+   *  the entity, its position, its inventory and its unacked inputs all
+   *  survive, and nothing is restored from the store at all. A CONSENTED leave
+   *  (the player really left) is unaffected and cleans up at once. */
+  async onLeave(client: Client, consented?: boolean) {
     const player = this.state.players.get(client.sessionId);
+    // Flush first: if the grace expires we must not have lost the session.
     if (player) this.savePlayer(player);
+    const wasKicked = this.kicked.delete(client.sessionId);
+    if (!consented && !wasKicked && player) {
+      try {
+        await this.allowReconnection(client, RECONNECT_GRACE_S);
+        return; // reclaimed — the body never moved and nothing was rebuilt
+      } catch {
+        /* the grace ran out, or the room is shutting down: fall through */
+      }
+    }
     this.state.players.delete(client.sessionId);
     // Session ids are not reused, so a stale entry would leak for the room's
     // lifetime and silently pacify whoever inherited the id.

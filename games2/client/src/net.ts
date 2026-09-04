@@ -50,12 +50,49 @@ export function getPlayerToken(): string {
  *  adds. It gets left. */
 const JOIN_TIMEOUT_MS = 15_000;
 
+/** RECLAIM THE SEAT IF THE SERVER IS STILL HOLDING IT.
+ *
+ *  The server holds a dropped seat for RECONNECT_GRACE_S (WorldRoom.onLeave),
+ *  and reclaiming it keeps the SAME player entity — position, inventory and the
+ *  inputs the server had not yet acked. Joining fresh instead builds a new
+ *  player anchored at the last acked position, which is what threw the
+ *  maintainer around the map every time his train lost signal.
+ *
+ *  Kept in memory only. A reconnection token is one-shot and seat-scoped; a
+ *  stale one from a previous page load names a seat that is long gone, so
+ *  persisting it would trade this bug for a slower failure on every boot. */
+let reconnectionToken: string | null = null;
+
+/** Remember the seat this room holds, for the next drop. */
+export function rememberSeat(room: Room): void {
+  reconnectionToken = room.reconnectionToken ?? null;
+}
+
+/** Forget it — a consented leave, or a reclaim that the server refused. */
+export function forgetSeat(): void {
+  reconnectionToken = null;
+}
+
 export async function joinWorld(
   options: JoinOptions,
   room: string = ROOM_NAME,
   timeoutMs: number = JOIN_TIMEOUT_MS,
 ): Promise<Room> {
   const client = new Client(serverEndpoint());
+  if (reconnectionToken) {
+    const token = reconnectionToken;
+    // One attempt. If the grace has expired the server answers with an error
+    // and we fall through to a normal join rather than retrying a dead seat.
+    try {
+      const back = await withJoinTimeout(client.reconnect(token), timeoutMs, (r) => void r.leave(false));
+      rememberSeat(back);
+      return back;
+    } catch {
+      forgetSeat();
+    }
+  }
   const joining = client.joinOrCreate(room, { token: getPlayerToken(), ...options });
-  return withJoinTimeout(joining, timeoutMs, (r) => void r.leave(false));
+  const joined = await withJoinTimeout(joining, timeoutMs, (r) => void r.leave(false));
+  rememberSeat(joined);
+  return joined;
 }
