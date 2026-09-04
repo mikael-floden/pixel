@@ -272,7 +272,72 @@ def lower_rim_to_palette(rgb, top, clean_rgb, rings=LOWER_RIM):
     return n
 
 
-def align(img, clean_rgb, protect_motif=False):
+_SPREAD = {}
+
+
+def ground_spread(ground, n_tiles=40):
+    """The value spread of the ground's OWN base tile set, measured not assumed.
+
+    This is what a detail's grass is compressed TO, so it has to come from the art the
+    detail will sit next to rather than a constant. Measured per ground and cached;
+    grass reads 19.6. Falls back to retint_spill's 16.2 for a ground with no published
+    base candidates yet."""
+    if ground in _SPREAD:
+        return _SPREAD[ground]
+    vs = []
+    pat = os.path.join(REPO, "tiles", "base_candidates", ground, "**", "*.webp")
+    for f in sorted(glob.glob(pat, recursive=True))[:n_tiles]:
+        try:
+            a = np.array(Image.open(f).convert("RGBA"))
+            m = PS._regions(a)["top"] & (a[..., 3] > 0)
+        except Exception:
+            continue
+        if m.sum() < 50:
+            continue
+        vs.append(PS._rgb2hsv(a[..., :3][m])[:, 2])
+    _SPREAD[ground] = float(np.concatenate(vs).std()) if vs else 16.2
+    return _SPREAD[ground]
+
+
+def ground_to_palette(rgb, top, clean_rgb, spread):
+    """Move the detail's GROUND onto the palette; leave its motif alone.
+
+    Alignment is a TRANSLATION, and a translation cannot pull an outlier in - it slides
+    the whole distribution, so a bright lime blade only becomes a slightly less bright
+    lime blade. Measured on the tile the maintainer sent (grass sheet_03 tile_10, live
+    art): the bulk landed correctly on the clean colour but the brightest 8% of GROUND
+    pixels sat at [98 167 88], L1 191 away, peaking [139 198 117] - "lime green grass
+    you didn't make our green". The leading-channel rule had already classified them as
+    grass (995 of 996 top pixels); identifying them was never the missing half.
+
+    So the ground is REMAPPED, the same operation palette_snap.retint_spill uses on the
+    overhanging blades: hue and saturation become the palette's, and value keeps its
+    relative light and shade re-centred on the palette's brightness. Its spread is
+    COMPRESSED ONLY, NEVER AMPLIFIED - stretching contrast to hit a target is what
+    turned a stone wall into zigzag earlier in this pipeline. Same tile after: brightest
+    8% [33 132 94], L1 97, landing just past the palette's own brightest #18765a, which
+    is what a highlight should do.
+
+    Details only. The motif (any pixel the leading-channel test does not call ground)
+    is untouched, which is the whole point: the detail pops because the grass under it
+    stopped competing."""
+    lead = np.asarray(clean_rgb, float).argmax()
+    sel = top & ((rgb.argmax(2) == lead) | (np.ptp(rgb, axis=2) < GROUND_MIN_CHROMA))
+    if sel.sum() < 8:
+        return 0
+    px = np.clip(np.rint(rgb[sel]), 0, 255).astype(np.uint8)
+    hsv = PS._rgb2hsv(px)
+    tgt = PS._rgb2hsv(np.asarray(clean_rgb, np.uint8)[None, :])[0]
+    v = hsv[:, 2].astype(float)
+    scale = min(1.0, spread / (float(v.std()) or spread))
+    hsv[:, 0] = tgt[0]
+    hsv[:, 1] = tgt[1]
+    hsv[:, 2] = np.clip(float(tgt[2]) + (v - v.mean()) * scale, 0, 255)
+    rgb[sel] = PS._hsv2rgb(hsv).astype(float)
+    return int(sel.sum())
+
+
+def align(img, clean_rgb, protect_motif=False, spread=None):
     """(aligned image, background before, clipped fraction of top pixels).
 
     `protect_motif` is for DETAIL sheets, and it is the maintainer's rule of what a
@@ -374,7 +439,10 @@ def align(img, clean_rgb, protect_motif=False):
         # he sees lives in the ring the other definition calls wall. Measuring one and
         # correcting the other is why the first attempt at this changed nothing.
         vis = PS._regions(np.asarray(a, float))
-        lower_rim_to_palette(rgb, vis["top"] if vis else top, clean_rgb)
+        vtop = vis["top"] if vis else top
+        lower_rim_to_palette(rgb, vtop, clean_rgb)
+        # LAST, so nothing downstream re-spreads the ground off the palette again.
+        ground_to_palette(rgb, vtop, clean_rgb, spread if spread else 16.2)
     out = a.copy()
     out[..., :3] = np.clip(np.rint(rgb), 0, 255).astype(int)
     return Image.fromarray(out.astype(np.uint8), "RGBA"), bg, clipped
@@ -416,8 +484,10 @@ def main(only_flavour=None):
         post_files = []
         for name in sheet["tiles"]:
             img = Image.open(os.path.join(d, name))
+            is_detail = sheet.get("flavour") == "detail"
             aligned, bg, clipped = align(
-                img, clean, protect_motif=(sheet.get("flavour") == "detail"))
+                img, clean, protect_motif=is_detail,
+                spread=ground_spread(g) if is_detail else None)
             if aligned is None:
                 post_files.append(None)
                 continue
