@@ -2073,12 +2073,24 @@ export class WorldScene extends Phaser.Scene {
     this.perfRenderHooked = true;
     const ev = this.game.events;
     let t0 = 0;
+    let sort0 = 0;
     ev.on(Phaser.Core.Events.PRE_RENDER, () => {
-      if (this.perfOn) t0 = performance.now();
+      if (!this.perfOn) return;
+      t0 = performance.now();
+      sort0 = this.perfAcc["depthSort"]?.ms ?? 0;
     });
     ev.on(Phaser.Core.Events.POST_RENDER, () => {
       if (!this.perfOn || !t0) return;
-      this.pAdd("render", performance.now() - t0);
+      /* RENDER REPORTS SELF TIME TOO, because `depthSort` is INSIDE it.
+       * Phaser calls `displayList.depthSort()` from `Systems.render`, i.e.
+       * between PRE_RENDER and POST_RENDER, and these two spans go through
+       * `pAdd` rather than the ps/pe stack — so the stack's self-time rule
+       * could not reach them and `render` billed the sort a second time,
+       * understating the report's `other` by the whole depthSort figure
+       * (0.57-1.71 ms/frame on his phone). Subtract exactly what the sort
+       * accumulated inside this bracket. */
+      const sortMs = (this.perfAcc["depthSort"]?.ms ?? 0) - sort0;
+      this.pAdd("render", performance.now() - t0 - sortMs);
       t0 = 0;
       this.perfDrawCount = this.perfFlushes;
       this.perfFlushes = 0;

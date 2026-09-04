@@ -2336,7 +2336,16 @@ height reads per thing per frame.
   posterize AFTER scaling to the band range — floor() on raw density dropped
   everything below band 1 and the effect silently vanished (debug by
   bisecting the fragment with early colour returns). Eases on the ~4s cloud
-  roll; skipped while clear. Exact JS twin `mistAt()` — change together.
+  roll. Exact JS twin `mistAt()` — change together. **A SHADER PASS WITH
+  `setRenderToTexture` IS NEVER SKIPPED BY `setVisible(false)`**:
+  `Shader.willRender` returns true unconditionally in that case, so all three
+  full-screen passes run EVERY frame whatever the visibility says — this note
+  used to claim mist was "skipped while clear" and it never was. A pass is made
+  cheap only by a uniform guard on the FIRST line of its own `main`, which is
+  where DEPTHFOG_FRAG's `uFog` test has always been and where MIST_FRAG's
+  `uMist` test now is; before that it sat after the 128-iteration surface
+  march, so clear weather paid for the expensive part of a pass that then
+  returned nothing.
   Probes: `__ml.mistAt(wx,wy)`, mist in weatherInfo.
 
 ## Directional sun shadows (day phases)

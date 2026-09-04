@@ -1207,6 +1207,16 @@ float blockMaxAt(vec2 b) {
 }
 
 void main() {
+  /* THE PASS IS NEVER SKIPPED, SO IT MUST SKIP ITSELF, and this guard was 30
+   * lines too late. setVisible(false) does NOT stop a Shader that has
+   * setRenderToTexture: Shader.willRender returns true unconditionally in that
+   * case, so the mist pass ran a full canvas-sized fragment program EVERY FRAME
+   * with clear weather, and the uMist test sat AFTER the 128-iteration surface
+   * march that is the expensive part. DEPTHFOG_FRAG has always had its uFog
+   * guard on the first line of main; this is the same guard, and it is
+   * pixel-identical because the old code answered vec4(0.0) for exactly these
+   * fragments anyway. */
+  if (uMist <= 0.001) { gl_FragColor = vec4(0.0); return; }
   vec2 suv = gl_FragCoord.xy / resolution;
   float wx = uCam.x + suv.x * uCam.z;
   float wy = uCam.y + mix(suv.y, 1.0 - suv.y, uFlip) * uCam.w;
@@ -3186,8 +3196,11 @@ export class NightLights {
     s.setUniform("uEmitN.value", this.emitList.length);
 
     // MIST overlay — same world window/clock as the light field, its own
-    // shader (NORMAL blend can't share the multiply pass). Skipped entirely
-    // while clear so the extra pass costs nothing.
+    // shader (NORMAL blend can't share the multiply pass). SETTING IT INVISIBLE
+    // DOES NOT SKIP IT: `Shader.willRender` returns true unconditionally once
+    // `setRenderToTexture` is set, so the pass runs whatever this says. What
+    // makes it cheap while clear is the `uMist` guard on the first line of
+    // MIST_FRAG's main, not this call.
     const showMist = mist > 0.003;
     this.mistShader?.setVisible(showMist);
     this.mistOverlay?.setVisible(showMist);
