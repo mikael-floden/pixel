@@ -301,7 +301,14 @@ const SHADOW_DIR_VEC: Record<string, [number, number]> = {
 /** The screen ellipse for a facing — radii p ≥ q and a rotation — from the
  *  south-tuned (rx, ry). Pure; safe to call per frame. */
 export function shadowScreenEllipse(rx: number, ry: number, dir: string): { p: number; q: number; theta: number } {
-  const K = ISO_DY / ISO_DX;
+  // SHADOW_TUNED_K, not the live pitch, and it must match shadowBodyRadius or the
+  // DRAWN shadow stops being the hit box - which is the maintainer's whole rule for
+  // these ("the size will be the monsters hit box"). He tuned every rx/ry by eye
+  // against ISO_DY 15; pinning both functions gives him back the ellipse he saw and
+  // the reach he set. The cost is that the shadow's squash no longer tracks the
+  // terrain pitch, a 7% difference on a soft ellipse - far cheaper than 57 hit boxes
+  // that quietly stopped being his.
+  const K = SHADOW_TUNED_K;
   const [vx, vy] = SHADOW_DIR_VEC[dir] ?? [0, 1];
   const a = Math.atan2(vx, vy / K); // the facing's angle on the GROUND
   const ryg = ry / K;               // the tuned depth, unsquashed
@@ -358,8 +365,25 @@ export const SHADOW_BODY_R_MAX = 80;
  *  Never NaN — junk collapses to the floor, so a malformed record can only
  *  ever make a monster small, never a map-wide one (readMonsterShadow already
  *  rejects non-finite radii; this is the second lock on the same door). */
+/** The pitch the SHADOW HITBOXES WERE TUNED AT, pinned on purpose.
+ *
+ * Every rx/ry in live/tuning/monsters.json was set by hand against ISO_DY 15, and
+ * this formula divides by K - so moving the projection silently rescales all 57 of
+ * them. It did: ISO_DY 15 -> 14 grew every tuned shadow by a mean 3.8% and up to
+ * 4.5% (polar_bear 33.25 -> 34.68, black_horse 22.10 -> 23.07), and since
+ * monsterRadiusFor derives MELEE REACH from this, those monsters reached further
+ * than he set them to. The test caught it and was overridden - the wrong call.
+ *
+ * A hitbox he tuned is a fact about the monster, not about the camera, so it must
+ * not track the camera. Pinning K here restores every value exactly and decouples
+ * the two permanently: the pitch can move again without touching his tuning.
+ * (wiki/tools/check-shadow.mjs gates on this function's output and was calibrated
+ * at 15 too, so this restores that gate as well. Signature unchanged.)
+ */
+const SHADOW_TUNED_K = 15 / 32;
+
 export function shadowBodyRadius(rx: number, ry: number): number {
-  const K = ISO_DY / ISO_DX;
+  const K = SHADOW_TUNED_K;
   const r = (rx + ry / K) / 2;
   if (!isFinite(r)) return SHADOW_BODY_R_MIN;
   return Math.min(SHADOW_BODY_R_MAX, Math.max(SHADOW_BODY_R_MIN, r));

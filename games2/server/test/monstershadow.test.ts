@@ -24,7 +24,10 @@ import {
   ISO_DY,
 } from "@nangijala/shared";
 
-const K = ISO_DY / ISO_DX;
+// The shadow functions are pinned to the pitch the hit boxes were TUNED at, so the
+// test must reason in that frame too - using the live pitch here is what made this
+// file demand new numbers when ISO_DY moved.
+const K = 15 / 32;
 
 // --- readMonsterShadow: junk in, null out (never a crash, never a NaN) ------
 
@@ -167,13 +170,13 @@ test("shadowScreenEllipse: every direction keeps the ellipse's area and p ≥ q"
 
 test("shadowBodyRadius is the mean of the GROUND semi-axes", () => {
   assert.ok(Math.abs(shadowBodyRadius(25.5, 14.5) - (25.5 + 14.5 / K) / 2) < 1e-9);
-  // These two follow K = ISO_DY / ISO_DX by construction, so they move when the
-  // projection does: at ISO_DY 15 they were 16.392 and 26.958, and at 14 (the pitch
-  // the tiles3 art closes at - see ISO_DY) they are 16.982 and 27.911. The CHECK is
-  // unchanged and is the point of the numbers: each still lands within a pixel of the
-  // monster's own art radius, and forest_poring is now nearer 17 than it was.
-  assert.ok(Math.abs(shadowBodyRadius(16.25, 7.75) - 16.982) < 0.001, "forest_poring ≈ its art radius 17");
-  assert.ok(Math.abs(shadowBodyRadius(27.25, 12.5) - 27.911) < 0.001, "diablo_2 ≈ its art radius 27");
+  // BACK TO THE TUNED VALUES. These moved to 16.982/27.911 when ISO_DY went 15 -> 14,
+  // and updating them here was the wrong response: the test was reporting that a
+  // camera change had rescaled 57 hand-tuned hitboxes. shadowBodyRadius now pins K to
+  // the pitch they were tuned at, so these are his numbers again and stay his if the
+  // projection moves.
+  assert.ok(Math.abs(shadowBodyRadius(16.25, 7.75) - 16.392) < 0.001, "forest_poring ≈ its art radius 17");
+  assert.ok(Math.abs(shadowBodyRadius(27.25, 12.5) - 26.958) < 0.001, "diablo_2 ≈ its art radius 27");
 });
 
 test("shadowBodyRadius cannot change when the monster turns", () => {
