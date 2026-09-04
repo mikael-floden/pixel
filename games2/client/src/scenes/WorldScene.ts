@@ -3395,7 +3395,15 @@ export class WorldScene extends Phaser.Scene {
             sy: cell.sy,
           },
           blits: cell && tex ? cellBlits(tex, this.t3tm, cell).map((o) => ({ role: o.role, key: o.key })) : [],
-          boundary: b && { index: b.index, a: b.a, b: b.b, maskFrame: b.maskFrame, drawn: !!bop },
+          boundary: b && {
+            index: b.index,
+            a: b.a,
+            b: b.b,
+            maskFrame: b.maskFrame,
+            topOnly: !!b.topOnly,
+            drawn: !!bop,
+            key: bop?.key ?? null,
+          },
           decks: this.t3Try(`probe decks ${col},${row}`, () => t3.decks(col, row), []).length,
         };
       },
@@ -4253,6 +4261,58 @@ export class WorldScene extends Phaser.Scene {
           if (!on) this.t3ringQueue = [];
         }
         return this.groundPrefetch;
+      },
+      /** THE TWO TRANSITION SWITCHES, as hooks rather than chat-menu entries
+       *  (the menu keeps its own copies). A headless run needs to A/B the
+       *  composed boundary against the plates it replaces WITHOUT a human
+       *  opening a menu — "why don't you confirm on your own if you have fixed
+       *  this?" is not answerable through a screenshot alone, because a
+       *  transition and a hard edge are the same two grounds in the same two
+       *  colours and only the A/B separates them. */
+      transitions: (on?: boolean) => {
+        if (typeof on === "boolean" && on === this.noTransitions) {
+          this.noTransitions = !on;
+          this.repaintWorld();
+        }
+        return !this.noTransitions;
+      },
+      seam: (on?: boolean) => {
+        if (typeof on === "boolean" && on !== this.seamOn) {
+          this.seamOn = on;
+          this.t3tex = null; // the seam is part of the composed key's identity
+          this.repaintWorld();
+        }
+        return this.seamOn;
+      },
+      /** ONE COMPOSED TEXTURE, as pixels. `t3at` can say a boundary resolved,
+       *  has a mask frame and "drew", and the picture can still be a hard
+       *  diamond — those are not the same claim, and only the raster settles
+       *  which. Returns the texture's own source scaled 1:1 as a PNG data URL
+       *  plus a two-tone histogram, so a headless run can SEE the transition
+       *  rather than infer it from counters. */
+      t3png: (key: string) => {
+        const tx = this.textures.exists(key) ? this.textures.get(key) : null;
+        const src = tx?.getSourceImage() as HTMLCanvasElement | HTMLImageElement | undefined;
+        if (!src) return null;
+        const w = (src as HTMLCanvasElement).width;
+        const h = (src as HTMLCanvasElement).height;
+        const cv = document.createElement("canvas");
+        cv.width = w;
+        cv.height = h;
+        const ctx = cv.getContext("2d");
+        if (!ctx) return null;
+        ctx.drawImage(src as CanvasImageSource, 0, 0);
+        const d = ctx.getImageData(0, 0, w, h).data;
+        let opaque = 0;
+        const hist = new Map<string, number>();
+        for (let i = 0; i < d.length; i += 4) {
+          if (d[i + 3] < 128) continue;
+          opaque++;
+          const k = `${d[i] >> 4},${d[i + 1] >> 4},${d[i + 2] >> 4}`;
+          hist.set(k, (hist.get(k) ?? 0) + 1);
+        }
+        const top = [...hist.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+        return { key, w, h, opaque, top, url: cv.toDataURL("image/png") };
       },
       /** The resolution cache's switch, for the occluder-pass parity check. */
       groundCache: (on: boolean) => {
@@ -14627,9 +14687,38 @@ export class WorldScene extends Phaser.Scene {
           }
           this.occluders.push(this.occImage(fk, bx, by - lvl * lh, oDepth, col, row));
         }
-        if (columnShows(bx, by - topL * lh, by + tileSize))
+        if (columnShows(bx, by - topL * lh, by + tileSize)) {
           this.occluders.push(this.occImage(topL === cell.level ? topKey : fk, bx, by - topL * lh, oDepth, col, row));
-        else culled++;
+          /* THE CAP WEARS ITS TRANSITION HERE TOO — and not doing so is the
+           * whole of "the transition only works on level 0" (maintainer, for
+           * weeks, with photographs: "As soon as I go up on a hill or something
+           * not level 0 the transition breaks!").
+           *
+           * This pass re-issues raised terrain as SPRITES over the ground
+           * texture so bodies can interleave with it, and it built the cap from
+           * the cell's own plate alone. So the ground RT composed the boundary
+           * correctly, drew it, and then this copy landed on top of it one
+           * frame later with a hard diamond edge — every cell above level 0,
+           * every terrace, every plateau. Level 0 has no occluder (`continue`
+           * above), which is exactly why level 0 was the only place a
+           * transition ever survived, and why water — always level 0 — looked
+           * right the whole time. Nothing was wrong with the composition, the
+           * mask, the pools or the streaming: the picture was being painted
+           * over.
+           *
+           * ONLY A TOP-FACE-ONLY BOUNDARY may ride here, which is the same
+           * raised/liquid case that gives this pass a cell at all. A full
+           * silhouette (level 0) carries a 1,088-texel wall band, and pasting
+           * that as a sprite would paint a wall over the cell in front. Drawn
+           * AFTER the cap, at the same anchor and depth, exactly as the ground
+           * pass draws it after `cellBlits` — both rasters are the same 924
+           * texels, so the transition simply replaces the plain cap. */
+          const ob = topL === cell.level ? this.t3boundaryOf(t3, col, row) : null;
+          if (ob?.topOnly && !(mask && (!cuts || this.t3QuadCut(cuts, col, row)))) {
+            const obop = this.t3Try(`occ boundary ${col},${row}`, () => tex.opsForBoundary(ob), null);
+            if (obop) this.occluders.push(this.occImage(obop.key, bx, by - topL * lh, oDepth, col, row));
+          }
+        } else culled++;
         this.occluderMeta.push({
           col, row, top: topL, solid: false, depth: oDepth,
           x0: bx, x1: bx + tileSize, y0: by - topL * lh, y1: by + tileSize,
