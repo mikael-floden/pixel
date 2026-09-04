@@ -1739,7 +1739,7 @@ export class WorldScene extends Phaser.Scene {
         texturesAdded: snap.texturesAdded as number,
         // Objects the RENDERER actually drew last frame, against the display
         // list we built — the gap is what the cull is worth.
-        drawCount: this.perfDrawCount,
+        flushes: this.perfDrawCount, // batch flushes in the last rendered frame
       },
       // Every jump of the AUTHORITATIVE body over 2 cells in one frame, with
       // the unacked-input depth at the time — a rejoin restore, a respawn, an
@@ -2050,8 +2050,30 @@ export class WorldScene extends Phaser.Scene {
       if (!this.perfOn || !t0) return;
       this.pAdd("render", performance.now() - t0);
       t0 = 0;
-      const dc = (this.game.renderer as unknown as { drawCount?: number }).drawCount;
-      if (typeof dc === "number") this.perfDrawCount = dc;
+      this.perfDrawCount = this.perfFlushes;
+      this.perfFlushes = 0;
+    });
+    /* BATCH FLUSHES PER FRAME — and the first cut of this metric read
+     * `renderer.drawCount`, which came back 0 in all four runs of his beacon
+     * because it is a CANVAS-renderer property; Phaser 3.90's WebGLRenderer has
+     * no such counter at all. The real signal is the pipeline's own
+     * BEFORE_FLUSH, which `WebGLPipeline.flush` emits only when `vertexCount >
+     * 0`, i.e. only on a flush that actually draws.
+     *
+     * It is the number that decides whether `render` (3.5-13.3 ms/frame, the
+     * largest steady section) is the batcher thrashing: every composed boundary
+     * is its own canvas texture, there are 7,867 of them and climbing, and the
+     * batcher must flush whenever a draw needs a texture it is not holding. A
+     * flush count near the display-list size (4,329-7,640) means the ground is
+     * being drawn one object per draw call; a count in the dozens means the
+     * cost is elsewhere and atlasing would buy nothing. */
+    const pm = (this.game.renderer as unknown as {
+      pipelines?: { pipelines?: { each(fn: (k: string, p: { on(e: string, cb: () => void): void }) => void): void } };
+    }).pipelines;
+    pm?.pipelines?.each((_k, pipe) => {
+      pipe.on(Phaser.Renderer.WebGL.Pipelines.Events.BEFORE_FLUSH, () => {
+        if (this.perfOn) this.perfFlushes++;
+      });
     });
     /* THE DEPTH SORT, timed where it happens. Phaser re-sorts the whole list
      * whenever anything changed depth, which for this scene is every frame that
@@ -2069,7 +2091,9 @@ export class WorldScene extends Phaser.Scene {
     }
   }
   private perfRenderHooked = false;
+  /** Batch flushes in the last rendered frame — see perfHookRender. */
   private perfDrawCount = 0;
+  private perfFlushes = 0;
   /** Server-side position jumps for the local body — see the recorder in the
    *  avatar loop. Bounded at 40 so a runaway cannot grow the report. */
   private posJumps: Record<string, unknown>[] = [];
