@@ -1022,6 +1022,14 @@ export interface Tiles3TexturesStats {
   evicted: number;
   /** Requests that could not build because a source texture was not loaded. */
   missing: number;
+  /** Of `built`, the ones that were composed BOUNDARIES. Measured on the_game:
+   *  a fresh ground window around the spawn needs 128-287 distinct boundary
+   *  compositions and only 5-9 plate ones, so this is very nearly all of it. */
+  builtBoundary: number;
+  /** Boundary compositions REFUSED because the frame's compose budget was
+   *  spent. Each one draws its plain plate instead and is repainted by
+   *  `t3retryBoundaries` when a later frame's budget affords it. */
+  deferred: number;
 }
 
 /**
@@ -1032,7 +1040,7 @@ export interface Tiles3TexturesStats {
  * atlas bake.
  */
 export class Tiles3Textures {
-  readonly stats: Tiles3TexturesStats = { built: 0, buildMs: 0, reused: 0, live: 0, evicted: 0, missing: 0 };
+  readonly stats: Tiles3TexturesStats = { built: 0, buildMs: 0, reused: 0, live: 0, evicted: 0, missing: 0, builtBoundary: 0, deferred: 0 };
   /** Ops `opsForCell` DROPPED because their texture was not registered. It has
    *  always dropped them silently; nothing counted it, so "a tile simply never
    *  drew" was invisible to every probe. The maintainer's artefact is bare
@@ -1051,6 +1059,35 @@ export class Tiles3Textures {
 
   private o: Tiles3TexturesOpts;
   /** key -> nothing; a Map because insertion order IS the LRU order. */
+  /* THE COMPOSE BUDGET — what stops a fresh window from freezing the game.
+   *
+   * A composition costs 6.0-9.6 ms on the maintainer's phone (measured off his
+   * beacon: composeMs/composed over the 20 worst frames; games2/CLAUDE.md's
+   * "2-4 ms on a phone" was optimistic by 2-4x). The ground pass composed every
+   * boundary a window needed SYNCHRONOUSLY, so his worst frames read
+   * redrawGround 1244 ms / 113 compositions and groundSlice 770 ms / 87 — a
+   * freeze of over a second, and the single largest thing in the whole report.
+   * It is worst exactly where he plays: measured over 100 windows of the_game,
+   * a window needs 15 distinct boundary compositions at the map's median but
+   * 128-287 around the spawn (441,364).
+   *
+   * So the pass gets a wall-clock allowance per frame. A composition already
+   * under way always finishes — this bounds how many START, not how long one
+   * takes — so the allowance is deliberately SMALLER than one composition:
+   * spending it means his phone starts exactly one per frame while this
+   * machine, where a composition is ~0.45 ms, starts a dozen. The budget tunes
+   * itself to the device instead of encoding one.
+   *
+   * ONLY BOUNDARIES ARE REFUSED, because only they have a correct fallback: a
+   * cell whose transition is not composed yet draws THE PLAIN PLATE it would
+   * otherwise replace — the pre-3.0 look, two grounds meeting hard, and never
+   * a hole (the same answer this path already gives while a source plate is
+   * still streaming). A refused PLATE would leave the cell with no art at all,
+   * so plates are never budgeted; they are 5-9 per window and cached for the
+   * session, so they cost nothing to leave alone. */
+  private composeBudgetMs = Infinity;
+  private composeSpent = 0;
+
   private mine = new Map<string, true>();
   private pix = new Map<string, Pixels | null>();
 
@@ -1065,7 +1102,15 @@ export class Tiles3Textures {
   boundary(b: Tiles3Boundary): string | null {
     const key = boundaryKeyFor(b, this.o.seam !== false);
     if (!key) return null;
-    return this.ensure(key, () => {
+    // THE BUDGET, and the ONE place it is enforced. An already-composed key is
+    // free and is always answered — refusing a cache hit would make the ground
+    // flicker between plate and transition as the camera moved.
+    if (this.composeSpent >= this.composeBudgetMs && !this.o.textures.exists(key)) {
+      this.stats.deferred++;
+      return null;
+    }
+    const before = this.stats.built;
+    const out = this.ensure(key, () => {
       const a = this.platePixels(b.plateA, b.a);
       const bb = this.platePixels(b.plateB, b.b);
       if (!a || !bb) return null;
@@ -1155,6 +1200,16 @@ export class Tiles3Textures {
         ? topFaceOnly(this.o.sheets, out, { margin: !!b.noWall })
         : capWallToSurface(this.o.sheets, out);
     });
+    if (this.stats.built !== before) this.stats.builtBoundary++;
+    return out;
+  }
+
+  /** Arm this frame's compose allowance (see `composeBudgetMs`). `Infinity`
+   *  composes without limit — what the join paint runs under, behind the
+   *  loading screen, so the first world he sees is whole. */
+  armCompose(ms: number): void {
+    this.composeBudgetMs = ms;
+    this.composeSpent = 0;
   }
 
   /** The drawable texture key for a resolved plate: the plain art key for a
@@ -1399,7 +1454,11 @@ export class Tiles3Textures {
     this.o.textures.addCanvas(key, cv)?.setFilter(NEAREST);
     this.mine.set(key, true);
     this.stats.built++;
-    this.stats.buildMs += typeof performance !== "undefined" ? performance.now() - t0 : 0;
+    const ms = typeof performance !== "undefined" ? performance.now() - t0 : 0;
+    this.stats.buildMs += ms;
+    // Plate compositions spend the budget too — they are part of the same
+    // frame — they are just never refused by it.
+    this.composeSpent += ms;
     this.stats.live = this.mine.size;
     const limit = this.o.limit ?? 0;
     if (limit > 0) {

@@ -1011,3 +1011,70 @@ test("topFaceOnly's margin row is opt-out, and the liquid default keeps it", { s
   for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++)
     if (SHEETS.libTop[i]) for (let ch = 0; ch < 4; ch++) assert.equal(withM.data[i * 4 + ch], without.data[i * 4 + ch]);
 });
+
+/* THE COMPOSE BUDGET — the whole contract, because getting any half of it wrong
+ * is either a freeze or a wrong picture.
+ *
+ * A composition costs 6.0-9.6 ms on the maintainer's phone and a fresh ground
+ * window around the spawn needs 128-287 of them, which is the 1,276 ms frame in
+ * his beacon. The budget bounds how many START per frame. What it must never do
+ * is refuse a key that already exists (the ground would flicker between plate
+ * and transition as the camera moved) or refuse a PLATE (a boundary falls back
+ * to the plain plate it replaces — the pre-3.0 hard edge, never a hole — while
+ * a plate has no fallback at all and the cell would draw nothing). */
+test("the compose budget refuses NEW boundaries, never a cache hit", { skip }, () => {
+  const cases = (F.boundary as any[]).slice(0, 3);
+  const fx = fakeTextures();
+  for (const c of cases) {
+    fx.put(artKey(c.a.path), px(c.a.path));
+    fx.put(artKey(c.b.path), px(c.b.path));
+  }
+  const T = new Tiles3Textures({ textures: fx.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas });
+  const bOf = (c: any) => ({ maskFrame: c.frame, a: c.a.ground, b: c.b.ground, plateA: c.a, plateB: c.b } as any);
+
+  // A budget of 0 is spent before the first composition, so nothing new builds.
+  T.armCompose(0);
+  assert.equal(T.boundary(bOf(cases[0])), null, "a new boundary is refused");
+  assert.equal(T.stats.built, 0, "and nothing was rasterised");
+  assert.equal(T.stats.deferred, 1, "the refusal is counted");
+
+  // Unbudgeted, the SAME boundary composes — so the refusal was the budget and
+  // not a broken input, and the deferral is recoverable.
+  T.armCompose(Infinity);
+  const key = T.boundary(bOf(cases[0]));
+  assert.ok(key, "unbudgeted, it composes");
+  assert.equal(T.stats.built, 1);
+  assert.equal(T.stats.builtBoundary, 1, "and is counted as a boundary build");
+
+  // Spent again, an ALREADY COMPOSED key is still answered — free, and the
+  // picture must not flicker.
+  T.armCompose(0);
+  assert.equal(T.boundary(bOf(cases[0])), key, "a cache hit is never refused");
+  assert.equal(T.stats.deferred, 1, "and is not counted as a deferral");
+
+  // A wall-clock budget is spent by the work itself: one composition costs more
+  // than 0 ms, so an allowance of 0.000001 buys exactly the first one.
+  // A FRESH texture manager: sharing `fx` would hand T2 the composition T
+  // already registered, so it would spend nothing and defer nothing.
+  const fx2 = fakeTextures();
+  for (const c of cases) {
+    fx2.put(artKey(c.a.path), px(c.a.path));
+    fx2.put(artKey(c.b.path), px(c.b.path));
+  }
+  const T2 = new Tiles3Textures({ textures: fx2.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas });
+  T2.armCompose(1e-6);
+  assert.ok(T2.boundary(bOf(cases[0])), "the first composition always starts");
+  assert.equal(T2.boundary(bOf(cases[1])), null, "the next is deferred");
+  assert.equal(T2.stats.built, 1, "exactly one composition was afforded");
+});
+
+test("the compose budget never refuses a PLATE — a plate has no fallback", { skip }, () => {
+  const c: any = (F.boundary as any[])[0];
+  const fx = fakeTextures();
+  fx.put(artKey(c.a.path), px(c.a.path));
+  const T = new Tiles3Textures({ textures: fx.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas });
+  T.armCompose(0);
+  const key = T.plate(c.a, c.a.ground);
+  assert.ok(key, "a plate composes with the budget fully spent");
+  assert.equal(T.stats.deferred, 0, "and no deferral is recorded");
+});

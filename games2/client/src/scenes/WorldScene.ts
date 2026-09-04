@@ -820,6 +820,24 @@ const GROUND_RING_COMPOSE = 3;
  *  composition, this machine still gets its eighty. The counts stay as upper
  *  bounds so a pathologically cheap frame cannot run away. */
 const GROUND_RING_MS = 2;
+/** THE GROUND PASS'S COMPOSE ALLOWANCE PER FRAME, in ms (see the compose budget
+ *  in tiles3draw). Deliberately smaller than ONE composition on his phone
+ *  (measured 6.0-9.6 ms), so spending it starts exactly one there and about a
+ *  dozen on a desktop where a composition is ~0.45 ms — the budget reads the
+ *  device instead of assuming one. Same shape and same number as the ring's
+ *  GROUND_RING_MS, which bounds the same work from the other side. */
+const GROUND_COMPOSE_MS = 2;
+/** How often a boundary repair may force an occluder rebuild, in ms. A RAISED
+ *  transition is worn by the occluder cap, not by the ground texture under it
+ *  (the cap is re-issued over the ground so bodies interleave by depth), so a
+ *  boundary the budget deferred is invisible until the occluder set is built
+ *  again — and that set is latched to 96 px of camera drift, which never comes
+ *  while he stands still. Measured on the_game, 118-217 of a window's 169-287
+ *  boundaries are raised, so this is the common case, not the corner.
+ *  Rebuilding on every repaired cell would cost a rebuild per frame for
+ *  hundreds of frames; this makes the repairs land in waves a few times a
+ *  second, at ~3 ms each, and stops by itself when the owed set drains. */
+const T3_OCC_REPAIR_MS = 400;
 /** ONE COMPOSITION IS AN ATOM, AND ON HIS PHONE IT IS ~13 ms.
  *
  *  Measured: with GROUND_RING_MS already in force, `prefetch` still cost 15.64
@@ -1557,6 +1575,8 @@ export class WorldScene extends Phaser.Scene {
   private hitchSum = 0;
   private hitchPrevBuilt = 0;
   private hitchPrevBuildMs = 0;
+  private hitchPrevBuiltB = 0;
+  private hitchPrevDeferred = 0;
   private perfTexAdded = 0;
   private perfTexFam: Record<string, number> = {};
   private perfTexFrame = 0;
@@ -1568,8 +1588,17 @@ export class WorldScene extends Phaser.Scene {
     const tex = this.t3tex;
     const built = (tex?.stats.built ?? 0) - this.hitchPrevBuilt;
     const buildMs = (tex?.stats.buildMs ?? 0) - this.hitchPrevBuildMs;
+    // `deferred` is what the compose budget refused THIS frame — the number
+    // that says whether the budget is doing anything, and how far behind the
+    // repair is running. `bnd` splits the builds: measured offline, a fresh
+    // window needs 128-287 boundary compositions and 5-9 plate ones, so a
+    // build that is not a boundary is not what the budget is aimed at.
+    const bnd = (tex?.stats.builtBoundary ?? 0) - this.hitchPrevBuiltB;
+    const defer = (tex?.stats.deferred ?? 0) - this.hitchPrevDeferred;
     this.hitchPrevBuilt = tex?.stats.built ?? 0;
     this.hitchPrevBuildMs = tex?.stats.buildMs ?? 0;
+    this.hitchPrevBuiltB = tex?.stats.builtBoundary ?? 0;
+    this.hitchPrevDeferred = tex?.stats.deferred ?? 0;
     let secMs = 0;
     for (const k in this.hitchSec) secMs += this.hitchSec[k];
     this.hitchN++;
@@ -1582,6 +1611,9 @@ export class WorldScene extends Phaser.Scene {
       mode: this.groundLastMode,
       composed: built,
       composeMs: +buildMs.toFixed(1),
+      bnd,
+      defer,
+      owed: this.t3boundaryOwed.size,
       tex: this.hitchC.tex,
       files: this.hitchC.files,
       objs: this.hitchC.objs,
@@ -8775,6 +8807,12 @@ export class WorldScene extends Phaser.Scene {
     // run — bumping it in the flush instead would make every probe read
     // "this body has no surface" one tick too early.
     this.coverTick++;
+    /* ARM THIS FRAME'S COMPOSE ALLOWANCE — the thing that turns a 1,276 ms
+     * freeze into a bounded cost. Until the world is up the join paint runs
+     * UNBUDGETED: it is behind the loading screen, nothing is being played
+     * through it, and releasing the hold onto a window of hard edges is
+     * exactly the pop-in the hold exists to prevent. */
+    this.t3tex?.armCompose(this.worldUp ? GROUND_COMPOSE_MS : Infinity);
     // The coalesced streaming repaints — see requestRepaint / onTerrainBatch.
     if (this.repaintGroundPending) {
       this.repaintGroundPending = false;
@@ -14291,8 +14329,17 @@ export class WorldScene extends Phaser.Scene {
       ready.push(idx);
       this.t3boundaryOwed.delete(idx);
     }
-    if (ready.length) this.repaintTiles3Cells(ready);
+    if (!ready.length) return;
+    this.repaintTiles3Cells(ready);
+    // The ground now carries these transitions; a raised one also needs its
+    // occluder cap rebuilt to wear it. Rate-limited — see T3_OCC_REPAIR_MS.
+    const now = performance.now();
+    if (now - this.t3occRepairAt >= T3_OCC_REPAIR_MS) {
+      this.t3occRepairAt = now;
+      this.lastOccl = { x: NaN, y: NaN };
+    }
   }
+  private t3occRepairAt = 0;
 
   private t3prefetchStep(): void {
     const load = this.t3load;
