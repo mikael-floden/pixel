@@ -1,7 +1,7 @@
 {
   "format": "nangijala-client-perf@1",
   "_comment": "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here by the server. The maintainer plays on a phone and tests in production; the headless harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these are the only honest numbers for the paths that matter. Newest last; the file keeps the most recent reports only.",
-  "updated_at": "2026-09-04T18:32:24.066Z",
+  "updated_at": "2026-09-04T18:32:54.160Z",
   "reports": [
     {
       "id": "2026-09-03T09-18-53-926Z-i0k047",
@@ -925,6 +925,79 @@
         "dark": 0,
         "clear": 0,
         "topBins": []
+      },
+      "groundFull": null,
+      "worst": []
+    },
+    {
+      "id": "2026-09-04T18-32-54-160Z-ccp4fi",
+      "at": "2026-09-04T18:32:54.160Z",
+      "build": "a9a8e3752f279198ebe0b52da73d9706329357d4",
+      "where": "525.7,349.0",
+      "tod": "Day",
+      "zoom": 1.42,
+      "dpr": 2.23,
+      "view": "1079x1404",
+      "secs": 30,
+      "final": false,
+      "frames": {
+        "n": 834,
+        "p50": 27,
+        "p90": 74.2,
+        "p99": 127,
+        "max": 461.4
+      },
+      "sections": {
+        "groundSlice": 3.49,
+        "redrawGround": 1.11,
+        "rebuildOccluders": 0.85,
+        "avatarLoop": 0.53,
+        "rebuildScenery": 0.5,
+        "prefetch": 0.43,
+        "stepNpcs": 0.18,
+        "repaintCells": 0.09
+      },
+      "counts": {
+        "occluders": 2027,
+        "litOccluders": 8,
+        "occluderMeta": 1239,
+        "sceneryImgs": 8,
+        "propImgs": 0,
+        "monsters": 146,
+        "monstersActive": 5,
+        "avatars": 1,
+        "npcs": 33,
+        "displayList": 2726,
+        "textures": 6644,
+        "texturesAdded": 1436
+      },
+      "ground": {
+        "png": "null",
+        "rt": "1510x1656",
+        "block": "256x192@627,732",
+        "anchor": "16311,10437",
+        "mode": "scroll",
+        "cellRuns": 3,
+        "medianSum": 387,
+        "nonInt": 0,
+        "topFace": "64x46 opaque=988 rows=30 lastRow=29 (expect 924/",
+        "anchorFrac": 0,
+        "rtPosFrac": 0,
+        "fill": 0,
+        "dark": 17107,
+        "clear": 0,
+        "topBins": [
+          "16,24:15",
+          "17,24:15",
+          "17,23:15",
+          "15,26:14",
+          "17,26:14",
+          "21,26:14",
+          "13,25:14",
+          "16,25:14",
+          "17,25:14",
+          "19,25:14"
+        ]
       },
       "groundFull": null,
       "worst": []
