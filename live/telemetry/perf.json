@@ -1,7 +1,7 @@
 {
   "format": "nangijala-client-perf@1",
   "_comment": "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here by the server. The maintainer plays on a phone and tests in production; the headless harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these are the only honest numbers for the paths that matter. Newest last; the file keeps the most recent reports only.",
-  "updated_at": "2026-09-04T18:34:10.779Z",
+  "updated_at": "2026-09-04T19:36:42.648Z",
   "reports": [
     {
       "id": "2026-09-03T09-18-53-926Z-i0k047",
@@ -1236,6 +1236,80 @@
         "topBins": []
       },
       "worst": []
+    },
+    {
+      "id": "2026-09-04T19-36-42-648Z-8pg742",
+      "at": "2026-09-04T19:36:42.648Z",
+      "build": "0a0d1e7750d47fd334af2d6796a42ceddfcc33d0",
+      "where": "543.7,327.4",
+      "tod": "Night",
+      "zoom": 1.43,
+      "dpr": 2.23,
+      "view": "1079x1404",
+      "secs": 30,
+      "final": false,
+      "frames": {
+        "n": 701,
+        "p50": 22.3,
+        "p90": 63.8,
+        "p99": 414.8,
+        "max": 1276.2
+      },
+      "sections": {
+        "groundSlice": 9.61,
+        "redrawGround": 6.43,
+        "render": 3.52,
+        "rebuildOccluders": 3.34,
+        "lighting": 3.34,
+        "monsterLoop": 1.66,
+        "rebuildScenery": 0.92,
+        "prefetch": 0.64,
+        "avatarLoop": 0.61,
+        "depthSort": 0.57,
+        "repaintCells": 0.3,
+        "overlays": 0.25,
+        "stepNpcs": 0.18
+      },
+      "counts": {
+        "occluders": 3758,
+        "litOccluders": 24,
+        "occluderMeta": 1846,
+        "sceneryImgs": 24,
+        "propImgs": 0,
+        "monsters": 146,
+        "monstersActive": 9,
+        "avatars": 1,
+        "npcs": 33,
+        "displayList": 4464,
+        "textures": 4800,
+        "drawCount": 0,
+        "texturesAdded": 0
+      },
+      "ground": {
+        "png": "null",
+        "rt": "1510x1656",
+        "block": "256x192@627,732",
+        "anchor": "16833,9628",
+        "mode": "scroll",
+        "cellRuns": 2,
+        "medianSum": 161,
+        "nonInt": 0,
+        "topFace": "64x46 opaque=988 rows=30 lastRow=29 (expect 924/",
+        "anchorFrac": 0,
+        "rtPosFrac": 0,
+        "fill": 0,
+        "dark": 0,
+        "clear": 0,
+        "topBins": []
+      },
+      "groundFull": null,
+      "worst": [
+        "{\"f\":286,\"total\":1276.2,\"other\":1.6,\"sec\":{\"redrawGround\":1244,\"rebuildScenery\":3.6,\"rebuildOccluders\":11.7,\"avatarLoop\":0.8,\"monsterLoop\":4.5,\"overlays\":0.3,\"lighting\":7.9,\"depthSort\":0.3,\"render\":1.5},\"mode\":\"full\",\"composed\":113,\"composeMs\":1081.1,\"tex\":0,\"files\":0,\"objs\":0,\"ring\":885}",
+        "{\"f\":426,\"total\":1137.2,\"other\":2.5,\"sec\":{\"redrawGround\":1071.5,\"rebuildScenery\":2.2,\"rebuildOccluders\":33.1,\"avatarLoop\":0.7,\"monsterLoop\":1,\"stepNpcs\":0.2,\"overlays\":0.2,\"lighting\":13.7,\"depthSort\":1.6,\"render\":10.5},\"mode\":\"full\",\"composed\":109,\"composeMs\":879.6,\"tex\":0,\"files\":0,\"objs\":0,\"ring\":1119}",
+        "{\"f\":600,\"total\":1086.4,\"other\":4,\"sec\":{\"redrawGround\":1044.5,\"rebuildOccluders\":15,\"rebuildScenery\":1.7,\"avatarLoop\":0.3,\"monsterLoop\":0.7,\"overlays\":0.2,\"lighting\":11.2,\"depthSort\":1.3,\"render\":7.5},\"mode\":\"full\",\"composed\":119,\"composeMs\":958.8,\"tex\":0,\"files\":0,\"objs\":0,\"ring\":907}",
+        "{\"f\":508,\"total\":802.4,\"other\":4.4,\"sec\":{\"groundSlice\":770.7,\"avatarLoop\":0.6,\"monsterLoop\":8.8,\"overlays\":0.3,\"lighting\":8.2,\"depthSort\":1.5,\"render\":7.7},\"mode\":\"scroll\",\"composed\":87,\"composeMs\":748.4,\"tex\":0,\"files\":0,\"objs\":0,\"ring\":1146}",
+        "{\"f\":576,\"total\":551.2,\"other\":13,\"sec\":{\"groundSlice\":499.1,\"avatarLoop\":0.9,\"monsterLoop\":3.3,\"overlays\":0.4,\"lighting\":16.1,\"depthSort\":1.9,\"render\":16.1},\"mode\":\"scroll\",\"composed\":70,\"composeMs\":476.2,\"tex\":0,\"files\":0,\"objs\":0,\"ring\":743}"
+      ]
     }
   ]
 }
