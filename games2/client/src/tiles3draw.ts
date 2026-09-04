@@ -1271,10 +1271,18 @@ export class Tiles3Textures {
     const key = `t3u:${rgb[0]},${rgb[1]},${rgb[2]}`;
     return (
       this.ensure(key, () => {
-        const { fw, fh, libTop } = this.o.sheets;
+        const { fw, fh, sil } = this.o.sheets;
         const out = newPixels(fw, fh);
         for (let i = 0; i < fw * fh; i++) {
-          if (!libTop[i]) continue;
+          /* THE WHOLE SILHOUETTE, not just the top face. The underlay is
+           * insurance against a hole, and a hole is any texel of the plate's
+           * 2,012-texel footprint that nothing paints — his magenta ground
+           * clear found 144 of them in one frame, in runs of exactly one texel
+           * on diamond-edge slopes. Filling only `libTop` (924) left the other
+           * 1,088 uninsurable. It is drawn FIRST and only when nothing else
+           * covers the cell, so the extra rows are either painted over by the
+           * cell in front or are the hole they exist to fill. */
+          if (!sil[i]) continue;
           out.data[i * 4] = rgb[0];
           out.data[i * 4 + 1] = rgb[1];
           out.data[i * 4 + 2] = rgb[2];

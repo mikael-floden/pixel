@@ -14377,7 +14377,15 @@ export class WorldScene extends Phaser.Scene {
        * 1088-texel hole with nothing beneath it. The two changes go together. */
       const useBoundary = !!bop && cell.kind === "field" && !this.noTransitions;
       const ops = useBoundary ? null : this.t3Try(`blits ${col},${row}`, () => cellBlits(tex, this.t3tm, cell, cut), []);
-      const covered = useBoundary || (ops !== null && ops.some((o) => o.role === "surface"));
+      /* COVERED MEANS THE WHOLE FOOTPRINT, not merely "something drew". A
+       * TOP-FACE-ONLY raster — a raised cell's surface, a raised or liquid
+       * boundary — paints 924 of the plate's 2,012 texels, so treating it as
+       * cover left the other 1,088 uninsurable. His magenta ground clear found
+       * 144 bare texels in one frame, in runs of exactly one texel on
+       * diamond-edge slopes, which is what that gap looks like. */
+      const topFaceOnly = useBoundary ? !!b?.topOnly : !!(cell.kind === "field" && cell.art?.topOnly);
+      const covered =
+        !topFaceOnly && (useBoundary || (ops !== null && ops.some((o) => o.role === "surface")));
       if (!covered && cell.kind === "field" && cell.art?.kind !== "liquid") {
         const under = this.t3Try(`under ${col},${row}`, () => tex.groundUnderlay(cell), null);
         if (under) {
