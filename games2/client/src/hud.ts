@@ -1881,11 +1881,17 @@ function injectStyles() {
      land on the same line — the log's max-width already reserves the pill's
      lane. :root outranks their own bottom rules whatever order the
      stylesheets were injected in. */
-  /* …and the Wiki/🔍 row takes that first line (wikibtn.ts), so the pill —
-     and the log that shares its line — step up over it by the same
-     --ml-stack-step they use at rest. The stack must not reorder just
-     because the keys came up (maintainer 2026-09-03). */
-  :root.ml-kb-up .ml-chatlog,
+  /* THE CHAT TEXT KEEPS THE LINE DIRECTLY ABOVE THE INPUT (maintainer
+     2026-09-03: "why can't the text appear over the input field when the
+     keyboard is opened? It appears correctly already when the keyboard is
+     not opened"). It shares that line with the Wiki/🔍 row, whose lane the
+     log's --ml-chatw reserves; the PILL steps up over both by the same
+     --ml-stack-step it uses at rest, so the stack never reorders. An earlier
+     cut lifted the log with the pill to preserve a "log and pill on one
+     line" reading — that rule was only ever about the pill being the thing
+     on the log's line, and honouring it pushed his chat a step off the
+     input for nothing. */
+  :root.ml-kb-up .ml-chatlog{bottom:calc(var(--ml-inputlift) + 56px)}
   :root.ml-kb-up .ml-clock{bottom:calc(var(--ml-inputlift) + 56px + var(--ml-stack-step, 44px))}
   /* ── compact fits (icons stay at their authored 1x grid at every size) ── */
   @media (max-width:480px){

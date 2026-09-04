@@ -200,6 +200,12 @@ try {
       logH: (() => { const e = document.querySelector(".ml-chat-log"); return e ? Math.round(e.getBoundingClientRect().height) : null; })(),
       chatlogBottom: (() => { const e = document.querySelector(".ml-chatlog"); return e ? Math.round(parseFloat(getComputedStyle(e).bottom)) : null; })(),
       clockBottom: (() => { const e = document.querySelector(".ml-clock"); return e ? Math.round(parseFloat(getComputedStyle(e).bottom)) : null; })(),
+      wikibtnBottom: (() => { const e = document.querySelector(".ml-wikibtn"); return e ? Math.round(parseFloat(getComputedStyle(e).bottom)) : null; })(),
+      // The right edge a long chat line may reach, and the left edge of the
+      // 🔍 it must stop short of — the lane --ml-chatw reserves.
+      logRight: (() => { const e = document.querySelector(".ml-chatlog"); if (!e) return null;
+        const r = e.getBoundingClientRect(); return Math.round(r.left + parseFloat(getComputedStyle(e).maxWidth)); })(),
+      nearLeft: (() => { const e = document.querySelector(".ml-wikinear"); return e ? Math.round(e.getBoundingClientRect().left) : null; })(),
       placeholder: getComputedStyle(document.querySelector(".ml-chat-input"), "::placeholder").color,
       firstLine: (() => { const e = document.querySelector(".ml-chat-log > *"); return e ? Math.round(e.getBoundingClientRect().top) : null; })(),
     };
@@ -240,9 +246,25 @@ try {
   frameBefore.clockBottom != null && lifted.clockBottom != null && lifted.clockBottom > frameBefore.clockBottom + 20
     ? ok(`time-of-day pill lifted too (bottom ${frameBefore.clockBottom} -> ${lifted.clockBottom})`)
     : fail(`pill not lifted: bottom ${frameBefore.clockBottom} -> ${lifted.clockBottom}`);
-  Math.abs(lifted.clockBottom - lifted.chatlogBottom) <= 1
-    ? ok(`chat log and pill lifted onto the same line (${lifted.clockBottom}px)`)
-    : fail(`log ${lifted.chatlogBottom} and pill ${lifted.clockBottom} lifted to different heights`);
+  // THE TEXT KEEPS THE LINE DIRECTLY ABOVE THE INPUT (maintainer 2026-09-03:
+  // "why can't the text appear over the input field when the keyboard is
+  // opened? It appears correctly already when the keyboard is not opened").
+  // It shares that line with the Wiki/🔍 row; the PILL steps up over both.
+  // This used to read "log and pill on the same line", which was only ever
+  // true because the pill was the thing on the log's line — restating it
+  // after the stack swapped is what pushed his chat a step off the input.
+  lifted.wikibtnBottom != null && Math.abs(lifted.wikibtnBottom - lifted.chatlogBottom) <= 1
+    ? ok(`chat log sits on the first line above the input, beside the Wiki row (${lifted.chatlogBottom}px)`)
+    : fail(`log ${lifted.chatlogBottom} is not on the Wiki row's line ${lifted.wikibtnBottom} — the text must stay over the input`);
+  lifted.clockBottom > lifted.chatlogBottom
+    ? ok(`…and the pill steps up over both (pill ${lifted.clockBottom} > log ${lifted.chatlogBottom})`)
+    : fail(`pill ${lifted.clockBottom} did not clear the log/Wiki line ${lifted.chatlogBottom}`);
+  // Sharing a line means the lane must be the ROW's, not the pill's: the row
+  // is one --ml-stack-step wider, and it draws ABOVE the log (z 8 vs 5), so
+  // an unwidened reservation hides the end of a long message.
+  lifted.logRight != null && lifted.nearLeft != null && lifted.nearLeft - lifted.logRight >= 8
+    ? ok(`…and a full-width line still stops clear of the 🔍 (${lifted.logRight} vs ${lifted.nearLeft})`)
+    : fail(`the chat lane runs under the 🔍: log reaches ${lifted.logRight}, 🔍 starts ${lifted.nearLeft}`);
   // The prompt gets out of the way once you are actually typing.
   lifted.placeholder === "rgba(0, 0, 0, 0)"
     ? ok("placeholder hidden while the input has focus")
