@@ -170,6 +170,7 @@ import {
   type Tiles3DeckCell,
 } from "../tiles3";
 import {
+  boundaryKeyFor,
   Tiles3Textures,
   patternSheets,
   patternSheetPaths,
@@ -830,6 +831,10 @@ const GROUND_RING_MS = 2;
  *  his it is one every seven, which is what holds the average at the budget
  *  instead of the atom. */
 const GROUND_RING_COMPOSE_EMA = 0.25;
+/** Cells inspected per frame by `t3retryBoundaries` — a Set walk and a texture
+ *  lookup each, so this is cheap; the repaint it triggers is the real cost and
+ *  is bounded by how many of them actually became ready. */
+const T3_BOUNDARY_RETRY = 32;
 /** Files in flight for the DEFERRED animation batch — see loadDeferredAnims.
  *  Dev A/B: localStorage `ml-deferred-parallel` overrides (0 = the loader's own). */
 const DEFERRED_PARALLEL = 2;
@@ -1492,6 +1497,10 @@ export class WorldScene extends Phaser.Scene {
    *  this is the A/B for "the zigzag is the transition tile you make with the
    *  mask". Diagnostic, default off (transitions on). */
   private noTransitions = false;
+  /** Cells painted while their composed transition was not yet built — see the
+   *  ground pass and `t3retryBoundaries`. Bounded by the texture's own cell
+   *  count; a cell leaves the moment it draws its boundary. */
+  private t3boundaryOwed = new Set<number>();
   private t3cells = new Map<number, { cell?: Tiles3Cell | null; boundary?: Tiles3Boundary | null; decks?: Tiles3DeckCell[] }>();
   private t3pitchChecked = false;
   private t3regionMs = 0;
@@ -1686,6 +1695,32 @@ export class WorldScene extends Phaser.Scene {
       frames: snap.frames,
       sections: perFrame,
       counts: { ...(snap.counts as Record<string, number>), texturesAdded: snap.texturesAdded as number },
+      /* WHAT THE GROUND PASS ACTUALLY DREW, from his device (2026-09-04). He
+       * reports "we have no transition here" on a grass/soil border while the
+       * resolver, measured offline, composes one on 36 cells of the block he
+       * is standing in — and every measurement in this hunt so far has been of
+       * the RESOLVER, which cannot see whether the raster reached the screen.
+       *
+       * The tell is in `composed` vs `boundaries`: `boundary()` returns null
+       * when either source plate has not decoded yet, and the caller then
+       * "draws no boundary there and the flats meet hard", which is exactly a
+       * diamond staircase and exactly what he photographs. `dropped` and
+       * `underlays` say the same thing for cell art. If boundaries is ~0 while
+       * the resolver says otherwise, the composition is failing on his device
+       * and nothing offline will ever show me that. */
+      groundDrew: {
+        cells: this.t3stats.cells,
+        blits: this.t3stats.blits,
+        boundaries: this.t3stats.boundaries,
+        underlays: this.t3stats.underlays,
+        composed: this.t3stats.composed,
+        composeMs: +this.t3stats.composeMs.toFixed(1),
+        dropped: this.t3tex?.droppedOps ?? -1,
+        built: this.t3tex?.stats.built ?? -1,
+        reused: this.t3tex?.stats.reused ?? -1,
+        seam: this.seamOn,
+        transitionsOn: !this.noTransitions,
+      },
       ground: this.groundTexelReport(final),
       /* THE DISCRIMINATOR. On a flush, sample the texture, then FORCE a full
        * repaint and sample it again. The zigzag is in the ground texture (his
@@ -8595,6 +8630,7 @@ export class WorldScene extends Phaser.Scene {
     this.pe("rebuildOccluders");
     this.ps();
     this.t3prefetchStep();
+    this.t3retryBoundaries();
     this.pe("prefetch");
     // ...and, once the art has settled, repair anything a paint dropped.
     this.t3drainDrops();
@@ -13919,6 +13955,40 @@ export class WorldScene extends Phaser.Scene {
    *  way round (a pass flush joins at most one slice's files); what a slice
    *  could not flush stays queued for the next slice, the next pass, or the
    *  landing (onTerrainBatch). */
+  /** THE LANDING REPAINT FOR COMPOSITIONS. A bounded slice per frame: for each
+   *  cell that was painted without its transition, ask the factory again, and
+   *  repaint the ones that can now draw it. Costs nothing while the set is
+   *  empty, which is the steady state once the ring has caught up. */
+  private t3retryBoundaries(): void {
+    if (!this.t3boundaryOwed.size || !this.worldUp) return;
+    const t3 = this.t3;
+    const world = this.world;
+    if (!t3 || !world) return;
+    // Never on a frame that already scrolled or painted — those are the frames
+    // the player feels, and this is repair work with no deadline.
+    if (this.groundRedrewThisFrame || this.groundSliceQ.length) return;
+    const tex = this.ensureTiles3Textures();
+    if (!tex) return;
+    const ready: number[] = [];
+    let looked = 0;
+    for (const idx of this.t3boundaryOwed) {
+      if (looked++ >= T3_BOUNDARY_RETRY) break;
+      const col = idx % world.width;
+      const row = (idx - col) / world.width;
+      const b = this.t3boundaryOf(t3, col, row);
+      if (!b) {
+        this.t3boundaryOwed.delete(idx);
+        continue;
+      }
+      // ASK, NEVER BUILD: the ring owns the compose budget, and building here
+      // would spend it twice in one frame.
+      if (!this.t3tm.exists(boundaryKeyFor(b, this.seamOn) ?? "")) continue;
+      ready.push(idx);
+      this.t3boundaryOwed.delete(idx);
+    }
+    if (ready.length) this.repaintTiles3Cells(ready);
+  }
+
   private t3prefetchStep(): void {
     const load = this.t3load;
     const t3 = this.t3;
@@ -14301,6 +14371,28 @@ export class WorldScene extends Phaser.Scene {
           stats.underlays++;
         }
       }
+      /* A TRANSITION THAT WAS NOT READY IS OWED A REPAINT (2026-09-04).
+       *
+       * `boundary()` returns null while either source plate is still
+       * undecoded, and the caller then "draws no boundary there and the flats
+       * meet hard". That is a DIAMOND STAIRCASE, and it is exactly what he
+       * photographs: "I'M TALKING ABOUT THE TRANSITION FROM GRASS TO SOIL. WE
+       * HAVE NO TRANSITION HERE!" — with a picture of what one should look
+       * like, two grounds meeting along a wandering edge INSIDE the diamond.
+       *
+       * The prefetch ring builds compositions AHEAD of the camera so this
+       * should not happen — but one composition costs ~13 ms on his phone
+       * against a 2 ms/frame budget, so the ring manages one every ~7 frames
+       * while a fresh window needs ~83. He outruns it constantly, and until
+       * now NOTHING revisited a cell once its composition finally landed: the
+       * ring only walks cells OUTSIDE the texture, and the pass that painted
+       * this one is over. The hard edge was permanent.
+       *
+       * So the cell is recorded, and `t3retryBoundaries` repaints it when the
+       * composition exists. Same shape as `onTerrainBatch`'s landing repaint,
+       * which does this for ART; compositions had no equivalent. */
+      if (b && !bop) this.t3boundaryOwed.add(idx);
+      else this.t3boundaryOwed.delete(idx);
       if (useBoundary) {
         this.t3Blit(rt, bop, ax, ay, tint);
         stats.blits++;
