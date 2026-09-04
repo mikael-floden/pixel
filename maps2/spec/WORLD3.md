@@ -164,9 +164,19 @@ wiki's: its preview still solves on `data.json.iso` (dy **15**, tiles2), while
 scenery lives in maps3 at dy 14, so the same `ry` reads 7.1% deeper on the
 ground here than in the tool he tunes in. Raised with wiki.
 
-maps2 uses the rect twice: the facing whose footprint lies LONGER along the
-wall is the one placed (so a shelf's back is against it), and the piece is then
-put flush — `x = x0 + hx − cx` — instead of snapped to a cell centre. **It also
+**THE WALL DECIDES THE FACING, THE FOOTPRINT DECIDES THE GEOMETRY.** West wall
+to `south-east`, north wall to `south-west`, always: that is the measured rule
+(the backrest centroid) and it is what "the back is against the wall" means.
+Deriving the facing instead from which way the piece's rect is longer looks
+equivalent and breaks on the pieces that are not well formed - `cupboard_010`
+publishes an ELLIPSE, so both facings measured the same, the tie took the
+first, and a dresser stood in the middle of the room with its back to nothing
+(maintainer 2026-09-04: *"It sticks out straight into the room ... Some shelfs
+are good, but this one is horrible!"*). The footprint then decides where it
+stands, for an ellipse piece as much as a rect one: the piece is put flush —
+`x = x0 + deep − cx` — instead of snapped to a cell centre (an ellipse
+piece used to be dropped on the wall cell's CENTRE and then snapped like a
+loose prop: half a cell of gap and no facing rule at all). **It also
 slides along that wall, into the corner first**: centring a piece on the wall
 cell it was handed is only right for a piece shorter than one cell, and a bed
 is 1.4 cells long, so on the first cell of a wall half of it lay in the wall

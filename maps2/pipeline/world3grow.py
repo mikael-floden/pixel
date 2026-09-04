@@ -1015,44 +1015,42 @@ class Grow:
         for r in out:
             r["cells"].sort(key=lambda c: (c["x"], c["y"]))
         self.doc["rooms"] = out
-        # BUILD ASSERT: THE LONG EDGE IS ON THE WALL AND THE PIECE IS FLUSH.
-        # Judges exactly what against() placed - not every rect piece in the
-        # room, since the table chairs stand in the middle by design. This
-        # replaces an assert that pinned a GLOBAL facing convention (low-x
-        # edge means south-east): the rect supersedes it, because cupboard_001
-        # and bed_002 do not agree on which named facing lies which way, and
-        # asking the piece is the only rule that survives both.
-        bad = []
+        # BUILD ASSERT: THE BACK IS TO THE WALL AND THE PIECE IS FLUSH.
+        # Judges exactly what against() placed - not every piece in the room,
+        # since the hall's table and its chairs stand in the middle by design.
+        # The facing is the WALL's (west -> south-east, north -> south-west,
+        # measured from the backrest centroid), and the near edge of the
+        # footprint sits on the wall face, for an ellipse piece as much as a
+        # rect one.
+        bad, odd = [], []
         for (piece, px, py, d, axis, face) in getattr(self, "_against", []):
+            want = "south-east" if axis == "x" else "south-west"
+            if d != want:
+                bad.append((piece, (px, py), f"facing {d}, this wall wants {want}"))
+                continue
             sh = self._fp_shape({"piece": piece, "x": px, "y": py, "dir": d})
-            if not sh or sh[0] != "rect":
+            if not sh:
                 continue
-            _, cx, cy, hx, hy = sh
-            # THE CHOSEN FACING IS THE BETTER OF THE PIECE'S TWO. Demanding
-            # span >= deep outright is wrong: some pieces are deeper than they
-            # are wide in BOTH facings (wall hangings, some hearths), and then
-            # "the long edge on the wall" has nothing to choose between. The
-            # rule that always means something is that we took the facing that
-            # lies the longer way along this wall.
-            def lie(dd):
-                q = self._fp_shape({"piece": piece, "x": px, "y": py,
-                                    "dir": dd})
-                if not q or q[0] != "rect":
-                    return None
-                return (q[4] - q[3]) if axis == "x" else (q[3] - q[4])
-            mine, other = lie(d), lie("south-west" if d == "south-east"
-                                      else "south-east")
-            if mine is not None and other is not None and mine < other - 1e-9:
-                bad.append((piece, (px, py),
-                            f"the other facing lies longer on this wall"))
-                continue
+            kind, cx, cy, hx, hy = sh
             edge = (px + cx - hx) if axis == "x" else (py + cy - hy)
             if abs(edge - face) > 0.02:
                 bad.append((piece, (px, py),
                             f"not flush: edge {edge:.3f} vs wall face {face}"))
+                continue
+            # REPORTED, NOT ENFORCED: a well-formed piece is longer ALONG its
+            # wall in the facing that wall wants, and the ones that are not
+            # are the ones whose published box does not describe the art (an
+            # ellipse on a bookshelf, a square box on a dresser). Their facing
+            # is still the wall's - that is what "back to the wall" means -
+            # but they are the list to hand the wiki when a shelf looks wrong.
+            if kind != "rect" or (hy - hx if axis == "x" else hx - hy) < 0:
+                odd.append(piece)
         assert not bad, ("furniture against the wall: "
                          + "; ".join(f"{p} at {c}: {why}"
                                      for p, c, why in bad[:6]))
+        if odd:
+            self.placed += [("wall pieces whose box does not lie along it",
+                             len(set(odd)))]
         # every indoor floor cell belongs to exactly one room
         n = sum(len(r["cells"]) for r in out)
         assert n == len({(c["x"], c["y"]) for r in out for c in r["cells"]}), \
@@ -2195,102 +2193,79 @@ class Grow:
             north.sort(key=lambda c: c[0])
 
             def against(group, wall, idx, **kw):
-                """THE LONG EDGE GOES AGAINST THE WALL, AND IT LANDS FLUSH
-                (maintainer 2026-09-03).
+                """BACK TO THE WALL, FLUSH AGAINST IT, SLIDING INTO THE CORNER.
 
-                The piece's own RECT decides which way it lies - not a global
-                convention. A rect is solved per facing off the art itself
-                (wiki/tools/rect-hitbox-pass.py), so cupboard_001 measures
-                1.18 x 0.50 cells facing south-east and 0.50 x 1.18 facing
-                south-west. The west wall runs along Y, so it wants the facing
-                whose footprint is LONGER IN Y; the north wall runs along X and
-                wants the longer X. Asking the piece is also the only thing
-                that survives art whose facings do not follow the majority.
+                THE WALL DECIDES THE FACING, always: west wall -> south-east,
+                north wall -> south-west. That is the measured rule (the
+                backrest centroid, see above), and it is what "the back is
+                against the wall" MEANS. Deriving it instead from which way
+                the piece's rect is longer looks equivalent - a well-formed
+                shelf is long along its wall - and breaks on the pieces that
+                are not well formed: cupboard_010 publishes an ELLIPSE, so
+                both facings measured the same, the tie took the first one,
+                and a dresser stood in the middle of the room with its back to
+                nothing (maintainer 2026-09-04: "It sticks out straight into
+                the room and is not against a wall or corner! Some shelfs are
+                good, but this one is horrible!").
 
-                Then the back edge is put exactly ON the wall face: the wall
-                cells sit at x0 (or y0) and the floor starts one cell in, so a
-                flush piece has its footprint edge at that boundary - touching
-                it, never inside it, which is what the footprint law allows in
-                flush mode."""
+                THE FOOTPRINT DECIDES THE GEOMETRY, for every piece and not
+                only the rect ones. The near edge of the footprint is put
+                exactly ON the wall face - the wall cells sit at x0 (or y0)
+                and the floor starts one cell in, so a flush piece touches
+                that boundary and never enters it, which is what the footprint
+                law allows in flush mode. For an ellipse piece the "near edge"
+                is its radius, which is as close as its published footprint
+                lets it stand; before this it was dropped on the wall cell's
+                CENTRE and then snapped to a cell centre like any loose prop,
+                which is half a cell of gap and no facing rule at all.
+
+                AND IT SLIDES ALONG THE WALL UNTIL IT FITS, INTO THE CORNER
+                FIRST (maintainer 2026-09-04: "I told you to place furnitures
+                edge to edge with the wall/corner"). Centring the piece on the
+                wall cell it was handed is only right for a piece shorter than
+                one cell: a bed is 1.4 cells long, so on the first cell of the
+                wall half of it lay in the wall ROUND THE CORNER, the footprint
+                law refused it, and the room lost its bed altogether. The
+                along-wall centre is clamped inside the wall's own run - which
+                IS the corner when the slot asked for is the end of it - and
+                then walked outward in half cells until the whole footprint is
+                on free floor."""
                 if not wall:
                     return 0
                 wx, wy = wall[min(idx, len(wall) - 1)]
                 along_y = wall is west
-                # THE PIECE FIRST, THEN ITS FACING. pk() hashes the facing
-                # into its choice, so asking it per direction compared piece
-                # A's south-east against piece B's south-west and could take
-                # the worse orientation of the piece it then placed.
-                piece = pk(group)
-                best = None
-                for d in ("south-east", "south-west"):
-                    sh = self._fp_shape({"piece": piece, "x": 0, "y": 0,
-                                         "dir": d})
-                    if not sh:
-                        continue
-                    kind, cx, cy, hx, hy = sh
-                    span = hy if along_y else hx      # along the wall
-                    deep = hx if along_y else hy      # into the room
-                    if kind != "rect":
-                        span = deep = hx
-                    key = (-(span - deep), deep)      # longest edge on the wall
-                    if best is None or key < best[0]:
-                        best = (key, d, sh)
-                if best is None:
+                d = "south-east" if along_y else "south-west"
+                # pk() prefers a piece that actually ships this rotation
+                piece = pk(group, d)
+                sh = self._fp_shape({"piece": piece, "x": 0, "y": 0, "dir": d})
+                if not sh:
                     return 0
-                _, d, (kind, cx, cy, hx, hy) = best
-                if kind == "rect":
-                    # flush: the near edge of the footprint sits on the wall
-                    # face, and the piece is centred on its cell along the wall
-                    # x0/y0 are the room's FIRST FLOOR column and row, so the
-                    # wall face they meet is x0 / y0 itself - not x0 + 1. The
-                    # off-by-one put every piece a whole cell into the room.
-                    #
-                    # AND IT SLIDES ALONG THE WALL UNTIL IT FITS, INTO THE
-                    # CORNER FIRST (maintainer 2026-09-04, on a bed standing
-                    # in the middle of his bedroom: "I told you to place
-                    # furnitures edge to edge with the wall/corner"). Centring
-                    # the piece on the wall cell it was handed is only right
-                    # for a piece shorter than one cell: a bed is 1.4 cells
-                    # long, so on the first cell of the wall half of it lay in
-                    # the wall ROUND THE CORNER, the footprint law refused it,
-                    # and the room lost its bed altogether - which is how one
-                    # ended up placed by an older, looser pass instead. The
-                    # along-wall centre is therefore clamped inside the wall's
-                    # own run - which IS the corner when the slot asked for is
-                    # the end of it - and then walked outward in half cells
-                    # until the whole footprint is on free floor.
-                    span = hy if along_y else hx      # half-extent along wall
-                    run = [c[1] if along_y else c[0] for c in wall]
-                    lo, hi = min(run) + span, max(run) + 1 - span
-                    if lo > hi:                       # too long for this wall
-                        return 0
-                    want = (wy if along_y else wx) + 0.5
-                    first = min(max(want, lo), hi)
-                    cands, t = [first], 0.5
-                    while t <= hi - lo:
-                        for sgn in (1, -1):
-                            v = first + sgn * t
-                            if lo - 1e-9 <= v <= hi + 1e-9:
-                                cands.append(v)
-                        t += 0.5
-                    for v in cands:
-                        if along_y:
-                            x, y = x0 + hx - cx, v - cy
-                        else:
-                            x, y = v - cx, y0 + hy - cy
-                        if self.put(piece, x, y, on=IN, dir=d, flush=True,
-                                    **kw):
-                            self._against.append(
-                                (piece, round(x, 4), round(y, 4), d,
-                                 "x" if along_y else "y",
-                                 x0 if along_y else y0))
-                            return 1
+                kind, cx, cy, hx, hy = sh
+                deep = hx if along_y else hy      # into the room
+                span = hy if along_y else hx      # along the wall
+                run = [c[1] if along_y else c[0] for c in wall]
+                lo, hi = min(run) + span, max(run) + 1 - span
+                if lo > hi:                       # too long for this wall
                     return 0
-                # not a rect piece: as close as its circle allows, as before
-                for inset in (0.0, 0.25, 0.5, 0.75, 1.0):
-                    px = wx + 0.5 + (inset if along_y else 0.0)
-                    py = wy + 0.5 + (0.0 if along_y else inset)
-                    if self.put(piece, px, py, on=IN, dir=d, **kw):
+                want = (wy if along_y else wx) + 0.5
+                first = min(max(want, lo), hi)
+                cands, t = [first], 0.5
+                while t <= hi - lo:
+                    for sgn in (1, -1):
+                        v = first + sgn * t
+                        if lo - 1e-9 <= v <= hi + 1e-9:
+                            cands.append(v)
+                    t += 0.5
+                for v in cands:
+                    if along_y:
+                        x, y = x0 + deep - cx, v - cy
+                    else:
+                        x, y = v - cx, y0 + deep - cy
+                    if self.put(piece, x, y, on=IN, dir=d, flush=True, **kw):
+                        self._against.append(
+                            (piece, round(x, 4), round(y, 4), d,
+                             "x" if along_y else "y",
+                             x0 if along_y else y0))
                         return 1
                 return 0
 
