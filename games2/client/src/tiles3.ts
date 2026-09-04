@@ -1707,7 +1707,16 @@ export class Tiles3 {
        * while being the largest surface on the map. Top face only: a liquid
        * never shows a wall. render3 takes `surface`, never `wang_surface` — no
        * quad touching a liquid composes a boundary. */
-      this.dress(cell, this.surface(view, g, L, gr, x, y, zl), true);
+      /* WANG, NOT PLAIN — so a shore COMPOSES. `surface()` carries no fade, no
+       * slope and no boundary, which is why a water cell used to meet a beach
+       * with a hard diamond edge; `boundaryAt` now composes that quad, and the
+       * two resolvers have to agree or `tiles3runtime`'s parity gate fails
+       * (it did, on the_bay 392,357 — water/light_beach — which is exactly the
+       * coastline he was asking about).
+       *
+       * Still `dress(..., true)`: a liquid never shows a wall, so its surface
+       * and its boundary are both masked to the library top face. */
+      this.dress(cell, this.wangSurface(view, frame, g, L, gr, x, y, zl), true);
       return cell;
     }
     if (zl === 0) {
@@ -1870,11 +1879,28 @@ export class Tiles3 {
     }
     const uniq = new Set(gs as string[]);
     if (uniq.size !== 2) return null;
-    /* AFTER THE FOLD, so the veto is about this cell's own plane. A liquid at
-     * this level still kills the quad — a coast is a hard edge, unchanged. A
-     * liquid two storeys down is not on this tile and cannot veto a ground
-     * change that is (4 cells on the_game). */
-    if ([...uniq].some((q) => view.isLiquid(q))) return null;
+    /* A COAST IS A TRANSITION, NOT A HARD EDGE (maintainer 2026-09-04).
+     *
+     * This refused any quad a liquid touched, on the rule "a coast is a hard
+     * edge, not a blend" — and the shoreline is the most-looked-at ground
+     * change in the game, so the rule was the reason he kept reporting that
+     * transitions were missing at the water.
+     *
+     * The WIKI has been composing exactly this the whole time and he has been
+     * approving it: its fade-review backdrop calls `transArt(a, b,
+     * FADE_PATTERN, idx, ...)` for every cell of the scene with a and b set to
+     * the pair under review — water and light_beach included — through the same
+     * Wang masks and the same seam, with no liquid case anywhere in
+     * `wiki/site/wiki.js`. His words on that picture: "It looks so good in the
+     * wiki ... I think the wiki used very good fading masks when building that
+     * preview." There is no reason the game should draw the same two grounds
+     * differently from the tool he reviews them in.
+     *
+     * A LIQUID CELL'S BOUNDARY IS TOP FACE ONLY — see the `topOnly` below. That
+     * is the one thing the old veto was really protecting: water has no wall,
+     * and a full-silhouette raster on a water cell would paint a 1,088-texel
+     * wall band into the sea. */
+    void uniq;
     const sorted = [...uniq].sort();
     const [sa, sb] = this.sideRoles(sorted[0], sorted[1]);
     const index =
@@ -1906,11 +1932,15 @@ export class Tiles3 {
         setB: pb.set.id,
         memberB: pb.memberIndex,
         folded,
-        /* TOP FACE ONLY at every raised level, so the cap's own wall survives.
-         * The raster replaces THIS cell's plate and is pasted at this cell's
-         * own column and level, so the cell's own level decides it outright —
-         * a quad that spans levels changes nothing here. */
-        topOnly: z0 > 0 || undefined,
+        /* TOP FACE ONLY at every raised level, so the cap's own wall survives,
+         * AND ON A LIQUID, which has no wall at all — `resolveCell` gives a
+         * liquid `dress(..., true)` for the same reason, and a full-silhouette
+         * raster here would paint a 1,088-texel wall band into the sea. The
+         * raster replaces THIS cell's plate and is pasted at this cell's own
+         * column and level, so the cell's own ground and level decide it
+         * outright — a quad that spans levels or laps a shore changes nothing
+         * here. */
+        topOnly: z0 > 0 || view.isLiquid(g0) || undefined,
         sx: columnX(frame, x, y),
         sy: columnY(frame, x, y, z0),
         w: TILE,
