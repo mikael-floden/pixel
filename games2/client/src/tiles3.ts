@@ -1847,16 +1847,25 @@ export class Tiles3 {
     /* THE LEVEL FOLD (see the doc comment): a corner that is not on this cell's
      * plane is not on this tile, so it votes with this cell's own ground. When
      * every corner shares the level this is the identity and nothing changes. */
-    let gs: (string | null)[] = [
-      g0,
-      L(x + 1, y) === z0 ? g1 : g0,
-      L(x, y + 1) === z0 ? g2 : g0,
-      L(x + 1, y + 1) === z0 ? g3 : g0,
-    ];
-    /* The one-ground early-out again, because the fold can produce it: a cliff
-     * whose only ground change is over the edge composes nothing, which is the
-     * old rule's answer for that quad and still the right one. */
-    if (gs[1] === g0 && gs[2] === g0 && gs[3] === g0) return null;
+    /* EVERY CORNER VOTES WITH ITS OWN GROUND, WHATEVER ITS LEVEL (maintainer
+     * 2026-09-04: "FIX SO THE TRANSITION WORK ON HIGH GROUND!!").
+     *
+     * The quad used to FOLD an off-plane corner onto this cell's own ground, on
+     * the geometric argument that a corner one storey away has no texel inside
+     * this cell's flat 64x46 diamond. That is true, and it cost him the effect
+     * he wants: measured over the_game, of the quads that genuinely contain a
+     * ground change, 84.0% compose at level 0 but only 45.6% on raised ground —
+     * because 60% of raised border quads span a level (level 0: 17%), and the
+     * fold collapsed every one of them to a single ground. On a hill the ground
+     * change IS the rim, so folding it away removed the transition exactly
+     * where he was looking.
+     *
+     * The raster is still this cell's own: drawn at columnY(z0) and, above
+     * level 0, masked to the top face. So what a cross-level quad now does is
+     * carry the neighbouring ground's colour into the corner of THIS cell's top
+     * surface — the material easing toward the edge, which is what a terrace
+     * lip looks like — rather than painting anything into the drop. */
+    let gs: (string | null)[] = [g0, g1, g2, g3];
     let folded = false;
     /* A THREE-GROUND JUNCTION STILL GETS A BOUNDARY. Falling back to the pure
      * plate there drew the cell's raw diamond edge — a hard straight segment
@@ -2130,12 +2139,25 @@ export class Tiles3 {
           }
           const t = pool[Math.max(0, pick)];
           out.fade = { other: near[0], dist: near[1], poolKey: `${gr}|${near[0]}`, index: pick, u, v, file: t.file };
-          /* A fade tile's WALL is explicitly meaningless by the producer's own
-           * index, so it conforms exactly like any other surface: top face kept,
-           * wall filled from the ground's palette, alpha the published
-           * silhouette. Hand-cropping it produced a 30-row surface the top-face
-           * mask could not index — and shipped a garbage wall besides. */
-          out.art = { kind: "conform", path: t.file, w: TILE, h: PLATE_H };
+          /* THE FADE IS AN OVERLAY, NOT A REPLACEMENT — and this is the zigzag
+           * he kept photographing after the art started shipping.
+           *
+           * It used to become `out.art`, so the cell drew the fade tile INSTEAD
+           * of its own plate. But a fade tile is its FIELD'S FLAT PALETTE COLOUR
+           * everywhere the scatter is not: measured over the real arts, 100% of
+           * the 124 rim texels are within 10 of the ground's palette top, and
+           * 45-54% of the whole 924-texel top face is. So the tile is a flat
+           * patch with a bright middle, dropped into a field of TEXTURED member
+           * plates — and its rim is a visible diamond outline against them. A
+           * band of those outlines is the lattice.
+           *
+           * Now the cell keeps its own plate and the fade paints only the
+           * texels that are NOT the field colour (`fadeOverlay`). The rim is
+           * not drawn at all, so it cannot outline anything, and the scatter —
+           * which is the entire point of a fade — lands on the real ground
+           * exactly as the producer drew it. `cell.fade.file` already carries
+           * the path; `cellArtPaths` names it so the loader and the shipped
+           * closure both see it. */
           return out;
         }
       }

@@ -834,11 +834,20 @@ test("the_game's boundaries share compositions — the ratio, measured", { skip 
   const distinct = new Set(keys);
   assert.ok(win.boundaries.length > 100, `${win.boundaries.length} boundaries in a 64x64-cell window`);
   assert.ok(distinct.size < win.boundaries.length, `${win.boundaries.length} boundaries share ${distinct.size} compositions`);
-  // MEASURED over the whole 512x512 world: 3,390 boundaries, 2,047 distinct
-  // compositions (1.66x). A window is what the live cache holds; the peak over
-  // five window positions is 132 compositions at 32x32 cells, 468 at 64x64 and
-  // 731 at 96x96 — the numbers behind Tiles3TexturesOpts.limit.
-  assert.ok(distinct.size < 900, `a 64x64-cell window holds ${distinct.size} compositions`);
+  /* WHAT A WINDOW COSTS THE LIVE CACHE, and it grew on purpose (2026-09-04).
+   * Three changes each added compositions where the game used to draw a hard
+   * edge: the coast composes (the liquid veto is gone), a cross-level quad
+   * composes with every corner voting its own ground, and light_soil left
+   * MADE_GROUND. Measured on real border quads, the transition rate went from
+   * 84.0% at level 0 / 45.6% raised to 100% at every elevation — which is the
+   * maintainer's "FIX SO THE TRANSITION WORK ON HIGH GROUND", and the cache
+   * bill for it is this number.
+   *
+   * 1,100 at 64x64 is ~13 MB of canvas against the 25 MB ceiling the unbounded
+   * cache was sized for (Tiles3TexturesOpts.limit is 0, deliberately — see
+   * WorldScene). If this gate trips again, the question is whether the cache
+   * should stay unbounded, not whether to raise the number again. */
+  assert.ok(distinct.size < 1100, `a 64x64-cell window holds ${distinct.size} compositions`);
   // every op the window emits resolves to a key, and every art key it names is
   // in the load list — no draw can reference something nothing fetches
   const loads = new Set(windowArtLoads(win).map((l) => l.key));

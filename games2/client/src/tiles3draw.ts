@@ -274,6 +274,48 @@ export function composeBoundary(
   return out;
 }
 
+/** A FADE OVERLAY'S KEY. Distinct from the conformed plate of the same file:
+ *  it is a DIFFERENT PICTURE (the field texels are transparent), and two
+ *  pictures must never share a key. */
+export function fadeKey(path: string, ground: string): string {
+  return `t3d:${ground}|${path}`;
+}
+
+/** HOW CLOSE TO THE GROUND'S OWN TOP COLOUR COUNTS AS "FIELD", and therefore
+ *  as not-scatter. Measured over the real fade arts: 100% of the 124 rim texels
+ *  sit within 10 of the palette top, while the scatter is tens of units away —
+ *  a wide gap, so the threshold is not delicate. */
+export const FADE_FIELD_TOL = 10;
+
+/** THE SCATTER ONLY. Conform the fade tile as usual, then make every texel that
+ *  IS the field's own colour transparent, so what lands on the cell is the
+ *  producer's scatter and nothing else.
+ *
+ *  This is what stops a fade from outlining its own diamond. Drawn as a
+ *  replacement, a fade tile is a flat palette-coloured patch — 100% of its rim,
+ *  45-54% of its whole top face — dropped among TEXTURED member plates, and its
+ *  rim reads as an edge against every neighbour. Drawn as an overlay, there is
+ *  no rim to read: the field texels are simply absent and the cell's own plate
+ *  shows through them. */
+export function fadeOverlay(sheets: PatternSheets, src: Pixels, topRGB: readonly [number, number, number], wallRGB: readonly [number, number, number]): Pixels {
+  const { fw, fh, libTop } = sheets;
+  const out = conformPlate(sheets, src, wallRGB);
+  const d = out.data;
+  for (let i = 0; i < fw * fh; i++) {
+    if (!libTop[i]) {
+      // the wall band is the cell's own business; an overlay never paints it
+      d[i * 4 + 3] = 0;
+      continue;
+    }
+    if (d[i * 4 + 3] === 0) continue;
+    const dr = d[i * 4] - topRGB[0];
+    const dg = d[i * 4 + 1] - topRGB[1];
+    const db = d[i * 4 + 2] - topRGB[2];
+    if (Math.sqrt(dr * dr + dg * dg + db * db) <= FADE_FIELD_TOL) d[i * 4 + 3] = 0;
+  }
+  return out;
+}
+
 /* -- 2. CONFORMING 64x64 ART INTO PLATE GEOMETRY ---------------------------- */
 
 /** A fixed 64x46 window ANCHORED AT THE ART'S TOP ROW — the port of
@@ -758,7 +800,7 @@ export interface Tiles3Blit {
   sw: number;
   sh: number;
   /** What produced this op — for the depth sort, the occluder pass and QA. */
-  role: "surface" | "wall" | "boundary" | "deck";
+  role: "surface" | "wall" | "boundary" | "deck" | "fade";
 }
 
 /** The ops for one resolved cell, in render3's own order: a field cell is ONE
@@ -771,7 +813,26 @@ export function cellOps(cell: Tiles3Cell): Tiles3Blit[] {
     const art = cell.art;
     if (!art) return [];
     const key = art.kind === "liquid" ? liquidKey(art.topRGB) : plateKey(art, cell.ground);
-    return [{ key, x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: art.w, sh: art.h, role: "surface" }];
+    const ops: Tiles3Blit[] = [
+      { key, x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: art.w, sh: art.h, role: "surface" },
+    ];
+    /* ...AND THE FADE'S SCATTER ON TOP OF IT. A fade no longer replaces the
+     * plate (see the resolver): it paints only the texels that are not the
+     * field's own colour, so the cell keeps its member art and the fade tile
+     * has no rim to outline the diamond with. */
+    if (cell.fade) {
+      ops.push({
+        key: fadeKey(cell.fade.file, cell.ground),
+        x: cell.sx,
+        y: cell.pasteY ?? cell.sy,
+        sx: 0,
+        sy: 0,
+        sw: TILE,
+        sh: PLATE_H,
+        role: "fade",
+      });
+    }
+    return ops;
   }
   const w = cell.wall;
   if (!w) return [];
@@ -802,6 +863,22 @@ export function cellOps(cell: Tiles3Cell): Tiles3Blit[] {
       sh: art.h,
       role: "surface",
     });
+    /* ...and its fade too, for the same reason a field cell gets one: the cap
+     * wears the maintainer's set, so it wears the scatter that eases into the
+     * next ground. 88 cliff-edge fades were resolved and never drawn without
+     * this. */
+    if (cell.fade) {
+      ops.push({
+        key: fadeKey(cell.fade.file, cell.ground),
+        x: cell.sx,
+        y: cell.pasteY ?? cell.sy,
+        sx: 0,
+        sy: 0,
+        sw: TILE,
+        sh: PLATE_H,
+        role: "fade",
+      });
+    }
   }
   return ops;
 }
@@ -1073,6 +1150,18 @@ export class Tiles3Textures {
     return this.ensure(key, () => this.platePixels(art, ground));
   }
 
+  /** THE FADE SCATTER for one file on one ground, built once and cached. Null
+   *  while the fade art has not decoded — the cell then draws its plain plate,
+   *  which is the pre-fade look and never a hole. */
+  fade(path: string, ground: string): string | null {
+    const key = fadeKey(path, ground);
+    return this.ensure(key, () => {
+      const src = this.sourcePixels(artKey(path));
+      if (!src) return null;
+      return fadeOverlay(this.o.sheets, src, this.topRGB(ground), this.wallRGB(ground));
+    });
+  }
+
   /** A liquid's painted diamond. */
   liquid(rgb: readonly [number, number, number]): string {
     const key = liquidKey(rgb);
@@ -1092,6 +1181,15 @@ export class Tiles3Textures {
        * cell's cap wears one too (see cellOps). Keyed off the ROLE, not the
        * kind, or a wall cell's surface would take the raw-file branch and skip
        * the conform/top-face path its `topOnly` art requires. */
+      /* A FADE OP BUILDS ITS OVERLAY — the scatter with the field texels
+       * transparent. Dropped like any other op if its art has not landed. */
+      if (op.role === "fade") {
+        const f = cell.fade;
+        const built = f ? this.fade(f.file, cell.ground) : null;
+        if (built) out.push(op.key === built ? op : { ...op, key: built });
+        else this.droppedOps++;
+        continue;
+      }
       const art = op.role === "surface" ? cell.art : undefined;
       let key: string | null;
       /* A LIQUID NEVER SHOWS A WALL — enforced HERE, not trusted from a flag.
@@ -1369,6 +1467,13 @@ export class Tiles3Textures {
   private wallRGB(ground: string): [number, number, number] {
     const g = this.o.groundTypes[ground];
     return hexRGB(g?.palette?.top ?? g?.palette?.wall ?? g?.base_color ?? "#808080");
+  }
+
+  /** THE GROUND'S OWN TOP COLOUR — what a fade tile paints everywhere its
+   *  scatter is not, and therefore what `fadeOverlay` makes transparent. */
+  private topRGB(ground: string): [number, number, number] {
+    const g = this.o.groundTypes[ground];
+    return hexRGB(g?.palette?.top ?? g?.base_color ?? "#808080");
   }
 }
 

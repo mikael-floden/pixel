@@ -459,6 +459,11 @@ export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void): void {
    * diamond from a colour, not a file. */
   if (cell.art && cell.art.kind !== "liquid" && (cell.kind === "field" || cell.dressed))
     out(cell.art.path);
+  /* AND THE FADE'S OWN FILE. A fade is an OVERLAY now, not the cell's art, so
+   * nothing else names it — and this one function feeds both the streaming
+   * loader and scripts/tiles3closure.ts, which decides what enters the image.
+   * Miss it and every fade 404s in production and only in production. */
+  if (cell.fade) out(cell.fade.file);
   if (cell.kind !== "field" && cell.wall)
     for (const s of cell.wall.stack) if (s.tile.path) out(s.tile.path);
 }
