@@ -1477,6 +1477,14 @@ export class WorldScene extends Phaser.Scene {
   /* THE PER-CELL RESOLUTION CACHE — see t3resolve. A/B switch for
    * `__ml.groundRedraw`; nothing in play reads it. */
   private groundCacheOn = true;
+  /** `clear: pink` — fill the ground texture with magenta instead of the page
+   *  dark, so an unpainted texel is unmistakable. Diagnostic, default off. */
+  private groundClearPink = false;
+  /** `transitions` — skip the composed transition tile and let each cell draw
+   *  its own plate instead. The draw loop takes ONE of the two, never both, so
+   *  this is the A/B for "the zigzag is the transition tile you make with the
+   *  mask". Diagnostic, default off (transitions on). */
+  private noTransitions = false;
   private t3cells = new Map<number, { cell?: Tiles3Cell | null; boundary?: Tiles3Boundary | null; decks?: Tiles3DeckCell[] }>();
   private t3pitchChecked = false;
   private t3regionMs = 0;
@@ -2938,6 +2946,26 @@ export class WorldScene extends Phaser.Scene {
          * is dropped ops and the cause is a missing texture; one that stays
          * dark is not, and that kills this whole line of enquiry in one tap.
          * His idea, from the pink-background test. */
+        {
+          label: "clear: pink",
+          act: () => {
+            this.groundClearPink = !this.groundClearPink;
+            this.chat.addLog("—", `ground clear: ${this.groundClearPink ? "MAGENTA" : "normal"} — magenta means NOTHING painted there`);
+            this.repaintWorld();
+          },
+          get: () => this.groundClearPink,
+          state: () => (this.groundClearPink ? "pink" : "off"),
+        },
+        {
+          label: "transitions",
+          act: () => {
+            this.noTransitions = !this.noTransitions;
+            this.chat.addLog("—", `transition tiles: ${this.noTransitions ? "OFF — cells draw their own plates" : "on"}`);
+            this.repaintWorld();
+          },
+          get: () => !this.noTransitions,
+          state: () => (this.noTransitions ? "off" : "on"),
+        },
         {
           label: "dropped ops",
           act: () => {
@@ -13530,7 +13558,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.groundScrollLog.length > 16) this.groundScrollLog.shift();
     const W = cur.width;
     const H = cur.height;
-    const bg = mask ? 0x000000 : 0x181c28;
+    const bg = this.groundFillRGB(mask);
     next.setPosition(ax, ay);
     next.clear();
     // The background under everything, as the full paint lays it: a WHOLE-
@@ -14236,7 +14264,7 @@ export class WorldScene extends Phaser.Scene {
           stats.blits++;
         }
       }
-      if (bop && cell.kind === "field") {
+      if (bop && cell.kind === "field" && !this.noTransitions) {
         this.t3Blit(rt, bop, ax, ay, tint);
         stats.blits++;
         stats.boundaries++;
@@ -15085,6 +15113,19 @@ export class WorldScene extends Phaser.Scene {
     rt.fill(rgb, 1);
   }
 
+  /** THE GROUND TEXTURE'S CLEAR COLOUR — normally the page's own dark, and
+   *  MAGENTA while the `clear: pink` switch is on. His idea, asked for
+   *  repeatedly: "clear the screen with pink before we draw. Then we know if
+   *  the pixels are still pink it means the black border is the pink
+   *  background." It separates the only two things a dark line can be, in one
+   *  tap and with no argument: a texel NOTHING painted turns magenta, and a
+   *  texel something painted DARK stays dark. `0x181c28` is close enough to a
+   *  dark tile colour that no screenshot census has ever settled it. */
+  private groundFillRGB(mask: unknown): number {
+    if (this.groundClearPink) return 0xff00ff;
+    return mask ? 0x000000 : 0x181c28;
+  }
+
   private redrawGround() {
     if (!this.world || !this.groundRT) return;
     const cam = this.cameras.main;
@@ -15145,7 +15186,7 @@ export class WorldScene extends Phaser.Scene {
       this.groundSliceCtx = null;
       rt.setPosition(ax, ay);
       rt.clear();
-      this.fillGround(rt, mask ? 0x000000 : 0x181c28);
+      this.fillGround(rt, this.groundFillRGB(mask));
       const win = this.t3groundWindow(ax, ay, 0, 0, rt.width, rt.height);
       this.groundClip = null;
       this.drawTiles3Ground(rt, ax, ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, top);
