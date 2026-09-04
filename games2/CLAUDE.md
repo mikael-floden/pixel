@@ -319,24 +319,22 @@ by construction, so no existing branch changed.
   Gated by `server/test/tiles3draw.test.ts` #6b/#6c, which hold both halves at
   once: the band EXISTS (footprint parity, no hole) and carries NONE of either
   ground's palette wall colour (no dark course).
-- **THE GAME DRAWS NO SEAM** (`WorldScene` Tiles3Textures `seam: false`). The
-  tile pipeline's `compose()` darkens every texel of the border mask to
-  `border.tone` (0.82) of what it already is — a deliberate one-texel line
-  along every ground transition so it reads as a soft edge, not a 0-100 hard
-  cut (maintainer verdict in `tiles/patterns/index.json`, 2026-08-27). It does
-  not survive the device: at camera zoom 2 one texel is two screen px, and 18%
-  darker reads as a dotted dark line tracing the diamonds. **This was the rest
-  of his zigzag**, and unlike the wall band it was never a defect. MEASURED two
-  ways that agree: off his screenshot at 441.3/374.0, 4,923 dot texels on sand,
-  median dot/sand ratio 0.825/0.819/0.820 — a FLAT multiply, where the wall
-  band's signature is 0.731/0.695/0.671 and cooler in blue; and rendering his
-  window with the seam on vs off differs by 8,846 texels at median
-  0.821/0.819/0.817. It fits his three-way localisation like the wall band did:
-  a boundary is dressed only at level 0 on non-liquid ground, and he reports
-  the artefact absent on raised ground and on water. The LIBRARY and the WIKI
-  preview are untouched — this is the game only, which is what the `seam`
-  option exists for, and `boundaryKey` appends `|noseam` so a seamed and an
-  unseamed composition can never share a key. One word restores it.
+- **THE SEAM IS ON, AND IT IS WHAT MAKES A TRANSITION VISIBLE.** A composed
+  transition is `out.rgb = mask ? plateB : plateA` — a HARD per-pixel select
+  between two flat plates. The seam, which darkens the 1-texel border mask to
+  `border.tone` (0.82) of what is already there, is the only thing that makes
+  it read as a blend: "a transition without it is a 0-100 hard cut, which is
+  not what the generator drew" (maintainer verdict,
+  `tiles/patterns/index.json`, 2026-08-27), and the wiki preview draws it.
+  IT WAS SWITCHED OFF ON 2026-09-04 CHASING THE ZIGZAG AND THAT WAS WRONG: the
+  remaining dots did measure a flat 0.82 multiply, but 0.82 was the seam doing
+  its job ON TOP OF the actual defect — a transition tile covering 924 texels
+  where the plate it replaces covers 2012, leaving 1088 painted by nothing.
+  Removing the seam removed the transition instead, and he reported it
+  immediately: "I still see no transitions..." on a frame where 109 boundaries
+  and 41 fades resolved. A settings switch (`seam`) flips it live, and
+  `boundaryKey` carries `|noseam`, so seamed and unseamed are different
+  pictures under different keys.
 - **EVERY FIELD ART GOES THROUGH `plate()`, INCLUDING A PUBLISHED OR CLEAN
   ONE** (`tiles3draw` opsForCell). Its last branch drew `op.key` — the RAW FILE
   — for any field art that was not conform, not `topOnly` and not a liquid

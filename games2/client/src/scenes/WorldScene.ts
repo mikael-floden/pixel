@@ -1480,6 +1480,10 @@ export class WorldScene extends Phaser.Scene {
   /* THE PER-CELL RESOLUTION CACHE — see t3resolve. A/B switch for
    * `__ml.groundRedraw`; nothing in play reads it. */
   private groundCacheOn = true;
+  /** The 1-texel transition seam (`border.tone` 0.82). ON — it is what makes a
+   *  composed transition read as a blend rather than a hard cut. Switchable
+   *  because he has called it both the fix and the bug, on different builds. */
+  private seamOn = true;
   /** `clear: pink` — fill the ground texture with magenta instead of the page
    *  dark, so an unpainted texel is unmistakable. Diagnostic, default off. */
   private groundClearPink = false;
@@ -2949,6 +2953,17 @@ export class WorldScene extends Phaser.Scene {
          * is dropped ops and the cause is a missing texture; one that stays
          * dark is not, and that kills this whole line of enquiry in one tap.
          * His idea, from the pink-background test. */
+        {
+          label: "seam",
+          act: () => {
+            this.seamOn = !this.seamOn;
+            this.t3tex = null; // rebuilt on next use: the seam is part of the picture, so part of the key
+            this.chat.addLog("—", `transition seam: ${this.seamOn ? "on — transitions blend" : "OFF — transitions are a hard cut"}`);
+            this.repaintWorld();
+          },
+          get: () => this.seamOn,
+          state: () => (this.seamOn ? "on" : "off"),
+        },
         {
           label: "clear: pink",
           act: () => {
@@ -13276,35 +13291,29 @@ export class WorldScene extends Phaser.Scene {
     this.t3tex = new Tiles3Textures({
       textures: this.t3tm,
       sheets: this.t3sheets,
-      /* NO SEAM IN THE GAME — this is the maintainer's zigzag, the part of it
-       * that was never a defect (2026-09-04).
+      /* THE SEAM IS BACK ON, AND TURNING IT OFF WAS A MISTAKE OF MINE
+       * (2026-09-04). A composed transition is `out.rgb = mask ? plateB :
+       * plateA` — a HARD per-pixel select between two flat plates. The seam,
+       * which darkens the 1-texel border mask to `border.tone` (0.82) of what
+       * is already there, is the only thing that makes it read as a blend at
+       * all: "a transition without it is a 0-100 hard cut, which is not what
+       * the generator drew" (his verdict, tiles/patterns/index.json,
+       * 2026-08-27), and the wiki preview he reviews from draws it.
        *
-       * `compose()` darkens every texel of the border mask to `border.tone` of
-       * what it already is: a deliberate one-texel line along every ground
-       * transition, so a transition reads as a soft edge instead of a 0-100
-       * hard cut. He approved exactly that in tiles/patterns/index.json
-       * (2026-08-27) and the wiki preview he reviews from still draws it.
+       * It was switched off here chasing the zigzag, on the measurement that
+       * the remaining dots were a flat 0.82 multiply — which they were. But
+       * 0.82 was the seam doing its job on top of the ACTUAL defect: a
+       * transition tile covering 924 texels where the plate it replaces covers
+       * 2012, leaving 1088 painted by nothing. His magenta ground clear proved
+       * that, and it is fixed. Removing the seam removed the transition
+       * instead, which is what he reported next: "I still see no
+       * transitions..." with 109 boundaries and 41 fades resolving in the very
+       * frame he sent.
        *
-       * It does not survive contact with the device. At camera zoom 2 one texel
-       * is two screen px, and 18% darker reads as a dotted dark line tracing
-       * the diamonds — which is what he has been photographing. MEASURED, two
-       * ways that agree: off his screenshot at 441.3,374.0, 4,923 dot texels on
-       * sand with a median dot/sand ratio of 0.825/0.819/0.820 (a FLAT multiply
-       * — the wall band's signature is 0.731/0.695/0.671, cooler in blue, and
-       * is what the previous commit removed); and rendering his window here
-       * with the seam on vs off differs by 8,846 texels at a median ratio of
-       * 0.821/0.819/0.817. `border.tone` is 0.82.
-       *
-       * It also explains his three-way localisation exactly, like the wall band
-       * did: a boundary is dressed only at level 0 on non-liquid ground, and he
-       * reports the artefact 100% absent on raised ground and on water.
-       *
-       * THE LIBRARY IS NOT TOUCHED and neither is the wiki: this turns the seam
-       * off for the GAME only, which is what `seam` was added for. The key
-       * carries it (`boundaryKey` appends `|noseam`), so a seamed and an
-       * unseamed composition are different keys and no cache can serve one for
-       * the other. One word to restore if he wants it back. */
-      seam: false,
+       * The switch below lets him settle it in a tap rather than a deploy, and
+       * `boundaryKey` carries `|noseam` so the two are different pictures under
+       * different keys and no cache can serve one for the other. */
+      seam: this.seamOn,
       groundTypes: groundTypes as Record<string, { palette?: { wall?: string; top?: string }; base_color?: string }>,
       // UNBOUNDED, deliberately. Eviction calls textures.remove, which pulls a
       // texture out from under anything still holding the key; the ground RT
