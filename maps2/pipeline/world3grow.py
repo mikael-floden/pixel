@@ -470,7 +470,8 @@ class Grow:
         if on is not None and self.g(int(x), int(y)) not in on:
             self.fail += 1
             return False
-        if not self._footprint_ok(wx, wy, R, HY, flush=flush):
+        flat = self._flat(probe)
+        if not self._footprint_ok(wx, wy, R, HY, flush=flush, flat=flat):
             self.fail += 1
             self.fp_refused = getattr(self, "fp_refused", 0) + 1
             return False
@@ -495,7 +496,8 @@ class Grow:
             if not hasattr(self, "_flush_ids"):
                 self._flush_ids = set()
             self._flush_ids.add(id(p))
-        self._fp_add(wx, wy, R, HY)
+        if not flat:                  # floor claims no ground - see _flat
+            self._fp_add(wx, wy, R, HY)
         if not hasattr(self, "occ"):
             self._reindex()
         else:
@@ -1095,6 +1097,50 @@ class Grow:
     # +-45 degrees is exactly the world x or y axis on screen.
     _K = 14.0 / 32.0
 
+    # ---- one box, read the way the wiki writes it ---------------------------
+    # (maintainer 2026-09-03/04) A box carries THREE per-facing channels, and a
+    # consumer that reads only some of them draws a different rectangle from
+    # the one he drew (wiki/site/wiki.js boxPos / boxSize / boxRot):
+    #   pos_by_dir[d]  -> ax, ay   "the move tool is per direction"
+    #   size_by_dir[d] -> rx, ry   "we need a dedicated W and D for the S
+    #                               direction ... as an opt-in" - 54 of 131
+    #                               rect pieces have a south view whose
+    #                               footprint disagrees with its turned views,
+    #                               so one rectangle cannot serve every facing
+    #   rot_by_dir[d]  -> degrees, else the box's own rot MINUS the facing's
+    #                     ground turn (rect only; an ellipse just takes rot)
+    # Absent means the shared value - that is still the answer for most of the
+    # library, and reading the shared one where an override exists is silently
+    # the wrong size rather than an error.
+    GROUND_DEG = {"south": 0.0, "south-east": 45.0, "east": 90.0,
+                  "north-east": 135.0, "north": 180.0, "north-west": -135.0,
+                  "west": -90.0, "south-west": -45.0}
+
+    @staticmethod
+    def _box_pos(b, d):
+        o = (b.get("pos_by_dir") or {}).get(d) or {}
+        ax, ay = o.get("ax"), o.get("ay")
+        return (b.get("ax", 0.0) if ax is None else ax,
+                b.get("ay", 0.0) if ay is None else ay)
+
+    @staticmethod
+    def _box_size(b, d):
+        o = (b.get("size_by_dir") or {}).get(d) or {}
+        rx, ry = o.get("rx"), o.get("ry")
+        return (b.get("rx", 0.0) if rx is None else rx,
+                b.get("ry", 0.0) if ry is None else ry)
+
+    def _box_rot(self, b, d, rect):
+        o = (b.get("rot_by_dir") or {}).get(d)
+        if isinstance(o, (int, float)):
+            return float(o)
+        base = float(b.get("rot") or 0.0)
+        # THE SIGN IS NEGATIVE, and getting it wrong rotates every rect 90
+        # degrees off its own art (maintainer 2026-09-03, looking at my own
+        # overlay: "It looks like you are rotating the rect hitbox the wrong
+        # way"). south-east is +45 on the ground and -45 here.
+        return base - self.GROUND_DEG.get(d, 0.0) if rect else base
+
     def _rec(self, p):
         """The hitbox record the game will resolve for this placement: the
         drawn variation first, then the piece, then any variation's - the same
@@ -1170,24 +1216,16 @@ class Grow:
             return ("circle", geo[0], geo[1], geo[2], geo[2])
         k, afx, afy, fw, fh = fit
         d = p.get("dir") or "south"
-        # THE SIGN IS NEGATIVE, and getting it wrong rotates every rect 90
-        # degrees off its own art (maintainer 2026-09-03, looking at my own
-        # overlay: "It looks like you are rotating the rect hitbox the wrong
-        # way"). The wiki solves with th = radians(-GROUND[dir]) where GROUND
-        # is south 0, south-east +45, south-west -45
-        # (wiki/tools/rect-hitbox-pass.py) - so south-east is -45 here.
-        th = math.radians(-{"south": 0.0, "south-east": 45.0,
-                            "south-west": -45.0}.get(d, 0.0))
-        eu = (math.cos(th), math.sin(th) * self._K)
-        ev = (-math.sin(th), math.cos(th) * self._K)
         xs, ys = [], []
         for b in boxes:
-            pos = (b.get("pos_by_dir") or {}).get(d) or b
-            ax = pos.get("ax", b.get("ax", 0.0))
-            ay = pos.get("ay", b.get("ay", 0.0))
+            # every per-facing channel, each from its own override
+            th = math.radians(self._box_rot(b, d, True))
+            eu = (math.cos(th), math.sin(th) * self._K)
+            ev = (-math.sin(th), math.cos(th) * self._K)
+            ax, ay = self._box_pos(b, d)
             if p.get("hflip"):
                 ax = -ax
-            rx, ry = b.get("rx", 0.0), b.get("ry", 0.0)
+            rx, ry = self._box_size(b, d)
             for su in (-1, 1):
                 for sv in (-1, 1):
                     fx = fw / 2 + ax + su * rx * eu[0] + sv * (ry / self._K) * ev[0]
@@ -1210,9 +1248,12 @@ class Grow:
             return None
         k = self._fit(p)[0]
         rec = self._rec(p)
-        R = max(max(b["rx"] * k / (self.HIT_DX * math.sqrt(2)),
-                    b["ry"] * k / (self.HIT_DY * math.sqrt(2)))
-                for b in rec["boxes"])
+        d = p.get("dir") or "south"
+        R = 0.0
+        for b in rec["boxes"]:
+            rx, ry = self._box_size(b, d)       # his per-facing W and D
+            R = max(R, rx * k / (self.HIT_DX * math.sqrt(2)),
+                    ry * k / (self.HIT_DY * math.sqrt(2)))
         return off[0], off[1], R
 
     # ---- the footprint law -------------------------------------------------
@@ -1252,12 +1293,41 @@ class Grow:
         self._fp.setdefault((int(wx) // 4, int(wy) // 4), []).append(
             (wx, wy, R, R if hy is None else hy))
 
-    def _footprint_ok(self, wx, wy, R, hy=None, flush=False):
+    # A RUG IS FLOOR, NOT AN OBSTACLE (maintainer 2026-09-04, on the collision
+    # overlay in his own house: "Why does the show collision mode show the
+    # collision on a carpet that doesn't even have a collision?"). The piece
+    # says so itself - scenery.json `collision: false` - and the tuning file
+    # may override it per variation with `no_collision`, which is the wiki's
+    # own resolution order (hitboxFlat: the override, else the piece's tag).
+    # A flat piece therefore CLAIMS NO GROUND: it may lie against a wall and
+    # under a table, and nothing is refused for standing on it. It still may
+    # not span a level change - a rug torn across a step reads as a bug - and
+    # it still may not straddle the shore.
+    def _flat(self, p):
+        if not hasattr(self, "_flatc"):
+            self._flatc = {}
+        rec = self._rec(p) or {}
+        if isinstance(rec.get("no_collision"), bool):
+            return rec["no_collision"]
+        piece = p["piece"]
+        if piece not in self._flatc:
+            try:
+                j = json.load(open(os.path.join(
+                    REPO, "scenery", piece, "scenery.json")))
+            except OSError:
+                j = {}
+            self._flatc[piece] = (j.get("collision") is False
+                                  or j.get("no_collision") is True)
+        return self._flatc[piece]
+
+    def _footprint_ok(self, wx, wy, R, hy=None, flush=False, flat=False):
         """The three rules on one footprint. A circle when hy is None, else a
         world box of half-extents (R, hy). `flush` is for furniture placed
         deliberately AGAINST a wall: the box may TOUCH the wall face but still
         may not enter it (maintainer 2026-09-03: "place the rect furniture
-        exactly at the wall/corner, pixel perfect")."""
+        exactly at the wall/corner, pixel perfect"). `flat` is a piece with no
+        collision - see above: ground rules only, no wall test, no neighbour
+        test, and the caller does not register it."""
         cx, cy = int(wx), int(wy)
         if not (0 <= cx < NEW and 0 <= cy < NEW):
             return False
@@ -1284,12 +1354,14 @@ class Grow:
                         continue
                 if not (0 <= xx < NEW and 0 <= yy < NEW):
                     return False
-                if (xx, yy) in walls:                 # touches a wall
+                if (xx, yy) in walls and not flat:    # touches a wall
                     return False
                 if self.lvl[yy][xx] != lvl:           # hangs over a cliff/slope
                     return False
                 if self.liquid(xx, yy) != wet:        # straddles the shore
                     return False
+        if flat:
+            return True                    # floor: it claims no ground at all
         for (ox, oy, orx, ory) in self._fp_near(wx, wy):
             # box vs box on the world axes; a circle is its own square here,
             # which is conservative and keeps one test for every pair
@@ -1321,10 +1393,12 @@ class Grow:
         # SEVERAL ELLIPSES ARE ONE FOOTPRINT (an entrance with two pillars is
         # two): centre the AREA-WEIGHTED centroid, which is the single ellipse
         # for the common case and the sensible middle for the rest.
-        tw = sum(b["rx"] * b["ry"] for b in boxes) or 1.0
-        ax = sum((-b["ax"] if p.get("hflip") else b["ax"]) * b["rx"] * b["ry"]
-                 for b in boxes) / tw
-        ay = sum(b["ay"] * b["rx"] * b["ry"] for b in boxes) / tw
+        d = p.get("dir") or "south"
+        sized = [(self._box_pos(b, d), self._box_size(b, d)) for b in boxes]
+        tw = sum(rx * ry for _, (rx, ry) in sized) or 1.0
+        ax = sum((-pa if p.get("hflip") else pa) * rx * ry
+                 for (pa, _), (rx, ry) in sized) / tw
+        ay = sum(pb * rx * ry for (_, pb), (rx, ry) in sized) / tw
         sx = (fw / 2 + ax - anchor_fx) * k
         sy = (fh / 2 + ay - anchor_fy) * k
         return ((sx / self.HIT_DX + sy / self.HIT_DY) / 2,
@@ -1420,9 +1494,11 @@ class Grow:
             else:
                 wx, wy, R, HY = int(p["x"]) + 0.5, int(p["y"]) + 0.5, \
                     self.FP_DEFAULT, None
-            if self._footprint_ok(wx, wy, R, HY, flush=True):
+            flat = self._flat(p)
+            if self._footprint_ok(wx, wy, R, HY, flush=True, flat=flat):
                 keep.append(i)
-                self._fp_add(wx, wy, R, HY)
+                if not flat:
+                    self._fp_add(wx, wy, R, HY)
             else:
                 dropped += 1
         keep.sort()
@@ -1442,9 +1518,11 @@ class Grow:
             else:
                 wx, wy, R, HY = int(p["x"]) + 0.5, int(p["y"]) + 0.5, \
                     self.FP_DEFAULT, None
-            assert self._footprint_ok(wx, wy, R, HY, flush=True), \
+            flat = self._flat(p)
+            assert self._footprint_ok(wx, wy, R, HY, flush=True, flat=flat), \
                 f"{p['piece']} at {p['x']},{p['y']} breaks the footprint law"
-            self._fp_add(wx, wy, R, HY)
+            if not flat:
+                self._fp_add(wx, wy, R, HY)
 
     def relight(self):
         """FILL THE LIGHT BUDGET, NEVER EXCEED IT (maintainer 2026-08-29:

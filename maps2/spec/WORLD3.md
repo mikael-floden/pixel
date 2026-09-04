@@ -145,6 +145,40 @@ no cell centre — and which therefore block **nothing** — fall from **550 of
 1,421 (39%) to 11**, and the centring error from median 3.0 px to **0.00**.
 The footprints got accurate, not bigger. Build-asserted every run.
 
+**A RECT BOX IS READ PER FACING — all three channels.** `shape:"rect"` means
+the footprint is a rectangle on the ground, and the wiki writes three
+independent per-facing overrides (`wiki/site/wiki.js` boxPos/boxSize/boxRot);
+a consumer that reads only some of them draws a different rectangle from the
+one he drew:
+
+| channel | what it overrides | why it exists |
+|---|---|---|
+| `pos_by_dir[d]` | `ax`, `ay` | *"the move tool is per direction"* — the art's anchor is not the same point on every facing |
+| `size_by_dir[d]` | `rx`, `ry` | *"we need a dedicated W and D for the S direction ... as an opt-in"* — 54 of 131 rect pieces have a south view whose footprint disagrees with its own turned views, so one rectangle cannot serve every facing |
+| `rot_by_dir[d]` | degrees | otherwise `rot − GROUND_DEG[d]` for a rect (an ellipse just takes `rot`) |
+
+Absent means the shared value. The corners are centre ± rx·**eu** ± (ry/K)·**ev**
+with `K = dy/dx = 14/32`, `th = radians(rot − GROUND_DEG[d])`,
+`eu = (cos th, sin th·K)`, `ev = (−sin th, cos th·K)` — the game's K, not the
+wiki's: its preview still solves on `data.json.iso` (dy **15**, tiles2), while
+scenery lives in maps3 at dy 14, so the same `ry` reads 7.1% deeper on the
+ground here than in the tool he tunes in. Raised with wiki.
+
+maps2 uses the rect twice: the facing whose footprint lies LONGER along the
+wall is the one placed (so a shelf's back is against it), and the piece is then
+put flush — `x = x0 + hx − cx` — instead of snapped to a cell centre.
+
+**A NO-COLLISION PIECE IS FLOOR** (maintainer 2026-09-04, on the collision
+overlay: *"Why does the show collision mode show the collision on a carpet that
+doesn't even have a collision?"*). Resolution, the wiki's own order: the tuning
+record's `no_collision`, else the piece's `scenery.json` `collision: false`.
+Such a piece claims no ground — it may lie against a wall and under a table,
+and nothing is refused for standing on it — but it still may not span a level
+change or straddle the shore. **The game stamps it anyway**: the server hands
+`stampSceneryCollision` only `scenery-bbox.json` and the hitbox doc, and
+neither carries the flag, so a rug really does block its cells in the live nav
+grid. Raised with games2; the fix is theirs.
+
 **games2 divergence, reported not worked around:** the client draws (and sorts)
 a variation through `k = drawnPx / BASE bbox height` (`fitSprite`'s `scaleH`,
 which is what keeps a rotation's own proportions), while the collision stamp
