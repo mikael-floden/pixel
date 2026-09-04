@@ -2086,7 +2086,32 @@ export class Tiles3 {
          * The probability falls off with distance from the switch. */
         const bandPos = (FADE_BAND + 1 - near[1]) / (FADE_BAND + 1);
         const u = rr();
-        if (u <= 0.45 * bandPos) {
+        /* NO TWO FADES TOUCH EDGE-ON — his own rule, and the lattice he keeps
+         * photographing.
+         *
+         * A fade tile is PURE FIELD GROUND at its rim, with the scatter only in
+         * the middle: measured, the perimeter ring of the library top face runs
+         * up to 43.5 luma from the interior, and the rim's luma is exactly the
+         * field's palette top. One such tile is a warm-up patch and reads as
+         * one. TWO SIDE BY SIDE put their dark rims against each other, and a
+         * band of them draws a continuous dark line down the diamond edges —
+         * which is what he circles. Measured over the_game before this: of
+         * 2,182 fade cells, 991 (45.4%) touched another edge-on and 1,410
+         * (64.6%) touched one at all.
+         *
+         * He said it first, to the wiki (2026-08-28): "I also only want to see
+         * 1 tile near the center ... The 'fade' tiles are not meant to be
+         * repeated like that!"
+         *
+         * A cell keeps its fade only if its own draw is a STRICT LOCAL MINIMUM
+         * among its four edge neighbours. That makes edge-on adjacency
+         * impossible rather than unlikely — if A beats B then B cannot beat A —
+         * and it is four extra LCG draws, no band scan, and order-independent,
+         * so the resolver stays a pure function of the cell. */
+        const drawAt = (cx: number, cy: number): number => lcg((cx * 73856093) ^ (cy * 19349663))();
+        const lonely =
+          u < drawAt(x + 1, y) && u < drawAt(x - 1, y) && u < drawAt(x, y + 1) && u < drawAt(x, y - 1);
+        if (lonely && u <= 0.45 * bandPos) {
           /* Sample the WHOLE pool, weighted by his ratings, with the mix strength
            * tracking the distance. */
           const wts = pool.map((t) => (1.0 + 1.6 * t.rating) * (1.0 - Math.abs(t.pct / 60.0 - bandPos)));
