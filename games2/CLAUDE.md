@@ -294,6 +294,30 @@ by construction, so no existing branch changed.
   holes) — and its widest row still lands on `TOP_Y + DY`, so no water moved.
   The general rule: a mask that has to interlock with the art's masks IS the
   art's mask; re-deriving the diamond is how the gaps get in.
+- **EVERY FIELD ART GOES THROUGH `plate()`, INCLUDING A PUBLISHED OR CLEAN
+  ONE** (`tiles3draw` opsForCell). Its last branch drew `op.key` — the RAW FILE
+  — for any field art that was not conform, not `topOnly` and not a liquid
+  ground, which is exactly a LEVEL-0 published or clean plate. So
+  `capWallToSurface`, whose entire purpose is to neutralise the wall band,
+  never ran on the cells it was written for. **This was the land zigzag**, and
+  it cost three days. Measured on `tiles/plates/light_beach/clean.webp`: the
+  raw file carries 1088 texels of exactly (171,146,116) — light_beach's palette
+  wall — and the capped raster carries 0. A level-0 cell has nothing below it,
+  so its wall band is never legitimate art; it is only the ~25%-darker course
+  that makes a one-texel coverage error visible. The cell in front covers
+  almost all of it, so what shows is a short broken run along a diamond edge:
+  measured off the maintainer's screenshot at 442.2/382.2, 633 texels of
+  exactly (171,146,116) in 116 chevrons, each 2 screen px tall at camera zoom 2
+  — one texel — on diamond-edge slopes repeating every 64 px, which is DX at
+  that zoom. The BRANCH CONDITION IS HIS LOCALISATION, which is how it was
+  found: he reported the artefact 100% absent on raised ground (`topOnly`) and
+  100% absent on water (the liquid path), present only on level-0 land.
+  Offline render of his window, real client code, same inset: 1781 -> 0, with
+  the legitimate raised wall course untouched. Gated by
+  `server/test/tiles3draw.test.ts` #6b, which asserts BOTH that the op points
+  at the capped raster and that the raster carries none of the palette wall
+  colour — either alone passes while the bug is live. A wall cell keeps the raw
+  path (`art` is undefined there; a wall course must draw its own art).
 - **A CONFORMED PLATE FILLS EVERY SILHOUETTE TEXEL, INCLUDING HOLES INSIDE A
   COLUMN** (`conformPlate`). Conforming assigns the library silhouette as the
   ALPHA CHANNEL — every silhouette texel comes out opaque — but it fills RGB

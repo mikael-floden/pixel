@@ -1054,6 +1054,39 @@ export class Tiles3Textures {
         // a CONFORM repaints its own wall band and must keep it (see plateKey's
         // note); only a liquid ground is forced onto the top-face path.
         key = this.plate(liquidGround ? { ...art, topOnly: true } : art, cell.ground);
+      /* EVERY FIELD ART GOES THROUGH `plate()`, INCLUDING A PUBLISHED OR CLEAN
+       * ONE — and this is the LAND zigzag (2026-09-04).
+       *
+       * This branch used to draw `op.key`, the raw file, for any field art that
+       * was not conform, not topOnly and not a liquid ground. That is exactly a
+       * level-0 published or clean plate, and it meant `capWallToSurface` —
+       * written to neutralise the wall band, and applied inside `platePixels`
+       * — NEVER RAN ON THE CELLS IT WAS WRITTEN FOR. Measured on
+       * tiles/plates/light_beach/clean.webp: the raw file carries 1088 texels
+       * of exactly (171,146,116), light_beach's palette wall; the capped raster
+       * carries 0.
+       *
+       * A level-0 cell has nothing below it, so its wall band is never
+       * legitimate art — it is only ever the ~25%-darker course that makes a
+       * one-texel coverage error VISIBLE. The cell in front covers almost all
+       * of it, so what shows is a short broken run along a diamond edge, which
+       * is what the maintainer photographed: measured off his screenshot at
+       * 442.2,382.2, 633 texels of exactly (171,146,116) in 116 chevrons, every
+       * one 2 screen px tall at camera zoom 2 — one texel — on diamond-edge
+       * slopes repeating every 64 px, which is DX at that zoom.
+       *
+       * The branch condition IS his localisation, which is how it was found: a
+       * raised cell is `topOnly` and takes the masked path, a liquid takes the
+       * liquid path, and he reports the artefact 100% absent on both and
+       * present only on level-0 land. A tiles2 world has no such plate at all,
+       * which is why the_island2 never showed it.
+       *
+       * `plate()` keeps its own fallback to the raw file when the readback
+       * fails, so this cannot reintroduce the tile-sized black holes of
+       * cc2b41c975: worst case is exactly the old picture. A WALL cell keeps
+       * the raw path — `art` is undefined there, and a wall course must draw
+       * its own art. */
+      else if (art) key = this.plate(art, cell.ground);
       else key = this.o.textures.exists(op.key) ? op.key : null;
       if (!key) {
         this.droppedOps++;

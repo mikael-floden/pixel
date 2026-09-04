@@ -678,6 +678,50 @@ test("every op the factory hands back is drawable; the rest are dropped", { skip
   assert.equal(T.opsForBoundary({ maskFrame: b.frame, a: b.a.ground, b: b.b.ground, plateA: b.a, plateB: b.b, sx: 0, sy: 0, w: TILE, h: PLATE_H } as any), null);
 });
 
+/* -- 6b. a level-0 published plate NEVER draws its own wall band ------------ */
+
+/** THE LAND ZIGZAG (2026-09-04). `opsForCell`'s last branch drew `op.key` — the
+ *  raw file — for any field art that was not conform, not topOnly and not a
+ *  liquid ground. That is exactly a level-0 published or clean plate, so
+ *  `capWallToSurface` never ran on the cells it was written for and every one
+ *  of them painted its ~25%-darker wall course. The cell in front covers almost
+ *  all of it; what showed was a broken one-texel run along the diamond edges —
+ *  633 texels of exactly (171,146,116) measured off the maintainer's screenshot
+ *  at 442.2,382.2, in 116 chevrons.
+ *
+ *  Two things are asserted, because either alone can pass while the bug is
+ *  live: the op must point at the CAPPED raster, and that raster must carry
+ *  none of the ground's palette wall colour. The raw file carries 1088. */
+test("a level-0 clean plate draws the capped raster, never its wall band", { skip }, () => {
+  const path = "tiles/plates/light_beach/clean.webp";
+  const raw = px(path);
+  assert.equal(raw.h, PLATE_H, "the fixture assumes plate geometry");
+  const fx = fakeTextures();
+  fx.put(artKey(path), raw);
+  const T = new Tiles3Textures({ textures: fx.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas });
+  const art: any = { kind: "clean", path, w: TILE, h: PLATE_H };
+  const cell: any = { kind: "field", ground: "light_beach", sx: 0, sy: 0, pasteY: 0, art };
+  const ops = T.opsForCell(cell);
+  assert.equal(ops.length, 1);
+  assert.equal(ops[0].key, `t3s:${artKey(path)}`, "a level-0 plate must go through plate(), not draw the raw file");
+
+  const [wr, wg, wb] = wallRGB("light_beach");
+  const count = (p: Pixels): number => {
+    let n = 0;
+    for (let i = 0; i < p.w * p.h; i++)
+      if (p.data[i * 4 + 3] > 0 && p.data[i * 4] === wr && p.data[i * 4 + 1] === wg && p.data[i * 4 + 2] === wb) n++;
+    return n;
+  };
+  assert.ok(count(raw) > 500, `the raw file should carry the wall band (got ${count(raw)}) or this gate proves nothing`);
+  const drawn = (fx.t.get(ops[0].key) as any).getSourceImage() as { pix: Uint8ClampedArray };
+  assert.equal(count({ w: TILE, h: PLATE_H, data: drawn.pix }), 0, "the drawn raster still carries light_beach's palette wall colour");
+
+  // a WALL cell keeps the raw path — a wall course must draw its own art
+  fx.put("t2:course.webp", { w: 1, h: 1, data: new Uint8ClampedArray(4) });
+  const wall: any = { kind: "wall", ground: "grey_stone", sx: 0, sy: 0, wall: { stack: [{ storey: 0, tile: { path: "course.webp", w: TILE, h: TILE }, y: 0 }] } };
+  assert.deepEqual(T.opsForCell(wall).map((o) => o.key), ["t2:course.webp"]);
+});
+
 /* -- 7. the real world: how many compositions the_game actually asks for ---- */
 
 test("the_game's boundaries share compositions — the ratio, measured", { skip }, () => {
