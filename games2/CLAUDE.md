@@ -907,6 +907,66 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     phone against a 16.7 ms budget — spread across the sliced band, the ring,
     the occluder+scenery rebuild and the per-frame fog/lit-copy pass. Reducing
     that floor, not spreading it, is the open work.
+  - **COMPOSING IS BUDGETED, AND A CELL WITHOUT ITS TRANSITION YET DRAWS THE
+    PLAIN PLATE** (`Tiles3Textures.armCompose`, `GROUND_COMPOSE_MS` = 2). One
+    composition costs **6.0-9.6 ms on his phone** (measured composeMs/composed
+    over the worst frames of the 0a0d1e775 beacon — NOT the "2-4 ms" this file
+    used to guess), and the pass composed every boundary a fresh window needed
+    synchronously: his worst frames were redrawGround 1244 ms / 113
+    compositions, groundSlice 770 / 87, with composeMs 76-95% of the frame. It
+    is worst where he plays — over 100 real windows of the_game, a window needs
+    15 distinct boundary compositions at the map's median but **128-287 around
+    the spawn** (441,364), i.e. 1.1-2.3 s of composing to enter the town.
+    The allowance is deliberately SMALLER than one composition, so spending it
+    starts exactly one per frame on a phone and about a dozen on a desktop: the
+    budget reads the device instead of encoding one. **Only boundaries are
+    refused**, because only they have a correct fallback — the plain plate they
+    would have replaced, two grounds meeting hard, which is the same answer
+    `boundary()` has always given while a source plate streams. A refused PLATE
+    would leave the cell with no art at all; plates are 5-9 per window and
+    cached for the session, so they are never budgeted. A deferred cell lands in
+    `t3boundaryOwed` and `t3retryBoundaries` composes it on a later frame's
+    allowance and repaints only what it got — the readiness test is "can it be
+    composed NOW", and `stats.deferred` is what separates "the budget refused"
+    (stop, everything after is refused too) from "this one cell is not ready"
+    (skip). A FORCED FULL PAINT IS UNBUDGETED (`withoutComposeBudget`): the
+    `groundHash`/`groundFull` parity instruments compare a streamed picture
+    against a forced one, so a budgeted reference would report a mismatch that
+    is not a defect.
+    **THE COST IS THE TEXTURE, NOT THE BLEND**: composeBoundary is 42 us and
+    capWallToSurface 30 us against 6-9.6 ms, so 91-97% was the registration —
+    a per-composition `<canvas>`, a 2D context, putImageData, and Phaser's
+    `addCanvas` doing a full getImageData READBACK it retains forever
+    (CanvasTexture.js:86,118). A composition now goes in as raw bytes
+    (`TextureManager.addUint8Array`), one retained copy instead of three. Safe
+    because every composed raster is BINARY-ALPHA (gated), so the shared
+    `UNPACK_PREMULTIPLY_ALPHA_WEBGL true` is the identity on every texel, and
+    `createUint8ArrayTexture` hardcodes gl.NEAREST. A raw texture has no
+    drawable source — `rawTexPixels` is what keeps `__ml.t3png` working.
+    Bisects: `__ml.groundCompose(Infinity)` (pre-budget), `__ml.groundRaw(false)`
+    (back to the canvas). Beacon: `bnd`, `defer`, `owed`.
+  - **A TOO-WIDE CELL REPAINT SPLITS; IT DOES NOT GIVE UP.** `repaintTiles3Cells`
+    bailed to a full paint when its bounding rect passed half the texture, and
+    the geometry made that the ORDINARY case: a cell's rect spans the world's
+    whole column height, so at maxLevel 40 / pitch 15 ONE cell is 704 texels =
+    42.5% of the 1,656-tall texture, leaving ~23 columns of width before the
+    bail — and one landed plate file is wanted by cells all over the window
+    (`t3missing` maps a shared file to every cell that asked). The landing
+    repaint was manufacturing the full paints it exists to avoid. It halves the
+    set on the longer axis, `T3_REPAINT_SPLITS` (2) deep, at most 4 rects. Sound
+    because each rect repaints its WHOLE window, not just its listed cells, so
+    a cell's spill into a neighbouring rect is redrawn there.
+  - **ONLY A RAISED REPAIR REBUILDS THE OCCLUDERS** (`T3_OCC_REPAIR_MS` 400). A
+    raised cap wears its transition on the occluder re-issued over the ground,
+    so a repaired one needs a rebuild; a level-0 field cell emits no occluder
+    and no `occluderMeta` at all, so rebuilding for a flat repair returns a
+    bit-identical set. Measured standing still, poisoning on every repair cost
+    11-12 rebuilds and 101-309 ms of JS per 12 s to change nothing, because
+    94-100% of repaired cells are flat.
+  - **A SECTION TIMER REPORTS SELF TIME.** `rebuildScenery` runs inside
+    `rebuildOccluders`; an inclusive timer billed both and drove the beacon's
+    `other` — the frame minus every section — to -84.9 ms. A span hands its
+    duration up to its parent, which subtracts it.
     **`?ground=legacy` IS THE BISECT** (remembered in localStorage
     `ml-ground-path`; `?ground=fast` restores). It turns the whole 2026-09-02/03
     ground rework off in one page load — no scroll, no sliced band, no landing
