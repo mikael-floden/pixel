@@ -853,6 +853,9 @@ const GROUND_RING_COMPOSE_EMA = 0.25;
  *  lookup each, so this is cheap; the repaint it triggers is the real cost and
  *  is bounded by how many of them actually became ready. */
 const T3_BOUNDARY_RETRY = 32;
+/** How many times a too-wide cell repaint may be halved before it gives up and
+ *  paints in full — at most 2^N rects. */
+const T3_REPAINT_SPLITS = 2;
 /** Files in flight for the DEFERRED animation batch — see loadDeferredAnims.
  *  Dev A/B: localStorage `ml-deferred-parallel` overrides (0 = the loader's own). */
 const DEFERRED_PARALLEL = 2;
@@ -2312,7 +2315,7 @@ export class WorldScene extends Phaser.Scene {
   /** When the boot hold's readiness condition first became true — see
    *  hideLoadingWhenTerrainIsUp. 0 while not ready. */
   private holdReadySince = 0;
-  private groundCellStats = { runs: 0, full: 0, cells: 0, ms: 0 };
+  private groundCellStats = { runs: 0, full: 0, cells: 0, ms: 0, split: 0 };
   /** DEV: the last landing repaint's stamp rect and grown clip rect. */
   private groundLastRect: unknown = null;
   /** DIAGNOSTIC ring: the last scrolls' (prevAx, prevAy, ax, ay, sx, sy). */
@@ -14222,7 +14225,7 @@ export class WorldScene extends Phaser.Scene {
    *  scroll's bands use, so it equals a full paint pixel for pixel. A landing
    *  whose cells span more than half the texture paints in full instead, and
    *  so does one that arrives with no valid anchor. */
-  private repaintTiles3Cells(cells: number[]): void {
+  private repaintTiles3Cells(cells: number[], depth = 0): void {
     const rt = this.groundRT;
     const a = this.groundAnchor;
     const f = this.t3?.frame;
@@ -14240,6 +14243,9 @@ export class WorldScene extends Phaser.Scene {
     let y0 = Infinity;
     let x1 = -Infinity;
     let y1 = -Infinity;
+    const kept: number[] = [];
+    const keptX: number[] = [];
+    const keptY: number[] = [];
     for (const idx of cells) {
       const col = idx % world.width;
       const row = (idx - col) / world.width;
@@ -14250,6 +14256,9 @@ export class WorldScene extends Phaser.Scene {
       // outlives the window until the next full paint) must not stretch the
       // rectangle from there to the visible ones.
       if (cx + T3_TILE <= 0 || cx >= W || bot <= 0 || top >= H) continue;
+      kept.push(idx);
+      keptX.push(cx);
+      keptY.push(top);
       if (cx < x0) x0 = cx;
       if (cx + T3_TILE > x1) x1 = cx + T3_TILE;
       if (top < y0) y0 = top;
@@ -14261,6 +14270,47 @@ export class WorldScene extends Phaser.Scene {
     y1 = Math.min(H, Math.ceil(y1));
     if (x1 <= x0 || y1 <= y0) return; // every landed cell lies off the texture
     if ((x1 - x0) * (y1 - y0) > 0.5 * W * H) {
+      /* TOO WIDE TO REPAINT AS ONE RECT — SO CUT IT IN TWO, DO NOT GIVE UP.
+       *
+       * Giving up means poisoning the latch, and the next pass is then a FULL
+       * paint: 84-101 ms warm on his phone and 212-1244 ms cold. The bail was
+       * meant for the rare landing that dirties most of the texture, but the
+       * geometry makes it the ORDINARY case: a cell's rect spans the world's
+       * whole column height, `columnY(maxLevel) - TOP_Y - lh` to `columnY(0) +
+       * TILE + lh`, and the_game has maxLevel 40 at pitch 15, so ONE cell is
+       * already 704 texels tall — 42.5% of the 1,656-tall texture. At full
+       * height the width may then be at most half of 1,510, about 23 columns,
+       * so any cell set that is not a tight local cluster bailed. And the
+       * feeder is exactly the scattered kind: one landed plate file is wanted
+       * by cells all over the window, because `t3missing` maps a shared file to
+       * every cell that asked for it.
+       *
+       * Splitting on the longer axis gives disjoint rects that each go through
+       * the same clipped pass, so the pixels are the full paint's either way —
+       * this only changes how many brackets draw them. Bounded to
+       * T3_REPAINT_SPLITS levels (at most 4 rects, measured 0.8-8 ms each
+       * against 84-1244 for the full paint it replaces); past that, or with one
+       * cell that alone overflows, the old bail still stands. */
+      if (kept.length > 1 && depth < T3_REPAINT_SPLITS) {
+        const byX = x1 - x0 >= y1 - y0;
+        const mid = (byX ? x0 + x1 : y0 + y1) / 2;
+        const lo: number[] = [];
+        const hi: number[] = [];
+        for (let i = 0; i < kept.length; i++) ((byX ? keptX[i] : keptY[i]) < mid ? lo : hi).push(kept[i]);
+        // A degenerate split (everything on one side) would recurse without
+        // shrinking; halve the list instead so progress is guaranteed.
+        if (!lo.length || !hi.length) {
+          const h = kept.length >> 1;
+          lo.length = 0;
+          hi.length = 0;
+          lo.push(...kept.slice(0, h));
+          hi.push(...kept.slice(h));
+        }
+        this.groundCellStats.split++;
+        this.repaintTiles3Cells(lo, depth + 1);
+        this.repaintTiles3Cells(hi, depth + 1);
+        return;
+      }
       this.groundCellStats.full++;
       this.lastGround = { x: NaN, y: NaN };
       return;
@@ -14454,6 +14504,7 @@ export class WorldScene extends Phaser.Scene {
     const tex = this.ensureTiles3Textures();
     if (!tex) return;
     const ready: number[] = [];
+    let raisedRepair = false;
     let looked = 0;
     for (const idx of this.t3boundaryOwed) {
       if (looked++ >= T3_BOUNDARY_RETRY) break;
@@ -14500,6 +14551,7 @@ export class WorldScene extends Phaser.Scene {
        * it would be refused too. The cell stays owed and is tried again next
        * frame; nothing is deleted that was not repaired. */
       const d0 = tex.stats.deferred;
+      if (b.topOnly) raisedRepair = true;
       if (!tex.boundary(b)) {
         /* WHICH `null` THIS IS DECIDES WHETHER TO STOP OR TO SKIP, and getting
          * it wrong wedges the repair. `boundary()` answers null for three
@@ -14517,8 +14569,17 @@ export class WorldScene extends Phaser.Scene {
     }
     if (!ready.length) return;
     this.repaintTiles3Cells(ready);
-    // The ground now carries these transitions; a raised one also needs its
-    // occluder cap rebuilt to wear it. Rate-limited — see T3_OCC_REPAIR_MS.
+    /* ONLY A RAISED REPAIR NEEDS AN OCCLUDER REBUILD, and rebuilding for a flat
+     * one is a measured no-op: a level-0 field cell emits no occluder image and
+     * no `occluderMeta` record at all (`if (cell.kind !== "wall" && cell.level
+     * <= 0) continue`), so the set that comes back is bit-identical. Measured
+     * standing still with no landing repaints, poisoning on every repair cost
+     * 11-12 full rebuilds and 101-309 ms of JS per 12 s here — 250-770 ms on
+     * his phone — to produce exactly the same occluders, because 94-100% of the
+     * cells a repair fixes are flat. A raised cap wears its transition on the
+     * occluder rather than on the ground under it, so that case still needs
+     * one; rate-limited by T3_OCC_REPAIR_MS. */
+    if (!raisedRepair) return;
     const now = performance.now();
     if (now - this.t3occRepairAt >= T3_OCC_REPAIR_MS) {
       this.t3occRepairAt = now;
