@@ -294,6 +294,31 @@ by construction, so no existing branch changed.
   holes) — and its widest row still lands on `TOP_Y + DY`, so no water moved.
   The general rule: a mask that has to interlock with the art's masks IS the
   art's mask; re-deriving the diamond is how the gaps get in.
+- **A TRANSITION TILE COVERS WHAT THE PLATE IT REPLACES COVERED** (`tiles3draw`
+  boundary). The ground loop takes ONE of the two, never both — `if (bop &&
+  cell.kind === "field") <transition tile> else <plate>` — so a boundary's
+  FOOTPRINT must equal the plate's or the difference is painted by nothing.
+  render3 gets this right by construction: `composed_boundary` sets
+  `out[..., 3] = _silhouette()`, the full 2012 texels. Masking the client's to
+  its 924-texel top face (2026-09-03) fixed a real defect — the band then
+  carried the palette WALL colour, 800 of 1088 on a light_beach<->grass
+  composition, and boundaries were then a SEPARATE PASS drawn after every cell
+  so nothing covered it — but it left **1088 texels painted by nothing**, and
+  **that was the maintainer's remaining zigzag**. His own test proved it: the
+  `clear: pink` switch fills the ground magenta, and his screenshot then
+  carried 396 bare pixels in 76 chains, 195 runs of exactly 2 screen px — one
+  texel at camera zoom 2 — on diamond-edge slopes. It was never a dark tile; it
+  was bare ground. His words: "as if the transition tiles doesn't have a wall.
+  Ofc they must have a wall." Boundaries are drawn WITH their cell now, in
+  plate painter order, so the cells in front cover the band exactly as they
+  cover a plate's; `capWallToSurface` then makes it free, repainting the band
+  from each column's own bottom top-face texel so even a peeking texel is the
+  surface's own colour. A RAISED boundary stays top-face-only (the cap's own
+  x-over-y art is the wall) — a different picture, so `boundaryKey` carries
+  `topOnly`; two rasters under one key is the cache failure this repo forbids.
+  Gated by `server/test/tiles3draw.test.ts` #6b/#6c, which hold both halves at
+  once: the band EXISTS (footprint parity, no hole) and carries NONE of either
+  ground's palette wall colour (no dark course).
 - **THE GAME DRAWS NO SEAM** (`WorldScene` Tiles3Textures `seam: false`). The
   tile pipeline's `compose()` darkens every texel of the border mask to
   `border.tone` (0.82) of what it already is — a deliberate one-texel line

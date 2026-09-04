@@ -39,6 +39,7 @@ import {
   cropToArt,
   topFaceMask,
   topFaceOnly,
+  capWallToSurface,
   liquidDiamond,
   rint,
   artKey,
@@ -514,49 +515,68 @@ test("the factory builds a composition once and NEAREST-filters every canvas", {
   assert.deepEqual(fx.filters, [`${k1}:${NEAREST}`], "addCanvas does NOT inherit pixelArt; LINEAR smears at fractional zoom");
   // and what it registered IS the composition
   const src = fx.man.get(k1 as string)!.getSourceImage() as { pix: Uint8ClampedArray };
-  const pa = px(c.a.path);
-  const pb = conformPlate(SHEETS, px(c.b.path), wallRGB(c.b.ground));
-  // ...THROUGH the top-face mask: a boundary paints last and must carry no wall
-  // band (see "a composed boundary carries NO wall band" below).
+  // ...through the SAME pipeline platePixels uses (each side capped), and a
+  // level-0 boundary keeps its wall band, exactly like render3's
+  // composed_boundary, whose alpha is the full silhouette.
+  const pa = capWallToSurface(SHEETS, px(c.a.path));
+  const pb = capWallToSurface(SHEETS, conformPlate(SHEETS, px(c.b.path), wallRGB(c.b.ground)));
   assert.equal(
     createHash("sha256").update(Buffer.from(src.pix.buffer, 0, src.pix.length)).digest("hex"),
-    rasterSha(topFaceOnly(SHEETS, composeBoundary(SHEETS, c.frame, pa, pb), { margin: false })),
+    rasterSha(capWallToSurface(SHEETS, composeBoundary(SHEETS, c.frame, pa, pb))),
   );
 });
 
-/* THE BEACH ZIGZAG (maintainer 2026-09-03). A boundary is a SURFACE blend on the
- * corner lattice with no lawful wall source at any level, and PAINTER ORDER makes
- * a wall band on it fatal: cells, then boundaries, then decks. A cell's own wall
- * band is covered by the cells painted in front of it (measured: 0 texels
- * uncovered); a boundary is painted AFTER every cell, so only a LATER BOUNDARY
- * can cover its wall band — and boundaries exist only where the Wang index is
- * mixed, so along a transition band most of it is covered by nothing.
- * Measured before the fix, on his own cell: a real light_beach<->grass
- * composition carried 1088/1088 OPAQUE wall texels, 800 of them exactly
- * (171,146,116) = light_beach's palette wall; the dots on his screenshot measure
- * 0.750/0.747/0.779 of the sand beside them against a wall/top ratio of
- * 0.7500/0.7449/0.7785. This gate is why that cannot come back. */
-test("a composed boundary carries NO wall band, and its top face is untouched", { skip }, () => {
+/* THE BEACH ZIGZAG, BOTH HALVES (maintainer 2026-09-03 and 2026-09-04).
+ *
+ * A composed boundary is drawn INSTEAD of the cell's plate, never over it:
+ *     if (bop && cell.kind === "field") <transition tile>  else  <plate>
+ * so its FOOTPRINT must equal the plate's or the difference is painted by
+ * nothing. render3's composed_boundary sets `out[..., 3] = _silhouette()` —
+ * the full 2012 texels — which is what makes drawing it instead of the plate
+ * lawful there.
+ *
+ * Masking it to the 924-texel top face (2026-09-03) removed a real defect: a
+ * boundary then carried the palette WALL colour, 800 of 1088 texels exactly
+ * (171,146,116) on a light_beach<->grass composition, and at the time
+ * boundaries were a separate pass drawn after every cell, so nothing covered
+ * it. But it left 1088 texels painted by NOTHING. The maintainer's magenta
+ * ground clear proved it: 396 bare pixels, 195 runs of exactly 2 screen px —
+ * one texel at zoom 2 — on diamond-edge slopes. "As if the transition tiles
+ * doesn't have a wall. Ofc they must have a wall."
+ *
+ * Both are held here at once, which is the only stable resting point: the band
+ * EXISTS (footprint parity with render3, so no hole) and carries NONE of either
+ * ground's palette wall colour (capped to the surface, so no dark course even
+ * if a texel peeks). A raised boundary stays top-face-only — there the cap's
+ * own x-over-y art is the wall — and since that is a different picture, the two
+ * must not share a texture key. */
+test("a level-0 boundary covers the plate silhouette, with no palette wall in it", { skip }, () => {
+  let silN = 0;
+  for (const v of SHEETS.sil) if (v > 0) silN++;
   let checked = 0;
   for (const c of (F.boundary as any[]).slice(0, 12)) {
     const pa = c.a.kind === "conform" ? conformPlate(SHEETS, px(c.a.path), wallRGB(c.a.ground)) : px(c.a.path);
     const pb = c.b.kind === "conform" ? conformPlate(SHEETS, px(c.b.path), wallRGB(c.b.ground)) : px(c.b.path);
     const raw = composeBoundary(SHEETS, c.frame, pa, pb);
-    /* THROUGH THE REAL FACTORY — this gate is about the WIRING, not about
-     * topFaceOnly. `Tiles3Boundary.topOnly` was a DEAD FLAG here: the resolver
-     * set it and `boundary()` never read it, so recomputing the mask in the test
-     * would pass against the very bug it is meant to catch. */
+    /* THROUGH THE REAL FACTORY — this gate is about the WIRING. `topOnly` was
+     * once a DEAD FLAG here (the resolver set it and `boundary()` never read
+     * it), so recomputing the mask in the test would pass against the very bug
+     * it is meant to catch. */
     const fx = fakeTextures();
     fx.put(artKey(c.a.path), px(c.a.path));
     fx.put(artKey(c.b.path), px(c.b.path));
     const T = new Tiles3Textures({ textures: fx.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas });
-    const key = T.boundary({ maskFrame: c.frame, a: c.a.ground, b: c.b.ground, plateA: c.a, plateB: c.b } as any);
+    const base: any = { maskFrame: c.frame, a: c.a.ground, b: c.b.ground, plateA: c.a, plateB: c.b };
+    const key = T.boundary(base);
     assert.ok(key, `${c.a.ground}/${c.b.ground} composed nothing`);
     const reg = fx.man.get(key as string)!.getSourceImage() as { pix: Uint8ClampedArray };
     const out: Pixels = { w: SHEETS.fw, h: SHEETS.fh, data: reg.pix };
+
+    const walls = [wallRGB(c.a.ground), wallRGB(c.b.ground)];
     let rawWall = 0;
     let outWall = 0;
     let top = 0;
+    let paletteWall = 0;
     for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++) {
       if (SHEETS.libTop[i]) {
         // the blend itself survives byte for byte
@@ -565,13 +585,24 @@ test("a composed boundary carries NO wall band, and its top face is untouched", 
         continue;
       }
       if (raw.data[i * 4 + 3] > 0) rawWall++;
-      if (out.data[i * 4 + 3] > 0) outWall++;
+      if (out.data[i * 4 + 3] > 0) {
+        outWall++;
+        for (const w of walls) if (out.data[i * 4] === w[0] && out.data[i * 4 + 1] === w[1] && out.data[i * 4 + 2] === w[2]) paletteWall++;
+      }
     }
-    // NON-VACUOUS: the raw composition really does carry a full wall band, so a
-    // gate that passes here is testing the mask and not an empty plate.
+    // NON-VACUOUS: the raw composition really does carry a full wall band.
     assert.ok(rawWall > 1000, `${c.a.ground}/${c.b.ground} raw wall band is only ${rawWall} texels — fixture drifted`);
-    assert.equal(outWall, 0, `${c.a.ground}/${c.b.ground} still paints ${outWall} wall texels`);
     assert.equal(top, 924, `${c.a.ground}/${c.b.ground} keeps its whole top face`);
+    assert.equal(top + outWall, silN, `${c.a.ground}/${c.b.ground} covers ${top + outWall} of the plate's ${silN} texels — the rest is painted by NOTHING`);
+    assert.equal(paletteWall, 0, `${c.a.ground}/${c.b.ground} band carries ${paletteWall} palette-wall texels — that is the dark course`);
+
+    // ...and a RAISED one is still top-face-only, under its own key
+    const rk = T.boundary({ ...base, topOnly: true });
+    assert.ok(rk && rk !== key, "a raised boundary is a different picture and must not share a key");
+    const rreg = fx.man.get(rk as string)!.getSourceImage() as { pix: Uint8ClampedArray };
+    let rOpaque = 0;
+    for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++) if (rreg.pix[i * 4 + 3] > 0) rOpaque++;
+    assert.equal(rOpaque, 924, "a raised boundary stays top-face-only — the cap's own art is the wall");
     checked++;
   }
   assert.ok(checked >= 8, `${checked} boundary cases`);
@@ -607,18 +638,20 @@ test("eviction is safe because a rebuilt key is byte-identical", { skip }, () =>
   const again = T.boundary({ maskFrame: first.frame, a: first.a.ground, b: first.b.ground, plateA: first.a, plateB: first.b } as any);
   assert.equal(again, keys[0], "the same content mints the same key, never a new one");
   const src = fx.man.get(again as string)!.getSourceImage() as { pix: Uint8ClampedArray };
-  /* Still anchored to the fixture, through the mask the factory now applies: a
-   * boundary is TOP FACE ONLY (it paints after every cell and may carry no wall
-   * band). fixture sha -> raw compose -> topFaceOnly is one chain, so a drifted
-   * port still fails the parity gate above and eviction safety is what THIS
-   * gate measures. */
+  /* Still anchored to the fixture, through the same tail the factory applies: a
+   * level-0 boundary keeps the full silhouette (render3's composed_boundary
+   * sets alpha to _silhouette(), and the tile is drawn INSTEAD of the plate, so
+   * a smaller footprint is a hole), with each side capped first exactly as
+   * platePixels caps it. fixture sha -> raw compose -> capped is one chain, so
+   * a drifted port still fails the parity gate above and eviction safety is
+   * what THIS gate measures. */
   const pa = first.a.kind === "conform" ? conformPlate(SHEETS, px(first.a.path), wallRGB(first.a.ground)) : px(first.a.path);
   const pb = first.b.kind === "conform" ? conformPlate(SHEETS, px(first.b.path), wallRGB(first.b.ground)) : px(first.b.path);
   const raw = composeBoundary(SHEETS, first.frame, pa, pb);
   assert.equal(rasterSha(raw), first.sha, "the fixture still pins the raw composition");
   assert.equal(
     createHash("sha256").update(Buffer.from(src.pix.buffer, 0, src.pix.length)).digest("hex"),
-    rasterSha(topFaceOnly(SHEETS, raw, { margin: false })),
+    rasterSha(capWallToSurface(SHEETS, composeBoundary(SHEETS, first.frame, capWallToSurface(SHEETS, pa), capWallToSurface(SHEETS, pb)))),
   );
 });
 
@@ -720,6 +753,52 @@ test("a level-0 clean plate draws the capped raster, never its wall band", { ski
   fx.put("t2:course.webp", { w: 1, h: 1, data: new Uint8ClampedArray(4) });
   const wall: any = { kind: "wall", ground: "grey_stone", sx: 0, sy: 0, wall: { stack: [{ storey: 0, tile: { path: "course.webp", w: TILE, h: TILE }, y: 0 }] } };
   assert.deepEqual(T.opsForCell(wall).map((o) => o.key), ["t2:course.webp"]);
+});
+
+/* -- 6c. a transition tile covers what the plate it replaces covered -------- */
+
+/** THE HOLE (2026-09-04). The ground loop takes ONE of the two, never both:
+ *      if (bop && cell.kind === "field") <transition tile>  else  <cell plate>
+ *  so a boundary masked to its top face paints 924 texels where the plate it
+ *  stands in for paints 2012, and those 1088 are painted by nothing. The
+ *  maintainer's magenta-ground-clear screenshot showed it directly: 396 bare
+ *  pixels, 195 runs of exactly 2 screen px — one texel at zoom 2 — on
+ *  diamond-edge slopes. His read: "as if the transition tiles doesn't have a
+ *  wall. Ofc they must have a wall."
+ *
+ *  A RAISED boundary is still masked (the cap's own art is the wall), so the
+ *  two are different pictures and the KEY must separate them — otherwise one
+ *  name serves two rasters, which is the cache failure this repo forbids. */
+test("a level-0 transition tile covers the full plate silhouette", { skip }, () => {
+  const c = (F.boundary as any[]).find((b) => b.a.kind === "clean" && b.b.kind === "clean") ?? (F.boundary as any[])[0];
+  assert.ok(c);
+  const fx = fakeTextures();
+  fx.put(artKey(c.a.path), px(c.a.path));
+  fx.put(artKey(c.b.path), px(c.b.path));
+  const T = new Tiles3Textures({ textures: fx.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas });
+  const base: any = { maskFrame: c.frame, a: c.a.ground, b: c.b.ground, plateA: c.a, plateB: c.b };
+
+  let silN = 0;
+  for (const v of SHEETS.sil) if (v > 0) silN++;
+  let topN = 0;
+  for (const v of SHEETS.libTop) if (v > 0) topN++;
+  assert.ok(silN > topN, "the fixture assumes a wall band exists");
+
+  const opaque = (key: string): number => {
+    const img = (fx.t.get(key) as any).getSourceImage() as { pix: Uint8ClampedArray };
+    let n = 0;
+    for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++) if (img.pix[i * 4 + 3] > 0) n++;
+    return n;
+  };
+  const flat = T.boundary(base);
+  assert.ok(flat);
+  assert.equal(opaque(flat), silN, "a level-0 transition tile must cover the same texels as the plate it replaces");
+
+  const raised = T.boundary({ ...base, topOnly: true });
+  assert.ok(raised);
+  assert.equal(opaque(raised), topN, "a raised transition tile stays top-face-only — the cap's own art is the wall");
+
+  assert.notEqual(flat, raised, "two different pictures must never share one texture key");
 });
 
 /* -- 7. the real world: how many compositions the_game actually asks for ---- */

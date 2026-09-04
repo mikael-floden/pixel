@@ -656,8 +656,13 @@ export function plateKey(art: PlateLike, ground: string): string {
  *  library's canonical `side_order`, so which ground is side_b is decided
  *  upstream; sorting the key would let two callers agree on a key while drawing
  *  the boundary opposite ways round. */
-export function boundaryKey(frame: number, idA: string, idB: string, seam = true): string {
-  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}`;
+export function boundaryKey(frame: number, idA: string, idB: string, seam = true, topOnly = false): string {
+  /* `topOnly` IS PART OF THE KEY, because it is part of the PICTURE: a raised
+   * boundary is masked to its 924-texel top face and a level-0 one carries the
+   * full 2012-texel silhouette. Same frame, same plates, two different rasters
+   * — so they must never share a key. (Cache safety is absolute here: two
+   * pictures under one name is the one bug this repo does not survive.) */
+  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}${topOnly ? "|top" : ""}`;
 }
 
 /** A painted liquid diamond, keyed by the colour that IS its content. */
@@ -671,7 +676,7 @@ export function liquidKey(rgb: readonly [number, number, number]): string {
  *  pre-3.0 look, not a hole. */
 export function boundaryKeyFor(b: Tiles3Boundary, seam = true): string | null {
   if (b.maskFrame === null) return null;
-  return boundaryKey(b.maskFrame, plateSourceId(b.plateA, b.a), plateSourceId(b.plateB, b.b), seam);
+  return boundaryKey(b.maskFrame, plateSourceId(b.plateA, b.a), plateSourceId(b.plateB, b.b), seam, !!b.topOnly);
 }
 
 /* -- the load list ---------------------------------------------------------- */
@@ -988,7 +993,34 @@ export class Tiles3Textures {
        * never names a file (`boundaryArtPaths` names the SOURCES, which do not
        * move), so one key still maps to one picture and no cache can hold a
        * stale one. */
-      return topFaceOnly(this.o.sheets, out, { margin: false });
+      /* A LEVEL-0 TRANSITION TILE KEEPS ITS WALL BAND — and its absence was the
+       * maintainer's zigzag, proven by his own test (2026-09-04).
+       *
+       * The draw loop takes ONE of the two, never both:
+       *     if (bop && cell.kind === "field") <transition tile> else <plate>
+       * so a masked boundary paints 924 texels where the plate it replaces
+       * paints 2012. Those 1088 texels are painted by NOTHING, and the "0
+       * texels uncovered" coverage measurement does not hold for them because
+       * it was taken with every cell painting a full plate. He asked for a
+       * magenta ground clear; with it on, his screenshot carries 396 magenta
+       * pixels in 76 chains, 195 runs of exactly 2 screen px — one texel at
+       * zoom 2 — on diamond-edge slopes. The zigzag was never a dark tile. It
+       * was bare ground. His words: "as if the transition tiles doesn't have a
+       * wall. Ofc they must have a wall."
+       *
+       * WHY IT WAS MASKED, and why that is no longer the trade: boundaries used
+       * to be a SEPARATE PASS drawn after every cell, so their wall band landed
+       * on top of the very tiles that would have hidden it and showed as a dark
+       * course. They are drawn WITH their cell now, in the same painter order
+       * as a plate, so the cells in front cover this band exactly as they cover
+       * a plate's. `capWallToSurface` then makes the trade free: the band is
+       * repainted from each column's own bottom top-face texel, so even a texel
+       * that does peek is the surface's own colour and cannot read as a course.
+       *
+       * A RAISED boundary stays masked: there the cap's own x-over-y art IS the
+       * wall, which is what `topOnly` has always meant here. The two are
+       * different pictures, so `boundaryKey` carries the flag. */
+      return b.topOnly ? topFaceOnly(this.o.sheets, out, { margin: false }) : capWallToSurface(this.o.sheets, out);
     });
   }
 
