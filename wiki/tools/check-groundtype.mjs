@@ -724,6 +724,18 @@ const dq = await p.evaluate(() => ({
   canvases: document.querySelectorAll(".detail-card canvas").length,
   stars: document.querySelectorAll(".detail-card .stars").length,
   more: [...document.querySelectorAll("button")].some((x) => /Show 12 more/.test(x.textContent)),
+  // A DETAIL HAS NO WALL TO JUDGE (maintainer 2026-09-03: "Why did you add the
+  // wall selector to details? A detail only has a top and will never be
+  // displayed close to a wall so wall will never ever be visible... This is
+  // why I review details alone in the center in a 5x5 grid").
+  wallPickers: document.querySelectorAll(".detail-card .wall-step, .detail-card .wall-mode").length,
+  wallWords: [...document.querySelectorAll(".detail-card")].filter((c) => /\bWall\b/.test(c.textContent)).length,
+  // ...and the reason it has none: it is ringed on every side. 25 cells, the
+  // detail at the centre — measured off the scene, not assumed.
+  ringed: (() => {
+    const f = (window.__wikiDetailField ?? [])[0];
+    return f ? { cells: f.cells, centre: f.centre, edgeCells: f.edge } : null;
+  })(),
 }));
 // What the page should say: every top of this ground that nobody has judged.
 /* BOTH POOLS. Since 2026-08-27 the queue is the x-over-y candidates AND the
@@ -929,43 +941,18 @@ ok(dRaw.view === "before" && typeof dRaw.centre === "string" && !/\/post\//.test
     if (fix) break;
   }
   ok(!!fix, `the data holds a top whose measured best wall is NOT the pool's first (${fix ? `${fix.g} → #${fix.want + 1}` : "none — the assertion below cannot discriminate"})`);
+  /* The stepper's own mechanics — step stores his pick, stepping back onto the
+   * measured best clears it — are covered further down on the cell page, which
+   * is where the control now lives: the maintainer removed it from a detail
+   * card on 2026-09-03 ("a detail only has a top and will never be displayed
+   * close to a wall"), and it survives on the top-only row he asked for on
+   * 2026-08-28, where a borrowed wall really is drawn. Nothing to re-test
+   * here; the detail cards are asserted to offer NO wall at all above. */
   if (fix) {
-    await p.goto(`${W}#/world/${fix.g}`, { waitUntil: "load" });
-    await p.waitForTimeout(2200);
-    await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
-    await p.waitForTimeout(2200);
-    const walls = await p.evaluate(() => ({ ...(window.__wikiDetail ?? {}) }));
-    ok(typeof walls.wallIdx === "number" && walls.wallN >= 2 && walls.wallAuto === true,
-      `a detail card publishes its chosen wall (#${walls.wallIdx + 1} of ${walls.wallN}, auto ${walls.wallAuto})`);
-    // the stepper: next stores HIS choice, stepping back onto auto deletes it
-    const step = await p.evaluate(() => {
-      const row = [...document.querySelectorAll(".wall-step")].at(-1);
-      return { rows: document.querySelectorAll(".wall-step").length, label: row?.textContent.replace(/\s+/g, " ").trim() ?? "" };
-    });
-    ok(step.rows >= 1 && /auto · best match|your pick/.test(step.label),
-      `every detail card carries the wall stepper (${step.rows} rows, "${step.label.slice(0, 40)}")`);
-    const w0 = await p.evaluate(() => window.__wikiDetail.wall);
-    await p.evaluate(() => { const row = [...document.querySelectorAll(".wall-step")].at(-1); [...row.querySelectorAll("button")].find((b2) => b2.textContent === "›")?.click(); });
-    await p.waitForTimeout(1600);
-    const w1 = await p.evaluate(() => ({ wall: window.__wikiDetail.wall, auto: window.__wikiDetail.wallAuto,
-      pending: Object.values(window.__wiki.state.touched).reduce((n2, s3) => n2 + s3.size, 0) }));
-    ok(w1.wall !== w0 && w1.auto === false && w1.pending >= 1,
-      `stepping › composes the NEXT wall and stores the choice (${String(w1.wall).split("/").pop()})`);
-    await p.evaluate(() => { const row = [...document.querySelectorAll(".wall-step")].at(-1); [...row.querySelectorAll("button")].find((b2) => b2.textContent === "‹")?.click(); });
-    await p.waitForTimeout(1600);
-    const w2 = await p.evaluate(() => ({ wall: window.__wikiDetail.wall, auto: window.__wikiDetail.wallAuto,
-      ov: Object.keys(window.__wiki.state.tuning.top_walls?.overrides ?? {}).length }));
-    ok(w2.wall === w0 && w2.auto === true && w2.ov === 0,
-      "stepping back onto the measured best CLEARS the override — absent means auto");
-    await p.evaluate(() => document.querySelector("#save-btn")?.click());
-    await p.waitForTimeout(700);
-    // back where the rest of the gate expects to be
     await p.goto(`${W}#/world/grass`, { waitUntil: "load" });
     await p.waitForTimeout(2000);
     await p.evaluate(() => [...document.querySelectorAll(".groundtab")].find((x) => /Details/.test(x.textContent))?.click());
     await p.waitForTimeout(1600);
-    await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => x.textContent.trim() === "Clean #0")?.click());
-    await p.waitForTimeout(1200);
   }
 }
 await p.evaluate(() => [...document.querySelectorAll('.ground-pass [data-bar="wiki-world-view"] button')].find((x) => x.textContent.trim() === "Clean #0")?.click());
@@ -1978,6 +1965,12 @@ ok(bad.length > 0 && bad.length < Object.keys(fringe).length * 0.12,
   `the warning is rare enough to mean something — ${bad.length} of ${Object.keys(fringe).length} tiles (${(bad.length / Object.keys(fringe).length * 100).toFixed(1)}%)`);
 ok(left > bad.length / 2,
   `and the LEFT face is where it concentrates, which is the lead for the tiles agent (${left} left / ${bad.length - left} right)`);
+
+console.log("detail card walls:", JSON.stringify({ pickers: dq.wallPickers, sayingWall: dq.wallWords, field: dq.ringed }));
+ok(dq.wallPickers === 0 && dq.wallWords === 0,
+  `no detail card offers a wall to pick — it has none to show (${dq.wallPickers} pickers, ${dq.wallWords} cards saying "Wall")`);
+ok(dq.ringed && dq.ringed.cells === 25 && dq.ringed.centre === 12 && dq.ringed.edgeCells === 0,
+  `and the reason: the detail stands at the centre of a 5x5, ringed on every side (${JSON.stringify(dq.ringed)})`);
 
 await b.close();
 console.log(fails.length ? `\nGROUND-TYPE CHECKS FAILED (${fails.length})` : "\nALL GROUND-TYPE CHECKS PASSED");

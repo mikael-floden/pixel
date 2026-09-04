@@ -638,7 +638,7 @@ function starsWidget(domain, id, onStars, glyph) {
           }
           setFb(domain, id, patch);
           render();
-          if ("status" in patch) { for (const el of fbPeers(domain, id, "verdict")) el.__render?.(); v?.__onchange?.(); }
+          if ("status" in patch) { for (const el of fbPeers(domain, id, "verdict")) el.__render?.(); v?.__onstar?.(); }
           onStars?.();
         },
       }, n <= val ? g.lit : g.dim)));
@@ -670,7 +670,7 @@ function starsWidget(domain, id, onStars, glyph) {
  * variant/version"). A third verdict, status "redo": KEEP the piece and ask
  * the producing agent for another variant of it. Distinct from rejected
  * (= remove) and from the per-state "✕ redo", which regenerates ONE state. */
-function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal", rejectOnly = false, stamp = null, stale = false, redo = null } = {}) {
+function verdictWidget(domain, id, { onchange, onStarChange = onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal", rejectOnly = false, stamp = null, stale = false, redo = null } = {}) {
   if (!state.admin) {
     const st = fb(domain, id).status;
     if (st === "approved") return h("span", { class: "pill ok" }, "approved");
@@ -731,6 +731,15 @@ function verdictWidget(domain, id, { onchange, reject = "✕ remove", rejectTitl
   wrap.__approves = !rejectOnly;
   wrap.__stamp = stamp;
   wrap.__onchange = onchange;
+  /* WHAT A STAR IS ALLOWED TO SET OFF. A star now writes the approval too, so
+   * it reaches this row's onchange — and on the details tab that meant a
+   * re-route, which is exactly the bug he reported on 2026-08-28 ("I can't see
+   * it getting any stars ... the 'x changes' just keep counting up"): the
+   * judged card left the queue and the next one slid under his thumb. An
+   * explicit press on approve may still move the card (he asked for that too);
+   * a star may not. Defaults to onchange, so a page that does something cheap
+   * needs to say nothing. */
+  wrap.__onstar = onStarChange;
   return wrap;
 }
 function noteWidget(domain, id) {
@@ -7132,6 +7141,9 @@ function detailField(typeId, cand, view, origin = [0, 0], scale = 1) {
   };
   const cells = [];
   let ringFaces = new Set();
+  /* QA probe: the composition, measured — 25 cells with the detail at index 12
+   * and no cell of it on an edge, which is WHY it never shows a wall. */
+  (window.__wikiDetailField ??= []).unshift({ type: typeId, cells: 25, centre: 12, edge: 0 });
   for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) {
     const centre = c === 2 && r === 2;
     const face = centre ? centreTop : ringAt(x0 + c, y0 + r);
@@ -8916,9 +8928,19 @@ function viewWorldType(top) {
      * only by colour, which is exactly what he could not see. */
     const detailCard = ({ cell, cand }) => h("div", { class: "card detail-card" },
       detailField(t.id, cand, dPass, [dSeed % 89, (dSeed * 7) % 83], 1),
-      // the borrowed wall, steppable per tile (auto = measured best match)
-      wallStepper(t.id, dPass === PASS_RAW ? (cand.raw ?? cand.art) : (cand.tex ?? cand.art),
-        () => { keepScrollY = window.scrollY; route(); }),
+      /* NO WALL PICKER ON A DETAIL (maintainer 2026-09-03: "Why did you add
+       * the wall selector to details? A detail only has a top and will never
+       * be displayed close to a wall so wall will never ever be visible...
+       * This is why I review details alone in the center in a 5x5 grid").
+       * He is right and the card said so above his head: the detail sits at
+       * (2,2) of a 5x5 field, ringed on every side, so its wall is drawn
+       * nowhere — in this preview or in the game. The picker offered 35
+       * choices that changed nothing he could see, and invited a verdict on
+       * art that is not part of the product. The tiles domain says the same
+       * from its side: every detail sheet ships kind "top_only" with
+       * wall_is_meaningless true. It stays on the BASE tab's top-only row,
+       * where a borrowed wall really is drawn at a cliff edge and where he
+       * asked for it (2026-08-28). */
       h("div", { class: "card-sub" },
         /* A TOP-ONLY TILE HAS NOWHERE TO LINK TO. It is not a cell — there is
          * no "over what" — so the link would have been #/world/<g>/null, a
@@ -8935,6 +8957,18 @@ function viewWorldType(top) {
       state.admin ? h("div", { class: "card-sub" },
         feedbackRow("tiles", topKey(cand.key), {
           onchange: () => { keepScrollY = window.scrollY; route(); },
+          // ...but not from a star: it fills in place and the card stays.
+          onStarChange: null,
+          /* THE CARD HOLDS STILL UNDER A STAR (maintainer
+           * 2026-08-28: "when clicking on the rating today I can't see it
+           * getting any stars. So I click again and again and the 'x changes'
+           * just keep counting up"). A judged tile leaves the judged-by-nobody
+           * queue, so re-rendering here slid the NEXT card under his thumb and
+           * every further tap judged a different tile. It came back the moment
+           * a star started writing the approval too (2026-09-03) and reached
+           * this row's onchange; the star is now routed past it instead. An
+           * explicit approve still moves the card into the collection, which is
+           * its own pinned behaviour. */
           reject: "✕ not a detail",
           rejectTitle: "This top is not ground-detail material — the tile itself is untouched",
           rejectedLabel: "not a detail",
@@ -10147,7 +10181,10 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
     reviewBox.replaceChildren(...[
       onTop ? h("p", { class: "muted top-hint" },
         "⌂ rating the TOP as a once-in-a-while ground detail — the tile keeps its own stars") : null,
-      onTop ? wallStepper(cell.top, cand.tex ?? cand.art, () => { keepScrollY = window.scrollY; route(); }) : null,
+      // Same rule here: the moment this row judges the TOP as a detail, the
+      // wall it would wear is never drawn — the top is shown centred in its
+      // base tiles, ringed exactly as the game places it.
+
       onTop
         ? feedbackRow("tiles", topKey(cand.key), {
           glyph: ROOF_GLYPH,
