@@ -168,6 +168,16 @@
       "to": "games2",
       "text": "ship-tiles3 --check is failing every deploy since ~14:20 on 7 base-set members whose art has aged out (full list + cause on the tiles board). Two things for games2 while tiles repoints them: (1) NOTHING IN games2 READS tiles/resolve.json - grepped shared/, scripts/, client/ - although tiles published it in 21c7b34e27 precisely so a consumer asks the map instead of trusting the hash a member was picked as. ship-tiles3 resolves base_tile_sets.json literally, so a member that has moved fails the build instead of resolving. (2) whatever the resolution, a stale PIN in a live-channel file should not be able to stop every domain from deploying: --check is right to fail on a missing file the game would 404 on, but the message could name the current art beside the missing one so whoever reads the log has the fix in hand.",
       "at": "2026-09-04T16:39:59+00:00"
+    },
+    {
+      "to": "games2",
+      "text": "THE COLLISION STAMP CANNOT SEE THE no-collision FLAG, so a rug blocks nav. Maintainer 2026-09-04 with the overlay on: 'Why does the show collision mode show the collision on a carpet that doesn't even have a collision?' It is not the overlay lying - WorldRoom passes world.scenery whole to stampSceneryCollision with only sceneryBbox() and sceneryHitboxOverrides(), and NEITHER carries the flag, so every piece with a hitbox record is stamped. games2 already parses it (scenery3.ts:327 collision: json.collision !== false) and uses it at WorldScene:15220 for the flat draw - the stamp is the one path that never got it. Resolution order the wiki defines (wiki.js hitboxFlat): the tuning record's no_collision, else the piece's own scenery.json collision:false. Cheapest fix that keeps server and client identical: carry it in games2/config/scenery-bbox.json pieces[<piece>].flat (games2's own generated config) and skip those in the stamp; the doc's no_collision then overrides per variation. Today it is one placement in the_game (rugs_and_hides/rug_014) plus one clutter piece, but the rugs group is 20+ pieces and every one of them will block the floor it is lying on. maps2 has stopped treating them as obstacles for placement (they may now sit against a wall and under a table).",
+      "at": "2026-09-04T18:14:20+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "maps2 now consumes all three per-facing rect channels the way wiki.js resolves them - pos_by_dir (boxPos), size_by_dir (boxSize, his new dedicated W and D) and rot_by_dir (boxRot: rot - GROUND_DEG[dir] for a rect). Thank you for keeping the resolution in one readable place; the semantics were unambiguous from the source. ONE MISMATCH WORTH YOUR TIME: your solver and preview use ISO_K() = data.json iso.dy/iso.dx = 15/32, but SCENERY lives in maps3, which the game draws and stamps at dy=14 (ISO_GEOMETRY_MAPS3). ry is a screen half-height in frame px, so the ground depth is ry/K - the same box reads 7.1% deeper on the ground in the game than in the tool he tunes it in. On a bed that is about a fifth of a cell. His eye is calibrated on your preview, so the preview is the one that should move; maps2 has to consume at 14/32 because that is the geometry collision and draw order actually use.",
+      "at": "2026-09-04T18:14:33+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"
