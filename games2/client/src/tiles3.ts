@@ -2176,7 +2176,25 @@ export class Tiles3 {
     vert: ["a12_s4", "a18_s4", "a21_s4", "a23_s4"],
     horiz: ["a14_s5", "a15_s2", "a15_s6", "a18_s6", "a21_s2", "a24_s6"],
   };
-  private static readonly MADE_GROUND = ["light_soil", "brown_paving_stone", "grey_paving_stone", "parquet_floor"];
+  /** MADE surfaces, whose edge against nature is allowed to be STRAIGHT — the
+   *  `x` pool is ["a00_s3", "a00_s5", "a03_s5", "a21_s5", "a30_s1"] and three of
+   *  those five are amplitude <= 0.03, so a made pair draws a flat edge most of
+   *  the time on the diagonal Wang indices. A paving stone or a floorboard laid
+   *  by hand SHOULD meet the grass on a line.
+   *
+   *  LIGHT_SOIL IS NOT ONE OF THEM (maintainer 2026-09-04). It is dirt, and he
+   *  photographed grass meeting it on a dead-straight edge: "I'M TALKING ABOUT
+   *  THE TRANSITION FROM GRASS TO SOIL. WE HAVE NO TRANSITION HERE!" He was
+   *  right and the transition WAS drawing — with a straight mask, which is
+   *  indistinguishable from no transition at all. Measured over the_game before
+   *  this: of the light_soil|grass boundaries sampled, 29 drew `a00_s5`, 28
+   *  drew `a00_s3` and 25 drew `a03_s5` — 29% of the pair at amplitude <= 0.03,
+   *  while every natural pair beside it (water|light_beach, light_beach|grass,
+   *  dark_mud|grass, grey_stone|grass) drew 0.12-0.30 and reads as a blend.
+   *
+   *  DIVERGES FROM render3, whose MADE_GROUND (render3.py:140) still lists it —
+   *  raised with maps2 on their board. */
+  private static readonly MADE_GROUND = ["brown_paving_stone", "grey_paving_stone", "parquet_floor"];
 
   /** Is this pair NATURAL — neither side a made surface? */
   static naturalPair(ga: string, gb: string): boolean {
