@@ -1337,7 +1337,16 @@ class Grow:
         m = 0.0 if flush else self.FP_MARGIN
         hxm, hym = R + m, (R if hy is None else hy) + m
         rr = int(math.ceil(max(hxm, hym)))
-        eps = 1e-6
+        # THE TOLERANCE HAS TO CLEAR THE STORED PRECISION. A placement is
+        # written to world.json rounded to 4 decimals, so a piece put exactly
+        # flush can come back up to 5e-5 of a cell INSIDE the wall - and this
+        # pass runs again over what was written. At 1e-6 that read as "touches
+        # a wall" and police_footprints deleted the piece: a table placed
+        # perfectly against the wall vanished from the room, the bed beside it
+        # survived only because its rounding fell the other way. 1e-3 of a
+        # cell is 0.03 screen px - below a pixel, and far below any overlap
+        # that could matter.
+        eps = 1e-3
         for yy in range(cy - rr, cy + rr + 1):
             for xx in range(cx - rr, cx + rr + 1):
                 if hy is None:
@@ -2297,8 +2306,18 @@ class Grow:
                 n += against("barrels", west, len(west) - 1)
             for k in range(len(cells) // 24):
                 n += against("chairs_and_benches", north, 2 + k * 4)
-            # the middle of the room: a table with chairs either side
-            if len(cells) >= 6:
+            # A TABLE GOES AGAINST A WALL TOO (maintainer 2026-09-04, on a
+            # table standing in the middle of a 13-cell bedroom, in front of
+            # the bed: "Who in their right mind places a table like this! Why
+            # didn't you use SW and placed it against the wall?"). A table in
+            # the MIDDLE of the floor is a dining arrangement and needs a room
+            # to be a dining room: the centre spot plus a chair on two sides
+            # is three cells of clear floor, which a bedroom does not have and
+            # a hall does. So the middle table is for rooms of 20+ cells, and
+            # every smaller room puts its table against a wall like the rest
+            # of its furniture - north for a south-west table, west for a
+            # south-east one, whichever has room.
+            if len(cells) >= 20:
                 # A CHAIR FACES ITS TABLE. With only two rotations a chair can
                 # look down-right (+x, south-west) or down-left (+y,
                 # south-east), so both chairs sit UP-SCREEN of the table - one
@@ -2309,6 +2328,30 @@ class Grow:
                               cx - 1.0, cy, on=IN, dir="south-east")
                 n += self.put(pk("chairs_and_benches", "south-west"),
                               cx, cy - 1.0, on=IN, dir="south-west")
+            elif len(cells) >= 6:
+                mark = len(self._against)
+                if against("tables", north, len(north) // 2) \
+                        or against("tables", west, len(west) // 2):
+                    n += 1
+                    # AND A CHAIR DRAWN UP TO IT, on the side it can face
+                    # from: a chair only looks down-screen, so it sits west of
+                    # a north-wall table (looking south-east at it) and north
+                    # of a west-wall one (south-west).
+                    # (only the rect branch logs a placement; a round table
+                    # goes through the inset loop and gets no chair)
+                    if len(self._against) <= mark:
+                        continue_chair = False
+                    else:
+                        continue_chair = True
+                        _, tx, ty, _, axis, _ = self._against[mark]
+                    if not continue_chair:
+                        pass
+                    elif axis == "y":        # table stands on the north wall
+                        n += self.put(pk("chairs_and_benches", "south-east"),
+                                      tx - 1.0, ty, on=IN, dir="south-east")
+                    else:                    # ... on the west wall
+                        n += self.put(pk("chairs_and_benches", "south-west"),
+                                      tx, ty - 1.0, on=IN, dir="south-west")
             if len(cells) >= 12:
                 n += against("wall_hangings", north, max(0, len(north) - 2))
                 n += self.put(pk("rugs_and_hides"), cx, cy + 1.0, on=IN)

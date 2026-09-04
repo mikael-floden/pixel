@@ -176,6 +176,24 @@ edge with the wall/corner"*). The along-wall centre is clamped inside the wall's
 own run, which IS the corner at either end, then walked outward in half cells
 until the whole footprint is on free floor.
 
+**A TABLE IS FURNITURE TOO.** A table in the MIDDLE of the floor is a dining
+arrangement, and it needs a room to be a dining room: the centre cell plus a
+chair up-screen on two sides is three cells of clear floor, which a hall has
+and a bedroom does not (maintainer 2026-09-04, on a table standing in front of
+his bed in a 13-cell room: *"Who in their right mind places a table like this!
+Why didn't you use SW and placed it against the wall?"*). So the middle table
+is for rooms of **20+ cells**; every smaller room puts its table against a wall
+like the rest of its furniture, with one chair drawn up on the side it can face
+from (a chair only looks down-screen).
+
+**THE FLUSH TOLERANCE IS 1e-3 OF A CELL, and it must be.** A placement is
+written to `world.json` rounded to 4 decimals, so a piece placed exactly flush
+reads back up to 5e-5 of a cell INSIDE the wall — and the footprint law runs
+again over what was written. At a 1e-6 tolerance that read as "touches a wall"
+and the piece was deleted: **53 removals instead of 84, and 735 placements
+instead of 713**, entirely furniture that was correctly placed. 1e-3 of a cell
+is 0.03 screen px.
+
 **A NO-COLLISION PIECE IS FLOOR** (maintainer 2026-09-04, on the collision
 overlay: *"Why does the show collision mode show the collision on a carpet that
 doesn't even have a collision?"*). Resolution, the wiki's own order: the tuning
