@@ -98,22 +98,36 @@ def shift_mask_to_clean(rgb, mask, clean_rgb, iters=3, measure=None):
         if not np.abs(delta).sum():
             break
         rgb[mask] += delta
+        # ONE FACTOR FOR ALL THREE CHANNELS, or the compression ROTATES THE COLOUR.
+        #
+        # This used to squeeze each channel by its own factor, which is hue-destroying
+        # by construction: scaling R toward the anchor by 0.4 while G keeps 1.0 turns a
+        # red flower green. Measured on the detail sheets, 2026-09-03: the motif's
+        # leading channel changed in 9 of 14 grass sheets and its chroma fell 152->52,
+        # 95->28, 74->33. The maintainer saw it as "you do everything green... maybe we
+        # had a small red flower and you make it green".
+        #
+        # Scaling (px - anchor) by ONE scalar moves the colour along the line to the
+        # anchor, so hue and the ratios between channels survive; only distance from
+        # the clean colour shrinks, which is what fitting the range means. It costs a
+        # little more contrast than the per-channel version - the worst channel now sets
+        # the factor for all - and that is the right trade against inventing a colour
+        # the generator never drew.
+        fmin = 1.0
         for c in range(3):
             anchor = clean_rgb[c]
-            ch = rgb[..., c]
-            vals = ch[mask]
-            mx = float(vals.max())
+            vals = rgb[..., c][mask]
+            mx, mn = float(vals.max()), float(vals.min())
             if mx > 255.0 and mx > anchor:
-                f = (255.0 - anchor) / (mx - anchor)
-                sel = mask & (ch > anchor)
-                ch[sel] = anchor + (ch[sel] - anchor) * f
-                squeeze = min(squeeze, f)
-            mn = float(vals.min())
+                fmin = min(fmin, (255.0 - anchor) / (mx - anchor))
             if mn < 0.0 and mn < anchor:
-                f = anchor / (anchor - mn) if anchor > 0 else 0.0
-                sel = mask & (ch < anchor)
-                ch[sel] = anchor + (ch[sel] - anchor) * f
-                squeeze = min(squeeze, f)
+                fmin = min(fmin, (anchor / (anchor - mn)) if anchor > 0 else 0.0)
+        if fmin < 1.0:
+            for c in range(3):
+                anchor = clean_rgb[c]
+                ch = rgb[..., c]
+                ch[mask] = anchor + (ch[mask] - anchor) * fmin
+            squeeze = min(squeeze, fmin)
         np.rint(rgb, out=rgb)
         np.clip(rgb, 0, 255, out=rgb)
     return 1.0 - squeeze
@@ -158,8 +172,34 @@ def rim_suppress(rgb, top, clean_rgb, width=RIM_W, snap=RIM_SNAP):
     return int(sel.sum())
 
 
-def align(img, clean_rgb):
-    """(aligned image, background before, clipped fraction of top pixels)."""
+# A DETAIL'S MOTIF KEEPS ITS OWN COLOUR. Below MOTIF_NEAR a pixel is ground and takes
+# the whole alignment shift; above MOTIF_FAR it is the drawn thing - a flower, a
+# crystal, a footprint - and takes none. Between, the weight ramps, so there is no hard
+# seam where the two meet.
+MOTIF_NEAR, MOTIF_FAR = 30.0, 60.0
+
+
+def align(img, clean_rgb, protect_motif=False):
+    """(aligned image, background before, clipped fraction of top pixels).
+
+    `protect_motif` is for DETAIL sheets, and it is the maintainer's rule of what a
+    detail is for: "I want the grass on the detail to feel seamless against the base
+    tile set... what I'm after with the details is to make the detail POP, not the
+    grass tile itself."
+
+    The plain path moves every pixel by one delta. That keeps the tile's internal
+    relationships, but the delta is not small - measured on the detail sheets, grass
+    needs 125 RGB units - and a translation that large does not preserve hue: it drags
+    colours toward the anchor and flips which channel leads. Measured over the same
+    motif pixels before and after, 38.5% of them changed leading channel and chroma
+    fell to 64%. That is what he saw: "maybe we had a small red flower or something and
+    you make it green".
+
+    So on a detail sheet the shift is WEIGHTED by how ground-like each pixel is. The
+    background is measured on ground pixels either way, so alignment with the base tile
+    set stays exact - the seam he cares about is untouched - while the motif keeps the
+    colour the generator drew.
+    """
     a = np.array(img.convert("RGBA"), int)
     top = TR.top_face(a[..., 3] > 0)
     if not top.any():
@@ -170,7 +210,22 @@ def align(img, clean_rgb):
     # art), the background is measured on the top face, and the helper drives it onto
     # the clean colour integer-exactly with anchored compression for the overflow.
     opaque = a[..., 3] > 0
-    clipped = shift_mask_to_clean(rgb, opaque, clean_rgb, measure=top)
+    if protect_motif:
+        # Ground only: the same helper, on the pixels that ARE the ground, so the
+        # background lands on the clean colour integer-exactly exactly as before.
+        d = np.linalg.norm(rgb - bg, axis=2)
+        ground = opaque & (d <= MOTIF_NEAR)
+        before = rgb.copy()
+        clipped = shift_mask_to_clean(rgb, ground, clean_rgb, measure=top & ground)
+        # Then feather the SAME delta outward over the ramp, fading to nothing on the
+        # motif, so the transition from shifted ground to untouched motif is gradual.
+        delta = (rgb - before)[ground]
+        step = np.median(delta, axis=0) if len(delta) else np.zeros(3)
+        w = np.clip((MOTIF_FAR - d) / (MOTIF_FAR - MOTIF_NEAR), 0.0, 1.0)[..., None]
+        ramp = opaque & (d > MOTIF_NEAR)
+        rgb[ramp] = np.clip(before[ramp] + step * w[ramp], 0, 255)
+    else:
+        clipped = shift_mask_to_clean(rgb, opaque, clean_rgb, measure=top)
     rim_suppress(rgb, top, clean_rgb)
     out = a.copy()
     out[..., :3] = np.clip(np.rint(rgb), 0, 255).astype(int)
@@ -208,7 +263,8 @@ def main():
         post_files = []
         for name in sheet["tiles"]:
             img = Image.open(os.path.join(d, name))
-            aligned, bg, clipped = align(img, clean)
+            aligned, bg, clipped = align(
+                img, clean, protect_motif=(sheet.get("flavour") == "detail"))
             if aligned is None:
                 post_files.append(None)
                 continue
