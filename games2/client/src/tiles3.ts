@@ -914,6 +914,14 @@ export interface Tiles3Boundary {
   folded: boolean;
   /** Only the top face of the composed tile is painted — a wall cap, a liquid. */
   topOnly?: boolean;
+  /** TOP FACE ONLY *AND NOTHING IS DRAWN UNDER IT* — a liquid on the flat, which
+   *  has no wall column of its own. It decides the margin row: a top face is 29
+   *  rows and the ground lays tiles at dy=14, so a top-face-only raster is the
+   *  one thing in the game with ZERO slack at the interlock, and it carries one
+   *  replicated row so the seam cannot open. A raised cap must NOT carry it —
+   *  its own wall column is drawn beneath and the extra row would paint surface
+   *  over the wall — which is why this is not simply `topOnly`. */
+  noWall?: boolean;
   sx: number;
   sy: number;
   w: number;
@@ -1982,6 +1990,20 @@ export class Tiles3 {
          * outright — a quad that spans levels or laps a shore changes nothing
          * here. */
         topOnly: z0 > 0 || view.isLiquid(g0) || undefined,
+        /* THE SURFACE PLATE HAS ALWAYS CARRIED THE MARGIN ROW AND THE COMPOSED
+         * BOUNDARY NEVER DID (maintainer 2026-09-04, swimming at 426.5,407.8:
+         * "I was swimming out in the ocean and run into the following zigzag
+         * bugs", six of them circled along the deep-water edge).
+         *
+         * Measured there: the water surface plate is 988 texels over 30 rows,
+         * every deep_water|water boundary is 924 over 29 — one row short at the
+         * bottom, on the only rasters in the game with no slack. `topFaceOnly`
+         * says it outright: "at a one-row interlock any single missing row is a
+         * line of whatever lies behind the sea. That is the class, and it is why
+         * only liquids still show it." The line he photographed is the SHALLOW
+         * water one row up showing through the gap. 62 such tiles in the window
+         * he was swimming in, and no other ground within reach. */
+        noWall: (z0 === 0 && view.isLiquid(g0)) || undefined,
         sx: columnX(frame, x, y),
         sy: columnY(frame, x, y, z0),
         w: TILE,

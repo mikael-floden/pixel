@@ -698,13 +698,24 @@ export function plateKey(art: PlateLike, ground: string): string {
  *  library's canonical `side_order`, so which ground is side_b is decided
  *  upstream; sorting the key would let two callers agree on a key while drawing
  *  the boundary opposite ways round. */
-export function boundaryKey(frame: number, idA: string, idB: string, seam = true, topOnly = false): string {
+export function boundaryKey(
+  frame: number,
+  idA: string,
+  idB: string,
+  seam = true,
+  topOnly = false,
+  noWall = false,
+): string {
   /* `topOnly` IS PART OF THE KEY, because it is part of the PICTURE: a raised
    * boundary is masked to its 924-texel top face and a level-0 one carries the
    * full 2012-texel silhouette. Same frame, same plates, two different rasters
    * — so they must never share a key. (Cache safety is absolute here: two
-   * pictures under one name is the one bug this repo does not survive.) */
-  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}${topOnly ? "|top" : ""}`;
+   * pictures under one name is the one bug this repo does not survive.)
+   *
+   * `noWall` rides for the same reason and no other: it adds the margin row, so
+   * a top-face-only raster with it is 988 texels and one without is 924. Two
+   * pictures, two names. */
+  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}${topOnly ? "|top" : ""}${noWall ? "|m" : ""}`;
 }
 
 /** A painted liquid diamond, keyed by the colour that IS its content. */
@@ -718,7 +729,14 @@ export function liquidKey(rgb: readonly [number, number, number]): string {
  *  pre-3.0 look, not a hole. */
 export function boundaryKeyFor(b: Tiles3Boundary, seam = true): string | null {
   if (b.maskFrame === null) return null;
-  return boundaryKey(b.maskFrame, plateSourceId(b.plateA, b.a), plateSourceId(b.plateB, b.b), seam, !!b.topOnly);
+  return boundaryKey(
+    b.maskFrame,
+    plateSourceId(b.plateA, b.a),
+    plateSourceId(b.plateB, b.b),
+    seam,
+    !!b.topOnly,
+    !!b.noWall,
+  );
 }
 
 /* -- the load list ---------------------------------------------------------- */
@@ -1125,7 +1143,17 @@ export class Tiles3Textures {
        * A RAISED boundary stays masked: there the cap's own x-over-y art IS the
        * wall, which is what `topOnly` has always meant here. The two are
        * different pictures, so `boundaryKey` carries the flag. */
-      return b.topOnly ? topFaceOnly(this.o.sheets, out, { margin: false }) : capWallToSurface(this.o.sheets, out);
+      /* THE MARGIN ROW GOES ON EXACTLY WHAT HAS NOTHING UNDER IT. A liquid on
+       * the flat draws no wall column, so its composed tile is the one raster
+       * with zero slack at the dy=14 interlock and it carries the replicated
+       * row the surface plate has always carried — without it the shallow sea
+       * one row up shows through as a dotted line along every diamond edge,
+       * which is what he photographed swimming over the deep-water rim. A
+       * raised cap keeps `margin: false`: its own wall column is drawn beneath
+       * and the extra row would paint surface over the course. */
+      return b.topOnly
+        ? topFaceOnly(this.o.sheets, out, { margin: !!b.noWall })
+        : capWallToSurface(this.o.sheets, out);
     });
   }
 
