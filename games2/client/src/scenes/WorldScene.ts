@@ -4465,6 +4465,28 @@ export class WorldScene extends Phaser.Scene {
             }
           });
         }),
+      /** THE GROUND TEXTURE ITSELF, as a PNG data URL. `groundHash` can say the
+       *  streaming picture and a full paint DISAGREE; only the pixels say
+       *  where. Reading the screen instead cannot answer it — the day/night
+       *  grade moves between two frames and swamps a one-texel difference. */
+      groundSnapshot: () =>
+        new Promise<{ w: number; h: number; url: string } | null>((resolve, reject) => {
+          this.t3flushSlices();
+          const rt = this.groundRT;
+          if (!rt) return reject(new Error("no ground RT"));
+          rt.snapshot((img) => {
+            try {
+              const el = img as HTMLImageElement;
+              const c = document.createElement("canvas");
+              c.width = el.width;
+              c.height = el.height;
+              c.getContext("2d")!.drawImage(el, 0, 0);
+              resolve({ w: c.width, h: c.height, url: c.toDataURL("image/png") });
+            } catch (e) {
+              reject(e);
+            }
+          });
+        }),
       /** PARITY for the landing repaint: repaint these cells (col,row pairs)
        *  of the current window through repaintTiles3Cells — over a fresh full
        *  paint this must leave every pixel as it was (__ml.groundHash before
@@ -13949,14 +13971,71 @@ export class WorldScene extends Phaser.Scene {
       y1: Math.min(H, y1 + GROUND_SEAM),
     };
     this.groundLastRect = { stamp: { x0, y0, x1, y1 }, clip: { ...b }, W, H, cells: cells.length };
-    rt.stamp(bgKey, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
-    const win = this.t3groundWindow(a.ax, a.ay, b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
-    this.groundClip = b;
+
+    /* THE PASS PAINTS INTO THE SCRATCH AND ONLY THE RECT IS COPIED BACK.
+     *
+     * `t3Blit` draws an op WHOLE whenever it touches the clip — "the clip
+     * decides whether to draw, never what to draw" — and the note above it
+     * argues the spill is harmless because "the pixels an uncropped op lays
+     * outside the band are the pixels already there". THAT IS FALSE HERE, and
+     * measured: a landing repaint over a fresh full paint at 447,371 changed
+     * 15,037 texels — 0 of them inside its own clip and every one of them
+     * outside it, spilling 63 texels left and right (a tile less one) and 36
+     * below. An op that straddles the edge is drawn whole, but out there the
+     * sequence is TRUNCATED: the ops that would have covered it are culled for
+     * not touching the clip, so a cell from BEHIND is left lying on top of a
+     * cell in front. One texel of the wrong ground along the tile lattice,
+     * around every rect this pass paints — and it runs wherever art lands, so
+     * they accumulate into exactly the lattice the maintainer photographs, and
+     * a full repaint erases them ("often gone when I tab back in again").
+     *
+     * Cropping the op is the other way and this repo has already paid for it —
+     * it takes the margin row off the ops that need it most and was the zigzag
+     * before this one. So the op still draws whole, into a buffer nobody sees,
+     * and the ground texture receives ONE rect copy: nothing outside it can be
+     * touched, whatever the ops did. The clip stays as the perf cull it always
+     * was (an op is at most a tile, so anything that could reach the rect still
+     * intersects a tile-grown clip) and no longer has to be a correctness
+     * argument.
+     *
+     * The scratch is the scroll's spare buffer, which is cleared and refilled
+     * before every use it has of its own, so borrowing it between scrolls
+     * cannot lose anything. Without one — before the first scroll — there is no
+     * confinement to be had, so the latch is poisoned and the next frame paints
+     * in full rather than laying a lattice. */
+    const scratch = this.groundScratch;
+    if (!scratch) {
+      this.groundCellStats.full++;
+      this.lastGround = { x: NaN, y: NaN };
+      return;
+    }
+    const TILE_PAD = this.geom.tile;
+    const cull = {
+      x0: Math.max(0, x0 - TILE_PAD),
+      y0: Math.max(0, y0 - TILE_PAD),
+      x1: Math.min(W, x1 + TILE_PAD),
+      y1: Math.min(H, y1 + TILE_PAD),
+    };
+    scratch.setPosition(a.ax, a.ay);
+    scratch.stamp(bgKey, undefined, x0, y0, { originX: 0, originY: 0, scaleX: x1 - x0, scaleY: y1 - y0, alpha: 1 });
+    const win = this.t3groundWindow(a.ax, a.ay, cull.x0, cull.y0, cull.x1 - cull.x0, cull.y1 - cull.y0);
+    this.groundClip = cull;
     try {
-      this.drawTiles3Ground(rt, a.ax, a.ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, a.top);
+      this.drawTiles3Ground(scratch, a.ax, a.ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, a.top);
     } finally {
       this.groundClip = null;
     }
+    /* The copy back, at integer texels and scale 1 — the only sub-rect
+     * arithmetic in the pass, done once on a whole-texture blit instead of per
+     * op. The frame is rebuilt each time because the rect moves. */
+    const src = scratch.texture;
+    const FRAME = "t3cells";
+    if (src.has(FRAME)) src.remove(FRAME);
+    src.add(FRAME, 0, x0, y0, x1 - x0, y1 - y0);
+    src.firstFrame = "__BASE"; // an added frame must never become the default
+    rt.beginDraw();
+    rt.batchDrawFrame(src.key, FRAME, x0, y0, 1, 0xffffff);
+    rt.endDraw();
     this.groundLastMode = "cells";
     this.groundCellStats.runs++;
     this.groundCellStats.cells += cells.length;
