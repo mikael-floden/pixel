@@ -486,6 +486,11 @@ export interface FadePoolTile {
   key: string;
   pct: number;
   rating: number;
+  /** WHICH RULE LET THIS TILE IN. 1 = approved and inside the honest-mix
+   *  window (the only tier that has ever shipped); 2 = approved but outside the
+   *  window, taken ONLY because tier 1 was empty; 3 = listed-but-unjudged,
+   *  taken only when `provisionalFades` is on. A whole pool is one tier. */
+  tier: 1 | 2 | 3;
 }
 
 /** tiles/slopes/index.json — `tiles3/slopes@1`. A Wang set on ELEVATION (the
@@ -593,6 +598,15 @@ export interface Tiles3Data {
    *  but the library has shipped 122 short tiles before, and
    *  `stats.unguardedSlopes` counts every pick made without one. */
   slopeGuard?: (file: string) => boolean;
+  /** LET UNJUDGED FADE ART SHIP (tier 3), and ONLY into pairs that would
+   *  otherwise draw no fade at all. Default OFF, which is exactly today's
+   *  picture: the fade layer is one the maintainer rates himself, and 1,800 of
+   *  the 9,061 listed tiles are art he has never seen. Turning it on trades
+   *  "this pair has a hard edge" for "this pair fades with art he has not
+   *  vetted", and on `the_game` that lights up 2,230 band cells on the WATER
+   *  side of the beach — the surface he has just said looks right. So it is a
+   *  switch, not a default. */
+  provisionalFades?: boolean;
   /** Where a stale index or an unresolvable member is reported. Defaults to
    *  console.warn; the counters in `stats` are always kept. */
   warn?: (message: string) => void;
@@ -607,6 +621,15 @@ export interface Tiles3Stats {
   unresolvedMembers: number;
   /** Fade pools built without `fadeGuard`. */
   unguardedFadePools: number;
+  /** `<field>|<other>` for every ordered pair that was ASKED for a fade and had
+   *  nothing to give — the hard edge the maintainer sees as "the fade does not
+   *  work between these two". An empty pool used to be silent; it is the one
+   *  failure of this layer that has no visible symptom of its own. */
+  deadFadePairs: string[];
+  /** Pairs served from tier 2 (approved art outside the 8..55 window). */
+  widenedFadePairs: string[];
+  /** Pairs served from tier 3 (unjudged art, `provisionalFades` only). */
+  provisionalFadePairs: string[];
   /** Slope tiles taken without `slopeGuard`. */
   unguardedSlopes: number;
   /** Boundary cells whose Pair Lab pattern is not in tiles/patterns/index.json.
@@ -932,6 +955,9 @@ export class Tiles3 {
     staleMembers: 0,
     unresolvedMembers: 0,
     unguardedFadePools: 0,
+    deadFadePairs: [],
+    widenedFadePairs: [],
+    provisionalFadePairs: [],
     unguardedSlopes: 0,
     unpublishedMasks: 0,
     rooms: 0,
@@ -1557,23 +1583,62 @@ export class Tiles3 {
     const key = `${field}|${other}`;
     let out = this.fadeCache.get(key);
     if (out) return out;
-    out = [];
+    if (!this.data.fadeGuard) this.stats.unguardedFadePools++;
+    /* THE TIERS, IN ORDER, AND THE FIRST NON-EMPTY ONE WINS OUTRIGHT. A pool is
+     * never MIXED across tiers: a widened or provisional tile is a fallback for
+     * a pair that has nothing, never a dilution of a pair that has something.
+     *
+     * Measured on tiles/fades/index.json + live/feedback/tiles.json, 2026-09-04:
+     * of the 154 ordered pairs the band can ever ask for (the other side must be
+     * solid), 138 answer at tier 1, 2 more at tier 2 (deep_water->light_beach,
+     * water->dark_mud: every approved tile is a sub-8% mix), 13 more only at
+     * tier 3, and exactly ONE — water->grey_paving_stone — has no art with the
+     * right edge_ground at all and needs the tiles agent. */
+    out = this.fadeTier(field, other, 1);
+    if (!out.length) {
+      out = this.fadeTier(field, other, 2);
+      if (out.length) this.stats.widenedFadePairs.push(key);
+    }
+    if (!out.length && this.data.provisionalFades) {
+      out = this.fadeTier(field, other, 3);
+      if (out.length) this.stats.provisionalFadePairs.push(key);
+    }
+    if (!out.length) {
+      /* NEVER SILENT AGAIN. This is the whole symptom of the missing-pair bug:
+       * the band runs, finds nothing, and draws the plain field. */
+      this.stats.deadFadePairs.push(key);
+      (this.data.warn ?? ((m: string) => console.warn(m)))(
+        `tiles3: no fade art for ${field} next to ${other} — that edge draws hard`,
+      );
+    }
+    this.fadeCache.set(key, out);
+    return out;
+  }
+
+  /** ONE TIER of `fadePool`, built from the same two index keys and the same
+   *  edge_ground rule. `pct` is how much of `other` shows; 8..55 is the honest-
+   *  mix window (a ~0% tile is the source set's own idea of a pure field, a
+   *  >60% one reads as the other ground with a rim, and 50/50 is his never
+   *  rule). Sorted by pct, which is the order the distance weighting expects. */
+  private fadeTier(field: string, other: string, tier: 1 | 2 | 3): FadePoolTile[] {
+    const out: FadePoolTile[] = [];
     const pairs = this.data.fades?.pairs ?? {};
     const fb = this.data.feedback ?? {};
-    if (!this.data.fadeGuard) this.stats.unguardedFadePools++;
     for (const pk of [`${field}__to__${other}`, `${other}__to__${field}`]) {
       for (const t of pairs[pk] ?? []) {
         if (t.edge_ground !== field) continue;
         const e = fb[t.key ?? ""];
-        if (e?.status !== "approved") continue;
+        /* A REJECTED TILE IS NEVER A CANDIDATE AT ANY TIER. */
+        if (e?.status === "rejected") continue;
+        if (tier === 3 ? e?.status === "approved" : e?.status !== "approved") continue;
         const pct = t.pct?.[other] ?? 0;
-        if (!(pct >= 8 && pct <= 55)) continue;
+        if (tier !== 2 && !(pct >= 8 && pct <= 55)) continue;
+        if (tier === 2 && pct > 55) continue;
         if (this.data.fadeGuard && !this.data.fadeGuard(t.file, field, other)) continue;
-        out.push({ file: t.file, key: t.key ?? "", pct, rating: Number(e.rating) || 0 });
+        out.push({ file: t.file, key: t.key ?? "", pct, rating: Number(e?.rating) || 0, tier });
       }
     }
     out.sort((a, b) => a.pct - b.pct);
-    this.fadeCache.set(key, out);
     return out;
   }
 
@@ -1873,21 +1938,67 @@ export class Tiles3 {
       }
     }
 
-    /* THE FADE BAND: a REAL CHEBYSHEV DISTANCE BAND, ring 1 included. Four axis
-     * cells at one ring was not a band, and skipping ring 1 dropped the fade
-     * exactly where the drift is strongest — the boundary tile rides the corner
-     * lattice ON TOP of this cell, so ring 1 is still ours to dress. */
+    /* THE FADE BAND: a REAL CHEBYSHEV DISTANCE BAND, ring 1 included, AND
+     * ELEVATION IS ITS THIRD AXIS. Four axis cells at one ring was not a band,
+     * and skipping ring 1 dropped the fade exactly where the drift is
+     * strongest — the boundary tile rides the corner lattice ON TOP of this
+     * cell, so ring 1 is still ours to dress.
+     *
+     * THE NEIGHBOUR NEED NOT SHARE THIS CELL'S LEVEL. render3 (and this port
+     * until now) required `L(nb) === zl`, so the one place a ground change is
+     * most visible — the lip of every terrace, every road shoulder that steps
+     * up, every shore that climbs — was the one place that could never fade
+     * (maintainer 2026-09-04: "the fade to work between all different ground
+     * types and regardless of level/elevation").
+     *
+     * ELEVATION IS A THIRD AXIS OF THE SAME CHEBYSHEV BAND, at one cell per
+     * level: `d = max(|dx|, |dy|, |dz|)`. It is one cell because on screen it
+     * very nearly is — the measured stacking pitch is 15 px
+     * (`measureStoreyPitch`) against DY = 14 px of vertical travel per cell of
+     * Chebyshev distance — so d measures the neighbour's real remoteness in the
+     * picture, which is the only thing a fade is about. That is what keeps a
+     * grass shelf standing ten storeys over a beach from wearing sand (dz 10 >
+     * FADE_BAND, no fade) while the one-storey terrace lip beside it fades
+     * exactly like flat ground. Measured on the_game: 21,269 cells have a
+     * differing solid ground with a published pool inside Chebyshev 2 at some
+     * level; 12,322 have one at their OWN level (all the old rule could see),
+     * 13,246 inside the 3D band, and the 8,023 the band still refuses are every
+     * one of them three or more storeys away.
+     *
+     * SAME-LEVEL TERRAIN IS UNTOUCHED, to the cell: dz is 0 there, so d is the
+     * old Chebyshev ring, and the square is walked in the order the ascending
+     * ring loops walked it (ring r's cells keep their relative order and a
+     * nearer candidate always displaces a further one), so the first candidate
+     * at the winning distance is the same one. Measured on the_game, 1,852
+     * fades -> 2,126: NOT ONE CELL LOST ITS FADE, and only 10 changed which
+     * ground they fade toward — every one because a nearer cross-level
+     * neighbour displaced a ring-2 same-level one, which is the rule doing its
+     * job. 207 of the 2,126 are across a level change. */
     let near: [string, number] | null = null;
-    for (let r = 1; r <= FADE_BAND && !near; r++)
-      for (let dy = -r; dy <= r && !near; dy++)
-        for (let dx = -r; dx <= r; dx++) {
-          if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
-          const og = g(x + dx, y + dy);
-          if (og && og !== gr && !view.isLiquid(og) && L(x + dx, y + dy) === zl) {
-            near = [og, r];
-            break;
-          }
-        }
+    let bestD = FADE_BAND + 1;
+    for (let dy = -FADE_BAND; dy <= FADE_BAND; dy++)
+      for (let dx = -FADE_BAND; dx <= FADE_BAND; dx++) {
+        /* `r >= bestD` is the ascending-ring loop's early-out, kept: d is never
+         * below r, and this runs on every cell of every window. */
+        const r = Math.max(Math.abs(dx), Math.abs(dy));
+        if (r === 0 || r >= bestD) continue;
+        const og = g(x + dx, y + dy);
+        if (!og || og === gr || view.isLiquid(og)) continue;
+        const d = Math.max(r, Math.abs(L(x + dx, y + dy) - zl));
+        if (d >= bestD) continue;
+        /* THE NEAREST NEIGHBOUR THIS GROUND CAN ACTUALLY FADE TOWARD. The scan
+         * used to take the nearest DIFFERING ground and then ask for its pool,
+         * so a neighbour the library publishes no approved pair for silently
+         * vetoed a further one that has one — no fallback, no fade, no counter.
+         * `fadePool` is memoised per (field, other) and the `bestD` early-out
+         * cuts the walk, so this is a Map hit on the few candidates that get
+         * this far. Measured over the whole of the_game (262,144 cells, median
+         * of 5): 474.1 ms against 472.4 ms for the old scan — inside the run
+         * spread, and the fix alone is worth 85 more level-0 fades. */
+        if (!this.fadePool(gr, og).length) continue;
+        bestD = d;
+        near = [og, d];
+      }
     if (near) {
       const pool = this.fadePool(gr, near[0]);
       if (pool.length) {

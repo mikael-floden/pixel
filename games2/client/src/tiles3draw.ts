@@ -775,7 +775,35 @@ export function cellOps(cell: Tiles3Cell): Tiles3Blit[] {
   }
   const w = cell.wall;
   if (!w) return [];
-  return w.stack.map((s) => tileBlit(s.tile, cell.sx, s.y, "wall"));
+  const ops = w.stack.map((s) => tileBlit(s.tile, cell.sx, s.y, "wall"));
+  /* AND THE SURFACE GOES ON THE CAP. `cell.dressed` is the resolver saying the
+   * over-tile does NOT own its top face, so the maintainer's own set surface
+   * belongs on it — which is how a raised cell gets a fade, a slope or a
+   * boundary at all. It was a DEAD FLAG: set at tiles3.ts:1691 and read
+   * nowhere, so every exposed raised cell drew its wall stack and threw the
+   * resolved surface away. Measured over the_game: 3,670 wall cells, ALL 3,670
+   * flagged `dressed`, and 288 resolved fades (14.1% of every fade in the
+   * world) discarded with them — which is the maintainer's "the transition/fade
+   * also doesn't work on levels other than the first 0-level".
+   *
+   * It goes at the cell's own top vertex, exactly where a field cell's surface
+   * goes, and it is `topOnly` (the resolver set that at the same line), so it
+   * is masked to the library top face and cannot paint a wall band over the
+   * cap's own x-over-y art. */
+  if (cell.dressed && cell.art && cell.art.kind !== "liquid") {
+    const art = cell.art;
+    ops.push({
+      key: plateKey(art, cell.ground),
+      x: cell.sx,
+      y: cell.pasteY ?? cell.sy,
+      sx: 0,
+      sy: 0,
+      sw: art.w,
+      sh: art.h,
+      role: "surface",
+    });
+  }
+  return ops;
 }
 
 /** A deck's slab: same-over-same courses down to its underside, cap on top. */
@@ -1060,7 +1088,11 @@ export class Tiles3Textures {
   opsForCell(cell: Tiles3Cell): Tiles3Blit[] {
     const out: Tiles3Blit[] = [];
     for (const op of cellOps(cell)) {
-      const art = cell.kind === "field" ? cell.art : undefined;
+      /* THE SURFACE OP CARRIES THE ART, whatever the cell's kind — a raised
+       * cell's cap wears one too (see cellOps). Keyed off the ROLE, not the
+       * kind, or a wall cell's surface would take the raw-file branch and skip
+       * the conform/top-face path its `topOnly` art requires. */
+      const art = op.role === "surface" ? cell.art : undefined;
       let key: string | null;
       /* A LIQUID NEVER SHOWS A WALL — enforced HERE, not trusted from a flag.
        *
