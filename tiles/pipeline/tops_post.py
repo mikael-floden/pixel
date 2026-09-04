@@ -208,6 +208,11 @@ def rim_suppress(rgb, top, clean_rgb, width=RIM_W, snap=RIM_SNAP):
 # crystal, a footprint - and takes none. Between, the weight ramps, so there is no hard
 # seam where the two meet.
 MOTIF_NEAR, MOTIF_FAR = 30.0, 60.0
+# The ground/motif test where the ground HAS a colour: a pixel whose LEADING CHANNEL is
+# the ground's is the same material however light or dark it is.
+# Below this chroma a colour has no hue to compare - true of the pixel AND of the
+# ground itself, and on a near-grey ground the test falls back to distance.
+GROUND_MIN_CHROMA = 8.0
 
 
 # THE LOWER RIM, and how far in it is pulled onto the palette. Ring 0 goes all the way,
@@ -314,9 +319,43 @@ def align(img, clean_rgb, protect_motif=False):
         # to teal. The wall takes the whole delta, exactly as it did before this path
         # existed ("one tile, one delta" - a seam between shifted top and unshifted wall
         # would be invented detail on art whose wall is meaningless anyway).
+        # HUE DECIDES WHAT IS GROUND, NOT DISTANCE (maintainer, 2026-09-03: "if it's
+        # green it's most likely still grass (the detail is brown)").
+        #
+        # Distance alone protects a bright grass blade exactly as hard as it protects a
+        # brown pinecone, because both are far from a dark palette green. Measured on
+        # his pinecone tile: of 101 pixels in the ramp band, 85 were GRASS by hue and
+        # were getting only a partial shift - they stayed lime while the ground went
+        # dark, which is what he circled. Meanwhile the 262 genuinely foreign pixels
+        # were 100% brown, so the hue test separates them cleanly.
+        #
+        # So a pixel sharing the ground's hue takes the WHOLE shift however bright it
+        # is, and only a pixel of a different hue is protected. On a near-grey ground
+        # hue means nothing, so those fall back to distance - the old behaviour.
+        def _op(c):
+            c = np.asarray(c, float)
+            return np.stack([c[..., 0] - c[..., 1], c[..., 1] - c[..., 2]], -1)
+
+        oc = _op(clean_rgb)
+        nc = float(np.hypot(*oc))
+        dist = np.linalg.norm(rgb - bg, axis=2)
+        ramp = np.clip((MOTIF_FAR - dist) / (MOTIF_FAR - MOTIF_NEAR), 0.0, 1.0)
+        if nc >= GROUND_MIN_CHROMA:
+            # WHICH CHANNEL LEADS, not the angle to the clean colour. Measured on his
+            # own two tiles, the angle cannot tell them apart - grass reads 31.2 deg on
+            # the pinecone tile and 32.0 on the buttercup one - but channel dominance
+            # separates them completely:
+            #   pinecone tile   green-dominant 772px [ 90 142  73] = grass
+            #                   not green-dom  160px [103  71  58] = the brown cone
+            #   buttercup tile  green-dominant 873px [ 93 156  72] = grass
+            #                   not green-dom  110px [233 188  31] = the yellow flower
+            # which is his rule stated exactly: "if it's green it's most likely still
+            # grass (the detail is brown)".
+            lead = np.asarray(clean_rgb, float).argmax()
+            same = (rgb.argmax(2) == lead) | (np.ptp(rgb, axis=2) < GROUND_MIN_CHROMA)
+            ramp = np.where(same, 1.0, ramp)
         w = np.ones(rgb.shape[:2])[..., None]
-        w[top] = np.clip((MOTIF_FAR - np.linalg.norm(rgb - bg, axis=2)[top])
-                         / (MOTIF_FAR - MOTIF_NEAR), 0.0, 1.0)[..., None]
+        w[top] = ramp[top][..., None]
         clipped = 0.0
         for _ in range(4):
             cur = background_of(rgb, top)
