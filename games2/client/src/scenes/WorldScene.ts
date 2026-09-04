@@ -1980,10 +1980,32 @@ export class WorldScene extends Phaser.Scene {
     try {
       this.t3flushSlices();
       this.lastGround = { x: NaN, y: NaN }; // poison the latch: the next pass is FULL
-      this.redrawGround();
+      this.withoutComposeBudget(() => this.redrawGround());
       return this.groundTexelReport(true);
     } catch {
       return null;
+    }
+  }
+
+  /* A FORCED FULL PAINT IS A MEASUREMENT, AND IT COMPOSES WITHOUT LIMIT.
+   *
+   * `__ml.groundHash()`/`groundSnap()` and the beacon's `groundFull` compare a
+   * streamed picture against a forced full one and call any difference a bug —
+   * that comparison is what proved the scroll, the cell repaints and the draw
+   * cull pixel-identical. Under the frame budget the forced paint composes ONE
+   * boundary and draws plain plates for the rest, so it would report a mismatch
+   * that is not a defect, and the beacon's final flush would LEAVE the ground
+   * plate-only. The instrument gets the whole allowance; the restore is in a
+   * finally so a throw inside the pass cannot leave it armed. */
+  private withoutComposeBudget<T>(run: () => T): T {
+    const prev = this.composeMsOverride;
+    this.composeMsOverride = Infinity;
+    this.t3tex?.armCompose(Infinity);
+    try {
+      return run();
+    } finally {
+      this.composeMsOverride = prev;
+      this.t3tex?.armCompose(prev ?? GROUND_COMPOSE_MS);
     }
   }
 
@@ -4494,6 +4516,30 @@ export class WorldScene extends Phaser.Scene {
         }
         return { on: this.groundSliced, pending: this.groundSliceQ.length, ...this.groundSliceStats, ms: +this.groundSliceStats.ms.toFixed(1), shift: this.groundLastShift, ring: this.t3ringQueue.length - this.t3ringAt };
       },
+      /** THE COMPOSE BUDGET, live. `Infinity` restores the pre-budget behaviour
+       *  (every boundary composed in the frame that wants it — the 1,276 ms
+       *  freeze); no argument reports what is in force. Remembered, so an A/B
+       *  survives the reload a phone needs. */
+      groundCompose: (ms?: number) => {
+        if (typeof ms === "number") {
+          this.composeMsOverride = ms;
+          try {
+            localStorage.setItem("ml-ground-compose", String(ms));
+          } catch {
+            /* private mode — the switch is still live for this session */
+          }
+        }
+        const t = this.t3tex;
+        return {
+          budgetMs: this.composeMsOverride ?? GROUND_COMPOSE_MS,
+          overridden: this.composeMsOverride !== null,
+          built: t?.stats.built ?? 0,
+          builtBoundary: t?.stats.builtBoundary ?? 0,
+          deferred: t?.stats.deferred ?? 0,
+          buildMs: +(t?.stats.buildMs ?? 0).toFixed(1),
+          owed: this.t3boundaryOwed.size,
+        };
+      },
       groundRedraw: (cull?: boolean, cache?: boolean) => {
         // The switches are applied for THIS forced redraw only and restored
         // after, so an A/B never leaves the game running with either off.
@@ -4503,8 +4549,10 @@ export class WorldScene extends Phaser.Scene {
         if (typeof cache === "boolean") this.groundCacheOn = cache;
         this.lastGround = { x: NaN, y: NaN };
         const t0 = performance.now();
-        this.redrawGround();
-        this.t3flushSlices(); // a forced redraw settles the picture before it is read
+        this.withoutComposeBudget(() => {
+          this.redrawGround();
+          this.t3flushSlices(); // a forced redraw settles the picture before it is read
+        });
         // The pass's own counters (incl. its `ms`) plus the whole redraw's wall clock.
         const out = {
           ...this.t3stats,
@@ -8836,7 +8884,7 @@ export class WorldScene extends Phaser.Scene {
      * UNBUDGETED: it is behind the loading screen, nothing is being played
      * through it, and releasing the hold onto a window of hard edges is
      * exactly the pop-in the hold exists to prevent. */
-    this.t3tex?.armCompose(this.worldUp ? GROUND_COMPOSE_MS : Infinity);
+    this.t3tex?.armCompose(this.worldUp ? (this.composeMsOverride ?? GROUND_COMPOSE_MS) : Infinity);
     // The coalesced streaming repaints — see requestRepaint / onTerrainBatch.
     if (this.repaintGroundPending) {
       this.repaintGroundPending = false;
@@ -14345,11 +14393,40 @@ export class WorldScene extends Phaser.Scene {
        * returns null only while one of them has not decoded. Once they are
        * here, repainting the cell makes the PASS compose it, on its own budget,
        * where that work already belongs. */
-      let haveArt = true;
-      boundaryArtPaths(b, (path) => {
-        if (!this.t3tm.exists(t3ArtKey(path))) haveArt = false;
-      });
-      if (!haveArt) continue;
+      /* THE READINESS TEST IS "CAN IT BE COMPOSED NOW", NOT "IS ITS ART HERE".
+       *
+       * Asking only whether both source plates are resident was right while the
+       * only reason to owe a cell was streaming art. Since the compose budget
+       * exists it is TRUE IMMEDIATELY for every budget-deferred cell — the
+       * budget was the only refusal — so the retry pushed up to 32 cells per
+       * frame, the repaint's pass afforded ONE, and the other 31 redrew their
+       * plain plates and landed straight back in the owed set. That is a full
+       * repaintTiles3Cells cycle (a scratch stamp, a clipped pass over the
+       * cells' whole bounding window, a rect copy, two beginDraw/endDraw
+       * brackets) every frame to deliver one composition, with 31/32 of it
+       * provably idempotent — and the band walks the owed set and starts over,
+       * so a spawn-sized backlog re-blits the ground every ~9 frames for the
+       * ~9 s it takes to drain. It put back more than the spike it replaced.
+       *
+       * So compose it HERE, on this frame's allowance, and repaint only what
+       * actually got composed. `boundary()` answers null when the art is not
+       * resident (the old condition, still enforced) or when the budget is
+       * spent — and the first refusal ends the slice, because everything after
+       * it would be refused too. The cell stays owed and is tried again next
+       * frame; nothing is deleted that was not repaired. */
+      const d0 = tex.stats.deferred;
+      if (!tex.boundary(b)) {
+        /* WHICH `null` THIS IS DECIDES WHETHER TO STOP OR TO SKIP, and getting
+         * it wrong wedges the repair. `boundary()` answers null for three
+         * reasons: the budget refused it (then everything after it this frame
+         * is refused too — stop), a source plate has not decoded (skip it and
+         * try the next; a landing will bring it), or the pattern has no frame
+         * at all (never buildable — skip it too, and it costs one lookup a
+         * frame rather than blocking every cell behind it). Only the budget
+         * bumps `deferred`, so the counter is the discriminator. */
+        if (tex.stats.deferred !== d0) break;
+        continue;
+      }
       ready.push(idx);
       this.t3boundaryOwed.delete(idx);
     }
@@ -14364,6 +14441,19 @@ export class WorldScene extends Phaser.Scene {
     }
   }
   private t3occRepairAt = 0;
+  /** Dev A/B for the compose budget — `null` is GROUND_COMPOSE_MS. Remembered
+   *  like the other ground switches so it can be flipped on the phone, where a
+   *  probe call cannot survive the reload the comparison needs. */
+  private composeMsOverride: number | null = ((): number | null => {
+    try {
+      const v = localStorage.getItem("ml-ground-compose");
+      if (v === null) return null;
+      const n = v === "Infinity" ? Infinity : Number(v);
+      return Number.isNaN(n) ? null : n;
+    } catch {
+      return null;
+    }
+  })();
 
   private t3prefetchStep(): void {
     const load = this.t3load;
