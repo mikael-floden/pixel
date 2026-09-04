@@ -23,8 +23,8 @@
   "sprite": "stones/stone_050/sprite.webp",
   "placement": {
     "world_height_m": 1.39,
-    "world_px_height": 52,
-    "character_height_px": 64,
+    "world_px_height": 72,
+    "character_height_px": 88,
     "character_height_m": 1.7,
     "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
     "content_box": [
@@ -34,7 +34,7 @@
       60
     ],
     "content_px_height": 52,
-    "canvas_render_px": 64
+    "canvas_render_px": 89
   },
   "pixellab_object_id": "1aedc678-14c0-40e5-96ba-99a0bdadd216",
   "pixellab_directions": 8,

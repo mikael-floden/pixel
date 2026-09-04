@@ -27,8 +27,8 @@
   "sprite": "windows/window_021/sprite.webp",
   "placement": {
     "world_height_m": 1.2,
-    "world_px_height": 45,
-    "character_height_px": 64,
+    "world_px_height": 62,
+    "character_height_px": 88,
     "character_height_m": 1.7,
     "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
     "content_box": [
@@ -38,7 +38,7 @@
       71
     ],
     "content_px_height": 61,
-    "canvas_render_px": 59
+    "canvas_render_px": 81
   },
   "pixellab_object_id": "f1003e47-ef3d-473c-bfef-7dd5929eabd2",
   "pixellab_directions": 8,

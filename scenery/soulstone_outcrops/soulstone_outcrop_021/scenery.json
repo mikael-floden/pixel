@@ -23,8 +23,8 @@
   "sprite": "soulstone_outcrops/soulstone_outcrop_021/sprite.webp",
   "placement": {
     "world_height_m": 0.6,
-    "world_px_height": 23,
-    "character_height_px": 64,
+    "world_px_height": 31,
+    "character_height_px": 88,
     "character_height_m": 1.7,
     "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
     "content_box": [
@@ -34,7 +34,7 @@
       54
     ],
     "content_px_height": 44,
-    "canvas_render_px": 33
+    "canvas_render_px": 45
   },
   "pixellab_object_id": "bf373a20-6165-48ea-bcd3-7fddef46fb18",
   "pixellab_directions": 8,

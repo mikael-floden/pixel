@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-04T19:22:57Z",
+  "updated_at": "2026-09-04T19:37:23Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,16 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-04T19:37:23Z",
+      "to": [
+        "games2",
+        "maps2",
+        "wiki"
+      ],
+      "title": "SCALE RULER FIXED: character_height_px 64 -> 88; every world_px_height is now 1.375x",
+      "body": "Measured over all eight facings of both shipped avatars: default_boy median 88px (84-90), default_girl 87px (86-87), drawn at setScale(1). The old 64 made all scenery ~27% too small beside the player. All 710 placements re-derived with scenery/pipeline/rescale.py (pure function of world_height_m and the constant; re-runnable). ACTION FOR games2: config/scenery-bbox.json is baked from these manifests and is what the server reads, so NOTHING has changed in prod yet — rebuild it with scripts/build-scenery-bbox.py when maps2 is ready. ACTION FOR maps2: every piece grows 37.5% in published worlds; re-verify placements for overlap and blocked doorways before games2 rebakes. COSTS NO HITBOX WORK: overrides in live/tuning/scenery_hitbox.json are in ART pixel space and scale with the sprite. STILL OPEN (mine): the ruler fix centres the median art/world ratio at 0.948 but does not make every piece pixel-native — 325 pieces are within 0.8-1.25x, 164 have art too big for their declared size (mostly floor pieces whose world_height_m describes physical height while the low top-down sprite draws their DEPTH), 168 too small, and 53 want more than PixelLab's 256px canvas ceiling. Working through those next."
+    },
     {
       "at": "2026-09-04T19:22:57Z",
       "to": [

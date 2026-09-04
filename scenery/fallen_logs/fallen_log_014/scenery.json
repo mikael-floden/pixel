@@ -23,8 +23,8 @@
   "sprite": "fallen_logs/fallen_log_014/sprite.webp",
   "placement": {
     "world_height_m": 0.99,
-    "world_px_height": 37,
-    "character_height_px": 64,
+    "world_px_height": 51,
+    "character_height_px": 88,
     "character_height_m": 1.7,
     "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
     "content_box": [
@@ -34,7 +34,7 @@
       120
     ],
     "content_px_height": 101,
-    "canvas_render_px": 47
+    "canvas_render_px": 65
   },
   "pixellab_object_id": "ffdc95c0-13a3-469c-ac2f-16d25b4de55a",
   "pixellab_directions": 8,
