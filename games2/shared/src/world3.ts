@@ -110,6 +110,14 @@ export function parseWorld3(json: any): ParsedWorld | null {
   // the_game HAS such conflicts (145 cells claimed twice, 71 of them by groups
   // naming different materials). Assigning in the same order reproduces the
   // renderer exactly; anything else repaints 71 cells of the stone house.
+  /* THE PUBLISHED ROOMS, carried verbatim. maps2 states where a room ENDS
+   * rather than leaving it to be guessed — see WORLD3.md, which lists the three
+   * ways guessing gets it wrong. Nothing here interprets them. */
+  const rooms = (Array.isArray(json.rooms) ? json.rooms : []).map((r: any) => ({
+    ground: String(r.ground ?? ""),
+    cells: (Array.isArray(r.cells) ? r.cells : []).map((c: any) => ({ col: c.x | 0, row: c.y | 0 })),
+  })).filter((r: { ground: string; cells: unknown[] }) => r.ground && r.cells.length);
+
   const wallSides: Record<number, string> = {};
   for (const grp of Array.isArray(json.walls) ? json.walls : []) {
     const side = String(grp?.side ?? "");
@@ -179,6 +187,7 @@ export function parseWorld3(json: any): ParsedWorld | null {
     pois: [],
     spawn,
     decks: decks.length ? decks : undefined,
+    rooms: rooms.length ? rooms : undefined,
     // THE PROJECTION TRAVELS WITH THE WORLD. tiles3 lays out on dy=14 with a
     // 15px storey; the engine's constants are tiles2's 15/16. A v3 world that
     // projects at 15 shears one row per grid step, so the geometry is published

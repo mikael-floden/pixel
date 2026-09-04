@@ -25,6 +25,8 @@ export interface World {
   props?: WorldProp[];
   /** maps2 world@2: elevated walkable slabs (roofs, bridge decks). */
   decks?: Deck[];
+  /** maps3: the published rooms — one floor each (WORLD3.md). */
+  rooms?: { ground: string; cells: { col: number; row: number }[] }[];
   /** maps3: the world's own projection (see geometryFor). Absent on v1/v2. */
   iso?: IsoGeometry;
   /** maps3: the grounds the world declares liquid. */

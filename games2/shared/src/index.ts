@@ -761,6 +761,12 @@ export interface ParsedWorld {
   /** maps2 world@2: elevated walkable slabs (roofs, bridge spans) floating over
    * the unchanged base terrain — a SECOND walkable surface at some cells. */
   decks?: Deck[];
+  /** maps3 `rooms[]`: ONE FLOOR EACH. A room is a connected patch of indoor
+   *  floor bounded by its walls, and a DOORWAY DOES NOT CONDUCT — maps2 spec
+   *  WORLD3.md, which also says why it cannot be inferred here (sets are chosen
+   *  per 24-cell chunk and a building straddles chunk borders). Additive: no
+   *  cell, deck, wall or level is changed by it. */
+  rooms?: { ground: string; cells: { col: number; row: number }[] }[];
   /** maps3: the grounds the WORLD declares liquid. SURFACES still decides
    * swimmability (the engine owns movement); this is the world's own answer,
    * which the renderer needs for the things SURFACES has no opinion about —

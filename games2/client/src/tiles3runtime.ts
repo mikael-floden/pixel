@@ -76,6 +76,7 @@ export interface ParsedLike {
   liquids?: string[];
   wallSides?: Record<number, string>;
   decks?: { kind?: string; mat?: string; level: number; thickness: number; cells: { col: number; row: number }[] }[];
+  rooms?: { ground: string; cells: { col: number; row: number }[] }[];
 }
 
 /** A `World3View` over the ALREADY-PARSED world, not over the raw document.
@@ -93,6 +94,10 @@ export function viewFromParsed(w: ParsedLike, bounds?: Partial<Bounds>): World3V
     level: d.level,
     thickness: d.thickness,
     cells: d.cells.map((c) => ({ x: c.col, y: c.row })),
+  }));
+  const rooms = (w.rooms ?? []).map((r) => ({
+    ground: r.ground,
+    cells: r.cells.map((c) => ({ x: c.col, y: c.row })),
   }));
   return {
     x0: bounds?.x0 ?? 0,
@@ -113,6 +118,7 @@ export function viewFromParsed(w: ParsedLike, bounds?: Partial<Bounds>): World3V
     isLiquid: (g) => liquids.has(g),
     wallSideAt: (x, y) => w.wallSides?.[y * w.width + x] || null,
     decks,
+    rooms: rooms.length ? rooms : undefined,
   };
 }
 
@@ -480,14 +486,20 @@ export function deckArtPaths(d: Tiles3DeckCell, out: (p: string) => void): void 
 /** The drawable texture key for a cell's SURFACE — what an occluder copy of
  *  that cell must draw. Null while the art is still loading. */
 export function surfaceKey(t3: Tiles3Textures, tex: TextureManagerLike, cell: Tiles3Cell): string | null {
-  /* A DRESSED WALL WEARS ITS SURFACE, here as in the ground pass. `cellOps`
-   * draws the stack and then the cell's own surface on top of the cap; an
-   * occluder copy that drew only the stack cap put the plain x-over-y review
-   * tile back over the maintainer's tile set on every dressed cliff — the same
-   * cover-up as the transition, one layer down. Its raster is a PLATE and is
-   * pasted at the cell's own y, which is why the caller must use `surfaceY`
-   * rather than the column's top. */
-  if (cell.kind === "wall" && !cell.dressed) {
+  /* A WALL'S CAP IS ITS STACK'S CAP TILE, full stop.
+   *
+   * This briefly returned the SURFACE for a dressed wall, to stop the occluder
+   * covering the maintainer's tile set with the plain x-over-y review tile.
+   * That was wrong twice over and he caught it in one look: the cap course IS
+   * the wall's masonry, so replacing it took the stone top off every wall ring,
+   * and a surface is pasted ten rows lower than a course, so what was left
+   * floated up-screen — "Why is the entire roof shifted top-left? The tree wall
+   * no longer have a stone wall!!"
+   *
+   * The ground pass draws BOTH on a dressed wall — the stack, then the surface
+   * over its cap — so an occluder copy that wants parity needs two images, not
+   * one substituted for the other. It draws one, so it draws the cap. */
+  if (cell.kind === "wall") {
     const cap = cell.wall?.stack[cell.wall.stack.length - 1]?.tile;
     if (!cap?.path) return null;
     const k = artKey(cap.path);
@@ -519,7 +531,7 @@ export function surfaceKey(t3: Tiles3Textures, tex: TextureManagerLike, cell: Ti
  *  Null when the cap is a wall course, which the caller then anchors its own
  *  way — that IS the column's top. */
 export function surfaceY(cell: Tiles3Cell): number | null {
-  if (cell.kind === "wall" && !cell.dressed) return null;
+  if (cell.kind === "wall") return null;
   return cell.pasteY ?? cell.sy;
 }
 

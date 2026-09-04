@@ -676,6 +676,16 @@ export interface World3View extends Bounds {
   /** The `walls[]` group override: the ground this cell's face is drawn OVER. */
   wallSideAt(x: number, y: number): string | null;
   decks: Deck3[];
+  /** maps3 `rooms[]` — ONE FLOOR EACH, published because it cannot be inferred
+   *  (WORLD3.md). Absent on a world that publishes none, and then the fill
+   *  below stands in. */
+  rooms?: Room3[];
+}
+
+/** One published room: the ground it is laid in and the cells it covers. */
+export interface Room3 {
+  ground: string;
+  cells: { x: number; y: number }[];
 }
 
 /** A `World3View` over a raw `pixel-maps3/world@1` document. */
@@ -991,6 +1001,9 @@ export class Tiles3 {
   private roomAnchors: Map<number, number> | null = null;
   /** The view the current resolve is running against — the room fill reads it. */
   private curView: World3View | null = null;
+  /** The view whose rooms `roomAnchors` was built from. A world swap must drop
+   *  the cache — the anchors are cell indices into a specific grid. */
+  private roomView: World3View | null = null;
   private texturedCache: Map<string, string> | null = null;
   private slopeCache: Map<string, SlopeSet[]> | null = null;
   private slopeTileCache = new Map<string, SlopePick | null>();
@@ -1226,6 +1239,16 @@ export class Tiles3 {
     return this.plateAt(ground, regionAt(ground, ax, ay), x, y, ax, ay);
   }
 
+  /** ONE PLACE SETS THE VIEW, and drops anything cached against the old one. */
+  private setView(view: World3View): void {
+    this.curView = view;
+    if (this.roomView !== view) {
+      this.roomAnchors = null;
+      this.roomView = view;
+      this.stats.rooms = 0;
+    }
+  }
+
   /** The anchor cell of the room this one belongs to, or itself.
    *
    *  WORLD-SCOPED AND CACHED, where render3 fills rooms per RENDER WINDOW. A
@@ -1241,6 +1264,35 @@ export class Tiles3 {
       const W = view.width;
       const H = view.height;
       const m = new Map<number, number>();
+      /* THE PUBLISHED ROOMS WIN. maps2 states where a room ends because it
+       * cannot be inferred, and the fill below is the inference it warns about:
+       * it is 4-connected over the floor ground alone, so A DOORWAY CONDUCTS
+       * and the town hall's three chambers come out as one 116-cell patch —
+       * "that looks like 3 rooms to me" (maintainer, quoted in WORLD3.md). The
+       * anchor is `min(cells)`, the spec's own words, lexicographic by (x, y).
+       * The fill stays for a world that publishes no rooms. */
+      const pub = view.rooms;
+      if (pub?.length) {
+        for (const room of pub) {
+          let ax = Infinity;
+          let ay = Infinity;
+          for (const c of room.cells) {
+            if (c.x < ax || (c.x === ax && c.y < ay)) {
+              ax = c.x;
+              ay = c.y;
+            }
+          }
+          if (!Number.isFinite(ax)) continue;
+          const a = ay * W + ax;
+          for (const c of room.cells) m.set(c.y * W + c.x, a);
+        }
+        this.roomAnchors = m;
+        this.stats.rooms = new Set(m.values()).size;
+        const a0 = m.get(y * W + x);
+        if (a0 === undefined) return [x, y];
+        const rx = a0 % W;
+        return [rx, (a0 - rx) / W];
+      }
       const seen = new Uint8Array(W * H);
       const stack: number[] = [];
       for (let sy = 0; sy < H; sy++) {
@@ -1664,7 +1716,7 @@ export class Tiles3 {
   /** Everything the window draws, in render3's own painter order. The whole
    *  point of the module: one call from the world doc to the art. */
   resolveWindow(view: World3View): Tiles3Window {
-    this.curView = view;
+    this.setView(view);
     const b: Bounds = { x0: view.x0, y0: view.y0, x1: view.x1, y1: view.y1 };
     const frame = isoFrame(b, view.maxLevel, this.data.storeyPitch);
     const inWindow = (x: number, y: number): boolean =>
@@ -1695,6 +1747,16 @@ export class Tiles3 {
    *  raised cell draws its wall column and then wears the surface on the cap —
    *  and a raised cell with NO EXPOSED FACE draws only the surface, which is a
    *  field cell in every sense the draw layer has. */
+  /** THE STREAMING PATH SETS THE VIEW TOO, and not doing so is why the indoor
+   *  floor was a patchwork. `roomAnchor` reads `curView`, `resolveWindow` was
+   *  the only thing that ever set it, and the game does not call
+   *  `resolveWindow` — `Tiles3World.cell()` calls this directly, once per cell.
+   *  So the anchor lookup hit its `if (!view) return [x, y]` guard on every
+   *  call, silently: every floor cell picked its own set and member from its
+   *  own 24-cell chunk, and `stats.rooms` stayed 0 because the map was never
+   *  built. Measured in the town hall: 116 floor cells, 4 chunk regions, FIVE
+   *  different parquet tiles, which is the mess the maintainer photographed and
+   *  exactly the failure WORLD3.md predicts for inferring rooms from chunks. */
   resolveCell(
     view: World3View,
     frame: Frame,
@@ -1703,6 +1765,7 @@ export class Tiles3 {
     x: number,
     y: number,
   ): Tiles3Cell | null {
+    this.setView(view);
     const gr = g(x, y);
     if (!gr) return null;
     const zl = L(x, y);
