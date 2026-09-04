@@ -75,7 +75,7 @@ def background_of(rgb, top):
     return med
 
 
-def shift_mask_to_clean(rgb, mask, clean_rgb, iters=3, measure=None):
+def shift_mask_to_clean(rgb, mask, clean_rgb, iters=3, measure=None, uniform=False):
     """Shift the pixels under `mask` so their trimmed-median background lands on the
     clean colour INTEGER-EXACTLY, compressing overflow around the clean anchor.
 
@@ -92,6 +92,11 @@ def shift_mask_to_clean(rgb, mask, clean_rgb, iters=3, measure=None):
     # is a property of the TOP FACE, and a median taken over top+wall answers a
     # question nobody asked.
     measure = mask if measure is None else measure
+    # An EMPTY mask is a real case on a detail sheet, not a bug to crash on: a tile
+    # whose motif covers the whole face leaves no ground to align, and vals.max() on
+    # zero pixels raises. Nothing to shift means nothing to do.
+    if not mask.any() or not measure.any():
+        return 0.0
     for _ in range(iters):
         bg = background_of(rgb, measure)
         delta = np.rint(clean_rgb - bg)
@@ -99,6 +104,13 @@ def shift_mask_to_clean(rgb, mask, clean_rgb, iters=3, measure=None):
             break
         rgb[mask] += delta
         # ONE FACTOR FOR ALL THREE CHANNELS, or the compression ROTATES THE COLOUR.
+        #
+        # OPT-IN, and deliberately so (maintainer 2026-09-03: "we are too late into the
+        # game to make a postprocess change that affects everything... let colour
+        # details pass through be a details fix"). Every ground the game already ships
+        # was aligned with the per-channel path and he has approved that art; changing
+        # it under him to fix details would put the whole library at risk for one
+        # flavour's benefit. So detail sheets pass uniform=True and nothing else moves.
         #
         # This used to squeeze each channel by its own factor, which is hue-destroying
         # by construction: scaling R toward the anchor by 0.4 while G keeps 1.0 turns a
@@ -114,7 +126,7 @@ def shift_mask_to_clean(rgb, mask, clean_rgb, iters=3, measure=None):
         # the factor for all - and that is the right trade against inventing a colour
         # the generator never drew.
         fmin = 1.0
-        for c in range(3):
+        for c in range(3) if uniform else ():
             anchor = clean_rgb[c]
             vals = rgb[..., c][mask]
             mx, mn = float(vals.max()), float(vals.min())
@@ -122,12 +134,30 @@ def shift_mask_to_clean(rgb, mask, clean_rgb, iters=3, measure=None):
                 fmin = min(fmin, (255.0 - anchor) / (mx - anchor))
             if mn < 0.0 and mn < anchor:
                 fmin = min(fmin, (anchor / (anchor - mn)) if anchor > 0 else 0.0)
-        if fmin < 1.0:
+        if uniform and fmin < 1.0:
             for c in range(3):
                 anchor = clean_rgb[c]
                 ch = rgb[..., c]
                 ch[mask] = anchor + (ch[mask] - anchor) * fmin
             squeeze = min(squeeze, fmin)
+        if not uniform:
+            # the original per-channel compression, untouched, for every other sheet
+            for c in range(3):
+                anchor = clean_rgb[c]
+                ch = rgb[..., c]
+                vals = ch[mask]
+                mx = float(vals.max())
+                if mx > 255.0 and mx > anchor:
+                    f = (255.0 - anchor) / (mx - anchor)
+                    sel = mask & (ch > anchor)
+                    ch[sel] = anchor + (ch[sel] - anchor) * f
+                    squeeze = min(squeeze, f)
+                mn = float(vals.min())
+                if mn < 0.0 and mn < anchor:
+                    f = anchor / (anchor - mn) if anchor > 0 else 0.0
+                    sel = mask & (ch < anchor)
+                    ch[sel] = anchor + (ch[sel] - anchor) * f
+                    squeeze = min(squeeze, f)
         np.rint(rgb, out=rgb)
         np.clip(rgb, 0, 255, out=rgb)
     return 1.0 - squeeze
@@ -211,19 +241,24 @@ def align(img, clean_rgb, protect_motif=False):
     # the clean colour integer-exactly with anchored compression for the overflow.
     opaque = a[..., 3] > 0
     if protect_motif:
-        # Ground only: the same helper, on the pixels that ARE the ground, so the
-        # background lands on the clean colour integer-exactly exactly as before.
-        d = np.linalg.norm(rgb - bg, axis=2)
-        ground = opaque & (d <= MOTIF_NEAR)
-        before = rgb.copy()
-        clipped = shift_mask_to_clean(rgb, ground, clean_rgb, measure=top & ground)
-        # Then feather the SAME delta outward over the ramp, fading to nothing on the
-        # motif, so the transition from shifted ground to untouched motif is gradual.
-        delta = (rgb - before)[ground]
-        step = np.median(delta, axis=0) if len(delta) else np.zeros(3)
-        w = np.clip((MOTIF_FAR - d) / (MOTIF_FAR - MOTIF_NEAR), 0.0, 1.0)[..., None]
-        ramp = opaque & (d > MOTIF_NEAR)
-        rgb[ramp] = np.clip(before[ramp] + step * w[ramp], 0, 255)
+        # THE DELTA IS MEASURED ON THE WHOLE TOP FACE, exactly as the plain path does,
+        # and only its APPLICATION is weighted. Measuring it on the ground subset
+        # instead was a real regression, caught before it shipped: grass came back at
+        # [21.2 86.1 57.7] with a spread of 21 in green where the clean colour is
+        # [20 82 59] and the spread must be 0 - the seam he cares about, broken to fix
+        # the motif. The background is a trimmed median dominated by ground pixels, so
+        # giving those the full delta lands it exactly while the motif keeps its colour.
+        w = np.clip((MOTIF_FAR - np.linalg.norm(rgb - bg, axis=2))
+                    / (MOTIF_FAR - MOTIF_NEAR), 0.0, 1.0)[..., None]
+        clipped = 0.0
+        for _ in range(4):
+            cur = background_of(rgb, top)
+            delta = np.rint(clean_rgb - cur)
+            if not np.abs(delta).sum():
+                break
+            rgb[opaque] = np.clip(rgb[opaque] + delta * w[opaque], 0, 255)
+        # what the ramp cost the motif, reported like the plain path's squeeze
+        clipped = float(((rgb[top] <= 0) | (rgb[top] >= 255)).any(1).mean())
     else:
         clipped = shift_mask_to_clean(rgb, opaque, clean_rgb, measure=top)
     rim_suppress(rgb, top, clean_rgb)
@@ -232,7 +267,10 @@ def align(img, clean_rgb, protect_motif=False):
     return Image.fromarray(out.astype(np.uint8), "RGBA"), bg, clipped
 
 
-def main():
+def main(only_flavour=None):
+    """`only_flavour` limits the rewrite - a details fix must not re-hash the whole
+    library, because every rewritten tile gets a new content-hashed name and the base
+    tile sets he has approved point at the old ones."""
     idx_path = os.path.join(TOPS, "index.json")
     idx = json.load(open(idx_path))
     wrote = misfits = 0
@@ -260,6 +298,8 @@ def main():
         # hash, the index points at the current name, and every stale name is deleted -
         # so a cache can only ever show a coherent old version or a missing image,
         # never a wrong-pixel mix. The class is gone, not patched.
+        if only_flavour and sheet.get("flavour") != only_flavour:
+            continue
         post_files = []
         for name in sheet["tiles"]:
             img = Image.open(os.path.join(d, name))
@@ -335,4 +375,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    _ap = argparse.ArgumentParser()
+    _ap.add_argument("--only-flavour", help="rewrite only sheets of this flavour")
+    _a = _ap.parse_args()
+    main(only_flavour=_a.only_flavour)
