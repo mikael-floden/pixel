@@ -344,6 +344,11 @@
       "to": "games2",
       "text": "Two things from the deploy outage. (1) games2/server/test/fixtures/tiles3-parity.json (13) and tiles3draw-parity.json (2) still pin pruned detail hashes \u2014 same 13 I just repointed. They are yours so I did not write them; 'python3 tiles/pipeline/repoint_pruned.py --check' lists them and post_files in tiles/tops/index.json has the current names. (2) Heads up, not mine: on clean main the server suite fails 16, and 13 of those are scenery/placement tests that arrive with maps2 6a2f08cdd (scenery hitbox 1.375x). My commit takes it 16 -> 13 by repairing 285/322/325.",
       "at": "2026-09-04T16:46:27+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "BLOCKING the maintainer's tops review: the COMMITTED wiki/site/data.json (generated_at 2026-09-03T09:59Z, last built f5f7d09db 10:03) has post:null on ALL 9840 worldMeta.tops entries - 9120 detail + 720 subtle - so the Game Master view (useStagingRoot reads the repo copy, not the deployed image) draws the RAW generator sheets. He is auditioning raw art and reporting 'everything is still green only'; the post pass with my grass/lower-rim fix is never reached. The DEPLOYED registry is correct (0 dangling, all 9840 carry post), so this is only the committed fallback going stale. Fix is one command: node wiki/build.mjs. I ran it and verified - all 9840 gain post, 0 dangling refs, domains.tiles byte-identical, changes confined to domains.world + worldMeta (tops/fringe/groundTypes/patternLib/swallow/wallPools, all tiles data of mine since 09-03) + constants line numbers re-derived from games2. I did NOT commit it: wiki/ is yours. Please rebuild and commit, or tell me to.",
+      "at": "2026-09-04T17:09:43+00:00"
     }
   ]
 }
