@@ -272,6 +272,26 @@ def lower_rim_to_palette(rgb, top, clean_rgb, rings=LOWER_RIM):
     return n
 
 
+# WHICH GROUNDS THE PALETTE REMAP IS ALLOWED ON, and nothing else runs it.
+#
+# The remap is only sound where a detail's MOTIF is a different hue family from the
+# ground, because the leading-channel test is what separates the two. Grass qualifies:
+# blades are green, the pinecone is brown. LAVA does not - its black cracks, pink
+# mottling and glowing veins are all in the ground's own orange family, so they are
+# classified as ground and repainted. Rendered against the previous generation, that
+# flattened three of four lava tiles to near-uniform orange.
+#
+# Three automatic discriminators were tried and all three failed, so none is used:
+#   * luminance-structure retention - on the maintainer's own tile, REMOVING the lime
+#     IS a spread reduction (60.9%), so the guard cannot tell the fix from the damage
+#     and skipped the exact tile it was built for;
+#   * hue/saturation only, value preserved - lava carries structure in saturation too,
+#     retention 22-70%;
+#   * off-hue selection with a colourfulness floor - same, min 22%.
+# A ground joins this list when its details have been rendered against the previous
+# generation and LOOKED AT. Adding one is a one-line change; guessing is not.
+PALETTE_REMAP_GROUNDS = ("grass",)
+
 _SPREAD = {}
 
 
@@ -442,7 +462,10 @@ def align(img, clean_rgb, protect_motif=False, spread=None):
         vtop = vis["top"] if vis else top
         lower_rim_to_palette(rgb, vtop, clean_rgb)
         # LAST, so nothing downstream re-spreads the ground off the palette again.
-        ground_to_palette(rgb, vtop, clean_rgb, spread if spread else 16.2)
+        # `spread` is None for a ground not in PALETTE_REMAP_GROUNDS, and that is the
+        # switch: those keep the plain translated art they had before this pass.
+        if spread:
+            ground_to_palette(rgb, vtop, clean_rgb, spread)
     out = a.copy()
     out[..., :3] = np.clip(np.rint(rgb), 0, 255).astype(int)
     return Image.fromarray(out.astype(np.uint8), "RGBA"), bg, clipped
@@ -485,9 +508,10 @@ def main(only_flavour=None):
         for name in sheet["tiles"]:
             img = Image.open(os.path.join(d, name))
             is_detail = sheet.get("flavour") == "detail"
+            remap = is_detail and g in PALETTE_REMAP_GROUNDS
             aligned, bg, clipped = align(
                 img, clean, protect_motif=is_detail,
-                spread=ground_spread(g) if is_detail else None)
+                spread=ground_spread(g) if remap else None)
             if aligned is None:
                 post_files.append(None)
                 continue
