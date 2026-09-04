@@ -1465,7 +1465,11 @@ export class WorldScene extends Phaser.Scene {
   // What the last ground pass resolved and drew, plus how long it took. The
   // pass runs on the ground RT's own latch (every GROUND_MARGIN/2 of camera
   // drift), never per frame — `ms` is what makes that budget checkable.
-  private t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: 0, ms: 0, culled: 0, composed: 0, composeMs: 0 };
+  /** `underlays` counts the FALLBACK diamonds actually drawn — one per cell
+   *  whose surface op did not draw. It used to be one per flat cell; if this
+   *  climbs back toward `cells`, art is not landing and the pass is paying for
+   *  the insurance again. */
+  private t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: 0, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0 };
   /** The ground has drawn SOMETHING this world — sticky, because after a
    *  scroll t3stats counts only the exposed bands (which can be all void). */
   private groundPainted = false;
@@ -13632,7 +13636,7 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     this.groundSliceStats.runs++;
-    this.t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0 };
+    this.t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0 };
     // The cache keeps the FULL window's cells, not the band's — the next step
     // wants the ~82% it already knows.
     if (this.groundCacheOn && this.t3keepIdx) this.t3pruneCache(this.t3keepIdx);
@@ -14175,7 +14179,7 @@ export class WorldScene extends Phaser.Scene {
     // Published BEFORE the passes and mutated in place: a gate reads these
     // counters to tell a correct dark frame from a black one, and an exception
     // mid-pass must leave what actually drew visible, not last frame's numbers.
-    const stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0 };
+    const stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0 };
     this.groundCulled = 0;
     const built0 = tex?.stats.built ?? 0;
     const buildMs0 = tex?.stats.buildMs ?? 0;
@@ -14256,19 +14260,44 @@ export class WorldScene extends Phaser.Scene {
        * pass whose draw calls measured ~20% of its cost. Skipped for liquids,
        * which already ARE that diamond, and for raised cells, whose wall stack
        * is drawn from its own art. */
-      if (cell.kind === "field" && cell.art?.kind !== "liquid") {
+      /* ...AND THE UNDERLAY IS A FALLBACK NOW, NOT A FLOOR (2026-09-04).
+       *
+       * It was drawn under EVERY flat cell — one extra batchDrawFrame each,
+       * against a pass whose draw calls measured ~20% of its cost — because in
+       * the middle of the zigzag hunt a hole could appear and nothing knew
+       * why. Now it is known: a composed transition tile covered 924 texels
+       * where the plate it replaces covers 2012, and the difference was
+       * painted by nothing. That is fixed, and the maintainer's magenta ground
+       * clear is what proved it.
+       *
+       * So the insurance is kept but stops being paid on every cell: the ops
+       * are taken FIRST, and the flat diamond is drawn only when nothing in
+       * them covers the surface — a dropped op, art that has not landed yet.
+       * Order does not matter in that case, because it is then the only thing
+       * drawn on this cell. The whole point of the old draw-it-first ordering
+       * was that something might land on top of it, and something landing on
+       * top of it is exactly the case this now skips.
+       *
+       * This is only safe BECAUSE the boundary carries its wall band again: a
+       * transition tile that still covered 924 texels would leave the same
+       * 1088-texel hole with nothing beneath it. The two changes go together. */
+      const useBoundary = !!bop && cell.kind === "field" && !this.noTransitions;
+      const ops = useBoundary ? null : this.t3Try(`blits ${col},${row}`, () => cellBlits(tex, this.t3tm, cell, cut), []);
+      const covered = useBoundary || (ops !== null && ops.some((o) => o.role === "surface"));
+      if (!covered && cell.kind === "field" && cell.art?.kind !== "liquid") {
         const under = this.t3Try(`under ${col},${row}`, () => tex.groundUnderlay(cell), null);
         if (under) {
           this.t3Blit(rt, under, ax, ay, tint);
           stats.blits++;
+          stats.underlays++;
         }
       }
-      if (bop && cell.kind === "field" && !this.noTransitions) {
+      if (useBoundary) {
         this.t3Blit(rt, bop, ax, ay, tint);
         stats.blits++;
         stats.boundaries++;
       } else {
-        for (const op of this.t3Try(`blits ${col},${row}`, () => cellBlits(tex, this.t3tm, cell, cut), [])) {
+        for (const op of ops ?? []) {
           this.t3Blit(rt, op, ax, ay, tint);
           stats.blits++;
         }
