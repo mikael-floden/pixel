@@ -1776,9 +1776,40 @@ export class Tiles3 {
   /** THE COMPOSED BOUNDARY THIS CELL WEARS, or null. The Wang index is read from
    *  the four corners of the cell BEING DRAWN — `8*NW + 4*NE + 2*SW + 1*SE`, bit
    *  set = side_b, the ground later in the library's `side_order` — so 0 and 15
-   *  are the pure field and draw no boundary. All four corners must share a
-   *  level, and NO LIQUID may touch the quad: a coast is a hard edge, not a
-   *  blend. */
+   *  are the pure field and draw no boundary. NO LIQUID may touch the quad on
+   *  this cell's own plane: a coast is a hard edge, not a blend.
+   *
+   *  A CORNER OFF THIS CELL'S LEVEL IS NOT ON THIS TILE, so it carries this
+   *  cell's own ground. That is the whole cross-level rule, and it falls out of
+   *  where the raster goes: a composed boundary is drawn INSTEAD of this cell's
+   *  plate, at this cell's own column and at `columnY(..., z0)` — one flat 64x46
+   *  diamond on the plane z0. A corner one storey up is 15 px higher on screen
+   *  and a corner one storey down is 15 px lower; neither has a single texel
+   *  inside this box. Painting its ground into a quadrant of this diamond would
+   *  put the ground at the FOOT of a cliff onto the cliff TOP (or the reverse),
+   *  which is why the old rule refused the quad outright. But refusing the whole
+   *  quad also threw away the corners that ARE on the plane: a terrace lip whose
+   *  own top face carries a real grass/stone edge got a hard diamond edge purely
+   *  because the fourth corner of its quad happened to step. Folding per corner
+   *  keeps both halves of the truth — a cliff edge stays a hard edge (softened
+   *  by the fade, which crosses levels), and a same-plane ground change blends
+   *  wherever it actually is.
+   *
+   *  SAME-LEVEL QUADS ARE UNTOUCHED, TO THE CELL: every corner passes the level
+   *  test, so the fold is the identity and the index, mask, plates and key are
+   *  byte-for-byte what they were. Measured over the_game (262,144 cells):
+   *  3,257 -> 3,563 boundaries, 306 added, 0 existing boundary lost and 0
+   *  changed; 2,652 -> 2,916 distinct compositions world-wide.
+   *
+   *  DIVERGES FROM render3 (`wang_surface`, `len({L(*c)}) == 1`), deliberately
+   *  and in the same direction the fade already went — see maps2's hand-off in
+   *  the commit. The reference renderer draws one still image of a world nobody
+   *  walks; the game is the thing he is looking at.
+   *
+   *  `topOnly` NEEDS NO NEW RULE: the raster replaces THIS cell's plate, so the
+   *  cell's own level decides it exactly as before — level 0 keeps the full
+   *  2,012-texel silhouette (`capWallToSurface`), raised is the 924-texel top
+   *  face and the cap's x-over-y art is the wall. */
   boundaryAt(
     view: World3View,
     frame: Frame,
@@ -1804,8 +1835,19 @@ export class Tiles3 {
     if (!g0 || !g1 || !g2 || !g3) return null;
     if (g0 === g1 && g0 === g2 && g0 === g3) return null;
     const z0 = L(x, y);
-    if (L(x + 1, y) !== z0 || L(x, y + 1) !== z0 || L(x + 1, y + 1) !== z0) return null;
-    let gs: (string | null)[] = [g0, g1, g2, g3];
+    /* THE LEVEL FOLD (see the doc comment): a corner that is not on this cell's
+     * plane is not on this tile, so it votes with this cell's own ground. When
+     * every corner shares the level this is the identity and nothing changes. */
+    let gs: (string | null)[] = [
+      g0,
+      L(x + 1, y) === z0 ? g1 : g0,
+      L(x, y + 1) === z0 ? g2 : g0,
+      L(x + 1, y + 1) === z0 ? g3 : g0,
+    ];
+    /* The one-ground early-out again, because the fold can produce it: a cliff
+     * whose only ground change is over the edge composes nothing, which is the
+     * old rule's answer for that quad and still the right one. */
+    if (gs[1] === g0 && gs[2] === g0 && gs[3] === g0) return null;
     let folded = false;
     /* A THREE-GROUND JUNCTION STILL GETS A BOUNDARY. Falling back to the pure
      * plate there drew the cell's raw diamond edge — a hard straight segment
@@ -1828,6 +1870,10 @@ export class Tiles3 {
     }
     const uniq = new Set(gs as string[]);
     if (uniq.size !== 2) return null;
+    /* AFTER THE FOLD, so the veto is about this cell's own plane. A liquid at
+     * this level still kills the quad — a coast is a hard edge, unchanged. A
+     * liquid two storeys down is not on this tile and cannot veto a ground
+     * change that is (4 cells on the_game). */
     if ([...uniq].some((q) => view.isLiquid(q))) return null;
     const sorted = [...uniq].sort();
     const [sa, sb] = this.sideRoles(sorted[0], sorted[1]);
@@ -1861,8 +1907,9 @@ export class Tiles3 {
         memberB: pb.memberIndex,
         folded,
         /* TOP FACE ONLY at every raised level, so the cap's own wall survives.
-         * A quad is one level by the test above and never touches a liquid, so
-         * the cell's own level decides it outright. */
+         * The raster replaces THIS cell's plate and is pasted at this cell's
+         * own column and level, so the cell's own level decides it outright —
+         * a quad that spans levels changes nothing here. */
         topOnly: z0 > 0 || undefined,
         sx: columnX(frame, x, y),
         sy: columnY(frame, x, y, z0),
