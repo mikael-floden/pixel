@@ -1539,7 +1539,7 @@ export class WorldScene extends Phaser.Scene {
   private perfBeaconAt = 0;
   private perfBeaconFrom: { x: number; y: number } | null = null;
   private perfHideHooked = false;
-  private perfStack: number[] = [];
+  private perfStack: { t0: number; child: number }[] = [];
   private perfAcc: Record<string, { n: number; ms: number; max: number }> = {};
   private perfFrames: number[] = [];
   private perfLast = 0;
@@ -1599,7 +1599,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private ps(): void {
-    if (this.perfOn) this.perfStack.push(performance.now());
+    if (this.perfOn) this.perfStack.push({ t0: performance.now(), child: 0 });
   }
   /** Arm or disarm the perf beacon from the settings panel, and remember it —
    *  the installed app cannot be given a query parameter. Arming also turns on
@@ -1964,9 +1964,22 @@ export class WorldScene extends Phaser.Scene {
 
   private pe(key: string): void {
     if (!this.perfOn) return;
-    const t0 = this.perfStack.pop();
-    if (t0 === undefined) return;
-    this.pAdd(key, performance.now() - t0);
+    const f = this.perfStack.pop();
+    if (f === undefined) return;
+    const d = performance.now() - f.t0;
+    // SECTIONS ARE SELF TIME, SO THEY SUM TO THE FRAME. `rebuildScenery` is
+    // called from inside `rebuildOccluders`, so an inclusive timer billed the
+    // same milliseconds twice and `other` — the frame minus every section, the
+    // one number that says how much is still unmeasured — went NEGATIVE: his
+    // worst-frame record read `rebuildScenery` 91.7 + `rebuildOccluders` 125.3
+    // inside a 168.9 ms frame, other -84.9. A span hands its whole duration up
+    // to its parent, which subtracts it, so a parent reports only its own work
+    // and nesting can never double-count. (`pAdd` callers that are not stack
+    // pairs — the renderer, which brackets on game events outside `update` —
+    // are unaffected: the stack is empty there.)
+    const parent = this.perfStack[this.perfStack.length - 1];
+    if (parent) parent.child += d;
+    this.pAdd(key, d - f.child);
   }
   /** One measured span into the beacon's accumulators. Split out of `pe` so a
    *  span that is NOT a stack pair — the renderer, which starts and ends on
