@@ -192,6 +192,7 @@ import {
   faceKey as t3FaceKey,
   sheetPaths,
   surfaceKey as t3SurfaceKey,
+  surfaceY as t3SurfaceY,
   tiles3DataFrom,
   viewFromParsed,
   type Tiles3DocKey,
@@ -4261,6 +4262,18 @@ export class WorldScene extends Phaser.Scene {
           if (!on) this.t3ringQueue = [];
         }
         return this.groundPrefetch;
+      },
+      /** THE SHADOW DEBUG MODE (0 on, 1 off, 2 RED), as a hook. The chat menu
+       *  has had this for a while and it is the single best discriminator this
+       *  game owns — the maintainer killed the whole shadow theory with one tap
+       *  of it. A headless run needs it for the same reason: a dark shape on
+       *  the ground is either art or a shadow, and turning the shadows red
+       *  answers that in one frame instead of an afternoon. */
+      shadows: (mode?: number) => {
+        const n = this.night;
+        if (!n) return null;
+        if (typeof mode === "number") n.shadowDbg = ((mode % 3) + 3) % 3;
+        return ["on", "off", "red"][n.shadowDbg];
       },
       /** THE TWO TRANSITION SWITCHES, as hooks rather than chat-menu entries
        *  (the menu keeps its own copies). A headless run needs to A/B the
@@ -14635,7 +14648,7 @@ export class WorldScene extends Phaser.Scene {
                 culled++;
                 continue;
               }
-              this.occluders.push(this.occImage(op.key, bx, op.y, oDepth, col, row));
+              this.occluders.push(this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck"));
             }
             this.occluderMeta.push({
               col, row, top: d.level, solid: false, depth: oDepth,
@@ -14685,10 +14698,19 @@ export class WorldScene extends Phaser.Scene {
             culled++;
             continue;
           }
-          this.occluders.push(this.occImage(fk, bx, by - lvl * lh, oDepth, col, row));
+          this.occluders.push(this.occTint(this.occImage(fk, bx, by - lvl * lh, oDepth, col, row), "face"));
         }
-        if (columnShows(bx, by - topL * lh, by + tileSize)) {
-          this.occluders.push(this.occImage(topL === cell.level ? topKey : fk, bx, by - topL * lh, oDepth, col, row));
+        /* THE CAP IS PASTED WHERE THE GROUND PASS PASTES IT. A surface is a
+         * 64x46 plate anchored at the cell's own `sy`; a wall course is 64x64
+         * review art anchored ten rows higher (see `surfaceY`). One y for both
+         * put every surface cap ten pixels above its own copy in the ground
+         * texture. A cut column (topL < level) draws the face art, which is a
+         * course, so it keeps the column's own top. */
+        const capSurface = topL === cell.level ? t3SurfaceY(cell) : null;
+        const capX = capSurface !== null ? cell.sx : bx;
+        const capY = capSurface !== null ? capSurface : by - topL * lh;
+        if (columnShows(capX, capY, by + tileSize)) {
+          this.occluders.push(this.occTint(this.occImage(topL === cell.level ? topKey : fk, capX, capY, oDepth, col, row), "cap"));
           /* THE CAP WEARS ITS TRANSITION HERE TOO — and not doing so is the
            * whole of "the transition only works on level 0" (maintainer, for
            * weeks, with photographs: "As soon as I go up on a hill or something
@@ -14713,10 +14735,13 @@ export class WorldScene extends Phaser.Scene {
            * AFTER the cap, at the same anchor and depth, exactly as the ground
            * pass draws it after `cellBlits` — both rasters are the same 924
            * texels, so the transition simply replaces the plain cap. */
-          const ob = topL === cell.level ? this.t3boundaryOf(t3, col, row) : null;
+          const ob =
+            topL === cell.level && !this.noTransitions ? this.t3boundaryOf(t3, col, row) : null;
           if (ob?.topOnly && !(mask && (!cuts || this.t3QuadCut(cuts, col, row)))) {
             const obop = this.t3Try(`occ boundary ${col},${row}`, () => tex.opsForBoundary(ob), null);
-            if (obop) this.occluders.push(this.occImage(obop.key, bx, by - topL * lh, oDepth, col, row));
+            // `obop` carries the boundary's own absolute paste point (the same
+            // one the ground pass blits it at) — never re-derive it here.
+            if (obop) this.occluders.push(this.occTint(this.occImage(obop.key, obop.x, obop.y, oDepth, col, row), "boundary"));
           }
         } else culled++;
         this.occluderMeta.push({
@@ -15995,6 +16020,22 @@ export class WorldScene extends Phaser.Scene {
    *  The pool is a multimap because the old set could legitimately hold two
    *  identical images. A pooled image that the scene has since destroyed
    *  (`scene` gone) is dropped, never reused. Depth: see OCC_DEPTH_EPS. */
+  /** DEV: tint every occluder by WHICH PRODUCER made it — deck slab, wall
+   *  course, cap, transition — so a headless run can NAME the thing that drew a
+   *  stray diamond instead of arguing with its geometry. Set
+   *  `window.__t3occtint = 1` and force a rebuild (the pass only reruns after
+   *  ~96px of camera movement). Off by default and free: it returns the image
+   *  untouched unless one is actually tinted, and occluders are POOLED, so a
+   *  tint left on a recycled image would outlive the session that set it. */
+  private occTint(img: Phaser.GameObjects.Image, role: string): Phaser.GameObjects.Image {
+    const on = (window as unknown as { __t3occtint?: unknown }).__t3occtint;
+    if (!on) return img.isTinted ? img.clearTint() : img;
+    const c: Record<string, number> = {
+      deck: 0xff00ff, face: 0xffff00, cap: 0x00ffff, boundary: 0x00ff00, scenery: 0xff8800,
+    };
+    return img.setTint(c[role] ?? 0xffffff);
+  }
+
   private occImage(tex: string, x: number, y: number, depth: number, col: number, row: number): Phaser.GameObjects.Image {
     const k = `${col},${row},${tex},${x},${y},${depth}`;
     const have = this.occPool.get(k);

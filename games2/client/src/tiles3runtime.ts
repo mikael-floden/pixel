@@ -480,7 +480,14 @@ export function deckArtPaths(d: Tiles3DeckCell, out: (p: string) => void): void 
 /** The drawable texture key for a cell's SURFACE — what an occluder copy of
  *  that cell must draw. Null while the art is still loading. */
 export function surfaceKey(t3: Tiles3Textures, tex: TextureManagerLike, cell: Tiles3Cell): string | null {
-  if (cell.kind === "wall") {
+  /* A DRESSED WALL WEARS ITS SURFACE, here as in the ground pass. `cellOps`
+   * draws the stack and then the cell's own surface on top of the cap; an
+   * occluder copy that drew only the stack cap put the plain x-over-y review
+   * tile back over the maintainer's tile set on every dressed cliff — the same
+   * cover-up as the transition, one layer down. Its raster is a PLATE and is
+   * pasted at the cell's own y, which is why the caller must use `surfaceY`
+   * rather than the column's top. */
+  if (cell.kind === "wall" && !cell.dressed) {
     const cap = cell.wall?.stack[cell.wall.stack.length - 1]?.tile;
     if (!cap?.path) return null;
     const k = artKey(cap.path);
@@ -494,6 +501,26 @@ export function surfaceKey(t3: Tiles3Textures, tex: TextureManagerLike, cell: Ti
   if (art.kind === "conform" || art.topOnly) return t3.plate(art, cell.ground);
   const k = plateKey(art, cell.ground);
   return tex.exists(k) ? k : null;
+}
+
+/** WHERE `surfaceKey`'S RASTER IS PASTED, and the reason this function exists.
+ *
+ *  The two art formats in this game do not share an anchor. A wall course is
+ *  64x64 REVIEW art whose diamond starts ten rows down, so the resolver pastes
+ *  it at `columnY(...) - TOP_Y`; a surface is a 64x46 PLATE whose diamond
+ *  starts at row 0, so it is pasted at the cell's own `sy`. The occluder pass
+ *  computed one y for both (`by - level * lh`) and so drew every SURFACE ten
+ *  pixels above its own copy in the ground texture — a diamond poking out past
+ *  the top of a roof, which is what the maintainer circled: "a roof tile that
+ *  is rendered outside the roof". It shows wherever a raised cell's cap is a
+ *  surface rather than a wall course, which on a building is the one corner
+ *  cell that has no exposed face.
+ *
+ *  Null when the cap is a wall course, which the caller then anchors its own
+ *  way — that IS the column's top. */
+export function surfaceY(cell: Tiles3Cell): number | null {
+  if (cell.kind === "wall" && !cell.dressed) return null;
+  return cell.pasteY ?? cell.sy;
 }
 
 /** The repeated storey tile's key for a cell's column — the FACE an occluder
