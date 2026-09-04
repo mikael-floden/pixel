@@ -1607,7 +1607,8 @@ export class Tiles3 {
       /* NEVER SILENT AGAIN. This is the whole symptom of the missing-pair bug:
        * the band runs, finds nothing, and draws the plain field. */
       this.stats.deadFadePairs.push(key);
-      (this.data.warn ?? ((m: string) => console.warn(m)))(
+      this.warn(
+        `deadfade:${key}`,
         `tiles3: no fade art for ${field} next to ${other} — that edge draws hard`,
       );
     }

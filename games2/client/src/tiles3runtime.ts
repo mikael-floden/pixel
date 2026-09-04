@@ -441,11 +441,26 @@ export function cellBlits(
 /** Every repo-relative art file one resolved cell can draw — what the loader is
  *  asked for BEFORE the blits are taken, so the next redraw has it. */
 export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void): void {
-  if (cell.kind === "field") {
-    if (cell.art && cell.art.kind !== "liquid") out(cell.art.path);
-    return;
-  }
-  if (cell.wall) for (const s of cell.wall.stack) if (s.tile.path) out(s.tile.path);
+  /* THE SURFACE IS NAMED WHATEVER THE CELL'S KIND IS. A WALL cell wears the
+   * maintainer's set on its cap — `resolveCell` dresses it and `cellOps` blits
+   * it over the courses — so its file has to be named HERE or nothing ever asks
+   * for it. This one function feeds both consumers that decide whether a file
+   * can be drawn at all: the streaming loader (`Tiles3Loader`; art that is not
+   * resident has its op DROPPED on purpose, and nothing is in flight to repair
+   * the hole) and `scripts/ship-tiles3.ts`, which copies exactly these paths
+   * into the image, so a path missing here is a 404 at `/assets/tiles/…` in
+   * production and only in production. Measured on the_game: 3,670 wall cells,
+   * every one of them dressed, and 288 of their caps wear a FADE — 13.5% of
+   * every fade the resolver places, none of which could ever have drawn.
+   *
+   * `dressed` is the maintainer's `own_top`: false means the x-over-y tile keeps
+   * its own top and no surface is painted over it, so there is nothing to name.
+   * A liquid never reaches this arm (it is always a field cell) and paints its
+   * diamond from a colour, not a file. */
+  if (cell.art && cell.art.kind !== "liquid" && (cell.kind === "field" || cell.dressed))
+    out(cell.art.path);
+  if (cell.kind !== "field" && cell.wall)
+    for (const s of cell.wall.stack) if (s.tile.path) out(s.tile.path);
 }
 
 export function boundaryArtPaths(b: Tiles3Boundary, out: (p: string) => void): void {
