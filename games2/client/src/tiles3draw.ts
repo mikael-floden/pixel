@@ -979,6 +979,24 @@ export interface TextureManagerLike {
   exists(key: string): boolean;
   get(key: string): { getSourceImage(): unknown } | undefined;
   addCanvas(key: string, source: CanvasLike): { setFilter(mode: number): unknown } | null;
+  /** REGISTER A COMPOSITION FROM RAW BYTES — no canvas, no readback.
+   *
+   * Wired only under WebGL (Phaser's `addUint8Array` is WebGL-only), which is
+   * why it is optional and why the canvas path below is kept: the tests and any
+   * canvas fallback still go through it. Measured cost of the canvas path per
+   * composed texture, and it is 91-97% of a composition on his phone: a new
+   * <canvas> element, a 2D context, createImageData + putImageData, and then
+   * Phaser's `addCanvas` builds a CanvasTexture which immediately does a full
+   * `getImageData` READBACK of the canvas it was just handed and retains that
+   * ImageData for the texture's life (CanvasTexture.js:86,118) — a GPU->CPU
+   * round trip per composition, on a context created without
+   * `willReadFrequently`, and three retained copies of every raster (canvas +
+   * ImageData + GPU) against a deliberately unbounded cache that reached 7,867
+   * textures in his beacon. `addUint8Array` uploads the bytes once and keeps
+   * one. Filtering is not a risk: `createUint8ArrayTexture` hardcodes
+   * gl.NEAREST for both min and mag (WebGLRenderer.js), which is the pixel-art
+   * rule this repo enforces everywhere. */
+  addRaw?(key: string, data: Uint8Array, w: number, h: number): unknown | null;
   remove(key: string): unknown;
 }
 
@@ -1202,6 +1220,34 @@ export class Tiles3Textures {
     });
     if (this.stats.built !== before) this.stats.builtBoundary++;
     return out;
+  }
+
+  /** Hand a finished raster to the texture manager. Raw bytes where the
+   *  renderer allows it (see `addRaw`); a canvas otherwise. */
+  private registerRaster(key: string, px: Pixels): boolean {
+    const tm = this.o.textures;
+    if (tm.addRaw) {
+      // A ZERO-COPY VIEW: Phaser tests `source instanceof Uint8Array`, and a
+      // Uint8ClampedArray is not one, so the view is required — but it shares
+      // the same buffer and copies nothing.
+      const u8 =
+        px.data instanceof Uint8Array
+          ? px.data
+          : new Uint8Array(px.data.buffer, px.data.byteOffset, px.data.byteLength);
+      if (tm.addRaw(key, u8, px.w, px.h)) return true;
+      // Fall through: a rejected key or a renderer that could not take it is
+      // better served by the canvas than by a missing tile.
+    }
+    const cv = (this.o.canvas ?? domCanvas)(px.w, px.h);
+    cv.width = px.w;
+    cv.height = px.h;
+    const ctx = cv.getContext("2d");
+    if (!ctx) return false;
+    const id = ctx.createImageData(px.w, px.h);
+    id.data.set(px.data);
+    ctx.putImageData(id, 0, 0);
+    tm.addCanvas(key, cv)?.setFilter(NEAREST);
+    return true;
   }
 
   /** Arm this frame's compose allowance (see `composeBudgetMs`). `Infinity`
@@ -1440,18 +1486,10 @@ export class Tiles3Textures {
       this.stats.missing++;
       return null;
     }
-    const cv = (this.o.canvas ?? domCanvas)(px.w, px.h);
-    cv.width = px.w;
-    cv.height = px.h;
-    const ctx = cv.getContext("2d");
-    if (!ctx) {
+    if (!this.registerRaster(key, px)) {
       this.stats.missing++;
       return null;
     }
-    const id = ctx.createImageData(px.w, px.h);
-    id.data.set(px.data);
-    ctx.putImageData(id, 0, 0);
-    this.o.textures.addCanvas(key, cv)?.setFilter(NEAREST);
     this.mine.set(key, true);
     this.stats.built++;
     const ms = typeof performance !== "undefined" ? performance.now() - t0 : 0;

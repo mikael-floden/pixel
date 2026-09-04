@@ -1484,6 +1484,11 @@ export class WorldScene extends Phaser.Scene {
   private t3sheets: PatternSheets | null = null; // silhouette + masks + borders
   private t3route: UrlRoute = {}; // staging + version pin, injected into both modules
   private t3tm: TextureManagerLike = this.t3TextureManager(); // see t3TextureManager
+  /** Can this renderer take a composition as raw bytes? Resolved on first use
+   *  (the adapter above is built before `this.game` exists). */
+  private t3raw: boolean | null = null;
+  /** `__ml.groundRaw(false)` — force new compositions back onto the canvas. */
+  private t3rawOff = false;
   private t3loader: Phaser.Loader.LoaderPlugin | null = null; // see tiles3Loader
   // What the last ground pass resolved and drew, plus how long it took. The
   // pass runs on the ground RT's own latch (every GROUND_MARGIN/2 of camera
@@ -2301,6 +2306,8 @@ export class WorldScene extends Phaser.Scene {
   private groundLastShift = { x: 0, y: 0 };
   private groundSliced = groundPathFast();
   private groundRedrewThisFrame = false;
+  /** Full ground paints, so a frame can tell one happened — see below. */
+  private groundFullRuns = 0;
   private worldUp = false;
   /** When the boot hold's readiness condition first became true — see
    *  hideLoadingWhenTerrainIsUp. 0 while not ready. */
@@ -4479,16 +4486,24 @@ export class WorldScene extends Phaser.Scene {
        *  rather than infer it from counters. */
       t3png: (key: string) => {
         const tx = this.textures.exists(key) ? this.textures.get(key) : null;
-        const src = tx?.getSourceImage() as HTMLCanvasElement | HTMLImageElement | undefined;
-        if (!src) return null;
-        const w = (src as HTMLCanvasElement).width;
-        const h = (src as HTMLCanvasElement).height;
+        // A composed texture is raw bytes under WebGL — see rawTexPixels.
+        const rawPx = this.rawTexPixels(key);
+        const src = rawPx ? null : (tx?.getSourceImage() as HTMLCanvasElement | HTMLImageElement | undefined);
+        if (!rawPx && !src) return null;
+        const w = rawPx ? rawPx.w : (src as HTMLCanvasElement).width;
+        const h = rawPx ? rawPx.h : (src as HTMLCanvasElement).height;
         const cv = document.createElement("canvas");
         cv.width = w;
         cv.height = h;
         const ctx = cv.getContext("2d");
         if (!ctx) return null;
-        ctx.drawImage(src as CanvasImageSource, 0, 0);
+        if (rawPx) {
+          const id = ctx.createImageData(w, h);
+          id.data.set(rawPx.data);
+          ctx.putImageData(id, 0, 0);
+        } else {
+          ctx.drawImage(src as CanvasImageSource, 0, 0);
+        }
         const d = ctx.getImageData(0, 0, w, h).data;
         let opaque = 0;
         const hist = new Map<string, number>();
@@ -4520,6 +4535,16 @@ export class WorldScene extends Phaser.Scene {
        *  (every boundary composed in the frame that wants it — the 1,276 ms
        *  freeze); no argument reports what is in force. Remembered, so an A/B
        *  survives the reload a phone needs. */
+      /** THE BISECT FOR THE RAW-BYTES REGISTRATION. `false` sends every NEW
+       *  composition back through the <canvas> path, so a picture defect can be
+       *  attributed to or cleared of it in one call — the same standing as
+       *  `?ground=legacy`. Only new compositions move; ones already registered
+       *  keep the path they were built on, which is what makes it safe to flip
+       *  live. */
+      groundRaw: (on?: boolean) => {
+        if (typeof on === "boolean") this.t3rawOff = !on;
+        return { raw: this.t3raw === true && !this.t3rawOff, forcedOff: this.t3rawOff };
+      },
       groundCompose: (ms?: number) => {
         if (typeof ms === "number") {
           this.composeMsOverride = ms;
@@ -8916,9 +8941,22 @@ export class WorldScene extends Phaser.Scene {
       if (this.perfBeacon) this.perfBeaconTick(now);
     }
     this.ps();
-    const groundBefore = this.groundSliceStats.runs + this.repaintStats.groundRuns;
+    /* A FULL PAINT COUNTS AS HAVING PAINTED, and it did not.
+     *
+     * `groundRedrewThisFrame` is what keeps the ring, the boundary retry and the
+     * band slice off a frame the player is already paying for — every one of
+     * them tests it. But it was derived from the SCROLL and CELL-REPAINT
+     * counters only, and the full branch bumps neither, so after the most
+     * expensive pass in the game (measured on his phone: redrawGround 1244,
+     * 1071, 1044 ms) the flag read false and that same frame went on to paint a
+     * band slice, compose up to GROUND_RING_COMPOSE more textures in the ring,
+     * and run a boundary repair. The one frame that most needed to be left
+     * alone was the only one nothing stood down for. */
+    const groundBefore =
+      this.groundSliceStats.runs + this.repaintStats.groundRuns + this.groundFullRuns;
     this.redrawGround();
-    this.groundRedrewThisFrame = this.groundSliceStats.runs + this.repaintStats.groundRuns !== groundBefore;
+    this.groundRedrewThisFrame =
+      this.groundSliceStats.runs + this.repaintStats.groundRuns + this.groundFullRuns !== groundBefore;
     this.pe("redrawGround");
     if (!this.groundRedrewThisFrame) {
       this.ps();
@@ -13562,6 +13600,31 @@ export class WorldScene extends Phaser.Scene {
       exists: (k) => this.textures.exists(k),
       get: (k) => (this.textures.exists(k) ? this.textures.get(k) : undefined),
       addCanvas: (k, src) => this.textures.addCanvas(k, src as HTMLCanvasElement),
+      /* RAW BYTES INSTEAD OF A CANVAS, under WebGL only — Phaser's
+       * `addUint8Array` is documented WebGL-only and `TextureSource.init` sends
+       * a Uint8Array down `createUint8ArrayTexture`, a path the Canvas renderer
+       * does not have. The gate is here rather than in tiles3draw so that
+       * module stays pure and its gates keep exercising both paths. */
+      addRaw: (k, data, w, h) => {
+        /* THE CHECK IS LAZY BECAUSE THIS ADAPTER IS A FIELD INITIALISER —
+         * `t3tm` is built while the Scene is being constructed, when
+         * `this.game` is still undefined, so reading the renderer here at wire
+         * time throws and takes the whole client down before it boots. Resolved
+         * once, on the first composition, by which time the game exists.
+         * Answering null falls through to the canvas path, which is exactly
+         * what a non-WebGL renderer needs. */
+        if (this.t3raw === null) {
+          const t = this.textures as unknown as { addUint8Array?: unknown };
+          this.t3raw =
+            this.game?.renderer?.type === Phaser.WEBGL && typeof t.addUint8Array === "function";
+        }
+        if (!this.t3raw || this.t3rawOff) return null;
+        return (
+          this.textures as unknown as {
+            addUint8Array(k: string, d: Uint8Array, w: number, h: number): unknown | null;
+          }
+        ).addUint8Array(k, data, w, h);
+      },
       remove: (k) => this.textures.remove(k),
     };
   }
@@ -13615,11 +13678,33 @@ export class WorldScene extends Phaser.Scene {
     };
   }
 
+  /* A COMPOSITION REGISTERED FROM RAW BYTES HAS NO DRAWABLE SOURCE, and every
+   * reader in this file assumed one. Composed textures go in as a Uint8Array
+   * under WebGL (see `addRaw`), so `getSourceImage()` answers the array itself:
+   * `src.width` is undefined and a `drawImage` of it throws. That would have
+   * silently broken `__ml.t3png` — the probe that exists precisely to settle
+   * whether a composed boundary is a real transition or a hard diamond, i.e.
+   * the repo's main instrument for the artefact class this renderer keeps
+   * being asked about. The bytes are right there; hand them back. */
+  private rawTexPixels(key: string): T3Pixels | null {
+    const tx = this.textures.exists(key) ? this.textures.get(key) : null;
+    const src = tx?.getSourceImage() as unknown;
+    if (!(src instanceof Uint8Array) && !(src instanceof Uint8ClampedArray)) return null;
+    const ts = (tx as unknown as { source?: { width: number; height: number }[] })?.source?.[0];
+    const w = ts?.width ?? 0;
+    const h = ts?.height ?? 0;
+    if (!w || !h || src.length < w * h * 4) return null;
+    return { w, h, data: new Uint8ClampedArray(src.buffer, src.byteOffset, w * h * 4) };
+  }
+
   /** Decoded RGBA behind a loaded texture. A texture whose source is already a
    *  canvas is read from its own context; an `<img>` is drawn into a scratch
-   *  one first. Null while the art is not resident. */
+   *  one first; raw bytes are handed straight back. Null while the art is not
+   *  resident. */
   private texPixels(key: string): T3Pixels | null {
     if (!this.textures.exists(key)) return null;
+    const raw = this.rawTexPixels(key);
+    if (raw) return raw;
     const src = this.textures.get(key)?.getSourceImage() as
       | (HTMLImageElement & HTMLCanvasElement)
       | undefined;
@@ -15836,6 +15921,7 @@ export class WorldScene extends Phaser.Scene {
       this.drawTiles3Ground(rt, ax, ay, win.u0, win.u1, win.v0, win.v1, mask, cuts, top);
       this.groundAnchor = { ax, ay, mask, top };
       this.groundLastMode = "full";
+      this.groundFullRuns++;
       return;
     }
     rt.setPosition(ax, ay);

@@ -1078,3 +1078,56 @@ test("the compose budget never refuses a PLATE — a plate has no fallback", { s
   assert.ok(key, "a plate composes with the budget fully spent");
   assert.equal(T.stats.deferred, 0, "and no deferral is recorded");
 });
+
+
+/* THE RASTERS ARE BINARY-ALPHA, WHICH IS WHY RAW BYTES AND A CANVAS UPLOAD THE
+ * SAME PICTURE.
+ *
+ * A composition is registered from raw bytes under WebGL (`addRaw` ->
+ * `TextureManager.addUint8Array`) instead of through a <canvas>, which is what
+ * removes the per-texture canvas element, the 2D context, the putImageData and
+ * Phaser's own full getImageData readback — 91-97% of a composition's cost on
+ * his phone. Both uploads run with UNPACK_PREMULTIPLY_ALPHA_WEBGL true
+ * (`canvasToTexture` passes pma true; `createUint8ArrayTexture` leaves it
+ * undefined and WebGLTextureWrapper defaults it to true), so they agree by
+ * construction — and premultiplying is the IDENTITY on a texel whose alpha is 0
+ * or 255, which is the only way the two paths could ever have diverged. This
+ * pins that, so a future composition op that introduces a soft edge fails here
+ * rather than shipping a difference between renderers. */
+test("every composed raster carries binary alpha", { skip }, () => {
+  // The parity fixture outruns this checkout: the tiles agent republishes art
+  // under new content-hashed names, so a case may reference a file that is no
+  // longer here. Use the ones whose art IS present — there are plenty.
+  const here = (p: string) => existsSync(rel(p));
+  const bcases = (F.boundary as any[]).filter((c) => here(c.a.path) && here(c.b.path));
+  const ccases = (F.conform as any[]).filter((c) => here(c.path));
+  const fx = fakeTextures();
+  for (const c of bcases) {
+    fx.put(artKey(c.a.path), px(c.a.path));
+    fx.put(artKey(c.b.path), px(c.b.path));
+  }
+  for (const c of ccases) fx.put(artKey(c.path), px(c.path));
+  const T = new Tiles3Textures({ textures: fx.man, sheets: SHEETS, groundTypes: GT, canvas: fakeCanvas });
+
+  const keys: string[] = [];
+  for (const c of bcases.slice(0, 12)) {
+    const base: any = { maskFrame: c.frame, a: c.a.ground, b: c.b.ground, plateA: c.a, plateB: c.b };
+    for (const k of [T.boundary(base), T.boundary({ ...base, topOnly: true })]) if (k) keys.push(k);
+  }
+  for (const c of ccases.slice(0, 8)) {
+    const k = T.plate({ kind: "conform", path: c.path, w: TILE, h: PLATE_H } as any, c.ground);
+    if (k) keys.push(k);
+  }
+  keys.push(T.liquid([12, 34, 56]));
+  assert.ok(keys.length > 12, `${keys.length} rasters under test`);
+
+  let partial = 0;
+  for (const key of keys) {
+    const img = (fx.t.get(key) as any).getSourceImage() as { pix: Uint8ClampedArray };
+    for (let i = 3; i < img.pix.length; i += 4) {
+      const a = img.pix[i];
+      if (a !== 0 && a !== 255) partial++;
+    }
+  }
+  assert.equal(partial, 0, `${partial} texels carry partial alpha — raw and canvas uploads can then differ`);
+});
