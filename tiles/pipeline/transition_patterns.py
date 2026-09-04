@@ -838,8 +838,76 @@ def index_doc(patterns, sil, generated_at):
             ],
         },
         "selection": {
-            "default_pattern": "a18_s4",
-            "_default_reason": "mid roughness (mean deviation 4.32px of the 0.97-4.94 range) "
+            # A WEIGHTED POOL, not one pattern. The maintainer, looking at the wiki's
+            # fade preview, 2026-09-03: "they picked a really good mask... You should
+            # also be able to use that mask more often. I mean we have several masks so
+            # things don't feel too repeated, but that one is a good one."
+            #
+            # The mask he liked is a12_s4, and it is not a lucky pick - the four SEED-4
+            # patterns take the top four places by `bump` (9.10, 9.25, 9.97, 13.89) and
+            # the next best is 25.79, a 2-4x gap. They also carry the shortest
+            # boundaries (949-981 px against 1045-1125) and the highest `clean` scores.
+            # Seed 4 wanders less and leaves fewer isolated bumps, which is what reads
+            # as a deliberate coastline instead of noise.
+            #
+            # So the pool is led by that family and keeps a tail for variety, because
+            # variety is the other half of what he asked for. Weights are relative.
+            # A CONSUMER MUST STILL HONOUR `rejected_pairs`: a12_s4 has the most (6),
+            # so being the nicest in general does not make it right everywhere - skip a
+            # pattern on a pair it lost, and take the next in the pool.
+            "pool": [
+                {"id": "a12_s4", "weight": 4,
+                 "why": "the maintainer's pick from the wiki fade preview; bump 13.89, "
+                        "clean 0.93. Six rejected pairs - honour them."},
+                {"id": "a18_s4", "weight": 3,
+                 "why": "lowest bump but one (9.25), clean 0.94, the previous default"},
+                {"id": "a23_s4", "weight": 3,
+                 "why": "lowest bump (9.10), clean 0.94, rougher character"},
+                {"id": "a21_s4", "weight": 2,
+                 "why": "bump 9.97, highest vote agreement of the family (0.9954)"},
+                {"id": "a05_s1", "weight": 1,
+                 "why": "gentlest boundary and ZERO rejected pairs - the safe fallback "
+                        "for a pair the family lost"},
+                {"id": "a15_s2", "weight": 1,
+                 "why": "a different seed entirely, so a large map does not read as one "
+                        "coastline repeated"},
+            ],
+            # CALM WHERE A SHORELINE WANTS CALM (maintainer, 2026-09-03: "Especially
+            # for a beach! It looks very calm and is a good beach... it's a good one to
+            # use more often at least"). "Calm" is the AMPLITUDE, and it is why he
+            # picked this one out of the family: a12_s4 wanders 0.12 against its
+            # siblings' 0.18-0.23, so the coastline stays a coastline instead of a
+            # ragged tear. Its six rejected pairs contain NO light_beach pair, so
+            # leading with it on a shoreline costs nothing measured.
+            #
+            # Not 100% - he said so ("maybe not 100% this one"). The bias raises its
+            # share on shorelines and keeps the rest of the pool underneath, so a long
+            # beach still varies.
+            "pair_bias": {
+                "shoreline": {
+                    "when": "either ground is light_beach, or the pair is water with "
+                            "deep_water",
+                    "order": ["a12_s4", "a05_s1", "a18_s4"],
+                    "weights": [6, 3, 2],
+                    "why": "the two calmest boundaries first - a12_s4 at amplitude 0.12 "
+                           "and a05_s1 at 0.05, which also has ZERO rejected pairs. A "
+                           "beach reads wrong when its edge is busy.",
+                },
+            },
+            "pick_rule": "Pick DETERMINISTICALLY from `pool` per boundary - hash the "
+                         "cell and the ground pair, drop any entry whose "
+                         "`rejected_pairs` contains this pair, then choose by weight. "
+                         "Deterministic so two consumers never disagree about one "
+                         "boundary, weighted so the maintainer's mask leads without "
+                         "being the only one on the map. Fall back to default_pattern "
+                         "when every pool entry was rejected for the pair. Where a "
+                         "`pair_bias` entry matches the pair, use its order and weights "
+                         "instead of the pool's, with the same rejected_pairs rule.",
+            "default_pattern": "a12_s4",
+            "_default_reason": "the maintainer's own pick, 2026-09-03, and the pool's "
+                               "lead. Was a18_s4 on measured roughness alone; his eye "
+                               "chose a sibling of it from the same seed-4 family. "
+                               "(previous reason: mid roughness of the 0.97-4.94 range) "
                                "and the highest vote agreement of the rough patterns. A "
                                "consumer with no maintainer preference draws this one.",
             "side_order": SIDE_ORDER,
