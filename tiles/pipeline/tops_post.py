@@ -248,8 +248,17 @@ def align(img, clean_rgb, protect_motif=False):
         # [20 82 59] and the spread must be 0 - the seam he cares about, broken to fix
         # the motif. The background is a trimmed median dominated by ground pixels, so
         # giving those the full delta lands it exactly while the motif keeps its colour.
-        w = np.clip((MOTIF_FAR - np.linalg.norm(rgb - bg, axis=2))
-                    / (MOTIF_FAR - MOTIF_NEAR), 0.0, 1.0)[..., None]
+        # THE RAMP IS A TOP-FACE RULE. `bg` is the TOP's background, so a wall pixel's
+        # distance from it is meaningless - brown soil is far from green grass for
+        # reasons that have nothing to do with being a motif. Weighting the wall by it
+        # gave wall pixels arbitrary partial shifts and wrecked their colour: measured,
+        # a grass detail's wall went [95 90 66] brown to [32 27 52] PURPLE, and another
+        # to teal. The wall takes the whole delta, exactly as it did before this path
+        # existed ("one tile, one delta" - a seam between shifted top and unshifted wall
+        # would be invented detail on art whose wall is meaningless anyway).
+        w = np.ones(rgb.shape[:2])[..., None]
+        w[top] = np.clip((MOTIF_FAR - np.linalg.norm(rgb - bg, axis=2)[top])
+                         / (MOTIF_FAR - MOTIF_NEAR), 0.0, 1.0)[..., None]
         clipped = 0.0
         for _ in range(4):
             cur = background_of(rgb, top)
