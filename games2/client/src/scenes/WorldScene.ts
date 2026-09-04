@@ -170,7 +170,6 @@ import {
   type Tiles3DeckCell,
 } from "../tiles3";
 import {
-  boundaryKeyFor,
   Tiles3Textures,
   patternSheets,
   patternSheetPaths,
@@ -13980,9 +13979,25 @@ export class WorldScene extends Phaser.Scene {
         this.t3boundaryOwed.delete(idx);
         continue;
       }
-      // ASK, NEVER BUILD: the ring owns the compose budget, and building here
-      // would spend it twice in one frame.
-      if (!this.t3tm.exists(boundaryKeyFor(b, this.seamOn) ?? "")) continue;
+      /* THE TEST IS THE SOURCE ART, NOT THE COMPOSED KEY — and the first cut of
+       * this asked for the key, which made the whole retry a no-op.
+       *
+       * Nothing builds a composition for a cell that is already INSIDE the
+       * texture: the prefetch ring walks only cells outside it ("the pass asks
+       * for those itself"), and the pass that would have asked is over. So the
+       * key never appeared, the cell was never re-queued, and the hard edge
+       * stayed for good — which is exactly what he kept photographing on ground
+       * he had walked onto faster than the loader.
+       *
+       * Both plates being resident is the real readiness condition: `boundary()`
+       * returns null only while one of them has not decoded. Once they are
+       * here, repainting the cell makes the PASS compose it, on its own budget,
+       * where that work already belongs. */
+      let haveArt = true;
+      boundaryArtPaths(b, (path) => {
+        if (!this.t3tm.exists(t3ArtKey(path))) haveArt = false;
+      });
+      if (!haveArt) continue;
       ready.push(idx);
       this.t3boundaryOwed.delete(idx);
     }

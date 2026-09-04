@@ -1403,7 +1403,22 @@ export class Tiles3Textures {
     }
     /* LAST, over the conformed raster too: conforming REPAINTS the wall band
      * from the ground palette, so masking first would hand it back. */
-    if (out && art.topOnly) out = topFaceOnly(this.o.sheets, out);
+    /* CAP FIRST, THEN MASK — and the order is the whole point.
+     *
+     * `topFaceOnly` keeps ONE MARGIN ROW past the library top face, so a
+     * raised surface that skipped the cap shipped one row of its art's REAL
+     * wall band: a 1-texel dark line along the lower diamond edges, on every
+     * raised cell. Measured off his screenshot at 439.5,364.5, the line runs
+     * 0.784/0.700/0.599 of the sand beside it, against light_soil's palette
+     * wall over its top at 0.781/0.702/0.595 — the same colour to a rounding
+     * step, in 340 runs of exactly 2 screen px, which is one texel at zoom 2.
+     *
+     * It went unnoticed while only a handful of cells took this path. Making a
+     * cliff edge wear its surface put 3,670 more cells on it, and the line
+     * came back with them. Capping first repaints that band from each column's
+     * own bottom top-face texel, so the margin row is the SURFACE's colour and
+     * cannot read as a course whatever the mask keeps. */
+    if (out && art.topOnly) out = topFaceOnly(this.o.sheets, capWallToSurface(this.o.sheets, out));
     else if (out) out = capWallToSurface(this.o.sheets, out);
     if (out) this.pix.set(key, out);
     return out;
