@@ -1881,8 +1881,12 @@ function injectStyles() {
      land on the same line — the log's max-width already reserves the pill's
      lane. :root outranks their own bottom rules whatever order the
      stylesheets were injected in. */
+  /* …and the Wiki/🔍 row takes that first line (wikibtn.ts), so the pill —
+     and the log that shares its line — step up over it by the same
+     --ml-stack-step they use at rest. The stack must not reorder just
+     because the keys came up (maintainer 2026-09-03). */
   :root.ml-kb-up .ml-chatlog,
-  :root.ml-kb-up .ml-clock{bottom:calc(var(--ml-inputlift) + 56px)}
+  :root.ml-kb-up .ml-clock{bottom:calc(var(--ml-inputlift) + 56px + var(--ml-stack-step, 44px))}
   /* ── compact fits (icons stay at their authored 1x grid at every size) ── */
   @media (max-width:480px){
     .ml-btnrow{gap:6px}

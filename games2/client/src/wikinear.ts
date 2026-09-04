@@ -35,7 +35,9 @@ const NEAR_HASH = "#/near";
 const PILL_H = 32;
 const WIKI_W = 80;
 const STEP_X = WIKI_W + 2 + 10; // 92
-const PILL_STEP = PILL_H + 2 + 10; // 44 — the Wiki button's own lift over the pill
+// The Wiki button publishes --ml-stack-step (its outer height + the 10px
+// gap); the fallback only covers the frame before its stylesheet lands.
+const STACK_STEP = "var(--ml-stack-step, 44px)";
 
 type NearSnapshot = {
   world: string | null;
@@ -174,7 +176,7 @@ function injectStyles(): void {
   /* The Wiki button's rules (wikibtn.ts), one STEP_X further from the right
      edge, and a square — the pill's height on both sides. */
   .ml-wikinear{position:fixed;right:calc(var(--gv-right,0px) + 10px + ${STEP_X}px);
-    bottom:calc(var(--hud-h, 38.2dvh) + 10px + ${PILL_STEP}px);z-index:8;
+    bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:8;
     width:${PILL_H}px;height:${PILL_H}px;box-sizing:content-box;padding:0;
     border:1px solid var(--border-strong);border-radius:7px;
     box-shadow:var(--shadow);cursor:pointer;
@@ -186,7 +188,7 @@ function injectStyles(): void {
   .ml-wikinear-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   .ml-wikinear.press,.ml-wikinear:active{transform:scale(.96)}
   :root.ml-land:not(.ml-lh) .ml-wikinear{
-    top:calc(var(--bars-r-h, 78px) + 20px + ${PILL_STEP}px);bottom:auto}
-  :root.ml-kb-up .ml-wikinear{bottom:calc(var(--ml-inputlift) + 56px + ${PILL_STEP}px)}`;
+    top:calc(var(--bars-r-h, 78px) + 20px + ${STACK_STEP});bottom:auto}
+  :root.ml-kb-up .ml-wikinear{bottom:calc(var(--ml-inputlift) + 56px)}`;
   document.head.appendChild(s);
 }

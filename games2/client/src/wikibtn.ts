@@ -4,12 +4,16 @@
  * LIVES WITH the time-of-day pill — same size, same right edge, stacked on
  * the pill's open side, and riding every move the pill makes.
  *
- * The placement rule, read off the maintainer's three red-circled shots: the
- * button is the pill's NEIGHBOUR on the side facing into the screen — the
- * pill hugs the bottom edge in portrait and left-handed landscape, so the
- * button sits ABOVE it; in right-handed landscape the pill parks UNDER the
- * XP chip (its corner belongs to the thumb stick) and the button sits BELOW.
- * That is why every rule here is the pill's own rule plus one PILL_STEP:
+ * The placement rule (maintainer 2026-09-03, on a screenshot: "I think it
+ * looks better if the wiki+search is under the time-of-day pill — they should
+ * swap y position"): the button row sits BELOW the pill in every placement.
+ * At rest that means this row takes the corner anchor and the PILL steps up
+ * over it; in right-handed landscape the pill is top-anchored under the XP
+ * chip (its corner belongs to the thumb stick) and this row hangs one step
+ * under it, which already read that way. The stack therefore has ONE order
+ * everywhere — including over the phone keyboard, so nothing reorders on
+ * screen when the keys come up. Every rule here is the pill's own rule ±
+ * one PILL_STEP:
  * anchors, the right-handed landscape flip, and the keyboard lift all mirror
  * `.ml-clock` (clock.ts + hud.ts's `:root.ml-kb-up .ml-clock`), so wherever
  * the pill goes — including up over the phone keyboard — the button follows
@@ -29,7 +33,11 @@ import { withV } from "./assetver";
 // a resized pill fails loudly instead of the two drifting apart.
 const PILL_W = 80;
 const PILL_H = 32;
-/** Outer pill height (2px of border) + the project's one 10px edge gap. */
+/** How far anything stacked ON TOP of this button has to clear it: its outer
+ * height (2px of border) + the project's one 10px edge gap. Published as
+ * `--ml-stack-step` below because THREE elements need it — this button, the
+ * 🔍 beside it, and the pill above it — and the day the button's box changes,
+ * three hardcoded copies would silently disagree. */
 const PILL_STEP = PILL_H + 2 + 10;
 
 let root: HTMLButtonElement | null = null;
@@ -76,8 +84,9 @@ function injectStyles(): void {
   /* One PILL_STEP up from the pill's own anchor (clock.ts .ml-clock), same
      right edge, same transitions — the two move as a stack. z 8 = the pill's
      layer; unlike it this one takes pointer events. */
+  :root{--ml-stack-step:${PILL_STEP}px}
   .ml-wikibtn{position:fixed;right:calc(var(--gv-right,0px) + 10px);
-    bottom:calc(var(--hud-h, 38.2dvh) + 10px + ${PILL_STEP}px);z-index:8;
+    bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:8;
     width:${PILL_W}px;height:${PILL_H}px;box-sizing:content-box;padding:0;
     border:1px solid var(--border-strong);border-radius:7px;
     box-shadow:var(--shadow);cursor:pointer;
@@ -90,11 +99,11 @@ function injectStyles(): void {
   .ml-wikibtn-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   .ml-wikibtn.press,.ml-wikibtn:active{transform:scale(.96)}
   /* RIGHT-HANDED LANDSCAPE: the pill is top-anchored under the XP chip, so
-     the button flips BELOW it — the pill's rule plus one step. */
+     the button hangs one step BELOW it — the same reading as everywhere else. */
   :root.ml-land:not(.ml-lh) .ml-wikibtn{
     top:calc(var(--bars-r-h, 78px) + 20px + ${PILL_STEP}px);bottom:auto}
-  /* The keyboard lift: hud.ts raises the pill to inputlift+56 — ride one
-     step above it so the stack stays intact over the keys. */
-  :root.ml-kb-up .ml-wikibtn{bottom:calc(var(--ml-inputlift) + 56px + ${PILL_STEP}px)}`;
+  /* The keyboard lift: this row takes the line hud.ts clears above the keys,
+     and the pill steps up over it exactly as it does at rest. */
+  :root.ml-kb-up .ml-wikibtn{bottom:calc(var(--ml-inputlift) + 56px)}`;
   document.head.appendChild(s);
 }

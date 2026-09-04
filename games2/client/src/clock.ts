@@ -270,7 +270,7 @@ function mount() {
      keyboard covers this corner, so hud.ts lifts the pill (and the chat log)
      above the floated input via :root.ml-kb-up — hence the transition. */
   .ml-clock{position:fixed;right:calc(var(--gv-right,0px) + 10px);
-    bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:8;
+    bottom:calc(var(--hud-h, 38.2dvh) + 10px + var(--ml-stack-step, 44px));z-index:8;
     width:${AW * SCALE}px;height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
     pointer-events:none;box-sizing:content-box;
     transition:bottom .15s ease-out,right .3s ease;

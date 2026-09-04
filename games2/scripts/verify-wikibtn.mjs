@@ -7,10 +7,13 @@
 //   1. SIZE AND STACK against the REAL pill's rect — never against the
 //      button's own constants, which would let the two drift apart the day
 //      the pill is resized.
-//   2. The three placements from the maintainer's red circles: ABOVE the
-//      pill in portrait and left-handed landscape (the pill hugs the bottom
-//      edge), BELOW it in right-handed landscape (the pill parks under the
-//      XP chip there — its corner belongs to the thumb stick).
+//   2. THE ROW SITS BELOW THE PILL, in every placement (maintainer
+//      2026-09-03: "the wiki+search is under the time-of-day pill — they
+//      should swap y position"). At rest the row takes the corner and the
+//      pill steps up over it; in right-handed landscape the pill is
+//      top-anchored under the XP chip (its corner belongs to the thumb
+//      stick) and the row hangs under it. Same over the keyboard — the
+//      stack must not reorder when the keys come up.
 //   3. The KEYBOARD RIDE: hud.ts lifts the pill over the phone keyboard via
 //      :root.ml-kb-up — the button must hold its 10px gap through the lift.
 //      The class+var are set directly (the real focus→lift path is
@@ -75,8 +78,13 @@ const rects = async () => {
 
 const near = (a, b, tol = 1.5) => Math.abs(a - b) <= tol;
 
-/** The stack invariant: same box, same right edge, 10px gap on `side`. */
-const assertStack = (g, side, label) => {
+/** The stack invariant: same box, same right edge, and the Wiki row one 10px
+ *  gap BELOW the pill. One reading in EVERY placement since the swap
+ *  (maintainer 2026-09-03: "the wiki+search is under the time-of-day pill —
+ *  they should swap y position") — including over the keyboard, so nothing
+ *  reorders on screen when the keys come up. There is no `side` any more:
+ *  a parameter that only ever takes one value hides the invariant. */
+const assertStack = (g, label) => {
   if (!g.pill || !g.btn) return fail(`${label}: missing ${!g.pill ? "pill" : "button"}`);
   near(g.btn.w, g.pill.w) && near(g.btn.h, g.pill.h)
     ? ok(`${label}: button is pill-sized (${g.btn.w}x${g.btn.h} vs ${g.pill.w}x${g.pill.h})`)
@@ -84,10 +92,10 @@ const assertStack = (g, side, label) => {
   near(g.btn.r, g.pill.r)
     ? ok(`${label}: right edges aligned (${g.btn.r.toFixed(1)})`)
     : fail(`${label}: right edges differ (button ${g.btn.r}, pill ${g.pill.r})`);
-  const gap = side === "above" ? g.pill.t - g.btn.b : g.btn.t - g.pill.b;
+  const gap = g.btn.t - g.pill.b;
   near(gap, 10, 2)
-    ? ok(`${label}: ${side} the pill with the 10px gap (${gap.toFixed(1)})`)
-    : fail(`${label}: wanted ${side} the pill at 10px, gap is ${gap.toFixed(1)} (btn ${g.btn.t.toFixed(0)}..${g.btn.b.toFixed(0)}, pill ${g.pill.t.toFixed(0)}..${g.pill.b.toFixed(0)})`);
+    ? ok(`${label}: below the pill with the 10px gap (${gap.toFixed(1)})`)
+    : fail(`${label}: wanted the Wiki row 10px BELOW the pill, gap is ${gap.toFixed(1)} (btn ${g.btn.t.toFixed(0)}..${g.btn.b.toFixed(0)}, pill ${g.pill.t.toFixed(0)}..${g.pill.b.toFixed(0)})`);
 
   // The 🔍: a square the pill's height, on the Wiki button's own line, one
   // 10px gap to its LEFT — so the three read as one stack in every placement.
@@ -168,7 +176,7 @@ try {
   await page.waitForFunction(() => !!document.querySelector(".ml-clock"), null, { timeout: 20000 });
 
   // ── 1. portrait: pill-sized, stacked ABOVE ─────────────────────────────
-  assertStack(await rects(), "above", "portrait");
+  assertStack(await rects(), "portrait");
 
   // ── 1b. BOTH BUTTONS WEAR HIS OWN ART, and it actually arrived ─────────
   // (maintainer 2026-09-03: the PixelLab magnifying glass, flipped, and the
@@ -232,9 +240,9 @@ try {
   pillRose > 60 && near(btnRose, pillRose, 2)
     ? ok(`keyboard lift: the stack rides together (pill +${pillRose.toFixed(0)}px, button +${btnRose.toFixed(0)}px)`)
     : fail(`keyboard lift broke the stack (pill rose ${pillRose.toFixed(0)}, button ${btnRose.toFixed(0)})`);
-  near(lifted.pill.t - lifted.btn.b, 10, 2)
-    ? ok("keyboard lift: the 10px gap survives")
-    : fail(`gap while lifted: ${(lifted.pill.t - lifted.btn.b).toFixed(1)}px`);
+  near(lifted.btn.t - lifted.pill.b, 10, 2)
+    ? ok("keyboard lift: the 10px gap survives, in the same order")
+    : fail(`gap while lifted: ${(lifted.btn.t - lifted.pill.b).toFixed(1)}px (the stack must not reorder over the keys)`);
   near(lifted.near.b, lifted.btn.b, 2)
     ? ok("keyboard lift: 🔍 rides on the Wiki button's line")
     : fail(`keyboard lift left 🔍 behind (🔍 bottom ${lifted.near.b.toFixed(0)}, Wiki ${lifted.btn.b.toFixed(0)})`);
@@ -498,12 +506,12 @@ try {
     null,
     { timeout: 15000 },
   );
-  assertStack(await rects(), "below", "right-handed landscape");
+  assertStack(await rects(), "right-handed landscape");
 
   // ── 8. left-handed landscape: the pill keeps its corner, button ABOVE ──
   await page.evaluate(() => window.__ml.hand("left"));
   await page.waitForTimeout(800);
-  assertStack(await rects(), "above", "left-handed landscape");
+  assertStack(await rects(), "left-handed landscape");
   await page.evaluate(() => window.__ml.hand("right"));
 
   // ── 9. portrait return ─────────────────────────────────────────────────
@@ -513,7 +521,7 @@ try {
     null,
     { timeout: 15000 },
   );
-  assertStack(await rects(), "above", "portrait return");
+  assertStack(await rects(), "portrait return");
 
   errors.length === 0 ? ok("no page errors") : fail(`page errors: ${errors.join(" | ")}`);
 } finally {

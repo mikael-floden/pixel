@@ -193,9 +193,20 @@ from the games agent), #18 (title/landing screen).
   UI screenshots use the real phone geometry — the two never mix.
 - **THE WIKI BUTTON LIVES WITH THE CLOCK PILL** (`wikibtn.ts`, maintainer
   2026-08-13, placements from his three red-circled shots): pill-sized
-  (80x32+border), same right edge, stacked one PILL_STEP (34+10px) on the
-  pill's OPEN side — above it in portrait and left-handed landscape, below
-  it in right-handed landscape where the pill parks under the XP chip. Every
+  (80x32+border), same right edge, and one 10px gap BELOW the pill in EVERY
+  placement (maintainer 2026-09-03, on a screenshot: "I think it looks better
+  if the wiki+search is under the time-of-day pill — they should swap y
+  position"). At rest the Wiki row takes the corner anchor and the PILL steps
+  up over it by `--ml-stack-step`; in right-handed landscape the pill is
+  top-anchored under the XP chip and the row hangs one step under it, which
+  already read that way. ONE order everywhere, including over the phone
+  keyboard — chrome that reorders when the keys come up reads as a bug.
+  THE STEP IS PUBLISHED, NOT COPIED: `--ml-stack-step` is declared once by
+  wikibtn.ts (it is that button's own outer height + the gap) and read by
+  clock.ts, wikinear.ts and hud.ts's keyboard lift. It was three hardcoded
+  44s before the swap, which is exactly the shape that desyncs. And the chat
+  log moves WITH the pill over the keyboard: "the log and the pill on one
+  line" is an approved 2026-07-31 arrangement that verify-chatpage pins. Every
   rule mirrors `.ml-clock` plus one step, including the `:root.ml-kb-up`
   keyboard lift, so the two always move as a stack; change the pill's
   anchoring and this file changes in the same commit. It is in hud's
