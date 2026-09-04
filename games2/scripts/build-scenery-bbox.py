@@ -64,7 +64,19 @@ def main() -> int:
             spr = (st or {}).get("rotations", {}).get("south") or (st or {}).get("sprite")
             if spr:
                 states[k] = spr
+        # FLAT = LIES ON THE FLOOR AND BLOCKS NOTHING. `scenery.json`'s own
+        # `collision: false`, carried here because the COLLISION STAMP is the
+        # one path that never saw it: the server hands stampSceneryCollision
+        # only this document and the hitbox doc, so a rug with a tuned hitbox
+        # was stamped solid and the floor it lies on stopped being walkable
+        # (maintainer 2026-09-04, overlay on: "Why does the show collision mode
+        # show the collision on a carpet that doesn't even have a collision?").
+        # The client already parsed it for the flat DRAW (scenery3.ts) — this
+        # is the same flag reaching the same decision on both sides.
+        flat = man.get("collision") is False
         pieces[pid] = {"wph": wph, "cpx": cpx, "sprite": man.get("sprite"), "states": states}
+        if flat:
+            pieces[pid]["flat"] = True
 
     doc = {
         "format": "games2-scenery-bbox@2",

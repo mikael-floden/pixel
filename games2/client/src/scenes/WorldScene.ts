@@ -1611,6 +1611,14 @@ export class WorldScene extends Phaser.Scene {
     if (this.perfBeacon) this.perfBeaconSend(performance.now(), true);
     this.perfBeacon = !this.perfBeacon;
     this.perfOn = this.perfBeacon;
+    /* THE WORST-FRAME RECORDER RIDES WITH THE BEACON. It defaulted off and was
+     * armed only by `__ml.hitch(true)`, which nothing on a phone can call — so
+     * `closeHitchFrame` never ran, `hitchWorst` stayed empty and EVERY report
+     * he has ever sent carried `worst: []`. His p99 is 108-359 ms and his max
+     * is 1,037 ms, and the one instrument built to say what those frames were
+     * doing was switched off. */
+    this.hitchOn = this.perfBeacon;
+    if (this.perfBeacon) this.perfHookRender();
     this.perfBeaconAt = 0;
     this.perfBeaconFrom = null;
     this.perfAcc = {};
@@ -1694,7 +1702,18 @@ export class WorldScene extends Phaser.Scene {
       final,
       frames: snap.frames,
       sections: perFrame,
-      counts: { ...(snap.counts as Record<string, number>), texturesAdded: snap.texturesAdded as number },
+      counts: {
+        ...(snap.counts as Record<string, number>),
+        texturesAdded: snap.texturesAdded as number,
+        // Objects the RENDERER actually drew last frame, against the display
+        // list we built — the gap is what the cull is worth.
+        drawCount: this.perfDrawCount,
+      },
+      // Every jump of the AUTHORITATIVE body over 2 cells in one frame, with
+      // the unacked-input depth at the time — a rejoin restore, a respawn, an
+      // unstick and a reconciliation blow-up all land here and are told apart
+      // by `pending` and `seq`.
+      jumps: this.posJumps.slice(0, 40),
       /* WHAT THE GROUND PASS ACTUALLY DREW, from his device (2026-09-04). He
        * reports "we have no transition here" on a grass/soil border while the
        * resolver, measured offline, composes one on 36 cells of the block he
@@ -1947,13 +1966,70 @@ export class WorldScene extends Phaser.Scene {
     if (!this.perfOn) return;
     const t0 = this.perfStack.pop();
     if (t0 === undefined) return;
-    const d = performance.now() - t0;
+    this.pAdd(key, performance.now() - t0);
+  }
+  /** One measured span into the beacon's accumulators. Split out of `pe` so a
+   *  span that is NOT a stack pair — the renderer, which starts and ends on
+   *  game events rather than inside `update` — reports through the same path
+   *  and lands in the same `sections` table. */
+  private pAdd(key: string, d: number): void {
     const a = (this.perfAcc[key] ??= { n: 0, ms: 0, max: 0 });
     a.n++;
     a.ms += d;
     if (d > a.max) a.max = d;
     if (this.hitchOn) this.hitchSec[key] = (this.hitchSec[key] ?? 0) + d;
   }
+
+  /* THE RENDERER, WHICH IS MOST OF THE FRAME AND WAS NONE OF THE REPORT.
+   *
+   * Every section the beacon timed lives inside `update()`, and on his phone
+   * they add up to 4-24 ms of a 30-55 ms frame: 55-87% of every frame was
+   * unaccounted for. `update()` is not the frame. Phaser then sorts a display
+   * list of 2,726-5,680 objects by depth and draws them into a 2406x3131
+   * backing store, and none of that was visible.
+   *
+   * PRE_RENDER/POST_RENDER bracket exactly that step, so `render` splits the
+   * missing time in one run: large means the display list and the fill rate,
+   * small means the cost is elsewhere and the hunt moves on. `sortMs`/`sorts`
+   * separate the depth sort from the drawing, and `drawCount` says how many
+   * objects actually reached the GPU versus how many we built. */
+  private perfHookRender(): void {
+    if (this.perfRenderHooked) return;
+    this.perfRenderHooked = true;
+    const ev = this.game.events;
+    let t0 = 0;
+    ev.on(Phaser.Core.Events.PRE_RENDER, () => {
+      if (this.perfOn) t0 = performance.now();
+    });
+    ev.on(Phaser.Core.Events.POST_RENDER, () => {
+      if (!this.perfOn || !t0) return;
+      this.pAdd("render", performance.now() - t0);
+      t0 = 0;
+      const dc = (this.game.renderer as unknown as { drawCount?: number }).drawCount;
+      if (typeof dc === "number") this.perfDrawCount = dc;
+    });
+    /* THE DEPTH SORT, timed where it happens. Phaser re-sorts the whole list
+     * whenever anything changed depth, which for this scene is every frame that
+     * a body moves — i.e. every frame. n log n over ~5,000 objects. */
+    const list = this.children as unknown as { depthSort?: () => void };
+    const orig = list.depthSort;
+    if (typeof orig === "function") {
+      list.depthSort = () => {
+        if (!this.perfOn) return orig.call(list);
+        const t = performance.now();
+        const r = orig.call(list);
+        this.pAdd("depthSort", performance.now() - t);
+        return r;
+      };
+    }
+  }
+  private perfRenderHooked = false;
+  private perfDrawCount = 0;
+  /** Server-side position jumps for the local body — see the recorder in the
+   *  avatar loop. Bounded at 40 so a runaway cannot grow the report. */
+  private posJumps: Record<string, unknown>[] = [];
+  private jumpLastX: number | null = null;
+  private jumpLastY: number | null = null;
   /** The "Connecting…" creep — see the bar bands. */
   private connectCreep: Phaser.Time.TimerEvent | null = null;
   private sceneryArtCounting = false;
@@ -2621,6 +2697,13 @@ export class WorldScene extends Phaser.Scene {
   }
 
   async create() {
+    /* A BEACON ARMED AT BOOT (`?perf=1`, or remembered) gets the same
+     * instruments the settings toggle installs. Without this the two arming
+     * paths measure different things, and the boot path is the one he uses. */
+    if (this.perfBeacon) {
+      this.hitchOn = true;
+      this.perfHookRender();
+    }
     this.ensurePlaceholderTexture();
     this.ensureShadowTexture();
     this.ensureMonsterShadowTexture();
@@ -8755,6 +8838,34 @@ export class WorldScene extends Phaser.Scene {
     this.avatars.forEach((av, id) => {
       const player = state.players.get(id);
       if (!player) return;
+      /* THE AUTHORITATIVE POSITION JUMPED. Recorded for the beacon because
+       * "the player was flying around like I don't know what" (maintainer
+       * 2026-09-04, eight screenshots seconds apart at 429, 427, 437, 429
+       * indoors, 437, 448, 430) is a POSITION bug and the report carried no
+       * positions at all — only one `where` per window, sampled at the end.
+       *
+       * This watches the SERVER's own x/y for the local player, so it sees a
+       * correction, an unstick, a respawn and a rejoin restore alike, and it
+       * cannot be confused by prediction: a jump here is the world telling us
+       * the body is somewhere else. Costs two subtractions a frame. */
+      if (id === myId) {
+        const jx = player.x / CELL_WU;
+        const jy = player.y / CELL_WU;
+        if (this.jumpLastX !== null && this.jumpLastY !== null) {
+          const d = Math.hypot(jx - this.jumpLastX, jy - this.jumpLastY);
+          if (d > 2 && this.posJumps.length < 40)
+            this.posJumps.push({
+              t: Math.round(this.time.now),
+              from: `${this.jumpLastX.toFixed(1)},${this.jumpLastY.toFixed(1)}`,
+              to: `${jx.toFixed(1)},${jy.toFixed(1)}`,
+              cells: +d.toFixed(1),
+              pending: this.pending.length,
+              seq: player.seq ?? -1,
+            });
+        }
+        this.jumpLastX = jx;
+        this.jumpLastY = jy;
+      }
 
       let tx: number;
       let ty: number;
@@ -9266,6 +9377,7 @@ export class WorldScene extends Phaser.Scene {
     // remote player (rate 12, snap on a big jump). Server owns the movement —
     // the client only interpolates + renders the hop.
     const monsterState = state.monsters;
+    this.ps();
     if (monsterState) {
       // CAMERA GATE (see MONSTER_CULL_SLACK): the view in world coords, grown
       // by the hysteresis slack. Zoom is already baked into worldView.
@@ -9511,6 +9623,11 @@ export class WorldScene extends Phaser.Scene {
       });
       this.monstersActive = active;
     }
+    /* THE REAL MONSTER LOOP, MEASURED AT LAST. `monsterLoop` was instrumented
+     * inside the `__ml.monsterGate` debug hook, which play never calls, so the
+     * key never appeared in a report and 146 monsters cost an unknown amount
+     * per frame. This is the loop that actually runs. */
+    this.pe("monsterLoop");
 
     // The world's people: placed by maps2, drawn through the shared body
     // pipeline, breathing on their own calm clocks.
@@ -9519,6 +9636,7 @@ export class WorldScene extends Phaser.Scene {
     this.pe("stepNpcs");
     // Sword marker + target frame + aggro-radius debug rings (all read the
     // freshly-updated monster sprites above).
+    this.ps();
     this.updateTargetOverlays();
     // The pickup sound, held until the hand actually reaches the ground —
     // before stepGroundDecor, so the sound and the item vanishing land on the
@@ -9529,6 +9647,12 @@ export class WorldScene extends Phaser.Scene {
 
     if (this.death) this.stepDeath(this.time.now);
     this.updateChaseCam(delta);
+    this.pe("overlays");
+    /* EVERYTHING FROM HERE TO THE END OF THE FRAME IS LIGHTING — the shader's
+     * light list, the room filter, applyObjectLights, flushCoverSurfaces and
+     * the atmosphere update. None of it was timed, and it is the last large
+     * unmeasured block in update(). */
+    this.ps();
 
     // The bonfire is world ART and is DRAWN wherever it stands — indoors the
     // outside is no longer a void, so nothing about the room hides it. Its
@@ -9863,6 +9987,7 @@ export class WorldScene extends Phaser.Scene {
     this.flushCoverSurfaces();
     this.footsteps?.update(this.time.now);
     this.atmo.update(lights, this.cameras.main, dt);
+    this.pe("lighting");
   }
 
   /** Start easing toward a time-of-day phase FROM the grade currently on

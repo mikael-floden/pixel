@@ -4132,6 +4132,10 @@ export type SceneryBboxDoc = {
       cpx?: number | null;
       sprite?: string | null;
       states?: Record<string, string>;
+      /** `scenery.json`'s `collision: false` — the piece LIES ON THE FLOOR and
+       *  blocks nothing. Carried in this document because the stamp is handed
+       *  only this and the hitbox doc, and so could not see the flag at all. */
+      flat?: boolean;
     }
   >;
   boxes?: Record<string, [number, number, number, number, number, number]>;
@@ -4177,7 +4181,15 @@ export function sceneryDrawnPx(
 /** live/tuning/scenery_hitbox.json `.overrides`. */
 export type SceneryHitboxDoc = Record<
   string,
-  { boxes?: { ax: number; ay: number; rx: number; ry: number; rot?: number }[]; auto?: boolean }
+  {
+    boxes?: { ax: number; ay: number; rx: number; ry: number; rot?: number }[];
+    auto?: boolean;
+    /** The Game Master's per-variation verdict that this piece lies flat and
+     *  blocks nothing. It OUTRANKS the piece's published `collision` — the
+     *  order the wiki resolves in (`hitboxFlat`), so the stamp, the overlay and
+     *  the tool he tunes in all agree. */
+    no_collision?: boolean;
+  }
 >;
 
 /** Nav lattice: the coarse pass samples each cell KxK ... */
@@ -4283,6 +4295,22 @@ export function stampSceneryCollision(
       }
       recCache.set(rkey, rec ?? null);
     }
+    /* A FLAT PIECE BLOCKS NOTHING, and until now every one of them did.
+     *
+     * The stamp is handed the scenery list, this bbox document and the hitbox
+     * document, and NEITHER of the last two carried `collision: false` — so any
+     * piece with a tuned hitbox was stamped solid, rug included. The maintainer
+     * saw it through the collision overlay ("show the collision on a carpet
+     * that doesn't even have a collision?"), and maps2 has since stopped
+     * treating flat pieces as obstacles when it places furniture — so a rug now
+     * lands where you walk and a table now stands against a wall. A blocked
+     * cell under the player is ejected by the server every tick while the
+     * client predicts back into it, which is the flying he photographed.
+     *
+     * RESOLUTION ORDER IS THE WIKI'S (wiki.js hitboxFlat): the tuning record's
+     * `no_collision` decides per variation, and the piece's own published
+     * `collision: false` decides otherwise. */
+    if (rec?.no_collision ?? facts.flat) continue;
     const boxes = rec?.boxes;
     if (!boxes?.length) continue; // no record, or a decided "this piece needs none"
     /* AND THE VARIATION'S OWN ART: the ellipse is published in the frame px of
