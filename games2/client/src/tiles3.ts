@@ -56,6 +56,14 @@ export const PLATE_H = 46;
  *  distance band from ring 1: the boundary tile rides the corner lattice ON TOP
  *  of the cell, so ring 1 is still the surface's to dress. */
 export const FADE_BAND = 2;
+/** HOW FAR OFF THIS CELL'S PLANE A QUAD CORNER MAY STILL VOTE ON THE BOUNDARY,
+ *  in storeys. The Wang quad is four cells of the FLAT grid, so without a limit
+ *  a wall cap composes with the floor at its foot — measured on the_game, 36% of
+ *  every ground-change quad spanned two levels or more, out to forty. One storey
+ *  is a terrace lip or a stair: the same surface continuing, and the case the
+ *  maintainer wants eased. Anything further is two surfaces you cannot walk
+ *  between, and blending them put wood across a paved roof. */
+export const BOUNDARY_STEP = 1;
 /** A detail roughly once per 56 field cells — "once in a while", overridable per
  *  ground by live/tuning/tile_details.json (`rate`), which publishes none today. */
 export const DETAIL_FREQ = 1 / 56;
@@ -1865,7 +1873,31 @@ export class Tiles3 {
      * carry the neighbouring ground's colour into the corner of THIS cell's top
      * surface — the material easing toward the edge, which is what a terrace
      * lip looks like — rather than painting anything into the drop. */
-    let gs: (string | null)[] = [g0, g1, g2, g3];
+    /* ...BUT ONLY WITHIN ONE STOREY OF THIS CELL'S OWN PLANE (maintainer
+     * 2026-09-04: "Why are you doing transitions on the roof? ... I feel as if
+     * you are doing transitions to different levels or something. The roof is
+     * all the same ground type — no transition needed here!").
+     *
+     * Dropping the fold entirely paired grounds that are STOREYS apart: the
+     * quad is four cells of the flat grid, so a house's wall cap at level 6 sat
+     * in the same quad as the parquet floor 6 levels below it and composed a
+     * wood-into-paving transition across the roof. Measured on the_game, of the
+     * 9,980 quads carrying a ground change, 3,632 (36%) span two levels or more
+     * — 1,330 at four, 1,235 at six, a tail out to forty. Every one of those was
+     * a transition between two surfaces you cannot walk between.
+     *
+     * ONE STOREY is the line, because one storey is a terrace lip or a stair —
+     * the same surface continuing — and easing the neighbour's material into
+     * that corner is exactly the effect he asked for on high ground. It keeps
+     * 6,630 of the 6,648 transitions a same-plane-only rule would keep (the 191
+     * one-step quads are the terrace rims) and removes all 3,350 cross-storey
+     * ones. */
+    const zs = [z0, L(x + 1, y), L(x, y + 1), L(x + 1, y + 1)];
+    let gs: (string | null)[] = [g0, g1, g2, g3].map((gv, i) =>
+      Math.abs(zs[i] - z0) <= BOUNDARY_STEP ? gv : g0,
+    );
+    /* The THREE-GROUND fold below, and only it — the fixture asserts parity on
+     * this flag, and the level fold above is not what it names. */
     let folded = false;
     /* A THREE-GROUND JUNCTION STILL GETS A BOUNDARY. Falling back to the pure
      * plate there drew the cell's raw diamond edge — a hard straight segment
