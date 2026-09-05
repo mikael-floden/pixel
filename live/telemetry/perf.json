@@ -1,7 +1,7 @@
 {
   "format": "nangijala-client-perf@1",
   "_comment": "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here by the server. The maintainer plays on a phone and tests in production; the headless harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these are the only honest numbers for the paths that matter. Newest last; the file keeps the most recent reports only.",
-  "updated_at": "2026-09-05T12:53:11.747Z",
+  "updated_at": "2026-09-05T12:53:41.672Z",
   "reports": [
     {
       "id": "2026-09-03T09-18-53-926Z-i0k047",
@@ -2841,6 +2841,98 @@
         "{\"f\":732,\"total\":116.7,\"other\":0.4,\"sec\":{\"redrawGround\":75.7,\"rebuildScenery\":1.6,\"rebuildOccluders\":14.9,\"occCull\":0.2,\"prefetch\":0.4,\"avatarLoop\":0.5,\"monsterLoop\":6.2,\"stepNpcs\":0.2,\"overlays\":0.2,\"lighting\":9,\"depthSort\":1.7,\"render\":3.7,\"gapBusy\":2},\"mode\":\"full\",\"composed\":14,\"composeMs\":2.8,\"bnd\":11,\"defer\":3,\"owed\":3,\"tex\":0,\"files\":0,\"objs\":0,\"ring\":696}",
         "{\"f\":460,\"total\":116.6,\"other\":0.2,\"sec\":{\"occCull\":0.2,\"prefetch\":2,\"avatarLoop\":0.2,\"monsterLoop\":2.7,\"overlays\":0.3,\"lighting\":1.6,\"depthSort\":0.5,\"render\":1.1,\"gapBusy\":1.4,\"gapIdle\":106.4},\"mode\":\"cells\",\"composed\":1,\"composeMs\":0.7,\"bnd\":0,\"defer\":0,\"owed\":0,\"tex\":0,\"files\":0,\"objs\":0,\"ring\":724}",
         "{\"f\":830,\"total\":115.2,\"other\":0.5,\"sec\":{\"redrawGround\":96.4,\"occCull\":0.3,\"prefetch\":1.4,\"monsterLoop\":0.9,\"lighting\":7.4,\"depthSort\":1.3,\"render\":3,\"gapBusy\":2.3,\"gapIdle\":1.3},\"mode\":\"full\",\"composed\":12,\"composeMs\":4.5,\"bnd\":8,\"defer\":8,\"owed\":8,\"tex\":0,\"files\":0,\"objs\":0,\"ring\":837}"
+      ]
+    },
+    {
+      "id": "2026-09-05T12-53-41-672Z-r8qywq",
+      "at": "2026-09-05T12:53:41.672Z",
+      "build": "4aa2a570fa45109246e9393c90301c3213707ad7",
+      "where": "323.6,362.6",
+      "tod": "Night",
+      "zoom": 1.41,
+      "dpr": 2.23,
+      "view": "1079x1404",
+      "secs": 30,
+      "final": false,
+      "frames": {
+        "n": 1356,
+        "p50": 17.4,
+        "p90": 35.3,
+        "p99": 68.4,
+        "max": 136.7
+      },
+      "sections": {
+        "gapIdle": 7.57,
+        "render": 3.52,
+        "gapBusy": 2.47,
+        "rebuildOccluders": 1.36,
+        "lighting": 1.15,
+        "monsterLoop": 1.1,
+        "depthSort": 1.04,
+        "avatarLoop": 0.68,
+        "redrawGround": 0.55,
+        "groundSlice": 0.55,
+        "occCull": 0.55,
+        "prefetch": 0.39,
+        "overlays": 0.26,
+        "repath": 0.22,
+        "rebuildScenery": 0.21,
+        "stepNpcs": 0.16,
+        "repaintCells": 0.05
+      },
+      "counts": {
+        "occluders": 3187,
+        "litOccluders": 22,
+        "occluderMeta": 2942,
+        "sceneryImgs": 22,
+        "propImgs": 0,
+        "monsters": 146,
+        "monstersActive": 0,
+        "avatars": 1,
+        "npcs": 33,
+        "displayList": 3931,
+        "textures": 8183,
+        "texturesAdded": 1926,
+        "flushes": 11,
+        "occSkipped": 2017,
+        "cpuOccCull": 162.3,
+        "cpuSort": 21,
+        "longN": 25,
+        "longMs": 2000,
+        "occMean": 3371,
+        "dlMean": 4120,
+        "beaconSelfMs": 96.2,
+        "fullPaints": 8,
+        "drains": 8,
+        "drainsDeferred": 0
+      },
+      "ground": {
+        "png": "null",
+        "rt": "1510x1656",
+        "block": "256x192@627,732",
+        "anchor": "14225,9216",
+        "mode": "scroll",
+        "cellRuns": 30,
+        "medianSum": 187,
+        "nonInt": 0,
+        "topFace": "err",
+        "anchorFrac": 0,
+        "rtPosFrac": 0,
+        "fill": 0,
+        "dark": 0,
+        "clear": 0,
+        "topBins": []
+      },
+      "groundFull": null,
+      "worst": [
+        "{\"f\":1369,\"total\":136.7,\"other\":0.4,\"sec\":{\"redrawGround\":87.3,\"rebuildScenery\":3.5,\"rebuildOccluders\":19,\"occCull\":0.3,\"prefetch\":1.4,\"repath\":0.4,\"avatarLoop\":0.6,\"monsterLoop\":1,\"overlays\":0.3,\"lighting\":12.9,\"depthSort\":1.4,\"render\":4,\"gapBusy\":2.5,\"gapIdle\":1.6},\"mode\":\"full\",\"composed\":6,\"composeMs\":3.7,\"bnd\":3,\"defer\":4,\"owed\":4,\"tex\":6,\"files\":0,\"objs\":0,\"ring\":885}",
+        "{\"f\":1661,\"total\":130.4,\"other\":0.8,\"sec\":{\"occCull\":0.5,\"prefetch\":0.9,\"avatarLoop\":0.7,\"monsterLoop\":7.8,\"stepNpcs\":0.4,\"overlays\":1.1,\"lighting\":1,\"depthSort\":1.2,\"render\":5.5,\"gapBusy\":2.9,\"gapIdle\":107.6},\"mode\":\"scroll\",\"composed\":1,\"composeMs\":0.3,\"bnd\":0,\"defer\":0,\"owed\":0,\"tex\":1,\"files\":0,\"objs\":0,\"ring\":679}",
+        "{\"f\":1488,\"total\":119.6,\"other\":0.7,\"sec\":{\"redrawGround\":55.1,\"groundSlice\":6.4,\"rebuildScenery\":2.9,\"rebuildOccluders\":13.6,\"prefetch\":0.9,\"monsterLoop\":6.6,\"overlays\":3,\"lighting\":20.5,\"depthSort\":1.4,\"render\":4,\"gapBusy\":4.1},\"mode\":\"full\",\"composed\":9,\"composeMs\":3.4,\"bnd\":7,\"defer\":4,\"owed\":4,\"tex\":9,\"files\":0,\"objs\":0,\"ring\":1119}",
+        "{\"f\":1699,\"total\":117,\"other\":0.5,\"sec\":{\"redrawGround\":36.8,\"rebuildScenery\":2.2,\"rebuildOccluders\":24.6,\"avatarLoop\":0.7,\"monsterLoop\":0.8,\"stepNpcs\":0.3,\"overlays\":5.2,\"lighting\":7.4,\"depthSort\":1.5,\"render\":4.1,\"gapBusy\":32.7},\"mode\":\"scroll\",\"composed\":0,\"composeMs\":0,\"bnd\":0,\"defer\":0,\"owed\":0,\"tex\":1,\"files\":0,\"objs\":0,\"ring\":696}",
+        "{\"f\":1580,\"total\":108.1,\"other\":0.6,\"sec\":{\"redrawGround\":61.4,\"groundSlice\":7.4,\"rebuildScenery\":5.5,\"rebuildOccluders\":21.4,\"avatarLoop\":0.3,\"monsterLoop\":1,\"overlays\":0.2,\"lighting\":1,\"depthSort\":1.4,\"render\":4.4,\"gapBusy\":2,\"gapIdle\":1.2},\"mode\":\"full\",\"composed\":8,\"composeMs\":3.5,\"bnd\":7,\"defer\":10,\"owed\":10,\"tex\":8,\"files\":0,\"objs\":0,\"ring\":748}",
+        "{\"f\":1724,\"total\":100.8,\"other\":0.8,\"sec\":{\"redrawGround\":61.8,\"rebuildScenery\":2.5,\"rebuildOccluders\":19.8,\"occCull\":0.2,\"prefetch\":0.6,\"avatarLoop\":0.7,\"monsterLoop\":0.9,\"stepNpcs\":0.2,\"overlays\":0.3,\"lighting\":0.9,\"depthSort\":4.8,\"render\":3.9,\"gapBusy\":2.5,\"gapIdle\":0.9},\"mode\":\"full\",\"composed\":14,\"composeMs\":8,\"bnd\":4,\"defer\":34,\"owed\":34,\"tex\":14,\"files\":0,\"objs\":0,\"ring\":719}",
+        "{\"f\":1733,\"total\":92.9,\"other\":0.6,\"sec\":{\"redrawGround\":51.8,\"rebuildScenery\":2.7,\"rebuildOccluders\":23.9,\"prefetch\":1.2,\"avatarLoop\":2.3,\"monsterLoop\":0.7,\"stepNpcs\":0.2,\"lighting\":0.7,\"depthSort\":1.7,\"render\":3.5,\"gapBusy\":1,\"gapIdle\":2.2},\"mode\":\"full\",\"composed\":7,\"composeMs\":3,\"bnd\":5,\"defer\":2,\"owed\":2,\"tex\":7,\"files\":0,\"objs\":0,\"ring\":720}",
+        "{\"f\":1375,\"total\":87.4,\"other\":0.4,\"sec\":{\"redrawGround\":44.5,\"rebuildScenery\":3.2,\"rebuildOccluders\":16.8,\"occCull\":0.2,\"prefetch\":1,\"repath\":0.6,\"avatarLoop\":0.8,\"monsterLoop\":1.1,\"overlays\":0.3,\"lighting\":10.8,\"depthSort\":1.1,\"render\":3.8,\"gapBusy\":2.8},\"mode\":\"full\",\"composed\":3,\"composeMs\":1.5,\"bnd\":2,\"defer\":5,\"owed\":5,\"tex\":3,\"files\":0,\"objs\":0,\"ring\":885}"
       ]
     }
   ]
