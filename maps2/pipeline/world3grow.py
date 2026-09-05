@@ -2949,6 +2949,67 @@ class Grow:
                           on=("dark_mud", "light_beach"), hflip=i % 2)
         self.placed += [("islet pieces", n)]
 
+    # A STEP HAS TO BE VISIBLE (maintainer 2026-09-05, standing on a grass
+    # ledge above grass: "It's really hard for me to know that this is an edge
+    # since both levels use the same ground type ... You often draw both the
+    # hill and the slope using the same ground when we have so many to choose
+    # from"). A raised cell's WALL BAND is drawn from its OWN ground, so grass
+    # over grass paints an invisible cliff - the edge exists only as a
+    # silhouette against whatever is behind it.
+    #
+    # The whole terrace is not repainted: level 6 alone is 8,357 cells and the
+    # island would go brown. What carries the information is the LIP, which is
+    # also what wears bare in life - so the rim of every drop takes a
+    # contrasting ground, and so does every RAMP, which turns "the way up"
+    # into a visible path. One cell is enough to read; the band is chosen by
+    # height so the mountain does not wear the meadow's soil.
+    RIM_BY_HEIGHT = ((8, "light_soil"), (18, "grey_stone"), (999, "ice"))
+    RIM_SOFT = ("grass", "snow")      # only these are repainted
+    RIM_DROP = 2                      # levels; a 1-level step is a slope, not
+                                      # a cliff, and already reads as one
+
+    def terrace_rims(self):
+        gi, grd, lvl = self.gi, self.grd, self.lvl
+        ramp = {(c["x"], c["y"]) for r in self.doc.get("ramps", [])
+                for c in r.get("cells", [])}
+        rim = []
+        for y in range(NEW):
+            for x in range(NEW):
+                g = self.g(x, y)
+                if g not in self.RIM_SOFT or self.liquid(x, y):
+                    continue
+                if (x, y) in getattr(self, "floor_cells", {}):
+                    continue
+                z = lvl[y][x]
+                edge = (x, y) in ramp
+                if not edge:
+                    for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        nx, ny = x + dx, y + dy
+                        if not (0 <= nx < NEW and 0 <= ny < NEW):
+                            continue
+                        if self.liquid(nx, ny) or not self.g(nx, ny):
+                            continue          # a shore is already a contrast
+                        if z - lvl[ny][nx] >= self.RIM_DROP:
+                            edge = True
+                            break
+                if edge:
+                    rim.append((x, y))
+        # A RIM IS A LINE, NOT A RASH. An isolated cell that happens to have
+        # a 2-level neighbour is a dimple in the terrain, and painting it
+        # leaves a speck of soil in open grass; a real edge runs. A candidate
+        # keeps its rim only if two more candidates touch it.
+        rimset = set(rim)
+        rim = [c for c in rim
+               if sum((c[0] + dx, c[1] + dy) in rimset
+                      for dx in (-1, 0, 1) for dy in (-1, 0, 1)
+                      if (dx, dy) != (0, 0)) >= 2]
+        for (x, y) in rim:
+            z = lvl[y][x]
+            mat = next(m for lim, m in self.RIM_BY_HEIGHT if z < lim)
+            # snow keeps its own rim above the snowline unless it is a ramp
+            grd[y][x] = gi[mat]
+        self.placed += [("terrace rims drawn", len(rim))]
+
     def deepen(self):
         """world3's deep-water rule re-run over the WHOLE grown sea: open
         water further than DEEP_R from any land goes deep, shores stay
@@ -3199,6 +3260,7 @@ class Grow:
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
+                     self.terrace_rims,
                      self.snap_hitboxes, self.police_footprints,
                      self.relight, self.npcs,
                      self.rooms, self.spawns):

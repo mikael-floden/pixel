@@ -118,6 +118,27 @@ border from cutting a roof in two (a 15-cell-wide house straddles one).
 `render3.plate_img(..., anchor=)`; **games2 consumes `rooms` for the same
 purpose and needs the same rule** — raised on their board.
 
+### terrain — a step has to be visible
+
+**A RAISED CELL'S WALL BAND IS DRAWN FROM ITS OWN GROUND**, so grass over grass
+paints an invisible cliff: the edge exists only as a silhouette against
+whatever happens to be behind it (maintainer 2026-09-05, standing on a grass
+ledge above grass: *"It's really hard for me to know that this is an edge since
+both levels use the same ground type ... You often draw both the hill and the
+slope using the same ground when we have so many to choose from"*).
+
+The terrace is NOT repainted — level 6 alone is 8,357 cells and the island
+would go brown. What carries the information is the **lip**, which is also what
+wears bare in life: `terrace_rims()` gives one cell of contrasting ground to
+the rim of every drop of `RIM_DROP = 2` levels or more, and to every **ramp
+cell**, which turns "the way up" into a visible path. The material is chosen by
+height (`RIM_BY_HEIGHT`: light_soil below 8, grey_stone below 18, ice above) so
+the mountain does not wear the meadow's soil, and only `grass`/`snow` are
+repainted — a shore, a road, a floor and bare rock are already contrasts.
+**A rim is a line, not a rash**: a candidate keeps its rim only if two more
+candidates touch it, so a dimple in open grass does not become a speck of soil
+(3,792 → 3,595 cells, 5 isolated in the whole world).
+
 ### `scenery` — a placement is centred on its HITBOX, not its art
 
 **The hitbox centre stands in the middle of a tile** (maintainer, 2026-08-30:
