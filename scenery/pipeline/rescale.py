@@ -1,12 +1,17 @@
-"""ONE PIXEL IS ONE PIXEL. Publish every piece at its art's own size.
+"""ONE SCENERY PIXEL IS ONE PLAYER PIXEL. Publish art at its own size.
 
 THE LAW (maintainer, 2026-09-05): "I want the player and scenery to be the same
 scale. If the player img is 100px height and a scenery is 50px in height, then
 the player should be twice as tall as the scenery in the game and in the wiki.
-1 pixel is the same size. That's what I'm after."
+1 pixel on the player should be the same size as 1 pixel on the scenery."
 
-So scenery is NEVER resampled. The game already draws the avatar at setScale(1)
-(games2 WorldScene.ts:4103); scenery now matches it.
+This is about the RATIO between them, not about device pixels. The game draws the
+avatar at setScale(1), so scenery goes into the world at 1:1 too and the two
+share one pixel grid. The camera zoom is untouched and stays correct: it scales
+the WHOLE scene uniformly, so the ratio survives it. He was explicit — "we have a
+camera that zooms out when the player runs, ofc we can't map the pixel to 1 pixel
+on my phone, that would destroy the game." What must never happen is scenery
+being resampled ON ITS OWN, against the player.
 
 HOW, without touching three other domains' renderers: every consumer (maps2
 render3, games2 fitSprite, the wiki) already scales a sprite so its alpha bbox
@@ -36,6 +41,8 @@ import json, os, sys
 from PIL import Image
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import factory, viewer_build
+
+GOOD_NOTE = "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene — that is uniform and correct; what must never happen is scenery being resampled on its own, against the player."
 
 
 def run(write=False):
@@ -67,10 +74,8 @@ def run(write=False):
         pl["character_height_px"] = sc["character_height_px"]
         pl["character_height_m"] = sc["character_height_m"]
         pl["world_height_m"] = round(content / ppm, 3)
-        pl["note"] = ("DRAW AT 1:1. world_px_height IS the art's own alpha bbox "
-                      "height, so the scale is 1 — never resample scenery. "
-                      "world_height_m is what the art reads as beside a "
-                      f"{sc['character_height_px']}px character; "
+        pl["note"] = (GOOD_NOTE + " world_height_m is what the art reads as "
+                      f"beside a {sc['character_height_px']}px character; "
                       "declared_height_m is what it was once declared to be, "
                       "and a gap between them means the ART is the wrong size.")
         if old != content:

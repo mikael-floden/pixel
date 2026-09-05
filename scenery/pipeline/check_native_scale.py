@@ -1,6 +1,8 @@
 """GATE: no piece may publish a size other than its art's own.
 
-ONE PIXEL IS ONE PIXEL (maintainer 2026-09-05). Every consumer scales a sprite
+ONE SCENERY PIXEL IS ONE PLAYER PIXEL (maintainer 2026-09-05) — a ratio between
+the two, not a device-pixel rule; the camera zoom scales the whole scene and is
+correct. Every consumer scales a sprite
 so its alpha bbox equals placement.world_px_height, so the only thing keeping
 that from resampling pixel art is world_px_height being the bbox height itself.
 This fails the moment it is not.
@@ -73,7 +75,7 @@ def main():
     if bad:
         print("FAIL — run: python3 scenery/pipeline/rescale.py --write")
         return 1
-    print("PASS — scenery is never resampled")
+    print("PASS — scenery shares the player's pixel grid")
     return 0
 
 

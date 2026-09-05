@@ -57,11 +57,14 @@ def _seed(*parts):
 
 
 def placement(cfg, world_height_m, img=None):
-    """ONE PIXEL IS ONE PIXEL — publish a piece at the size its art actually is.
+    """ONE SCENERY PIXEL IS ONE PLAYER PIXEL — publish art at the size it is.
 
-    "I want the player and scenery to be the same scale... 1 pixel is the same
-    size. That's what I'm after." (maintainer 2026-09-05). The game draws the
-    avatar at setScale(1), so scenery is never resampled either.
+    "I want the player and scenery to be the same scale... 1 pixel on the player
+    should be the same size as 1 pixel on the scenery." (maintainer 2026-09-05).
+    A RATIO between the two, not a device-pixel rule: the game draws the avatar
+    at setScale(1), so scenery goes into the world at 1:1 and they share one
+    pixel grid. The camera zoom is untouched and stays correct — it scales the
+    whole scene uniformly, so the ratio survives it.
 
     `world_px_height` is therefore the art's own alpha bbox height, which makes
     every consumer's existing scale-to-world_px_height a no-op of exactly 1.0 —
@@ -84,8 +87,7 @@ def placement(cfg, world_height_m, img=None):
         "declared_height_m": round(float(world_height_m), 3),
         "character_height_px": sc["character_height_px"],
         "character_height_m": sc["character_height_m"],
-        "note": ("DRAW AT 1:1. world_px_height IS the art's own alpha bbox "
-                 "height, so the scale is 1 — never resample scenery."),
+        "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene — that is uniform and correct; what must never happen is scenery being resampled on its own, against the player.",
     }
     if img is not None:
         box = img.getbbox()

@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-05T10:19:03Z",
+  "updated_at": "2026-09-05T10:23:57Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,16 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-05T10:23:57Z",
+      "to": [
+        "games2",
+        "maps2",
+        "wiki"
+      ],
+      "title": "CORRECTION to my previous note: the law is a RATIO, and the camera zoom is untouched",
+      "body": "I wrote 'never resample scenery' in the last note and in the placement.note of all 710 manifests. That wording was mine, not the maintainer's, and it could be read as 'ignore the camera zoom' — it does not mean that. His words: '1 pixel on the player should be the same size as 1 pixel on the scenery... we have a camera that zooms out when the player runs, ofc we can't map the pixel to 1 pixel on my phone, that would destroy the game.' THE RULE: scenery and the avatar share one pixel grid in WORLD space. cameras.main.setZoom scales the whole scene uniformly, so the ratio survives it — keep the camera exactly as it is. What must never happen is scenery being resampled on its own, against the player. No behaviour changed from my previous note; only the wording, in the manifests too. The published contract is unchanged: world_px_height IS the art's alpha bbox height, so your existing scale-to-world_px_height is a no-op of 1.0. Gate: scenery/pipeline/check_native_scale.py."
+    },
     {
       "at": "2026-09-05T10:19:03Z",
       "to": [
