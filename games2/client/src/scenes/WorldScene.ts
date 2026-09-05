@@ -1748,17 +1748,34 @@ export class WorldScene extends Phaser.Scene {
     /* The two rates the index is built from, in NANOSECONDS per unit of work,
      * taken from the per-frame means above against the end-of-window counts. */
     const cnt = (snap.counts ?? {}) as Record<string, number>;
-    const occN = cnt.occluders ?? 0;
-    const dlN = cnt.displayList ?? 0;
+    const cn = this.perfCountN || 1;
+    const occN = this.perfCountN ? this.perfOccSum / cn : (cnt.occluders ?? 0);
+    const dlN = this.perfCountN ? this.perfDlSum / cn : (cnt.displayList ?? 0);
+    const zoomMean = this.perfCountN ? this.perfZoomSum / cn : cam.zoom;
+    const longN = this.perfLongN;
+    const longMs = this.perfLongMs;
+    this.perfLongN = 0;
+    this.perfLongMs = 0;
+    this.perfOccSum = 0;
+    this.perfDlSum = 0;
+    this.perfZoomSum = 0;
+    this.perfCountN = 0;
     const cpuIndex = {
       cpuOccCull: +(occN > 0 ? ((perFrame["occCull"] ?? 0) / occN) * 1e6 : 0).toFixed(1),
       cpuSort: +(dlN > 1 ? ((perFrame["depthSort"] ?? 0) / (dlN * Math.log2(dlN))) * 1e6 : 0).toFixed(2),
+      // The means the index actually divided by, so the ratio is auditable and
+      // the gap between these and `counts.*` shows how atypical the snapshot was.
+      longN, // main-thread tasks over 50 ms the browser named, this window
+      longMs: +longMs.toFixed(0),
+      occMean: Math.round(occN),
+      dlMean: Math.round(dlN),
     };
     const body = {
       build: assetIndexInfo().buildSha,
       where: at ? `${at.x.toFixed(1)},${at.y.toFixed(1)}` : "unknown",
       tod: TIME_PHASES[this.timeIdx].name,
-      zoom: cam.zoom,
+      zoom: cam.zoom, // INSTANTANEOUS — see zoomMean; the snapshot instant is atypical
+      zoomMean: +zoomMean.toFixed(2),
       dpr: window.devicePixelRatio || 1,
       view: `${this.scale.width}x${this.scale.height}`,
       secs: +secs.toFixed(1),
@@ -2180,7 +2197,53 @@ export class WorldScene extends Phaser.Scene {
       t0 = 0;
       this.perfDrawCount = this.perfFlushes;
       this.perfFlushes = 0;
+      /* THE GAP, AND WHETHER THE PHONE IS WORKING OR WAITING.
+       *
+       * `total` is marker-to-marker between two `update()` calls, so it is the
+       * whole event-loop turn: everything after POST_RENDER — the wait for the
+       * compositor, plus any task that is not ours — lands in `other` with no
+       * way to tell idle from work. That residual has been 16-27% of every
+       * report and up to 25 ms/frame, and it is the one number that decides
+       * whether this device could run at 60 at all or whether a rock-steady 30
+       * is the honest target. No arithmetic on the existing report can split it.
+       *
+       * A macrotask can. Posting a MessageChannel message at POST_RENDER puts a
+       * callback at the BACK of the task queue: it runs the moment the main
+       * thread has nothing else to do. So the timestamp when it runs cuts the
+       * gap in two — `gapBusy` is the thread being held by something that is
+       * not our frame (a Colyseus patch, a texture upload, GC, a touch handler),
+       * and `gapIdle` is the thread free and simply waiting for the next vsync.
+       * Idle time is not a problem to fix; busy time is. */
+      this.perfPostAt = performance.now();
+      this.perfMsgAt = 0;
+      this.perfPort?.postMessage(0);
     });
+    try {
+      const mc = new MessageChannel();
+      mc.port1.onmessage = () => {
+        if (this.perfOn && this.perfPostAt) this.perfMsgAt = performance.now();
+      };
+      mc.port1.start();
+      this.perfPort = mc.port2;
+    } catch {
+      /* no MessageChannel — the gap stays one number, as before */
+    }
+    /* AND WHAT STOLE IT, WHERE THE BROWSER WILL SAY. A longtask entry names any
+     * task over 50 ms on the main thread; it cannot attribute inside our own
+     * frame, but a long task that lands in the GAP is exactly the thing
+     * `gapBusy` counts and this says how many and how long. */
+    try {
+      const po = new PerformanceObserver((list) => {
+        if (!this.perfOn) return;
+        for (const e of list.getEntries()) {
+          this.perfLongN++;
+          this.perfLongMs += e.duration;
+        }
+      });
+      po.observe({ entryTypes: ["longtask"] });
+    } catch {
+      /* not supported (Safari) — gapBusy still works */
+    }
     /* BATCH FLUSHES PER FRAME — and the first cut of this metric read
      * `renderer.drawCount`, which came back 0 in all four runs of his beacon
      * because it is a CANVAS-renderer property; Phaser 3.90's WebGLRenderer has
@@ -2224,6 +2287,15 @@ export class WorldScene extends Phaser.Scene {
   private perfFlushes = 0;
   /** What building the last report cost — see the beacon tick. */
   private beaconSelfMs = 0;
+  private perfPostAt = 0;
+  private perfMsgAt = 0;
+  private perfPort: MessagePort | null = null;
+  private perfLongN = 0;
+  private perfLongMs = 0;
+  private perfOccSum = 0;
+  private perfDlSum = 0;
+  private perfZoomSum = 0;
+  private perfCountN = 0;
   private perfPrevFullPaints = 0;
   private perfPrevDrains = 0;
   private perfPrevDeferred = 0;
@@ -5172,6 +5244,11 @@ export class WorldScene extends Phaser.Scene {
           this.perfTexFrame = 0;
           this.perfTexFrameMax = 0;
           this.perfOn = on;
+          // The render/depthSort/gap spans live on game events, installed once.
+          // Arming perf from the console must install them too, or a dev A/B
+          // silently measures a section table with the three biggest entries
+          // missing — which is exactly what it did.
+          if (on) this.perfHookRender();
           this.perfAcc = {};
           this.perfFrames = [];
           this.perfStack = [];
@@ -9075,10 +9152,35 @@ export class WorldScene extends Phaser.Scene {
     if (this.perfOn) {
       const now = performance.now();
       if (this.perfLast) this.perfFrames.push(now - this.perfLast);
+      // Close the gap the previous frame left open — see perfHookRender.
+      if (this.perfPostAt) {
+        const msg = this.perfMsgAt || now; // never fired: treat the whole gap as busy
+        this.pAdd("gapBusy", Math.max(0, Math.min(msg, now) - this.perfPostAt));
+        this.pAdd("gapIdle", Math.max(0, now - Math.max(msg, this.perfPostAt)));
+        this.perfPostAt = 0;
+      }
       if (this.hitchOn && this.perfLast) this.closeHitchFrame(now - this.perfLast);
       this.perfLast = now;
       if (this.perfTexFrame > this.perfTexFrameMax) this.perfTexFrameMax = this.perfTexFrame;
       this.perfTexFrame = 0;
+      /* WINDOW MEANS, because the end-of-window snapshot is a systematically
+       * ATYPICAL instant. A report is built when the beacon timer fires, and
+       * across 34 of them 11 of the 12 `final` reports carry zoom >= 1.89 while
+       * 0 of 26 others do — i.e. the snapshot lands when he has STOPPED and the
+       * camera has eased back in. Zoom 1.89 against 1.36 shrinks the occluder
+       * cull box (worldView + 2*OCC_CULL_PAD) to 0.71 of its area, so the
+       * occluder count read at that instant understates the window's own mean
+       * by 1.4x or more.
+       *
+       * That matters because the device-speed index divides a section MEAN by a
+       * count: dividing a whole window's mean cost by one atypical instant's
+       * count inflates it. It made me report a 5.75x throttle where the honest
+       * figure is nearer 2x. Accumulating the two counts the index uses costs
+       * two adds a frame and makes the ratio a mean over a mean. */
+      this.perfOccSum += this.occluders.length;
+      this.perfDlSum += this.children.length;
+      this.perfZoomSum += this.cameras.main.zoom;
+      this.perfCountN++;
       /* THE INSTRUMENT MUST NOT BILL THE GAME, AND IT WAS BILLING 125 ms.
        *
        * Building a window's report is expensive on purpose — a gl.readPixels of
