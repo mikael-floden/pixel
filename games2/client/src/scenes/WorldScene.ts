@@ -1737,6 +1737,8 @@ export class WorldScene extends Phaser.Scene {
     const prevFull = this.perfPrevFullPaints;
     const prevDrain = this.perfPrevDrains;
     const prevDefer = this.perfPrevDeferred;
+    const prevCtx = this.perfPrevCtxRestores;
+    this.perfPrevCtxRestores = this.ctxRestores;
     this.perfPrevFullPaints = this.groundFullRuns;
     this.perfPrevDrains = this.repaintStats.drains;
     this.perfPrevDeferred = this.repaintStats.drainsDeferred;
@@ -1822,6 +1824,15 @@ export class WorldScene extends Phaser.Scene {
          * number in this report is already per window (`sections` divides by
          * the frame count, `perfAcc` is reset each send); these two were the
          * exception and are not any more. */
+        /* WAS THE GROUND TEXTURE LOST? A backgrounded GPU can discard a
+         * framebuffer's contents, which empties the ground RT while every
+         * ordinary sprite re-uploads and survives — the "light blue with only
+         * scenery visible" photograph. Nothing in this client observed it:
+         * Phaser only console.warns a context loss and no report carried
+         * renderer state, so the diagnosis was an inference. This counts the
+         * restores that forced a repaint, per window, so the next beacon says
+         * whether it happens on his phone at all. */
+        ctxRestores: this.ctxRestores - prevCtx,
         fullPaints: this.groundFullRuns - prevFull,
         drains: this.repaintStats.drains - prevDrain,
         drainsDeferred: this.repaintStats.drainsDeferred - prevDefer,
@@ -2304,6 +2315,10 @@ export class WorldScene extends Phaser.Scene {
   private perfZoomSum = 0;
   private perfCountN = 0;
   private perfPrevFullPaints = 0;
+  private perfPrevCtxRestores = 0;
+  /** Ground repaints forced by a context restore or a tab-in — see
+   *  hookContextRestore. Reported per window by the beacon. */
+  private ctxRestores = 0;
   private perfPrevDrains = 0;
   private perfPrevDeferred = 0;
   /** Server-side position jumps for the local body — see the recorder in the
@@ -4832,6 +4847,73 @@ export class WorldScene extends Phaser.Scene {
           out.push({ key: lo.img.texture.key.slice(0, 40), col: +lo.col.toFixed(2), row: +lo.row.toFixed(2), z: lo.z, worldL: this.world?.rows[Math.floor(lo.row)]?.[Math.floor(lo.col)]?.l ?? null, x: Math.round(lo.img.x), y: Math.round(lo.img.y), h: Math.round(lo.img.displayHeight), footA: +foot.a.toFixed(3), footRGB: [+foot.r.toFixed(2), +foot.g.toFixed(2), +foot.b.toFixed(2)], cellA: +cellTwin.a.toFixed(3), pass });
         }
         return { player: [+px.toFixed(2), +py.toFixed(2)], pieces: out };
+      },
+      /** THE SAME QUESTION FOR BODIES, WHICH HAD NO PROBE AT ALL.
+       *
+       * `fogPieces` answers "is this scenery piece fogged like the ground under
+       * it" and there has never been an equivalent for monsters, NPCs or remote
+       * players — which is exactly the asymmetry the maintainer reported
+       * (2026-09-05: "monsters and NPCs not being affected by the fog the way
+       * scenery is"). Reports, per body: the foot point the twin is read at,
+       * the twin's answer there, the fog the PASS actually paints at that
+       * point, the alpha the silhouette is currently drawn with, and whether
+       * there is a silhouette and a lit copy at all — because a body whose lit
+       * copy is hidden gets no silhouette by construction, and that is a
+       * different bug from a silhouette drawn at the wrong strength. */
+      fogBodies: (radius = 12) => {
+        const me = this.avatars.get(this.room?.sessionId ?? "");
+        const px = me ? me.fx / CELL_WU : 0;
+        const py = me ? me.fy / CELL_WU : 0;
+        const out: Record<string, unknown>[] = [];
+        const cv = this.cameras.main.worldView;
+        const add = (kind: string, name: string, b: BodyVisual) => {
+          const col = b.fx / CELL_WU;
+          const row = b.fy / CELL_WU;
+          if (Math.hypot(col - px, row - py) > radius) return;
+          const lvl = this.litLevelOf(b);
+          const sp = b.sprite;
+          const foot = this.night!.depthFogAtFoot(sp.x, sp.y, Math.floor(lvl), col, row);
+          const cellTwin = this.night!.depthFogAt(Math.floor(col), Math.floor(row), Math.floor(lvl), true);
+          let pass: unknown = null;
+          try {
+            pass = (this.night!.fogProbeAt(sp.x, sp.y) as { pass: unknown }).pass;
+          } catch {
+            pass = null;
+          }
+          out.push({
+            kind,
+            name,
+            col: +col.toFixed(2),
+            row: +row.toFixed(2),
+            lvl: +lvl.toFixed(2),
+            footA: +foot.a.toFixed(3),
+            cellA: +cellTwin.a.toFixed(3),
+            pass,
+            litVisible: !!b.lit?.visible,
+            hasLit: !!b.lit,
+            hasFog: !!b.fog,
+            fogVisible: !!b.fog?.visible,
+            fogAlpha: b.fog ? +b.fog.alpha.toFixed(3) : null,
+            spriteVisible: !!sp.visible,
+            culled: !!(b as unknown as { culled?: boolean }).culled,
+            onScreen:
+              sp.x >= cv.x - 64 && sp.x <= cv.right + 64 && sp.y >= cv.y - 64 && sp.y <= cv.bottom + 96,
+            coverY: (b as unknown as { coverY?: number }).coverY ?? null,
+          });
+        };
+        for (const [id, a] of this.avatars) add(id === this.room?.sessionId ? "me" : "player", id.slice(0, 6), a);
+        for (const [, m] of this.monsters) add("monster", m.label ?? m.kind ?? "?", m as unknown as BodyVisual);
+        for (const [, n] of this.npcs) add("npc", (n as unknown as { uid?: string }).uid ?? "?", n as unknown as BodyVisual);
+        return {
+          player: [+px.toFixed(2), +py.toFixed(2)],
+          sceneryFogOn: this.night?.sceneryFog !== false,
+          /** The applyObjectLights gate: false means NO body gets a lit copy or
+           *  a fog silhouette, whatever its fog reads. */
+          litGate: !!this.night && this.night.active && this.night.testPattern < 3,
+          playerZ: this.night ? (this.night as unknown as { curPlayerZ: number }).curPlayerZ : null,
+          playerXY: this.night ? (this.night as unknown as { curPlayerXY: [number, number] }).curPlayerXY : null,
+          bodies: out,
+        };
       },
       /** THE HITCH RECORDER: `hitch(true)` arms it (perf must be on too),
        *  `hitch()` reads the worst frames of the run and clears them. */
@@ -12675,6 +12757,7 @@ export class WorldScene extends Phaser.Scene {
     }
     this.makeGroundRT();
     this.scale.on("resize", () => this.makeGroundRT());
+    this.hookContextRestore();
     // Fake debug spawn-area rectangles depend on the iso origin — (re)draw them
     // now that this.iso is set.
     this.drawSpawnAreas();
@@ -16155,6 +16238,58 @@ export class WorldScene extends Phaser.Scene {
     this.scnDrain();
     this.flushScenery();
   }
+
+  /** A BACKGROUNDED TAB COMES BACK WITH AN EMPTY GROUND TEXTURE, so both latches
+   *  are poisoned on the way in and the next pass paints in full.
+   *
+   *  `groundRT` is a framebuffer: its pixels exist only as previously-rendered
+   *  output, so a GPU that reclaims them while the app is backgrounded hands
+   *  back a blank texture. Ordinary sprites re-upload from their image source
+   *  and return intact — which is exactly the photograph: scenery, monsters and
+   *  the player drawn over an empty world.
+   *
+   *  NOTHING REPAINTED IT. `redrawGround` returns early until the camera strays
+   *  GROUND_MARGIN/2, and a tab-in moves the camera not at all. Walking then
+   *  made it WORSE, not better: the first latch crossing SCROLLS the empty
+   *  picture forward and paints only the newly exposed slice, leaving a correct
+   *  strip at the leading edge with the void dragged along behind it. (Before
+   *  the ground scroll, every latch crossing was a full paint and the damage
+   *  healed itself within 256 px of walking.)
+   *
+   *  BOTH HOOKS, because they cover different failures. `RESTORE_WEBGL` fires
+   *  only when the browser reports a real context loss; mobile discards
+   *  framebuffer contents without one. A tab-in that also changes the viewport
+   *  is already covered — `makeGroundRT` poisons the latch on every resize — so
+   *  the uncovered case is precisely the tab-in whose viewport does not move.
+   *  Poisoning is what the other latch sites do; it costs one full paint per
+   *  tab-in, the pass the player triggers 256 px later anyway. */
+  private hookContextRestore(): void {
+    if (this.ctxRestoreHooked) return;
+    this.ctxRestoreHooked = true;
+    const repaint = () => {
+      this.ctxRestores++;
+      this.lastGround = { x: NaN, y: NaN };
+      this.lastOccl = { x: NaN, y: NaN };
+    };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") repaint();
+    };
+    const onPageShow = () => repaint(); // bfcache restore fires no visibilitychange
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("pageshow", onPageShow);
+    // Phaser rebuilds the texture and framebuffer wrappers FIRST and emits
+    // after (WebGLRenderer.dispatchContextRestored) — never hook the canvas
+    // event directly, it runs before that.
+    const webgl = this.game.renderer.type === Phaser.WEBGL ? this.game.renderer : null;
+    webgl?.on(Phaser.Renderer.Events.RESTORE_WEBGL, repaint);
+    this.events.once("shutdown", () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pageshow", onPageShow);
+      webgl?.off(Phaser.Renderer.Events.RESTORE_WEBGL, repaint);
+      this.ctxRestoreHooked = false;
+    });
+  }
+  private ctxRestoreHooked = false;
 
   private makeGroundRT() {
     // A SAVED texture outlives its game object (RenderTexture.preDestroy skips

@@ -800,8 +800,30 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     on the_game: a 576 px step issues 2,876-3,966 blits instead of 5,949-8,843
     (the band window still resolves and culls, so JS cost falls ~40-60%, not
     ~80%). Only a camera latch scrolls — a poisoned latch (repaintWorld, a
-    landed batch, a resize, the indoor mask/cut, the first `caveDepth`) paints
-    in full, so the kept picture and the band can never disagree on state.
+    landed batch, a resize, the indoor mask/cut, the first `caveDepth`, a
+    CONTEXT RESTORE OR TAB-IN) paints in full, so the kept picture and the band
+    can never disagree on state.
+    **A TAB-IN POISONS THE LATCH (`hookContextRestore`).** The ground RT is a
+    framebuffer: its pixels exist only as previously-rendered output, so a GPU
+    that reclaims them while the app is backgrounded hands back a blank texture
+    while every ordinary sprite re-uploads and survives — scenery, monsters and
+    the player over an empty world, photographed 2026-09-05. Nothing repaired
+    it: `redrawGround` returns early until the camera strays GROUND_MARGIN/2,
+    and a tab-in moves the camera not at all. The scroll made walking SPREAD the
+    damage rather than heal it — the first latch crossing scrolls the empty
+    picture forward and paints only the exposed slice, leaving a correct strip
+    at the leading edge with the void dragged behind it (his second photograph);
+    before the scroll every latch crossing was a full paint and it healed within
+    256 px. Hooked on BOTH `visibilitychange`→visible and
+    `Phaser.Renderer.Events.RESTORE_WEBGL` (the latter fires only when the
+    browser reports a real loss, and mobile discards contents without one; a
+    tab-in that also resizes was already covered by `makeGroundRT`). Never hook
+    `webglcontextrestored` on the canvas — Phaser's own handler rebuilds the
+    texture and framebuffer wrappers first and emits RESTORE_WEBGL after it.
+    The cover atlases and the glow RT need no equivalent: both are redrawn every
+    frame. Cost is one full paint per tab-in. The beacon reports `ctxRestores`
+    per window — SwiftShader restores RT contents, so the harness cannot
+    reproduce the loss and only his phone can confirm it fires.
     After a scroll `t3stats` counts the BANDS (cells/culled with the corner
     twice); the boot hold reads the sticky `groundPainted` instead of blits.
     Three Phaser 3.90 traps this paid for, each a wrong picture, none an error:
