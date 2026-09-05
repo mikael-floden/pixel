@@ -7,6 +7,7 @@ import { createServer, type Server as HttpServer } from "http";
 import type { AddressInfo } from "net";
 import { createHash, createHmac } from "crypto";
 import express from "express";
+import { readFileSync } from "node:fs";
 
 // Mock GitHub (raw + contents API) — must be up BEFORE live.ts reads env.
 const ghFiles = new Map<string, string>(); // "live/tuning/monsters.json" -> body
@@ -325,4 +326,26 @@ test("save with no server token fails closed (memory untouched)", async () => {
   } finally {
     process.env.WIKI_GITHUB_TOKEN = saveToken;
   }
+});
+
+/* WHAT IS SAVEABLE IS READABLE — one list, not two. The state response used to
+ * enumerate the tuning docs by hand, so registering a file in LIVE_FILES made
+ * it saveable while the wiki could never read it back. Measured on 2026-09-05:
+ * tuning/scenery_flips shipped, its row worked, its doc came back absent on
+ * every load, and an hour went into "the server must be a deploy behind". The
+ * response is derived from the registry now; this fails if the two ever part
+ * again — including for whatever file is added next, which is the point. */
+test("every registered tuning file comes back in the state — no second list", async () => {
+  await live.initLive("/nonexistent");
+  const res = await fetch(`${base}/api/live/state`);
+  assert.equal(res.status, 200);
+  const body = (await res.json()) as { tuning: Record<string, unknown> };
+  const src = readFileSync(new URL("../src/live.ts", import.meta.url), "utf8");
+  const registry = [...src.matchAll(/"tuning\/([a-z_]+)\.json":/g)].map((m) => m[1]);
+  assert.ok(registry.length >= 13, `the registry was found and parsed (${registry.length} tuning files)`);
+  const missing = registry.filter((k) => !(k in body.tuning));
+  assert.deepEqual(missing, [], `every registered tuning file is served: missing ${missing.join(", ")}`);
+  // ...and each one is a real document, not undefined dressed as a key.
+  const empty = registry.filter((k) => body.tuning[k] == null);
+  assert.deepEqual(empty, [], `and each carries a document: empty ${empty.join(", ")}`);
 });

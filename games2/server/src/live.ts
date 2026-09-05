@@ -483,17 +483,18 @@ export function registerLiveRoutes(app: express.Application): void {
     }
     res.json({
       fetched_at: fetchedAt,
-      tuning: {
-        monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants"),
-        sfx_requests: docs.get("tuning/sfx_requests"), shadow_notes: docs.get("tuning/shadow_notes"), tile_walls: docs.get("tuning/tile_walls"), chess: docs.get("tuning/chess"),
-        scenery_lights: docs.get("tuning/scenery_lights"),
-        base_tiles: docs.get("tuning/base_tiles"),
-        tile_tops: docs.get("tuning/tile_tops"),
-        scenery_hitbox: docs.get("tuning/scenery_hitbox"),
-        top_walls: docs.get("tuning/top_walls"),
-        scenery_walls: docs.get("tuning/scenery_walls"),
-        base_tile_sets: docs.get("tuning/base_tile_sets"),
-      },
+      /* EVERY TUNING DOC THE REGISTRY KNOWS, derived — never a second list.
+       * This was hand-written, so registering a file in LIVE_FILES made it
+       * SAVEABLE while the wiki could never READ it back: scenery_flips landed
+       * on 2026-09-05, the row worked, the doc came back absent on every load,
+       * and the two lists disagreeing was the whole of it. A save already
+       * validates against LIVE_FILES, so deriving the response from the same
+       * map is what makes "registered" mean one thing. */
+      tuning: Object.fromEntries(
+        Object.values(LIVE_FILES)
+          .filter((k) => k.startsWith("tuning/"))
+          .map((k) => [k.slice("tuning/".length), docs.get(k)]),
+      ),
       feedback: Object.fromEntries(FEEDBACK_DOMAINS.map((d) => [d, docs.get(`feedback/${d}`)])),
     });
   });
