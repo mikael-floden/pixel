@@ -102,6 +102,22 @@ lower anchor, so no indoor floor cell is left without one. the_game publishes
 54 in the hall south of it). The channel is additive — no cell, deck, wall or
 level changes — so collision, indoor detection and draw order are untouched.
 
+**A ROOM IS A FLOOR, AND THE ROOM MAP MUST NOT REACH A ROOF.** The channel
+exists so an indoor floor lays as ONE board — every cell of a room asks for its
+set and member at the room's anchor. A deck's top surface went through the same
+function with its own coordinates, so each roof cell over a room took THAT
+room's anchor and each wall cell took its own: the plan of the house, inner
+walls included, painted onto its roof and readable from outside (maintainer
+2026-09-05, drawing it on a render of mine: *"It's as if you define the rooms
+both for the roof and indoor. A player see the entire house including walls
+tops as the house roof and expect the entire house to have the same
+tiling"*). A surface that is one thing to the player asks ONE question: a deck
+anchors at its own up-screen-most cell, so a roof is one set and one member
+from eave to eave, whatever is under it — which also stops a 24-cell region
+border from cutting a roof in two (a 15-cell-wide house straddles one).
+`render3.plate_img(..., anchor=)`; **games2 consumes `rooms` for the same
+purpose and needs the same rule** — raised on their board.
+
 ### `scenery` — a placement is centred on its HITBOX, not its art
 
 **The hitbox centre stands in the middle of a tile** (maintainer, 2026-08-30:

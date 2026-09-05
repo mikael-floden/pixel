@@ -360,7 +360,7 @@ def detail_pool(ground):
 ROOM_ANCHOR = {}          # (x,y) -> the room's anchor cell, for indoor floors
 
 
-def plate_img(ground, region, x, y):
+def plate_img(ground, region, x, y, anchor=None):
     """The maintainer's ground look: SET per region, MEMBER per cell
     (basesets port above); a member resolves to its published plate, or is
     conformed from its own art when the plate library does not cover it;
@@ -372,7 +372,19 @@ def plate_img(ground, region, x, y):
     # border took two different sets and the floor changed pattern mid-room
     # even though the member rule was already in place. Anchoring both lays
     # the floor as one board.
-    ax, ay = ROOM_ANCHOR.get((x, y), (x, y))
+    #
+    # A ROOF IS NOT A FLOOR, AND THE ROOM MAP MUST NOT REACH IT (maintainer
+    # 2026-09-05, drawing the floor plan on a photo of this renderer's own
+    # roof: "It's as if you define the rooms both for the roof and indoor. A
+    # player see the entire house including walls tops as the house roof and
+    # expect the entire house to have the same tiling"). A deck's top went
+    # through this function with the cell's own coordinates, so every roof
+    # cell over a room took THAT ROOM's anchor and every wall cell took its
+    # own - which paints the plan of the house onto its roof, inner walls
+    # included. A caller that owns a whole surface passes its `anchor` and
+    # gets ONE set and ONE member for all of it; the deck pass does, so a roof
+    # is one tiling from eave to eave whatever is under it.
+    ax, ay = anchor or ROOM_ANCHOR.get((x, y), (x, y))
     if (ax, ay) != (x, y):
         region = f"{ground}@{ax // 24},{ay // 24}"
     chosen = pick_set(ground, region)
@@ -1287,6 +1299,9 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
         cells = sorted(((c["x"], c["y"]) for c in dk["cells"]),
                        key=lambda c: (c[0] + c[1], c[1]))
         cellset = {(c[0], c[1]) for c in cells}
+        # THE SLAB'S OWN ANCHOR: its up-screen-most cell, deterministic in the
+        # deck's own cell list, so the whole surface asks one question.
+        danch = min(cells, key=lambda c: (c[0] + c[1], c[0])) if cells else (0, 0)
         for (x, y) in cells:
             if not (x0 <= x < x1 and y0 <= y < y1):
                 continue
@@ -1368,9 +1383,14 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
                     t = t.crop((0, 0, t.width, TOP_Y + DY + 8))
                 img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
             # a roof, a bridge and a cave lid are GROUND too: the slab top
-            # wears the maintainer's base tile set like any other surface
+            # wears the maintainer's base tile set like any other surface -
+            # ONE set and ONE member for the WHOLE slab, anchored at the
+            # deck's own first cell. See plate_img: the room map must not
+            # reach a roof, and a 24-cell region border must not cut one
+            # either (a house 15 cells wide straddles one).
             img.alpha_composite(
-                top_face_only(plate_img(dg, f"{dg}@{x // 24},{y // 24}", x, y)),
+                top_face_only(plate_img(dg, f"{dg}@{danch[0] // 24},{danch[1] // 24}",
+                                        x, y, anchor=danch)),
                 (bx, col_y(x, y, dl)))
 
     # 3) scenery, painter-ordered with terrain already flat-composited.
