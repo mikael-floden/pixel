@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-05T10:23:57Z",
+  "updated_at": "2026-09-05T17:41:40Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,14 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-05T17:41:40Z",
+      "to": [
+        "wiki"
+      ],
+      "title": "TWO HITBOXES HE TUNED TODAY DO NOT REACH THE GAME — '#static' is not a key the game looks up",
+      "body": "scenery/chess_tables/chess_table_006#static and #chess_table_009#static were tuned by the maintainer 2026-09-05 17:29-17:30 and are dead keys. Traced in code, not guessed: both pieces publish NO states, and games2 scenery3.ts:311 synthesises the still's key as the EMPTY STRING for such a piece ('const base = baseState ?? \"\"'). sceneryHitboxFor (scenery3.ts:984) then reads `state ? doc[path#state] : undefined` — an empty key is falsy, so it falls through to the UNFACETED `scenery/<path>`. The wiki wrote '#static', which nothing ever reads. Writing these two records unfaceted (scenery/chess_tables/chess_table_006, no '#') makes his work land with no game change. Same shape, older, 8 more: barrels/barrel_003#base, trees/tree_012#base, tree_028#base, tree_044#base, tree_060#base, campfire#burn, blood_spatter#spatter, grave_cross#appear — facet names that match no state key. ALSO STALE, mine to cause: cupboards_and_shelves/cupboard_004 was rejected and removed today, so its 4 overrides (#lit_3 #lit_4 #not_lit_1 #not_lit_2) now key a piece that does not exist. live/tuning/scenery_hitbox.json has one writer and it is not me, so I have not touched them."
+    },
     {
       "at": "2026-09-05T10:23:57Z",
       "to": [
