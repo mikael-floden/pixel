@@ -231,7 +231,41 @@ the mountain shelf** (`highest_pad`, level 46 — the massif's own materials, no
 grass). **A FLOOR IS RECORDED, NOT INFERRED**: `house()` writes every interior
 cell into `floor_cells`, because dark mud is also a fen and paving stone is
 also a road, so "every connected patch of parquet_floor is a room" stops being
-true the moment a house is not made of wood.
+true the moment a house is not made of wood. **`indoor_floors()` is the one
+definition** every pass uses — the recorded cells PLUS anything under a
+roof/cave deck, below it, wall-free and of an indoor material, which is how the
+v2 island's ported houses qualify. Reading only the recorded half emptied
+them: the furnish pass flooded and found nothing, so the fisher's house shipped
+with a bush in it and no furniture (*"Why did you remive the furnitures in the
+house and replaced it with a bush?"*). Nothing outdoor may stand on an indoor
+floor, and the gate is in `put()` rather than a sweep afterwards, because the
+sweep runs before `nature` plants anything.
+
+**A HOUSE IS SITED, NOT DROPPED** (maintainer 2026-09-05: *"Why do you place
+the house so close to the hill. Feel the balance please... Is the door placed
+at a smart location? Is the house built at a smart location."*). A pad that is
+flat in itself can still have a cliff against its back wall, and then there is
+nowhere to stand and the hill grows out of the roof. `find_pad` now demands an
+**ELBOW of 2 cells of same-level dry ground on every side**, and that **at
+least one front face has a 4-cell walkable approach** — the ground a player
+walks up to the door on. `house()` then puts the door on a side that passed and
+**asserts the approach**, because a doorway opening onto a drop is a house you
+cannot enter (*"How do you expect a player to even get in?!"*).
+
+**THE DOOR IS NOT ALWAYS ON THE SAME WALL.** South is the screen's bottom-LEFT
+face and east its bottom-RIGHT; both are front walls the camera sees and a
+player can reach, and houses alternate between them (*"I see you also always
+place the door at the bottom left and never bottom right"*). North and west
+open into the back of the house, which the camera never shows — they are not
+candidates.
+
+**AN ART MAY NOT HANG OVER A DROP.** The footprint law refuses a footprint that
+SPANS a level change; a rowboat whose footprint sat wholly on a ledge still
+hung its art out over the cliff (*"Why did you place the boat on the wall?"*).
+So the drawn sprite gets its own test: its two horizontal extremes, projected
+onto the ground it stands on, must be cells at the same level and the same
+wetness. Half the drawn width in cells is the reach (a screen offset of `dx` px
+is `dx/64` of a cell in +x and the same in −y), capped at 3.
 
 **NOTHING STANDS IN A DOORWAY.** The threshold is three cells — the gap in the
 wall ring, the step outside it and the cell inside — and no footprint may touch

@@ -259,7 +259,7 @@ class Grow:
     # matter: the second is how a tree ends up planted on top of a mushroom.
     HIDE = 0.55            # refuse at more than this fraction covered
 
-    def _art_rect(self, piece, x, y):
+    def _art_rect(self, piece, x, y, state=None):
         """The piece's drawn rectangle in screen px, anchored bottom-centre at
         the projection of (x,y) - the same fit the game uses: the art is
         scaled so its ALPHA BBOX height equals world_px_height."""
@@ -267,7 +267,8 @@ class Grow:
             self._bx = json.load(open(os.path.join(
                 REPO, "games2", "config", "scenery-bbox.json")))
         facts = (self._bx.get("pieces") or {}).get(piece)
-        bb = (self._bx.get("boxes") or {}).get((facts or {}).get("sprite"))
+        spr = ((facts or {}).get("states") or {}).get(state) if state else None
+        bb = (self._bx.get("boxes") or {}).get(spr or (facts or {}).get("sprite"))
         if not facts or not facts.get("wph") or not bb:
             return None
         bx0, by0, bx1, by1 = bb[:4]
@@ -436,7 +437,17 @@ class Grow:
         if not self.free(x, y):
             self.fail += 1
             return False
-        if (int(x), int(y)) not in getattr(self, "floor_cells", {}):
+        # NOTHING OUTDOOR STANDS ON AN INDOOR FLOOR, and the gate is here
+        # rather than in a sweep afterwards: the eviction pass runs before
+        # `nature`, so a bush planted later kept its place in the sitting
+        # room (maintainer 2026-09-05, standing in an empty house with one:
+        # "Why did you remive the furnitures in the house and replaced it
+        # with a bush?").
+        if (int(x), int(y)) in self._indoor_now():
+            if not piece.startswith(self.INDOOR_OK):
+                self.fail += 1
+                return False
+        else:
             # outdoor pieces stay out of the up-screen shadow behind a roof —
             # a washing line 2 cells behind the cottage rendered ON its roof
             if (int(x), int(y)) in getattr(self, "no_place", set()):
@@ -471,6 +482,10 @@ class Grow:
             self.fail += 1
             return False
         flat = self._flat(probe)
+        if not flat and not self._art_clear(piece, x, y, state):
+            self.fail += 1
+            self.fp_refused = getattr(self, "fp_refused", 0) + 1
+            return False
         if not self._footprint_ok(wx, wy, R, HY, flush=flush, flat=flat):
             self.fail += 1
             self.fp_refused = getattr(self, "fp_refused", 0) + 1
@@ -786,14 +801,15 @@ class Grow:
                  (cx - 5, cy - 14, 10, 8, "stone"),
                  (cx - 3, cy + 7, 8, 6, "brick")]
         built = 0
-        for (hx, hy, w, h, style) in specs:
+        for si, (hx, hy, w, h, style) in enumerate(specs):
             wall, roof, floor = self.HOUSE_STYLES[style]
+            side = "south" if si % 2 == 0 else "east"
             try:
                 px, py = self.find_pad(hx, hy, w, h, r=16, widen=False, dry=3)
             except AssertionError:
                 self.fail += 1
                 continue
-            self.house(px, py, w, h, wall, roof, floor)
+            self.house(px, py, w, h, wall, roof, floor, door_side=side)
             built += 1
         assert built >= 5, f"the town only fit {built} houses"
         PAVE = ("grey_paving_stone", "brown_paving_stone")
@@ -954,6 +970,49 @@ class Grow:
     # the floors a room is made of - the same set render3 treats as indoor
     INDOOR_GROUNDS = ("parquet_floor", "brown_paving_stone", "grey_paving_stone")
 
+    INDOOR_OK = ("beds/", "tables/", "chairs_and_benches/", "hearths/",
+                 "cupboards_and_shelves/", "barrels/", "rugs_and_hides/",
+                 "house_clutter/", "wall_hangings/", "anvils/",
+                 "flower_stands/", "lantern_stands/", "braziers/")
+
+    def _indoor_now(self):
+        """indoor_floors(), cached until a house or deck is added - put() asks
+        it for every placement and it walks every deck."""
+        key = (len(self.doc["decks"]), len(getattr(self, "floor_cells", {})))
+        if getattr(self, "_if_key", None) != key:
+            self._if_key, self._if_map = key, self.indoor_floors()
+        return self._if_map
+
+    def indoor_floors(self):
+        """{cell: floor ground} for EVERY indoor floor in the world - one
+        definition, because three passes need the same one.
+
+        A cell counts when house() recorded it (the only way to know a dark
+        mud or paving floor is a floor rather than a fen or a road) OR when it
+        lies under a roof/cave deck, below it, carries no wall and is made of
+        an indoor material - which is how the v2 island's ported houses and
+        the cave lids qualify, since they were never built by house().
+
+        Reading only the recorded cells is what emptied the ported houses:
+        the furnish pass flooded them and found nothing, so the fisher's house
+        shipped with a bush in it and no furniture at all (maintainer
+        2026-09-05: "Why did you remive the furnitures in the house and
+        replaced it with a bush?")."""
+        walls = {(c["x"], c["y"]) for w in self.doc["walls"] for c in w["cells"]}
+        under = {}
+        for dk in self.doc["decks"]:
+            if dk.get("kind") in ("roof", "cave"):
+                for c in dk["cells"]:
+                    under[(c["x"], c["y"])] = int(dk["level"])
+        out = dict(getattr(self, "floor_cells", {}))
+        for c, lv in under.items():
+            if c in out or c in walls:
+                continue
+            g = self.g(*c)
+            if g in self.INDOOR_GROUNDS and self.lvl[c[1]][c[0]] < lv:
+                out[c] = g
+        return out
+
     def rooms(self):
         """PUBLISH THE ROOMS. "The same room should only have one type of
         Parquet Floor" (maintainer, 2026-08-30, twice) - and a renderer can
@@ -981,12 +1040,10 @@ class Grow:
         # to look indoor: a floor may be dark mud (a fen outdoors) or paving
         # stone (a road), so house() records them and this reads the record.
         # The cave lids have no record, so they keep the material test.
-        fc = getattr(self, "floor_cells", {})
+        fc = self.indoor_floors()
 
         def floor(c):
-            return (c in indoor and c not in walls
-                    and (c in fc or self.g(*c) in self.INDOOR_GROUNDS)
-                    and self.lvl[c[1]][c[0]] < indoor[c])
+            return c in fc and c in indoor and c not in walls
 
         # A DOORWAY IS NOT A ROOM BOUNDARY YOU CAN WALK THROUGH TWICE.
         # The maintainer counts rooms by their WALLS - shown the town hall as
@@ -1328,6 +1385,34 @@ class Grow:
     # under a table, and nothing is refused for standing on it. It still may
     # not span a level change - a rug torn across a step reads as a bug - and
     # it still may not straddle the shore.
+    # NOTHING HANGS OVER THE EDGE (maintainer 2026-09-05, on a rowboat at a
+    # cliff top: "Why did you place the boat on the wall?"). The footprint law
+    # already refuses a footprint that SPANS a level change, and the boat did
+    # not span one - it stood wholly on the ledge, and its ART, three times
+    # wider than its published footprint, hung out over the drop. So the ART
+    # gets its own test: the two horizontal extremes of the drawn sprite,
+    # projected onto the ground the piece stands on, must be cells at the
+    # same level. A screen offset of dx px is dx/64 of a cell in +x and the
+    # same in -y, so half the drawn width is the reach.
+    def _art_clear(self, piece, x, y, state=None):
+        a = self._art_rect(piece, x, y, state)
+        if a is None:
+            return True
+        r = min((a[2] - a[0]) / 128.0, 3.0)      # cells, capped
+        if r < 0.5:
+            return True
+        cx, cy = int(x), int(y)
+        if not (0 <= cx < NEW and 0 <= cy < NEW):
+            return False
+        lv = self.lvl[cy][cx]
+        for (ex, ey) in ((x + r, y - r), (x - r, y + r)):
+            ix, iy = int(ex), int(ey)
+            if not (0 <= ix < NEW and 0 <= iy < NEW):
+                return False
+            if self.lvl[iy][ix] != lv or self.liquid(ix, iy) != self.liquid(cx, cy):
+                return False
+        return True
+
     def _flat(self, p):
         if not hasattr(self, "_flatc"):
             self._flatc = {}
@@ -1532,7 +1617,9 @@ class Grow:
                 wx, wy, R, HY = int(p["x"]) + 0.5, int(p["y"]) + 0.5, \
                     self.FP_DEFAULT, None
             flat = self._flat(p)
-            if self._footprint_ok(wx, wy, R, HY, flush=True, flat=flat):
+            if self._footprint_ok(wx, wy, R, HY, flush=True, flat=flat) \
+                    and (flat or self._art_clear(p["piece"], p["x"], p["y"],
+                                                 p.get("state"))):
                 keep.append(i)
                 if not flat:
                     self._fp_add(wx, wy, R, HY)
@@ -1558,6 +1645,9 @@ class Grow:
             flat = self._flat(p)
             assert self._footprint_ok(wx, wy, R, HY, flush=True, flat=flat), \
                 f"{p['piece']} at {p['x']},{p['y']} breaks the footprint law"
+            assert flat or self._art_clear(p["piece"], p["x"], p["y"],
+                                           p.get("state")), \
+                f"{p['piece']} at {p['x']},{p['y']} hangs over a level change"
             if not flat:
                 self._fp_add(wx, wy, R, HY)
 
@@ -1992,7 +2082,8 @@ class Grow:
     # stands 5 clear and the roof is the sixth.
     HOUSE_RISE = 6
 
-    def house(self, x0, y0, w, h, wall, roof, floor="parquet_floor"):
+    def house(self, x0, y0, w, h, wall, roof, floor="parquet_floor",
+              door_side="south"):
         """A house is a RING OF X-OVER-Y WALLS, and the roof is the thin band
         on top of them (maintainer 2026-08-30).
 
@@ -2018,7 +2109,18 @@ class Grow:
         rect = [(x, y) for y in range(y0, y0 + h) for x in range(x0, x0 + w)]
         for (x, y) in rect:      # the pad must be dry land, flat enough
             assert not self.liquid(x, y) and self.g(x, y), (x, y, self.g(x, y))
-        door = (x0 + w // 2, y0 + h - 1)
+        # THE DOOR IS NOT ALWAYS ON THE SAME WALL (maintainer 2026-09-05: "I
+        # see you also always place the door at the bottom left and never
+        # bottom right"). South is the screen's bottom-LEFT face and east its
+        # bottom-RIGHT; both are front walls the player walks in through, and
+        # both keep the doorway visible from outside - a north or west door
+        # opens into the back of the house, which the camera never sees.
+        sides = [door_side, "east" if door_side == "south" else "south"]
+        door_side = next((sd for sd in sides
+                          if self._approach_ok(x0, y0, w, h, sd, base, 4)),
+                         sides[0])
+        door = (x0 + w // 2, y0 + h - 1) if door_side == "south" \
+            else (x0 + w - 1, y0 + h // 2)
         wcells = []
         for (x, y) in rect:
             ring = x in (x0, x0 + w - 1) or y in (y0, y0 + h - 1)
@@ -2060,12 +2162,29 @@ class Grow:
         # footprint may touch any of them. The barrel had every right to be
         # there under the footprint law: it was against a wall, on free floor,
         # clear of its neighbours. A door is not a wall.
-        self.door_cells.update({door, (door[0], door[1] + 1),
-                                (door[0], door[1] - 1)})
+        # AND THE DOOR MUST OPEN ONTO GROUND YOU CAN STAND ON (maintainer
+        # 2026-09-05, at the town hall whose doorway opened straight onto a
+        # drop: "How do you expect a player to even get in?! Do you even look
+        # and thing when you place stuff?"). Three cells straight out from the
+        # threshold, at the floor's own level and dry - which is what the pad
+        # ELBOW buys, asserted here so a future pad rule cannot lose it.
+        step = (door[0], door[1] + 1) if door_side == "south" \
+            else (door[0] + 1, door[1])
+        back = (door[0], door[1] - 1) if door_side == "south" \
+            else (door[0] - 1, door[1])
+        self.door_cells.update({door, step, back})
         # doorstep
-        dx, dy = door[0], door[1] + 1
+        dx, dy = step
         if self.g(dx, dy) == "grass":
             grd[dy][dx] = gi["brown_paving_stone"]
+        for k in range(1, 4):
+            ax = door[0] + (0 if door_side == "south" else k)
+            ay = door[1] + (k if door_side == "south" else 0)
+            assert 0 <= ax < NEW and 0 <= ay < NEW \
+                and self.lvl[ay][ax] == base and not self.liquid(ax, ay), \
+                (f"the door of the house at {(x0, y0)} opens onto "
+                 f"{(ax, ay)}: level {self.lvl[ay][ax] if 0 <= ax < NEW and 0 <= ay < NEW else '-'} "
+                 f"against the floor's {base}")
         # evict scenery the pad swallowed
         self.doc["scenery"] = [
             p for p in self.doc["scenery"]
@@ -2078,20 +2197,65 @@ class Grow:
                    # (maintainer 2026-08-29: "Don't place them to close to the
                    # water! Place them at the open grass field instead!")
 
-    def find_pad(self, tx, ty, w, h, on=("grass",), r=60, widen=True, dry=None):
+    ELBOW = 2      # cells of FLAT ground a house wants on every side
+                   # (maintainer 2026-09-05: "Why do you place the house so
+                   # close to the hill. Feel the balance please. You could
+                   # have placed it a little big up to get some space." A pad
+                   # that is flat itself can still have a cliff against its
+                   # back wall, and then there is nowhere to stand and the
+                   # hill grows out of the roof.)
+
+    def _approach_ok(self, x0, y0, w, h, side, z, n=4):
+        """n cells straight out from the middle of a front face, at level `z`
+        and dry - the ground a player walks up to that door on."""
+        for i in range(n):
+            if side == "south":
+                ax, ay = x0 + w // 2, y0 + h + i
+            else:
+                ax, ay = x0 + w + i, y0 + h // 2
+            if not (0 <= ax < NEW and 0 <= ay < NEW):
+                return False
+            if self.lvl[ay][ax] != z or self.liquid(ax, ay) or not self.g(ax, ay):
+                return False
+        return True
+
+    def find_pad(self, tx, ty, w, h, on=("grass",), r=60, widen=True, dry=None,
+                 elbow=None):
         """Nearest flat clear w*h pad to (tx,ty): every cell `on`-ground at one
         level and DRY (further than DRY_R from water/beach, via the BFS
         field), no paving/road adjacent, no non-tree scenery in the rect+1
-        (trees get evicted by the house build)."""
+        (trees get evicted by the house build), and `elbow` cells of ground at
+        the SAME LEVEL all the way round it."""
         if not hasattr(self, "wd"):
             self._wdist()
         if not hasattr(self, "occ"):
             self._reindex()
         best, D = None, self.DRY_R if dry is None else dry
+        E = self.ELBOW if elbow is None else elbow
         for y in range(max(1, ty - r), min(NEW - h - 1, ty + r)):
             for x in range(max(1, tx - r), min(NEW - w - 1, tx + r)):
                 z = self.lvl[y][x]
                 ok = True
+                # THE ELBOW: flat ground round the house, so there is
+                # somewhere to walk and the hill is not against the wall.
+                for yy in range(y - E, y + h + E):
+                    for xx in range(x - E, x + w + E):
+                        if not (0 <= xx < NEW and 0 <= yy < NEW) \
+                                or self.lvl[yy][xx] != z \
+                                or self.liquid(xx, yy):
+                            ok = False; break
+                    if not ok:
+                        break
+                if not ok:
+                    continue
+                # AND THE HOUSE MUST HAVE A FRONT YOU CAN WALK UP TO. The
+                # elbow keeps the walls clear; this keeps a DOOR reachable -
+                # four cells straight out from the middle of the south face
+                # or the east one, at the pad's level and dry. house() then
+                # puts the door on a side that passed.
+                if not any(self._approach_ok(x, y, w, h, sd, z, 4)
+                           for sd in ("south", "east")):
+                    continue
                 for yy in range(y - 1, y + h + 1):
                     for xx in range(x - 1, x + w + 1):
                         gg = self.g(xx, yy)
@@ -2149,7 +2313,8 @@ class Grow:
         lx, ly = self.landing
         hx, hy = self.find_pad(lx - 7, ly - 7, 8, 7)
         self.int_fisher = self.house(hx, hy, 8, 7,
-                                     *self.HOUSE_STYLES["timber"])
+                                     *self.HOUSE_STYLES["timber"],
+                                     door_side="east")
         # woodcutter's cabin: timber, at the forest edge — the grass cell with
         # the most trees within 12, at least 50 from spawn
         best = None
@@ -2183,7 +2348,8 @@ class Grow:
         try:
             hix, hiy = self.highest_pad(8, 7)
             self.int_high = self.house(hix, hiy, 8, 7,
-                                       *self.HOUSE_STYLES["highland"])
+                                       *self.HOUSE_STYLES["highland"],
+                                       door_side="east")
             self.highland = (hix, hiy)
             n_high = 1
         except AssertionError:
@@ -2215,16 +2381,12 @@ class Grow:
         # NOTHING OUTDOOR STANDS ON AN INDOOR FLOOR. Building a house over
         # ground that already had a tree or a bush left it growing in the
         # sitting room.
-        INDOOR_OK = ("beds/", "tables/", "chairs_and_benches/", "hearths/",
-                     "cupboards_and_shelves/", "barrels/", "rugs_and_hides/",
-                     "house_clutter/", "wall_hangings/", "anvils/",
-                     "flower_stands/", "lantern_stands/", "braziers/")
-        floors0 = getattr(self, "floor_cells", {})
+        floors0 = self.indoor_floors()
         before = len(self.doc["scenery"])
         self.doc["scenery"] = [
             p for p in self.doc["scenery"]
             if not ((int(p["x"]), int(p["y"])) in floors0
-                    and not p["piece"].startswith(INDOOR_OK))]
+                    and not p["piece"].startswith(self.INDOOR_OK))]
         self._reindex()
         self.placed += [("outdoor scenery evicted from rooms",
                          before - len(self.doc["scenery"]))]
@@ -2235,7 +2397,7 @@ class Grow:
         # recorded by house(), not inferred from the material, now that a
         # floor can be dark mud (which is also a fen) or paving stone (which
         # is also a road).
-        floors = getattr(self, "floor_cells", {})
+        floors = floors0
         seen, rooms = set(), []
         for y in range(NEW):
             for x in range(NEW):
@@ -2273,8 +2435,7 @@ class Grow:
                     pool = have or pool
                 return pool[int(r() * len(pool)) % len(pool)]
 
-            IN = (getattr(self, "floor_cells", {}).get(floor[0],
-                                                       "parquet_floor"),)
+            IN = (floors.get(floor[0], "parquet_floor"),)
             n = 0
             # FURNITURE GOES AGAINST THE BACK WALLS, FACING THE ROOM
             # (maintainer 2026-08-30: "pick the correct SW vs SE so a
