@@ -535,6 +535,34 @@ by construction, so no existing branch changed.
   `server/test/footprint.test.ts` (corners solid with the ellipse arm asserted
   so it cannot pass by blocking everything; the turn moves the shape; the
   per-facing overrides are read; the bucket asserted from outside).
+- **A HITBOX RECORD IS LOOKED UP IN EXACTLY ONE PLACE — `sceneryHitboxRec`
+  (shared) — AND THE STATE'S CASE IS THE TRAP.** A piece names its variations in
+  UPPER_SNAKE and the placement copies it verbatim (`"state": "NOT_LIT_4"`);
+  the wiki writes its key LOWER (`#not_lit_4`) — all 3,689 state-keyed records
+  are lower, not one is upper. So an exact-case lookup matches NOTHING, and the
+  stamp's last-resort scan ("any variation of this piece") then serves a box the
+  maintainer drew for a DIFFERENT variation. Measured on the_game: of 486
+  placements carrying a state, **0 reached their own record and 376 were served
+  another variation's** — he tuned 994 of these by hand and essentially none of
+  them reached the game. He caught it with the wiki open beside the game on
+  driftwood_log_901 `NOT_LIT_4` ("It's not the same hitbox!"): own record a wide
+  flat `rx 27 / ry 12.5`, served `#not_lit_1`'s `24 x 24` circle — the stamped
+  footprint was 19.42 x 19.42 wu where the record says 2.16:1, now 21.85 x
+  10.11. **It is ONE function because there were two**: `sceneryHitboxFor` (draw
+  and overlay) had the case rule AND a comment explaining it, while
+  `stampSceneryCollision` re-derived the lookup without it — so what the game
+  COLLIDED with and what the wiki SHOWED came from different records, and the
+  overlay drew the honest outline of the wrong box. The resolution order is the
+  wiki's `hitboxRaw`: `#state`, then `#state` lowered, then the bare path. The
+  scan stays as a documented LAST RESORT and must stay last (a piece with no
+  footprint is worse than an approximate one — the waystone_009 report); after
+  the fix it fires for the 178 the_game placements carrying no state at all and
+  for none that has one. KNOWN, his to decide: 5 placements (bush_007/bush_008
+  in `NOT_LIT_3`) are genuinely untuned and still take the last resort. Gate:
+  `a variation's own hitbox wins over another variation's` — asserted as the
+  ASPECT RATIO, so the frame-to-world scaling cannot mask it, with an arm
+  pinning that the fixture's two variations really are different shapes (the bug
+  looked exactly like both resolving to one record).
 - **INDOOR SCENERY IS DRAWN WHILE ITS ROOF IS CUT AWAY** — the furniture of
   every house and cave. `buildPlacements` FLAGS a placement under a roof/cave
   deck (`SceneryPlacement.roofed`) instead of dropping it: render3 drops those

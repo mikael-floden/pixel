@@ -380,3 +380,58 @@ test("the contact normal points OUT of the shape it belongs to", () => {
       `normal at angle ${a} does not lead out (${hit.depth} -> ${out?.depth})`);
   }
 });
+
+// ============================================================================
+// THE RECORD THE WIKI SHOWS IS THE RECORD THE BODY HITS
+// ============================================================================
+//
+// A piece names its variations in UPPER_SNAKE and the placement copies that
+// verbatim (`"state": "NOT_LIT_4"`); the wiki writes its override key in LOWER
+// (`#not_lit_4`) — all 3,689 state-keyed records are lower, not one is upper.
+// So an exact-case lookup matches nothing, and the stamp's last-resort scan
+// ("any variation of this piece") then serves a box the maintainer drew for a
+// DIFFERENT variation. He caught it with the wiki open beside the game on
+// driftwood_log_901 NOT_LIT_4 — own record a wide flat rx 27 / ry 12.5, served
+// #not_lit_1's 24 x 24 circle: "It's not the same hitbox!"
+//
+// Measured on the_game before the fix: of 486 placements carrying a state, 0
+// reached their own record and 376 were served another variation's.
+test("a variation's own hitbox wins over another variation's", () => {
+  const doc: SceneryHitboxDoc = {
+    // Only lower-case keys exist, which is what the wiki actually writes. The
+    // circle is FIRST so a document-order scan finds it before the right one.
+    "scenery/p#not_lit_1": { boxes: [{ ax: 0, ay: -50, rx: 24, ry: 24 }] },
+    "scenery/p#not_lit_4": { boxes: [{ ax: 0, ay: -50, rx: 27, ry: 12.5 }] },
+  };
+  const stamp = (state?: string) => {
+    const rows = Array.from({ length: H }, () => Array.from({ length: W }, () => ({ t: "grass", l: 0 })));
+    const grid = buildTerrainGrid(W, H, rows, [], []);
+    const bbox: SceneryBboxDoc = {
+      pieces: { p: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" } },
+      boxes: { s: [0, 0, 100, 100, 100, 100] },
+    };
+    stampSceneryCollision(grid, [{ piece: "p", x: 15, y: 15, state }], bbox, doc, ISO_GEOMETRY_MAPS3);
+    const f: any = grid.footprints;
+    return { rx: f.rx[0], ry: f.ry[0] };
+  };
+
+  // THE BUG, stated as the ratio so the frame->world scaling cannot mask it:
+  // not_lit_1 is a circle and not_lit_4 is 2.16:1. Reading the wrong record is
+  // therefore visible without knowing the scale factor at all.
+  const four = stamp("NOT_LIT_4");
+  assert.ok(
+    Math.abs(four.rx / four.ry - 27 / 12.5) < 1e-9,
+    `NOT_LIT_4 got ${four.rx.toFixed(2)} x ${four.ry.toFixed(2)} — that is another variation's box`,
+  );
+  const one = stamp("NOT_LIT_1");
+  assert.ok(Math.abs(one.rx / one.ry - 1) < 1e-9, "NOT_LIT_1 is the circle it was drawn as");
+  // AND THE ARM THAT KEEPS THIS HONEST: the two records really are different
+  // shapes, so the assertion above cannot pass by both resolving to the same
+  // record — which is exactly how the bug looked.
+  assert.ok(Math.abs(four.rx / four.ry - one.rx / one.ry) > 1, "the fixture's two variations must differ");
+
+  // A state nobody tuned still gets SOMETHING (the waystone_009 rule: a piece
+  // with no footprint is worse than an approximate one) — the last resort.
+  const none = stamp("NOT_LIT_9");
+  assert.ok(none.rx > 0 && none.ry > 0, "an untuned variation falls back rather than losing its hitbox");
+});

@@ -25,6 +25,7 @@
  * `SceneryFit` into whatever its renderer speaks.
  */
 
+import { sceneryHitboxRec } from "@nangijala/shared";
 import { DX, DY, columnX, columnY, type Bounds, type Frame } from "./tiles3";
 import { assetPath, rint, type Pixels, type UrlRoute } from "./tiles3draw";
 
@@ -964,11 +965,12 @@ export type SceneryHitboxRec = { boxes?: SceneryHitbox[]; auto?: boolean };
  *  conflate them: the empty list is a decision — this piece needs no footprint,
  *  which is right for anything hung on a wall — while null means fall back.
  *
- *  KEYED PER VARIATION ("<path>#<state>", since variations differ in size) with
- *  a piece-level record under the bare path as the fallback. CASE: a piece names
- *  its states in UPPER_SNAKE (`NOT_LIT_1`) and the wiki writes the key in lower
- *  (`#not_lit_1`), so the state is tried as given and then lowered — without
- *  that, a piece with only per-variation records resolves to nothing at all.
+ *  THE KEY RESOLUTION — per variation, and the state's CASE — IS
+ *  `sceneryHitboxRec` in shared, and it is shared BECAUSE this rule and the
+ *  collision stamp's drifted apart: the case rule was documented right here
+ *  while `stampSceneryCollision` re-derived the lookup without it, so the
+ *  outline the overlay drew and the ellipse the body collided with came from
+ *  different records. Never re-derive it a third time.
  *
  *  `auto` is the wiki's alpha-placed PROPOSAL, shown as the default until the
  *  maintainer accepts or edits it. Returned as-is: the game uses them as
@@ -979,10 +981,7 @@ export function sceneryHitboxFor(
   path: string,
   state?: string,
 ): { boxes: SceneryHitbox[]; auto: boolean } | null {
-  if (!doc) return null;
-  const rec =
-    (state ? doc[`scenery/${path}#${state}`] ?? doc[`scenery/${path}#${state.toLowerCase()}`] : undefined) ??
-    doc[`scenery/${path}`];
+  const rec = sceneryHitboxRec(doc, path, state);
   if (!rec) return null;
   const boxes = (Array.isArray(rec.boxes) ? rec.boxes : []).filter(
     (b): b is SceneryHitbox =>

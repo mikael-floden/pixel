@@ -4327,6 +4327,46 @@ export type SceneryHitboxDoc = Record<
   }
 >;
 
+/**
+ * THE ONE PLACE A HITBOX RECORD IS LOOKED UP — the wiki's `hitboxRaw` rule,
+ * which is `overrides[path#state] ?? overrides[path]`.
+ *
+ * **THE STATE'S CASE IS THE WHOLE TRAP.** A piece names its variations in
+ * UPPER_SNAKE (`scenery.json` states, and the placement copies it verbatim:
+ * `"state": "NOT_LIT_4"`), while the wiki writes its key LOWER (`#not_lit_4`) —
+ * all 3,689 state-keyed records are lower, not one is upper. So an exact lookup
+ * on the placement's own state matches NOTHING, and a caller that then scans the
+ * document for any `path#` key silently serves a DIFFERENT VARIATION'S box.
+ * Measured on the_game before this existed: of 486 placements carrying a state,
+ * **0 hit their own record** and 376 were served another variation's — the
+ * maintainer hand-tuned 994 of these and essentially none reached the game. He
+ * caught it on driftwood_log_901 `NOT_LIT_4`, whose own record is a wide flat
+ * `rx 27 / ry 12.5` and which was being served `#not_lit_1`'s `24 x 24` circle
+ * ("It's not the same hitbox!", the wiki open beside the game).
+ *
+ * It is ONE function because there were two: `sceneryHitboxFor` (the draw and
+ * overlay path) had the case rule and even a comment explaining it, while
+ * `stampSceneryCollision` re-derived the lookup without it — so what the game
+ * COLLIDED with and what the wiki SHOWED were resolved by different code. Both
+ * call this now; a third caller must too.
+ *
+ * Returns the raw record or undefined. `undefined` and `{boxes: []}` are
+ * different answers and must not be conflated: the empty list is a decision
+ * ("this piece needs no footprint"), undefined means nobody has decided.
+ */
+export function sceneryHitboxRec<T>(
+  doc: Record<string, T> | null | undefined,
+  path: string,
+  state?: string | null,
+): T | undefined {
+  if (!doc) return undefined;
+  if (state) {
+    const own = doc[`scenery/${path}#${state}`] ?? doc[`scenery/${path}#${state.toLowerCase()}`];
+    if (own) return own;
+  }
+  return doc[`scenery/${path}`];
+}
+
 /** Nav lattice: the coarse pass samples each cell KxK ... */
 const NAV_COARSE = 4; // 4x4 over a 32wu cell — one sample per 8wu
 const NAV_SUB = 8; // 8x8 INSIDE a coarse tile that isn't provably covered — one per 1wu
@@ -4415,16 +4455,26 @@ export function stampSceneryCollision(
      * documents lands. 201 distinct pieces, so the cache answers 1,546 of them
      * for free and the whole stamp — ellipse table, bucket index and nav bake
      * included — drops to 126ms. */
-    /* THE VARIATION THAT IS DRAWN answers first, because the outline the
-     * overlay draws resolves the same way (`sceneryHitboxFor(doc, piece,
-     * st.key)`) and the two must not disagree — the maintainer tuned 994 of
-     * these records by hand. Then the piece, then any variation's. Cached per
-     * (piece, state) for the same reason the piece cache exists: the fallback
-     * scan is 3,704 keys. */
+    /* THE VARIATION THAT IS DRAWN answers first, through `sceneryHitboxRec` —
+     * THE SAME FUNCTION the overlay and the draw path resolve with
+     * (`sceneryHitboxFor`), because what the game collides with and what the
+     * wiki shows must be the same record; the maintainer tuned 994 of them by
+     * hand. That shared seam is also where the state's CASE is handled, and
+     * this line re-derived the lookup without it: measured on the_game, 0 of
+     * 486 state-carrying placements reached their own record and 376 got
+     * another variation's box off the scan below. Cached per (piece, state) for
+     * the same reason the piece cache exists: the scan is 3,704 keys. */
     const rkey = pl.state ? `${pl.piece}#${pl.state}` : pl.piece;
     let rec = recCache.get(rkey);
     if (rec === undefined) {
-      rec = (pl.state ? hitbox[`scenery/${pl.piece}#${pl.state}`] : undefined) ?? hitbox[`scenery/${pl.piece}`];
+      rec = sceneryHitboxRec(hitbox, pl.piece, pl.state);
+      /* LAST RESORT, and it must stay last: any variation's box, so a piece
+       * whose records are all state-keyed still gets a footprint rather than
+       * none (the waystone_009 report — "no hitbox at all and I can run
+       * straight through it"). It serves a box the maintainer drew for a
+       * DIFFERENT variation, so it is only ever right by luck; it fires now
+       * for the 178 the_game placements that carry no state at all and for no
+       * placement that has one. */
       if (!rec) {
         const pfx = `scenery/${pl.piece}#`;
         for (const k in hitbox) {
