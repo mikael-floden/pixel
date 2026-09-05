@@ -826,6 +826,10 @@ const GROUND_RING_MS = 2;
  *  dozen on a desktop where a composition is ~0.45 ms — the budget reads the
  *  device instead of assuming one. Same shape and same number as the ring's
  *  GROUND_RING_MS, which bounds the same work from the other side. */
+/** An occluder image carries the cell it came from as plain properties — see
+ *  `tagOccluder`. Read only by `__ml.occAudit()` and `__ml.occDump()`. */
+type OccTagged = Phaser.GameObjects.Image & { ocCol?: number; ocRow?: number };
+
 const GROUND_COMPOSE_MS = 2;
 /** How often a boundary repair may force an occluder rebuild, in ms. A RAISED
  *  transition is worn by the occluder cap, not by the ground texture under it
@@ -2088,7 +2092,22 @@ export class WorldScene extends Phaser.Scene {
   private mePos(): { x: number; y: number } | null {
     const m = this.avatars.get(this.room?.sessionId ?? "");
     if (!m) return null;
-    return { x: m.sprite.x / CELL_WU, y: m.sprite.y / CELL_WU };
+    /* CELLS MEAN `fx/fy`, NOT `sprite.x/y` — and this was reporting the wrong
+     * place in every beacon. `sprite.x` is `av.lx`, the ISO-PROJECTED screen x
+     * (`projectFlat(...).x` = `ox + (col-row)*DX`); dividing it by CELL_WU is
+     * not a cell coordinate at all. The tell was sitting in the reports: the
+     * world is 512x512 and `where` read 526, 588, 564. Every other caller in
+     * this file that wants a cell already reads `fx / CELL_WU` (the fog probe,
+     * the near-list, the spawn gates).
+     *
+     * Two things were wrong because of it. The `where` field named a place that
+     * does not exist, so any offline measurement taken "at his position" — the
+     * findPath benchmark I ran against these coordinates, for one — was
+     * sampling somewhere else entirely. And the "have you moved 2 cells" gate
+     * that decides whether a window is worth sending was comparing projected
+     * distance, which is up to 2.13x the world distance depending on heading:
+     * a north-south walk passed the gate on 0.94 cells of real movement. */
+    return { x: m.fx / CELL_WU, y: m.fy / CELL_WU };
   }
 
   private pe(key: string): void {
@@ -3747,8 +3766,8 @@ export class WorldScene extends Phaser.Scene {
         // Which cells actually got at least one image this rebuild?
         const drawn = new Set<number>();
         for (const o of this.occluders) {
-          const c = o.getData("oc") as number | undefined;
-          const r = o.getData("or") as number | undefined;
+          const c = (o as OccTagged).ocCol;
+          const r = (o as OccTagged).ocRow;
           if (c !== undefined && r !== undefined) drawn.add(r * 100000 + c);
         }
         let metaWithoutArt = 0;
@@ -5062,7 +5081,7 @@ export class WorldScene extends Phaser.Scene {
           ims
             .map((im) => ({ im, i: pos.get(im) ?? -1 }))
             .sort((a, b) => a.im.depth - b.im.depth || a.i - b.i)
-            .map(({ im }) => [im.texture.key, im.x, im.y, Math.round(im.depth * 10) / 10, im.getData("oc"), im.getData("or")]);
+            .map(({ im }) => [im.texture.key, im.x, im.y, Math.round(im.depth * 10) / 10, (im as OccTagged).ocCol, (im as OccTagged).ocRow]);
         // Three bands, each in its own painter order: the terrain occluders
         // (pooled), the scenery base images, and the LIT copies (never pooled,
         // and where review found the epsilon must not go — so parity covers it).
@@ -13887,7 +13906,13 @@ export class WorldScene extends Phaser.Scene {
       const cv = document.createElement("canvas");
       cv.width = w;
       cv.height = h;
-      ctx = cv.getContext("2d");
+      // THE SAME READBACK HINT AS `sourcePixels`, on the surviving copy of the
+      // same defect: this canvas exists only to be read straight back with
+      // getImageData, and without the flag the browser keeps it GPU-backed and
+      // the read is a synchronous GPU->CPU stall. Adding it on the composition
+      // path took a composition from 2.8-5.6 ms (with 34.7 and 150.8 ms
+      // outliers) to 0.2-0.55 ms on his phone.
+      ctx = cv.getContext("2d", { willReadFrequently: true });
       ctx?.drawImage(src as CanvasImageSource, 0, 0);
     }
     try {
@@ -16759,9 +16784,19 @@ export class WorldScene extends Phaser.Scene {
     for (const o of objs) o.destroy();
   }
 
+  /** The cell an occluder image came from — see tagOccluder. Read only by
+   *  `__ml.occAudit()` and `__ml.occDump()`. */
   private tagOccluder(img: Phaser.GameObjects.Image, col: number, row: number): Phaser.GameObjects.Image {
-    img.setData("oc", col);
-    img.setData("or", row);
+    /* PLAIN PROPERTIES, NOT `setData`. The first `setData` on a GameObject
+     * constructs a DataManager for it, and each call then goes through `set` ->
+     * `setValue` -> two `Object.defineProperty` installs plus an event emit.
+     * Measured on 1,000 live images: create + setOrigin + destroy 2.7 ms, with
+     * the two setData calls 4.4 ms, with two plain writes 2.6 ms — the tag cost
+     * 1.7 us per image, on a rebuild that creates hundreds to thousands of
+     * them, for a value only two dev probes ever read. */
+    const t = img as OccTagged;
+    t.ocCol = col;
+    t.ocRow = row;
     return img;
   }
 
