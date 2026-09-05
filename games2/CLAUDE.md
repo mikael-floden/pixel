@@ -466,6 +466,28 @@ by construction, so no existing branch changed.
   piece at its NATIVE sprite pixels beside the man at his ("the comparison
   needs no math at all"), so a bed read as 1.14 of him — that is what made the
   beds look big there and small here. Gate:
+  **AND THE CACHED COPY OF THOSE NUMBERS IS GATED, because it silently rotted
+  for weeks.** `config/scenery-bbox.json` is built by hand
+  (`build-scenery-bbox.py`) and NOTHING ran it — not the Dockerfile, not a
+  workflow, not a package script — so it drifted from the art domain: measured
+  2026-09-05 it carried bed_001 at wph 47 / cpx 64 while
+  `scenery/beds/bed_001/scenery.json` said 107 / 87. The RENDERER reads the
+  manifest and drew the bed 108 px tall; `stampSceneryCollision` reads the
+  cached doc and sized its footprint for 65 — **0.60x, with the anchor offset
+  scaled by the same wrong k, so every box was mis-placed as well as too
+  small.** Library-wide: 325 pieces had grown and 385 had shrunk, 0.33x to
+  6.03x, and every piece's cpx was 64 against a real 87. It was costing a real
+  gate (`findSpawn never returns a cell scenery has blocked` passes again on the
+  refreshed doc) and it is what made the beds' hitboxes look tiny and off-centre
+  next to the wiki's. Found by the maps2 agent. `scripts/check-scenery-bbox.mjs`
+  runs in `npm test` and fails on any disagreement (1,411 on the stale doc, 0
+  now). IT IS A NODE SCRIPT ON PURPOSE: the generator's own `--check` re-measures
+  every alpha box and needs Pillow, and CI installs no Python — wiring that in
+  would trade a silent bug for a red pipeline. The half that drifts is plain
+  JSON copied out of `scenery.json` (wph, cpx, sprite, states, flat) and that is
+  what the gate compares; the alpha boxes move only when the ART moves (they
+  were current) and stay the generator's job. A missing `scenery/` tree skips,
+  not fails — the deploy's test job sparse-checks-out a subset. Gate:
   `server/test/characterscale.test.ts` (the constant is re-measured off the
   heroes' art within ±3 px; the stamp scales by exactly 88/64; every piece in
   the bbox doc carries `cpx`). Synthetic collision fixtures declare

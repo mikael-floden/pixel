@@ -16,7 +16,7 @@
     "build:client": "npm run manifest && npm run build -w client",
     "serve": "cross-env SERVE_CLIENT=1 NODE_ENV=production npm run start -w server",
     "start": "npm run build:client && npm run serve",
-    "test": "npm run manifest && node scripts/shipset.mjs --check-policy && npm run test -w server && npx tsx scripts/check-surfaces.mjs && npx tsx scripts/verify-deckwalk.mjs && node scripts/check-light-budget.mjs",
+    "test": "npm run manifest && node scripts/check-scenery-bbox.mjs && node scripts/shipset.mjs --check-policy && npm run test -w server && npx tsx scripts/check-surfaces.mjs && npx tsx scripts/verify-deckwalk.mjs && node scripts/check-light-budget.mjs",
     "typecheck": "tsc --noEmit -p shared/tsconfig.json && tsc --noEmit -p server/tsconfig.json && tsc --noEmit -p client/tsconfig.json",
     "boottime": "node scripts/verify-boottime.mjs",
     "manifest:force": "node scripts/manifest.mjs --force",
