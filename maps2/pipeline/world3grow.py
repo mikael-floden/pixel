@@ -3684,6 +3684,10 @@ class Grow:
     CLIMB = 2          # JUMP_CLIMB: the most a player climbs without a stair
     LEDGE_MAX = 12     # a trap this small is a ledge: it joins the terrace above
     STAIR_EVERY = 24   # a cliff longer than this gets a stair per this length
+    STAIR_MAX = 8      # taller is a mountain, not a wall with a ladder: one
+                       # build laid a 31-cell staircase from the valley (2)
+                       # to the snow rim (32) - "WTF is this gigantic
+                       # rectangle" (maintainer, photograph)
     REACH_ROUNDS = 16
 
     def _standable(self):
@@ -3742,7 +3746,7 @@ class Grow:
         (tx, ty), (bx, by) = t, b
         L, H = self.lvl[ty][tx], self.lvl[by][bx]
         n = H - L - 1
-        if n < 1:
+        if n < 1 or H - L > self.STAIR_MAX:
             return None
         away = (tx - bx, ty - by)
         perp = [(-away[1], away[0]), (away[1], -away[0])]
@@ -3872,7 +3876,7 @@ class Grow:
                 for (nx, ny) in ((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)):
                     if (nx, ny) not in revg or self.liquid(nx, ny) or not self._carvable(nx, ny):
                         continue
-                    if self.lvl[ny][nx] - self.lvl[y][x] < 3:
+                    if not 3 <= self.lvl[ny][nx] - self.lvl[y][x] <= self.STAIR_MAX:
                         continue
                     if self.g(nx, ny) not in self.NATURAL or self.g(x, y) not in self.NATURAL:
                         continue

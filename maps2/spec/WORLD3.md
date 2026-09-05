@@ -553,7 +553,11 @@ massif's snow rim had one, a 24-level fall 120 cells along the rim (measured
 before this rule, 17,501 trap cells — the whole front of the massif was a
 one-way cascade of 4-level shelves).
 
-Every trap gets a **stair**: `H − L − 1` straight cells at one level each,
+A stair climbs at most `STAIR_MAX = 8` levels — taller is a mountain, and a
+mountain is climbed where the terrain offers it, never by a ladder (one
+build laid a 31-cell staircase from the valley at 2 to the snow rim at 32:
+*"WTF is this gigantic rectangle"*). Every trap gets a **stair**: `H − L − 1`
+straight cells at one level each,
 cut into the trap so the steps rise toward the cliff (the run that hugs the
 most wall wins), else a notch down into the terrace above, light_soil like
 every ramp, published in `ramps[]` under the contract above. A trap under
@@ -562,10 +566,10 @@ components are fixed in rounds (a trap whose only way out is another trap
 waits for it), one stair per `STAIR_EVERY = 24` cells of a component's edge.
 
 **A WALL IS NEVER THE END OF THE WALK.** After the traps, every cliff of 3+
-levels between two terraces the player walks on has a stair within
+to 8 levels between two terraces the player walks on has a stair within
 `STAIR_EVERY` cells along it (natural ground both sides, never a house, a
-floor, a road or water). the_game: 43 stairs for traps, 39 along cliffs,
-116 runs, **0 traps left — build-asserted**, and the ramp contract is
+floor, a road or water). the_game: 42 stairs for traps, 36 along cliffs,
+112 runs, **0 traps left — build-asserted**, and the ramp contract is
 re-asserted over every run.
 
 Bridge decks are standable at their own level; roof and cave decks are
