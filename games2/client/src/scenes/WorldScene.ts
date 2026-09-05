@@ -60,7 +60,7 @@ import {
   screenToWorldVector,
   PLAYER_RADIUS,
   WALK_CLIMB,
-  canEnter,
+  canEnterElev,
   JUMP_CLIMB,
   JUMP_SPEED_FACTOR,
   JUMP_MS,
@@ -4860,6 +4860,110 @@ export class WorldScene extends Phaser.Scene {
        * there is a silhouette and a lit copy at all — because a body whose lit
        * copy is hidden gets no silhouette by construction, and that is a
        * different bug from a silhouette drawn at the wrong strength. */
+      /** SNAPSHOT THE FRAME AND COMPARE IT TO THE LAST ONE. Colour-free, so it
+       *  cannot be confounded by guessing what the fog tint currently is:
+       *  `snapDiff(true)` stores a frame, `snapDiff(false)` reports how many
+       *  pixels differ from it. Toggle one thing between the two calls and the
+       *  answer is exactly the area that thing paints. */
+      snapDiff: (store = false, tol = 12) =>
+        new Promise((res) => {
+          const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+          r.snapshot((img) => {
+            const im = img as HTMLImageElement;
+            const cv = document.createElement("canvas");
+            cv.width = im.width;
+            cv.height = im.height;
+            const cx = cv.getContext("2d", { willReadFrequently: true });
+            if (!cx) return res({ err: "no 2d" });
+            cx.drawImage(im, 0, 0);
+            const d = cx.getImageData(0, 0, cv.width, cv.height).data;
+            const w = window as unknown as { __SNAP?: Uint8ClampedArray };
+            if (store) {
+              w.__SNAP = new Uint8ClampedArray(d);
+              return res({ stored: (d.length / 4) | 0, w: cv.width, h: cv.height });
+            }
+            const prev = w.__SNAP;
+            if (!prev || prev.length !== d.length) return res({ err: "no stored frame" });
+            let n = 0;
+            for (let i = 0; i < d.length; i += 4)
+              if (
+                Math.abs(d[i] - prev[i]) + Math.abs(d[i + 1] - prev[i + 1]) + Math.abs(d[i + 2] - prev[i + 2]) >
+                tol
+              )
+                n++;
+            res({ changed: n, total: (d.length / 4) | 0, w: cv.width, h: cv.height });
+          });
+        }),
+      /** COUNT PIXELS OF A COLOUR IN THE WHOLE RENDERED FRAME. One readback,
+       *  and it answers the only question a property dump cannot: did this
+       *  object's fragments reach the framebuffer at all? (Sampling a point on
+       *  a body is unreliable — the point lands on fogged ground as often as on
+       *  the art.) */
+      countPixels: (hex: string, tol = 24) =>
+        new Promise((res) => {
+          const want = parseInt(hex.replace("#", ""), 16);
+          const wr = (want >> 16) & 0xff;
+          const wg = (want >> 8) & 0xff;
+          const wb = want & 0xff;
+          const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+          r.snapshot((img) => {
+            const im = img as HTMLImageElement;
+            const cv = document.createElement("canvas");
+            cv.width = im.width;
+            cv.height = im.height;
+            const cx = cv.getContext("2d", { willReadFrequently: true });
+            if (!cx) return res({ err: "no 2d" });
+            cx.drawImage(im, 0, 0);
+            const d = cx.getImageData(0, 0, cv.width, cv.height).data;
+            let n = 0;
+            for (let i = 0; i < d.length; i += 4)
+              if (Math.abs(d[i] - wr) + Math.abs(d[i + 1] - wg) + Math.abs(d[i + 2] - wb) <= tol) n++;
+            res({ hit: n, total: (d.length / 4) | 0, w: cv.width, h: cv.height });
+          });
+        }),
+      /** THE RENDERED PIXEL OVER EACH BODY, and the screen point it was read
+       *  at. `fogBodies` proves the silhouette is CONFIGURED (visible, alpha,
+       *  tintFill, colour, depth, on the display list); only a readback proves
+       *  it REACHED THE FRAMEBUFFER. Async: snapshotPixel schedules its
+       *  readPixels for after the next render. */
+      bodyPixels: async () => {
+        const cam = this.cameras.main;
+        const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+        if (!r.snapshotPixel) return null;
+        const out: Record<string, unknown>[] = [];
+        const list: [string, BodyVisual][] = [];
+        for (const [, m] of this.monsters) list.push(["monster", m as unknown as BodyVisual]);
+        for (const [, n] of this.npcs) list.push(["npc", n as unknown as BodyVisual]);
+        const me = this.avatars.get(this.room?.sessionId ?? "");
+        if (me) list.push(["me", me]);
+        for (const [kind, b] of list) {
+          if ((b as unknown as { culled?: boolean }).culled) continue;
+          const sp = b.sprite;
+          // A point well INSIDE the art: a third of the way up from the feet.
+          const wx = sp.x;
+          const wy = sp.y - sp.displayHeight * 0.35;
+          const sx = Math.round((wx - cam.worldView.x) * cam.zoom);
+          const sy = Math.round((wy - cam.worldView.y) * cam.zoom);
+          if (sx < 0 || sy < 0 || sx >= this.scale.width || sy >= this.scale.height) continue;
+          const col = await new Promise<{ r: number; g: number; b: number }>((res) =>
+            r.snapshotPixel(sx, sy, (c) => {
+              const p = c as Phaser.Display.Color;
+              res({ r: p.red, g: p.green, b: p.blue });
+            }),
+          );
+          out.push({
+            kind,
+            sx,
+            sy,
+            pixel: "#" + [col.r, col.g, col.b].map((v) => v.toString(16).padStart(2, "0")).join(""),
+            fogVisible: !!b.fog?.visible,
+            fogAlpha: b.fog ? +b.fog.alpha.toFixed(3) : null,
+            fogTint: b.fog ? "#" + (b.fog.tintTopLeft >>> 0).toString(16).padStart(6, "0") : null,
+          });
+          if (out.length >= 5) break;
+        }
+        return out;
+      },
       fogBodies: (radius = 12) => {
         const me = this.avatars.get(this.room?.sessionId ?? "");
         const px = me ? me.fx / CELL_WU : 0;
@@ -4896,6 +5000,18 @@ export class WorldScene extends Phaser.Scene {
             fogAlpha: b.fog ? +b.fog.alpha.toFixed(3) : null,
             spriteVisible: !!sp.visible,
             culled: !!(b as unknown as { culled?: boolean }).culled,
+            fogInList: b.fog ? this.children.list.indexOf(b.fog) >= 0 : null,
+            litInList: b.lit ? this.children.list.indexOf(b.lit) >= 0 : null,
+            fogDepth: b.fog?.depth ?? null,
+            litDepthV: b.lit?.depth ?? null,
+            spriteDepth: sp.depth,
+            fogTintFill: b.fog ? (b.fog as unknown as { tintFill: boolean }).tintFill : null,
+            fogTint: b.fog ? "#" + (b.fog.tintTopLeft >>> 0).toString(16).padStart(6, "0") : null,
+            fogCamFilter: b.fog?.cameraFilter ?? null,
+            fogAlphaLive: b.fog?.alpha ?? null,
+            fogXY: b.fog ? [Math.round(b.fog.x), Math.round(b.fog.y)] : null,
+            fogScale: b.fog ? [b.fog.scaleX, b.fog.scaleY] : null,
+            fogTexKey: b.fog?.texture?.key ?? null,
             onScreen:
               sp.x >= cv.x - 64 && sp.x <= cv.right + 64 && sp.y >= cv.y - 64 && sp.y <= cv.bottom + 96,
             coverY: (b as unknown as { coverY?: number }).coverY ?? null,
@@ -7442,12 +7558,16 @@ export class WorldScene extends Phaser.Scene {
    *
    *  Four marks, each answering a different question:
    *
-   *   RED diamond    TERRAIN — ground `canEnter` refuses on its own: a wall, a
-   *                  cliff step, deep water, a maps2 prop. Asked on a view of
-   *                  the grid with the SCENERY TAKEN OUT (`bareTerrain`), so a
-   *                  tree leaning against a house still reads as house, and so
-   *                  the rules (climb, stairs, swim, decks) stay canEnter's own
-   *                  instead of being re-derived here to drift.
+   *   RED diamond    TERRAIN — ground `canEnterElev` refuses FROM THE SURFACE
+   *                  YOU ARE ON: a wall, a cliff step, deep water, a maps2
+   *                  prop. Asked on a view of the grid with the SCENERY TAKEN
+   *                  OUT (`bareTerrain`), so a tree leaning against a house
+   *                  still reads as house, and through the same predicate the
+   *                  body moves by, so the climb, stairs, swim and DECK rules
+   *                  stay the engine's own instead of being re-derived here to
+   *                  drift. It must stay the elevation-carrying one: the
+   *                  terrain-only `canEnter` cannot represent standing on a
+   *                  deck and paints the shelf under your feet as a wall.
    *   AMBER diamond  NAV — a cell the scenery closes completely: no body centre
    *                  fits anywhere inside it, so findPath routes around it.
    *                  DERIVED from the ellipses and deliberately SMALLER than
@@ -7515,10 +7635,25 @@ export class WorldScene extends Phaser.Scene {
          * looking at. What a player means by "can I go there" is canEnter from
          * where he stands, which folds in the climb, water and deck rules too,
          * so ask exactly that — of the terrain alone. */
-        const terrain = !canEnter(bare, me.fx, me.fy, (c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU, {
+        /* canEnterElev, NOT canEnter — the overlay was asking a question the
+         * movement does not ask. `canEnter` infers your elevation from the
+         * from-cell's BASE TERRAIN level; the body actually carries `elev` and
+         * moves through `canEnterElev`/`makeBlockedElev`, which is what lets a
+         * deck (a bridge span, a roof, the cave lid) be a second surface.
+         *
+         * So standing ON a deck, the overlay measured every neighbour's climb
+         * from the ground UNDER the deck — the cave floor, the water, the
+         * chasm — and a plateau at your own feet's level came out as a
+         * twenty-storey climb: the whole same-level shelf painted red while you
+         * walked across it freely (maintainer 2026-09-05, three shots: red
+         * everywhere on the cave lid, gone one step off it, and a bridge whose
+         * far bank "has the same level as the bridge top" drawn as a wall).
+         * `meLevel` is the same `surfLevel` findPath already feeds
+         * makeBlockedElev, so the overlay and the pathfinder now agree. */
+        const terrain = !canEnterElev(bare, meLevel, me.fx, me.fy, (c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU, {
           maxClimb: WALK_CLIMB,
           canSwim: true,
-        });
+        }).ok;
         // Terrain wins the colour where both hold: a wall with a tree against
         // it is a wall, and painting it amber is how the house he could not
         // enter would go back to looking like set dressing.
