@@ -68,7 +68,10 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
 - **The transition is a DEBRIS CROSSFADE, not a pop**: on the indoor flip the
   REMOVED art (roof slab, wall bands above each cut, the cone's tops) is
   rebuilt as ordinary world-anchored images at occluder depths
-  (`buildIndoorDebris`) wearing `alpha = 1 − indoorGrade()`. ENTRY: the
+  (`buildIndoorDebris` for world@2, `buildIndoorDebris3` for maps3 — the
+  latter from tiles3 art, one depth step above the pooled occluders; until
+  2026-09-05 maps3 had no debris at all and the_game's roofs popped on one
+  frame) wearing `alpha = 1 − indoorGrade()`. ENTRY: the
   world repaints to the cut state on the flip frame under OPAQUE debris
   (picture unchanged), which then dissolves. EXIT: commitIndoor(false) does
   NOT repaint; the cut world stays drawn (mask, cuts, `night.indoor`,

@@ -583,13 +583,29 @@ by construction, so no existing branch changed.
   cutAway/drawnRoofed/maskUp/grade). Gates: `scripts/verify-indoorscenery.mjs`
   (derives the most-furnished room from the world doc; a real join, inside and
   out) + the placement half of `server/test/scenery3.test.ts`.
+  **A HIDDEN PIECE'S ART IS STILL ASKED FOR.** `rebuildScenery` calls
+  `needScenery` (which only QUEUES) before the roofed skip, so furniture under a
+  roof streams in while you are outside; it used to be asked for after the
+  skip, so the first entry after a boot drew the floor on the flip frame and
+  every bed and hearth arrived a round trip later and popped (maintainer
+  2026-09-05: "the game is not ready to display what's inside"). 136
+  placements on the_game, all already in the ship closure.
+  **THE MAPS3 TRANSITION FADES TOO** (`buildIndoorDebris3`): `buildIndoorDebris`
+  returned early on `!this.maps2`, so on the_game the roof left and returned on
+  ONE frame while the light eased — "I felt we had a solution for this that
+  looked ok": he had, on the_island2 (world@2). The maps3 branch builds the same
+  debris from tiles3 art — the storeys above the cut at `by - lvl*lh`, the real
+  cap at `surfaceY`, every deck the constrained column hides (equal-level roofs
+  over wall tops included) — at `oDepth + 0.01`, one step above the pooled
+  occluders' epsilons and 0.49 under the bodies. `verify-indoorscope` runs on
+  house_demo (world@2), which is why its "must not pop on a single frame" gate
+  never saw this. Probe: `__ml.indoorFade()` (debris count + alpha per frame).
 - KNOWN GAPS, stated: no FADE GUARD in the game (it is a pixel test over art the
   pool has not fetched yet — measured, 2 of 10 pools keep a tile render3 drops,
   which is a wrong tile inside a 1-cell band, never a hole;
   `Tiles3.stats.unguardedFadePools` counts it); scenery draws STILLS only (no
   idle animation) and registers no occluderMeta, so a body sorts against a tree
-  by painter depth alone; `buildIndoorDebris` is world@2-only, so a maps3 indoor
-  transition is instant rather than eased; the resolver is proven against the
+  by painter depth alone; the resolver is proven against the
   parity fixture, and render3 has since grown slopes, set-dressed wall caps and
   a Chebyshev fade band, all of which are RESOLUTION decisions and belong in
   tiles3.ts and its fixture.

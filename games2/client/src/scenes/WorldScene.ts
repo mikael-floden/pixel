@@ -13325,11 +13325,87 @@ export class WorldScene extends Phaser.Scene {
    * the dissolve instead of restarting it. Per-image depths mean bodies keep
    * sorting correctly through the fade — someone under the returning roof is
    * covered by it exactly as they will be once it is real. */
+  /** THE DEBRIS FOR A MAPS3 WORLD — the same crossfade, drawn from tiles3 art.
+   *
+   *  `buildIndoorDebris` returned early on `!this.maps2`, so on the_game the
+   *  roof left and came back on ONE frame while the light still eased
+   *  (maintainer 2026-09-05: "the roof feels like it pops on a single frame
+   *  without any fade whatsoever ... I felt we had a solution for this that
+   *  looked ok" — he had: the_island2 is world@2 and fades). The known-gap note
+   *  said as much for a week.
+   *
+   *  Same contract as the world@2 branch: on the flip the ground and occluders
+   *  repaint to the CUT state at once, and these images are everything the cut
+   *  REMOVED, pasted exactly where the occluder pass drew them whole — the
+   *  storeys above the cut at `by - lvl*lh`, the real cap at `surfaceY`, and
+   *  every deck the constrained column hides (a deck at the column's own level
+   *  included — the roof over a wall top, see capDecks) — wearing `debrisAlpha`,
+   *  eased per frame by the caller. ONE STEP ABOVE THE OCCLUDER BAND: pooled
+   *  occluders sit at `oDepth + creationIndex × OCC_DEPTH_EPS` (≤ ~0.006), so
+   *  the debris takes `oDepth + 0.01`, over every one of them and still 0.49
+   *  under the bodies in front. Art that has not landed is skipped, as the
+   *  world@2 branch skips a missing texture: a piece of the fade is missing
+   *  rather than a wrong one drawn. */
+  private buildIndoorDebris3(cuts: Map<number, number>, world: World): void {
+    const t3 = this.t3;
+    const tex = this.ensureTiles3Textures();
+    if (!t3 || !tex) return;
+    const { dx, dy, lh, tile: tileSize } = this.geom;
+    const cam = this.cameras.main;
+    const cx0 = cam.worldView.x - OCC_CULL_PAD;
+    const cx1 = cam.worldView.right + OCC_CULL_PAD;
+    const cy0 = cam.worldView.y - OCC_CULL_PAD;
+    const cy1 = cam.worldView.bottom + OCC_CULL_PAD;
+    const shows = (ix: number, iy: number) =>
+      ix + tileSize >= cx0 && ix <= cx1 && iy + tileSize >= cy0 && iy <= cy1;
+    const a = this.debrisAlpha();
+    const out: Phaser.GameObjects.Image[] = [];
+    const push = (x: number, y: number, key: string, depth: number) => {
+      if (!this.textures.exists(key)) return;
+      out.push(this.add.image(x, y, key).setOrigin(0, 0).setDepth(depth).setAlpha(a));
+    };
+    for (const [idx, cutE] of cuts) {
+      const col = idx % world.width;
+      const row = (idx - col) / world.width;
+      const cell = this.t3cellOf(t3, col, row);
+      if (!cell) continue; // void
+      const u = col - row;
+      const v = col + row;
+      const bx = this.iso.ox + u * dx;
+      const by = this.iso.oy + v * dy;
+      const depth = by + dy + 0.01;
+      // The storeys the cut took off this column, and its real cap.
+      if (cutE < cell.level && (cell.kind === "wall" || cell.level > 0)) {
+        const topKey = t3SurfaceKey(tex, this.t3tm, cell);
+        const fk = t3FaceKey(this.t3tm, cell) ?? topKey;
+        if (topKey && fk) {
+          for (let lvl = cutE + 1; lvl < cell.level; lvl++) if (shows(bx, by - lvl * lh)) push(bx, by - lvl * lh, fk, depth);
+          const sy = t3SurfaceY(cell);
+          const capX = sy !== null ? cell.sx : bx;
+          const capY = sy !== null ? sy : by - cell.level * lh;
+          if (shows(capX, capY)) push(capX, capY, topKey, depth);
+        }
+      }
+      // Every deck a constrained column hides — the roof itself.
+      const base = world.rows[row]?.[col]?.l ?? 0;
+      for (const d of this.t3decksOf(t3, col, row)) {
+        if (d.level < base) continue; // buried: nothing of it ever shows
+        for (const op of tex.opsForDeck(d)) if (shows(bx, op.y)) push(bx, op.y, op.key, depth);
+      }
+    }
+    this.indoorDebris = out.length ? out : null;
+  }
+
   private buildIndoorDebris() {
     this.destroyIndoorDebris();
     const cuts = this.indoorCut;
     const world = this.world;
-    if (!cuts || !world || !this.maps2) return; // legacy cut / no world: instant
+    if (!cuts || !world) return; // legacy cut / no world: instant
+    if (this.maps3) {
+      this.buildIndoorDebris3(cuts, world);
+      return;
+    }
+    if (!this.maps2) return;
     const { dx, dy, lh, tile: tileSize } = this.geom;
     const cam = this.cameras.main;
     const cx0 = cam.worldView.x - OCC_CULL_PAD;
@@ -16238,15 +16314,24 @@ export class WorldScene extends Phaser.Scene {
         void pieces.request(p.piece); // 205 fetches for 1,388 placements, lazily; landing → onSceneryManifest
         continue;
       }
-      // INDOOR FURNITURE: a piece under a roof/cave deck draws only while that
-      // roof is actually cut away — see roofCutAwayAt.
-      if (p.roofed && !this.roofCutAwayAt(p.cx, p.cy, p.level)) continue;
       if (piece === null) continue; // tombstoned: the manifest 404'd or is broken
       // THE VARIATION THE MAP PLACED — without it every tree in a forest drew
       // the piece's base still and the wood looked stamped from one tree.
       const st = stateFor(piece, p.lit, p.state);
       const sprite = facedSprite(st, p.dir);
-      if (!this.needScenery(sprite)) continue;
+      /* THE ART IS ASKED FOR BEFORE THE ROOF DECIDES. `needScenery` only QUEUES
+       * (it draws nothing), so a piece the roof hides still gets its sprite
+       * streamed while you are outside. It used to be asked for after the
+       * roofed skip below — so on the first entry after a boot the floor drew
+       * on the flip frame and every bed, cupboard and hearth arrived one
+       * network round trip later and popped in (maintainer 2026-09-05: "the
+       * game is not ready to display what's inside"). 136 placements on
+       * the_game; their files are in the ship closure already. */
+      const resident = this.needScenery(sprite);
+      // INDOOR FURNITURE: a piece under a roof/cave deck draws only while that
+      // roof is actually cut away — see roofCutAwayAt.
+      if (p.roofed && !this.roofCutAwayAt(p.cx, p.cy, p.level)) continue;
+      if (!resident) continue;
       /* PREFETCH ONLY beyond the draw pad: the manifest is in hand and the art
        * is queued by `needScenery` above, which is the whole point of coming
        * out this far. Everything below builds a sprite. */
