@@ -249,10 +249,15 @@ ok(moved.probe.state === "has" && !/not set/.test(moved.read),
 const fits = async (what) => {
   const f = await p.evaluate(() => {
     const hb = window.__wikiHitbox; if (!hb) return null;
+    /* THE EXTENTS THE PAGE PUBLISHES, not a formula of this file's own. An
+     * ellipse is a GROUND ellipse projected now (2026-09-05, so a turned facing
+     * foreshortens), and re-deriving it here as a rotated SCREEN ellipse
+     * predicted a shape nobody draws — it reported a 12px overflow that was not
+     * on the canvas. `extent` comes from the same function the outline does. */
     const span = hb.boxes.map((bx, i) => {
-      const th = (bx.rot || 0) * Math.PI / 180;
-      const hx = Math.hypot(bx.rx * Math.cos(th), bx.ry * Math.sin(th)) * hb.s;
-      const hy = Math.hypot(bx.rx * Math.sin(th), bx.ry * Math.cos(th)) * hb.s;
+      const e = hb.extent?.[i];
+      const hx = (e ? e[0] : bx.rx) * hb.s;
+      const hy = (e ? e[1] : bx.ry) * hb.s;
       const c = hb.screen[i];
       return [c.ex - hx, c.ex + hx, c.ey - hy, c.ey + hy];
     });
@@ -1264,6 +1269,65 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
     `bed_002's south is narrower than its turned facings, as its art is (south ${bed?.size_by_dir?.south?.rx} vs shared ${bed?.rx})`);
 }
 ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
+
+/* AN ELLIPSE TURNS WITH THE FACING (maintainer 2026-09-05, on "Small dinghy
+ * with rope coil 001": "I fixed the hitbox for S, but when I press SE or SW the
+ * hitbox is still rotated as if it was S. Didn't we fix this so the hitbox
+ * rotates to better fit SE and SW automatically? Maybe we only did this for
+ * rect ... It's really hard to make the hitbox fit the boat otherwise").
+ *
+ * It was rect-only. Now both shapes read `rot` as GROUND degrees and take the
+ * facing's 45° step there, so south is untouched — every tuned box means what
+ * it meant — and a turned view gets the footprint actually under the art. The
+ * shape is checked, not just the angle: a boat's ellipse must FORESHORTEN as it
+ * turns, which a screen-space rotation would not do. */
+{
+  /* ITS OWN PAGE, with no fixture on it. The page this file drives carries the
+   * injected tuning the rect checks need; the dinghy has to be read as HE sees
+   * it — his own stored box, his own shape tag. */
+  const cx = await b.newContext({ viewport: { width: 420, height: 1300 } });
+  const p2 = await cx.newPage();
+  await p2.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+  await p2.addInitScript(() => {
+    localStorage.setItem("wiki-admin-token", "gate");
+    localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+    localStorage.setItem("wiki-hitbox-always", "1");
+  });
+  const dirs = async (id) => {
+    const out = {};
+    await p2.goto(`${W}#/objects/${id}`, { waitUntil: "load" });
+    await p2.waitForTimeout(3400);
+    for (const [label, key] of [["S", "south"], ["SE", "south-east"], ["SW", "south-west"]]) {
+      await p2.evaluate((d) => [...document.querySelectorAll("button")].find((x) => x.textContent.trim() === d && /south/.test(x.title || ""))?.click(), label);
+      await p2.waitForTimeout(900);
+      const r = await p2.evaluate(() => window.__wikiHitbox && ({ dir: window.__wikiHitbox.dir, drawn: window.__wikiHitbox.drawn, extent: window.__wikiHitbox.extent, shapes: window.__wikiHitbox.shapes }));
+      if (r?.dir === key) out[label] = r;
+    }
+    return out;
+  };
+  const boat = await dirs("beached_rowboat_001");
+  await cx.close();
+  console.log("dinghy per facing:", JSON.stringify(boat));
+  ok(boat.S && boat.SE && boat.SW, `the dinghy answers on all three facings (${Object.keys(boat).join(",")})`);
+  if (boat.S && boat.SE && boat.SW) {
+    ok(boat.S.shapes[0] === "ellipse", `and it is an ellipse, the shape this never covered (${boat.S.shapes[0]})`);
+    ok(boat.S.drawn[0] === 0 && boat.SE.drawn[0] === -45 && boat.SW.drawn[0] === 45,
+      `south is untouched and the turned views take their 45° step (${boat.S.drawn[0]}, ${boat.SE.drawn[0]}, ${boat.SW.drawn[0]})`);
+    const [sx, sy] = boat.S.extent[0], [ex, ey] = boat.SE.extent[0], [wx, wy] = boat.SW.extent[0];
+    ok(Math.abs(ex - sx) > 0.5 || Math.abs(ey - sy) > 0.5,
+      `the footprint really CHANGES SHAPE when it turns — not just a number (S ${sx}x${sy} → SE ${ex}x${ey})`);
+    ok(Math.abs(ex - wx) < 0.01 && Math.abs(ey - wy) < 0.01,
+      `and the two turned views mirror each other exactly (SE ${ex}x${ey}, SW ${wx}x${wy})`);
+    /* THE GROUND MODEL, checked against its own arithmetic: half-axes rx and
+     * ry/k turned on the ground, then squashed by k. A screen rotation would
+     * keep the long axis its full length and fail this. */
+    const k = 15 / 32, th = (-45 * Math.PI) / 180;
+    const want = [Math.hypot(sx * Math.cos(th), (sy / k) * Math.sin(th)),
+                  k * Math.hypot(sx * Math.sin(th), (sy / k) * Math.cos(th))];
+    ok(Math.abs(ex - want[0]) < 0.05 && Math.abs(ey - want[1]) < 0.05,
+      `and it is the GROUND ellipse projected, the same frame a rect uses (${ex}x${ey}, want ${want[0].toFixed(2)}x${want[1].toFixed(2)})`);
+  }
+}
 
 await b.close();
 console.log(fails.length ? `\nHITBOX CHECKS FAILED (${fails.length})` : "\nALL HITBOX CHECKS PASSED");

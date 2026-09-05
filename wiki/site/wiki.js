@@ -1305,7 +1305,47 @@ function boxRot(o, b, dir) {
   const own = b?.rot_by_dir?.[dir];
   if (isFinite(own)) return +own;
   const base = isFinite(b?.rot) ? +b.rot : 0;
-  return boxShape(o, b) === "rect" ? base - (DIR_GROUND_DEG[dir] ?? 0) : base;
+  /* AN ELLIPSE TURNS WITH THE FACING TOO (maintainer 2026-09-05, on "Small
+   * dinghy with rope coil 001": "I fixed the hitbox for S, but when I press SE
+   * or SW the hitbox is still rotated as if it was S. Didn't we fix this so the
+   * hitbox rotates to better fit SE and SW automatically? Maybe we only did
+   * this for rect"). We had: the rule below was written with the rect work and
+   * kept ellipses out of it, which left a long footprint — a boat, a fallen log
+   * — impossible to fit on a turned view. `rot` is GROUND degrees for both
+   * shapes now, and south (a 0° step) still means exactly what it always did,
+   * so no tuned box moves. */
+  return base - (DIR_GROUND_DEG[dir] ?? 0);
+}
+/** The ellipse as the game's ground sees it: half-axes on the GROUND, turned
+ *  there, then projected — the same frame the rect uses, so the two shapes
+ *  cannot disagree about what a facing means. At 0° it is the screen ellipse
+ *  rx × ry that was always stored. Returned as a path of points because a
+ *  transform would stroke the outline thinner at top and bottom than at the
+ *  sides. */
+function ellipsePath(o, b, dir, n = 72) {
+  const k = ISO_K();
+  const th = boxRot(o, b, dir) * Math.PI / 180;
+  const c = Math.cos(th), sn = Math.sin(th);
+  const sz = boxSize(b, dir);
+  const a = sz.rx, bb2 = sz.ry / k;                    // ground half-axes
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const u = (i / n) * Math.PI * 2, cu = Math.cos(u), su = Math.sin(u);
+    const gx = a * cu, gy = bb2 * su;                  // on the ground
+    out.push([gx * c - gy * sn, (gx * sn + gy * c) * k]);   // turned, then projected
+  }
+  return out;
+}
+/** Its half-extents on screen, exactly — the extremes of that projection. */
+function ellipseExtent(o, b, dir) {
+  const k = ISO_K();
+  const th = boxRot(o, b, dir) * Math.PI / 180;
+  const sz = boxSize(b, dir);
+  const a = sz.rx, bb2 = sz.ry / k;
+  return {
+    hx: Math.hypot(a * Math.cos(th), bb2 * Math.sin(th)),
+    hy: k * Math.hypot(a * Math.sin(th), bb2 * Math.cos(th)),
+  };
 }
 /* WHERE THE BOX SITS IS PER FACING (maintainer 2026-09-03: "when I move the
  * hitbox on the S direction it also moves on SE and SW. It's only the W and D
@@ -1955,10 +1995,10 @@ function makePlayer(entity, kind, opts = {}) {
         // rx·cos t·cos th − ry·sin t·sin th over t. Cheaper and tighter than
         // walking the outline, and it must be exact or the rim clips again at
         // some angles and not others, which reads as a flicker.
-        const th = boxRot(entity, b, cur.dir) * Math.PI / 180;
-        const szF = boxSize(b, cur.dir);
-        let hx = Math.hypot(szF.rx * Math.cos(th), szF.ry * Math.sin(th));
-        let hy = Math.hypot(szF.rx * Math.sin(th), szF.ry * Math.cos(th));
+        // Through the same projection the outline is drawn with, or the rim
+        // clips a turned ellipse at some angles and not others.
+        const ext = ellipseExtent(entity, b, cur.dir);
+        let hx = ext.hx, hy = ext.hy;
         if (boxShape(entity, b) === "rect") {
           const cs = rectCorners(entity, b, cur.dir);
           hx = Math.max(...cs.map(([x]) => Math.abs(x)));
@@ -2064,13 +2104,10 @@ function makePlayer(entity, kind, opts = {}) {
         const on = i === hitSel;
         const bp = boxPos(b, cur.dir);
         const ex = dx + (fw / 2 + bp.ax) * s, ey = dy + (fh / 2 + bp.ay) * s;
-        const th = boxRot(entity, b, cur.dir) * Math.PI / 180;
         // The unselected ones stay visible but quiet: with two pillars he must
         // see both to judge the pair, and know which one the rails drive.
         ctx.strokeStyle = on ? "rgba(217,119,87,1)" : "rgba(217,119,87,0.45)";
         ctx.lineWidth = on ? 1.5 : 1;
-        const szD = boxSize(b, cur.dir);
-        const px = Math.max(1, szD.rx * s), py = Math.max(1, szD.ry * s);
         ctx.beginPath();
         // Same centre, same half-axes, same rotation — only the outline
         // differs, so switching shape never moves the footprint he placed.
@@ -2079,7 +2116,9 @@ function makePlayer(entity, kind, opts = {}) {
           cs.forEach(([x, y], n) => (n ? ctx.lineTo(ex + x * s, ey + y * s) : ctx.moveTo(ex + x * s, ey + y * s)));
           ctx.closePath();
         } else {
-          ctx.ellipse(ex, ey, px, py, th, 0, Math.PI * 2);
+          const pts = ellipsePath(entity, b, cur.dir);
+          pts.forEach(([x, y], n2) => (n2 ? ctx.lineTo(ex + x * s, ey + y * s) : ctx.moveTo(ex + x * s, ey + y * s)));
+          ctx.closePath();
         }
         ctx.stroke();
         if (on) {
@@ -2103,6 +2142,13 @@ function makePlayer(entity, kind, opts = {}) {
         // not say what he is looking at.
         dir: cur.dir, tilt: +facingTilt(cur.dir).toFixed(2),
         drawn: boxes.map((b) => +boxRot(entity, b, cur.dir).toFixed(2)),
+        // An ellipse's half-extents ON SCREEN, from the same projection the
+        // outline is drawn with — the only way a gate can tell a turned
+        // footprint from an untouched one without reading pixels.
+        extent: boxes.map((b) => {
+          const e = ellipseExtent(entity, b, cur.dir);
+          return [+e.hx.toFixed(3), +e.hy.toFixed(3)];
+        }),
         /* The same four corners in FRAME px — canvas-independent. The canvas is
          * fitted to the box, so its origin moves when the box does and canvas
          * coordinates cannot be compared across an edit (measured 2026-09-03,
