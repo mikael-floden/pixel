@@ -124,6 +124,96 @@ test("a rect footprint is bucketed into the cells its corners reach", () => {
   }
 });
 
+/** A rect placed with a FACING, and optionally per-facing overrides. */
+function oneTurnedRect(
+  rx: number, ry: number, dir: string,
+  extra: Record<string, unknown> = {},
+  at = { x: 15.5, y: 15.5 },
+): TerrainGrid {
+  const rows = Array.from({ length: H }, () => Array.from({ length: W }, () => ({ t: "grass", l: 0 })));
+  const grid = buildTerrainGrid(W, H, rows, [], []);
+  const bbox: SceneryBboxDoc = {
+    pieces: { p: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" } },
+    boxes: { s: [0, 0, 100, 100, 100, 100] },
+  };
+  const hitbox: SceneryHitboxDoc = {
+    "scenery/p": { boxes: [{ ax: 0, ay: -50, rx, ry, shape: "rect", ...extra } as never] },
+  };
+  stampSceneryCollision(grid, [{ piece: "p", x: at.x, y: at.y, dir }], bbox, hitbox, GEOM);
+  return grid;
+}
+/** A world point at (fu, fv) of the footprint's half-extents IN THE BOX'S OWN
+ *  TURNED AXES — the frame footprintPenetration tests in. */
+function atBoxFraction(grid: TerrainGrid, j: number, fu: number, fv: number): { x: number; y: number } {
+  const fp = grid.footprints!;
+  const R2 = Math.SQRT2;
+  const U = fu * fp.p[j];
+  const V = fv * fp.q[j];
+  const X = U * fp.rcos[j] - V * fp.rsin[j];
+  const Y = U * fp.rsin[j] + V * fp.rcos[j];
+  const ox = (X + Y) / R2;
+  const oy = (Y - X) / R2;
+  return { x: (fp.cx[j] + ox) * CELL_WU, y: (fp.cy[j] + oy) * CELL_WU };
+}
+
+/* A RECT IS A GROUND RECTANGLE, AND THE FACING TURNS IT.
+ *
+ * wiki.js `rectCorners`: the edges follow the two GROUND axes, so a turned piece
+ * projects to a PARALLELOGRAM. The first cut of this collided (and drew) a
+ * SCREEN-aligned box, which is right only for an unturned south piece — every
+ * turned bed got a box that did not follow the furniture (maintainer
+ * 2026-09-05, beside the wiki's own render: "you just drew a box at the bottom
+ * bed corner ... I can walk straight up on the bed"). */
+test("a rect turns with its facing, and south is the unturned box", () => {
+  /* LONG in the (X, Y) frame, or the test cannot tell a turn from a square:
+   * p/q = 0.4375 * rx/ry, so 48x16 is only 1.3:1 and the turned box's far
+   * corner still falls inside the unturned one. 96x14 is 3:1. */
+  const south = oneTurnedRect(96, 14, "south");
+  const se = oneTurnedRect(96, 14, "south-east");
+  assert.equal(south.footprints!.rect[0], 1);
+  assert.equal(se.footprints!.rect[0], 1);
+  // south = 0 degrees on the ground; south-east = -45.
+  assert.ok(Math.abs(south.footprints!.rcos[0] - 1) < 1e-12, "south is unturned");
+  assert.ok(Math.abs(south.footprints!.rsin[0]) < 1e-12);
+  assert.ok(Math.abs(se.footprints!.rsin[0] + Math.SQRT1_2) < 1e-9, "south-east turns -45");
+  // The SIZE is unchanged by the turn — only the orientation.
+  assert.ok(Math.abs(se.footprints!.p[0] - south.footprints!.p[0]) < 1e-12);
+  assert.ok(Math.abs(se.footprints!.q[0] - south.footprints!.q[0]) < 1e-12);
+  // A point at the corner of each box's OWN axes is inside that box...
+  for (const g of [south, se]) {
+    for (const [su, sv] of [[1, 1], [-1, 1], [1, -1], [-1, -1]] as [number, number][]) {
+      const c = atBoxFraction(g, 0, su * 0.9, sv * 0.9);
+      assert.equal(footprintBlocks(g, c.x, c.y, 0), true);
+    }
+  }
+  // ...and the turn really moves the shape: a point far along the LONG axis of
+  // the turned box is outside the unturned one, and vice versa.
+  const far = atBoxFraction(se, 0, 0.95, 0);
+  assert.equal(footprintBlocks(se, far.x, far.y, 0), true, "inside the turned box");
+  assert.equal(footprintBlocks(south, far.x, far.y, 0), false, "outside the unturned one");
+});
+
+/* THE PER-FACING OVERRIDES ARE READ. The art's anchor is not the same point on
+ * every facing, so the wiki stores placement per facing and size as an opt-in
+ * exception; reading only the base ax/ay/rx/ry put every turned piece's box in
+ * the wrong place at the wrong size. */
+test("pos_by_dir moves a rect and size_by_dir resizes it, per facing", () => {
+  const base = oneTurnedRect(40, 20, "south-east");
+  const moved = oneTurnedRect(40, 20, "south-east", { pos_by_dir: { "south-east": { ax: 0, ay: -20 } } });
+  const dy = Math.abs(moved.footprints!.cy[0] - base.footprints!.cy[0])
+    + Math.abs(moved.footprints!.cx[0] - base.footprints!.cx[0]);
+  assert.ok(dy > 0.2, `pos_by_dir must move the box (moved ${dy.toFixed(3)} cells)`);
+  // A facing with no entry of its own keeps the base placement.
+  const other = oneTurnedRect(40, 20, "south", { pos_by_dir: { "south-east": { ax: 0, ay: -20 } } });
+  const un = oneTurnedRect(40, 20, "south");
+  assert.equal(other.footprints!.cx[0], un.footprints!.cx[0]);
+  assert.equal(other.footprints!.cy[0], un.footprints!.cy[0]);
+
+  const big = oneTurnedRect(40, 20, "south", { size_by_dir: { south: { rx: 80, ry: 20 } } });
+  assert.ok(big.footprints!.p[0] > un.footprints!.p[0] * 1.9, "size_by_dir must resize it");
+  assert.equal(big.footprints!.q[0], un.footprints!.q[0]);
+});
+
 const walk = { maxClimb: WALK_CLIMB, canSwim: true };
 const DIRS: [number, number][] = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]];
 /** How far inside the DRAWN ellipse (gauge < 1) the body ever gets, running at

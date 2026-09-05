@@ -952,6 +952,10 @@ export type SceneryHitbox = {
   /** `"rect"` = a rectangle, anything else (or absent) = an ellipse. The wiki
    *  publishes it per variation; the game collides and draws both. */
   shape?: string;
+  /** Per-facing overrides — see the stamp's rectGroundRot/boxSize/boxPos. */
+  rot_by_dir?: Record<string, number>;
+  pos_by_dir?: Record<string, { ax: number; ay: number }>;
+  size_by_dir?: Record<string, { rx: number; ry: number }>;
 };
 export type SceneryHitboxRec = { boxes?: SceneryHitbox[]; auto?: boolean };
 

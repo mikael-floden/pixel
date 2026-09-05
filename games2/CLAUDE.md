@@ -471,30 +471,48 @@ by construction, so no existing branch changed.
   the bbox doc carries `cpx`). Synthetic collision fixtures declare
   `cpx: CHARACTER_BODY_PX` — a piece sized against our own person, identity
   scale — never omit it or they silently grow 1.375×.
-- **A SCENERY HITBOX IS AN ELLIPSE *OR* A RECTANGLE, and the shape is
-  COLLISION, not decoration.** `live/tuning/scenery_hitbox.json` publishes
-  `shape: "rect"` on 571 of its boxes — every bed, cupboard and shelf, 547 of
-  them the wiki's own alpha-placed default — and the game read only ax/ay/rx/ry,
-  so it collided all of them as the ellipse INSCRIBED in the published box and
-  a body walked into all four corners of every one (maintainer 2026-09-05: "I
-  know the bed and shelf is a rect hitbox and not an ellipse"). Both shapes now
-  stamp, collide and DRAW as themselves. The maths is shared, not parallel:
-  screen->world is a pure diagonal scale in the frame `SceneryFootprints.p/q`
-  are measured in, so a screen-axis-aligned rect is axis-aligned there too —
-  the same half-extents describe both and only the distance function differs
-  (`footprintPenetration`, where the rect case is exact and cheaper than the
-  ellipse's gauge gates). TWO THINGS A RECT NEEDS THAT THE ELLIPSE DID NOT: the
-  BUCKET PAD, because a rect's world-axis support is `(p+q)/sqrt(2)` against
-  the ellipse's `sqrt((p^2+q^2)/2)` — pad it as an ellipse and its corners sit
-  in cells no query looks at, so the body walks through them with every
-  containment test still passing; and the inside answer must be FLOORED above
-  zero like the ellipse's own boolean gate, because `canEnterElev` queries with
-  r = 0 and `footprintBlocks` tests `> 0`. `rot` is still ignored (12 boxes
-  carry a non-zero one). USE THE WIKI'S DEFAULT: the stamp never filters `auto`
+- **A SCENERY HITBOX IS AN ELLIPSE *OR* A GROUND RECTANGLE, and a rect is DRAWN
+  IN PERSPECTIVE.** `live/tuning/scenery_hitbox.json` publishes `shape: "rect"`
+  on 571 boxes — every bed, cupboard and shelf, 547 of them the wiki's own
+  default — and the game read none of it, colliding all of them as the ellipse
+  INSCRIBED in the box. A rect's edges follow the two GROUND axes, so a turned
+  piece projects to a PARALLELOGRAM (maintainer 2026-09-03: "the 3D perspective
+  requires the shape to be a bit different ... capture the furniture's
+  contour"). **A SCREEN-ALIGNED BOX IS THE WRONG MODEL and was shipped once:**
+  it is right only for an unturned south piece, and every turned bed got a box
+  at the wrong angle, the wrong size and the wrong place — "you just drew a box
+  at the bottom bed corner ... I can walk straight up on the bed" (2026-09-05).
+  PORT THE WIKI, DO NOT RE-DERIVE IT: `wiki/site/wiki.js` `rectCorners` /
+  `boxRot` / `boxPos` / `boxSize` are the authority, and `rectGroundRot` +
+  the stamp mirror them. The three per-facing inputs are NOT optional — the
+  art's anchor differs per facing, so PLACEMENT is per facing (`pos_by_dir`),
+  SIZE is one decision with an opt-in exception (`size_by_dir`; 54 of 131 rect
+  pieces have a south view that disagrees with their own turned views), and the
+  facing adds a 45-degree GROUND step (`rot - DIR_GROUND_DEG[dir]`, with
+  `rot_by_dir` as the per-facing correction). hflip negates the angle as it
+  negates `ax`.
+  THE GEOMETRY IS FREE, and that is why this is a small change: the wiki's
+  ground frame IS the frame `p`/`q` already live in, under a UNIFORM scale
+  (gx = rx maps to p = rx/(dx*SQRT2), gy = ry/k to q = ry/(dy*SQRT2) — both a
+  factor 1/(dx*SQRT2)). A uniform scale preserves ANGLES, so p and q are
+  unchanged and a ground turn is just a rotation of the (X, Y) box: the rect
+  case of `footprintPenetration` is the standard box distance, exact and
+  cheaper than the ellipse's gauge gates. Verified: the game's four corners
+  equal `rectCorners` to 2.8e-14 frame px over 45 shape/angle pairs.
+  TWO THINGS A RECT NEEDS THAT THE ELLIPSE DID NOT. The REJECT GATE and the
+  BUCKET PAD must use the TURNED support (`supX`/`supY` = |p·cos|+|q·sin| and
+  its partner), not p/q: once the box turns, |X| < p is neither necessary nor
+  sufficient, and padding a rect like an ellipse leaves its corners in cells no
+  query looks at — the body walks through them with every containment test
+  still passing. And the inside answer must be FLOORED above zero like the
+  ellipse's own boolean gate, because `canEnterElev` queries with r = 0 and
+  `footprintBlocks` tests `> 0`. `rot` alone (no facing) is honoured; 12 boxes
+  carry a non-zero one. USE THE WIKI'S DEFAULT: the stamp never filters `auto`
   — an override rewrites the same record without the flag, so a reviewed box
   wins by being the record. Gates: the rect block of
-  `server/test/footprint.test.ts` (corners solid, the ellipse arm asserted so
-  it cannot pass by blocking everything, and the bucket asserted from outside).
+  `server/test/footprint.test.ts` (corners solid with the ellipse arm asserted
+  so it cannot pass by blocking everything; the turn moves the shape; the
+  per-facing overrides are read; the bucket asserted from outside).
 - **INDOOR SCENERY IS DRAWN WHILE ITS ROOF IS CUT AWAY** — the furniture of
   every house and cave. `buildPlacements` FLAGS a placement under a roof/cave
   deck (`SceneryPlacement.roofed`) instead of dropping it: render3 drops those

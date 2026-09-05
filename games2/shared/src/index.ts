@@ -1345,11 +1345,19 @@ export interface SceneryFootprints {
   p: Float64Array;
   q: Float64Array;
   /** 1 = this footprint is a RECTANGLE, 0 = an ellipse (`shape: "rect"` in
-   *  live/tuning/scenery_hitbox.json). Screen->world is a pure diagonal scale in
-   *  the frame p/q are measured in, so a screen-axis-aligned rect is ALSO
-   *  axis-aligned there: the same p and q describe both shapes and only the
-   *  distance function differs. */
+   *  live/tuning/scenery_hitbox.json). A rect is a GROUND rectangle turned by
+   *  its facing (see rectGroundRot), so it shares p/q with the ellipse and adds
+   *  a rotation; only the distance function differs. */
   rect: Uint8Array;
+  /** The rect's ground turn, as cos/sin — the box's own axes in the (X, Y)
+   *  frame. Identity (1, 0) for an ellipse, which never reads them. */
+  rcos: Float64Array;
+  rsin: Float64Array;
+  /** The TURNED box's support along X and Y — |p·cos| + |q·sin| and its
+   *  partner. The unrotated p/q gate is not sound once the box turns, and this
+   *  is what both the reject gate and the bucket pad use. */
+  supX: Float64Array;
+  supY: Float64Array;
   /** Index into the scenery placement list this footprint came from, so a debug
    *  overlay can name the piece it is outlining. */
   place: Int32Array;
@@ -1503,22 +1511,31 @@ function footprintPenetration(
   // in either axis is exactly p+rc and q+rc, so this is tight and exact.
   const ax = X < 0 ? -X : X;
   const ay = Y < 0 ? -Y : Y;
-  if (ax >= p + rc || ay >= q + rc) return -1;
   /* A RECTANGLE, when the wiki published one (`shape: "rect"` — beds, cupboards
-   * and shelves are rectangles and were colliding as the ellipse inscribed in
-   * them, so a body walked into the corners of every one). Exact and cheaper
-   * than the ellipse: in this frame the rect is axis-aligned with the SAME half
-   * extents p, q, so the distance from the point to it is the standard
-   * box distance and no gauge gates or bisection are needed. */
+   * and shelves), TURNED BY ITS FACING (rectGroundRot). Exact and cheaper than
+   * the ellipse: in the box's own frame the distance from a point to it is the
+   * standard box distance, so no gauge gates and no bisection.
+   *
+   * The gate is the TURNED box's support, not p/q: once the box turns, |X| < p
+   * is neither necessary nor sufficient and the unrotated gate would reject
+   * real contacts at the corners. */
   if (fp.rect[j]) {
-    const ex = ax - p;
-    const ey = ay - q;
+    if (ax >= fp.supX[j] + rc || ay >= fp.supY[j] + rc) return -1;
+    const c = fp.rcos[j];
+    const sn = fp.rsin[j];
+    const U = X * c + Y * sn; // into the box's own axes (rotate by -theta)
+    const V = c * Y - sn * X;
+    const au = U < 0 ? -U : U;
+    const av = V < 0 ? -V : V;
+    const ex = au - p;
+    const ey = av - q;
     if (ex <= 0 && ey <= 0) {
-      // Inside: distance 0, and the outward normal is the nearest FACE.
       if (norm) {
-        // ex, ey are both negative here; the larger one is the closer face.
-        const gx = ex > ey ? (X < 0 ? -1 : 1) : 0;
-        const gy = ex > ey ? 0 : Y < 0 ? -1 : 1;
+        // Inside: the outward normal is the NEAREST FACE, in the box's axes.
+        const nu = ex > ey ? (U < 0 ? -1 : 1) : 0;
+        const nv = ex > ey ? 0 : V < 0 ? -1 : 1;
+        const gx = nu * c - nv * sn; // back out to (X, Y)
+        const gy = nu * sn + nv * c;
         norm.nx = (gx + gy) / ROOT2;
         norm.ny = (gy - gx) / ROOT2;
       }
@@ -1532,14 +1549,16 @@ function footprintPenetration(
     const d = Math.sqrt(qx * qx + qy * qy);
     if (d >= rc) return -1;
     if (norm) {
-      // Outward from the nearest point on the box towards the query point.
-      const gx = (X < 0 ? -qx : qx) / d;
-      const gy = (Y < 0 ? -qy : qy) / d;
+      const nu = (U < 0 ? -qx : qx) / d;
+      const nv = (V < 0 ? -qy : qy) / d;
+      const gx = nu * c - nv * sn;
+      const gy = nu * sn + nv * c;
       norm.nx = (gx + gy) / ROOT2;
       norm.ny = (gy - gx) / ROOT2;
     }
     return (rc - d) * CELL_WU;
   }
+  if (ax >= p + rc || ay >= q + rc) return -1;
   const gu = X / (p + rc);
   const gv = Y / (q + rc);
   const inGrown = gu * gu + gv * gv <= 1;
@@ -1728,7 +1747,7 @@ export function footprintsInCells(
   row0: number,
   col1: number,
   row1: number,
-): { cx: number; cy: number; rx: number; ry: number; rect: boolean; place: number }[] {
+): { cx: number; cy: number; rx: number; ry: number; rect: boolean; rcos: number; rsin: number; place: number }[] {
   const fp = grid.footprints;
   if (!fp) return [];
   const c0 = Math.max(0, Math.min(col0, col1));
@@ -1736,7 +1755,7 @@ export function footprintsInCells(
   const r0 = Math.max(0, Math.min(row0, row1));
   const r1 = Math.min(grid.height - 1, Math.max(row0, row1));
   const seen = new Set<number>();
-  const out: { cx: number; cy: number; rx: number; ry: number; rect: boolean; place: number }[] = [];
+  const out: { cx: number; cy: number; rx: number; ry: number; rect: boolean; rcos: number; rsin: number; place: number }[] = [];
   for (let r = r0; r <= r1; r++) {
     for (let c = c0; c <= c1; c++) {
       const i = r * grid.width + c;
@@ -1744,7 +1763,10 @@ export function footprintsInCells(
         const j = fp.items[k];
         if (seen.has(j)) continue;
         seen.add(j);
-        out.push({ cx: fp.cx[j], cy: fp.cy[j], rx: fp.rx[j], ry: fp.ry[j], rect: !!fp.rect[j], place: fp.place[j] });
+        out.push({
+          cx: fp.cx[j], cy: fp.cy[j], rx: fp.rx[j], ry: fp.ry[j],
+          rect: !!fp.rect[j], rcos: fp.rcos[j], rsin: fp.rsin[j], place: fp.place[j],
+        });
       }
     }
   }
@@ -4176,6 +4198,45 @@ export * from "./chess";
  * every tree.
  */
 
+/** The facing's own turn ON THE GROUND, in degrees — wiki.js DIR_GROUND_DEG.
+ *  Scenery is drawn facing south and a placement asks for a rotation; a rect
+ *  hitbox must follow the art around that turn. */
+const DIR_GROUND_DEG: Record<string, number> = {
+  south: 0, "south-east": 45, east: 90, "north-east": 135,
+  north: 180, "north-west": -135, west: -90, "south-west": -45,
+};
+
+/** A RECT IS A GROUND RECTANGLE, DRAWN IN PERSPECTIVE — wiki.js rectCorners,
+ *  and the maintainer's own verdict behind it (2026-09-03, drawing on a chest
+ *  facing south-east: "the 3D perspective requires the shape to be a bit
+ *  different ... I want the hitbox to transform into this perspective so it can
+ *  capture the furniture's contour").
+ *
+ *  Its edges follow the two GROUND axes, so it projects to a PARALLELOGRAM, not
+ *  to a rotated screen rectangle — and the wiki's ground frame is the frame
+ *  `p`/`q` already live in, under a UNIFORM scale: with gx = rx and gy = ry/k
+ *  (k = dy/dx), gx maps to p = rx/(dx*SQRT2) and gy to q = ry/(dy*SQRT2), both
+ *  a factor 1/(dx*SQRT2). A uniform scale preserves ANGLES, so the wiki's
+ *  ground degrees are the rotation of the (X, Y) box directly: p and q do not
+ *  change and only a rotation is added. That is the whole of it.
+ *
+ *  `rot` is the piece's own ground turn; the FACING adds its 45-degree step, and
+ *  `rot_by_dir` is the maintainer's per-facing correction on top (the art is not
+ *  always turned the way the compass says — measured on 14 rect pieces, four are
+ *  turned the other way). hflip mirrors the box about the screen vertical, which
+ *  negates the ground angle exactly as it negates `ax`. */
+function rectGroundRot(
+  b: { rot?: number; rot_by_dir?: Record<string, number> },
+  dir: string,
+  hflip: boolean,
+): number {
+  const own = b.rot_by_dir?.[dir];
+  const deg = Number.isFinite(own)
+    ? (own as number)
+    : (Number.isFinite(b.rot) ? (b.rot as number) : 0) - (DIR_GROUND_DEG[dir] ?? 0);
+  return ((hflip ? -deg : deg) * Math.PI) / 180;
+}
+
 /** games2/config/scenery-bbox.json — built by scripts/build-scenery-bbox.py. */
 export type SceneryBboxDoc = {
   pieces?: Record<
@@ -4236,7 +4297,22 @@ export function sceneryDrawnPx(
 export type SceneryHitboxDoc = Record<
   string,
   {
-    boxes?: { ax: number; ay: number; rx: number; ry: number; rot?: number; shape?: string }[];
+    boxes?: {
+      ax: number;
+      ay: number;
+      rx: number;
+      ry: number;
+      /** GROUND degrees for a rect (see rectGroundRot); ignored for an ellipse. */
+      rot?: number;
+      shape?: string;
+      /** Per-facing overrides, exactly as the wiki resolves them (boxRot /
+       *  boxPos / boxSize in wiki/site/wiki.js): SIZE is one decision for the
+       *  piece and PLACEMENT is one per facing, with an opt-in size exception
+       *  where the art disagrees with itself. */
+      rot_by_dir?: Record<string, number>;
+      pos_by_dir?: Record<string, { ax: number; ay: number }>;
+      size_by_dir?: Record<string, { rx: number; ry: number }>;
+    }[];
     auto?: boolean;
     /** The Game Master's per-variation verdict that this piece lies flat and
      *  blocks nothing. It OUTRANKS the piece's published `collision` — the
@@ -4290,7 +4366,11 @@ const NAV_SUB = 8; // 8x8 INSIDE a coarse tile that isn't provably covered — o
  */
 export function stampSceneryCollision(
   grid: TerrainGrid,
-  scenery: readonly { piece: string; x: number; y: number; hflip?: boolean; lit?: boolean; state?: string }[],
+  scenery: readonly {
+    piece: string; x: number; y: number; hflip?: boolean; lit?: boolean; state?: string;
+    /** The facing the map asked for — "south" (default) | "south-east" | ... */
+    dir?: string;
+  }[],
   bbox: SceneryBboxDoc | null | undefined,
   hitbox: SceneryHitboxDoc | null | undefined,
   geom: { dx: number; dy: number },
@@ -4308,6 +4388,7 @@ export function stampSceneryCollision(
   const erx: number[] = [];
   const ery: number[] = [];
   const erect: number[] = [];
+  const erot: number[] = [];
   const eplace: number[] = [];
   const recCache = new Map<string, SceneryHitboxDoc[string] | null | undefined>();
   for (let pi = 0; pi < scenery.length; pi++) {
@@ -4381,9 +4462,23 @@ export function stampSceneryCollision(
     const k = wph / sh;
     const anchorFx = bx0 + sw / 2;
     const anchorFy = by1;
+    const dir = pl.dir || "south";
     for (const b of boxes) {
-      const bcx = fw / 2 + (pl.hflip ? -b.ax : b.ax);
-      const bcy = fh / 2 + b.ay;
+      /* PER FACING, exactly as the wiki resolves it. The art's anchor is not the
+       * same point on every facing, so SIZE is one decision for the piece and
+       * PLACEMENT is one per facing; `size_by_dir` is the opt-in exception where
+       * a piece's south view disagrees with its own turned views (measured in
+       * the wiki: 54 of 131 rect pieces do — bed_002's turned views imply a base
+       * 105 wide, its south shows 70). Reading only the base ax/ay/rx/ry put
+       * every turned piece's box in the wrong place at the wrong size. */
+      const isRect = b.shape === "rect";
+      const szo = isRect ? b.size_by_dir?.[dir] : undefined;
+      const pos = (isRect ? b.pos_by_dir?.[dir] : undefined) ?? { ax: b.ax, ay: b.ay };
+      const brx = szo && Number.isFinite(szo.rx) ? szo.rx : b.rx;
+      const bry = szo && Number.isFinite(szo.ry) ? szo.ry : b.ry;
+      const th = isRect ? rectGroundRot(b, dir, !!pl.hflip) : 0;
+      const bcx = fw / 2 + (pl.hflip ? -pos.ax : pos.ax);
+      const bcy = fh / 2 + pos.ay;
       const sx = (bcx - anchorFx) * k;
       const sy = (bcy - anchorFy) * k;
       const wx = pl.x + (sx / geom.dx + sy / geom.dy) / 2;
@@ -4395,8 +4490,8 @@ export function stampSceneryCollision(
        * Storing rx/ry as published and converting only inside the query (see
        * SceneryFootprints.p/q) drops the factor entirely AND honours a box that
        * is not a circle: a fallen log is long, and a disc could never be. */
-      let rx = b.rx * k;
-      let ry = b.ry * k;
+      let rx = brx * k;
+      let ry = bry * k;
       if (!(rx > 0) || !(ry > 0) || !isFinite(wx) || !isFinite(wy)) continue;
       /* AND NOT THINNER THAN THE PROBES CAN SEE — see MIN_FOOTPRINT_SEMI. The
        * world semi-axes are rx/(dx*SQRT2) and ry/(dy*SQRT2) CELLS, so the floor
@@ -4409,7 +4504,8 @@ export function stampSceneryCollision(
       ecy.push(wy);
       erx.push(rx);
       ery.push(ry);
-      erect.push(b.shape === "rect" ? 1 : 0);
+      erect.push(isRect ? 1 : 0);
+      erot.push(th);
       eplace.push(pi);
     }
   }
@@ -4434,6 +4530,10 @@ export function stampSceneryCollision(
     rx: Float64Array.from(erx),
     ry: Float64Array.from(ery),
     rect: Uint8Array.from(erect),
+    rcos: new Float64Array(n),
+    rsin: new Float64Array(n),
+    supX: new Float64Array(n),
+    supY: new Float64Array(n),
     p: new Float64Array(n),
     q: new Float64Array(n),
     place: Int32Array.from(eplace),
@@ -4446,6 +4546,15 @@ export function stampSceneryCollision(
   for (let j = 0; j < n; j++) {
     fp.p[j] = fp.rx[j] / (geom.dx * Math.SQRT2);
     fp.q[j] = fp.ry[j] / (geom.dy * Math.SQRT2);
+    const th = erot[j] || 0;
+    const c = Math.cos(th);
+    const sn = Math.sin(th);
+    fp.rcos[j] = c;
+    fp.rsin[j] = sn;
+    const ac = c < 0 ? -c : c;
+    const as = sn < 0 ? -sn : sn;
+    fp.supX[j] = fp.p[j] * ac + fp.q[j] * as;
+    fp.supY[j] = fp.p[j] * as + fp.q[j] * ac;
   }
   const c0 = new Int32Array(n);
   const c1 = new Int32Array(n);
@@ -4459,9 +4568,15 @@ export function stampSceneryCollision(
      * i.e. (rx/dx + ry/dy)/2, the generous form this line replaced for the
      * ellipse. Bucketing a rect by the ellipse's support would leave its
      * corners outside the cells they reach and a query would walk through them. */
+    /* A RECT REACHES FURTHER THAN ITS INSCRIBED ELLIPSE, and further again once
+     * it turns. World-axis support is sqrt((p^2+q^2)/2) for the ellipse and
+     * (supX + supY)/sqrt(2) for the box — the turned half-extents, so it is
+     * exact at every angle. Bucketing a rect by the ellipse's formula leaves its
+     * corners in cells no query looks at, and the body walks through them with
+     * every containment test still passing. */
     const h =
       (fp.rect[j]
-        ? (fp.rx[j] / geom.dx + fp.ry[j] / geom.dy) / 2
+        ? (fp.supX[j] + fp.supY[j]) / Math.SQRT2
         : Math.hypot(fp.rx[j] / geom.dx, fp.ry[j] / geom.dy) / 2) + fp.pad;
     c0[j] = Math.max(0, Math.floor(fp.cx[j] - h));
     c1[j] = Math.min(grid.width - 1, Math.floor(fp.cx[j] + h));
