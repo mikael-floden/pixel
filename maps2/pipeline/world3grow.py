@@ -3267,18 +3267,18 @@ class Grow:
         # the crown is entirely above it, so nobody stands half-hidden.
         for (x, y) in void:
             assert self._under_ridge(x, y, self.lvl[y][x], top), (x, y)
-        # and the sea's own level-0 diamond must be under the ridge too (a
-        # cut cell at level 6 is hidden; the sea it becomes sits 90 px lower)
-        for (x, y) in void:
-            assert self._under_ridge(x, y, 0, top), ("sea shows", x, y)
-        # THE BACK OF THE MOUNTAIN DROPS INTO THE SEA. Void draws nothing, and
-        # the game does not draw the ridge from the valley either (it culls by
-        # cell distance, and the ridge is 17 cells away), so the player at the
-        # valley's edge looked into "space" (maintainer 2026-09-05, three
-        # photographs). Deep water is drawn wherever the ridge is not, and it
-        # is the game's own edge of the world: a current no stroke outruns.
-        # A void MOAT stays along the crown so nobody steps off the ridge into
-        # it - void refuses the move; deep water would take a 32-level fall.
+        # THE FOREST THICKENS INTO THE MOUNTAIN. Void draws nothing, and the
+        # game does not draw the ridge from the valley either (it culls by
+        # cell distance, and the ridge is 17 cells away), so a void band
+        # showed as "space"; a sea in its place read as a moat (maintainer
+        # 2026-09-05: "I asked for a forest extending in under the part
+        # hidden by the mountain - so the player reads it as the forest is
+        # getting so thick I can't walk into it ... if the tree is 90%
+        # covered by mountain the player will think it extends all the way
+        # in"). So the hidden cells stay LAND at the valley's height, and
+        # wild() raises and plants them with the shore band as one forest.
+        # A void MOAT stays along the crown so nobody steps off the ridge:
+        # void refuses the move.
         crown = [(x, y) for y in range(N) for x in range(N)
                  if self.lvl[y][x] >= self.CROWN_MIN and (x, y) not in void]
         moat, frontier = set(), [c for c in crown]
@@ -3290,30 +3290,31 @@ class Grow:
                         moat.add(m)
                         nxt.append(m)
             frontier = nxt
-        self.back_sea = void - moat
+        self.back_hidden = void - moat
         self.back_void = moat
-        for (x, y) in void:
-            self.grd[y][x] = gi_void if (x, y) in moat else self.gi["deep_water"]
+        self.crown_top = top
+        for (x, y) in moat:
+            self.grd[y][x] = gi_void
             self.lvl[y][x] = 0
-        self.placed += [("back sea cells", len(self.back_sea)),
+        self.placed += [("hidden forest floor cells", len(self.back_hidden)),
                         ("void moat cells", len(moat))]
         # a cell that was cut or voided leaves every terrain wall group: its
         # old shelf face no longer exists, and a side on a void cell is noise
-        touched |= void
+        touched |= moat
         for w in self.doc["walls"]:
             w["cells"] = [c for c in w["cells"] if (c["x"], c["y"]) not in touched]
         self.doc["walls"] = [w for w in self.doc["walls"] if w["cells"]]
         # nothing stands in nothing
         before = len(self.doc["scenery"])
         self.doc["scenery"] = [p for p in self.doc["scenery"]
-                               if (int(p["x"]), int(p["y"])) not in void]
+                               if (int(p["x"]), int(p["y"])) not in moat]
         self._reindex()
         for key in ("_wdist", "wd"):
             if hasattr(self, key) and key == "wd":
                 delattr(self, "wd")           # the shore field is stale now
-        self.placed += [("void cells", len(void)),
-                        ("void: scenery evicted", before - len(self.doc["scenery"]))]
-        self.placed += [(f"void from {k}", v) for k, v in kinds.most_common()]
+        self.placed += [("hidden cells", len(void)),
+                        ("moat: scenery evicted", before - len(self.doc["scenery"]))]
+        self.placed += [(f"hidden from {k}", v) for k, v in kinds.most_common()]
         for y in range(N):
             for x in range(N):
                 dd, s = x - y, x + y
@@ -3632,7 +3633,7 @@ class Grow:
                     parent[find(i)] = find(j)
         size = collections.Counter(find(i) for i, comp in enumerate(bodies) for _ in comp)
         sea = size.most_common(1)[0][0]
-        back = getattr(self, "back_sea", set())
+        back = getattr(self, "back_sea", set())        # none since the forest
         n = 0
         for i, comp in enumerate(bodies):
             if find(i) == sea or any(c in back for c in comp):
@@ -3716,9 +3717,12 @@ class Grow:
     WILD_RISE = 4      # the crest stands this far above the valley
     WILD_STEP = 2      # one tree per this many cells each way, jittered
 
+    TREE_PX = 140      # a tree this tall shows above the ridge or is not planted
+
     def wild(self):
-        sea = getattr(self, "back_sea", set())
-        if not sea:
+        hidden = getattr(self, "back_hidden", set())
+        sea = getattr(self, "back_void", set())         # the moat: the band's far edge
+        if not hidden:
             self.placed += [("wild cells", 0)]
             return
         floors = self.floor_cells
@@ -3739,14 +3743,13 @@ class Grow:
             g = self.g(x, y)
             return (g and g != "deep_water" and (x, y) not in keep
                     and (g in self.NATURAL or g in ("light_soil", "water")))
-        # depth by BFS over land from the shore inward
+        # the hidden floor is the band's core; depth counts outward from it
         depth = {}
         frontier = []
-        for (x, y) in sea:
-            for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
-                if land(*m) and m not in depth:
-                    depth[m] = 0
-                    frontier.append(m)
+        for c in hidden:
+            if land(*c):
+                depth[c] = 0
+                frontier.append(c)
         for d in range(1, self.WILD_DEPTH):
             nxt = []
             for (x, y) in frontier:
@@ -3757,6 +3760,7 @@ class Grow:
             frontier = nxt
         band = set(depth)
         base = {c: self.lvl[c[1]][c[0]] for c in band}
+        top = getattr(self, "crown_top", {})
         # profile: FLAT, the whole band at +RISE. A band that stepped down
         # toward the shore was three terraces in stripes of three colours
         # with room for eighteen trees (a tree's footprint needs flat
@@ -3784,6 +3788,13 @@ class Grow:
             cx, cy = x + jx, y + jy
             if (cx, cy) not in band:
                 cx, cy = x, y
+            # under the ridge, only a tree that still shows is worth drawing
+            dd, ss = cx - cy, cx + cy
+            if dd in top and ss < top[dd][1]:
+                apex = ss * 14 - self.lvl[cy][cx] * 15
+                sil = max(top[k][0] for k in (dd - 1, dd, dd + 1) if k in top)
+                if apex - self.TREE_PX >= sil:
+                    continue
             if self.put("trees/tree_001", cx + 0.5, cy + 0.5, on=tuple(self.NATURAL)):
                 n += 1
                 self.doc["scenery"][-1]["wild"] = True
@@ -3797,7 +3808,7 @@ class Grow:
         when the band is made and again before the audit: passes in between
         move ground next to it."""
         band = getattr(self, "wild_cells", set())
-        sea = getattr(self, "back_sea", set())
+        sea = getattr(self, "back_void", set())
         raised = 0
         for (x, y) in band:
             for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):

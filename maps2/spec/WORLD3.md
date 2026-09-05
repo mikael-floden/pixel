@@ -192,34 +192,38 @@ silhouette, the highest row any crown cell reaches. `mountain_back()`:
    (apex + 14) against the two neighbouring columns (`_under_ridge`; 3,857
    cells). Only `kind: "house"` wall cells and recorded floors are spared.
 
-**THE BACK OF THE MOUNTAIN DROPS INTO THE SEA.** The hidden cells are
-`deep_water` at level 0 — the game's own edge of the world, a current no
-stroke outruns — except a `MOAT = 3` cells of **void** (ground index −1)
-along the crown, so nobody steps off the ridge: void refuses the move, deep
-water would take a 32-level fall. Void was the whole band once, and the game
-does not draw the ridge from the valley (it culls by cell distance, and the
-ridge is 17 cells away), so the player at the valley's edge looked into
-space. Deep water is drawn wherever the ridge is not, and the sea behind a
-mountain is a picture. **Build-asserted both ways**: every hidden cell's
-diamond, at its level AND at level 0, is at least partly under the ridge, and
-every kept cell up-screen of the crown is wholly above it.
+**THE FOREST THICKENS INTO THE MOUNTAIN.** The hidden cells stay LAND at the
+valley's height — the wild (below) raises and plants them — except a
+`MOAT = 3` cells of **void** (ground index −1) along the crown, so nobody
+steps off the ridge: void refuses the move. Two pictures were built and
+rejected before this one (maintainer 2026-09-05): a void band ("it looks as
+if you can fall down into space" — the game culls by cell distance and does
+not draw the ridge from the valley, 17 cells away, so the hole showed) and a
+sea in its place ("some sort of moat"). What he asked for: *"a forest
+extending in under the part hidden by the mountain — so the player reads it
+as the forest is getting so thick I can't walk into it ... if the tree is
+90% covered by mountain the player will think it extends all the way in."*
+**Build-asserted**: every hidden cell's diamond, at its cut level, is at
+least partly under the ridge, and every kept cell up-screen of the crown is
+wholly above it.
 
-**THE WILD** (`wild()`, right after the cut): the valley's shore toward the
-back sea is a wooded rise — every land and pond cell within `WILD_DEPTH = 6`
-of the sea (BFS, houses, decks and ramps excluded; roads are taken and turned
-to grass, a road left out was a dead end at a 10-level drop into deep water)
-stands `WILD_RISE = 4` above the ground it had, FLAT (a band that stepped
-down toward the shore was three terraces in stripes with room for eighteen
-trees), sealed on EVERY side: every band cell is 3+ levels above every
-standable cell it touches that is not band or sea, water included, and
-sealed again right before the reachability audit because passes in between
-move ground next to it (1,481 of the band's cells were enterable through the
-sides and a level-12 lake on the first build). One tree per `WILD_STEP = 2`
-cells each way, jittered, marked `wild: true` in `scenery[]`: never thinned
-by species spacing (spacing exists so the player can pass, and nobody passes
-here) and allowed to hang over the bank (that is what a wood on a rise looks
-like). the_game: 2,007 wild cells, 214 trees. **Build-asserted**: no wild cell
-is reachable, and no reachable cell touches the back sea.
+**THE WILD** (`wild()`, right after the cut): the hidden floor plus every
+land and pond cell within `WILD_DEPTH = 6` of it (BFS; houses, decks and
+ramps excluded; roads are taken and turned to grass — a road left out was a
+dead end at a 10-level drop) is one wooded plateau standing `WILD_RISE = 4`
+above the ground it had, FLAT (a band that stepped down was three terraces
+in stripes with room for eighteen trees), sealed on EVERY side: every band
+cell is 3+ levels above every standable cell it touches that is not band,
+water included, and sealed again right before the reachability audit because
+passes in between move ground next to it (1,481 of the band's cells were
+enterable through the sides and a level-12 lake on the first build). One
+tree per `WILD_STEP = 2` cells each way, jittered, marked `wild: true` in
+`scenery[]`: never thinned by species spacing (spacing exists so the player
+can pass, and nobody passes here) and allowed to hang over the bank. Under
+the ridge a tree is planted only where it still shows: its apex less
+`TREE_PX = 140` must lie above the silhouette (no point drawing a tree the
+mountain covers whole). the_game: 4,710 wild cells, 535 trees.
+**Build-asserted**: no wild cell is reachable.
 
 Three traps, each one build:
 - **A plain void band without the cut**: the shoulders beyond the hidden band
