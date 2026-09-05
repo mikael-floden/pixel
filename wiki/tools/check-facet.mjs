@@ -762,6 +762,68 @@ await pub.close();
   }
 }
 
+/* MIRROR THIS FACING (maintainer 2026-09-05: "the scenery might have generated
+ * the same direction for both SE and SW. I need a way in my review to
+ * flip/mirror a SE or a SW. This will be picked up by the scenery-agent").
+ *
+ * A correction, not a rejection — the art is good, it is the wrong hand — so it
+ * rides the live channel as tuning/scenery_flips, one entry per
+ * <piece>#<state>#<direction>, and the preview shows the mirror he is asking
+ * for. The picture is checked as a PICTURE: the canvas after the request must
+ * be the horizontal mirror of the canvas before it, or the row is a word with
+ * no consequence. */
+{
+  const alpha = () => p.evaluate(() => {
+    const c = document.querySelector(".player-stage canvas");
+    const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+    const a = [];
+    for (let y = 0; y < c.height; y += 2) for (let x = 0; x < c.width; x += 2) a.push(d[(y * c.width + x) * 4 + 3] > 30 ? 1 : 0);
+    return { a, w: Math.ceil(c.width / 2), h: Math.ceil(c.height / 2) };
+  });
+  await p.goto(`${W}#/objects/beached_rowboat_001`, { waitUntil: "load" });
+  await p.waitForTimeout(3200);
+  await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => x.textContent.trim() === "SE" && /south/.test(x.title || ""))?.click());
+  await p.waitForTimeout(900);
+  const row = await p.evaluate(() => ({
+    present: !!document.querySelector(".flip-mode"),
+    labels: [...document.querySelectorAll(".flip-mode button")].map((x) => x.textContent.trim()),
+    on: document.querySelector(".flip-mode button.sel, .flip-mode button.on")?.textContent.trim() ?? null,
+  }));
+  console.log("flip row:", JSON.stringify(row));
+  ok(row.present && row.labels.some((l) => /mirror/.test(l)), `a scenery facing can be sent back to be mirrored (${row.labels.join(" | ")})`);
+  ok(row.on === "as generated", `and it starts as the art was generated ("${row.on}")`);
+  const before = await alpha();
+  await p.evaluate(() => [...document.querySelectorAll(".flip-mode button")].find((x) => /mirror/.test(x.textContent))?.click());
+  await p.waitForTimeout(900);
+  const after = await alpha();
+  const rec = await p.evaluate(() => ({
+    doc: window.__wiki.state.tuning.scenery_flips?.overrides ?? null,
+    pill: document.querySelector(".flip-mode .pill")?.textContent ?? null,
+    pending: Object.values(window.__wiki.state.touched).reduce((n, s2) => n + s2.size, 0),
+  }));
+  const key = "scenery/beached_rowboats/beached_rowboat_001#lit_2#south-east";
+  ok(!!rec.doc?.[key]?.flip, `the request is filed against the FACING, not the piece (${Object.keys(rec.doc ?? {})[0] ?? "nothing"})`);
+  ok(/mirror/i.test(rec.pill ?? ""), `and the card says it is requested ("${rec.pill}")`);
+  ok(rec.pending >= 1, `and it is a change waiting to be committed (${rec.pending})`);
+  // THE PICTURE, not the flag: after must be before, mirrored.
+  let same = 0, mirror = 0, n = 0;
+  if (before.w === after.w && before.h === after.h) {
+    for (let y = 0; y < before.h; y++) for (let x = 0; x < before.w; x++) {
+      const i = y * before.w + x, j = y * before.w + (before.w - 1 - x);
+      if (before.a[i] || after.a[i]) { n++; if (before.a[i] === after.a[i]) same++; if (before.a[j] === after.a[i]) mirror++; }
+    }
+  }
+  console.log("preview:", JSON.stringify({ n, sameFrac: +(same / (n || 1)).toFixed(3), mirrorFrac: +(mirror / (n || 1)).toFixed(3) }));
+  ok(n > 500 && mirror / n > 0.9, `the preview really is the mirror (${(100 * mirror / (n || 1)).toFixed(0)}% of the silhouette matches the flip)`);
+  ok(same / (n || 1) < 0.97, `and it is not just the same picture with a pill on it (${(100 * same / (n || 1)).toFixed(0)}% unchanged)`);
+  // Off again is the art as generated, and the entry is GONE — this file is a
+  // list of corrections, so an undone one must not linger as flip:false.
+  await p.evaluate(() => [...document.querySelectorAll(".flip-mode button")].find((x) => /as generated/.test(x.textContent))?.click());
+  await p.waitForTimeout(800);
+  const off = await p.evaluate(() => window.__wiki.state.tuning.scenery_flips?.overrides ?? {});
+  ok(!off[key], `withdrawing it deletes the entry rather than storing a no (${Object.keys(off).length} left)`);
+}
+
 /* ...AND THE SAME ON EVERY OTHER REVIEW PAGE, walked rather than assumed. */
 {
   const DD2 = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));

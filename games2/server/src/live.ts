@@ -100,6 +100,16 @@ const LIVE_FILES: Record<string, string> = {
   // <piece path>#<state>, correcting the name. Consumed by the scenery agent.
   // See live/README.md.
   "tuning/scenery_lights.json": "tuning/scenery_lights",
+  // WHICH FACING IS THE OTHER ONE AGAIN. PixelLab draws the two three-quarter
+  // views separately and sometimes returns the same one twice, so a piece faces
+  // the same way from both sides (maintainer 2026-09-05: "the scenery might
+  // have generated the same direction for both SE and SW. I need a way in my
+  // review to flip/mirror a SE or a SW"). One entry per
+  // <piece path>#<state>#<direction> asking for that file to be mirrored — a
+  // correction, not a rejection, since the art itself is good. Written by the
+  // wiki; consumed by the scenery agent, which republishes the flipped file and
+  // deletes the entry. See live/README.md.
+  "tuning/scenery_flips.json": "tuning/scenery_flips",
   // WHICH TILES ARE A GROUND TYPE'S BASE TILES. A base tile is the one the
   // world agent paints first and repeats forever — "does everything but noone
   // notice" (maintainer 2026-08-21). Promoted and revoked from the wiki's

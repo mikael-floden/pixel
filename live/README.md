@@ -147,6 +147,25 @@ The laws around the flow:
     candidate key.
   - **Absent means the measured best**; stepping onto the measured best
     deletes the entry — the file only ever names his exceptions.
+- `live/tuning/scenery_flips.json` — `pixel-wiki-scenery-flips@1`. **WHICH
+  FACING IS THE OTHER ONE AGAIN.** PixelLab draws the two three-quarter views
+  separately and sometimes returns the same one twice, so a piece faces the same
+  way from both sides (maintainer 2026-09-05: "the scenery might have generated
+  the same direction for both SE and SW. I need a way in my review to
+  flip/mirror a SE or a SW. This will be picked up by the scenery-agent"). One
+  entry per `<piece path>#<state>#<direction>` — `{ flip: true, state, dir,
+  updated_at }` — asking for THAT FILE to be mirrored horizontally. It is a
+  CORRECTION, not a rejection: the art is good, it is the wrong hand, and
+  rejecting it would throw away a drawing that only needs flipping. The scenery
+  agent republishes the mirrored file and DELETES the entry; an absent entry
+  means "as generated", so the file only ever lists what is still wrong — the
+  same contract as `scenery_lights`. Written by the wiki's scenery review, which
+  shows the mirror in the preview while the request stands (the file on disk is
+  untouched until the agent acts). Note for whoever mirrors: anything already
+  tuned against that facing in art coordinates — a per-facing `pos_by_dir`, a
+  `rot_by_dir` — mirrors with it (`ax → −ax`, ground angle negated, the same
+  rule the game's `hflip` uses).
+
 - `live/tuning/scenery_hitbox.json` — `pixel-wiki-scenery-hitbox@1`. **The
   ground a scenery piece occupies.** One or more ellipses per piece, in FRAME
   PIXELS with the origin at the frame's centre — the same quantity and units

@@ -2081,9 +2081,22 @@ function makePlayer(entity, kind, opts = {}) {
     } else shadowHit = null;
     const f = Math.min(cur.frame, clip.frames - 1);
     if (img?.complete && img.naturalWidth) {
+      /* A REQUESTED MIRROR IS SHOWN AS A MIRROR. He is asking for this facing to
+       * be flipped, so the preview flips — otherwise the request is a word with
+       * no picture and he cannot tell whether the mirror is the art he wants
+       * (a boat's rope coil ends up on the other side). The FILE is untouched;
+       * the pill above says so. Not while the hitbox editor is open: the box is
+       * stored in the art's own frame, and mirroring underneath a tool he is
+       * dragging in would invert every drag. */
+      const mirrored = kind === "object" && !cur.editHit && flipOf(entity.path, cur.state, cur.dir);
+      if (mirrored) { ctx.save(); ctx.translate(dx * 2 + fw * s, 0); ctx.scale(-1, 1); }
       ctx.drawImage(img, f * (img.naturalWidth / clip.frames), 0, img.naturalWidth / clip.frames, img.naturalHeight, dx, dy, fw * s, fh * s);
+      if (mirrored) ctx.restore();
     } else if (frameImgs[f]?.complete && frameImgs[f].naturalWidth) {
+      const mirrored2 = kind === "object" && !cur.editHit && flipOf(entity.path, cur.state, cur.dir);
+      if (mirrored2) { ctx.save(); ctx.translate(dx * 2 + fw * s, 0); ctx.scale(-1, 1); }
       ctx.drawImage(frameImgs[f], dx, dy, fw * s, fh * s);
+      if (mirrored2) ctx.restore();
     }
     /* ---- THE SCENERY HITBOX, DRAWN OVER THE ART -------------------------
      * A monster's shadow is painted UNDER its sprite because it is a shadow.
@@ -3017,6 +3030,8 @@ function makePlayer(entity, kind, opts = {}) {
     getDir: () => cur.dir,
     /** Repaint the approved/rejected marks — call after a verdict changes. */
     refreshMarks() { renderStateSeg(); revealActiveState(); renderDirPad(); },
+    /** Repaint the art alone — a mirror request changes the picture, nothing else. */
+    redraw() { draw(); },
     /** Shadow editing: one record per monster (see shadowRec). */
     editShadow(on) { setEditShadow(on); },
     isEditingShadow: () => cur.editShadow,
@@ -4578,6 +4593,55 @@ const VARIANT = /^(not[_-]?lit|lit|lights[_-]?off|lights[_-]?on)(?:[_-]?(\d+))?$
  * `lights` on the piece is legacy and null wherever a piece carries both kinds
  * (scenery/README.md). So this reads the key, and the override corrects it.
  */
+/* ONE FACING IS THE OTHER ONE AGAIN (maintainer 2026-09-05: "the scenery might
+ * have generated the same direction for both SE and SW. I need a way in my
+ * review to flip/mirror a SE or a SW. This will be picked up by the
+ * scenery-agent").
+ *
+ * PixelLab returns the two three-quarter views separately and sometimes draws
+ * the same one twice, so a piece faces the same way from both sides and the
+ * world looks wrong wherever it is placed the other way round. The art is not
+ * bad — it is the wrong hand — so this is a correction, not a rejection: one
+ * entry per <piece path>#<state>#<direction> saying MIRROR THIS FACING, and the
+ * scenery agent produces the flipped file. Deleting the entry means "as
+ * generated", exactly the corrections-only contract scenery_lights uses. */
+const SCENERY_FLIP_KEY = "tuning/scenery_flips";
+const sceneryFlips = () => state.tuning.scenery_flips
+  ?? (state.tuning.scenery_flips = { format: "pixel-wiki-scenery-flips@1", updated_at: "", overrides: {} });
+const flipKey = (path, st, dir) => `${path}#${st}#${dir}`;
+const flipOf = (path, st, dir) => !!sceneryFlips().overrides?.[flipKey(path, st, dir)]?.flip;
+function setFlip(path, st, dir, on) {
+  const doc = sceneryFlips();
+  const key = flipKey(path, st, dir);
+  if (on) (doc.overrides ??= {})[key] = { flip: true, state: st, dir, updated_at: new Date().toISOString() };
+  else delete (doc.overrides ??= {})[key];
+  doc.updated_at = new Date().toISOString();
+  touch(SCENERY_FLIP_KEY, key);
+  markDirty(SCENERY_FLIP_KEY);
+}
+const FLIP_MODES = {
+  keep: { label: "as generated", title: "This facing's art faces the way it should" },
+  flip: { label: "⇄ mirror it", title: "This facing is the OTHER facing's art — the scenery agent mirrors this file and republishes it" },
+};
+/** The row: one decision, on the facing on screen. */
+function flipRow(o, st, dir, onChange) {
+  const box = h("div", { class: "card-sub lit-mode flip-mode" });
+  const draw = () => {
+    const on = flipOf(o.path, st, dir);
+    box.replaceChildren(...[
+      h("span", { class: "muted lit-label" }, "Facing"),
+      sortBar(`scenery-flip:${o.path}#${st}#${dir}`, Object.entries(FLIP_MODES).map(([id, m]) => [id, m.label, m.title]),
+        on ? "flip" : "keep",
+        (v) => { setFlip(o.path, st, dir, v === "flip"); draw(); onChange?.(); }, { persist: false }),
+      on
+        ? h("span", { class: "pill warn", title: "Requested. The preview below shows the mirror you are asking for; the file on disk is untouched until the scenery agent republishes it." },
+          `mirror ${DIR_LABEL[dir] ?? dir}`)
+        : null,
+    ].filter(Boolean));
+  };
+  draw();
+  return box;
+}
 const SCENERY_LIGHT_KEY = "tuning/scenery_lights";
 const sceneryLights = () => state.tuning.scenery_lights
   ?? (state.tuning.scenery_lights = { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} });
@@ -11154,6 +11218,9 @@ function viewObject(id) {
       // machinery below even applies, so the correction sits above it.
       state.admin ? wallRow(o, () => { player?.refreshMarks?.(); route(); }) : null,
       state.admin ? litRow(o.path, st, () => player.refreshMarks()) : null,
+      // WHICH WAY THIS FACING FACES — per direction, because that is where the
+      // fault is: one of the two three-quarter views is the other one again.
+      state.admin ? flipRow(o, st, dir, () => player.redraw?.()) : null,
       feedbackRow("objects", `${o.path}#${st}#${dir}`, {
         // The chip the verdict belongs to turns green or red the moment it lands.
         onchange: () => player.refreshMarks(),
