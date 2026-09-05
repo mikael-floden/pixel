@@ -1748,6 +1748,7 @@ export class WorldScene extends Phaser.Scene {
         // Objects the RENDERER actually drew last frame, against the display
         // list we built — the gap is what the cull is worth.
         flushes: this.perfDrawCount, // batch flushes in the last rendered frame
+        occSkipped: this.occCulledSubmits, // occluder submits the cull removed
       },
       // Every jump of the AUTHORITATIVE body over 2 cells in one frame, with
       // the unacked-input depth at the time — a rejoin restore, a respawn, an
@@ -4559,6 +4560,41 @@ export class WorldScene extends Phaser.Scene {
       groundRaw: (on?: boolean) => {
         if (typeof on === "boolean") this.t3rawOff = !on;
         return { raw: this.t3raw === true && !this.t3rawOff, forcedOff: this.t3rawOff };
+      },
+      /** THE BISECT FOR THE OCCLUDER SUBMIT CULL. `false` goes back to
+       *  submitting every occluder whether or not it can be seen, and clears the
+       *  filters it had set. Reports what the last frame actually skipped. */
+      occCull: (on?: boolean) => {
+        if (typeof on === "boolean") {
+          this.occCullOn = on;
+          if (!on) for (const im of this.occluders) im.cameraFilter = 0;
+        }
+        /* AUDITED AGAINST PHASER'S OWN BOUNDS, never against the cull's own
+         * arithmetic — the same rule `__ml.occAudit` and `__ml.monsterGate`
+         * already follow here, because a wrong formula cannot disagree with
+         * itself. `wrongCulled` is the only number that matters: an image whose
+         * real `getBounds()` DOES touch the camera while its submit is being
+         * skipped is a hole in the world. It must be 0. `wastedSubmits` is the
+         * harmless direction — on-screen by our generous box, off-screen by
+         * Phaser's exact one. */
+        const cam = this.cameras.main;
+        const v = cam.worldView;
+        let wrongCulled = 0;
+        let wastedSubmits = 0;
+        for (const im of this.occluders) {
+          const bb = im.getBounds();
+          const touches = bb.right > v.x && bb.x < v.right && bb.bottom > v.y && bb.y < v.bottom;
+          const culled = im.cameraFilter !== 0;
+          if (culled && touches) wrongCulled++;
+          else if (!culled && !touches) wastedSubmits++;
+        }
+        return {
+          on: this.occCullOn,
+          occluders: this.occluders.length,
+          skipped: this.occCulledSubmits,
+          wrongCulled,
+          wastedSubmits,
+        };
       },
       groundCompose: (ms?: number) => {
         if (typeof ms === "number") {
@@ -8981,6 +9017,9 @@ export class WorldScene extends Phaser.Scene {
     this.ps();
     this.rebuildOccluders();
     this.pe("rebuildOccluders");
+    this.ps();
+    this.cullOccluderSubmits();
+    this.pe("occCull");
     this.ps();
     this.t3prefetchStep();
     this.t3retryBoundaries();
@@ -16602,6 +16641,79 @@ export class WorldScene extends Phaser.Scene {
    * vertex y), so sprites standing behind it are covered while sprites in
    * front draw over it. The ground RT stays as the flat base underneath.
    */
+  /* PHASER SUBMITS EVERY OCCLUDER, ON SCREEN OR NOT — and most of them are not.
+   *
+   * There is no view culling anywhere in the renderer: `CameraManager.
+   * getVisibleChildren` filters on `GameObject.willRender`, which tests
+   * `renderFlags` and `cameraFilter` and NOTHING about bounds, so every image in
+   * the display list pays a full `batchSprite` — matrix build, quad, four tint
+   * computations, 42 typed-array stores — whether or not it can be seen. And the
+   * occluder set is deliberately built far outside the view: `OCC_CULL_PAD` is
+   * OCC_STEP + 64 + 200 = 360, plus a tile in `shows`/`columnShows`, so the built
+   * box is view + ~424 px on each side. At his geometry that is 3.8x the view
+   * AREA — measured off his beacon, 57.7-64.5% of a 4,153-7,640 object display
+   * list is an occluder whose own 64 px box cannot touch the camera. `render` is
+   * now the largest steady section in all four runs (4.18-6.06 ms/frame).
+   *
+   * THE PAD MUST STAY BIG AND THE CULL MUST BE PER FRAME. The pad is not slack
+   * to be trimmed — `occluderMeta` needs a record for every column that could
+   * cover an on-screen body, and the rebuild only re-runs every OCC_STEP (96 px)
+   * of camera drift, while the speed zoom-out changes `worldView` SIZE without
+   * moving its centre and so without tripping that latch at all. Deciding
+   * visibility once per rebuild would therefore need a pad nearly as large as
+   * the one it is trying to undo. Deciding it per FRAME against the live
+   * `worldView` costs ~4,000 AABB tests (measured shape: four compares and one
+   * store each) and lets the test be exact.
+   *
+   * WHY IT CANNOT CHANGE A PIXEL: an image whose rectangle misses the camera
+   * contributes zero fragments, so skipping its submit is the identity. The box
+   * is taken as +/- a full display size around the origin, which is generous in
+   * every direction and therefore origin-agnostic — the maps2 branch builds its
+   * occluders with `this.add.image` rather than through `occImage` and does not
+   * share the (0,0) origin convention.
+   *
+   * `cameraFilter`, NOT `visible`: `rebuildCoverIndex` and `coverCandidates`
+   * both skip an image with `!im.visible`, so hiding one would silently drop it
+   * from the cover index and uncrop the bodies it covers. `cameraFilter` is read
+   * only by `willRender`, and the cover pass reaches its images through
+   * `DynamicTexture.batchGameObject`, which calls `renderWebGL` directly and
+   * never consults it. `occluderMeta` is not culled at all, so `resolveBodyDepth`
+   * is untouched.
+   *
+   * WRITTEN UNCONDITIONALLY, EVERY FRAME, FOR EVERY MEMBER: `occImage` recycles
+   * images out of a pool across rebuilds, and this file already paid for that
+   * trap once with tints ("a tint left on a recycled image would outlive the
+   * session that set it"). A filter that is only ever set, never cleared, would
+   * strand a recycled image invisible for good. */
+  private cullOccluderSubmits(): void {
+    const list = this.occluders;
+    if (!list.length || !this.occCullOn) {
+      this.occCulledSubmits = 0; // never report the previous window's count
+      return;
+    }
+    const cam = this.cameras.main;
+    const id = cam.id;
+    const v = cam.worldView;
+    const x0 = v.x;
+    const y0 = v.y;
+    const x1 = v.right;
+    const y1 = v.bottom;
+    let off = 0;
+    for (let i = 0; i < list.length; i++) {
+      const im = list[i];
+      const w = im.displayWidth;
+      const h = im.displayHeight;
+      const hidden = im.x + w < x0 || im.x - w > x1 || im.y + h < y0 || im.y - h > y1;
+      im.cameraFilter = hidden ? id : 0;
+      if (hidden) off++;
+    }
+    this.occCulledSubmits = off;
+  }
+  /** Occluders whose submit the last frame skipped — reported by the beacon. */
+  private occCulledSubmits = 0;
+  /** Dev A/B: `__ml.occCull(false)` restores the old every-object submit. */
+  private occCullOn = true;
+
   private rebuildOccluders() {
     if (!this.world) return;
     const cam = this.cameras.main;
