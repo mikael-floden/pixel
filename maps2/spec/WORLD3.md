@@ -30,7 +30,8 @@ and the fade upgrades itself to art.
   "spawn":  [x, y],
   "decks":  [{"kind": "roof|bridge|cave", "level", "thickness",
               "ground", "cells": [{"x","y"}]}],
-  "walls":  [{"side": "grey_stone", "cells": [{"x","y"}]}],  // authored wall body
+  "walls":  [{"side": "grey_stone", "cells": [{"x","y"}]},   // authored wall body
+             {"side": "black_rock", "kind": "cliff", "cells": [...]}], // dressed drop
   "rooms":  [{"ground": "parquet_floor", "cells": [{"x","y"}]}], // ONE FLOOR EACH
   "ramps":  [{"from": 0, "to": 4, "ground": "light_soil",
               "cells": [{"x","y"}, ...]}],                   // THE WAY UP
@@ -200,6 +201,43 @@ beyond the hidden band still poked above the ridge at levels 14–28 — the ver
 "slope that starts to go down again". **`g()` returns "" on void**: index −1
 would otherwise read as the LAST legend entry, a void that answers
 "grey_paving_stone" and is walkable, buildable and painted.
+
+### cliff faces — the wall matrix is a palette, not a default
+
+**A CLIFF FACE IS NEVER GRASS.** The renderer's default face is `top__over__
+side` with `side` = the ground at the face's foot, so every grass drop showed
+the grass wall tile and nothing else. Maintainer 2026-09-05, six photos: *"I'm
+not that big fan of grass walls ... most tile types (not the liquid ones) look
+better as cliff walls then grass. I'm especially a fan of black_rock and
+grey_stone ... you could have beach as a wall near the ocean, etc. And
+snow/ice to ... you don't use all the different wall textures I have actually
+reviewed."*
+
+`cliff_faces()` publishes a `walls` group with `"kind": "cliff"` for every
+exposed south/east face of a natural top (not liquid, not a house, not indoor
+floor, road or ramp). The side comes from a pool chosen by the top and the
+foot, weighted, and one draw per (terrace, pool) hashed from the terrace anchor
+— so a hill wears ONE face all the way round, two hills differ, and a rebuild
+reproduces:
+
+| pool | when | sides (weight) |
+|---|---|---|
+| highland | top is snow or ice | grey_stone 3, black_rock 2, ice 1 |
+| rock | top is grey_stone or black_rock | black_rock 2, grey_stone 2, dark_mud 1 |
+| shore | foot at water, beach, or within `SHORE_R = 2` of the sea | light_beach 2, grey_stone 1, black_rock 1 |
+| lowland | everything else (grass, mud, soil) | grey_stone 3, black_rock 3, dark_mud 2 |
+
+The draw never equals the top when the pool has another choice (a grey_stone
+top over a grey_stone face is the invisible same-over-same column). **Not a
+hard rule, a palette** (maintainer: *"I don't want to set up any hard rule"*)
+— weights and pools are the taste dials. **Build-asserted:** zero cliff faces
+with a grass side. the_game: 1,867 faces — grey_stone 801, black_rock 607,
+dark_mud 254, light_beach 172, ice 33.
+
+`kind: "cliff"` groups are dressing, NOT walls: `_walls()`, `indoor_floors()`,
+`rooms()` and the footprint police ignore them (a barrel against a cliff is
+fine; only house walls keep the `FP_MARGIN`). The game reads `walls[]` by side
+and cells and does not need the kind.
 
 ### `scenery` — a placement is centred on its HITBOX, not its art
 

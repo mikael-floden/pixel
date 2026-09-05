@@ -1006,7 +1006,8 @@ class Grow:
         shipped with a bush in it and no furniture at all (maintainer
         2026-09-05: "Why did you remive the furnitures in the house and
         replaced it with a bush?")."""
-        walls = {(c["x"], c["y"]) for w in self.doc["walls"] for c in w["cells"]}
+        walls = {(c["x"], c["y"]) for w in self.doc["walls"]
+                 if w.get("kind") != "cliff" for c in w["cells"]}
         under = {}
         for dk in self.doc["decks"]:
             if dk.get("kind") in ("roof", "cave"):
@@ -1037,7 +1038,8 @@ class Grow:
         # its cells include the wall ring - whose tops are brown_paving_stone
         # at the deck's own level and would otherwise be published as a room.
         # A floor cell lies BELOW its deck and carries no wall.
-        walls = {(c["x"], c["y"]) for w in self.doc["walls"] for c in w["cells"]}
+        walls = {(c["x"], c["y"]) for w in self.doc["walls"]
+                 if w.get("kind") != "cliff" for c in w["cells"]}
         indoor = {}
         for dk in self.doc["decks"]:
             if dk.get("kind") not in ("roof", "cave"):
@@ -1361,10 +1363,13 @@ class Grow:
     FP_GAP = 0.20
 
     def _walls(self):
+        """The cells that are a WALL to stand against - a house's ring. A
+        cliff face published through the same channel (kind "cliff") is not
+        one: it is a dressed drop, and the ground on top of it is ground."""
         n = sum(len(w["cells"]) for w in self.doc["walls"])
         if getattr(self, "_wallset_n", -1) != n:
             self._wallset = {(c["x"], c["y"]) for w in self.doc["walls"]
-                             for c in w["cells"]}
+                             if w.get("kind") != "cliff" for c in w["cells"]}
             self._wallset_n = n
         return self._wallset
 
@@ -3235,6 +3240,96 @@ class Grow:
                 if k in top:
                     assert s * 14 - 16 >= top[k][0], (x, y)
 
+    # A CLIFF IS NOT MADE OF WHAT IT STANDS ON (maintainer 2026-09-05, six
+    # photographs of green cliffs: "I'm not that big fan of grass walls. I
+    # think grey_rock, black_rock, dark_mud - to be honest most tile types
+    # (not the liquid ones) look better as cliff walls than grass. I'm
+    # especially a fan of black_rock and grey_stone ... I don't want to set
+    # up any hard rule. I mean you could have beach as a wall near the ocean,
+    # etc. And snow/ice too. You have just gone crazy with the grass walls
+    # and you don't use all the different wall textures I have actually
+    # reviewed.")
+    #
+    # WHY THEY WERE GRASS: a raised cell's face is the x-over-y tile, its own
+    # top over the ground at the FOOT of the face - that is the renderer's
+    # default when the world says nothing (games2 wallSideAt: "then the
+    # renderer's default applies - the ground at the face's foot"). Grass
+    # above grass is a grass wall by construction. The `walls[]` channel
+    # overrides the side per cell, both renderers honour it, and every one of
+    # the 225 top-over-side pairs is approved in live/feedback/tiles.json, so
+    # the whole reviewed matrix is available.
+    #
+    # THE RULE IS TASTE, NOT LAW: one wall material per TERRACE, so a hill
+    # wears one face and two hills wear different ones, drawn from a weighted
+    # pool that follows what the cliff is - rock on the massif, rock or peat
+    # under a meadow, sand where the foot is the shore - with his favourites
+    # weighted up and grass never a side. Published as walls[] groups with
+    # kind "cliff", which the footprint law and the room map ignore: a
+    # dressed drop is still ground to stand on.
+    CLIFF_POOL = {
+        "highland": (("grey_stone", 3), ("black_rock", 2), ("ice", 1)),
+        "rock":     (("black_rock", 2), ("grey_stone", 2), ("dark_mud", 1)),
+        "lowland":  (("grey_stone", 3), ("black_rock", 3), ("dark_mud", 2)),
+        "shore":    (("light_beach", 2), ("grey_stone", 1), ("black_rock", 1)),
+    }
+    SHORE_R = 2   # a face whose foot is this close to sea or sand is a shore
+
+    def cliff_faces(self):
+        N = NEW
+        if not hasattr(self, "wd"):
+            self._wdist()
+        house = self._walls()
+        ts = self.terraces()
+        tid = {}
+        for i, (lv, cells, dom) in enumerate(ts):
+            for c in cells:
+                tid[c] = i
+        choice, groups, kinds = {}, collections.defaultdict(list), collections.Counter()
+        for y in range(N - 1):
+            for x in range(N - 1):
+                top = self.g(x, y)
+                if not top or self.liquid(x, y) or (x, y) in house:
+                    continue
+                if top in self.INDOOR_GROUNDS or top == "light_soil":
+                    continue                 # floors, paving, roads, ramps
+                z = self.lvl[y][x]
+                e = self.lvl[y][x + 1] if self.g(x + 1, y) else 0
+                sth = self.lvl[y + 1][x] if self.g(x, y + 1) else 0
+                if z <= min(e, sth):
+                    continue                 # no exposed face
+                fx, fy = (x + 1, y) if e <= sth else (x, y + 1)
+                shore = self.liquid(fx, fy) or self.g(fx, fy) == "light_beach" \
+                    or self.wd[fy][fx] <= self.SHORE_R
+                if top in ("snow", "ice"):
+                    pool = "highland"
+                elif top in ("grey_stone", "black_rock"):
+                    pool = "rock"
+                elif shore:
+                    pool = "shore"
+                else:
+                    pool = "lowland"
+                key = (tid.get((x, y), (x, y)), pool)
+                if key not in choice:
+                    anchor = min(ts[key[0]][1]) if isinstance(key[0], int) else key[0]
+                    r = _rng32((anchor[0] * 2654435761 ^ anchor[1] * 40503
+                                ^ hash(pool) & 0xffff) & 0xffffffff)
+                    opts = [m for m, w in self.CLIFF_POOL[pool] for _ in range(w)]
+                    side = opts[int(r() * len(opts)) % len(opts)]
+                    if side == top and len({m for m, _ in self.CLIFF_POOL[pool]}) > 1:
+                        side = next(m for m, _ in self.CLIFF_POOL[pool] if m != top)
+                    choice[key] = side
+                side = choice[key]
+                groups[side].append({"x": x, "y": y})
+                kinds[(top, side)] += 1
+        for side, cells in sorted(groups.items()):
+            self.doc["walls"].append({"side": side, "kind": "cliff",
+                                      "cells": cells})
+        self.placed += [("cliff faces dressed", sum(len(c) for c in groups.values())),
+                        ("cliff faces left grass", 0)]
+        self.placed += [(f"cliff {t} over {sd}", n) for (t, sd), n in kinds.most_common(8)]
+        # BUILD ASSERT: no exposed face is grass over grass any more
+        assert not any(sd == "grass" for (_, sd) in kinds), "a grass wall survived"
+
     def ramp_paths(self):
         """A ramp is where you walk: light_soil, the road's own material,
         so the way up is a visible path and never grass climbing grass."""
@@ -3501,7 +3596,7 @@ class Grow:
                      self.ramp_paths,
                      self.snap_hitboxes, self.police_footprints,
                      self.relight, self.npcs,
-                     self.rooms, self.spawns):
+                     self.rooms, self.cliff_faces, self.spawns):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
