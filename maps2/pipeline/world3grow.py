@@ -175,7 +175,14 @@ class Grow:
 
     # -- helpers --------------------------------------------------------------
     def g(self, x, y):
-        return self.G[self.grd[y][x]] if 0 <= x < NEW and 0 <= y < NEW else ""
+        """The ground name, or "" off the map AND on void: a void cell's
+        index is -1, which Python would happily read as the LAST legend
+        entry - a void that answered "grey_paving_stone" would be walkable,
+        buildable and painted."""
+        if not (0 <= x < NEW and 0 <= y < NEW):
+            return ""
+        i = self.grd[y][x]
+        return self.G[i] if i >= 0 else ""
 
     def liquid(self, x, y):
         return self.g(x, y) in ("water", "deep_water")
@@ -2996,7 +3003,9 @@ class Grow:
     # the face-less side is no constraint.
     EDGE_MIN = 4
     # what each family may become, in order of preference after its own
-    FAMILY = {"snow": ("snow", "grey_stone", "black_rock", "ice"),
+    # ice before black_rock on the massif: a black shelf reads as a hole
+    # from above (measured on the first build, 3,506 cells of it)
+    FAMILY = {"snow": ("snow", "grey_stone", "ice", "black_rock"),
               "grey_stone": ("grey_stone", "black_rock", "snow"),
               "black_rock": ("black_rock", "grey_stone"),
               "ice": ("ice", "snow")}
@@ -3104,6 +3113,127 @@ class Grow:
         assert not unforced, (f"{len(unforced)} touching terraces share a "
                               f"ground with a colour free: "
                               f"{[(ts[i][0], ts[j][0], colour[i]) for i, j in unforced[:5]]}")
+
+    # NOBODY PLAYS BEHIND THE MOUNTAIN (maintainer 2026-09-05: "I don't like
+    # the top of the mountain where the slope starts to go down again. I want
+    # it to be a steep hill ... The solution games often do is to make it
+    # impossible to play/walk behind the mountain. So you need a new tile type
+    # that is 'void'. A player can't walk into void and they will never find
+    # out what it is (the mountain is always covering it). I'm not saying this
+    # is something we should use at smaller cliffs.")
+    #
+    # THE FORMAT ALREADY HAS IT: ground index -1 is VOID - the game draws
+    # nothing there and its surface is neither standable nor swimmable
+    # (games2/shared/src/world3.ts; "the_game has zero voids, so this path is
+    # unexercised"). It is exercised now.
+    #
+    # WHERE THE MOUNTAIN HIDES THE GROUND is a screen fact, so it is computed
+    # on the screen. A cell draws at row (x+y)*DY - level*LP. In each screen
+    # column d = x-y the CROWN - cells at CROWN_MIN or higher, the mega
+    # mountain and not the 5-7 level cliffs he wants to keep walking behind -
+    # has a silhouette: the highest row any crown cell reaches. Every cell
+    # up-screen of the crown whose own base row lies below that silhouette is
+    # covered by the mountain wherever the player stands, land or water; a
+    # player there would be invisible, so there is no there. The three
+    # columns a diamond spans all have to hide it, and the base row is taken
+    # 16 px up, so a void cell can never show a corner.
+    #
+    # WHAT THIS LEAVES IS RIGHT: the town valley beyond the ridge is drawn
+    # ABOVE the silhouette, so it stays - the player sees it over the
+    # mountain, walks there, and stops where the ridge would hide them. From
+    # the valley side the mountain simply ends at its own silhouette: its
+    # north faces are never drawn, and the void behind them never is either.
+    CROWN_MIN = 32
+    SHOULDER_MAX = 12   # valley height: a back shoulder above this is cut
+
+    def mountain_back(self):
+        gi_void = -1
+        N = NEW
+        top = {}
+        for y in range(N):
+            for x in range(N):
+                if self.liquid(x, y) or not self.g(x, y) or self.lvl[y][x] < self.CROWN_MIN:
+                    continue
+                dd, s = x - y, x + y
+                t = s * 14 - self.lvl[y][x] * 15
+                if dd not in top or t < top[dd][0]:
+                    top[dd] = (t, s)
+        if not top:
+            self.placed += [("void cells", 0)]
+            return
+        floors = getattr(self, "floor_cells", {})
+        walls = {(c["x"], c["y"]) for w in self.doc["walls"] for c in w["cells"]}
+        # THE BACK IS STEEP: a shoulder behind the crown that still shows
+        # above the ridge - measured, 2,600 cells of grey_stone 16-28, snow 20
+        # and black_rock 14-20 - is the "slope that starts to go down again".
+        # It is cut to the valley beyond it: the first cell further up-screen
+        # in the same column that is already valley height lends its level
+        # and its ground, so the ridge drops straight to the land the player
+        # can see and walk. The void pass then swallows whatever of that lies
+        # under the ridge.
+        cut = collections.Counter()
+        for y in range(N):
+            for x in range(N):
+                dd, s = x - y, x + y
+                if dd not in top or s >= top[dd][1]:
+                    continue
+                if self.liquid(x, y) or not self.g(x, y):
+                    continue
+                if not (self.SHOULDER_MAX < self.lvl[y][x] < self.CROWN_MIN):
+                    continue
+                if (x, y) in floors or (x, y) in walls:
+                    continue
+                vx, vy, found = x - 1, y - 1, None
+                while 0 <= vx < N and 0 <= vy < N:
+                    gg = self.g(vx, vy)
+                    if gg and not self.liquid(vx, vy) and self.lvl[vy][vx] <= self.SHOULDER_MAX:
+                        found = (self.lvl[vy][vx], gg)
+                        break
+                    if self.liquid(vx, vy):
+                        found = (0, "grass")
+                        break
+                    vx, vy = vx - 1, vy - 1
+                lv, gg = found or (6, "grass")
+                cut[(self.g(x, y), self.lvl[y][x], gg, lv)] += 1
+                self.lvl[y][x] = lv
+                self.grd[y][x] = self.gi[gg]
+        self.placed += [("back shoulders cut to the valley", sum(cut.values()))]
+        void, kinds = set(), collections.Counter()
+        for y in range(N):
+            for x in range(N):
+                if self.grd[y][x] < 0:
+                    continue
+                dd, s = x - y, x + y
+                if dd not in top or s >= top[dd][1]:
+                    continue                      # not up-screen of the crown
+                sil = max(top[k][0] for k in (dd - 1, dd, dd + 1) if k in top)
+                if s * 14 - 16 < sil:
+                    continue                      # its base shows above the ridge
+                if (x, y) in floors or (x, y) in walls:
+                    continue                      # a house is never voided
+                void.add((x, y))
+                kinds[self.g(x, y) or "?"] += 1
+        for (x, y) in void:
+            self.grd[y][x] = gi_void
+            self.lvl[y][x] = 0
+        # nothing stands in nothing
+        before = len(self.doc["scenery"])
+        self.doc["scenery"] = [p for p in self.doc["scenery"]
+                               if (int(p["x"]), int(p["y"])) not in void]
+        self._reindex()
+        for key in ("_wdist", "wd"):
+            if hasattr(self, key) and key == "wd":
+                delattr(self, "wd")           # the shore field is stale now
+        self.placed += [("void cells", len(void)),
+                        ("void: scenery evicted", before - len(self.doc["scenery"]))]
+        self.placed += [(f"void from {k}", v) for k, v in kinds.most_common()]
+        # BUILD ASSERT: no void cell shows. Its base row, taken 16 px up, is
+        # below the silhouette of every column its diamond touches.
+        for (x, y) in void:
+            dd, s = x - y, x + y
+            for k in (dd - 1, dd, dd + 1):
+                if k in top:
+                    assert s * 14 - 16 >= top[k][0], (x, y)
 
     def ramp_paths(self):
         """A ramp is where you walk: light_soil, the road's own material,
@@ -3364,7 +3494,7 @@ class Grow:
                      self.town_ground, self.i2_cave,
                      self.i2_road, self.i2_systems, self._reindex,
                      self.archipelago, self.pier, self.houses, self.town,
-                     self.terrace_grounds,
+                     self.mountain_back, self.terrace_grounds,
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,

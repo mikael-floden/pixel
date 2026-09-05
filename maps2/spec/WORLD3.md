@@ -163,6 +163,44 @@ drop.** It read as a ring painted on to hide a bug (*"The player should never
 think 'aah you added stone here to hide this problem'"*), and it ringed the
 south and east faces too, which already show a fall.
 
+### the mountain — nobody plays behind it
+
+**GROUND INDEX −1 IS VOID**, and the_game now uses it. The game draws nothing
+there and its surface is neither standable nor swimmable (games2
+`world3.ts`, from the format's own definition). Maintainer 2026-09-05: *"I want
+it to be a steep hill ... make it impossible to play/walk behind the mountain.
+So you need a new tile type that is 'void'. A player can't walk into void and
+they will never find out what it is (the mountain is always covering it). I'm
+not saying this is something we should use at smaller cliffs."*
+
+**WHERE THE MOUNTAIN HIDES THE GROUND IS A SCREEN FACT**, so it is computed on
+the screen. A cell draws at row `(x+y)·14 − level·15`. In each screen column
+`d = x−y` the **crown** — cells at `CROWN_MIN = 32` or higher, the mega
+mountain and not the 5–7 level cliffs he wants to keep walking behind — has a
+silhouette, the highest row any crown cell reaches. `mountain_back()`:
+
+1. **cuts the back shoulders to the valley** — every cell up-screen of the
+   crown between `SHOULDER_MAX = 12` and the crown takes the level and ground
+   of the first valley-height cell further up-screen in its column (6,740
+   cells), so the ridge drops straight to land the player can see and walk;
+2. **voids what the ridge hides** — every cell up-screen of the crown whose
+   base row (taken 16 px up) lies below the silhouette of all three columns
+   its diamond spans (4,381 cells, water included: a hidden sea is a place to
+   swim unseen). Houses are never voided.
+
+What this leaves is right: the town valley beyond the ridge is drawn ABOVE the
+silhouette, so it stays — the player sees it over the mountain, walks there,
+and stops where the ridge would hide them. From the valley the mountain simply
+ends at its own silhouette: its north faces are never drawn and the void behind
+them never is either. **Build-asserted** per void cell, and **proven by
+render**: painting every void cell lava and re-rendering is pixel-identical.
+
+**A PLAIN VOID BAND WITHOUT THE CUT IS NOT ENOUGH** (measured): the shoulders
+beyond the hidden band still poked above the ridge at levels 14–28 — the very
+"slope that starts to go down again". **`g()` returns "" on void**: index −1
+would otherwise read as the LAST legend entry, a void that answers
+"grey_paving_stone" and is walkable, buildable and painted.
+
 ### `scenery` — a placement is centred on its HITBOX, not its art
 
 **The hitbox centre stands in the middle of a tile** (maintainer, 2026-08-30:
