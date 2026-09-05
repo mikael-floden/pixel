@@ -3,6 +3,9 @@
 // If a rules edit changes any of them, the rules are wrong, not the test.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync, existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   chessInitial, chessMoves, chessApply, chessPerft, chessOutcome, chessKey,
   chessAiMove, chessParseMove, chessMoveStr, ChessState, CH_P, CH_N, CH_B, CH_R, CH_Q, CH_K,
@@ -108,3 +111,76 @@ test("the NPC brain: always legal, deterministic per seed, and CHEAP", () => {
   const b = chessAiMove(chessInitial(), { seed: 7 })!;
   assert.equal(chessMoveStr(a), chessMoveStr(b), "same seed, same move");
 });
+
+// ============================================================================
+// A PLACED TABLE IS A PLAYABLE BOARD
+// ============================================================================
+//
+// The maps agent places the furniture; `config/chess_boards.json` is what makes
+// it playable. Nothing connects the two, so a world can ship chess tables — and
+// a resident opponent standing at one — while the game has no idea they exist.
+// That is exactly what happened: the_game shipped two `chess_tables/*` pieces
+// and a Rannulf carrying `anchor: "chess"`, became the DEFAULT map on
+// 2026-09-02, and had no entry here at all, so chess quietly left the game the
+// day the map changed under it. Nothing was removed; the config simply never
+// followed the world (maintainer: "I feel like I can't play chess in the game
+// any more.. Have you removed that feature?").
+//
+// So the gate is stated from the WORLD's side, not the config's: every chess
+// table a shipped world places must have a board within reach of it. A future
+// world gets this for free the moment the maps agent puts a table down.
+//
+// SKIPPED, NOT FAILED, when the world tree is absent — the deploy's test job
+// sparse-checks-out a subset.
+{
+  const HERE = dirname(fileURLToPath(import.meta.url));
+  const REPO = join(HERE, "..", "..", "..");
+  const CFG = join(REPO, "games2", "config", "chess_boards.json");
+  const publish = join(REPO, "games2", "config", "publish.json");
+  const worldDoc = (w: string) => {
+    for (const root of ["worlds", "worlds3"]) {
+      const p = join(REPO, "maps2", root, w, "world.json");
+      if (existsSync(p)) return JSON.parse(readFileSync(p, "utf8"));
+    }
+    return null;
+  };
+  const have = existsSync(CFG) && existsSync(publish);
+  test("every chess table a world places is a board you can sit at", { skip: !have }, () => {
+    const cfg = JSON.parse(readFileSync(CFG, "utf8"));
+    const worlds: string[] = JSON.parse(readFileSync(publish, "utf8")).userWorlds ?? [];
+    let tables = 0;
+    const orphans: string[] = [];
+    for (const w of worlds) {
+      const doc = worldDoc(w);
+      if (!doc) continue;
+      /* A maps3 world places the table as SCENERY (a piece id); a tiles2 world
+       * as a PROP, which carries NO type string at all — only `{x, y, tile}`,
+       * an INDEX into the world's own `paths[]`. Resolving that index is the
+       * only way to see the_island2's two tables; matching on a `type` field
+       * finds nothing and leaves the older world silently uncovered. */
+      const paths: string[] = doc.paths ?? [];
+      const placed: { x: number; y: number }[] = [
+        ...((doc.scenery ?? []) as any[]).filter((p) => String(p.piece).includes("chess")),
+        ...((doc.props ?? []) as any[]).filter((p) =>
+          String(paths[p.tile] ?? "").toLowerCase().includes("chess"),
+        ),
+      ];
+      const boards: any[] = cfg.worlds?.[w] ?? [];
+      for (const t of placed) {
+        tables++;
+        // THE SAME 1.75-CELL RADIUS THE SERVER SEATS BY (chess.ts TABLE_RADIUS_WU),
+        // measured from the board cell's CENTRE to the table's anchor — so a
+        // board that names the wrong cell fails this too, not just a missing one.
+        const near = boards.some(
+          (b) => Math.hypot(b.col + 0.5 - (t.x + 0.5), b.row + 0.5 - (t.y + 0.5)) <= 1.75,
+        );
+        if (!near) orphans.push(`${w} (${t.x.toFixed(1)}, ${t.y.toFixed(1)})`);
+      }
+    }
+    assert.deepEqual(orphans, [], "chess tables standing in a published world with no board to sit at");
+    // NON-VACUOUS: if no shipped world places a table, this gate proves nothing
+    // and should be deleted rather than left passing.
+    assert.ok(tables > 0, "no published world places a chess table — this gate is vacuous");
+    console.log(`chess: ${tables} placed tables across ${worlds.length} published worlds, all playable`);
+  });
+}
