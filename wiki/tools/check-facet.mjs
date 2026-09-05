@@ -518,8 +518,13 @@ await pub.close();
     // that grows it), so compare piece-to-Man using the piece's own scale.
     const sPiece = await p.evaluate(() => window.__wikiScale?.s ?? null);
     const sMan = on.manH / manPx;
-    ok(sPiece && sMan && Math.abs((sPiece / sMan) - (drawnPx / ch)) < 0.02,
-      `beside the Man the piece is drawn at the GAME's placement scale — ${piece.id}: ${(sPiece / sMan).toFixed(3)}× its native px, want ${(drawnPx / ch).toFixed(3)} (world ${pl.world_px_height}px → drawn ${drawnPx.toFixed(1)}px over a ${ch}px crop)`);
+    /* AGAINST THE PIECE'S BASE SPRITE, not this clip — the game fits every
+     * state through the base bbox (WorldScene's `baseH`), so one piece has one
+     * scale. This expectation used the clip in hand, which made a taller state
+     * "want" a smaller factor and pinned the very bug it was meant to catch. */
+    const baseH = pl.content_px_height > 0 ? pl.content_px_height : ch;
+    ok(sPiece && sMan && Math.abs((sPiece / sMan) - (drawnPx / baseH)) < 0.02,
+      `beside the Man the piece is drawn at the GAME's placement scale — ${piece.id}: ${(sPiece / sMan).toFixed(3)}× its native px, want ${(drawnPx / baseH).toFixed(3)} (world ${pl.world_px_height}px → drawn ${drawnPx.toFixed(1)}px over its ${baseH}px base sprite)`);
     ok(Math.abs((drawnPx / manPx) - (pl.world_height_m / 1.7)) < 0.08,
       `which puts it at ${(drawnPx / manPx).toFixed(2)}× the Man — the contract's ${pl.world_height_m}m against 1.7m is ${(pl.world_height_m / 1.7).toFixed(2)}×`);
     await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /vs human/.test(x.textContent))?.click());
@@ -705,28 +710,55 @@ await pub.close();
   });
 }
 
-/* THE PIECE SAYS WHETHER IT IS DRAWN AT ITS OWN PIXELS (maintainer 2026-09-04:
- * "what I want is for the scenery to be drawn in the same scale as the player
- * is drawn ... I don't want any smart logic here"). Until the art is
- * regenerated at the size its metres imply, the game resamples it, and the
- * only honest thing this page can do is print the number. Read off a piece
- * whose disagreement is known and large, and off one drawn the other way. */
+/* ONE SCENERY PIXEL IS ONE PLAYER PIXEL (maintainer 2026-09-04: "what I want
+ * is for the scenery to be drawn in the same scale as the player is drawn ...
+ * if the player is 100px and a table is 50px I want the player to be twice as
+ * high as the table. I don't want any smart logic here").
+ *
+ * The scenery domain now publishes world_px_height AS the art's own alpha bbox
+ * (all 710 pieces), so the draw factor collapses to 88/87 — the game's person
+ * against the person the pieces were measured beside. This page must land on
+ * the SAME number the game does, or he is approving a size that is not what
+ * ships; that is the whole history of this bug, in both directions. Measured
+ * off the page, and cross-checked against the game's own formula. */
 {
-  for (const [id, want] of [["bed_002", "under"], ["ancient_tree_001", "over"]]) {
+  const D2 = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
+  const sc = D2.sceneryScale;
+  for (const id of ["bed_002", "ancient_tree_001"]) {
+    const piece = D2.domains.objects.find((o) => o.id === id);
+    const pl = piece?.placement ?? {};
+    const want = (pl.world_px_height * sc.characterBodyPx) / (pl.character_height_px || sc.contractCharacterPx) / pl.content_px_height;
+    // WITH THE MAN SHOWN — the mode he reviews size in, and the only mode the
+    // page takes the game's factor in at all.
+    await p.evaluate(() => localStorage.setItem("wiki-obj-human", "1"));
     await p.goto(`${W}#/objects/${id}`, { waitUntil: "load" });
-    await p.waitForTimeout(3200);
-    const s = await p.evaluate(() => {
-      const el = document.querySelector(".scale-pill");
-      return el ? { text: el.textContent, f: +el.dataset.factor, warn: el.classList.contains("warn"), title: el.title } : null;
-    });
-    console.log(`${id} scale pill:`, JSON.stringify(s && { text: s.text, f: s.f, warn: s.warn }));
-    ok(!!s, `${id} says what scale it is drawn at`);
-    if (!s) continue;
-    ok(want === "under" ? s.f < 0.98 : s.f > 1.02,
-      `${id} is resampled ${want === "under" ? "down" : "up"} and the pill agrees (${s.f}×)`);
-    ok(s.warn && /→ drawn/.test(s.text), `and it reads as a fault, not a decoration ("${s.text}")`);
-    ok(/resampled/.test(s.title) && /art wants to be/.test(s.title),
-      "and says what the art should have been, which is the fix");
+    await p.waitForTimeout(3400);
+    const s = await p.evaluate(() => ({ scale: window.__wikiScale, pill: document.querySelector(".scale-pill")?.textContent ?? null }));
+    const offBy = s.scale ? Math.abs(s.scale.factor - want) * pl.content_px_height : 999;
+    console.log(`${id}:`, JSON.stringify(s), `game says x${want.toFixed(4)}, off by ${offBy.toFixed(2)}px`);
+    ok(offBy < 1.5,
+      `${id} is drawn at the GAME's height, not one of its own (page ${s.scale?.factor}, game ${want.toFixed(4)} — ${offBy.toFixed(2)}px apart on a ${pl.content_px_height}px sprite)`);
+    ok(s.scale && Math.abs(s.scale.factor - 1) < 0.02,
+      `...which is the piece's own pixels beside the man's (${s.scale?.factor}×)`);
+    ok(/1:1/.test(s.pill ?? ""), `and the piece says so on the page ("${s.pill}")`);
+  }
+  /* AND IT IS THE PIECE'S SCALE, NOT THE CLIP'S. The game fits every state
+   * through the base sprite's bbox, so a taller lit state must not come out
+   * shrunk to match its unlit twin — which is what dividing by the clip in
+   * hand did here. Walk the states and require one factor. */
+  const piece = D2.domains.objects.find((o) => Object.keys(o.animations ?? {}).length > 1 && o.placement?.content_px_height);
+  if (piece) {
+    await p.goto(`${W}#/objects/${piece.id}`, { waitUntil: "load" });
+    await p.waitForTimeout(3000);
+    const seen = [];
+    for (let i = 0; i < Math.min(3, Object.keys(piece.animations).length); i++) {
+      await p.evaluate((n) => document.querySelectorAll(".seg-states button")[n]?.click(), i);
+      await p.waitForTimeout(700);
+      seen.push(await p.evaluate(() => window.__wikiScale?.factor));
+    }
+    console.log(`${piece.id} factor per state:`, JSON.stringify(seen));
+    ok(new Set(seen.filter((x) => x != null)).size === 1,
+      `every state of ${piece.id} is drawn at ONE scale, the piece's (${seen.join(", ")})`);
   }
 }
 

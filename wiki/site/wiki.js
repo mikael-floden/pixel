@@ -1843,7 +1843,14 @@ function makePlayer(entity, kind, opts = {}) {
       const wph = +pl?.world_px_height;
       if (!(wph > 0) || !sc) return 1;
       const cpx = +pl?.character_height_px > 0 ? +pl.character_height_px : sc.contractCharacterPx;
-      return (wph * sc.characterBodyPx / cpx) / ch;
+      /* AGAINST THE PIECE'S OWN BASE SPRITE, never this clip. The game fits
+       * every state through the BASE sprite's bbox (WorldScene's `baseH`), so
+       * one piece has one scale and a lit state cannot be drawn bigger than an
+       * unlit one. Dividing by the clip in hand instead re-fitted each state to
+       * the same height — a candle's flame state, taller in art, came out
+       * SHRUNK against its own unlit twin, and neither matched the game. */
+      const base = +pl?.content_px_height > 0 ? +pl.content_px_height : ch;
+      return (wph * sc.characterBodyPx / cpx) / base;
     };
     const s = s0 * placementFactor();
     // QA probe: the scale the piece is drawn at, and why.
@@ -11075,7 +11082,9 @@ function viewObject(id) {
     const wph = +pl?.world_px_height;
     if (!bb || !(wph > 0) || !sc) return null;
     const cpx = +pl?.character_height_px > 0 ? +pl.character_height_px : sc.contractCharacterPx;
-    const native = bb[3] - bb[1], drawn = (wph * sc.characterBodyPx) / cpx;
+    // The piece's own base sprite, the height the game scales from.
+    const native = +pl?.content_px_height > 0 ? +pl.content_px_height : bb[3] - bb[1];
+    const drawn = (wph * sc.characterBodyPx) / cpx;
     const f = drawn / native;
     if (!(native > 0) || !isFinite(f)) return null;
     const off = Math.abs(f - 1) > 0.02;
