@@ -30,7 +30,8 @@ and the fade upgrades itself to art.
   "spawn":  [x, y],
   "decks":  [{"kind": "roof|bridge|cave", "level", "thickness",
               "ground", "cells": [{"x","y"}]}],
-  "walls":  [{"side": "grey_stone", "cells": [{"x","y"}]},   // authored wall body
+  "walls":  [{"side": "grey_stone", "cells": [{"x","y"}]},   // terrain wall body
+             {"side": "parquet_floor", "kind": "house", "cells": [...]}, // a building
              {"side": "black_rock", "kind": "cliff", "cells": [...]}], // dressed drop
   "rooms":  [{"ground": "parquet_floor", "cells": [{"x","y"}]}], // ONE FLOOR EACH
   "ramps":  [{"from": 0, "to": 4, "ground": "light_soil",
@@ -182,25 +183,44 @@ silhouette, the highest row any crown cell reaches. `mountain_back()`:
 
 1. **cuts the back shoulders to the valley** — every cell up-screen of the
    crown between `SHOULDER_MAX = 12` and the crown takes the level and ground
-   of the first valley-height cell further up-screen in its column (6,740
+   of the first valley-height cell further up-screen in its column (7,189
    cells), so the ridge drops straight to land the player can see and walk;
 2. **voids what the ridge hides** — every cell up-screen of the crown whose
-   base row (taken 16 px up) lies below the silhouette of all three columns
-   its diamond spans (4,381 cells, water included: a hidden sea is a place to
-   swim unseen). Houses are never voided.
+   TOP DIAMOND, at its (cut) level, has any corner under the silhouette: the
+   bottom corner (apex + 28) against its own column, the side corners
+   (apex + 14) against the two neighbouring columns (`_under_ridge`; 3,864
+   cells, water included: a hidden sea is a place to swim unseen). Only
+   `kind: "house"` wall cells and recorded floors are spared.
 
 What this leaves is right: the town valley beyond the ridge is drawn ABOVE the
 silhouette, so it stays — the player sees it over the mountain, walks there,
-and stops where the ridge would hide them. From the valley the mountain simply
-ends at its own silhouette: its north faces are never drawn and the void behind
-them never is either. **Build-asserted** per void cell, and **proven by
-render**: painting every void cell lava and re-rendering is pixel-identical.
+and stops where the ridge would hide them: the last kept cell is entirely
+above the ridge, so nobody ever stands half-hidden, and the ground it hides
+is simply gone. From the valley the mountain ends at its own silhouette: its
+north faces are never drawn and the void behind them never is either.
+**Build-asserted both ways** — every void cell is at least partly under the
+ridge, every kept cell up-screen of the crown is wholly above it.
 
-**A PLAIN VOID BAND WITHOUT THE CUT IS NOT ENOUGH** (measured): the shoulders
-beyond the hidden band still poked above the ridge at levels 14–28 — the very
-"slope that starts to go down again". **`g()` returns "" on void**: index −1
-would otherwise read as the LAST legend entry, a void that answers
-"grey_paving_stone" and is walkable, buildable and painted.
+Three traps, each one build:
+- **A plain void band without the cut**: the shoulders beyond the hidden band
+  still poked above the ridge at levels 14–28 — the very "slope that starts
+  to go down again".
+- **Sparing every `walls[]` cell**: the terrain's own wall groups (world3
+  `_terrain_walls`, the massif's shelf faces) are dressing, and sparing them
+  left the last cell of every shelf standing in the void — a 28 / 24 / 20
+  staircase of one-cell stripes behind the ridge, each showing its face
+  ("steep, then mountain, then a steep, then mountain", 440 cells). A cut or
+  voided cell now also leaves every terrain wall group.
+- **Testing the level-0 base instead of the raised top**: it voided every
+  valley cell whose top peeked over the ridge, so the first survivor showed a
+  full six-storey face standing ON the crown — a steep that was never there.
+  The valley's ground now runs under the ridge; the void's edge is dressed by
+  `cliff_faces` from the top's own pool, never as a shore (`_seadist`
+  measures water and sand only; the pad field counts void as wet).
+
+**`g()` returns "" on void**: index −1 would otherwise read as the LAST legend
+entry, a void that answers "grey_paving_stone" and is walkable, buildable and
+painted.
 
 ### cliff faces — the wall matrix is a palette, not a default
 

@@ -207,6 +207,26 @@ class Grow:
                         return False
         return True
 
+    def _seadist(self):
+        """Manhattan distance to the nearest water or beach cell only."""
+        from collections import deque
+        dist = [[99] * NEW for _ in range(NEW)]
+        q = deque()
+        for y in range(NEW):
+            for x in range(NEW):
+                if self.liquid(x, y) or self.g(x, y) == "light_beach":
+                    dist[y][x] = 0
+                    q.append((x, y))
+        while q:
+            x, y = q.popleft()
+            if dist[y][x] >= self.SHORE_R:
+                continue
+            for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if 0 <= nx < NEW and 0 <= ny < NEW and dist[ny][nx] > dist[y][x] + 1:
+                    dist[ny][nx] = dist[y][x] + 1
+                    q.append((nx, ny))
+        return dist
+
     def _wdist(self):
         """Manhattan distance to the nearest wet/void/beach cell, BFS once —
         the per-candidate DRY_R rescans measured the pad search into the
@@ -2148,7 +2168,8 @@ class Grow:
                 # has a dark mud or paving-stone floor - and dark mud is a fen
                 # outdoors. The house says so instead.
                 self.floor_cells[(x, y)] = floor
-        self.doc["walls"].append({"side": wall, "cells": wcells})
+        self.doc["walls"].append({"side": wall, "kind": "house",
+                                  "cells": wcells})
         # THE ROOF DECK IS WHAT MAKES A HOUSE INDOORS. The game's indoor
         # system keys on a kind:"roof" deck over the player - it is what
         # blacks out the world outside and fixes the draw order. Dropping the
@@ -3167,7 +3188,14 @@ class Grow:
             self.placed += [("void cells", 0)]
             return
         floors = getattr(self, "floor_cells", {})
-        walls = {(c["x"], c["y"]) for w in self.doc["walls"] for c in w["cells"]}
+        # ONLY A HOUSE IS SPARED. The terrain's own wall groups (world3
+        # _terrain_walls, the shelf faces of the massif) are dressing, and
+        # sparing them left every shelf's last cell standing in the void:
+        # a 28 / 24 / 20 staircase of one-cell stripes behind the ridge,
+        # each showing its face - "steep, mountain, steep, mountain"
+        # (maintainer 2026-09-05, 440 cells measured).
+        walls = {(c["x"], c["y"]) for w in self.doc["walls"]
+                 if w.get("kind") == "house" for c in w["cells"]}
         # THE BACK IS STEEP: a shoulder behind the crown that still shows
         # above the ridge - measured, 2,600 cells of grey_stone 16-28, snow 20
         # and black_rock 14-20 - is the "slope that starts to go down again".
@@ -3176,7 +3204,7 @@ class Grow:
         # and its ground, so the ridge drops straight to the land the player
         # can see and walk. The void pass then swallows whatever of that lies
         # under the ridge.
-        cut = collections.Counter()
+        cut, cut_cells = collections.Counter(), []
         for y in range(N):
             for x in range(N):
                 dd, s = x - y, x + y
@@ -3200,9 +3228,11 @@ class Grow:
                     vx, vy = vx - 1, vy - 1
                 lv, gg = found or (6, "grass")
                 cut[(self.g(x, y), self.lvl[y][x], gg, lv)] += 1
+                cut_cells.append((x, y))
                 self.lvl[y][x] = lv
                 self.grd[y][x] = self.gi[gg]
         self.placed += [("back shoulders cut to the valley", sum(cut.values()))]
+        touched = set(cut_cells)
         void, kinds = set(), collections.Counter()
         for y in range(N):
             for x in range(N):
@@ -3211,16 +3241,27 @@ class Grow:
                 dd, s = x - y, x + y
                 if dd not in top or s >= top[dd][1]:
                     continue                      # not up-screen of the crown
-                sil = max(top[k][0] for k in (dd - 1, dd, dd + 1) if k in top)
-                if s * 14 - 16 < sil:
-                    continue                      # its base shows above the ridge
+                if not self._under_ridge(x, y, self.lvl[y][x], top):
+                    continue                      # its whole diamond shows above the ridge
                 if (x, y) in floors or (x, y) in walls:
                     continue                      # a house is never voided
                 void.add((x, y))
                 kinds[self.g(x, y) or "?"] += 1
+        # BUILD ASSERT, taken before the level is zeroed: every void cell's
+        # standable diamond is at least partly under the ridge, so nothing
+        # a player could stand on is lost - and every kept cell up-screen of
+        # the crown is entirely above it, so nobody stands half-hidden.
+        for (x, y) in void:
+            assert self._under_ridge(x, y, self.lvl[y][x], top), (x, y)
         for (x, y) in void:
             self.grd[y][x] = gi_void
             self.lvl[y][x] = 0
+        # a cell that was cut or voided leaves every terrain wall group: its
+        # old shelf face no longer exists, and a side on a void cell is noise
+        touched |= void
+        for w in self.doc["walls"]:
+            w["cells"] = [c for c in w["cells"] if (c["x"], c["y"]) not in touched]
+        self.doc["walls"] = [w for w in self.doc["walls"] if w["cells"]]
         # nothing stands in nothing
         before = len(self.doc["scenery"])
         self.doc["scenery"] = [p for p in self.doc["scenery"]
@@ -3232,13 +3273,30 @@ class Grow:
         self.placed += [("void cells", len(void)),
                         ("void: scenery evicted", before - len(self.doc["scenery"]))]
         self.placed += [(f"void from {k}", v) for k, v in kinds.most_common()]
-        # BUILD ASSERT: no void cell shows. Its base row, taken 16 px up, is
-        # below the silhouette of every column its diamond touches.
-        for (x, y) in void:
-            dd, s = x - y, x + y
-            for k in (dd - 1, dd, dd + 1):
-                if k in top:
-                    assert s * 14 - 16 >= top[k][0], (x, y)
+        for y in range(N):
+            for x in range(N):
+                dd, s = x - y, x + y
+                if self.grd[y][x] < 0 or dd not in top or s >= top[dd][1]:
+                    continue
+                if (x, y) in floors or (x, y) in walls:
+                    continue
+                assert not self._under_ridge(x, y, self.lvl[y][x], top), (x, y)
+
+    @staticmethod
+    def _under_ridge(x, y, lvl, top):
+        """True when any corner of the cell's TOP DIAMOND lies under the
+        crown silhouette: the bottom corner (apex + 2*DY) against its own
+        column, the side corners (apex + DY) against the neighbouring
+        columns. The apex is the cell's screen row at ITS level - the first
+        cut tested the level-0 base instead, which voided every raised cell
+        whose top peeked over the ridge and left the first survivor showing a
+        full 6-storey face on top of the crown (measured, "a steep" the
+        maintainer had not asked for)."""
+        dd, s = x - y, x + y
+        t = s * 14 - lvl * 15
+        if dd in top and t + 28 > top[dd][0]:
+            return True
+        return any(k in top and t + 14 > top[k][0] for k in (dd - 1, dd + 1))
 
     # A CLIFF IS NOT MADE OF WHAT IT STANDS ON (maintainer 2026-09-05, six
     # photographs of green cliffs: "I'm not that big fan of grass walls. I
@@ -3276,8 +3334,9 @@ class Grow:
 
     def cliff_faces(self):
         N = NEW
-        if not hasattr(self, "wd"):
-            self._wdist()
+        # distance to REAL water or sand: the pad field counts void as wet,
+        # which dressed every face at the void's edge as a beach
+        sea = self._seadist()
         house = self._walls()
         ts = self.terraces()
         tid = {}
@@ -3299,7 +3358,7 @@ class Grow:
                     continue                 # no exposed face
                 fx, fy = (x + 1, y) if e <= sth else (x, y + 1)
                 shore = self.liquid(fx, fy) or self.g(fx, fy) == "light_beach" \
-                    or self.wd[fy][fx] <= self.SHORE_R
+                    or sea[fy][fx] <= self.SHORE_R
                 if top in ("snow", "ice"):
                     pool = "highland"
                 elif top in ("grey_stone", "black_rock"):
