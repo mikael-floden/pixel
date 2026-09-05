@@ -22,11 +22,11 @@
   "size": 64,
   "sprite": "stones/stone_029/sprite.webp",
   "placement": {
-    "world_height_m": 0.93,
+    "world_height_m": 0.938,
     "world_px_height": 48,
-    "character_height_px": 88,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
     "content_box": [
       13,
       9,
@@ -34,7 +34,8 @@
       57
     ],
     "content_px_height": 48,
-    "canvas_render_px": 64
+    "canvas_render_px": 64,
+    "declared_height_m": 0.93
   },
   "pixellab_object_id": "021864ed-6dfb-4f7a-86db-3fa67271ab33",
   "pixellab_directions": 8,

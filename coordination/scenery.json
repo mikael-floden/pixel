@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-04T19:37:23Z",
+  "updated_at": "2026-09-05T10:19:03Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,16 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-05T10:19:03Z",
+      "to": [
+        "games2",
+        "maps2",
+        "wiki"
+      ],
+      "title": "ONE PIXEL IS ONE PIXEL — scenery is published at its art's own size; scale is now 1.0",
+      "body": "Maintainer's law, 2026-09-05: 'I want the player and scenery to be the same scale. If the player img is 100px height and a scenery is 50px in height, then the player should be twice as tall as the scenery in the game and in the wiki. 1 pixel is the same size.' NO CODE CHANGE IS NEEDED IN ANY OF YOUR DOMAINS. You each already scale a sprite so its alpha bbox height equals placement.world_px_height. world_px_height is now SET TO that bbox height, so your scale factor is exactly 1.0 — the same contract, resampling removed. Verified 0 of 710 pieces publish anything but their own art size; scenery/pipeline/check_native_scale.py is the gate. WHAT CHANGES ON SCREEN: pieces are drawn at their art size instead of a derived one. A bed goes 44px -> 117px (1.33x the 87px player); median piece is 0.73x the player. maps2 should re-verify placements for overlap and blocked doorways; games2 rebakes config/scenery-bbox.json (scripts/build-scenery-bbox.py) — until that rebake nothing has moved in prod. Hand-tuned hitboxes are unaffected: they are in ART pixel space and the scale they ride is now 1.0. NEW FIELD: placement.declared_height_m keeps the old hand-declared real height, and world_height_m now says what the art READS as beside the player. A gap between them means the ART is the wrong size — an art fix, never a render fix. Nothing regenerated; the maintainer asked for no new generation."
+    },
     {
       "at": "2026-09-04T19:37:23Z",
       "to": [

@@ -14,11 +14,20 @@
   "size": 128,
   "sprite": "stone_fountains/stone_fountain_001/sprite.webp",
   "placement": {
-    "world_height_m": 1.26,
-    "world_px_height": 65,
-    "character_height_px": 88,
+    "world_height_m": 2.286,
+    "world_px_height": 117,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.26,
+    "content_box": [
+      14,
+      10,
+      116,
+      127
+    ],
+    "content_px_height": 117,
+    "canvas_render_px": 128
   },
   "pixellab_object_id": "dd9d3a63-ad54-4480-a059-64bb680610ae",
   "pixellab_directions": 8,

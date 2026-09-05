@@ -15,11 +15,20 @@
   "size": 64,
   "sprite": "toadstool_rings/toadstool_ring_009/sprite.webp",
   "placement": {
-    "world_height_m": 0.36,
-    "world_px_height": 19,
-    "character_height_px": 88,
+    "world_height_m": 0.86,
+    "world_px_height": 44,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.36,
+    "content_box": [
+      5,
+      11,
+      60,
+      55
+    ],
+    "content_px_height": 44,
+    "canvas_render_px": 64
   },
   "pixellab_object_id": "ff2e0781-aa1a-4f20-a8cd-2fb6aa8cfeac",
   "pixellab_directions": 8,

@@ -14,11 +14,20 @@
   "size": 48,
   "sprite": "ant_hills/ant_hill_001/sprite.webp",
   "placement": {
-    "world_height_m": 0.62,
-    "world_px_height": 32,
-    "character_height_px": 88,
+    "world_height_m": 0.586,
+    "world_px_height": 30,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.62,
+    "content_box": [
+      4,
+      9,
+      46,
+      39
+    ],
+    "content_px_height": 30,
+    "canvas_render_px": 48
   },
   "pixellab_object_id": "3cf24983-766f-4b5b-bdf7-ad8505a26f89",
   "pixellab_directions": 8,

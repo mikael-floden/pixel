@@ -16,11 +16,20 @@
   "size": 64,
   "sprite": "torch_posts/torch_post_021/sprite.webp",
   "placement": {
-    "world_height_m": 1.52,
-    "world_px_height": 79,
-    "character_height_px": 88,
+    "world_height_m": 1.192,
+    "world_px_height": 61,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.52,
+    "content_box": [
+      23,
+      2,
+      41,
+      63
+    ],
+    "content_px_height": 61,
+    "canvas_render_px": 64
   },
   "pixellab_object_id": "e6889488-d8ec-44b6-a649-833908806f5d",
   "pixellab_directions": 8,

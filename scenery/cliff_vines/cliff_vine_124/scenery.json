@@ -16,11 +16,20 @@
   "size": 256,
   "sprite": "cliff_vines/cliff_vine_124/sprite.webp",
   "placement": {
-    "world_height_m": 8.61,
-    "world_px_height": 446,
-    "character_height_px": 88,
+    "world_height_m": 4.826,
+    "world_px_height": 247,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 8.61,
+    "content_box": [
+      62,
+      6,
+      185,
+      253
+    ],
+    "content_px_height": 247,
+    "canvas_render_px": 256
   },
   "pixellab_object_id": "e165e7e9-7bea-4fea-aa2f-0ca5247c57d3",
   "pixellab_directions": 1,

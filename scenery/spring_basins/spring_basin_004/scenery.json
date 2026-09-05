@@ -14,11 +14,20 @@
   "size": 96,
   "sprite": "spring_basins/spring_basin_004/sprite.webp",
   "placement": {
-    "world_height_m": 0.95,
-    "world_px_height": 49,
-    "character_height_px": 88,
+    "world_height_m": 0.821,
+    "world_px_height": 42,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.95,
+    "content_box": [
+      16,
+      29,
+      80,
+      71
+    ],
+    "content_px_height": 42,
+    "canvas_render_px": 96
   },
   "pixellab_object_id": "391213ab-759c-47b0-9e62-bbdacd94afed",
   "pixellab_directions": 8,

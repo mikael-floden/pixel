@@ -16,11 +16,20 @@
   "size": 192,
   "sprite": "trees/tree_041/sprite.webp",
   "placement": {
-    "world_height_m": 3.59,
-    "world_px_height": 186,
-    "character_height_px": 88,
+    "world_height_m": 3.693,
+    "world_px_height": 189,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 3.59,
+    "content_box": [
+      35,
+      3,
+      156,
+      192
+    ],
+    "content_px_height": 189,
+    "canvas_render_px": 192
   },
   "pixellab_object_id": "c0586ec9-d29f-4a68-bbe7-789652c79ef0",
   "pixellab_directions": 1,

@@ -14,11 +14,20 @@
   "size": 128,
   "sprite": "cliff_features/cliff_feature_007/sprite.webp",
   "placement": {
-    "world_height_m": 2.67,
-    "world_px_height": 138,
-    "character_height_px": 88,
+    "world_height_m": 1.72,
+    "world_px_height": 88,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.67,
+    "content_box": [
+      2,
+      20,
+      127,
+      108
+    ],
+    "content_px_height": 88,
+    "canvas_render_px": 128
   },
   "pixellab_object_id": "89b281fd-10ce-48a0-98b9-9c2b7a433a98",
   "pixellab_directions": 8,

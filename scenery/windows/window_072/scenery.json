@@ -26,11 +26,11 @@
   "size": 96,
   "sprite": "windows/window_072/sprite.webp",
   "placement": {
-    "world_height_m": 1.27,
-    "world_px_height": 66,
-    "character_height_px": 88,
+    "world_height_m": 1.524,
+    "world_px_height": 78,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a character is character_height_px tall. With content_box present, render the whole canvas at canvas_render_px.",
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
     "content_box": [
       23,
       10,
@@ -38,7 +38,8 @@
       88
     ],
     "content_px_height": 78,
-    "canvas_render_px": 81
+    "canvas_render_px": 96,
+    "declared_height_m": 1.27
   },
   "pixellab_object_id": "4164cbc7-28d2-4f28-b3e6-dd79e7c42ae5",
   "pixellab_directions": 8,

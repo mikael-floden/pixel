@@ -14,11 +14,20 @@
   "size": 128,
   "sprite": "wells/well_006/sprite.webp",
   "placement": {
-    "world_height_m": 1.57,
-    "world_px_height": 81,
-    "character_height_px": 88,
+    "world_height_m": 2.189,
+    "world_px_height": 112,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.57,
+    "content_box": [
+      18,
+      9,
+      106,
+      121
+    ],
+    "content_px_height": 112,
+    "canvas_render_px": 128
   },
   "pixellab_object_id": "00f26a5f-e3a9-407a-a7b0-8c091be65339",
   "pixellab_directions": 8,

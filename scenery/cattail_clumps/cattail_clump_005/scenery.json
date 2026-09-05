@@ -14,11 +14,20 @@
   "size": 96,
   "sprite": "cattail_clumps/cattail_clump_005/sprite.webp",
   "placement": {
-    "world_height_m": 1.72,
-    "world_px_height": 89,
-    "character_height_px": 88,
+    "world_height_m": 1.544,
+    "world_px_height": 79,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.72,
+    "content_box": [
+      18,
+      9,
+      81,
+      88
+    ],
+    "content_px_height": 79,
+    "canvas_render_px": 96
   },
   "pixellab_object_id": "081fb42c-9f88-43c5-9558-e2ffcc7bff16",
   "pixellab_directions": 8,

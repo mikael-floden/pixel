@@ -16,11 +16,20 @@
   "size": 192,
   "sprite": "wasp_nest_trees/wasp_nest_tree_004/sprite.webp",
   "placement": {
-    "world_height_m": 2.75,
-    "world_px_height": 142,
-    "character_height_px": 88,
+    "world_height_m": 2.99,
+    "world_px_height": 153,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.75,
+    "content_box": [
+      30,
+      19,
+      162,
+      172
+    ],
+    "content_px_height": 153,
+    "canvas_render_px": 192
   },
   "pixellab_object_id": "62ad44a2-64f3-427d-8d37-9b30bdc0933e",
   "pixellab_directions": 1,

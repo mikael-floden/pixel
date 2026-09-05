@@ -16,11 +16,20 @@
   "size": 64,
   "sprite": "wall_hangings/wall_hanging_019/sprite.webp",
   "placement": {
-    "world_height_m": 0.84,
-    "world_px_height": 43,
-    "character_height_px": 88,
+    "world_height_m": 1.094,
+    "world_px_height": 56,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.84,
+    "content_box": [
+      6,
+      4,
+      58,
+      60
+    ],
+    "content_px_height": 56,
+    "canvas_render_px": 64
   },
   "pixellab_object_id": "69097aea-0820-48fc-a023-c54d35e26d1f",
   "pixellab_directions": 8,

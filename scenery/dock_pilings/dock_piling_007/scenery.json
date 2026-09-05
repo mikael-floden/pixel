@@ -14,11 +14,20 @@
   "size": 96,
   "sprite": "dock_pilings/dock_piling_007/sprite.webp",
   "placement": {
-    "world_height_m": 1.73,
-    "world_px_height": 90,
-    "character_height_px": 88,
+    "world_height_m": 1.602,
+    "world_px_height": 82,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.73,
+    "content_box": [
+      15,
+      10,
+      84,
+      92
+    ],
+    "content_px_height": 82,
+    "canvas_render_px": 96
   },
   "pixellab_object_id": "314bc37c-474f-4e5d-b5a6-9d2eaaf8f299",
   "pixellab_directions": 8,

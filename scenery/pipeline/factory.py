@@ -57,36 +57,45 @@ def _seed(*parts):
 
 
 def placement(cfg, world_height_m, img=None):
-    """Turn a real-world height into the in-world PIXEL height a piece should
-    occupy beside a character, so props compose at a believable scale.
+    """ONE PIXEL IS ONE PIXEL — publish a piece at the size its art actually is.
 
-    `world_px_height` is the height of the VISIBLE ART. Scaling the whole
-    canvas to it renders every piece short by however much transparent margin
-    the model happened to leave — measured 2026-08-14 across the first windows,
-    content filled 68-82% of the canvas and the fraction varied per piece, so
-    two windows both declared 1.2m came out visibly different sizes. Pass `img`
-    and the manifest also carries `content_box` and `canvas_render_px`: render
-    the canvas at THAT height and the art lands at world_px_height exactly."""
+    "I want the player and scenery to be the same scale... 1 pixel is the same
+    size. That's what I'm after." (maintainer 2026-09-05). The game draws the
+    avatar at setScale(1), so scenery is never resampled either.
+
+    `world_px_height` is therefore the art's own alpha bbox height, which makes
+    every consumer's existing scale-to-world_px_height a no-op of exactly 1.0 —
+    the same contract as before, with the resampling taken out, so no renderer
+    in maps2, games2 or the wiki has to change or stay in sync.
+
+    Deriving it from a declared real height instead is what broke this: the
+    character constant was wrong (64px against an 88px character) so everything
+    rendered ~27% small, and even corrected, only 21% of pieces matched their
+    own art — the renderer was resampling pixel art by an arbitrary per-piece
+    factor. `declared_height_m` keeps the hand-declared height, and
+    `world_height_m` says what the art READS as; a gap between them means the
+    ART is the wrong size, which is fixed by regenerating, never by scaling.
+
+    Without `img` there is no art to measure yet, so only the declaration is
+    recorded and rescale.py fills the rest in once the sprite lands."""
     sc = cfg["scale"]
-    wh = float(world_height_m)
     ppm = sc["character_height_px"] / sc["character_height_m"]
     out = {
-        "world_height_m": round(wh, 3),
-        "world_px_height": max(1, round(wh * ppm)),
+        "declared_height_m": round(float(world_height_m), 3),
         "character_height_px": sc["character_height_px"],
         "character_height_m": sc["character_height_m"],
-        "note": "Scale the sprite so its VISIBLE art is world_px_height tall; a "
-                "character is character_height_px tall. With content_box "
-                "present, render the whole canvas at canvas_render_px.",
+        "note": ("DRAW AT 1:1. world_px_height IS the art's own alpha bbox "
+                 "height, so the scale is 1 — never resample scenery."),
     }
     if img is not None:
         box = img.getbbox()
         if box:
-            ch = max(1, box[3] - box[1])
+            content = max(1, box[3] - box[1])
             out["content_box"] = list(box)
-            out["content_px_height"] = ch
-            out["canvas_render_px"] = max(1, round(out["world_px_height"]
-                                                   * img.size[1] / ch))
+            out["content_px_height"] = content
+            out["world_px_height"] = content
+            out["canvas_render_px"] = img.size[1]
+            out["world_height_m"] = round(content / ppm, 3)
     return out
 
 

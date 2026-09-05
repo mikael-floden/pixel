@@ -14,11 +14,20 @@
   "size": 160,
   "sprite": "ruined_arches/ruined_arch_001/sprite.webp",
   "placement": {
-    "world_height_m": 2.98,
-    "world_px_height": 154,
-    "character_height_px": 88,
+    "world_height_m": 2.853,
+    "world_px_height": 146,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.98,
+    "content_box": [
+      4,
+      14,
+      158,
+      160
+    ],
+    "content_px_height": 146,
+    "canvas_render_px": 160
   },
   "pixellab_object_id": "c7d4f263-5e9b-4c9e-915b-7b7401ac097e",
   "pixellab_directions": 8,

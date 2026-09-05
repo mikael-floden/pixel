@@ -14,11 +14,20 @@
   "size": 128,
   "sprite": "washing_lines/washing_line_002/sprite.webp",
   "placement": {
-    "world_height_m": 2.08,
-    "world_px_height": 108,
-    "character_height_px": 88,
+    "world_height_m": 1.661,
+    "world_px_height": 85,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 2.08,
+    "content_box": [
+      10,
+      21,
+      120,
+      106
+    ],
+    "content_px_height": 85,
+    "canvas_render_px": 128
   },
   "pixellab_object_id": "a6f0b50c-a22e-4399-8325-0103a997d63f",
   "pixellab_directions": 8,

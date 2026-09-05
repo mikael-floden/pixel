@@ -14,11 +14,20 @@
   "size": 96,
   "sprite": "wayside_shrines/wayside_shrine_011/sprite.webp",
   "placement": {
-    "world_height_m": 1.4,
-    "world_px_height": 72,
-    "character_height_px": 88,
+    "world_height_m": 1.348,
+    "world_px_height": 69,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.4,
+    "content_box": [
+      23,
+      13,
+      76,
+      82
+    ],
+    "content_px_height": 69,
+    "canvas_render_px": 96
   },
   "pixellab_object_id": "a2762865-bd84-4862-bd96-2a24e1b5f832",
   "pixellab_directions": 8,

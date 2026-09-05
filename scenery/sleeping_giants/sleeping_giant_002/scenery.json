@@ -16,11 +16,20 @@
   "size": 192,
   "sprite": "sleeping_giants/sleeping_giant_002/sprite.webp",
   "placement": {
-    "world_height_m": 3.15,
-    "world_px_height": 163,
-    "character_height_px": 88,
+    "world_height_m": 2.462,
+    "world_px_height": 126,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 3.15,
+    "content_box": [
+      6,
+      40,
+      188,
+      166
+    ],
+    "content_px_height": 126,
+    "canvas_render_px": 192
   },
   "pixellab_object_id": "12b9fb55-491a-4112-8b82-80422c37d8e4",
   "pixellab_directions": 1,

@@ -15,11 +15,20 @@
   "size": 128,
   "sprite": "hearths/hearth_900/sprite.webp",
   "placement": {
-    "world_height_m": 1.14,
-    "world_px_height": 59,
-    "character_height_px": 88,
+    "world_height_m": 1.954,
+    "world_px_height": 100,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 1.14,
+    "content_box": [
+      20,
+      11,
+      110,
+      111
+    ],
+    "content_px_height": 100,
+    "canvas_render_px": 128
   },
   "pixellab_object_id": "d6c219c2-9f7c-4fe4-9fc9-f43f6beb2867",
   "pixellab_directions": 8,

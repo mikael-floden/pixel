@@ -14,11 +14,20 @@
   "size": 96,
   "sprite": "briar_thickets/briar_thicket_015/sprite.webp",
   "placement": {
-    "world_height_m": 0.94,
-    "world_px_height": 49,
-    "character_height_px": 88,
+    "world_height_m": 0.918,
+    "world_px_height": 47,
+    "character_height_px": 87,
     "character_height_m": 1.7,
-    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+    "note": "DRAW AT 1:1. world_px_height IS the art's own alpha bbox height, so the scale is 1 \u2014 never resample scenery. world_height_m is what the art reads as beside a 87px character; declared_height_m is what it was once declared to be, and a gap between them means the ART is the wrong size.",
+    "declared_height_m": 0.94,
+    "content_box": [
+      16,
+      26,
+      82,
+      73
+    ],
+    "content_px_height": 47,
+    "canvas_render_px": 96
   },
   "pixellab_object_id": "7553f172-c0d7-4b84-a5dc-98c325f65ff5",
   "pixellab_directions": 8,
