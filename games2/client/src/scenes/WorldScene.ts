@@ -7613,15 +7613,17 @@ export class WorldScene extends Phaser.Scene {
     const RANGE = 16; // cells each way — a screen's worth on a phone
     const c0 = Math.floor(me.fx / CELL_WU);
     const r0 = Math.floor(me.fy / CELL_WU);
-    /* ONE PLANE — THE PLAYER'S. Lifting each mark to its own cell's surface put
-     * a wall's marker up on the roof, six levels above the ground it actually
-     * stops you on, so a building read as a patch of colour floating over its
-     * own tiles. What this overlay is FOR is a floor plan of where the body may
-     * go, so every mark — diamonds and ellipses alike — sits on the plane the
-     * body is standing on. */
-    /* ONE LEVEL FOR EVERY MARK — the player's — and ONE PROJECTION, the
-     * ground's (projectCellCorner). Mixing the two conventions is what put the
-     * footprint ellipses 4 px above the cells they block. */
+    /* ONE PROJECTION FOR EVERY MARK — the ground's (projectCellCorner). Mixing
+     * that with `projectFlat`, which answers where a BODY's feet are drawn, is
+     * what put the footprint ellipses 4 px above the cells they block.
+     *
+     * THE LEVEL IS PER MARK, and deliberately so — see the `lvl` note in the
+     * cell loop. A TERRAIN refusal is a floor plan of MY storey; a SCENERY
+     * footprint belongs on the ground the piece stands on, beside its own
+     * ellipse. (This block used to say "one plane, the player's, diamonds and
+     * ellipses alike"; the ellipses moved to the placement's own anchor on
+     * 2026-09-02 and the note was not corrected, which is how the two came to
+     * disagree at every elevation but the piece's own.) */
     const meLevel = me.surfLevel ?? 0;
     const bare = this.bareTerrain(t);
     for (let r = r0 - RANGE; r <= r0 + RANGE; r++) {
@@ -7659,12 +7661,32 @@ export class WorldScene extends Phaser.Scene {
         // enter would go back to looking like set dressing.
         const nav = !terrain && t.sceneryBlocked?.[i] === true;
         if (!terrain && !nav) continue;
+        /* THE RED CELL SITS ON MY PLANE, THE AMBER ONE ON ITS OWN GROUND — and
+         * that is not an inconsistency, it is what the two marks MEAN.
+         *
+         * RED answers "may I walk there FROM HERE", a floor plan of my own
+         * storey: lifting it to each cell's own surface puts a wall's marker up
+         * on the roof, six levels above the ground it actually stops me on, and
+         * a building reads as colour floating over its own tiles.
+         *
+         * AMBER is a SCENERY FOOTPRINT's cell, and the teal ellipse beside it
+         * is drawn from the placement's own anchor with the piece's level baked
+         * in. Drawing the two on different planes made them separate the moment
+         * I stood anywhere but the piece's own storey (maintainer 2026-09-05,
+         * on a plateau above a beached boat: "the navigation hitbox is not
+         * aligned with the scenery hitbox ... I jump down and now they are
+         * aligned"). The cell's own surface is where the piece stands, so
+         * ellipse and diamond land together at any elevation.
+         * KNOWN LIMIT: a piece standing on a DECK takes the base terrain here,
+         * because `sceneryBlocked` is one boolean per cell and does not name
+         * the placement that closed it. */
+        const lvl = terrain ? meLevel : t.level[i] ?? meLevel;
         const pts = [
           [c, r],
           [c + 1, r],
           [c + 1, r + 1],
           [c, r + 1],
-        ].map(([cx, cy]) => this.projectCellCorner(cx, cy, meLevel));
+        ].map(([cx, cy]) => this.projectCellCorner(cx, cy, lvl));
         gfx.fillStyle(terrain ? 0xf25d5d : 0xffa94d, 0.3);
         gfx.fillPoints(pts, true);
         gfx.lineStyle(1, terrain ? 0xff8787 : 0xffc078, 0.85);
