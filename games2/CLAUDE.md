@@ -1071,6 +1071,25 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     drawable source — `rawTexPixels` is what keeps `__ml.t3png` working.
     Bisects: `__ml.groundCompose(Infinity)` (pre-budget), `__ml.groundRaw(false)`
     (back to the canvas). Beacon: `bnd`, `defer`, `owed`.
+  - **A BOUNDARY IS SKIPPED INDOORS ONLY WHERE ITS OWN COLUMN IS TRUNCATED,
+    AND A CUT-SUPPRESSED CELL IS NEVER OWED** (`cutSuppressed`, 2026-09-05).
+    The transition raster replaces the cell's plate at its own uncut level; if
+    the cut-away draws that column SHORTER (`cell.level > cut`) the raster would
+    float over the stump, and that — only that — is skipped. It used to skip
+    wherever ANY cell of the quad was constrained, so a level-0 DOOR cell whose
+    quad meets the level-6 wall lost its parquet<->stone transition indoors
+    (plain parquet ran out of the door) and got it back one step outside — the
+    maintainer's two frames half a second apart, and his repro: "stand still
+    just inside the door ... one more step outside and the floor changes
+    radically at the transition". Worse, every such cell was OWED, and
+    `t3retryBoundaries` found its composition ready, repainted it, watched the
+    pass suppress it again and owed it again: up to T3_BOUNDARY_RETRY cell
+    repaints EVERY FRAME for as long as you stood indoors — measured at his
+    door, the ground RT's hash changed on 8 of 8 consecutive frames standing
+    still, 3-4.5 cell repaints per frame — the cave floor "simmering like
+    crazy". The occluder pass's twin (`topL === cell.level`) already meant
+    "not truncated", so its quad clause is gone and the two passes agree.
+    Legacy kill switch (cuts null) still suppresses every boundary.
   - **A TOO-WIDE CELL REPAINT SPLITS; IT DOES NOT GIVE UP.** `repaintTiles3Cells`
     bailed to a full paint when its bounding rect passed half the texture, and
     the geometry made that the ORDINARY case: a cell's rect spans the world's
@@ -1177,30 +1196,36 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     cross, chess pieces) queues behind it, as before — FIFO — only later. Dev
     A/B: localStorage `ml-deferred-parallel` (0 = the loader's own);
     `__ml.perf()` reports texture adds by key family and the per-frame max.
-- **A SLAB IS ONE SURFACE — ONE SET AND ONE MEMBER FOR THE WHOLE DECK**, roof,
-  bridge and cave lid alike, anchored at the deck's own first cell (min by
-  `x + y`, tie on `x` — render3.py:1387 and its `danch`). `deckCell` resolved
-  `plateFor(dg, x, y)` PER CELL, so a slab took its member from each cell's own
-  coordinates and its SET from each cell's own region, and 22 of the_game's 28
-  decks came out patchwork — the 180-cell inn across 8 arts, seams the maintainer
-  photographed from the street. Two channels, one fix: a 24-cell region border
-  cuts a roof in two (his houses are up to 15 cells wide and straddle one), and a
-  deck whose ground is the ROOM FLOOR takes each cell's own room anchor, painting
-  the floor plan — inner walls included — onto the roof. **The whole house
-  including wall tops is ONE roof; the rooms are something you discover when you
-  walk in** (maintainer, via the maps2 agent, who hit the identical bug from the
-  identical channel in render3 and posted the fix). The geometry is free:
-  `plateAt` ignores `x`/`y` except as the anchor's defaults, so one anchor for
-  both region and member is the whole change, and `deckAnchor` is a pure function
-  of the deck's own cells (memoised per deck object) — so the streaming per-cell
-  path and `resolveWindow` cannot disagree about it. NOTE FOR THE NEXT REPORT:
-  the_game's 11 roof decks are `brown_paving_stone`, so the ROOM MAP never
-  reached them — what showed there was the per-cell member and the region border;
-  only one 9-cell `parquet_floor` bridge takes the room path at all. Same
-  conclusion, same fix, different mechanism. Gate: `a deck is ONE set and ONE
-  member, eave to eave` (its control resolves each cell as a synthetic ONE-CELL
-  deck, which reproduces the old per-cell answer exactly, and must keep finding
-  ≥10 patchwork slabs — so the gate cannot go vacuous).
+- **A SLAB WEARS ONE SURFACE, AND IT IS DRAWN.** A roof, a bridge and a cave
+  lid take ONE set and ONE member for the whole deck, anchored at the deck's own
+  first cell (min by `x + y`, tie on `x` — render3.py:1387 and its `danch`), and
+  `opsForDeck` pastes that plate TOP FACE ONLY over the cap at `surfaceY` —
+  render3's `top_face_only(plate_img(..., anchor=danch))` at `col_y(x, y, dl)`,
+  to the row. TWO DEFECTS SAT ON TOP OF EACH OTHER HERE (2026-09-05): `deckCell`
+  resolved the surface PER CELL (22 of the_game's 28 decks patchwork, the
+  180-cell inn across 8 arts), and NOTHING DREW IT AT ALL — `Tiles3DeckCell
+  .surface` was resolved, carried and parity-gated against render3, and no
+  consumer turned it into a blit, so every roof wore its CAP TILE per cell:
+  `overTile` on the ring, `flatTile` inside. That is the lighter ring around
+  every roof and the line along every inner wall — the floor plan drawn on the
+  roof (maintainer: "the top of the outer and inner walls is not part of the
+  same roof, but from a player's perspective it's all the same rooftop ... not
+  be able to see what room a house has until you walk inside"). Fixing the
+  anchor alone changed no pixel, which is how the second defect was found.
+  `deckArtPaths` names the surface file too, or the loader never fetches it and
+  `ship-tiles3` never bakes it (`scripts/tiles3closure.ts` uses the same
+  function) — `opsForDeck` would then drop the op as "still streaming" forever.
+  A slab whose surface did not resolve draws its courses alone, never a hole.
+  The wall ring IS deck cells (every level-6 wall of the house is in deck 4), so
+  the surface covers wall caps and inner walls alike; decks draw LAST, as in
+  render3, so no down-screen cap can paint over it. NOTE: the room map never
+  reached the_game's roofs — they are `brown_paving_stone`, not the room floor;
+  the visible seams were the cap tiles and the per-cell member. Gates: `a deck
+  is ONE set and ONE member, eave to eave` (control resolves each cell as a
+  synthetic ONE-CELL deck, which reproduces the per-cell answer exactly, and
+  must keep finding >=10 patchwork slabs) and the deck arm of `every op the
+  factory hands back is drawable` (the surface op exists, is `t3f:`-keyed, sits
+  at `surfaceY` with role `deck`; an unloaded surface emits nothing).
 - **A DECK'S `thickness` IS THE CONTRACT — never force a course.** `deckCell`
   draws the slab from `lo = dl - thickness` (or `dl` where `frontCovered`), and
   `thickness` means "EXTRA face tiles below the top; 0 = the top only"

@@ -481,6 +481,11 @@ export function boundaryArtPaths(b: Tiles3Boundary, out: (p: string) => void): v
 
 export function deckArtPaths(d: Tiles3DeckCell, out: (p: string) => void): void {
   for (const s of d.stack) if (s.tile.path) out(s.tile.path);
+  /* THE SURFACE TOO. This names what the loader fetches AND what ship-tiles3
+   * bakes into the image (`scripts/tiles3closure.ts`); without it the slab's
+   * base-set plate is neither requested in dev nor present in prod, and
+   * `opsForDeck` drops the op as "still streaming" forever. */
+  if (d.surface?.path) out(d.surface.path);
 }
 
 /** The drawable texture key for a cell's SURFACE — what an occluder copy of

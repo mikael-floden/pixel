@@ -706,6 +706,21 @@ test("every op the factory hands back is drawable; the rest are dropped", { skip
   const wall: any = { kind: "wall", ground: "grey_stone", sx: 0, sy: 0, wall: { stack: [{ storey: 0, tile: { path: "loaded.webp", w: TILE, h: TILE }, y: 1 }, { storey: 1, tile: { path: "never.webp", w: TILE, h: TILE }, y: 2 }] } };
   assert.deepEqual(T.opsForCell(wall).map((o) => o.key), ["t2:loaded.webp"]);
   assert.deepEqual(T.opsForDeck({ sx: 0, stack: [{ tile: { path: "never.webp", w: TILE, h: TILE }, y: 0 }] } as any), []);
+  /* A DECK WEARS ITS SURFACE — top face only, at the slab's own level, keyed
+   * apart from the full plate. It was resolved and never drawn: every roof wore
+   * its cap tile per cell, the ring in `overTile` and the inside in `flatTile`,
+   * which is the floor plan drawn on the roof (maintainer 2026-09-05). The
+   * unloaded arm keeps the rule "dropped while streaming, never a hole". */
+  const roofPath = "tiles/plates/light_beach/clean.webp";
+  fx.put(artKey(roofPath), px(roofPath));
+  const roof: any = { sx: 5, surfaceY: 9, ground: "light_beach", stack: [], surface: { kind: "clean", path: roofPath, w: TILE, h: PLATE_H } };
+  const rops = T.opsForDeck(roof);
+  assert.equal(rops.length, 1, "the slab's surface is an op");
+  assert.equal(rops[0].key, plateKey({ kind: "clean", path: roofPath, topOnly: true }, "light_beach"));
+  assert.ok(rops[0].key.startsWith("t3f:"), "top face only — a different picture under its own key");
+  assert.ok(fx.man.exists(rops[0].key));
+  assert.deepEqual([rops[0].x, rops[0].y, rops[0].role], [5, 9, "deck"], "pasted at surfaceY, as render3's col_y(x, y, dl)");
+  assert.deepEqual(T.opsForDeck({ ...roof, surface: { ...roof.surface, path: "never.webp" } }), [], "an unloaded surface is dropped, not a hole");
   // and a boundary whose plates never loaded draws nothing
   const b = (F.boundary as any[])[0];
   assert.equal(T.opsForBoundary({ maskFrame: b.frame, a: b.a.ground, b: b.b.ground, plateA: b.a, plateB: b.b, sx: 0, sy: 0, w: TILE, h: PLATE_H } as any), null);

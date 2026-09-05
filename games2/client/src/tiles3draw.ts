@@ -1448,9 +1448,36 @@ export class Tiles3Textures {
     return this.boundary(b) ? op : null;
   }
 
-  /** A deck's slab. Its courses are plain x-over-x art; nothing composes. */
+  /** A deck's slab: its courses, then THE SURFACE IT WEARS.
+   *
+   *  The courses are plain x-over-x art and compose nothing. The surface is the
+   *  maintainer's base tile set — `deckCell` resolves ONE set and ONE member for
+   *  the whole slab — pasted TOP FACE ONLY over the cap at the slab's own level,
+   *  which is render3's `top_face_only(plate_img(..., anchor=danch))` at
+   *  `col_y(x, y, dl)` to the row.
+   *
+   *  IT WAS NEVER DRAWN. `Tiles3DeckCell.surface` was resolved, carried and
+   *  parity-gated against render3, and no consumer turned it into a blit — so
+   *  every roof, bridge and cave lid in the game wore its CAP TILE per cell:
+   *  `overTile` on the ring, `flatTile` inside. That is a lighter ring around
+   *  every roof and a line along every inner wall, i.e. the floor plan drawn on
+   *  the roof (maintainer 2026-09-05: "the top of the outer and inner walls is
+   *  not part of the same roof, but from a player's perspective it's all the
+   *  same rooftop ... the goal is to not be able to see what room a house has
+   *  until you walk inside"). The slab-anchor fix landed the same day and
+   *  changed no pixel, for this reason.
+   *
+   *  A plate is never budgeted (see `plate`), so this op is never refused; it is
+   *  dropped only while its file streams, exactly like a course. */
   opsForDeck(d: Tiles3DeckCell): Tiles3Blit[] {
-    return deckOps(d).filter((op) => this.o.textures.exists(op.key));
+    const ops = deckOps(d).filter((op) => this.o.textures.exists(op.key));
+    // A slab whose surface did not resolve draws its courses alone — the cap
+    // tile, the pre-fix look — never a hole.
+    if (d.surface && d.ground) {
+      const key = this.plate({ kind: d.surface.kind, path: d.surface.path, topOnly: true }, d.ground);
+      if (key) ops.push({ key, x: d.sx, y: d.surfaceY, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "deck" });
+    }
+    return ops;
   }
 
   /** Drop every composed texture whose key is not in `keep`. The owner calls

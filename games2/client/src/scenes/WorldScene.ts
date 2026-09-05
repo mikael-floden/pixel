@@ -3786,7 +3786,18 @@ export class WorldScene extends Phaser.Scene {
             drawn: !!bop,
             key: bop?.key ?? null,
           },
-          decks: this.t3Try(`probe decks ${col},${row}`, () => t3.decks(col, row), []).length,
+          /* Every slab on this cell, with the SURFACE it resolved to and the ops
+           * the factory hands the RT right now — so a roof cell that resolved a
+           * base-set member but draws only its cap tile reads as `ops` without
+           * a `deck`-role `t3f:` key, not as a resolution failure. */
+          decks: this.t3decksOf(t3, col, row).map((d) => ({
+            kind: d.kind,
+            level: d.level,
+            set: d.surfaceSet,
+            member: d.surfaceMember,
+            surface: d.surface?.path ?? null,
+            ops: tex ? tex.opsForDeck(d).map((o) => ({ role: o.role, key: o.key })) : [],
+          })),
         };
       },
       // world@2 decks: parsed summary + cells indexed for the ground/occluder loop.
@@ -15470,17 +15481,33 @@ export class WorldScene extends Phaser.Scene {
       const idx = row * world.width + col;
       const cut = mask ? (cuts ? cuts.get(idx) : top) : undefined;
       const tint = this.caveTint(idx, !!mask);
-      // A boundary is skipped INDOORS wherever ANY cell of its quad is a
-      // constrained column: the cut-away has already truncated those, and a
-      // transition pasted at the uncut level floats over the stump. With the
-      // legacy kill switch (cuts null) every column is constrained, so no
-      // boundary draws at all — which is what that switch means.
+      /* A BOUNDARY IS SKIPPED INDOORS ONLY WHERE ITS OWN COLUMN IS TRUNCATED.
+       *
+       * The raster replaces THIS cell's plate at `columnY(z0)` — the cell's own
+       * uncut level. If the cut-away draws this column SHORTER than that, the
+       * transition would float over the stump; that is the case the skip
+       * exists for, and `cell.level > cut` is exactly that case. A cell drawn at
+       * full height — every level-0 cell, and any raised one the cut does not
+       * reach — keeps its transition, whatever stands next to it.
+       *
+       * IT USED TO SKIP WHEREVER ANY CELL OF THE QUAD WAS CONSTRAINED, and the
+       * maintainer photographed the result from a doorway (2026-09-05, two
+       * frames half a second apart): the DOOR cell is a level-0 parquet floor
+       * whose quad meets the level-6 wall, so indoors its parquet<->stone
+       * transition vanished and plain parquet ran out of the door; one step out
+       * and the stone came back — "the floor changes radically at the
+       * transition". Nothing about the door was truncated. And every such cell
+       * was OWED (see below) and repainted every frame while indoors.
+       *
+       * The legacy kill switch (cuts null) still constrains every column, so no
+       * boundary draws at all — which is what that switch means. */
+      const cutSuppressed = !!mask && (!cuts || (cut !== undefined && cell.level > cut));
       /* GUARDED, like the resolves above it. A composition throws on art that
        * is not plate geometry, and an unguarded throw here escapes the whole
        * pass — one bad cell would black out the entire world instead of
        * costing its own diamond. */
       const bop =
-        b && !(mask && (!cuts || this.t3QuadCut(cuts, col, row)))
+        b && !cutSuppressed
           ? this.t3Try(`boundary art ${col},${row}`, () => tex.opsForBoundary(b), null)
           : null;
       // THE TILE IS THE BOUNDARY: on a flat cell the composed tile replaces the
@@ -15571,7 +15598,16 @@ export class WorldScene extends Phaser.Scene {
        * So the cell is recorded, and `t3retryBoundaries` repaints it when the
        * composition exists. Same shape as `onTerrainBatch`'s landing repaint,
        * which does this for ART; compositions had no equivalent. */
-      if (b && !bop) this.t3boundaryOwed.add(idx);
+      /* NEVER OWED FOR THE CUT. A boundary the cut-away suppressed is not
+       * waiting for anything a later frame can bring — only the mask coming
+       * down restores it, and that is a full repaint. Owing it made
+       * `t3retryBoundaries` find its composition ready, repaint the cell, watch
+       * this pass suppress it again, and owe it again: up to T3_BOUNDARY_RETRY
+       * cell repaints EVERY FRAME for as long as you stood indoors, each one
+       * resetting its rect and re-blitting it — the cave floor "simmering like
+       * crazy" while standing still (maintainer 2026-09-05), and a
+       * repaintTiles3Cells bill of 4-19 ms per frame under every roof. */
+      if (b && !bop && !cutSuppressed) this.t3boundaryOwed.add(idx);
       else this.t3boundaryOwed.delete(idx);
       if (useBoundary) {
         this.t3Blit(rt, bop, ax, ay, tint);
@@ -15709,18 +15745,6 @@ export class WorldScene extends Phaser.Scene {
       }
       return fallback;
     }
-  }
-
-  /** Is any cell of the lattice quad anchored at (col,row) a CONSTRAINED
-   *  column? (indoor cut-away — see drawTiles3Ground). */
-  private t3QuadCut(cuts: Map<number, number>, col: number, row: number): boolean {
-    const w = this.world!.width;
-    return (
-      cuts.has(row * w + col) ||
-      cuts.has(row * w + col + 1) ||
-      cuts.has((row + 1) * w + col) ||
-      cuts.has((row + 1) * w + col + 1)
-    );
   }
 
   /** OCCLUDER COLUMNS for a maps3 world — the same contract as the maps2
@@ -15872,7 +15896,11 @@ export class WorldScene extends Phaser.Scene {
            * texels, so the transition simply replaces the plain cap. */
           const ob =
             topL === cell.level && !this.noTransitions ? this.t3boundaryOf(t3, col, row) : null;
-          if (ob?.topOnly && !(mask && (!cuts || this.t3QuadCut(cuts, col, row)))) {
+          /* `topL === cell.level` above already means this column is drawn at
+           * full height — not truncated — which is the ONLY case the ground
+           * pass draws the transition indoors (see `cutSuppressed` there). The
+           * two passes must agree or the occluder copy paints over the ground. */
+          if (ob?.topOnly) {
             const obop = this.t3Try(`occ boundary ${col},${row}`, () => tex.opsForBoundary(ob), null);
             // `obop` carries the boundary's own absolute paste point (the same
             // one the ground pass blits it at) — never re-derive it here.
