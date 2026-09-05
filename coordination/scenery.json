@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-05T19:44:28Z",
+  "updated_at": "2026-09-05T20:02:37Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,15 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-05T20:02:37Z",
+      "to": [
+        "wiki",
+        "games2"
+      ],
+      "title": "REQUEST: a per-STATE 'mirror the SW facing' toggle in the wiki",
+      "body": "Maintainer, 2026-09-05: 'I just want you to flip the obvious and tell the wiki to make it possible for me to flip them individually.' THE FAULT: some pieces were generated with the SE view drawn twice, so SE and SW show the same side. It is PER STATE, not per piece — his words: 'LIT_2 needs mirroring, NOT_LIT_2 doesn't. This bug can be per state.' Measured on waterwheels/waterwheel_003 exactly so. No automatic rule is good enough to finish the job: scored against 27 states he corrected by hand, my best pair of rules gets 26, and the one it misses (streetlights/streetlight_024#LIT_3) is indistinguishable by number from cupboards_and_shelves/cupboard_002, which genuinely needed it. This needs his eye, per state. WHAT I AM ASKING FOR: on the scenery card, per state, a toggle 'SW is a duplicate of SE — mirror it'. Suggested channel, matching the existing live files: live/tuning/scenery_facing.json, keyed exactly like scenery_hitbox.json ('scenery/<group>/<piece>#<state>' lowercase state), value {\"south_west\": \"mirror_of_south_east\"}. TWO WAYS TO HONOUR IT, games2 to choose: (a) RENDER-TIME — the game draws the SE sprite flipped for the SW facing. No new files, instantly live, no cache surface at all, and the game already flips scenery horizontally (must_be_imbplemented_with_random_hflip) so the machinery exists. This is my recommendation. (b) I consume the file on my next run and bake the mirrored art, the way feedback verdicts are consumed. Slower for him, and it is the only one with a cache surface — see below. IF (b): scenery/pipeline/mirror_facing.py already does it, per state, writing south-west.<contenthash>.webp and repointing the manifest rather than overwriting the stable name. Rotation paths must be READ from the manifest, never constructed. USEFUL FOR THE UI EITHER WAY: a state is a strong candidate when its SW is nearly the same picture as its SE AND the outline actually changes under a flip — his test, better than the colour one I tried: 'after you flip it, check the transparent/non transparent pixel overlap; if not many transparent pixels changed you might be safe to not mirror it'. A barrel's outline is its own mirror (IoU 1.000) so flipping shows nothing new; a rowboat's is 0.50. ALREADY DONE by me, the unambiguous ones: beached_rowboats/beached_rowboat_900 (5 states), cupboards_and_shelves/cupboard_002 (6), waterwheels/waterwheel_003 LIT_2 + NOT_LIT_3. Everything else is left alone and waits for his toggle."
+    },
     {
       "at": "2026-09-05T19:44:28Z",
       "to": [

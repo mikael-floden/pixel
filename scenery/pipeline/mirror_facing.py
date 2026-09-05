@@ -43,7 +43,7 @@ import factory, viewer_build
 HANDED_GROUPS = {"standing_stones", "story_posts", "signposts", "sundials",
                  "milestones", "grave_markers"}
 DUPLICATE_MAX = 6.0     # mean |RGBA| difference at 64x64 below which SW *is* SE
-SYMMETRY_MIN = 6.0      # below this the art is its own mirror and flipping is a no-op
+SILHOUETTE_MAX = 0.80   # above this the OUTLINE is its own mirror; flipping shows nothing new
 
 
 def _small(path):
@@ -57,13 +57,28 @@ def duplication(se, sw):
 
 
 def self_symmetry(se_path):
-    """How much a mirror actually changes this art. Near zero means the piece is
-    its own reflection — a plain barrel, a lamp post — so mirroring achieves
-    nothing and only rewrites files. The maintainer's rule: "if you apply it on
-    scenery that doesn't need it you are the one making SE and SW look the same."
-    """
-    a = _small(se_path)
-    return float(np.abs(a - a[:, ::-1]).mean())
+    """How much of the SHAPE survives a flip, as intersection-over-union of the
+    opaque mask against its own mirror. 1.0 = the outline is symmetric.
+
+    His test, and it beats the one it replaced: "After you flip it, check the
+    transparent/non transparent pixel overlap. You should not focus on objects
+    where the transparent pixels look kinda identical after flip. If not many
+    transparent pixels changed you might be safe to not mirror it."
+    (maintainer 2026-09-05)
+
+    Measuring COLOUR instead was the bug: a barrel's wood grain differs left to
+    right, so an RGBA comparison called it asymmetric and offered to mirror it
+    when its outline is perfectly symmetric (IoU 1.000) and flipping shows the
+    player nothing new. Scored against the 27 states he corrected by hand, this
+    plus the already-different rule accounts for 26 of them; colour got 7."""
+    im = Image.open(se_path).convert("RGBA")
+    box = im.getbbox()
+    if box:
+        im = im.crop(box)
+    m = np.asarray(im.resize((96, 96), Image.NEAREST))[..., 3] > 8
+    f = m[:, ::-1]
+    union = int((m | f).sum())
+    return float((m & f).sum() / union) if union else 1.0
 
 
 def _mirror_bytes(se_path):
@@ -74,7 +89,7 @@ def _mirror_bytes(se_path):
     return buf.getvalue()
 
 
-def plan(rel):
+def plan(rel, only=None):
     """[(state_key, se_rel, sw_rel, duplication)] for facings that need it.
     `skipped` (printed by the CLI) is what was duplicated but symmetric."""
     man = factory.read_manifest(rel)
@@ -93,18 +108,25 @@ def plan(rel):
         d = duplication(se_abs, sw_abs)
         if d >= DUPLICATE_MAX:
             continue                      # SW is already a genuinely different view
+        if only is not None and key.upper() in only:
+            jobs.append((key, se, sw, d))   # named by the maintainer
+            continue
         sym = self_symmetry(se_abs)
-        if sym < SYMMETRY_MIN:
-            skipped.append((key, d, sym))  # symmetric piece: a mirror is the same picture
+        if sym > SILHOUETTE_MAX:
+            skipped.append((key, d, sym))  # the outline is its own mirror: flipping shows nothing
             continue
         jobs.append((key, se, sw, d))
     return man, jobs
 
 
-def apply(rel, write=False):
+def apply(rel, write=False, only=None):
+    """`only` = a set of STATE keys the maintainer named explicitly. His eye beats
+    the heuristics, so a named state skips the shape test (waterwheel_003 LIT_2
+    scored 0.802 against a 0.80 line and he had already said it needs mirroring).
+    It never skips the handed-art refusal or the round-trip check."""
     if rel.split("/", 1)[0] in HANDED_GROUPS:
         return "REFUSED — handed art, a mirror reverses it; regenerate instead", []
-    man, jobs = plan(rel)
+    man, jobs = plan(rel, only)
     if man is None:
         return "no manifest", []
     if not jobs:
@@ -138,9 +160,17 @@ if __name__ == "__main__":
     write = "--dry-run" not in sys.argv
     if not args:
         raise SystemExit(__doc__)
+    # "group/piece#STATE" names one facing explicitly; "group/piece" lets the
+    # rules decide. Both forms may be mixed on one command line.
+    named = {}
+    for a in args:
+        rel, _, st = a.partition("#")
+        named.setdefault(rel, set())
+        if st:
+            named[rel].add(st.upper())
     total = 0
-    for rel in args:
-        status, done = apply(rel, write)
+    for rel, only in named.items():
+        status, done = apply(rel, write, only or None)
         print("%-42s %s" % (rel, status))
         for key, d, new in done:
             print("    %-12s duplication %.1f -> %s" % (key, d, os.path.basename(new)))
