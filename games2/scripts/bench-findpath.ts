@@ -19,11 +19,15 @@ import { readFileSync } from "node:fs";
 import { existsSync } from "node:fs";
 import { buildTerrainGrid, findPath, CELL_WU, findSpawn, parseWorld } from "@nangijala/shared";
 
+// the_game FIRST: it is the map this budget exists for, and the tiles2 worlds
+// under it are on a countdown (maintainer 2026-09-05 — see games2/CLAUDE.md).
+// They stay measured only so a regression in the branch that still serves them
+// is visible; they must never be what a constant is tuned against.
 const WORLDS: [string, string][] = [
+  ["the_game", "worlds3"], // the shipped default map — the one that matters
   ["ring_test", "worlds"],
   ["glow_test", "worlds"],
   ["prop_demo", "worlds"],
-  ["the_game", "worlds3"], // the shipped default map
 ];
 
 for (const [name, tree] of WORLDS) {

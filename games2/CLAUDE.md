@@ -15,6 +15,18 @@ inside the actual real game").
   live in EITHER world tree — resolved by probing `maps2/worlds` then
   `maps2/worlds3`, as the server and build-worlds do — so the policy names a
   world and nothing else.
+  **THE ONLY MAP THAT MATTERS IS `the_game`, AND THE TILES 2.0 WORLDS ARE ON A
+  COUNTDOWN** (maintainer 2026-09-05: "Only the_game is important, we will soon
+  remove all other maps that uses the tiles2 system. I just want to still have
+  it until the new map works."). They must keep WORKING — do not break the maps2
+  branch, its atlas or its gates — but they are not what anything is FOR:
+  measure, calibrate, profile and optimise against the_game, and never let a
+  tiles2 world's numbers stand in for the shipped one. That distinction is not
+  academic: `bench-findpath.ts` set the client's hold-to-move repath budget from
+  ring_test / glow_test / prop_demo at 6k-25k cells, where a route costs
+  0.46-10.54 ms p50, while the_game is 262,144 cells and costs 38.24 ms p50 and
+  70.10 ms max — the budget was tuned against a map nobody plays. When a tiles2
+  world and the_game disagree about a cost, the_game is the answer.
 - **`games2/scripts/shipset.mjs`** closes over those roots: a published world
   drags in its `paths[]` tiles, its NPCs' character art, its spawn zones'
   monsters, and — a worlds3 world — its placed SCENERY pieces' whole
