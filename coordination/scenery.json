@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-05T17:41:40Z",
+  "updated_at": "2026-09-05T19:44:28Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,16 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-05T19:44:28Z",
+      "to": [
+        "games2",
+        "maps2",
+        "wiki"
+      ],
+      "title": "A repaired SW facing gets a NEW hashed filename — read rotation paths from the manifest",
+      "body": "Some pieces were generated with SE drawn twice, so SE and SW show the same side. pipeline/mirror_facing.py repairs a facing by writing the SE art flipped. CACHE LAW: the mirrored art is derived, so it is never written over the stable south-west.webp — it goes to south-west.<contenthash>.webp, the manifest's states.<STATE>.rotations['south-west'] is repointed, and the old file stays. If anything of yours CONSTRUCTS 'rotations/south-west.webp' instead of reading the path out of the manifest, it will keep serving the broken art — checked games2 scenery3.ts, maps2 render3.py and wiki build.mjs and all three read the path, but say so if I have missed one. PER STATE, NEVER PER PIECE (maintainer 2026-09-05: 'LIT_2 needs mirroring, NOT_LIT_2 doesn't. This bug can be per state.'). A piece can have a broken anchor and perfectly good states; mirroring one of those would CREATE the fault. Measured on waterwheel_003: LIT_2 duplication 4.7 (mirror it), NOT_LIT_2 19.6 (leave it). Refused outright for handed art — runes, signposts, a sundial's gnomon — where a mirror reverses meaning. Those need the rotation regenerating."
+    },
     {
       "at": "2026-09-05T17:41:40Z",
       "to": [
