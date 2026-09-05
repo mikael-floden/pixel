@@ -1149,6 +1149,30 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     cross, chess pieces) queues behind it, as before — FIFO — only later. Dev
     A/B: localStorage `ml-deferred-parallel` (0 = the loader's own);
     `__ml.perf()` reports texture adds by key family and the per-frame max.
+- **A SLAB IS ONE SURFACE — ONE SET AND ONE MEMBER FOR THE WHOLE DECK**, roof,
+  bridge and cave lid alike, anchored at the deck's own first cell (min by
+  `x + y`, tie on `x` — render3.py:1387 and its `danch`). `deckCell` resolved
+  `plateFor(dg, x, y)` PER CELL, so a slab took its member from each cell's own
+  coordinates and its SET from each cell's own region, and 22 of the_game's 28
+  decks came out patchwork — the 180-cell inn across 8 arts, seams the maintainer
+  photographed from the street. Two channels, one fix: a 24-cell region border
+  cuts a roof in two (his houses are up to 15 cells wide and straddle one), and a
+  deck whose ground is the ROOM FLOOR takes each cell's own room anchor, painting
+  the floor plan — inner walls included — onto the roof. **The whole house
+  including wall tops is ONE roof; the rooms are something you discover when you
+  walk in** (maintainer, via the maps2 agent, who hit the identical bug from the
+  identical channel in render3 and posted the fix). The geometry is free:
+  `plateAt` ignores `x`/`y` except as the anchor's defaults, so one anchor for
+  both region and member is the whole change, and `deckAnchor` is a pure function
+  of the deck's own cells (memoised per deck object) — so the streaming per-cell
+  path and `resolveWindow` cannot disagree about it. NOTE FOR THE NEXT REPORT:
+  the_game's 11 roof decks are `brown_paving_stone`, so the ROOM MAP never
+  reached them — what showed there was the per-cell member and the region border;
+  only one 9-cell `parquet_floor` bridge takes the room path at all. Same
+  conclusion, same fix, different mechanism. Gate: `a deck is ONE set and ONE
+  member, eave to eave` (its control resolves each cell as a synthetic ONE-CELL
+  deck, which reproduces the old per-cell answer exactly, and must keep finding
+  ≥10 patchwork slabs — so the gate cannot go vacuous).
 - **A DECK'S `thickness` IS THE CONTRACT — never force a course.** `deckCell`
   draws the slab from `lo = dl - thickness` (or `dl` where `frontCovered`), and
   `thickness` means "EXTRA face tiles below the top; 0 = the top only"

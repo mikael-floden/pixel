@@ -801,3 +801,78 @@ test("the entire 512x512 world resolves with no fallback and no missing art", { 
       `${files.size} distinct art files, all present (${Date.now() - started} ms)`,
   );
 });
+
+// ============================================================================
+// A SLAB IS ONE SURFACE
+// ============================================================================
+//
+// render3.py:1387 — "a roof, a bridge and a cave lid are GROUND too: the slab
+// top wears the maintainer's base tile set like any other surface - ONE set and
+// ONE member for the WHOLE slab, anchored at the deck's own first cell. See
+// plate_img: the room map must not reach a roof, and a 24-cell region border
+// must not cut one either (a house 15 cells wide straddles one)."
+//
+// The maintainer's rule, reported through the maps2 agent with his wording: the
+// whole house including wall tops is ONE roof; the rooms are something you
+// discover when you walk in.
+//
+// THE CONTROL IS FREE AND EXACT: a ONE-CELL deck's anchor is that cell, so
+// resolving each cell as its own synthetic deck reproduces the per-cell answer
+// byte for byte — `plateAt` never reads the deck's cell set (only `cap`/`lo` do,
+// through `frontCovered`), so `surface` is faithful. That arm is what keeps this
+// gate honest: it must find the patchwork the anchor removes, or the assertion
+// below could pass on a world with nothing to get wrong.
+test("a deck is ONE set and ONE member, eave to eave", { skip: !!MISSING.length }, () => {
+  const { t, pitch } = build();
+  const view: World3View = viewFromDoc(doc);
+  const frame = isoFrame({ x0: 0, y0: 0, x1: view.width, y1: view.height }, view.maxLevel, pitch);
+  const art = (dk: any, di: number, x: number, y: number) =>
+    `${t.deckCell(view, frame, dk, di, x, y).surface?.path}`;
+
+  const spread: string[] = [];
+  let perCellSpread = 0;
+  view.decks.forEach((dk: any, di: number) => {
+    const mine = new Set<string>();
+    const sets = new Set<number>();
+    const members = new Set<number>();
+    const control = new Set<string>();
+    for (const c of dk.cells) {
+      const d = t.deckCell(view, frame, dk, di, c.x, c.y);
+      mine.add(`${d.surface?.path}`);
+      sets.add(d.surfaceSet);
+      members.add(d.surfaceMember);
+      control.add(art({ ...dk, cells: [c] }, di, c.x, c.y));
+    }
+    if (mine.size > 1 || sets.size > 1 || members.size > 1)
+      spread.push(
+        `deck ${di} (${dk.kind ?? "-"}, ${dk.ground}, ${dk.cells.length} cells): ` +
+          `${sets.size} sets, ${members.size} members, ${mine.size} arts`,
+      );
+    if (control.size > 1) perCellSpread++;
+  });
+  assert.deepEqual(spread, [], "a slab wearing more than one surface");
+
+  // NON-VACUOUS: the per-cell rule this replaced really does shatter this world's
+  // slabs (measured 22 of 28 on the_game, the 180-cell inn across 8 arts).
+  assert.ok(
+    perCellSpread >= 10,
+    `the control found only ${perCellSpread} patchwork slabs — the gate cannot see the bug it exists for`,
+  );
+
+  // AND IT IS THE DECK'S OWN FIRST CELL — render3's min by (x + y), tie x.
+  for (let di = 0; di < view.decks.length; di++) {
+    const dk: any = view.decks[di];
+    const a = dk.cells.reduce((b: any, c: any) =>
+      c.x + c.y < b.x + b.y || (c.x + c.y === b.x + b.y && c.x < b.x) ? c : b,
+    );
+    assert.equal(
+      art(dk, di, dk.cells[0].x, dk.cells[0].y),
+      art({ ...dk, cells: [a] }, di, a.x, a.y),
+      `deck ${di} is not anchored at its own first cell (${a.x},${a.y})`,
+    );
+  }
+  console.log(
+    `tiles3 decks: ${view.decks.length} slabs, each ONE set and ONE member; ` +
+      `${perCellSpread} of them were patchwork under the per-cell rule`,
+  );
+});

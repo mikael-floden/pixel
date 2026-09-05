@@ -2403,6 +2403,31 @@ export class Tiles3 {
    *  level with same-over-same wall bands down to its underside, and then WEARS
    *  THE MAINTAINER'S SET like any other ground. A cell whose down-screen
    *  neighbours are both deck is covered, so it needs no face and no thickness. */
+  /** THE DECK'S OWN ANCHOR — its up-screen-most cell, min by (x + y) with x as
+   *  the tie-break, which is render3's `min(cells, key=(c[0] + c[1], c[0]))`.
+   *  A pure function of the deck's own cells, so the streaming per-cell path and
+   *  `resolveWindow` cannot disagree about it; cached per deck object because
+   *  `deckCell` runs once per deck cell per window. */
+  private deckAnchorCache = new WeakMap<object, [number, number]>();
+  private deckAnchor(dk: Deck3): [number, number] {
+    const hit = this.deckAnchorCache.get(dk as unknown as object);
+    if (hit) return hit;
+    let best = Infinity;
+    let ax = 0;
+    let ay = 0;
+    for (const c of dk.cells) {
+      const s = c.x + c.y;
+      if (s < best || (s === best && c.x < ax)) {
+        best = s;
+        ax = c.x;
+        ay = c.y;
+      }
+    }
+    const a: [number, number] = Number.isFinite(best) ? [ax, ay] : [0, 0];
+    this.deckAnchorCache.set(dk as unknown as object, a);
+    return a;
+  }
+
   private deckCells(view: World3View, frame: Frame): Tiles3DeckCell[] {
     const out: Tiles3DeckCell[] = [];
     view.decks.forEach((dk, di) => {
@@ -2441,7 +2466,28 @@ export class Tiles3 {
     const stack: WallStackStep[] = [];
     for (let f = lo; f <= dl; f++)
       stack.push({ storey: f, tile: f === dl ? cap : mid, y: columnY(frame, x, y, f) - TOP_Y });
-    const p = this.plateFor(dg, x, y);
+    /* A SLAB IS ONE SURFACE — ONE SET AND ONE MEMBER FOR THE WHOLE DECK,
+     * anchored at its own first cell, exactly as render3 does it (render3.py
+     * :1387 "a roof, a bridge and a cave lid are GROUND too ... ONE set and ONE
+     * member for the WHOLE slab, anchored at the deck's own first cell").
+     *
+     * This was `plateFor(dg, x, y)` — per cell — so a slab picked its member
+     * from each cell's own coordinates and its SET from each cell's own region.
+     * Two consequences, both visible from outside the building: a 24-cell region
+     * border cuts a roof in two (the_game's houses are up to 15 cells wide and
+     * straddle one), and a roof whose ground is the ROOM FLOOR takes each cell's
+     * own room anchor, painting the floor plan — inner walls included — onto the
+     * roof. The maintainer's rule, via the maps2 agent who found it: the whole
+     * house including wall tops is ONE roof; the rooms are something you
+     * discover when you walk in.
+     *
+     * (the_game's 11 roof decks are `brown_paving_stone`, so the room map does
+     * not reach THEM — it is the per-cell member and the region border that show
+     * there. One bridge deck is `parquet_floor` and would take the room path.
+     * The anchor fixes both, which is why it is the anchor and not a special
+     * case for rooms.) */
+    const [dax, day] = this.deckAnchor(dk);
+    const p = this.plateAt(dg, regionAt(dg, dax, day), x, y, dax, day);
     return {
       deck: di,
       kind: dk.kind ?? null,
