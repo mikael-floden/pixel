@@ -118,26 +118,50 @@ border from cutting a roof in two (a 15-cell-wide house straddles one).
 `render3.plate_img(..., anchor=)`; **games2 consumes `rooms` for the same
 purpose and needs the same rule** — raised on their board.
 
-### terrain — a step has to be visible
+### terrain — a step has to be visible, and the player must never see the fix
 
-**A RAISED CELL'S WALL BAND IS DRAWN FROM ITS OWN GROUND**, so grass over grass
-paints an invisible cliff: the edge exists only as a silhouette against
-whatever happens to be behind it (maintainer 2026-09-05, standing on a grass
-ledge above grass: *"It's really hard for me to know that this is an edge since
-both levels use the same ground type ... You often draw both the hill and the
-slope using the same ground when we have so many to choose from"*).
+**A RAISED CELL DRAWS WALL FACES ON ITS SOUTH AND EAST EDGES ONLY.** Its north
+and west edges draw nothing — the higher top simply lies over the lower ground
+behind it — so a step you approach from up-screen exists only where the two
+GROUNDS differ. Grass on grass is invisible (maintainer 2026-09-05: *"It's
+really hard for me to know that this is an edge since both levels use the same
+ground type"*). A drop to the south or east already reads as a fall: the grass
+tile's own wall band is earth.
 
-The terrace is NOT repainted — level 6 alone is 8,357 cells and the island
-would go brown. What carries the information is the **lip**, which is also what
-wears bare in life: `terrace_rims()` gives one cell of contrasting ground to
-the rim of every drop of `RIM_DROP = 2` levels or more, and to every **ramp
-cell**, which turns "the way up" into a visible path. The material is chosen by
-height (`RIM_BY_HEIGHT`: light_soil below 8, grey_stone below 18, ice above) so
-the mountain does not wear the meadow's soil, and only `grass`/`snow` are
-repainted — a shore, a road, a floor and bare rock are already contrasts.
-**A rim is a line, not a rash**: a candidate keeps its rim only if two more
-candidates touch it, so a dimple in open grass does not become a speck of soil
-(3,792 → 3,595 cells, 5 isolated in the whole world).
+**THE PLAN: NO TWO TERRACES THAT MEET FACE-LESS SHARE A GROUND.** A terrace is
+a 4-connected patch of one level. `terrace_grounds()` builds the graph of
+terraces that touch where the LOWER one lies north or west of the higher, by a
+drop of `STEP = 2` levels or more, along `EDGE_MIN = 4` cells or more (a
+one-level step is a walkable slope; a two-cell contact is a corner, not a line
+you misread). The graph is coloured **largest-first**, so the valley floor and
+the big benches keep the ground they have, and a smaller neighbour that would
+match takes the next ground in its own family — a **whole terrace**, never a
+rim:
+
+| family | keeps | becomes, in order |
+|---|---|---|
+| grass | grass | **dark_mud** below level 16 (a peat bench under a meadow), **grey_stone** above (a rocky rise), black_rock |
+| snow | snow | grey_stone (the bare shoulder), black_rock, ice |
+| grey_stone / black_rock / ice | its own | the other rock, snow |
+
+Roads, floors, paving, beach and existing fens are never repainted — each is
+already a contrast and already means something — and only a terrace's dominant
+cells change. Ramps are `light_soil`, the road's own material, because a ramp
+is where you walk. **Build-asserted:** zero touching pairs share a ground with
+a colour free (the_game: 0 pairs, 0 forced).
+
+Measured on the_game: grass 29,303 → 19,275 cells; dark_mud +9,089;
+grey_stone from grass +1,069; the massif alternates snow / grey_stone /
+black_rock shelf by shelf. Two palettes were built and rejected by eye before
+this one: grey_stone as the lowland alternate from level 4 (grass 29,303 →
+13,674, the middle benches a grey layer cake — that repaints the meadow, not
+the hill) and constraining every touching side (the same, plus repainting for
+edges that already show a fall).
+
+**REJECTED, one build (2026-09-05): a one-cell contrasting lip along every
+drop.** It read as a ring painted on to hide a bug (*"The player should never
+think 'aah you added stone here to hide this problem'"*), and it ringed the
+south and east faces too, which already show a fall.
 
 ### `scenery` — a placement is centred on its HITBOX, not its art
 

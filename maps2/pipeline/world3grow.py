@@ -35,6 +35,7 @@ ground and collisions; the light audit (8 slots/window) gates the build.
 """
 from __future__ import annotations
 
+import collections
 import json
 import math
 import os
@@ -2949,66 +2950,172 @@ class Grow:
                           on=("dark_mud", "light_beach"), hflip=i % 2)
         self.placed += [("islet pieces", n)]
 
-    # A STEP HAS TO BE VISIBLE (maintainer 2026-09-05, standing on a grass
-    # ledge above grass: "It's really hard for me to know that this is an edge
-    # since both levels use the same ground type ... You often draw both the
-    # hill and the slope using the same ground when we have so many to choose
-    # from"). A raised cell's WALL BAND is drawn from its OWN ground, so grass
-    # over grass paints an invisible cliff - the edge exists only as a
-    # silhouette against whatever is behind it.
+    # A STEP HAS TO BE VISIBLE, AND THE PLAYER MUST NEVER SEE THE FIX
+    # (maintainer 2026-09-05, twice). First: "It's really hard for me to know
+    # that this is an edge since both levels use the same ground type ... You
+    # often draw both the hill and the slope using the same ground when we
+    # have so many to choose from." Then, on the soil lip I painted round every
+    # drop: "It looks as if you have created a small ring around the hill. Why
+    # didn't you just change the entire top of the hill to stone? ... The
+    # player should never think 'aah you added stone here to hide this
+    # problem'. It should feel as if this is never an issue."
     #
-    # The whole terrace is not repainted: level 6 alone is 8,357 cells and the
-    # island would go brown. What carries the information is the LIP, which is
-    # also what wears bare in life - so the rim of every drop takes a
-    # contrasting ground, and so does every RAMP, which turns "the way up"
-    # into a visible path. One cell is enough to read; the band is chosen by
-    # height so the mountain does not wear the meadow's soil.
-    RIM_BY_HEIGHT = ((8, "light_soil"), (18, "grey_stone"), (999, "ice"))
-    RIM_SOFT = ("grass", "snow")      # only these are repainted
-    RIM_DROP = 2                      # levels; a 1-level step is a slope, not
-                                      # a cliff, and already reads as one
+    # THE PROPERTY: a raised cell draws wall faces on its south and east edges
+    # only. Its north and west edges have no face - the higher top simply lies
+    # over the lower ground behind it - so a step you approach from up-screen
+    # exists only where the two GROUNDS differ. Grass on grass is invisible.
+    #
+    # THE PLAN: no two terraces that touch share a ground. A terrace is a
+    # connected patch of one level; the touching graph is coloured largest-
+    # first, so the valley floor and the big benches keep the ground they
+    # have, and a smaller neighbour that would match them takes the next
+    # ground in its own family - a WHOLE terrace, never a rim:
+    #
+    #   grass family   grass -> dark_mud on a low bench (a damp hollow),
+    #                           grey_stone on a high one (a rocky rise)
+    #   snow family    snow  -> grey_stone (the bare shoulder), black_rock
+    #
+    # Roads, floors, paving, beach, fens and ice are never repainted: each is
+    # already a contrast and already means something. Ramps are light_soil,
+    # the road's own material, because a ramp is where you walk.
+    #
+    # REJECTED: a one-cell contrasting lip along every drop (this file,
+    # 2026-09-05, one build). It read as a ring painted on to hide a bug, and
+    # it also ringed the south and east faces, which already show a fall.
+    # THE LOWLAND ALTERNATE IS EARTH, NOT ROCK, until the upland. Measured on
+    # the first build with grey_stone from level 4 up: the island's grass
+    # went 29,303 -> 13,674 cells and the middle benches read as a grey
+    # layer cake - that is repainting the meadow, not the hill. Peat under a
+    # meadow bench (dark_mud) is what a wet lowland does; bare rock belongs
+    # to the upland, where the massif's own grey_stone already begins.
+    LOW_ALT = ((15, "dark_mud"), (999, "grey_stone"))
+    # AN EDGE IS A RUN, NOT A CORNER. Two terraces that meet face-less along
+    # a single cell or two are a corner clipped in passing, not a line a
+    # player walks along and misreads; constraining those repainted whole
+    # benches for the sake of three cells. Fewer than EDGE_MIN contacts on
+    # the face-less side is no constraint.
+    EDGE_MIN = 4
+    # what each family may become, in order of preference after its own
+    FAMILY = {"snow": ("snow", "grey_stone", "black_rock", "ice"),
+              "grey_stone": ("grey_stone", "black_rock", "snow"),
+              "black_rock": ("black_rock", "grey_stone"),
+              "ice": ("ice", "snow")}
+    # A ONE-LEVEL STEP IS A SLOPE, NOT A CLIFF: 15 px, walkable both ways,
+    # graded by the tiles domain's slope sets where they exist, and nothing is
+    # lost by misjudging it. Only a drop of two or more must read.
+    STEP = 2
 
-    def terrace_rims(self):
-        gi, grd, lvl = self.gi, self.grd, self.lvl
-        ramp = {(c["x"], c["y"]) for r in self.doc.get("ramps", [])
-                for c in r.get("cells", [])}
-        rim = []
+    def terraces(self):
+        """[(level, cells, dominant ground)] over land, 4-connected."""
+        seen = [[False] * NEW for _ in range(NEW)]
+        out = []
         for y in range(NEW):
             for x in range(NEW):
-                g = self.g(x, y)
-                if g not in self.RIM_SOFT or self.liquid(x, y):
+                if seen[y][x] or self.liquid(x, y) or not self.g(x, y):
                     continue
-                if (x, y) in getattr(self, "floor_cells", {}):
-                    continue
-                z = lvl[y][x]
-                edge = (x, y) in ramp
-                if not edge:
+                lv = self.lvl[y][x]
+                st, cells = [(x, y)], []
+                seen[y][x] = True
+                while st:
+                    cx, cy = st.pop()
+                    cells.append((cx, cy))
                     for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                        nx, ny = x + dx, y + dy
-                        if not (0 <= nx < NEW and 0 <= ny < NEW):
-                            continue
-                        if self.liquid(nx, ny) or not self.g(nx, ny):
-                            continue          # a shore is already a contrast
-                        if z - lvl[ny][nx] >= self.RIM_DROP:
-                            edge = True
-                            break
-                if edge:
-                    rim.append((x, y))
-        # A RIM IS A LINE, NOT A RASH. An isolated cell that happens to have
-        # a 2-level neighbour is a dimple in the terrain, and painting it
-        # leaves a speck of soil in open grass; a real edge runs. A candidate
-        # keeps its rim only if two more candidates touch it.
-        rimset = set(rim)
-        rim = [c for c in rim
-               if sum((c[0] + dx, c[1] + dy) in rimset
-                      for dx in (-1, 0, 1) for dy in (-1, 0, 1)
-                      if (dx, dy) != (0, 0)) >= 2]
-        for (x, y) in rim:
-            z = lvl[y][x]
-            mat = next(m for lim, m in self.RIM_BY_HEIGHT if z < lim)
-            # snow keeps its own rim above the snowline unless it is a ramp
-            grd[y][x] = gi[mat]
-        self.placed += [("terrace rims drawn", len(rim))]
+                        nx, ny = cx + dx, cy + dy
+                        if 0 <= nx < NEW and 0 <= ny < NEW and not seen[ny][nx] \
+                                and not self.liquid(nx, ny) and self.g(nx, ny) \
+                                and self.lvl[ny][nx] == lv:
+                            seen[ny][nx] = True
+                            st.append((nx, ny))
+                dom = collections.Counter(self.g(*c) for c in cells).most_common(1)[0][0]
+                out.append((lv, cells, dom))
+        return out
+
+    def terrace_grounds(self):
+        ts = self.terraces()
+        idx = {}
+        for i, (lv, cells, dom) in enumerate(ts):
+            for c in cells:
+                idx[c] = i
+        # ONLY THE FACE-LESS SIDE CONSTRAINS. A raised terrace draws wall
+        # faces on its south and east edges - and the grass tile's own wall
+        # band is earth, so a drop to the south or east already reads as a
+        # fall ("they show a fall", his words on the rims I put there). The
+        # north and west edges draw nothing: the higher top lies over the
+        # lower ground behind it. So two terraces constrain each other only
+        # where the LOWER one lies north or west of the higher.
+        contact = collections.Counter()
+        for i, (lv, cells, dom) in enumerate(ts):
+            for (x, y) in cells:
+                for dx, dy in ((-1, 0), (0, -1)):        # north, west of me
+                    j = idx.get((x + dx, y + dy))
+                    if j is not None and j != i \
+                            and lv - ts[j][0] >= self.STEP:  # I am higher
+                        contact[(i, j)] += 1
+        adj = [set() for _ in ts]
+        for (i, j), n in contact.items():
+            if n >= self.EDGE_MIN:
+                adj[i].add(j)
+                adj[j].add(i)
+        # colour: fixed families first (they are constraints), then the rest
+        # largest-first so the ground the island already has wins wherever it can
+        colour, forced_set = {}, set()
+        movable = set(self.FAMILY) | {"grass"}
+        order = sorted(range(len(ts)), key=lambda i: (ts[i][2] in movable,
+                                                      -len(ts[i][1])))
+        for i in order:
+            lv, cells, dom = ts[i]
+            if dom == "grass":
+                alt = next(m for lim, m in self.LOW_ALT if lv <= lim)
+                other = "grey_stone" if alt == "dark_mud" else "dark_mud"
+                pal = ("grass", alt, other, "black_rock")
+            elif dom in self.FAMILY:
+                pal = self.FAMILY[dom]
+            else:
+                colour[i] = dom          # beach, road, paving, floor, fen: as is
+                continue
+            taken = {colour[j] for j in adj[i] if j in colour}
+            pick = next((m for m in pal if m not in taken), None)
+            if pick is None:             # every option touches - keep, count
+                pick = pal[0]
+                forced_set.add(i)
+            colour[i] = pick
+        forced = len(forced_set)
+        # apply: only the terrace's dominant cells change
+        changed = collections.Counter()
+        for i, (lv, cells, dom) in enumerate(ts):
+            if colour[i] == dom:
+                continue
+            for (x, y) in cells:
+                if self.g(x, y) == dom and (x, y) not in getattr(self, "floor_cells", {}):
+                    self.grd[y][x] = self.gi[colour[i]]
+                    changed[f"{dom}->{colour[i]}"] += 1
+        # BUILD ASSERT: no two touching terraces share a ground unless one of
+        # them had no free colour at all (counted, and it is the exception
+        # that says the palette is too small, not a placement slip)
+        same = [(i, j) for i in range(len(ts)) for j in adj[i]
+                if j > i and colour[i] == colour[j]]
+        unforced = [(i, j) for (i, j) in same
+                    if i not in forced_set and j not in forced_set
+                    and ts[i][2] in movable and ts[j][2] in movable]
+        self.placed += [("terraces", len(ts)),
+                        ("terrace pairs still matching", len(same)),
+                        ("terraces with no free colour", forced)]
+        self.placed += [(f"terrace {k}", v) for k, v in sorted(changed.items())]
+        assert not unforced, (f"{len(unforced)} touching terraces share a "
+                              f"ground with a colour free: "
+                              f"{[(ts[i][0], ts[j][0], colour[i]) for i, j in unforced[:5]]}")
+
+    def ramp_paths(self):
+        """A ramp is where you walk: light_soil, the road's own material,
+        so the way up is a visible path and never grass climbing grass."""
+        n = 0
+        for r in self.doc.get("ramps", []):
+            for c in r.get("cells", []):
+                x, y = c["x"], c["y"]
+                if self.g(x, y) in ("grass", "snow"):
+                    self.grd[y][x] = self.gi["light_soil"]
+                    n += 1
+        self.placed += [("ramp cells paved", n)]
 
     def deepen(self):
         """world3's deep-water rule re-run over the WHOLE grown sea: open
@@ -3257,10 +3364,11 @@ class Grow:
                      self.town_ground, self.i2_cave,
                      self.i2_road, self.i2_systems, self._reindex,
                      self.archipelago, self.pier, self.houses, self.town,
+                     self.terrace_grounds,
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
-                     self.terrace_rims,
+                     self.ramp_paths,
                      self.snap_hitboxes, self.police_footprints,
                      self.relight, self.npcs,
                      self.rooms, self.spawns):
