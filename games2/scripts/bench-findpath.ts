@@ -1,11 +1,39 @@
 // Micro-benchmark: real findPath cost on shipped worlds (drives the client's
 // hold-to-move adaptive repath budget). Run:
 //   TSX_TSCONFIG_PATH=./server/tsconfig.json npx tsx scripts/bench-findpath.ts
+//
+// THE WORLD PEOPLE ACTUALLY PLAY IS IN THE LIST, and for a long time it was not.
+// This benchmark is what calibrated the client's repath budget, and it measured
+// ring_test / glow_test / prop_demo — 6,308 to 25,600 cells — while the shipped
+// default map, `the_game`, is 512x512 = 262,144 cells and lives in the OTHER
+// world tree (`maps2/worlds3`). A* is bounded by `maxNodes` (4,000), so cost
+// does not scale with the map until the search EXHAUSTS that budget, and only a
+// map big enough to have unreachable-looking targets ever does. Measured on
+// the_game: from ordinary standing positions a hold-drag replan is p90 0.23-1.09
+// ms, but from the SPAWN it is p99 55.19 ms with 38 of 400 samples over 5 ms,
+// and a target the search cannot reach costs 42-66 ms here — roughly 160-280 ms
+// on the maintainer's phone, on the input path, with the backoff then pinned at
+// its 400 ms cap so it repeats at a fixed duty cycle while the finger is down.
+// A benchmark that cannot see that cannot calibrate against it.
 import { readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { buildTerrainGrid, findPath, CELL_WU, findSpawn, parseWorld } from "@nangijala/shared";
 
-for (const name of ["ring_test", "glow_test", "prop_demo"]) {
-  const raw = JSON.parse(readFileSync(new URL(`../../maps2/worlds/${name}/world.json`, import.meta.url), "utf8"));
+const WORLDS: [string, string][] = [
+  ["ring_test", "worlds"],
+  ["glow_test", "worlds"],
+  ["prop_demo", "worlds"],
+  ["the_game", "worlds3"], // the shipped default map
+];
+
+for (const [name, tree] of WORLDS) {
+  const url = new URL(`../../maps2/${tree}/${name}/world.json`, import.meta.url);
+  if (!existsSync(url)) {
+    // A sparse checkout may hold only one tree; that is not a failure.
+    console.log(`${name}: not in this checkout (${tree})`);
+    continue;
+  }
+  const raw = JSON.parse(readFileSync(url, "utf8"));
   const world = parseWorld(raw);
   if (!world) throw new Error(`unparseable world ${name}`);
   const grid = buildTerrainGrid(world.width, world.height, world.rows, world.props);

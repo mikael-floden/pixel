@@ -11032,9 +11032,29 @@ export class WorldScene extends Phaser.Scene {
       const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
       if (me && Math.hypot(g.x - me.fx, g.y - me.fy) < CELL_WU * 0.75) return;
     }
+    /* THE REPATH IS TIMED NOW, AND ITS COST WAS ALREADY BEING MEASURED.
+     *
+     * `cost` has always been computed here and used only to space the next
+     * replan — the number was thrown away, and this whole call sits outside
+     * every beacon span (`predictAndSend` has no ps/pe, and the pointermove
+     * path reaches it from Phaser's InputManager on PRE_RENDER, which is
+     * registered at Game boot and so runs BEFORE the scene's own PRE_RENDER
+     * hook, outside the `render` span too). It is therefore one of the
+     * candidates for the 21.5% of worst-frame time that no timer accounts for,
+     * and 25.1 ms/frame of it in his worst run.
+     *
+     * Measured offline on the SHIPPED world (the_game, 512x512 = 262,144 cells,
+     * 400 targets 2-10 cells out): from the four positions his last beacon was
+     * recorded at, p90 is 0.23-1.09 ms and nothing exceeded 5 ms. From the
+     * SPAWN it is p99 55.19 ms, max 60.31, with 38 of 400 over 5 ms, and a
+     * target the search cannot reach costs 42-66 ms here — call it 160-280 ms
+     * on his phone. So this is a real unbounded worst case in the busiest part
+     * of the map, and until now nothing in the report could see it. */
+    this.ps();
     const t0 = performance.now();
     this.setMoveTarget(g.x, g.y, true, true, g.lvl, true, g.at);
     const cost = performance.now() - t0;
+    this.pe("repath");
     this.holdRepathAt = nowMs + Math.min(400, Math.max(50, cost * 8));
   }
 
