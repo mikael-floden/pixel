@@ -19,7 +19,12 @@ test("the tiles3 art closure of every published worlds3 world resolves completel
   assert.deepEqual(c.missing, [], "a named-but-missing file is a production 404");
   for (const w of c.worlds) {
     assert.equal(w.failures, 0, `${w.name}: the resolver threw`);
-    assert.ok(w.cells === w.width * w.height, `${w.name}: every cell resolved`);
+    /* VOID CELLS ARE NOT UNRESOLVED CELLS. maps2 voids ground on purpose (the
+     * mountain's back, 2026-09-05: 3,864 cells of the_game), and a void cell
+     * resolves to null, draws nothing and names no art — it is not a failure
+     * and not a hole. The whole grid must still be accounted for. */
+    assert.ok(w.cells > 0, `${w.name}: resolved nothing`);
+    assert.equal(w.cells + w.void, w.width * w.height, `${w.name}: every non-void cell resolved`);
     assert.ok(w.boundaries > 0, `${w.name}: boundaries resolved`);
   }
   assert.ok(c.art.some((p) => p.startsWith("tiles/patterns/")), "the pattern sheets every boundary composes from");

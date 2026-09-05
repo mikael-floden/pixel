@@ -30,6 +30,10 @@ export interface Tiles3ClosureWorld {
   width: number;
   height: number;
   cells: number;
+  /** Cells with NO ground — a void the resolver answers null for. They draw
+   *  nothing and name no art, so they are neither resolved cells nor failures;
+   *  the gate counts them so `cells + void` is the whole grid. */
+  void: number;
   boundaries: number;
   decks: number;
   /** Resolver throws, caught per cell exactly as the scene's t3Try does. */
@@ -89,7 +93,7 @@ export function tiles3ArtClosure(root: string, worldNames: readonly string[]): T
       canvas: [1, 1],
     } as unknown as Frame;
     const t3 = new Tiles3World({ view, tiles, frame, patterns: data.patterns });
-    const w: Tiles3ClosureWorld = { name, width: world.width, height: world.height, cells: 0, boundaries: 0, decks: 0, failures: 0 };
+    const w: Tiles3ClosureWorld = { name, width: world.width, height: world.height, cells: 0, void: 0, boundaries: 0, decks: 0, failures: 0 };
     for (let r = 0; r <= world.height; r++) {
       for (let c = 0; c <= world.width; c++) {
         if (c < world.width && r < world.height) {
@@ -101,7 +105,7 @@ export function tiles3ArtClosure(root: string, worldNames: readonly string[]): T
               // (cellBlits): named here too, so a cut never finds a hole.
               if (cell.kind !== "field" && cell.wall) out(cell.wall.mid?.path);
               w.cells++;
-            }
+            } else w.void++;
           } catch {
             w.failures++;
           }

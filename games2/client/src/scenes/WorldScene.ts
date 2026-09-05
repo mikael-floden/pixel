@@ -15784,10 +15784,29 @@ export class WorldScene extends Phaser.Scene {
 
         // A deck slab floating ABOVE its base must occlude whoever walks under
         // it. Same rule as world@2: skip it entirely on a constrained column.
+        /* A DECK AT THE COLUMN'S OWN LEVEL IS THE COLUMN'S TOP, and it is issued
+         * LAST. The wall ring of a house is level-6 terrain under a level-6
+         * roof deck: this loop used to skip such a deck ("the terrain occluder
+         * already covers it") and the terrain block below then pushed the
+         * WALL'S CAP TILE over the ground texture — so every wall top wore its
+         * plain cap while every room cell, whose deck floats above a level-0
+         * floor, wore the roof surface. That is the floor plan drawn on the roof
+         * in the sprite layer alone, invisible in the RT (maintainer
+         * 2026-09-05, tracing the rooms on a photo of the roof: "from a player's
+         * perspective the top of the walls is also part of the house roof").
+         * The ground pass draws decks after every cell; the copy must too, so an
+         * equal-level deck is collected here and pushed after the cap and the
+         * boundary below — creation order is draw order in this band. A deck
+         * BELOW the column's top stays skipped: nothing of it shows. */
+        const capDecks: Tiles3DeckCell[] = [];
         if (occCut === undefined)
           for (const d of this.t3decksOf(t3, col, row)) {
             const base = world.rows[row]?.[col]?.l ?? 0;
-            if (d.level <= base) continue; // the terrain occluder already covers it
+            if (d.level < base) continue; // buried under taller terrain: nothing of it shows
+            if (d.level === base) {
+              capDecks.push(d);
+              continue;
+            }
             /* THE DECK TOP IS NEVER EXPOSURE-CULLED — world@2's rule, which this
              * branch did not copy. The top is the walkable surface and it is
              * the thing that hides a body walking UNDER the slab. `shows` is a
@@ -15907,6 +15926,17 @@ export class WorldScene extends Phaser.Scene {
             if (obop) this.occluders.push(this.occTint(this.occImage(obop.key, obop.x, obop.y, oDepth, col, row), "boundary"));
           }
         } else culled++;
+        // The roof over a wall top — see capDecks above. Only on a column drawn
+        // whole: a truncated column's deck was already skipped by occCut.
+        if (topL === cell.level)
+          for (const d of capDecks)
+            for (const op of tex.opsForDeck(d)) {
+              if (!columnShows(bx, op.y, by + tileSize)) {
+                culled++;
+                continue;
+              }
+              this.occluders.push(this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck"));
+            }
         this.occluderMeta.push({
           col, row, top: topL, solid: false, depth: oDepth,
           x0: bx, x1: bx + tileSize, y0: by - topL * lh, y1: by + tileSize,

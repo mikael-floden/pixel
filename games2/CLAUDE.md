@@ -1226,6 +1226,21 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   must keep finding >=10 patchwork slabs) and the deck arm of `every op the
   factory hands back is drawable` (the surface op exists, is `t3f:`-keyed, sits
   at `surfaceY` with role `deck`; an unloaded surface emits nothing).
+  **AND THE OCCLUDER COPY MUST END WITH IT TOO** (`capDecks`, same day, from
+  his outline of the rooms on a photo of the fixed roof). The occluder pass
+  duplicates every column's top as a sprite OVER the ground texture so bodies
+  interleave; for a deck it skipped any slab at or below the column's own level
+  ("the terrain occluder already covers it") and the terrain block then pushed
+  the WALL'S CAP TILE. A house's wall ring is level-6 terrain under a level-6
+  roof, so every wall top wore its plain cap in the sprite layer while every
+  room cell (deck floating over a level-0 floor) wore the roof surface — the
+  plan drawn on the roof a second time, in a layer the RT parity probes cannot
+  see. An equal-level deck is now collected per column and its ops pushed AFTER
+  the cap and the raised-boundary re-issue (creation order is draw order in
+  this band), exactly as the ground pass draws decks after every cell; a deck
+  below the column's top stays skipped. Probe: `__ml.occDump()` — the LAST
+  image on every wall-top column must be the `t3f:` roof key, and the same key
+  as the interior's.
 - **A DECK'S `thickness` IS THE CONTRACT — never force a course.** `deckCell`
   draws the slab from `lo = dl - thickness` (or `dl` where `frontCovered`), and
   `thickness` means "EXTRA face tiles below the top; 0 = the top only"
