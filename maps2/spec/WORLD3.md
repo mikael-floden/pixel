@@ -126,10 +126,17 @@ area-weighted centroid. Sources: `games2/config/scenery-bbox.json` and
 `live/tuning/scenery_hitbox.json` (his overrides win, and a piece with no
 record is left alone).
 
-**THE SCALE IS THE DRAWN ONE, AND IT IS NOT `world_px_height`.** The contract
-sizes every piece against a 64-px character; the game's people are 88, so it
-draws — and stamps collision with — `world_px_height × 88 / character_height_px`
-(`sceneryDrawnPx`). The ellipse sits at a SCALED offset from the art's anchor,
+**THE SCALE IS THE DRAWN ONE, AND THE SOURCE IS `scenery/`, NEVER
+`games2/config/scenery-bbox.json`.** The drawn height is
+`world_px_height × 88 / character_height_px` (games2 `sceneryDrawnPx`), read
+from the piece's own `scenery.json` — `maps2/pipeline/sceneryscale.py`. The
+cached bbox doc is a build artefact that nothing regenerates, and it went stale
+the moment the scenery domain re-derived every piece (2026-09-05, *"ONE SCENERY
+PIXEL IS ONE PLAYER PIXEL"*): `bed_001` declares 107 px against an 87-px
+character while the cache still says 47 against 64 — a factor of **1.66**.
+Anything reading the cache places furniture at two thirds of the size the game
+draws, which is a room full of overlapping furniture. (games2's own collision
+stamp still reads the cache; raised with them.) The ellipse sits at a SCALED offset from the art's anchor,
 so reading the raw contract number centred the footprint at 1/1.375 of the real
 offset and left it **up-screen of the cell it blocks: median 3.0 screen px over
 892 placements, always up** (maintainer 2026-09-04, overlay screenshot: *"the
@@ -185,6 +192,17 @@ no bed in it (maintainer 2026-09-04: *"I told you to place furnitures edge to
 edge with the wall/corner"*). The along-wall centre is clamped inside the wall's
 own run, which IS the corner at either end, then walked outward in half cells
 until the whole footprint is on free floor.
+
+**A HOUSE IS SIZED BY WHAT STANDS IN IT.** At the drawn scale a bed's footprint
+is **2.37 × 1.33 cells**, a hearth 1.51 × 1.65, a dresser 1.72 × 0.72 — so the
+old 6×5 house, whose interior is 4×3, was a bed and a corridor (maintainer
+2026-09-05: *"if you make a house this ultra small you can't expect to fit much
+inside it"*). Houses are **8×7 / 9×7 / 10×8 outside** (interiors 6×5, 7×5, 8×6),
+which takes a bed on one wall, a dresser and a hearth on the other, and still
+has floor to walk on. And footprints keep `FP_GAP = 0.20` of a cell FROM EACH
+OTHER rather than merely failing to overlap: a published footprint hugs the
+piece's base while its art rises a cell above it, so two boxes a hundredth of a
+cell apart still read as one heap.
 
 **A TABLE IS FURNITURE TOO.** A table in the MIDDLE of the floor is a dining
 arrangement, and it needs a room to be a dining room: the centre cell plus a

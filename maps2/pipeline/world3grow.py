@@ -63,7 +63,7 @@ TOWN_AT = (168, 176)      # fallback town target; the real one derives from
                           # where the ridge ends and the valley opens
 
 import world3
-from sceneryscale import drawn_px_for
+from sceneryscale import drawn_px_for_piece
 
 
 def _rng32(seed):
@@ -274,7 +274,7 @@ class Grow:
         # THE SIZE THE GAME DRAWS, not the contract's raw number - see
         # sceneryscale.drawn_px. At the contract's number every piece in this
         # test was 27% small and nothing ever looked buried.
-        h = drawn_px_for(facts)
+        h = drawn_px_for_piece(piece)
         w = max(1, bx1 - bx0) * h / max(1, by1 - by0)
         sx = (x - y) * 32.0
         sy = (x + y) * 14.0
@@ -766,12 +766,22 @@ class Grow:
         x0, y0, TW, TH = self.town
         # wall material, then the thin roof course above it
         # WOOD WALLS, THIN BLACK ROCK ROOF (his call, 2026-08-30)
-        specs = [(cx - 13, cy - 8, 6, 5, "parquet_floor", "brown_paving_stone"),
-                 (cx - 14, cy + 2, 7, 5, "parquet_floor", "brown_paving_stone"),
-                 (cx + 8, cy - 8, 7, 5, "parquet_floor", "brown_paving_stone"),
-                 (cx + 9, cy + 2, 6, 5, "parquet_floor", "brown_paving_stone"),
-                 (cx - 4, cy - 12, 8, 6, "parquet_floor", "brown_paving_stone"),
-                 (cx - 2, cy + 7, 6, 4, "parquet_floor", "brown_paving_stone")]
+        # A HOUSE IS SIZED BY WHAT STANDS IN IT (maintainer 2026-09-05: "if
+        # you make a house this ultra small you can't expect to fit much
+        # inside it ... make sure the furnitures in all houses look good and
+        # the size of the house is what you want it to be"). At the scale the
+        # game actually draws, a bed's footprint is 2.37 x 1.33 cells, a
+        # hearth 1.51 x 1.65, a dresser 1.72 x 0.72 - so a 6x5 house, whose
+        # INTERIOR is 4x3, was a bed and a corridor. These are outside
+        # measurements including the wall ring: 8x7 and 9x7 give a 6x5 and 7x5
+        # room, which takes a bed on one wall, a dresser and a hearth on the
+        # other, and still has floor to walk on.
+        specs = [(cx - 15, cy - 10, 8, 7, "parquet_floor", "brown_paving_stone"),
+                 (cx - 16, cy + 2, 9, 7, "parquet_floor", "brown_paving_stone"),
+                 (cx + 8, cy - 10, 9, 7, "parquet_floor", "brown_paving_stone"),
+                 (cx + 9, cy + 2, 8, 7, "parquet_floor", "brown_paving_stone"),
+                 (cx - 5, cy - 14, 10, 8, "parquet_floor", "brown_paving_stone"),
+                 (cx - 3, cy + 7, 8, 6, "parquet_floor", "brown_paving_stone")]
         built = 0
         for (hx, hy, w, h, wall, roof) in specs:
             try:
@@ -1181,7 +1191,7 @@ class Grow:
         if not facts:
             return None
         base = (self._bbox.get("boxes") or {}).get(facts.get("sprite"))
-        want = drawn_px_for(facts)
+        want = drawn_px_for_piece(p["piece"])
         if not base or not want:
             return None
         spr = (facts.get("states") or {}).get(p["state"]) if p.get("state") \
@@ -1267,6 +1277,13 @@ class Grow:
     # violating piece is refused rather than shipped and policed later.
     FP_MARGIN = 0.15      # cells of clearance; "touches" means within this
     FP_DEFAULT = 0.30     # radius for a piece with no published footprint
+    # AND FOOTPRINTS KEEP A GAP FROM EACH OTHER, not merely fail to overlap
+    # (maintainer 2026-09-05: "it looks like you have placed furnitures very
+    # very tight so the render inside/on top of each other"). A published
+    # footprint hugs the piece's BASE while its art rises over a cell above
+    # it, so two boxes a hundredth of a cell apart still read as one heap.
+    # 0.20 of a cell is 6.4 screen px between the two bases.
+    FP_GAP = 0.20
 
     def _walls(self):
         n = sum(len(w["cells"]) for w in self.doc["walls"])
@@ -1369,12 +1386,13 @@ class Grow:
                     return False
         if flat:
             return True                    # floor: it claims no ground at all
+        gap = self.FP_GAP
         for (ox, oy, orx, ory) in self._fp_near(wx, wy):
             # box vs box on the world axes; a circle is its own square here,
             # which is conservative and keeps one test for every pair
-            if abs(ox - wx) < (R if hy is None else R) + orx - eps \
-                    and abs(oy - wy) < ((R if hy is None else hy) + ory) - eps:
-                return False                          # intersects a footprint
+            if abs(ox - wx) < R + orx + gap - eps \
+                    and abs(oy - wy) < (R if hy is None else hy) + ory + gap - eps:
+                return False                          # too close to a footprint
         return True
 
     def _hitbox_offset(self, p):
@@ -2055,8 +2073,8 @@ class Grow:
         # fisher's hut: timber (turf over parquet faces) — on the grass field
         # ABOVE the pier landing, never on the sand itself
         lx, ly = self.landing
-        hx, hy = self.find_pad(lx - 6, ly - 6, 6, 5)
-        self.int_fisher = self.house(hx, hy, 6, 5, "parquet_floor", "brown_paving_stone")
+        hx, hy = self.find_pad(lx - 7, ly - 7, 8, 7)
+        self.int_fisher = self.house(hx, hy, 8, 7, "parquet_floor", "brown_paving_stone")
         # woodcutter's cabin: timber, at the forest edge — the grass cell with
         # the most trees within 12, at least 50 from spawn
         best = None
@@ -2071,11 +2089,11 @@ class Grow:
                     and abs(q["x"] - x) <= 12 and abs(q["y"] - y) <= 12)
             if best is None or n > best[0]:
                 best = (n, x, y)
-        wx, wy = self.find_pad(best[1], best[2], 7, 5)
-        self.int_wood = self.house(wx, wy, 7, 5, "parquet_floor", "brown_paving_stone")
+        wx, wy = self.find_pad(best[1], best[2], 9, 7)
+        self.int_wood = self.house(wx, wy, 9, 7, "parquet_floor", "brown_paving_stone")
         # the smithy: stone (slate over cobble), in the village near spawn
-        mx, my = self.find_pad(sx + 8, sy - 6, 6, 5)
-        self.int_smith = self.house(mx, my, 6, 5, "parquet_floor", "brown_paving_stone")
+        mx, my = self.find_pad(sx + 8, sy - 7, 8, 7)
+        self.int_smith = self.house(mx, my, 8, 7, "parquet_floor", "brown_paving_stone")
         self.smithy = (mx, my)
         self.woodcutter = (wx, wy)
         self.fisher = (hx, hy)
