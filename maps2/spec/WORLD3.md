@@ -516,10 +516,12 @@ legal, so the game does not have to infer one from the heightfield.
   consecutive cells the level differs by **exactly 1** — build-asserted.
 * `from` / `to` are the levels of the first and last cell. A run is
   **monotone**: a chain that rises then falls is published as two runs.
-* The rule the game implements: **movement between two adjacent cells whose
-  levels differ is permitted iff both are consecutive cells of the same
-  ramp.** Everywhere else a level change stays solid. Entering or leaving a
-  ramp end from a same-level neighbour is ordinary movement, no special case.
+* The rule the game implements (games2 `WALK_CLIMB = 1`, `JUMP_CLIMB = 2`):
+  a **1-level step walks**, a **2-level ledge needs a jump**, 3+ levels is a
+  cliff, and **dropping is always free** at any depth (fall damage from 6
+  levels, the navigation line). A ramp is a chain of 1-level steps the
+  renderer may dress as a slope; entering or leaving a ramp end from a
+  same-level neighbour is ordinary movement, no special case.
 * The player's height on a ramp cell is that cell's own `level` — there are no
   fractional levels, which is what keeps collision, draw order and the wall
   model unchanged.
@@ -532,6 +534,43 @@ legal, so the game does not have to infer one from the heightfield.
 * Art is independent of this contract: the renderer dresses a rise with the
   slope library where an approved set exists, and the ramp is still a ramp
   where it does not.
+
+### reachability — nobody gets stuck
+
+Maintainer 2026-09-05, seven photographs from the massif and a wall: *"So I
+jumped down and now I'm stuck. I can't get back up by going back and I can't
+jump down to the unwalkable area ... Why can't you when building the map try
+to see if you are stuck on this location or not? Do we need a ramp maybe?"*
+and *"it would be really nice with a way to get up on the grass."*
+
+**THE MAP IS BUILT ON REVERSIBLE MOVEMENT.** A move is reversible when the
+player can take it back: a step of at most `CLIMB = 2` levels either way, or
+a stair. `reach_audit()` (after the ramps, before scenery is policed) walks
+the whole standable world from the spawn twice — once with free drops, once
+with reversible moves only — and every cell in the first set but not the
+second is a **trap**. A search that finds "a way out" is not the test: the
+massif's snow rim had one, a 24-level fall 120 cells along the rim (measured
+before this rule, 17,501 trap cells — the whole front of the massif was a
+one-way cascade of 4-level shelves).
+
+Every trap gets a **stair**: `H − L − 1` straight cells at one level each,
+cut into the trap so the steps rise toward the cliff (the run that hugs the
+most wall wins), else a notch down into the terrace above, light_soil like
+every ramp, published in `ramps[]` under the contract above. A trap under
+`LEDGE_MAX = 12` cells with no room for either joins the terrace above. Trap
+components are fixed in rounds (a trap whose only way out is another trap
+waits for it), one stair per `STAIR_EVERY = 24` cells of a component's edge.
+
+**A WALL IS NEVER THE END OF THE WALK.** After the traps, every cliff of 3+
+levels between two terraces the player walks on has a stair within
+`STAIR_EVERY` cells along it (natural ground both sides, never a house, a
+floor, a road or water). the_game: 43 stairs for traps, 39 along cliffs,
+116 runs, **0 traps left — build-asserted**, and the ramp contract is
+re-asserted over every run.
+
+Bridge decks are standable at their own level; roof and cave decks are
+not (the ground under them is). Water is swimmable at its level and climbed
+out of like any step, so a shore over 2 levels is a wall and gets its stair.
 
 ## How art resolves (the renderer contract — `maps2/pipeline/render3.py`)
 

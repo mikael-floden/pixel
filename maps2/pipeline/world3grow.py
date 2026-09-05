@@ -3662,6 +3662,253 @@ class Grow:
         assert self._shallow_ponds() == 0, "deep water off the sea"
         self.placed += [("ground audit", "clean")]
 
+
+    # NOBODY GETS STUCK (maintainer 2026-09-05, seven photographs: "So I
+    # jumped down and now I'm stuck. I can't get back up by going back and I
+    # can't jump down to the unwalkable area ... Why can't you when building
+    # the map try to see if you are stuck on this location or not? Do we
+    # need a ramp maybe?" and, at a wall: "it would be really nice with a
+    # way to get up on the grass"). The game's rule (games2 WALK_CLIMB /
+    # JUMP_CLIMB): a 1-level step walks, a 2-level ledge needs a jump, 3+ is
+    # a cliff, and dropping is always free. So the map is built on
+    # REVERSIBLE movement: a move the player can take back (a step of at
+    # most CLIMB levels either way, or a stair). Every cell the player can
+    # reach at all must be reachable by reversible moves alone - a rim you
+    # drop onto whose only way out is a 24-level fall 120 cells away is a
+    # trap, whatever a path search says (measured: the massif's snow rim).
+    # Every trap gets a STAIR: a straight run of 1-level steps hugging the
+    # cliff, cut into the trap, else into the terrace above, published as a
+    # ramp. And every cliff between two walkable terraces has a stair at
+    # least every STAIR_EVERY cells along it, so a wall is never the end of
+    # the walk. Asserted: no trap left.
+    CLIMB = 2          # JUMP_CLIMB: the most a player climbs without a stair
+    LEDGE_MAX = 12     # a trap this small is a ledge: it joins the terrace above
+    STAIR_EVERY = 24   # a cliff longer than this gets a stair per this length
+    REACH_ROUNDS = 16
+
+    def _standable(self):
+        """(x, y, layer) -> level; layer 0 = ground, 1 = a bridge deck."""
+        lv = {}
+        for y in range(NEW):
+            for x in range(NEW):
+                if self.g(x, y):
+                    lv[(x, y, 0)] = self.lvl[y][x]
+        for dk in self.doc["decks"]:
+            if dk.get("kind") == "bridge":
+                for c in dk["cells"]:
+                    lv[(c["x"], c["y"], 1)] = int(dk["level"])
+        return lv
+
+    def _reach(self, lv):
+        """R: reachable from the spawn with free drops; Rev: reachable by
+        reversible moves only (|step| <= CLIMB)."""
+        sx, sy = int(self.doc["spawn"][0]), int(self.doc["spawn"][1])
+        start = (sx, sy, 0)
+        assert start in lv, "the spawn is not standable"
+
+        def nbrs(n):
+            x, y, _ = n
+            for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                for layer in (0, 1):
+                    m = (nx, ny, layer)
+                    if m in lv:
+                        yield m
+
+        def bfs(ok):
+            seen = {start}
+            dq = collections.deque([start])
+            while dq:
+                u = dq.popleft()
+                for v in nbrs(u):
+                    if v not in seen and ok(lv[u], lv[v]):
+                        seen.add(v)
+                        dq.append(v)
+            return seen
+        R = bfs(lambda a, b: b - a <= self.CLIMB)
+        Rev = bfs(lambda a, b: abs(b - a) <= self.CLIMB)
+        return R, Rev
+
+    def _carvable(self, x, y):
+        g = self.g(x, y)
+        return (g and g not in self.INDOOR_GROUNDS and (x, y) not in self.floor_cells
+                and (x, y) not in getattr(self, "door_cells", set()))
+
+    def _stair(self, t, b, T, B):
+        """Carve a stair from cell t (level L) up to adjacent cell b (level
+        H >= L + 3): H-L-1 straight cells at one level each. First inside
+        the trap T (steps rise toward the cliff, foot stays in T, the run
+        that hugs the most wall wins), else a notch down into the terrace
+        above (cells of B at level H). Returns where it went, or None."""
+        (tx, ty), (bx, by) = t, b
+        L, H = self.lvl[ty][tx], self.lvl[by][bx]
+        n = H - L - 1
+        if n < 1:
+            return None
+        away = (tx - bx, ty - by)
+        perp = [(-away[1], away[0]), (away[1], -away[0])]
+        ramp = {(c["x"], c["y"]) for r in self.doc["ramps"] for c in r["cells"]}
+        best = None
+        if not self.liquid(tx, ty):
+            for d in [away] + perp:
+                cells = [(tx + d[0] * k, ty + d[1] * k) for k in range(n + 1)]
+                if all(c in T and self.lvl[c[1]][c[0]] == L and self._carvable(*c)
+                       and not self.liquid(*c) and c not in ramp for c in cells):
+                    hug = sum(1 for (cx, cy) in cells[:n]
+                              for nx, ny in ((cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1))
+                              if self.g(nx, ny) and self.lvl[ny][nx] > L)
+                    if best is None or hug > best[0]:
+                        best = (hug, "trap", cells)
+        if best is None:
+            back = (bx - tx, by - ty)
+            for d in [back] + [(-back[1], back[0]), (back[1], -back[0])]:
+                cells = [(bx + d[0] * k, by + d[1] * k) for k in range(n + 1)]
+                if all((c[0], c[1], 0) in B and self.lvl[c[1]][c[0]] == H
+                       and self._carvable(*c) and not self.liquid(*c)
+                       and self.g(*c) in self.NATURAL and c not in ramp for c in cells):
+                    best = (0, "above", cells)
+                    break
+        if best is None:
+            return None
+        _, where, cells = best
+        soil = self.gi["light_soil"]
+        if where == "trap":
+            for k, (cx, cy) in enumerate(cells[:n], 1):
+                self.lvl[cy][cx] = H - k
+                self.grd[cy][cx] = soil
+            run = [cells[n]] + cells[:n][::-1] + [b]
+        else:
+            for k, (cx, cy) in enumerate(cells[:n], 1):
+                self.lvl[cy][cx] = L + k
+                self.grd[cy][cx] = soil
+            run = [t] + cells
+        self.doc["ramps"].append({"from": L, "to": H, "ground": "light_soil",
+                                  "cells": [{"x": c[0], "y": c[1]} for c in run]})
+        return where
+
+    def _fix_traps(self):
+        fixed = collections.Counter()
+        for rnd in range(self.REACH_ROUNDS):
+            lv = self._standable()
+            R, Rev = self._reach(lv)
+            traps = {(x, y) for (x, y, layer) in R - Rev if layer == 0}
+            if rnd == 0 and not any(k.startswith("standable") for k, _ in self.placed):
+                self.placed += [("standable cells", sum(1 for k in lv if k[2] == 0)),
+                                ("reachable from spawn", sum(1 for k in R if k[2] == 0)),
+                                ("reachable by reversible moves", sum(1 for k in Rev if k[2] == 0)),
+                                ("trap cells found", len(traps))]
+            if not traps:
+                break
+            seen, comps = set(), []
+            for c in traps:
+                if c in seen:
+                    continue
+                comp, st = set(), [c]
+                seen.add(c)
+                while st:
+                    x, y = st.pop()
+                    comp.add((x, y))
+                    for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                        if m in traps and m not in seen:
+                            seen.add(m)
+                            st.append(m)
+                comps.append(comp)
+            progress = 0
+            for T in comps:
+                cands = []
+                for (x, y) in T:
+                    for (nx, ny) in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                        if (nx, ny, 0) in Rev and self.lvl[ny][nx] >= self.lvl[y][x] + 3:
+                            cands.append((self.lvl[ny][nx] - self.lvl[y][x], (x, y), (nx, ny)))
+                if not cands:
+                    continue                 # its way out is another trap: next round
+                cands.sort()
+                laid = []
+                for _, t, b in cands:
+                    if any(abs(t[0] - p[0]) + abs(t[1] - p[1]) < self.STAIR_EVERY for p in laid):
+                        continue
+                    where = self._stair(t, b, T, Rev)
+                    if where:
+                        laid.append(t)
+                        fixed[where] += 1
+                if not laid and len(T) <= self.LEDGE_MAX:
+                    _, t, b = cands[0]
+                    H, gb = self.lvl[b[1]][b[0]], self.grd[b[1]][b[0]]
+                    for (x, y) in T:
+                        self.lvl[y][x] = H
+                        if not self.liquid(x, y):
+                            self.grd[y][x] = gb
+                    fixed["joined"] += 1
+                    laid.append(t)
+                progress += len(laid)
+            if not progress:
+                break
+        return fixed
+
+    def _stair_coverage(self):
+        """A stair at least every STAIR_EVERY cells along any cliff of 3+
+        levels between two terraces the player walks on."""
+        lv = self._standable()
+        R, Rev = self._reach(lv)
+        revg = {(x, y) for (x, y, layer) in Rev if layer == 0}
+        cells = [(c["x"], c["y"]) for r in self.doc["ramps"] for c in r["cells"]]
+        K = self.STAIR_EVERY
+        bucket = collections.defaultdict(list)
+        for c in cells:
+            bucket[(c[0] // K, c[1] // K)].append(c)
+
+        def near(x, y):
+            bx, by = x // K, y // K
+            for i in (bx - 1, bx, bx + 1):
+                for j in (by - 1, by, by + 1):
+                    for (cx, cy) in bucket.get((i, j), ()):
+                        if abs(cx - x) + abs(cy - y) <= K:
+                            return True
+            return False
+        wanted = laid = 0
+        for y in range(NEW - 1):
+            for x in range(NEW - 1):
+                if (x, y) not in revg or self.liquid(x, y) or not self._carvable(x, y):
+                    continue
+                for (nx, ny) in ((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)):
+                    if (nx, ny) not in revg or self.liquid(nx, ny) or not self._carvable(nx, ny):
+                        continue
+                    if self.lvl[ny][nx] - self.lvl[y][x] < 3:
+                        continue
+                    if self.g(nx, ny) not in self.NATURAL or self.g(x, y) not in self.NATURAL:
+                        continue
+                    if near(x, y):
+                        continue
+                    wanted += 1
+                    where = self._stair((x, y), (nx, ny), revg, Rev)
+                    if where:
+                        laid += 1
+                        for c in self.doc["ramps"][-1]["cells"]:
+                            bucket[(c["x"] // K, c["y"] // K)].append((c["x"], c["y"]))
+                    break
+        return wanted, laid
+
+    def reach_audit(self):
+        fixed = self._fix_traps()
+        wanted, laid = self._stair_coverage()
+        fixed2 = self._fix_traps()
+        lv = self._standable()
+        R, Rev = self._reach(lv)
+        traps = sorted((x, y) for (x, y, layer) in R - Rev if layer == 0)
+        self.placed += [("traps fixed: stair in the trap", fixed["trap"] + fixed2["trap"]),
+                        ("traps fixed: notch in the terrace above", fixed["above"] + fixed2["above"]),
+                        ("traps fixed: ledge joined the terrace above", fixed["joined"] + fixed2["joined"]),
+                        ("cliffs wanting a stair", wanted), ("cliff stairs laid", laid),
+                        ("traps left", len(traps))]
+        # every published run still honours the ramp contract
+        for r in self.doc["ramps"]:
+            cs = r["cells"]
+            for a, b in zip(cs, cs[1:]):
+                assert abs(a["x"] - b["x"]) + abs(a["y"] - b["y"]) == 1, ("ramp not 4-connected", a)
+                assert abs(self.lvl[b["y"]][b["x"]] - self.lvl[a["y"]][a["x"]]) == 1, ("ramp step", a, b)
+        assert not traps, ("traps left", len(traps), traps[:10])
+        # a stair can cut a natural cell off from its patch
+        self.placed += [("specks dissolved after stairs", self._dissolve_specks())]
+
     def widen_roads(self):
         """A ROAD NARROWER THAN THREE CELLS CANNOT RENDER AS A ROAD.
 
@@ -3895,7 +4142,7 @@ class Grow:
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
-                     self.ramp_paths, self.regroom,
+                     self.ramp_paths, self.regroom, self.reach_audit,
                      self.snap_hitboxes, self.police_footprints,
                      self.relight, self.npcs,
                      self.rooms, self.cliff_faces, self.audit_ground,
