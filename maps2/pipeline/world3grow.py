@@ -990,7 +990,14 @@ class Grow:
         # NOW that every tree knows what it is, enforce the clearance ITS OWN
         # species needs - a hawthorn hides two and a half times the screen a
         # juniper does and cannot stand as close.
-        dropped, left = world3.thin_by_species(self.doc["scenery"])
+        # THE WILD IS NOT THINNED: species spacing exists so the player can
+        # pass between trees, and nobody passes through the wild - it is the
+        # edge, and it must read dense (206 planted, 60 left after thinning)
+        rest = [p for p in self.doc["scenery"] if not p.get("wild")]
+        keep = [p for p in self.doc["scenery"] if p.get("wild")]
+        dropped, left = world3.thin_by_species(rest)
+        self.doc["scenery"] = rest + keep
+        self._reindex()
         self.placed += [("trees thinned by species spacing", dropped),
                         ("trees left", left)]
         self.placed += [(f"forest {k}", v) for k, v in sorted(tally.items())]
@@ -1651,8 +1658,9 @@ class Grow:
                     self.FP_DEFAULT, None
             flat = self._flat(p)
             if self._footprint_ok(wx, wy, R, HY, flush=True, flat=flat) \
-                    and (flat or self._art_clear(p["piece"], p["x"], p["y"],
-                                                 p.get("state"))):
+                    and (flat or p.get("wild")
+                         or self._art_clear(p["piece"], p["x"], p["y"],
+                                            p.get("state"))):
                 keep.append(i)
                 if not flat:
                     self._fp_add(wx, wy, R, HY)
@@ -1678,7 +1686,7 @@ class Grow:
             flat = self._flat(p)
             assert self._footprint_ok(wx, wy, R, HY, flush=True, flat=flat), \
                 f"{p['piece']} at {p['x']},{p['y']} breaks the footprint law"
-            assert flat or self._art_clear(p["piece"], p["x"], p["y"],
+            assert flat or p.get("wild") or self._art_clear(p["piece"], p["x"], p["y"],
                                            p.get("state")), \
                 f"{p['piece']} at {p['x']},{p['y']} hangs over a level change"
             if not flat:
@@ -3174,6 +3182,7 @@ class Grow:
     # the valley side the mountain simply ends at its own silhouette: its
     # north faces are never drawn, and the void behind them never is either.
     CROWN_MIN = 32
+    MOAT = 3           # void cells kept along the crown: nobody steps off the ridge
     SHOULDER_MAX = 12   # valley height: a back shoulder above this is cut
 
     def mountain_back(self):
@@ -3214,9 +3223,10 @@ class Grow:
                 dd, s = x - y, x + y
                 if dd not in top or s >= top[dd][1]:
                     continue
-                if self.liquid(x, y) or not self.g(x, y):
+                if not self.g(x, y):
                     continue
-                if not (self.SHOULDER_MAX < self.lvl[y][x] < self.CROWN_MIN):
+                low = self.SHOULDER_MAX - 1 if self.liquid(x, y) else self.SHOULDER_MAX
+                if not (low < self.lvl[y][x] < self.CROWN_MIN):
                     continue
                 if (x, y) in floors or (x, y) in walls:
                     continue
@@ -3257,9 +3267,36 @@ class Grow:
         # the crown is entirely above it, so nobody stands half-hidden.
         for (x, y) in void:
             assert self._under_ridge(x, y, self.lvl[y][x], top), (x, y)
+        # and the sea's own level-0 diamond must be under the ridge too (a
+        # cut cell at level 6 is hidden; the sea it becomes sits 90 px lower)
         for (x, y) in void:
-            self.grd[y][x] = gi_void
+            assert self._under_ridge(x, y, 0, top), ("sea shows", x, y)
+        # THE BACK OF THE MOUNTAIN DROPS INTO THE SEA. Void draws nothing, and
+        # the game does not draw the ridge from the valley either (it culls by
+        # cell distance, and the ridge is 17 cells away), so the player at the
+        # valley's edge looked into "space" (maintainer 2026-09-05, three
+        # photographs). Deep water is drawn wherever the ridge is not, and it
+        # is the game's own edge of the world: a current no stroke outruns.
+        # A void MOAT stays along the crown so nobody steps off the ridge into
+        # it - void refuses the move; deep water would take a 32-level fall.
+        crown = [(x, y) for y in range(N) for x in range(N)
+                 if self.lvl[y][x] >= self.CROWN_MIN and (x, y) not in void]
+        moat, frontier = set(), [c for c in crown]
+        for _ in range(self.MOAT):
+            nxt = []
+            for (x, y) in frontier:
+                for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                    if m in void and m not in moat:
+                        moat.add(m)
+                        nxt.append(m)
+            frontier = nxt
+        self.back_sea = void - moat
+        self.back_void = moat
+        for (x, y) in void:
+            self.grd[y][x] = gi_void if (x, y) in moat else self.gi["deep_water"]
             self.lvl[y][x] = 0
+        self.placed += [("back sea cells", len(self.back_sea)),
+                        ("void moat cells", len(moat))]
         # a cell that was cut or voided leaves every terrain wall group: its
         # old shelf face no longer exists, and a side on a void cell is noise
         touched |= void
@@ -3280,7 +3317,7 @@ class Grow:
         for y in range(N):
             for x in range(N):
                 dd, s = x - y, x + y
-                if self.grd[y][x] < 0 or dd not in top or s >= top[dd][1]:
+                if self.grd[y][x] < 0 or (x, y) in void or dd not in top or s >= top[dd][1]:
                     continue
                 if (x, y) in floors or (x, y) in walls:
                     continue
@@ -3595,9 +3632,10 @@ class Grow:
                     parent[find(i)] = find(j)
         size = collections.Counter(find(i) for i, comp in enumerate(bodies) for _ in comp)
         sea = size.most_common(1)[0][0]
+        back = getattr(self, "back_sea", set())
         n = 0
         for i, comp in enumerate(bodies):
-            if find(i) == sea:
+            if find(i) == sea or any(c in back for c in comp):
                 continue
             for x, y in comp:
                 if self.g(x, y) == "deep_water":
@@ -3663,6 +3701,114 @@ class Grow:
         self.placed += [("ground audit", "clean")]
 
 
+    # THE WILD (maintainer 2026-09-05): "What we need is a clever system they
+    # used in A Link to the Past. They just used forest that made it
+    # impossible to walk into ... I was expecting a forest or something that
+    # made it impossible for me to even get close to this buggy area. The
+    # forest might have to start a bit away from this zone so the player
+    # can't even see this buggy line." So the valley's shore toward the back
+    # sea is a WOODED RISE: a crest WILD_RISE levels above the valley (more
+    # than a jump, so no stair is ever carved into it), sloping down behind
+    # to the shore, planted with trees. The player sees a forested ridge and
+    # the sea beyond it; the shore cliff and the ridge behind the sea are
+    # never at their feet.
+    WILD_DEPTH = 6     # cells of shore that are wild, from the sea inward
+    WILD_RISE = 4      # the crest stands this far above the valley
+    WILD_STEP = 2      # one tree per this many cells each way, jittered
+
+    def wild(self):
+        sea = getattr(self, "back_sea", set())
+        if not sea:
+            self.placed += [("wild cells", 0)]
+            return
+        floors = self.floor_cells
+        keep = set(floors) | set(getattr(self, "door_cells", ()))
+        for w in self.doc["walls"]:
+            if w.get("kind") == "house":
+                keep |= {(c["x"], c["y"]) for c in w["cells"]}
+        for dk in self.doc["decks"]:
+            keep |= {(c["x"], c["y"]) for c in dk["cells"]}
+        for r in self.doc.get("ramps", []):
+            keep |= {(c["x"], c["y"]) for c in r["cells"]}
+        # roads are NOT spared: the town's flank road now runs into the sea
+        # where the cut took its continuation, and a road left out of the
+        # band was a dead end at a 10-level drop into deep water. The band
+        # takes it and turns it to grass; the road ends at the wooded rise.
+
+        def land(x, y):
+            g = self.g(x, y)
+            return (g and g != "deep_water" and (x, y) not in keep
+                    and (g in self.NATURAL or g in ("light_soil", "water")))
+        # depth by BFS over land from the shore inward
+        depth = {}
+        frontier = []
+        for (x, y) in sea:
+            for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if land(*m) and m not in depth:
+                    depth[m] = 0
+                    frontier.append(m)
+        for d in range(1, self.WILD_DEPTH):
+            nxt = []
+            for (x, y) in frontier:
+                for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                    if land(*m) and m not in depth:
+                        depth[m] = d
+                        nxt.append(m)
+            frontier = nxt
+        band = set(depth)
+        base = {c: self.lvl[c[1]][c[0]] for c in band}
+        # profile: FLAT, the whole band at +RISE. A band that stepped down
+        # toward the shore was three terraces in stripes of three colours
+        # with room for eighteen trees (a tree's footprint needs flat
+        # ground, and its art may not hang over a drop) - it read as farmed
+        # terraces. One level is one terrace, one wall, one forest.
+        for (x, y), d in depth.items():
+            self.lvl[y][x] = base[(x, y)] + self.WILD_RISE
+            if self.g(x, y) == "light_soil":
+                self.grd[y][x] = self.gi["grass"]
+        # the crest must stand RISE above every valley cell it touches, and
+        # every step inside the band stays within 2 so the slope is a slope
+        # SEALED ON EVERY SIDE, not only at the crest: the band ends at
+        # roads, houses and its own lateral ends, and a low shore row next to
+        # the valley there is a place to drop into (measured: 1,481 of the
+        # band's cells reachable through the sides on the first build)
+        self.wild_cells = band
+        self._seal_wild()
+        # trees, one per WILD_STEP cells each way, jittered, on the band only
+        r = _rng32(0x5EEDF0)
+        n = 0
+        for (x, y) in sorted(band):
+            if (x % self.WILD_STEP) or (y % self.WILD_STEP):
+                continue
+            jx, jy = int(r() * self.WILD_STEP), int(r() * self.WILD_STEP)
+            cx, cy = x + jx, y + jy
+            if (cx, cy) not in band:
+                cx, cy = x, y
+            if self.put("trees/tree_001", cx + 0.5, cy + 0.5, on=tuple(self.NATURAL)):
+                n += 1
+                self.doc["scenery"][-1]["wild"] = True
+        self.placed += [("wild cells", len(band)), ("wild trees", n)]
+        # BUILD ASSERT: the crest is out of reach from the valley side
+
+    def _seal_wild(self):
+        """Every band cell stands 3+ levels above every standable cell it
+        touches that is not band and not the back sea - land or water (a
+        lake at level 12 the shoulder cut leaves alone was an entry). Run
+        when the band is made and again before the audit: passes in between
+        move ground next to it."""
+        band = getattr(self, "wild_cells", set())
+        sea = getattr(self, "back_sea", set())
+        raised = 0
+        for (x, y) in band:
+            for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if m in band or m in sea or not self.g(*m) or self.g(*m) == "deep_water":
+                    continue
+                need = self.lvl[m[1]][m[0]] + 3
+                if self.lvl[y][x] < need:
+                    self.lvl[y][x] = need
+                    raised += 1
+        return raised
+
     # NOBODY GETS STUCK (maintainer 2026-09-05, seven photographs: "So I
     # jumped down and now I'm stuck. I can't get back up by going back and I
     # can't jump down to the unwalkable area ... Why can't you when building
@@ -3684,6 +3830,8 @@ class Grow:
     CLIMB = 2          # JUMP_CLIMB: the most a player climbs without a stair
     LEDGE_MAX = 12     # a trap this small is a ledge: it joins the terrace above
     STAIR_EVERY = 24   # a cliff longer than this gets a stair per this length
+    STAIR_WIDE = 5     # this tall or more, a stair is two cells wide ("even 8
+                       # levels feel tall for a staircase only 1 cell wide")
     STAIR_MAX = 8      # taller is a mountain, not a wall with a ladder: one
                        # build laid a 31-cell staircase from the valley (2)
                        # to the snow rim (32) - "WTF is this gigantic
@@ -3695,8 +3843,8 @@ class Grow:
         lv = {}
         for y in range(NEW):
             for x in range(NEW):
-                if self.g(x, y):
-                    lv[(x, y, 0)] = self.lvl[y][x]
+                if self.g(x, y) and self.g(x, y) != "deep_water":
+                    lv[(x, y, 0)] = self.lvl[y][x]     # the current owns deep water
         for dk in self.doc["decks"]:
             if dk.get("kind") == "bridge":
                 for c in dk["cells"]:
@@ -3735,7 +3883,8 @@ class Grow:
     def _carvable(self, x, y):
         g = self.g(x, y)
         return (g and g not in self.INDOOR_GROUNDS and (x, y) not in self.floor_cells
-                and (x, y) not in getattr(self, "door_cells", set()))
+                and (x, y) not in getattr(self, "door_cells", set())
+                and (x, y) not in getattr(self, "wild_cells", set()))
 
     def _stair(self, t, b, T, B):
         """Carve a stair from cell t (level L) up to adjacent cell b (level
@@ -3775,18 +3924,40 @@ class Grow:
             return None
         _, where, cells = best
         soil = self.gi["light_soil"]
-        if where == "trap":
-            for k, (cx, cy) in enumerate(cells[:n], 1):
-                self.lvl[cy][cx] = H - k
-                self.grd[cy][cx] = soil
-            run = [cells[n]] + cells[:n][::-1] + [b]
-        else:
-            for k, (cx, cy) in enumerate(cells[:n], 1):
-                self.lvl[cy][cx] = L + k
-                self.grd[cy][cx] = soil
-            run = [t] + cells
-        self.doc["ramps"].append({"from": L, "to": H, "ground": "light_soil",
-                                  "cells": [{"x": c[0], "y": c[1]} for c in run]})
+        lanes = [cells]
+        if H - L >= self.STAIR_WIDE:
+            # a second lane beside the first, same rules, either side
+            d = (cells[1][0] - cells[0][0], cells[1][1] - cells[0][1])
+            for q in ((-d[1], d[0]), (d[1], -d[0])):
+                lane = [(cx + q[0], cy + q[1]) for (cx, cy) in cells]
+                ok_t = (where == "trap" and not self.liquid(tx, ty)
+                        and all(c in T and self.lvl[c[1]][c[0]] == L and self._carvable(*c)
+                                and not self.liquid(*c) and c not in ramp for c in lane)
+                        and (b[0] + q[0], b[1] + q[1], 0) in B
+                        and self.lvl[b[1] + q[1]][b[0] + q[0]] == H)
+                ok_a = (where == "above"
+                        and all((c[0], c[1], 0) in B and self.lvl[c[1]][c[0]] == H
+                                and self._carvable(*c) and not self.liquid(*c)
+                                and self.g(*c) in self.NATURAL and c not in ramp for c in lane)
+                        and (t[0] + q[0], t[1] + q[1]) in T
+                        and self.lvl[t[1] + q[1]][t[0] + q[0]] == L)
+                if ok_t or ok_a:
+                    lanes.append(lane)
+                    break
+        for i, lane in enumerate(lanes):
+            q = (lane[0][0] - cells[0][0], lane[0][1] - cells[0][1])
+            if where == "trap":
+                for k, (cx, cy) in enumerate(lane[:n], 1):
+                    self.lvl[cy][cx] = H - k
+                    self.grd[cy][cx] = soil
+                run = [lane[n]] + lane[:n][::-1] + [(b[0] + q[0], b[1] + q[1])]
+            else:
+                for k, (cx, cy) in enumerate(lane[:n], 1):
+                    self.lvl[cy][cx] = L + k
+                    self.grd[cy][cx] = soil
+                run = [(t[0] + q[0], t[1] + q[1])] + lane
+            self.doc["ramps"].append({"from": L, "to": H, "ground": "light_soil",
+                                      "cells": [{"x": c[0], "y": c[1]} for c in run]})
         return where
 
     def _fix_traps(self):
@@ -3848,6 +4019,21 @@ class Grow:
                 break
         return fixed
 
+    def _slope_top(self, x, y):
+        """A cell at the top of a run of 1-level steps: the terrain invites
+        the player up here, so a cliff at the top must be met (maintainer
+        2026-09-05 at (352,416), a slope 4..9 under a plateau at 12: "It
+        looks like you have tried to make something a player can walk up
+        on, but you forgot the player can only jump 2 levels ... lower the
+        cliff around the place where you make the ramp")."""
+        L = self.lvl[y][x]
+        for (cx, cy) in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+            if self.g(cx, cy) and self.lvl[cy][cx] == L - 1:
+                for (dx, dy) in ((cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1)):
+                    if self.g(dx, dy) and self.lvl[dy][dx] == L - 2:
+                        return True
+        return False
+
     def _stair_coverage(self):
         """A stair at least every STAIR_EVERY cells along any cliff of 3+
         levels between two terraces the player walks on."""
@@ -3873,17 +4059,22 @@ class Grow:
             for x in range(NEW - 1):
                 if (x, y) not in revg or self.liquid(x, y) or not self._carvable(x, y):
                     continue
+                top = self._slope_top(x, y)
                 for (nx, ny) in ((x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)):
-                    if (nx, ny) not in revg or self.liquid(nx, ny) or not self._carvable(nx, ny):
+                    if (nx, ny, 0) not in lv or self.liquid(nx, ny) or not self._carvable(nx, ny):
+                        continue
+                    # a slope top climbs onto ground nobody can reach yet - that
+                    # is how the plateau above it becomes reachable at all
+                    if (nx, ny) not in revg and not top:
                         continue
                     if not 3 <= self.lvl[ny][nx] - self.lvl[y][x] <= self.STAIR_MAX:
                         continue
                     if self.g(nx, ny) not in self.NATURAL or self.g(x, y) not in self.NATURAL:
                         continue
-                    if near(x, y):
+                    if near(x, y) and not top:
                         continue
                     wanted += 1
-                    where = self._stair((x, y), (nx, ny), revg, Rev)
+                    where = self._stair((x, y), (nx, ny), revg, Rev if (nx, ny) in revg else lv)
                     if where:
                         laid += 1
                         for c in self.doc["ramps"][-1]["cells"]:
@@ -3891,10 +4082,80 @@ class Grow:
                     break
         return wanted, laid
 
+    def _connect_unreachable(self):
+        """Land nobody can reach at all - not a trap, never entered - gets a
+        stair from the nearest reachable terrace wherever the cliff between
+        them is STAIR_MAX or less (maintainer 2026-09-05: "I have been
+        running around the entire cliff and found no way up"). Taller
+        cliffs (island 2's summit, 22+ levels above everything) wait for a
+        serpentine. House walls and the wild are unreachable on purpose."""
+        walls = {(c["x"], c["y"]) for w in self.doc["walls"]
+                 if w.get("kind") == "house" for c in w["cells"]}
+        wild = getattr(self, "wild_cells", set())
+        laid = 0
+        for _ in range(self.REACH_ROUNDS):
+            lv = self._standable()
+            R, Rev = self._reach(lv)
+            revg = {(x, y) for (x, y, layer) in Rev if layer == 0}
+            un = {(x, y) for (x, y, layer) in lv if layer == 0 and (x, y, 0) not in R
+                  and (x, y) not in walls and (x, y) not in wild
+                  and not self.liquid(x, y)}
+            seen, progress = set(), 0
+            for c in sorted(un):
+                if c in seen:
+                    continue
+                comp, st = set(), [c]
+                seen.add(c)
+                while st:
+                    x, y = st.pop()
+                    comp.add((x, y))
+                    for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                        if m in un and m not in seen:
+                            seen.add(m)
+                            st.append(m)
+                if len(comp) < 8:
+                    continue
+                cands = []
+                for (x, y) in comp:
+                    for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                        if m in revg and not self.liquid(*m):
+                            dlv = self.lvl[y][x] - self.lvl[m[1]][m[0]]
+                            if 3 <= abs(dlv) <= self.STAIR_MAX:
+                                cands.append((abs(dlv), (x, y), m, dlv))
+                cands.sort()
+                for _, cc, m, dlv in cands:
+                    if dlv > 0:          # the patch stands above: notch down into it
+                        where = self._stair(m, cc, revg, lv)
+                    else:                # the patch lies below: stair up out of it
+                        where = self._stair(cc, m, comp, Rev)
+                    if where:
+                        laid += 1
+                        progress += 1
+                        break
+            if not progress:
+                break
+        lv = self._standable()
+        R, Rev = self._reach(lv)
+        left = [(x, y) for (x, y, layer) in lv if layer == 0 and (x, y, 0) not in R
+                and (x, y) not in walls and (x, y) not in wild and not self.liquid(x, y)]
+        return laid, len(left)
+
     def reach_audit(self):
+        self.placed += [("wild re-sealed", self._seal_wild())]
         fixed = self._fix_traps()
         wanted, laid = self._stair_coverage()
         fixed2 = self._fix_traps()
+        # a second sweep: a terrace that a stair of the first sweep just made
+        # reachable has cliffs of its own (the slope at (352,416) led up to a
+        # plateau that was not yet reachable when the sweep passed it)
+        w2, l2 = self._stair_coverage()
+        wanted, laid = wanted + w2, laid + l2
+        joined, left = self._connect_unreachable()
+        fixed3 = self._fix_traps()
+        for k in fixed3:
+            fixed2[k] += fixed3[k]
+        self.placed += [("unreachable land joined by a stair", joined),
+                        ("unreachable land cells left (island 2 summit)", left)]
         lv = self._standable()
         R, Rev = self._reach(lv)
         traps = sorted((x, y) for (x, y, layer) in R - Rev if layer == 0)
@@ -3910,6 +4171,11 @@ class Grow:
                 assert abs(a["x"] - b["x"]) + abs(a["y"] - b["y"]) == 1, ("ramp not 4-connected", a)
                 assert abs(self.lvl[b["y"]][b["x"]] - self.lvl[a["y"]][a["x"]]) == 1, ("ramp step", a, b)
         assert not traps, ("traps left", len(traps), traps[:10])
+        # every house is somewhere the player can walk to, and the wild is not
+        lost = [c for c in self.floor_cells if (c[0], c[1], 0) not in R]
+        assert not lost, ("house floors unreachable", len(lost), lost[:6])
+        wild_in = [c for c in getattr(self, "wild_cells", ()) if (c[0], c[1], 0) in R]
+        assert not wild_in, ("the wild is reachable", len(wild_in), wild_in[:6])
         # a stair can cut a natural cell off from its patch
         self.placed += [("specks dissolved after stairs", self._dissolve_specks())]
 
@@ -4142,7 +4408,7 @@ class Grow:
                      self.town_ground, self.i2_cave,
                      self.i2_road, self.i2_systems, self.groom, self._reindex,
                      self.archipelago, self.pier, self.houses, self.town,
-                     self.mountain_back, self.terrace_grounds,
+                     self.mountain_back, self.wild, self.terrace_grounds,
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,

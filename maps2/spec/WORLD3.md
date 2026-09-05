@@ -167,13 +167,12 @@ south and east faces too, which already show a fall.
 
 ### the mountain — nobody plays behind it
 
-**GROUND INDEX −1 IS VOID**, and the_game now uses it. The game draws nothing
-there and its surface is neither standable nor swimmable (games2
-`world3.ts`, from the format's own definition). Maintainer 2026-09-05: *"I want
-it to be a steep hill ... make it impossible to play/walk behind the mountain.
-So you need a new tile type that is 'void'. A player can't walk into void and
-they will never find out what it is (the mountain is always covering it). I'm
-not saying this is something we should use at smaller cliffs."*
+Maintainer 2026-09-05: *"I want it to be a steep hill ... make it impossible
+to play/walk behind the mountain."* Then, at the first cut's edge: *"the
+intersection between 'you can walk here' and 'you cannot walk here because
+it's behind the mountain' looks ugly ... it looks as if you can fall down
+into space. What we need is a clever system they used in A Link to the Past.
+They just used forest that made it impossible to walk into."*
 
 **WHERE THE MOUNTAIN HIDES THE GROUND IS A SCREEN FACT**, so it is computed on
 the screen. A cell draws at row `(x+y)·14 − level·15`. In each screen column
@@ -182,24 +181,45 @@ mountain and not the 5–7 level cliffs he wants to keep walking behind — has 
 silhouette, the highest row any crown cell reaches. `mountain_back()`:
 
 1. **cuts the back shoulders to the valley** — every cell up-screen of the
-   crown between `SHOULDER_MAX = 12` and the crown takes the level and ground
-   of the first valley-height cell further up-screen in its column (7,189
-   cells), so the ridge drops straight to land the player can see and walk;
-2. **voids what the ridge hides** — every cell up-screen of the crown whose
+   crown between `SHOULDER_MAX = 12` and the crown, liquids from 12 up
+   included (a mountain lake on a cut shoulder survived as a one-row stripe
+   of water), takes the level and ground of the first valley-height cell
+   further up-screen in its column (7,218 cells), so the ridge drops straight
+   to land the player can see and walk;
+2. **hides what the ridge covers** — every cell up-screen of the crown whose
    TOP DIAMOND, at its (cut) level, has any corner under the silhouette: the
    bottom corner (apex + 28) against its own column, the side corners
-   (apex + 14) against the two neighbouring columns (`_under_ridge`; 3,864
-   cells, water included: a hidden sea is a place to swim unseen). Only
-   `kind: "house"` wall cells and recorded floors are spared.
+   (apex + 14) against the two neighbouring columns (`_under_ridge`; 3,857
+   cells). Only `kind: "house"` wall cells and recorded floors are spared.
 
-What this leaves is right: the town valley beyond the ridge is drawn ABOVE the
-silhouette, so it stays — the player sees it over the mountain, walks there,
-and stops where the ridge would hide them: the last kept cell is entirely
-above the ridge, so nobody ever stands half-hidden, and the ground it hides
-is simply gone. From the valley the mountain ends at its own silhouette: its
-north faces are never drawn and the void behind them never is either.
-**Build-asserted both ways** — every void cell is at least partly under the
-ridge, every kept cell up-screen of the crown is wholly above it.
+**THE BACK OF THE MOUNTAIN DROPS INTO THE SEA.** The hidden cells are
+`deep_water` at level 0 — the game's own edge of the world, a current no
+stroke outruns — except a `MOAT = 3` cells of **void** (ground index −1)
+along the crown, so nobody steps off the ridge: void refuses the move, deep
+water would take a 32-level fall. Void was the whole band once, and the game
+does not draw the ridge from the valley (it culls by cell distance, and the
+ridge is 17 cells away), so the player at the valley's edge looked into
+space. Deep water is drawn wherever the ridge is not, and the sea behind a
+mountain is a picture. **Build-asserted both ways**: every hidden cell's
+diamond, at its level AND at level 0, is at least partly under the ridge, and
+every kept cell up-screen of the crown is wholly above it.
+
+**THE WILD** (`wild()`, right after the cut): the valley's shore toward the
+back sea is a wooded rise — every land and pond cell within `WILD_DEPTH = 6`
+of the sea (BFS, houses, decks and ramps excluded; roads are taken and turned
+to grass, a road left out was a dead end at a 10-level drop into deep water)
+stands `WILD_RISE = 4` above the ground it had, FLAT (a band that stepped
+down toward the shore was three terraces in stripes with room for eighteen
+trees), sealed on EVERY side: every band cell is 3+ levels above every
+standable cell it touches that is not band or sea, water included, and
+sealed again right before the reachability audit because passes in between
+move ground next to it (1,481 of the band's cells were enterable through the
+sides and a level-12 lake on the first build). One tree per `WILD_STEP = 2`
+cells each way, jittered, marked `wild: true` in `scenery[]`: never thinned
+by species spacing (spacing exists so the player can pass, and nobody passes
+here) and allowed to hang over the bank (that is what a wood on a rise looks
+like). the_game: 2,007 wild cells, 214 trees. **Build-asserted**: no wild cell
+is reachable, and no reachable cell touches the back sea.
 
 Three traps, each one build:
 - **A plain void band without the cut**: the shoulders beyond the hidden band
@@ -208,13 +228,12 @@ Three traps, each one build:
 - **Sparing every `walls[]` cell**: the terrain's own wall groups (world3
   `_terrain_walls`, the massif's shelf faces) are dressing, and sparing them
   left the last cell of every shelf standing in the void — a 28 / 24 / 20
-  staircase of one-cell stripes behind the ridge, each showing its face
-  ("steep, then mountain, then a steep, then mountain", 440 cells). A cut or
-  voided cell now also leaves every terrain wall group.
+  staircase of one-cell stripes behind the ridge ("steep, then mountain,
+  then a steep, then mountain", 440 cells). A cut or voided cell now also
+  leaves every terrain wall group.
 - **Testing the level-0 base instead of the raised top**: it voided every
   valley cell whose top peeked over the ridge, so the first survivor showed a
-  full six-storey face standing ON the crown — a steep that was never there.
-  The valley's ground now runs under the ridge; the void's edge is dressed by
+  full six-storey face standing ON the crown. The void's edge is dressed by
   `cliff_faces` from the top's own pool, never as a shore (`_seadist`
   measures water and sand only; the pad field counts void as wet).
 
@@ -556,8 +575,10 @@ one-way cascade of 4-level shelves).
 A stair climbs at most `STAIR_MAX = 8` levels — taller is a mountain, and a
 mountain is climbed where the terrain offers it, never by a ladder (one
 build laid a 31-cell staircase from the valley at 2 to the snow rim at 32:
-*"WTF is this gigantic rectangle"*). Every trap gets a **stair**: `H − L − 1`
-straight cells at one level each,
+*"WTF is this gigantic rectangle"*) — and from `STAIR_WIDE = 5` levels it is
+two cells wide (*"even 8 levels feel tall for a staircase only 1 cell
+wide"*; the serpentine he wants for taller climbs is not built yet). Every
+trap gets a **stair**: `H − L − 1` straight cells at one level each,
 cut into the trap so the steps rise toward the cliff (the run that hugs the
 most wall wins), else a notch down into the terrace above, light_soil like
 every ramp, published in `ramps[]` under the contract above. A trap under
@@ -565,16 +586,27 @@ every ramp, published in `ramps[]` under the contract above. A trap under
 components are fixed in rounds (a trap whose only way out is another trap
 waits for it), one stair per `STAIR_EVERY = 24` cells of a component's edge.
 
-**A WALL IS NEVER THE END OF THE WALK.** After the traps, every cliff of 3+
+**A WALL IS NEVER THE END OF THE WALK.** After the traps, every cliff of 3
 to 8 levels between two terraces the player walks on has a stair within
 `STAIR_EVERY` cells along it (natural ground both sides, never a house, a
-floor, a road or water). the_game: 42 stairs for traps, 36 along cliffs,
-112 runs, **0 traps left — build-asserted**, and the ramp contract is
+floor, a road or water), swept twice because a stair makes new terraces
+reachable. **A slope that invites you up arrives**: a cell at the top of a
+run of 1-level steps under a cliff of 3+ levels gets a notch cut down into
+the terrace above whatever the spacing rule says and whether or not anyone
+can reach that terrace yet (maintainer at (352,416), a slope 4..9 under a
+plateau at 12: *"lower the cliff around the place where you make the
+ramp"*). **Unreachable land is joined**: any patch of 8+ land cells nobody
+can reach at all gets a stair from the nearest reachable terrace wherever
+the cliff between them is 8 levels or less; house walls and the wild are
+unreachable on purpose, and island 2's summit (22+ levels above everything)
+waits for a serpentine. the_game: 42 stairs for traps, 49 along cliffs,
+7 joining unreachable land, 133 runs, **0 traps left — build-asserted**, and the ramp contract is
 re-asserted over every run.
 
 Bridge decks are standable at their own level; roof and cave decks are
 not (the ground under them is). Water is swimmable at its level and climbed
 out of like any step, so a shore over 2 levels is a wall and gets its stair.
+Deep water is not a place to stand: the current owns it.
 
 ## How art resolves (the renderer contract — `maps2/pipeline/render3.py`)
 
