@@ -1726,6 +1726,16 @@ export class WorldScene extends Phaser.Scene {
       snap = null;
     }
     if (!snap) return;
+    /* THE WINDOW IS CLOSED HERE, not at the early returns above — taking the
+     * snapshot is what resets `perfAcc` and `perfFrames`, so the delta
+     * baselines must advance in step with it or a skipped window (too short,
+     * or the player never moved) would be double-counted into the next one. */
+    const prevFull = this.perfPrevFullPaints;
+    const prevDrain = this.perfPrevDrains;
+    const prevDefer = this.perfPrevDeferred;
+    this.perfPrevFullPaints = this.groundFullRuns;
+    this.perfPrevDrains = this.repaintStats.drains;
+    this.perfPrevDeferred = this.repaintStats.drainsDeferred;
     const sec = snap.sections as Record<string, { totalMs?: number }> | undefined;
     const perFrame: Record<string, number> = {};
     const frames = (snap.frames as { n?: number } | undefined)?.n || 1;
@@ -1782,8 +1792,18 @@ export class WorldScene extends Phaser.Scene {
          * cause; recording one window at a time is the way to avoid it. */
         ...cpuIndex,
         beaconSelfMs: this.beaconSelfMs, // what the PREVIOUS report cost to build
-        fullPaints: this.groundFullRuns,
-        drains: this.repaintStats.drains,
+        /* PER WINDOW, NOT SINCE PAGE LOAD — and reading them as per-window when
+         * they were cumulative cost a round of analysis. Four consecutive
+         * reports read fullPaints 25/33/36/38 and drains 21/29/29/29, which I
+         * reported as "about one whole-world repaint per second"; the real
+         * deltas are 25/8/3/2 and 21/8/0/0, i.e. front-loaded into the fresh
+         * world's streaming boot and ZERO for the last 50 seconds. Every other
+         * number in this report is already per window (`sections` divides by
+         * the frame count, `perfAcc` is reset each send); these two were the
+         * exception and are not any more. */
+        fullPaints: this.groundFullRuns - prevFull,
+        drains: this.repaintStats.drains - prevDrain,
+        drainsDeferred: this.repaintStats.drainsDeferred - prevDefer,
       },
       // Every jump of the AUTHORITATIVE body over 2 cells in one frame, with
       // the unacked-input depth at the time — a rejoin restore, a respawn, an
@@ -2185,6 +2205,9 @@ export class WorldScene extends Phaser.Scene {
   private perfFlushes = 0;
   /** What building the last report cost — see the beacon tick. */
   private beaconSelfMs = 0;
+  private perfPrevFullPaints = 0;
+  private perfPrevDrains = 0;
+  private perfPrevDeferred = 0;
   /** Server-side position jumps for the local body — see the recorder in the
    *  avatar loop. Bounded at 40 so a runaway cannot grow the report. */
   private posJumps: Record<string, unknown>[] = [];
@@ -5022,7 +5045,7 @@ export class WorldScene extends Phaser.Scene {
       repaints: (coalesce?: boolean) => {
         if (typeof coalesce === "boolean") this.repaintCoalesce = coalesce;
         const out = { coalesce: this.repaintCoalesce, ...this.repaintStats };
-        this.repaintStats = { terrain: 0, scenery: 0, manifest: 0, groundRuns: 0, occRuns: 0, drains: 0 };
+        this.repaintStats = { terrain: 0, scenery: 0, manifest: 0, groundRuns: 0, occRuns: 0, drains: 0, drainsDeferred: 0 };
         return out;
       },
       /** MICRO-BENCH: force one full occluder rebuild right now — the latch
@@ -13037,7 +13060,7 @@ export class WorldScene extends Phaser.Scene {
   private repaintGroundPending = false;
   private repaintOccPending = false;
   private repaintCoalesce = true;
-  private repaintStats = { terrain: 0, scenery: 0, manifest: 0, groundRuns: 0, occRuns: 0, drains: 0 };
+  private repaintStats = { terrain: 0, scenery: 0, manifest: 0, groundRuns: 0, occRuns: 0, drains: 0, drainsDeferred: 0 };
   private requestRepaint(kind: "terrain" | "scenery" | "manifest"): void {
     this.repaintStats[kind]++;
     if (!this.repaintCoalesce) {
@@ -15240,9 +15263,36 @@ export class WorldScene extends Phaser.Scene {
     const rising = idle && !this.t3loadWasIdle;
     this.t3loadWasIdle = idle;
     if (!this.groundDropsPending || !rising) return;
+    /* THE LANDING PATH ALREADY OWES THESE CELLS — let it pay, it is cheaper.
+     *
+     * An op drops because its texture is not resident, and `need()` records the
+     * CELL against the file it wanted in `t3missing`; when that file lands,
+     * `onTerrainBatch` repaints exactly those cells and sets both
+     * `repaintGroundPending` and `repaintOccPending`. So for the ordinary
+     * still-streaming case the drain adds nothing at all — and worse than
+     * nothing, because `repaintWorld` CLEARS `groundDirtyCells` and
+     * `repaintGroundPartial`, throwing the targeted repaint away and doing the
+     * whole world instead. The flag stays armed, so a drop that the landing
+     * path does NOT own is still repaired at a later idle edge. */
+    if (this.repaintGroundPending || this.repaintGroundPartial || this.groundDirtyCells.length) {
+      this.repaintStats.drainsDeferred++;
+      return;
+    }
     this.groundDropsPending = false;
     this.repaintStats.drains++;
-    this.repaintWorld();
+    /* GROUND ONLY. A dropped GROUND op is a hole in the ground texture; it says
+     * nothing about the occluder set, which draws its own art on its own 96 px
+     * latch and is repainted by the landing path anyway (`requestRepaint`
+     * sets `repaintOccPending` for every terrain batch). Poisoning that latch
+     * here bought a full occluder rebuild — measured 4.9-35.1 ms on his phone,
+     * 198.8 ms across the beacon's worst twenty — for a texture it cannot
+     * change. This is `repaintWorld` minus the occluder half. */
+    this.groundSliceQ = [];
+    this.groundSliceCtx = null;
+    this.lastGround = { x: NaN, y: NaN };
+    this.ps();
+    this.redrawGround();
+    this.pe("redrawGround");
   }
   /** Was the terrain loader idle last frame? — see t3drainDrops. */
   private t3loadWasIdle = false;
