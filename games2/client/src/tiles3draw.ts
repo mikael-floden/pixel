@@ -1576,7 +1576,16 @@ export class Tiles3Textures {
           const cv = (this.o.canvas ?? domCanvas)(w, h);
           cv.width = w;
           cv.height = h;
-          ctx = cv.getContext("2d");
+          /* THE READBACK HINT, on the one canvas in this file that is created
+           * ONLY to be read back. `sourcePixels` draws a freshly decoded plate
+           * into this scratch and immediately calls getImageData over the whole
+           * thing; without `willReadFrequently` the browser keeps that canvas
+           * GPU-backed and the read is a synchronous GPU->CPU stall. It is a
+           * FIRST-TOUCH cost — the result is memoised in `this.pix` — which is
+           * exactly the shape of the composition outliers in his beacon: a
+           * median composition is 3.30 ms but single ones cost 21.9, 34.7 and
+           * 150.8 ms, and those are the ones that had to decode a source. */
+          ctx = cv.getContext("2d", { willReadFrequently: true } as unknown as undefined);
           ctx?.drawImage(src, 0, 0);
         }
         const id = ctx?.getImageData(0, 0, w, h);

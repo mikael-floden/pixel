@@ -1749,6 +1749,12 @@ export class WorldScene extends Phaser.Scene {
         // list we built — the gap is what the cull is worth.
         flushes: this.perfDrawCount, // batch flushes in the last rendered frame
         occSkipped: this.occCulledSubmits, // occluder submits the cull removed
+        // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
+        // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
+        // every "full" frame in the last beacon was a `repaintWorld` — so these
+        // two say directly whether the drain's rising-edge guard held.
+        fullPaints: this.groundFullRuns,
+        drains: this.repaintStats.drains,
       },
       // Every jump of the AUTHORITATIVE body over 2 cells in one frame, with
       // the unacked-input depth at the time — a rejoin restore, a respawn, an
@@ -4974,7 +4980,7 @@ export class WorldScene extends Phaser.Scene {
       repaints: (coalesce?: boolean) => {
         if (typeof coalesce === "boolean") this.repaintCoalesce = coalesce;
         const out = { coalesce: this.repaintCoalesce, ...this.repaintStats };
-        this.repaintStats = { terrain: 0, scenery: 0, manifest: 0, groundRuns: 0, occRuns: 0 };
+        this.repaintStats = { terrain: 0, scenery: 0, manifest: 0, groundRuns: 0, occRuns: 0, drains: 0 };
         return out;
       },
       /** MICRO-BENCH: force one full occluder rebuild right now — the latch
@@ -12945,7 +12951,7 @@ export class WorldScene extends Phaser.Scene {
   private repaintGroundPending = false;
   private repaintOccPending = false;
   private repaintCoalesce = true;
-  private repaintStats = { terrain: 0, scenery: 0, manifest: 0, groundRuns: 0, occRuns: 0 };
+  private repaintStats = { terrain: 0, scenery: 0, manifest: 0, groundRuns: 0, occRuns: 0, drains: 0 };
   private requestRepaint(kind: "terrain" | "scenery" | "manifest"): void {
     this.repaintStats[kind]++;
     if (!this.repaintCoalesce) {
@@ -15124,12 +15130,36 @@ export class WorldScene extends Phaser.Scene {
    *  dropped and cleared the moment the repaint is issued, so a cell whose art
    *  genuinely never arrives costs one repaint, not one per frame. */
   private t3drainDrops(): void {
-    if (!this.groundDropsPending || !this.maps3) return;
+    if (!this.maps3) return;
     const load = this.t3load;
-    if (!load || load.queuedCount > 0 || !load.idle) return;
+    if (!load) return;
+    /* THE RISING EDGE, AND IT WAS A GUARD IN NAME ONLY.
+     *
+     * The intent is "repaint once when the loader goes idle, in case a dropped
+     * op's texture has arrived". But the flag is re-armed INSIDE the repaint it
+     * triggers: `drawTiles3Ground` ends by setting `groundDropsPending` whenever
+     * that pass dropped an op, and `repaintWorld` runs `drawTiles3Ground`. So an
+     * op that is permanently undrawable — a 404, an unpublished x-over-y pair —
+     * cleared the flag, repainted the WHOLE world and the occluders, set the
+     * flag again, and did it all over on the next frame, for as long as the
+     * loader stayed idle. Measured on his phone, a repaintWorld frame costs 52.9
+     * to 271.6 ms of redrawGround plus 7.6 to 252.2 ms of rebuildOccluders, and
+     * these frames are 47% of all the time in the beacon's twenty worst.
+     *
+     * Firing on the TRANSITION into idle bounds it to one repaint per loader
+     * cycle, which is what "once per idle transition" always meant: a repaint is
+     * only ever useful when something has LANDED since the last one, and
+     * something landing is exactly what takes the loader out of idle first. */
+    const idle = load.queuedCount === 0 && load.idle;
+    const rising = idle && !this.t3loadWasIdle;
+    this.t3loadWasIdle = idle;
+    if (!this.groundDropsPending || !rising) return;
     this.groundDropsPending = false;
+    this.repaintStats.drains++;
     this.repaintWorld();
   }
+  /** Was the terrain loader idle last frame? — see t3drainDrops. */
+  private t3loadWasIdle = false;
 
   /** RESOLVE, BUT NEVER TAKE THE FRAME DOWN. `Tiles3.overTile` THROWS when the
    *  x-over-y matrix has no entry for a pair — deliberately, because the matrix
