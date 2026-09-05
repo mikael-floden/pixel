@@ -1731,6 +1731,15 @@ export class WorldScene extends Phaser.Scene {
     const frames = (snap.frames as { n?: number } | undefined)?.n || 1;
     for (const [k, v] of Object.entries(sec ?? {})) perFrame[k] = +(((v?.totalMs ?? 0) / frames)).toFixed(3);
     const cam = this.cameras.main;
+    /* The two rates the index is built from, in NANOSECONDS per unit of work,
+     * taken from the per-frame means above against the end-of-window counts. */
+    const cnt = (snap.counts ?? {}) as Record<string, number>;
+    const occN = cnt.occluders ?? 0;
+    const dlN = cnt.displayList ?? 0;
+    const cpuIndex = {
+      cpuOccCull: +(occN > 0 ? ((perFrame["occCull"] ?? 0) / occN) * 1e6 : 0).toFixed(1),
+      cpuSort: +(dlN > 1 ? ((perFrame["depthSort"] ?? 0) / (dlN * Math.log2(dlN))) * 1e6 : 0).toFixed(2),
+    };
     const body = {
       build: assetIndexInfo().buildSha,
       where: at ? `${at.x.toFixed(1)},${at.y.toFixed(1)}` : "unknown",
@@ -1753,6 +1762,26 @@ export class WorldScene extends Phaser.Scene {
         // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
         // every "full" frame in the last beacon was a `repaintWorld` — so these
         // two say directly whether the drain's rising-edge guard held.
+        /* A MACHINE-SPEED INDEX, so "this run is worse" becomes falsifiable.
+         *
+         * Two loops in this scene are purely proportional to an object count
+         * and do nothing else: `occCull` is four compares and a store per
+         * occluder, `depthSort` is a comparison sort of the display list. Their
+         * cost PER UNIT OF WORK is therefore a measurement of the device, not
+         * of the game — and across his last beacon those two independent rates
+         * agreed that one window ran 3.2x slower than the others (occCull index
+         * 3.39, depthSort index 3.46, render per object 2.69). That window was
+         * the fourth consecutive 30 s recording, and it is why its sections
+         * summed HIGHER than the previous window's while its display list was
+         * 3.7x SMALLER — which no amount of per-object reasoning can produce,
+         * and which I had started to investigate as a code regression.
+         *
+         * Shipping the two rates means the next report says whether a slow
+         * window is a slow device before anyone goes looking for a slow code
+         * path. Thermal throttling across back-to-back windows is the expected
+         * cause; recording one window at a time is the way to avoid it. */
+        ...cpuIndex,
+        beaconSelfMs: this.beaconSelfMs, // what the PREVIOUS report cost to build
         fullPaints: this.groundFullRuns,
         drains: this.repaintStats.drains,
       },
@@ -1869,8 +1898,19 @@ export class WorldScene extends Phaser.Scene {
     const bins: Record<string, number> = {};
     const sums = new Int32Array(W * H);
     for (let i = 0, j = 0; i < px.length; i += 4, j++) sums[j] = px[i] + px[i + 1] + px[i + 2];
-    const sorted = Int32Array.from(sums).sort();
-    const med = sorted[sorted.length >> 1];
+    /* THE MEDIAN WITHOUT SORTING 49,152 NUMBERS. Each entry is three bytes
+     * added, so it is an integer in [0,765] and a 766-bucket histogram gives
+     * the SAME value in one pass with no copy — verified against the sort over
+     * 2,000 random arrays, zero mismatches. The sort was a copy plus an
+     * O(n log n) of 49,152 elements inside a probe that runs on one frame every
+     * 30 s, and that frame lands in this report's own worst-frames list. */
+    const hist = new Int32Array(766);
+    for (let j = 0; j < sums.length; j++) hist[sums[j]]++;
+    let med = 0;
+    for (let seen = 0, half = sums.length >> 1; med < 766; med++) {
+      seen += hist[med];
+      if (seen > half) break;
+    }
     for (let y = 1; y < H - 1; y++) {
       for (let x = 1; x < W - 1; x++) {
         const j = y * W + x;
@@ -2143,6 +2183,8 @@ export class WorldScene extends Phaser.Scene {
   /** Batch flushes in the last rendered frame — see perfHookRender. */
   private perfDrawCount = 0;
   private perfFlushes = 0;
+  /** What building the last report cost — see the beacon tick. */
+  private beaconSelfMs = 0;
   /** Server-side position jumps for the local body — see the recorder in the
    *  avatar loop. Bounded at 40 so a runaway cannot grow the report. */
   private posJumps: Record<string, unknown>[] = [];
@@ -8995,7 +9037,31 @@ export class WorldScene extends Phaser.Scene {
       this.perfLast = now;
       if (this.perfTexFrame > this.perfTexFrameMax) this.perfTexFrameMax = this.perfTexFrame;
       this.perfTexFrame = 0;
-      if (this.perfBeacon) this.perfBeaconTick(now);
+      /* THE INSTRUMENT MUST NOT BILL THE GAME, AND IT WAS BILLING 125 ms.
+       *
+       * Building a window's report is expensive on purpose — a gl.readPixels of
+       * 256x192 is a full GPU sync, and it used to sort 49,152 numbers on top —
+       * but it ran AFTER `perfLast` was stamped, so its whole cost landed in the
+       * NEXT frame's measurement. That frame is f=3778 in his last beacon: the
+       * first frame of window 4, total 138.4 ms with `other` 125.0 and every
+       * section under 3.2 ms. One of the three "mystery" frames I was chasing
+       * was this probe measuring itself, and at 125 ms it was a quarter of all
+       * the unaccounted time in the tail.
+       *
+       * Re-stamping `perfLast` afterwards takes it out of the game's frame, and
+       * `beaconSelfMs` reports what it cost so the number is visible rather than
+       * merely gone. It is a real stall on his device while recording — but it
+       * is the measurement's, not the game's, and it must not be attributed to
+       * the thing it is measuring. */
+      if (this.perfBeacon) {
+        const b0 = performance.now();
+        this.perfBeaconTick(now);
+        const spent = performance.now() - b0;
+        if (spent > 1) {
+          this.beaconSelfMs = +spent.toFixed(1);
+          this.perfLast = performance.now();
+        }
+      }
     }
     this.ps();
     /* A FULL PAINT COUNTS AS HAVING PAINTED, and it did not.
