@@ -256,7 +256,10 @@ test("a body standing on the route is passed, not orbited", () => {
   const worldH = grid.height * CELL_WU;
   const npc = { id: "npc:aurelia", x: 178.5 * CELL_WU, y: 120.5 * CELL_WU, r: 9 };
 
-  assert.equal(bodyStandoff(npc.x, npc.y, [npc]), 24,
+  // 9 (npc) + (9 + 6) * MONSTER_DODGE_TIGHTEN(0.85). A GUARD, not a behaviour
+  // check: it fires when the clearance moves so this fixture's geometry gets
+  // re-examined rather than silently measuring nothing.
+  assert.equal(bodyStandoff(npc.x, npc.y, [npc]), 21.75,
     "personal space moved — this test's geometry no longer matches the dodge's");
   assert.equal(bodyStandoff(npc.x + 100, npc.y, [npc]), 0, "a free point reported occupied");
 

@@ -80,7 +80,7 @@ import {
   PICKUP_RADIUS_WU,
   attackRange,
   PLAYER_BODY_RADIUS,
-  MONSTER_DODGE_MARGIN,
+  dodgePersonal,
   PROVOKE_RADIUS_WU,
   DROP_TTL_MS,
   DROP_FLASH_MS,
@@ -7764,10 +7764,11 @@ export class WorldScene extends Phaser.Scene {
      *   GREEN SOLID  the body itself, `radius` — for a tuned monster that is
      *                shadowBodyRadius of the wiki's own shadow, which is why it
      *                can differ per monster and per state.
-     *   GREEN FAINT  where the dodge actually turns him: radius + his own
-     *                PLAYER_BODY_RADIUS + MONSTER_DODGE_MARGIN. He never
-     *                touches the inner ring, and being unable to see why was
-     *                the same complaint as the footprints.
+     *   GREEN FAINT  where the dodge actually turns him — `dodgePersonal`
+     *                ITSELF, never a re-derivation of it, so the ring on screen
+     *                is the rule the body moves by. He never touches the inner
+     *                ring, and being unable to see why was the same complaint
+     *                as the footprints.
      * Each sits on the BODY's own elevation (already a pixel lift), not the
      * player's plane — the aggro rings' rule. A monster up on a deck draws its
      * circle under itself rather than on the floor below. */
@@ -7782,16 +7783,15 @@ export class WorldScene extends Phaser.Scene {
         36,
       );
     };
-    const self = PLAYER_BODY_RADIUS + MONSTER_DODGE_MARGIN;
     this.monsters.forEach((mv) => {
       if (Math.abs(mv.fx - me.fx) > 400 || Math.abs(mv.fy - me.fy) > 400) return;
       ring(mv.fx, mv.fy, mv.radius, mv.elev, 0x51cf66, 0.95);
-      ring(mv.fx, mv.fy, mv.radius + self, mv.elev, 0x51cf66, 0.35);
+      ring(mv.fx, mv.fy, dodgePersonal(mv.radius, PLAYER_BODY_RADIUS), mv.elev, 0x51cf66, 0.35);
     });
     this.npcs.forEach((npc) => {
       if (Math.abs(npc.fx - me.fx) > 400 || Math.abs(npc.fy - me.fy) > 400) return;
       ring(npc.fx, npc.fy, NPC_BODY_RADIUS, npc.elev, 0x51cf66, 0.95);
-      ring(npc.fx, npc.fy, NPC_BODY_RADIUS + self, npc.elev, 0x51cf66, 0.35);
+      ring(npc.fx, npc.fy, dodgePersonal(NPC_BODY_RADIUS, PLAYER_BODY_RADIUS), npc.elev, 0x51cf66, 0.35);
     });
   }
 

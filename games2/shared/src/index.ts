@@ -3800,6 +3800,8 @@ import {
   zonePolygonCells,
   MONSTER_DODGE_LOOKAHEAD,
   MONSTER_DODGE_MARGIN,
+  dodgePersonal,
+  dodgeHold,
   DEFAULT_MONSTER_RADIUS,
   PLAYER_BODY_RADIUS,
   DODGE_PASS_STALL_MS,
@@ -3882,7 +3884,7 @@ export function bodyStandoff(
 ): number {
   let out = 0;
   for (const b of bodies) {
-    const p = (b.r ?? DEFAULT_MONSTER_RADIUS) + selfR + MONSTER_DODGE_MARGIN;
+    const p = dodgePersonal(b.r, selfR);
     const d = Math.hypot(wx - b.x, wy - b.y);
     if (d < p) out = Math.max(out, p - d);
   }
@@ -3921,8 +3923,7 @@ export function monsterDodge(
   // the dodger's own, plus a comfort margin — an 84wu-wide mammoth deflects a
   // walker from ~4× the distance a poring does. Lookahead scales to match so
   // big bodies are reacted to before the walker is already inside them.
-  const personal = (m: { r?: number }) =>
-    (m.r ?? DEFAULT_MONSTER_RADIUS) + selfR + MONSTER_DODGE_MARGIN;
+  const personal = (m: { r?: number }) => dodgePersonal(m.r, selfR);
   // The closest monster the heading actually runs into within its lookahead:
   // in front (dot), and the straight line would pass inside its personal space.
   let hit: { id: string; x: number; y: number; r?: number } | null = null;
@@ -3948,9 +3949,13 @@ export function monsterDodge(
     const tx = m.x - x;
     const ty = m.y - y;
     const d = Math.hypot(tx, ty);
-    if (d < 1e-6 || d > Math.max(MONSTER_DODGE_LOOKAHEAD, p + 20)) continue;
+    // The HELD blocker is measured against the untightened corridor (dodgeHold)
+    // — reach and width both — so making the TRIGGER later cannot make the
+    // release earlier. See MONSTER_DODGE_HOLD_WIDEN.
+    const reach = held ? dodgeHold(m.r, selfR) : p;
+    if (d < 1e-6 || d > Math.max(MONSTER_DODGE_LOOKAHEAD, reach + 20)) continue;
     if ((tx * ux + ty * uy) / d < (held ? 0.0 : 0.35)) continue; // beside/behind — free
-    if (Math.abs(tx * uy - ty * ux) > (held ? p * 1.35 : p)) continue; // misses
+    if (Math.abs(tx * uy - ty * ux) > reach) continue; // misses
     // The held blocker wins ties AND near-ties: switching mid-pass to a body
     // that is marginally closer restarts the side choice and weaves again.
     if (held) { hitD = -1; hit = m; break; }

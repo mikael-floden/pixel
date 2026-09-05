@@ -1723,9 +1723,23 @@ clip, no tint.
   NPCs and monsters have faked client-side collision — the INPUT slips around
   their personal space). The laws, from the back-and-forth-panic reports:
   - Engage and release on DIFFERENT thresholds: engage at `dot ≥ 0.35` inside
-    the personal corridor; HOLD the committed blocker until `dot < 0.0` with a
-    1.35× wider corridor. Widening only the HOLD makes it hysteresis, not a
-    bigger trigger.
+    the personal corridor (`dodgePersonal` = `r + (selfR + MONSTER_DODGE_MARGIN)
+    · MONSTER_DODGE_TIGHTEN`); HOLD the committed blocker until `dot < 0.0`
+    inside `dodgeHold` — the UNTIGHTENED radii sum, 1.35×. Widening only the
+    HOLD makes it hysteresis, not a bigger trigger, and the two are separate
+    functions for exactly that reason: **`MONSTER_DODGE_TIGHTEN` must never
+    reach the hold.** It shrinks how EARLY you are turned (0.85 — maintainer
+    2026-09-05, with the overlay on: the outer ring "a bit too big", wanted
+    between the body ring and where it sat), and tightening the hold with it
+    made the walker let go the moment it had stepped aside — the 2026-08-08
+    weave, caught by the dodge gate rather than by reasoning. `bodyStandoff`
+    reads `dodgePersonal` too: the autopilot steers at a waypoint the dodge
+    refuses to enter, and if the two disagree the walker orbits forever. The
+    collision overlay draws `dodgePersonal` ITSELF, never a re-derivation.
+    HALFWAY (0.5) IS STILL WANTED and is not shipped: it stops 9 dodge/pass
+    fixtures from arising at all ("the fixture no longer blocks", "the pass
+    never engaged"), so it needs those bodies re-placed against the new
+    clearance first — not a constant change.
   - The side is chosen ONCE and held; only walkability may overrule it
     (re-scoring both sides per frame with a small bias kept flipping). The
     45°-vs-90° escalation latches the same way — but see below.

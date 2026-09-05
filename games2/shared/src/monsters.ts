@@ -245,6 +245,40 @@ export const PLAYER_BODY_RADIUS = 9; // wu — the player's own footprint half-w
 export const MONSTER_SEP_MARGIN = 4; // wu — breathing room beyond touching radii
 export const MONSTER_SEP_RELAX_SPEED = 90; // wu/s — cap on the positional push (no teleporting)
 export const MONSTER_DODGE_MARGIN = 6; // wu — dodge clearance beyond the radii sum
+/** HOW MUCH OF THAT CLEARANCE THE DODGE ACTUALLY KEEPS (maintainer 2026-09-05,
+ *  with the collision overlay on: "the OUTER hitbox radius on monsters and NPCs
+ *  are a bit too big and should be maybe in between what it is now and the
+ *  inner hitbox circle"). The dodge used to turn you a whole body plus a margin
+ *  out from the art — r + 9 + 6 — which drew a ring a body and a half wide and
+ *  felt like being pushed aside by nothing. Half of that clearance puts the ring
+ *  exactly midway between the body itself (r) and where it used to sit
+ *  (r + 15), which is what he asked for; bodies are SOFT collision, so brushing
+ *  one is free and the only cost is how early you are steered. */
+export const MONSTER_DODGE_TIGHTEN = 0.85;
+
+/** THE HOLD CORRIDOR IS DELIBERATELY *NOT* TIGHTENED. Engage and release are
+ *  two different thresholds on purpose — "widening only the HOLD is what makes
+ *  this hysteresis rather than a bigger trigger" — so the corridor that keeps a
+ *  committed dodge alive is the FULL radii sum, 1.35x, whatever
+ *  MONSTER_DODGE_TIGHTEN does to the trigger. Tightening both together weakened
+ *  the hysteresis and the walker let go the moment it had stepped aside, which
+ *  is the 2026-08-08 weave ("runs back-and-forth-back-and-forth until the
+ *  player finally walks around the NPC") — caught by the dodge gate, not by
+ *  reasoning. Turning LATER is what was asked for; letting go sooner was not. */
+export const MONSTER_DODGE_HOLD_WIDEN = 1.35;
+export function dodgeHold(r: number | undefined, selfR: number): number {
+  return ((r ?? DEFAULT_MONSTER_RADIUS) + selfR + MONSTER_DODGE_MARGIN) * MONSTER_DODGE_HOLD_WIDEN;
+}
+
+/** THE ONE DEFINITION of how far from a body the dodge turns you — the radii
+ *  sum tightened by MONSTER_DODGE_TIGHTEN. `bodyStandoff` and `monsterDodge`
+ *  MUST agree here: the autopilot steers at a waypoint the dodge refuses to
+ *  enter, and if the two disagree the walker orbits the body forever (the
+ *  standoff rule). The collision overlay draws THIS, so the ring on screen
+ *  cannot drift from the rule. */
+export function dodgePersonal(r: number | undefined, selfR: number): number {
+  return (r ?? DEFAULT_MONSTER_RADIUS) + (selfR + MONSTER_DODGE_MARGIN) * MONSTER_DODGE_TIGHTEN;
+}
 export const MONSTER_DODGE_LOOKAHEAD = 26; // wu — MINIMUM dodge lookahead (scales with radius)
 // THE PASS — the player's "special move" past a body blocking the ONLY lane
 // (maintainer 2026-08-13: "this should not result in the player switching
