@@ -209,6 +209,37 @@ edge with the wall/corner"*). The along-wall centre is clamped inside the wall's
 own run, which IS the corner at either end, then walked outward in half cells
 until the whole footprint is on free floor.
 
+**A HOUSE IS NOT ALL THE SAME HOUSE.** The WALL is one of three materials and
+nothing else — `parquet_floor`, `brown_paving_stone`, `grey_paving_stone`
+(maintainer 2026-08-30) — so the variety lives in the **roof and the floor**,
+which are free (2026-09-05: *"You can use paving stone as well to create a
+house out of stone ... place them on top of the mountain with snow on the roof
+... What about dark mud as floor? What about tree as the roof and paving stone
+in the rooms?"*). `parquet_floor` **is** the timber, so "tree as the roof" is a
+parquet_floor roof. `HOUSE_STYLES` (wall, roof, floor):
+
+| style | wall | roof | floor |
+|---|---|---|---|
+| timber | parquet_floor | brown_paving_stone | parquet_floor |
+| stone | grey_paving_stone | grey_stone | dark_mud |
+| longhouse | parquet_floor | parquet_floor | grey_paving_stone |
+| brick | brown_paving_stone | grey_paving_stone | parquet_floor |
+| highland | grey_paving_stone | snow | dark_mud |
+
+the_game ships 5 timber, 2 longhouse, 2 stone, 2 brick and one **highland on
+the mountain shelf** (`highest_pad`, level 46 — the massif's own materials, not
+grass). **A FLOOR IS RECORDED, NOT INFERRED**: `house()` writes every interior
+cell into `floor_cells`, because dark mud is also a fen and paving stone is
+also a road, so "every connected patch of parquet_floor is a room" stops being
+true the moment a house is not made of wood.
+
+**NOTHING STANDS IN A DOORWAY.** The threshold is three cells — the gap in the
+wall ring, the step outside it and the cell inside — and no footprint may touch
+any of them (maintainer 2026-09-05: *"I tried to walk into this house, but you
+have placed a barrel exactly at the entrance so I can't get in"*). The barrel
+was legal under every other rule: against a wall, on free floor, clear of its
+neighbours. A door is not a wall.
+
 **A HOUSE IS SIZED BY WHAT STANDS IN IT.** At the drawn scale a bed's footprint
 is **2.37 × 1.33 cells**, a hearth 1.51 × 1.65, a dresser 1.72 × 0.72 — so the
 old 6×5 house, whose interior is 4×3, was a bed and a corridor (maintainer
