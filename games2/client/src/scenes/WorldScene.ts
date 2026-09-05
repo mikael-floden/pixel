@@ -1869,7 +1869,14 @@ export class WorldScene extends Phaser.Scene {
       worst: (() => {
         try {
           const h = (window as unknown as { __ml?: { hitch?: () => { worst?: unknown[] } } }).__ml?.hitch?.();
-          return h?.worst?.slice(0, 5) ?? null;
+          /* ALL OF THEM, NOT FIVE. The recorder already keeps 24 worst frames
+           * and the report threw 19 away — and that cost real analysis time:
+           * proving the depthSort spikes were a mis-billed stall rather than a
+           * slow sort needed the frames AROUND them, and answering "what was
+           * this frame doing" is exactly what the tail is for. Twenty-four
+           * records is a few KB against a report that already carries a PNG on
+           * its final flush. */
+          return h?.worst ?? null;
         } catch {
           return null;
         }
