@@ -7711,7 +7711,17 @@ export class WorldScene extends Phaser.Scene {
       const ey = pl.ay + (ox + oy) * dy;
       const widened = f.rx <= floorRx + 1e-6 || f.ry <= floorRy + 1e-6;
       gfx.lineStyle(1, widened ? 0xb197fc : 0x3bc9db, 0.95);
-      gfx.strokeEllipse(ex, ey, f.rx * 2, f.ry * 2, 44);
+      /* A RECT IS DRAWN AS A RECT. The wiki publishes `shape: "rect"` for the
+       * things that are rectangles — beds, cupboards, shelves — and drawing
+       * them as the inscribed ellipse made the overlay disagree with the
+       * collision at all four corners (maintainer 2026-09-05: "I know the bed
+       * and shelf is a rect hitbox and not an ellipse"). The screen-aligned
+       * rectangle IS what the engine collides with: screen->world is a pure
+       * diagonal scale in the frame the footprint's p/q live in, so the same
+       * half-extents describe both shapes and only the distance function
+       * differs (footprintPenetration). */
+      if (f.rect) gfx.strokeRect(ex - f.rx, ey - f.ry, f.rx * 2, f.ry * 2);
+      else gfx.strokeEllipse(ex, ey, f.rx * 2, f.ry * 2, 44);
       // A centre tick: a hitbox parked off its own art is the fault that is
       // hardest to see from the outline alone (it just looks like the wrong
       // size), and it is the one the wiki editor fixes.

@@ -471,6 +471,30 @@ by construction, so no existing branch changed.
   the bbox doc carries `cpx`). Synthetic collision fixtures declare
   `cpx: CHARACTER_BODY_PX` — a piece sized against our own person, identity
   scale — never omit it or they silently grow 1.375×.
+- **A SCENERY HITBOX IS AN ELLIPSE *OR* A RECTANGLE, and the shape is
+  COLLISION, not decoration.** `live/tuning/scenery_hitbox.json` publishes
+  `shape: "rect"` on 571 of its boxes — every bed, cupboard and shelf, 547 of
+  them the wiki's own alpha-placed default — and the game read only ax/ay/rx/ry,
+  so it collided all of them as the ellipse INSCRIBED in the published box and
+  a body walked into all four corners of every one (maintainer 2026-09-05: "I
+  know the bed and shelf is a rect hitbox and not an ellipse"). Both shapes now
+  stamp, collide and DRAW as themselves. The maths is shared, not parallel:
+  screen->world is a pure diagonal scale in the frame `SceneryFootprints.p/q`
+  are measured in, so a screen-axis-aligned rect is axis-aligned there too —
+  the same half-extents describe both and only the distance function differs
+  (`footprintPenetration`, where the rect case is exact and cheaper than the
+  ellipse's gauge gates). TWO THINGS A RECT NEEDS THAT THE ELLIPSE DID NOT: the
+  BUCKET PAD, because a rect's world-axis support is `(p+q)/sqrt(2)` against
+  the ellipse's `sqrt((p^2+q^2)/2)` — pad it as an ellipse and its corners sit
+  in cells no query looks at, so the body walks through them with every
+  containment test still passing; and the inside answer must be FLOORED above
+  zero like the ellipse's own boolean gate, because `canEnterElev` queries with
+  r = 0 and `footprintBlocks` tests `> 0`. `rot` is still ignored (12 boxes
+  carry a non-zero one). USE THE WIKI'S DEFAULT: the stamp never filters `auto`
+  — an override rewrites the same record without the flag, so a reviewed box
+  wins by being the record. Gates: the rect block of
+  `server/test/footprint.test.ts` (corners solid, the ellipse arm asserted so
+  it cannot pass by blocking everything, and the bucket asserted from outside).
 - **INDOOR SCENERY IS DRAWN WHILE ITS ROOF IS CUT AWAY** — the furniture of
   every house and cave. `buildPlacements` FLAGS a placement under a roof/cave
   deck (`SceneryPlacement.roofed`) instead of dropping it: render3 drops those

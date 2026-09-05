@@ -39,6 +39,91 @@ function oneFootprint(rx: number, ry: number, at: { x: number; y: number }[]): T
   stampSceneryCollision(grid, at.map((a) => ({ piece: "p", x: a.x, y: a.y })), bbox, hitbox, GEOM);
   return grid;
 }
+/** The same world, with the box published as a RECTANGLE. */
+function oneRectFootprint(rx: number, ry: number, at: { x: number; y: number }[], shape = "rect"): TerrainGrid {
+  const rows = Array.from({ length: H }, () => Array.from({ length: W }, () => ({ t: "grass", l: 0 })));
+  const grid = buildTerrainGrid(W, H, rows, [], []);
+  const bbox: SceneryBboxDoc = {
+    pieces: { p: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" } },
+    boxes: { s: [0, 0, 100, 100, 100, 100] },
+  };
+  const hitbox: SceneryHitboxDoc = { "scenery/p": { boxes: [{ ax: 0, ay: -50, rx, ry, shape }] } };
+  stampSceneryCollision(grid, at.map((a) => ({ piece: "p", x: a.x, y: a.y })), bbox, hitbox, GEOM);
+  return grid;
+}
+/** World point at (fu, fv) of the footprint's own half-extents, through the
+ *  SAME rotation footprintPenetration uses (X = (ox-oy)/R2, Y = (ox+oy)/R2). */
+function atFraction(grid: TerrainGrid, j: number, fu: number, fv: number): { x: number; y: number } {
+  const fp = grid.footprints!;
+  const R2 = Math.SQRT2;
+  const X = fu * fp.p[j];
+  const Y = fv * fp.q[j];
+  const ox = (X + Y) / R2;
+  const oy = (Y - X) / R2;
+  return { x: (fp.cx[j] + ox) * CELL_WU, y: (fp.cy[j] + oy) * CELL_WU };
+}
+
+/* A RECTANGLE COLLIDES AS A RECTANGLE — its CORNERS are solid.
+ *
+ * live/tuning/scenery_hitbox.json publishes `shape: "rect"` on 571 boxes (every
+ * bed, cupboard and shelf; 547 of them the wiki's own alpha-placed default) and
+ * the game read none of it: every footprint collided as the ellipse INSCRIBED
+ * in the published box, so a body walked into all four corners of every one of
+ * them and the collision overlay drew an ellipse over a rectangle (maintainer
+ * 2026-09-05: "I know the bed and shelf is a rect hitbox and not an ellipse").
+ *
+ * (0.9, 0.9) of the half-extents is the discriminating point: gauge sqrt(1.62)
+ * = 1.27 puts it OUTSIDE the ellipse and inside the rect. The ellipse arm is
+ * asserted too, so the test cannot pass by blocking everything. */
+test("a rect footprint blocks its corners and an ellipse does not", () => {
+  const RX = 40;
+  const RY = 20;
+  const rect = oneRectFootprint(RX, RY, [{ x: 15.5, y: 15.5 }]);
+  const ell = oneFootprint(RX, RY, [{ x: 15.5, y: 15.5 }]);
+  assert.equal(rect.footprints!.n, 1);
+  assert.equal(ell.footprints!.n, 1);
+  assert.equal(rect.footprints!.rect[0], 1);
+  assert.equal(ell.footprints!.rect[0], 0);
+  // Same geometry both ways — only the shape flag differs.
+  assert.equal(rect.footprints!.p[0], ell.footprints!.p[0]);
+  assert.equal(rect.footprints!.q[0], ell.footprints!.q[0]);
+  for (const [su, sv] of [[1, 1], [1, -1], [-1, 1], [-1, -1]] as [number, number][]) {
+    const c = atFraction(rect, 0, su * 0.9, sv * 0.9);
+    assert.equal(footprintBlocks(rect, c.x, c.y, 0), true, `rect corner ${su},${sv}`);
+    assert.equal(footprintBlocks(ell, c.x, c.y, 0), false, `ellipse corner ${su},${sv}`);
+  }
+  // The centre is inside both, and a point well outside is inside neither.
+  const mid = atFraction(rect, 0, 0, 0);
+  assert.equal(footprintBlocks(rect, mid.x, mid.y, 0), true);
+  assert.equal(footprintBlocks(ell, mid.x, mid.y, 0), true);
+  const out = atFraction(rect, 0, 1.6, 1.6);
+  assert.equal(footprintBlocks(rect, out.x, out.y, 0), false);
+  assert.equal(footprintBlocks(ell, out.x, out.y, 0), false);
+  // An unknown/absent shape stays an ellipse — the default must not change.
+  const other = oneRectFootprint(RX, RY, [{ x: 15.5, y: 15.5 }], "ellipse");
+  assert.equal(other.footprints!.rect[0], 0);
+});
+
+/* THE BUCKET MUST REACH THE CORNERS TOO. A rect's world-axis support is
+ * (p+q)/sqrt(2), strictly larger than the ellipse's sqrt((p^2+q^2)/2), so
+ * bucketing a rect by the ellipse's formula leaves its corners in cells the
+ * query never looks at — the body walks through them and every assertion above
+ * still passes, because footprintBlocks would never be handed the footprint.
+ * Asserted from the OUTSIDE: the corner cell must list the footprint. */
+test("a rect footprint is bucketed into the cells its corners reach", () => {
+  const grid = oneRectFootprint(56, 28, [{ x: 15.5, y: 15.5 }]);
+  const fp = grid.footprints!;
+  for (const [su, sv] of [[1, 1], [1, -1], [-1, 1], [-1, -1]] as [number, number][]) {
+    const c = atFraction(grid, 0, su * 0.99, sv * 0.99);
+    const col = Math.floor(c.x / CELL_WU);
+    const row = Math.floor(c.y / CELL_WU);
+    const i = row * grid.width + col;
+    const listed: number[] = [];
+    for (let k = fp.start[i]; k < fp.start[i + 1]; k++) listed.push(fp.items[k]);
+    assert.ok(listed.includes(0), `corner cell ${col},${row} must list the footprint`);
+  }
+});
+
 const walk = { maxClimb: WALK_CLIMB, canSwim: true };
 const DIRS: [number, number][] = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]];
 /** How far inside the DRAWN ellipse (gauge < 1) the body ever gets, running at

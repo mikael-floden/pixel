@@ -1344,6 +1344,12 @@ export interface SceneryFootprints {
    *  every query needs them and they never change. */
   p: Float64Array;
   q: Float64Array;
+  /** 1 = this footprint is a RECTANGLE, 0 = an ellipse (`shape: "rect"` in
+   *  live/tuning/scenery_hitbox.json). Screen->world is a pure diagonal scale in
+   *  the frame p/q are measured in, so a screen-axis-aligned rect is ALSO
+   *  axis-aligned there: the same p and q describe both shapes and only the
+   *  distance function differs. */
+  rect: Uint8Array;
   /** Index into the scenery placement list this footprint came from, so a debug
    *  overlay can name the piece it is outlining. */
   place: Int32Array;
@@ -1498,6 +1504,42 @@ function footprintPenetration(
   const ax = X < 0 ? -X : X;
   const ay = Y < 0 ? -Y : Y;
   if (ax >= p + rc || ay >= q + rc) return -1;
+  /* A RECTANGLE, when the wiki published one (`shape: "rect"` — beds, cupboards
+   * and shelves are rectangles and were colliding as the ellipse inscribed in
+   * them, so a body walked into the corners of every one). Exact and cheaper
+   * than the ellipse: in this frame the rect is axis-aligned with the SAME half
+   * extents p, q, so the distance from the point to it is the standard
+   * box distance and no gauge gates or bisection are needed. */
+  if (fp.rect[j]) {
+    const ex = ax - p;
+    const ey = ay - q;
+    if (ex <= 0 && ey <= 0) {
+      // Inside: distance 0, and the outward normal is the nearest FACE.
+      if (norm) {
+        // ex, ey are both negative here; the larger one is the closer face.
+        const gx = ex > ey ? (X < 0 ? -1 : 1) : 0;
+        const gy = ex > ey ? 0 : Y < 0 ? -1 : 1;
+        norm.nx = (gx + gy) / ROOT2;
+        norm.ny = (gy - gx) / ROOT2;
+      }
+      /* FLOORED, like the ellipse's own boolean gate: `footprintBlocks` tests
+       * `> 0` and `canEnterElev` queries with r = 0, so a bare `rc * CELL_WU`
+       * answers "not blocked" for a point standing INSIDE the shape. */
+      return Math.max(1e-12, rc * CELL_WU);
+    }
+    const qx = ex > 0 ? ex : 0;
+    const qy = ey > 0 ? ey : 0;
+    const d = Math.sqrt(qx * qx + qy * qy);
+    if (d >= rc) return -1;
+    if (norm) {
+      // Outward from the nearest point on the box towards the query point.
+      const gx = (X < 0 ? -qx : qx) / d;
+      const gy = (Y < 0 ? -qy : qy) / d;
+      norm.nx = (gx + gy) / ROOT2;
+      norm.ny = (gy - gx) / ROOT2;
+    }
+    return (rc - d) * CELL_WU;
+  }
   const gu = X / (p + rc);
   const gv = Y / (q + rc);
   const inGrown = gu * gu + gv * gv <= 1;
@@ -1686,7 +1728,7 @@ export function footprintsInCells(
   row0: number,
   col1: number,
   row1: number,
-): { cx: number; cy: number; rx: number; ry: number; place: number }[] {
+): { cx: number; cy: number; rx: number; ry: number; rect: boolean; place: number }[] {
   const fp = grid.footprints;
   if (!fp) return [];
   const c0 = Math.max(0, Math.min(col0, col1));
@@ -1694,7 +1736,7 @@ export function footprintsInCells(
   const r0 = Math.max(0, Math.min(row0, row1));
   const r1 = Math.min(grid.height - 1, Math.max(row0, row1));
   const seen = new Set<number>();
-  const out: { cx: number; cy: number; rx: number; ry: number; place: number }[] = [];
+  const out: { cx: number; cy: number; rx: number; ry: number; rect: boolean; place: number }[] = [];
   for (let r = r0; r <= r1; r++) {
     for (let c = c0; c <= c1; c++) {
       const i = r * grid.width + c;
@@ -1702,7 +1744,7 @@ export function footprintsInCells(
         const j = fp.items[k];
         if (seen.has(j)) continue;
         seen.add(j);
-        out.push({ cx: fp.cx[j], cy: fp.cy[j], rx: fp.rx[j], ry: fp.ry[j], place: fp.place[j] });
+        out.push({ cx: fp.cx[j], cy: fp.cy[j], rx: fp.rx[j], ry: fp.ry[j], rect: !!fp.rect[j], place: fp.place[j] });
       }
     }
   }
@@ -4113,8 +4155,20 @@ export * from "./chess";
 /* -- SCENERY COLLISION ------------------------------------------------------
  * The precondition world3.ts named — "collision stays off until scenery
  * publishes a hitbox" — is met: live/tuning/scenery_hitbox.json ships a
- * footprint ellipse per piece, and the maintainer's call is to use it,
- * default (auto) boxes included.
+ * footprint per piece, and the maintainer's call is to use it, default (auto)
+ * boxes included — which is the whole of "use the wiki's default unless I have
+ * overridden it": an edit rewrites the same record without the `auto` flag, so
+ * a reviewed box wins by being the record.
+ *
+ * A BOX IS AN ELLIPSE OR A RECTANGLE (`shape: "rect"`), and the shape is
+ * COLLISION, not decoration: 571 of the shipped boxes are rectangles — every
+ * bed, cupboard and shelf, 547 of them the wiki's own default — and reading
+ * only ax/ay/rx/ry collided all of them as the INSCRIBED ellipse, so a body
+ * walked into all four corners of every one. Screen->world is a pure diagonal
+ * scale in the frame `p`/`q` are measured in, so a screen-axis-aligned rect is
+ * axis-aligned there too: the same half-extents describe both shapes and only
+ * the distance function differs (footprintPenetration) — and the bucket pad,
+ * because a rect reaches further than the ellipse inside it.
  *
  * ONE DEFINITION, both sides. The server is the authority and the client
  * predicts against the same grid, so this lives here and both call it — a
@@ -4182,7 +4236,7 @@ export function sceneryDrawnPx(
 export type SceneryHitboxDoc = Record<
   string,
   {
-    boxes?: { ax: number; ay: number; rx: number; ry: number; rot?: number }[];
+    boxes?: { ax: number; ay: number; rx: number; ry: number; rot?: number; shape?: string }[];
     auto?: boolean;
     /** The Game Master's per-variation verdict that this piece lies flat and
      *  blocks nothing. It OUTRANKS the piece's published `collision` — the
@@ -4253,6 +4307,7 @@ export function stampSceneryCollision(
   const ecy: number[] = [];
   const erx: number[] = [];
   const ery: number[] = [];
+  const erect: number[] = [];
   const eplace: number[] = [];
   const recCache = new Map<string, SceneryHitboxDoc[string] | null | undefined>();
   for (let pi = 0; pi < scenery.length; pi++) {
@@ -4354,6 +4409,7 @@ export function stampSceneryCollision(
       ecy.push(wy);
       erx.push(rx);
       ery.push(ry);
+      erect.push(b.shape === "rect" ? 1 : 0);
       eplace.push(pi);
     }
   }
@@ -4377,6 +4433,7 @@ export function stampSceneryCollision(
     cy: Float64Array.from(ecy),
     rx: Float64Array.from(erx),
     ry: Float64Array.from(ery),
+    rect: Uint8Array.from(erect),
     p: new Float64Array(n),
     q: new Float64Array(n),
     place: Int32Array.from(eplace),
@@ -4397,7 +4454,15 @@ export function stampSceneryCollision(
   const counts = fp.start; // counted in place, then prefix-summed
   let total = 0;
   for (let j = 0; j < n; j++) {
-    const h = Math.hypot(fp.rx[j] / geom.dx, fp.ry[j] / geom.dy) / 2 + fp.pad;
+    /* A RECT REACHES FURTHER THAN ITS INSCRIBED ELLIPSE. World-axis support is
+     * sqrt((p^2+q^2)/2) for the ellipse but (p+q)/sqrt(2) for the rectangle —
+     * i.e. (rx/dx + ry/dy)/2, the generous form this line replaced for the
+     * ellipse. Bucketing a rect by the ellipse's support would leave its
+     * corners outside the cells they reach and a query would walk through them. */
+    const h =
+      (fp.rect[j]
+        ? (fp.rx[j] / geom.dx + fp.ry[j] / geom.dy) / 2
+        : Math.hypot(fp.rx[j] / geom.dx, fp.ry[j] / geom.dy) / 2) + fp.pad;
     c0[j] = Math.max(0, Math.floor(fp.cx[j] - h));
     c1[j] = Math.min(grid.width - 1, Math.floor(fp.cx[j] + h));
     r0[j] = Math.max(0, Math.floor(fp.cy[j] - h));

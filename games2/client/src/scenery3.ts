@@ -943,7 +943,16 @@ export class SceneryPieces {
  *  — "its centre line is what decides render order — a player above an
  *  ellipse's centre is drawn behind that part of the piece, below it in
  *  front." */
-export type SceneryHitbox = { ax: number; ay: number; rx: number; ry: number; rot?: number };
+export type SceneryHitbox = {
+  ax: number;
+  ay: number;
+  rx: number;
+  ry: number;
+  rot?: number;
+  /** `"rect"` = a rectangle, anything else (or absent) = an ellipse. The wiki
+   *  publishes it per variation; the game collides and draws both. */
+  shape?: string;
+};
 export type SceneryHitboxRec = { boxes?: SceneryHitbox[]; auto?: boolean };
 
 /** The record in force for one piece variation, or null when NOBODY HAS
