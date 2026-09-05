@@ -245,7 +245,7 @@ reproduces:
 | highland | top is snow or ice | grey_stone 3, black_rock 2, ice 1 |
 | rock | top is grey_stone or black_rock | black_rock 2, grey_stone 2, dark_mud 1 |
 | shore | foot at water, beach, or within `SHORE_R = 2` of the sea | light_beach 2, grey_stone 1, black_rock 1 |
-| lowland | everything else (grass, mud, soil) | grey_stone 3, black_rock 3, dark_mud 2 |
+| lowland | everything else (grass, mud, soil) | grey_stone 3, black_rock 3, dark_mud 2, light_soil 2 |
 
 The draw never equals the top when the pool has another choice (a grey_stone
 top over a grey_stone face is the invisible same-over-same column). **Not a
@@ -258,6 +258,49 @@ dark_mud 254, light_beach 172, ice 33.
 `rooms()` and the footprint police ignore them (a barrel against a cliff is
 fine; only house walls keep the `FP_MARGIN`). The game reads `walls[]` by side
 and cells and does not need the kind.
+
+**ONLY A `kind: "house"` WALL KEEPS ITS OWN SIDE.** The terrain wall groups the
+v2 port and island 2 carry (world3 `_terrain_walls`: light_soil below the
+massif, grey_stone on it) are the old dressing. One build honoured them and
+dressed only the gaps between them — a black column beside tan ones wherever a
+cell had fallen out of the old group, and the same at every terrace corner
+(maintainer 2026-09-05, four photographs: *"You often draw a single column in
+a different ground and wall type! This looks extremely ugly!"*). Every natural
+face is dressed by this pass, a dressed cell leaves every terrain group, and
+it is **build-asserted** that no dressed cell is in any other group. the_game:
+3,509 faces.
+
+### ground grooming — a speck is not a place, a hole is not terrain
+
+`groom()` runs before anything is built (after `i2_systems`) and `regroom()`
+again after every pass that paints ground; `audit_ground()` asserts at the end
+of the build. Four rules, all from one round of photographs (maintainer
+2026-09-05):
+
+- **No speck.** A patch of natural ground (`NATURAL`: grass, mud, rocks,
+  snow, ice, sand) of `SPECK_MAX = 2` cells or fewer, by ground alone, takes
+  the ground most of its rim is — same level counted double — and failing a
+  natural rim, whatever dry non-floor ground surrounds it (a mud dot in a
+  road becomes road). A one-cell islet with a wet rim stays an islet. The v2
+  port carried 65 lone grey_stone cells and 28 lone sand cells, one per
+  terrace corner, each drawing its own top AND its own wall column; the
+  terrace colouring and the road widening painted a few more, so
+  `TERRACE_MIN = 6`: a terrace smaller than that never recolours.
+- **No pocket.** A land or water patch of `POCKET_MAX = 60` cells or fewer
+  whose whole rim stands `POCKET_DROP = 2` levels or more above it rises to
+  the rim's lowest level; land takes the rim's ground, water stays water — a
+  pond at the meadow's own level is a place to swim, a shaft is a trap
+  (*"holes the player get stuck inside if they fall in"*). Iterated: a bowl
+  filled can sit in a bowl. A patch a ramp reaches is a landing, not a hole.
+  The mountain cut removes some pockets' only exit, hence the late pass.
+- **Deep water is the sea.** Every liquid body but the largest is a pond, and
+  a pond is `water` (*"The deep ocean tile is meant as an edge-of-world
+  tile"*). Three ponds shipped as deep_water.
+- **A bridge is built.** Bridge decks are `parquet_floor` (the pier's own
+  planks, one course of face) below `BRIDGE_HIGH = 14` and
+  `grey_paving_stone` above; the ported decks carried whatever v2 material
+  lay under them — a slab of 100% grass, with mud on one bank and soil on
+  the other. Both banks take the road for two cells at the deck's level.
 
 ### `scenery` — a placement is centred on its HITBOX, not its art
 

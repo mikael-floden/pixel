@@ -3039,6 +3039,7 @@ class Grow:
     # graded by the tiles domain's slope sets where they exist, and nothing is
     # lost by misjudging it. Only a drop of two or more must read.
     STEP = 2
+    TERRACE_MIN = 6   # smaller never recolours: it painted five lone grey cells
 
     def terraces(self):
         """[(level, cells, dominant ground)] over land, 4-connected."""
@@ -3099,6 +3100,9 @@ class Grow:
                                                       -len(ts[i][1])))
         for i in order:
             lv, cells, dom = ts[i]
+            if len(cells) < self.TERRACE_MIN:
+                colour[i] = dom          # a speck is not a terrace anyone misreads
+                continue
             if dom == "grass":
                 alt = next(m for lim, m in self.LOW_ALT if lv <= lim)
                 other = "grey_stone" if alt == "dark_mud" else "dark_mud"
@@ -3327,7 +3331,8 @@ class Grow:
     CLIFF_POOL = {
         "highland": (("grey_stone", 3), ("black_rock", 2), ("ice", 1)),
         "rock":     (("black_rock", 2), ("grey_stone", 2), ("dark_mud", 1)),
-        "lowland":  (("grey_stone", 3), ("black_rock", 3), ("dark_mud", 2)),
+        "lowland":  (("grey_stone", 3), ("black_rock", 3), ("dark_mud", 2),
+                     ("light_soil", 2)),
         "shore":    (("light_beach", 2), ("grey_stone", 1), ("black_rock", 1)),
     }
     SHORE_R = 2   # a face whose foot is this close to sea or sand is a shore
@@ -3337,7 +3342,15 @@ class Grow:
         # distance to REAL water or sand: the pad field counts void as wet,
         # which dressed every face at the void's edge as a beach
         sea = self._seadist()
-        house = self._walls()
+        # ONLY A BUILDING KEEPS ITS OWN WALL. The terrain wall groups the v2
+        # port and island 2 carry (light_soil below the massif, grey_stone
+        # on it) are the OLD dressing: honouring them left this pass filling
+        # the gaps between them, one black column beside tan ones wherever
+        # a cell had fallen out of the old group (maintainer 2026-09-05,
+        # four photographs). Every natural face is dressed here, and a cell
+        # dressed here leaves every terrain group.
+        house = {(c["x"], c["y"]) for w in self.doc["walls"]
+                 if w.get("kind") == "house" for c in w["cells"]}
         ts = self.terraces()
         tid = {}
         for i, (lv, cells, dom) in enumerate(ts):
@@ -3380,9 +3393,18 @@ class Grow:
                 side = choice[key]
                 groups[side].append({"x": x, "y": y})
                 kinds[(top, side)] += 1
+        dressed = {(c["x"], c["y"]) for cells in groups.values() for c in cells}
+        for w in self.doc["walls"]:
+            if w.get("kind") not in ("house", "cliff"):
+                w["cells"] = [c for c in w["cells"] if (c["x"], c["y"]) not in dressed]
+        self.doc["walls"] = [w for w in self.doc["walls"] if w["cells"]]
         for side, cells in sorted(groups.items()):
             self.doc["walls"].append({"side": side, "kind": "cliff",
                                       "cells": cells})
+        # BUILD ASSERT: one side per terrace and pool - no natural face is
+        # dressed twice, so no column can differ from its neighbours
+        assert not any((c["x"], c["y"]) in dressed for w in self.doc["walls"]
+                       if w.get("kind") != "cliff" for c in w["cells"])
         self.placed += [("cliff faces dressed", sum(len(c) for c in groups.values())),
                         ("cliff faces left grass", 0)]
         self.placed += [(f"cliff {t} over {sd}", n) for (t, sd), n in kinds.most_common(8)]
@@ -3418,6 +3440,227 @@ class Grow:
                 if g and self.grd[y][x] != self.gi[g]:
                     self.grd[y][x] = self.gi[g]
 
+
+
+    # THE GROUND IS GROOMED BEFORE ANYTHING IS BUILT ON IT (maintainer
+    # 2026-09-05, six photographs): "You often draw a single column in a
+    # different ground and wall type! This looks extremely ugly!" - 65 lone
+    # grey_stone cells and 28 lone sand cells came in with the v2 port, each
+    # a one-cell terrace corner that drew its own top AND its own wall;
+    # "holes the player get stuck inside if they fall in" - six level-0
+    # grass cells in a level-4 meadow; "you also use deep_ocean and not
+    # water next to it. The deep ocean tile is meant as an edge-of-world
+    # tile" - three ponds tiled deep_water; and "have you ever seen a 100%
+    # grass bridge" - a bridge slab whose top was whatever the v2 material
+    # under it said.
+    NATURAL = ("grass", "dark_mud", "grey_stone", "black_rock", "snow", "ice",
+               "light_beach")
+    SPECK_MAX = 2      # a natural-ground patch this small is a speck, not a place
+    POCKET_MAX = 60    # a pocket this small below its whole rim is a hole
+    POCKET_DROP = 2    # ... when the rim stands this many levels above it
+    BRIDGE_HIGH = 14   # a bridge up here is stone; below, timber like the pier
+
+    def _components(self, ok, by_level=True):
+        """4-connected components of cells for which ok(x, y) holds, of one
+        ground - and, with by_level, of one level: one flat patch."""
+        seen = [[False] * NEW for _ in range(NEW)]
+        for y in range(NEW):
+            for x in range(NEW):
+                if seen[y][x] or not ok(x, y):
+                    continue
+                g0, l0 = self.g(x, y), self.lvl[y][x]
+                comp, st = [], [(x, y)]
+                seen[y][x] = True
+                while st:
+                    cx, cy = st.pop()
+                    comp.append((cx, cy))
+                    for nx, ny in ((cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1)):
+                        if (0 <= nx < NEW and 0 <= ny < NEW and not seen[ny][nx]
+                                and self.g(nx, ny) == g0
+                                and (not by_level or self.lvl[ny][nx] == l0)):
+                            seen[ny][nx] = True
+                            st.append((nx, ny))
+                yield g0, l0, comp
+
+    def _rim(self, comp):
+        """The land/water cells 4-adjacent to a component, outside it."""
+        cs = set(comp)
+        out = set()
+        for x, y in comp:
+            for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if (nx, ny) not in cs and self.g(nx, ny):
+                    out.add((nx, ny))
+        return out
+
+    def _dissolve_specks(self):
+        """A natural-ground patch of SPECK_MAX cells or fewer, at one level,
+        takes the ground its rim mostly is (same level preferred). Repeats
+        until nothing changes - dissolving one speck can expose another."""
+        total = 0
+        for _ in range(6):
+            n = 0
+            for g0, l0, comp in list(self._components(
+                    lambda x, y: self.g(x, y) in self.NATURAL, by_level=False)):
+                if len(comp) > self.SPECK_MAX:
+                    continue
+                rim = self._rim(comp)
+                votes = collections.Counter()
+                for x, y in rim:
+                    gg = self.g(x, y)
+                    if gg in self.NATURAL and gg != g0:
+                        votes[gg] += 2 if self.lvl[y][x] == l0 else 1
+                if not votes:            # a mud dot in a road becomes road
+                    for x, y in rim:
+                        gg = self.g(x, y)
+                        if self._speck_rim(x, y) and gg != g0:
+                            votes[gg] += 1
+                if not votes:            # a one-cell islet is an islet
+                    continue
+                pick = votes.most_common(1)[0][0]
+                for x, y in comp:
+                    self.grd[y][x] = self.gi[pick]
+                n += 1
+            total += n
+            if not n:
+                break
+        return total
+
+    def _speck_rim(self, x, y):
+        """A rim cell a speck may take the ground of: dry, not a floor."""
+        gg = self.g(x, y)
+        return bool(gg) and not self.liquid(x, y) and gg not in self.INDOOR_GROUNDS
+
+    def _fill_pockets(self):
+        """A land patch of POCKET_MAX cells or fewer whose WHOLE rim stands
+        POCKET_DROP levels or more above it is a hole: it rises to the rim's
+        lowest level and takes the rim's ground. A pond in the same position
+        rises to the rim's level and stays a pond - water at the meadow's
+        own level is a place to swim, a shaft is a trap."""
+        n = 0
+        for _ in range(8):               # a bowl filled can sit in a bowl
+            found = self._pockets()
+            if not found:
+                break
+            for g0, l0, comp, rim, lv in found:
+                for x, y in comp:
+                    self.lvl[y][x] = lv
+                if g0 not in ("water", "deep_water"):
+                    votes = collections.Counter(self.g(x, y) for x, y in rim
+                                                if self.lvl[y][x] == lv
+                                                and self.g(x, y) in self.NATURAL)
+                    if votes:
+                        pick = votes.most_common(1)[0][0]
+                        for x, y in comp:
+                            self.grd[y][x] = self.gi[pick]
+                n += len(comp)
+        return n
+
+    def _pockets(self):
+        """[(ground, level, cells, rim, rim level)] of every land or water
+        patch of POCKET_MAX cells or fewer whose whole rim stands POCKET_DROP
+        levels above it. A patch a ramp reaches is a landing, not a hole."""
+        ramp = {(c["x"], c["y"]) for r in self.doc.get("ramps", []) for c in r["cells"]}
+        out = []
+        for g0, l0, comp in list(self._components(lambda x, y: bool(self.g(x, y)))):
+            if len(comp) > self.POCKET_MAX:
+                continue
+            rim = self._rim(comp)
+            if not rim or any(c in ramp for c in rim) or any(c in ramp for c in comp):
+                continue
+            lv = min(self.lvl[y][x] for x, y in rim)
+            if lv - l0 >= self.POCKET_DROP:
+                out.append((g0, l0, comp, rim, lv))
+        return out
+
+    def _shallow_ponds(self):
+        """deep_water belongs to the open sea only: any liquid body that is
+        not the sea (the largest one) is a pond, and a pond is water."""
+        bodies = [(comp) for g0, l0, comp in self._components(
+            lambda x, y: self.liquid(x, y))]
+        # bodies are split by level and ground above; merge by adjacency
+        cell_body = {}
+        for i, comp in enumerate(bodies):
+            for c in comp:
+                cell_body[c] = i
+        parent = list(range(len(bodies)))
+        def find(i):
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]
+                i = parent[i]
+            return i
+        for (x, y), i in cell_body.items():
+            for nb in ((x + 1, y), (x, y + 1)):
+                j = cell_body.get(nb)
+                if j is not None and find(i) != find(j):
+                    parent[find(i)] = find(j)
+        size = collections.Counter(find(i) for i, comp in enumerate(bodies) for _ in comp)
+        sea = size.most_common(1)[0][0]
+        n = 0
+        for i, comp in enumerate(bodies):
+            if find(i) == sea:
+                continue
+            for x, y in comp:
+                if self.g(x, y) == "deep_water":
+                    self.grd[y][x] = self.gi["water"]
+                    n += 1
+        return n
+
+    def _build_bridges(self):
+        """A bridge is BUILT: timber planks (parquet_floor, the pier's own
+        deck) below BRIDGE_HIGH, dressed stone above, one course of face so
+        the slab reads as a slab. Both banks take the road for two cells so
+        the bridge is walked onto from a road, not from mud on one side and
+        soil on the other."""
+        n = 0
+        for dk in self.doc["decks"]:
+            if dk.get("kind") != "bridge":
+                continue
+            lv = int(dk["level"])
+            dk["ground"] = "grey_paving_stone" if lv >= self.BRIDGE_HIGH else "parquet_floor"
+            dk["thickness"] = max(1, int(dk.get("thickness", 1)))
+            cells = {(c["x"], c["y"]) for c in dk["cells"]}
+            if lv >= self.BRIDGE_HIGH:
+                n += 1
+                continue
+            for x, y in cells:
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    for k in (1, 2):
+                        nx, ny = x + dx * k, y + dy * k
+                        if (nx, ny) in cells or not self.g(nx, ny):
+                            break
+                        if self.liquid(nx, ny) or self.lvl[ny][nx] != lv:
+                            break
+                        if self.g(nx, ny) in self.NATURAL:
+                            self.grd[ny][nx] = self.gi["light_soil"]
+            n += 1
+        return n
+
+    def regroom(self):
+        """The dissolve again, after every pass that paints ground: the
+        terrace colouring and the road widening each left a few specks."""
+        self.placed += [("specks dissolved late", self._dissolve_specks()),
+                        ("pocket cells raised late", self._fill_pockets()),
+                        ("pond cells deep -> water, late", self._shallow_ponds())]
+
+    def groom(self):
+        self.placed += [("specks dissolved", self._dissolve_specks()),
+                        ("pocket cells raised to their rim", self._fill_pockets()),
+                        ("pond cells deep -> water", self._shallow_ponds()),
+                        ("bridges built", self._build_bridges())]
+
+    def audit_ground(self):
+        """BUILD ASSERT, at the end: no natural-ground speck, no pocket
+        below its rim, no deep water off the sea - whatever a later pass
+        painted, the photographs cannot come back."""
+        specks = [comp for g0, l0, comp in self._components(
+            lambda x, y: self.g(x, y) in self.NATURAL, by_level=False)
+            if len(comp) <= self.SPECK_MAX
+            and any(self._speck_rim(x, y) for x, y in self._rim(comp))]
+        pockets = [(p[0], p[1], p[2][0], len(p[2]), p[4]) for p in self._pockets()]
+        assert not specks, ("specks", len(specks), [c[0] for c in specks[:8]])
+        assert not pockets, ("pockets", pockets[:8])
+        assert self._shallow_ponds() == 0, "deep water off the sea"
+        self.placed += [("ground audit", "clean")]
 
     def widen_roads(self):
         """A ROAD NARROWER THAN THREE CELLS CANNOT RENDER AS A ROAD.
@@ -3646,16 +3889,17 @@ class Grow:
                      # LAYER in the format — flagged; the isthmus road is
                      # the crossing, each massif keeps its own dungeon.
                      self.town_ground, self.i2_cave,
-                     self.i2_road, self.i2_systems, self._reindex,
+                     self.i2_road, self.i2_systems, self.groom, self._reindex,
                      self.archipelago, self.pier, self.houses, self.town,
                      self.mountain_back, self.terrace_grounds,
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
-                     self.ramp_paths,
+                     self.ramp_paths, self.regroom,
                      self.snap_hitboxes, self.police_footprints,
                      self.relight, self.npcs,
-                     self.rooms, self.cliff_faces, self.spawns):
+                     self.rooms, self.cliff_faces, self.audit_ground,
+                     self.spawns):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
