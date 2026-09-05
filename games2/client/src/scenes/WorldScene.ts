@@ -16596,6 +16596,29 @@ export class WorldScene extends Phaser.Scene {
       }
       list.length = w;
       this.children.queueDepthSort();
+      /* AND THE DESTROY ITSELF STILL SCANNED THE WHOLE LIST, once per object.
+       *
+       * `destroy()` -> `removeFromDisplayList` -> `displayList.exists(this)` ->
+       * `list.indexOf(child)`. The filter above has ALREADY taken every one of
+       * these objects out, so that indexOf is a guaranteed MISS over the entire
+       * remaining list — and with the occluder pool the new set is in there
+       * too, so it is N x L, not N x (a few hundred) as the note below assumed.
+       * Measured shape: 2 ns per element on his phone, N up to ~6,000 against
+       * L ~4,000-7,600, i.e. tens of millions of element visits in one frame.
+       *
+       * Hiding the list behind an empty array for the destroy loop makes that
+       * lookup O(1). It is EXACTLY equivalent, not merely close: `exists`
+       * answers false either way — the objects are provably absent from the
+       * list we just filtered them out of — so `removeFromDisplayList` takes
+       * the same branch and every other part of `destroy()` is untouched. */
+      const real = this.children.list;
+      this.children.list = [];
+      try {
+        for (const o of objs) o.destroy();
+      } finally {
+        this.children.list = real;
+      }
+      return;
     }
     for (const o of objs) o.destroy();
   }
