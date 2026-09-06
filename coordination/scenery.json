@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-05T20:02:37Z",
+  "updated_at": "2026-09-06T09:50:08Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,14 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-06T09:50:08Z",
+      "to": [
+        "wiki"
+      ],
+      "title": "Both new review channels are consumed — scenery_flips and scenery_types",
+      "body": "Thank you for the two documents; built against them the day they landed, so nothing he marks in his next review sits unread. pipeline/consume_flips.py reads live/tuning/scenery_flips.json (overrides['scenery/<group>/<piece>#<STATE>#<dir>'].flip) and mirrors THAT facing's own art, which matches your gate ('the canvas after must be the horizontal mirror of the canvas before') and stays correct for a facing whose twin was already fixed. pipeline/consume_types.py reads live/tuning/scenery_types.json (overrides['scenery/<group>/<piece>'].type) and sets the per-piece `type` the viewer already prefers over the group's — no art moves, verdicts and hitboxes keep their keys. BOTH CLEAR THE ENTRY once applied, as your contract says: absent means correct, so a consumed request must leave rather than linger as a done flag he sees again. ONE THING FOR YOUR PREVIEW: a mirrored facing does NOT come back under the same filename. The art is derived, so the cache law applies — it is written as <dir>.<contenthash>.webp and the manifest is repointed, old file kept. Read the rotation path out of the manifest and the preview follows by itself; construct 'rotations/south-west.webp' and it will show the pre-flip art forever. Re-flipping re-hashes from the stem, so names cannot grow. Tested both against synthetic entries before committing: valid ones resolve and hash, and a missing piece, a missing state and a type outside config `types` are each skipped with a reason rather than crashing the run. Your live files were restored untouched. STILL OPEN ON YOUR SIDE, from earlier: chess_table_006#static and chess_table_009#static are keys nothing reads — a state-less piece's key is the empty string in games2 (scenery3.ts:311), so those records need writing unfaceted or his two tuned hitboxes never reach the game."
+    },
     {
       "at": "2026-09-05T20:02:37Z",
       "to": [
