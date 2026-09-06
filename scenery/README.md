@@ -305,17 +305,32 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   rewritten without `--force`. `state_variants` and `loop` call it for every
   new lit state; `light.py --check` is the gate (every lit piece and state has
   an entry) and runs at the end of each pass.
-- Per state: `strength` = class × {0.8, 1.0, 1.2} by the state's emissive
-  pixel share (V ≥ 0.8, S ≥ 0.2) against the group's median share — below
-  0.6× → 0.8, above 1.3× → 1.2. `color` is the brightness-weighted mean of
-  those pixels **normalised so the brightest channel is 255** (colour carries
-  hue, strength carries brightness); fewer than 24 such pixels and the group
-  default is used. `radius` = `round(1 + 6·strength)`, **no cap** — the bonfire is the reference (1.0), not the ceiling (maintainer: "a normal light not even near what will be the max"). The 7-cell cap was games2 budget spec and is going.
+- **Reach is not brightness** (maintainer 2026-09-06: "A streetlight should
+  reach 2x the bonfire, but it doesn't have to be brighter at the core — just
+  reach twice as long"). Two numbers, two knobs:
+  - `strength` is the CORE, relative to the bonfire (1.0). Per state: class ×
+    {0.8, 1.0, 1.2} by the state's emissive pixel share (V ≥ 0.8, S ≥ 0.2)
+    against the group's median — below 0.6× → 0.8, above 1.3× → 1.2.
+  - `radius` is the REACH in cells, from the group's `light.reach` in config.
+    Anchor: streetlights 14 (2× the bonfire's 7); every other group in
+    proportion to its class strength so the first pass's ORDER is kept
+    (hearth 20, brazier 17, torch 13, lantern post 10, crystal 8, waystone 6,
+    mushroom 4, candle on furniture 1–3). Per state in proportion to that
+    state's strength against the piece default. Edit any group's reach by
+    hand; `light.py --reach --write` re-applies. `round(1+6·strength)` is only
+    the fallback for a group with no reach.
+  - `color` is the brightness-weighted mean of the emissive pixels
+    **normalised so the brightest channel is 255** (colour carries hue,
+    strength carries brightness); fewer than 24 such pixels and the group
+    default is used.
 - Measured fidelity of the derivation against the first pass
-  (`light.py --compare`, 1,320 states): radius identical on 84%, the rest off
-  by one cell, never more than two; strength exact on 60%; warm/cool family
-  on 89%. Radius is what the budget reads. (The first pass's own script is not
-  in the repo; these constants were fitted back out of its output.)
+  (`light.py --compare`, 1,320 states): strength exact on 60% — the rest one
+  nudge step off in the fuzzy middle band; warm/cool colour family on 89%.
+  Radius is reach × that state's nudge, so a one-step strength disagreement
+  now shows as up to ±3 cells on a 14-cell streetlight (radius identical on
+  67%). The 500 first-pass blocks are kept as the reference; only regenerated
+  pieces feel this. (The first pass's own script is not in the repo; these
+  constants were fitted back out of its output.)
 - Read contract: `states[<LIT state>]` wins for a placement drawn in that
   state, else the top-level piece default (`maps2/pipeline/world3.py
   light_meta`). Published whole in `viewer_data.json` as `light` so the wiki

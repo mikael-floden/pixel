@@ -44,7 +44,8 @@ quite what was run):
     python3 scenery/pipeline/light.py --compare
     python3 scenery/pipeline/light.py [--force] <rel> [<rel> ...]
     python3 scenery/pipeline/light.py --fill          # every gap, every piece
-    python3 scenery/pipeline/light.py --scale 2 [--write]   # the brightness knob
+    python3 scenery/pipeline/light.py --scale 2 [--write]   # the brightness (core) knob
+    python3 scenery/pipeline/light.py --reach   [--write]   # the reach knob, from config
 """
 from __future__ import annotations
 
@@ -143,6 +144,9 @@ def derive(rel, man, cache):
     base = float(cls["strength"])
     default_color = cls.get("color") or warm
     med = _group_median_share(g, cache)
+    reach = cls.get("reach")           # cells; None -> legacy formula
+    rad = (lambda s: max(0, int(round(reach * s / base))) if reach is not None and base > 0
+           else _radius(s))
     states = {}
     for st, sp in lit_states(man).items():
         p = os.path.join(factory.ROOT, sp)
@@ -152,10 +156,10 @@ def derive(rel, man, cache):
         ratio = share / med if med > 0 else 1.0
         nudge = 0.8 if ratio < NUDGE_LO else (1.2 if ratio > NUDGE_HI else 1.0)
         s = round(base * nudge, 2)
-        states[st] = {"strength": s, "color": col or default_color, "radius": _radius(s)}
+        states[st] = {"strength": s, "color": col or default_color, "radius": rad(s)}
     if not states:
         return None, "no lit art on disk"
-    return {"strength": base, "color": default_color, "radius": _radius(base),
+    return {"strength": base, "color": default_color, "radius": rad(base),
             "reference": REFERENCE, "states": states}, None
 
 
@@ -230,6 +234,64 @@ def scale(factor, write=False):
     return n
 
 
+ANCHOR_GROUP, ANCHOR_REACH = "streetlights", 14   # 2x the bonfire's 7
+
+
+def reach_table(write=False):
+    """REACH IS NOT BRIGHTNESS (maintainer 2026-09-06: "A streetlight should
+    reach 2x the bonfire, but it doesn't have to be brighter at the core — just
+    reach twice as long"). So `radius` stops being a function of `strength`.
+    Each group gets an explicit `light.reach` in cells; the anchor is the
+    streetlight at 14, and every other group's reach is set in proportion to
+    its class strength so the ORDER the first pass decided is kept — a lantern
+    post still reaches less than a streetlight, a hearth more. Written into
+    config so every number is editable by hand, and light.py reads them from
+    there: derive() uses reach for radius and keeps strength for the core.
+    round(1+6·strength) survives only as the fallback for a group with no
+    reach yet."""
+    cfg_p = os.path.join(factory.ROOT, "config", "factory.json")
+    cfg = json.load(open(cfg_p))
+    groups = {g["id"]: g for g in cfg.get("groups", []) if isinstance(g, dict) and g.get("id")}
+    anchor = groups[ANCHOR_GROUP]["light"]["strength"]
+    out = {}
+    for gid, g in groups.items():
+        L = g.get("light")
+        if not isinstance(L, dict) or "strength" not in L:
+            continue
+        r = int(round(ANCHOR_REACH * L["strength"] / anchor)) if L["strength"] > 0 else 0
+        L["reach"] = r
+        out[gid] = (L["strength"], r)
+    if write:
+        cfg["light"]["reach"] = ("cells a group's light reaches, INDEPENDENT of strength (the core). "
+                                 "Anchor: streetlights 14 = 2x the bonfire; others in proportion to class "
+                                 "strength. Edit per group freely; light.py --reach re-applies.")
+        json.dump(cfg, open(cfg_p, "w"), indent=2, ensure_ascii=False)
+    return out
+
+
+def apply_reach(write=False, table=None):
+    """Set every block's radius from its group's reach, per state in proportion
+    to the state's own strength against the piece default. Strength and colour
+    untouched — the core is unchanged, only the reach moves."""
+    if table is None:
+        table, _, _ = _cfg_light()
+    n = 0
+    for rel, man in factory.discover():
+        L = man.get("light")
+        cls = table.get(group_of(rel)) or {}
+        if not L or "reach" not in cls:
+            continue
+        reach, base = int(cls["reach"]), float(L.get("strength") or 0)
+        L["radius"] = reach
+        for st in (L.get("states") or {}).values():
+            k = (float(st.get("strength", base)) / base) if base > 0 else 1.0
+            st["radius"] = max(0, int(round(reach * k)))
+        n += 1
+        if write:
+            factory.write_manifest(rel, man)
+    return n
+
+
 def check():
     """The gate: every lit piece and every LIT state carries an entry."""
     bad = []
@@ -290,6 +352,18 @@ if __name__ == "__main__":
               f"({100 * r['radius_match'] // max(r['states'], 1)}%)   off-by: {r['radius_off_by']}")
         print(f"  strength exact (2dp)  : {r['strength_exact']} / {r['states']}")
         print(f"  colour warm/cool same : {r['colour_family']} / {r['states']}")
+        sys.exit(0)
+    if "--reach" in sys.argv:
+        dry = "--write" not in sys.argv
+        t = reach_table(write=not dry)
+        print("reach in cells (streetlights anchored at %d = 2x the bonfire):" % ANCHOR_REACH)
+        for g in ("beacons","hearths","braziers","streetlights","torch_posts","lantern_posts",
+                  "crystals","waystones","mushrooms","beds"):
+            if g in t: print("  %-14s strength %.2f  reach %2d" % (g, *t[g]))
+        n = apply_reach(write=not dry, table={g: {"reach": r} for g, (_s, r) in t.items()})
+        print("%d pieces %s" % (n, "re-reached" if not dry else "would be (DRY RUN — add --write)"))
+        if not dry:
+            viewer_build.build(); print("viewer_data.json rebuilt")
         sys.exit(0)
     if "--scale" in sys.argv:
         f = float(sys.argv[sys.argv.index("--scale") + 1])

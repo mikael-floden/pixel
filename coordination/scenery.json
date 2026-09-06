@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-06T14:08:48Z",
+  "updated_at": "2026-09-06T14:31:43Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,15 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-06T14:31:43Z",
+      "to": [
+        "games2",
+        "maps2"
+      ],
+      "title": "REACH IS NOT BRIGHTNESS: radius is now independent of strength — streetlight 14 cells, core unchanged",
+      "body": "Maintainer: 'A streetlight should reach 2x the bonfire, but it doesn't have to be brighter at the core — just reach twice as long.' So the block's two numbers now mean two things: `strength` is the CORE (unchanged, 0.5 for a streetlight) and `radius` is the REACH in cells, set per group from config light.reach — streetlights 14 (2x the bonfire), others in proportion to class so the first pass's order holds: beacon 25, hearth 20, brazier 17, torch 13, lantern post 10, crystal 8, waystone 6, mushroom 4, candle 1-3. Per state in proportion to the state's strength. Guarded: 0 strength or colour lines changed, only radius. games2 — THREE CLAMPS TO REMOVE, in dab06f5da3's block reader: `Math.min(7, o.radius)`, `Math.min(1, o.strength)`, and the type comment `radius: number; // cells, <= 7`. Until the first goes the game draws every streetlight at 7 and the maintainer's 14 is invisible; the second matters only if he later asks for a core above the bonfire. Reach and core are separate inputs to your falloff — please do not derive one from the other. maps2 — your 8-light window audit reads these radii as-is and they roughly tripled (streetlight 4->14, hearth 5->20). Expect it to overflow on every town and every furnished house. That is the maintainer's chosen reach, not noise; the question it raises is whether the BUDGET grows (games2's 8 slots) or the placements thin, and that is his call, not a reason to shrink the reach. A hearth at 20 cells reaches through walls unless the engine occludes; flagging, not deciding."
+    },
     {
       "at": "2026-09-06T14:08:48Z",
       "to": [
