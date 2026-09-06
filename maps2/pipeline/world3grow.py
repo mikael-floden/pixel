@@ -116,6 +116,7 @@ class Grow:
                 self.G.append(g)
         self.placed = []          # (label, count) build log
         self.fail = 0
+        self.refused = {}         # why put() said no, by reason
 
     # -- canvas ---------------------------------------------------------------
     def grow_canvas(self):
@@ -461,9 +462,11 @@ class Grow:
             assert any(k.startswith("LIT") for k in (meta.get("states") or {})), \
                 f"{piece} has no LIT state to select"
         if on is not None and self.g(int(x), int(y)) not in on:
+            self.refused["ground"] = self.refused.get("ground", 0) + 1
             self.fail += 1
             return False
         if not self.free(x, y):
+            self.refused["occupied"] = self.refused.get("occupied", 0) + 1
             self.fail += 1
             return False
         # NOTHING OUTDOOR STANDS ON AN INDOOR FLOOR, and the gate is here
@@ -474,16 +477,24 @@ class Grow:
         # with a bush?").
         if (int(x), int(y)) in self._indoor_now():
             if not piece.startswith(self.INDOOR_OK):
-                self.fail += 1
-                return False
-        if (int(x), int(y)) in getattr(self, "cave_floor", {}):
-            if not piece.startswith(self.CAVE_OK):
+                self.refused["indoor-gate"] = self.refused.get("indoor-gate", 0) + 1
                 self.fail += 1
                 return False
         else:
             # outdoor pieces stay out of the up-screen shadow behind a roof —
             # a washing line 2 cells behind the cottage rendered ON its roof
             if (int(x), int(y)) in getattr(self, "no_place", set()):
+                self.refused["no_place"] = self.refused.get("no_place", 0) + 1
+                self.fail += 1
+                return False
+        # ONLY CAVE DRESSING ON A CAVE FLOOR. (A first cut of this gate sat
+        # between the indoor test and its else - so the roof-shadow rule
+        # ran on every indoor placement and every house shipped empty,
+        # 2026-09-06: "Was it you who removed all indoor scenery objects
+        # from this house?" It was.)
+        if (int(x), int(y)) in getattr(self, "cave_floor", {}):
+            if not piece.startswith(self.CAVE_OK):
+                self.refused["cave-gate"] = self.refused.get("cave-gate", 0) + 1
                 self.fail += 1
                 return False
         # SNAP THE FOOTPRINT TO A CELL CENTRE NOW, and judge the piece where
@@ -512,14 +523,17 @@ class Grow:
             wx, wy = int(x) + 0.5, int(y) + 0.5
             R, HY = self.FP_DEFAULT, None
         if on is not None and self.g(int(x), int(y)) not in on:
+            self.refused["ground-snapped"] = self.refused.get("ground-snapped", 0) + 1
             self.fail += 1
             return False
         flat = self._flat(probe)
         if not flat and not self._art_clear(piece, x, y, state):
+            self.refused["art"] = self.refused.get("art", 0) + 1
             self.fail += 1
             self.fp_refused = getattr(self, "fp_refused", 0) + 1
             return False
         if not self._footprint_ok(wx, wy, R, HY, flush=flush, flat=flat):
+            self.refused["footprint"] = self.refused.get("footprint", 0) + 1
             self.fail += 1
             self.fp_refused = getattr(self, "fp_refused", 0) + 1
             return False
@@ -3008,6 +3022,9 @@ class Grow:
                        "rugs_and_hides")[k % 4]
                 n += self.put(pk(grp), rx + 0.5, ry + 0.5, on=IN)
             self.placed += [(f"room {hi} furniture", n)]
+            # BUILD ASSERT: a room the pass furnishes is never left empty -
+            # eleven empty rooms shipped once without a word from the build
+            assert n > 0, f"room {hi} got no furniture"
 
         # the smithy works outdoors too: anvil + woodpile out FRONT (south —
         # anything beside/behind the house gets buried by the roof slab)
@@ -4810,6 +4827,8 @@ class Grow:
               f"{len(self.doc['decks'])} decks, {self.fail} placements dropped")
         for k, v in self.placed:
             print(f"   {k}: {v}")
+        for k, v in sorted(self.refused.items(), key=lambda kv: -kv[1]):
+            print(f"   put refused ({k}): {v}")
 
 
 if __name__ == "__main__":

@@ -377,7 +377,13 @@ a world channel. **Corridors are one cell wider**: every passage grows one
 cell on its east/south side, into rock at the lid's level that is interior
 on all eight sides, never through a one-cell wall between two passages and
 never into the mountain's shell (the_game: 592 floor cells, 120 added).
-`put()` refuses anything but cave dressing (`CAVE_OK`) on a cave floor.
+`put()` refuses anything but cave dressing (`CAVE_OK`) on a cave floor — a
+gate that sits AFTER the indoor test and its roof-shadow `else`, not between
+them: the first cut split that `if`/`else`, the shadow rule ran on every
+indoor placement, and every house shipped empty for three builds
+(maintainer 2026-09-06: *"Was it you who removed all indoor scenery objects
+from this house?"*). **Build-asserted now: a furnished room is never empty**,
+and `put()` counts every refusal by reason in the build log.
 
 `cave_dress()` (after `nature`): one piece per `CAVE_DRESS_PER = 7` cells of
 a ROOM (a floor cell with five or more floor neighbours that is not a
