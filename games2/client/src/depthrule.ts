@@ -46,6 +46,17 @@ export interface DepthCtx {
   lh: number;
   dy: number;
   self?: unknown;
+  /** THE COVER COLUMN — the screen-x span that may CROP this caller's lit copy,
+   *  narrower than the art box when the caller is wider than what it stands on.
+   *  A tree's canopy is ~170 px across while its trunk stands on one cell, and
+   *  the crop is a flat horizontal line: with the canopy as the window, a cliff
+   *  step two or three cells TO THE SIDE set that line, and since a step run
+   *  shares one y0 (constant in col+row and level), a whole stand of trees got
+   *  the SAME line — the sharp horizontal seams across the treeline, lit copy
+   *  above, dark base sprite below (maintainer, 2026-09-07). Defaults to the
+   *  art box, which is what a body wants. */
+  cx0?: number;
+  cx1?: number;
 }
 
 export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): { depth: number; coverY: number | undefined } {
@@ -144,10 +155,20 @@ export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): 
       o.stand !== undefined &&
       o.top > ctx.lvl + 1 &&
       o.stand !== ctx.lvl &&
+      // ...AND THE WALL IS ACTUALLY CAMERA-NEARER. "Behind" is the whole name
+      // of the rule, but the diagonal slack alone also accepted a wall LEVEL
+      // with the caller or one diagonal BEHIND it, which then handed the
+      // caller a crop line it does not stand behind at all — on a wooded slope
+      // that is a cliff step, and a step run shares one y0, so a whole stand
+      // of trees cropped on one horizontal line (maintainer, 2026-09-07).
+      o.col + o.row >= ctx.colf + ctx.rowf &&
       !(ctx.colf + ctx.rowf > o.col + o.row + 1);
     if (rayBlocked || faceOverFeet || solidArtOver || wallBehind) {
       below = Math.min(below, od);
-      coverY = Math.min(coverY, o.y0);
+      // The DEPTH decision keeps the whole art box — a piece in front must
+      // still push this one back — but only something over the caller's OWN
+      // COLUMN may set the crop line. See DepthCtx.cx0.
+      if (o.x1 >= (ctx.cx0 ?? ctx.sx0) && o.x0 <= (ctx.cx1 ?? ctx.sx1)) coverY = Math.min(coverY, o.y0);
     } else if (
       /* A NON-SOLID COLUMN LIFTS THE CALLER — unless it is HIGHER, NOT
        * STANDABLE AT THE CALLER'S LEVEL, and the caller is not camera-
@@ -206,5 +227,10 @@ export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): 
    * −0.3: a body in front of a piece lands above it; a body BEHIND a piece
    * is clamped under that piece's own draw depth through solidArtOver. */
   if (below < Infinity) depth = Math.min(depth, below - (ctx.self ? 0.3 : 0.15));
-  return { depth, coverY: below < Infinity ? coverY : undefined };
+  /* A COVER LINE ONLY WHEN ONE WAS ACTUALLY SET. `below` and `coverY` no longer
+   * move together — an occluder off the caller's own column clamps the depth
+   * without cropping (see DepthCtx.cx0) — so this keys on coverY itself.
+   * Returning the untouched Infinity would hand consumers an infinite crop
+   * line, which reads as "covered" everywhere it is tested against undefined. */
+  return { depth, coverY: coverY < Infinity ? coverY : undefined };
 }

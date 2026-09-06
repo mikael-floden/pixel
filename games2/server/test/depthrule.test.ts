@@ -107,3 +107,54 @@ test("THE LIFT IS THE ROOT OF IT: a wide piece may not outrank the terrain stand
   assert.ok(RIBCAGE.drawDepth! < stubsInFront[0].depth, `the capped piece (${RIBCAGE.drawDepth}) must sort under the terrain in front of it (${stubsInFront[0].depth})`);
   assert.equal(+RIBCAGE.drawDepth!.toFixed(2), 10225.39);
 });
+
+test("ONLY WHAT STANDS OVER THE TRUNK CROPS THE CANOPY — the treeline seams", () => {
+  // A tree: 170px of canopy around a trunk that stands on one cell. A cliff
+  // step two cells to the SIDE overlaps the canopy but nothing the tree stands
+  // on. It may still push the tree back in depth; it may NOT set the flat crop
+  // line, because that line runs across the whole canopy and a step run shares
+  // one y0 — which is how a whole stand of trees got the same seam.
+  const trunkX = 18000;
+  const tree: DepthCtx = {
+    colf: 310, rowf: 233, lvl: 0, lx: trunkX, ly: 9310, lyFlat: 9310,
+    sx0: trunkX - 85, sx1: trunkX + 85, sy0: 9130, sy1: 9316, lh: LH, dy: DY,
+    cx0: trunkX - 16, cx1: trunkX + 16,
+  };
+  const beside: OccluderMeta = { col: 312, row: 233, top: 4, stand: -1, depth: 9340, x0: trunkX + 40, x1: trunkX + 104, y0: 9250, y1: 9330, solid: false, point: false };
+  const inFront: OccluderMeta = { col: 311, row: 234, top: 4, stand: -1, depth: 9340, x0: trunkX - 32, x1: trunkX + 32, y0: 9260, y1: 9340, solid: false, point: false };
+
+  const off = resolveDepthRule(tree, [beside]);
+  assert.equal(off.coverY, undefined, "a step beside the trunk must not crop the canopy");
+
+  const on = resolveDepthRule(tree, [inFront]);
+  assert.equal(on.coverY, 9260, "a step the trunk actually stands behind still crops it");
+
+  // Both together: the line comes from the one over the trunk, not the higher
+  // one to the side — the whole point, since the side one sits further up.
+  const both = resolveDepthRule(tree, [beside, inFront]);
+  assert.equal(both.coverY, 9260);
+  assert.ok(both.depth <= beside.depth - 0.15, "the depth decision still counts both");
+});
+
+test("A WALL ONLY COVERS FROM IN FRONT — `wallBehind` means behind", () => {
+  // The rule exists so a tree standing BEHIND a house has its lit copy cut by
+  // the house's left wall. It must not fire for a wall the caller has already
+  // walked past: on a wooded slope that wall is a cliff step, and a step run
+  // shares one y0, so a whole stand of trees cropped on one horizontal line.
+  const trunkX = 18000;
+  const caller: DepthCtx = {
+    colf: 310, rowf: 233, lvl: 0, lx: trunkX, ly: 9310, lyFlat: 9310,
+    sx0: trunkX - 85, sx1: trunkX + 85, sy0: 9130, sy1: 9316, lh: LH, dy: DY,
+    cx0: trunkX - 16, cx1: trunkX + 16,
+  };
+  const wall = (col: number, row: number): OccluderMeta =>
+    ({ col, row, top: 6, stand: 24, depth: 9200, x0: trunkX - 32, x1: trunkX + 32, y0: 9200, y1: 9330, solid: false, point: false });
+
+  // Nearer than the caller (col+row 545 >= 543): the real case, still covers.
+  assert.notEqual(resolveDepthRule(caller, [wall(311, 234)]).coverY, undefined, "a wall in front must still cut the copy");
+  // Level with the caller's own diagonal: covers (it is at the same depth row).
+  assert.notEqual(resolveDepthRule(caller, [wall(310, 233)]).coverY, undefined);
+  // BEHIND the caller — it must not hand out a crop line.
+  assert.equal(resolveDepthRule(caller, [wall(309, 233)]).coverY, undefined, "a wall the caller stands in front of must not cut its copy");
+  assert.equal(resolveDepthRule(caller, [wall(308, 232)]).coverY, undefined);
+});

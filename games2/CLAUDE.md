@@ -1394,6 +1394,40 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   whole lit copy below its top line, the hidden-behind outline over his body
   (cave, maintainer 2026-09-06). A billboard answers through `solidArtOver`,
   which checks the feet's x against the piece. Measured after: pod spot: body 10245.9 over the pod's 10245.7, feet still under the rock stub in front (cover 10217); crystal spot: the cover line comes from the rock stub (10343), no longer from the crystal (10325), body 10371.9 above both crystals.
+- **ONLY WHAT STANDS OVER THE CALLER MAY CROP IT** (`DepthCtx.cx0/cx1`, the
+  COVER COLUMN). A lit copy is cropped at ONE flat screen line, so the window
+  that may set that line is the caller's own column, not its whole art box:
+  scenery passes its FOOTPRINT span (a tree's canopy is ~170 px across while
+  its trunk stands on one cell), bodies keep the art box. With the canopy as
+  the window a cliff step two cells TO THE SIDE set the line, and a step run
+  shares one `y0` (it is constant in col+row and level), so a whole stand of
+  trees cropped on the SAME horizontal line — the sharp seams the maintainer
+  saw across the back-of-the-mountain treeline, lit copy above, dark base
+  sprite below, at Night AND Morning. The DEPTH decision still counts the whole
+  art box: a piece in front must still push this one back.
+  `wallBehind` additionally requires the wall to be camera-NEARER
+  (`o.col + o.row >= colf + rowf`) — "behind" is the name of the rule, but the
+  diagonal slack alone also accepted a wall LEVEL with or one diagonal BEHIND
+  the caller, which handed it a crop line it does not stand behind at all.
+  NOTE the return contract that changed with this: `coverY` and `below` no
+  longer move together, so the result keys on `coverY` itself — returning the
+  untouched Infinity would hand consumers an infinite crop line, which every
+  `=== undefined` test reads as "covered".
+  STILL OPEN: where a cover line is legitimate the seam remains, because the
+  two sides are shaded by different pipelines (base = the night pass per screen
+  pixel; copy = one `lightAt` sample + scenerylit's per-texel volume). BODIES
+  already solved this with the pixel-exact cover surfaces (`registerCoverSlot`
+  / `flushCoverSurfaces`, "it also kills the dark band the flat line left
+  across visible legs"); scenery is still on the flat line and wants the same
+  treatment.
+- **THE GRAVE CROSS LOADS AT BOOT** (`GRAVE_CROSS_KEY`, queued in `preload()`
+  beside the campfire). It used to fetch on the FIRST kill, so the first cross
+  of every session waited on a round trip — and the dropped item's own texture
+  queued BEHIND it on the same loader, which is how a slow cross becomes being
+  ninjalooted (maintainer, 2026-09-07: "this being loaded and fast has with
+  gameplay to do"). 16 frames of 34 px. `spawnGraveCross` keeps its lazy path
+  as the fallback for a failed preload. Measured: the texture exists at join,
+  before any kill.
 - **A CALLER NEVER LIFTS MORE THAN 2.5 CELLS PAST ITS OWN ANCHOR**
   (`LIFT_MAX_PX` 35, `depthrule.ts`). The lift exists so the flat tile IN FRONT
   OF THE FEET — one diagonal, dy px — cannot draw over them; it is a one-cell

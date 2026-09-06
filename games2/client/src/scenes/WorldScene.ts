@@ -412,6 +412,17 @@ const CAMPFIRE_KEY = "campfire-burn";
 // hardcoding the extension here.
 const CAMPFIRE_URL = "/assets/scenery/campfire/animations/burn__south.webp";
 const CAMPFIRE_FRAME = 96;
+/* THE GRAVE CROSS RIDES THE BOOT LOAD, NOT THE FIRST KILL (maintainer,
+ * 2026-09-07: "often when I join the game and kill a monster it takes a long
+ * time for the wooden cross to appear... this being loaded and fast has with
+ * gameplay to do"). It used to fetch on the first death, so the first cross of
+ * every session waited on a round trip — and the dropped item's own texture
+ * queued BEHIND it on the same loader, which is how a slow cross turns into
+ * being ninjalooted. 16 frames of 34px: it costs nothing to carry from boot.
+ * `spawnGraveCross` keeps its lazy path as the fallback for a failed preload. */
+const GRAVE_CROSS_KEY = "grave-cross-appear";
+const GRAVE_CROSS_URL = "/assets/scenery/grave_cross/animations/appear__south.webp";
+const GRAVE_CROSS_FRAME = 34;
 const CAMPFIRE_FRAMES = 17;
 const CAMPFIRE_SCALE = 42 / 68;
 const CAMPFIRE_BASE = 83 / 96;
@@ -3073,6 +3084,10 @@ export class WorldScene extends Phaser.Scene {
       this.load.spritesheet(CAMPFIRE_KEY, withV(CAMPFIRE_URL), {
         frameWidth: CAMPFIRE_FRAME,
         frameHeight: CAMPFIRE_FRAME,
+      });
+      this.load.spritesheet(GRAVE_CROSS_KEY, withV(GRAVE_CROSS_URL), {
+        frameWidth: GRAVE_CROSS_FRAME,
+        frameHeight: GRAVE_CROSS_FRAME,
       });
     }
   }
@@ -8218,7 +8233,7 @@ export class WorldScene extends Phaser.Scene {
    * QUEUE while the strip loads (appending to a busy loader is fine — a
    * kill during the deferred-anim batch must not silently drop its cross). */
   private spawnGraveCross(lx: number, lyFlat: number, elevPx: number) {
-    const KEY = "grave-cross-appear";
+    const KEY = GRAVE_CROSS_KEY;
     if (this.textures.exists(KEY)) {
       this.materializeCross(lx, lyFlat, elevPx);
       return;
@@ -8226,9 +8241,9 @@ export class WorldScene extends Phaser.Scene {
     this.pendingCrosses.push({ lx, lyFlat, elevPx });
     if (!this.crossLoadQueued) {
       this.crossLoadQueued = true;
-      this.load.spritesheet(KEY, withV("/assets/scenery/grave_cross/animations/appear__south.webp"), {
-        frameWidth: 34,
-        frameHeight: 34,
+      this.load.spritesheet(KEY, withV(GRAVE_CROSS_URL), {
+        frameWidth: GRAVE_CROSS_FRAME,
+        frameHeight: GRAVE_CROSS_FRAME,
       });
       this.load.once(`filecomplete-spritesheet-${KEY}`, () => {
         for (const c of this.pendingCrosses.splice(0)) this.materializeCross(c.lx, c.lyFlat, c.elevPx);
@@ -8238,7 +8253,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private materializeCross(lx: number, lyFlat: number, elevPx: number) {
-    const KEY = "grave-cross-appear";
+    const KEY = GRAVE_CROSS_KEY;
     if (!this.anims.exists(KEY)) {
       this.anims.create({
         key: KEY,
@@ -12291,7 +12306,7 @@ export class WorldScene extends Phaser.Scene {
    *  `occluderMeta` (bodies are not), and without it a tree reads itself as a
    *  solid covering itself and crops its own lit copy away. */
   private resolveDrawDepth(
-    v: { sprite: Phaser.GameObjects.Image; lx: number; lyFlat: number; ly: number; fx: number; fy: number },
+    v: { sprite: Phaser.GameObjects.Image; lx: number; lyFlat: number; ly: number; fx: number; fy: number; cx0?: number; cx1?: number },
     lvl: number,
     self?: unknown,
   ): { depth: number; coverY: number | undefined } {
@@ -12313,7 +12328,7 @@ export class WorldScene extends Phaser.Scene {
       const sy0 = aTop + ab.y0 * b.sprite.scaleY - 4;
       const sy1 = aTop + ab.y1 * b.sprite.scaleY + 4;
       const r = resolveDepthRule(
-        { colf, rowf, lvl, lx: b.lx, ly: b.ly, lyFlat: b.lyFlat, sx0, sx1, sy0, sy1, lh: this.geom.lh, dy: this.geom.dy, self },
+        { colf, rowf, lvl, lx: b.lx, ly: b.ly, lyFlat: b.lyFlat, sx0, sx1, sy0, sy1, lh: this.geom.lh, dy: this.geom.dy, self, cx0: b.cx0, cx1: b.cx1 },
         this.occluderMeta,
       );
       depth = r.depth;
@@ -17087,7 +17102,9 @@ export class WorldScene extends Phaser.Scene {
      * read itself as covering itself. */
     for (const r of resolve) {
       const d = this.resolveDrawDepth(
-        { sprite: r.img, lx: r.hbX, lyFlat: r.hbDepth - 0.5, ly: r.hbY, fx: r.fx, fy: r.fy },
+        // cx0/cx1: the piece's FOOTPRINT span, not its canopy — only terrain
+        // over what it stands on may crop its lit copy (see DepthCtx.cover column).
+        { sprite: r.img, lx: r.hbX, lyFlat: r.hbDepth - 0.5, ly: r.hbY, fx: r.fx, fy: r.fy, cx0: r.meta?.x0, cx1: r.meta?.x1 },
         r.lvl,
         r.meta,
       );
