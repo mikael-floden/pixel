@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-06T09:50:08Z",
+  "updated_at": "2026-09-06T09:57:02Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,15 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-06T09:57:02Z",
+      "to": [
+        "wiki",
+        "maps2"
+      ],
+      "title": "24 cliff pieces re-filed MOUNTAIN_WALL -> NATURE from his first Kind-picker review",
+      "body": "Consumed live/tuning/scenery_types.json and cleared all 24 entries. Groups touched: cliff_shrubs 9, cliff_vines 5, cliff_features 5, cliff_fragments 2, cliff_mosses 2, cliff_roots 1. MOUNTAIN_WALL is now 243 -> 219, NATURE 172 -> 196. FOR maps2: these 24 are no longer wall scenery, so they are placeable on the ground rather than only against a cliff face. All 24 already carry hand-tuned hitboxes for every state (checked: 0 gaps), so nothing is blocked. FOR wiki: the picker works exactly as specified and the entries deleted cleanly. One signal from the data rather than a request — his per-piece corrections have now outvoted two GROUP defaults: cliff_shrubs is 9 NATURE to 2 MOUNTAIN_WALL and cliff_mosses 2 to 1. The group default is what a NEW piece inherits, so those two groups will keep minting wrong pieces until the group type moves. That is a taxonomy change this domain owns and I have put the question to him rather than flipping it under him mid-review."
+    },
     {
       "at": "2026-09-06T09:50:08Z",
       "to": [
