@@ -1379,14 +1379,16 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   body at equal coordinates), so a piece keyed on the bare line sorted one dy
   BEHIND its hitbox centre: a body 0.9 cells behind a signpost drew over it
   (body 11619.4 vs sign 11617.6). Measured after: behind the post the sign paints over the player (sign 11631.6 vs body 11619.9); in front of it the player paints over the sign (11647.9 vs 11631.6).
-- **A HIGHER NON-SOLID COLUMN LIFTS A CALLER ONLY WHEN THE CALLER IS
-  CAMERA-FORWARD OF IT** (`resolveDrawDepth`): standable neighbours lift
-  unconditionally (the flat tile in front of the feet), but a wall or cliff
-  face rising above the caller and off its diagonal — where the ray test
-  cannot see it — lifted it over the wall: a tree standing BEHIND a house drew
-  over the house's front wall (tree lifted 10861.8 → 10918.6, the wall cell's
-  front edge four cells in front). Measured after: the tree stays at its own line (10875.8) under both overlapping wall cells (10946, 10960). (Maintainer,
-  2026-09-06.)
+- **THE LIFT OVER A NON-SOLID COLUMN STAYS UNCONDITIONAL** (`resolveDrawDepth`).
+  Gating it on the caller being camera-forward of a HIGHER column (to stop a
+  tree standing behind a house lifting over its front wall) made every piece
+  in a room vanish under its own floor: a capped cell's meta `top` is the
+  ROOF, so the floor a barrel stands on read as a higher column it was not
+  forward of (maintainer, 2026-09-06, within the hour of shipping it;
+  reverted). OPEN: the tree behind the house (tree lifted from its 10861.8
+  anchor line to 10918.6, a wall cell's front edge four cells in front, off
+  its diagonal). A fix needs the column description to tell a floor from a
+  wall before it can refuse a lift.
 
 ## Animation playback (anti-moonwalk)
 

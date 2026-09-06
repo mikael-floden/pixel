@@ -12322,15 +12322,15 @@ export class WorldScene extends Phaser.Scene {
           below = Math.min(below, od);
           coverY = Math.min(coverY, o.y0);
         } else if (
-          /* STANDABLE terrain lifts unconditionally (the flat tile in front
-           * of the feet — see below). A HIGHER non-solid column — a wall, a
-           * cliff face rising above the caller — lifts it only when the
-           * caller is camera-forward of the column: off its diagonal the ray
-           * test cannot see it, and the blanket lift drew a tree standing
-           * BEHIND a house over the house's front wall (measured: the tree
-           * lifted from its 10861.8 anchor line to 10918.6, the wall cell's
-           * front edge, four cells in front of it; maintainer, 2026-09-06). */
-          (!o.solid && (!higher || colf + rowf > o.col + o.row + 1)) ||
+          /* UNCONDITIONAL FOR ANY NON-SOLID COLUMN. A gate "only when the
+           * caller is camera-forward of a HIGHER column" (to keep a tree
+           * standing behind a house from lifting over its front wall) made
+           * every piece in a room vanish under its own floor: a capped cell's
+           * `top` is the ROOF, so the floor a barrel stands on read as a
+           * higher column it was not forward of (maintainer, 2026-09-06,
+           * within the hour). The tree case is open; it needs a column
+           * description that tells a floor from a wall. */
+          !o.solid ||
           // POINT-ANCHORED (scenery): its own anchor line is the exact
           // comparison — the cell+1 rule is a whole cell of slack, and a body
           // standing under a tree's canopy but in front of its trunk sits
