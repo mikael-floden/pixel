@@ -223,7 +223,8 @@ export interface SceneryPiece {
   lightsOn: string | null;
   /** THE PUBLISHED LIGHT BLOCK (`scenery.json` `light`, scenery's 5aac752481):
    *  strength 0..1 relative to the spawn campfire (1.0, radius 7), colour
-   *  0..1 rgb from the hex, radius in cells (≤ 7), and per-state overrides.
+   *  0..1 rgb from the hex, radius in cells (NO CAP — maintainer 2026-09-07:
+   *  the campfire's 7 is one light, not the game's maximum), and per-state overrides.
    *  Null when the manifest carries none — the game then derives one from the
    *  pixels (scenerylights.ts). The maintainer tunes this table from the wiki. */
   light: SceneryLight | null;
@@ -269,7 +270,7 @@ function parseRotations(raw: unknown): Record<string, string> {
 export interface SceneryLightLevel {
   strength: number; // 0..1, the campfire is 1
   color: [number, number, number]; // 0..1
-  radius: number; // cells, ≤ 7
+  radius: number; // cells, as published — no cap
 }
 export interface SceneryLight extends SceneryLightLevel {
   states: Record<string, SceneryLightLevel>;
@@ -288,7 +289,7 @@ export function hexToRgb01(hex: unknown): [number, number, number] {
 function parseLightLevel(o: any, fallback?: SceneryLightLevel): SceneryLightLevel | null {
   if (!o || typeof o !== "object") return null;
   const strength = typeof o.strength === "number" ? Math.max(0, Math.min(1, o.strength)) : fallback?.strength;
-  const radius = typeof o.radius === "number" ? Math.max(0.5, Math.min(7, o.radius)) : fallback?.radius;
+  const radius = typeof o.radius === "number" && Number.isFinite(o.radius) && o.radius > 0 ? Math.max(0.5, o.radius) : fallback?.radius;
   if (strength === undefined || radius === undefined) return null;
   const color = typeof o.color === "string" ? hexToRgb01(o.color) : fallback?.color ?? [1, 0.85, 0.6];
   return { strength, color, radius };

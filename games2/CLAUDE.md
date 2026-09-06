@@ -2886,10 +2886,13 @@ height reads per thing per frame.
   relative to the spawn campfire (1.0, radius 7; 0 is no light), colour hex,
   radius in cells. The maintainer tunes that table from the wiki, so the game
   reads it as given: for a placement in state S, `states[S]` else the piece
-  block; radius as given, clamped to the campfire's 7 (`spec/LIGHT_BUDGET.md`);
-  colour as given; intensity = strength × the campfire's peak 1.9 (nothing
-  outshines it, maps2/scenery contract 2026-09-06 — a pixel-derived 4.5 cap
-  made his "twice the radius" edits change nothing in-game). Steady, no
+  block; radius as given — **NO CAP** (maintainer 2026-09-07: the campfire's 7
+  "is a normal light, not even near what will be the max in the game"; the
+  scenery table decides, a big radius costs a world slot from further away,
+  `spec/LIGHT_BUDGET.md`); colour as given; intensity = strength × the
+  campfire's peak 1.9 (strength 1 IS a campfire, maps2/scenery contract
+  2026-09-06 — a pixel-derived 4.5 cap made his "twice the radius" edits
+  change nothing in-game). Steady, no
   flicker (deferred by the maintainer: a type will be published beside
   strength later — wire it then, don't invent one). Flame-like ids
   (light|lamp|lantern|torch|brazier|fire|candle|beacon|hearth|forge) cast

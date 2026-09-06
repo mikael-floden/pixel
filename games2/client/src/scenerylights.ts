@@ -86,7 +86,8 @@ export type LightKind = "flame" | "glow";
 export const CAMPFIRE_PEAK = 1.9;
 
 /** Params from THE PUBLISHED BLOCK (the manifest wins over the pixels): radius
- *  as given up to the campfire's 7, colour as given, intensity = strength ×
+ *  as given — NO CAP (maintainer 2026-09-07: the campfire is one light, not
+ *  the game's maximum) — colour as given, intensity = strength ×
  *  the campfire's peak. Flicker is deferred by the maintainer (a type will be
  *  added beside strength later) — steady. Shadows still by kind. */
 export function lightFromBlock(
@@ -97,7 +98,7 @@ export function lightFromBlock(
   const peak = Math.max(b.color[0], b.color[1], b.color[2], 0.001);
   const inten = CAMPFIRE_PEAK * b.strength;
   return {
-    radius: Math.min(7, Math.max(0.5, b.radius)),
+    radius: Math.max(0.5, b.radius),
     color: [(b.color[0] / peak) * inten, (b.color[1] / peak) * inten, (b.color[2] / peak) * inten],
     flicker: 0,
     anim: 1,
@@ -120,7 +121,7 @@ export interface SceneryLightParams {
 }
 
 /** Campfire-anchored defaults (spec/LIGHT_BUDGET.md): radius from the
- *  emissive area, capped well under the campfire's 7; a streetlight's flame
+ *  emissive area, capped at 4.5 (a fallback default, not a table); a streetlight's flame
  *  (~40 px) lands near 2.8 cells, a big crystal at the 4.5 cap. */
 export function lightParams(e: Emissive, kind: LightKind): SceneryLightParams {
   const radius = Math.min(4.5, Math.max(2, 2 + Math.sqrt(e.area) / 8));

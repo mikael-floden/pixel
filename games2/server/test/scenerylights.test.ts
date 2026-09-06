@@ -35,7 +35,7 @@ test("kind by piece id, params campfire-anchored: a lamp flickers with shadows a
   assert.equal(lamp.shadows, true);
   assert.ok(lamp.color[0] > 1 && lamp.color[0] <= 1.8, "overbright red channel, capped by the intensity");
   const crystal = lightParams({ ...e, area: 900 }, "glow");
-  assert.equal(crystal.radius, 4.5, "capped under the campfire's 7");
+  assert.equal(crystal.radius, 4.5, "the fallback derivation's own ceiling");
   assert.equal(crystal.anim, 1);
   assert.equal(crystal.shadows, false);
 });
@@ -49,7 +49,7 @@ test("the manifest's light block parses: hex colour, clamps, per-state overrides
   assert.deepEqual(l.color.map((v) => +v.toFixed(3)), [1, 0.824, 0.478]);
   assert.equal(l.radius, 4);
   assert.deepEqual(l.states.LIT_3, { strength: 0.4, color: l.color, radius: 3 }, "colour inherited from the top block");
-  assert.equal(l.states.LIT_9.radius, 7, "capped at the campfire's 7");
+  assert.equal(l.states.LIT_9.radius, 12, "no cap: the table decides (maintainer 2026-09-07)");
   assert.deepEqual(l.states.LIT_9.color, [0, 1, 1], "#rgb shorthand");
   assert.equal(l.states.junk, undefined);
   assert.equal(parseLight(null), null);
@@ -64,12 +64,13 @@ test("a placement's light is its state's block, else the piece's, else the pixel
   assert.equal(lightBlockFor({ light: null }, "LIT_1"), null, "no block: derive from the pixels");
 });
 
-test("params from the block: radius as given to 7, colour as given, intensity = strength × the campfire's peak, steady", () => {
+test("params from the block: radius as given (no cap), colour as given, intensity = strength × the campfire's peak, steady", () => {
   const lamp = lightFromBlock({ strength: 0.5, color: [1, 0.824, 0.478], radius: 6.5 }, "flame")!;
   assert.equal(lamp.radius, 6.5);
   assert.equal(+lamp.color[0].toFixed(3), +(CAMPFIRE_PEAK * 0.5).toFixed(3), "peak channel = strength × 1.9");
   assert.equal(lamp.flicker, 0, "flicker is deferred by the maintainer — steady");
   assert.equal(lamp.shadows, true, "a lamp still casts shadows");
   assert.equal(lightFromBlock({ strength: 0, color: [1, 1, 1], radius: 3 }, "glow"), null, "strength 0 is no light");
-  assert.equal(lightFromBlock({ strength: 1, color: [1, 1, 1], radius: 9 }, "glow")!.radius, 7);
+  assert.equal(lightFromBlock({ strength: 1, color: [1, 1, 1], radius: 9 }, "glow")!.radius, 9, "no cap");
+  assert.equal(parseLight({ strength: 1, color: "#fff", radius: -3 }), null, "a negative or non-finite radius is unusable, not clamped");
 });

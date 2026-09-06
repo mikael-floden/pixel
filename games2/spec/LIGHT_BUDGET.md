@@ -40,7 +40,11 @@ is 8, always. (The QA `probeLight` consumes a world slot while set.)
 Concretely (worst-case viewport ≈ 640×540 world px × 1.18 speed zoom-out; a
 radius-R pool reaches ≤46·R px horizontally, ≤22·R px vertically):
 
-- **Radius cap: 7 cells** (the campfire's own radius — nothing outshines it).
+- **No radius cap** (maintainer 2026-09-07: the campfire's 7 is one ordinary
+  light, "not even near what will be the max in the game"; the art tables
+  decide). A big radius costs SLOTS, not pixels: the pool holds one of the 8
+  from further away, so the spacing rule below is what keeps a beacon from
+  starving the lamps around it.
 - Derived defaults for un-curated emissive tiles are ≤ 5 cells and quiet.
 - Prefer radius ≤ 4 for repeated street furniture (lamps, rune stones);
   spacing rule of thumb: **≤ 8 sources per ~1500×1100 world-px window**, which
@@ -64,7 +68,7 @@ stamp-only. Fields (all optional):
 
 | field | meaning |
 |-------|---------|
-| `radius` | cells, cap 7 |
+| `radius` | cells, as published (no cap) |
 | `color` | `[r,g,b]`, values >1 are OVERBRIGHT — the shader clamps the multiply at 1.25, so excess widens the hot plateau (the campfire trick) |
 | `flicker` | 0..1 (campfire = 1) |
 | `shadows` | `false` = the shader's shadow-free glow pool (soft ambience, no LOS geometry) |
@@ -74,7 +78,8 @@ Absent an entry, games2 derives a **campfire-anchored** default (2026-08-13 —
 "a tile light source should aim to look as bright and lit up as the good old
 campfire"): hue = the tile's extracted glow colour normalized to peak 1,
 intensity = 1.9 · clamp(avgS·1.15, 0.45, 1), radius = clamp(4 + avgS·4, 4, 7)
-— a strong source IS a campfire, a faint one is still ~45% of one, scaled by
+(the derived default's own range, not a cap on a published entry) — a strong
+source IS a campfire, a faint one is still ~45% of one, scaled by
 the art's own cluster strengths. Curate entries to make a tile LEAD a scene
 **or to dim one down** — with defaults this bright, quieting a decorative
 glow (`radius`/`color` down, or `null` for stamp-only) is now the more common

@@ -16518,7 +16518,8 @@ export class WorldScene extends Phaser.Scene {
     srow: number,
   ): void {
     /* THE MANIFEST WINS (maps2/scenery ask, 2026-09-06): the state's block,
-     * else the piece's — radius as given up to the campfire's 7, colour as
+     * else the piece's — radius as given (no cap: the campfire is one light,
+     * not the game's maximum — maintainer 2026-09-07), colour as
      * given, intensity = strength × the campfire's. The pixels still give the
      * HEAD HEIGHT (the derived centroid), and remain the whole light for a
      * piece with no block. The maintainer tunes the table from the wiki;

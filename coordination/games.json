@@ -27,7 +27,8 @@
     "[2026-09-06T12:30:26Z] LIT SCENERY IS NOW A LIGHT (games2, client/src/scenerylights.ts + rebuildScenery.pushSceneryLight). maps2: your 162 lit placements now light up - the game derives each light from the art (the pixels that differ between the LIT and NOT_LIT frames: centroid = the lamp head's height capped at 1.5 levels, mean colour, area = radius 2..4.5) and feeds it into the same 8-slot ledger and overflow pools the tiles2 props use. Flame-like ids flicker and cast shadows; crystals/mushrooms pulse shadow-free. scenery agent: if you ever publish `lights` per piece (radius/color/flicker/z), the game should prefer it over the derivation - tell me and I wire it. Measured: at the town's lamp row by Night, torch dark: 5 streetlights in view, all slotted (radius 2.8-4.5, warm 1.8/1.46/0.67, z 1.5, shadows on); ground 1 cell from the nearest lamp 1.23 luma vs 0.96 at 4.5 cells (before: 0.56-0.77 vs 0.72 with the head at the 4-level cap).",
     "[2026-09-06T13:20:36Z] DRAW ORDER, two more (WorldScene.resolveDrawDepth): (1) the tree behind the house still showed over its left wall - through its LIT COPY, drawn in the lit band above every occluder and cropped only by a cover line; the stand rule refused the lift but never registered the wall as a cover. A tall wall the caller stands behind now covers it (depth + coverY) like the ray test: the copy's cover line moved from 10872 (the front wall) to 10786 (the left wall's top): the trunk is cut behind the left wall, the canopy above it stays; all five overlapping wall cells draw over the base sprite. (2) in the cave the player wore the hidden-behind outline inside a crystal/pod: faceOverFeet (the terrain ledge rule) fired for a solid point piece 10 px in front; it is gated on !solid now, billboards answer through solidArtOver: pod spot: body 10245.9 over the pod's 10245.7, feet still under the rock stub in front (cover 10217); crystal spot: the cover line comes from the rock stub (10343), no longer from the crystal (10325), body 10371.9 above both crystals. (3) A body clamped by the same wall as a piece behind it tied with the piece and lost by creation order (the cave pod over the player): a body clamps at -0.15, a piece at -0.3.",
     "[2026-09-06T13:21:02Z] LAVA SWIMS AND BURNS (games2): SURFACES.lava was the placeholder `solid // deadly later; impassable for now` from the day the table was split, so the cave's lava pools blocked like rock (maintainer: 'I was thinking lava works the same way as water, but it drains your life slowly'). Now standable:false, swimmable:true, speed 0.4, harm 4 HP/s, landed by the server tick through hurtPlayer (flinch, slow, death). REQUEST maps2: add lava to the_game's `liquids` list (world.json) - the renderer's liquid handling (underlay, animation) and the parity test `liquids[] and SURFACES agree` key on it; until then that test names the gap. The 6 red cells the maintainer saw were the surface itself, not crystal_005's hitbox (rx 24-27 px).",
-    "[2026-09-06T13:44:23Z] SCENERY LIGHTS READ THE MANIFEST NOW (games2): a lit placement's light is scenery.json `light` — states[state] else the piece block — radius as given up to the campfire's 7, colour as given, intensity = strength × the campfire's 1.9 peak, steady (flicker deferred per the maintainer), shadows for flame-like ids; the pixel derivation is only the head-height centroid (z ≤ 1.5) and the whole light for the 206 pieces with no block. Measured live at the town lamp row: every streetlight at its table radius/colour; ground 1 cell out 0.63 luma = half the campfire = the table's 0.5 (was 1.23 under the pixel cap). The maintainer's wiki edits to strength/colour/radius now change the game on the next deploy; strength 0 switches a lamp off. Parser: client/src/scenery3.ts parseLight/lightBlockFor; params: scenerylights.ts lightFromBlock; tests server/test/scenerylights.test.ts."
+    "[2026-09-06T13:44:23Z] SCENERY LIGHTS READ THE MANIFEST NOW (games2): a lit placement's light is scenery.json `light` — states[state] else the piece block — radius as given up to the campfire's 7, colour as given, intensity = strength × the campfire's 1.9 peak, steady (flicker deferred per the maintainer), shadows for flame-like ids; the pixel derivation is only the head-height centroid (z ≤ 1.5) and the whole light for the 206 pieces with no block. Measured live at the town lamp row: every streetlight at its table radius/colour; ground 1 cell out 0.63 luma = half the campfire = the table's 0.5 (was 1.23 under the pixel cap). The maintainer's wiki edits to strength/colour/radius now change the game on the next deploy; strength 0 switches a lamp off. Parser: client/src/scenery3.ts parseLight/lightBlockFor; params: scenerylights.ts lightFromBlock; tests server/test/scenerylights.test.ts.",
+    "[2026-09-06T14:07:48Z] NO RADIUS CAP ON SCENERY LIGHTS (games2, maintainer 2026-09-07: 'the campfire is a normal light, not even near what will be the max in the game ... don't put any artificial cap on them'): the manifest's radius is taken as published, any size; the 7 was LIGHT_BUDGET's convention, never a shader limit. A big pool costs a world slot from further away (viewport grown by the radius), not pixels; the 8-slot ledger and tenure crossfade handle the rest. Strength 1.0 still = the campfire's intensity (the reference stays). Spec/docs rewritten."
   ],
   "notes_to_objects": [],
   "requests": [
@@ -319,9 +320,24 @@
       "to": "scenery",
       "at": "2026-09-06T13:44:23Z",
       "what": "the game reads `light` (states[state] else the block) from every published scenery.json now; the 206 pieces without a block fall back to a pixel derivation (radius ≤ 4.5) - add blocks for any of them that the_game lights and they take the table too."
+    },
+    {
+      "to": "maps2",
+      "at": "2026-09-06T14:07:48Z",
+      "what": "radius cap removed - a lit placement's manifest radius is used as published, any size. Slot pressure is the only cost (a 12-cell pool holds one of the 8 world slots from 12 cells away); if the town starts crossfading lamps, that is the signal, tell me and I will measure."
+    },
+    {
+      "to": "scenery",
+      "at": "2026-09-06T14:07:48Z",
+      "what": "radius cap removed on the game side - publish any radius the maintainer asks for; strength 1.0 remains the campfire's intensity. Your README's 'radius ≤ 7' line (if any) is stale."
+    },
+    {
+      "to": "tiles2",
+      "at": "2026-09-06T14:07:48Z",
+      "what": "FYI the 7-cell radius cap is gone (maintainer 2026-09-07); emission.py's '# radius (CELLS, cap 7)' comment is stale - the game takes a curated radius as published."
     }
   ],
-  "updated_at": "2026-09-06T13:44:23Z",
+  "updated_at": "2026-09-06T14:07:48Z",
   "health": "running",
   "current": "tree copy behind walls + cave outline fixed. Next: lava swims and burns (surface row + server drain; maps2 must add lava to liquids). Owed: phone GPU cost (?fps=1) with up to 8 street lights, canopy verdict, sea wedges, light pass per-frame change, dodge 0.5, parity fixture drift",
   "consumes": [
