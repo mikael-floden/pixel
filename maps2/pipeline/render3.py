@@ -1480,6 +1480,32 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
     return img
 
 
+# THE MINIMAP THE GAME READS IS NOT THE RENDER I READ (maintainer 2026-09-06:
+# "I think the game is using your mini-map and show it in the game in small
+# area ... maybe your mini-map is a bit too big and the client has to make it
+# much smaller before rendering it"). It was: the HUD's map tab fetched the
+# 16300x7576 / 15 MB QA render and scaled it into a frame a few hundred px
+# wide, on a PHONE. The QA render keeps its detail under `overview_full.webp`
+# (repo only - .dockerignore keeps it out of the deploy image); the game gets
+# MINIMAP_W px of the same picture, 157 KB.
+MINIMAP_W = 1200        # ~4x the HUD frame on a phone: sharp at any zoom it does
+
+
+def write_minimap(img, world_dir):
+    """The published map image, downscaled from the render already in hand
+    (a second render of the island costs minutes). Written under BOTH names:
+    `minimap.webp` is the explicit one to read, `overview.webp` is what
+    games2 asks an iso world for today (client/src/maps.ts mapImageUrls) and
+    goes away once it prefers the minimap - board request 2026-09-06."""
+    w = MINIMAP_W
+    h = max(1, round(img.height * w / img.width))
+    small = img.convert("RGBA").resize((w, h), Image.LANCZOS)
+    for name in ("minimap.webp", "overview.webp"):
+        f = os.path.join(world_dir, name)
+        small.save(f, lossless=True, method=4, exact=True)
+        print("wrote", f, small.size, f"{os.path.getsize(f) // 1024} KB")
+
+
 def main():
     doc = json.load(open(os.path.join(MAPS2, "worlds3", "the_game", "world.json")))
     if "--cal" in sys.argv:
@@ -1491,9 +1517,11 @@ def main():
         W, H = doc["size"]["w"], doc["size"]["h"]
         fw = (W + H) * 32 + 16
         img = render(doc, scale=min(0.5, 16300 / fw))
-        out = os.path.join(MAPS2, "worlds3", "the_game", "overview.webp")
+        out = os.path.join(MAPS2, "worlds3", "the_game", "overview_full.webp")
     img.convert("RGB").save(out, lossless=True, method=4, exact=True)
     print("wrote", out, img.size)
+    if "--cal" not in sys.argv:
+        write_minimap(img, os.path.join(MAPS2, "worlds3", "the_game"))
     # THE SILENT-FLAT GATE. The old member rule fell through to clean.webp on
     # a miss: a real file, so every existence check passed and the only
     # symptom was "the world looks flatter than it is" — 30.6% of members,

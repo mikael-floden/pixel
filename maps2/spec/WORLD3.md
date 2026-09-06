@@ -829,6 +829,21 @@ not (the ground under them is). Water is swimmable at its level and climbed
 out of like any step, so a shore over 2 levels is a wall and gets its stair.
 Deep water is not a place to stand: the current owns it.
 
+## The pictures render3 writes
+
+| file | what it is |
+| --- | --- |
+| `minimap.webp` / `overview.webp` | **the map the GAME shows** — 1200 px wide (`MINIMAP_W`), ~164 KB, downscaled from the render already in hand. Two names for one picture: `minimap.webp` is the explicit one, `overview.webp` is what games2 asks an iso world for today (`client/src/maps.ts mapImageUrls`) and goes away once it prefers the minimap. |
+| `overview_full.webp` | the QA render, 16300×7576 / 15 MB — **repo only**, `.dockerignore` keeps it out of the deploy image. |
+| `cal.webp` | the 14×14 calibration scene (`--cal`). |
+
+The HUD's map tab used to fetch the 15 MB render and scale it into a frame a
+few hundred px wide, on a phone (maintainer 2026-09-06: *"maybe your mini-map
+is a bit too big and the client has to make it much smaller before rendering
+it"*). The published map is **not cropped to the island**: the game places its
+"you are here" dot as a percentage of the FULL iso canvas (`maps3DotFrac`), so
+a crop would move the dot off the player.
+
 ## How art resolves (the renderer contract — `maps2/pipeline/render3.py`)
 
 | layer | source | rule |

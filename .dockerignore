@@ -29,6 +29,12 @@ games2/.data
 # build/data. 4,648 files / 34 MB baked into every image for nothing.
 tiles2/*/raw
 !maps2
+# ...but NOT the QA render. render3 writes TWO pictures of the_game: the map
+# the game shows (minimap.webp / overview.webp, 1200 px, 164 KB) and
+# overview_full.webp, the 16300x7576 / 15 MB render this domain reviews the
+# world in. The HUD's map tab used to fetch the big one and scale it into a
+# frame a few hundred px wide, on a phone (maintainer 2026-09-06).
+maps2/worlds3/*/overview_full.webp
 !sounds
 !music
 # The music WAV masters (~61 MB) are the music domain's analysis source-of-truth,
