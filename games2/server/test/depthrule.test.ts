@@ -17,7 +17,7 @@
 // is decided by which stubs the 41 px box happens to touch.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { resolveDepthRule, type OccluderMeta, type DepthCtx } from "../../client/src/depthrule.js";
+import { resolveDepthRule, LIFT_MAX_PX, type OccluderMeta, type DepthCtx } from "../../client/src/depthrule.js";
 
 // Measured: the body at 363.3,317.2 rendered at lx 17867.2 / lyFlat 10239, and
 // at 363.6,317.0 at lx 17883.2 / lyFlat 10240.4.
@@ -25,7 +25,10 @@ const OX = 16392, OY = 712, DX = 32, DY = 14, LH = 15;
 // His opaque art box, measured off the sprite: 41 x 98 px around the anchor.
 const BOX = { dx0: -20.5, dx1: 20.5, dy0: -91.53, dy1: 6.47 };
 
-const RIBCAGE: OccluderMeta = { col: 362, row: 316, top: 7, solid: true, point: true, depth: 10189.79, drawDepth: 10245.7, x0: 17814.99, x1: 17911.91, y0: 10104, y1: 10214.3 };
+// drawDepth is what the piece's OWN resolve produces: it lifted 55.9px (four
+// cells) before the cap, and 35 + 0.6 after it.
+const RIBCAGE_UNCAPPED = 10245.7;
+const RIBCAGE: OccluderMeta = { col: 362, row: 316, top: 7, solid: true, point: true, depth: 10189.79, drawDepth: 10189.79 + LIFT_MAX_PX + 0.6, x0: 17814.99, x1: 17911.91, y0: 10104, y1: 10214.3 };
 // The cave's rock stubs, cut to one level indoors so you can see in, standable
 // at the deck's 24 while the floor he stands on is level 0.
 const STUBS: OccluderMeta[] = [
@@ -63,7 +66,7 @@ test("the fixture reproduces the real projection", () => {
   assert.equal(+b.lyFlat.toFixed(1), 10240.4);
 });
 
-for (const [colf, rowf, label] of [[363.1, 316.5, "his third report"], [363.6, 317.0, "his second"], [363.3, 317.2, "the one that looked right"]] as const) {
+for (const [colf, rowf, label] of [[363.1, 316.1, "his fourth report, on the build that was meant to fix it"], [363.1, 316.5, "his third"], [363.6, 317.0, "his second"], [363.3, 317.2, "the one that looked right"]] as const) {
   test(`the body draws IN FRONT of the ribcage it stands in front of — ${colf},${rowf} (${label})`, () => {
     const r = resolveDepthRule(bodyAt(colf, rowf), CAVE);
     assert.ok(
@@ -93,4 +96,14 @@ test("a ledge his feet are actually under still covers him, and still reports it
 test("a body genuinely behind the ribcage stays behind it", () => {
   const r = resolveDepthRule(bodyAt(361.0, 314.0), [RIBCAGE]);
   assert.ok(r.depth < RIBCAGE.drawDepth!, "standing behind the piece must stay behind it");
+});
+
+test("THE LIFT IS THE ROOT OF IT: a wide piece may not outrank the terrain standing in front of it", () => {
+  // The ribcage anchors at 10189.79. Uncapped it drew at 10245.70 — past the
+  // rock stubs at 10232 that stand a cell IN FRONT of it, so the cave's own
+  // floor sorted behind it and any body clamped by those stubs went with it.
+  const stubsInFront = STUBS.filter((o) => o.depth > RIBCAGE.depth && o.depth < RIBCAGE_UNCAPPED);
+  assert.ok(stubsInFront.length > 0, "the fixture must contain terrain between the piece and its uncapped draw depth");
+  assert.ok(RIBCAGE.drawDepth! < stubsInFront[0].depth, `the capped piece (${RIBCAGE.drawDepth}) must sort under the terrain in front of it (${stubsInFront[0].depth})`);
+  assert.equal(+RIBCAGE.drawDepth!.toFixed(2), 10225.39);
 });

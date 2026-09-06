@@ -9,6 +9,10 @@
  *  round the only check available was a probe that needed the world to finish
  *  loading. Now it is a test.
  */
+/** How far past its own anchor line a caller may be lifted, in screen px.
+ *  2.5 cells at dy 14 — see the note at the lift. */
+export const LIFT_MAX_PX = 35;
+
 export interface OccluderMeta {
   col: number;
   row: number;
@@ -182,7 +186,18 @@ export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): 
       above = Math.max(above, od);
     }
   }
-  if (above > -Infinity) depth = Math.max(depth, above + 0.6);
+  /* A CALLER NEVER LIFTS MORE THAN LIFT_MAX_PX PAST ITS OWN ANCHOR. The lift
+   * exists so the flat tile IN FRONT OF THE FEET (one diagonal, dy px) cannot
+   * draw over them — it is a one-cell job. But `above` takes the MAX over every
+   * occluder the ART BOX overlaps, and a WIDE piece overlaps ground tiles three
+   * and four diagonals forward: measured on the_game, 54 treeline pieces lift a
+   * median of 14.8 px (1.06 cells) and at most 28.8, while the cave's dragon
+   * ribcage — 97 px wide — lifts 55.9 px, FOUR cells. That is what put the
+   * maintainer behind it from three different tiles: lifted to 10245.70, the
+   * piece outranked both him and the rock stubs at 10232 that stand in front of
+   * it, so the terrain itself sorted behind it too. 35 px = 2.5 cells clears
+   * every piece measured (max 2.06) and cuts the outlier. */
+  if (above > -Infinity) depth = Math.max(depth, Math.min(above, ctx.lyFlat + LIFT_MAX_PX) + 0.6);
   /* WALLS WIN CONFLICTS — and among the things one wall clamps, a BODY sits
    * a hair above a PIECE. A cave's one-level rock stub in front of both a
    * player and the pod behind him clamped both to the same value, and the

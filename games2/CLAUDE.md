@@ -1394,6 +1394,19 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   whole lit copy below its top line, the hidden-behind outline over his body
   (cave, maintainer 2026-09-06). A billboard answers through `solidArtOver`,
   which checks the feet's x against the piece. Measured after: pod spot: body 10245.9 over the pod's 10245.7, feet still under the rock stub in front (cover 10217); crystal spot: the cover line comes from the rock stub (10343), no longer from the crystal (10325), body 10371.9 above both crystals.
+- **A CALLER NEVER LIFTS MORE THAN 2.5 CELLS PAST ITS OWN ANCHOR**
+  (`LIFT_MAX_PX` 35, `depthrule.ts`). The lift exists so the flat tile IN FRONT
+  OF THE FEET — one diagonal, dy px — cannot draw over them; it is a one-cell
+  job. But `above` takes the MAX over every occluder the ART BOX overlaps, and
+  a WIDE piece overlaps ground tiles three and four diagonals forward.
+  MEASURED on the_game: 54 treeline pieces lift a median 14.8 px (1.06 cells),
+  at most 28.8; the cave's dragon ribcage, 97 px wide, lifts 55.9 px — FOUR
+  cells. Lifted to 10245.70 it outranked not just the player but the rock stubs
+  at 10232 that stand a cell IN FRONT of it, so the cave floor sorted behind it
+  too and any body those stubs clamped went behind it with them. THIS is why
+  the maintainer kept landing behind that ribcage from four different tiles
+  while each cover-side fix only moved which tiles did it. 35 px clears every
+  piece measured and cuts the outlier.
 - **A LEDGE COVERS ONLY WHAT IT STANDS OVER — `feetInColumn` in
   `depthrule.ts`**: the ledge rule (`faceOverFeet`) additionally requires the
   caller's FEET X to lie in the occluder's screen column (±6), exactly as
