@@ -116,7 +116,7 @@ import {
 import { SceneryLitPipeline, SCENERY_LIT_PIPELINE, SCENERY_LIT_OCC, type SceneryLitShape } from "../scenerylit";
 import { ShapeMapBuilder, shapeMapKey, decodeShape, type ShapeHitbox, type ShapeScale } from "../scenerylight";
 import { reservedLights, WORLD_LIGHT_SLOTS, RESERVED_LIGHT_SLOTS } from "../lightslots";
-import { deriveEmissive, lightKindOf, lightParams, type SceneryLightParams } from "../scenerylights";
+import { deriveEmissive, lightKindOf, lightParams, lightFromBlock, type SceneryLightParams } from "../scenerylights";
 import { joinWorld } from "../net";
 import { bindLiveTuning, liveTuningSnapshot, monsterShadow, onLiveTuning } from "../live";
 import { ChatUI } from "../chat";
@@ -220,6 +220,8 @@ import {
   type SceneryFit,
   anchorX,
   anchorY,
+  lightBlockFor as sceneryLightBlockFor,
+  type SceneryLight,
 } from "../scenery3";
 
 // Fallback loop rates when a state has no measured gaitFps. The jump clip is
@@ -16508,13 +16510,20 @@ export class WorldScene extends Phaser.Scene {
    *  so a slotted lamp's stamp is suppressed like a prop's. */
   private pushSceneryLight(
     p: { i: number; x: number; y: number; ax: number; ay: number; dir?: string; piece: string },
-    piece: { states: Record<string, { key: string; sprite: string; rotations: Record<string, string> }>; baseState: string },
+    piece: { states: Record<string, { key: string; sprite: string; rotations: Record<string, string> }>; baseState: string; light: SceneryLight | null },
     st: { key: string },
     key: string,
     fit: { x: number; y: number; sx: number; sy: number; kx: number; ky: number; ay: number },
     scol: number,
     srow: number,
   ): void {
+    /* THE MANIFEST WINS (maps2/scenery ask, 2026-09-06): the state's block,
+     * else the piece's — radius as given up to the campfire's 7, colour as
+     * given, intensity = strength × the campfire's. The pixels still give the
+     * HEAD HEIGHT (the derived centroid), and remain the whole light for a
+     * piece with no block. The maintainer tunes the table from the wiki;
+     * a pixel cap on the radius made his edits change nothing in-game. */
+    const block = sceneryLightBlockFor(piece, st.key);
     let rec = this.sceneryLightCache.get(key);
     if (rec === undefined) {
       const pix = this.texPixels(key);
@@ -16531,11 +16540,15 @@ export class WorldScene extends Phaser.Scene {
       rec = e ? { cx: e.cx, cy: e.cy, params: lightParams(e, lightKindOf(p.piece)) } : null;
       this.sceneryLightCache.set(key, rec);
     }
-    if (!rec) return;
+    const fromBlock = block ? lightFromBlock(block, lightKindOf(p.piece)) : null;
+    if (block && !fromBlock) return; // the manifest says strength 0: no light
+    if (!rec && !fromBlock) return; // no block and nothing bright in the art
+    const params = fromBlock ?? rec!.params;
     const world = this.world!;
     const lvl = world.rows[srow]?.[scol]?.l ?? 0;
-    // The emissive centroid on screen → levels above the anchor line.
-    const headY = fit.y + (rec.cy - fit.sy) * fit.ky;
+    // The emissive centroid on screen → levels above the anchor line (a piece
+    // whose art shows nothing bright but whose manifest lights it: 1 level).
+    const headY = rec ? fit.y + (rec.cy - fit.sy) * fit.ky : fit.ay - this.geom.lh;
     // Capped at 1.5 levels: the pool attenuates on the 3D distance, and a
     // head 4 levels up put the ground under a streetlight near the radius'
     // edge (ring at 1 cell 0.56–0.77 vs 0.72 at 4.5 cells, measured). The
@@ -16547,7 +16560,7 @@ export class WorldScene extends Phaser.Scene {
       if (this.roomVerdictAt(scol + dc, srow + dr, nl)) { sealed = true; break; }
     }
     const id = `s3:${p.i}`;
-    const pr = rec.params;
+    const pr = params;
     this.sceneryLightSources.push({
       id, col: p.x, row: p.y, z: lvl + z, radius: pr.radius, color: pr.color, flicker: pr.flicker, shadows: pr.shadows,
       sx: p.ax, sy: p.ay, sealed,

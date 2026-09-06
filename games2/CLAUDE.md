@@ -2877,26 +2877,41 @@ height reads per thing per frame.
   deploys never stall on the game agent. Runbook: **`games2/SURFACES.md`**.
   If a DIFFERENT gate fails on an art push, that's a real art bug, not a
   surfaces edit.
-- **A `lit` SCENERY PLACEMENT IS A LIGHT, DERIVED FROM ITS ART**
-  (`client/src/scenerylights.ts`, `pushSceneryLight` in rebuildScenery). The
-  scenery domain publishes no light parameters (`lights: null`, prose glow
-  concepts only), and maps2 placed 162 lit pieces that lit nothing (maintainer,
-  2026-09-06: "the LIT scenery is not lit at all"). So the game reads the
-  pixels: those that DIFFER between the LIT frame and its NOT_LIT sibling
-  (same canvas — PixelLab relights the same object) are the emissive ones, or
-  without a sibling the bright saturated ones; their centroid puts the light
-  at the lamp's HEAD (z = its height above the anchor, 0.3..1.5 levels — the
-  pool attenuates on the 3D distance, and a head 4 levels up left the ground
-  under a streetlight near the radius' edge, measured), their mean colour is
-  the light's colour, their area the radius (2 + √area/8, capped 4.5 — under
-  the campfire's 7, spec/LIGHT_BUDGET.md). Flame-like
-  pieces by id (light|lamp|lantern|torch|brazier|fire|candle|beacon|hearth|
-  forge) flicker 0.5 and cast shadows; the rest pulse 0.15, shadow-free.
+- **A `lit` SCENERY PLACEMENT IS A LIGHT — THE MANIFEST'S `light` BLOCK WINS,
+  THE PIXELS ARE THE FALLBACK** (`client/src/scenery3.ts` `parseLight`/
+  `lightBlockFor`, `client/src/scenerylights.ts`, `pushSceneryLight` in
+  rebuildScenery). Scenery publishes `light: {strength, color, radius,
+  states: {LIT_n: {...}}}` in every lit piece's `scenery.json` (500 of 706
+  pieces; `lights` — plural — is the old LIGHTS_ON flag): strength 0..1
+  relative to the spawn campfire (1.0, radius 7; 0 is no light), colour hex,
+  radius in cells. The maintainer tunes that table from the wiki, so the game
+  reads it as given: for a placement in state S, `states[S]` else the piece
+  block; radius as given, clamped to the campfire's 7 (`spec/LIGHT_BUDGET.md`);
+  colour as given; intensity = strength × the campfire's peak 1.9 (nothing
+  outshines it, maps2/scenery contract 2026-09-06 — a pixel-derived 4.5 cap
+  made his "twice the radius" edits change nothing in-game). Steady, no
+  flicker (deferred by the maintainer: a type will be published beside
+  strength later — wire it then, don't invent one). Flame-like ids
+  (light|lamp|lantern|torch|brazier|fire|candle|beacon|hearth|forge) cast
+  shadows, the rest are shadow-free. The pixels still place the light: those
+  that DIFFER between the LIT frame and its NOT_LIT sibling (same canvas —
+  PixelLab relights the same object), or without a sibling the bright
+  saturated ones, give the centroid = the lamp's HEAD (z 0.3..1.5 levels above
+  the anchor — the pool attenuates on the 3D distance, and a head 4 levels up
+  left the ground under a streetlight near the radius' edge, measured); a
+  block with no bright pixels sits 1 level up. A piece WITHOUT a block keeps
+  the full derivation (mean colour, radius 2 + √area/8 capped 4.5, flame
+  flicker 0.5 / pulse 0.15) — the older, un-tuned pieces.
   Sources join the props' ledger under `s3:<place>` — the same 8 world slots,
   the same overflow (a ground-pool stamp under the same id, suppressed while
   slotted, `sceneryStamps`), the same `sealed` room test. Derived once per
   LIT texture (`sceneryLightCache`); a piece whose art has not landed lights
-  on the next rebuild, with its sprite. Measured: at the town's lamp row by Night, torch dark: 5 streetlights in view, all slotted (radius 2.8-4.5, warm 1.8/1.46/0.67, z 1.5, shadows on); ground 1 cell from the nearest lamp 1.23 luma vs 0.96 at 4.5 cells (before: 0.56-0.77 vs 0.72 with the head at the 4-level cap).
+  on the next rebuild, with its sprite. Measured at the town's lamp row by
+  Night, torch dark: 5 streetlights in view, all slotted, each at its
+  manifest's radius (4, one 5) and colour (`#ffc47d` → 0.95/0.73/0.47);
+  ground 1 cell from the nearest lamp 0.63 luma vs 0.30 at 4.5 cells — half
+  the campfire, exactly the table's strength 0.5; brightness is now the
+  maintainer's column, not ours.
 - **EMISSIVE TILES ARE REAL LIGHTS — THE LIGHT SLOT LEDGER** (maintainer: "NO
   DIFFERENCE in how bright the bonfire [tile] is vs the campfire [object]";
   measured parity 0.95). `buildEmissiveSources()` resolves every emissive prop

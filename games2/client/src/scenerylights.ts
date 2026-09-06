@@ -81,6 +81,30 @@ export function deriveEmissive(lit: PixelBuf, unlit?: PixelBuf | null): Emissive
 
 export type LightKind = "flame" | "glow";
 
+/** The spawn campfire's peak channel ([1.9, 0.88, 0.3]): strength 1.0 in the
+ *  manifest is the campfire — nothing outshines it (maps2 ask, 2026-09-06). */
+export const CAMPFIRE_PEAK = 1.9;
+
+/** Params from THE PUBLISHED BLOCK (the manifest wins over the pixels): radius
+ *  as given up to the campfire's 7, colour as given, intensity = strength ×
+ *  the campfire's peak. Flicker is deferred by the maintainer (a type will be
+ *  added beside strength later) — steady. Shadows still by kind. */
+export function lightFromBlock(
+  b: { strength: number; color: [number, number, number]; radius: number },
+  kind: LightKind,
+): SceneryLightParams | null {
+  if (b.strength <= 0) return null; // strength 0 is no light
+  const peak = Math.max(b.color[0], b.color[1], b.color[2], 0.001);
+  const inten = CAMPFIRE_PEAK * b.strength;
+  return {
+    radius: Math.min(7, Math.max(0.5, b.radius)),
+    color: [(b.color[0] / peak) * inten, (b.color[1] / peak) * inten, (b.color[2] / peak) * inten],
+    flicker: 0,
+    anim: 1,
+    shadows: kind === "flame",
+  };
+}
+
 /** Flame-like pieces (lamps, torches, braziers, fires) flicker and cast
  *  shadows; the rest (crystals, mushrooms, runes) pulse softly, shadow-free. */
 export function lightKindOf(pieceId: string): LightKind {

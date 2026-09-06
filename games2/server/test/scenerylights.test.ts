@@ -39,3 +39,37 @@ test("kind by piece id, params campfire-anchored: a lamp flickers with shadows a
   assert.equal(crystal.anim, 1);
   assert.equal(crystal.shadows, false);
 });
+
+import { lightFromBlock, CAMPFIRE_PEAK } from "../../client/src/scenerylights.js";
+import { parseLight, lightBlockFor, hexToRgb01 } from "../../client/src/scenery3.js";
+
+test("the manifest's light block parses: hex colour, clamps, per-state overrides inheriting the top block", () => {
+  const l = parseLight({ strength: 0.5, color: "#ffd27a", radius: 4, states: { LIT_3: { strength: 0.4, radius: 3 }, LIT_9: { radius: 12, color: "#0ff" }, junk: "no" } })!;
+  assert.ok(l);
+  assert.deepEqual(l.color.map((v) => +v.toFixed(3)), [1, 0.824, 0.478]);
+  assert.equal(l.radius, 4);
+  assert.deepEqual(l.states.LIT_3, { strength: 0.4, color: l.color, radius: 3 }, "colour inherited from the top block");
+  assert.equal(l.states.LIT_9.radius, 7, "capped at the campfire's 7");
+  assert.deepEqual(l.states.LIT_9.color, [0, 1, 1], "#rgb shorthand");
+  assert.equal(l.states.junk, undefined);
+  assert.equal(parseLight(null), null);
+  assert.equal(parseLight({ color: "#fff" }), null, "no strength/radius: unusable");
+  assert.deepEqual(hexToRgb01("nonsense"), [1, 0.85, 0.6]);
+});
+
+test("a placement's light is its state's block, else the piece's, else the pixels", () => {
+  const piece = { light: parseLight({ strength: 0.5, color: "#ffd27a", radius: 4, states: { LIT_3: { strength: 0.4, radius: 3 } } }) };
+  assert.equal(lightBlockFor(piece, "LIT_3")!.radius, 3);
+  assert.equal(lightBlockFor(piece, "LIT_1")!.radius, 4, "no state block: the piece's");
+  assert.equal(lightBlockFor({ light: null }, "LIT_1"), null, "no block: derive from the pixels");
+});
+
+test("params from the block: radius as given to 7, colour as given, intensity = strength × the campfire's peak, steady", () => {
+  const lamp = lightFromBlock({ strength: 0.5, color: [1, 0.824, 0.478], radius: 6.5 }, "flame")!;
+  assert.equal(lamp.radius, 6.5);
+  assert.equal(+lamp.color[0].toFixed(3), +(CAMPFIRE_PEAK * 0.5).toFixed(3), "peak channel = strength × 1.9");
+  assert.equal(lamp.flicker, 0, "flicker is deferred by the maintainer — steady");
+  assert.equal(lamp.shadows, true, "a lamp still casts shadows");
+  assert.equal(lightFromBlock({ strength: 0, color: [1, 1, 1], radius: 3 }, "glow"), null, "strength 0 is no light");
+  assert.equal(lightFromBlock({ strength: 1, color: [1, 1, 1], radius: 9 }, "glow")!.radius, 7);
+});

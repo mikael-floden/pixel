@@ -221,6 +221,12 @@ export interface SceneryPiece {
    *  a `lit` placement (see `litState`) — it is what the night pass will
    *  crossfade a window to. */
   lightsOn: string | null;
+  /** THE PUBLISHED LIGHT BLOCK (`scenery.json` `light`, scenery's 5aac752481):
+   *  strength 0..1 relative to the spawn campfire (1.0, radius 7), colour
+   *  0..1 rgb from the hex, radius in cells (≤ 7), and per-state overrides.
+   *  Null when the manifest carries none — the game then derives one from the
+   *  pixels (scenerylights.ts). The maintainer tunes this table from the wiki. */
+  light: SceneryLight | null;
 }
 
 const str = (v: unknown): string => (typeof v === "string" ? v : "");
@@ -260,6 +266,56 @@ function parseRotations(raw: unknown): Record<string, string> {
 
 /** Normalise one `scenery.json`. Returns null only when the doc names no sprite
  *  at all — every other surprise degrades to the plain sprite and warns once. */
+export interface SceneryLightLevel {
+  strength: number; // 0..1, the campfire is 1
+  color: [number, number, number]; // 0..1
+  radius: number; // cells, ≤ 7
+}
+export interface SceneryLight extends SceneryLightLevel {
+  states: Record<string, SceneryLightLevel>;
+}
+
+/** `#rrggbb` (or `#rgb`) → 0..1 rgb; anything else → warm white. */
+export function hexToRgb01(hex: unknown): [number, number, number] {
+  if (typeof hex !== "string") return [1, 0.85, 0.6];
+  const m = hex.trim().match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (!m) return [1, 0.85, 0.6];
+  let h = m[1];
+  if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+  return [parseInt(h.slice(0, 2), 16) / 255, parseInt(h.slice(2, 4), 16) / 255, parseInt(h.slice(4, 6), 16) / 255];
+}
+
+function parseLightLevel(o: any, fallback?: SceneryLightLevel): SceneryLightLevel | null {
+  if (!o || typeof o !== "object") return null;
+  const strength = typeof o.strength === "number" ? Math.max(0, Math.min(1, o.strength)) : fallback?.strength;
+  const radius = typeof o.radius === "number" ? Math.max(0.5, Math.min(7, o.radius)) : fallback?.radius;
+  if (strength === undefined || radius === undefined) return null;
+  const color = typeof o.color === "string" ? hexToRgb01(o.color) : fallback?.color ?? [1, 0.85, 0.6];
+  return { strength, color, radius };
+}
+
+/** The manifest's `light` block, sanitised; null when absent or unusable. */
+export function parseLight(json: any): SceneryLight | null {
+  const top = parseLightLevel(json);
+  if (!top) return null;
+  const states: Record<string, SceneryLightLevel> = {};
+  if (json.states && typeof json.states === "object" && !Array.isArray(json.states)) {
+    for (const [k, v] of Object.entries(json.states as Record<string, any>)) {
+      if (k === "__proto__") continue;
+      const lv = parseLightLevel(v, top);
+      if (lv) states[k] = lv;
+    }
+  }
+  return { ...top, states };
+}
+
+/** The light a placement in state `stateKey` shines with: the state's own
+ *  block, else the piece's, else null (derive from the pixels). */
+export function lightBlockFor(piece: { light: SceneryLight | null }, stateKey: string): SceneryLightLevel | null {
+  if (!piece.light) return null;
+  return piece.light.states[stateKey] ?? piece.light;
+}
+
 export function parsePiece(
   id: string,
   json: any,
@@ -330,6 +386,7 @@ export function parsePiece(
     states,
     baseState: base,
     lightsOn: states.LIGHTS_ON ? "LIGHTS_ON" : null,
+    light: parseLight(json.light),
   };
 }
 
