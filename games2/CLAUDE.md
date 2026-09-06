@@ -3028,6 +3028,15 @@ height reads per thing per frame.
   sits at 0.46-0.60 of unshadowed across 2-4.8 cells. Bigger published radii
   are what put the shadow back inside the lit area, so a lamp's radius is a
   LOOK knob, not just a reach knob.
+- **THE GLOW FIELD IS HALF-RESOLUTION** (`GLOW_FIELD_DIV` 2, nightlight.ts).
+  The shader samples `uGlow` NORMALIZED over uCam's window and the stamps are
+  placed by that same mapping (`gscale`, derived from `rt.width`), so the RT's
+  size is free and only the stamps' own resolution follows — and they are soft
+  radial blobs, the one thing half resolution costs nothing on. It is cleared
+  and redrawn every frame the stamps move, and a draw bracket pays its area
+  about three times (explicit clear, the capture target's auto-clear, the
+  blit): 1.52 Mpix a bracket at his 1079x1404 field, a quarter of that now.
+  Do not "restore" it to canvas size — the field is a blur, not art.
 - **THE GROUND DRAIN REPAINTS ONLY WHEN ART HAS LANDED** (`t3drainDrops`,
   `t3texGen`/`t3drainGen`). A dropped ground op drops because the art it wanted
   is not resident, so a repaint can only change the picture if something has

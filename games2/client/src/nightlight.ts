@@ -139,6 +139,8 @@ const SCN_SHADOW_DEEP = 0.3;
  *  the light's ray has NO step there — its largest step, 0.627, sits at 3.0
  *  cells and is a shadow edge. */
 const SHADOW_MARCH_MIN_LIGHT = 0.012;
+/** The glow field's resolution divisor — see where glowRT is built. */
+const GLOW_FIELD_DIV = 2;
 /** GLSL smoothstep, for the CPU twins of shader terms (e0 > e1 allowed, as in GLSL). */
 function smoothStep01(e0: number, e1: number, x: number): number {
   const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
@@ -2363,11 +2365,21 @@ export class NightLights {
       s.setSampler2D("uHeightG", "world-heightmap-ground", 5);
     if (this.scene.textures.exists("emission-palette"))
       s.setSampler2D("uEmit", "emission-palette", 2);
-    // Glow field RT: canvas-sized. The shader samples it normalized over uCam's
-    // window, so stamps are placed by that same mapping (see gscale in update()).
+    /* Glow field RT at HALF the field, aspect preserved. The shader samples it
+     * NORMALIZED over uCam's window and the stamps are placed by that same
+     * mapping (`gscale` in update(), which is derived from rt.width), so the
+     * size is free to change and only the stamps' own resolution follows — and
+     * they are soft radial blobs, which is the one thing half resolution costs
+     * nothing on. It is cleared and redrawn EVERY frame the stamps move, so its
+     * area is paid ~3x per frame (explicit clear, capture clear, blit): at his
+     * 1079x1404 that was 1.52 Mpix a bracket, and a quarter of that now.
+     * (GLOW_FIELD_DIV 2 — measured on his Mali-G715 run of 2026-09-07, where
+     * the pass update WAS the `lighting` section.) */
     this.glowRT?.destroy();
     if (this.glowKey && this.scene.textures.exists(this.glowKey)) this.scene.textures.remove(this.glowKey);
-    this.glowRT = this.scene.make.renderTexture({ width, height }, false);
+    const gw = Math.max(1, Math.round(width / GLOW_FIELD_DIV));
+    const gh = Math.max(1, Math.round(height / GLOW_FIELD_DIV));
+    this.glowRT = this.scene.make.renderTexture({ width: gw, height: gh }, false);
     this.glowKey = `night-glow-${this.fieldCount}`;
     this.glowRT.saveTexture(this.glowKey);
     s.setSampler2D("uGlow", this.glowKey, 3);
