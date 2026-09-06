@@ -2109,6 +2109,8 @@ class Grow:
     # place IS, in priority order, and each is lit only if the worst camera
     # window still holds 8 after it - the EXACT worst window, over every
     # camera position, with each light's own reach (world3.max_overlap).
+    MIN_CORE = 0.8      # a light never stands inside another's core: centres at
+                        # least this many of the BIGGER reach apart
     LAMP_SPACING = 2.5  # streetlight radii between streetlights along a road
     DARK_MAX = 12       # no reachable outdoor cell further than this from a pool's edge
     BLACK_MIN = 12      # a black patch smaller than this is contrast, not a hole
@@ -2164,6 +2166,33 @@ class Grow:
         boxes = world3.light_boxes(self.doc["scenery"], extra)
         lit_n = sum(1 for p in self.doc["scenery"] if world3.is_lit(p))
 
+        # WHERE ONE LIGHT STANDS, THE NEXT DOES NOT (maintainer 2026-09-06,
+        # standing at a plaza corner: "I have 3 very bright streetlights very
+        # very close together ... it's just very very bright here"). Those
+        # corners were laid out when a lamp reached 3 cells; the same lamps
+        # at the published reach of 11 are one white floor. The rule scales
+        # with whatever reach the scenery domain publishes - a brighter table
+        # spreads the lights instead of stacking them - and it is per PAIR,
+        # so dim glows may still cluster where bright lamps may not.
+        # ...and only against a light in the SAME space: a wall or a hillside
+        # of rock is between them, so a hearth is not crowded by the lamp in
+        # the street outside it.
+        # `rooms` is published after this pass, so ask the one definition
+        # every pass shares (doc["rooms"] is still empty here)
+        indoor_cells = set(self._indoor_now())
+
+        def space(x, y):
+            c = (int(x), int(y))
+            return ("in" if c in indoor_cells
+                    else "cave" if c in getattr(self, "cave_floor", {}) else "out")
+
+        lit_pts = [(sx + 0.5, sy + 0.5, self.BONFIRE_R, "out")]
+
+        def crowded(x, y, r):
+            sp = space(x, y)
+            return any(sp == lsp and math.hypot(x - lx, y - ly) < self.MIN_CORE * max(r, lr)
+                       for (lx, ly, lr, lsp) in lit_pts)
+
         def fits(p):
             box = world3.light_boxes([p])[0]
             n, _ = world3.max_overlap(boxes + [box], only=box)
@@ -2178,6 +2207,10 @@ class Grow:
             if not st:
                 tally[f"{why} refused (no LIT state)"] += 1
                 return False
+            r = world3.light_meta(p["piece"], st)[0]
+            if crowded(p["x"], p["y"], r):
+                tally[f"{why} refused (inside another light's core)"] += 1
+                return False
             was = p.get("state")
             p["lit"], p["state"] = True, st
             ok, box = fits(p)
@@ -2190,6 +2223,7 @@ class Grow:
                     p["state"] = was
                 return False
             boxes.append(box)
+            lit_pts.append((p["x"], p["y"], r, space(p["x"], p["y"])))
             lit_n += 1
             return True
 
@@ -2198,6 +2232,9 @@ class Grow:
         def place(piece, st, x, y, why="", **kw):
             """Put a new piece lit, if the budget allows; else not at all."""
             nonlocal lit_n
+            if crowded(x, y, world3.light_meta(piece, st)[0]):
+                tally[f"{why} refused (inside another light's core)"] += 1
+                return 0
             probe = {"piece": piece, "x": x, "y": y, "lit": True, "state": st}
             ok, box = fits(probe)
             if not ok:
@@ -2214,6 +2251,9 @@ class Grow:
                     tally[f"{why} refused (budget)"] += 1
                     return 0
                 boxes.append(box)
+                lit_pts.append((placed["x"], placed["y"],
+                                world3.light_meta(piece, st)[0],
+                                space(placed["x"], placed["y"])))
                 lit_n += 1
                 return 1
             for k, v in self.refused.items():
@@ -2247,6 +2287,10 @@ class Grow:
             p.pop("lit", None)
         boxes = world3.light_boxes(self.doc["scenery"], extra)
         lit_n = len(boxes)
+        lit_pts[:] = [(sx + 0.5, sy + 0.5, self.BONFIRE_R, "out")]
+        lit_pts += [(p["x"], p["y"], world3.light_meta(p["piece"], p.get("state"))[0],
+                     space(p["x"], p["y"]))
+                    for p in self.doc["scenery"] if world3.is_lit(p)]
         near = lambda p: abs(p["x"] - sx) + abs(p["y"] - sy)
         for p in sorted((p for p in already if p["piece"].startswith("streetlights/")), key=near):
             tally["plaza and village streetlights"] += light(p, "plaza streetlights")

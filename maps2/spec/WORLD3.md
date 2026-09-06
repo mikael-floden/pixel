@@ -650,6 +650,17 @@ runs the same check incrementally on the box of the piece WHERE IT STANDS
 after `put` snapped it (a probe at the asked position was a cell off and
 blew the audit once).
 
+**No light stands inside another's core** (maintainer 2026-09-06, at a
+plaza corner: *"I have 3 very bright streetlights very very close together
+... it's just very very bright here"*). Two lights' centres are at least
+`MIN_CORE = 0.8` of the BIGGER reach apart, and the rule is per pair, so
+dim glows may cluster where bright lamps may not, and it scales with the
+table: when the reach of a streetlight went 3 → 9 the town's four plaza
+corner lamps thinned to one. Crowding counts only within the same SPACE —
+indoors, cave, outdoors — because a wall or a hillside stands between them
+(the space comes from `_indoor_now()`/`cave_floor`, since `rooms` is
+published after this pass).
+
 **Placement is by what a place is, in priority, nearest-spawn first inside
 a priority, and a candidate that would push any window past 8 is simply not
 lit** (`world3grow.lights`, replacing the old greedy `relight`):
@@ -690,26 +701,25 @@ lit** (`world3grow.lights`, replacing the old greedy `relight`):
 **Radius is the lever, not count.** A window is ~28×52 cells and holds 8
 lights, so the share of any screen inside a pool is bounded by
 8·π·R²/1450: ≤ 28% at radius 4, ≤ 85% at radius 7, the whole screen from
-radius 8 up (there is no cap, so this bound is the table's to lift). At the published
-radii (streetlights 3–5, glows 2) the night cannot be made bright by
-placing more — a lamp row every 12 cells fills its windows and leaves the
-land beside the road black — which is why the maintainer asked scenery for
-2× streetlight radii (and half for rune stones). When that table changes
-the world is rebuilt against it: the boxes grow, the row thins, the fill
-reaches further.
+radius 8 up. At the first table (streetlights 3–5, glows 2) the night could
+not be made bright by placing more — a lamp row every 12 cells filled its
+windows and left the land beside the road black. Scenery's 2026-09-06
+rescale (streetlight 9, `reach` decoupled from `strength`) is what made a
+bright night possible, and the same rescale is why lights had to be spread:
+the count fell 258 → 184 while the lit share of the ground rose 12% → 32%.
 
-Measured on the_game: 258 lit placements (crystals 47, streetlights 39,
-crystal trees 29, cauldron camps 19, wayside shrines 17, charcoal kilns 16,
-giant mushrooms 15, waystones 13, soulstones 12, toadstool rings 11,
-mushrooms 10, braziers 7, lantern posts 7, torches 6, rock spires 4,
-ancient trees 2, hearth 1, beacon 1), worst window 8/8. Outdoor reachable
-cells: 12% inside a pool, 34% within 3 cells of one, 39% at 4–7, 12% at
-8–11, 2.1% black (the level-12 terrace south of the mountain, whose
-windows the town and its road row already fill). Camera spots sampled
-every 4 cells: 8 lights 2%, 7 9%, 6 17%, 5 21%, 4 24%, 3 15%, 2 7%, 1 2%,
-0 0%. The build log prints the tally, every refusal by reason
-(`lights: black-patch fill refused (budget)`) and where each patch was
-given up.
+Measured on the_game against the published reach (streetlight 9, hearth 13,
+brazier 11, beacon 16–18, camp/kiln 9, torch 8, crystal 5, glow 2–4): 184
+lit placements (crystals 38, streetlights 23, cauldron camps 19, crystal
+trees 15, wayside shrines 13, toadstool rings 12, mushrooms 11, soulstones
+10, giant mushrooms 8, lantern posts 7, braziers 7, charcoal kilns 6,
+ancient trees 5, torches 3, waystones 2, rock spires 2, hearth 1, beacon
+1), worst window 8/8. Fewer lights than the 3-cell table needed and far
+more light: outdoor reachable cells 32% inside a pool, 34% within 3 cells
+of one, 24% at 4–7, 7% at 8–11, 0.6% black. Camera spots sampled every 4
+cells: 8 lights 2%, 7 7%, 6 19%, 5 24%, 4 20%, 3 14%, 2 8%, 1 3%, 0 0%.
+The build log prints the tally and every refusal by reason
+(`lights: streetlights refused (inside another light's core)`).
 
 Only braziers that ship a LIT state go into a cave (`brazier_002` has none
 and was a third of the cave's fires). Flicker is deferred (maintainer: "not
