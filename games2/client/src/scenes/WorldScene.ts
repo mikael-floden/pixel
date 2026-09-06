@@ -15,6 +15,7 @@ import {
   buildTerrainGrid,
   stampSceneryCollision,
   sceneryDrawnPx,
+  rectGroundRot,
   footprintsInCells,
   MIN_FOOTPRINT_SEMI,
   ISO_GEOMETRY_MAPS3,
@@ -110,7 +111,10 @@ import {
   EmissionSource,
   GlowStamp,
   buildGlowStamps,
+  type LightParts,
 } from "../nightlight";
+import { SceneryLitPipeline, SCENERY_LIT_PIPELINE, SCENERY_LIT_OCC, type SceneryLitShape } from "../scenerylit";
+import { ShapeMapBuilder, shapeMapKey, decodeShape, type ShapeHitbox, type ShapeScale } from "../scenerylight";
 import { reservedLights, WORLD_LIGHT_SLOTS, RESERVED_LIGHT_SLOTS } from "../lightslots";
 import { joinWorld } from "../net";
 import { bindLiveTuning, liveTuningSnapshot, monsterShadow, onLiveTuning } from "../live";
@@ -211,6 +215,7 @@ import {
   stateFor,
   sceneryHitboxFor,
   type SceneryHitboxRec,
+  type SceneryHitbox,
   type SceneryFit,
   anchorX,
   anchorY,
@@ -661,6 +666,10 @@ const TIME_TRANSITION_S = 1.25;
 // themselves — a character in front of the fire must cover the fire's lit copy
 // too. Base depths are screen-y scalars (< ~20k px), compressed into the band.
 const litDepth = (baseDepth: number) => 900_001 + baseDepth * 1e-5;
+/** Rows of a shape map built between budget checks (~0.3 ms on a 256-wide sprite). */
+const SHAPE_ROWS_PER_STEP = 8;
+/** A light channel (0..1+) packed as a tint byte, clamped at 1. */
+const tint8 = (v: number): number => Math.min(255, Math.round(Math.min(1, v) * 255));
 const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
 // A 1-level STEP (up or down) plays a QUICK little hop — the jump animation + jump
 // sound — while the player keeps FULL walk/run speed (this is purely cosmetic: the
@@ -2559,7 +2568,31 @@ export class WorldScene extends Phaser.Scene {
     /** THE COVER LINE the SHARED rule returned for this piece (resolveDrawDepth,
      *  the same call bodies make). Infinity = uncovered; set once per rebuild. */
     cover?: number;
+    /** Scenery: the placement's index into world.scenery — keys the piece's own
+     *  occluder shares out of its tint (nightlight.sceneryExclR2). */
+    place?: number;
+    /** Scenery: the VOLUME the scenery-lit pipeline shades this copy with
+     *  (scenerylit.ts) — the copy's `pipelineData`, by reference. */
+    shape?: SceneryLitShape;
   }[] = [];
+  /* SCENERY LIGHT — per-pixel lighting of scenery lit copies (scenerylit.ts +
+   * scenerylight.ts). Default ON; `__ml.sceneryLight(false)` returns every
+   * copy to the flat tint for an A/B. */
+  private sceneryLightOn = true;
+  private sceneryLitPipe: SceneryLitPipeline | null = null;
+  /** Shape maps by their content key: the GL texture, or null = could not be built. */
+  private shapeMaps = new Map<string, { tex: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper; w: number; h: number; opaque: number; ms: number } | null>();
+  /** Maps still to build (the art landed this rebuild) and the copies waiting on each. */
+  private shapeJobs = new Map<string, { artKey: string; hb: ShapeHitbox; sc: ShapeScale; waiters: SceneryLitShape[]; fallback: boolean; builder?: ShapeMapBuilder; t0?: number }>();
+  /** Shape-map keys built from the tile-radius FALLBACK hitbox (the docs had
+   *  not landed): dropped once the published hitboxes stamp, so a sprite does
+   *  not keep two resident maps for the life of the page. */
+  private shapeFallbackKeys = new Set<string>();
+  private shapeStats = { built: 0, failed: 0, texels: 0, ms: 0, maxMs: 0 };
+  private sceneryLitParts: LightParts = { base: [0, 0, 0], occ: new Float32Array(MAX_SHADER_LIGHTS), ao: 1, sunF: 1 };
+  /** Per-frame JS cost of the feature (applyObjectLights' shaded branch + the
+   *  job trickle): an EMA in ms and the last frame's piece count. */
+  private sceneryLightStat = { emaMs: 0, lastMs: 0, pieces: 0, jobMs: 0 };
   private occluderMeta: {
     col: number;
     row: number;
@@ -3053,6 +3086,9 @@ export class WorldScene extends Phaser.Scene {
       try {
         this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
         this.night.create();
+        // Footprints stamped before the night existed (the boot restamp, or docs
+        // that landed first) become occluders now; later stamps re-apply themselves.
+        this.night.setSceneryOccluders(this.terrain?.footprints);
       } catch (err) {
         console.warn("[nangijala] shader night unavailable:", err);
         this.night = undefined;
@@ -3063,6 +3099,7 @@ export class WorldScene extends Phaser.Scene {
       if (this.night) {
         this.lastGround = { x: NaN, y: NaN };
         this.lastOccl = { x: NaN, y: NaN };
+        this.ensureSceneryLitPipeline();
       }
     }
 
@@ -3360,6 +3397,31 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => !!this.night && this.night.dbgOverlays !== 0,
           state: () => ["all", "no fog", "no mist", "none"][this.night?.dbgOverlays ?? 0],
+        },
+        /* THE TWO SCENERY LIGHTING SWITCHES, for the phone: "scenery light" is
+         * the per-pixel lit copy (scenerylit.ts), "scenery shadows" the torch
+         * and sun shadows a piece casts (nightlight.setSceneryOccluders). Both
+         * default ON; each tap flips one so the maintainer can judge the look
+         * against the flat tint / no shadow on his own screen. Same paths as
+         * `__ml.sceneryLight(on)` / `__ml.sceneryShadows(on)`. */
+        {
+          label: "scenery light",
+          act: () => {
+            this.setSceneryLight(!this.sceneryLightOn);
+            this.chat.addLog("—", `scenery light: ${this.sceneryLightOn ? "per pixel" : "flat tint"}`);
+          },
+          get: () => this.sceneryLightOn,
+          state: () => (this.sceneryLightOn ? "per pixel" : "flat"),
+        },
+        {
+          label: "scenery shadows",
+          act: () => {
+            const on = !(this.night?.sceneryShadows ?? true);
+            this.setSceneryShadows(on);
+            this.chat.addLog("—", `scenery shadows: ${on ? "on" : "off"}`);
+          },
+          get: () => !!this.night?.sceneryShadows,
+          state: () => (this.night?.sceneryShadows ? "on" : "off"),
         },
         /* DROPPED OPS, PAINTED MAGENTA. The maintainer's artefact is bare
          * ground fill inside the painted field on a FULL paint, and neighbours
@@ -5081,12 +5143,72 @@ export class WorldScene extends Phaser.Scene {
         if (typeof on === "boolean") this.night.sceneryFog = on;
         return this.night.sceneryFog;
       },
+      /** SCENERY SHADOWS A/B: on = pieces occlude the torch and the sun through
+       *  the heightmaps (the props' path, nightlight.setSceneryOccluders); off =
+       *  terrain only. Re-applies the layer and reports its cost + the build's. */
+      sceneryShadows: (on?: boolean, gate?: boolean) => {
+        if (!this.night) return null;
+        if (typeof gate === "boolean") this.night.sunGate = gate;
+        if (typeof on === "boolean" || typeof gate === "boolean") this.setSceneryShadows(on ?? this.night.sceneryShadows);
+        return {
+          on: this.night.sceneryShadows,
+          gate: this.night.sunGate,
+          ...this.night.sceneryStats,
+          buildMs: this.night.buildMs,
+          footprintsStamped: this.terrain?.footprints?.n ?? 0,
+          filters: this.night.heightmapFilters(),
+          view: (() => {
+            const c = this.cameras.main;
+            const v = c.worldView;
+            return { zoom: +c.zoom.toFixed(3), x: Math.round(v.x), y: Math.round(v.y), w: Math.round(v.width), h: Math.round(v.height) };
+          })(),
+        };
+      },
+      /** SCENERY LIGHT A/B: on = scenery lit copies are shaded per pixel by the
+       *  scenery-lit pipeline (torch, world lights and the sun against the
+       *  piece's volume); off = today's one flat tint. opts tune the pipeline:
+       *  {shade: 0|1 (0 = Multi.frag's own maths for parity), debug: 0..3,
+       *  wrap, sunLam, gain}. Returns sceneryLightInfo(). */
+      sceneryLight: (on?: boolean, opts?: { shade?: number; debug?: number; wrap?: number; sunLam?: number; gain?: number }) => {
+        if (typeof on === "boolean") this.setSceneryLight(on);
+        const p = this.sceneryLitPipe;
+        if (p && opts) {
+          if (opts.shade !== undefined) p.shade = opts.shade;
+          if (opts.debug !== undefined) p.debug = opts.debug;
+          if (opts.wrap !== undefined) p.wrap = opts.wrap;
+          if (opts.sunLam !== undefined) p.sunLam = opts.sunLam;
+          if (opts.gain !== undefined) p.gain = opts.gain;
+        }
+        return this.sceneryLightInfo();
+      },
+      /** SCENERY LIGHT REPORT: pipeline state, lights fed, shape maps built /
+       *  pending, per-frame CPU, and the first shaped pieces. */
+      sceneryLightInfo: () => this.sceneryLightInfo(),
+      /** SCENERY LIGHT GATE: luma thirds/bands of a named piece's lit copy,
+       *  read back from the framebuffer after the next render. */
+      sceneryLightBox: (needle: string) => this.sceneryLightBox(needle),
+      /** SCENERY LIGHT SHAPE: the normal/depth the pipeline reads at texel
+       *  (x, y) of a shaped piece's map (its own mirror when the piece is flipped). */
+      sceneryLightShape: (needle: string, x: number, y: number) => {
+        const lo = this.litOccluders.find((l) => l.img.texture.key.includes(needle) && l.shape?.tex);
+        if (!lo) return null;
+        const key = [...this.shapeMaps.entries()].find(([, r]) => r && r.tex === lo.shape!.tex)?.[0];
+        const px = key ? this.rawTexPixels(key) : null;
+        if (!px) return { key, err: "no raw pixels" };
+        return { key, ...decodeShape({ w: px.w, h: px.h, data: new Uint8Array(px.data.buffer, px.data.byteOffset, px.data.byteLength) }, x, y, lo.shape!.flip < 0) };
+      },
+      /** PASS SNAPSHOT + DIFF: keep a pass's raw pixels under a label, then measure how
+       *  two labels differ (max/mean byte delta, count) — a hash only says "not equal". */
+      nightSnap: (label: string, which: "night" | "fog" = "night") => this.night?.snapPass(which, label) ?? null,
+      nightDiff: (a: string, b: string) => this.night?.diffPass(a, b) ?? null,
+      heightmapBytes: (c0: number, r0: number, c1: number, r1: number) => this.night?.heightmapBytes(c0, r0, c1, r1) ?? null,
+      samplerLayout: () => this.night?.samplerLayout() ?? null,
       /** THE LIGHTING PASSES' A/B: arm/disarm the surface-march block skip. */
       nightSkip: (on: boolean) => this.night?.setSkip(on) ?? null,
       /** PARITY, same turn: the night or fog pass rendered with the skip off and on
        *  back to back, nothing else changing — {full, skip} hashes of its pixels. */
-      nightParity: (which: "night" | "fog" = "night") =>
-        this.night ? this.night.parityHash(which) : Promise.reject(new Error("no night lighting")),
+      nightParity: (which: "night" | "fog" = "night", toggle: "skip" | "gate" = "skip") =>
+        this.night ? this.night.parityHash(which, toggle) : Promise.reject(new Error("no night lighting")),
       /** PARITY for the lighting passes: hash of the night or fog pass's own pixels. */
       nightHash: (which: "night" | "fog" = "night") =>
         this.night ? this.night.passHash(which) : Promise.reject(new Error("no night lighting")),
@@ -10689,6 +10811,7 @@ export class WorldScene extends Phaser.Scene {
       }
       lights.push(...this.emissiveLights);
     }
+    if (this.shapeJobs.size) this.runShapeJobs(3);
     this.applyObjectLights();
     // After every body has registered AND both consumers have read their slot,
     // before render: rasterise the surfaces the frame's images point at.
@@ -10823,6 +10946,8 @@ export class WorldScene extends Phaser.Scene {
     const on = !!night && night.active && night.testPattern < 3;
     const tNow = this.time.now / 1000;
     const fogOn = on && night!.sceneryFog;
+    let litMs = 0;
+    let litN = 0;
     for (const lo of this.litOccluders) {
       lo.img.setVisible(on);
       if (!on) {
@@ -10874,7 +10999,35 @@ export class WorldScene extends Phaser.Scene {
         const c = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
         lo.fog!.setTintFill((c(f.r) << 16) | (c(f.g) << 8) | c(f.b)).setAlpha(fa).setVisible(true);
       } else lo.fog?.setVisible(false);
-      let tint = night!.tintAt(lo.col, lo.row, lo.z, true);
+      // (shade 0 = the parity switch: the copy keeps the flat tint and the
+      // pipeline runs Multi.frag's own path — the plumbing alone under test.)
+      if (lo.shape && this.sceneryLightOn && this.sceneryLitPipe!.shade > 0 && !lo.emission) {
+        /* SCENERY LIGHT: the flat tint carries only the AMBIENT side (sun, sky,
+         * AO, glow stamps — the ground's own grade, so a piece in a cave stays
+         * as dark as its floor); the point lights are added PER TEXEL by the
+         * pipeline, which reads the axis's per-light occlusion × AO and sun
+         * share off `shape` (by reference). One lightAt per piece — what the
+         * flat tint paid — read at the HITBOX CENTRE, the volume's own axis.
+         * WHILE THE SHAPE MAP IS STILL BEING BUILT the copy takes the SAME
+         * ambient-only tint: the landing map then ADDS the point lights (a
+         * piece entering the view brightens over a few frames) instead of the
+         * full flat tint dropping to the shaded one — measured −33..−53% in one
+         * frame, the maintainer's "sudden pop". */
+        const t0 = performance.now();
+        const sh = lo.shape;
+        const parts = this.sceneryLitParts;
+        night!.lightAt(sh.fc, sh.fr, sh.fz + 0.5, true, lo.place !== undefined ? night!.sceneryExclR2(lo.place) : 0, parts);
+        const ao = parts.ao;
+        for (let i = 0; i < SCENERY_LIT_OCC; i++) sh.occ[i] = parts.occ[i] * ao;
+        sh.sv = parts.sunF - 1 + 0.45 * night!.sunStrength;
+        lo.img.setTint((tint8(parts.base[0]) << 16) | (tint8(parts.base[1]) << 8) | tint8(parts.base[2]));
+        litMs += performance.now() - t0;
+        litN++;
+        continue;
+      }
+      // A scenery piece's own occluder shares are excluded from its own tint (see
+      // nightlight.setSceneryOccluders) — the ground behind it takes the shadow, the piece does not.
+      let tint = night!.tintAt(lo.col, lo.row, lo.z, true, lo.place !== undefined ? night!.sceneryExclR2(lo.place) : 0);
       if (lo.emission) {
         // Self-glow floor on the copy's tint — same semantics as the
         // shader's per-cell floor (max(light, colour*self*anim)) but applied
@@ -10904,6 +11057,12 @@ export class WorldScene extends Phaser.Scene {
           Math.round((tint & 0xff) * sp);
       }
       lo.img.setTint(tint);
+    }
+    {
+      const st = this.sceneryLightStat;
+      st.lastMs = litMs;
+      st.pieces = litN;
+      st.emaMs = st.emaMs * 0.9 + litMs * 0.1;
     }
     for (const a of this.avatars.values()) {
       const l = this.syncLitCopy(a, on, a.baseTint);
@@ -14827,6 +14986,11 @@ export class WorldScene extends Phaser.Scene {
       .setFlipX(im.flipX)
       .setDepth(im.depth)
       .setVisible(false);
+    // THE SILHOUETTE RIDES THE COPY'S PIPELINE (no shape data → tintEffect 1,
+    // Multi.frag's exact path): a default-pipeline silhouette between two
+    // scenery-lit copies is a flush each way (measured +12.8 flushes/frame).
+    if (lo.shape && this.sceneryLitPipe && im.pipeline === (this.sceneryLitPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline))
+      lo.fog.setPipeline(this.sceneryLitPipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline);
   }
 
   /** A TERRAIN BATCH LANDED. The files it carried were wanted by known window
@@ -16111,6 +16275,324 @@ export class WorldScene extends Phaser.Scene {
       // WorldRoom passes, or the client's trees would stand somewhere else.
       ISO_GEOMETRY_MAPS3,
     );
+    // The same footprints are the pieces' LIGHT occluders (nightlight
+    // setSceneryOccluders) — re-applied here because the footprints only exist
+    // once the docs land, after the heightmap was built, and change on wiki edits.
+    this.night?.setSceneryOccluders(this.terrain.footprints);
+    // The lit copies' VOLUMES are keyed on the hitbox too (attachSceneryShape):
+    // poison the occluder latch so the next frame re-attaches them under the
+    // new keys, and drop the maps built from the tile-radius fallback now that
+    // the published hitboxes exist (content-keyed; a copy still pointing at
+    // one is re-attached the same frame).
+    if (this.sceneryHitboxDoc && this.sceneryBboxDoc) {
+      this.lastOccl = { x: NaN, y: NaN };
+      for (const k of this.shapeFallbackKeys) {
+        this.shapeMaps.delete(k);
+        if (this.textures.exists(k)) this.textures.remove(k);
+      }
+      this.shapeFallbackKeys.clear();
+    }
+  }
+
+  /* ---- SCENERY LIGHT (scenerylit.ts + scenerylight.ts) ------------------- */
+
+  /** Register the scenery-lit pipeline once per game (pipelines outlive
+   *  scenes) and wire it to this scene's night ledger. A shader that fails to
+   *  compile throws here and the scenery keeps its flat tint — nothing else
+   *  depends on it. */
+  private ensureSceneryLitPipeline(): void {
+    if (this.sceneryLitPipe || this.game.renderer.type !== Phaser.WEBGL) return;
+    try {
+      const pm = (this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer).pipelines;
+      const have = (pm.has(SCENERY_LIT_PIPELINE) ? pm.get(SCENERY_LIT_PIPELINE) : null) as unknown as SceneryLitPipeline | null;
+      const pipe =
+        have ?? (pm.add(SCENERY_LIT_PIPELINE, new SceneryLitPipeline(this.game) as unknown as Phaser.Renderer.WebGL.WebGLPipeline) as unknown as SceneryLitPipeline);
+      pipe.dx = this.geom.dx;
+      pipe.lh = this.geom.lh;
+      // ONE ledger: the frame's lights exactly as the night pass uploads them,
+      // re-based on my own cell so a mediump phone GPU keeps sub-cell accuracy.
+      const frame: { pos: Float32Array; col: Float32Array; n: number; sun: [number, number, number, number]; time: number; orgX: number; orgY: number } = {
+        pos: new Float32Array(0), col: new Float32Array(0), n: 0, sun: [0, 0, 1, 0], time: 0, orgX: 0, orgY: 0,
+      };
+      pipe.source = () => {
+        const n = this.night;
+        if (!n) return null;
+        const u = n.lightUniforms();
+        frame.pos = u.pos;
+        frame.col = u.col;
+        frame.n = u.n;
+        frame.sun = u.sun;
+        frame.time = u.time;
+        const me = this.avatars.get(this.room?.sessionId ?? "");
+        frame.orgX = me ? Math.floor(me.fx / CELL_WU) : 0;
+        frame.orgY = me ? Math.floor(me.fy / CELL_WU) : 0;
+        return frame;
+      };
+      this.sceneryLitPipe = pipe;
+    } catch (err) {
+      console.warn("[nangijala] scenery-lit pipeline unavailable — scenery keeps the flat tint:", err);
+      this.sceneryLitPipe = null;
+    }
+  }
+
+  /** THE VOLUME a scenery lit copy is shaded with: the hitbox (ellipse →
+   *  rounded, rect → a box turned by the facing) and the alpha silhouette
+   *  (scenerylight.buildShapeMap), built ONCE per sprite + hitbox under a
+   *  content key and shared by every placement of it; hflip reads it in a
+   *  mirror. The copy takes the pipeline at once — with the map still pending
+   *  it draws exactly as the flat tint would — and `runShapeJobs` fills the
+   *  map in within its per-frame budget. Geometry is the DRAW path's
+   *  (hbX/hbY, fit.kx/ky): the stamp scales a variation by its own bbox and
+   *  drifts up to 42% from what is drawn (measured, 160/651 placements). */
+  private attachSceneryShape(
+    lo: WorldScene["litOccluders"][number],
+    key: string,
+    art: { canvas: { w: number; h: number } },
+    fit: SceneryFit,
+    box0: SceneryHitbox | undefined,
+    hbX: number,
+    hbY: number,
+    p: SceneryPlacement,
+    lvl: number,
+    tileSize: number,
+  ): void {
+    const pipe = this.sceneryLitPipe;
+    if (!pipe || !this.sceneryLightOn) return;
+    const { dx, dy, lh } = this.geom;
+    const rect = box0?.shape === "rect";
+    const dir = p.dir || "south";
+    // The hitbox in the sprite's own UNFLIPPED frame (frame px). A rect takes
+    // the per-facing size the stamp honours and its ground turn for the
+    // unflipped placement — the mirror negates both ax and the angle.
+    const szo = rect ? box0?.size_by_dir?.[dir] : undefined;
+    const r0 = Math.min(tileSize, fit.w) / 2 / fit.kx;
+    const hb: ShapeHitbox = box0
+      ? {
+          cx: art.canvas.w / 2 + box0.ax,
+          cy: art.canvas.h / 2 + box0.ay,
+          rx: szo && Number.isFinite(szo.rx) ? szo.rx : box0.rx,
+          ry: szo && Number.isFinite(szo.ry) ? szo.ry : box0.ry,
+          rect,
+          theta: rect ? rectGroundRot(box0, dir, false) : 0,
+        }
+      : { cx: fit.sx + fit.sw / 2, cy: fit.sy + fit.sh, rx: r0, ry: (r0 * dy) / dx, rect: false, theta: 0 };
+    const sc: ShapeScale = { px2cell: fit.kx / (dx * Math.SQRT2), py2cell: fit.ky / (dy * Math.SQRT2), px2lvl: fit.ky / lh };
+    const mapKey = shapeMapKey(key, hb, sc);
+    // Hitbox centre → cells: the collision stamp's own inverse projection.
+    const sx = hbX - p.ax;
+    const sy = hbY - p.ay;
+    const shape: SceneryLitShape = {
+      hbX,
+      hbY,
+      fc: p.x + (sx / dx + sy / dy) / 2,
+      fr: p.y + (sy / dy - sx / dx) / 2,
+      fz: lvl,
+      flip: fit.flipX ? -1 : 1,
+      occ: new Float32Array(SCENERY_LIT_OCC),
+      sv: 0,
+    };
+    const rec = this.shapeMaps.get(mapKey);
+    if (rec) shape.tex = rec.tex;
+    else if (rec === undefined) {
+      const job = this.shapeJobs.get(mapKey);
+      if (job) job.waiters.push(shape);
+      else this.shapeJobs.set(mapKey, { artKey: key, hb, sc, waiters: [shape], fallback: !box0 });
+    } else return; // null: could not be built — the copy keeps the flat tint
+    lo.shape = shape;
+    lo.img.setPipeline(pipe as unknown as Phaser.Renderer.WebGL.WebGLPipeline, shape, false);
+  }
+
+  /** Build pending shape maps within a per-frame budget and hand each to the
+   *  copies waiting on it. A map is built IN ROW SLICES across frames
+   *  (`ShapeMapBuilder.step`): one 256² sprite took 18-26 ms in a single frame
+   *  when the budget was only checked before a job started — a hitch every
+   *  time a willow scrolled in. Now the clock is checked after every slice of
+   *  SHAPE_ROWS_PER_STEP rows, so a frame never overruns the budget by more
+   *  than one slice (~0.3 ms). The raster is registered under its content key
+   *  (`s3n:<path>@v<version>:<hitbox>`) and never rewritten. */
+  /** ONE PATH FOR THE PHONE SWITCH AND THE PROBE. Settings -> "scenery light"
+   *  and `__ml.sceneryLight(on)` both land here, so an A/B tapped on the
+   *  maintainer's phone is exactly the one the harness measures. */
+  private setSceneryLight(on: boolean): void {
+    if (on === this.sceneryLightOn) return;
+    this.sceneryLightOn = on;
+    if (on) this.ensureSceneryLitPipeline();
+    for (const lo of this.litOccluders) {
+      if (!on && lo.shape) {
+        lo.img.resetPipeline();
+        lo.fog?.resetPipeline();
+        lo.shape = undefined;
+      }
+    }
+    this.lastOccl = { x: NaN, y: NaN }; // the next occluder rebuild (re)attaches
+  }
+
+  /** Same contract for the scenery light-occluders (torch + sun shadows). */
+  private setSceneryShadows(on: boolean): void {
+    if (!this.night) return;
+    this.night.sceneryShadows = on;
+    this.night.setSceneryOccluders(this.terrain?.footprints);
+  }
+
+  private runShapeJobs(budgetMs: number): void {
+    const t0 = performance.now();
+    for (const [mapKey, job] of this.shapeJobs) {
+      if (performance.now() - t0 > budgetMs) break;
+      let rec: { tex: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper; w: number; h: number; opaque: number; ms: number } | null = null;
+      let finished = false;
+      const tj = performance.now();
+      try {
+        if (this.textures.exists(mapKey)) {
+          const src = this.textures.get(mapKey).source[0];
+          if (src?.glTexture) rec = { tex: src.glTexture, w: src.width, h: src.height, opaque: -1, ms: 0 };
+          finished = true;
+        } else {
+          if (!job.builder) {
+            const px = this.texPixels(job.artKey);
+            if (!px) finished = true; // art not resident: cannot build
+            else {
+              job.builder = new ShapeMapBuilder(px, job.hb, job.sc);
+              job.t0 = tj;
+            }
+          }
+          if (job.builder) {
+            while (!job.builder.done && performance.now() - t0 <= budgetMs) job.builder.step(SHAPE_ROWS_PER_STEP);
+            if (job.builder.done) {
+              const map = job.builder.result();
+              const tx = this.textures.addUint8Array(mapKey, map.data, map.w, map.h);
+              const gl = tx?.source[0]?.glTexture;
+              if (gl) rec = { tex: gl, w: map.w, h: map.h, opaque: map.opaque, ms: 0 };
+              finished = true;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn(`[nangijala] scenery-lit: shape map ${mapKey} failed:`, err);
+        rec = null;
+        finished = true;
+      }
+      const ms = performance.now() - tj;
+      if (ms > this.shapeStats.maxMs) this.shapeStats.maxMs = ms;
+      this.shapeStats.ms += ms;
+      if (!finished) break; // out of budget mid-map: resume next frame
+      this.shapeJobs.delete(mapKey);
+      if (rec) {
+        rec.ms = +(performance.now() - (job.t0 ?? tj)).toFixed(2);
+        this.shapeStats.built++;
+        this.shapeStats.texels += rec.w * rec.h;
+        for (const w of job.waiters) w.tex = rec.tex;
+        if (job.fallback) this.shapeFallbackKeys.add(mapKey);
+      } else this.shapeStats.failed++;
+      this.shapeMaps.set(mapKey, rec);
+    }
+    this.sceneryLightStat.jobMs = performance.now() - t0;
+  }
+
+  /** The `__ml.sceneryLightInfo()` report. */
+  private sceneryLightInfo(): Record<string, unknown> {
+    const p = this.sceneryLitPipe;
+    const pipeObj = p as unknown as Phaser.Renderer.WebGL.WebGLPipeline | null;
+    const copies = this.litOccluders;
+    const onPipe = copies.filter((lo) => lo.img.pipeline === pipeObj);
+    const shaped = copies.filter((lo) => lo.shape?.tex);
+    const st = this.sceneryLightStat;
+    const ss = this.shapeStats;
+    return {
+      on: this.sceneryLightOn,
+      pipeline: p
+        ? {
+            name: p.name,
+            shade: p.shade,
+            debug: p.debug,
+            wrap: p.wrap,
+            sunLam: p.sunLam,
+            gain: p.gain,
+            quads: p.quads,
+            shapedQuads: p.shapedQuads,
+            lightsFed: p.lightsFed,
+            vertexSize: (p.currentShader as unknown as { vertexSize?: number })?.vertexSize ?? null,
+          }
+        : null,
+      copies: { total: copies.length, onPipeline: onPipe.length, shaped: shaped.length, pending: copies.filter((lo) => lo.shape && !lo.shape.tex).length },
+      shapeMaps: { built: ss.built, failed: ss.failed, pending: this.shapeJobs.size, texels: ss.texels, bytes: ss.texels * 4, totalMs: +ss.ms.toFixed(1), maxMs: +ss.maxMs.toFixed(2) },
+      cpu: { lastMs: +st.lastMs.toFixed(3), emaMs: +st.emaMs.toFixed(3), pieces: st.pieces, perPieceUs: st.pieces ? +((st.lastMs / st.pieces) * 1000).toFixed(1) : 0, jobMs: +st.jobMs.toFixed(2) },
+      lights: this.night ? this.night.lightUniforms().n : 0,
+      pieces: shaped.slice(0, 12).map((lo) => ({
+        key: lo.img.texture.key.replace(/^s3:/, ""),
+        fogPipeline: lo.fog?.pipeline?.name ?? null,
+        tint: lo.img.tintTopLeft.toString(16),
+        fc: +lo.shape!.fc.toFixed(2),
+        fr: +lo.shape!.fr.toFixed(2),
+        fz: lo.shape!.fz,
+        flip: lo.shape!.flip,
+        occ: Array.from(lo.shape!.occ).map((v) => +v.toFixed(2)),
+        sv: +lo.shape!.sv.toFixed(3),
+        box: [lo.img.x, lo.img.y, Math.round(lo.img.displayWidth), Math.round(lo.img.displayHeight)],
+      })),
+    };
+  }
+
+  /** Luma of a named piece's lit copy on screen (device px), split into
+   *  left/mid/right thirds and bottom/middle/top bands — read back from the
+   *  framebuffer after the next render. The gate the circle test uses. */
+  private sceneryLightBox(needle: string): Promise<Record<string, unknown>> {
+    return new Promise((res) => {
+      const lo = this.litOccluders.find((l) => l.img.texture.key.includes(needle) && l.img.visible);
+      if (!lo) return res({ err: "no visible lit copy for " + needle });
+      const cam = this.cameras.main;
+      const gl = (this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer).gl;
+      const bb = lo.img.getBounds();
+      const m = (cam as unknown as { matrix: Phaser.GameObjects.Components.TransformMatrix }).matrix;
+      const x0 = Math.round(m.getX(bb.left, bb.top) - cam.scrollX * cam.zoom);
+      const y0 = Math.round(m.getY(bb.left, bb.top) - cam.scrollY * cam.zoom);
+      const w = Math.round(bb.width * cam.zoom);
+      const h = Math.round(bb.height * cam.zoom);
+      // Only the ART's own device pixels count (the sprite's alpha through the
+      // copy's crop and flip): the ground behind a tree is lit by the same torch
+      // from the same side and would fake the very asymmetry being measured.
+      const fr = lo.img.frame;
+      const pix = this.texPixels(lo.img.texture.key);
+      const flip = lo.img.flipX;
+      const once = () => {
+        this.game.events.off(Phaser.Core.Events.POST_RENDER, once);
+        const buf = new Uint8Array(w * h * 4);
+        gl.readPixels(x0, this.game.canvas.height - (y0 + h), w, h, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+        const L = (i: number) => 0.2126 * buf[i] + 0.7152 * buf[i + 1] + 0.0722 * buf[i + 2];
+        const opaque = (x: number, y: number) => {
+          if (!pix) return true;
+          const u = (x + 0.5) / w;
+          const v = (h - 1 - y + 0.5) / h;
+          const tx = Math.min(pix.w - 1, Math.floor(fr.cutX + (flip ? 1 - u : u) * fr.cutWidth));
+          const ty = Math.min(pix.h - 1, Math.floor(fr.cutY + v * fr.cutHeight));
+          return pix.data[(ty * pix.w + tx) * 4 + 3] > 0;
+        };
+        let opq = 0;
+        for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (opaque(x, y)) opq++;
+        const region = (xa: number, xb: number, ya: number, yb: number) => {
+          let sum = 0;
+          let n = 0;
+          for (let y = ya; y < yb; y++) for (let x = xa; x < xb; x++) { if (!opaque(x, y)) continue; sum += L((y * w + x) * 4); n++; }
+          return +(sum / Math.max(1, n)).toFixed(1);
+        };
+        const th = Math.floor(w / 3);
+        const hh = Math.floor(h / 3);
+        const half = Math.floor(h / 2);
+        // readPixels rows run bottom-up: rows 0..hh are the sprite's BOTTOM.
+        res({
+          key: lo.img.texture.key,
+          pipeline: lo.img.pipeline?.name,
+          shaped: !!lo.shape?.tex,
+          box: [x0, y0, w, h],
+          opaqueFrac: +(opq / (w * h)).toFixed(3),
+          tint: lo.img.tintTopLeft.toString(16),
+          left: region(0, th, 0, h), mid: region(th, 2 * th, 0, h), right: region(2 * th, w, 0, h), all: region(0, w, 0, h),
+          bottom: region(0, w, 0, hh), middle: region(0, w, hh, 2 * hh), top: region(0, w, 2 * hh, h),
+          lowerL: region(0, th, 0, half), lowerR: region(2 * th, w, 0, half),
+          upperL: region(0, th, half, h), upperR: region(2 * th, w, half, h),
+        });
+      };
+      this.game.events.on(Phaser.Core.Events.POST_RENDER, once);
+    });
   }
 
   private sceneryArtFit(key: string): { bbox: ReturnType<typeof alphaBBox>; canvas: { w: number; h: number } } | null {
@@ -16480,8 +16962,13 @@ export class WorldScene extends Phaser.Scene {
           bx: p.ax,
           by: p.ay,
           pd: hbDepth,
+          place: p.i,
         });
-        this.makeFogSilhouette(this.litOccluders[this.litOccluders.length - 1]);
+        const lo = this.litOccluders[this.litOccluders.length - 1];
+        // THE VOLUME (scenery-lit): attached BEFORE the silhouette so the
+        // silhouette can take the same pipeline — see makeFogSilhouette.
+        this.attachSceneryShape(lo, key, art, fit, box0, hbX, hbY, p, world.rows[srow]?.[scol]?.l ?? 0, tileSize);
+        this.makeFogSilhouette(lo);
       }
       const meta = flat ? null : {
         col: scol,

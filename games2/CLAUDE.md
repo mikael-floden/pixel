@@ -2641,8 +2641,13 @@ height reads per thing per frame.
   into.) Armed only with its texture bound (`uSkip`; an unbound sampler reads
   unit 0 = the full heightmap and would make one cell's height a "block max").
   Three more byte-identical cuts landed with it: the prop sun-shadow loop is
-  gated on `uHasProps` (the_game places no props, so its 7 iterations and two
-  fetches per pixel per daytime frame were identity); `emitAt` is fetched only
+  gated on `uHasProps` — 1 for placed props OR scenery shares, so it RUNS on
+  the_game since 2026-09-05 (scenery sun shadows) but SPARSELY: `uPropGate`
+  keys it on the ground map's G flag, set within 4 cells of any share
+  (`setSceneryOccluders`), so the 8 steps × 2 fetches run on ~2% of the map
+  and one texel-centre fetch elsewhere (identity, proven per turn by
+  `__ml.nightParity("night","gate")`; tiles2 worlds keep the gate 0 and the
+  loop unconditional as before); `emitAt` is fetched only
   under `uEmitN > 0.5`; the glow field is cleared only when it has or had
   stamps and `uGlowOn` is 1 only when it has them (a clear of an empty field
   is a whole extra render pass on a tiler). NOT taken, on purpose: half-res
@@ -2684,7 +2689,7 @@ height reads per thing per frame.
   the face-sliver attribution — known, subtle, needs a pixel-proven plan.
 - Heightmaps: the NEAREST surface map holds TERRAIN levels and drives resolve
   + wall-face classification; `world-heightmap-linear` (LINEAR) holds terrain
-  + solid objects and drives ONLY the LOS march. A cell's LEVEL packs into
+  + solid objects + scenery footprints and drives ONLY the LOS march. A cell's LEVEL packs into
   one 8-bit channel as `level*hScale`, decoded `*255/uHScale`; **`hScale` is
   chosen PER WORLD** in `buildHeightmap` (16 for worlds ≤15 levels —
   byte-identical to history — smaller when taller). The old fixed *16
@@ -2694,6 +2699,76 @@ height reads per thing per frame.
 - **Solid objects are ART, not walls**: they block light and cast a soft
   shadow but must NEVER get a wall-face band — modelling them as blocks
   painted knife-edged phantom shadows outside the drawn art.
+- **SCENERY OCCLUDES LIKE A PROP** (`NightLights.setSceneryOccluders`): a maps3
+  piece's collision footprint (`grid.footprints`) enters the SAME channels a
+  tiles2 prop does — linear R + an EQUAL G share, ground R — so the torch's LOS
+  march and the sun's prop patch shade it with no shader change and R−G stays
+  byte-exact (cliffs and depth fog untouched: fog hash identical on/off).
+  Trunk = the footprint's cells at round(art px / 88) levels, clamped 1..3 (a
+  tree 2, a stone 1) — the compact soft pool props cast. NO CANOPY DISC
+  (built, measured, removed): a block of crown cells drew a DIAMOND LATTICE
+  under every tree by day — the patch skips a pixel's own cell, so each cell of
+  a block shades as its own saw-tooth; a smooth canopy needs the patch changed,
+  which is the_island2's approved prop look (maintainer verdict). Deck-capped
+  cells skip (indoors, under bridges); a piece's own shares are excluded from
+  its own lit-copy tint (`sceneryExclR2`, else every tree stood in its own
+  shadow). Footprints land AFTER the heightmap is built, so `restampScenery`
+  re-applies (idempotent). Measured the_game: 649 footprints, 4-19 ms + two
+  1 MB uploads; a flicker-free light 3.5 cells from a tree reads 0.13 behind
+  it vs 0.32 beside (off: 0.32 both); the tree's own copy tint identical on/off;
+  the fog pass on/off differs by 0 bytes and the night pass only inside a
+  share's own pool (`__ml.nightSnap`/`nightDiff`; an elevated piece 26 cells
+  away still projects into the view — screen for that before calling a spot
+  "scenery-free"). A/B: `__ml.sceneryShadows(on, gate?)`. The GROUND MAP's
+  two spare channels carry the scenery side: B = the cell's scenery share
+  alone (levels, R's packing) and G = the sparse sun-patch flag. B is what
+  `groundTerrAt` subtracts in the cave-mouth walk (a trunk on a cliff-top
+  cell must not extend that column over the mouth) and what arms the
+  OWN-CELL SKIRT SKIP: the bump's bilinear skirt reaches a cell out, so the
+  tread under a 0.5-cell trunk darkened 21% on the torch side — a pixel whose
+  cell carries a share now skips LOS samples within one cell of that cell's
+  centre (`ownShare`, twin in `lightAt`); props write no B, so tiles2 is
+  byte-identical. Trunk position is cell-quantised (one texel per cell): up
+  to 0.5 cell from the drawn trunk, and the day pool keeps the patch's 0.35-
+  cell tiers — both inherited from the approved prop look.
+- **SCENERY IS LIT PER PIXEL** (`scenerylit.ts` pipeline + `scenerylight.ts`
+  shape maps; maintainer 2026-09-05: walking around a tree with the torch must
+  light different parts of it). The lit copy keeps the flat tint for the
+  AMBIENT side (sun/sky/AO/glow — the twin's `LightParts.base`) and the
+  pipeline adds the POINT LIGHTS per texel against a pseudo-volume: an
+  ellipse hitbox = a surface of revolution whose radius is the alpha
+  silhouette's per-row half-width, a rect = a box turned by the facing with a
+  lid; encoded RGBA8 (R N.x, G N.z, B depth toward the viewer, A 255 — data
+  never rides alpha, Phaser premultiplies) under a content key
+  `s3n:<path>@v<n>:<hitbox,scale>`, never rewritten, built in ROW SLICES
+  within a 3 ms frame budget (a 256² willow was an 18-26 ms hitch when built
+  whole). hflip is the same map read mirrored (N.x negated), pinned by
+  `server/test/scenerylight.test.ts`. SMOOTHNESS: the radius is triple-box
+  smoothed over ±h/19 rows and differentiated over ±S rows, clamp-to-edge
+  padded below the art (a short-window derivative striped every crown:
+  adjacent-row Δnz 0.40-0.49 measured; now ≤0.03). LIGHT MODEL, measured on
+  the real trees: attenuation per texel with height weighted `SHAPE_ZW_ATT`
+  0.15 (the ground's 0.6 put crowns past the torch radius — whole trees at
+  22% of the flat tint); the Lambert direction is the HORIZONTAL vector from
+  the piece's AXIS to the light (per texel it degenerates with the torch
+  under the crown, and any vertical weight puts a ground torch straight
+  below the crown's front — a crown could never be lit); wrap 0.75, gain
+  1.25 → side torch 0.75×, in front 1.25×, behind 0.4× the flat copy, the
+  near third ≥2× the far third from every side. Sun: soft Lambert on the full
+  normal against an elevated sun (sin 1.2·slope), never brighter than flat.
+  All 12 ledger slots' LOS occlusions ride the vertex (7 attributes / 7
+  varyings, no per-object uniforms — a uniform per sprite is a flush per
+  sprite); the fog silhouettes take the same pipeline (tintEffect 1, exact)
+  so the lit band never ping-pongs pipelines; flicker is folded into the
+  light colour on the CPU once per light per frame from the SAME clock as
+  `uAnimTime` (`lightAt` reads `scene.time.now` too now — it used to lag by
+  the boot). While a map is pending the copy takes the ambient-only tint, so
+  the landing ADDS light (the flat→shaded drop was −33..−53% in one frame).
+  Knobs live: `__ml.sceneryLight(on, {shade, debug, wrap, sunLam, gain})`;
+  gates `__ml.sceneryLightBox(needle)` (alpha-masked luma thirds/bands),
+  `sceneryLightInfo()`, `sceneryLightShape(needle,x,y)`. Phone GPU cost of
+  the per-texel copies and the sparse sun patch is UNMEASURED (SwiftShader
+  is no proxy) — `?fps=1` at the town, Night and Day, is the owed number.
 - **A CAVE MOUTH IS NOT A WALL FACE**: `Ha` is max(terrain, deck), so pixels
   under a roof slab classified as FACE and took face Lambert + face shadow —
   painting the open entrance like glass (maintainer: "some sort of mirror or

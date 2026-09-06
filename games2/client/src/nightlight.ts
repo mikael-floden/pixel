@@ -1,5 +1,6 @@
 import Phaser from "phaser";
-import { surfaceFor } from "@nangijala/shared";
+import { surfaceFor, CHARACTER_BODY_PX } from "@nangijala/shared";
+import type { SceneryFootprints } from "@nangijala/shared";
 import { World, MAP_GEOMETRY, geometryFor } from "./maps";
 
 /**
@@ -79,6 +80,34 @@ export interface GlowStamp {
 }
 
 export const MAX_SHADER_LIGHTS = 12;
+
+/** lightAt's BREAKDOWN for the scenery-lit pipeline (scenerylit.ts), which
+ *  adds the point lights per texel and needs everything else at the foot:
+ *  `base` = ambient·sun·cloud + aurora, AO'd, plus the glow stamps — the
+ *  copy's flat tint minus the point lights; `occ[i]` = light i's LOS occlusion
+ *  at the foot (1 = clear; the pipeline carries the first 8); `ao` = the
+ *  ground AO factor; `sunF` = the sun factor alone (no cloud), so the pipeline
+ *  can re-weight the sun share by the volume's Lambert. Filled in place. */
+export interface LightParts {
+  base: [number, number, number];
+  occ: Float32Array;
+  ao: number;
+  sunF: number;
+}
+
+/* SCENERY OCCLUDER SIZING — see NightLights.setSceneryOccluders. */
+/** Trunk bump ceiling, levels. The LOS ramp saturates 0.67 level over the ray,
+ *  so 2 already reads as a full shadow; 3 is headroom for a torch held a step up. */
+const SCN_TRUNK_MAX = 3;
+/** A piece's OWN shares are removed from its lit-copy tint within this radius
+ *  (cells): its trunk cell is ≤0.7 from its anchor and the bilinear skirt adds 1. */
+const SCN_EXCL_R = 1.8;
+/** Chebyshev radius (cells) of the sun patch's sparse gate around a share cell. */
+const SCN_GATE_R = 4;
+/** A scenery lit copy's LOS occlusion is marched for every light within its
+ *  radius grown by this (cells): the crown's near edge can be lit by a light
+ *  that is out of range at the foot, and it must carry a real occlusion. */
+const SCN_CROWN_REACH = 2.5;
 
 /** Per-channel emission animation — the "alive" waveform shared by every
  * emission layer (shader self-floor, glow stamps, lit-copy tints). Returns
@@ -194,6 +223,8 @@ uniform float uEmitN;       // number of palette entries (0 = no emission)
 uniform sampler2D uGlow;    // world-anchored glow-halo field (same window as uCam)
 uniform float uGlowOn;      // 1 when the glow field is bound (unbound sampler = unit 0!)
 uniform float uHasProps;    // 0 when the world places no props: the prop-shadow loop is a no-op then
+uniform float uSceneryOn;   // 1 when scenery shares are stamped (maps3): own-cell skirt skip armed
+uniform float uPropGate;    // 1 when the ground map's G flags the sun patch's reach (sparse prop loop)
 uniform float uGlowFlip;    // render-target y orientation (calibrated numerically)
 
 // Bilinear height for the LOS march ONLY: blockers ramp in over ~a cell, so
@@ -260,6 +291,29 @@ float groundAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeightG, uv).r * 255.0 / uHScale;
+}
+
+// SCENERY (maps3, setSceneryOccluders): the ground map's B carries a cell's
+// SCENERY share of its column (levels, R's packing) and its G flags every
+// cell within the sun patch's reach of any share. Both 0 on a tiles2 world.
+float sceneryShareAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeightG, uv).b * 255.0 / uHScale;
+}
+float sceneryNearAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeightG, uv).g;
+}
+// groundAt WITHOUT the scenery share — the terrain + solid column, for the
+// cave-mouth walk: a trunk bump on a cliff-top cell must not extend that
+// column over the mouth below it (B is 0 for props: same bytes as groundAt).
+float groundTerrAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  vec3 v = texture2D(uHeightG, uv).rgb;
+  return (v.r - v.b) * 255.0 / uHScale;
 }
 
 // The SURFACE height a screen pixel resolves to.
@@ -369,7 +423,7 @@ vec2 groundCellAt(float u, float v0, float kk) {
     float vLo = max(vColB, vRowB);
     float vMid = (vHi + vLo) * 0.5;
     vec2 c2 = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
-    float H = groundAt(c2);
+    float H = groundTerrAt(c2);
     if (H < 90.0 && v0 + H * kk >= vLo - 0.0001) { hit = c2; got = true; }
     vHi = vLo;
   }
@@ -765,7 +819,15 @@ void main() {
     // 0, m stays 0 and the loop's only effect (sunVis *= 1 - 0.75*m) is
     // identity — 7 iterations and two fetches per pixel per daytime frame for
     // nothing. Gated on the CPU-known fact, byte-identical.
-    if (uHasProps > 0.5) for (int s = 1; s <= 8; s++) {
+    // SPARSE ON A SCENERY WORLD: uHasProps is 1 there too (scenery shares
+    // feed this loop), but only 629 of the_game's 262,144 cells carry one, so
+    // the ground map's G flags the cells within the patch's reach of any
+    // share (setSceneryOccluders) and the 16 fetches run only there — one
+    // texel-centre fetch everywhere else. Identity by construction (proven:
+    // night hash equal gate on/off); tiles2 worlds keep uPropGate 0.
+    bool propRun = uHasProps > 0.5;
+    if (propRun && uPropGate > 0.5) propRun = sceneryNearAt(cell) > 0.5;
+    if (propRun) for (int s = 1; s <= 8; s++) {
       dcp += 0.35;
       vec2 p = pos - uSun.xy * dcp;
       if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
@@ -848,6 +910,15 @@ void main() {
     vec3 acol = mix(vec3(0.10, 0.85, 0.45), vec3(0.45, 0.25, 0.85), hue);
     light += acol * curtain * 0.18 * uAurora * (1.0 - uSun.w) * inRoom;
   }
+  // A SCENERY TRUNK NEVER SHADOWS ITS OWN CELL'S TREAD (maps3). The bump's
+  // bilinear skirt reaches one cell out and the march's own-cell + 0.75-cell
+  // near-field skips are sized for a pixel at a wall base: under a 0.5-cell
+  // trunk the skirt darkened the tread on the TORCH side by 21% (measured) —
+  // a dark ring hugging every root. For a pixel whose cell carries a scenery
+  // share, samples within one cell of that cell's centre are skipped; props
+  // carry no share in this channel, so tiles2 is byte-identical.
+  float ownShare = uSceneryOn > 0.5 ? sceneryShareAt(cell) : 0.0;
+  vec2 ownC = floor(cell) + 0.5;
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
     if (float(i) >= uNumLights) continue;
     vec3 lp = uLightPos[i].xyz;
@@ -886,6 +957,7 @@ void main() {
         // the wall cell — a false dark notch along every base line.
         vec2 dp = p - pos;
         if (dot(dp, dp) < 0.56) continue;
+        if (ownShare > 0.0 && dot(p - ownC, p - ownC) < 1.0) continue;
         float hRay = mix(z, lp.z, t) + 0.2;
         // TWO SOLID SPANS PER COLUMN, not one height. The ground is solid
         // from 0 to hg; a deck (when H > hg) is a slab at H with OPEN AIR
@@ -1706,6 +1778,28 @@ export class NightLights {
   private fieldCount = 0;
   private hArr!: Float32Array; // CPU occlusion heights (terrain + solid objects)
   private pArr!: Float32Array; // CPU prop share (props get their own shade patch)
+  private sArrH!: Float32Array; // CPU SCENERY share in the occlusion heights — setSceneryOccluders
+  private sArrG!: Float32Array; // CPU SCENERY share in the ground column (trunk only)
+  /** The linear and ground maps' pixels, retained so setSceneryOccluders can
+   *  rewrite a few cells and re-upload (the setRoom pattern). */
+  private imgL?: ImageData;
+  private imgG?: ImageData;
+  /** Cells the scenery layer wrote → what they held before it (R, G, groundR bytes;
+   *  hArr, gArr, pArr floats): restored before every re-apply, so the layer is
+   *  rebuilt from scratch exactly like the collision stamp. */
+  private sceneryOrig = new Map<number, [number, number, number, number, number, number]>();
+  /** Placement index → the self-exclusion radius² (cells²) its lit copy tints with. */
+  private sceneryExcl = new Map<number, number>();
+  private hasSceneryShares = false;
+  /** Cells whose ground-map G carries the sun patch's sparse-gate flag (restored before a re-apply). */
+  private sceneryDil: number[] = [];
+  /** Dev switch (__ml.sceneryShadows): false = scenery casts nothing, terrain only. */
+  sceneryShadows = true;
+  /** Dev switch (__ml.sceneryShadows(on, gate)): the sparse sun-patch gate (uPropGate). Identity when off. */
+  sunGate = true;
+  /** Measured costs, ms: the once-per-world heightmap build and the last scenery apply. */
+  buildMs = 0;
+  sceneryStats = { footprints: 0, cells: 0, gateCells: 0, ms: 0 };
   private tArr!: Float32Array; // CPU surface heights (terrain or deck slab)
   /** 1 while the local player is INDOORS: the surface resolve then ignores
    * decks, because indoor mode has culled every one of them from the render.
@@ -1824,7 +1918,9 @@ export class NightLights {
   }
 
   create() {
+    const tBuild = performance.now();
     this.buildHeightmap();
+    this.buildMs = +(performance.now() - tBuild).toFixed(1);
     // MIST overlay shader (weather 2): declared uniforms only — the uSun
     // lesson applies here too (an undeclared uniform silently never syncs
     // on real phone GPUs).
@@ -1943,6 +2039,9 @@ export class NightLights {
       uHBlockN: { type: "2f", value: { x: 1, y: 1 } },
       uSkip: { type: "1f", value: 0 },
       uHasProps: { type: "1f", value: 0 },
+      // DECLARED (the uSun lesson) — scenery-world switches, 0 on tiles2 worlds.
+      uSceneryOn: { type: "1f", value: 0 },
+      uPropGate: { type: "1f", value: 0 },
       uHeightL: { type: "sampler2D", value: null },
       uHeightG: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
@@ -2144,7 +2243,8 @@ export class NightLights {
     this.glowKey = `night-glow-${this.fieldCount}`;
     this.glowRT.saveTexture(this.glowKey);
     s.setSampler2D("uGlow", this.glowKey, 3);
-    s.setUniform("uHasProps.value", (this.world.props?.length ?? 0) > 0 ? 1 : 0);
+    s.setUniform("uHasProps.value", this.propsFlag());
+    this.setScenerySwitches();
     // The room mask (unit 4). Built lazily the first time the player steps
     // indoors — a world nobody ever enters a building in never pays for it.
     this.ensureRoomTexture();
@@ -2400,6 +2500,11 @@ export class NightLights {
     this.gArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
     this.pArr = new Float32Array(w * h);
+    this.sArrH = new Float32Array(w * h);
+    this.sArrG = new Float32Array(w * h);
+    this.imgL = imgL;
+    this.imgG = imgG;
+    this.sceneryOrig.clear();
     // Placed props occlude EXACTLY like solid terrain categories: +1 level,
     // one shadow system for everything (maintainer — the torch LOS look).
     // Their taller art heights (2-5 levels) were tried in the map and only
@@ -2583,6 +2688,206 @@ export class NightLights {
     }
   }
 
+  /** 1 when the sun's prop patch has anything to read: placed props, or scenery shares. */
+  private propsFlag(): number {
+    return (this.world.props?.length ?? 0) > 0 || this.hasSceneryShares ? 1 : 0;
+  }
+
+  /** The scenery-world switches on the night pass: the own-cell skirt skip and
+   *  the sparse sun-patch gate — both 0 unless scenery shares are stamped. */
+  private setScenerySwitches(): void {
+    this.shader?.setUniform("uSceneryOn.value", this.hasSceneryShares ? 1 : 0);
+    this.shader?.setUniform("uPropGate.value", this.hasSceneryShares && this.sunGate ? 1 : 0);
+  }
+
+  /** The lit-copy self-exclusion radius² for a scenery placement (0 = none stamped). */
+  sceneryExclR2(place: number): number {
+    return this.sceneryExcl.get(place) ?? 0;
+  }
+
+  /** SCENERY OCCLUDES LIKE A PROP: a maps3 piece enters the SAME two maps a
+   *  tiles2 prop does — the linear map's R plus an EQUAL G share, and the ground
+   *  map's R — so the torch's LOS march and the sun's prop patch shade it with no
+   *  shader change: one shadow system for everything (the props' approved torch
+   *  look). Re-applied whenever the footprints change (the docs land after the
+   *  heightmap is built; the wiki edits hitboxes live) and rebuilt from scratch
+   *  each time, like the collision stamp. Bytes are ADDED over the cell's own
+   *  terrain byte and the same bytes go into G, so R−G — the locked cliff march
+   *  and the depth fog — stays bit-identical (verified: fog hash unchanged).
+   *  - THE TRUNK is the collision footprint: the cell holding its centre plus
+   *    every cell whose centre the ellipse/rect covers — one cell for a tree, a
+   *    row for a log or a stall. Its height is round(art over the hitbox / a
+   *    body's 88 px) levels, clamped 1..3: a stone or bush is a prop's +1 (occ
+   *    0.67 per sample), a tree's 2 saturates the ramp (0.45). Only 1-vs-≥2 is
+   *    visible to the torch, and the sun patch flattens any share to +1 itself
+   *    (min(pr·1.8, 1)) — the props' "levels made spikes" cannot recur.
+   *    REJECTED: coverage-weighted shares — a 0.5-cell trunk straddling a corner
+   *    spread to 4 × 0.19 level (under the ray's +0.2) and cast NOTHING; and a
+   *    dilated footprint, which darkened the ground on the TORCH side of the
+   *    trunk (the march's 0.75-cell near field is sized for one-cell bumps).
+   *  - NO CANOPY (rejected, measured): a tree's crown as a disc of share cells
+   *    at its true top (a slab in the two-span rule — the torch passed under it
+   *    correctly, the sun shaded beneath it) drew a DIAMOND LATTICE under every
+   *    tree by day: the sun patch skips a pixel's OWN cell, so inside a block of
+   *    share cells each cell shades from its first up-sun sample — m runs 1 → 0.58
+   *    across every cell (Hp − hRay falls with dcp) and the block reads as tiled
+   *    diamonds, not a blob (scratch p4-day-on-crop). A smooth canopy needs the
+   *    patch itself changed, and that patch IS the_island2's approved prop look —
+   *    a maintainer verdict, not a stamp choice. So a tree casts as a prop does:
+   *    its trunk cell, and the compact soft pool the patch makes of one cell.
+   *  - SKIPPED: cells capped by a deck (surface > terrain): furniture under a
+   *    roof, anything under a bridge — a G share there would DENT the deck for
+   *    the cliff march and the fog, and a bed must not cast on the street. Flat
+   *    pieces (`collision: false`) never reach the footprint table.
+   *  - THE PIECE'S OWN LIT COPY is tinted with its own shares removed within
+   *    `sceneryExclR2(place)` (1.8 cells): the tint is read at
+   *    the anchor, which is not always the trunk's cell, so without this every
+   *    tree stood in its own shadow from every side ("a prop OCCLUDES ITS OWN
+   *    CELL" — the bonfire trap). Cost, measured headless: 2-19 ms for the_game's
+   *    649 footprints INCLUDING the two 1 MB re-uploads; the heightmap build
+   *    itself (153-184 ms there) is untouched. */
+  setSceneryOccluders(fp: SceneryFootprints | undefined): void {
+    if (!this.hArr || !this.imgL || !this.imgG) return;
+    const t0 = performance.now();
+    const W = this.world.width;
+    const Hh = this.world.height;
+    const dL = this.imgL.data;
+    const dG = this.imgG.data;
+    for (const [i, o] of this.sceneryOrig) {
+      dL[i * 4] = o[0];
+      dL[i * 4 + 1] = o[1];
+      dG[i * 4] = o[2];
+      dG[i * 4 + 2] = 0;
+      this.hArr[i] = o[3];
+      this.gArr[i] = o[4];
+      this.pArr[i] = o[5];
+      this.sArrH[i] = 0;
+      this.sArrG[i] = 0;
+    }
+    for (const i of this.sceneryDil) dG[i * 4 + 1] = 0;
+    this.sceneryDil = [];
+    const had = this.sceneryOrig.size > 0;
+    this.sceneryOrig.clear();
+    this.sceneryExcl.clear();
+    const stats = { footprints: 0, cells: 0, gateCells: 0, ms: 0 };
+    const hs = this.hScale;
+    const trunk = new Map<number, number>(); // cell → bump bytes over its OWN terrain byte
+    if (fp && this.sceneryShadows) {
+      for (let j = 0; j < fp.n; j++) {
+        const cx = fp.cx[j];
+        const cy = fp.cy[j];
+        const cc = Math.floor(cx);
+        const cr = Math.floor(cy);
+        if (cc < 0 || cr < 0 || cc >= W || cr >= Hh) continue;
+        const artH = fp.artH[j];
+        const tb = Math.round(Math.max(1, Math.min(SCN_TRUNK_MAX, Math.round(artH / CHARACTER_BODY_PX))) * hs);
+        const p = fp.p[j];
+        const q = fp.q[j];
+        const isRect = fp.rect[j] === 1;
+        const bump = (c: number, r: number) => {
+          if (c < 0 || r < 0 || c >= W || r >= Hh) return;
+          const i = r * W + c;
+          if ((trunk.get(i) ?? 0) < tb) trunk.set(i, tb);
+        };
+        bump(cc, cr);
+        // Every cell whose CENTRE the shape covers — the footprint's own inside
+        // test (footprintPenetration's frame: X/Y along the map diagonals).
+        const reach = isRect ? (fp.supX[j] + fp.supY[j]) / Math.SQRT2 : Math.sqrt((p * p + q * q) / 2);
+        const c0 = Math.floor(cx - reach);
+        const c1 = Math.floor(cx + reach);
+        const r0 = Math.floor(cy - reach);
+        const r1 = Math.floor(cy + reach);
+        for (let r = r0; r <= r1; r++)
+          for (let c = c0; c <= c1; c++) {
+            const ox = c + 0.5 - cx;
+            const oy = r + 0.5 - cy;
+            const X = (ox - oy) / Math.SQRT2;
+            const Y = (ox + oy) / Math.SQRT2;
+            let inside: boolean;
+            if (isRect) {
+              const U = X * fp.rcos[j] + Y * fp.rsin[j];
+              const V = fp.rcos[j] * Y - fp.rsin[j] * X;
+              inside = Math.abs(U) <= p && Math.abs(V) <= q;
+            } else inside = (X * X) / (p * p) + (Y * Y) / (q * q) <= 1;
+            if (inside) bump(c, r);
+          }
+        this.sceneryExcl.set(fp.place[j], SCN_EXCL_R * SCN_EXCL_R);
+        stats.footprints++;
+      }
+    }
+    for (const i of trunk.keys()) {
+      if (this.tArr[i] > this.bArr[i] + 1e-3) continue; // capped by a deck: indoors / under a span
+      const i4 = i * 4;
+      const Rb0 = dL[i4];
+      const Gb0 = dL[i4 + 1];
+      const Bb = dL[i4 + 2]; // the cell's terrain byte — same packing as R
+      const Grb0 = dG[i4];
+      const eT = trunk.get(i) ?? 0;
+      const newGr = Math.max(Grb0, Math.min(255, Bb + eT));
+      const newR = Math.max(Rb0, Math.min(255, Bb + eT));
+      if (newR === Rb0 && newGr === Grb0) continue;
+      const newG = Math.min(255, Gb0 + (newR - Rb0)); // R−G unchanged, byte-exact
+      this.sceneryOrig.set(i, [Rb0, Gb0, Grb0, this.hArr[i], this.gArr[i], this.pArr[i]]);
+      dL[i4] = newR;
+      dL[i4 + 1] = newG;
+      dG[i4] = newGr;
+      // The share alone (B): what groundTerrAt subtracts and the own-cell skirt
+      // skip keys on — the SAME bytes the column grew by, so R − B is exact.
+      dG[i4 + 2] = newGr - Grb0;
+      const dh = (newR - Rb0) / hs;
+      const dg = (newGr - Grb0) / hs;
+      this.hArr[i] += dh;
+      this.gArr[i] += dg;
+      this.pArr[i] += (newG - Gb0) / hs;
+      this.sArrH[i] = dh;
+      this.sArrG[i] = dg;
+      stats.cells++;
+    }
+    // THE SPARSE GATE (G of the ground map): every cell within SCN_GATE_R of a
+    // cell carrying ANY prop share. The sun patch samples up to 2.45 cells
+    // from the pixel, its bilinear read spreads one more, and the pixel sits
+    // up to 0.5 from its cell's centre: a share can influence a pixel at most
+    // 3.95 cells away per axis, so a Chebyshev radius of 4 is complete.
+    if (this.sceneryOrig.size > 0) {
+      const dil = new Uint8Array(W * Hh);
+      for (let i = 0; i < W * Hh; i++) {
+        if (this.pArr[i] <= 0) continue;
+        const c = i % W;
+        const r = (i - c) / W;
+        const r0 = Math.max(0, r - SCN_GATE_R);
+        const r1 = Math.min(Hh - 1, r + SCN_GATE_R);
+        const c0 = Math.max(0, c - SCN_GATE_R);
+        const c1 = Math.min(W - 1, c + SCN_GATE_R);
+        for (let rr = r0; rr <= r1; rr++) for (let cc = c0; cc <= c1; cc++) dil[rr * W + cc] = 1;
+      }
+      for (let i = 0; i < W * Hh; i++)
+        if (dil[i]) {
+          dG[i * 4 + 1] = 255;
+          this.sceneryDil.push(i);
+        }
+    }
+    if (had || this.sceneryOrig.size > 0) {
+      const maps: [string, ImageData][] = [
+        ["world-heightmap-linear", this.imgL],
+        ["world-heightmap-ground", this.imgG],
+      ];
+      for (const [key, img] of maps) {
+        if (!this.scene.textures.exists(key)) continue;
+        const t = this.scene.textures.get(key) as Phaser.Textures.CanvasTexture;
+        t.getContext().putImageData(img, 0, 0);
+        t.refresh();
+        // refresh() re-applies the source's scale mode (see setRoom) — re-assert.
+        t.setFilter(Phaser.Textures.FilterMode.LINEAR);
+      }
+    }
+    this.hasSceneryShares = this.sceneryOrig.size > 0;
+    this.shader?.setUniform("uHasProps.value", this.propsFlag());
+    this.setScenerySwitches();
+    stats.gateCells = this.sceneryDil.length;
+    stats.ms = +(performance.now() - t0).toFixed(2);
+    this.sceneryStats = stats;
+  }
+
   /** CPU twin of the shader's lighting for a surface at (col,row,z): used to
    * tint STANDING objects (characters, wall columns, props) so they carry the
    * light of their own cell — the screen-space field only shades the flat
@@ -2668,7 +2973,13 @@ export class NightLights {
   /** CPU twin of the shader's directional-sun shade for a surface (1 = fully
    * lit, ~0.62 = deepest shade). Drives lit-copy tints and the headless
    * verify probe. */
-  sunFactorAt(col: number, row: number, z: number, sun: [number, number, number, number] = this.curSun): number {
+  sunFactorAt(
+    col: number,
+    row: number,
+    z: number,
+    sun: [number, number, number, number] = this.curSun,
+    selfR2 = 0,
+  ): number {
     if (sun[3] <= 0.001) return 1;
     // z < 0 = "use the cell's own terrain height" (headless probe sugar).
     if (z < 0) {
@@ -2720,8 +3031,14 @@ export class NightLights {
       const reach = sstep(2.7, 1.3, dcp);
       if (reach <= 0) break;
       const hRay = z + dcp * sun[2] + 0.15;
-      const pr = pAtSoft(px, py);
-      const hh = hAtSoft(px, py);
+      let pr = pAtSoft(px, py);
+      let hh = hAtSoft(px, py);
+      if (selfR2 > 0 && dcp * dcp < selfR2) {
+        // A piece's OWN shares do not shade its own copy — setSceneryOccluders.
+        const sc = this.shareAtSoft(this.sArrH, px, py);
+        pr -= sc;
+        hh -= sc;
+      }
       const hp = hh - pr + Math.min(1, pr * 1.8);
       if (pr > 0.001 && hh < 90 && hp > hRay)
         m = Math.max(m, Math.min(1, (hp - hRay) * 2.2) * reach);
@@ -2731,7 +3048,7 @@ export class NightLights {
     return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
   }
 
-  lightAt(col: number, row: number, z: number, isObj: boolean): [number, number, number] {
+  lightAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0, parts?: LightParts): [number, number, number] {
     const W = this.world.width;
     const H = this.world.height;
     const hAt = (c: number, r: number) => {
@@ -2752,12 +3069,23 @@ export class NightLights {
     const hAtSoft = soft2(this.hArr);
     // Twin of groundAtSoft: the ground column alone, deck excluded.
     const gAtSoft = soft2(this.gArr);
-    const t = this.scene.game.loop.getDuration();
+    // Same clock as uAnimTime (scene.time.now): the shader's flicker and the
+    // scenery-lit pipeline's are on it, and a copy beside a shaded piece must
+    // breathe in phase with it (game.loop.getDuration lags by the boot).
+    const t = this.scene.time.now / 1000;
+    // The own-cell skirt skip, twin of the shader's (see FRAG): the pixel's
+    // cell carries a scenery share → samples within a cell of its centre skip.
+    const oc = Math.floor(col);
+    const orow = Math.floor(row);
+    const ownShare = this.hasSceneryShares && oc >= 0 && orow >= 0 && oc < W && orow < H ? this.sArrG[orow * W + oc] : 0;
+    const ocx = oc + 0.5;
+    const ocy = orow + 0.5;
     // Directional-sun + cloud twins (see the shader): shade the ambient term.
     const geo = this.geo;
     const wxT = this.iso.ox + (col - row) * geo.dx + geo.dx;
     const wyT = this.iso.oy + (col + row) * geo.dy + geo.dy - z * geo.lh;
-    const sunF = this.sunFactorAt(col, row, z) * this.cloudFactorAt(wxT, wyT);
+    const sunOnly = this.sunFactorAt(col, row, z, this.curSun, selfR2);
+    const sunF = sunOnly * this.cloudFactorAt(wxT, wyT);
     const aur = this.auroraAt(wxT, wyT);
     // EXACT TWIN of the fragment's `inRoom` (roomAt): indoors, a cell outside
     // MY room gets no ambient and no sky glow — only the point lights below.
@@ -2782,6 +3110,14 @@ export class NightLights {
       amb(1) * sunF + aur[1] * inRoom,
       amb(2) * sunF + aur[2] * inRoom,
     ];
+    if (parts) {
+      parts.base[0] = out[0];
+      parts.base[1] = out[1];
+      parts.base[2] = out[2];
+      parts.sunF = sunOnly;
+      parts.ao = 1;
+      parts.occ.fill(1);
+    }
     for (let i = 0; i < this.curLights.length && i < MAX_SHADER_LIGHTS; i++) {
       const L = this.curLights[i];
       const dx = L.col - col;
@@ -2790,7 +3126,10 @@ export class NightLights {
       const dist = Math.sqrt(dx * dx + dy * dy + Math.pow((L.z - z) * 0.6, 2));
       let att = Math.max(0, 1 - dist / radius);
       att *= att;
-      if (att <= 0.001) continue;
+      // A lit copy's crown reaches nearer the light than its axis: its
+      // occlusion is marched whenever the light is within reach of the volume.
+      const wantOcc = parts !== undefined && dist < radius + SCN_CROWN_REACH;
+      if (att <= 0.001 && !wantOcc) continue;
       let occ = 1;
       if (L.radius > 0 && (z < L.z + 0.05 || isObj)) {
         for (let sN = 1; sN <= 12; sN++) {
@@ -2799,17 +3138,26 @@ export class NightLights {
           const py = row + dy * tt;
           if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
           if ((px - col) * (px - col) + (py - row) * (py - row) < 0.56) continue; // near-field
+          if (ownShare > 0 && (px - ocx) * (px - ocx) + (py - ocy) * (py - ocy) < 1.0) continue; // own trunk's skirt
           const hRay = z + (L.z - z) * tt + 0.2;
           // EXACT twin of the shader's two-span test: a deck is a floating
           // slab, so it only blocks a ray whose light is on its far side.
-          const hh = hAtSoft(px, py);
-          const hg = gAtSoft(px, py);
+          let hh = hAtSoft(px, py);
+          let hg = gAtSoft(px, py);
+          if (selfR2 > 0 && (px - col) * (px - col) + (py - row) * (py - row) < selfR2) {
+            // The piece's OWN shares (0 off-grid) — subtracted inside its
+            // exclusion radius so its lit copy is never shadowed by itself.
+            hh -= this.shareAtSoft(this.sArrH, px, py);
+            hg -= this.shareAtSoft(this.sArrG, px, py);
+          }
           const blocker = hh > hg + 0.01 && L.z <= hh ? hg : hh;
           if (blocker < 90 && blocker > hRay)
             occ *= 0.8 + (0.45 - 0.8) * Math.min(1, (blocker - hRay) * 1.5);
         }
         occ = Math.max(occ, 0.22); // bounce floor — same as the shader
       }
+      if (parts && i < parts.occ.length) parts.occ[i] = occ;
+      if (att <= 0.001) continue;
       const fl = L.flicker;
       const flick = 1 - fl * 0.1 * (0.5 + 0.5 * Math.sin(t * 2.9 + i * 5.3)) - fl * 0.05 * Math.sin(t * 7.1 + i * 11.1);
       const d01 = Math.min(1, dist / radius);
@@ -2853,6 +3201,10 @@ export class NightLights {
         const t2 = Math.min(1, dBase / 6);
         const ao = 0.72 + 0.28 * (t2 * t2 * (3 - 2 * t2));
         for (let ch = 0; ch < 3; ch++) out[ch] *= ao;
+        if (parts) {
+          parts.ao = ao;
+          for (let ch = 0; ch < 3; ch++) parts.base[ch] *= ao;
+        }
       }
     }
     // Glow-halo twin (added after AO, like the shader): a character standing
@@ -2868,14 +3220,61 @@ export class NightLights {
         if (d >= 1) continue;
         const f = (1 - d) * (1 - d); // ≈ the stamp texture's falloff
         for (let ch = 0; ch < 3; ch++) out[ch] += g.color[ch] * g.alpha * f;
+        if (parts) for (let ch = 0; ch < 3; ch++) parts.base[ch] += g.color[ch] * g.alpha * f;
       }
     }
     return out;
   }
 
+  /** THE FRAME'S LIGHTS AS THE NIGHT PASS UPLOADS THEM — col,row,z,±radius /
+   *  r,g,b,flicker, the sun and the animation clock — for the scenery-lit
+   *  pipeline, so a piece is lit by the SAME lights, phase and flicker as the
+   *  ground it stands on (one ledger, no second light list). Live views. */
+  lightUniforms(): { pos: Float32Array; col: Float32Array; n: number; sun: [number, number, number, number]; time: number } {
+    const u = this.lightU;
+    u.pos = this.posArr;
+    u.col = this.colArr;
+    u.n = Math.min(this.curLights.length, MAX_SHADER_LIGHTS);
+    u.sun = this.curSun;
+    u.time = this.scene.time.now / 1000;
+    return u;
+  }
+  /** One object, mutated per call — the pipeline reads it every frame. */
+  private lightU: { pos: Float32Array; col: Float32Array; n: number; sun: [number, number, number, number]; time: number } = {
+    pos: new Float32Array(0),
+    col: new Float32Array(0),
+    n: 0,
+    sun: [0, 0, 1, 0],
+    time: 0,
+  };
+
+  /** The sun's current strength (uSun.w) — no object per read. */
+  get sunStrength(): number {
+    return this.curSun[3];
+  }
+
+  /** Bilinear read of a scenery-share array at (c, r) — 0 off-grid. Twin of
+   *  the map's LINEAR filter for the share alone; no closure per call. */
+  private shareAtSoft(arr: Float32Array, c: number, r: number): number {
+    const cf = c - 0.5;
+    const rf = r - 0.5;
+    const c0 = Math.floor(cf);
+    const r0 = Math.floor(rf);
+    const fx = cf - c0;
+    const fy = rf - r0;
+    return (
+      (this.shareCell(arr, c0, r0) * (1 - fx) + this.shareCell(arr, c0 + 1, r0) * fx) * (1 - fy) +
+      (this.shareCell(arr, c0, r0 + 1) * (1 - fx) + this.shareCell(arr, c0 + 1, r0 + 1) * fx) * fy
+    );
+  }
+  private shareCell(arr: Float32Array, ci: number, ri: number): number {
+    const W = this.world.width;
+    return ci < 0 || ri < 0 || ci >= W || ri >= this.world.height ? 0 : arr[ri * W + ci];
+  }
+
   /** lightAt packed as a Phaser tint (multiplier clamped to 1). */
-  tintAt(col: number, row: number, z: number, isObj: boolean): number {
-    const l = this.lightAt(col, row, z, isObj);
+  tintAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0): number {
+    const l = this.lightAt(col, row, z, isObj, selfR2);
     const r = Math.min(255, Math.round(Math.min(1, l[0]) * 255));
     const g = Math.min(255, Math.round(Math.min(1, l[1]) * 255));
     const b = Math.min(255, Math.round(Math.min(1, l[2]) * 255));
@@ -2930,6 +3329,14 @@ export class NightLights {
    *  round trip would premultiply and quantise — review, 2026-09-02) and
    *  synchronous. */
   private hashPass(sh: Phaser.GameObjects.Shader): string {
+    const buf = this.readPass(sh);
+    let h = 0x811c9dc5;
+    for (let i = 0; i < buf.length; i++) h = Math.imul(h ^ buf[i], 0x01000193) >>> 0;
+    return h.toString(16).padStart(8, "0");
+  }
+
+  /** The raw RGBA of a pass's framebuffer (what hashPass hashes). */
+  private readPass(sh: Phaser.GameObjects.Shader): Uint8Array {
     const r = this.scene.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
     const gl = r.gl;
     const fb = (sh as unknown as { framebuffer?: unknown }).framebuffer;
@@ -2938,9 +3345,109 @@ export class NightLights {
     const buf = new Uint8Array(sh.width * sh.height * 4);
     gl.readPixels(0, 0, sh.width, sh.height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     (r as unknown as { setFramebuffer: (f: unknown, s?: boolean) => void }).setFramebuffer(null, true);
-    let h = 0x811c9dc5;
-    for (let i = 0; i < buf.length; i++) h = Math.imul(h ^ buf[i], 0x01000193) >>> 0;
-    return h.toString(16).padStart(8, "0");
+    return buf;
+  }
+
+  private passSnaps = new Map<string, Uint8Array>();
+
+  /** DIAGNOSTIC: keep a pass's raw pixels under a label, for diffPass. */
+  snapPass(which: "night" | "fog", label: string): number {
+    const sh = which === "night" ? this.shader : this.depthFogShader;
+    if (!sh) throw new Error(`no ${which} pass`);
+    const buf = this.readPass(sh);
+    this.passSnaps.set(label, buf);
+    return buf.length;
+  }
+
+  /** DIAGNOSTIC: how two snapshots differ — a hash says "not equal", this says
+   *  by how much (max |Δ| per byte, how many bytes, where). */
+  diffPass(
+    a: string,
+    b: string,
+  ): { bytes: number; differing: number; maxAbs: number; meanAbs: number; box: number[] | null; w: number; samples: number[][] } | null {
+    const A = this.passSnaps.get(a);
+    const B = this.passSnaps.get(b);
+    if (!A || !B || A.length !== B.length) return null;
+    const w = this.shader?.width ?? 0;
+    let differing = 0;
+    let maxAbs = 0;
+    let sum = 0;
+    let x0 = Infinity, y0 = Infinity, x1 = -1, y1 = -1;
+    const samples: number[][] = []; // [px, py, Ar,Ag,Ab,Aa, Br,Bg,Bb,Ba] at a few differing pixels
+    for (let i = 0; i < A.length; i++) {
+      const d = Math.abs(A[i] - B[i]);
+      if (d) {
+        differing++;
+        sum += d;
+        if (d > maxAbs) maxAbs = d;
+        if (w) {
+          const px = (i >> 2) % w, py = Math.floor((i >> 2) / w);
+          if (px < x0) x0 = px;
+          if (px > x1) x1 = px;
+          if (py < y0) y0 = py;
+          if (py > y1) y1 = py;
+          if (samples.length < 6 && differing % 4000 === 1) {
+            const k = (i >> 2) * 4;
+            samples.push([px, py, A[k], A[k + 1], A[k + 2], A[k + 3], B[k], B[k + 1], B[k + 2], B[k + 3]]);
+          }
+        }
+      }
+    }
+    // box = [x0, y0, x1, y1] in pass texels (readPixels rows are bottom-up).
+    return { bytes: A.length, differing, maxAbs, meanAbs: differing ? +(sum / differing).toFixed(3) : 0, box: differing ? [x0, y0, x1, y1] : null, w, samples };
+  }
+
+  /** DIAGNOSTIC: the bytes the two LINEAR maps hold for a cell range — from the
+   *  retained ImageData AND read back from the live canvas (must agree), plus the
+   *  CPU twins — so a GPU reading that disagrees can be attributed. */
+  heightmapBytes(c0: number, r0: number, c1: number, r1: number): Record<string, number[]> {
+    const out: Record<string, number[]> = {};
+    const W = this.world.width;
+    const tL = this.scene.textures.exists("world-heightmap-linear") ? (this.scene.textures.get("world-heightmap-linear") as Phaser.Textures.CanvasTexture) : null;
+    const tG = this.scene.textures.exists("world-heightmap-ground") ? (this.scene.textures.get("world-heightmap-ground") as Phaser.Textures.CanvasTexture) : null;
+    const cL = tL ? tL.getContext().getImageData(c0, r0, c1 - c0 + 1, r1 - r0 + 1).data : null;
+    const cG = tG ? tG.getContext().getImageData(c0, r0, c1 - c0 + 1, r1 - r0 + 1).data : null;
+    const cw = c1 - c0 + 1;
+    for (let r = r0; r <= r1; r++)
+      for (let c = c0; c <= c1; c++) {
+        const i = r * W + c;
+        const k = ((r - r0) * cw + (c - c0)) * 4;
+        out[`${c},${r}`] = [
+          this.imgL?.data[i * 4] ?? -1, this.imgL?.data[i * 4 + 1] ?? -1, this.imgL?.data[i * 4 + 2] ?? -1, this.imgG?.data[i * 4] ?? -1,
+          cL ? cL[k] : -1, cL ? cL[k + 1] : -1, cL ? cL[k + 2] : -1, cG ? cG[k] : -1,
+          +(this.hArr[i] ?? -1).toFixed(2), +(this.pArr[i] ?? -1).toFixed(2), +(this.gArr[i] ?? -1).toFixed(2), this.tArr[i] ?? -1,
+        ];
+      }
+    return out;
+  }
+
+  /** DIAGNOSTIC: the sampler uniforms of the night pass in their sync order and the texture key each holds. */
+  samplerLayout(): string[] {
+    const sh = this.shader as unknown as { uniforms?: Record<string, { type?: string; value?: unknown; textureKey?: string }> } | undefined;
+    const out: string[] = [];
+    if (!sh?.uniforms) return out;
+    let n = 0;
+    for (const [k, u] of Object.entries(sh.uniforms)) {
+      if (u.value === null || u.value === undefined) continue;
+      if (u.type === "sampler2D") out.push(`unit${n++}:${k}=${u.textureKey ?? "?"}`);
+    }
+    return out;
+  }
+
+  /** DIAGNOSTIC: the GL filters the height maps carry NOW (9729 = LINEAR, 9728 =
+   *  NEAREST). A CanvasTexture refresh() re-uploads with the renderer's default
+   *  (NEAREST under pixelArt), so setSceneryOccluders must re-assert LINEAR on
+   *  the two bilinear maps — this is the proof that it did. */
+  heightmapFilters(): Record<string, number | null> {
+    const f = (key: string): [number | null, number | null] => {
+      if (!this.scene.textures.exists(key)) return [null, null];
+      const g = this.scene.textures.get(key).source[0]?.glTexture as unknown as { minFilter?: number; magFilter?: number } | null;
+      return [g?.minFilter ?? null, g?.magFilter ?? null];
+    };
+    const [linMin, linMag] = f("world-heightmap-linear");
+    const [gndMin, gndMag] = f("world-heightmap-ground");
+    const [surfMin, surfMag] = f("world-heightmap");
+    return { linMin, linMag, gndMin, gndMag, surfMin, surfMag };
   }
 
   /** DIAGNOSTIC: the fog PASS's own pixel over a cell's tread centre (its
@@ -3006,11 +3513,32 @@ export class NightLights {
    *  same uniforms for both), so the two hashes differ only by the skip. The
    *  renderer draws a render-to-texture shader with exactly load() + flush()
    *  (ShaderWebGLRenderer). Raw readPixels, so exact for both passes. */
-  parityHash(which: "night" | "fog"): Promise<{ full: string; skip: string; w: number; h: number }> {
+  parityHash(which: "night" | "fog", toggle: "skip" | "gate" = "skip"): Promise<{ full: string; skip: string; w: number; h: number }> {
     const sh = which === "night" ? this.shader : this.depthFogShader;
     if (!sh) return Promise.reject(new Error(`no ${which} pass`));
     const draw = sh as unknown as { load: () => void; flush: () => void };
     const armed = this.scene.textures.exists(BLOCK_KEY);
+    if (toggle === "gate") {
+      // THE SPARSE SUN-PATCH GATE, same turn: the pass with the prop loop run
+      // for every pixel, then gated by the ground map's G flag — nothing else
+      // changing. `full` = ungated, `skip` = gated; equal = the gate is identity.
+      const gated = this.hasSceneryShares && this.sunGate ? 1 : 0;
+      try {
+        sh.setUniform("uPropGate.value", 0);
+        draw.load();
+        draw.flush();
+        const full = this.hashPass(sh);
+        sh.setUniform("uPropGate.value", this.hasSceneryShares ? 1 : 0);
+        draw.load();
+        draw.flush();
+        const skip = this.hashPass(sh);
+        sh.setUniform("uPropGate.value", gated);
+        return Promise.resolve({ full, skip, w: sh.width, h: sh.height });
+      } catch (e) {
+        sh.setUniform("uPropGate.value", gated);
+        return Promise.reject(e);
+      }
+    }
     try {
       sh.setUniform("uSkip.value", 0);
       draw.load();

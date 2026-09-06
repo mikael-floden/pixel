@@ -1361,6 +1361,13 @@ export interface SceneryFootprints {
   /** Index into the scenery placement list this footprint came from, so a debug
    *  overlay can name the piece it is outlining. */
   place: Int32Array;
+  /** THE ART STANDING OVER THE HITBOX, in SCREEN px (frame px × the draw
+   *  scale): from the hitbox centre row up to the top of the sprite's alpha box.
+   *  What the night lighting sizes a piece's light occluder from (nightlight.ts
+   *  setSceneryOccluders): a taller piece blocks the torch harder. Measured once
+   *  here, beside the ellipse, from the same box and scale — a second reading of
+   *  the docs would drift. */
+  artH: Float64Array;
   /** CSR bucket index over the grid: the footprints whose reach covers cell i
    *  are items[start[i] .. start[i+1]-1]. */
   start: Int32Array;
@@ -4230,7 +4237,7 @@ const DIR_GROUND_DEG: Record<string, number> = {
  *  always turned the way the compass says — measured on 14 rect pieces, four are
  *  turned the other way). hflip mirrors the box about the screen vertical, which
  *  negates the ground angle exactly as it negates `ax`. */
-function rectGroundRot(
+export function rectGroundRot(
   b: { rot?: number; rot_by_dir?: Record<string, number> },
   dir: string,
   hflip: boolean,
@@ -4435,6 +4442,7 @@ export function stampSceneryCollision(
   const erect: number[] = [];
   const erot: number[] = [];
   const eplace: number[] = [];
+  const eartH: number[] = [];
   const recCache = new Map<string, SceneryHitboxDoc[string] | null | undefined>();
   for (let pi = 0; pi < scenery.length; pi++) {
     const pl = scenery[pi];
@@ -4511,9 +4519,9 @@ export function stampSceneryCollision(
     const spr = (pl.state ? facts.states?.[pl.state] : null) ?? facts.sprite;
     const bb = spr ? bbox.boxes[spr] : undefined;
     if (!bb) continue;
-    const [bx0, , bx1, by1, fw, fh] = bb;
+    const [bx0, by0, bx1, by1, fw, fh] = bb;
     const sw = Math.max(1, bx1 - bx0);
-    const sh = Math.max(1, by1 - bb[1]);
+    const sh = Math.max(1, by1 - by0);
     const k = wph / sh;
     const anchorFx = bx0 + sw / 2;
     const anchorFy = by1;
@@ -4562,6 +4570,7 @@ export function stampSceneryCollision(
       erect.push(isRect ? 1 : 0);
       erot.push(th);
       eplace.push(pi);
+      eartH.push(Math.max(0, (bcy - by0) * k));
     }
   }
   const n = ecx.length;
@@ -4592,6 +4601,7 @@ export function stampSceneryCollision(
     p: new Float64Array(n),
     q: new Float64Array(n),
     place: Int32Array.from(eplace),
+    artH: Float64Array.from(eartH),
     start: new Int32Array(cells + 1),
     items: new Int32Array(0),
     pad: FOOTPRINT_REACH / CELL_WU,
