@@ -1013,14 +1013,15 @@ class Grow:
             lid = int(dk["level"])
             fl = min(self.lvl[y][x] for x, y in floor)
             new = set()
+            # a one-cell wall between two passages goes too: "as soon as you
+            # enter the cave you have two small corridors going top right
+            # instead of one bigger corridor" (maintainer 2026-09-06)
             for (x, y) in sorted(floor):
-                for n, beyond in (((x + 1, y), (x + 2, y)), ((x, y + 1), (x, y + 2))):
+                for n in ((x + 1, y), (x, y + 1)):
                     if n in cave_all or n in new or not rock(n):
                         continue
                     if self.lvl[n[1]][n[0]] != lid or not interior(n):
                         continue
-                    if beyond in cave_all or beyond in new or not rock(beyond):
-                        continue                  # keep a wall between passages
                     new.add(n)
             for (x, y) in new:
                 self.lvl[y][x] = fl
@@ -1178,6 +1179,53 @@ class Grow:
         self.placed += [("lava pool cells", len(pools)),
                         ("lava: scenery evicted", before - len(self.doc["scenery"]))]
 
+    ROOM_MIN = 4       # a floor cell is in a ROOM when the floor runs this far through it both ways
+
+    def _cave_rooms(self, cells):
+        """Room cells of a cave: the floor runs ROOM_MIN or more through the
+        cell along x AND along y. Anything narrower is a corridor, and a
+        corridor gets nothing put in it (maintainer 2026-09-06: "you have
+        blocked the corridors and made it even more hard to navigate the
+        dungeon"). A two-cell passage counted as a room before."""
+        cs = set(cells)
+
+        def run(c, dx, dy):
+            n, m = 1, (c[0] + dx, c[1] + dy)
+            while m in cs:
+                n += 1
+                m = (m[0] + dx, m[1] + dy)
+            m = (c[0] - dx, c[1] - dy)
+            while m in cs:
+                n += 1
+                m = (m[0] - dx, m[1] - dy)
+            return n
+        return {c for c in cs if run(c, 1, 0) >= self.ROOM_MIN and run(c, 0, 1) >= self.ROOM_MIN}
+
+    def _put_flush(self, piece, cell, side, on):
+        """Put a piece on a floor cell FLUSH against the wall on `side`
+        (n/w/s/e): the footprint's back edge on the wall line, like furniture
+        against a house wall. A piece wider than the cell stands centred."""
+        x, y = cell
+        px, py, flush = x + 0.5, y + 0.5, False
+        sh = self._fp_shape({"piece": piece, "x": px, "y": py, "hflip": False,
+                             "state": None, "dir": None})
+        if sh and side:
+            _, dwx, dwy, hx, hy = sh
+            R = max(hx, hy)
+            if R < 0.95:
+                gap = R + 0.04
+                cx, cy = x + 0.5, y + 0.5
+                if side == "n":
+                    cy = y + gap
+                elif side == "s":
+                    cy = y + 1 - gap
+                elif side == "w":
+                    cx = x + gap
+                else:
+                    cx = x + 1 - gap
+                px, py, flush = cx - dwx, cy - dwy, True
+        return self.put(piece, px, py, on=on, flush=flush)
+
     def cave_dress(self):
         r = _rng32(0xCA7E5)
         cave = self.cave_floor
@@ -1203,7 +1251,7 @@ class Grow:
             def corridor(c):
                 x, y = c
                 return (wall((x - 1, y)) and wall((x + 1, y))) or (wall((x, y - 1)) and wall((x, y + 1)))
-            room = [c for c in sorted(cells) if nfloor(c) >= 5 and not corridor(c)]
+            room = sorted(self._cave_rooms(cells))
             edge = [c for c in room if any(wall(m) for m in ((c[0] + 1, c[1]), (c[0] - 1, c[1]), (c[0], c[1] + 1), (c[0], c[1] - 1)))]
             edgeset = set(edge)
             ring2 = [c for c in room if c not in edgeset and nfloor(c) == 8
@@ -1263,27 +1311,8 @@ class Grow:
                 if not pcs:
                     continue
                 piece = pcs[int(r() * len(pcs))]
-                px, py, flush = x + 0.5, y + 0.5, False
-                if side_:
-                    sh = self._fp_shape({"piece": piece, "x": px, "y": py, "hflip": False,
-                                         "state": None, "dir": None})
-                    if sh:
-                        _, dwx, dwy, hx, hy = sh
-                        R = max(hx, hy)
-                        if R < 0.95:                     # fits in its own cell
-                            gap = R + 0.04
-                            cx, cy = x + 0.5, y + 0.5
-                            if side_ == "n":
-                                cy = y + gap
-                            elif side_ == "s":
-                                cy = y + 1 - gap
-                            elif side_ == "w":
-                                cx = x + gap
-                            else:
-                                cx = x + 1 - gap
-                            px, py, flush = cx - dwx, cy - dwy, True
-                if self.put(piece, px, py, on=("dark_mud", "ice"), flush=flush):
-                    taken.append((px, py))
+                if self._put_flush(piece, (x, y), side_, ("dark_mud", "ice")):
+                    taken.append((x + 0.5, y + 0.5))
                     laid += 1
             n += laid
         # one set piece: the bones of something large, in the biggest hall
@@ -3034,13 +3063,26 @@ class Grow:
         # EVERY cave gets braziers — both dungeons have hearth-light
         n = 0
         bz = self.pool("braziers")
+        cave_floor = getattr(self, "cave_floor", {})
         for cave in (dk for dk in self.doc["decks"] if dk["kind"] == "cave"):
             cells = sorted((c["x"], c["y"]) for c in cave["cells"])
             if len(cells) < 12:
                 continue              # tunnel segments stay dark
-            step = max(1, len(cells) // 5)
-            for i, (x, y) in enumerate(cells[::step][:5]):
-                n += self.put(bz[i % len(bz)], x + 0.5, y + 0.5)
+            # on a room's wall side, never in a corridor: a brazier in the
+            # passage blocked it (maintainer 2026-09-06)
+            room = self._cave_rooms(cells)
+            edge = []
+            for c in sorted(room):
+                for sd, m in (("n", (c[0], c[1] - 1)), ("w", (c[0] - 1, c[1])),
+                              ("s", (c[0], c[1] + 1)), ("e", (c[0] + 1, c[1]))):
+                    if m not in cave_floor:
+                        edge.append((c, sd))
+                        break
+            if not edge:
+                continue
+            step = max(1, len(edge) // 3)
+            for i, (c, sd) in enumerate(edge[::step][:3]):
+                n += self._put_flush(bz[i % len(bz)], c, sd, ("dark_mud", "ice", "slime"))
         self.placed += [("cave braziers", n)]
 
     # -- village + roads ------------------------------------------------------

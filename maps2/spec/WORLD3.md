@@ -375,8 +375,15 @@ chamber in ice). The cap tile of an inner wall (`<top>__over__<side>`) still
 carries the mountain's top ground — that band is the tiles/game contract, not
 a world channel. **Corridors are one cell wider**: every passage grows one
 cell on its east/south side, into rock at the lid's level that is interior
-on all eight sides, never through a one-cell wall between two passages and
-never into the mountain's shell (the_game: 592 floor cells, 120 added).
+on all eight sides, never into the mountain's shell — and a one-cell wall
+between two passages goes with it (maintainer 2026-09-06: *"as soon as you
+enter the cave you have two small corridors going top right instead of one
+bigger corridor"*; the_game: 598 floor cells, 126 added). **A ROOM is where
+the floor runs `ROOM_MIN = 4` or more through a cell both ways**
+(`_cave_rooms`); anything narrower is a corridor and nothing is ever put in
+it — the braziers included, which used to land on any floor cell (*"you
+have blocked the corridors and made it even more hard to navigate the
+dungeon"*). A two-cell passage counted as a room before.
 `put()` refuses anything but cave dressing (`CAVE_OK`) on a cave floor — a
 gate that sits AFTER the indoor test and its roof-shadow `else`, not between
 them: the first cut split that `if`/`else`, the shadow rule ran on every
@@ -395,7 +402,10 @@ scenery against the walls more often?"*): a piece on a room's edge cell is
 put FLUSH, its footprint's back edge on the wall line, the way furniture
 meets a house wall — north and west walls first, whose faces show — and
 about one piece in five stands in the open, one cell in from the wall. One
-dragon ribcage in the biggest hall. The braziers stay as they were.
+dragon ribcage in the biggest hall. Three braziers per room, flush against
+the wall like the rest (`_put_flush`; a brazier on the wall side at the cell
+centre reaches into the wall cell and the footprint law refuses it: 0 of 12
+landed).
 **THE CLIFF FAMILIES (`cliff_*`: roots, vines, mosses, fragments, features,
 shrubs) ARE NEVER PLACED** — build-asserted. Maintainer 2026-09-06: *"You
 should not use the scenery type 'Mountain wall', we will use that scenery
