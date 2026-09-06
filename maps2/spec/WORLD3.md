@@ -579,16 +579,24 @@ one-way cascade of 4-level shelves).
 A stair climbs at most `STAIR_MAX = 8` levels — taller is a mountain, and a
 mountain is climbed where the terrain offers it, never by a ladder (one
 build laid a 31-cell staircase from the valley at 2 to the snow rim at 32:
-*"WTF is this gigantic rectangle"*) — and from `STAIR_WIDE = 5` levels it is
-two cells wide (*"even 8 levels feel tall for a staircase only 1 cell
-wide"*; the serpentine he wants for taller climbs is not built yet). Every
-trap gets a **stair**: `H − L − 1` straight cells at one level each,
-cut into the trap so the steps rise toward the cliff (the run that hugs the
-most wall wins), else a notch down into the terrace above, light_soil like
-every ramp, published in `ramps[]` under the contract above. A trap under
-`LEDGE_MAX = 12` cells with no room for either joins the terrace above. Trap
-components are fixed in rounds (a trap whose only way out is another trap
-waits for it), one stair per `STAIR_EVERY = 24` cells of a component's edge.
+*"WTF is this gigantic rectangle"*). **A STAIR IS A BREACH, CUT DOWN INTO THE
+TERRACE ABOVE, NEVER BUILT UP OUT OF THE TERRACE BELOW** (`_stair`): `H − L − 1`
+cells of the upper terrace, straight in from the cliff edge, become one step
+each, `BREACH_WIDE = 3` lanes side by side where the plateau has room (two,
+then one), and the plateau cells beside every step drop to two levels above
+it so the cut flares into a gully rather than a slot. Each lane is a run in
+`ramps[]` under the contract above. Steps raised out of the lower terrace —
+freestanding blocks, a wedge hugging the wall — were built and rejected
+(maintainer 2026-09-05: *"super thin ... just feels placed to solve some
+rule ... Have you ever seen triangles like this in nature?"*). **Roads,
+ramps and the cells beside them, houses and the wild are never carved**; a
+stair that would need them is not built, and a trap under `LEDGE_MAX = 12`
+cells with no room joins the terrace above. **The road is never broken**:
+every two adjacent road cells differ by at most one level, as `ramps()` left
+them — asserted, because one build cut stairs across the Trollstigen
+switchbacks and the old road could not be climbed. Trap components are
+fixed in rounds (a trap whose only way out is another trap waits for it),
+one breach per `STAIR_EVERY = 24` cells of a component's edge.
 
 **A WALL IS NEVER THE END OF THE WALK.** After the traps, every cliff of 3
 to 8 levels between two terraces the player walks on has a stair within
@@ -603,8 +611,8 @@ ramp"*). **Unreachable land is joined**: any patch of 8+ land cells nobody
 can reach at all gets a stair from the nearest reachable terrace wherever
 the cliff between them is 8 levels or less; house walls and the wild are
 unreachable on purpose, and island 2's summit (22+ levels above everything)
-waits for a serpentine. the_game: 42 stairs for traps, 49 along cliffs,
-7 joining unreachable land, 133 runs, **0 traps left — build-asserted**, and the ramp contract is
+waits for a serpentine. the_game: 41 breaches for traps, 45 along cliffs,
+5 joining unreachable land, 185 lane runs, **0 traps left — build-asserted**, and the ramp contract is
 re-asserted over every run.
 
 Bridge decks are standable at their own level; roof and cave decks are

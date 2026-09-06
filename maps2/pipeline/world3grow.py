@@ -3841,8 +3841,7 @@ class Grow:
     CLIMB = 2          # JUMP_CLIMB: the most a player climbs without a stair
     LEDGE_MAX = 12     # a trap this small is a ledge: it joins the terrace above
     STAIR_EVERY = 24   # a cliff longer than this gets a stair per this length
-    STAIR_WIDE = 5     # this tall or more, a stair is two cells wide ("even 8
-                       # levels feel tall for a staircase only 1 cell wide")
+    BREACH_WIDE = 3    # lanes of a breach, when the plateau has room
     STAIR_MAX = 8      # taller is a mountain, not a wall with a ladder: one
                        # build laid a 31-cell staircase from the valley (2)
                        # to the snow rim (32) - "WTF is this gigantic
@@ -3893,83 +3892,82 @@ class Grow:
 
     def _carvable(self, x, y):
         g = self.g(x, y)
-        return (g and g not in self.INDOOR_GROUNDS and (x, y) not in self.floor_cells
+        return (g and g not in self.INDOOR_GROUNDS and g != "light_soil"
+                and (x, y) not in self.floor_cells
                 and (x, y) not in getattr(self, "door_cells", set())
                 and (x, y) not in getattr(self, "wild_cells", set()))
 
     def _stair(self, t, b, T, B):
-        """Carve a stair from cell t (level L) up to adjacent cell b (level
-        H >= L + 3): H-L-1 straight cells at one level each. First inside
-        the trap T (steps rise toward the cliff, foot stays in T, the run
-        that hugs the most wall wins), else a notch down into the terrace
-        above (cells of B at level H). Returns where it went, or None."""
+        """A BREACH: the way up is cut DOWN into the terrace above, never
+        built up out of the terrace below. From cell t (level L) up to
+        adjacent cell b (level H, 3..STAIR_MAX above): H-L-1 cells of B at
+        level H, straight in from b, become one step each (L+1 .. H-1),
+        BREACH_WIDE lanes side by side (narrower only where there is no
+        room), and the plateau cells beside every step drop to two levels
+        above it, so the cut flares into a gully instead of a slot. Steps
+        raised out of the lower terrace - "stairs sticking out everywhere",
+        freestanding blocks, a wedge hugging the wall - were built and
+        rejected (maintainer 2026-09-05: "Have you ever seen triangles like
+        this in nature?"). Roads, ramps, houses and the wild are never
+        touched; a stair that would need them is not built."""
         (tx, ty), (bx, by) = t, b
         L, H = self.lvl[ty][tx], self.lvl[by][bx]
         n = H - L - 1
         if n < 1 or H - L > self.STAIR_MAX:
             return None
-        away = (tx - bx, ty - by)
-        perp = [(-away[1], away[0]), (away[1], -away[0])]
         ramp = {(c["x"], c["y"]) for r in self.doc["ramps"] for c in r["cells"]}
-        best = None
-        if not self.liquid(tx, ty):
-            for d in [away] + perp:
-                cells = [(tx + d[0] * k, ty + d[1] * k) for k in range(n + 1)]
-                if all(c in T and self.lvl[c[1]][c[0]] == L and self._carvable(*c)
-                       and not self.liquid(*c) and c not in ramp for c in cells):
-                    hug = sum(1 for (cx, cy) in cells[:n]
-                              for nx, ny in ((cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1))
-                              if self.g(nx, ny) and self.lvl[ny][nx] > L)
-                    if best is None or hug > best[0]:
-                        best = (hug, "trap", cells)
-        if best is None:
-            back = (bx - tx, by - ty)
-            for d in [back] + [(-back[1], back[0]), (back[1], -back[0])]:
-                cells = [(bx + d[0] * k, by + d[1] * k) for k in range(n + 1)]
-                if all((c[0], c[1], 0) in B and self.lvl[c[1]][c[0]] == H
-                       and self._carvable(*c) and not self.liquid(*c)
-                       and self.g(*c) in self.NATURAL and c not in ramp for c in cells):
-                    best = (0, "above", cells)
-                    break
-        if best is None:
-            return None
-        _, where, cells = best
-        soil = self.gi["light_soil"]
-        lanes = [cells]
-        if H - L >= self.STAIR_WIDE:
-            # a second lane beside the first, same rules, either side
-            d = (cells[1][0] - cells[0][0], cells[1][1] - cells[0][1])
-            for q in ((-d[1], d[0]), (d[1], -d[0])):
-                lane = [(cx + q[0], cy + q[1]) for (cx, cy) in cells]
-                ok_t = (where == "trap" and not self.liquid(tx, ty)
-                        and all(c in T and self.lvl[c[1]][c[0]] == L and self._carvable(*c)
-                                and not self.liquid(*c) and c not in ramp for c in lane)
-                        and (b[0] + q[0], b[1] + q[1], 0) in B
-                        and self.lvl[b[1] + q[1]][b[0] + q[0]] == H)
-                ok_a = (where == "above"
-                        and all((c[0], c[1], 0) in B and self.lvl[c[1]][c[0]] == H
-                                and self._carvable(*c) and not self.liquid(*c)
-                                and self.g(*c) in self.NATURAL and c not in ramp for c in lane)
-                        and (t[0] + q[0], t[1] + q[1]) in T
-                        and self.lvl[t[1] + q[1]][t[0] + q[0]] == L)
-                if ok_t or ok_a:
-                    lanes.append(lane)
-                    break
-        for i, lane in enumerate(lanes):
-            q = (lane[0][0] - cells[0][0], lane[0][1] - cells[0][1])
-            if where == "trap":
-                for k, (cx, cy) in enumerate(lane[:n], 1):
-                    self.lvl[cy][cx] = H - k
-                    self.grd[cy][cx] = soil
-                run = [lane[n]] + lane[:n][::-1] + [(b[0] + q[0], b[1] + q[1])]
-            else:
-                for k, (cx, cy) in enumerate(lane[:n], 1):
-                    self.lvl[cy][cx] = L + k
-                    self.grd[cy][cx] = soil
-                run = [(t[0] + q[0], t[1] + q[1])] + lane
-            self.doc["ramps"].append({"from": L, "to": H, "ground": "light_soil",
-                                      "cells": [{"x": c[0], "y": c[1]} for c in run]})
-        return where
+        guard = set(ramp)
+        for (rx, ry) in ramp:                     # and the cells beside a run
+            for m in ((rx + 1, ry), (rx - 1, ry), (rx, ry + 1), (rx, ry - 1)):
+                guard.add(m)
+        back = (bx - tx, by - ty)
+
+        def plateau(c):
+            return ((c[0], c[1], 0) in B and self.lvl[c[1]][c[0]] == H
+                    and self._carvable(*c) and not self.liquid(*c)
+                    and self.g(*c) in self.NATURAL and c not in guard)
+
+        def mouth(c):
+            return (c in T and self.lvl[c[1]][c[0]] == L and self.g(*c)
+                    and not self.liquid(*c) and c not in guard)
+        for width in (self.BREACH_WIDE, 2, 1):
+            for d in [back, (-back[1], back[0]), (back[1], -back[0])]:
+                q = (-d[1], d[0])
+                offsets = {3: (-1, 0, 1), 2: (0, 1), 1: (0,)}[width]
+                for flip in (1, -1):
+                    lanes = []
+                    ok = True
+                    for o in offsets:
+                        o *= flip
+                        head = (bx + q[0] * o, by + q[1] * o)
+                        foot = (tx + q[0] * o, ty + q[1] * o)
+                        lane = [(head[0] + d[0] * k, head[1] + d[1] * k) for k in range(n + 1)]
+                        if not (mouth(foot) and all(plateau(c) for c in lane)):
+                            ok = False
+                            break
+                        lanes.append((foot, lane))
+                    if not ok:
+                        continue
+                    soil = self.gi["light_soil"]
+                    lane_cells = {c for _, lane in lanes for c in lane}
+                    for foot, lane in lanes:
+                        for k, (cx, cy) in enumerate(lane[:n]):
+                            self.lvl[cy][cx] = L + 1 + k
+                            self.grd[cy][cx] = soil
+                        run = [foot] + lane
+                        self.doc["ramps"].append({"from": L, "to": H, "ground": "light_soil",
+                                                  "cells": [{"x": c[0], "y": c[1]} for c in run]})
+                    # the flare: plateau beside each step drops to two above it
+                    for foot, lane in lanes:
+                        for k, (cx, cy) in enumerate(lane[:n]):
+                            for m in ((cx + q[0], cy + q[1]), (cx - q[0], cy - q[1])):
+                                if m in lane_cells or not plateau(m):
+                                    continue
+                                want = L + 1 + k + 2
+                                if self.lvl[m[1]][m[0]] > want:
+                                    self.lvl[m[1]][m[0]] = want
+                    return "breach"
+        return None
 
     def _fix_traps(self):
         fixed = collections.Counter()
@@ -4015,7 +4013,7 @@ class Grow:
                     where = self._stair(t, b, T, Rev)
                     if where:
                         laid.append(t)
-                        fixed[where] += 1
+                        fixed["breach"] += 1
                 if not laid and len(T) <= self.LEDGE_MAX:
                     _, t, b = cands[0]
                     H, gb = self.lvl[b[1]][b[0]], self.grd[b[1]][b[0]]
@@ -4170,11 +4168,22 @@ class Grow:
         lv = self._standable()
         R, Rev = self._reach(lv)
         traps = sorted((x, y) for (x, y, layer) in R - Rev if layer == 0)
-        self.placed += [("traps fixed: stair in the trap", fixed["trap"] + fixed2["trap"]),
-                        ("traps fixed: notch in the terrace above", fixed["above"] + fixed2["above"]),
+        self.placed += [("traps fixed: breach cut into the terrace above", fixed["breach"] + fixed2["breach"]),
                         ("traps fixed: ledge joined the terrace above", fixed["joined"] + fixed2["joined"]),
                         ("cliffs wanting a stair", wanted), ("cliff stairs laid", laid),
                         ("traps left", len(traps))]
+        # THE ROAD IS NEVER BROKEN: every two adjacent road cells differ by at
+        # most one level, as ramps() left them (a build carved stairs across
+        # the Trollstigen switchbacks and the old road could not be climbed)
+        soil = self.gi["light_soil"]
+        for y in range(NEW - 1):
+            for x in range(NEW - 1):
+                if self.grd[y][x] != soil:
+                    continue
+                for (nx, ny) in ((x + 1, y), (x, y + 1)):
+                    if self.grd[ny][nx] == soil:
+                        assert abs(self.lvl[ny][nx] - self.lvl[y][x]) <= 1, \
+                            ("road step", (x, y), (nx, ny))
         # every published run still honours the ramp contract
         for r in self.doc["ramps"]:
             cs = r["cells"]
