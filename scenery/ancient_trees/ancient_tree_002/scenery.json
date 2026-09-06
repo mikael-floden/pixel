@@ -423,28 +423,28 @@
   "light": {
     "strength": 0.25,
     "color": "#fff0a0",
-    "radius": 7,
+    "radius": 4,
     "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
     "states": {
       "LIT_1": {
         "strength": 0.2,
         "color": "#fed690",
-        "radius": 6
+        "radius": 3
       },
       "LIT_2": {
         "strength": 0.3,
         "color": "#ffc869",
-        "radius": 8
+        "radius": 5
       },
       "LIT_3": {
         "strength": 0.3,
         "color": "#ffc982",
-        "radius": 8
+        "radius": 5
       },
       "LIT_4": {
         "strength": 0.3,
         "color": "#8dffae",
-        "radius": 8
+        "radius": 5
       }
     }
   }

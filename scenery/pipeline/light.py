@@ -234,7 +234,7 @@ def scale(factor, write=False):
     return n
 
 
-ANCHOR_GROUP, ANCHOR_REACH = "streetlights", 14   # 2x the bonfire's 7
+ANCHOR_GROUP, ANCHOR_REACH = "streetlights", 9    # his number, 2026-09-06
 
 
 def reach_table(write=False):
@@ -248,7 +248,13 @@ def reach_table(write=False):
     config so every number is editable by hand, and light.py reads them from
     there: derive() uses reach for radius and keeps strength for the core.
     round(1+6·strength) survives only as the fallback for a group with no
-    reach yet."""
+    reach yet.
+
+    The anchor is the ONE number to turn: every other group is derived from it,
+    so changing it rescales the whole table by the same percentage and keeps the
+    order. Set to 14 (2x the bonfire) on his first answer and to 9 an hour later
+    — "streetlight 14 was a bit overkill... scale down the others with high
+    radius by the same %" — which is this line and a re-run, nothing else."""
     cfg_p = os.path.join(factory.ROOT, "config", "factory.json")
     cfg = json.load(open(cfg_p))
     groups = {g["id"]: g for g in cfg.get("groups", []) if isinstance(g, dict) and g.get("id")}
@@ -356,7 +362,7 @@ if __name__ == "__main__":
     if "--reach" in sys.argv:
         dry = "--write" not in sys.argv
         t = reach_table(write=not dry)
-        print("reach in cells (streetlights anchored at %d = 2x the bonfire):" % ANCHOR_REACH)
+        print("reach in cells (anchor: %s at %d; the bonfire is 7):" % (ANCHOR_GROUP, ANCHOR_REACH))
         for g in ("beacons","hearths","braziers","streetlights","torch_posts","lantern_posts",
                   "crystals","waystones","mushrooms","beds"):
             if g in t: print("  %-14s strength %.2f  reach %2d" % (g, *t[g]))

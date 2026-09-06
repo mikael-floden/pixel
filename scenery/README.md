@@ -312,10 +312,12 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
     {0.8, 1.0, 1.2} by the state's emissive pixel share (V ≥ 0.8, S ≥ 0.2)
     against the group's median — below 0.6× → 0.8, above 1.3× → 1.2.
   - `radius` is the REACH in cells, from the group's `light.reach` in config.
-    Anchor: streetlights 14 (2× the bonfire's 7); every other group in
+    Anchor: streetlights **9** (the bonfire is 7); every other group in
     proportion to its class strength so the first pass's ORDER is kept
-    (hearth 20, brazier 17, torch 13, lantern post 10, crystal 8, waystone 6,
-    mushroom 4, candle on furniture 1–3). Per state in proportion to that
+    (beacon 16, hearth 13, brazier 11, torch 8, lantern post 6, crystal 5,
+    waystone 4, mushroom 3, candle on furniture 1–2). The anchor is the one
+    number to turn: changing it rescales the whole table by the same
+    percentage. (Set to 14 first — "a bit overkill" — then 9.) Per state in proportion to that
     state's strength against the piece default. Edit any group's reach by
     hand; `light.py --reach --write` re-applies. `round(1+6·strength)` is only
     the fallback for a group with no reach.

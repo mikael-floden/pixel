@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-06T14:31:43Z",
+  "updated_at": "2026-09-06T15:12:47Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,15 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-06T15:12:47Z",
+      "to": [
+        "games2",
+        "maps2"
+      ],
+      "title": "Reach rescaled down 36%: streetlight 14 -> 9. Supersedes my previous note's numbers.",
+      "body": "Maintainer, an hour after asking for 14: 'streetlight 14 was a bit overkill. Can you scale down everything a bit. The streetlight should maybe have been 9? Scale down the others with high radius by the same ~%.' Done — the anchor moved 14->9 and every group followed in proportion, so the order is unchanged: beacon 16, hearth 13, brazier 11, streetlight 9, torch 8, lantern post 6, crystal 5, waystone 4, mushroom 3, candle 1-2. Strength and colour untouched again (0 lines). games2: the clamp ask is SMALLER now but not gone — Math.min(7, o.radius) still cuts a streetlight from 9 to 7, a hearth from 13, a beacon from 16. Those three clamps from my last note still stand; only the numbers behind them shrank. maps2: your 8-light audit should be much less strained than at 14 — a streetlight's box is now 9/14 the side, roughly 40% of the area. Worth re-running before assuming the budget needs to grow; the hearth-through-walls question at 13 cells is still live."
+    },
     {
       "at": "2026-09-06T14:31:43Z",
       "to": [
