@@ -56,6 +56,7 @@ import time
 from datetime import datetime, timezone
 
 import factory
+import light
 import prompts_generic as P
 import tree_variants as tv
 import viewer_build
@@ -352,6 +353,14 @@ def finalize(client, rel, man, state, oid, source_img, siblings, glow_used,
     fresh["states"] = {k: st[k] for k in sorted(st)}
     tv.demote_piece_lights(fresh)
     factory.write_manifest(rel, fresh)
+    # A NEW LIT STATE MUST SHINE THE MOMENT IT EXISTS. maps2's light budget
+    # audits a state with no `light` entry at the bonfire's radius 7, so a
+    # candle born without one blows the 8-light window. Fill-only: reviewed
+    # entries are never touched. (maintainer 2026-09-06: scenery owns `light`.)
+    if state.upper().startswith("LIT_"):
+        status, detail = light.ensure(rel)
+        if status == "REFUSED":
+            print(f"  LIGHT: {rel}/{state} has no light entry — {detail}")
     return diff
 
 

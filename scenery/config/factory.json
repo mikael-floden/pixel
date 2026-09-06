@@ -107,7 +107,11 @@
       "quota": 77,
       "_always": "maintainer 2026-08-14: 'Trees are ofc always welcomed.' Quota doubled and demand 0.35 so trees stay near the front of every plan; 42 varieties x 24 modifiers means ~1000 distinct tree prompts before anything repeats.",
       "_parked": "maintainer 2026-08-14: 'maybe you can generate less trees so we can focus on getting this right' — parked at 77. Trees are the strongest group (23 approved / 2 rejected); unpark by raising quota when the wall-growth concept is settled.",
-      "type": "TREE"
+      "type": "TREE",
+      "light": {
+        "strength": 0.15,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 2,
@@ -172,7 +176,11 @@
       "modifier_pool": "nature",
       "demand": 0.55,
       "quota": 150,
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.08,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 3,
@@ -216,7 +224,11 @@
       "modifier_pool": "structure",
       "quota": 10,
       "_saturated": "maintainer said enough (3 note(s)) — frozen at 10",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.08,
+        "color": "#c8e8ff"
+      }
     },
     {
       "rank": 4,
@@ -260,7 +272,11 @@
       "modifier_pool": "structure",
       "quota": 14,
       "_saturated": "maintainer said enough (2 note(s)) — frozen at 14",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.6,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 5,
@@ -298,7 +314,11 @@
       "modifier_pool": "structure",
       "quota": 12,
       "_saturated": "maintainer said enough (3 note(s)) — frozen at 12",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.35,
+        "color": "#ffd27a"
+      }
     },
     {
       "rank": 6,
@@ -339,7 +359,11 @@
       "modifier_pool": "structure",
       "quota": 11,
       "_saturated": "maintainer said enough (2 note(s)) — frozen at 11",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.2,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 7,
@@ -378,7 +402,11 @@
       "modifier_pool": "structure",
       "quota": 15,
       "_saturated": "maintainer said enough (1 note(s)) — frozen at 15",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.45,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 8,
@@ -420,7 +448,11 @@
       "modifier_pool": "structure",
       "quota": 5,
       "_throttled": "maintainer approval 5/32 (16%) over 32 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals.",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.1,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 9,
@@ -459,7 +491,11 @@
       "animation_idea": "warm light flickering in the gaps between the stones",
       "lore_fit": "Travelers stack them so a path stays spoken of, each added stone a small promise that the way will not go soft.",
       "modifier_pool": "nature",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.12,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 10,
@@ -499,7 +535,11 @@
       "modifier_pool": "structure",
       "quota": 5,
       "_throttled": "maintainer approval 3/28 (11%) over 28 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals.",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.05,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 11,
@@ -539,7 +579,11 @@
       "modifier_pool": "structure",
       "quota": 12,
       "_saturated": "maintainer: enough of these (2 note(s)) — frozen at 12, 2026-08-14",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.15,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 12,
@@ -622,7 +666,11 @@
       "modifier_pool": "nature",
       "quota": 12,
       "_saturated": "maintainer said enough (1 note(s)) — frozen at 12",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.08,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 14,
@@ -665,7 +713,11 @@
       "modifier_pool": "structure",
       "quota": 0,
       "_retired": "maintainer verdicts 1/20 approved — concept dead 2026-08-14",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.15,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 15,
@@ -727,7 +779,11 @@
         "a spare torch bundle leaning against it"
       ],
       "_reformed": "maintainer 2026-08-14: 'I always get streetlamps looking the same. This is an RPG after all, so think more candle and fire then lamp.' Concept rebuilt around open flame, candle, cresset and horn lantern — hand-made materials only, no glass-and-iron lamppost. Unfrozen with 40 quota and 18 varieties x 12 modifiers so no two read alike.",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.5,
+        "color": "#ffd27a"
+      }
     },
     {
       "rank": 16,
@@ -770,7 +826,11 @@
       "modifier_pool": "structure",
       "quota": 8,
       "_saturated": "maintainer said enough (1 note(s)) — frozen at 8",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.3,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 17,
@@ -810,7 +870,11 @@
       "modifier_pool": "structure",
       "quota": 6,
       "_throttled": "maintainer approval 6/22 (27%) over 22 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals.",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.1,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 18,
@@ -894,7 +958,11 @@
       "modifier_pool": "structure",
       "quota": 6,
       "_throttled": "maintainer approval 6/24 (25%) over 24 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals.",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.25,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 20,
@@ -939,7 +1007,11 @@
       "lore_fit": "Even a tree's death is remembered here; a fallen trunk is the storm somebody still tells the story of.",
       "modifier_pool": "nature",
       "demand": 0.7,
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.1,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 21,
@@ -983,7 +1055,11 @@
       "modifier_pool": "structure",
       "quota": 8,
       "_saturated": "maintainer said enough (1 note(s)) — frozen at 8",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.2,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 22,
@@ -1026,7 +1102,11 @@
       "modifier_pool": "structure",
       "quota": 10,
       "_saturated": "maintainer said enough (2 note(s)) — frozen at 10",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.2,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 23,
@@ -1066,7 +1146,11 @@
       "animation_idea": "heart-light pulsing like a slow breath",
       "lore_fit": "Soulstones are what remains when a thing thins far enough — one fact pressed to mineral — and here they surface right out of the ground.",
       "modifier_pool": "nature",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.35,
+        "color": "#c090ff"
+      }
     },
     {
       "rank": 24,
@@ -1111,7 +1195,11 @@
       "lore_fit": "A stump is a tree half-forgotten — felled in someone's memory yet too well-known to go soft — its rings a readable record of kept years.",
       "modifier_pool": "nature",
       "demand": 0.7,
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.1,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 25,
@@ -1153,7 +1241,11 @@
       "lore_fit": "Berry bushes are remembered hands-first — every picker who filled a pail keeps their bush standing at the field edge.",
       "modifier_pool": "nature",
       "demand": 0.8,
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.08,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 26,
@@ -1193,7 +1285,11 @@
       "modifier_pool": "structure",
       "quota": 5,
       "_throttled": "maintainer approval 5/21 (24%) over 21 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals.",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.08,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 27,
@@ -1234,7 +1330,11 @@
       "modifier_pool": "structure",
       "quota": 6,
       "_saturated": "maintainer said enough (1 note(s)) — frozen at 6",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.1,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 28,
@@ -1274,7 +1374,11 @@
       "modifier_pool": "structure",
       "quota": 5,
       "_saturated": "maintainer said enough (1 note(s)) — frozen at 5",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.05,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 29,
@@ -1312,7 +1416,11 @@
       "animation_idea": "lantern swaying gently on its chain",
       "lore_fit": "Hanging a lantern out for travelers is a small act of keeping, and its swinging light marks the doorsteps of people the Quiet has not touched.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.3,
+        "color": "#ffd27a"
+      }
     },
     {
       "rank": 30,
@@ -1352,7 +1460,11 @@
       "modifier_pool": "structure",
       "quota": 4,
       "_throttled": "maintainer approval 4/16 (25%) over 16 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals.",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.05,
+        "color": "#ffd060"
+      }
     },
     {
       "rank": 31,
@@ -1398,7 +1510,11 @@
       "lore_fit": "Humble Nordic-forest mushrooms rise wherever the remembered valley soil is rich, first to sprout at the soft edges where the Quiet begins.",
       "modifier_pool": "nature",
       "demand": 0.7,
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.15,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 32,
@@ -1439,7 +1555,11 @@
       "animation_idea": "stalks swaying together in a slow breeze",
       "lore_fit": "Reed beds fringe every remembered lakeshore in the valley, and their constant whispering is often the only voice keeping the water's edge spoken of.",
       "modifier_pool": "nature",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.08,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 33,
@@ -1479,7 +1599,11 @@
       "modifier_pool": "nature",
       "quota": 6,
       "_saturated": "maintainer said enough (1 note(s)) — frozen at 6",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.05,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 34,
@@ -1519,7 +1643,11 @@
       "modifier_pool": "nature",
       "quota": 5,
       "_saturated": "maintainer said enough (1 note(s)) — frozen at 5",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.08,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 35,
@@ -1560,7 +1688,11 @@
       "animation_idea": "rope fenders knocking softly against the wood",
       "lore_fit": "The pier they carried has gone soft into the Quiet, but the pilings stand because departures are the part everyone remembers.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.1,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 36,
@@ -1600,7 +1732,11 @@
       "lore_fit": "Meadow grass is the ground note of every remembered summer, so tufts of it spring up wherever anyone's memory of hayfields touches the world.",
       "modifier_pool": "nature",
       "demand": 0.8,
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.03,
+        "color": "#b0ffb0"
+      }
     },
     {
       "rank": 37,
@@ -1640,7 +1776,11 @@
       "animation_idea": "inner light slowly pulsing while tiny sparks drift off the tips",
       "lore_fit": "Bright mineral the valleys remember from every tale of treasure — distinct from soulstone, which is memory itself pressed flat; crystals are simply beautiful, and beauty gets talked about.",
       "modifier_pool": "nature",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.3,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 38,
@@ -1721,7 +1861,11 @@
       "modifier_pool": "nature",
       "quota": 11,
       "_saturated": "maintainer: enough of these (1 note(s)) — frozen at 11, 2026-08-14",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.15,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 40,
@@ -1759,7 +1903,11 @@
       "animation_idea": "the linens rippling and billowing on the line",
       "lore_fit": "Wash on the line means somebody still keeps house, and clothes remembered by the bodies that wore them hold their shape the longest.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.05,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 41,
@@ -1799,7 +1947,11 @@
       "animation_idea": "loose tendrils at the top swaying gently in the wind",
       "lore_fit": "Fences outlive their farms in Nangijala, and the ivy somebody once cursed at keeps its post upright long after the field around it has gone quiet.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.1,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 42,
@@ -1840,7 +1992,11 @@
       "lore_fit": "Ferns are older than every era standing in the valley, remembered bone-deep by even the most ancient dead.",
       "modifier_pool": "nature",
       "demand": 0.75,
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.05,
+        "color": "#b0ffb0"
+      }
     },
     {
       "rank": 43,
@@ -1880,7 +2036,11 @@
       "animation_idea": "the cut wire swinging gently in the wind",
       "lore_fit": "Somebody's century still remembers sending word down the wire, so its poles march across meadows where no line was ever strung.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.15,
+        "color": "#ffd27a"
+      }
     },
     {
       "rank": 44,
@@ -1918,7 +2078,11 @@
       "animation_idea": "the hanging fish swaying slightly in the wind",
       "lore_fit": "Whole coastal generations remember winters survived on racks like these, and remembered providence keeps the fish from ever spoiling.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.05,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 45,
@@ -1956,7 +2120,11 @@
       "modifier_pool": "nature",
       "quota": 5,
       "_throttled": "maintainer approval 5/18 (28%) over 18 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals.",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.05,
+        "color": "#b0ffb0"
+      }
     },
     {
       "rank": 46,
@@ -1994,7 +2162,11 @@
       "animation_idea": "blaze raging with sparks streaming off the cage",
       "lore_fit": "A beacon is a whole village's agreement to remember the way home, raised high so its light can hold the valley's edges against the Quiet.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.9,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 47,
@@ -2073,7 +2245,11 @@
       "modifier_pool": "structure",
       "quota": 2,
       "_throttled": "maintainer approval 2/9 (22%) over 9 verdicts — quota frozen at current count 2026-08-14; his taste says stop spending here. Unfreeze if a reworked prompt earns approvals.",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.2,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 49,
@@ -2111,7 +2287,11 @@
       "animation_idea": "the canopy edge fluttering and hanging goods swinging",
       "lore_fit": "Market day is remembering out loud — prices, names and gossip repeated weekly for lifetimes — so stalls stand firm even in villages gone half-Quiet.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.15,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 50,
@@ -2187,7 +2367,11 @@
       "animation_idea": "briar rose vines swaying against the stonework",
       "lore_fit": "Every era built doorways, and in Nangijala the doorway outlives its wall — an opening still held open by the habit of walking through.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.2,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 52,
@@ -2226,7 +2410,11 @@
       "animation_idea": "the branch curtains rippling gently in the wind",
       "lore_fit": "Willows lean over every riverbank the dead remember, curtained trees a child could hide inside, and grief keeps them greener than anything else in the valley.",
       "modifier_pool": "nature",
-      "type": "TREE"
+      "type": "TREE",
+      "light": {
+        "strength": 0.2,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 53,
@@ -2262,7 +2450,11 @@
       "animation_idea": "puffball venting a little spore cloud in a slow rhythm",
       "lore_fit": "Each puff scatters spores like retold stories, seeding firm ground downwind of wherever people still talk.",
       "modifier_pool": "nature",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.05,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 54,
@@ -2303,7 +2495,11 @@
       "animation_idea": "core light pulsing like a slow heartbeat with orbiting motes",
       "lore_fit": "When a memory has thinned to one mineral fact, displaying its soulstone keeps that last fact spoken for.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.35,
+        "color": "#c090ff"
+      }
     },
     {
       "rank": 55,
@@ -2338,7 +2534,11 @@
       "animation_idea": "a loose pebble occasionally trickling down the slope",
       "lore_fit": "The crumb left behind when a quarry or roadwork goes half-forgotten — memory ground down but not yet gone to the Quiet.",
       "modifier_pool": "nature",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.03,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 56,
@@ -2376,7 +2576,11 @@
       "animation_idea": "remembered water trickling and dripping from the broken channel",
       "lore_fit": "The oldest dead still trust their empire's stonework, so its arches stand beside cherry orchards, carrying water only they remember.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.15,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 57,
@@ -2414,7 +2618,11 @@
       "animation_idea": "a caught gull feather fluttering on a branch stub",
       "lore_fit": "Every drowned sailor and river child remembers wood the water gave back, so the shores of Nangijala are strewn with it.",
       "modifier_pool": "nature",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.1,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 58,
@@ -2450,7 +2658,11 @@
       "animation_idea": "faint luminous steam curling up out of the cups",
       "lore_fit": "Little cups that hold light the way the valley holds its tended fires, keeping a sip of memory lit through the night.",
       "modifier_pool": "nature",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.1,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 59,
@@ -2481,7 +2693,11 @@
       "animation_idea": "the wheel creaking a few degrees and settling back",
       "lore_fit": "Somebody remembers the mill fondly but not exactly, so only its wheel endures, leaning wherever the meadow will hold it.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.15,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 60,
@@ -2520,7 +2736,11 @@
       "lore_fit": "A tree spoken of for generations becomes a landmark certainty, older and firmer than the ground it stands on, and whole districts of the dead navigate by it.",
       "modifier_pool": "nature",
       "demand": 0.5,
-      "type": "TREE"
+      "type": "TREE",
+      "light": {
+        "strength": 0.25,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 61,
@@ -2558,7 +2778,11 @@
       "animation_idea": "ivy leaves fluttering against the shaft",
       "lore_fit": "A temple nobody fully remembers has thinned to its last certain piece: one column somebody once leaned against and never forgot.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.15,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 62,
@@ -2638,7 +2862,11 @@
       "animation_idea": "pads drifting gently on a slow ripple",
       "lore_fit": "Lilies bloom over the deepest remembered water, each flower marking a place where someone was last looked for; shipped as water-overlay scenery for maps2 to place only on water tiles.",
       "modifier_pool": "nature",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.1,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 64,
@@ -2679,7 +2907,11 @@
       "animation_idea": "leaves fluttering while one heavy blossom nods on its stem",
       "lore_fit": "Cottage gardeners keep their trellises exactly as they were proudest of them, and a well-spoken-of trellis stays sharp-edged while the beds around it soften.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.0,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 65,
@@ -2715,7 +2947,11 @@
       "animation_idea": "amber ring-light breathing slowly while spore motes rise",
       "lore_fit": "Orchards that thinned toward the Quiet but were remembered just enough to stay — trees pressed down into their own stone monuments.",
       "modifier_pool": "nature",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.15,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 66,
@@ -2753,7 +2989,11 @@
       "animation_idea": "the bine tip high above swaying in a slow circle",
       "lore_fit": "Brewers from every century remember their hop gardens at harvest, and the beer poured around tended fires keeps the poles standing tall and certain.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.1,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 67,
@@ -2792,7 +3032,11 @@
       "animation_idea": "a butterfly settling on the antler tip, slowly fanning its wings, then fluttering off",
       "lore_fit": "Bones are the last firm fact of a beast, still held in shape by every hunter and child who told of it.",
       "modifier_pool": "nature",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.08,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 68,
@@ -2830,7 +3074,11 @@
       "animation_idea": "a gauge needle twitching with an occasional puff of steam",
       "lore_fit": "An engineer's pride outlasts its factory: the machine idles in a meadow, kept solid by everyone who ever bragged about it.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.15,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 69,
@@ -2870,7 +3118,11 @@
       "type": "TREE",
       "_no_owl": "maintainer 2026-08-15, nine separate rejection notes across two review rounds: 'No owl in the tree thanks', 'No owl' x8. The owl was written into the group's own description ('where an owl roosts') and into a glow concept ('owl eyes glowing from the dark hollow'), so every piece was born with one and every VARIANT inherited it — the variants are text edits of the base sprite, and no prompt correction can reliably remove something the source art already contains. He likes the snag; he does not want the bird. Description and glow concept cleaned; the group keeps its id because the maintainer's verdicts are keyed by path.",
       "quota": 2,
-      "_saturated": "maintainer said enough (1 note(s)) — frozen at 2"
+      "_saturated": "maintainer said enough (1 note(s)) — frozen at 2",
+      "light": {
+        "strength": 0.15,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 70,
@@ -2980,7 +3232,11 @@
       "animation_idea": "loose vine strands swinging slowly in the opening",
       "lore_fit": "Every era's dead remember a gateway they were proud to walk through, so arches stand alone in the meadows long after the walls they belonged to were forgotten.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.15,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 73,
@@ -3058,7 +3314,11 @@
       "animation_idea": "the basket swinging slightly on its creaking hook",
       "lore_fit": "Hanging a light and flowers out for travelers is old lantern courtesy, and the dead keep the habit even where the door it belonged to is gone.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.05,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 75,
@@ -3096,7 +3356,11 @@
       "animation_idea": "water trickling and rippling in the basin",
       "lore_fit": "Every village square in living memory had a fountain, and the sound of one still running keeps a whole square from going quiet.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.2,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 76,
@@ -3132,7 +3396,11 @@
       "animation_idea": "glowing motes spiraling slowly up around the spire",
       "lore_fit": "A landmark pointed at from afar by so many of the dead that it keeps its exact silhouette across every era's world.",
       "modifier_pool": "nature",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.25,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 77,
@@ -3170,7 +3438,11 @@
       "animation_idea": "the trailing vine tips stirring softly against the barrel",
       "lore_fit": "A barrel of flowers by the door is the plainest certainty of home the dead carry, so planters bloom on doorsteps whose houses have long since gone soft.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.03,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 78,
@@ -3209,7 +3481,11 @@
       "animation_idea": "the long flower clusters swinging like slow pendulums",
       "lore_fit": "The tree itself died long ago, but its flowering is still spoken of every spring, so the wisteria returns to dress the dead wood in what it is remembered for.",
       "modifier_pool": "nature",
-      "type": "TREE"
+      "type": "TREE",
+      "light": {
+        "strength": 0.2,
+        "color": "#e0c0ff"
+      }
     },
     {
       "rank": 79,
@@ -3245,7 +3521,11 @@
       "animation_idea": "cap swaying gently while spore motes fall like slow snow",
       "lore_fit": "In woods drifting toward the Quiet, growth stops obeying anyone's certainty, and mushrooms nobody contradicts swell to the size of trees.",
       "modifier_pool": "nature",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.3,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 80,
@@ -3363,7 +3643,11 @@
       "modifier_pool": "nature",
       "type": "NATURE",
       "quota": 2,
-      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor.",
+      "light": {
+        "strength": 0.1,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 83,
@@ -3439,7 +3723,11 @@
       "animation_idea": "a loose mooring rope swaying against the hull",
       "lore_fit": "For many the crossing into Nangijala was a last ferry over dark water, and each beached hull is somebody's arrival still held ashore.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.08,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 85,
@@ -3474,7 +3762,11 @@
       "animation_idea": "crystal lining glinting as the interior glow flickers",
       "lore_fit": "Memory keeps its brightest part hidden — a plain stone that cracks open to show the light it has been holding all along.",
       "modifier_pool": "nature",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.15,
+        "color": "#ffc070"
+      }
     },
     {
       "rank": 86,
@@ -3512,7 +3804,11 @@
       "animation_idea": "wasps drifting lazily in and out of the nest entrance while the nest sways slightly",
       "lore_fit": "Everyone remembers the tree they were told never to poke, so the gray paper nests hang unusually firm.",
       "modifier_pool": "nature",
-      "type": "TREE"
+      "type": "TREE",
+      "light": {
+        "strength": 0.1,
+        "color": "#ffd060"
+      }
     },
     {
       "rank": 87,
@@ -3708,7 +4004,11 @@
       "animation_idea": "the handle dipping slowly as a trickle falls from the spout",
       "lore_fit": "Every era pumped its own water, and a pump that still primes means the dooryard it served is still spoken of.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.08,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 92,
@@ -3746,7 +4046,11 @@
       "animation_idea": "the loose chain end swaying and clinking softly",
       "lore_fit": "An anchor set ashore is a sailor's promise that the voyage is over, holding whole harbors of memory fast against the Quiet.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.05,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 93,
@@ -3821,7 +4125,11 @@
       "animation_idea": "bubbles rising as rings spread across the water surface",
       "lore_fit": "Springs are where the land remembers water beginning, and drinking from a kept basin is said to steady whatever in you has gone thin.",
       "modifier_pool": "structure",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.25,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 95,
@@ -3859,7 +4167,11 @@
       "animation_idea": "grain heads nodding while sparrows flutter in and out",
       "lore_fit": "Setting out the midwinter sheaf for the birds is remembered kindness, and kindness repeated every year holds its pole upright for centuries.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.1,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 96,
@@ -3977,7 +4289,11 @@
       "animation_idea": "a faint ring of sparks scattering as if from an unseen hammer blow",
       "lore_fit": "The smith's trade is remembered in every era at once, and an anvil rings on in the meadow long after its forge went soft.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.1,
+        "color": "#ff8040"
+      }
     },
     {
       "rank": 99,
@@ -4015,7 +4331,11 @@
       "animation_idea": "heat shimmer and thin smoke rising from the vent holes",
       "lore_fit": "Charcoal burners watched their smoking mounds night and day for weeks, and a thing watched that hard keeps burning here, feeding the valley's tended fires.",
       "modifier_pool": "structure",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.5,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 100,
@@ -4110,7 +4430,11 @@
       "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine — replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
       "_climbing": "maintainer 2026-08-14: 'I'm more thinking how a root can nest itself up a mountain... like how a root can spin around a tree (but this is a mountain so it cant spin). And at some places on this root you can see leaves.' The piece is ONE clinging, winding climber with leaves at intervals — not a bundle of parallel strands.",
       "type": "MOUNTAIN_WALL",
-      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor.",
+      "light": {
+        "strength": 0.1,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 102,
@@ -4157,7 +4481,11 @@
         "with a small tree rooted on it"
       ],
       "type": "NATURE",
-      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor.",
+      "light": {
+        "strength": 0.1,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 103,
@@ -4193,7 +4521,11 @@
       "animation_idea": "the candleflame swaying gently",
       "lore_fit": "A laid table says someone is expected home, and in Nangijala someone always is.",
       "modifier_pool": "indoor",
-      "type": "INDOOR"
+      "type": "INDOOR",
+      "light": {
+        "strength": 0.1,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 104,
@@ -4229,7 +4561,11 @@
       "lore_fit": "Every remembered kitchen keeps its chairs pulled out a little, ready.",
       "modifier_pool": "indoor",
       "_saturated": "maintainer said enough (1 note(s)) — frozen at 8",
-      "type": "INDOOR"
+      "type": "INDOOR",
+      "light": {
+        "strength": 0.05,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 105,
@@ -4264,7 +4600,11 @@
       "animation_idea": "the quilt rising and falling as if someone breathes beneath it",
       "lore_fit": "The dead still sleep — not because they must, but because dreams are where the living visit.",
       "modifier_pool": "indoor",
-      "type": "INDOOR"
+      "type": "INDOOR",
+      "light": {
+        "strength": 0.08,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 106,
@@ -4300,7 +4640,11 @@
       "animation_idea": "a cupboard door drifting open a crack and closing again",
       "lore_fit": "Shelves are how a house remembers out loud: everything kept where it was always kept.",
       "modifier_pool": "indoor",
-      "type": "INDOOR"
+      "type": "INDOOR",
+      "light": {
+        "strength": 0.1,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 107,
@@ -4334,7 +4678,11 @@
       "animation_idea": "the fire flickering and a curl of smoke rising",
       "lore_fit": "The hearth is the first thing a remembered house gets right; the fire has burned since someone first told the story.",
       "modifier_pool": "indoor",
-      "type": "INDOOR"
+      "type": "INDOOR",
+      "light": {
+        "strength": 0.7,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 108,
@@ -4367,7 +4715,11 @@
       "animation_idea": "a corner of the rug lifting in a draft and settling",
       "lore_fit": "A rug marks the warm middle of a room the way a fire marks a camp.",
       "modifier_pool": "indoor",
-      "type": "INDOOR"
+      "type": "INDOOR",
+      "light": {
+        "strength": 0.05,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 109,
@@ -4403,7 +4755,11 @@
       "animation_idea": "a mouse darting between the jugs and vanishing",
       "lore_fit": "Clutter is proof of living; empty rooms are how the Quiet gets in.",
       "modifier_pool": "indoor",
-      "type": "INDOOR"
+      "type": "INDOOR",
+      "light": {
+        "strength": 0.1,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 110,
@@ -4439,7 +4795,11 @@
       "animation_idea": "the hanging pans swaying and knocking softly once",
       "lore_fit": "Walls with things on them are walls someone chose; bare walls are just weather kept out.",
       "modifier_pool": "indoor",
-      "type": "INDOOR"
+      "type": "INDOOR",
+      "light": {
+        "strength": 0.1,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 111,
@@ -4512,7 +4872,11 @@
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.25,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 113,
@@ -4548,7 +4912,11 @@
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.1,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 114,
@@ -4658,7 +5026,11 @@
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.1,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 117,
@@ -4730,7 +5102,11 @@
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "type": "TREE"
+      "type": "TREE",
+      "light": {
+        "strength": 0.15,
+        "color": "#ffd060"
+      }
     },
     {
       "rank": 119,
@@ -4911,7 +5287,11 @@
       "modifier_pool": null,
       "lore_fit": "A rare landmark: one or two per world, so a place is remembered BY it.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "type": "TOWN"
+      "type": "TOWN",
+      "light": {
+        "strength": 0.5,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 124,
@@ -5121,7 +5501,11 @@
       "animation_idea": "subtle idle motion",
       "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.3,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 130,
@@ -5189,7 +5573,11 @@
       "animation_idea": "subtle idle motion",
       "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "type": "TREE"
+      "type": "TREE",
+      "light": {
+        "strength": 0.35,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 132,
@@ -5292,7 +5680,11 @@
       "animation_idea": "subtle idle motion",
       "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.1,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 135,
@@ -5360,7 +5752,11 @@
       "animation_idea": "subtle idle motion",
       "lore_fit": "Experimental special — small bet; the maintainer's stars decide if it lives.",
       "_special": "SPECIAL: 3 pieces max. The maintainer 2026-08-14: specials must be VARIED, not repeated — breadth of types, not depth per type.",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.15,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 137,
@@ -6025,7 +6421,11 @@
       "_climbing": "maintainer 2026-08-14: 'I'm more thinking how a root can nest itself up a mountain... like how a root can spin around a tree (but this is a mountain so it cant spin). And at some places on this root you can see leaves.' The piece is ONE clinging, winding climber with leaves at intervals — not a bundle of parallel strands.",
       "_vertical": "maintainer 2026-08-14: 'The roots still form a tree... its also tilted wrong. The roots should go kinda straight up not sideways like this and they should be thinner.'",
       "type": "MOUNTAIN_WALL",
-      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor.",
+      "light": {
+        "strength": 0.1,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 156,
@@ -6124,7 +6524,11 @@
       "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall — naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
       "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine — replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
       "type": "MOUNTAIN_WALL",
-      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor.",
+      "light": {
+        "strength": 0.08,
+        "color": "#fff0a0"
+      }
     },
     {
       "rank": 158,
@@ -6172,7 +6576,11 @@
       "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine — replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
       "_small": "maintainer 2026-08-14: 'Yes it would be cool to have moss on the mountain wall, but not like this. That should be small sparse moss pieces on rocks sticking out and this is small details. This looks like graphics to a different game.' Big hanging moss drapes were entirely the wrong idea — moss is a 64px DETAIL on a small protruding rock, scattered over a wall by maps2.",
       "type": "MOUNTAIN_WALL",
-      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor."
+      "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor.",
+      "light": {
+        "strength": 0.08,
+        "color": "#b0ffb0"
+      }
     },
     {
       "rank": 159,
@@ -6248,7 +6656,11 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by.",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.2,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 161,
@@ -6423,7 +6835,11 @@
       "animation_idea": "subtle idle motion",
       "_special": "SPECIAL: 3 max — new concept wave 2026-08-14",
       "lore_fit": "A landmark a place is remembered by.",
-      "type": "NATURE"
+      "type": "NATURE",
+      "light": {
+        "strength": 0.3,
+        "color": "#9fe4ff"
+      }
     },
     {
       "rank": 166,
@@ -6740,7 +7156,11 @@
           96
         ]
       ],
-      "type": "WINDOW"
+      "type": "WINDOW",
+      "light": {
+        "strength": 0.2,
+        "color": "#ffd27a"
+      }
     },
     {
       "rank": 172,
@@ -6780,7 +7200,11 @@
           "table-height, waist-high"
         ]
       ],
-      "_retired": "maintainer 2026-08-27: frozen at chess_table_006 and chess_table_009 — the two the game places on the_island2 (maps2/props bakes of these sprites, and the furniture for the playable chess feature). Never generate more."
+      "_retired": "maintainer 2026-08-27: frozen at chess_table_006 and chess_table_009 — the two the game places on the_island2 (maps2/props bakes of these sprites, and the furniture for the playable chess feature). Never generate more.",
+      "light": {
+        "strength": 0.05,
+        "color": "#ffb45c"
+      }
     },
     {
       "rank": 173,
@@ -6915,5 +7339,12 @@
       "NATURE": "grew there, or the ground, water and bones did it",
       "OTHER": "ruins, wonders and the frankly uncanny"
     }
+  },
+  "light": {
+    "_comment": "HOW STRONG A LIT PIECE SHINES. Per group: `light.strength` relative to the spawn bonfire (1.0) and the group's default `light.color` (used when a state's own glow cannot be measured). Decided by what the thing IS - a beacon 0.9, a hearth 0.7, a brazier 0.6, a streetlight 0.5, a torch 0.45, a lantern post 0.35, a crystal 0.3, a waystone 0.2, a mushroom 0.15, a candle on furniture 0.05-0.1 - because pixel counts alone cannot rank a torch against a willow full of fireflies. First pass written by maps2 2026-09-06 across 500 pieces; the scenery domain owns it from here and pipeline/light.py derives every piece's block from THIS table. A NEW GROUP WITH LIT ART MUST GET AN ENTRY HERE or light.py refuses it - the maps2 budget audits a piece with no block at the bonfire's radius 7, so silence would make a candle a bonfire.",
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "radius": "round(1 + 6*strength), capped at 7",
+    "warm": "#ffb45c",
+    "cool": "#9fe4ff"
   }
 }

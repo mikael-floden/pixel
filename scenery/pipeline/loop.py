@@ -37,6 +37,7 @@ import time
 import catalog
 import coordination
 import factory
+import light
 import viewer_build
 from pixellab_client import PixelLabClient, PixelLabError
 
@@ -318,6 +319,13 @@ def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
                    if pixellab_directions == 8 else
                    "pixellab.ai create-1-direction-object (single, S-only)"),
     })
+    # A piece born LIGHTS_ON shines from its first commit (scenery owns `light`,
+    # maintainer 2026-09-06). Fill-only and idempotent; an unlit piece is a
+    # no-op, and a lit group missing its config entry is refused out loud
+    # rather than audited by maps2 at the bonfire's radius 7.
+    status, detail = light.ensure(rel)
+    if status == "REFUSED":
+        print(f"  LIGHT: {rel} has no light entry — {detail}")
 
     factory.record_first_seen(rel)
     viewer_build.build()

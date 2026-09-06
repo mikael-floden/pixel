@@ -86,6 +86,10 @@ def build():
             "name": meta.get("name", rel),
             "category": cat,
             "lights": meta.get("lights"),
+            # HOW STRONG IT SHINES (config `light`, derived by pipeline/light.py).
+            # Published whole so the wiki and the game read the same block the
+            # maps2 light budget reads from the manifest, never a re-derivation.
+            "light": meta.get("light"),
             "description": meta.get("prompt") or meta.get("description", ""),
             "view": meta.get("view"),
             "size": meta.get("size"),

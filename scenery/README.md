@@ -280,9 +280,9 @@ glowing scenery. LIGHTS_ON art carries baked glow (self-emission in the
 sprite); becoming a real shader light is a separate, budgeted decision made
 at placement time (tiles2/emission.json pattern).
 
-**`light` — how strong a piece shines (maintainer 2026-09-06, written by
-maps2, scenery maintains it from here).** Every piece with a `LIT_*` state
-(or `lights: LIGHTS_ON`) carries in its manifest:
+**`light` — how strong a piece shines (maintainer 2026-09-06; first pass
+written by maps2, owned by scenery from here).** Every piece with a `LIT_*`
+state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
 
 ```
 "light": {"strength": 0.6, "color": "#ffb45c", "radius": 5,
@@ -291,50 +291,34 @@ maps2, scenery maintains it from here).** Every piece with a `LIT_*` state
                      "LIT_2": {"strength": 0.48, "color": "#ffb45c", "radius": 4}}}
 ```
 
-- `strength` is relative to the spawn bonfire (1.0); it is decided per group
-  by what the thing IS (a beacon 0.9, a hearth 0.7, a brazier 0.6, a
-  streetlight 0.5, a torch 0.45, a lantern post 0.35, a crystal 0.3, a
-  waystone 0.2, a mushroom 0.15, a candle on furniture 0.05–0.1), then nudged
-  ×0.8…×1.2 per state by that state's emissive pixel share against the
-  group's median. (Pixel counts alone cannot rank a torch against a willow
-  full of fireflies — the class sets the order, the art only the nuance.)
-- `color` is the state's own emissive hue, measured from its art (the
-  brightness-weighted mean of its bright saturated pixels); a state with no
-  measurable glow takes the group's default (warm `#ffb45c`, cool `#9fe4ff`).
-- `radius` is in cells: `round(1 + 6·strength)`, capped at 7 (the bonfire).
-  It is what the light budget measures (`maps2/pipeline/world3.py
-  light_boxes`).
-- The top-level values are the piece default; `states[<LIT state>]` wins for
-  a placement drawn in that state. A new LIT state without an entry falls
-  back to the piece default; a piece without a `light` block is audited at
-  the cap (7).
+- **The class table is `config/factory.json` `groups[].light`** — one entry per
+  group: `strength` by what the thing IS (beacon 0.9, hearth 0.7, brazier 0.6,
+  streetlight 0.5, torch 0.45, lantern post 0.35, crystal 0.3, waystone 0.2,
+  mushroom 0.15, candle on furniture 0.05–0.1) and the group's default
+  `color`. Pixel counts alone cannot rank a torch against a willow full of
+  fireflies, so the class sets the order and the art only the nuance. **A new
+  group with lit art must get an entry or `pipeline/light.py` refuses it** —
+  maps2's budget audits a piece with no block at the bonfire's radius 7, so
+  silence would make a candle a bonfire.
+- `pipeline/light.py` derives the block and **fills gaps only**: the 500
+  blocks from the first pass are the reviewed reference and are never
+  rewritten without `--force`. `state_variants` and `loop` call it for every
+  new lit state; `light.py --check` is the gate (every lit piece and state has
+  an entry) and runs at the end of each pass.
+- Per state: `strength` = class × {0.8, 1.0, 1.2} by the state's emissive
+  pixel share (V ≥ 0.8, S ≥ 0.2) against the group's median share — below
+  0.6× → 0.8, above 1.3× → 1.2. `color` is the brightness-weighted mean of
+  those pixels **normalised so the brightest channel is 255** (colour carries
+  hue, strength carries brightness); fewer than 24 such pixels and the group
+  default is used. `radius` = `round(1 + 6·strength)`, capped at 7.
+- Measured fidelity of the derivation against the first pass
+  (`light.py --compare`, 1,320 states): radius identical on 84%, the rest off
+  by one cell, never more than two; strength exact on 60%; warm/cool family
+  on 89%. Radius is what the budget reads. (The first pass's own script is not
+  in the repo; these constants were fitted back out of its output.)
+- Read contract: `states[<LIT state>]` wins for a placement drawn in that
+  state, else the top-level piece default (`maps2/pipeline/world3.py
+  light_meta`). Published whole in `viewer_data.json` as `light` so the wiki
+  and the game read the same block.
 - Flicker (a type + parameter beside strength/colour) is deliberately not
   here yet (maintainer: "not now").
-
-## Run it
-
-```bash
-pip install -r ../requirements.txt
-export PIXELLAB_API_KEY=...            # gitignored .env; NEVER committed
-
-python pipeline/loop.py --dry-run                # see the plan, spend nothing
-python pipeline/loop.py --once                   # one piece
-python pipeline/loop.py --max-pieces 100         # a daily-sized pass
-python pipeline/sync.py --dry-run                # reconcile report
-python pipeline/feedback.py --dry-run            # pending wiki rejections
-```
-
-Each **piece** (one API call) is generated, downloaded, manifest-written; the
-loop rebuilds `viewer_data.json`, refreshes the heartbeat, commits per piece
-and pushes in batches (10 pieces / 240 s). `sync.py` keeps PixelLab and the
-repo in lockstep: deletion parity (reject-and-delete in the UI propagates
-here), loose-pointer pruning, changed-art re-mirror (If-Modified-Since), and
-an orphan report for SCENERY-tagged store objects nothing tracks. Sync writes
-lossless WebP only.
-
-## Browse it
-
-- In-game wiki: the **Scenery** section (`/assets/wiki/site/`) — approval UI.
-- `index.html` + `viewer_data.json` — the domain's own gallery with a
-  to-scale character comparison (`python -m http.server` in this folder).
-- `viewer_data.json → groups` — per-group quota/done progress at a glance.
