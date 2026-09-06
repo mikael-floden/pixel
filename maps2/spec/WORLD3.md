@@ -618,6 +618,66 @@ whose variation is not the base's height the two disagree — worst
 offset. maps2 aims at the ART (the draw path): it is what he sees through the
 overlay and what draw order uses.
 
+### lights — the town spends the whole budget, the woods keep one glow
+
+(maintainer 2026-09-06: *"a single scene in the game should never show more
+than 8 lights ... go all the way up to 8 at some locations and down to 1 or
+even 0 at other locations ... streetlights next to the road ... lots of
+small lights and some bigger ones"*.)
+
+A light is a placement with `lit: true` and an explicit `state` (the
+best-rated `LIT_*` state of the piece: the game draws that still and, from
+games2's side, spends a shader slot with the state's `light` from
+`scenery/<piece>/scenery.json` — strength, colour, radius; schema in
+`scenery/README.md`, written by maps2, owned by scenery from here). The game
+places its own campfire at spawn: it is one of the 8 wherever the spawn is,
+and it is the reference — 1.0, radius 7, nothing outshines it.
+
+**The budget is measured exactly** (`world3.light_boxes` / `max_overlap`):
+a light of radius R cells is seen by every camera centre inside the 899×774
+worst-case window grown by R·√2·32 px sideways and R·√2·15 px up-screen, so
+the count at any point is the number of those boxes it lies in, and the
+worst point is found by sweeping every box edge — not sampled at the lights'
+own centres (the worst point is often a corner where nothing stands). The
+audit asserts `worst ≤ 8` with the spawn bonfire counted; the placement pass
+runs the same check incrementally on the box of the piece WHERE IT STANDS
+after `put` snapped it (a probe at the asked position was a cell off and
+blew the audit once).
+
+**Placement is by what a place is, in priority, nearest-spawn first inside
+a priority, and a candidate that would push any window past 8 is simply not
+lit** (`world3grow.lights`, replacing the old greedy `relight`):
+
+1. the plaza's corner streetlights and the village's lamps; every hearth
+2. the beacon on Lighthouse Point — the one big far light (0.9)
+3. two torch posts flanking the cave mouth, then the cave braziers hall by
+   hall (one per hall, then a second; a hall's third comes after the cave's
+   own crystals and fungi) — a first cut lit nine braziers in one cave and
+   the mouth torches found no slot left
+4. a lantern post beside every house door (on the hinge side of the step,
+   else beside the path out from it — an east door's step sits in the roof's
+   sideways `no_place` band), then the town's gate lanterns
+5. streetlights every `LAMP_EVERY = 10` road cells on a natural-ground cell
+   beside the road, sides alternating; lit waystones every `STONE_EVERY =
+   16` between them
+6. forest glows: a lit mushroom or toadstool ring beside a tree every
+   `GLOW_EVERY = 20` cells
+7. rock glows: a lit crystal on bare rock every `ROCK_EVERY = 24` cells,
+   hash-jittered off the lattice
+
+Measured on the_game: 164 lit placements (streetlights 48, crystals 45,
+mushrooms + toadstool rings 43, waystones 9, braziers 7, lantern posts 7,
+torches 2, hearth 1, beacon 1), worst window 8/8. Camera spots over
+reachable ground, sampled every 4 cells: 8 lights 2%, 7 5%, 6 4%, 5 8%,
+4 13%, 3 17%, 2 21%, 1 13%, 0 13% — the town sees eight, the mountain's far
+terraces one crystal or none. The build log prints the tally and every
+refusal by reason (`lights: streetlights refused (budget)`).
+
+Only braziers that ship a LIT state go into a cave (`brazier_002` has none
+and was a third of the cave's fires). Flicker is deferred (maintainer: "not
+now"); `hearths`/`braziers` keep their slot even under a roof — indoor mode
+(games2) decides what an under-roof light does.
+
 ### `ramps` — the contract with the game
 
 A level change is a cliff. A **ramp** is where the world says a climb is

@@ -831,33 +831,111 @@ def _forests(W, H, mat, lvl, scen, spawn):
     return out
 
 
-def _light_audit(scen):
-    """THE ENGINE'S LIGHT BUDGET (games2/scripts/check-light-budget.mjs): 8
-    point-light slots per worst-case camera window (899x774 px, each light
-    grown by its reach). Mirrored here for worlds3 so a scenery pass can never
-    ship a scene the engine has to degrade. Radius assumed campfire-class (7
-    cells) for lit scenery until scenery publishes real radii."""
-    import math
-    VIEW_W, VIEW_H, SLOTS, RAD = 899, 774, 8, 7
-    RX, RY = math.sqrt(2) * 32 * RAD, math.sqrt(2) * 15 * RAD
-    lit = []
+# THE LIGHT BUDGET, WITH REAL RADII (maintainer 2026-09-06: "a light has a
+# radius so the light is seen in the player's viewport BEFORE the light
+# scenery itself is in the scene ... a single scene in the game should never
+# show more than 8 lights"). The engine (games2/spec/LIGHT_BUDGET.md,
+# check-light-budget.mjs) has 8 world slots and a worst-case window of
+# 899x774 world px; a light of radius R cells reaches R*sqrt(2)*32 px
+# sideways and R*sqrt(2)*15 px up and down, so a camera sees it from a box
+# of the window grown by that reach. The question is the largest number of
+# those boxes any one point lies in - EXACT, by sweeping every box edge, not
+# only at the lights' own centres (the worst point can be a corner where no
+# light stands). Radii come from scenery.json `light` (per LIT state, then
+# the piece), 7 for a piece that publishes none - the bonfire's, the cap.
+VIEW_W, VIEW_H, SLOTS = 899, 774, 8
+REACH_X, REACH_Y = math.sqrt(2) * 32, math.sqrt(2) * 15
+_LIGHT_META = {}
+
+
+def light_meta(piece, state=None):
+    """(radius cells, strength 0..1, colour) for a placement of `piece` drawn
+    in `state` (None: the alphabetically first LIT_* state, which is what a
+    `lit` placement draws)."""
+    if piece not in _LIGHT_META:
+        try:
+            d = json.load(open(os.path.join(REPO, "scenery", piece, "scenery.json")))
+        except OSError:
+            d = {}
+        _LIGHT_META[piece] = d
+    d = _LIGHT_META[piece]
+    lb = d.get("light") or {}
+    st = state
+    if not st:
+        keys = sorted(k for k in (d.get("states") or {}) if k.startswith("LIT"))
+        st = keys[0] if keys else None
+    sb = (lb.get("states") or {}).get(st) if st else None
+    src = sb or lb
+    return (int(src.get("radius", 7)), float(src.get("strength", 1.0)),
+            src.get("color", "#ffb45c"))
+
+
+def is_lit(p):
+    d = _LIGHT_META.get(p["piece"])
+    if d is None:
+        light_meta(p["piece"])
+        d = _LIGHT_META[p["piece"]]
+    return bool(p.get("lit")) or d.get("lights") == "LIGHTS_ON"
+
+
+def light_boxes(scen, extra=()):
+    """One camera box per light: every camera centre inside it sees the
+    light. extra = [(x, y, radius)] for lights the world does not place (the
+    game's own spawn bonfire)."""
+    out = []
     for p in scen:
-        d = json.load(open(os.path.join(REPO, "scenery", p["piece"], "scenery.json")))
-        # a light is a PLACEMENT choice: {"lit": true} selects the piece's
-        # LIT_* state sprite; inherently-lit pieces (lights == LIGHTS_ON)
-        # count too. Unlit placements of lightable pieces cost nothing.
-        if p.get("lit") or d.get("lights") == "LIGHTS_ON":
-            lit.append(((p["x"] - p["y"]) * 32, (p["x"] + p["y"]) * 15))
-    worst = 0
-    for (cx, cy) in lit:
-        n = sum(1 for (ox, oy) in lit
-                if abs(ox - cx) <= VIEW_W / 2 + RX and abs(oy - cy) <= VIEW_H / 2 + RY)
-        worst = max(worst, n)
+        if not is_lit(p):
+            continue
+        r, _s, _c = light_meta(p["piece"], p.get("state"))
+        cx, cy = (p["x"] - p["y"]) * 32, (p["x"] + p["y"]) * 15
+        out.append((cx - VIEW_W / 2 - r * REACH_X, cx + VIEW_W / 2 + r * REACH_X,
+                    cy - VIEW_H / 2 - r * REACH_Y, cy + VIEW_H / 2 + r * REACH_Y))
+    for (x, y, r) in extra:
+        cx, cy = (x - y) * 32, (x + y) * 15
+        out.append((cx - VIEW_W / 2 - r * REACH_X, cx + VIEW_W / 2 + r * REACH_X,
+                    cy - VIEW_H / 2 - r * REACH_Y, cy + VIEW_H / 2 + r * REACH_Y))
+    return out
+
+
+def max_overlap(boxes, only=None):
+    """The most boxes any one point lies in, and such a point. `only`: a box;
+    then only points inside it are considered (the incremental check when
+    that box is the one just added)."""
+    if not boxes:
+        return 0, None
+    cand = boxes if only is None else [b for b in boxes if not (
+        b[1] < only[0] or b[0] > only[1] or b[3] < only[2] or b[2] > only[3])]
+    xs = sorted({b[0] for b in cand} | {b[1] for b in cand})
+    if only is not None:
+        xs = [x for x in xs if only[0] <= x <= only[1]]
+    best, where = 0, None
+    for x in xs:
+        act = [b for b in cand if b[0] <= x <= b[1]]
+        if len(act) <= best:
+            continue
+        ev = []
+        for b in act:
+            ev.append((b[2], 1))
+            ev.append((b[3], -1))
+        ev.sort(key=lambda e: (e[0], -e[1]))
+        n = 0
+        for y, d in ev:
+            n += d
+            if only is not None and not (only[2] <= y <= only[3]):
+                continue
+            if n > best:
+                best, where = n, (x, y)
+    return best, where
+
+
+def _light_audit(scen, extra=()):
+    """(number of lights, worst window count). Asserts the budget."""
+    boxes = light_boxes(scen, extra)
+    worst, where = max_overlap(boxes)
     assert worst <= SLOTS, (
-        f"LIGHT BUDGET BLOWN: {worst} lit scenery pieces share one camera "
-        f"window — the engine has {SLOTS} slots (check-light-budget). Unlight "
-        f"or spread them.")
-    return len(lit), worst
+        f"LIGHT BUDGET BLOWN: {worst} lights reach one camera window at "
+        f"{where} - the engine has {SLOTS} slots. Unlight or spread them.")
+    return len(boxes), worst
 
 
 def build():

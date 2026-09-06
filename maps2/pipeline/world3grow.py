@@ -542,9 +542,11 @@ class Grow:
             p["hflip"] = True
         if lit:
             p["lit"] = True
-        if state and state in (self._variations(piece) or ()):
-            p["state"] = state          # the variation axis; unknown states
-                                        # fall through to the base still
+        if state and (state in (self._variations(piece) or ())
+                      or (lit and state.startswith("LIT"))):
+            p["state"] = state          # the variation axis (or, lit, the LIT
+                                        # look chosen); unknown states fall
+                                        # through to the base still
         if dir and os.path.isfile(os.path.join(REPO, "scenery", piece,
                                                 "rotations", dir + ".webp")):
             p["dir"] = dir      # not every piece ships rotations; the base
@@ -2090,48 +2092,318 @@ class Grow:
             if not flat:
                 self._fp_add(wx, wy, R, HY)
 
-    def relight(self):
-        """FILL THE LIGHT BUDGET, NEVER EXCEED IT (maintainer 2026-08-29:
-        "push the limit so we get as much light as we can before the tech
-        fails us"). Every hearth, brazier and lamp is a CANDIDATE; they are
-        lit greedily, nearest-the-player-first, and a candidate is only lit
-        if the worst camera window still holds at most the engine's 8 slots
-        after it. Lighting them all blew the budget at 14 in one window the
-        moment every room got a hearth."""
-        import math as _m
-        VIEW_W, VIEW_H, SLOTS, RAD = 899, 774, 8, 7
-        RX, RY = _m.sqrt(2) * 32 * RAD, _m.sqrt(2) * 15 * RAD
-        LIGHTABLE = ("hearths/", "braziers/", "torch_posts/", "lantern_posts/",
-                     "lantern_stands/", "streetlights/", "flame_niches/",
-                     "campfire", "cauldron_camps/")
-        lit = [((p["x"] - p["y"]) * 32, (p["x"] + p["y"]) * 15)
-               for p in self.doc["scenery"] if p.get("lit")]
+    # THE LIGHTS (maintainer 2026-09-06: "it's time to finally light up the
+    # game and make the evening/night and morning look awesome ... you
+    # should go all the way up to 8 at some locations and down to 1 or even
+    # 0 at other locations ... lots of small lights and some bigger ones").
+    # Every light is a placement with lit=true and an explicit LIT state,
+    # and every placement's radius comes from scenery.json `light` (the
+    # scenery agent's data from here on; the spawn bonfire is 1.0 / 7
+    # cells and nothing outshines it). Candidates are laid out by what a
+    # place IS, in priority order, and each is lit only if the worst camera
+    # window still holds 8 after it - the EXACT worst window, over every
+    # camera position, with each light's own reach (world3.max_overlap).
+    LAMP_EVERY = 10     # road cells between streetlights
+    STONE_EVERY = 16    # road cells between lit waystones, offset from the lamps
+    GLOW_EVERY = 20     # cells between forest glows (lit mushrooms)
+    ROCK_EVERY = 24     # cells between lit crystals on the bare rock
+    BONFIRE_R = 7       # the game's own campfire at spawn: one world slot
+    LAMP_ON = ("grass", "dark_mud", "grey_stone", "black_rock", "snow", "light_beach",
+               "grey_paving_stone", "light_soil")   # a lamp stands on any dry ground
 
-        def fits(c):
-            for a in (c, *lit):
-                n = sum(1 for b in (c, *lit)
-                        if abs(b[0] - a[0]) <= VIEW_W / 2 + RX
-                        and abs(b[1] - a[1]) <= VIEW_H / 2 + RY)
-                if n > SLOTS:
-                    return False
+    def _best_lit_state(self, piece):
+        """The LIT state with the best verdict; ties to the first."""
+        d = json.load(open(os.path.join(REPO, "scenery", piece, "scenery.json")))
+        keys = sorted(k for k in (d.get("states") or {}) if k.startswith("LIT"))
+        best, bk = -1, None
+        for k in keys:
+            ok, rating = self._rated(piece, k)
+            if ok and rating > best:
+                best, bk = rating, k
+        return bk
+
+    def _lit_pool(self, group):
+        """Pieces of a group that ship an approved LIT state, best-rated
+        first."""
+        out = []
+        for pc in self.pool(group):
+            st = self._best_lit_state(pc)
+            if st:
+                ok, rating = self._rated(pc, st)
+                out.append((-rating, pc, st))
+        out.sort()
+        return [(pc, st) for _, pc, st in out]
+
+    def _road_walk(self, comp):
+        """The cells of one road component in walking order from its
+        up-screen-most end (BFS order along the road)."""
+        cs = set(comp)
+        start = min(comp, key=lambda c: (c[0] + c[1], c[0]))
+        order, seen, dq = [], {start}, collections.deque([start])
+        while dq:
+            c = dq.popleft()
+            order.append(c)
+            for m in ((c[0] + 1, c[1]), (c[0], c[1] + 1), (c[0] - 1, c[1]), (c[0], c[1] - 1)):
+                if m in cs and m not in seen:
+                    seen.add(m)
+                    dq.append(m)
+        return order
+
+    def lights(self):
+        sx, sy = self.doc["spawn"]
+        extra = [(sx + 0.5, sy + 0.5, self.BONFIRE_R)]
+        boxes = world3.light_boxes(self.doc["scenery"], extra)
+        lit_n = sum(1 for p in self.doc["scenery"] if world3.is_lit(p))
+
+        def fits(p):
+            box = world3.light_boxes([p])[0]
+            n, _ = world3.max_overlap(boxes + [box], only=box)
+            return n <= world3.SLOTS, box
+
+        def light(p, why=""):
+            """Turn an existing placement on, if the budget allows."""
+            nonlocal lit_n
+            if world3.is_lit(p):
+                return False
+            st = self._best_lit_state(p["piece"])
+            if not st:
+                tally[f"{why} refused (no LIT state)"] += 1
+                return False
+            was = p.get("state")
+            p["lit"], p["state"] = True, st
+            ok, box = fits(p)
+            if not ok:
+                tally[f"{why} refused (budget)"] += 1
+                del p["lit"]
+                if was is None:
+                    p.pop("state", None)
+                else:
+                    p["state"] = was
+                return False
+            boxes.append(box)
+            lit_n += 1
             return True
 
-        added = 0
-        cands = [p for p in self.doc["scenery"]
-                 if not p.get("lit") and p["piece"].startswith(LIGHTABLE)
-                 and any(k.startswith("LIT") for k in (json.load(open(
-                     os.path.join(REPO, "scenery", p["piece"],
-                                  "scenery.json"))).get("states") or {}))]
-        sx, sy = self.doc["spawn"]
-        cands.sort(key=lambda p: abs(p["x"] - sx) + abs(p["y"] - sy))
-        for p in cands:
-            c = ((p["x"] - p["y"]) * 32, (p["x"] + p["y"]) * 15)
-            if fits(c):
-                p["lit"] = True
-                lit.append(c)
-                added += 1
-        self.placed += [("lights added by the budget pass", added),
-                        ("lit total", len(lit))]
+        tally = collections.Counter()
+
+        def place(piece, st, x, y, why="", **kw):
+            """Put a new piece lit, if the budget allows; else not at all."""
+            nonlocal lit_n
+            probe = {"piece": piece, "x": x, "y": y, "lit": True, "state": st}
+            ok, box = fits(probe)
+            if not ok:
+                tally[f"{why} refused (budget)"] += 1
+                return 0
+            before = dict(self.refused)
+            if self.put(piece, x, y, lit=True, state=st, **kw):
+                # judge the box where the piece actually stands: put snaps
+                # the footprint to a cell centre, up to a cell away
+                placed = self.doc["scenery"][-1]
+                ok, box = fits(placed)
+                if not ok:
+                    self.doc["scenery"].pop()
+                    tally[f"{why} refused (budget)"] += 1
+                    return 0
+                boxes.append(box)
+                lit_n += 1
+                return 1
+            for k, v in self.refused.items():
+                if v != before.get(k, 0):
+                    tally[f"{why} refused ({k})"] += 1
+            return 0
+        roadset = {(x, y) for y in range(NEW) for x in range(NEW)
+                   if self.g(x, y) == "light_soil"}
+
+        def side_cell(c, prev, k):
+            """A cell beside the road at c, off the road, same level,
+            natural ground, alternating side by k."""
+            dx, dy = (c[0] - prev[0], c[1] - prev[1]) if prev else (1, 0)
+            if dx == 0 and dy == 0:
+                dx, dy = 1, 0
+            sides = [(-dy, dx), (dy, -dx)]
+            if k % 2:
+                sides.reverse()
+            for (ox, oy) in sides:
+                m = (c[0] + ox, c[1] + oy)
+                if (m not in roadset and self.g(*m) in self.NATURAL
+                        and self.lvl[m[1]][m[0]] == self.lvl[c[1]][c[0]]
+                        and not self.liquid(*m)):
+                    return m
+            return None
+
+        # 1. the plaza's corner streetlights and the village's lamps, the
+        #    hearths; the rest of the town's lamps queue behind the doors
+        already = [p for p in self.doc["scenery"] if p.get("lit")]
+        for p in already:
+            p.pop("lit", None)
+        boxes = world3.light_boxes(self.doc["scenery"], extra)
+        lit_n = len(boxes)
+        near = lambda p: abs(p["x"] - sx) + abs(p["y"] - sy)
+        for p in sorted((p for p in already if p["piece"].startswith("streetlights/")), key=near):
+            tally["plaza and village streetlights"] += light(p, "plaza streetlights")
+        for p in sorted((p for p in self.doc["scenery"] if p["piece"].startswith("hearths/")), key=near):
+            tally["hearths"] += light(p)
+        # 2. the beacon on Lighthouse Point - the one big far light
+        for p in (p for p in self.doc["scenery"] if p["piece"].startswith("beacons/")):
+            tally["lighthouse beacon"] += light(p)
+        # 3. torches at the cave mouth, then the braziers hall by hall (one
+        #    per hall, then a second, ...) so no hall hogs the cave's window
+        cave = getattr(self, "cave_floor", {})
+        mouth = sorted(c for c in cave if any(
+            m not in cave and self.g(*m) and not self.liquid(*m) and self.lvl[m[1]][m[0]] < self.ROCK_MIN
+            for m in ((c[0] + 1, c[1]), (c[0] - 1, c[1]), (c[0], c[1] + 1), (c[0], c[1] - 1))))
+        torches = self._lit_pool("torch_posts")
+        tally["cave mouth cells"] = len(mouth)
+        tally["house doors"] = len(getattr(self, "house_doors", []))
+        if mouth and torches:
+            outs = []
+            for c in mouth:
+                for m in ((c[0] + 1, c[1]), (c[0] - 1, c[1]), (c[0], c[1] + 1), (c[0], c[1] - 1)):
+                    if m not in cave and self.g(*m) in self.NATURAL and self.lvl[m[1]][m[0]] < self.ROCK_MIN:
+                        outs.append(m)
+            outs = sorted(set(outs))
+            for k, m in enumerate((outs[0], outs[-1]) if len(outs) > 1 else outs):
+                pc, st = torches[k % len(torches)]
+                tally["cave mouth torches"] += place(pc, st, m[0] + 0.5, m[1] + 0.5, why="cave mouth torches", on=tuple(self.NATURAL))
+        braz = sorted((p for p in self.doc["scenery"] if p["piece"].startswith("braziers/")), key=near)
+        halls = []          # clusters of braziers within 6 cells
+        for p in braz:
+            for h in halls:
+                if any(abs(p["x"] - q["x"]) + abs(p["y"] - q["y"]) <= 6 for q in h):
+                    h.append(p)
+                    break
+            else:
+                halls.append([p])
+        rounds = max((len(h) for h in halls), default=0)
+        for rnd in range(min(2, rounds)):
+            for h in halls:
+                if rnd < len(h):
+                    tally["braziers"] += light(h[rnd], "braziers")
+        # the cave's own glows - crystals and fungi already standing there -
+        # come before a hall's third brazier
+        for p in sorted((p for p in self.doc["scenery"]
+                         if (int(p["x"]), int(p["y"])) in cave
+                         and p["piece"].startswith(("crystals/", "mushrooms/", "cup_fungi/", "frost_flowers/"))),
+                        key=near):
+            tally["cave glows"] += light(p, "cave glows")
+        for rnd in range(2, rounds):
+            for h in halls:
+                if rnd < len(h):
+                    tally["braziers"] += light(h[rnd], "braziers")
+        # 4. a lantern beside every door, then the town's gate lanterns
+        lanterns = self._lit_pool("lantern_posts")
+        for k, (door, step, side) in enumerate(sorted(getattr(self, "house_doors", []),
+                                                      key=lambda d: abs(d[1][0] - sx) + abs(d[1][1] - sy))):
+            if not lanterns:
+                break
+            ox, oy = step[0] - door[0], step[1] - door[1]          # outward
+            px, py = -oy, ox                                        # along the wall
+            # beside the step, else beside the path out from it (an east
+            # door's step sits in the roof's sideways no_place band)
+            spots = [(step[0] + o * ox + sd * px, step[1] + o * oy + sd * py)
+                     for o in range(3) for sd in (1, -1)]
+            pc, st = lanterns[k % len(lanterns)]
+            for m in spots:
+                if m not in self.door_cells and m not in getattr(self, "no_place", set()):
+                    if place(pc, st, m[0] + 0.5, m[1] + 0.5, why="door lanterns", on=self.LAMP_ON):
+                        tally["door lanterns"] += 1
+                        break
+        for p in sorted((p for p in already if not p["piece"].startswith("streetlights/")), key=near):
+            tally["gate and landing lanterns"] += light(p, "gate lanterns")
+        # 5. streetlights along the roads, every LAMP_EVERY cells, sides
+        #    alternating; lit waystones between them
+        lamps = self._lit_pool("streetlights")
+        stones = self._lit_pool("waystones")
+        seen, comps = set(), []
+        for c in sorted(roadset):
+            if c in seen:
+                continue
+            comp, st_ = [], [c]
+            seen.add(c)
+            while st_:
+                x, y = st_.pop()
+                comp.append((x, y))
+                for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                    if m in roadset and m not in seen:
+                        seen.add(m)
+                        st_.append(m)
+            if len(comp) >= 24:
+                comps.append(comp)
+        comps.sort(key=lambda c: min(abs(x - sx) + abs(y - sy) for x, y in c))
+        for comp in comps:
+            walk = self._road_walk(comp)
+            for k, idx in enumerate(range(self.LAMP_EVERY // 2, len(walk), self.LAMP_EVERY)):
+                c = walk[idx]
+                m = side_cell(c, walk[idx - 1] if idx else None, k)
+                if not m or not lamps:
+                    continue
+                pc, st = lamps[k % len(lamps)]
+                tally["streetlights"] += place(pc, st, m[0] + 0.5, m[1] + 0.5, why="streetlights", on=tuple(self.NATURAL))
+            for k, idx in enumerate(range(self.LAMP_EVERY, len(walk), self.STONE_EVERY)):
+                c = walk[idx]
+                m = side_cell(c, walk[idx - 1] if idx else None, k + 1)
+                if not m or not stones:
+                    continue
+                pc, st = stones[k % len(stones)]
+                tally["waystones"] += place(pc, st, m[0] + 0.5, m[1] + 0.5, why="waystones", on=tuple(self.NATURAL))
+        # 7. forest glows: a lit mushroom or toadstool ring in the woods and
+        #    the wild, every GLOW_EVERY cells - the small lights far out
+        reach_cells = getattr(self, "reach_cells", None)
+        glows = self._lit_pool("mushrooms") + self._lit_pool("toadstool_rings")
+        trees = [p for p in self.doc["scenery"] if p["piece"].startswith("trees/")]
+        r = _rng32(0x11617)
+        if glows and trees:
+            taken = []
+            for t in sorted(trees, key=lambda p: (round(p["x"] + p["y"]), p["x"])):
+                tx, ty = int(t["x"]), int(t["y"])
+                if any(abs(tx - a) + abs(ty - b) < self.GLOW_EVERY for a, b in taken):
+                    continue
+                pc, st = glows[int(r() * len(glows)) % len(glows)]
+                for m in ((tx + 1, ty + 1), (tx - 1, ty + 1), (tx + 1, ty - 1), (tx + 2, ty),
+                          (tx + 2, ty + 2), (tx - 2, ty + 2), (tx, ty + 2), (tx + 2, ty - 1)):
+                    if self.g(*m) in self.NATURAL and not self.liquid(*m):
+                        if place(pc, st, m[0] + 0.5, m[1] + 0.5, why="forest glows", on=tuple(self.NATURAL)):
+                            taken.append((tx, ty))
+                            tally["forest glows"] += 1
+                            break
+        # 8. rock glows: a lit crystal on the bare rock every ROCK_EVERY
+        #    cells - the mountain's terraces are otherwise pitch dark
+        crys = self._lit_pool("crystals")
+        if crys:
+            taken = []
+            for y0 in range(0, NEW, 3):
+                for x0 in range(0, NEW, 3):
+                    # off the lattice: a hash jitter of up to 4 cells
+                    h = (x0 * 2654435761 ^ y0 * 40503 ^ 0xC7) & 0xffffffff
+                    x, y = x0 + h % 9 - 4, y0 + (h >> 8) % 9 - 4
+                    if not (0 <= x < NEW and 0 <= y < NEW):
+                        continue
+                    if self.g(x, y) not in ("grey_stone", "black_rock", "snow") or (x, y) in cave:
+                        continue
+                    if reach_cells is not None and (x, y) not in reach_cells:
+                        continue
+                    if any(abs(x - a) + abs(y - b) < self.ROCK_EVERY for a, b in taken):
+                        continue
+                    pc, st = crys[int(r() * len(crys)) % len(crys)]
+                    if place(pc, st, x + 0.5, y + 0.5, why="rock glows", on=("grey_stone", "black_rock", "snow")):
+                        taken.append((x, y))
+                        tally["rock glows"] += 1
+        self.placed += [(f"lights: {k}", v) for k, v in tally.items()]
+        self.placed += [("lit total", lit_n)]
+        # the distribution the maintainer asked for: how many lights a camera
+        # sees, sampled every 4 cells over the walkable world
+        counts = collections.Counter()
+        reach = getattr(self, "reach_cells", None)
+        for y in range(0, NEW, 4):
+            for x in range(0, NEW, 4):
+                if not self.g(x, y) or self.liquid(x, y) or (reach and (x, y) not in reach):
+                    continue
+                cx, cy = (x - y) * 32, (x + y) * 15
+                n = sum(1 for b in boxes if b[0] <= cx <= b[1] and b[2] <= cy <= b[3])
+                counts[n] += 1
+        tot = sum(counts.values())
+        self.placed += [(f"camera spots seeing {k} lights", f"{v} ({100 * v // tot}%)")
+                        for k, v in sorted(counts.items(), reverse=True)]
 
     def npcs(self):
         """THE CAST (maintainer 2026-08-30: "why didn't you add the NPCs to
@@ -2540,6 +2812,7 @@ class Grow:
         if not hasattr(self, "floor_cells"):
             self.floor_cells = {}
             self.door_cells = set()
+            self.house_doors = []
         # A HOUSE IS SIX TILES TALL - five of door, one of roof. Three levels
         # stood 45px against a 64px hero and read as a bunker; eight overshot.
         rise = self.HOUSE_RISE
@@ -2613,6 +2886,7 @@ class Grow:
         back = (door[0], door[1] - 1) if door_side == "south" \
             else (door[0] - 1, door[1])
         self.door_cells.update({door, step, back})
+        self.house_doors.append((door, step, door_side))
         # doorstep
         dx, dy = step
         if self.g(dx, dy) == "grass":
@@ -3062,7 +3336,7 @@ class Grow:
         self.put("woodpiles/woodpile_001", mx + 4.5, my + 5.6, on=("grass",))
         # EVERY cave gets braziers — both dungeons have hearth-light
         n = 0
-        bz = self.pool("braziers")
+        bz = [pc for pc, _st in self._lit_pool("braziers")]   # only braziers that can burn
         cave_floor = getattr(self, "cave_floor", {})
         for cave in (dk for dk in self.doc["decks"] if dk["kind"] == "cave"):
             cells = sorted((c["x"], c["y"]) for c in cave["cells"])
@@ -4587,6 +4861,7 @@ class Grow:
                         ("unreachable land cells left (island 2 summit)", left)]
         lv = self._standable()
         R, Rev = self._reach(lv)
+        self.reach_cells = {(x, y) for (x, y, layer) in R if layer == 0}
         traps = sorted((x, y) for (x, y, layer) in R - Rev if layer == 0)
         self.placed += [("traps fixed: breach cut into the terrace above", fixed["breach"] + fixed2["breach"]),
                         ("traps fixed: ledge joined the terrace above", fixed["joined"] + fixed2["joined"]),
@@ -4854,14 +5129,16 @@ class Grow:
                      self.retype, self.widen_roads, self.ramps,
                      self.ramp_paths, self.regroom, self.reach_audit,
                      self.snap_hitboxes, self.police_footprints,
-                     self.relight, self.npcs,
+                     self.lights, self.npcs,
                      self.rooms, self.cliff_faces, self.audit_ground,
                      self.spawns):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
         print(f"  [total {time.time() - t0:.1f}s]", flush=True)
-        nlit, worst = world3._light_audit(self.doc["scenery"])
+        sx, sy = self.doc["spawn"]
+        nlit, worst = world3._light_audit(
+            self.doc["scenery"], [(sx + 0.5, sy + 0.5, self.BONFIRE_R)])
         json.dump(self.doc, open(os.path.join(OUT, "world.json"), "w"),
                   separators=(",", ":"))
         print(f"the_game grown: {NEW}x{NEW}, {len(self.doc['scenery'])} scenery "
