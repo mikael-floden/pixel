@@ -110,6 +110,16 @@ const LIVE_FILES: Record<string, string> = {
   // wiki; consumed by the scenery agent, which republishes the flipped file and
   // deletes the entry. See live/README.md.
   "tuning/scenery_flips.json": "tuning/scenery_flips",
+  // WHAT KIND OF THING A SCENERY PIECE IS. The agent tags every piece TOWN /
+  // TREE / NATURE / MOUNTAIN_WALL / INDOOR / WINDOW / OTHER and both the wiki
+  // and the world group by it, so a mis-tag is not a label — it puts the piece
+  // in the wrong review list and gets it PLACED as the wrong thing (maintainer
+  // 2026-09-05: "I can see some scenery in the group 'Mountain wall' is not
+  // mountain wall and I can't change type when doing the review. I need a
+  // change type button"). One entry per piece path carrying the type it should
+  // be. Written by the wiki; the scenery agent re-files the piece and deletes
+  // the entry. See live/README.md.
+  "tuning/scenery_types.json": "tuning/scenery_types",
   // WHICH TILES ARE A GROUND TYPE'S BASE TILES. A base tile is the one the
   // world agent paints first and repeats forever — "does everything but noone
   // notice" (maintainer 2026-08-21). Promoted and revoked from the wiki's

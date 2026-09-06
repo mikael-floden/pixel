@@ -1009,6 +1009,39 @@ const sceneryWalls = () => state.tuning.scenery_walls
   ?? (state.tuning.scenery_walls = { format: "pixel-wiki-scenery-walls@1", updated_at: "", overrides: {} });
 const WALL_TYPES = new Set(["MOUNTAIN_WALL", "WINDOW"]);
 const taggedWall = (o) => WALL_TYPES.has(o?.type);
+/* WHAT KIND OF THING THIS IS (maintainer 2026-09-05: "I can see some scenery in
+ * the group 'Mountain wall' is not mountain wall and I can't change type when
+ * doing the review. I need a change type button").
+ *
+ * The scenery agent tags every piece TOWN / TREE / NATURE / MOUNTAIN_WALL /
+ * INDOOR / WINDOW / OTHER and the wiki groups by it, so a mis-tagged piece is
+ * not merely mislabelled — it is in a list he is reviewing as something else,
+ * and it will be PLACED as something else. Same contract as the wall and lit
+ * corrections: one entry per piece path carrying the type it should be, the
+ * scenery agent re-files the piece and deletes the entry, and choosing the tag
+ * the agent already gave deletes it too — the file lists only what is wrong.
+ *
+ * The wiki obeys the correction the moment he makes it: the type chips, the
+ * counts, the filter and ‹ › all read typeOf(), so a piece he re-files LEAVES
+ * the group he found it in instead of sitting there until the agent runs. */
+const SCTYPE_KEY = "tuning/scenery_types";
+const sceneryTypes = () => state.tuning.scenery_types
+  ?? (state.tuning.scenery_types = { format: "pixel-wiki-scenery-types@1", updated_at: "", overrides: {} });
+/** The type this piece IS, his correction first. */
+function typeOf(o) {
+  const ov = sceneryTypes().overrides?.[o?.path]?.type;
+  return typeof ov === "string" && ov ? ov : (o?.type ?? null);
+}
+const typeCorrected = (o) => typeOf(o) !== (o?.type ?? null);
+function setSceneryType(o, type) {
+  const doc = sceneryTypes();
+  doc.overrides ??= {};
+  if (!type || type === (o.type ?? null)) delete doc.overrides[o.path];
+  else doc.overrides[o.path] = { type, was: o.type ?? null, updated_at: new Date().toISOString() };
+  doc.updated_at = new Date().toISOString();
+  touch(SCTYPE_KEY, o.path);
+  markDirty(SCTYPE_KEY);
+}
 function isWallScenery(o) {
   const ov = sceneryWalls().overrides?.[o?.path];
   return typeof ov?.wall === "boolean" ? ov.wall : taggedWall(o);
@@ -4690,6 +4723,37 @@ const SCWALL_MODES = {
   ground: { label: "on the ground", title: "Stands in the world: it has a footprint, y-sorts against the player, and belongs in the hitbox queue" },
   wall: { label: "wall scenery", title: "Hangs on a house/mountain/cave wall: no hitbox, never sorted against the player" },
 };
+/** The change-type control: the types the domain actually has, his correction
+ *  shown against the agent's tag. A select rather than a chip row — seven of
+ *  them, one is "Mountain wall", and a phone has no room for that as buttons. */
+function typeRow(o, onChange) {
+  const box = h("div", { class: "card-sub lit-mode type-mode" });
+  const draw = () => {
+    const now = typeOf(o);
+    // The types the DOMAIN has, plus whatever this piece is — never a list
+    // hardcoded here, so a type the scenery agent invents tomorrow appears by
+    // itself (the same rule OBJ_TYPES' comment sets for the chips).
+    const present = [...new Set([...state.data.domains.objects.map((x) => x.type), ...Object.keys(OBJ_TYPES), now, o.type])]
+      .filter(Boolean).sort((a, b) => objTypeLabel(a).localeCompare(objTypeLabel(b)));
+    const sel = h("select", { class: "type-pick", "aria-label": "what kind of scenery this is" },
+      ...present.map((tp) => {
+        const opt = h("option", { value: tp }, objTypeLabel(tp));
+        if (tp === now) opt.selected = true;
+        return opt;
+      }));
+    sel.addEventListener("change", () => { setSceneryType(o, sel.value); draw(); onChange?.(); });
+    box.replaceChildren(...[
+      h("span", { class: "muted lit-label" }, "Kind"),
+      sel,
+      typeCorrected(o)
+        ? h("span", { class: "pill warn", title: "The scenery agent tagged it that. Your correction moves it out of that group here immediately; the agent re-files the piece and clears this." },
+          `tagged ${objTypeLabel(o.type)}`)
+        : null,
+    ].filter(Boolean));
+  };
+  draw();
+  return box;
+}
 function wallRow(o, onChange) {
   const box = h("div", { class: "card-sub lit-mode" });
   const draw = () => {
@@ -10947,8 +11011,8 @@ function objectQueue() {
   // admin-only. All three ride the same pager: "if I filter on TREES and click
   // on a tree, next next next should only display trees."
   const typed = read(OBJ_TYPE_KEY, "all");
-  const type = typed === "all" || all.some((o) => o.type === typed) ? typed : "all";
-  const byType = type === "all" ? all : all.filter((o) => o.type === type);
+  const type = typed === "all" || all.some((o) => typeOf(o) === typed) ? typed : "all";
+  const byType = type === "all" ? all : all.filter((o) => typeOf(o) === type);
   if (!state.admin) {
     return { list: byType, sort: "group", filter: "all", type, active: type !== "all", total: all.length };
   }
@@ -11034,7 +11098,7 @@ function viewObjects() {
     sortBar(OBJ_TYPE_KEY, [
       ["all", `all ${q.total}`, "Every kind of scenery"],
       ...Object.keys(OBJ_TYPES)
-        .map((t) => [t, t, state.data.domains.objects.filter((o) => o.type === t).length])
+        .map((t) => [t, t, state.data.domains.objects.filter((o) => typeOf(o) === t).length])
         .filter(([, , n]) => n > 0)
         .map(([t, , n]) => [t, `${objTypeLabel(t)} ${n}`, `Only ${objTypeLabel(t).toLowerCase()} — ${n} pieces`]),
     ], q.type, () => route()),
@@ -11043,7 +11107,7 @@ function viewObjects() {
       // with Trees selected, "no hitbox yet 61" has to mean sixty-one trees or
       // the two bars contradict each other. Counting the whole domain here was
       // the first cut and it made "all 739" sit above a page of 83.
-      [id, `${f.label} ${state.data.domains.objects.filter((o) => (q.type === "all" || o.type === q.type) && f.hit(o)).length}`,
+      [id, `${f.label} ${state.data.domains.objects.filter((o) => (q.type === "all" || typeOf(o) === q.type) && f.hit(o)).length}`,
         q.type === "all" ? f.title : `${f.title} — within ${objTypeLabel(q.type)}`]), q.hitbox, () => route()) : null,
     state.admin ? sortBar(OBJ_SORT_KEY, Object.entries(OBJ_SORTS).map(([id, s]) => [id, s.label, s.title]), q.sort, () => route()) : null,
     // COUNT ON EVERY CHIP. The filter is sticky, and a sticky filter can
@@ -11055,7 +11119,7 @@ function viewObjects() {
     state.admin ? sortBar(OBJ_FILTER_KEY, Object.entries(OBJ_FILTERS).map(([id, f]) =>
       // Counted WITHIN the chosen type: with Trees selected, "needs review 12"
       // has to mean twelve trees, or the two bars contradict each other.
-      [id, `${f.label} ${state.data.domains.objects.filter((o) => (q.type === "all" || o.type === q.type) && f.match(objVerdict(o), o)).length}`,
+      [id, `${f.label} ${state.data.domains.objects.filter((o) => (q.type === "all" || typeOf(o) === q.type) && f.match(objVerdict(o), o)).length}`,
         q.type === "all" ? f.title : `${f.title} — within ${objTypeLabel(q.type)}`]), q.filter, () => route()) : null,
     q.active
       ? h("p", { class: "muted", style: "margin:-6px 0 12px" },
@@ -11216,6 +11280,9 @@ function viewObject(id) {
     facetBox.replaceChildren(...[
       // Placement first: whether it is wall scenery decides whether the hitbox
       // machinery below even applies, so the correction sits above it.
+      // KIND FIRST: it decides which list he found this piece in, and the wall
+      // question below only makes sense once the kind is right.
+      state.admin ? typeRow(o, () => { player?.refreshMarks?.(); route(); }) : null,
       state.admin ? wallRow(o, () => { player?.refreshMarks?.(); route(); }) : null,
       state.admin ? litRow(o.path, st, () => player.refreshMarks()) : null,
       // WHICH WAY THIS FACING FACES — per direction, because that is where the

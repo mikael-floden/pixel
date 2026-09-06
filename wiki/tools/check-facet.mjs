@@ -824,6 +824,69 @@ await pub.close();
   ok(!off[key], `withdrawing it deletes the entry rather than storing a no (${Object.keys(off).length} left)`);
 }
 
+/* CHANGE THE KIND, AND THE GROUP CHANGES WITH IT (maintainer 2026-09-05: "I can
+ * see some scenery in the group 'Mountain wall' is not mountain wall and I
+ * can't change type when doing the review. I need a change type button").
+ *
+ * The button is half of it. The half that matters is that the piece LEAVES the
+ * list he found it in — a correction he has to wait for the scenery agent to
+ * honour would leave him reviewing the same wrong piece in the same wrong group
+ * all evening. So the counts on the overview are checked, not just the record. */
+{
+  const DD3 = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
+  const victim = (DD3.domains.objects ?? []).find((o) => o.type === "MOUNTAIN_WALL");
+  const counts = () => p.evaluate(() => Object.fromEntries(
+    [...document.querySelectorAll('[data-bar="wiki-obj-type"] button')].map((b2) => {
+      const m = /^(.*?)\s+(\d+)$/.exec(b2.textContent.trim());
+      return m ? [m[1], +m[2]] : [b2.textContent.trim(), 0];
+    })));
+  await p.goto(`${W}#/objects`, { waitUntil: "load" });
+  await p.waitForTimeout(2600);
+  const before = await counts();
+  await p.goto(`${W}#/objects/${victim.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2800);
+  const row = await p.evaluate(() => {
+    const s = document.querySelector(".type-mode .type-pick");
+    return s ? { present: true, value: s.value, options: [...s.options].map((o) => o.value) } : { present: false };
+  });
+  console.log("kind row:", JSON.stringify(row));
+  ok(row.present, "a scenery piece can be re-filed from its own page");
+  ok(row.value === "MOUNTAIN_WALL" && row.options.includes("TOWN"),
+    `it opens on what the agent tagged and offers the domain's other kinds (${row.options?.join(",")})`);
+  await p.evaluate(() => {
+    const s = document.querySelector(".type-mode .type-pick");
+    s.value = "TOWN"; s.dispatchEvent(new Event("change"));
+  });
+  await p.waitForTimeout(900);
+  const rec = await p.evaluate((path) => ({
+    doc: window.__wiki.state.tuning.scenery_types?.overrides?.[path] ?? null,
+    pill: document.querySelector(".type-mode .pill")?.textContent ?? null,
+    pending: Object.values(window.__wiki.state.touched).reduce((n, s2) => n + s2.size, 0),
+  }), victim.path);
+  console.log("after re-filing:", JSON.stringify(rec));
+  ok(rec.doc?.type === "TOWN" && rec.doc?.was === "MOUNTAIN_WALL",
+    `the correction records both the new kind and the old (${JSON.stringify(rec.doc)})`);
+  ok(/tagged/i.test(rec.pill ?? ""), `and the page still shows what the agent said ("${rec.pill}")`);
+  ok(rec.pending >= 1, `and it is waiting to be committed (${rec.pending})`);
+  await p.goto(`${W}#/objects`, { waitUntil: "load" });
+  await p.waitForTimeout(2600);
+  const after = await counts();
+  console.log("type chips:", JSON.stringify({ before, after }));
+  const mw = "Mountain wall", tw = "Town";
+  ok(after[mw] === before[mw] - 1, `the piece LEAVES the group it was wrongly in (${before[mw]} → ${after[mw]} mountain wall)`);
+  ok(after[tw] === before[tw] + 1, `and joins the one he re-filed it to (${before[tw]} → ${after[tw]} town)`);
+  // Back to the agent's tag: the entry must go, not become type == was.
+  await p.goto(`${W}#/objects/${victim.id}`, { waitUntil: "load" });
+  await p.waitForTimeout(2600);
+  await p.evaluate(() => {
+    const s = document.querySelector(".type-mode .type-pick");
+    s.value = "MOUNTAIN_WALL"; s.dispatchEvent(new Event("change"));
+  });
+  await p.waitForTimeout(800);
+  const back = await p.evaluate((path) => window.__wiki.state.tuning.scenery_types?.overrides?.[path] ?? null, victim.path);
+  ok(!back, `agreeing with the agent deletes the correction rather than storing it (${JSON.stringify(back)})`);
+}
+
 /* ...AND THE SAME ON EVERY OTHER REVIEW PAGE, walked rather than assumed. */
 {
   const DD2 = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));

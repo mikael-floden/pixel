@@ -1868,3 +1868,11 @@ input[type="range"] { accent-color: var(--accent); }
    paving stone"). Sits under the scene, out of the art's way; the colour is
    the verdict — green matches, amber is a difference he can see. */
 .fade-tile .tone-chip { display: inline-block; margin: 6px 0 0; font-variant-numeric: tabular-nums; }
+
+/* The change-type picker (maintainer 2026-09-05: "I need a change type
+   button"). Sized like the other review controls, not like a form field. */
+.type-mode .type-pick {
+  background: var(--surface); color: var(--fg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 10px; font-size: 14px; min-height: 40px;
+  max-width: 60vw;
+}

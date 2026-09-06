@@ -147,6 +147,21 @@ The laws around the flow:
     candidate key.
   - **Absent means the measured best**; stepping onto the measured best
     deletes the entry — the file only ever names his exceptions.
+- `live/tuning/scenery_types.json` — `pixel-wiki-scenery-types@1`. **WHAT KIND
+  OF THING A PIECE IS.** The scenery agent tags every piece `TOWN`, `TREE`,
+  `NATURE`, `MOUNTAIN_WALL`, `INDOOR`, `WINDOW` or `OTHER`; the wiki groups its
+  review by that tag and the world places by it, so a mis-tag is not a label —
+  it puts the piece in the wrong review list and gets it placed as the wrong
+  thing (maintainer 2026-09-05: "I can see some scenery in the group 'Mountain
+  wall' is not mountain wall and I can't change type when doing the review. I
+  need a change type button"). One entry per piece path — `{ type, was,
+  updated_at }` — carrying the type it SHOULD be. Choosing the tag the agent
+  already gave deletes the entry, so the file lists only what is wrong, exactly
+  like `scenery_lights` and `scenery_walls`. The scenery agent re-files the
+  piece and deletes the entry. The wiki obeys the correction immediately: its
+  type chips, counts, filter and ‹ › all read the corrected type, so a re-filed
+  piece leaves the group he found it in without waiting for the agent.
+
 - `live/tuning/scenery_flips.json` — `pixel-wiki-scenery-flips@1`. **WHICH
   FACING IS THE OTHER ONE AGAIN.** PixelLab draws the two three-quarter views
   separately and sometimes returns the same one twice, so a piece faces the same
