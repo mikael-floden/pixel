@@ -1,5 +1,36 @@
 {
   "format": "pixel-wiki-scenery-types@1",
-  "updated_at": "2026-09-06T09:53:57.630Z",
-  "overrides": {}
+  "updated_at": "2026-09-06T09:57:53.593Z",
+  "overrides": {
+    "scenery/sleeping_giants/sleeping_giant_002": {
+      "type": "NATURE",
+      "was": "OTHER",
+      "updated_at": "2026-09-06T09:57:13.350Z"
+    },
+    "scenery/sky_stairs/sky_stair_001": {
+      "type": "NATURE",
+      "was": "OTHER",
+      "updated_at": "2026-09-06T09:57:18.872Z"
+    },
+    "scenery/sky_stairs/sky_stair_002": {
+      "type": "NATURE",
+      "was": "OTHER",
+      "updated_at": "2026-09-06T09:57:22.500Z"
+    },
+    "scenery/frost_flowers/frost_flower_002": {
+      "type": "NATURE",
+      "was": "OTHER",
+      "updated_at": "2026-09-06T09:57:25.960Z"
+    },
+    "scenery/grave_cross": {
+      "type": "OTHER",
+      "was": "TOWN",
+      "updated_at": "2026-09-06T09:57:45.169Z"
+    },
+    "scenery/campfire": {
+      "type": "OTHER",
+      "was": "TOWN",
+      "updated_at": "2026-09-06T09:57:50.763Z"
+    }
+  }
 }
