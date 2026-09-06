@@ -3028,6 +3028,21 @@ height reads per thing per frame.
   sits at 0.46-0.60 of unshadowed across 2-4.8 cells. Bigger published radii
   are what put the shadow back inside the lit area, so a lamp's radius is a
   LOOK knob, not just a reach knob.
+- **THE GROUND DRAIN REPAINTS ONLY WHEN ART HAS LANDED** (`t3drainDrops`,
+  `t3texGen`/`t3drainGen`). A dropped ground op drops because the art it wanted
+  is not resident, so a repaint can only change the picture if something has
+  LANDED since — and the flag was re-armed by the very repaint it triggered, so
+  a permanently undrawable op (a 404, an unpublished x-over-y pair) bought a
+  FULL ground paint at every loader idle edge, forever. The rising-edge guard
+  bounded it to one per loader cycle, but the loader cycles constantly while
+  prefetching. MEASURED in his 2026-09-07 run, window 1: `drains` 20,
+  `drainsDeferred` 0, `texturesAdded` **0** — with nothing landing, every one of
+  those 20 full paints was futile by construction, and a full paint costs
+  52.9-271.6 ms of redrawGround on his phone. That window spent 3306 ms in
+  tasks over 50 ms against a ~1280 ms floor in the quiet windows. Arming on the
+  residency counter leaves the feature intact (one repaint per drop episode,
+  which is what it was for) and removes the loop. Verified headless: drains
+  stopped at 2 and full paints at 6, flat for 72 s while textures kept arriving.
 - **`lighting` IS THE NIGHT PASS UPDATE — SPLIT IT, DON'T GUESS IT.** The
   maintainer's 2026-09-07 beacon run made `lighting` the biggest CPU section
   and the least explained: 2.48 ms in one window and 17.13 in another on a

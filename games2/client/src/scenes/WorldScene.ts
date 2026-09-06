@@ -1841,6 +1841,7 @@ export class WorldScene extends Phaser.Scene {
         coverQuads: this.coverStat.quads,
         coverCands: this.coverStat.cands,
         coverSlots: this.coverStat.slots,
+        texGen: this.t3texGen, // ground-drain residency counter (see t3drainDrops)
         // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
         // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
         // every "full" frame in the last beacon was a `repaintWorld` — so these
@@ -2557,6 +2558,16 @@ export class WorldScene extends Phaser.Scene {
    *  photographs while standing still. When the loader finally goes idle, repaint
    *  once. Bounded by construction: it fires at most once per idle transition. */
   private groundDropsPending = false;
+  /** TEXTURE RESIDENCY GENERATION — bumped on every texture ADD. A dropped
+   *  ground op drops because the art it wanted is not resident, so a repaint
+   *  can only change the picture if something has LANDED since. Measured in
+   *  the maintainer's 2026-09-07 run: window 1 did 20 drains with
+   *  texturesAdded 0 — every one of those full repaints was futile by
+   *  construction, and a full paint costs 52.9-271.6 ms of redrawGround on his
+   *  phone. That is where 2 of his 3.3 seconds of >50 ms tasks went. */
+  private t3texGen = 0;
+  /** The generation at the last drain — see groundDropsPending's setter. */
+  private t3drainGen = -1;
   private t3sheetPaths = new Set<string>();
   private groundDirtyCells: number[] = [];
   private repaintGroundPartial = false;
@@ -3120,6 +3131,12 @@ export class WorldScene extends Phaser.Scene {
       this.hitchOn = true;
       this.perfHookRender();
     }
+    /* The residency counter the ground drain gates on (t3texGen). Always on
+     * and one increment per texture — the perf hook is armed only with the
+     * beacon, and this decides real work. */
+    this.textures.on(Phaser.Textures.Events.ADD, () => {
+      this.t3texGen++;
+    });
     this.ensurePlaceholderTexture();
     this.ensureShadowTexture();
     this.ensureMonsterShadowTexture();
@@ -16016,8 +16033,14 @@ export class WorldScene extends Phaser.Scene {
     stats.composeMs = +((tex?.stats.buildMs ?? 0) - buildMs0).toFixed(1);
     stats.ms = +(performance.now() - t0).toFixed(1);
     if (stats.blits > 0) this.groundPainted = true;
-    /* DID THIS PAINT DROP ANYTHING? See groundDropsPending. */
-    if ((tex?.droppedOps ?? 0) > drops0) this.groundDropsPending = true;
+    /* DID THIS PAINT DROP ANYTHING? See groundDropsPending — and only ARM the
+     * repaint when something has landed since the last one. Re-arming
+     * unconditionally is what made the drain a loop: the repaint drops the same
+     * permanently-undrawable ops (a 404, an unpublished pair), sets the flag
+     * again, and pays a full paint at every loader idle edge for a picture that
+     * cannot change. One repaint per drop episode is the feature; the rest was
+     * the bug. */
+    if ((tex?.droppedOps ?? 0) > drops0 && this.t3texGen !== this.t3drainGen) this.groundDropsPending = true;
     load?.flush();
     this.checkTiles3Pitch();
   }
@@ -16076,6 +16099,7 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     this.groundDropsPending = false;
+    this.t3drainGen = this.t3texGen; // nothing new can drop until art lands
     this.repaintStats.drains++;
     /* GROUND ONLY. A dropped GROUND op is a hole in the ground texture; it says
      * nothing about the occluder set, which draws its own art on its own 96 px
