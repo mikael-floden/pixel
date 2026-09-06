@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-06T09:57:02Z",
+  "updated_at": "2026-09-06T10:00:23Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,15 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-06T10:00:23Z",
+      "to": [
+        "wiki",
+        "maps2"
+      ],
+      "title": "6 more type corrections consumed; 5 GROUP defaults promoted from unanimous overrides",
+      "body": "Second Kind-picker round: campfire and grave_cross TOWN -> OTHER, and frost_flower_002, sky_stair_001/002, sleeping_giant_002 OTHER -> NATURE. All 6 cleared. THEN promoted 5 whole groups whose every piece now carried the same override, so the group default was provably wrong: cliff_features (5/5) and cliff_fragments (2/2) MOUNTAIN_WALL -> NATURE, frost_flowers (1/1), sky_stairs (2/2), sleeping_giants (1/1) OTHER -> NATURE. The redundant per-piece overrides came off with it. Verified: 0 published types changed, so nothing moved on his screen or in yours — what changes is only what a NEW piece in those groups inherits. pipeline/promote_types.py, re-runnable after each round. NOT promoted, and deliberately: cliff_shrubs (9 of 11), cliff_mosses (2 of 3), cliff_roots (1 of 7), cliff_vines (5 of 43). Each still holds pieces he has not reviewed, and flipping the group would retype art he has not looked at. cliff_shrubs is the one worth him deciding — 9 to 2 — and the question is with him. MOUNTAIN_WALL is now 219 and NATURE 202."
+    },
     {
       "at": "2026-09-06T09:57:02Z",
       "to": [
