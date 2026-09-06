@@ -1420,6 +1420,21 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   / `flushCoverSurfaces`, "it also kills the dark band the flat line left
   across visible legs"); scenery is still on the flat line and wants the same
   treatment.
+- **THE DEPLOY GATE AND CI MUST SEE THE SAME WORLD** — they do not, and that
+  is why main can deploy while CI is red (ambient agent, 2026-09-07). The
+  deploy workflow's test job uses a SPARSE CHECKOUT (`nangijala-deploy.yml`:
+  `/games2/`, `/characters2/`, `/maps2/worlds/`, `/live/`,
+  `/tiles2/emission.json`) and `maps2/worlds3/` — the directory holding
+  the_game, the world that actually ships — is NOT in it. Every test that reads
+  it calls `test.skip("maps2/worlds3/the_game missing")`, so the gate goes
+  green on tests it never ran. MEASURED by hiding the directory locally:
+  461 tests, 0 fail, 88 SKIPPED — against 441 tests and 20 fail with it
+  present. A skipping test is not a passing test, and a gate that cannot see
+  its data cannot fail. Closing it means adding `/maps2/worlds3/` (18 MB) to
+  that sparse checkout — do it the moment the fixtures are green, because
+  until then it stops every deploy, and the maintainer tests in production.
+  (`/tiles/` 684 MB and `/scenery/` 221 MB stay out — those tests already
+  guard themselves on their own fixtures.)
 - **INDOOR FURNITURE CROSSES WITH ITS ROOF** (`roofedFade()` = 1 −
   `debrisAlpha()`, applied to the base sprite, its LIT COPY and its fog). A
   roofed piece is still DRAWN on the old binary gate (`roofCutAwayAt`, held to

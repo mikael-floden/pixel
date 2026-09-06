@@ -87,6 +87,12 @@ export const SURFACES: Record<string, Surface> = {
   crystal_ground: ground(1.0, "stone"),
   bog: ground(0.55, "swamp"),
   swamp: ground(0.5, "swamp"),
+  /* SLIME — walkable and sticky, the swamp family's speed. Classified 2026-09-07
+   * because maps3 put 4 cells of it in the_game and the surfaces gate failed on
+   * it (that is the gate's whole job). It does NOT harm: lava is the deliberate
+   * harmful liquid, and making a second one is a gameplay call for the
+   * maintainer, one field away (`harm: n` HP/s) if he wants it. */
+  slime: ground(0.5, "swamp"),
   // transitions
   stairs: { ...ground(0.9, "stone"), stairs: true },
   // solid structures (trees, monuments, towers) — you walk around them
