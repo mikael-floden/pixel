@@ -1420,6 +1420,29 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   / `flushCoverSurfaces`, "it also kills the dark band the flat line left
   across visible legs"); scenery is still on the flat line and wants the same
   treatment.
+- **A SCENERY SHARE BELONGS TO THE FLOOR ITS PIECE STANDS ON** — a pixel on a
+  DECK above that floor does not read it (`z > groundTerrAt(cell) + 1` clears
+  `ownShare`, shader and CPU twin alike). The share is a property of the CELL,
+  so without this every object inside a house printed its own dark blob on the
+  ROOF above it, and you could read a room's furniture layout off the roof
+  without entering — a wall-hack, and the exact thing the cut-away was built to
+  stop (maintainer 2026-09-07: "we just got rid of being able to see the rooms
+  by looking at the roof and now you can see where scenery objects have been
+  placed"). `groundTerrAt` is the column WITHOUT the share, i.e. the floor
+  itself; one level of slack covers the soft sampling. Measured at his house:
+  the furnished cells have their floor at 0 and their roof deck at 6, so a roof
+  pixel is excluded and a floor pixel (z 0.02) is not — the contact shading
+  under indoor furniture is untouched.
+- **THE HIDDEN-BEHIND OUTLINE HAS A STRENGTH DIAL** (`hiddenring.ts`, Settings
+  "Hidden outline", default 60%). The line draws ABOVE the darkness overlay, so
+  at full opacity a body behind a wall is the most legible thing on screen and
+  being hidden reads as an ADVANTAGE (maintainer 2026-09-07: "see the objects
+  behind the wall, not see them way better when behind the wall"). Separate
+  knob from `RING_LIGHT_FLOOR`, which decides how far the ring tracks the light
+  at the body's own spot: that one keeps the line from going black after
+  sunset, this one decides how loud it is at all. THE 60% IS A FIRST DIM, NOT A
+  VERDICT — he asked for the slider so he can pick the real default by eye.
+  Probe `__ml.hiddenRing(v?)`.
 - **TWO INDOOR AMBIENT DIALS — DARK ROOM 40%, LIT ROOM 12%**
   (`indoorlight.ts`, both in Settings). A room with no light of its own needs
   40% to read as stone rather than void; a room that lights ITSELF gets its

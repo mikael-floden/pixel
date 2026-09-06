@@ -89,6 +89,7 @@ import {
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { indoorAmbient, indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "../indoorlight";
+import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import { withV, assetIndexInfo } from "../assetver";
 import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
@@ -3682,6 +3683,12 @@ export class WorldScene extends Phaser.Scene {
       // The Settings "Indoor light" dial (indoorlight.ts). No arg reads it;
       // a number 0..1 drives it, so a gate can walk both ends without a
       // pointer drag. Returns the dial AND the ambient triple it resolves to.
+      // The Settings "Hidden outline" dial (hiddenring.ts): the wall-hack
+      // silhouette's opacity. No arg reads it; a number sets it.
+      hiddenRing: (v?: number) => {
+        if (typeof v === "number") setHiddenRing(v);
+        return { dial: hiddenRing() };
+      },
       indoorLight: (v?: number, which: "dark" | "lit" = "dark") => {
         if (typeof v === "number") (which === "lit" ? setIndoorLightLit : setIndoorLight)(v);
         const lit = this.roomHasLight();
@@ -7576,7 +7583,12 @@ export class WorldScene extends Phaser.Scene {
       .setScale(sp.scaleX, sp.scaleY)
       .setFlipX(slot ? false : sp.flipX)
       .setPosition(sp.x, sp.y)
-      .setAlpha(1)
+      // HOW LOUD THE LINE IS — the Settings dial (hiddenring.ts). The ring is
+      // drawn above the darkness overlay, so at full opacity a hidden body is
+      // the most legible thing on screen and being behind a wall reads as an
+      // ADVANTAGE (maintainer 2026-09-07: "see the objects behind the wall,
+      // not see them way better when behind the wall").
+      .setAlpha(hiddenRing())
       .setTint(ringTint)
       .setDepth(900_001.43)
       .setVisible(true);

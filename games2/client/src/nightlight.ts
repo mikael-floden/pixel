@@ -817,6 +817,15 @@ void main() {
   // THE PIXEL'S OWN SCENERY SHARE (main scope: the sun patch and the torch
   // march both read it): the share its cell carries, and that cell's centre.
   float ownShare = uSceneryOn > 0.5 ? sceneryShareAt(cell) : 0.0;
+  /* A SHARE BELONGS TO THE FLOOR THE PIECE STANDS ON. The share is a property
+   * of the CELL, so without this a pixel on a DECK above that floor — a house
+   * roof, a bridge — reads the furniture standing under it and takes its
+   * contact shading: every object inside a house printed its own dark blob on
+   * the roof, which is a wall-hack (maintainer 2026-09-07: "you can see where
+   * scenery objects have been placed by looking at the roof"). groundTerrAt is
+   * the column WITHOUT the share, i.e. the floor itself; one level of slack
+   * covers the soft sampling. */
+  if (ownShare > 0.0 && z > groundTerrAt(cell) + 1.0) ownShare = 0.0;
   vec2 ownC = floor(cell) + 0.5;
   float sunF = 1.0;
   float dbgShadow = 0.0; // see the shadow debug switch below
@@ -3176,7 +3185,10 @@ export class NightLights {
       const orow = Math.floor(row);
       const Wc = this.world.width;
       const Hc = this.world.height;
-      const ownShare = oc >= 0 && orow >= 0 && oc < Wc && orow < Hc ? this.sArrG[orow * Wc + oc] : 0;
+      const oi = orow * Wc + oc;
+      const ownShareRaw = oc >= 0 && orow >= 0 && oc < Wc && orow < Hc ? this.sArrG[oi] : 0;
+      // The shader's rule: a deck pixel does not read the floor's furniture.
+      const ownShare = ownShareRaw > 0 && z > this.gArr[oi] - this.sArrG[oi] + 1 ? 0 : ownShareRaw;
       if (ownShare > 0) {
         const ocx = oc + 0.5;
         const ocy = orow + 0.5;
@@ -3224,7 +3236,10 @@ export class NightLights {
     // cell carries a scenery share → samples within a cell of its centre skip.
     const oc = Math.floor(col);
     const orow = Math.floor(row);
-    const ownShare = this.hasSceneryShares && oc >= 0 && orow >= 0 && oc < W && orow < H ? this.sArrG[orow * W + oc] : 0;
+    const oidx = orow * W + oc;
+    const ownShareRaw = this.hasSceneryShares && oc >= 0 && orow >= 0 && oc < W && orow < H ? this.sArrG[oidx] : 0;
+    // The shader's rule: a deck pixel does not read the floor's furniture.
+    const ownShare = ownShareRaw > 0 && z > this.gArr[oidx] - this.sArrG[oidx] + 1 ? 0 : ownShareRaw;
     const ocx = oc + 0.5;
     const ocy = orow + 0.5;
     // Directional-sun + cloud twins (see the shader): shade the ambient term.

@@ -22,6 +22,7 @@ import { mountWikiNearButton } from "./wikinear";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { getHand, toggleHand, handLabel } from "./controls";
 import { indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "./indoorlight";
+import { hiddenRing, setHiddenRing } from "./hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "./indoorwall";
 import { withV } from "./assetver";
 import { minimapDotPct, mapImageUrls, type MinimapFeed } from "./maps";
@@ -801,6 +802,13 @@ export class HudBar {
      * far corners off black. Both live so he can tune each by eye in-game. */
     wrap.appendChild(
       pctSlider("Indoor light (lit room)", () => indoorLightLit(), (v) => setIndoorLightLit(v)),
+    );
+    /* HIDDEN OUTLINE: how loud the wall-hack silhouette is. The line draws
+     * above the darkness overlay, so at full opacity a body behind a wall is
+     * the most legible thing on screen — being hidden reads as an advantage.
+     * hiddenring.ts owns the value and its persistence. */
+    wrap.appendChild(
+      pctSlider("Hidden outline", () => hiddenRing(), (v) => setHiddenRing(v)),
     );
 
     // INDOOR WALL HEIGHT: how tall the walls stand while you are inside, in
