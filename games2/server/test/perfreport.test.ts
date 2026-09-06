@@ -59,3 +59,12 @@ test("a long device string is truncated rather than rejected", () => {
   const r = perfReport({ frames: { n: 1 }, lights: { gpu: "x".repeat(500) } }, AT);
   assert.equal((r.lights!.gpu as string).length, 80);
 });
+
+test("zoomMean and jumps reach the file — the allowlist dropped them for two runs", () => {
+  const r = perfReport({ frames: { n: 10 }, zoom: 2, zoomMean: 1.36, jumps: [{ at: 1, d: 40 }, "x"] }, AT);
+  assert.equal(r.zoomMean, 1.36, "the mean zoom is the variable the fill maths needs");
+  assert.equal(r.zoom, 2, "the instantaneous one still rides along");
+  assert.equal(r.jumps!.length, 2);
+  assert.equal(perfReport({ frames: { n: 1 } }, AT).zoomMean, null);
+  assert.equal(perfReport({ frames: { n: 1 } }, AT).jumps, null);
+});

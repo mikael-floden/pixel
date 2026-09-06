@@ -3028,6 +3028,20 @@ height reads per thing per frame.
   sits at 0.46-0.60 of unshadowed across 2-4.8 cells. Bigger published radii
   are what put the shadow back inside the lit area, so a lamp's radius is a
   LOOK knob, not just a reach knob.
+- **A PASS THAT IS "OFF" STILL RUNS — WRITE ITS STRENGTH UNIFORM ANYWAY**
+  (`uMist`, `uFog` in nightlight.ts). `setVisible(false)` does NOT stop a
+  render-to-texture Shader: Phaser's `willRender` returns true for one
+  unconditionally, so all three passes execute every frame regardless. The only
+  thing that makes mist cheap when it is off is the shader's own first line,
+  `if (uMist <= 0.001) return`. Both strength uniforms used to be written ONLY
+  inside their "is it on" branch, so once mist (or fog) had ever been on, the
+  last value written stayed > 0.001 and was never written again: the full
+  128-iteration surface march ran over every one of his 1,514,916 fragments,
+  every frame, forever, painting into a texture nobody composites. Entering a
+  house during mist latches it, and so does the snap to 0. The picture is
+  identical either way — the shader already returns vec4(0) for exactly those
+  fragments — so this is free. Any future pass with an early-out uniform gets
+  the same treatment: the guard is only as good as the last write.
 - **THE GLOW FIELD IS HALF-RESOLUTION** (`GLOW_FIELD_DIV` 2, nightlight.ts).
   The shader samples `uGlow` NORMALIZED over uCam's window and the stamps are
   placed by that same mapping (`gscale`, derived from `rt.width`), so the RT's
@@ -3046,17 +3060,24 @@ height reads per thing per frame.
   bounded it to one per loader cycle, but the loader cycles constantly while
   prefetching. MEASURED in his 2026-09-07 run, window 1: `drains` 20,
   `drainsDeferred` 0, `texturesAdded` **0** — with nothing landing, every one of
-  those 20 full paints was futile by construction, and a full paint costs
-  52.9-271.6 ms of redrawGround on his phone. That window spent 3306 ms in
-  tasks over 50 ms against a ~1280 ms floor in the quiet windows. Arming on the
+  those 20 full paints was futile by construction. HONEST SIZE, from the run's
+  own ceiling rather than the older per-paint note: w1's `redrawGround` is 1.09
+  ms/frame over 1027 frames = 1119 ms for the WHOLE window, and 24 full paints
+  in it, so a full paint averages at most 46.6 ms — the fix returns roughly
+  800-900 ms of a 30 s window (~3%), concentrated in ~20 hitches, and moves p99
+  and max rather than p50. That window spent 3306 ms in tasks over 50 ms
+  against a ~1280 ms floor in the quiet windows. Arming on the
   residency counter leaves the feature intact (one repaint per drop episode,
   which is what it was for) and removes the loop. Verified headless: drains
   stopped at 2 and full paints at 6, flat for 72 s while textures kept arriving.
 - **`lighting` IS THE NIGHT PASS UPDATE — SPLIT IT, DON'T GUESS IT.** The
   maintainer's 2026-09-07 beacon run made `lighting` the biggest CPU section
   and the least explained: 2.48 ms in one window and 17.13 in another on a
-  Mali-G715, and it did NOT track the lit-occluder count (the worst window had
-  the FEWEST, 7). Measured headless with the section split: `night.update()`
+  Mali-G715. (NOT "it does not track the lit-occluder count" — that reading was
+  WRONG and is the trap below: `sections` are window MEANS and `counts` are
+  INSTANTANEOUS snapshots, so it compared a 30 s mean against one sample. The
+  swing is still unattributed.) Measured headless with the section split:
+  `night.update()`
   IS the section — 116 ms/frame of it against under 0.7 for `applyObjectLights`,
   the cover surfaces and the shape jobs combined. So the cover-surface theory
   (it scales with occluders, which the worst window had most of) was WRONG, and
@@ -3067,6 +3088,19 @@ height reads per thing per frame.
   texture is a mid-frame framebuffer bind, which a TILER pays for in a tile
   flush. The beacon also carries the cover atlas's own counters now
   (`coverFlush`/`coverSkip`/`coverQuads`/`coverCands`/`coverSlots`).
+- **THE BEACON'S `sections` ARE WINDOW MEANS; ITS `counts` ARE INSTANTANEOUS
+  SNAPSHOTS.** Never correlate one against the other — that is comparing a 30
+  second average with a single frame, and it produced a confident wrong reading
+  of the 2026-09-07 run ("`lighting` does not track the lit-occluder count").
+  The run proves how unrepresentative a snapshot is: one window reported
+  `occluders` 320 against `occMean` 5682, and `displayList` 1176 against
+  `dlMean` 6439 — a 17x miss. Only `occMean`, `dlMean`, `zoomMean`, `longN`,
+  `longMs`, `texturesAdded`, `fullPaints` and `drains` are window quantities;
+  `litOccluders`, `sceneryImgs`, `scenerySources`, `monstersActive` and
+  `flushes` are snapshots and want promoting to means (the `perfOccSum`/
+  `perfCountN` pattern already exists). `zoomMean` and `jumps` were sent by the
+  client and DROPPED by the allowlist for two whole runs — the same trap this
+  file warns about one bullet down, walked into twice.
 - **THE PERF BEACON'S SERVER SIDE IS AN ALLOWLIST** (`server/src/perfreport.ts`,
   `perfReport`, tested in `server/test/perfreport.test.ts`): `/api/perf`
   rebuilds the report field by field, so a block the client starts sending is

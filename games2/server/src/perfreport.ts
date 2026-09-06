@@ -38,6 +38,12 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     where: str(body.where, 60),
     tod: str(body.tod, 16),
     zoom: num(body.zoom, 0, 16),
+    /* THE WINDOW'S MEAN ZOOM — the client has always sent it and this allowlist
+     * dropped it, which is this file's own trap for the second time. It is the
+     * variable the fill maths needs: the instantaneous `zoom` is demonstrably
+     * unrepresentative (one window snapshotted zoom 2.0 with 320 occluders
+     * against a mean of 5,682). */
+    zoomMean: num(body.zoomMean, 0, 16),
     dpr: num(body.dpr, 0, 8),
     view: str(body.view, 24),
     secs: num(body.secs, 0, 3600),
@@ -77,6 +83,8 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
           ]),
         )
       : null,
+    // Position jumps the client recorded this window (teleports, rubber-banding).
+    jumps: Array.isArray(body.jumps) ? (body.jumps as unknown[]).slice(0, 40).map((j) => str(JSON.stringify(j), 200)) : null,
     worst: Array.isArray(body.worst)
       ? (body.worst as unknown[]).slice(0, 8).map((w) => str(JSON.stringify(w), 400))
       : null,

@@ -3995,6 +3995,18 @@ export class NightLights {
     const showMist = mist > 0.003;
     this.mistShader?.setVisible(showMist);
     this.mistOverlay?.setVisible(showMist);
+    /* uMist IS WRITTEN EVEN WHEN THE PASS IS "OFF", or it LATCHES ON.
+     * `setVisible(false)` does not stop a render-to-texture Shader — Phaser's
+     * willRender returns true for one unconditionally, as this file's own note
+     * at the pass list says — so all three passes execute every frame no matter
+     * what. The ONLY thing that makes mist cheap when it is off is the shader's
+     * first line, `if (uMist <= 0.001) return`. Writing uMist only inside the
+     * show branch meant that once mist had ever been on, the last value written
+     * was > 0.001 and never written again: the full 128-iteration surface march
+     * ran over every fragment, every frame, forever, painting into a texture
+     * nobody composites. Costs nothing to write; the picture is identical
+     * because the shader already returns vec4(0) for exactly these fragments. */
+    this.mistShader?.setUniform("uMist.value", mist);
     if (showMist && this.mistShader) {
       const m = this.mistShader;
       m.setUniform("uAnimTime.value", this.scene.time.now / 1000);
@@ -4018,6 +4030,8 @@ export class NightLights {
     // ELEVATION DEPTH-FOG overlay — same world window as the light field. Only
     // drawn when the master strength is on (0 = disabled, costs nothing).
     const showFog = this.fogStrength * this.fogScale > 0.003;
+    // ...and the same for the depth-fog pass, for the same reason (see uMist).
+    this.depthFogShader?.setUniform("uFog.value", this.fogStrength * this.fogScale);
     this.depthFogShader?.setVisible(showFog);
     this.depthFogOverlay?.setVisible(showFog);
     if (showFog && this.depthFogShader) {
