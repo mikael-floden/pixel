@@ -981,7 +981,8 @@ def _rng(seed):
     return r
 
 
-def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
+def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
+           bg=(26, 28, 33, 255)):
     W, H = doc["size"]["w"], doc["size"]["h"]
     x1 = W if x1 is None else x1
     y1 = H if y1 is None else y1
@@ -1044,7 +1045,7 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
     oy = maxL * 17 + 24
     fw = (x1 - x0 + y1 - y0) * DX + 16
     fh = (x1 - x0 + y1 - y0) * DY + maxL * WALL + 120
-    img = Image.new("RGBA", (fw, fh), (26, 28, 33, 255))
+    img = Image.new("RGBA", (fw, fh), bg)
     fades = Counter()
 
     def cellpos(x, y, z):
@@ -1477,37 +1478,112 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print):
 
     if scale != 1:
         img = img.resize((int(img.width * scale), int(img.height * scale)), Image.LANCZOS)
+    # THE PROJECTION TRAVELS WITH THE PICTURE. Whoever draws a dot on a render
+    # needs the same arithmetic that put the tiles there, and re-deriving it
+    # from constants is how a dot ends up half a cell out: cellpos' own
+    # numbers, scaled, ride along.
+    img.proj = {"dx": DX, "dy": DY, "lp": LP, "tile": TILE, "top_y": TOP_Y,
+                "ox": ox - DX, "oy": oy, "x0": x0, "y0": y0, "scale": scale}
     return img
 
 
-# THE MINIMAP THE GAME READS IS NOT THE RENDER I READ (maintainer 2026-09-06:
-# "I think the game is using your mini-map and show it in the game in small
-# area ... maybe your mini-map is a bit too big and the client has to make it
-# much smaller before rendering it"). It was: the HUD's map tab fetched the
-# 16300x7576 / 15 MB QA render and scaled it into a frame a few hundred px
-# wide, on a PHONE. The QA render keeps its detail under `overview_full.webp`
-# (repo only - .dockerignore keeps it out of the deploy image); the game gets
-# MINIMAP_W px of the same picture, 157 KB.
-MINIMAP_W = 1200        # ~4x the HUD frame on a phone: sharp at any zoom it does
+# THE MINIMAP IS THE ISLAND, NOT THE OCEAN AROUND IT (maintainer 2026-09-06,
+# at a map tab showing a blob in a teal diamond: "Instead of adding more
+# deep_water just remove all deep water and make deep water transparent. Make
+# the mini map now as small as it can be (with the transparent pixels cropped
+# away). Give metadata how you did this so the UI-agent can place the player
+# correctly."). Deep water is the END OF THE WORLD marker, not scenery - the
+# current pushes the swimmer back long before he reaches it - so it is drawn
+# as nothing at all, the transparent border is cropped off, and what is left
+# is the coastline on a transparent ground. Every pixel of the file is island.
+#
+# The dot is the UI's job and it needs arithmetic, not a guess, so minimap.json
+# publishes the exact linear map from a cell to a pixel of THIS file.
+MINIMAP_W = 1200        # cap on the cropped island's width; it lands under this
 
 
-def write_minimap(img, world_dir):
-    """The published map image, downscaled from the render already in hand
-    (a second render of the island costs minutes). Written under BOTH names:
-    `minimap.webp` is the explicit one to read, `overview.webp` is what
-    games2 asks an iso world for today (client/src/maps.ts mapImageUrls) and
-    goes away once it prefers the minimap - board request 2026-09-06."""
-    w = MINIMAP_W
-    h = max(1, round(img.height * w / img.width))
-    small = img.convert("RGBA").resize((w, h), Image.LANCZOS)
-    for name in ("minimap.webp", "overview.webp"):
-        f = os.path.join(world_dir, name)
-        small.save(f, lossless=True, method=4, exact=True)
-        print("wrote", f, small.size, f"{os.path.getsize(f) // 1024} KB")
+def _sea_voided(doc):
+    """The same world with every deep_water cell set to the void index, which
+    render() draws as nothing."""
+    d = dict(doc)
+    G = doc["grounds"]
+    wet = {i for i, g in enumerate(G) if g == "deep_water"}
+    d["ground"] = [[-1 if v in wet else v for v in row] for row in doc["ground"]]
+    return d
+
+
+def write_minimap(img_unused, world_dir, doc):
+    """Render the island on transparency, crop to it, and publish the map with
+    the arithmetic that places a player on it."""
+    W, H = doc["size"]["w"], doc["size"]["h"]
+    fw = (W + H) * DX + 16
+    s1 = min(0.5, 16300 / fw)
+    img = render(_sea_voided(doc), scale=s1, bg=(0, 0, 0, 0), log=lambda *a: None)
+    # BEFORE the crop: crop() and resize() return NEW images and the projection
+    # does not ride along with them. Read once, here (the first cut read it
+    # after and silently fell back to a zero origin - the spawn sample landed
+    # at x -85, off the image, which is exactly what the samples are for).
+    p = img.proj
+    box = img.getbbox()
+    assert box, "nothing but sea on the map"
+    img = img.crop(box)
+    s2 = min(1.0, MINIMAP_W / img.width)
+    if s2 < 1.0:
+        img = img.resize((round(img.width * s2), round(img.height * s2)), Image.LANCZOS)
+    f = os.path.join(world_dir, "minimap.webp")
+    img.save(f, lossless=True, method=4, exact=True)
+    print("wrote", f, img.size, f"{os.path.getsize(f) // 1024} KB")
+
+    k = s1 * s2                      # source pixels -> pixels of this file
+    kx, ky, kz = p["dx"] * k, p["dy"] * k, p["lp"] * k
+    x0v = (p["ox"] + p["tile"] / 2) * k - box[0] * s2
+    y0v = (p["oy"] + p["top_y"] + p["dy"]) * k - box[1] * s2
+
+    def at(cx, cy, lv):
+        return [round(kx * (cx - cy) + x0v, 2), round(ky * (cx + cy) - kz * lv + y0v, 2)]
+    sx, sy = int(doc["spawn"][0]), int(doc["spawn"][1])
+    land = doc.get("land") or {}
+    meta = {
+        "schema": "pixel-maps3/minimap@1",
+        "image": "minimap.webp",
+        "size": {"w": img.width, "h": img.height},
+        "world": {"w": W, "h": H},
+        "note": ("deep_water is drawn as nothing and the transparent border is "
+                 "cropped away, so this file is only the island. Place a dot with "
+                 "`dot`; the world's own grid is unchanged."),
+        "dot": {
+            "kx": round(kx, 6), "x0": round(x0v, 4),
+            "ky": round(ky, 6), "kz": round(kz, 6), "y0": round(y0v, 4),
+            "formula": ("px = kx*(cell_x - cell_y) + x0 ; "
+                        "py = ky*(cell_x + cell_y) - kz*level + y0 . "
+                        "Pixels of this image, origin top-left; cell_x/cell_y may "
+                        "be fractional (the player stands between cells); level is "
+                        "world.json level[cell_y][cell_x]. The point is the CENTRE "
+                        "of that cell's top face, which is where a body stands."),
+        },
+        "samples": [
+            {"what": "spawn", "cell": [sx, sy], "level": doc["level"][sy][sx],
+             "px": at(sx, sy, doc["level"][sy][sx])},
+            {"what": "land north-west corner", "cell": [land.get("x0"), land.get("y0")],
+             "level": 0, "px": at(land.get("x0", 0), land.get("y0", 0), 0)},
+            {"what": "land south-east corner", "cell": [land.get("x1"), land.get("y1")],
+             "level": 0, "px": at(land.get("x1", 0), land.get("y1", 0), 0)},
+        ],
+        "land_cells": land,
+    }
+    for smp in meta["samples"]:
+        px, py = smp["px"]
+        assert -1 <= px <= img.width + 1 and -1 <= py <= img.height + 1, \
+            f"the dot maths puts {smp['what']} at {smp['px']} outside {img.size}"
+    f = os.path.join(world_dir, "minimap.json")
+    json.dump(meta, open(f, "w"), indent=1)
+    print("wrote", f, meta["dot"])
+    return meta
 
 
 def main():
     doc = json.load(open(os.path.join(MAPS2, "worlds3", "the_game", "world.json")))
+    img = out = None
     if "--cal" in sys.argv:
         img = render(doc, 190, 108, 216, 134)
         out = os.path.join(MAPS2, "worlds3", "the_game", "cal.webp")
@@ -1516,12 +1592,18 @@ def main():
         # grown map still encodes (512-wide world -> full canvas is ~32.8k px)
         W, H = doc["size"]["w"], doc["size"]["h"]
         fw = (W + H) * 32 + 16
-        img = render(doc, scale=min(0.5, 16300 / fw))
-        out = os.path.join(MAPS2, "worlds3", "the_game", "overview_full.webp")
-    img.convert("RGB").save(out, lossless=True, method=4, exact=True)
-    print("wrote", out, img.size)
-    if "--cal" not in sys.argv:
-        write_minimap(img, os.path.join(MAPS2, "worlds3", "the_game"))
+        # the QA render is only written on demand now: it is 15 MB, nothing
+        # reads it but this domain, and the map the game reads is its own
+        # render (transparent sea) rather than a downscale of it
+        world_dir = os.path.join(MAPS2, "worlds3", "the_game")
+        write_minimap(None, world_dir, doc)
+        img = out = None
+        if "--full" in sys.argv:
+            img = render(doc, scale=min(0.5, 16300 / fw))
+            out = os.path.join(world_dir, "overview_full.webp")
+    if out:
+        img.convert("RGB").save(out, lossless=True, method=4, exact=True)
+        print("wrote", out, img.size)
     # THE SILENT-FLAT GATE. The old member rule fell through to clean.webp on
     # a miss: a real file, so every existence check passed and the only
     # symptom was "the world looks flatter than it is" — 30.6% of members,

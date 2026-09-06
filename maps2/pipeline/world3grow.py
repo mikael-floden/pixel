@@ -48,7 +48,14 @@ REPO = os.path.dirname(MAPS2)
 OUT = os.path.join(MAPS2, "worlds3", "the_game")
 
 NEW = 512
-OFF = (240, 244)          # the tuned island rides FRONT (down-screen); the
+OFF = (240, 244)          # where the island lands on the canvas, and the only
+                          # place it is decided: EXT_C, TOWN_AT and the islets
+                          # are relative to it. The world is CENTRED at the end
+                          # instead (recentre), not here - generation reads
+                          # coordinates (seeds, noise, the ridge, the roads),
+                          # so moving the island at this end re-rolls the whole
+                          # world and measured 546 traps and a drowned islet.
+                          # The tuned island rides FRONT (down-screen); the
                           # map GROWS OUT OF IT (maintainer 2026-08-30, the
                           # architecture, verbatim: "skip the second island
                           # and extend the first island upwards. Extend the
@@ -57,11 +64,15 @@ OFF = (240, 244)          # the tuned island rides FRONT (down-screen); the
                           # city in the valley. In the valley you can use
                           # grass again. Then continue and make the island
                           # at least twice as big")
-EXT_C = (205, 215)        # the extension blob centre (up-screen of the
-                          # original); its far NW rim stays sealed cliff
+EXT_C = (OFF[0] - 35, OFF[1] - 29)   # the extension blob centre (up-screen of
+                          # the original); its far NW rim stays sealed cliff.
+                          # RELATIVE TO OFF, like every other landmark here:
+                          # as absolutes these three drifted apart the moment
+                          # the island moved.
 EXT_R = 118
-TOWN_AT = (168, 176)      # fallback town target; the real one derives from
-                          # where the ridge ends and the valley opens
+TOWN_AT = (OFF[0] - 72, OFF[1] - 68)   # fallback town target; the real one
+                          # derives from where the ridge ends and the valley
+                          # opens
 
 import world3
 from sceneryscale import drawn_px_for_piece
@@ -616,9 +627,12 @@ class Grow:
                  key=lambda c: c[0] + c[1])
         self.isl_light = self.islet(min(NEW - 12, se[0] + 12),
                                     min(NEW - 12, se[1] + 10), 7, "grey_stone", 71)
-        self.isl_stone = self.islet(322, 166, 6, "grass", 72)
-        self.isl_shoal = self.islet(356, 478, 9, "light_beach", 73, beach=False)
-        self.isl_fen = self.islet(142, 330, 8, "dark_mud", 74)
+        # RELATIVE TO OFF: as absolutes, moving the island onto the middle of
+        # the canvas dropped the standing stones inside the coast it used to
+        # sit off ("islet stones drowned/collided: 0 cells")
+        self.isl_stone = self.islet(OFF[0] + 82, OFF[1] - 78, 6, "grass", 72)
+        self.isl_shoal = self.islet(OFF[0] + 116, OFF[1] + 234, 9, "light_beach", 73, beach=False)
+        self.isl_fen = self.islet(OFF[0] - 98, OFF[1] + 86, 8, "dark_mud", 74)
         for nm, cs in (("lighthouse", self.isl_light), ("stones", self.isl_stone),
                        ("shoal", self.isl_shoal), ("fen", self.isl_fen)):
             assert len(cs) >= 25, f"islet {nm} drowned/collided: {len(cs)} cells"
@@ -2831,6 +2845,100 @@ class Grow:
                         ("npcs: town merchants", sold),
                         ("npcs: townsfolk", town),
                         ("npcs total", len(out))]
+
+    SEA_MARGIN = 20     # cells of open sea around the land: the end of the
+                        # world, which the deep-water current pushes the
+                        # swimmer back from long before he reaches it
+
+    def recentre(self):
+        """THE CANVAS IS THE LAND PLUS A SEA MARGIN - the last thing that
+        happens to the world (maintainer 2026-09-06 on the map tab: "make the
+        extended water as big to the bottom left and bottom right as you have
+        made it top left and top right ... this game uses deep_water as a way
+        to mark 'end of world'", and then, at a centred but tiny island: "The
+        island centered my-ass. Looks terrible."). Generated at OFF, the island
+        hugged the down-screen corner of a 512 grid - 128/156 cells of empty
+        sea up-screen, 30/21 down-screen - and centring alone still left it a
+        blob in an ocean of nothing. The canvas is now CUT to the land it
+        holds: everything translates together (grids, decks, walls, scenery,
+        ramps, rooms, spawn, NPCs, monster zones), nothing but deep water and
+        void is ever dropped, and the map tab gets an island that fills its
+        frame. It also takes ~40% off world.json, which is a phone download.
+        Always at the END, never at generation time: coordinates are what the
+        seeds, the ridge and the roads derive from, and moving the island up
+        front measured 546 traps and an islet drowned inside the coast it used
+        to sit off."""
+        gi, G = self.gi, self.G
+        dw, void = gi["deep_water"], -1
+        wet = {gi["deep_water"]}
+        land = [(x, y) for y in range(NEW) for x in range(NEW)
+                if self.grd[y][x] >= 0 and self.grd[y][x] not in wet]
+        assert land, "no land to centre"
+        x0 = min(c[0] for c in land); x1 = max(c[0] for c in land)
+        y0 = min(c[1] for c in land); y1 = max(c[1] for c in land)
+        N2 = max(x1 - x0, y1 - y0) + 1 + 2 * self.SEA_MARGIN
+        dx = (N2 - (x1 - x0 + 1)) // 2 - x0
+        dy = (N2 - (y1 - y0 + 1)) // 2 - y0
+        self.placed += [("land bbox before reframing", f"x {x0}..{x1} y {y0}..{y1}"),
+                        ("canvas", f"{NEW}x{NEW} -> {N2}x{N2}, moved {dx:+d},{dy:+d}")]
+        grd = [[dw] * N2 for _ in range(N2)]
+        lvl = [[0] * N2 for _ in range(N2)]
+        moved = 0
+        for y in range(NEW):
+            ny = y + dy
+            for x in range(NEW):
+                nx = x + dx
+                if not (0 <= nx < N2 and 0 <= ny < N2):
+                    assert self.grd[y][x] in wet or self.grd[y][x] == void, \
+                        f"cell {x},{y} ({G[self.grd[y][x]]}) would fall off the canvas"
+                    continue
+                grd[ny][nx] = self.grd[y][x]
+                lvl[ny][nx] = self.lvl[y][x]
+                moved += 1
+        self.doc["size"] = {"w": N2, "h": N2}
+        self.doc["ground"], self.doc["level"] = grd, lvl
+        self.grd, self.lvl = grd, lvl
+        d = self.doc
+        d["spawn"] = [d["spawn"][0] + dx, d["spawn"][1] + dy]
+        for coll in ("decks", "walls", "rooms", "ramps"):
+            for grp in d.get(coll, []):
+                for c in grp.get("cells", []):
+                    c["x"] += dx
+                    c["y"] += dy
+        for p in d.get("scenery", []):
+            p["x"] = round(p["x"] + dx, 4)
+            p["y"] = round(p["y"] + dy, 4)
+        # the two sidecars are written before this pass; they are cell
+        # coordinates in files this domain owns, so they move with the world
+        for nm, fix in (("npcs.json", "npc"), ("spawns.json", "zone")):
+            f = os.path.join(OUT, nm)
+            if not os.path.isfile(f):
+                continue
+            doc = json.load(open(f))
+            for n in doc.get("npcs", []):
+                n["x"] += dx
+                n["y"] += dy
+            for z in doc.get("zones", []):
+                z["area"] = [[x + dx, y + dy] for x, y in z["area"]]
+                if isinstance(z.get("anchor"), list) and len(z["anchor"]) == 2:
+                    z["anchor"] = [z["anchor"][0] + dx, z["anchor"][1] + dy]
+            json.dump(doc, open(f, "w"), separators=(",", ":"))
+        # WHERE THE LAND IS, stated rather than re-derived (maintainer: "it
+        # would also be good with some metadata that describes where the
+        # top-left and bottom-right land is so the game can center the new map
+        # on the land"). Cells, inclusive; the corner of the diamond, not of
+        # the screen box - the game projects it with the iso geometry the doc
+        # already carries.
+        d["land"] = {"x0": x0 + dx, "y0": y0 + dy, "x1": x1 + dx, "y1": y1 + dy}
+        m = (d["land"]["x0"], d["land"]["y0"],
+             N2 - 1 - d["land"]["x1"], N2 - 1 - d["land"]["y1"])
+        self.placed += [("land bbox", f"x {d['land']['x0']}..{d['land']['x1']} "
+                                      f"y {d['land']['y0']}..{d['land']['y1']}"),
+                        ("sea margin TL/TR/BR/BL", "/".join(str(v) for v in m)),
+                        ("cells moved", moved)]
+        assert abs(m[0] - m[2]) <= 1 and abs(m[1] - m[3]) <= 1, \
+            f"the land is not centred: margins {m}"
+        assert min(m) >= self.SEA_MARGIN - 1, f"the sea margin is thin: {m}"
 
     def spawns(self):
         """Monsters SPREAD over the doubled land (maintainer 2026-08-29): the
@@ -5336,7 +5444,7 @@ class Grow:
                      self.snap_hitboxes, self.police_footprints,
                      self.lights, self.npcs,
                      self.rooms, self.cliff_faces, self.audit_ground,
-                     self.spawns):
+                     self.spawns, self.recentre):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
