@@ -7342,9 +7342,10 @@
   },
   "light": {
     "_comment": "HOW STRONG A LIT PIECE SHINES. Per group: `light.strength` relative to the spawn bonfire (1.0) and the group's default `light.color` (used when a state's own glow cannot be measured). Decided by what the thing IS - a beacon 0.9, a hearth 0.7, a brazier 0.6, a streetlight 0.5, a torch 0.45, a lantern post 0.35, a crystal 0.3, a waystone 0.2, a mushroom 0.15, a candle on furniture 0.05-0.1 - because pixel counts alone cannot rank a torch against a willow full of fireflies. First pass written by maps2 2026-09-06 across 500 pieces; the scenery domain owns it from here and pipeline/light.py derives every piece's block from THIS table. A NEW GROUP WITH LIT ART MUST GET AN ENTRY HERE or light.py refuses it - the maps2 budget audits a piece with no block at the bonfire's radius 7, so silence would make a candle a bonfire.",
-    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
-    "radius": "round(1 + 6*strength), capped at 7",
+    "reference": "the spawn bonfire is 1.0 (radius 7) and NOT the maximum; strength 0 is no light",
+    "radius": "round(1 + 6*strength), no cap",
     "warm": "#ffb45c",
-    "cool": "#9fe4ff"
+    "cool": "#9fe4ff",
+    "_no_cap": "Maintainer 2026-09-06 on the 7-cell ceiling: \"I see the campfire as a normal light not even near what will be the max in the game.\" The cap was games2 light-budget spec, not a property of light; maps2 reads the published radius as-is and games2 is removing its cap. Strength is open at the top: 1.0 is the bonfire, 2.0 twice its reach. The strengths in this table are still the first pass's guesses (streetlight 0.5 = radius 4), which is why a night street reads dark; raising them is a taste decision and is his."
   }
 }

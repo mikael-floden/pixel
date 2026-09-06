@@ -286,7 +286,7 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
 
 ```
 "light": {"strength": 0.6, "color": "#ffb45c", "radius": 5,
-          "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+          "reference": "the spawn bonfire is 1.0 (radius 7) and NOT the maximum; strength 0 is no light",
           "states": {"LIT_1": {"strength": 0.6, "color": "#4bffde", "radius": 5},
                      "LIT_2": {"strength": 0.48, "color": "#ffb45c", "radius": 4}}}
 ```
@@ -310,7 +310,7 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   0.6× → 0.8, above 1.3× → 1.2. `color` is the brightness-weighted mean of
   those pixels **normalised so the brightest channel is 255** (colour carries
   hue, strength carries brightness); fewer than 24 such pixels and the group
-  default is used. `radius` = `round(1 + 6·strength)`, capped at 7.
+  default is used. `radius` = `round(1 + 6·strength)`, **no cap** — the bonfire is the reference (1.0), not the ceiling (maintainer: "a normal light not even near what will be the max"). The 7-cell cap was games2 budget spec and is going.
 - Measured fidelity of the derivation against the first pass
   (`light.py --compare`, 1,320 states): radius identical on 84%, the rest off
   by one cell, never more than two; strength exact on 60%; warm/cool family

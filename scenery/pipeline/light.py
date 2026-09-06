@@ -36,8 +36,9 @@ quite what was run):
     carries hue, strength carries brightness. Too few such pixels and the
     group default is used, which is why soulstone_016 sits at the group purple
     on all five states.
-  radius = round(1 + 6·strength), capped at 7 — maps2 world3.light_meta reads
-    exactly `states[<state>]` then the top level, so that shape is a contract.
+  radius = round(1 + 6·strength), NOT capped (the bonfire is the reference, not
+    the ceiling) — maps2 world3.light_meta reads exactly `states[<state>]` then
+    the top level, so that shape is a contract.
 
     python3 scenery/pipeline/light.py --check
     python3 scenery/pipeline/light.py --compare
@@ -56,7 +57,7 @@ import factory, viewer_build
 V_MIN, S_MIN = 0.8, 0.2          # what counts as an emissive pixel
 MIN_EMISSIVE_PX = 24             # fewer than this and the colour is not trusted
 NUDGE_LO, NUDGE_HI = 0.6, 1.3    # share / group median -> 0.8 | 1.0 | 1.2
-REFERENCE = "the spawn bonfire is 1.0 (radius 7); strength 0 is no light"
+REFERENCE = "the spawn bonfire is 1.0 (radius 7) and NOT the maximum; strength 0 is no light"
 
 
 def _cfg_light():
@@ -86,7 +87,12 @@ def _emissive(path):
 
 
 def _radius(strength):
-    return min(7, max(0, int(round(1 + 6 * strength))))
+    """Cells. NO CEILING (maintainer 2026-09-06: "I see the campfire as a
+    normal light not even near what will be the max in the game"). The 7-cell
+    cap came from games2's light-budget spec and is being removed there; maps2
+    already reads the published radius as-is. So strength 1.0 is the bonfire,
+    and 2.0 is a light twice its reach — the scale is open at the top."""
+    return max(0, int(round(1 + 6 * strength)))
 
 
 def lit_states(man):
