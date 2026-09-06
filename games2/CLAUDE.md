@@ -1379,6 +1379,27 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   body at equal coordinates), so a piece keyed on the bare line sorted one dy
   BEHIND its hitbox centre: a body 0.9 cells behind a signpost drew over it
   (body 11619.4 vs sign 11617.6). Measured after: behind the post the sign paints over the player (sign 11631.6 vs body 11619.9); in front of it the player paints over the sign (11647.9 vs 11631.6).
+- **A TALL WALL THE CALLER STANDS BEHIND COVERS IT — DEPTH AND COPY**
+  (`wallBehind` in `resolveDrawDepth`): the column the stand rule refuses to
+  lift over registers as a COVER exactly like the ray test (depth clamped
+  below it, `coverY` at its top line). Refusing the lift alone kept the base
+  sprite under the wall but never cut the LIT COPY, which draws in the lit
+  band above every occluder and is cropped only by a cover line — a tree
+  behind a house kept its trunk over the house's left wall through its copy
+  (copy cover 10872 from the front wall's ray test; the left wall's top at
+  10786 never registered; maintainer, 2026-09-06). Measured after: the copy's cover line moved from 10872 (the front wall) to 10786 (the left wall's top): the trunk is cut behind the left wall, the canopy above it stays; all five overlapping wall cells draw over the base sprite.
+- **`faceOverFeet` IS A TERRAIN RULE** (`!o.solid`): the ledge rule (a raised
+  cell's lifted top face in the feet band) fired for a solid point piece — a
+  short crystal 10 px in front and 11 px to the side of a player cropped his
+  whole lit copy below its top line, the hidden-behind outline over his body
+  (cave, maintainer 2026-09-06). A billboard answers through `solidArtOver`,
+  which checks the feet's x against the piece. Measured after: pod spot: body 10245.9 over the pod's 10245.7, feet still under the rock stub in front (cover 10217); crystal spot: the cover line comes from the rock stub (10343), no longer from the crystal (10325), body 10371.9 above both crystals.
+- **AMONG WHAT ONE WALL CLAMPS, A BODY SITS A HAIR ABOVE A PIECE** (the
+  `below` clamp: −0.15 for a body, −0.3 for a piece): a cave's one-level rock
+  stub in front of both a player and the pod behind him clamped both to the
+  same depth, and the tie went to creation order — the pod drew over the
+  player it stood behind (maintainer, 2026-09-06). A body behind a piece is
+  still clamped under that piece's own draw depth through `solidArtOver`.
 - **A NON-SOLID COLUMN LIFTS THE CALLER UNLESS IT RISES TWO OR MORE LEVELS
   ABOVE THE CALLER, IS NOT STANDABLE AT THE CALLER'S LEVEL, AND THE CALLER IS
   NOT CAMERA-FORWARD OF IT** (`resolveDrawDepth`, `occluderMeta.stand`).

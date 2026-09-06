@@ -12320,6 +12320,13 @@ export class WorldScene extends Phaser.Scene {
         const fwd = o.point ? o.depth > b.lyFlat : o.col + o.row + 1.2 > colf + rowf;
         const faceOverFeet =
           higher &&
+          /* TERRAIN ONLY, like the ray test: this is the LEDGE rule (a raised
+           * cell's lifted top face in the feet band). A solid billboard is
+           * point-anchored and answers through solidArtOver, which checks the
+           * feet's x against the piece — without this gate a short crystal
+           * 10px in front and 11px to the side cropped a player's whole lit
+           * copy below its top line (cave, maintainer 2026-09-06). */
+          !o.solid &&
           o.y0 <= feetY + 6 &&
           o.y0 >= feetY - (this.geom.lh + this.geom.dy + 9) &&
           fwd;
@@ -12338,7 +12345,21 @@ export class WorldScene extends Phaser.Scene {
           fwd &&
           b.lx >= o.x0 - 6 &&
           b.lx <= o.x1 + 6;
-        if (rayBlocked || faceOverFeet || solidArtOver) {
+        /* A TALL WALL THE CALLER STANDS BEHIND, OFF ITS DIAGONAL — the column
+         * the stand rule below refuses to lift over. Refusing the lift kept
+         * the base sprite under the wall but never CUT THE LIT COPY, which is
+         * drawn in the lit band above every occluder and cropped only by a
+         * cover line: a tree behind a house kept its trunk over the house's
+         * left wall through its copy (copy cover 10872 from the front wall's
+         * ray test, the left wall's top at 10786 never registered; maintainer
+         * 2026-09-06). It covers exactly as the ray test does. */
+        const wallBehind =
+          !o.solid &&
+          o.stand !== undefined &&
+          o.top > lvl + 1 &&
+          o.stand !== lvl &&
+          !(colf + rowf > o.col + o.row + 1);
+        if (rayBlocked || faceOverFeet || solidArtOver || wallBehind) {
           below = Math.min(below, od);
           coverY = Math.min(coverY, o.y0);
         } else if (
@@ -12380,7 +12401,14 @@ export class WorldScene extends Phaser.Scene {
         }
       }
       if (above > -Infinity) depth = Math.max(depth, above + 0.6);
-      if (below < Infinity) depth = Math.min(depth, below - 0.3); // walls win conflicts
+      /* WALLS WIN CONFLICTS — and among the things one wall clamps, a BODY sits
+       * a hair above a PIECE. A cave's one-level rock stub in front of both a
+       * player and the pod behind him clamped both to the same value, and the
+       * tie went to creation order: the pod drew over the player it stood
+       * behind (maintainer, 2026-09-06). A body clamps at −0.15, a piece at
+       * −0.3: a body in front of a piece lands above it; a body BEHIND a piece
+       * is clamped under that piece's own draw depth through solidArtOver. */
+      if (below < Infinity) depth = Math.min(depth, below - (self ? 0.3 : 0.15));
       coverOut = below < Infinity ? coverY : undefined;
     }
     return { depth, coverY: coverOut };
