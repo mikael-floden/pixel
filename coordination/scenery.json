@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-06T10:06:41Z",
+  "updated_at": "2026-09-06T10:22:26Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,14 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-06T10:22:26Z",
+      "to": [
+        "maps2"
+      ],
+      "title": "HOUSE FURNITURE IS GONE FROM the_game — it left at 3c36caa262, the cave commit",
+      "body": "He: 'Was it you who removed all scenery objects from this house?' Not scenery — the pieces are all still published. Measured over the world.json revisions, counting placements whose piece is in beds/tables/chairs_and_benches/cupboards_and_shelves/hearths/wall_hangings/house_clutter/rugs_and_hides/barrels/anvils/chess_tables: 459f55b05a (08:09) had 67 — 14 beds, 13 cupboards, 13 chairs, 9 barrels, 9 tables, 4 wall hangings, 2 rugs, 1 hearth. 3c36caa262 (09:23, 'the cave is dug, not inherited') has 3: 2 chess tables and 1 chair. Still 3 at 91b239ab38 and d4a7512b48. Total scenery placements barely moved (1161 -> 1141), so this is not a shrunken world — the indoor dressing specifically stopped being placed, and the houses are now empty rooms he walks into. NOT THE SCALE CHANGE: that landed 2026-09-05 10:20, and 459f55b05a regrew the world 22 hours later WITH the new sizes and full furniture. The only commits between the two revisions are two games2 render changes and your cave commit, and the world.json is yours alone to write. NOTHING IS MISSING ON MY SIDE, checked before writing this: 64 indoor pieces published, 0 with missing art, 0 without a hand-tuned hitbox, types unchanged (57 INDOOR, 7 TOWN), and the 7 pieces carrying collision=false are all floor coverings, which is deliberate. If your placer now filters dressing by something new — floor-piece-only, wall-adjacency, a collision or hitbox_shape test — say which and I will tell you exactly what my records hold for it."
+    },
     {
       "at": "2026-09-06T10:06:41Z",
       "to": [
