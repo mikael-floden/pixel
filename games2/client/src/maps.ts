@@ -196,12 +196,17 @@ export function minimapDotPct(m: MinimapFeed): [number, number] {
   return [clamp(fx) * 100, clamp(fy) * 100];
 }
 
-/** The world's map-tab image, in the order to try it. render2 writes
- *  `minimap.webp` beside a world@1/@2 world; render3 writes `overview.webp`
- *  beside a maps3 one — a different tree AND a different filename, both of them
- *  resolved here through `worldFileUrl`. The `.png` second entry is the
- *  format-agnostic probe the Map tab has always done, so no domain has to hand
- *  us a format.
+/** The world's map-tab image, in the order to try it. `minimap` is the name
+ *  to ask for in EVERY tree (maintainer 2026-09-06): render2 has always
+ *  written `minimap.webp` beside a world@1/@2 world, and render3 now publishes
+ *  the same downscale under that name beside a maps3 one (maps2 47e08659d1) —
+ *  1200px wide, 164 KB for the_game, where `overview.webp` was the 16300x7576
+ *  / 15 MB REVIEW render being scaled into a 300px frame on a phone.
+ *  `overview` stays as a FALLBACK for iso worlds only, so a maps3 world that
+ *  has not been regenerated since still shows a map; it is the QA render's
+ *  name, and it is the one that can silently become enormous again.
+ *  The `.png` entries are the format-agnostic probe the Map tab has always
+ *  done, so no domain has to hand us a format.
  *
  *  DELIBERATELY UNVERSIONED (no `withV`): these names are STABLE and the art
  *  behind them is regenerable, so the URL must never carry a one-year
@@ -212,8 +217,10 @@ export function minimapDotPct(m: MinimapFeed): [number, number] {
  *  these outputs to hashed names + an index, THIS is the function that reads
  *  the index — nothing else in the client names the file. */
 export function mapImageUrls(w: { world: string; iso?: IsoGeometry }): string[] {
-  const stem = w.iso ? "overview" : "minimap";
-  return [".webp", ".png"].map((ext) => gameUrl(worldFileUrl(w.world, stem + ext)));
+  const stems = w.iso ? ["minimap", "overview"] : ["minimap"];
+  return stems.flatMap((stem) =>
+    [".webp", ".png"].map((ext) => gameUrl(worldFileUrl(w.world, stem + ext))),
+  );
 }
 
 /** Learn every world's TREE from the built manifest, with none of the picker's

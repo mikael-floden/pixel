@@ -93,6 +93,8 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `server/test/combat.review.test.ts` instead),
   `scripts/verify-levelup.mjs` (the XP bar's level-up),
   `scripts/verify-tagline.mjs` (the logo's tagline pool + the erased art),
+  `scripts/verify-map.mjs` (the Map tab: the file it fetches, a ceiling on
+  its size, and the dot checked against the RENDERED image's own diamond),
   `scripts/verify-wikibtn.mjs` (the in-game Wiki button, the wiki's
   remembered reading spot, the game-loop freeze while it is open, the
   🔍 button + its `wiki:near` contract, and that the 🔍 icon really decoded).
@@ -216,6 +218,24 @@ from the games agent), #18 (title/landing screen).
   close and pagehide, applied on the next open — the hash rides the iframe
   src, the scroll waits for the page to be tall enough (the wiki fetches
   data.json before it renders).
+- **THE MAP TAB FETCHES `minimap.webp`, AND THE DOT IS CHECKED AGAINST THE
+  PICTURE.** Every tree publishes that name now (maps2 47e08659d1); `overview`
+  survives only as an iso fallback, and it is the QA render's name — for
+  the_game it WAS render3's 16300x7576 / 15.2 MB review render, fetched on a
+  phone and scaled into a ~360px frame, which is what made verify-landscape
+  report a 16300px map frame. Hence the size ceiling in `verify-map`: a
+  map-tab image over 2400px wide is a review render, not a map.
+  THE DOT'S GROUND TRUTH IS THE RENDERED BITMAP, never a second copy of
+  `isoFrame` — a gate that re-derives the projection agrees with the client
+  about a shared mistake. The render is an iso projection of a square grid, so
+  the four corner CELLS are the four APEXES of the diamond in the picture, and
+  those can be found by reading the pixels. Measured on the new 1200x558
+  downscale: every corner within 0.4% of its apex. That check is also the one
+  that would catch maps2 CROPPING or re-centring the render one day — the
+  client places the dot as a fraction of the FULL iso canvas, so a crop moves
+  every dot and nothing else in the client would notice. (Asked about in
+  2026-09-06: the landmass looks centred because an iso projection of a square
+  grid IS a centred diamond, not because anything was cropped.)
 - **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
   The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
   own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font
