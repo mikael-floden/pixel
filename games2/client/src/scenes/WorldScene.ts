@@ -116,6 +116,7 @@ import {
 import { SceneryLitPipeline, SCENERY_LIT_PIPELINE, SCENERY_LIT_OCC, type SceneryLitShape } from "../scenerylit";
 import { ShapeMapBuilder, shapeMapKey, decodeShape, type ShapeHitbox, type ShapeScale } from "../scenerylight";
 import { reservedLights, WORLD_LIGHT_SLOTS, RESERVED_LIGHT_SLOTS } from "../lightslots";
+import { deriveEmissive, lightKindOf, lightParams, type SceneryLightParams } from "../scenerylights";
 import { joinWorld } from "../net";
 import { bindLiveTuning, liveTuningSnapshot, monsterShadow, onLiveTuning } from "../live";
 import { ChatUI } from "../chat";
@@ -2806,6 +2807,15 @@ export class WorldScene extends Phaser.Scene {
   private sealedEmissiveCells = new Set<number>();
   // Glow halos emitted by emissive PROPS this frame — merged into glowStamps.
   private propStamps: GlowStamp[] = [];
+  /* SCENERY LIGHTS — every `lit` placement drawn in a LIT_* state is an
+   * emissive source derived from its art (scenerylights.ts), rebuilt with the
+   * scenery pass. They compete for the 8 world slots exactly like the props'
+   * sources; the unslotted ones keep their ground pool as a glow stamp. */
+  private sceneryLightSources: EmissiveSource[] = [];
+  private sceneryStamps: GlowStamp[] = [];
+  /** Per LIT texture key: the derived emissive (canvas px) + params, or null
+   *  when the art has nothing bright — derived once, the art never changes. */
+  private sceneryLightCache = new Map<string, { cx: number; cy: number; params: SceneryLightParams } | null>();
   // Bottom-anchor offset for tall (64x128 cliff/tall profile) tile art: drawn
   // with the same top-left anchor as 64px tiles it sinks 64px into the ground
   // (only the crystal tip peeked out — playtester report). Lift comes from the
@@ -10758,8 +10768,9 @@ export class WorldScene extends Phaser.Scene {
       // dissolve between the two looks, never a swap. High halos (ry unset)
       // stay: they are the art's own bloom. The glow RT repaints from this
       // array every frame, so this is a map, not a rebuild.
+      const allStamps = this.sceneryStamps.length ? this.glowStamps.concat(this.sceneryStamps) : this.glowStamps;
       const stampsDrawn = this.slotTenure.size
-        ? this.glowStamps.flatMap((g) => {
+        ? allStamps.flatMap((g) => {
             if (!g.srcId || g.ry === undefined) return [g];
             const t = this.slotTenure.get(g.srcId);
             if (!t || !this.slotLit.has(g.srcId)) return [g];
@@ -10767,7 +10778,7 @@ export class WorldScene extends Phaser.Scene {
             const k = t.ramp * t.ramp * (3 - 2 * t.ramp);
             return [{ ...g, alpha: g.alpha * (1 - k) }];
           })
-        : this.glowStamps;
+        : allStamps;
       this.night!.update(
         this.cameras.main,
         sl,
@@ -16462,6 +16473,69 @@ export class WorldScene extends Phaser.Scene {
     this.night.setSceneryOccluders(this.terrain?.footprints);
   }
 
+  /** A `lit` placement's light — derived from its LIT art once per texture
+   *  (the pixels that differ from the NOT_LIT sibling, else the bright ones),
+   *  placed at the emissive centroid's height above the anchor. Joins the
+   *  props' ledger under `s3:<place>` with its pool stamp under the same id,
+   *  so a slotted lamp's stamp is suppressed like a prop's. */
+  private pushSceneryLight(
+    p: { i: number; x: number; y: number; ax: number; ay: number; dir?: string; piece: string },
+    piece: { states: Record<string, { key: string; sprite: string; rotations: Record<string, string> }>; baseState: string },
+    st: { key: string },
+    key: string,
+    fit: { x: number; y: number; sx: number; sy: number; kx: number; ky: number; ay: number },
+    scol: number,
+    srow: number,
+  ): void {
+    let rec = this.sceneryLightCache.get(key);
+    if (rec === undefined) {
+      const pix = this.texPixels(key);
+      if (!pix) return; // art not landed yet — next rebuild
+      const unlitKey = Object.keys(piece.states).find((k) => k.startsWith("NOT_LIT")) ?? (piece.baseState.startsWith("LIT") ? null : piece.baseState);
+      let upix = null;
+      if (unlitKey && piece.states[unlitKey]) {
+        const us = piece.states[unlitKey];
+        const usprite = (p.dir ? us.rotations[p.dir] : "") || us.rotations.south || us.sprite;
+        const ukey = sceneryArtKey(usprite);
+        upix = this.textures.exists(ukey) ? this.texPixels(ukey) : null;
+      }
+      const e = deriveEmissive(pix, upix);
+      rec = e ? { cx: e.cx, cy: e.cy, params: lightParams(e, lightKindOf(p.piece)) } : null;
+      this.sceneryLightCache.set(key, rec);
+    }
+    if (!rec) return;
+    const world = this.world!;
+    const lvl = world.rows[srow]?.[scol]?.l ?? 0;
+    // The emissive centroid on screen → levels above the anchor line.
+    const headY = fit.y + (rec.cy - fit.sy) * fit.ky;
+    // Capped at 1.5 levels: the pool attenuates on the 3D distance, and a
+    // head 4 levels up put the ground under a streetlight near the radius'
+    // edge (ring at 1 cell 0.56–0.77 vs 0.72 at 4.5 cells, measured). The
+    // campfire's flame sits at 0.5; a lamp's at 1.5 still lights the post.
+    const z = Math.min(1.5, Math.max(0.3, (fit.ay - headY) / this.geom.lh));
+    let sealed = false;
+    for (const [dc, dr] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+      const nl = world.rows[srow + dr]?.[scol + dc]?.l ?? lvl;
+      if (this.roomVerdictAt(scol + dc, srow + dr, nl)) { sealed = true; break; }
+    }
+    const id = `s3:${p.i}`;
+    const pr = rec.params;
+    this.sceneryLightSources.push({
+      id, col: p.x, row: p.y, z: lvl + z, radius: pr.radius, color: pr.color, flicker: pr.flicker, shadows: pr.shadows,
+      sx: p.ax, sy: p.ay, sealed,
+    });
+    const { dx, dy } = this.geom;
+    const peak = Math.max(pr.color[0], pr.color[1], pr.color[2], 0.001);
+    this.sceneryStamps.push({
+      x: p.ax, y: p.ay + 4,
+      radius: pr.radius * Math.SQRT2 * dx, ry: pr.radius * Math.SQRT2 * dy,
+      color: [pr.color[0] / peak, pr.color[1] / peak, pr.color[2] / peak],
+      alpha: 0.6, anim: pr.anim,
+      phase: ((((scol * 40503) ^ (srow * 12289)) >>> 0) % 628) / 100,
+      litChar: true, srcId: id,
+    });
+  }
+
   private runShapeJobs(budgetMs: number): void {
     const t0 = performance.now();
     for (const [mapKey, job] of this.shapeJobs) {
@@ -16778,6 +16852,8 @@ export class WorldScene extends Phaser.Scene {
     this.scnReused = 0;
     this.scnCreated = 0;
     this.sceneryImgs = [];
+    this.sceneryLightSources = [];
+    this.sceneryStamps = [];
     /* COUNTED BEFORE THE GUARD: the boot hold waits for this pass to have RUN,
      * and a world with no scenery index runs it and finds nothing. Counting
      * after the early return would make every such join sit out the hold's full
@@ -17005,6 +17081,7 @@ export class WorldScene extends Phaser.Scene {
         this.attachSceneryShape(lo, key, art, fit, box0, hbX, hbY, p, world.rows[srow]?.[scol]?.l ?? 0, tileSize);
         this.makeFogSilhouette(lo);
       }
+      if (p.lit && st.key.startsWith("LIT")) this.pushSceneryLight(p, piece, st, key, fit, scol, srow);
       const meta = flat ? null : {
         col: scol,
         row: srow,
@@ -18911,7 +18988,7 @@ export class WorldScene extends Phaser.Scene {
           l: { col: c.col, row: c.row, z: c.z, radius: 7, color: [1.9, 0.88, 0.3], flicker: 1 },
         });
     }
-    for (const s of this.emissiveSources) {
+    for (const s of this.sceneryLightSources.length ? this.emissiveSources.concat(this.sceneryLightSources) : this.emissiveSources) {
       // A pool reaches radius*dx px past its anchor — the light must be LIVE
       // before its source scrolls on, or pools visibly pop at the screen edge.
       const reach = s.radius * this.geom.dx + 128;
