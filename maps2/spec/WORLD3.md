@@ -348,15 +348,16 @@ never into the mountain's shell (the_game: 592 floor cells, 120 added).
 
 `cave_dress()` (after `nature`): one piece per `CAVE_DRESS_PER = 7` cells of
 a ROOM (a floor cell with five or more floor neighbours that is not a
-corridor), `CAVE_GAP = 3` cells apart. Wall pieces (roots, vines, mosses,
-fragments, features) stand on a room's edge cell with a wall face behind it
-(rock to the north or west); floor pieces (crystals, geodes, fungi,
-mushrooms, cairns, stones, skulls, gravel, puffballs; frost flowers and a
-frozen spring in the ice cave) stand one cell in from the wall, because a
-footprint that reaches into the wall cell is a level change the footprint
-law refuses. Cave dressing may lean on the wall (`_art_clear` passes it: a
-root against the rock is what a root looks like). One dragon ribcage in the
-biggest hall. The braziers stay as they were. the_game: 43 pieces of 12
+corridor), `CAVE_GAP = 3` cells apart: crystals, geodes, fungi, mushrooms,
+cairns, stones, skulls, gravel, puffballs, and frost flowers and a frozen
+spring in the ice cave, one cell in from the wall, because a footprint that
+reaches into the wall cell is a level change the footprint law refuses. One
+dragon ribcage in the biggest hall. The braziers stay as they were.
+**THE CLIFF FAMILIES (`cliff_*`: roots, vines, mosses, fragments, features,
+shrubs) ARE NEVER PLACED** — build-asserted. Maintainer 2026-09-06: *"You
+should not use the scenery type 'Mountain wall', we will use that scenery
+later, but that scenery will need training to use right. They are like
+windows — you are not ready to use them yet."* the_game: 29 pieces of 9
 kinds, plus 19 braziers.
 
 ### `scenery` — a placement is centred on its HITBOX, not its art

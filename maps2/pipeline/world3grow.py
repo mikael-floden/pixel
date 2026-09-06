@@ -958,8 +958,7 @@ class Grow:
     CAVE_WALL = {"ice": "ice", "snow": "grey_stone", "grey_stone": "grey_stone",
                  "black_rock": "black_rock"}
     CAVE_OK = ("braziers/", "crystals/", "geodes/", "cup_fungi/", "mushrooms/",
-               "cairns/", "beast_skulls/", "cliff_fragments/", "cliff_mosses/",
-               "cliff_roots/", "cliff_vines/", "cliff_features/", "frost_flowers/",
+               "cairns/", "beast_skulls/", "frost_flowers/",
                "frozen_springs/", "dragon_ribcages/", "stones/", "gravel_piles/",
                "giant_skulls/", "puffballs/")
     ROCK_MIN = 24      # the mountain's body; a cave is dug into this
@@ -1053,13 +1052,17 @@ class Grow:
                             "beast_skulls", "gravel_piles", "puffballs"]
             if side == "ice":
                 floor_groups += ["frost_flowers", "frost_flowers", "frozen_springs", "crystals"]
-            hug_groups = ["cliff_roots", "cliff_vines", "cliff_vines", "cliff_mosses",
-                          "cliff_fragments", "cliff_features"]
+            # THE CLIFF FAMILIES ARE NOT PLACED (maintainer 2026-09-06: "You
+            # should not use the scenery type 'Mountain wall', we will use
+            # that scenery later, but that scenery will need training to use
+            # right. They are like windows - you are not ready to use them
+            # yet."). Nothing hugs the wall until there is placement code for
+            # it; a wall cell simply gets a floor piece like any other.
+            hug_groups = floor_groups
             target = max(2, len(room) // self.CAVE_DRESS_PER)
             taken = [(p["x"], p["y"]) for p in self.doc["scenery"]
                      if (int(p["x"]), int(p["y"])) in cells]
-            order = [(c, True) for c in edge if wall((c[0], c[1] - 1)) or wall((c[0] - 1, c[1]))] \
-                + [(c, False) for c in ring2]
+            order = [(c, False) for c in ring2]
             for k in range(len(order) - 1, 0, -1):
                 j = int(r() * (k + 1))
                 order[k], order[j] = order[j], order[k]
@@ -1090,6 +1093,10 @@ class Grow:
                     n += 1
                     break
         self.placed += [("cave dressing", n)]
+        # BUILD ASSERT: no cliff-family piece anywhere - they read only
+        # against a mountain wall and want placement code that does not exist
+        assert not any(p["piece"].startswith("cliff_") for p in self.doc["scenery"]), \
+            "a cliff-family piece was placed"
 
     def i2_systems(self):
         """The first island's own rule functions, re-run scoped to island 2's
