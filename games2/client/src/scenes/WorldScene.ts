@@ -2612,6 +2612,14 @@ export class WorldScene extends Phaser.Scene {
      *  FRONT of a tree as standing behind it (maintainer 2026-09-03: "when I
      *  stand under this tree the player's head is not visible"). */
     drawDepth?: number;
+    /** STANDABLE AT WHICH LEVEL (tiles3 columns only): a ground cell its
+     *  level, a deck plate its level, a wall −1. The lift rule needs to tell
+     *  a room's floor (a piece stands on it — lift, always) from a wall it
+     *  stands behind (lift only when camera-forward of it): both report the
+     *  ROOF as `top` under a cap, which is what hid furniture under its own
+     *  floor when the gate keyed on `top` alone (2026-09-06). maps2 metas
+     *  leave it unset and keep the unconditional lift. */
+    stand?: number;
     x0: number;
     x1: number;
     y0: number;
@@ -12323,15 +12331,25 @@ export class WorldScene extends Phaser.Scene {
           below = Math.min(below, od);
           coverY = Math.min(coverY, o.y0);
         } else if (
-          /* UNCONDITIONAL FOR ANY NON-SOLID COLUMN. A gate "only when the
-           * caller is camera-forward of a HIGHER column" (to keep a tree
-           * standing behind a house from lifting over its front wall) made
-           * every piece in a room vanish under its own floor: a capped cell's
-           * `top` is the ROOF, so the floor a barrel stands on read as a
-           * higher column it was not forward of (maintainer, 2026-09-06,
-           * within the hour). The tree case is open; it needs a column
-           * description that tells a floor from a wall. */
-          !o.solid ||
+          /* A NON-SOLID COLUMN LIFTS THE CALLER — unless it is HIGHER, NOT
+           * STANDABLE AT THE CALLER'S LEVEL, and the caller is not camera-
+           * forward of it. A room's floor and a terrace's plates are standable
+           * at the caller's level: the lift is unconditional there (the flat
+           * tile in front of the feet). A wall the caller stands behind, off
+           * its diagonal where the ray test cannot see it, is not: the blanket
+           * lift drew a tree standing BEHIND a house over the house's front
+           * wall (tree lifted from its 10861.8 anchor line to 10918.6, a wall
+           * cell's front edge four cells in front). Keyed on `top` alone the
+           * gate hid a room's furniture under its own floor (a capped cell's
+           * top is the ROOF): 4 of 10 pieces, measured — hence `stand`. And a
+           * ONE-LEVEL column keeps the lift regardless: a room's interior
+           * walls are cut to height 1 indoors (law), and a bed against one
+           * drew over its stub in the approved look — a stub one row in
+           * front covered the bed's bottom 15px under the plain rule. One-
+           * level ledges have their own cover rules (faceOverFeet); the gate
+           * is for columns TWO or more levels above the caller.
+           * maps2 metas carry no `stand` and keep the old unconditional lift. */
+          (!o.solid && (o.stand === undefined || o.top <= lvl + 1 || o.stand === lvl || colf + rowf > o.col + o.row + 1)) ||
           // POINT-ANCHORED (scenery): its own anchor line is the exact
           // comparison — the cell+1 rule is a whole cell of slack, and a body
           // standing under a tree's canopy but in front of its trunk sits
@@ -16078,7 +16096,7 @@ export class WorldScene extends Phaser.Scene {
               this.occluders.push(this.occTint(this.occImage(op.key, bx, op.y, oDepth, col, row), "deck"));
             }
             this.occluderMeta.push({
-              col, row, top: d.level, solid: false, depth: oDepth,
+              col, row, top: d.level, solid: false, depth: oDepth, stand: d.level,
               x0: bx, x1: bx + tileSize, y0: by - d.level * lh, y1: by + tileSize,
             });
           }
@@ -16188,6 +16206,7 @@ export class WorldScene extends Phaser.Scene {
             }
         this.occluderMeta.push({
           col, row, top: topL, solid: false, depth: oDepth,
+          stand: cell.kind === "wall" ? -1 : cell.level,
           x0: bx, x1: bx + tileSize, y0: by - topL * lh, y1: by + tileSize,
         });
       }

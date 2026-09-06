@@ -1379,22 +1379,29 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   body at equal coordinates), so a piece keyed on the bare line sorted one dy
   BEHIND its hitbox centre: a body 0.9 cells behind a signpost drew over it
   (body 11619.4 vs sign 11617.6). Measured after: behind the post the sign paints over the player (sign 11631.6 vs body 11619.9); in front of it the player paints over the sign (11647.9 vs 11631.6).
-- **THE LIFT OVER A NON-SOLID COLUMN STAYS UNCONDITIONAL** (`resolveDrawDepth`).
-  A gate (a HIGHER column lifts the caller only when the caller is
-  camera-forward of it — to stop a tree standing behind a house lifting over
-  its front wall) shipped for an hour on 2026-09-06 and was reverted. Two
-  things happened at once: the empty house the maintainer reported was
-  maps2's cave-gate commit dropping the furniture from the world (restored in
-  8b1833249f), AND the gate itself was measured guilty in part — with the
-  furniture back, 4 of the room's 10 roofed pieces had parquet floor tiles
-  drawn above them under the gate (a capped cell's meta `top` is the ROOF, so
-  a floor reads as a higher column a piece is not forward of), 0 without it.
-  OPEN: the tree behind the house (lifted from its 10861.8 anchor line to
-  10918.6, a wall cell's front edge four cells in front, off its diagonal). A
-  fix needs the column to say whether it is STANDABLE at the caller's level
-  (a room floor, a deck plate: unconditional lift; a wall: the gate) — and
-  scenery's `lvl` must be the surface it stands on, deck-aware, before that
-  can work on a bridge.
+- **A NON-SOLID COLUMN LIFTS THE CALLER UNLESS IT RISES TWO OR MORE LEVELS
+  ABOVE THE CALLER, IS NOT STANDABLE AT THE CALLER'S LEVEL, AND THE CALLER IS
+  NOT CAMERA-FORWARD OF IT** (`resolveDrawDepth`, `occluderMeta.stand`).
+  tiles3 columns say what level they are standable at (a ground cell its
+  level, a deck plate its level, a wall −1). A room's floor and a terrace's
+  plates lift a piece standing on them unconditionally (the flat tile in
+  front of the feet); a tall wall it stands behind — off its diagonal, where
+  the ray test cannot see it — does not: the blanket lift drew a tree standing
+  BEHIND a house over the house's front wall (lifted from its 10861.8 anchor
+  line to 10918.6, a wall cell's front edge four cells in front). One-level
+  columns always lift: a room's interior walls are cut to height 1 indoors,
+  and one-level ledges have their own cover rules (`faceOverFeet`). maps2
+  metas carry no `stand` and keep the unconditional lift (the_island2
+  unchanged). Measured after: house 10 roofed pieces drawn; the 4 beds whose bottom a one-level stub in front covers are the same pieces at the same depths with the rule stashed; cave 5 pieces under one-level stubs, identical pieces and depths with and without the rule; the tree stays at its own line (10875.8) under both overlapping wall cells (10946, 10960); the sign paints over the player behind it (11631.6 vs 11619.9) and under the player in front (11647.9).
+  THE RECORD ON THE FIRST GATE (2026-09-06): keyed on `top` alone, it was
+  blamed for a room's furniture vanishing and reverted within the hour. The
+  empty house was maps2's cave-gate commit dropping the furniture from the
+  world (restored in 8b1833249f); and the "4 of 10 pieces under the floor" it
+  was then measured with are the SAME 4 with no gate at all — beds whose
+  bottom 15 px a one-level wall stub one row in front covers through the
+  `below` clamp (depth = stub − 0.3), pre-existing and physically right. The
+  gate was innocent. Scenery's `lvl` is the placement's base level; no
+  the_game piece stands on a deck above base, so a bridge piece is untested.
 
 ## Animation playback (anti-moonwalk)
 
