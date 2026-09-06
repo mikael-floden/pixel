@@ -18,6 +18,7 @@
  */
 
 const KEY = "ml-indoor-light";
+const KEY_LIT = "ml-indoor-light-lit";
 
 /** Default = 40% — THE MAINTAINER'S OWN PICK, made on a device screenshot of
  * one of maps2' house_demo rooms (2026-08-07: "Let's set the default indoor
@@ -37,6 +38,15 @@ const KEY = "ml-indoor-light";
  * corners of a room read as stone rather than as void. */
 export const INDOOR_LIGHT_DEFAULT = 0.4;
 
+/** ...AND 12% WHEN THE ROOM LIGHTS ITSELF (maintainer 2026-09-07, walking into
+ * a house with a lit fireplace: "the old indoor ambient light at 40% is too
+ * much if we have lights inside the house"). 40% is the brightness an UNLIT
+ * room needs to read as stone rather than void; a room with a hearth in it
+ * gets its brightness from the hearth, and the base ambient only has to keep
+ * the far corners from going black. Two dials, both tunable in Settings,
+ * because the right answer differs per room and he tunes by eye. */
+export const INDOOR_LIGHT_LIT_DEFAULT = 0.12;
+
 /** The indoor HUE, as ratios (the tuned triple over its own max).
  *
  * Derived in WorldScene from TIME_PHASES[0] Night [0.075, 0.09, 0.14] by
@@ -46,24 +56,30 @@ export const INDOOR_LIGHT_DEFAULT = 0.4;
  * scales brightness WITHOUT touching the colour that was tuned. */
 const HUE: readonly [number, number, number] = [0.086 / 0.104, 0.09 / 0.104, 1];
 
-let value = load();
+let value = load(KEY, INDOOR_LIGHT_DEFAULT);
+let valueLit = load(KEY_LIT, INDOOR_LIGHT_LIT_DEFAULT);
 
-function load(): number {
+function load(key: string, dflt: number): number {
   try {
-    const raw = localStorage.getItem(KEY);
-    if (raw === null) return INDOOR_LIGHT_DEFAULT;
+    const raw = localStorage.getItem(key);
+    if (raw === null) return dflt;
     const v = Number(raw);
-    return Number.isFinite(v) ? clamp01(v) : INDOOR_LIGHT_DEFAULT;
+    return Number.isFinite(v) ? clamp01(v) : dflt;
   } catch {
-    return INDOOR_LIGHT_DEFAULT; // private mode / storage disabled
+    return dflt; // private mode / storage disabled
   }
 }
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
-/** The dial, 0..1. */
+/** The dial for a room with NO light of its own, 0..1. */
 export function indoorLight(): number {
   return value;
+}
+
+/** The dial for a room that has a light inside it, 0..1. */
+export function indoorLightLit(): number {
+  return valueLit;
 }
 
 /** Set the dial and tell the renderer. Fires "ml-indoor-light" so the scene
@@ -77,6 +93,20 @@ export function setIndoorLight(v: number): void {
     localStorage.setItem(KEY, String(next));
   } catch {
     /* storage disabled — the setting simply does not persist */
+  }
+  window.dispatchEvent(new CustomEvent("ml-indoor-light", { detail: next }));
+}
+
+/** The same, for the lit-room dial. Fires the SAME event: the renderer reads
+ *  both per frame and does not care which one moved. */
+export function setIndoorLightLit(v: number): void {
+  const next = clamp01(v);
+  if (next === valueLit) return;
+  valueLit = next;
+  try {
+    localStorage.setItem(KEY_LIT, String(next));
+  } catch {
+    /* storage disabled */
   }
   window.dispatchEvent(new CustomEvent("ml-indoor-light", { detail: next }));
 }
@@ -96,8 +126,8 @@ export function setIndoorLight(v: number): void {
  * The quadratic is what buys both: a linear fade would have washed the tint out
  * by half-way, where the room is still meant to read as an interior.
  */
-export function indoorAmbient(): [number, number, number] {
-  const t = value;
+export function indoorAmbient(lit = false): [number, number, number] {
+  const t = lit ? valueLit : value;
   const k = t * t;
   return [
     t * (HUE[0] + (1 - HUE[0]) * k),
@@ -109,4 +139,8 @@ export function indoorAmbient(): [number, number, number] {
 /** Percent for the slider's readout. */
 export function indoorLightLabel(): string {
   return `${Math.round(value * 100)}%`;
+}
+
+export function indoorLightLitLabel(): string {
+  return `${Math.round(valueLit * 100)}%`;
 }

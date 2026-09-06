@@ -21,7 +21,7 @@ import { mountWikiButton } from "./wikibtn";
 import { mountWikiNearButton } from "./wikinear";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { getHand, toggleHand, handLabel } from "./controls";
-import { indoorLight, setIndoorLight } from "./indoorlight";
+import { indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "./indoorlight";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "./indoorwall";
 import { withV } from "./assetver";
 import { minimapDotPct, mapImageUrls, type MinimapFeed } from "./maps";
@@ -791,7 +791,16 @@ export class HudBar {
     // and is built lazily from its registry. indoorlight.ts owns the value and
     // its persistence; the scene listens for "ml-indoor-light".
     wrap.appendChild(
-      pctSlider("Indoor light", () => indoorLight(), (v) => setIndoorLight(v)),
+      pctSlider("Indoor light (dark room)", () => indoorLight(), (v) => setIndoorLight(v)),
+    );
+    /* TWO DIALS, ONE FOR EACH KIND OF ROOM (maintainer 2026-09-07, on walking
+     * into a house with a lit fireplace: "the old indoor ambient light at 40%
+     * is too much if we have lights inside the house"). The first is the base
+     * a room with NO light of its own needs to read as stone; the second is
+     * what a room that lights itself gets, where the base only has to keep the
+     * far corners off black. Both live so he can tune each by eye in-game. */
+    wrap.appendChild(
+      pctSlider("Indoor light (lit room)", () => indoorLightLit(), (v) => setIndoorLightLit(v)),
     );
 
     // INDOOR WALL HEIGHT: how tall the walls stand while you are inside, in

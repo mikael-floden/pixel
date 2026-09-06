@@ -88,7 +88,7 @@ import {
   DROP_FLASH_MS,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
-import { indoorAmbient, indoorLight, setIndoorLight } from "../indoorlight";
+import { indoorAmbient, indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "../indoorlight";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import { withV, assetIndexInfo } from "../assetver";
 import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
@@ -405,6 +405,9 @@ const MONSTER_TAP_MIN_H = 48; // minimum box height — sprigling-class bodies
 // Spawn campfire (scenery/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
+/** How often the "does my room light itself" test re-runs (ms). */
+const ROOM_LIT_MS = 400;
+
 const CAMPFIRE_KEY = "campfire-burn";
 // The ONE art asset the game names directly instead of reading it from a
 // manifest — scenery/ ships none the game reads, and that whole domain is now
@@ -3679,9 +3682,15 @@ export class WorldScene extends Phaser.Scene {
       // The Settings "Indoor light" dial (indoorlight.ts). No arg reads it;
       // a number 0..1 drives it, so a gate can walk both ends without a
       // pointer drag. Returns the dial AND the ambient triple it resolves to.
-      indoorLight: (v?: number) => {
-        if (typeof v === "number") setIndoorLight(v);
-        return { dial: indoorLight(), ambient: indoorAmbient().map((x) => +x.toFixed(4)) };
+      indoorLight: (v?: number, which: "dark" | "lit" = "dark") => {
+        if (typeof v === "number") (which === "lit" ? setIndoorLightLit : setIndoorLight)(v);
+        const lit = this.roomHasLight();
+        return {
+          dial: indoorLight(),
+          dialLit: indoorLightLit(),
+          roomHasLight: lit,
+          ambient: indoorAmbient(lit).map((x) => +x.toFixed(4)),
+        };
       },
       // The Settings "Indoor wall height" dial (indoorwall.ts). No arg reads it; a
       // number sets it, so a gate can walk every level without a pointer drag.
@@ -10723,7 +10732,7 @@ export class WorldScene extends Phaser.Scene {
       // The interior target is READ PER FRAME from the Settings slider — it is
       // a live tuning dial, so a drag has to show while you stand in the room.
       // Cheap: three multiplies, no allocation beyond the triple itself.
-      const indoorTarget = indoorAmbient();
+      const indoorTarget = indoorAmbient(this.roomHasLight());
       // Kept SEPARATELY, because the two are for different halves of the world
       // while the crossing eases: `ambOut` is what a cell OUTSIDE my room is
       // heading for, `ambEff` is what a cell INSIDE it gets. Blending the
@@ -13444,6 +13453,35 @@ export class WorldScene extends Phaser.Scene {
    * repaint swap (past it the roll's exponential tail drives nothing
    * visible). The raw indoorMix stays the easing SUBSTRATE (and the QA pin's
    * target); consumers take the grade. */
+  /** DOES THE ROOM I AM IN LIGHT ITSELF? Picks which indoor ambient dial
+   *  applies (indoorlight.ts): a room with a hearth in it gets its brightness
+   *  from the hearth, so its base ambient is the lower one. Any real light
+   *  whose cell is inside my room mask counts — a scenery light (a lit
+   *  fireplace, a brazier, a candle) or an emissive tile. Recomputed at most
+   *  every ROOM_LIT_MS: the answer only changes when the room binding or the
+   *  scenery around me does, and the crossfade between the two dials is the
+   *  indoor grade's own ease, so a late frame costs nothing visible. */
+  private roomLitAt = 0;
+  private roomLitVal = false;
+  private roomHasLight(): boolean {
+    if (!this.roomMask) return false;
+    const now = this.time.now;
+    if (now - this.roomLitAt < ROOM_LIT_MS) return this.roomLitVal;
+    this.roomLitAt = now;
+    const inRoom = (col: number, row: number, z: number) => !this.indoorOutside(col * CELL_WU, row * CELL_WU, z);
+    let lit = false;
+    for (const s of this.sceneryLightSources) {
+      if (inRoom(s.col, s.row, s.z)) { lit = true; break; }
+    }
+    if (!lit) {
+      for (const e of this.emissiveSources) {
+        if (inRoom(e.col, e.row, e.z)) { lit = true; break; }
+      }
+    }
+    this.roomLitVal = lit;
+    return lit;
+  }
+
   private indoorGrade(): number {
     const R = INDOOR_GRADE_RATE;
     return this.indoorInside

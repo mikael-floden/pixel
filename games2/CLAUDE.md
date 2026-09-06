@@ -1420,6 +1420,19 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   / `flushCoverSurfaces`, "it also kills the dark band the flat line left
   across visible legs"); scenery is still on the flat line and wants the same
   treatment.
+- **TWO INDOOR AMBIENT DIALS — DARK ROOM 40%, LIT ROOM 12%**
+  (`indoorlight.ts`, both in Settings). A room with no light of its own needs
+  40% to read as stone rather than void; a room that lights ITSELF gets its
+  brightness from its own hearth, and the base ambient only has to keep the far
+  corners off black (maintainer 2026-09-07, walking into a house with a lit
+  fireplace: "the old indoor ambient light at 40% is too much if we have lights
+  inside the house"). `roomHasLight()` picks the dial: any real light — a
+  scenery light or an emissive tile — whose cell is inside MY room mask
+  (`indoorOutside`) counts, re-tested at most every `ROOM_LIT_MS` 400 ms, and
+  the switch between the two rides the indoor grade's own ease so it never
+  pops. Measured: the fireplace house resolves to [0.0995, 0.1041, 0.12], an
+  unlit room to [0.342, 0.355, 0.400]. Probe `__ml.indoorLight(v?, "dark"|"lit")`
+  reports both dials and `roomHasLight`.
 - **THE GRAVE CROSS LOADS AT BOOT** (`GRAVE_CROSS_KEY`, queued in `preload()`
   beside the campfire). It used to fetch on the FIRST kill, so the first cross
   of every session waited on a round trip — and the dropped item's own texture
