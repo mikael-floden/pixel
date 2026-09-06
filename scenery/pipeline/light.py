@@ -44,6 +44,7 @@ quite what was run):
     python3 scenery/pipeline/light.py --compare
     python3 scenery/pipeline/light.py [--force] <rel> [<rel> ...]
     python3 scenery/pipeline/light.py --fill          # every gap, every piece
+    python3 scenery/pipeline/light.py --scale 2 [--write]   # the brightness knob
 """
 from __future__ import annotations
 
@@ -191,6 +192,44 @@ def ensure(rel, force=False, cache=None, write=True):
     return "written" if not existing else "rewritten", list(block["states"])
 
 
+def scale(factor, write=False):
+    """Multiply EVERY strength (piece default and each state) by `factor`,
+    recompute radius, keep colour. This is the brightness knob.
+
+    Why multiply the blocks in place rather than re-derive with --force: the
+    500 first-pass blocks carry per-state nudges and measured colours that my
+    derivation only reproduces on 84% of radii. Scaling preserves their exact
+    relative structure — a streetlight stays 0.5 of a bonfire, LIT_3 stays
+    0.8 of LIT_1 — and only moves the whole scale. Also updates the group table
+    in config so a piece derived later lands on the same scale as the rest.
+
+    The budget cost, so it is decided with eyes open: radius = round(1+6s), so
+    x2 takes a streetlight from 4 to 7 cells and a hearth from 5 to 9; every
+    camera window then reaches more lights, and maps2's 8-light audit thins
+    placements where it overflows."""
+    n = 0
+    for rel, man in factory.discover():
+        L = man.get("light")
+        if not L:
+            continue
+        L["strength"] = round(L["strength"] * factor, 2)
+        L["radius"] = _radius(L["strength"])
+        for st in (L.get("states") or {}).values():
+            st["strength"] = round(st["strength"] * factor, 2)
+            st["radius"] = _radius(st["strength"])
+        n += 1
+        if write:
+            factory.write_manifest(rel, man)
+    if write:
+        cfg_p = os.path.join(factory.ROOT, "config", "factory.json")
+        cfg = json.load(open(cfg_p))
+        for g in cfg.get("groups", []):
+            if isinstance(g, dict) and isinstance(g.get("light"), dict) and "strength" in g["light"]:
+                g["light"]["strength"] = round(g["light"]["strength"] * factor, 2)
+        json.dump(cfg, open(cfg_p, "w"), indent=2, ensure_ascii=False)
+    return n
+
+
 def check():
     """The gate: every lit piece and every LIT state carries an entry."""
     bad = []
@@ -251,6 +290,21 @@ if __name__ == "__main__":
               f"({100 * r['radius_match'] // max(r['states'], 1)}%)   off-by: {r['radius_off_by']}")
         print(f"  strength exact (2dp)  : {r['strength_exact']} / {r['states']}")
         print(f"  colour warm/cool same : {r['colour_family']} / {r['states']}")
+        sys.exit(0)
+    if "--scale" in sys.argv:
+        f = float(sys.argv[sys.argv.index("--scale") + 1])
+        dry = "--write" not in sys.argv
+        table, _, _ = _cfg_light()
+        print("x%.2f would make (strength -> radius cells):" % f)
+        for g in ("beacons", "hearths", "braziers", "streetlights", "torch_posts",
+                  "lantern_posts", "crystals", "waystones", "mushrooms", "beds"):
+            if g in table and "strength" in table[g]:
+                s0 = table[g]["strength"]; s1 = round(s0 * f, 2)
+                print("  %-14s %.2f -> %.2f   radius %d -> %d" % (g, s0, s1, _radius(s0), _radius(s1)))
+        n = scale(f, write=not dry)
+        print("%d pieces %s" % (n, "rescaled" if not dry else "would be rescaled (DRY RUN — add --write)"))
+        if not dry:
+            viewer_build.build(); print("viewer_data.json rebuilt")
         sys.exit(0)
     force = "--force" in sys.argv
     if "--fill" in sys.argv:

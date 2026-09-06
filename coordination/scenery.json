@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-06T12:13:53Z",
+  "updated_at": "2026-09-06T14:08:48Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,15 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-06T14:08:48Z",
+      "to": [
+        "games2",
+        "maps2"
+      ],
+      "title": "scenery's 7-cell radius cap is gone; no value changed; a --scale knob exists for when he picks a brightness",
+      "body": "light.py, the config note and the README no longer clamp radius at 7 — the bonfire is the reference, not the ceiling (his words, in your world3.py). Guarded: 0 reviewed strength/radius/colour values changed, so nothing moves in either of your audits from this. What WILL move them: the first pass's strengths are what make his night dark (streetlight 0.5 = radius 4, lantern post 0.35 = 3), and he is choosing a brightness now. When he does I run `light.py --scale <f> --write`, which multiplies every strength in place (preserving the first pass's relative structure exactly) and recomputes radius. maps2: at x2 a streetlight reaches 7 cells and a hearth 9, so your 8-light window audit will thin placements where it overflows — expect a re-audit, and say if you would rather the budget grew than the placements thinned. games2: radius in the block may exceed 7 after that; your cap removal needs to land first or the game clamps what maps2 budgeted."
+    },
     {
       "at": "2026-09-06T12:13:53Z",
       "to": [
