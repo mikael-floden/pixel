@@ -114,6 +114,15 @@ const SCN_CORE = 0.45;
 const SCN_CONTACT_R = 0.75;
 const SCN_CONTACT_SUN = 0.7;
 const SCN_CONTACT_TORCH = 0.5;
+/** A SCENERY PIECE SHADOWS HARD under a point light (maintainer 2026-09-07:
+ *  every light must make scenery cast shadows the way the bonfire does). A
+ *  one-cell piece intercepts one or two march samples; at the wall chain's
+ *  0.8 per sample that was a 10-16% dip behind a waystone under a
+ *  streetlight (measured) — invisible in a half-strength pool, only the
+ *  bonfire's overbright pool made it read. Samples on a scenery share take
+ *  these factors instead (grazing → deep); walls keep 0.8→0.45. */
+const SCN_SHADOW_NEAR = 0.55;
+const SCN_SHADOW_DEEP = 0.3;
 /** GLSL smoothstep, for the CPU twins of shader terms (e0 > e1 allowed, as in GLSL). */
 function smoothStep01(e0: number, e1: number, x: number): number {
   const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
@@ -1019,8 +1028,13 @@ void main() {
         float H = heightAtSoft(p);
         float hg = groundAtSoft(p);
         float blocker = (H > hg + 0.01 && lp.z <= H) ? hg : H;
-        if (blocker < 90.0 && blocker > hRay)
-          occ *= mix(0.8, 0.45, clamp((blocker - hRay) * 1.5, 0.0, 1.0));
+        if (blocker < 90.0 && blocker > hRay) {
+          float pen = clamp((blocker - hRay) * 1.5, 0.0, 1.0);
+          // A scenery share shadows HARD (one or two samples per piece);
+          // terrain keeps the wall chain. One extra read, blocking samples only.
+          float sc = uSceneryOn > 0.5 ? step(0.01, sceneryShareAt(p)) : 0.0;
+          occ *= mix(mix(0.8, 0.45, pen), mix(${SCN_SHADOW_NEAR}, ${SCN_SHADOW_DEEP}, pen), sc);
+        }
       }
       // Bounce floor: firelight scatters — shadowed ground near a light keeps
       // a faint glow instead of dropping to pitch ambient. Faces still gate
@@ -1860,11 +1874,20 @@ export class NightLights {
   private sceneryOrig = new Map<number, [number, number, number, number, number, number]>();
   /** Placement index → the self-exclusion radius² (cells²) its lit copy tints with. */
   private sceneryExcl = new Map<number, number>();
-  private hasSceneryShares = false;
+  hasSceneryShares = false; // read by the perf beacon
   /** Cells whose ground-map G carries the sun patch's sparse-gate flag (restored before a re-apply). */
   private sceneryDil: number[] = [];
   /** Dev switch (__ml.sceneryShadows): false = scenery casts nothing, terrain only. */
   sceneryShadows = true;
+  /** What the last frame uploaded — the perf beacon's light-cost fields: lights
+   *  in the shader, how many march shadows, the summed pool area in cells
+   *  (the march's per-pixel bill scales with it), the ambient luma. */
+  lightStats = { n: 0, shadowing: 0, poolCells: 0, ambient: 1 };
+  /** THE LIGHT BILL, ACCUMULATED PER UPLOADED FRAME and drained by the perf
+   *  beacon (`lightBill`). Means over the window, not the last frame: the cost
+   *  correlates with how many lights were up WHILE the frames were timed, and
+   *  the maintainer walks in and out of the town's pools during one window. */
+  private bill = { frames: 0, n: 0, shadowing: 0, poolCells: 0, nMax: 0, shadowMax: 0, ambient: 1 };
   /** Dev switch (__ml.sceneryShadows(on, gate)): the sparse sun-patch gate (uPropGate). Identity when off. */
   sunGate = true;
   /** Measured costs, ms: the once-per-world heightmap build and the last scenery apply. */
@@ -3264,8 +3287,14 @@ export class NightLights {
             hg -= this.shareAtSoft(this.sArrG, px, py);
           }
           const blocker = hh > hg + 0.01 && L.z <= hh ? hg : hh;
-          if (blocker < 90 && blocker > hRay)
-            occ *= 0.8 + (0.45 - 0.8) * Math.min(1, (blocker - hRay) * 1.5);
+          if (blocker < 90 && blocker > hRay) {
+            const pen = Math.min(1, (blocker - hRay) * 1.5);
+            const pc = Math.floor(px);
+            const pr = Math.floor(py);
+            const inSelf = selfR2 > 0 && (px - col) * (px - col) + (py - row) * (py - row) < selfR2;
+            const sc = !inSelf && this.hasSceneryShares && pc >= 0 && pr >= 0 && pc < W && pr < H && this.sArrG[pr * W + pc] > 0.01;
+            occ *= sc ? SCN_SHADOW_NEAR + (SCN_SHADOW_DEEP - SCN_SHADOW_NEAR) * pen : 0.8 + (0.45 - 0.8) * pen;
+          }
         }
         // THE OWN TRUNK'S CORE, DIRECTIONALLY — the shader's rule.
         if (ownShare > 0 && selfR2 <= 0) {
@@ -3422,6 +3451,32 @@ export class NightLights {
   }
 
   /** Headless-debug: real dimensions of the render target vs the screen. */
+  /** What the night pass cost this beacon window, and the geometry it cost it
+   *  over: lights uploaded (mean + peak), how many of them MARCH SHADOWS (the
+   *  12-sample loop — the actual per-fragment bill), the summed pool area in
+   *  cells, and the FIELD the shader runs at. Resolution is the biggest lever
+   *  there is (`?light=` scales it) and was invisible to the beacon until now,
+   *  so a slow run could not be told apart from a large one. Drains on read. */
+  lightBill(): Record<string, number | string> {
+    const f = Math.max(1, this.bill.frames);
+    const w = Math.round(this.shader?.width ?? 0);
+    const h = Math.round(this.shader?.height ?? 0);
+    const out = {
+      frames: this.bill.frames,
+      n: +(this.bill.n / f).toFixed(2),
+      shadowing: +(this.bill.shadowing / f).toFixed(2),
+      nMax: this.bill.nMax,
+      shadowMax: this.bill.shadowMax,
+      poolCells: Math.round(this.bill.poolCells / f),
+      ambient: this.bill.ambient,
+      field: `${w}x${h}`,
+      ls: lightScale(),
+      fragPerPass: w * h,
+    };
+    this.bill = { frames: 0, n: 0, shadowing: 0, poolCells: 0, nMax: 0, shadowMax: 0, ambient: this.bill.ambient };
+    return out;
+  }
+
   debugInfo() {
     const key = this.overlay?.texture.key ?? "?";
     const tex = this.scene.textures.get(key);
@@ -3838,8 +3893,12 @@ export class NightLights {
     s.setUniform("uAmbientOut.value.y", ao[1]);
     s.setUniform("uAmbientOut.value.z", ao[2]);
     const n = Math.min(lights.length, MAX_SHADER_LIGHTS);
+    let shadowing = 0;
+    let poolCells = 0;
     for (let i = 0; i < n; i++) {
       const l = lights[i];
+      if (l.radius > 0) shadowing++;
+      poolCells += Math.PI * l.radius * l.radius;
       this.posArr[i * 4] = l.col;
       this.posArr[i * 4 + 1] = l.row;
       this.posArr[i * 4 + 2] = l.z;
@@ -3850,6 +3909,17 @@ export class NightLights {
       this.colArr[i * 4 + 3] = l.flicker;
     }
     s.setUniform("uNumLights.value", n);
+    this.lightStats.n = n;
+    this.lightStats.shadowing = shadowing;
+    this.lightStats.poolCells = Math.round(poolCells);
+    this.lightStats.ambient = +(0.2126 * ambient[0] + 0.7152 * ambient[1] + 0.0722 * ambient[2]).toFixed(3);
+    this.bill.frames++;
+    this.bill.n += n;
+    this.bill.shadowing += shadowing;
+    this.bill.poolCells += poolCells;
+    this.bill.nMax = Math.max(this.bill.nMax, n);
+    this.bill.shadowMax = Math.max(this.bill.shadowMax, shadowing);
+    this.bill.ambient = this.lightStats.ambient;
     s.setUniform("uLightPos.value", this.posArr);
     s.setUniform("uLightCol.value", this.colArr);
     s.setUniform("uEmitN.value", this.emitList.length);

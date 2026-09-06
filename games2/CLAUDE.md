@@ -1394,6 +1394,31 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   whole lit copy below its top line, the hidden-behind outline over his body
   (cave, maintainer 2026-09-06). A billboard answers through `solidArtOver`,
   which checks the feet's x against the piece. Measured after: pod spot: body 10245.9 over the pod's 10245.7, feet still under the rock stub in front (cover 10217); crystal spot: the cover line comes from the rock stub (10343), no longer from the crystal (10325), body 10371.9 above both crystals.
+- **BESIDE IS NOT IN FRONT — A GRID OCCLUDER ANSWERS ON CELL DIAGONALS**
+  (`fwd` in `depthrule.ts`): a terrain cell can only cover the caller when its
+  own diagonal is STRICTLY NEARER than the caller's CELL diagonal
+  (`o.col + o.row > floor(colf) + floor(rowf)`). The old `+1.2` slack compared
+  against the caller's FRACTIONAL position, so a stub on the SAME diagonal —
+  one east AND one north, i.e. beside him — claimed the front the moment the
+  41 px art box reached its screen column: the ledge rule fired, the `below`
+  clamp pulled the body from 10240.9 to 10231.85, and it dropped behind a
+  dragon ribcage drawing at 10245.70, wearing the hidden-behind outline. A
+  third of a cell decided it, which is why it read as "depends a bit on where
+  I stand" (maintainer, 2026-09-06 and again 2026-09-07). Quantising to the
+  caller's own cell puts the flip at a cell edge, where a painter-order change
+  is invisible, instead of mid-cell where it is not. (Rejected: comparing the
+  cell against the exact fraction — it kills the beside case too, but re-opens
+  a ledge corner poking between the legs when the body stands deep in its own
+  cell, the playtester bug the band was tuned for.)
+- **THE DEPTH RULE IS A PURE FUNCTION — `client/src/depthrule.ts`**, and
+  `WorldScene.resolveDrawDepth` only feeds it (art box, occluder list,
+  geometry). The cave sort broke three times and each round the only check was
+  a probe that needed the world to finish loading — flaky, and twice it
+  measured an empty scene and said "fixed". `server/test/depthrule.test.ts`
+  now replays REAL occluder records measured at the maintainer's spot, so the
+  rule is testable without a browser. NOTE the trap the split caught: the old
+  body clamp read a bare `self`, which in a browser is `window` — always
+  truthy, so bodies had silently been clamping at a piece's −0.3.
 - **AMONG WHAT ONE WALL CLAMPS, A BODY SITS A HAIR ABOVE A PIECE** (the
   `below` clamp: −0.15 for a body, −0.3 for a piece): a cave's one-level rock
   stub in front of both a player and the pod behind him clamped both to the
@@ -2859,6 +2884,19 @@ height reads per thing per frame.
   `sceneryLightInfo()`, `sceneryLightShape(needle,x,y)`. Phone GPU cost of
   the per-texel copies and the sparse sun patch is UNMEASURED (SwiftShader
   is no proxy) — `?fps=1` at the town, Night and Day, is the owed number.
+- **THE PERF BEACON'S SERVER SIDE IS AN ALLOWLIST** (`server/src/perfreport.ts`,
+  `perfReport`, tested in `server/test/perfreport.test.ts`): `/api/perf`
+  rebuilds the report field by field, so a block the client starts sending is
+  DROPPED SILENTLY until it is named there. A `lights` block written
+  client-side on 2026-09-07 would have posted, returned 200, and arrived empty.
+  Add the field on BOTH sides or not at all. What it carries now: the night
+  pass's own bill — lights uploaded (mean + peak over the window), how many of
+  them MARCH SHADOWS (the 12-sample loop, the real per-fragment cost), summed
+  pool area in cells, ambient, the FIELD the shader runs at with its
+  `?light=` scale and fragment count (resolution is the biggest GPU lever
+  there is and was invisible), plus the GPU string, torch, weather and the
+  scenery switches. Means over the window, not the last frame: he walks in and
+  out of the town's pools while one window is timing.
 - **A CAVE MOUTH IS NOT A WALL FACE**: `Ha` is max(terrain, deck), so pixels
   under a roof slab classified as FACE and took face Lambert + face shadow —
   painting the open entrance like glass (maintainer: "some sort of mirror or
@@ -2895,8 +2933,11 @@ height reads per thing per frame.
   change nothing in-game). Steady, no
   flicker (deferred by the maintainer: a type will be published beside
   strength later — wire it then, don't invent one). Flame-like ids
-  (light|lamp|lantern|torch|brazier|fire|candle|beacon|hearth|forge) cast
-  shadows, the rest are shadow-free. The pixels still place the light: those
+  (light|lamp|lantern|torch|brazier|fire|candle|beacon|hearth|forge) flicker
+  when they have no manifest block; EVERY scenery light CASTS SHADOWS
+  (maintainer 2026-09-07: "I was expecting all spotlights to work this way …
+  they should all be able to make other scenery cast shadows"). Shadow-free
+  glow pools stay the tile-emission default, not a scenery one. The pixels still place the light: those
   that DIFFER between the LIT frame and its NOT_LIT sibling (same canvas —
   PixelLab relights the same object), or without a sibling the bright
   saturated ones, give the centroid = the lamp's HEAD (z 0.3..1.5 levels above

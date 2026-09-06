@@ -25,7 +25,7 @@ test("without a sibling, bright saturated pixels are the light; a dark post alon
   assert.equal(deriveEmissive(unlit), null, "nothing bright: no light");
 });
 
-test("kind by piece id, params campfire-anchored: a lamp flickers with shadows at ~2 cells, a crystal pulses shadow-free", () => {
+test("kind by piece id, params campfire-anchored: a lamp flickers at ~2 cells, a crystal pulses; both shadow", () => {
   assert.equal(lightKindOf("streetlights/streetlight_011"), "flame");
   assert.equal(lightKindOf("crystals/crystal_012"), "glow");
   const e = deriveEmissive(lit, unlit)!;
@@ -37,7 +37,7 @@ test("kind by piece id, params campfire-anchored: a lamp flickers with shadows a
   const crystal = lightParams({ ...e, area: 900 }, "glow");
   assert.equal(crystal.radius, 4.5, "the fallback derivation's own ceiling");
   assert.equal(crystal.anim, 1);
-  assert.equal(crystal.shadows, false);
+  assert.equal(crystal.shadows, true, "every scenery light shadows (maintainer 2026-09-07)");
 });
 
 import { lightFromBlock, CAMPFIRE_PEAK } from "../../client/src/scenerylights.js";

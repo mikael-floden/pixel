@@ -102,7 +102,7 @@ export function lightFromBlock(
     color: [(b.color[0] / peak) * inten, (b.color[1] / peak) * inten, (b.color[2] / peak) * inten],
     flicker: 0,
     anim: 1,
-    shadows: kind === "flame",
+    shadows: true, // every scenery light shadows (maintainer 2026-09-07); kind only steers flicker
   };
 }
 
@@ -131,6 +131,6 @@ export function lightParams(e: Emissive, kind: LightKind): SceneryLightParams {
     color: [e.color[0] * inten, e.color[1] * inten, e.color[2] * inten],
     flicker: kind === "flame" ? 0.5 : 0.15,
     anim: kind === "flame" ? 2 : 1,
-    shadows: kind === "flame",
+    shadows: true, // every scenery light shadows (maintainer 2026-09-07)
   };
 }

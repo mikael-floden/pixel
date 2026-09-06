@@ -29,6 +29,7 @@ import { createHash, createHmac, randomBytes, timingSafeEqual } from "crypto";
 import { readFileSync } from "fs";
 import { join } from "path";
 import type express from "express";
+import { perfReport } from "./perfreport.js";
 
 const REPO = process.env.WIKI_REPO || "mikael-floden/pixel";
 const BRANCH = process.env.WIKI_BRANCH || "main";
@@ -530,61 +531,7 @@ export function registerLiveRoutes(app: express.Application): void {
     const now = Date.now();
     if (now - lastPerfCommit < PERF_MIN_GAP_MS) { res.status(429).json({ error: "too soon" }); return; }
     const body = (req.body ?? {}) as Record<string, unknown>;
-    const num = (v: unknown, lo: number, hi: number) =>
-      typeof v === "number" && isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v * 100) / 100)) : null;
-    const str = (v: unknown, n: number) => (typeof v === "string" ? v.slice(0, n) : null);
-    const flat = (v: unknown, keys: number, hi: number) => {
-      if (!v || typeof v !== "object") return null;
-      const out: Record<string, number> = {};
-      for (const [k, val] of Object.entries(v as Record<string, unknown>).slice(0, keys)) {
-        const n = num(val, 0, hi);
-        if (n !== null) out[k.slice(0, 40)] = n;
-      }
-      return out;
-    };
-    const report = {
-      at: new Date(now).toISOString(),
-      build: str(body.build, 40),
-      where: str(body.where, 60),
-      tod: str(body.tod, 16),
-      zoom: num(body.zoom, 0, 16),
-      dpr: num(body.dpr, 0, 8),
-      view: str(body.view, 24),
-      secs: num(body.secs, 0, 3600),
-      final: body.final === true,
-      frames: flat(body.frames, 12, 100000),
-      sections: flat(body.sections, 40, 100000),
-      counts: flat(body.counts, 40, 1e9),
-      // The ground-texture sample: where the dark texels sit on the tile
-      // lattice, measured on HIS device because the harness never reproduces it.
-      ground: body.ground && typeof body.ground === "object"
-        ? Object.fromEntries(
-            Object.entries(body.ground as Record<string, unknown>).slice(0, 16).map(([k, v]) => [
-              k.slice(0, 24),
-              typeof v === "number"
-                ? v
-                : Array.isArray(v)
-                  ? v.slice(0, 12).map((x) => String(x).slice(0, 24))
-                  // The texture crop is a data: URL and needs its own ceiling —
-                  // a few KB of PNG, which is the whole point of it.
-                  : k === "png"
-                    ? String(v).slice(0, 24000)
-                    : String(v).slice(0, 48),
-            ]),
-          )
-        : null,
-      groundFull: body.groundFull && typeof body.groundFull === "object"
-        ? Object.fromEntries(
-            Object.entries(body.groundFull as Record<string, unknown>).slice(0, 16).map(([k, v]) => [
-              k.slice(0, 24),
-              typeof v === "number" ? v : Array.isArray(v) ? v.slice(0, 12).map((x) => String(x).slice(0, 24)) : k === "png" ? String(v).slice(0, 24000) : String(v).slice(0, 48),
-            ]),
-          )
-        : null,
-      worst: Array.isArray(body.worst)
-        ? (body.worst as unknown[]).slice(0, 8).map((w) => str(JSON.stringify(w), 400))
-        : null,
-    };
+    const report = perfReport(body, new Date(now).toISOString());
     if (report.frames === null && report.sections === null) { res.status(400).json({ error: "empty report" }); return; }
     lastPerfCommit = now;
     const id = `${report.at.replace(/[:.]/g, "-")}-${Math.random().toString(36).slice(2, 8)}`;
