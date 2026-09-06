@@ -280,6 +280,37 @@ glowing scenery. LIGHTS_ON art carries baked glow (self-emission in the
 sprite); becoming a real shader light is a separate, budgeted decision made
 at placement time (tiles2/emission.json pattern).
 
+**`light` — how strong a piece shines (maintainer 2026-09-06, written by
+maps2, scenery maintains it from here).** Every piece with a `LIT_*` state
+(or `lights: LIGHTS_ON`) carries in its manifest:
+
+```
+"light": {"strength": 0.6, "color": "#ffb45c", "radius": 5,
+          "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+          "states": {"LIT_1": {"strength": 0.6, "color": "#4bffde", "radius": 5},
+                     "LIT_2": {"strength": 0.48, "color": "#ffb45c", "radius": 4}}}
+```
+
+- `strength` is relative to the spawn bonfire (1.0); it is decided per group
+  by what the thing IS (a beacon 0.9, a hearth 0.7, a brazier 0.6, a
+  streetlight 0.5, a torch 0.45, a lantern post 0.35, a crystal 0.3, a
+  waystone 0.2, a mushroom 0.15, a candle on furniture 0.05–0.1), then nudged
+  ×0.8…×1.2 per state by that state's emissive pixel share against the
+  group's median. (Pixel counts alone cannot rank a torch against a willow
+  full of fireflies — the class sets the order, the art only the nuance.)
+- `color` is the state's own emissive hue, measured from its art (the
+  brightness-weighted mean of its bright saturated pixels); a state with no
+  measurable glow takes the group's default (warm `#ffb45c`, cool `#9fe4ff`).
+- `radius` is in cells: `round(1 + 6·strength)`, capped at 7 (the bonfire).
+  It is what the light budget measures (`maps2/pipeline/world3.py
+  light_boxes`).
+- The top-level values are the piece default; `states[<LIT state>]` wins for
+  a placement drawn in that state. A new LIT state without an entry falls
+  back to the piece default; a piece without a `light` block is audited at
+  the cap (7).
+- Flicker (a type + parameter beside strength/colour) is deliberately not
+  here yet (maintainer: "not now").
+
 ## Run it
 
 ```bash

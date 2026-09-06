@@ -165,5 +165,23 @@
     }
   },
   "collision": true,
-  "hitbox_shape": "ellipse"
+  "hitbox_shape": "ellipse",
+  "light": {
+    "strength": 0.12,
+    "color": "#9fe4ff",
+    "radius": 2,
+    "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
+    "states": {
+      "LIT_1": {
+        "strength": 0.1,
+        "color": "#9fe4ff",
+        "radius": 2
+      },
+      "LIT_2": {
+        "strength": 0.14,
+        "color": "#ffb07b",
+        "radius": 2
+      }
+    }
+  }
 }
