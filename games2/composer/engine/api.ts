@@ -14,7 +14,7 @@ import { AudioGraph, BufferCache, BusName } from "./context";
 import { AmbienceMixer } from "./ambience";
 import { MusicDirector } from "./music";
 import { MusicalContext, OneShotPlayer, PlayOpts } from "./oneshot";
-import { composerFoley, composerFoleySurfaces, composerFoleyTake } from "./foley";
+import { composerFoley, composerFoleySurfaces, composerFoleyTake, loadComposerFoley } from "./foley";
 import { nightMusicUrl, titleThemeUrl } from "./titleTheme";
 import { ContextMusic, hasBed } from "./contextMusic";
 import { BED_MIN_HOLD_S, BED_NAMES, BED_OFF, BED_ON, BedName, desiredBed, resolveBed } from "./bedSelect";
@@ -545,7 +545,12 @@ export class GameAudio {
     this.oneShots.pure = this.pureOn;
     this.applySfxMute();
 
-    void loadCatalog().then((cat) => {
+    // The foley index loads ALONGSIDE the catalog, not before or after: the
+    // composer's sets OVERRIDE the catalog's, so if one landed first the
+    // override would be observable half-applied — a footstep could take the
+    // catalog sound for a frame and the composer's the next. Same tick, or
+    // neither.
+    void Promise.all([loadCatalog(), loadComposerFoley()]).then(([cat]) => {
       this.catalog = cat;
       this.ambience = new AmbienceMixer(this.graph!, this.buffers, cat.sounds);
       this.indexBindings(cat.bindings);

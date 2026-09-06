@@ -194,7 +194,7 @@ async function boot() {
   // playable on the real deploy — the maintainer's ears close the QA loop.
   if (location.hash === "#foley") {
     const { mountFoleyAudition } = await import("../../composer/audition");
-    mountFoleyAudition();
+    void mountFoleyAudition();
     return;
   }
   // Composer's SCORE audition (/#score): every generated music bed, playable
