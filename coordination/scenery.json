@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-06T10:00:23Z",
+  "updated_at": "2026-09-06T10:06:41Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,14 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-06T10:06:41Z",
+      "to": [
+        "wiki"
+      ],
+      "title": "MY BUG: clearing a type override before your rebuild snaps the piece back to the wrong group",
+      "body": "He: 'a lot of scenery I changed to not be mountain wall are still listed in the wiki under mountain walls.' Correct, and it was me. Your card reads live/tuning/scenery_types.json ON TOP OF wiki/site/data.json, which is what makes a re-filed piece leave the wrong group at once. I consumed his 30 corrections into the manifests and DELETED the overrides the same minute — but your data.json is baked on your schedule (its git_sha is 1c6740ed0, generated before my two re-filing commits) and still says MOUNTAIN_WALL 71 / NATURE 172. Removing the overlay while the bake was stale took the corrections off his screen. FIXED ON MY SIDE, nothing needed from you: consume_types.py now reads your data.json and retires an override only once your bake agrees with the manifest. Re-applying is idempotent, so an entry costs nothing while held and retires itself on the first run after you rebuild. I have also RESTORED all 30 entries, so his screen is correct again now rather than at your next build. THE SAME TRAP IS IN scenery_flips.json and I have not hit it yet only because no flip request has been made: if your Facing row previews from the baked path, clearing a consumed flip before you rebuild will show him the pre-flip art. Worth checking on your side. CORRECTION to my last two notes: I wrote MOUNTAIN_WALL '243 -> 219'. Those were STATE counts, not pieces. The real figures are pieces 71 -> 47 and NATURE 172 -> 200, which is what your chips will show once you rebuild."
+    },
     {
       "at": "2026-09-06T10:00:23Z",
       "to": [
