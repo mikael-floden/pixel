@@ -2710,10 +2710,23 @@ height reads per thing per frame.
   Trunk = the footprint's cells at round(art px / 88) levels, clamped 1..3 (a
   tree 2, a stone 1) — the compact soft pool props cast. NO CANOPY DISC
   (built, measured, removed): a block of crown cells drew a DIAMOND LATTICE
-  under every tree by day — the patch skips a pixel's own cell, so each cell of
-  a block shades as its own saw-tooth; a smooth canopy needs the patch changed,
-  which is the_island2's approved prop look (maintainer verdict). Deck-capped
-  cells skip (indoors, under bridges); a piece's own shares are excluded from
+  under every tree by day — the patch then skipped a pixel's own cell, so each
+  cell of a block shaded as its own saw-tooth. THE OWN CELL NOW SHADES ON A
+  SCENERY WORLD (`uSceneryOn`, twin `hasSceneryShares`; the skip stays for
+  props, so the_island2 is byte-identical): under a post, a cart, a stone it
+  left a BRIGHT DIAMOND inside the cast shadow wherever the art does not cover
+  its own cell — measured at the signpost: own cell 1.00 sun beside a 0.66
+  cast shadow, 0.66 after (maintainer, 2026-09-06). A canopy disc would no
+  longer lattice for that reason; unbuilt, the maintainer's call. UNDER A CAP
+  (a room under its roof, a cave under its ceiling, ground under a span) only
+  the GROUND map takes the share: the linear column IS the cap, so growing it
+  would raise the roof, and linear G is the sun's channel, which must not
+  shade indoors. The point-light march already reads the ground map for a
+  light under a cap (`lp.z <= H → hg`, shader and CPU twin alike), so the
+  ground byte alone gives the torch its indoor shadows. (Skipping capped cells
+  outright was the first cut — measured as a barrel beside the player casting
+  nothing, behind/beside 1.19; with the ground share 0.82 in the house and
+  0.65 / 0.91 / 0.89 in the cave. Maintainer, 2026-09-06.) A piece's own shares are excluded from
   its own lit-copy tint (`sceneryExclR2`, else every tree stood in its own
   shadow). Footprints land AFTER the heightmap is built, so `restampScenery`
   re-applies (idempotent). Measured the_game: 649 footprints, 4-19 ms + two
@@ -2731,7 +2744,12 @@ height reads per thing per frame.
   tread under a 0.5-cell trunk darkened 21% on the torch side — a pixel whose
   cell carries a share now skips LOS samples within one cell of that cell's
   centre (`ownShare`, twin in `lightAt`); props write no B, so tiles2 is
-  byte-identical. Trunk position is cell-quantised (one texel per cell): up
+  byte-identical. THE LIGHT'S OWN CELL IS SKIPPED THE SAME WAY (`lShare`,
+  twin `lShare`): a fire IS its piece, and a share taller than the light
+  (a lamp post's 2 levels vs a light at head height) would block its own
+  pool from the samples that land in its cell. By construction — the cave
+  braziers' fires sit above their 1-level share (own ring identical on/off);
+  town emitters after: the one real town emitter, a bonfire at 443.5,364.5 with no share in its own cell, reads its pool 0.92x with shadows on - a uniform 8% from its OWN multi-cell footprint, outside the own-cell skip; a per-light exclusion radius needs a uniform slot (open). Trunk position is cell-quantised (one texel per cell): up
   to 0.5 cell from the drawn trunk, and the day pool keeps the patch's 0.35-
   cell tiers — both inherited from the approved prop look.
 - **SCENERY IS LIT PER PIXEL** (`scenerylit.ts` pipeline + `scenerylight.ts`

@@ -831,7 +831,13 @@ void main() {
     if (propRun) for (int s = 1; s <= 8; s++) {
       dcp += 0.35;
       vec2 p = pos - uSun.xy * dcp;
-      if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
+      // THE OWN CELL SHADES TOO ON A SCENERY WORLD. Skipping it is the props'
+      // rule (the_island2's approved look; uSceneryOn keeps it byte-identical
+      // there), but under a post, a cart, a stone it left a BRIGHT DIAMOND
+      // inside the cast shadow wherever the art does not cover its own cell
+      // (maintainer, 2026-09-06). Shaded, the cell is the contact shadow the
+      // cast one grows from — same depth, no seam.
+      if (uSceneryOn < 0.5 && floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
       float reach = smoothstep(2.7, 1.3, dcp);
       if (reach <= 0.0) break;
       float hRay = z + dcp * uSun.z + 0.15;
@@ -945,6 +951,13 @@ void main() {
     // received from above or level (cliff bases, object shadows, faces)
     // keeps full occlusion.
     float occ = 1.0;
+    // A light standing INSIDE a scenery share — a campfire, a brazier: the
+    // fire IS the piece — must not be blocked by its own trunk (measured: a
+    // cave brazier's own pool fell 28% at 1.3 cells once its cell carried a
+    // share). The mirror of the pixel-side skirt skip, keyed on the light's
+    // cell; the piece still shadows every OTHER light.
+    float lShare = uSceneryOn > 0.5 ? sceneryShareAt(lp.xy) : 0.0;
+    vec2 lC = floor(lp.xy) + 0.5;
     if (uLightPos[i].w > 0.0 && (z < lp.z + 0.05 || objAt(cell) > 0.5)) {
       for (int s = 1; s <= 12; s++) {
         float t = float(s) / 13.0;
@@ -959,6 +972,7 @@ void main() {
         vec2 dp = p - pos;
         if (dot(dp, dp) < 0.56) continue;
         if (ownShare > 0.0 && dot(p - ownC, p - ownC) < 1.0) continue;
+        if (lShare > 0.0 && dot(p - lC, p - lC) < 1.0) continue;
         float hRay = mix(z, lp.z, t) + 0.2;
         // TWO SOLID SPANS PER COLUMN, not one height. The ground is solid
         // from 0 to hg; a deck (when H > hg) is a slab at H with OPEN AIR
@@ -2819,7 +2833,6 @@ export class NightLights {
       }
     }
     for (const i of trunk.keys()) {
-      if (this.tArr[i] > this.bArr[i] + 1e-3) continue; // capped by a deck: indoors / under a span
       const i4 = i * 4;
       const Rb0 = dL[i4];
       const Gb0 = dL[i4 + 1];
@@ -2827,7 +2840,17 @@ export class NightLights {
       const Grb0 = dG[i4];
       const eT = trunk.get(i) ?? 0;
       const newGr = Math.max(Grb0, Math.min(255, Bb + eT));
-      const newR = Math.max(Rb0, Math.min(255, Bb + eT));
+      // UNDER A CAP — a room under its roof, a cave under its ceiling, ground
+      // under a span — the linear column IS the cap: growing it would raise
+      // the roof, and the sun (linear G) must not shade inside. The ground
+      // share is the whole story there: the point-light march already falls
+      // back to the GROUND map for a light under a cap (`lp.z <= H → hg`, in
+      // the shader and the CPU twin alike), so a torch indoors shadows the
+      // piece off exactly this byte. Skipping capped cells outright was the
+      // first cut — measured as a barrel beside the player casting nothing,
+      // behind/beside 1.00 (maintainer's house and cave, 2026-09-06).
+      const capped = this.tArr[i] > this.bArr[i] + 1e-3;
+      const newR = capped ? Rb0 : Math.max(Rb0, Math.min(255, Bb + eT));
       if (newR === Rb0 && newGr === Grb0) continue;
       const newG = Math.min(255, Gb0 + (newR - Rb0)); // R−G unchanged, byte-exact
       this.sceneryOrig.set(i, [Rb0, Gb0, Grb0, this.hArr[i], this.gArr[i], this.pArr[i]]);
@@ -3030,7 +3053,9 @@ export class NightLights {
       dcp += 0.35;
       const px = col - sun[0] * dcp;
       const py = row - sun[1] * dcp;
-      if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
+      // The shader's rule: on a scenery world the pixel's OWN cell shades (its
+      // own share is a contact shadow); props keep the skip (the_island2).
+      if (!this.hasSceneryShares && Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
       const reach = sstep(2.7, 1.3, dcp);
       if (reach <= 0) break;
       const hRay = z + dcp * sun[2] + 0.15;
@@ -3134,6 +3159,11 @@ export class NightLights {
       const wantOcc = parts !== undefined && dist < radius + SCN_CROWN_REACH;
       if (att <= 0.001 && !wantOcc) continue;
       let occ = 1;
+      const lc = Math.floor(L.col);
+      const lr = Math.floor(L.row);
+      const lShare = this.hasSceneryShares && lc >= 0 && lr >= 0 && lc < W && lr < H ? this.sArrG[lr * W + lc] : 0;
+      const lcx = lc + 0.5;
+      const lcy = lr + 0.5;
       if (L.radius > 0 && (z < L.z + 0.05 || isObj)) {
         for (let sN = 1; sN <= 12; sN++) {
           const tt = sN / 13;
@@ -3142,6 +3172,7 @@ export class NightLights {
           if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
           if ((px - col) * (px - col) + (py - row) * (py - row) < 0.56) continue; // near-field
           if (ownShare > 0 && (px - ocx) * (px - ocx) + (py - ocy) * (py - ocy) < 1.0) continue; // own trunk's skirt
+          if (lShare > 0 && (px - lcx) * (px - lcx) + (py - lcy) * (py - lcy) < 1.0) continue; // the LIGHT's own trunk (a fire IS its piece)
           const hRay = z + (L.z - z) * tt + 0.2;
           // EXACT twin of the shader's two-span test: a deck is a floating
           // slab, so it only blocks a ray whose light is on its far side.
