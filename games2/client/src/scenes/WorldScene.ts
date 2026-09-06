@@ -1833,6 +1833,14 @@ export class WorldScene extends Phaser.Scene {
         // list we built — the gap is what the cull is worth.
         flushes: this.perfDrawCount, // batch flushes in the last rendered frame
         occSkipped: this.occCulledSubmits, // occluder submits the cull removed
+        // THE COVER SURFACES' own bill — the suspect for `lighting`: it scales
+        // with covered bodies x occluders, not with lights, and re-rasterises
+        // three atlases whenever anything it draws has MOVED (see coverSig).
+        coverFlush: this.coverStat.flushes,
+        coverSkip: this.coverStat.skips,
+        coverQuads: this.coverStat.quads,
+        coverCands: this.coverStat.cands,
+        coverSlots: this.coverStat.slots,
         // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
         // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
         // every "full" frame in the last beacon was a `repaintWorld` — so these
@@ -10676,7 +10684,9 @@ export class WorldScene extends Phaser.Scene {
         }
       // [8 WORLD SLOTS] — the campfire scenery + every emissive tile/prop in
       // range, as REAL lights at last. Overflow keeps the glow stamp.
+      this.ps();
       this.pickWorldLights(sl, fireLit, this.game.loop.delta);
+      this.pe("litPick");
       this.lastSlotInfo.total = sl.length;
       // LIGHT SOURCES OUTSIDE MY ROOM DO NOT REACH IT (maintainer 2026-08-07:
       // "point light from outside has to be turned off"). This became load
@@ -10744,7 +10754,9 @@ export class WorldScene extends Phaser.Scene {
       this.curPrecipDim += (dimTo - this.curPrecipDim) * ca;
       if (!this.weatherFX) this.weatherFX = new WeatherFX(this);
       this.weatherFX.setWeather(this.weatherIdx);
+      this.ps();
       this.weatherFX.update(this.game.loop.delta, this.cameras.main, (wx, wy) => this.isWaterAtScreen(wx, wy));
+      this.pe("litWeather");
       // Aurora eases on the same ~4s roll (the curtains breathe in).
       const auroraTo = this.auroraOn ? 1 : 0;
       this.curAurora += (auroraTo - this.curAurora) * ca;
@@ -10864,6 +10876,7 @@ export class WorldScene extends Phaser.Scene {
             return [{ ...g, alpha: g.alpha * (1 - k) }];
           })
         : allStamps;
+      this.ps();
       this.night!.update(
         this.cameras.main,
         sl,
@@ -10877,6 +10890,7 @@ export class WorldScene extends Phaser.Scene {
         playerCol,
         playerRow,
       );
+      this.pe("litPass");
     }
 
     const lights: LightSource[] = [];
@@ -10916,13 +10930,26 @@ export class WorldScene extends Phaser.Scene {
       }
       lights.push(...this.emissiveLights);
     }
+    /* SPLIT, because `lighting` was the run's biggest number and its most
+     * opaque: 2.48 ms in one window and 17.13 in another on the maintainer's
+     * Mali-G715, and it did NOT track the lit-occluder count (the worst window
+     * had the FEWEST). Self-timed spans nest (see `pe`), so the parent now
+     * reports only its own remainder and the next beacon run attributes it. */
+    this.ps();
     if (this.shapeJobs.size) this.runShapeJobs(3);
+    this.pe("litShapeJobs");
+    this.ps();
     this.applyObjectLights();
+    this.pe("litObjects");
     // After every body has registered AND both consumers have read their slot,
     // before render: rasterise the surfaces the frame's images point at.
+    this.ps();
     this.flushCoverSurfaces();
+    this.pe("litCoverSurf");
     this.footsteps?.update(this.time.now);
+    this.ps();
     this.atmo.update(lights, this.cameras.main, dt);
+    this.pe("litAtmo");
     this.pe("lighting");
   }
 

@@ -1914,6 +1914,15 @@ export class NightLights {
    *  correlates with how many lights were up WHILE the frames were timed, and
    *  the maintainer walks in and out of the town's pools during one window. */
   private bill = { frames: 0, n: 0, shadowing: 0, poolCells: 0, nMax: 0, shadowMax: 0, ambient: 1 };
+  /** THE PASS UPDATE'S OWN MS, accumulated per update and drained with the
+   *  light bill. `lighting` was the beacon run's biggest CPU section and its
+   *  whole cost is THIS call — measured headless: 116 ms/frame of it against
+   *  under 0.7 for every other part of that section — so it is split here.
+   *  `glow` is the glow render-texture: a mid-frame framebuffer bind, which a
+   *  TILER like his Mali-G715 pays for with a tile flush; the remainder is the
+   *  73 uniform writes and the overlay bookkeeping. */
+  private updMs = 0;
+  private updGlowMs = 0;
   /** Dev switch (__ml.sceneryShadows(on, gate)): the sparse sun-patch gate (uPropGate). Identity when off. */
   sunGate = true;
   /** Measured costs, ms: the once-per-world heightmap build and the last scenery apply. */
@@ -3504,8 +3513,14 @@ export class NightLights {
       field: `${w}x${h}`,
       ls: lightScale(),
       fragPerPass: w * h,
+      // What the pass UPDATE cost, ms per frame: the glow render-texture, and
+      // the rest (uniform writes + overlay bookkeeping) as updMs - glowMs.
+      updMs: +(this.updMs / f).toFixed(3),
+      glowMs: +(this.updGlowMs / f).toFixed(3),
     };
     this.bill = { frames: 0, n: 0, shadowing: 0, poolCells: 0, nMax: 0, shadowMax: 0, ambient: this.bill.ambient };
+    this.updMs = 0;
+    this.updGlowMs = 0;
     return out;
   }
 
@@ -3794,6 +3809,7 @@ export class NightLights {
     this.curPlayerZ = this.fogTestZ ?? playerZ;
     this.curPlayerXY = this.fogTestXY ?? [playerCol, playerRow];
     if (!this.shader || !this.active) return;
+    const tUpd0 = performance.now();
     const s = this.shader;
     // The overlay Images are setScrollFactor(0) but Phaser STILL scales them by the
     // camera zoom. Counter that here: scale each overlay by 1/zoom so its on-screen
@@ -3833,6 +3849,7 @@ export class NightLights {
     s.setUniform("uCam.value.w", wv.height * k);
     // Redraw the glow-halo field for this frame's window: one tinted radial
     // stamp per visible emission source, animated by per-source phase.
+    const tGlow0 = performance.now();
     if (this.glowRT && this.stampImg) {
       const rt = this.glowRT;
       // World px -> glow-RT texel. The shader samples uGlow normalized over
@@ -3883,6 +3900,7 @@ export class NightLights {
     } else {
       s.setUniform("uGlowOn.value", 0);
     }
+    this.updGlowMs += performance.now() - tGlow0;
     s.setUniform("uFlip.value", this.fieldFlip);
     // Pattern 5 (probe-only): NORMAL lighting maths but composited opaque
     // (blend rule below keys off >= 3) — a screenshot then reads the RAW
@@ -4028,6 +4046,7 @@ export class NightLights {
       this.shader?.setVisible(false);
       this.overlay?.setVisible(false);
     }
+    this.updMs += performance.now() - tUpd0;
   }
 
   /** EXACT JS twin of the shader's mist density at a WORLD point (probes +

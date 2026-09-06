@@ -3028,6 +3028,21 @@ height reads per thing per frame.
   sits at 0.46-0.60 of unshadowed across 2-4.8 cells. Bigger published radii
   are what put the shadow back inside the lit area, so a lamp's radius is a
   LOOK knob, not just a reach knob.
+- **`lighting` IS THE NIGHT PASS UPDATE — SPLIT IT, DON'T GUESS IT.** The
+  maintainer's 2026-09-07 beacon run made `lighting` the biggest CPU section
+  and the least explained: 2.48 ms in one window and 17.13 in another on a
+  Mali-G715, and it did NOT track the lit-occluder count (the worst window had
+  the FEWEST, 7). Measured headless with the section split: `night.update()`
+  IS the section — 116 ms/frame of it against under 0.7 for `applyObjectLights`,
+  the cover surfaces and the shape jobs combined. So the cover-surface theory
+  (it scales with occluders, which the worst window had most of) was WRONG, and
+  measuring it cost nothing while shipping a fix for it would have. The section
+  now reports as `litPick` / `litWeather` / `litPass` / `litShapeJobs` /
+  `litObjects` / `litCoverSurf` / `litAtmo`, self-timed so they nest, and the
+  pass reports `updMs` + `glowMs` inside the light bill — the glow render
+  texture is a mid-frame framebuffer bind, which a TILER pays for in a tile
+  flush. The beacon also carries the cover atlas's own counters now
+  (`coverFlush`/`coverSkip`/`coverQuads`/`coverCands`/`coverSlots`).
 - **THE PERF BEACON'S SERVER SIDE IS AN ALLOWLIST** (`server/src/perfreport.ts`,
   `perfReport`, tested in `server/test/perfreport.test.ts`): `/api/perf`
   rebuilds the report field by field, so a block the client starts sending is
