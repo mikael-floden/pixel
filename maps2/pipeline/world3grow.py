@@ -955,8 +955,17 @@ class Grow:
     # into the mountain's outer shell. Only cave dressing stands on a cave
     # floor (CAVE_OK), and it stands along the walls of rooms, never in a
     # corridor.
-    CAVE_WALL = {"ice": "ice", "snow": "grey_stone", "grey_stone": "grey_stone",
-                 "black_rock": "black_rock"}
+    # THE WALLS ARE CHOSEN FOR THE CAVE, NOT READ OFF THE MOUNTAIN TOP
+    # (maintainer 2026-09-06: "This is inside the mountain and we can have
+    # any floor/ground type on the top regardless of what walls we use
+    # inside the cave ... We should pick walls that look good in the cave
+    # and not 'just use' whatever the top of the mountain said"). Caves
+    # whose floors touch are ONE complex, and a complex is dug through one
+    # rock - CAVE_ROCK, drawn by the complex's own hash - with one exception
+    # a designer would make on purpose: in a complex of CAVE_ICE_MIN rooms
+    # or more, the deepest room (the highest lid) is the ice chamber.
+    CAVE_ROCK = ("grey_stone", "black_rock")
+    CAVE_ICE_MIN = 4
     CAVE_OK = ("braziers/", "crystals/", "geodes/", "cup_fungi/", "mushrooms/",
                "cairns/", "beast_skulls/", "frost_flowers/",
                "frozen_springs/", "dragon_ribcages/", "stones/", "gravel_piles/",
@@ -1003,7 +1012,31 @@ class Grow:
             for (x, y) in floor:
                 self.grd[y][x] = gi["dark_mud"]
                 self.cave_floor[(x, y)] = i
-            self.cave_side[i] = self.CAVE_WALL.get(dk.get("ground"), "grey_stone")
+        # complexes: decks whose floors touch
+        parent = {i: i for i, _ in decks}
+
+        def find(i):
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]
+                i = parent[i]
+            return i
+        for (x, y), i in self.cave_floor.items():
+            for m in ((x + 1, y), (x, y + 1)):
+                j = self.cave_floor.get(m)
+                if j is not None and find(i) != find(j):
+                    parent[find(i)] = find(j)
+        members = collections.defaultdict(list)
+        for i, dk in decks:
+            members[find(i)].append((i, dk))
+        for root, group in members.items():
+            anchor = min((c["x"], c["y"]) for _, dk in group for c in dk["cells"])
+            r = _rng32((anchor[0] * 2654435761 ^ anchor[1] * 40503) & 0xffffffff)
+            rock = self.CAVE_ROCK[int(r() * len(self.CAVE_ROCK)) % len(self.CAVE_ROCK)]
+            rooms = [(i, dk) for i, dk in group if len(dk["cells"]) >= 12]
+            deepest = max(rooms, key=lambda t: (int(t[1]["level"]), len(t[1]["cells"])))[0] \
+                if len(rooms) >= self.CAVE_ICE_MIN else None
+            for i, dk in group:
+                self.cave_side[i] = "ice" if i == deepest else rock
         gone = len(self.doc["scenery"])
         self.doc["scenery"] = [p for p in self.doc["scenery"]
                                if (int(p["x"]), int(p["y"])) not in self.cave_floor
@@ -1041,9 +1074,6 @@ class Grow:
             room = [c for c in sorted(cells) if nfloor(c) >= 5 and not corridor(c)]
             edge = [c for c in room if any(wall(m) for m in ((c[0] + 1, c[1]), (c[0] - 1, c[1]), (c[0], c[1] + 1), (c[0], c[1] - 1)))]
             edgeset = set(edge)
-            # floor pieces stand one cell in from the wall: a crystal's
-            # footprint reaches past its cell, and the wall cell is a level
-            # change the footprint law refuses (measured: 22 of ~60 landed)
             ring2 = [c for c in room if c not in edgeset and nfloor(c) == 8
                      and any((c[0] + dx, c[1] + dy) in edgeset
                              for dx in (-1, 0, 1) for dy in (-1, 0, 1))]
@@ -1062,24 +1092,66 @@ class Grow:
             target = max(2, len(room) // self.CAVE_DRESS_PER)
             taken = [(p["x"], p["y"]) for p in self.doc["scenery"]
                      if (int(p["x"]), int(p["y"])) in cells]
-            order = [(c, False) for c in ring2]
+            # AGAINST THE WALLS (maintainer 2026-09-06: "you often place stuff
+            # in the middle of the room ... make it hard to walk inside the
+            # room. Why not place the scenery against the walls more
+            # often?"): a piece on an edge cell is put FLUSH, its footprint's
+            # back edge on the wall line, the way furniture meets a house
+            # wall - walls to the north and west first (their faces show),
+            # south and east too, and about one piece in five in the open.
+            order = []
+            for c in edge:
+                x, y = c
+                sides = [d for d, m in (("n", (x, y - 1)), ("w", (x - 1, y)),
+                                        ("s", (x, y + 1)), ("e", (x + 1, y))) if wall(m)]
+                if sides:
+                    order.append((c, sides[0]))
+            open_cells = [(c, None) for c in ring2]
             for k in range(len(order) - 1, 0, -1):
                 j = int(r() * (k + 1))
                 order[k], order[j] = order[j], order[k]
+            for k in range(len(open_cells) - 1, 0, -1):
+                j = int(r() * (k + 1))
+                open_cells[k], open_cells[j] = open_cells[j], open_cells[k]
+            # four against the wall, then one in the open
+            mixed, oi = [], 0
+            for k, item in enumerate(order):
+                mixed.append(item)
+                if k % 4 == 3 and oi < len(open_cells):
+                    mixed.append(open_cells[oi])
+                    oi += 1
             laid = 0
-            for (x, y), back in order:
+            for (x, y), side_ in mixed:
                 if laid >= target:
                     break
                 if any(abs(x + 0.5 - tx) + abs(y + 0.5 - ty) < self.CAVE_GAP for tx, ty in taken):
                     continue
-                grp = hug_groups if back else floor_groups
-                grp = grp[int(r() * len(grp))]
+                grp = floor_groups[int(r() * len(floor_groups))]
                 pcs = self.pool(grp)
                 if not pcs:
                     continue
                 piece = pcs[int(r() * len(pcs))]
-                if self.put(piece, x + 0.5, y + 0.5, on=("dark_mud",)):
-                    taken.append((x + 0.5, y + 0.5))
+                px, py, flush = x + 0.5, y + 0.5, False
+                if side_:
+                    sh = self._fp_shape({"piece": piece, "x": px, "y": py, "hflip": False,
+                                         "state": None, "dir": None})
+                    if sh:
+                        _, dwx, dwy, hx, hy = sh
+                        R = max(hx, hy)
+                        if R < 0.95:                     # fits in its own cell
+                            gap = R + 0.04
+                            cx, cy = x + 0.5, y + 0.5
+                            if side_ == "n":
+                                cy = y + gap
+                            elif side_ == "s":
+                                cy = y + 1 - gap
+                            elif side_ == "w":
+                                cx = x + gap
+                            else:
+                                cx = x + 1 - gap
+                            px, py, flush = cx - dwx, cy - dwy, True
+                if self.put(piece, px, py, on=("dark_mud",), flush=flush):
+                    taken.append((px, py))
                     laid += 1
             n += laid
         # one set piece: the bones of something large, in the biggest hall

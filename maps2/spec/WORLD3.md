@@ -335,12 +335,22 @@ bit random."* The 12 ported cave lids kept the mountain's own top as their
 floor (snow and ice floors underground) and their inner walls took whatever
 pool the terrace above happened to draw.
 
-`caves()` (right after `i2_cave`): every cave floor cell is **dark_mud**; the
-walls inside a cave are **one material per cave, the rock it is dug into**
-(`CAVE_WALL` by the lid's ground: ice under ice, black rock under black rock,
-grey stone under snow and stone) — `cliff_faces` gives a face whose foot is
-a cave floor that side and no other; the mountain top and its outer walls
-are untouched. **Corridors are one cell wider**: every passage grows one
+`caves()` (right after `i2_cave`): every cave floor cell is **dark_mud**.
+**THE WALLS ARE CHOSEN FOR THE CAVE, NOT READ OFF THE MOUNTAIN TOP**
+(maintainer 2026-09-06: *"This is inside the mountain and we can have any
+floor/ground type on the top regardless of what walls we use inside the cave
+... We should pick walls that look good in the cave and not 'just use'
+whatever the top of the mountain said"*; a first cut took the lid's ground,
+and read as a coincidence). Caves whose floors touch are ONE complex, and a
+complex is dug through one rock — `CAVE_ROCK`, grey stone or black rock,
+drawn by the complex's own hash — with the one exception a designer makes on
+purpose: in a complex of `CAVE_ICE_MIN = 4` rooms or more, the deepest room
+(the highest lid) is the ice chamber. `cliff_faces` gives a face whose foot
+is a cave floor that side and no other; the mountain top and its outer walls
+are untouched (the_game: one complex, black rock throughout, the level-40
+chamber in ice). The cap tile of an inner wall (`<top>__over__<side>`) still
+carries the mountain's top ground — that band is the tiles/game contract, not
+a world channel. **Corridors are one cell wider**: every passage grows one
 cell on its east/south side, into rock at the lid's level that is interior
 on all eight sides, never through a one-cell wall between two passages and
 never into the mountain's shell (the_game: 592 floor cells, 120 added).
@@ -350,8 +360,12 @@ never into the mountain's shell (the_game: 592 floor cells, 120 added).
 a ROOM (a floor cell with five or more floor neighbours that is not a
 corridor), `CAVE_GAP = 3` cells apart: crystals, geodes, fungi, mushrooms,
 cairns, stones, skulls, gravel, puffballs, and frost flowers and a frozen
-spring in the ice cave, one cell in from the wall, because a footprint that
-reaches into the wall cell is a level change the footprint law refuses. One
+spring in the ice chamber. **Against the walls** (maintainer 2026-09-06:
+*"you often place stuff in the middle of the room ... Why not place the
+scenery against the walls more often?"*): a piece on a room's edge cell is
+put FLUSH, its footprint's back edge on the wall line, the way furniture
+meets a house wall — north and west walls first, whose faces show — and
+about one piece in five stands in the open, one cell in from the wall. One
 dragon ribcage in the biggest hall. The braziers stay as they were.
 **THE CLIFF FAMILIES (`cliff_*`: roots, vines, mosses, fragments, features,
 shrubs) ARE NEVER PLACED** — build-asserted. Maintainer 2026-09-06: *"You
