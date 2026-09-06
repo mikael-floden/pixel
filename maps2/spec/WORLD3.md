@@ -325,6 +325,24 @@ of the build. Four rules, all from one round of photographs (maintainer
   lay under them — a slab of 100% grass, with mud on one bank and soil on
   the other. Both banks take the road for two cells at the deck's level.
 
+### lava — with the black rock
+
+Maintainer 2026-09-06: *"both slime and lava have never been used ... Lava
+feels best together with black_rock. So maybe we need some lava on top of
+the mountain. Again no hard rules. This game can combine anything with
+anything, some placements/combinations should just occur more often than
+others."* `lava()` (after the terrace colouring, which decides which shelves
+are black rock): every black_rock terrace of `LAVA_MIN = 40` cells or more at
+`LAVA_LEVEL = 20` or higher gets a pool, one more per `LAVA_PER = 200`
+cells, each a blob of 3–7 cells whose every cell has its whole 5×5 square in
+the shelf, pools 2 cells apart, clear of roads (and 2 cells beside them),
+ramps, decks, houses, caves and the wild. **Lava is solid in the game**
+(`surfaces.ts`, "deadly later; impassable for now"), so it is not a place to
+stand in the reachability audit, and a pool ringed by walkable rock never
+cuts a way. the_game: 31 lava cells in six pools on the level-24 shelf.
+`lava` and `slime` are in the legend and are NOT liquids (`liquids` stays
+water and deep water: the game decides what a ground does).
+
 ### the cave — dug, not inherited
 
 Maintainer 2026-09-06: *"the cave floor should be dark_mud and the inside
@@ -344,8 +362,13 @@ whatever the top of the mountain said"*; a first cut took the lid's ground,
 and read as a coincidence). Caves whose floors touch are ONE complex, and a
 complex is dug through one rock — `CAVE_ROCK`, grey stone or black rock,
 drawn by the complex's own hash — with the one exception a designer makes on
-purpose: in a complex of `CAVE_ICE_MIN = 4` rooms or more, the deepest room
-(the highest lid) is the ice chamber. `cliff_faces` gives a face whose foot
+purpose: in a complex of `CAVE_ICE_MIN = 4` rooms or more, the deepest lid
+level is the **ice chamber**, every lid at that level, walls AND floor (a
+chamber is several lids where the ported cave stepped; one lid in ice looked
+like half a room). **Slime** lies on the floor somewhere: one pool per
+`CAVE_SLIME_PER = 4` rooms of a complex, in a room that is neither ice nor
+the biggest hall, a blob of 3–5 interior cells ringed by floor
+(`_pool_blob`), walkable (the game classes slime as plain ground). `cliff_faces` gives a face whose foot
 is a cave floor that side and no other; the mountain top and its outer walls
 are untouched (the_game: one complex, black rock throughout, the level-40
 chamber in ice). The cap tile of an inner wall (`<top>__over__<side>`) still

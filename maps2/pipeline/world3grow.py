@@ -109,7 +109,8 @@ class Grow:
         # asserted: the base is the island, this pass adds a town.
         for g in ("grass", "light_beach", "dark_mud", "grey_stone", "water",
                   "deep_water", "parquet_floor", "brown_paving_stone",
-                  "grey_paving_stone", "light_soil", "black_rock", "snow"):
+                  "grey_paving_stone", "light_soil", "black_rock", "snow",
+                  "ice", "lava", "slime"):
             if g not in self.gi:
                 self.gi[g] = len(self.G)
                 self.G.append(g)
@@ -966,6 +967,10 @@ class Grow:
     # or more, the deepest room (the highest lid) is the ice chamber.
     CAVE_ROCK = ("grey_stone", "black_rock")
     CAVE_ICE_MIN = 4
+    CAVE_SLIME_PER = 4  # one slime pool per this many rooms of a complex
+    LAVA_MIN = 40       # a black_rock shelf this big on the massif gets a lava pool
+    LAVA_PER = 200      # ... and one more per this many cells
+    LAVA_LEVEL = 20     # the massif, not a lowland outcrop
     CAVE_OK = ("braziers/", "crystals/", "geodes/", "cup_fungi/", "mushrooms/",
                "cairns/", "beast_skulls/", "frost_flowers/",
                "frozen_springs/", "dragon_ribcages/", "stones/", "gravel_piles/",
@@ -1028,15 +1033,48 @@ class Grow:
         members = collections.defaultdict(list)
         for i, dk in decks:
             members[find(i)].append((i, dk))
+        r = _rng32(0x5117E)
         for root, group in members.items():
             anchor = min((c["x"], c["y"]) for _, dk in group for c in dk["cells"])
             r = _rng32((anchor[0] * 2654435761 ^ anchor[1] * 40503) & 0xffffffff)
             rock = self.CAVE_ROCK[int(r() * len(self.CAVE_ROCK)) % len(self.CAVE_ROCK)]
             rooms = [(i, dk) for i, dk in group if len(dk["cells"]) >= 12]
-            deepest = max(rooms, key=lambda t: (int(t[1]["level"]), len(t[1]["cells"])))[0] \
-                if len(rooms) >= self.CAVE_ICE_MIN else None
+            # the ice chamber is EVERY lid at the deepest level of the complex
+            # (a chamber is several lids where the ported cave stepped), its
+            # walls and its floor (maintainer 2026-09-06: "why didn't you
+            # make the floor in the inner room ice as well? And didn't you
+            # make the entire room ice walls?")
+            top_lid = max(int(dk["level"]) for _, dk in rooms) if len(rooms) >= self.CAVE_ICE_MIN else None
             for i, dk in group:
-                self.cave_side[i] = "ice" if i == deepest else rock
+                icy = top_lid is not None and int(dk["level"]) == top_lid
+                self.cave_side[i] = "ice" if icy else rock
+                if icy:
+                    for c in dk["cells"]:
+                        self.grd[c["y"]][c["x"]] = gi["ice"]
+            # SLIME on the floor somewhere (maintainer 2026-09-06: "both slime
+            # and lava have never been used"): one pool per CAVE_SLIME_PER
+            # rooms of the complex, in a room that is neither ice nor the
+            # biggest hall, a blob of interior cells with a walkable ring
+            others = [(i, dk) for i, dk in rooms if self.cave_side[i] != "ice"]
+            others.sort(key=lambda t: len(t[1]["cells"]))
+            if len(others) > 1:
+                others = others[:-1]                     # not the biggest hall
+            want = max(1, len(rooms) // self.CAVE_SLIME_PER)
+            laid = 0
+            for k in range(len(others)):
+                if laid >= want:
+                    break
+                i, dk = others[(int(r() * len(others)) + k) % len(others)]
+                cells = {(c["x"], c["y"]) for c in dk["cells"]}
+                room = {c for c in cells
+                        if all((c[0] + dx, c[1] + dy) in self.cave_floor
+                               for dx in (-1, 0, 1) for dy in (-1, 0, 1))}
+                pool = self._pool_blob(room, r, 3 + int(r() * 3), ring=1)
+                if pool:
+                    for (x, y) in pool:
+                        self.grd[y][x] = gi["slime"]
+                    laid += 1
+            self.placed += [("cave slime pools", laid)]
         gone = len(self.doc["scenery"])
         self.doc["scenery"] = [p for p in self.doc["scenery"]
                                if (int(p["x"]), int(p["y"])) not in self.cave_floor
@@ -1045,6 +1083,86 @@ class Grow:
         self.placed += [("cave floor cells", len(self.cave_floor)),
                         ("cave corridors widened by", widened),
                         ("cave: stray scenery evicted", gone - len(self.doc["scenery"]))]
+
+    def _pool_blob(self, cells, r, size, ring=2):
+        """A blob of `size` cells inside `cells` whose every cell has its
+        whole (2*ring+1)-square in `cells`, so a ring of walkable ground is
+        left around the blob: a pool never splits the ground it lies in.
+        None if no seed fits."""
+        cs = set(cells)
+        span = range(-ring, ring + 1)
+
+        def deep(c):
+            return all((c[0] + dx, c[1] + dy) in cs for dx in span for dy in span)
+        seeds = [c for c in sorted(cs) if deep(c)]
+        if not seeds:
+            return None
+        seed = seeds[int(r() * len(seeds)) % len(seeds)]
+        pool, frontier = {seed}, [seed]
+        while len(pool) < size and frontier:
+            x, y = frontier[int(r() * len(frontier)) % len(frontier)]
+            grown = False
+            for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if m not in pool and deep(m):
+                    pool.add(m)
+                    frontier.append(m)
+                    grown = True
+                    break
+            if not grown:
+                frontier.remove((x, y))
+        return pool
+
+    def lava(self):
+        """LAVA ON THE MASSIF, with the black rock (maintainer 2026-09-06:
+        "Lava feels best together with black_rock. So maybe we need some
+        lava on top of the mountain. Again no hard rules ... some
+        combinations should just occur more often than others."): every
+        black_rock shelf of LAVA_MIN cells or more at LAVA_LEVEL or higher
+        gets a pool, one more per LAVA_PER cells, each a blob of interior
+        cells ringed by walkable rock, clear of roads, ramps, decks, houses,
+        caves and the wild. Lava is solid in the game (surfaces.ts): a pool
+        with a walkable ring around it never cuts a way."""
+        gi = self.gi
+        keep = set(self.floor_cells) | set(getattr(self, "door_cells", ()))
+        keep |= {(c["x"], c["y"]) for dk in self.doc["decks"] for c in dk["cells"]}
+        keep |= set(getattr(self, "cave_floor", {})) | set(getattr(self, "wild_cells", ()))
+        for w in self.doc["walls"]:
+            keep |= {(c["x"], c["y"]) for c in w["cells"]}
+        for rr in self.doc.get("ramps", []):
+            keep |= {(c["x"], c["y"]) for c in rr["cells"]}
+        soil = gi["light_soil"]
+        for y in range(NEW):
+            for x in range(NEW):
+                if self.grd[y][x] == soil:
+                    for dx in (-2, -1, 0, 1, 2):
+                        for dy in (-2, -1, 0, 1, 2):
+                            keep.add((x + dx, y + dy))
+        pools = set()
+        for lv, cells, dom in self.terraces():
+            if dom != "black_rock" or lv < self.LAVA_LEVEL or len(cells) < self.LAVA_MIN:
+                continue
+            ok = {c for c in cells if c not in keep and self.g(*c) == "black_rock"}
+            anchor = min(cells)
+            r = _rng32((anchor[0] * 2654435761 ^ anchor[1] * 40503 ^ 0x1A7A) & 0xffffffff)
+            want = 1 + len(cells) // self.LAVA_PER
+            for _ in range(want):
+                pool = self._pool_blob(ok, r, 3 + int(r() * 5))
+                if not pool:
+                    break
+                pools |= pool
+                for c in pool:
+                    ok.discard(c)
+                    for dx in (-2, -1, 0, 1, 2):        # pools keep apart
+                        for dy in (-2, -1, 0, 1, 2):
+                            ok.discard((c[0] + dx, c[1] + dy))
+        for (x, y) in pools:
+            self.grd[y][x] = gi["lava"]
+        before = len(self.doc["scenery"])
+        self.doc["scenery"] = [p for p in self.doc["scenery"]
+                               if (int(p["x"]), int(p["y"])) not in pools]
+        self._reindex()
+        self.placed += [("lava pool cells", len(pools)),
+                        ("lava: scenery evicted", before - len(self.doc["scenery"]))]
 
     def cave_dress(self):
         r = _rng32(0xCA7E5)
@@ -1150,7 +1268,7 @@ class Grow:
                             else:
                                 cx = x + 1 - gap
                             px, py, flush = cx - dwx, cy - dwy, True
-                if self.put(piece, px, py, on=("dark_mud",), flush=flush):
+                if self.put(piece, px, py, on=("dark_mud", "ice"), flush=flush):
                     taken.append((px, py))
                     laid += 1
             n += laid
@@ -1161,7 +1279,7 @@ class Grow:
                     if sum(1 for dx in (-1, 0, 1) for dy in (-1, 0, 1)
                            if (dx or dy) and (c[0] + dx, c[1] + dy) in cave) == 8]
             for c in mids[len(mids) // 2:] + mids[:len(mids) // 2]:
-                if self.put("dragon_ribcages/dragon_ribcage_001", c[0] + 0.5, c[1] + 0.5, on=("dark_mud",)):
+                if self.put("dragon_ribcages/dragon_ribcage_001", c[0] + 0.5, c[1] + 0.5, on=("dark_mud", "ice")):
                     n += 1
                     break
         self.placed += [("cave dressing", n)]
@@ -4096,7 +4214,7 @@ class Grow:
         lv = {}
         for y in range(NEW):
             for x in range(NEW):
-                if self.g(x, y) and self.g(x, y) != "deep_water":
+                if self.g(x, y) and self.g(x, y) not in ("deep_water", "lava"):
                     lv[(x, y, 0)] = self.lvl[y][x]     # the current owns deep water
         for dk in self.doc["decks"]:
             if dk.get("kind") == "bridge":
@@ -4671,7 +4789,7 @@ class Grow:
                      self.town_ground, self.i2_cave, self.caves,
                      self.i2_road, self.i2_systems, self.groom, self._reindex,
                      self.archipelago, self.pier, self.houses, self.town,
-                     self.mountain_back, self.wild, self.terrace_grounds,
+                     self.mountain_back, self.wild, self.terrace_grounds, self.lava,
                      self.build_no_place, self.interiors, self.village,
                      self.roads, self.nature, self.cave_dress, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
