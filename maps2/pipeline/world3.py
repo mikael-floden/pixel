@@ -72,7 +72,9 @@ V2_TO_V3 = {
     "light_sand": "light_beach", "lightdark_dirt": "light_soil",
     "clear_water": "water", "": "",
 }
-LIQUIDS = ("water", "deep_water")
+LIQUIDS = ("water", "deep_water", "lava")   # what the world DECLARES liquid; the
+# engine decides what that means (games2 SURFACES: lava swims like water and
+# burns, 2026-09-06). The order is asserted by games2's parity test.
 DEEP_R = 21         # open sea further than this from land is deep_water.
                     # THREE TIMES the old 7 (maintainer, 2026-08-30: "the deep
                     # water should start 3x away from the land vs what it uses

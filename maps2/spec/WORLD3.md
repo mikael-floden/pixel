@@ -336,12 +336,14 @@ are black rock): every black_rock terrace of `LAVA_MIN = 40` cells or more at
 `LAVA_LEVEL = 20` or higher gets a pool, one more per `LAVA_PER = 200`
 cells, each a blob of 3–7 cells whose every cell has its whole 5×5 square in
 the shelf, pools 2 cells apart, clear of roads (and 2 cells beside them),
-ramps, decks, houses, caves and the wild. **Lava is solid in the game**
-(`surfaces.ts`, "deadly later; impassable for now"), so it is not a place to
-stand in the reachability audit, and a pool ringed by walkable rock never
-cuts a way. the_game: 31 lava cells in six pools on the level-24 shelf.
-`lava` and `slime` are in the legend and are NOT liquids (`liquids` stays
-water and deep water: the game decides what a ground does).
+ramps, decks, houses, caves and the wild. **Lava is a liquid**: the world
+declares `liquids: ["water", "deep_water", "lava"]` (that exact list is
+asserted by games2's parity test) and the engine decides what it means
+(`SURFACES.lava`: swum at 0.4 speed, 4 HP a second). In the reachability
+audit lava is swum like water — only deep water is off limits — so the
+walkable ring makes a pool a hazard beside the way, never the way itself.
+the_game: 31 lava cells in six pools on the level-24 shelf. `slime` is in
+the legend and is NOT a liquid (the game walks it).
 
 ### the cave — dug, not inherited
 

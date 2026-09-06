@@ -114,6 +114,9 @@ class Grow:
             if g not in self.gi:
                 self.gi[g] = len(self.G)
                 self.G.append(g)
+        # the declaration follows the legend: lava is a liquid the moment the
+        # legend carries it (games2's parity test asserts the exact list)
+        self.doc["liquids"] = [g for g in world3.LIQUIDS if g in self.gi]
         self.placed = []          # (label, count) build log
         self.fail = 0
         self.refused = {}         # why put() said no, by reason
@@ -187,7 +190,7 @@ class Grow:
         return self.G[i] if i >= 0 else ""
 
     def liquid(self, x, y):
-        return self.g(x, y) in ("water", "deep_water")
+        return self.g(x, y) in world3.LIQUIDS
 
     def _reindex(self):
         """Grid-bucket index of scenery for O(1) collision checks (a linear
@@ -1137,8 +1140,10 @@ class Grow:
         black_rock shelf of LAVA_MIN cells or more at LAVA_LEVEL or higher
         gets a pool, one more per LAVA_PER cells, each a blob of interior
         cells ringed by walkable rock, clear of roads, ramps, decks, houses,
-        caves and the wild. Lava is solid in the game (surfaces.ts): a pool
-        with a walkable ring around it never cuts a way."""
+        caves and the wild. Lava is a liquid to the game (SURFACES: swum
+        slower than water, 4 HP a second) and to this world (`liquids`);
+        the walkable ring means a pool is a hazard beside the way, never
+        the way itself."""
         gi = self.gi
         keep = set(self.floor_cells) | set(getattr(self, "door_cells", ()))
         keep |= {(c["x"], c["y"]) for dk in self.doc["decks"] for c in dk["cells"]}
@@ -4660,8 +4665,9 @@ class Grow:
         lv = {}
         for y in range(NEW):
             for x in range(NEW):
-                if self.g(x, y) and self.g(x, y) not in ("deep_water", "lava"):
-                    lv[(x, y, 0)] = self.lvl[y][x]     # the current owns deep water
+                if self.g(x, y) and self.g(x, y) != "deep_water":
+                    lv[(x, y, 0)] = self.lvl[y][x]     # the current owns deep water;
+                                                       # water and lava are swum
         for dk in self.doc["decks"]:
             if dk.get("kind") == "bridge":
                 for c in dk["cells"]:
