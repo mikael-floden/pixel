@@ -2711,13 +2711,26 @@ height reads per thing per frame.
   tree 2, a stone 1) — the compact soft pool props cast. NO CANOPY DISC
   (built, measured, removed): a block of crown cells drew a DIAMOND LATTICE
   under every tree by day — the patch then skipped a pixel's own cell, so each
-  cell of a block shaded as its own saw-tooth. THE OWN CELL NOW SHADES ON A
-  SCENERY WORLD (`uSceneryOn`, twin `hasSceneryShares`; the skip stays for
-  props, so the_island2 is byte-identical): under a post, a cart, a stone it
-  left a BRIGHT DIAMOND inside the cast shadow wherever the art does not cover
-  its own cell — measured at the signpost: own cell 1.00 sun beside a 0.66
-  cast shadow, 0.66 after (maintainer, 2026-09-06). A canopy disc would no
-  longer lattice for that reason; unbuilt, the maintainer's call. UNDER A CAP
+  cell of a block shaded as its own saw-tooth. THE OWN CELL SHADES
+  DIRECTIONALLY (`SCN_CORE` 0.45 cells, shader + twin, sun patch and torch
+  march alike): the own-cell sample skips stay — they keep the bump's bilinear
+  skirt off the LIT side of a root (measured 21% there) — and a second test
+  shades a pixel wherever the ray to the light passes through its own trunk's
+  core between them, to the cast shadow's own depth. Before it, the cell under
+  a post, a cart, a stone was a BRIGHT DIAMOND inside its cast shadow wherever
+  the art does not cover it, by sun AND by torch (maintainer, 2026-09-06; a
+  uniform own-cell darkening was the first cut and lit nothing on the sunny
+  side wrong but left the torch case). Measured, signpost: Day far/near side
+  of the own cell far 0.66 = the cast shadow's 0.66, near 1.00; Night torch far 0.21 vs near 0.40 (cast 0.19); house barrel far 0.42 vs near 0.73 (cast 0.40). Scenery only
+  (ownShare is 0 on a props world) — the_island2 byte-identical. A canopy disc
+  would still lattice under the sample skip; unbuilt, the maintainer's call.
+  THE SWITCHES ARE PUSHED ON THE SHADER BEING BUILT (`setScenerySwitches(s)`
+  in buildShader): pushed through `this.shader` before that field is assigned
+  they landed on nothing, and `uSceneryOn`/`uPropGate` sat at 0 in play from
+  the lighting commit until 2026-09-06 — every shader-side scenery rule inert
+  while the CPU twin, gated on `hasSceneryShares`, read as if they worked.
+  Measured: 0 at join with 1,267 share cells stamped, 1 after one push. A
+  probe that toggles `__ml.sceneryShadows` re-pushes them and hides this. UNDER A CAP
   (a room under its roof, a cave under its ceiling, ground under a span) only
   the GROUND map takes the share: the linear column IS the cap, so growing it
   would raise the roof, and linear G is the sun's channel, which must not

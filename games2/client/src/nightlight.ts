@@ -103,6 +103,15 @@ const SCN_TRUNK_MAX = 3;
 /** A piece's OWN shares are removed from its lit-copy tint within this radius
  *  (cells): its trunk cell is ≤0.7 from its anchor and the bilinear skirt adds 1. */
 const SCN_EXCL_R = 1.8;
+/** The trunk CORE's radius (cells) for the own-cell directional shade: a pixel
+ *  inside a piece's share cell is shaded by its own trunk only where the ray to
+ *  the light (or the sun) passes through this core between them. */
+const SCN_CORE = 0.45;
+/** GLSL smoothstep, for the CPU twins of shader terms (e0 > e1 allowed, as in GLSL). */
+function smoothStep01(e0: number, e1: number, x: number): number {
+  const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
+  return t * t * (3 - 2 * t);
+}
 /** Chebyshev radius (cells) of the sun patch's sparse gate around a share cell. */
 const SCN_GATE_R = 4;
 /** A scenery lit copy's LOS occlusion is marched for every light within its
@@ -773,6 +782,10 @@ void main() {
   // per cell — terrain or solid objects above the ray shade the surface
   // with the point lights' soft penumbra family; faces turned away from
   // the sun shade via a Lambert gate. Point lights still add in shadow.
+  // THE PIXEL'S OWN SCENERY SHARE (main scope: the sun patch and the torch
+  // march both read it): the share its cell carries, and that cell's centre.
+  float ownShare = uSceneryOn > 0.5 ? sceneryShareAt(cell) : 0.0;
+  vec2 ownC = floor(cell) + 0.5;
   float sunF = 1.0;
   float dbgShadow = 0.0; // see the shadow debug switch below
   if (uSun.w > 0.001) {
@@ -831,13 +844,7 @@ void main() {
     if (propRun) for (int s = 1; s <= 8; s++) {
       dcp += 0.35;
       vec2 p = pos - uSun.xy * dcp;
-      // THE OWN CELL SHADES TOO ON A SCENERY WORLD. Skipping it is the props'
-      // rule (the_island2's approved look; uSceneryOn keeps it byte-identical
-      // there), but under a post, a cart, a stone it left a BRIGHT DIAMOND
-      // inside the cast shadow wherever the art does not cover its own cell
-      // (maintainer, 2026-09-06). Shaded, the cell is the contact shadow the
-      // cast one grows from — same depth, no seam.
-      if (uSceneryOn < 0.5 && floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
+      if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
       float reach = smoothstep(2.7, 1.3, dcp);
       if (reach <= 0.0) break;
       float hRay = z + dcp * uSun.z + 0.15;
@@ -846,6 +853,23 @@ void main() {
       float Hp = Hs - pr + min(pr * 1.8, 1.0);
       if (pr > 0.001 && Hs < 90.0 && Hp > hRay)
         m = max(m, min((Hp - hRay) * 2.2, 1.0) * reach);
+    }
+    // THE OWN TRUNK'S CORE, DIRECTIONALLY. The own-cell skip above keeps the
+    // bump's bilinear skirt off the sunny side, but the trunk still stands
+    // between the sun and a pixel on its FAR side — under a post, a cart, a
+    // stone the cell was a BRIGHT DIAMOND inside the cast shadow wherever the
+    // art does not cover it (maintainer, 2026-09-06). Shade exactly where the
+    // sunward ray from the pixel passes through the core, to the cast
+    // shadow's own depth; the sunny half of the cell stays lit. Scenery only
+    // (ownShare is 0 on a props world) — the_island2 is byte-identical.
+    if (ownShare > 0.0) {
+      float tt = dot(ownC - pos, -uSun.xy);
+      if (tt > 0.05) {
+        float dq = distance(pos - uSun.xy * tt, ownC);
+        float hRayC = z + tt * uSun.z + 0.15;
+        float top = z + min(ownShare * 1.8, 1.0);
+        if (top > hRayC) m = max(m, min((top - hRayC) * 2.2, 1.0) * smoothstep(${SCN_CORE}, ${SCN_CORE} * 0.55, dq));
+      }
     }
     sunVis *= 1.0 - 0.75 * m;
     if (isFace) {
@@ -924,8 +948,6 @@ void main() {
   // a dark ring hugging every root. For a pixel whose cell carries a scenery
   // share, samples within one cell of that cell's centre are skipped; props
   // carry no share in this channel, so tiles2 is byte-identical.
-  float ownShare = uSceneryOn > 0.5 ? sceneryShareAt(cell) : 0.0;
-  vec2 ownC = floor(cell) + 0.5;
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
     if (float(i) >= uNumLights) continue;
     vec3 lp = uLightPos[i].xyz;
@@ -990,6 +1012,22 @@ void main() {
       // Bounce floor: firelight scatters — shadowed ground near a light keeps
       // a faint glow instead of dropping to pitch ambient. Faces still gate
       // to dark below (the Lambert gate multiplies AFTER this floor).
+      // THE OWN TRUNK'S CORE, DIRECTIONALLY — the far-side half of the skirt
+      // rule above: a pixel in its piece's share cell is shaded where the ray
+      // to the light passes through the core between them (the ground at a
+      // barrel's base stayed lit inside its own cast shadow; maintainer,
+      // 2026-09-06). To the march's floor, so it meets the cast shadow.
+      if (ownShare > 0.0) {
+        vec2 dl = lp.xy - pos;
+        float tt = dot(ownC - pos, dl) / max(dot(dl, dl), 1e-4);
+        if (tt > 0.05 && tt < 1.0) {
+          float dq = distance(pos + dl * tt, ownC);
+          float hRayC = mix(z, lp.z, tt) + 0.2;
+          float top = z + ownShare;
+          if (top > hRayC)
+            occ *= mix(1.0, mix(0.8, 0.22, clamp((top - hRayC) * 1.5, 0.0, 1.0)), smoothstep(${SCN_CORE}, ${SCN_CORE} * 0.55, dq));
+        }
+      }
       occ = max(occ, 0.22);
     }
 
@@ -2261,7 +2299,13 @@ export class NightLights {
     this.glowRT.saveTexture(this.glowKey);
     s.setSampler2D("uGlow", this.glowKey, 3);
     s.setUniform("uHasProps.value", this.propsFlag());
-    this.setScenerySwitches();
+    // ON THE SHADER BEING BUILT, not `this.shader`: that is assigned below,
+    // so pushing through it here landed on the previous shader (none, on the
+    // first build) and every scenery-world switch stayed at its table value
+    // of 0 in play — the skirt skip, the sparse gate, the own-trunk rules —
+    // until some later restamp happened to re-push them. Measured: uSceneryOn
+    // 0 at join with 1,267 share cells stamped; 1 after one manual push.
+    this.setScenerySwitches(s);
     // The room mask (unit 4). Built lazily the first time the player steps
     // indoors — a world nobody ever enters a building in never pays for it.
     this.ensureRoomTexture();
@@ -2712,9 +2756,9 @@ export class NightLights {
 
   /** The scenery-world switches on the night pass: the own-cell skirt skip and
    *  the sparse sun-patch gate — both 0 unless scenery shares are stamped. */
-  private setScenerySwitches(): void {
-    this.shader?.setUniform("uSceneryOn.value", this.hasSceneryShares ? 1 : 0);
-    this.shader?.setUniform("uPropGate.value", this.hasSceneryShares && this.sunGate ? 1 : 0);
+  private setScenerySwitches(sh: Phaser.GameObjects.Shader | undefined = this.shader): void {
+    sh?.setUniform("uSceneryOn.value", this.hasSceneryShares ? 1 : 0);
+    sh?.setUniform("uPropGate.value", this.hasSceneryShares && this.sunGate ? 1 : 0);
   }
 
   /** The lit-copy self-exclusion radius² for a scenery placement (0 = none stamped). */
@@ -3053,9 +3097,7 @@ export class NightLights {
       dcp += 0.35;
       const px = col - sun[0] * dcp;
       const py = row - sun[1] * dcp;
-      // The shader's rule: on a scenery world the pixel's OWN cell shades (its
-      // own share is a contact shadow); props keep the skip (the_island2).
-      if (!this.hasSceneryShares && Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
+      if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
       const reach = sstep(2.7, 1.3, dcp);
       if (reach <= 0) break;
       const hRay = z + dcp * sun[2] + 0.15;
@@ -3070,6 +3112,26 @@ export class NightLights {
       const hp = hh - pr + Math.min(1, pr * 1.8);
       if (pr > 0.001 && hh < 90 && hp > hRay)
         m = Math.max(m, Math.min(1, (hp - hRay) * 2.2) * reach);
+    }
+    // THE OWN TRUNK'S CORE, DIRECTIONALLY — the shader's rule; a lit copy
+    // (selfR2 > 0) excludes its own shares and takes none of it.
+    if (selfR2 <= 0 && this.hasSceneryShares) {
+      const oc = Math.floor(col);
+      const orow = Math.floor(row);
+      const Wc = this.world.width;
+      const Hc = this.world.height;
+      const ownShare = oc >= 0 && orow >= 0 && oc < Wc && orow < Hc ? this.sArrG[orow * Wc + oc] : 0;
+      if (ownShare > 0) {
+        const ocx = oc + 0.5;
+        const ocy = orow + 0.5;
+        const tt = (ocx - col) * -sun[0] + (ocy - row) * -sun[1];
+        if (tt > 0.05) {
+          const dq = Math.hypot(col - sun[0] * tt - ocx, row - sun[1] * tt - ocy);
+          const hRayC = z + tt * sun[2] + 0.15;
+          const top = z + Math.min(1, ownShare * 1.8);
+          if (top > hRayC) m = Math.max(m, Math.min(1, (top - hRayC) * 2.2) * smoothStep01(SCN_CORE, SCN_CORE * 0.55, dq));
+        }
+      }
     }
     sunVis *= 1 - 0.75 * m;
     const sunShare = 0.45 * sun[3];
@@ -3187,6 +3249,20 @@ export class NightLights {
           const blocker = hh > hg + 0.01 && L.z <= hh ? hg : hh;
           if (blocker < 90 && blocker > hRay)
             occ *= 0.8 + (0.45 - 0.8) * Math.min(1, (blocker - hRay) * 1.5);
+        }
+        // THE OWN TRUNK'S CORE, DIRECTIONALLY — the shader's rule.
+        if (ownShare > 0 && selfR2 <= 0) {
+          const dd = Math.max(dx * dx + dy * dy, 1e-4);
+          const tt = ((ocx - col) * dx + (ocy - row) * dy) / dd;
+          if (tt > 0.05 && tt < 1) {
+            const dq = Math.hypot(col + dx * tt - ocx, row + dy * tt - ocy);
+            const hRayC = z + (L.z - z) * tt + 0.2;
+            const top = z + ownShare;
+            if (top > hRayC) {
+              const k = 0.8 + (0.22 - 0.8) * Math.min(1, (top - hRayC) * 1.5);
+              occ *= 1 + (k - 1) * smoothStep01(SCN_CORE, SCN_CORE * 0.55, dq);
+            }
+          }
         }
         occ = Math.max(occ, 0.22); // bounce floor — same as the shader
       }
