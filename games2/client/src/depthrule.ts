@@ -76,23 +76,32 @@ export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): 
     // level up, so its top lands ~lh+dy above the feet — a tighter band
     // (the old −26) let that ledge's corner poke between the legs with
     // the foot drawn over it (playtester, standing at a step edge).
-    /* IS THIS PIECE IN FRONT OF ME? A grid occluder answers on CELL
-     * DIAGONALS — strictly nearer than the caller's OWN cell — because a
-     * cell is a whole diagonal wide and only the next diagonal can be in
-     * front of anything standing in this one. BESIDE IS NOT IN FRONT: the
-     * old +1.2 slack on the fractional position made a stub on the SAME
-     * diagonal (one east AND one north) claim the front as soon as the
-     * body's art box reached its screen column, clamping the body 14 px
-     * under its own anchor and dropping it behind the scenery it stood in
-     * front of — a cave's rock stub at (364,316) put the maintainer behind
-     * a dragon ribcage at 363.6,317.0 while 363.3,317.2 was correct, the
-     * same step measured twice (2026-09-07). A POINT-anchored piece has a
-     * real published centre, so it answers exactly — the maintainer's own
-     * rule: "a player above an ellipse's centre is drawn behind that part
-     * of the piece, below it in front." */
-    const fwd = o.point ? o.depth > ctx.lyFlat : o.col + o.row > Math.floor(ctx.colf) + Math.floor(ctx.rowf);
+    /* IS THIS PIECE IN FRONT OF ME? A grid occluder answers on cell diagonals
+     * with a 1.2 slack, because its anchor is a cell corner and the body's is
+     * fractional. A POINT-anchored piece has a real published centre, so it
+     * answers exactly — the maintainer's own rule: "a player above an
+     * ellipse's centre is drawn behind that part of the piece, below it in
+     * front." (TRIED AND REVERTED 2026-09-07: quantising this to the caller's
+     * own CELL diagonal, so a stub BESIDE him could not claim the front. It
+     * fixed one of his three reported cave positions and left the others
+     * broken — `feetInColumn` below is what actually fixes all three — and it
+     * silently dropped covers everywhere else in the world, which is not worth
+     * carrying for nothing.) */
+    const fwd = o.point ? o.depth > ctx.lyFlat : o.col + o.row + 1.2 > ctx.colf + ctx.rowf;
+    /* AND ITS ART COLUMN MUST CONTAIN THE FEET — the ledge rule's real gate.
+     * `fwd` only says the column is on a nearer row; this says it is actually
+     * ABOVE THE PLAYER ON SCREEN. Without it a stub whose 64 px column merely grazed the edge of
+     * the 41 px art box covered him — at 363.1,316.5 the stub at (364,316)
+     * touched the box by under a pixel, 21 px from his feet, and clamped him
+     * 14 px down and behind the ribcage he stood in front of (maintainer,
+     * 2026-09-07, third report of the same family). `solidArtOver` has always
+     * asked exactly this of a billboard; a ledge is no different. The E/S
+     * diagonal ledges the band was tuned for share the body's screen column
+     * and keep covering. */
+    const feetInColumn = ctx.lx >= o.x0 - 6 && ctx.lx <= o.x1 + 6;
     const faceOverFeet =
       higher &&
+      feetInColumn &&
       /* TERRAIN ONLY, like the ray test: this is the LEDGE rule (a raised
        * cell's lifted top face in the feet band). A solid billboard is
        * point-anchored and answers through solidArtOver, which checks the

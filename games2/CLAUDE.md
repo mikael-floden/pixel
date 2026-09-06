@@ -1394,31 +1394,39 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   whole lit copy below its top line, the hidden-behind outline over his body
   (cave, maintainer 2026-09-06). A billboard answers through `solidArtOver`,
   which checks the feet's x against the piece. Measured after: pod spot: body 10245.9 over the pod's 10245.7, feet still under the rock stub in front (cover 10217); crystal spot: the cover line comes from the rock stub (10343), no longer from the crystal (10325), body 10371.9 above both crystals.
-- **BESIDE IS NOT IN FRONT — A GRID OCCLUDER ANSWERS ON CELL DIAGONALS**
-  (`fwd` in `depthrule.ts`): a terrain cell can only cover the caller when its
-  own diagonal is STRICTLY NEARER than the caller's CELL diagonal
-  (`o.col + o.row > floor(colf) + floor(rowf)`). The old `+1.2` slack compared
-  against the caller's FRACTIONAL position, so a stub on the SAME diagonal —
-  one east AND one north, i.e. beside him — claimed the front the moment the
-  41 px art box reached its screen column: the ledge rule fired, the `below`
-  clamp pulled the body from 10240.9 to 10231.85, and it dropped behind a
-  dragon ribcage drawing at 10245.70, wearing the hidden-behind outline. A
-  third of a cell decided it, which is why it read as "depends a bit on where
-  I stand" (maintainer, 2026-09-06 and again 2026-09-07). Quantising to the
-  caller's own cell puts the flip at a cell edge, where a painter-order change
-  is invisible, instead of mid-cell where it is not. (Rejected: comparing the
-  cell against the exact fraction — it kills the beside case too, but re-opens
-  a ledge corner poking between the legs when the body stands deep in its own
-  cell, the playtester bug the band was tuned for.)
+- **A LEDGE COVERS ONLY WHAT IT STANDS OVER — `feetInColumn` in
+  `depthrule.ts`**: the ledge rule (`faceOverFeet`) additionally requires the
+  caller's FEET X to lie in the occluder's screen column (±6), exactly as
+  `solidArtOver` has always asked of a billboard. Without it a one-level rock
+  stub whose 64 px column merely GRAZED the edge of the 41 px art box counted
+  as covering: it clamped the body to its own depth − 0.15, and because the
+  scenery beside it draws LIFTED (a dragon ribcage anchored at 10189.79 draws
+  at 10245.70, over the ground tiles in front of it), the body landed at
+  10231.85 — behind a piece it was standing in front of, wearing the
+  hidden-behind outline. Reported three times from three positions in one cave
+  room (maintainer, 2026-09-06 and twice 2026-09-07); the stub decides it from
+  21 px away, which is why it read as "depends a bit on where I stand".
+  MEASURED, all three positions, in `server/test/depthrule.test.ts` against
+  occluder records dumped from the running game: 10245.85 (in front) with the
+  rule, 10231.85 (behind) without it.
+  (REJECTED on the way: quantising `fwd` to the caller's own cell diagonal so a
+  stub BESIDE him cannot claim the front. It fixed one of the three positions,
+  left the other two broken, and dropped covers everywhere else in the world
+  for nothing. The lateral test is the whole fix; `fwd` keeps its +1.2 slack.)
 - **THE DEPTH RULE IS A PURE FUNCTION — `client/src/depthrule.ts`**, and
   `WorldScene.resolveDrawDepth` only feeds it (art box, occluder list,
   geometry). The cave sort broke three times and each round the only check was
   a probe that needed the world to finish loading — flaky, and twice it
   measured an empty scene and said "fixed". `server/test/depthrule.test.ts`
   now replays REAL occluder records measured at the maintainer's spot, so the
-  rule is testable without a browser. NOTE the trap the split caught: the old
-  body clamp read a bare `self`, which in a browser is `window` — always
-  truthy, so bodies had silently been clamping at a piece's −0.3.
+  rule is testable without a browser. TWO traps this caught, both of which had
+  already shipped: the old body clamp read a bare `self`, which in a browser is
+  `window` — always truthy, so bodies had silently been clamping at a piece's
+  −0.3; and a fixture that RECONSTRUCTS the projection instead of measuring it
+  is worthless — the first one used half the real screen-x step, so the art box
+  never reached the occluder that causes the bug and the test passed against
+  known-broken code. Dump the records (scratch `fx/cave3.mjs`), never derive
+  them, and prove a new fixture FAILS without the fix before trusting it.
 - **AMONG WHAT ONE WALL CLAMPS, A BODY SITS A HAIR ABOVE A PIECE** (the
   `below` clamp: −0.15 for a body, −0.3 for a piece): a cave's one-level rock
   stub in front of both a player and the pod behind him clamped both to the
