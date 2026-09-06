@@ -2387,6 +2387,10 @@ export class WorldScene extends Phaser.Scene {
   private connectCreep: Phaser.Time.TimerEvent | null = null;
   private sceneryArtCounting = false;
   private sceneryRoofedDrawn = 0; // roofed pieces the last rebuild actually drew
+  /** The INDOOR FURNITURE drawn this rebuild — the pieces whose roof is cut
+   *  away. Held apart from `sceneryImgs` so the cut-away crossfade can fade
+   *  them with it (see roofedFade); rebuilt with the scenery. */
+  private sceneryRoofedImgs: Phaser.GameObjects.Image[] = [];
   private sceneryManifestTimer: Phaser.Time.TimerEvent | null = null; // a manifest-landed rebuild is pending
   /** games2/config/scenery-bbox.json, or null until it lands. */
   private sceneryBboxDoc: SceneryBboxDoc | null = null;
@@ -2616,6 +2620,10 @@ export class WorldScene extends Phaser.Scene {
     /** THE COVER LINE the SHARED rule returned for this piece (resolveDrawDepth,
      *  the same call bodies make). Infinity = uncovered; set once per rebuild. */
     cover?: number;
+    /** Scenery: INDOOR FURNITURE — a piece under a roof/cave deck. It is drawn
+     *  only while that roof is cut away, and it FADES with the cut-away's own
+     *  crossfade rather than popping at the flip (see roofedFade). */
+    roofed?: boolean;
     /** Scenery: the placement's index into world.scenery — keys the piece's own
      *  occluder shares out of its tint (nightlight.sceneryExclR2). */
     place?: number;
@@ -3766,6 +3774,15 @@ export class WorldScene extends Phaser.Scene {
         debris: this.indoorDebris?.length ?? 0,
         alpha: +this.debrisAlpha().toFixed(3),
         exiting: !this.indoorInside && !!this.indoorMask,
+        mix: +this.indoorMix.toFixed(3),
+        inside: this.indoorInside,
+        // The furniture under the roof: how many are drawn and the opacity
+        // they wear this frame — the complement of `alpha`, so the two cross.
+        roofed: this.sceneryRoofedImgs.length,
+        roofedAlpha: +this.roofedFade().toFixed(3),
+        roofedDrawn: this.sceneryRoofedImgs.length
+          ? +(this.sceneryRoofedImgs.reduce((a, i) => a + i.alpha, 0) / this.sceneryRoofedImgs.length).toFixed(3)
+          : null,
       }),
       // How this world's tile art arrived: sheets sliced from the committed
       // atlas vs individual fallback requests (verify-atlas's instrument).
@@ -11082,10 +11099,16 @@ export class WorldScene extends Phaser.Scene {
       }
       const f = night!.depthFogAtFoot(lo.bx, lo.by, Math.floor(lo.z), lo.col, lo.row);
       const fa = fogOn ? Math.min(1, Math.max(0, f.a)) : 0;
+      /* INDOOR FURNITURE CROSSES WITH ITS ROOF (roofedFade): the copy and its
+       * fog take the same opacity the base sprite does, or the copy — which
+       * draws ABOVE the darkness overlay — would stay solid over a roof that
+       * has already faded back in. */
+      const rf = lo.roofed ? this.roofedFade() : 1;
+      lo.img.setAlpha(rf);
       if (fa > 0.002) {
         if (!lo.fog) this.makeFogSilhouette(lo);
         const c = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
-        lo.fog!.setTintFill((c(f.r) << 16) | (c(f.g) << 8) | c(f.b)).setAlpha(fa).setVisible(true);
+        lo.fog!.setTintFill((c(f.r) << 16) | (c(f.g) << 8) | c(f.b)).setAlpha(fa * rf).setVisible(true);
       } else lo.fog?.setVisible(false);
       // (shade 0 = the parity switch: the copy keeps the flat tint and the
       // pipeline runs Multi.frag's own path — the plumbing alone under test.)
@@ -13514,6 +13537,22 @@ export class WorldScene extends Phaser.Scene {
       : Math.min(1, D * (1 - this.indoorMix));
   }
 
+  /** INDOOR FURNITURE'S OPACITY THROUGH THE CUT-AWAY CROSSFADE — the exact
+   *  complement of the debris (the roof art returning over it), so the two
+   *  cross: as the roof fades IN the furniture fades OUT, and entering, the
+   *  furniture arrives as the roof dissolves. Before this the pieces were a
+   *  BINARY draw keyed on `roofCutAwayAt`, held all the way to the end of the
+   *  roll so the roof would not return over empty floor — so a bed drew at
+   *  full opacity ON TOP of the roof for the whole exit and then vanished
+   *  (maintainer 2026-09-07: "they don't give a shit we are currently fading
+   *  into outdoor... until the very last millisecond where they pop out of
+   *  existence"). The draw gate is unchanged; only the opacity is now shared
+   *  with the crossfade, so nothing appears a beat before its roof leaves. */
+  private roofedFade(): number {
+    const f = 1 - this.debrisAlpha();
+    return f < 0 ? 0 : f > 1 ? 1 : f;
+  }
+
   /** Build the TRANSITION DEBRIS: every piece of art the current cut removes,
    * as ordinary world-anchored images at the same depths the occluder pass
    * would give them — wall bands above each constrained column's cut, the
@@ -13981,6 +14020,12 @@ export class WorldScene extends Phaser.Scene {
       const a = this.debrisAlpha();
       if (this.indoorInside && a <= 0.004) this.destroyIndoorDebris();
       else for (const img of this.indoorDebris) img.setAlpha(a);
+    }
+    // ...and the furniture under the roof crosses the other way. Its lit copy
+    // and fog silhouette take the same factor in applyObjectLights.
+    if (this.sceneryRoofedImgs.length) {
+      const rf = this.roofedFade();
+      for (const img of this.sceneryRoofedImgs) img.setAlpha(rf);
     }
     // The room's LIGHT rules outlive the geometry by exactly one GRADE. The
     // grade landing on 0 means the outside has finished fading up from black
@@ -16865,6 +16910,7 @@ export class WorldScene extends Phaser.Scene {
     this.scnReused = 0;
     this.scnCreated = 0;
     this.sceneryImgs = [];
+    this.sceneryRoofedImgs = [];
     this.sceneryLightSources = [];
     this.sceneryStamps = [];
     /* COUNTED BEFORE THE GUARD: the boot hold waits for this pass to have RUN,
@@ -17046,6 +17092,13 @@ export class WorldScene extends Phaser.Scene {
               : hbDepth + this.occSeq++ * OCC_DEPTH_EPS,
           ),
       );
+      // INDOOR FURNITURE FADES WITH THE ROOF IT STANDS UNDER (see roofedFade):
+      // held apart here, and given the crossfade's alpha from the frame it is
+      // built so a rebuild mid-transition continues the dissolve.
+      if (p.roofed) {
+        img.setAlpha(this.roofedFade());
+        this.sceneryRoofedImgs.push(img);
+      }
       /* AND IT OCCLUDES. Scenery drew with the right painter depth but told
        * `resolveBodyDepth` nothing, so a body never sorted behind a tree — it
        * only ever looked right by luck of raw painter order. This is the props'
@@ -17087,6 +17140,7 @@ export class WorldScene extends Phaser.Scene {
           by: p.ay,
           pd: hbDepth,
           place: p.i,
+          roofed: p.roofed,
         });
         const lo = this.litOccluders[this.litOccluders.length - 1];
         // THE VOLUME (scenery-lit): attached BEFORE the silhouette so the

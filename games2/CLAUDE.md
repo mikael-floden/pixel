@@ -1420,6 +1420,21 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   / `flushCoverSurfaces`, "it also kills the dark band the flat line left
   across visible legs"); scenery is still on the flat line and wants the same
   treatment.
+- **INDOOR FURNITURE CROSSES WITH ITS ROOF** (`roofedFade()` = 1 −
+  `debrisAlpha()`, applied to the base sprite, its LIT COPY and its fog). A
+  roofed piece is still DRAWN on the old binary gate (`roofCutAwayAt`, held to
+  the end of the roll so the roof never returns over empty floor) — only its
+  OPACITY is now shared with the cut-away crossfade, as the exact complement of
+  the debris. Leaving, the roof fades in while the furniture fades out;
+  entering, the furniture arrives as the roof dissolves. Before this a bed drew
+  at full opacity ON TOP of the returning roof for the whole exit and then
+  vanished in one frame (maintainer 2026-09-07: "they don't give a shit we are
+  currently fading into outdoor… until the very last millisecond where they pop
+  out of existence"). The LIT COPY needs it too — it draws above the darkness
+  overlay, so a copy left at alpha 1 stays solid over a roof that has already
+  come back. Measured entering: debris 0.48 → 0 while the furniture's measured
+  sprite alpha rose 0.52 → 1, complement exact at every sample.
+  Probe: `__ml.indoorFade()` reports `alpha`, `roofedAlpha` and the drawn mean.
 - **A SCENERY SHARE BELONGS TO THE FLOOR ITS PIECE STANDS ON** — a pixel on a
   DECK above that floor does not read it (`z > groundTerrAt(cell) + 1` clears
   `ownShare`, shader and CPU twin alike). The share is a property of the CELL,
