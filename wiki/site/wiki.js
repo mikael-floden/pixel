@@ -13400,6 +13400,26 @@ async function upgradeToStaging() {
   try {
     const full = await useStagingRoot();
     if (!full) return;
+    /* THE FRESHER REGISTRY WINS, whichever side it is on (maintainer
+     * 2026-09-05, after re-filing scenery all evening: "The objects are however
+     * still listed in the wrong section. Is this your bug or a scenery bug?" —
+     * mine). The staging copy is the one COMMITTED in the repo, and it is only
+     * as fresh as the last time I ran build.mjs and pushed; the deployed image
+     * rebuilds the registry from its own tree at deploy time. So when another
+     * domain changes something and deploys before I rebuild, the copy this
+     * swap adopts is the OLDER of the two, and the page walks back to
+     * yesterday's world: he had re-filed 24 cliff pieces out of Mountain wall,
+     * the scenery agent had applied every one, the deployed registry said so —
+     * and this swap replaced it with a build from the night before.
+     *
+     * Both copies describe the whole repo (the image builds from /full, which
+     * is why unshipped art is listed and only its FILES 404), so neither is a
+     * subset of the other and taking the newer is strictly better. */
+    const age = (d) => Date.parse(d?.generated_at ?? "") || 0;
+    if (age(state.data) > age(full)) {
+      drawStamp(state.data);
+      return;
+    }
     // STAMP THE SHA WE FETCHED AT, not the file's self-label. build.mjs stamps
     // `git rev-parse HEAD` at build time, which in a working tree that has not
     // committed yet names the PARENT — so the committed registry's label runs
