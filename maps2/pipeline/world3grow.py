@@ -2104,7 +2104,8 @@ class Grow:
     # Every light is a placement with lit=true and an explicit LIT state,
     # and every placement's radius comes from scenery.json `light` (the
     # scenery agent's data from here on; the spawn bonfire is 1.0 / 7
-    # cells and nothing outshines it). Candidates are laid out by what a
+    # cells as the REFERENCE, not the ceiling - a light may be bigger and
+    # brighter than it, maintainer 2026-09-06). Candidates are laid out by what a
     # place IS, in priority order, and each is lit only if the worst camera
     # window still holds 8 after it - the EXACT worst window, over every
     # camera position, with each light's own reach (world3.max_overlap).

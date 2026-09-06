@@ -844,7 +844,10 @@ def _forests(W, H, mat, lvl, scen, spawn):
 # those boxes any one point lies in - EXACT, by sweeping every box edge, not
 # only at the lights' own centres (the worst point can be a corner where no
 # light stands). Radii come from scenery.json `light` (per LIT state, then
-# the piece), 7 for a piece that publishes none - the bonfire's, the cap.
+# the piece), 7 for a piece that publishes none - the bonfire's. There is NO
+# cap: the bonfire is the reference (1.0), not the ceiling (maintainer
+# 2026-09-06: "I see the campfire as a normal light not even near what will
+# be the max in the game").
 VIEW_W, VIEW_H, SLOTS = 899, 774, 8
 REACH_X, REACH_Y = math.sqrt(2) * 32, math.sqrt(2) * 15
 _LIGHT_META = {}

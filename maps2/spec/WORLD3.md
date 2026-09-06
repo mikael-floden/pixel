@@ -633,7 +633,11 @@ games2's side, spends a shader slot with the state's `light` from
 `scenery/<piece>/scenery.json` — strength, colour, radius; schema in
 `scenery/README.md`, written by maps2, owned by scenery from here). The game
 places its own campfire at spawn: it is one of the 8 wherever the spawn is,
-and it is the reference — 1.0, radius 7, nothing outshines it.
+and it is the reference — 1.0, radius 7 — not the ceiling: a light may be
+bigger and brighter than the bonfire (maintainer 2026-09-06, scrapping the
+old "campfire is the max" rule: *"I see the campfire as a normal light not
+even near what will be the max in the game"*). No radius is capped anywhere
+in the audit or the placement pass.
 
 **The budget is measured exactly** (`world3.light_boxes` / `max_overlap`):
 a light of radius R cells is seen by every camera centre inside the 899×774
@@ -685,7 +689,8 @@ lit** (`world3grow.lights`, replacing the old greedy `relight`):
 
 **Radius is the lever, not count.** A window is ~28×52 cells and holds 8
 lights, so the share of any screen inside a pool is bounded by
-8·π·R²/1450: ≤ 28% at radius 4, ≤ 85% at radius 7. At the published
+8·π·R²/1450: ≤ 28% at radius 4, ≤ 85% at radius 7, the whole screen from
+radius 8 up (there is no cap, so this bound is the table's to lift). At the published
 radii (streetlights 3–5, glows 2) the night cannot be made bright by
 placing more — a lamp row every 12 cells fills its windows and leaves the
 land beside the road black — which is why the maintainer asked scenery for
