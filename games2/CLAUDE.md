@@ -2884,6 +2884,29 @@ height reads per thing per frame.
   `sceneryLightInfo()`, `sceneryLightShape(needle,x,y)`. Phone GPU cost of
   the per-texel copies and the sparse sun patch is UNMEASURED (SwiftShader
   is no proxy) — `?fps=1` at the town, Night and Day, is the owed number.
+- **DON'T MARCH A SHADOW NOBODY CAN SEE** (`SHADOW_MARCH_MIN_LIGHT` 0.012,
+  nightlight.ts, shader and CPU twin alike): a light skips its 12-sample
+  shadow march where its OWN CONTRIBUTION (att × peak channel) falls below
+  that. A march can remove at most 78% of a contribution (the 0.22 bounce
+  floor), so the deepest shadow it can hide is 0.009 luma, under 3/255.
+  Threshold on the CONTRIBUTION, not on att: a campfire at 1.9 and a lamp at
+  0.5 reach it at different distances (att alone at 0.06 can hide 0.09 luma of
+  a bright light — half the night's ambient). It earns its keep now that the
+  manifest publishes radius-11 streetlights: such a pool is wider than the
+  phone's viewport, so every fragment on screen would otherwise march every
+  light in it; this drops the outer 8-12% of each radius, 15-21% of its area.
+  Measured at that lamp (skip radius 9.87 cells): no step in the luma profile
+  there — the largest step, 0.627, is a shadow edge at 3.0 cells.
+- **SCENERY SHADOWS READ NOW — GEOMETRY, NOT DARKNESS, WAS THE PROBLEM.** A
+  shadow lands at `d × h_blocker / (h_light − h_blocker)` beyond the blocker,
+  so the spawn campfire (flame LOW, radius 7, pieces taller than it) throws
+  long hard shadows across a bright pool, while a radius-4 lamp with its head
+  at 1.5 levels threw its shadow into the pool's dim tail or past its edge —
+  the maintainer saw "only the bonfire" doing it (2026-09-07). Measured at the
+  town's radius-11 lamp with a piece 2.4 cells away: the ground behind it now
+  sits at 0.46-0.60 of unshadowed across 2-4.8 cells. Bigger published radii
+  are what put the shadow back inside the lit area, so a lamp's radius is a
+  LOOK knob, not just a reach knob.
 - **THE PERF BEACON'S SERVER SIDE IS AN ALLOWLIST** (`server/src/perfreport.ts`,
   `perfReport`, tested in `server/test/perfreport.test.ts`): `/api/perf`
   rebuilds the report field by field, so a block the client starts sending is

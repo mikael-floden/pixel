@@ -123,6 +123,22 @@ const SCN_CONTACT_TORCH = 0.5;
  *  these factors instead (grazing → deep); walls keep 0.8→0.45. */
 const SCN_SHADOW_NEAR = 0.55;
 const SCN_SHADOW_DEEP = 0.3;
+/** DON'T MARCH A SHADOW NOBODY CAN SEE — the threshold is on the light's OWN
+ *  CONTRIBUTION (att × its peak channel), not on att, because a campfire at
+ *  1.9 and a lamp at 0.5 reach this point at different distances. A shadow can
+ *  remove at most 78% of that contribution (the march's 0.22 bounce floor), so
+ *  below 0.012 the deepest possible shadow is worth 0.009 luma — under 3/255,
+ *  invisible. It matters now that the manifest publishes radius-11
+ *  streetlights (the cap came off on the maintainer's word, 2026-09-07): a
+ *  radius-11 pool is wider than the phone's viewport, so without this every
+ *  fragment on screen marches every light in it. Saves the outer 8-12% of each
+ *  radius, which is 15-21% of its area and of its marched fragments.
+ *  (NOT 0.06 on att alone — that was the first cut and it can hide 0.09 luma
+ *  of a bright light's shadow, half the night's ambient.) MEASURED at the
+ *  town's radius-11 lamp (peak 1.14, skip radius 9.87): the luma profile along
+ *  the light's ray has NO step there — its largest step, 0.627, sits at 3.0
+ *  cells and is a shadow edge. */
+const SHADOW_MARCH_MIN_LIGHT = 0.012;
 /** GLSL smoothstep, for the CPU twins of shader terms (e0 > e1 allowed, as in GLSL). */
 function smoothStep01(e0: number, e1: number, x: number): number {
   const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
@@ -1002,7 +1018,8 @@ void main() {
     // cell; the piece still shadows every OTHER light.
     float lShare = uSceneryOn > 0.5 ? sceneryShareAt(lp.xy) : 0.0;
     vec2 lC = floor(lp.xy) + 0.5;
-    if (uLightPos[i].w > 0.0 && (z < lp.z + 0.05 || objAt(cell) > 0.5)) {
+    float peakC = max(max(uLightCol[i].r, uLightCol[i].g), uLightCol[i].b);
+    if (uLightPos[i].w > 0.0 && att * peakC > ${SHADOW_MARCH_MIN_LIGHT} && (z < lp.z + 0.05 || objAt(cell) > 0.5)) {
       for (int s = 1; s <= 12; s++) {
         float t = float(s) / 13.0;
         // March from the EXACT surface point (same as attenuation): marching
@@ -3266,7 +3283,7 @@ export class NightLights {
       const lShare = this.hasSceneryShares && lc >= 0 && lr >= 0 && lc < W && lr < H ? this.sArrG[lr * W + lc] : 0;
       const lcx = lc + 0.5;
       const lcy = lr + 0.5;
-      if (L.radius > 0 && (z < L.z + 0.05 || isObj)) {
+      if (L.radius > 0 && (att * Math.max(L.color[0], L.color[1], L.color[2]) > SHADOW_MARCH_MIN_LIGHT || wantOcc) && (z < L.z + 0.05 || isObj)) {
         for (let sN = 1; sN <= 12; sN++) {
           const tt = sN / 13;
           const px = col + dx * tt;

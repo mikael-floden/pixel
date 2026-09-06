@@ -30,7 +30,8 @@
     "[2026-09-06T13:44:23Z] SCENERY LIGHTS READ THE MANIFEST NOW (games2): a lit placement's light is scenery.json `light` — states[state] else the piece block — radius as given up to the campfire's 7, colour as given, intensity = strength × the campfire's 1.9 peak, steady (flicker deferred per the maintainer), shadows for flame-like ids; the pixel derivation is only the head-height centroid (z ≤ 1.5) and the whole light for the 206 pieces with no block. Measured live at the town lamp row: every streetlight at its table radius/colour; ground 1 cell out 0.63 luma = half the campfire = the table's 0.5 (was 1.23 under the pixel cap). The maintainer's wiki edits to strength/colour/radius now change the game on the next deploy; strength 0 switches a lamp off. Parser: client/src/scenery3.ts parseLight/lightBlockFor; params: scenerylights.ts lightFromBlock; tests server/test/scenerylights.test.ts.",
     "[2026-09-06T14:07:48Z] NO RADIUS CAP ON SCENERY LIGHTS (games2, maintainer 2026-09-07: 'the campfire is a normal light, not even near what will be the max in the game ... don't put any artificial cap on them'): the manifest's radius is taken as published, any size; the 7 was LIGHT_BUDGET's convention, never a shader limit. A big pool costs a world slot from further away (viewport grown by the radius), not pixels; the 8-slot ledger and tenure crossfade handle the rest. Strength 1.0 still = the campfire's intensity (the reference stays). Spec/docs rewritten.",
     "[2026-09-06T16:02:41Z] BESIDE IS NOT IN FRONT — the cave sort is fixed (games2). A one-level rock stub on the SAME screen diagonal as the player's own cell claimed the front through the ledge rule's old +1.2 fractional slack, clamping him from 10240.9 to 10231.85 and dropping him behind a dragon ribcage drawing at 10245.70 (maintainer, twice). A grid occluder now answers on CELL diagonals, strictly nearer than the caller's own cell, so the flip sits at a cell edge instead of a third of a cell mid-cell. The rule moved into client/src/depthrule.ts as a pure function and server/test/depthrule.test.ts replays the REAL occluders measured at his spot — the probe route needed the world to finish loading and twice measured an empty scene. The split also caught a bare `self` in the clamp, which in a browser is `window` (always truthy): bodies had been clamping at the piece's -0.3.",
-    "[2026-09-06T16:02:41Z] EVERY SCENERY LIGHT CASTS SHADOWS + THE BEACON CAN SEE THE LIGHT BILL (games2, maintainer 2026-09-07). Scenery lights were flame-only for shadows; all of them march now. /api/perf is an ALLOWLIST (server/src/perfreport.ts, now a pure tested function): a lights block sent client-side would have returned 200 and arrived empty. It carries the night pass's bill — lights uploaded mean/peak, how many MARCH SHADOWS, pool area in cells, ambient, and the FIELD with its ?light= scale and fragment count (resolution is the biggest GPU lever and was invisible) — as means over the window, plus the GPU string."
+    "[2026-09-06T16:02:41Z] EVERY SCENERY LIGHT CASTS SHADOWS + THE BEACON CAN SEE THE LIGHT BILL (games2, maintainer 2026-09-07). Scenery lights were flame-only for shadows; all of them march now. /api/perf is an ALLOWLIST (server/src/perfreport.ts, now a pure tested function): a lights block sent client-side would have returned 200 and arrived empty. It carries the night pass's bill — lights uploaded mean/peak, how many MARCH SHADOWS, pool area in cells, ambient, and the FIELD with its ?light= scale and fragment count (resolution is the biggest GPU lever and was invisible) — as means over the window, plus the GPU string.",
+    "[2026-09-06T16:23:49Z] SCENERY SHADOWS READ NOW, AND THE MARCH SKIPS WHERE NOBODY CAN SEE IT (games2). Geometry was the problem, not darkness: a shadow lands at d x h_blocker/(h_light - h_blocker) beyond the blocker, so the campfire (flame low, radius 7, pieces taller than it) threw long shadows across a bright pool while a radius-4 lamp at head 1.5 threw its into the pool's dim tail. With every light marching and scenery's bigger published radii, measured at the town's radius-11 lamp with a piece 2.4 cells out: the ground behind it is 0.46-0.60 of unshadowed across 2-4.8 cells (was 0.81-0.92). New: SHADOW_MARCH_MIN_LIGHT 0.012 skips the 12-sample march where a light's own contribution (att x peak) is too small for its deepest possible shadow (0.009 luma, under 3/255) to show - the outer 8-12% of each radius, 15-21% of its area. Measured: no step in the luma profile at the skip radius."
   ],
   "notes_to_objects": [],
   "requests": [
@@ -337,9 +338,19 @@
       "to": "tiles2",
       "at": "2026-09-06T14:07:48Z",
       "what": "FYI the 7-cell radius cap is gone (maintainer 2026-09-07); emission.py's '# radius (CELLS, cap 7)' comment is stale - the game takes a curated radius as published."
+    },
+    {
+      "to": "scenery",
+      "at": "2026-09-06T16:23:49Z",
+      "what": "a lamp's RADIUS is a look knob, not just a reach knob: the shadow a piece casts lands d x h_blocker/(h_light - h_blocker) beyond it, so a bigger radius is what puts that shadow inside the lit area instead of the dim tail. Your radius-11 streetlights are why scenery shadows read at all now (measured 0.46-0.60 of unshadowed behind a piece 2.4 cells out). Every scenery light casts shadows now, not just flame-like ids."
+    },
+    {
+      "to": "maps2",
+      "at": "2026-09-06T16:23:49Z",
+      "what": "lit scenery now casts real shadows from EVERY light (was flame-like ids only) and the big published radii put those shadows inside the lit area. Placing a lit piece 2-4 cells from something solid is what makes a night scene read."
     }
   ],
-  "updated_at": "2026-09-06T16:02:41Z",
+  "updated_at": "2026-09-06T16:23:49Z",
   "health": "running",
   "current": "tree copy behind walls + cave outline fixed. Next: lava swims and burns (surface row + server drain; maps2 must add lava to liquids). Owed: phone GPU cost (?fps=1) with up to 8 street lights, canopy verdict, sea wedges, light pass per-frame change, dodge 0.5, parity fixture drift",
   "consumes": [
