@@ -16,9 +16,9 @@
   "island": "core_off_frac >= 0.03: a clean rim with no island is a plain top, not a transition tile",
   "measured_on": "the published post/ file, never the raw sheet"
  },
- "n_tiles": 1534,
+ "n_tiles": 1524,
  "n_cells": 227,
- "from_blends": 789,
+ "from_blends": 779,
  "from_puddles": 745,
  "ladder": {
   "black_rock__with__brown_paving_stone": {
@@ -16100,20 +16100,6 @@
      "spill": 0.0,
      "island_frac": 0.119,
      "sides_clean": 4
-    },
-    {
-     "dir": "tiles/blends/deep_water__with__light_soil/p10",
-     "i": 15,
-     "raw": "tile_15.webp",
-     "file": "tile_15.50018553.webp",
-     "dominant": "deep_water",
-     "minor": "light_soil",
-     "pct_minor": 10,
-     "source": "blends",
-     "border_impurity": 0.0139,
-     "spill": 0.0,
-     "island_frac": 0.0492,
-     "sides_clean": 2
     }
    ],
    "20": [
@@ -16129,20 +16115,6 @@
      "border_impurity": 0.0,
      "spill": 0.0,
      "island_frac": 0.3694,
-     "sides_clean": 4
-    },
-    {
-     "dir": "tiles/blends/deep_water__with__light_soil/p20",
-     "i": 9,
-     "raw": "tile_09.webp",
-     "file": "tile_09.412903f3.webp",
-     "dominant": "deep_water",
-     "minor": "light_soil",
-     "pct_minor": 20,
-     "source": "blends",
-     "border_impurity": 0.0,
-     "spill": 0.0,
-     "island_frac": 0.132,
      "sides_clean": 4
     },
     {
@@ -16202,93 +16174,9 @@
      "spill": 0.0,
      "island_frac": 0.1127,
      "sides_clean": 4
-    },
-    {
-     "dir": "tiles/blends/deep_water__with__light_soil/p30",
-     "i": 5,
-     "raw": "tile_05.webp",
-     "file": "tile_05.536afb9e.webp",
-     "dominant": "deep_water",
-     "minor": "light_soil",
-     "pct_minor": 30,
-     "source": "blends",
-     "border_impurity": 0.0083,
-     "spill": 0.0,
-     "island_frac": 0.1159,
-     "sides_clean": 3
-    },
-    {
-     "dir": "tiles/blends/deep_water__with__light_soil/p30",
-     "i": 1,
-     "raw": "tile_01.webp",
-     "file": "tile_01.0c698e41.webp",
-     "dominant": "deep_water",
-     "minor": "light_soil",
-     "pct_minor": 30,
-     "source": "blends",
-     "border_impurity": 0.0194,
-     "spill": 0.0,
-     "island_frac": 0.2952,
-     "sides_clean": 2
-    },
-    {
-     "dir": "tiles/blends/deep_water__with__light_soil/p30",
-     "i": 8,
-     "raw": "tile_08.webp",
-     "file": "tile_08.d7b08a77.webp",
-     "dominant": "deep_water",
-     "minor": "light_soil",
-     "pct_minor": 30,
-     "source": "blends",
-     "border_impurity": 0.025,
-     "spill": 0.0,
-     "island_frac": 0.4714,
-     "sides_clean": 1
-    },
-    {
-     "dir": "tiles/blends/deep_water__with__light_soil/p30",
-     "i": 2,
-     "raw": "tile_02.webp",
-     "file": "tile_02.5651b1e3.webp",
-     "dominant": "deep_water",
-     "minor": "light_soil",
-     "pct_minor": 30,
-     "source": "blends",
-     "border_impurity": 0.0333,
-     "spill": 0.0,
-     "island_frac": 0.1175,
-     "sides_clean": 0
     }
    ],
    "40": [
-    {
-     "dir": "tiles/blends/deep_water__with__light_soil/p40",
-     "i": 1,
-     "raw": "tile_01.webp",
-     "file": "tile_01.79580fd0.webp",
-     "dominant": "deep_water",
-     "minor": "light_soil",
-     "pct_minor": 40,
-     "source": "blends",
-     "border_impurity": 0.0,
-     "spill": 0.0,
-     "island_frac": 0.1778,
-     "sides_clean": 4
-    },
-    {
-     "dir": "tiles/blends/deep_water__with__light_soil/p40",
-     "i": 2,
-     "raw": "tile_02.webp",
-     "file": "tile_02.f18f594f.webp",
-     "dominant": "deep_water",
-     "minor": "light_soil",
-     "pct_minor": 40,
-     "source": "blends",
-     "border_impurity": 0.0,
-     "spill": 0.0,
-     "island_frac": 0.1508,
-     "sides_clean": 4
-    },
     {
      "dir": "tiles/blends/deep_water__with__light_soil/p40",
      "i": 4,
@@ -16319,20 +16207,6 @@
     },
     {
      "dir": "tiles/blends/deep_water__with__light_soil/p40",
-     "i": 7,
-     "raw": "tile_07.webp",
-     "file": "tile_07.271a3f13.webp",
-     "dominant": "deep_water",
-     "minor": "light_soil",
-     "pct_minor": 40,
-     "source": "blends",
-     "border_impurity": 0.0,
-     "spill": 0.0,
-     "island_frac": 0.0921,
-     "sides_clean": 4
-    },
-    {
-     "dir": "tiles/blends/deep_water__with__light_soil/p40",
      "i": 9,
      "raw": "tile_09.webp",
      "file": "tile_09.ffe2190c.webp",
@@ -16344,20 +16218,6 @@
      "spill": 0.0,
      "island_frac": 0.1508,
      "sides_clean": 4
-    },
-    {
-     "dir": "tiles/blends/deep_water__with__light_soil/p40",
-     "i": 13,
-     "raw": "tile_13.webp",
-     "file": "tile_13.f8c2ff63.webp",
-     "dominant": "deep_water",
-     "minor": "light_soil",
-     "pct_minor": 40,
-     "source": "blends",
-     "border_impurity": 0.0139,
-     "spill": 0.0139,
-     "island_frac": 0.0494,
-     "sides_clean": 3
     }
    ]
   },
