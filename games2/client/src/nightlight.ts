@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { surfaceFor, CHARACTER_BODY_PX } from "@nangijala/shared";
 import type { SceneryFootprints } from "@nangijala/shared";
 import { World, MAP_GEOMETRY, geometryFor } from "./maps";
+import { renderedWorldView, ViewRect } from "./camview";
 
 /**
  * Serious night lighting: a fullscreen MULTIPLY shader that reconstructs each
@@ -1751,6 +1752,8 @@ export class NightLights {
   private hScale = 16;
   private base?: Phaser.Display.BaseShader;
   private shader?: Phaser.GameObjects.Shader;
+  /** Reused by update(): the rectangle the camera renders THIS frame. */
+  private viewRect: ViewRect = { x: 0, y: 0, width: 0, height: 0 };
   private overlay?: Phaser.GameObjects.Image;
   private mistBase?: Phaser.Display.BaseShader;
   private mistShader?: Phaser.GameObjects.Shader;
@@ -3602,7 +3605,10 @@ export class NightLights {
     this.overlay?.setScale(invZoom * k);
     this.mistOverlay?.setScale(invZoom * k);
     this.depthFogOverlay?.setScale(invZoom * k);
-    const wv = cam.worldView;
+    // NOT cam.worldView: inside update() that is LAST frame's rectangle, and
+    // every night-pass pixel then trails the sprites by one frame of camera
+    // motion (measured: lit ground between a running block and its shadow).
+    const wv = renderedWorldView(cam, this.viewRect);
     const camX = wv.x - (wv.width * (k - 1)) / 2;
     const camY = wv.y - (wv.height * (k - 1)) / 2;
     // Drive the shader animation clock from the SAME source as the JS

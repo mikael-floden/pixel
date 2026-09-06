@@ -2366,6 +2366,9 @@ height reads per thing per frame.
   zoom, dead-centred. Fractional zoom while MOVING is the accepted trade.
   `__ml.lookAt` detaches the chase; no-arg re-attaches. Probe:
   `__ml.camInfo()`; regression in verify-smoke.
+- `centerOn` moves scrollX/Y at once, but `cam.worldView` only follows in the
+  camera's preRender (render step). Screen-space work done in update() from
+  `worldView` is one frame behind — use `renderedWorldView` (Night lighting).
 - **`__ml.teleport(col, row)`** — drop the player at the exact coordinates
   shown under the avatar's name (`fx/CELL_WU, fy/CELL_WU`). Server-
   authoritative ("teleport" message clamps, sets `elev`, clears queued
@@ -2868,6 +2871,17 @@ height reads per thing per frame.
   a 1px unshaded line at night. TEST PATTERNS (nightCal ≥3) render with k=1
   (raw-field readbacks treat canvas pixels as texels 1:1; the stretch
   resamples rows into phantom seams).
+- **uCam IS THIS FRAME'S RECTANGLE, NEVER `cam.worldView`**
+  (`renderedWorldView`, client/src/camview.ts). Phaser recomputes `worldView`
+  only in the camera's own preRender, during render — after update(). Read in
+  update() it is LAST frame's, and every night-pass pixel (torch pools, sun
+  shadows, fog bands) then trails the sprites by one frame of camera motion
+  (measured: a strip of lit ground between a running scenery block and its
+  shadow, tight at rest — maintainer, 2026-09-06). The helper mirrors
+  Camera.preRender from the live scroll (floor on roundPixels, bounds clamp,
+  rounded view); the glow field and the mist/depth-fog shaders take the same
+  camX/camY, so they stay aligned with it. Padded cull boxes may keep reading
+  `worldView`; anything pixel-exact placed in update() may not.
 - Debug: `__ml.nightCal(flip,span,test)` (field test patterns — headless
   only; the old [6]-[9] keys are retired); `__ml.probeLight(col,row,z,
   radius)`; `__ml.lookAt(col,row)`. Numeric probes: verify-solidband,
