@@ -1,7 +1,7 @@
 {
  "format": "pixel-foley-index@1",
  "_comment": "THE PATH-AUTHORITATIVE INDEX for the foley library: what exists, and where. Split out of foley.json because that file is a bare {set: entry} map that consumers iterate with Object.entries \u2014 a layout key added to it becomes a phantom set and throws (wiki/build.mjs:2044). foley.json keeps the QA/feature data; this keeps the file list.",
- "root": "games2/composer/foley",
+ "root": "sounds/foley",
  "_root_comment": "Repo-root-relative directory holding every path below. JOIN it rather than hardcoding a location: the library is moving to sounds/ so a dedicated sound agent can own one directory, and this field is how that move happens without breaking a consumer.",
  "sets": {
   "cross_on_ashcrust": {

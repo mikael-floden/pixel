@@ -14,7 +14,7 @@ const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/i
 const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
 
 // ---------- data: both sources, and every file exists on disk
-const comp = JSON.parse(readFileSync(`${ROOT}/games2/composer/music/tracks.json`, "utf8")).tracks;
+const comp = JSON.parse(readFileSync(`${ROOT}/music/tracks.json`, "utf8")).tracks;
 const beds = D.domains.music.filter((t) => t.source === "composer");
 const tracks = D.domains.music.filter((t) => t.source !== "composer");
 console.log(`data: ${tracks.length} music-domain tracks + ${beds.length} composer beds`);
@@ -22,9 +22,18 @@ ok(beds.length === Object.keys(comp).length, `every composer track is listed (${
 ok(tracks.length >= 2, `the music agent's tracks are still there (${tracks.length})`);
 const newOnes = ["battle", "cave", "home", "town", "adventure"];
 ok(newOnes.every((id) => beds.some((t) => t.id === id)), `the five new songs are all present (${newOnes.join(", ")})`);
-const missing = beds.flatMap((t) => Object.values(t.files)).filter((f) => !existsSync(`${ROOT}/games2/${f}`));
+// Paths are REPO-ROOT-RELATIVE now: the score moved out of games2/composer/
+// into music/ (2026-09-02) and the manifest publishes its own `root`, which
+// build.mjs joins. Prefixing games2/ here is what made every one of them look
+// missing while all 51 were on disk.
+const missing = beds.flatMap((t) => Object.values(t.files)).filter((f) => !existsSync(`${ROOT}/${f}`));
 ok(missing.length === 0, `every bed's audio exists on disk (${missing.join(", ") || "all present"})`);
-ok(beds.every((t) => t.duration_s > 60 && t.bpm > 0 && t.key), "each carries its measured length, tempo and key");
+// 20 s, not 60: a bed is a POOL of interchangeable phrases now, and the small
+// pools are legitimately short — idle and arrive are 3 phrases of 13.7 s (41 s
+// of music, ~48-55 s with the lead-in). The point of the check is that the
+// measurement RAN, not that the piece is long; a truncated take is caught at
+// generation, where it scores 0 and is disqualified before it can ship.
+ok(beds.every((t) => t.duration_s > 20 && t.bpm > 0 && t.key), "each carries its measured length, tempo and key");
 
 // ---------- the page
 await p.goto(W + "#/music", { waitUntil: "load" });
@@ -66,7 +75,7 @@ const played = await p.evaluate(async () => {
     label: btn.textContent };
 });
 console.log("playback:", JSON.stringify(played));
-ok(/composer\/music\/battle\./.test(played.src), `Battle streams from the composer's own folder (${played.src})`);
+ok(/music\/beds\/battle\./.test(played.src), `Battle streams from the music domain (${played.src})`);
 ok(played.err === null && played.playing && played.t > 0.1, `and it is really playing (t=${played.t?.toFixed(2)}s)`);
 ok(played.label === "⏸", "the button shows it is playing");
 

@@ -58,7 +58,7 @@ for (const [where, hash] of [["a monster page", MONSTER], ["the Sound Effects pa
   const r = await wiki().evaluate(async () => {
     const a = document.querySelector("#shared-audio");
     if (!document.querySelector(".sfx-add-open")) return { noBtn: true };
-    a.src = "/assets/composer/music/battle.ogg";
+    a.src = "/assets/music/beds/battle.ogg";
     await a.play().catch(() => {});
     return { playing: !a.paused, muteBtns: document.querySelectorAll(".mute-game").length };
   });

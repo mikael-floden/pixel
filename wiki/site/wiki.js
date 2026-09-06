@@ -22,11 +22,11 @@
 let ROOT = new URL("../../", location.href);
 
 /** COMPOSER AUDIO LIVES IN THE REPO, NOT THE IMAGE (2026-08-15). The foley
- *  takes and music beds are 94 MB that ONLY these wiki pages play — nothing in
- *  the game loads /assets/composer (the in-world score is bundled into the
- *  client JS). Shipping them meant every player's container carried 94 MB for
- *  a page only the Game Master opens, so the image drops them and the wiki
- *  streams them from the public repo instead.
+ *  The foley library and the score SHIP now (sounds/, music/ — the image
+ *  serves them at /assets and the game itself fetches them from there). What
+ *  is left for this path is the score ARCHIVE, music/beds/pool: 97 MB of
+ *  superseded takes that only these pages play, excluded from the image in
+ *  publish.json and streamed from the public repo instead.
  *
  *  Unlike the admin registry swap below this applies to EVERYONE, because the
  *  sound pages are not admin-only. Resolved lazily and cached: the base needs
@@ -35,6 +35,18 @@ let ROOT = new URL("../../", location.href);
  *  override wins, and `composerBase` is only consulted when the local origin
  *  is the deployed game. */
 let composerBase = null;
+/** WHICH AUDIO PATHS THE IMAGE DOES NOT CARRY, and must therefore stream from
+ *  the public repo. Since the 2026-09-02 restructure the foley library and the
+ *  score live in sounds/ and music/, which the image ships and serves at
+ *  /assets — so they take the ordinary local path and are content-hashed and
+ *  immutable like every other asset. The ONE exception is the score ARCHIVE
+ *  (music/beds/pool, 97 MB of superseded takes kept so the maintainer can swap
+ *  one back in): it is wiki content, not game content, excluded in
+ *  publish.json, and streamed from the repo exactly as the whole composer tree
+ *  used to be. `composer/` stays recognised so an old data.json still plays. */
+export function streamsFromRepo(rel) {
+  return rel.startsWith("music/beds/pool/") || rel.startsWith("composer/");
+}
 async function composerRoot() {
   if (composerBase) return composerBase;
   /* THE COMPOSER LIVES UNDER games2/, and this forgot to say so (maintainer
@@ -43,18 +55,21 @@ async function composerRoot() {
    * Paths published for the composer are `composer/music/…`, and the staging
    * base is the REPO ROOT — so every one of them resolved to
    * raw.githubusercontent/…/<sha>/composer/music/… and answered 404, where the
-   * file is at …/<sha>/games2/composer/music/…. Verified against the CDN: the
-   * first is 404, the second 200 with access-control-allow-origin: *.
-   *
-   * It is not only the bench: the composer's situation beds on the Music page
-   * carry the same prefix and have never been playable in production either.
+   * file was at …/<sha>/games2/composer/music/…. That whole tree has since
+   * MOVED to sounds/ and music/, so the prefix is gone and the base is the
+   * repo root again — but the lesson stands, hence the note.
    *
    * MY GATE HID IT. The local override pointed at `…/8903/games2/`, which I
    * chose because it made the paths work — so the test proved the audio decodes
    * and proved nothing about where the page looks for it. The override is the
    * repo root now, exactly like the real base. */
   const base = (await stagingSha().then((sha) => stagingBase(sha))) ?? ROOT;
-  composerBase = new URL("games2/", base);
+  /* THE BASE IS THE REPO ROOT. It used to be `games2/` because everything this
+   * resolved lived under games2/composer/; after the restructure the only
+   * paths that come here are repo-root-relative (music/beds/pool/…), and a
+   * legacy composer/… path is ALSO repo-root-relative now that the tree is
+   * gone. One base, no per-path prefix. */
+  composerBase = new URL(base.href ?? String(base));
   return composerBase;
 }
 
@@ -3098,7 +3113,7 @@ async function playTake(files, btn) {
   if (playingBtn === btn && !a.paused) { a.pause(); return; }
   if (playingBtn) { playingBtn.classList.remove("playing"); playingBtn.textContent = "▶"; }
   // composer/** is not in the image (see composerRoot) — it streams from the repo.
-  a.src = src.startsWith("composer/") ? await composerUrl(src) : assetUrl(src);
+  a.src = streamsFromRepo(src) ? await composerUrl(src) : assetUrl(src);
   a.play().catch((e) => toast(`Playback failed: ${e.message}`));
   playingBtn = btn;
   btn.classList.add("playing"); btn.textContent = "⏸";
@@ -3177,7 +3192,7 @@ const benchEngine = {
     const p = (async () => {
       const why = [];
       for (const rel of cands) {
-        const url = rel.startsWith("composer/") ? await composerUrl(rel) : assetUrl(rel);
+        const url = streamsFromRepo(rel) ? await composerUrl(rel) : assetUrl(rel);
         try {
           const r = await fetch(url);
           if (!r.ok) { why.push(`${String(url).split("/").pop()} → HTTP ${r.status}`); continue; }
@@ -11440,7 +11455,7 @@ const sfxEngine = {
     const p = (async () => {
       for (const file of cands) {
         try {
-          const r = await fetch(file.startsWith("composer/") ? await composerUrl(file) : assetUrl(file));
+          const r = await fetch(streamsFromRepo(file) ? await composerUrl(file) : assetUrl(file));
           if (!r.ok) continue;
           const buf = await this.ac().decodeAudioData(await r.arrayBuffer());
           if (buf) return { buf, file };

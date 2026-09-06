@@ -16,7 +16,7 @@ import { MusicDirector } from "./music";
 import { MusicalContext, OneShotPlayer, PlayOpts } from "./oneshot";
 import { composerFoley, composerFoleySurfaces, composerFoleyTake, loadComposerFoley } from "./foley";
 import { nightMusicUrl, titleThemeUrl } from "./titleTheme";
-import { ContextMusic, hasBed } from "./contextMusic";
+import { ContextMusic, hasBed, loadMusicIndex } from "./contextMusic";
 import { BED_MIN_HOLD_S, BED_NAMES, BED_OFF, BED_ON, BedName, desiredBed, resolveBed } from "./bedSelect";
 
 /** Per-avatar, per-frame movement sample — the scene reports what the body
@@ -550,7 +550,7 @@ export class GameAudio {
     // override would be observable half-applied — a footstep could take the
     // catalog sound for a frame and the composer's the next. Same tick, or
     // neither.
-    void Promise.all([loadCatalog(), loadComposerFoley()]).then(([cat]) => {
+    void Promise.all([loadCatalog(), loadComposerFoley(), loadMusicIndex()]).then(([cat]) => {
       this.catalog = cat;
       this.ambience = new AmbienceMixer(this.graph!, this.buffers, cat.sounds);
       this.indexBindings(cat.bindings);

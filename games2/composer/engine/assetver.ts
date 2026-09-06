@@ -50,3 +50,10 @@ export function withAudioV(url: string): string {
   if (h) return `${url}${sep}h=${h}`;
   return V ? `${url}${sep}v=${V}` : url;
 }
+
+/** A manifest's repo-root-relative `root` -> the /assets url it is served at.
+ *  `sounds/foley` -> `/assets/sounds/foley/`. A leading `games2/` is stripped
+ *  for the composer's own two legacy mounts; nothing published today uses it. */
+export function assetBaseFor(root: string): string {
+  return "/assets/" + root.replace(/^games2\//, "").replace(/^\/+|\/+$/g, "") + "/";
+}

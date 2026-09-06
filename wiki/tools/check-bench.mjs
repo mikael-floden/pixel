@@ -24,11 +24,12 @@ import { join } from "node:path";
 const { chromium } = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../games2/package.json", import.meta.url))("playwright-core");
 const ROOT = new URL("../../", import.meta.url).pathname;
 const D = JSON.parse(readFileSync(join(ROOT, "wiki/site/data.json"), "utf8"));
-const TR = JSON.parse(readFileSync(join(ROOT, "games2/composer/music/tracks.json"), "utf8"));
+const TR = JSON.parse(readFileSync(join(ROOT, "music/tracks.json"), "utf8"));
 const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
 const W = `${process.env.WIKI_URL ?? "http://127.0.0.1:8902"}/assets/wiki/site/index.html`;
 // THE REPO ROOT, exactly like the real staging base. Pointing this at
-// ".../games2/" is what let a 404 ship: it made composer/music/... resolve and
+// ".../games2/" is what let a 404 ship (pre-2026-09-02, when the score lived
+// under games2/composer/music): it made those paths resolve and
 // proved nothing about where the page actually looks.
 const REPO = process.env.REPO_URL ?? "http://127.0.0.1:8903/";
 
@@ -153,13 +154,13 @@ ok(Math.abs(sched.bus - 10 ** (-14 / 20)) < 1e-6,
   `audition runs through the game's music bus at −14 dB (gain ${sched.bus.toFixed(4)})`);
 // THE URL IT ACTUALLY FETCHED, which is the check that was missing when a 404
 // shipped (maintainer: "I try to press on A but nothing happens"). The paths
-// are published as `composer/music/…` and the staging base is the REPO ROOT,
+// were published as `composer/music/…` while the staging base is the REPO ROOT,
 // so anything that does not put games2/ in between resolves to nothing.
 const audioOk = audioResp.filter((r) => r.ok);
 ok(audioResp.length > 0 && audioOk.length === audioResp.length,
   `every audio fetch succeeded (${audioOk.length}/${audioResp.length}${audioResp.filter((r) => !r.ok).map((r) => ` — ${r.status} ${r.url.slice(-52)}`).join("")})`);
 ok(audioOk.every((r) => /games2\/composer\/music\//.test(r.url)),
-  `and it looked under games2/composer/music (${(audioOk[0]?.url ?? "").slice(-58)})`);
+  `and it looked under ${(audioOk[0]?.url ?? "").slice(-58)}`);
 // And the page says so when it CANNOT load, instead of sitting silent.
 ok(/bench-problem/.test(await p.content()) || true, "the bench carries a place to report a load failure");
 // ONE DECODE PER TAKE — "don't re-download a 2 MB file every time I press play".

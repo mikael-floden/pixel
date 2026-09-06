@@ -6,7 +6,7 @@ entire responsibility for much music and sound right now") — sounds/, music/
 and games2/composer/ alike. The line that used to sit here, "this does NOT
 touch the music/ domain (another agent owns that)", is why the DAY BED, the
 most-heard music in the game, was left out of the sequenceable rewrite. Do not
-reintroduce that hedge. Tracks here are committed under games2/composer/music/
+reintroduce that hedge. Tracks here are committed under music/beds/
 and bundled by Vite (engine/contextMusic.ts).
 
 THE SEVEN BEDS — one per thing the player can be doing:
@@ -35,7 +35,7 @@ HOW THIS RUNS (and why it is not just one POST):
   4. Delivered as .ogg (opus) + .m4a (AAC) — every browser covered, ~40%
      smaller than the mp3 it replaces. Everything measured lands in tracks.json.
 
-Run:  python games2/composer/music/pipeline/generate.py <track|new|all> [seconds]
+Run:  python music/pipeline/score/generate.py <track|new|all> [seconds]
         new = the five context beds (town cave home battle adventure)
 Needs ELEVENLABS_API_KEY (a GitHub secret in composer-theme.yml).
 
@@ -67,8 +67,13 @@ PLAN_URL = f"{API_ROOT}/music/plan"
 MUSIC_URL = f"{API_ROOT}/music"
 SUB_URL = f"{API_ROOT}/user/subscription"
 MODEL_ID = "music_v1"
-MUSIC_DIR = Path(__file__).resolve().parents[1]
-TRACKS_JSON = MUSIC_DIR / "tracks.json"
+# music/pipeline/score/ -> music/beds/ for the audio, music/ for the
+# manifest and briefs. The PIPELINE sits under music/pipeline/ so it
+# inherits publish.json's image exclusion; the beds ship and are served
+# at /assets/music/beds/.
+MUSIC_ROOT = Path(__file__).resolve().parents[2]
+MUSIC_DIR = MUSIC_ROOT / "beds"
+TRACKS_JSON = MUSIC_ROOT / "tracks.json"
 # Every generation ever made, never overwritten — his swap-it-back library.
 POOL_DIR = MUSIC_DIR / "pool"
 
@@ -718,7 +723,7 @@ NEW_BEDS = ["town", "cave", "home", "battle", "adventure"]
 # he has seen is ever lost. Track names are <suite>_<pool>_<colour>, which means
 # a re-roll of one colour cannot overwrite another, and the wiki groups them by
 # prefix for free.
-BRIEFS_DIR = MUSIC_DIR / "briefs"
+BRIEFS_DIR = MUSIC_ROOT / "briefs"
 
 
 def load_suites() -> dict[str, dict]:

@@ -1488,7 +1488,7 @@ function buildMusic() {
   return [...tracks, ...buildComposerMusic()];
 }
 
-/* The COMPOSER's own score (games2/composer/music/tracks.json,
+/* The composer-generated SCORE (music/tracks.json,
    `composer-music@1`). Two sources make the game's music and the page listed
    only one, so the five context beds the composer generated on 2026-08-05
    were invisible (maintainer 2026-08-06: "he did 5 new songs and you are
@@ -1554,12 +1554,13 @@ const svKeyText = (s2) => {
   return m ? svKey(m[1], m[2] ?? "major") : String(s2);
 };
 function buildBench() {
-  const dir = composerDir() ? join(composerDir(), "music") : null;
-  const doc = dir ? readJson(join(dir, "tracks.json")) : null;
+  // Manifest, briefs and audio each have their own home under music/ — the
+  // manifest at the domain root, the briefs beside it, the audio in beds/.
+  const doc = musicScoreDoc();
   if (!doc?.tracks) return null;
   // The suite contracts, read from the composer's own briefs.
   const suites = {};
-  const bdir = dir ? join(dir, "briefs") : null;
+  const bdir = musicBriefsDir();
   if (bdir && isDir(bdir)) {
     for (const f of readdirSync(bdir).filter((x) => x.endsWith(".json"))) {
       const br = readJson(join(bdir, f));
@@ -1578,7 +1579,7 @@ function buildBench() {
     const out = {};
     for (const f of arr ?? []) {
       const ext = (f.file.split(".").pop() ?? "").toLowerCase();
-      out[ext] = `composer/music/${f.file}`;
+      out[ext] = `${musicScoreRel()}/${f.file}`;
     }
     return out;
   };
@@ -1642,8 +1643,10 @@ function buildBench() {
 }
 const bench = buildBench();
 function buildComposerMusic() {
-  const dir = composerDir() ? join(composerDir(), "music") : null;
-  const doc = dir ? readJson(join(dir, "tracks.json")) : null;
+  // The MANIFEST and the AUDIO are not in the same directory: tracks.json sits
+  // at music/, its files at music/beds/ (its own `root` says so). Joining the
+  // audio dir to find the manifest is how this silently listed 0 beds.
+  const doc = musicScoreDoc();
   if (!doc?.tracks) return [];
   // A bed the composer added that this build has no role text for is still
   // LISTED (never hidden), just without the routing line — and it warns, the
@@ -1653,7 +1656,7 @@ function buildComposerMusic() {
     const files = {};
     for (const f of t.files ?? []) {
       const ext = (f.file.split(".").pop() ?? "").toLowerCase();
-      files[ext] = `composer/music/${f.file}`;
+      files[ext] = `${musicScoreRel()}/${f.file}`;
     }
     const role = BED_ROLE[id] ?? {};
     return {
@@ -1946,6 +1949,41 @@ function composerDir() {
   for (const p of [join(GAMES2, "composer"), join(ROOT, "composer")]) if (isDir(p)) return p;
   return null;
 }
+/** WHERE A MANIFEST'S FILES LIVE — read from the manifest, never assumed.
+ *  The foley library and the score moved out of games2/composer/ into sounds/
+ *  and music/ on 2026-09-02 (the maintainer's restructure: one directory per
+ *  domain, so a dedicated sound or music agent can be hired without moving a
+ *  file). Both manifests publish `root`, repo-root-relative, exactly so this
+ *  build joins it instead of hardcoding a location and breaking on the move.
+ *  The fallback is the pre-move path, so an old checkout still builds. */
+function musicScoreDoc() {
+  const inMusic = readJson(join(ROOT, "music", "tracks.json"));
+  if (inMusic?.tracks) return inMusic;
+  const comp = composerDir();
+  return (comp && readJson(join(comp, "music", "tracks.json"))) || null;
+}
+function musicScoreDir() {
+  const rel = audioRoot(musicScoreDoc(), "music/beds");
+  if (isDir(join(ROOT, rel))) return join(ROOT, rel);
+  const comp = composerDir();
+  return comp && isDir(join(comp, "music")) ? join(comp, "music") : null;
+}
+/** The url prefix for a score file, from the manifest's own `root`. */
+/** Where the suite briefs live: beside the manifest, not inside the audio. */
+function musicBriefsDir() {
+  for (const d of [join(ROOT, "music", "briefs"),
+                   composerDir() && join(composerDir(), "music", "briefs")]) {
+    if (d && isDir(d)) return d;
+  }
+  return null;
+}
+function musicScoreRel() {
+  return audioRoot(musicScoreDoc(), "music/beds");
+}
+function audioRoot(manifest, fallback) {
+  const r = typeof manifest?.root === "string" ? manifest.root.replace(/^\/+|\/+$/g, "") : "";
+  return r || fallback;
+}
 /** Content hash, memoised — the ONLY way to tell a pool candidate that was
  *  promoted to a take from one that was passed over: the promotion is a plain
  *  file copy under a new name, so the paths never match and the bytes always
@@ -2021,8 +2059,11 @@ function buildSfx(soundEntries, entityIds = {}) {
   const JUMP_VOICE = tsRecord(apiSrc, "JUMP_VOICE") ?? {};
   const footDefault = apiSrc.match(/const FOOTSTEP_DEFAULT = "([^"]+)"/)?.[1] ?? (sfxDrift.push("FOOTSTEP_DEFAULT not found"), "stone");
 
-  // ---- composer's own foley sets (takes on disk, served at /assets/composer) --
-  const foleyDir = comp ? join(comp, "foley") : null;
+  // ---- the foley library (sounds/foley, served at /assets/sounds/foley) ----
+  const foleyIdx = readJson(join(ROOT, "sounds", "foley", "index.json")) ?? {};
+  const foleyRel = audioRoot(foleyIdx, "sounds/foley");
+  const foleyDir = isDir(join(ROOT, foleyRel)) ? join(ROOT, foleyRel)
+    : (comp && isDir(join(comp, "foley")) ? join(comp, "foley") : null);
   const foleyMeta = foleyDir ? readJson(join(foleyDir, "foley.json")) ?? {} : {};
   const composerSets = {};
   /* PUBLISH THE FILE THAT IS THERE, not the one the manifest remembers.
@@ -2046,7 +2087,7 @@ function buildSfx(soundEntries, entityIds = {}) {
     composerSets[set] = {
       takes: meta.takes.map((t, i) => ({
         name: foleyDisk(t).split("/").pop(),
-        file: `composer/foley/${foleyDisk(t)}`,
+        file: `${foleyRel}/${foleyDisk(t)}`,
         dur: meta.durations_s?.[i] ?? null,
       })),
       // ---- THE GENERATION POOL — the takes' unpicked siblings ----------
@@ -2072,7 +2113,7 @@ function buildSfx(soundEntries, entityIds = {}) {
           .sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
           .map((c) => ({
             name: foleyDisk(c.file).split("/").pop(),
-            file: `composer/foley/${foleyDisk(c.file)}`,
+            file: `${foleyRel}/${foleyDisk(c.file)}`,
             dur: c.features?.duration_s ?? null,
           }));
       })(),

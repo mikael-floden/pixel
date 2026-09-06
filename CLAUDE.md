@@ -42,8 +42,18 @@ works. This map answers one question only — whose directory is that.
   **the maps2 agent is who places scenery** in them.
 - `scenery/` — freely placeable, optionally animated set dressing: off the tile
   grid, and it can animate (tiles can't).
-- `sounds/` — game SFX; `music/` — background score, each track shipping sync
-  metadata. Both via ElevenLabs (`ELEVENLABS_API_KEY`).
+- `sounds/` — every sound EFFECT: the catalog, the 422-set foley library
+  (`sounds/foley/`) and both generators (`sounds/pipeline/`).
+- `music/` — every piece of MUSIC: the domain tracks, the score beds
+  (`music/beds/`), the kept archive (`music/beds/pool/`), the suite briefs and
+  both pipelines (`music/pipeline/`). Both via ElevenLabs
+  (`ELEVENLABS_API_KEY`).
+- Those two and `games2/composer/` (BINDING only — engine, viewers,
+  `assignments.json`; it generates nothing) are one agent's today and are laid
+  out so a dedicated sound or music agent can be hired into either **without
+  moving a file** (maintainer 2026-09-02). Each manifest publishes a `root`
+  saying where its own audio lives; consumers JOIN it rather than hardcoding a
+  path, which is what made the split possible and is what keeps it.
 - `items/` — everything carrying an item TYPE tag on PixelLab's objects store.
 - `monsters/` — everything tagged `MONSTER` (objects AND characters stores).
 - `lore/` — the story; no generation, no API. Writes only `lore/**`, publishes

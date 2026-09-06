@@ -11,7 +11,7 @@ import { extname, join, normalize, resolve } from "node:path";
 const REPO_ROOT = process.env.ASSETS_ROOT || resolve(__dirname, "../..");
 const ASSET_DOMAINS = new Set([
   "characters", "tiles", "maps", "scenery", "characters2", "tiles2", "maps2",
-  "sounds", "music", "monsters", "items", "lore", "wiki", "live", "composer",
+  "sounds", "music", "monsters", "items", "lore", "wiki", "live",
 ]);
 const TYPES: Record<string, string> = {
   ".png": "image/png",
@@ -42,11 +42,11 @@ function serveAssets(): Plugin {
         const rel = normalize(decodeURIComponent(req.url.slice("/assets/".length)));
         const domain = rel.split(/[\\/]/)[0];
         if (rel.startsWith("..") || !ASSET_DOMAINS.has(domain)) return next();
-        // composer/foley + composer/music live under games2/ in the repo (only
-        // the takes and the beds are served; the engine sources are not assets).
-        const file = domain === "composer" && /^composer\/(foley|music)\//.test(rel)
-          ? join(REPO_ROOT, "games2", rel)
-          : join(REPO_ROOT, rel);
+        // Every domain is a repo-root sibling. The composer used to be a
+        // special case here because its foley library and score sat under
+        // games2/; they live in sounds/ and music/ now, so there is nothing
+        // left to special-case.
+        const file = join(REPO_ROOT, rel);
         if (!existsSync(file) || !statSync(file).isFile()) return next();
         res.setHeader("Content-Type", TYPES[extname(file)] || "application/octet-stream");
         createReadStream(file).pipe(res);

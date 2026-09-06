@@ -30,7 +30,6 @@
 import { AudioGraph, BufferCache } from "./context";
 import { dbToGain } from "./catalog";
 import { MusicalContext } from "./oneshot";
-import tracksFile from "../music/tracks.json";
 
 export type BedName = "adventure" | "town" | "cave" | "home" | "battle" | "night" | "cave4" | "summit_triumph";
 
@@ -84,41 +83,62 @@ export interface TrackEntry {
     pool?: string | null;
   };
 }
+import { assetBaseFor, withAudioV } from "./assetver";
+
 interface TracksFile {
-  tracks: Record<string, TrackEntry>;
+  root?: string;
+  tracks?: Record<string, TrackEntry>;
 }
 
-const TRACKS = (tracksFile as unknown as TracksFile).tracks ?? {};
+/** THE SCORE MANIFEST, FETCHED — not imported at build time.
+ *
+ * The beds live in music/ now, one directory a dedicated music agent owns
+ * outright, and a build-time import would have to reach out of games2/ (Vite's
+ * workspace root) to find them. Reaching across that boundary is exactly the
+ * coupling that kept the score inside the game's folder in the first place.
+ * The manifest says where its own files are (`root`), so this joins it. */
+const TRACKS_URL = "/assets/music/tracks.json";
+let TRACKS: Record<string, TrackEntry> = {};
+let bedBase = assetBaseFor("music/beds");
+let musicLoaded: Promise<boolean> | null = null;
 
-// Bundled audio: Vite emits each as its own hashed asset, so nothing is
-// downloaded until a bed actually plays.
-const bundled = import.meta.glob("../music/*.{ogg,m4a,mp3}", {
-  query: "?url",
-  import: "default",
-  eager: true,
-}) as Record<string, string>;
+/** Fetch the score manifest once. Never throws: no manifest means no beds,
+ *  which the callers already treat as "not generated yet". */
+export function loadMusicIndex(fetchImpl: typeof fetch = fetch): Promise<boolean> {
+  if (musicLoaded) return musicLoaded;
+  musicLoaded = (async () => {
+    try {
+      const res = await fetchImpl(TRACKS_URL);
+      if (!res.ok) return false;
+      const doc = (await res.json()) as TracksFile;
+      if (!doc?.tracks) return false;
+      TRACKS = doc.tracks;
+      if (doc.root) bedBase = assetBaseFor(doc.root);
+      return Object.keys(TRACKS).length > 0;
+    } catch {
+      return false;
+    }
+  })();
+  return musicLoaded;
+}
 
-const byName = new Map<string, string>();
-for (const path of Object.keys(bundled)) {
-  const base = path.split("/").pop();
-  if (base) byName.set(base, bundled[path]);
+/** Every track in the manifest, for callers that pick by name. */
+export function musicTracks(): Record<string, TrackEntry> {
+  return TRACKS;
 }
 
 /** The playable URL for a bed: first listed format this browser can decode
- * (opus everywhere, AAC on Safari/iOS). The url is a bundle emit whose name
- * carries its content hash, so it is cached for a year as-is and survives a
- * deploy unchanged. Null when the bed has not been generated yet. */
+ * (opus everywhere, AAC on Safari/iOS). Served from /assets/music, so it is
+ * stamped with its content hash and frozen for a year. Null when the bed has
+ * not been generated yet. */
 export function bedTrack(name: string): { url: string; entry: TrackEntry } | null {
   const entry = TRACKS[name];
   if (!entry) return null;
   const probe = typeof document !== "undefined" ? document.createElement("audio") : null;
   for (const f of entry.files ?? []) {
-    const url = byName.get(f.file);
-    if (!url) continue;
+    if (!f?.file) continue;
     if (probe && f.mime && !probe.canPlayType(f.mime)) continue;
-    // A bundle emit: its filename carries the content hash, so it is
-    // immutable as-is and must NOT be stamped (assetver.ts).
-    return { url, entry };
+    return { url: withAudioV(bedBase + f.file), entry };
   }
   return null;
 }

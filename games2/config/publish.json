@@ -1,6 +1,6 @@
 {
   "$comment": [
-    "THE PUBLICATION POLICY — what is IN THE GAME (maintainer 2026-08-14).",
+    "THE PUBLICATION POLICY \u2014 what is IN THE GAME (maintainer 2026-08-14).",
     "",
     "This file is the ONLY hand-maintained part of the split. Everything else is",
     "derived by scripts/shipset.mjs, which closes over these roots: a published",
@@ -15,16 +15,18 @@
     "Editing this file changes what production serves. The shipset digest changes",
     "with it, which is what makes the image and the tile atlas rebuild."
   ],
-
-  "userWorlds": ["the_game", "the_island2"],
+  "userWorlds": [
+    "the_game",
+    "the_island2"
+  ],
   "$comment_userWorlds": [
-    "THE GAME. What an end user may select, and — since 2026-08-15 — the ONLY",
+    "THE GAME. What an end user may select, and \u2014 since 2026-08-15 \u2014 the ONLY",
     "worlds the image carries: the ship-set closure walks this list, nothing",
     "else. A product gate, not a security boundary (the repo is public); the",
     "point is the game never OFFERS anything else.",
     "",
-    "A name may live in EITHER world tree — maps2/worlds (world@1/@2) or",
-    "maps2/worlds3 (pixel-maps3) — resolved by probing, so this list names a",
+    "A name may live in EITHER world tree \u2014 maps2/worlds (world@1/@2) or",
+    "maps2/worlds3 (pixel-maps3) \u2014 resolved by probing, so this list names a",
     "world and nothing else. the_game is the default map (maintainer 2026-09-02:",
     "the new default, and once we are happy with it the only playable map;",
     "until then the_island2 stays). A worlds3 world ships its own docs, its",
@@ -33,7 +35,6 @@
     "Dockerfile's build stage by scripts/ship-tiles3.ts (measured on the_game:",
     "508 files / 0.3 MB of the 400 MB tiles/ domain)."
   ],
-
   "devWorlds": [
     "the_island",
     "demo_isle",
@@ -49,7 +50,7 @@
   "devWorlds3": [],
   "$comment_devWorlds3": [
     "STAGING worlds in the SECOND world tree, maps2/worlds3/<name>/world.json",
-    "(pixel-maps3/world@1 — a ground NAME per cell, no baked tile art; tiles3",
+    "(pixel-maps3/world@1 \u2014 a ground NAME per cell, no baked tile art; tiles3",
     "resolves what draws at draw time). Same staging contract as devWorlds and",
     "the same zero bytes in the image; a separate key because the name alone",
     "cannot say which directory holds the world, and the client's fetches, the",
@@ -61,10 +62,9 @@
     "/assets/tiles/... and the image ships only the closure of its PUBLISHED",
     "worlds3 worlds (userWorlds above), never the 400 MB domain."
   ],
-
   "$comment_devWorlds": [
     "STAGING worlds: renderer test beds and generator fixtures. NOT in the",
-    "image at all — an admin who joins one streams it from the repo (client:",
+    "image at all \u2014 an admin who joins one streams it from the repo (client:",
     "staging.ts via jsDelivr; server: WorldRoom's disk-first GitHub fallback).",
     "They cost production zero bytes, which is what lets monster_demo one day",
     "spawn all 57 monsters without dragging 16 MB of monster art into the",
@@ -72,44 +72,58 @@
     "reads this list via the CDN; the dev server still plays them from the",
     "working tree exactly as before."
   ],
-
-  "playableCharacters": ["humans/default_boy", "humans/default_girl"],
-
+  "playableCharacters": [
+    "humans/default_boy",
+    "humans/default_girl"
+  ],
   "monsters": [],
   "$comment_monsters": [
     "Monsters reachable from a published world's spawns.json are found",
     "automatically. This list is only for monsters the ENGINE names directly",
-    "with no spawn zone — leave empty unless something 404s."
+    "with no spawn zone \u2014 leave empty unless something 404s."
   ],
-
-  "scenery": ["campfire", "grave_cross", "blood_spatter"],
+  "scenery": [
+    "campfire",
+    "grave_cross",
+    "blood_spatter"
+  ],
   "$comment_scenery": [
     "The three pieces WorldScene loads by hardcoded path. The v2 factory's other",
     "~2,640 pieces are staging content until the maps2 agent places them."
   ],
-
-  "entityDomains": ["characters2", "monsters", "tiles2", "scenery"],
+  "entityDomains": [
+    "characters2",
+    "monsters",
+    "tiles2",
+    "scenery"
+  ],
   "$comment_entityDomains": [
     "Domains where individual entities are selected by closure. Their ROOT-level",
-    "files and config/ trees ship wholesale regardless — those are descriptors the",
+    "files and config/ trees ship wholesale regardless \u2014 those are descriptors the",
     "manifest builders read (monsters/config/roster.json,",
     "characters2/animation_map.json, tiles2/emission.json). Omitting one does not",
     "404 a sprite, it silently empties a manifest: the first curated root built a",
     "game with ZERO monsters for exactly this reason."
   ],
-
-  "alwaysShip": ["items", "lore", "live", "wiki", "sounds", "music"],
+  "alwaysShip": [
+    "items",
+    "lore",
+    "live",
+    "wiki",
+    "sounds",
+    "music"
+  ],
   "$comment_alwaysShip": [
     "Domains where per-entity closure buys little: items and lore are small and",
     "wholly in-game, live/ is runtime tuning state, wiki/ is the wiki itself.",
     "sounds/ and music/ are catalog-driven at runtime rather than referenced by",
-    "the worlds, so they ship whole minus the excludes below — tightening those",
+    "the worlds, so they ship whole minus the excludes below \u2014 tightening those",
     "two to a real catalog closure is a follow-up, not a guess to make here."
   ],
-
   "exclude": [
     "^tiles2/[^/]+/raw/",
     "^music/.*\\.wav$",
+    "^music/beds/pool/",
     "^characters2/_experiments/",
     "^wiki/tools/",
     "^maps2/(pipeline|spec)/",
@@ -118,7 +132,7 @@
   ],
   "$comment_exclude": [
     "Applied last, so these carve out of the wholesale alwaysShip includes.",
-    "tiles2/*/raw and the music masters were already excluded by .dockerignore —",
+    "tiles2/*/raw and the music masters were already excluded by .dockerignore \u2014",
     "kept here so ONE file is the source of truth for what ships."
   ]
 }

@@ -26,7 +26,7 @@ that fails is reported and its wav left as the only copy. A silent-but-valid
 take is a real thing here (fully transparent frames exist in this library), so
 "quiet" is never treated as failure.
 
-Run:  python games2/composer/foley/pipeline/to-opus.py [--check]
+Run:  python sounds/pipeline/foley/to-opus.py [--check]
         --check  report what would change, write nothing; FAILS on manifest
                  drift, which is what makes this a CI gate
 """
@@ -39,7 +39,7 @@ from pathlib import Path
 import numpy as np
 import soundfile as sf
 
-FOLEY = Path(__file__).resolve().parents[1]
+FOLEY = Path(__file__).resolve().parents[2] / "foley"
 
 # Duration must survive within one 20 ms opus frame plus a little slack; opus
 # pads to its frame size, so an exact match is not achievable and not required.
@@ -134,7 +134,7 @@ def sync_manifest(write: bool) -> int:
 INDEX = FOLEY / "index.json"
 # Where these paths live, repo-root-relative. THE ONE PLACE that changes when
 # the library moves to sounds/ — every consumer joins it instead of hardcoding.
-INDEX_ROOT = "games2/composer/foley"
+INDEX_ROOT = "sounds/foley"
 
 
 def write_index(write: bool) -> int:

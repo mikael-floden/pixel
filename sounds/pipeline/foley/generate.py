@@ -3,7 +3,7 @@
 Charter (maintainer 2026-07-18): the composer has the SAME generation rights
 as the sound/music agents (ELEVENLABS_API_KEY). When the producers' catalog
 falls short in-game, the composer regenerates the assets itself inside its
-own domain (games2/composer/foley/). Targets so far, both after maintainer
+own domain (sounds/foley/). Targets so far, both after maintainer
 in-game QA: FOOTSTEPS (grass/sand/snow bad, stone/ice okeyish) and the UI
 BUTTONS ("sound like a piano and not like buttons" — the ui_* sets are
 tactile mechanical clicks by construction).
@@ -16,8 +16,8 @@ de-click fades, -1 dBFS peak — same recipe as the sound domain), and writes
 Requires ELEVENLABS_API_KEY (Actions secret or local env). Self-contained on
 purpose: domains keep their own pipeline copies (repo convention).
 
-    python games2/composer/foley/pipeline/generate.py              # all sets
-    python games2/composer/foley/pipeline/generate.py grass ui_tick # a subset
+    python sounds/pipeline/foley/generate.py              # all sets
+    python sounds/pipeline/foley/generate.py grass ui_tick # a subset
 """
 
 from __future__ import annotations
@@ -36,7 +36,10 @@ from pathlib import Path
 import numpy as np
 import requests
 
-FOLEY_DIR = Path(__file__).resolve().parent.parent
+# sounds/pipeline/foley/ -> sounds/foley/. The GENERATOR lives under
+# sounds/pipeline/ so it inherits publish.json's "^[^/]+/pipeline/" image
+# exclusion; the LIBRARY it writes is served at /assets/sounds/foley/.
+FOLEY_DIR = Path(__file__).resolve().parents[2] / "foley"
 GEN_URL = "https://api.elevenlabs.io/v1/sound-generation"
 MODEL_ID = "eleven_text_to_sound_v2"
 SR = 48000
@@ -1595,7 +1598,7 @@ def _ref_distance(x: np.ndarray, ref_profile: np.ndarray) -> float:
 
 
 def _load_ref_profile(repo_rel: str) -> np.ndarray:
-    repo_root = FOLEY_DIR.parent.parent.parent  # games2/composer/foley → repo
+    repo_root = FOLEY_DIR.parent.parent          # sounds/foley → repo root
     with wave.open(str(repo_root / repo_rel)) as w:
         raw = np.frombuffer(w.readframes(w.getnframes()), dtype="<i2")
         x = raw.astype(np.float32) / 32768.0

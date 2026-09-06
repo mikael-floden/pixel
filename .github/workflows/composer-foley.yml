@@ -1,6 +1,6 @@
 name: Composer foley generation
 
-# The composer agent's OWN audio generation (games2/composer/foley/) — same
+# The sound domain's foley library (sounds/foley/) — generated here — same
 # rights + same ELEVENLABS_API_KEY secret as the sounds/music domains
 # (maintainer 2026-07-18). On-demand only: run it after editing the briefs in
 # generate.py, optionally limiting to specific surfaces. Commits the mastered
@@ -47,7 +47,7 @@ jobs:
       - name: Generate + master the foley takes
         env:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-        run: python games2/composer/foley/pipeline/generate.py ${{ github.event.inputs.surfaces }}
+        run: python sounds/pipeline/foley/generate.py ${{ github.event.inputs.surfaces }}
 
       # SHIP OPUS, NEVER RAW PCM. The generator writes wav masters; this turns
       # them into the ~9%-the-size opus the game actually loads, and deletes a
@@ -55,20 +55,20 @@ jobs:
       # AUDIBLE band. Without this step every new round would quietly put
       # uncompressed audio back into the deployed image.
       - name: Compress the takes to opus
-        run: python games2/composer/foley/pipeline/to-opus.py
+        run: python sounds/pipeline/foley/to-opus.py
 
       # The manifest must name the file that ships. to-opus rewrites it above;
       # this fails the run if anything still disagrees with the disk, which is
       # how foley.json went 452 takes stale for two weeks unnoticed.
       - name: Gate — foley.json names files that exist
-        run: python games2/composer/foley/pipeline/to-opus.py --check
+        run: python sounds/pipeline/foley/to-opus.py --check
 
       - name: Commit + push
         id: push
         run: |
           git config user.name "pixel-composer-bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add games2/composer/foley/
+          git add sounds/
           git diff --cached --quiet && { echo "nothing generated"; exit 0; }
           git commit -m "composer: regenerate foley sets (own generation rights)"
           ok=0

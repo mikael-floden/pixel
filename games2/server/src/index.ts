@@ -176,18 +176,6 @@ app.get("/asset-index.json", (_req, res) => {
 });
 
 if (serveClient) {
-  // The composer's own foley takes and music beds, for the wiki's sound and
-  // music pages. Only those two folders are exposed — the engine sources stay
-  // private. In the image the Dockerfile copies them under /assets/composer/;
-  // a repo checkout serves them straight from games2/composer (second mount =
-  // dev fallback).
-  for (const sub of ["foley", "music"]) {
-    app.use(
-      `/assets/composer/${sub}`,
-      express.static(join(ASSETS_ROOT, "composer", sub), { maxAge: "1h", setHeaders: setCacheHeaders }),
-      express.static(join(GAME_ROOT, "composer", sub), { maxAge: "1h", setHeaders: setCacheHeaders }),
-    );
-  }
   for (const domain of ASSET_DOMAINS) {
     app.use(
       `/assets/${domain}`,
