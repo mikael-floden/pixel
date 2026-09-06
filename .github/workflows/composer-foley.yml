@@ -57,6 +57,12 @@ jobs:
       - name: Compress the takes to opus
         run: python games2/composer/foley/pipeline/to-opus.py
 
+      # The manifest must name the file that ships. to-opus rewrites it above;
+      # this fails the run if anything still disagrees with the disk, which is
+      # how foley.json went 452 takes stale for two weeks unnoticed.
+      - name: Gate — foley.json names files that exist
+        run: python games2/composer/foley/pipeline/to-opus.py --check
+
       - name: Commit + push
         id: push
         run: |

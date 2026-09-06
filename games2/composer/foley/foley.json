@@ -1,7 +1,7 @@
 {
   "grass": {
     "takes": [
-      "grass/grass__take01.wav"
+      "grass/grass__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -26,7 +26,7 @@
     },
     "pool_candidates": [
       {
-        "file": "grass/pool/grass__cand01.wav",
+        "file": "grass/pool/grass__cand01.ogg",
         "passed_gates": false,
         "rank": 14.5,
         "features": {
@@ -41,7 +41,7 @@
         }
       },
       {
-        "file": "grass/pool/grass__cand05.wav",
+        "file": "grass/pool/grass__cand05.ogg",
         "passed_gates": false,
         "rank": 132.25,
         "features": {
@@ -56,7 +56,7 @@
         }
       },
       {
-        "file": "grass/pool/grass__cand06.wav",
+        "file": "grass/pool/grass__cand06.ogg",
         "passed_gates": false,
         "rank": 151.56,
         "features": {
@@ -71,7 +71,7 @@
         }
       },
       {
-        "file": "grass/pool/grass__cand07.wav",
+        "file": "grass/pool/grass__cand07.ogg",
         "passed_gates": false,
         "rank": 152.86,
         "features": {
@@ -86,7 +86,7 @@
         }
       },
       {
-        "file": "grass/pool/grass__cand08.wav",
+        "file": "grass/pool/grass__cand08.ogg",
         "passed_gates": false,
         "rank": 187.99,
         "features": {
@@ -101,7 +101,7 @@
         }
       },
       {
-        "file": "grass/pool/grass__cand09.wav",
+        "file": "grass/pool/grass__cand09.ogg",
         "passed_gates": false,
         "rank": 213.19,
         "features": {
@@ -116,7 +116,7 @@
         }
       },
       {
-        "file": "grass/pool/grass__cand10.wav",
+        "file": "grass/pool/grass__cand10.ogg",
         "passed_gates": false,
         "rank": 221.01,
         "features": {
@@ -131,7 +131,7 @@
         }
       },
       {
-        "file": "grass/pool/grass__cand11.wav",
+        "file": "grass/pool/grass__cand11.ogg",
         "passed_gates": false,
         "rank": 255.77,
         "features": {
@@ -146,7 +146,7 @@
         }
       },
       {
-        "file": "grass/pool/grass__cand12.wav",
+        "file": "grass/pool/grass__cand12.ogg",
         "passed_gates": false,
         "rank": 333.95,
         "features": {
@@ -167,8 +167,8 @@
   },
   "snow": {
     "takes": [
-      "snow/snow__take01.wav",
-      "snow/snow__take03.wav"
+      "snow/snow__take01.ogg",
+      "snow/snow__take03.ogg"
     ],
     "durations_s": [
       0.6,
@@ -200,7 +200,7 @@
     },
     "pool_candidates": [
       {
-        "file": "snow/pool/snow__cand01.wav",
+        "file": "snow/pool/snow__cand01.ogg",
         "passed_gates": true,
         "rank": 0.27,
         "features": {
@@ -213,7 +213,7 @@
         }
       },
       {
-        "file": "snow/pool/snow__cand03.wav",
+        "file": "snow/pool/snow__cand03.ogg",
         "passed_gates": true,
         "rank": 0.31,
         "features": {
@@ -226,7 +226,7 @@
         }
       },
       {
-        "file": "snow/pool/snow__cand05.wav",
+        "file": "snow/pool/snow__cand05.ogg",
         "passed_gates": true,
         "rank": 0.52,
         "features": {
@@ -239,7 +239,7 @@
         }
       },
       {
-        "file": "snow/pool/snow__cand06.wav",
+        "file": "snow/pool/snow__cand06.ogg",
         "passed_gates": true,
         "rank": 0.55,
         "features": {
@@ -252,7 +252,7 @@
         }
       },
       {
-        "file": "snow/pool/snow__cand07.wav",
+        "file": "snow/pool/snow__cand07.ogg",
         "passed_gates": true,
         "rank": 1.18,
         "features": {
@@ -265,7 +265,7 @@
         }
       },
       {
-        "file": "snow/pool/snow__cand08.wav",
+        "file": "snow/pool/snow__cand08.ogg",
         "passed_gates": false,
         "rank": 0.58,
         "features": {
@@ -278,7 +278,7 @@
         }
       },
       {
-        "file": "snow/pool/snow__cand09.wav",
+        "file": "snow/pool/snow__cand09.ogg",
         "passed_gates": false,
         "rank": 0.63,
         "features": {
@@ -297,8 +297,8 @@
   },
   "ice": {
     "takes": [
-      "ice/ice__take01.wav",
-      "ice/ice__take02.wav"
+      "ice/ice__take01.ogg",
+      "ice/ice__take02.ogg"
     ],
     "durations_s": [
       0.5,
@@ -334,7 +334,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ice/pool/ice__cand01.wav",
+        "file": "ice/pool/ice__cand01.ogg",
         "passed_gates": true,
         "rank": 0.15,
         "features": {
@@ -349,7 +349,7 @@
         }
       },
       {
-        "file": "ice/pool/ice__cand02.wav",
+        "file": "ice/pool/ice__cand02.ogg",
         "passed_gates": true,
         "rank": 0.15,
         "features": {
@@ -364,7 +364,7 @@
         }
       },
       {
-        "file": "ice/pool/ice__cand05.wav",
+        "file": "ice/pool/ice__cand05.ogg",
         "passed_gates": true,
         "rank": 0.27,
         "features": {
@@ -379,7 +379,7 @@
         }
       },
       {
-        "file": "ice/pool/ice__cand06.wav",
+        "file": "ice/pool/ice__cand06.ogg",
         "passed_gates": true,
         "rank": 0.31,
         "features": {
@@ -394,7 +394,7 @@
         }
       },
       {
-        "file": "ice/pool/ice__cand07.wav",
+        "file": "ice/pool/ice__cand07.ogg",
         "passed_gates": true,
         "rank": 0.39,
         "features": {
@@ -409,7 +409,7 @@
         }
       },
       {
-        "file": "ice/pool/ice__cand08.wav",
+        "file": "ice/pool/ice__cand08.ogg",
         "passed_gates": true,
         "rank": 0.39,
         "features": {
@@ -424,7 +424,7 @@
         }
       },
       {
-        "file": "ice/pool/ice__cand09.wav",
+        "file": "ice/pool/ice__cand09.ogg",
         "passed_gates": true,
         "rank": 0.47,
         "features": {
@@ -439,7 +439,7 @@
         }
       },
       {
-        "file": "ice/pool/ice__cand10.wav",
+        "file": "ice/pool/ice__cand10.ogg",
         "passed_gates": true,
         "rank": 0.5,
         "features": {
@@ -454,7 +454,7 @@
         }
       },
       {
-        "file": "ice/pool/ice__cand11.wav",
+        "file": "ice/pool/ice__cand11.ogg",
         "passed_gates": true,
         "rank": 0.74,
         "features": {
@@ -469,7 +469,7 @@
         }
       },
       {
-        "file": "ice/pool/ice__cand12.wav",
+        "file": "ice/pool/ice__cand12.ogg",
         "passed_gates": true,
         "rank": 0.95,
         "features": {
@@ -490,8 +490,8 @@
   },
   "wood": {
     "takes": [
-      "wood/wood__take01.wav",
-      "wood/wood__take02.wav"
+      "wood/wood__take01.ogg",
+      "wood/wood__take02.ogg"
     ],
     "durations_s": [
       0.586,
@@ -523,7 +523,7 @@
     },
     "pool_candidates": [
       {
-        "file": "wood/pool/wood__cand01.wav",
+        "file": "wood/pool/wood__cand01.ogg",
         "passed_gates": true,
         "rank": 0.35,
         "features": {
@@ -536,7 +536,7 @@
         }
       },
       {
-        "file": "wood/pool/wood__cand02.wav",
+        "file": "wood/pool/wood__cand02.ogg",
         "passed_gates": true,
         "rank": 0.43,
         "features": {
@@ -549,7 +549,7 @@
         }
       },
       {
-        "file": "wood/pool/wood__cand05.wav",
+        "file": "wood/pool/wood__cand05.ogg",
         "passed_gates": true,
         "rank": 0.93,
         "features": {
@@ -562,7 +562,7 @@
         }
       },
       {
-        "file": "wood/pool/wood__cand06.wav",
+        "file": "wood/pool/wood__cand06.ogg",
         "passed_gates": false,
         "rank": 1.91,
         "features": {
@@ -575,7 +575,7 @@
         }
       },
       {
-        "file": "wood/pool/wood__cand07.wav",
+        "file": "wood/pool/wood__cand07.ogg",
         "passed_gates": false,
         "rank": 1.95,
         "features": {
@@ -588,7 +588,7 @@
         }
       },
       {
-        "file": "wood/pool/wood__cand08.wav",
+        "file": "wood/pool/wood__cand08.ogg",
         "passed_gates": false,
         "rank": 2.19,
         "features": {
@@ -601,7 +601,7 @@
         }
       },
       {
-        "file": "wood/pool/wood__cand09.wav",
+        "file": "wood/pool/wood__cand09.ogg",
         "passed_gates": false,
         "rank": 2.46,
         "features": {
@@ -620,7 +620,7 @@
   },
   "dirt": {
     "takes": [
-      "dirt/dirt__take02.wav"
+      "dirt/dirt__take02.ogg"
     ],
     "durations_s": [
       0.6
@@ -643,7 +643,7 @@
     },
     "pool_candidates": [
       {
-        "file": "dirt/pool/dirt__cand02.wav",
+        "file": "dirt/pool/dirt__cand02.ogg",
         "passed_gates": true,
         "rank": 0.57,
         "features": {
@@ -656,7 +656,7 @@
         }
       },
       {
-        "file": "dirt/pool/dirt__cand05.wav",
+        "file": "dirt/pool/dirt__cand05.ogg",
         "passed_gates": true,
         "rank": 0.98,
         "features": {
@@ -669,7 +669,7 @@
         }
       },
       {
-        "file": "dirt/pool/dirt__cand06.wav",
+        "file": "dirt/pool/dirt__cand06.ogg",
         "passed_gates": true,
         "rank": 1.05,
         "features": {
@@ -682,7 +682,7 @@
         }
       },
       {
-        "file": "dirt/pool/dirt__cand07.wav",
+        "file": "dirt/pool/dirt__cand07.ogg",
         "passed_gates": true,
         "rank": 1.31,
         "features": {
@@ -695,7 +695,7 @@
         }
       },
       {
-        "file": "dirt/pool/dirt__cand08.wav",
+        "file": "dirt/pool/dirt__cand08.ogg",
         "passed_gates": false,
         "rank": 3.39,
         "features": {
@@ -727,7 +727,7 @@
   },
   "swamp": {
     "takes": [
-      "swamp/swamp__take03.wav"
+      "swamp/swamp__take03.ogg"
     ],
     "durations_s": [
       0.676
@@ -750,7 +750,7 @@
     },
     "pool_candidates": [
       {
-        "file": "swamp/pool/swamp__cand03.wav",
+        "file": "swamp/pool/swamp__cand03.ogg",
         "passed_gates": true,
         "rank": 0.33,
         "features": {
@@ -763,7 +763,7 @@
         }
       },
       {
-        "file": "swamp/pool/swamp__cand05.wav",
+        "file": "swamp/pool/swamp__cand05.ogg",
         "passed_gates": true,
         "rank": 0.39,
         "features": {
@@ -776,7 +776,7 @@
         }
       },
       {
-        "file": "swamp/pool/swamp__cand06.wav",
+        "file": "swamp/pool/swamp__cand06.ogg",
         "passed_gates": true,
         "rank": 0.42,
         "features": {
@@ -789,7 +789,7 @@
         }
       },
       {
-        "file": "swamp/pool/swamp__cand07.wav",
+        "file": "swamp/pool/swamp__cand07.ogg",
         "passed_gates": true,
         "rank": 0.48,
         "features": {
@@ -802,7 +802,7 @@
         }
       },
       {
-        "file": "swamp/pool/swamp__cand08.wav",
+        "file": "swamp/pool/swamp__cand08.ogg",
         "passed_gates": true,
         "rank": 1.61,
         "features": {
@@ -815,7 +815,7 @@
         }
       },
       {
-        "file": "swamp/pool/swamp__cand09.wav",
+        "file": "swamp/pool/swamp__cand09.ogg",
         "passed_gates": true,
         "rank": 1.71,
         "features": {
@@ -834,9 +834,9 @@
   },
   "ui_tick": {
     "takes": [
-      "ui_tick/ui_tick__take01.wav",
-      "ui_tick/ui_tick__take02.wav",
-      "ui_tick/ui_tick__take04.wav"
+      "ui_tick/ui_tick__take01.ogg",
+      "ui_tick/ui_tick__take02.ogg",
+      "ui_tick/ui_tick__take04.ogg"
     ],
     "durations_s": [
       0.25,
@@ -877,7 +877,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ui_tick/pool/ui_tick__cand01.wav",
+        "file": "ui_tick/pool/ui_tick__cand01.ogg",
         "passed_gates": true,
         "rank": 2.38,
         "features": {
@@ -890,7 +890,7 @@
         }
       },
       {
-        "file": "ui_tick/pool/ui_tick__cand02.wav",
+        "file": "ui_tick/pool/ui_tick__cand02.ogg",
         "passed_gates": true,
         "rank": 2.76,
         "features": {
@@ -903,7 +903,7 @@
         }
       },
       {
-        "file": "ui_tick/pool/ui_tick__cand04.wav",
+        "file": "ui_tick/pool/ui_tick__cand04.ogg",
         "passed_gates": false,
         "rank": 6.03,
         "features": {
@@ -916,7 +916,7 @@
         }
       },
       {
-        "file": "ui_tick/pool/ui_tick__cand05.wav",
+        "file": "ui_tick/pool/ui_tick__cand05.ogg",
         "passed_gates": false,
         "rank": 9.39,
         "features": {
@@ -929,7 +929,7 @@
         }
       },
       {
-        "file": "ui_tick/pool/ui_tick__cand06.wav",
+        "file": "ui_tick/pool/ui_tick__cand06.ogg",
         "passed_gates": false,
         "rank": 11.49,
         "features": {
@@ -942,7 +942,7 @@
         }
       },
       {
-        "file": "ui_tick/pool/ui_tick__cand07.wav",
+        "file": "ui_tick/pool/ui_tick__cand07.ogg",
         "passed_gates": false,
         "rank": 11.91,
         "features": {
@@ -955,7 +955,7 @@
         }
       },
       {
-        "file": "ui_tick/pool/ui_tick__cand08.wav",
+        "file": "ui_tick/pool/ui_tick__cand08.ogg",
         "passed_gates": false,
         "rank": 13.73,
         "features": {
@@ -968,7 +968,7 @@
         }
       },
       {
-        "file": "ui_tick/pool/ui_tick__cand09.wav",
+        "file": "ui_tick/pool/ui_tick__cand09.ogg",
         "passed_gates": false,
         "rank": 20.17,
         "features": {
@@ -987,8 +987,8 @@
   },
   "ui_confirm": {
     "takes": [
-      "ui_confirm/ui_confirm__take01.wav",
-      "ui_confirm/ui_confirm__take04.wav"
+      "ui_confirm/ui_confirm__take01.ogg",
+      "ui_confirm/ui_confirm__take04.ogg"
     ],
     "durations_s": [
       0.347,
@@ -1020,7 +1020,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ui_confirm/pool/ui_confirm__cand01.wav",
+        "file": "ui_confirm/pool/ui_confirm__cand01.ogg",
         "passed_gates": true,
         "rank": 2.39,
         "features": {
@@ -1033,7 +1033,7 @@
         }
       },
       {
-        "file": "ui_confirm/pool/ui_confirm__cand04.wav",
+        "file": "ui_confirm/pool/ui_confirm__cand04.ogg",
         "passed_gates": true,
         "rank": 2.52,
         "features": {
@@ -1046,7 +1046,7 @@
         }
       },
       {
-        "file": "ui_confirm/pool/ui_confirm__cand05.wav",
+        "file": "ui_confirm/pool/ui_confirm__cand05.ogg",
         "passed_gates": true,
         "rank": 3.09,
         "features": {
@@ -1059,7 +1059,7 @@
         }
       },
       {
-        "file": "ui_confirm/pool/ui_confirm__cand06.wav",
+        "file": "ui_confirm/pool/ui_confirm__cand06.ogg",
         "passed_gates": true,
         "rank": 3.56,
         "features": {
@@ -1072,7 +1072,7 @@
         }
       },
       {
-        "file": "ui_confirm/pool/ui_confirm__cand07.wav",
+        "file": "ui_confirm/pool/ui_confirm__cand07.ogg",
         "passed_gates": true,
         "rank": 3.69,
         "features": {
@@ -1085,7 +1085,7 @@
         }
       },
       {
-        "file": "ui_confirm/pool/ui_confirm__cand08.wav",
+        "file": "ui_confirm/pool/ui_confirm__cand08.ogg",
         "passed_gates": false,
         "rank": 6.17,
         "features": {
@@ -1098,7 +1098,7 @@
         }
       },
       {
-        "file": "ui_confirm/pool/ui_confirm__cand09.wav",
+        "file": "ui_confirm/pool/ui_confirm__cand09.ogg",
         "passed_gates": false,
         "rank": 8.62,
         "features": {
@@ -1117,7 +1117,7 @@
   },
   "stone": {
     "takes": [
-      "stone/stone__take01.wav"
+      "stone/stone__take01.ogg"
     ],
     "durations_s": [
       0.674
@@ -1128,7 +1128,7 @@
   },
   "water_step": {
     "takes": [
-      "water_step/water_step__take02.wav"
+      "water_step/water_step__take02.ogg"
     ],
     "durations_s": [
       0.7
@@ -1153,7 +1153,7 @@
     },
     "pool_candidates": [
       {
-        "file": "water_step/pool/water_step__cand02.wav",
+        "file": "water_step/pool/water_step__cand02.ogg",
         "passed_gates": true,
         "rank": 1.03,
         "features": {
@@ -1174,10 +1174,10 @@
   },
   "jump_voice": {
     "takes": [
-      "jump_voice/jump_voice__take01.wav",
-      "jump_voice/jump_voice__take02.wav",
-      "jump_voice/jump_voice__take03.wav",
-      "jump_voice/jump_voice__take04.wav"
+      "jump_voice/jump_voice__take01.ogg",
+      "jump_voice/jump_voice__take02.ogg",
+      "jump_voice/jump_voice__take03.ogg",
+      "jump_voice/jump_voice__take04.ogg"
     ],
     "durations_s": [
       0.96,
@@ -1235,7 +1235,7 @@
     },
     "pool_candidates": [
       {
-        "file": "jump_voice/pool/jump_voice__cand01.wav",
+        "file": "jump_voice/pool/jump_voice__cand01.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1250,7 +1250,7 @@
         }
       },
       {
-        "file": "jump_voice/pool/jump_voice__cand02.wav",
+        "file": "jump_voice/pool/jump_voice__cand02.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1265,7 +1265,7 @@
         }
       },
       {
-        "file": "jump_voice/pool/jump_voice__cand03.wav",
+        "file": "jump_voice/pool/jump_voice__cand03.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1280,7 +1280,7 @@
         }
       },
       {
-        "file": "jump_voice/pool/jump_voice__cand04.wav",
+        "file": "jump_voice/pool/jump_voice__cand04.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1295,7 +1295,7 @@
         }
       },
       {
-        "file": "jump_voice/pool/jump_voice__cand05.wav",
+        "file": "jump_voice/pool/jump_voice__cand05.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1310,7 +1310,7 @@
         }
       },
       {
-        "file": "jump_voice/pool/jump_voice__cand06.wav",
+        "file": "jump_voice/pool/jump_voice__cand06.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1325,7 +1325,7 @@
         }
       },
       {
-        "file": "jump_voice/pool/jump_voice__cand07.wav",
+        "file": "jump_voice/pool/jump_voice__cand07.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1340,7 +1340,7 @@
         }
       },
       {
-        "file": "jump_voice/pool/jump_voice__cand08.wav",
+        "file": "jump_voice/pool/jump_voice__cand08.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1361,9 +1361,9 @@
   },
   "jump_voice_boy": {
     "takes": [
-      "jump_voice_boy/jump_voice_boy__take02.wav",
-      "jump_voice_boy/jump_voice_boy__take03.wav",
-      "jump_voice_boy/jump_voice_boy__take04.wav"
+      "jump_voice_boy/jump_voice_boy__take02.ogg",
+      "jump_voice_boy/jump_voice_boy__take03.ogg",
+      "jump_voice_boy/jump_voice_boy__take04.ogg"
     ],
     "durations_s": [
       0.96,
@@ -1410,7 +1410,7 @@
     },
     "pool_candidates": [
       {
-        "file": "jump_voice_boy/pool/jump_voice_boy__cand02.wav",
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand02.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1425,7 +1425,7 @@
         }
       },
       {
-        "file": "jump_voice_boy/pool/jump_voice_boy__cand03.wav",
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand03.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1440,7 +1440,7 @@
         }
       },
       {
-        "file": "jump_voice_boy/pool/jump_voice_boy__cand04.wav",
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand04.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1455,7 +1455,7 @@
         }
       },
       {
-        "file": "jump_voice_boy/pool/jump_voice_boy__cand05.wav",
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand05.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1470,7 +1470,7 @@
         }
       },
       {
-        "file": "jump_voice_boy/pool/jump_voice_boy__cand06.wav",
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand06.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1485,7 +1485,7 @@
         }
       },
       {
-        "file": "jump_voice_boy/pool/jump_voice_boy__cand07.wav",
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand07.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1500,7 +1500,7 @@
         }
       },
       {
-        "file": "jump_voice_boy/pool/jump_voice_boy__cand08.wav",
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand08.ogg",
         "passed_gates": true,
         "rank": 0.0,
         "features": {
@@ -1521,7 +1521,7 @@
   },
   "punch": {
     "takes": [
-      "punch/punch__take04.wav"
+      "punch/punch__take04.ogg"
     ],
     "durations_s": [
       0.45
@@ -1546,7 +1546,7 @@
     },
     "pool_candidates": [
       {
-        "file": "punch/pool/punch__cand04.wav",
+        "file": "punch/pool/punch__cand04.ogg",
         "passed_gates": false,
         "rank": 39.8,
         "features": {
@@ -1561,7 +1561,7 @@
         }
       },
       {
-        "file": "punch/pool/punch__cand05.wav",
+        "file": "punch/pool/punch__cand05.ogg",
         "passed_gates": false,
         "rank": 183.11,
         "features": {
@@ -1576,7 +1576,7 @@
         }
       },
       {
-        "file": "punch/pool/punch__cand06.wav",
+        "file": "punch/pool/punch__cand06.ogg",
         "passed_gates": false,
         "rank": 241.12,
         "features": {
@@ -1591,7 +1591,7 @@
         }
       },
       {
-        "file": "punch/pool/punch__cand07.wav",
+        "file": "punch/pool/punch__cand07.ogg",
         "passed_gates": false,
         "rank": 318.59,
         "features": {
@@ -1606,7 +1606,7 @@
         }
       },
       {
-        "file": "punch/pool/punch__cand08.wav",
+        "file": "punch/pool/punch__cand08.ogg",
         "passed_gates": false,
         "rank": 349.21,
         "features": {
@@ -1621,7 +1621,7 @@
         }
       },
       {
-        "file": "punch/pool/punch__cand09.wav",
+        "file": "punch/pool/punch__cand09.ogg",
         "passed_gates": false,
         "rank": 350.53,
         "features": {
@@ -1636,7 +1636,7 @@
         }
       },
       {
-        "file": "punch/pool/punch__cand10.wav",
+        "file": "punch/pool/punch__cand10.ogg",
         "passed_gates": false,
         "rank": 392.66,
         "features": {
@@ -1657,7 +1657,7 @@
   },
   "hit_taken_gut": {
     "takes": [
-      "hit_taken_gut/hit_taken_gut__take01.wav"
+      "hit_taken_gut/hit_taken_gut__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -1687,7 +1687,7 @@
   },
   "kick_bamboo": {
     "takes": [
-      "kick_bamboo/kick_bamboo__take01.wav"
+      "kick_bamboo/kick_bamboo__take01.ogg"
     ],
     "durations_s": [
       0.5
@@ -1717,7 +1717,7 @@
   },
   "monster_hit_splat": {
     "takes": [
-      "monster_hit_splat/monster_hit_splat__take01.wav"
+      "monster_hit_splat/monster_hit_splat__take01.ogg"
     ],
     "durations_s": [
       0.5
@@ -1747,7 +1747,7 @@
   },
   "monster_die_bubble": {
     "takes": [
-      "monster_die_bubble/monster_die_bubble__take01.wav"
+      "monster_die_bubble/monster_die_bubble__take01.ogg"
     ],
     "durations_s": [
       0.7
@@ -1777,7 +1777,7 @@
   },
   "monster_die_splat": {
     "takes": [
-      "monster_die_splat/monster_die_splat__take01.wav"
+      "monster_die_splat/monster_die_splat__take01.ogg"
     ],
     "durations_s": [
       2.0
@@ -1807,7 +1807,7 @@
   },
   "cross_rise_roots": {
     "takes": [
-      "cross_rise_roots/cross_rise_roots__take01.wav"
+      "cross_rise_roots/cross_rise_roots__take01.ogg"
     ],
     "durations_s": [
       2.4
@@ -1837,7 +1837,7 @@
   },
   "cross_sink_swallow": {
     "takes": [
-      "cross_sink_swallow/cross_sink_swallow__take01.wav"
+      "cross_sink_swallow/cross_sink_swallow__take01.ogg"
     ],
     "durations_s": [
       2.0
@@ -1867,7 +1867,7 @@
   },
   "item_drop_mudplop": {
     "takes": [
-      "item_drop_mudplop/item_drop_mudplop__take01.wav"
+      "item_drop_mudplop/item_drop_mudplop__take01.ogg"
     ],
     "durations_s": [
       0.5
@@ -1897,7 +1897,7 @@
   },
   "level_up_harp": {
     "takes": [
-      "level_up_harp/level_up_harp__take01.wav"
+      "level_up_harp/level_up_harp__take01.ogg"
     ],
     "durations_s": [
       3.52
@@ -1927,7 +1927,7 @@
   },
   "level_up_choir": {
     "takes": [
-      "level_up_choir/level_up_choir__take01.wav"
+      "level_up_choir/level_up_choir__take01.ogg"
     ],
     "durations_s": [
       4.0
@@ -1957,7 +1957,7 @@
   },
   "hit_taken_armor": {
     "takes": [
-      "hit_taken_armor/hit_taken_armor__take01.wav"
+      "hit_taken_armor/hit_taken_armor__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -1987,7 +1987,7 @@
   },
   "hit_taken_oof": {
     "takes": [
-      "hit_taken_oof/hit_taken_oof__take01.wav"
+      "hit_taken_oof/hit_taken_oof__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -2017,7 +2017,7 @@
   },
   "hit_taken_coat": {
     "takes": [
-      "hit_taken_coat/hit_taken_coat__take01.wav"
+      "hit_taken_coat/hit_taken_coat__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -2077,7 +2077,7 @@
   },
   "hit_taken_earth": {
     "takes": [
-      "hit_taken_earth/hit_taken_earth__take01.wav"
+      "hit_taken_earth/hit_taken_earth__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -2107,7 +2107,7 @@
   },
   "hit_taken_rope": {
     "takes": [
-      "hit_taken_rope/hit_taken_rope__take01.wav"
+      "hit_taken_rope/hit_taken_rope__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -2137,7 +2137,7 @@
   },
   "hit_taken_bass": {
     "takes": [
-      "hit_taken_bass/hit_taken_bass__take01.wav"
+      "hit_taken_bass/hit_taken_bass__take01.ogg"
     ],
     "durations_s": [
       0.65
@@ -2167,7 +2167,7 @@
   },
   "hit_taken_snow": {
     "takes": [
-      "hit_taken_snow/hit_taken_snow__take01.wav"
+      "hit_taken_snow/hit_taken_snow__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -2197,7 +2197,7 @@
   },
   "hit_taken_water": {
     "takes": [
-      "hit_taken_water/hit_taken_water__take01.wav"
+      "hit_taken_water/hit_taken_water__take01.ogg"
     ],
     "durations_s": [
       0.65
@@ -2227,7 +2227,7 @@
   },
   "hit_taken_stagger": {
     "takes": [
-      "hit_taken_stagger/hit_taken_stagger__take01.wav"
+      "hit_taken_stagger/hit_taken_stagger__take01.ogg"
     ],
     "durations_s": [
       1.76
@@ -2257,7 +2257,7 @@
   },
   "kick_shield": {
     "takes": [
-      "kick_shield/kick_shield__take01.wav"
+      "kick_shield/kick_shield__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -2287,7 +2287,7 @@
   },
   "kick_gravel": {
     "takes": [
-      "kick_gravel/kick_gravel__take01.wav"
+      "kick_gravel/kick_gravel__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -2317,7 +2317,7 @@
   },
   "kick_boot": {
     "takes": [
-      "kick_boot/kick_boot__take01.wav"
+      "kick_boot/kick_boot__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -2347,7 +2347,7 @@
   },
   "kick_door": {
     "takes": [
-      "kick_door/kick_door__take01.wav"
+      "kick_door/kick_door__take01.ogg"
     ],
     "durations_s": [
       0.7
@@ -2377,7 +2377,7 @@
   },
   "kick_chain": {
     "takes": [
-      "kick_chain/kick_chain__take01.wav"
+      "kick_chain/kick_chain__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -2407,7 +2407,7 @@
   },
   "kick_punt": {
     "takes": [
-      "kick_punt/kick_punt__take01.wav"
+      "kick_punt/kick_punt__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -2437,7 +2437,7 @@
   },
   "kick_hay": {
     "takes": [
-      "kick_hay/kick_hay__take01.wav"
+      "kick_hay/kick_hay__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -2467,7 +2467,7 @@
   },
   "kick_pot": {
     "takes": [
-      "kick_pot/kick_pot__take01.wav"
+      "kick_pot/kick_pot__take01.ogg"
     ],
     "durations_s": [
       0.7
@@ -2497,7 +2497,7 @@
   },
   "kick_greave": {
     "takes": [
-      "kick_greave/kick_greave__take01.wav"
+      "kick_greave/kick_greave__take01.ogg"
     ],
     "durations_s": [
       0.5
@@ -2527,7 +2527,7 @@
   },
   "kick_sandspray": {
     "takes": [
-      "kick_sandspray/kick_sandspray__take01.wav"
+      "kick_sandspray/kick_sandspray__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -2557,7 +2557,7 @@
   },
   "punch_barrel": {
     "takes": [
-      "punch_barrel/punch_barrel__take01.wav"
+      "punch_barrel/punch_barrel__take01.ogg"
     ],
     "durations_s": [
       0.5
@@ -2587,7 +2587,7 @@
   },
   "punch_wetcloth": {
     "takes": [
-      "punch_wetcloth/punch_wetcloth__take01.wav"
+      "punch_wetcloth/punch_wetcloth__take01.ogg"
     ],
     "durations_s": [
       0.5
@@ -2617,7 +2617,7 @@
   },
   "punch_flour": {
     "takes": [
-      "punch_flour/punch_flour__take01.wav"
+      "punch_flour/punch_flour__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -2647,7 +2647,7 @@
   },
   "punch_stonewall": {
     "takes": [
-      "punch_stonewall/punch_stonewall__take01.wav"
+      "punch_stonewall/punch_stonewall__take01.ogg"
     ],
     "durations_s": [
       0.4
@@ -2677,7 +2677,7 @@
   },
   "punch_plate": {
     "takes": [
-      "punch_plate/punch_plate__take01.wav"
+      "punch_plate/punch_plate__take01.ogg"
     ],
     "durations_s": [
       0.5
@@ -2707,7 +2707,7 @@
   },
   "punch_snowbank": {
     "takes": [
-      "punch_snowbank/punch_snowbank__take01.wav"
+      "punch_snowbank/punch_snowbank__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -2737,7 +2737,7 @@
   },
   "punch_water": {
     "takes": [
-      "punch_water/punch_water__take01.wav"
+      "punch_water/punch_water__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -2767,7 +2767,7 @@
   },
   "punch_icecrack": {
     "takes": [
-      "punch_icecrack/punch_icecrack__take01.wav"
+      "punch_icecrack/punch_icecrack__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -2797,7 +2797,7 @@
   },
   "punch_hollowlog": {
     "takes": [
-      "punch_hollowlog/punch_hollowlog__take01.wav"
+      "punch_hollowlog/punch_hollowlog__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -2827,7 +2827,7 @@
   },
   "punch_canvas": {
     "takes": [
-      "punch_canvas/punch_canvas__take01.wav"
+      "punch_canvas/punch_canvas__take01.ogg"
     ],
     "durations_s": [
       0.45
@@ -2857,7 +2857,7 @@
   },
   "player_die_cello": {
     "takes": [
-      "player_die_cello/player_die_cello__take01.wav"
+      "player_die_cello/player_die_cello__take01.ogg"
     ],
     "durations_s": [
       3.2
@@ -2887,7 +2887,7 @@
   },
   "player_die_clarinet": {
     "takes": [
-      "player_die_clarinet/player_die_clarinet__take01.wav"
+      "player_die_clarinet/player_die_clarinet__take01.ogg"
     ],
     "durations_s": [
       2.96
@@ -2917,7 +2917,7 @@
   },
   "player_die_unravel": {
     "takes": [
-      "player_die_unravel/player_die_unravel__take01.wav"
+      "player_die_unravel/player_die_unravel__take01.ogg"
     ],
     "durations_s": [
       2.72
@@ -2947,7 +2947,7 @@
   },
   "player_die_underwater": {
     "takes": [
-      "player_die_underwater/player_die_underwater__take01.wav"
+      "player_die_underwater/player_die_underwater__take01.ogg"
     ],
     "durations_s": [
       3.2
@@ -2977,7 +2977,7 @@
   },
   "player_die_ember": {
     "takes": [
-      "player_die_ember/player_die_ember__take01.wav"
+      "player_die_ember/player_die_ember__take01.ogg"
     ],
     "durations_s": [
       3.2
@@ -3007,7 +3007,7 @@
   },
   "player_die_stonelid": {
     "takes": [
-      "player_die_stonelid/player_die_stonelid__take01.wav"
+      "player_die_stonelid/player_die_stonelid__take01.ogg"
     ],
     "durations_s": [
       2.72
@@ -3037,7 +3037,7 @@
   },
   "player_die_breath": {
     "takes": [
-      "player_die_breath/player_die_breath__take01.wav"
+      "player_die_breath/player_die_breath__take01.ogg"
     ],
     "durations_s": [
       2.96
@@ -3067,7 +3067,7 @@
   },
   "player_die_organ": {
     "takes": [
-      "player_die_organ/player_die_organ__take01.wav"
+      "player_die_organ/player_die_organ__take01.ogg"
     ],
     "durations_s": [
       3.52
@@ -3097,7 +3097,7 @@
   },
   "player_die_wings": {
     "takes": [
-      "player_die_wings/player_die_wings__take01.wav"
+      "player_die_wings/player_die_wings__take01.ogg"
     ],
     "durations_s": [
       2.72
@@ -3127,7 +3127,7 @@
   },
   "player_die_clockstop": {
     "takes": [
-      "player_die_clockstop/player_die_clockstop__take01.wav"
+      "player_die_clockstop/player_die_clockstop__take01.ogg"
     ],
     "durations_s": [
       3.141
@@ -3157,7 +3157,7 @@
   },
   "level_up_strings": {
     "takes": [
-      "level_up_strings/level_up_strings__take01.wav"
+      "level_up_strings/level_up_strings__take01.ogg"
     ],
     "durations_s": [
       4.0
@@ -3187,7 +3187,7 @@
   },
   "level_up_lute": {
     "takes": [
-      "level_up_lute/level_up_lute__take01.wav"
+      "level_up_lute/level_up_lute__take01.ogg"
     ],
     "durations_s": [
       3.2
@@ -3217,7 +3217,7 @@
   },
   "level_up_flute": {
     "takes": [
-      "level_up_flute/level_up_flute__take01.wav"
+      "level_up_flute/level_up_flute__take01.ogg"
     ],
     "durations_s": [
       3.52
@@ -3247,7 +3247,7 @@
   },
   "level_up_organ": {
     "takes": [
-      "level_up_organ/level_up_organ__take01.wav"
+      "level_up_organ/level_up_organ__take01.ogg"
     ],
     "durations_s": [
       4.0
@@ -3277,7 +3277,7 @@
   },
   "level_up_voices": {
     "takes": [
-      "level_up_voices/level_up_voices__take01.wav"
+      "level_up_voices/level_up_voices__take01.ogg"
     ],
     "durations_s": [
       4.0
@@ -3307,7 +3307,7 @@
   },
   "level_up_whistle": {
     "takes": [
-      "level_up_whistle/level_up_whistle__take01.wav"
+      "level_up_whistle/level_up_whistle__take01.ogg"
     ],
     "durations_s": [
       2.863
@@ -3337,7 +3337,7 @@
   },
   "level_up_accordion": {
     "takes": [
-      "level_up_accordion/level_up_accordion__take01.wav"
+      "level_up_accordion/level_up_accordion__take01.ogg"
     ],
     "durations_s": [
       3.52
@@ -3367,7 +3367,7 @@
   },
   "level_up_marimba": {
     "takes": [
-      "level_up_marimba/level_up_marimba__take01.wav"
+      "level_up_marimba/level_up_marimba__take01.ogg"
     ],
     "durations_s": [
       3.2
@@ -3397,7 +3397,7 @@
   },
   "level_up_bowl": {
     "takes": [
-      "level_up_bowl/level_up_bowl__take01.wav"
+      "level_up_bowl/level_up_bowl__take01.ogg"
     ],
     "durations_s": [
       3.858
@@ -3427,7 +3427,7 @@
   },
   "level_up_handdrum": {
     "takes": [
-      "level_up_handdrum/level_up_handdrum__take01.wav"
+      "level_up_handdrum/level_up_handdrum__take01.ogg"
     ],
     "durations_s": [
       3.2
@@ -3457,12 +3457,12 @@
   },
   "thunder": {
     "takes": [
-      "thunder/thunder__take01.wav",
-      "thunder/thunder__take02.wav",
-      "thunder/thunder__take03.wav",
-      "thunder/thunder__take04.wav",
-      "thunder/thunder__take05.wav",
-      "thunder/thunder__take06.wav"
+      "thunder/thunder__take01.ogg",
+      "thunder/thunder__take02.ogg",
+      "thunder/thunder__take03.ogg",
+      "thunder/thunder__take04.ogg",
+      "thunder/thunder__take05.ogg",
+      "thunder/thunder__take06.ogg"
     ],
     "durations_s": [
       1.4,
@@ -3542,7 +3542,7 @@
     },
     "pool_candidates": [
       {
-        "file": "thunder/pool/thunder__cand01.wav",
+        "file": "thunder/pool/thunder__cand01.ogg",
         "passed_gates": true,
         "rank": 1.64,
         "features": {
@@ -3557,7 +3557,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand02.wav",
+        "file": "thunder/pool/thunder__cand02.ogg",
         "passed_gates": true,
         "rank": 1.68,
         "features": {
@@ -3572,7 +3572,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand03.wav",
+        "file": "thunder/pool/thunder__cand03.ogg",
         "passed_gates": true,
         "rank": 1.76,
         "features": {
@@ -3587,7 +3587,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand04.wav",
+        "file": "thunder/pool/thunder__cand04.ogg",
         "passed_gates": true,
         "rank": 1.98,
         "features": {
@@ -3602,7 +3602,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand05.wav",
+        "file": "thunder/pool/thunder__cand05.ogg",
         "passed_gates": true,
         "rank": 2.06,
         "features": {
@@ -3617,7 +3617,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand06.wav",
+        "file": "thunder/pool/thunder__cand06.ogg",
         "passed_gates": true,
         "rank": 2.2,
         "features": {
@@ -3632,7 +3632,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand07.wav",
+        "file": "thunder/pool/thunder__cand07.ogg",
         "passed_gates": true,
         "rank": 2.4,
         "features": {
@@ -3647,7 +3647,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand08.wav",
+        "file": "thunder/pool/thunder__cand08.ogg",
         "passed_gates": true,
         "rank": 2.72,
         "features": {
@@ -3662,7 +3662,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand09.wav",
+        "file": "thunder/pool/thunder__cand09.ogg",
         "passed_gates": true,
         "rank": 2.84,
         "features": {
@@ -3677,7 +3677,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand10.wav",
+        "file": "thunder/pool/thunder__cand10.ogg",
         "passed_gates": true,
         "rank": 2.87,
         "features": {
@@ -3692,7 +3692,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand11.wav",
+        "file": "thunder/pool/thunder__cand11.ogg",
         "passed_gates": true,
         "rank": 2.88,
         "features": {
@@ -3707,7 +3707,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand12.wav",
+        "file": "thunder/pool/thunder__cand12.ogg",
         "passed_gates": true,
         "rank": 2.93,
         "features": {
@@ -3722,7 +3722,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand13.wav",
+        "file": "thunder/pool/thunder__cand13.ogg",
         "passed_gates": true,
         "rank": 2.96,
         "features": {
@@ -3737,7 +3737,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand14.wav",
+        "file": "thunder/pool/thunder__cand14.ogg",
         "passed_gates": true,
         "rank": 3.24,
         "features": {
@@ -3752,7 +3752,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand15.wav",
+        "file": "thunder/pool/thunder__cand15.ogg",
         "passed_gates": true,
         "rank": 3.36,
         "features": {
@@ -3767,7 +3767,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand16.wav",
+        "file": "thunder/pool/thunder__cand16.ogg",
         "passed_gates": true,
         "rank": 3.54,
         "features": {
@@ -3782,7 +3782,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand17.wav",
+        "file": "thunder/pool/thunder__cand17.ogg",
         "passed_gates": true,
         "rank": 3.8,
         "features": {
@@ -3797,7 +3797,7 @@
         }
       },
       {
-        "file": "thunder/pool/thunder__cand18.wav",
+        "file": "thunder/pool/thunder__cand18.ogg",
         "passed_gates": true,
         "rank": 3.86,
         "features": {
@@ -3818,7 +3818,7 @@
   },
   "ui_click_switch": {
     "takes": [
-      "ui_click_switch/ui_click_switch__take01.wav"
+      "ui_click_switch/ui_click_switch__take01.ogg"
     ],
     "durations_s": [
       0.21
@@ -3843,7 +3843,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ui_click_switch/pool/ui_click_switch__cand01.wav",
+        "file": "ui_click_switch/pool/ui_click_switch__cand01.ogg",
         "passed_gates": false,
         "rank": 4.42,
         "features": {
@@ -3858,7 +3858,7 @@
         }
       },
       {
-        "file": "ui_click_switch/pool/ui_click_switch__cand02.wav",
+        "file": "ui_click_switch/pool/ui_click_switch__cand02.ogg",
         "passed_gates": false,
         "rank": 22.55,
         "features": {
@@ -3879,7 +3879,7 @@
   },
   "ui_click_keycap": {
     "takes": [
-      "ui_click_keycap/ui_click_keycap__take01.wav"
+      "ui_click_keycap/ui_click_keycap__take01.ogg"
     ],
     "durations_s": [
       0.3
@@ -3904,7 +3904,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ui_click_keycap/pool/ui_click_keycap__cand01.wav",
+        "file": "ui_click_keycap/pool/ui_click_keycap__cand01.ogg",
         "passed_gates": true,
         "rank": 2.96,
         "features": {
@@ -3919,7 +3919,7 @@
         }
       },
       {
-        "file": "ui_click_keycap/pool/ui_click_keycap__cand02.wav",
+        "file": "ui_click_keycap/pool/ui_click_keycap__cand02.ogg",
         "passed_gates": true,
         "rank": 3.01,
         "features": {
@@ -3934,7 +3934,7 @@
         }
       },
       {
-        "file": "ui_click_keycap/pool/ui_click_keycap__cand03.wav",
+        "file": "ui_click_keycap/pool/ui_click_keycap__cand03.ogg",
         "passed_gates": false,
         "rank": 4.35,
         "features": {
@@ -3955,7 +3955,7 @@
   },
   "ui_click_latch": {
     "takes": [
-      "ui_click_latch/ui_click_latch__take01.wav"
+      "ui_click_latch/ui_click_latch__take01.ogg"
     ],
     "durations_s": [
       0.205
@@ -3980,7 +3980,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ui_click_latch/pool/ui_click_latch__cand01.wav",
+        "file": "ui_click_latch/pool/ui_click_latch__cand01.ogg",
         "passed_gates": true,
         "rank": 3.93,
         "features": {
@@ -3995,7 +3995,7 @@
         }
       },
       {
-        "file": "ui_click_latch/pool/ui_click_latch__cand02.wav",
+        "file": "ui_click_latch/pool/ui_click_latch__cand02.ogg",
         "passed_gates": false,
         "rank": 14.36,
         "features": {
@@ -4010,7 +4010,7 @@
         }
       },
       {
-        "file": "ui_click_latch/pool/ui_click_latch__cand03.wav",
+        "file": "ui_click_latch/pool/ui_click_latch__cand03.ogg",
         "passed_gates": false,
         "rank": 33.19,
         "features": {
@@ -4031,7 +4031,7 @@
   },
   "ui_click_pebble": {
     "takes": [
-      "ui_click_pebble/ui_click_pebble__take01.wav"
+      "ui_click_pebble/ui_click_pebble__take01.ogg"
     ],
     "durations_s": [
       0.22
@@ -4056,7 +4056,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ui_click_pebble/pool/ui_click_pebble__cand01.wav",
+        "file": "ui_click_pebble/pool/ui_click_pebble__cand01.ogg",
         "passed_gates": true,
         "rank": 2.54,
         "features": {
@@ -4071,7 +4071,7 @@
         }
       },
       {
-        "file": "ui_click_pebble/pool/ui_click_pebble__cand02.wav",
+        "file": "ui_click_pebble/pool/ui_click_pebble__cand02.ogg",
         "passed_gates": true,
         "rank": 2.84,
         "features": {
@@ -4086,7 +4086,7 @@
         }
       },
       {
-        "file": "ui_click_pebble/pool/ui_click_pebble__cand03.wav",
+        "file": "ui_click_pebble/pool/ui_click_pebble__cand03.ogg",
         "passed_gates": false,
         "rank": 16.46,
         "features": {
@@ -4107,7 +4107,7 @@
   },
   "ui_click_leather": {
     "takes": [
-      "ui_click_leather/ui_click_leather__take01.wav"
+      "ui_click_leather/ui_click_leather__take01.ogg"
     ],
     "durations_s": [
       0.347
@@ -4132,7 +4132,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ui_click_leather/pool/ui_click_leather__cand01.wav",
+        "file": "ui_click_leather/pool/ui_click_leather__cand01.ogg",
         "passed_gates": true,
         "rank": 2.38,
         "features": {
@@ -4147,7 +4147,7 @@
         }
       },
       {
-        "file": "ui_click_leather/pool/ui_click_leather__cand02.wav",
+        "file": "ui_click_leather/pool/ui_click_leather__cand02.ogg",
         "passed_gates": true,
         "rank": 3.28,
         "features": {
@@ -4162,7 +4162,7 @@
         }
       },
       {
-        "file": "ui_click_leather/pool/ui_click_leather__cand03.wav",
+        "file": "ui_click_leather/pool/ui_click_leather__cand03.ogg",
         "passed_gates": true,
         "rank": 3.48,
         "features": {
@@ -4183,7 +4183,7 @@
   },
   "ui_click_woodpeg": {
     "takes": [
-      "ui_click_woodpeg/ui_click_woodpeg__take01.wav"
+      "ui_click_woodpeg/ui_click_woodpeg__take01.ogg"
     ],
     "durations_s": [
       0.3
@@ -4208,7 +4208,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ui_click_woodpeg/pool/ui_click_woodpeg__cand01.wav",
+        "file": "ui_click_woodpeg/pool/ui_click_woodpeg__cand01.ogg",
         "passed_gates": false,
         "rank": 9.81,
         "features": {
@@ -4223,7 +4223,7 @@
         }
       },
       {
-        "file": "ui_click_woodpeg/pool/ui_click_woodpeg__cand02.wav",
+        "file": "ui_click_woodpeg/pool/ui_click_woodpeg__cand02.ogg",
         "passed_gates": false,
         "rank": 14.57,
         "features": {
@@ -4238,7 +4238,7 @@
         }
       },
       {
-        "file": "ui_click_woodpeg/pool/ui_click_woodpeg__cand03.wav",
+        "file": "ui_click_woodpeg/pool/ui_click_woodpeg__cand03.ogg",
         "passed_gates": false,
         "rank": 15.55,
         "features": {
@@ -4259,7 +4259,7 @@
   },
   "ui_click_clasp": {
     "takes": [
-      "ui_click_clasp/ui_click_clasp__take01.wav"
+      "ui_click_clasp/ui_click_clasp__take01.ogg"
     ],
     "durations_s": [
       0.25
@@ -4284,7 +4284,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ui_click_clasp/pool/ui_click_clasp__cand01.wav",
+        "file": "ui_click_clasp/pool/ui_click_clasp__cand01.ogg",
         "passed_gates": false,
         "rank": 21.99,
         "features": {
@@ -4299,7 +4299,7 @@
         }
       },
       {
-        "file": "ui_click_clasp/pool/ui_click_clasp__cand02.wav",
+        "file": "ui_click_clasp/pool/ui_click_clasp__cand02.ogg",
         "passed_gates": false,
         "rank": 34.8,
         "features": {
@@ -4335,7 +4335,7 @@
   },
   "ui_click_cork": {
     "takes": [
-      "ui_click_cork/ui_click_cork__take01.wav"
+      "ui_click_cork/ui_click_cork__take01.ogg"
     ],
     "durations_s": [
       0.3
@@ -4360,7 +4360,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ui_click_cork/pool/ui_click_cork__cand01.wav",
+        "file": "ui_click_cork/pool/ui_click_cork__cand01.ogg",
         "passed_gates": false,
         "rank": 17.72,
         "features": {
@@ -4375,7 +4375,7 @@
         }
       },
       {
-        "file": "ui_click_cork/pool/ui_click_cork__cand02.wav",
+        "file": "ui_click_cork/pool/ui_click_cork__cand02.ogg",
         "passed_gates": false,
         "rank": 23.67,
         "features": {
@@ -4390,7 +4390,7 @@
         }
       },
       {
-        "file": "ui_click_cork/pool/ui_click_cork__cand03.wav",
+        "file": "ui_click_cork/pool/ui_click_cork__cand03.ogg",
         "passed_gates": false,
         "rank": 29.13,
         "features": {
@@ -4411,7 +4411,7 @@
   },
   "ui_click_flint": {
     "takes": [
-      "ui_click_flint/ui_click_flint__take01.wav"
+      "ui_click_flint/ui_click_flint__take01.ogg"
     ],
     "durations_s": [
       0.129
@@ -4436,7 +4436,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ui_click_flint/pool/ui_click_flint__cand01.wav",
+        "file": "ui_click_flint/pool/ui_click_flint__cand01.ogg",
         "passed_gates": true,
         "rank": 2.48,
         "features": {
@@ -4451,7 +4451,7 @@
         }
       },
       {
-        "file": "ui_click_flint/pool/ui_click_flint__cand02.wav",
+        "file": "ui_click_flint/pool/ui_click_flint__cand02.ogg",
         "passed_gates": false,
         "rank": 20.31,
         "features": {
@@ -4466,7 +4466,7 @@
         }
       },
       {
-        "file": "ui_click_flint/pool/ui_click_flint__cand03.wav",
+        "file": "ui_click_flint/pool/ui_click_flint__cand03.ogg",
         "passed_gates": false,
         "rank": 25.98,
         "features": {
@@ -4487,7 +4487,7 @@
   },
   "ui_click_bead": {
     "takes": [
-      "ui_click_bead/ui_click_bead__take01.wav"
+      "ui_click_bead/ui_click_bead__take01.ogg"
     ],
     "durations_s": [
       0.25
@@ -4512,7 +4512,7 @@
     },
     "pool_candidates": [
       {
-        "file": "ui_click_bead/pool/ui_click_bead__cand01.wav",
+        "file": "ui_click_bead/pool/ui_click_bead__cand01.ogg",
         "passed_gates": true,
         "rank": 1.99,
         "features": {
@@ -4527,7 +4527,7 @@
         }
       },
       {
-        "file": "ui_click_bead/pool/ui_click_bead__cand02.wav",
+        "file": "ui_click_bead/pool/ui_click_bead__cand02.ogg",
         "passed_gates": false,
         "rank": 7.92,
         "features": {
@@ -4542,7 +4542,7 @@
         }
       },
       {
-        "file": "ui_click_bead/pool/ui_click_bead__cand03.wav",
+        "file": "ui_click_bead/pool/ui_click_bead__cand03.ogg",
         "passed_gates": false,
         "rank": 12.48,
         "features": {
@@ -4563,7 +4563,7 @@
   },
   "item_pickup_grass": {
     "takes": [
-      "item_pickup_grass/item_pickup_grass__take01.wav"
+      "item_pickup_grass/item_pickup_grass__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -4593,7 +4593,7 @@
   },
   "item_pickup_gravel": {
     "takes": [
-      "item_pickup_gravel/item_pickup_gravel__take01.wav"
+      "item_pickup_gravel/item_pickup_gravel__take01.ogg"
     ],
     "durations_s": [
       0.45
@@ -4623,7 +4623,7 @@
   },
   "item_pickup_chain": {
     "takes": [
-      "item_pickup_chain/item_pickup_chain__take01.wav"
+      "item_pickup_chain/item_pickup_chain__take01.ogg"
     ],
     "durations_s": [
       0.462
@@ -4653,7 +4653,7 @@
   },
   "item_pickup_glass": {
     "takes": [
-      "item_pickup_glass/item_pickup_glass__take01.wav"
+      "item_pickup_glass/item_pickup_glass__take01.ogg"
     ],
     "durations_s": [
       0.45
@@ -4683,7 +4683,7 @@
   },
   "monster_hit_fungus": {
     "takes": [
-      "monster_hit_fungus/monster_hit_fungus__take01.wav"
+      "monster_hit_fungus/monster_hit_fungus__take01.ogg"
     ],
     "durations_s": [
       0.495
@@ -4713,7 +4713,7 @@
   },
   "monster_hit_moss": {
     "takes": [
-      "monster_hit_moss/monster_hit_moss__take01.wav"
+      "monster_hit_moss/monster_hit_moss__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -4743,7 +4743,7 @@
   },
   "monster_hit_stonebody": {
     "takes": [
-      "monster_hit_stonebody/monster_hit_stonebody__take01.wav"
+      "monster_hit_stonebody/monster_hit_stonebody__take01.ogg"
     ],
     "durations_s": [
       0.45
@@ -4773,7 +4773,7 @@
   },
   "item_pickup_paper": {
     "takes": [
-      "item_pickup_paper/item_pickup_paper__take01.wav"
+      "item_pickup_paper/item_pickup_paper__take01.ogg"
     ],
     "durations_s": [
       0.5
@@ -4803,7 +4803,7 @@
   },
   "item_pickup_wet": {
     "takes": [
-      "item_pickup_wet/item_pickup_wet__take01.wav"
+      "item_pickup_wet/item_pickup_wet__take01.ogg"
     ],
     "durations_s": [
       0.418
@@ -4833,7 +4833,7 @@
   },
   "item_pickup_straw": {
     "takes": [
-      "item_pickup_straw/item_pickup_straw__take01.wav"
+      "item_pickup_straw/item_pickup_straw__take01.ogg"
     ],
     "durations_s": [
       0.499
@@ -4863,7 +4863,7 @@
   },
   "item_pickup_twig": {
     "takes": [
-      "item_pickup_twig/item_pickup_twig__take01.wav"
+      "item_pickup_twig/item_pickup_twig__take01.ogg"
     ],
     "durations_s": [
       0.373
@@ -4893,7 +4893,7 @@
   },
   "item_pickup_purse": {
     "takes": [
-      "item_pickup_purse/item_pickup_purse__take01.wav"
+      "item_pickup_purse/item_pickup_purse__take01.ogg"
     ],
     "durations_s": [
       0.414
@@ -4923,7 +4923,7 @@
   },
   "item_pickup_sand": {
     "takes": [
-      "item_pickup_sand/item_pickup_sand__take01.wav"
+      "item_pickup_sand/item_pickup_sand__take01.ogg"
     ],
     "durations_s": [
       0.455
@@ -4953,7 +4953,7 @@
   },
   "item_drop_clay": {
     "takes": [
-      "item_drop_clay/item_drop_clay__take01.wav"
+      "item_drop_clay/item_drop_clay__take01.ogg"
     ],
     "durations_s": [
       0.5
@@ -4983,7 +4983,7 @@
   },
   "item_drop_earth": {
     "takes": [
-      "item_drop_earth/item_drop_earth__take01.wav"
+      "item_drop_earth/item_drop_earth__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -5013,7 +5013,7 @@
   },
   "item_drop_metalring": {
     "takes": [
-      "item_drop_metalring/item_drop_metalring__take01.wav"
+      "item_drop_metalring/item_drop_metalring__take01.ogg"
     ],
     "durations_s": [
       0.566
@@ -5043,7 +5043,7 @@
   },
   "item_drop_puddle": {
     "takes": [
-      "item_drop_puddle/item_drop_puddle__take01.wav"
+      "item_drop_puddle/item_drop_puddle__take01.ogg"
     ],
     "durations_s": [
       0.547
@@ -5073,7 +5073,7 @@
   },
   "item_drop_hay": {
     "takes": [
-      "item_drop_hay/item_drop_hay__take01.wav"
+      "item_drop_hay/item_drop_hay__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -5103,7 +5103,7 @@
   },
   "item_drop_slate": {
     "takes": [
-      "item_drop_slate/item_drop_slate__take01.wav"
+      "item_drop_slate/item_drop_slate__take01.ogg"
     ],
     "durations_s": [
       0.26
@@ -5133,7 +5133,7 @@
   },
   "item_drop_leaves": {
     "takes": [
-      "item_drop_leaves/item_drop_leaves__take01.wav"
+      "item_drop_leaves/item_drop_leaves__take01.ogg"
     ],
     "durations_s": [
       0.534
@@ -5163,7 +5163,7 @@
   },
   "item_drop_rope": {
     "takes": [
-      "item_drop_rope/item_drop_rope__take01.wav"
+      "item_drop_rope/item_drop_rope__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -5193,7 +5193,7 @@
   },
   "item_drop_bounce": {
     "takes": [
-      "item_drop_bounce/item_drop_bounce__take01.wav"
+      "item_drop_bounce/item_drop_bounce__take01.ogg"
     ],
     "durations_s": [
       0.481
@@ -5223,7 +5223,7 @@
   },
   "item_drop_pebbles": {
     "takes": [
-      "item_drop_pebbles/item_drop_pebbles__take01.wav"
+      "item_drop_pebbles/item_drop_pebbles__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -5253,7 +5253,7 @@
   },
   "cross_rise_earthpush": {
     "takes": [
-      "cross_rise_earthpush/cross_rise_earthpush__take01.wav"
+      "cross_rise_earthpush/cross_rise_earthpush__take01.ogg"
     ],
     "durations_s": [
       1.203
@@ -5283,7 +5283,7 @@
   },
   "cross_rise_rootsnap": {
     "takes": [
-      "cross_rise_rootsnap/cross_rise_rootsnap__take01.wav"
+      "cross_rise_rootsnap/cross_rise_rootsnap__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -5313,7 +5313,7 @@
   },
   "cross_rise_gravelshed": {
     "takes": [
-      "cross_rise_gravelshed/cross_rise_gravelshed__take01.wav"
+      "cross_rise_gravelshed/cross_rise_gravelshed__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -5343,7 +5343,7 @@
   },
   "cross_rise_breath": {
     "takes": [
-      "cross_rise_breath/cross_rise_breath__take01.wav"
+      "cross_rise_breath/cross_rise_breath__take01.ogg"
     ],
     "durations_s": [
       1.281
@@ -5373,7 +5373,7 @@
   },
   "cross_rise_cloth": {
     "takes": [
-      "cross_rise_cloth/cross_rise_cloth__take01.wav"
+      "cross_rise_cloth/cross_rise_cloth__take01.ogg"
     ],
     "durations_s": [
       1.203
@@ -5403,7 +5403,7 @@
   },
   "cross_rise_iron": {
     "takes": [
-      "cross_rise_iron/cross_rise_iron__take01.wav"
+      "cross_rise_iron/cross_rise_iron__take01.ogg"
     ],
     "durations_s": [
       1.203
@@ -5433,7 +5433,7 @@
   },
   "cross_rise_water": {
     "takes": [
-      "cross_rise_water/cross_rise_water__take01.wav"
+      "cross_rise_water/cross_rise_water__take01.ogg"
     ],
     "durations_s": [
       1.203
@@ -5463,7 +5463,7 @@
   },
   "cross_rise_settle": {
     "takes": [
-      "cross_rise_settle/cross_rise_settle__take01.wav"
+      "cross_rise_settle/cross_rise_settle__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -5493,7 +5493,7 @@
   },
   "cross_rise_drone": {
     "takes": [
-      "cross_rise_drone/cross_rise_drone__take01.wav"
+      "cross_rise_drone/cross_rise_drone__take01.ogg"
     ],
     "durations_s": [
       1.281
@@ -5523,7 +5523,7 @@
   },
   "cross_rise_crackle": {
     "takes": [
-      "cross_rise_crackle/cross_rise_crackle__take01.wav"
+      "cross_rise_crackle/cross_rise_crackle__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -5553,7 +5553,7 @@
   },
   "cross_sink_mud": {
     "takes": [
-      "cross_sink_mud/cross_sink_mud__take01.wav"
+      "cross_sink_mud/cross_sink_mud__take01.ogg"
     ],
     "durations_s": [
       1.203
@@ -5583,7 +5583,7 @@
   },
   "cross_sink_crumble": {
     "takes": [
-      "cross_sink_crumble/cross_sink_crumble__take01.wav"
+      "cross_sink_crumble/cross_sink_crumble__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -5613,7 +5613,7 @@
   },
   "cross_sink_drain": {
     "takes": [
-      "cross_sink_drain/cross_sink_drain__take01.wav"
+      "cross_sink_drain/cross_sink_drain__take01.ogg"
     ],
     "durations_s": [
       1.203
@@ -5643,7 +5643,7 @@
   },
   "cross_sink_iron": {
     "takes": [
-      "cross_sink_iron/cross_sink_iron__take01.wav"
+      "cross_sink_iron/cross_sink_iron__take01.ogg"
     ],
     "durations_s": [
       1.203
@@ -5673,7 +5673,7 @@
   },
   "cross_sink_cloth": {
     "takes": [
-      "cross_sink_cloth/cross_sink_cloth__take01.wav"
+      "cross_sink_cloth/cross_sink_cloth__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -5703,7 +5703,7 @@
   },
   "cross_sink_breathout": {
     "takes": [
-      "cross_sink_breathout/cross_sink_breathout__take01.wav"
+      "cross_sink_breathout/cross_sink_breathout__take01.ogg"
     ],
     "durations_s": [
       1.281
@@ -5733,7 +5733,7 @@
   },
   "cross_sink_dronedown": {
     "takes": [
-      "cross_sink_dronedown/cross_sink_dronedown__take01.wav"
+      "cross_sink_dronedown/cross_sink_dronedown__take01.ogg"
     ],
     "durations_s": [
       1.281
@@ -5763,7 +5763,7 @@
   },
   "cross_sink_thud": {
     "takes": [
-      "cross_sink_thud/cross_sink_thud__take01.wav"
+      "cross_sink_thud/cross_sink_thud__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -5793,7 +5793,7 @@
   },
   "cross_sink_hush": {
     "takes": [
-      "cross_sink_hush/cross_sink_hush__take01.wav"
+      "cross_sink_hush/cross_sink_hush__take01.ogg"
     ],
     "durations_s": [
       1.203
@@ -5823,7 +5823,7 @@
   },
   "kick_barrel": {
     "takes": [
-      "kick_barrel/kick_barrel__take01.wav"
+      "kick_barrel/kick_barrel__take01.ogg"
     ],
     "durations_s": [
       0.65
@@ -5853,7 +5853,7 @@
   },
   "kick_crate": {
     "takes": [
-      "kick_crate/kick_crate__take01.wav"
+      "kick_crate/kick_crate__take01.ogg"
     ],
     "durations_s": [
       0.266
@@ -5883,7 +5883,7 @@
   },
   "kick_bucket": {
     "takes": [
-      "kick_bucket/kick_bucket__take01.wav"
+      "kick_bucket/kick_bucket__take01.ogg"
     ],
     "durations_s": [
       0.7
@@ -5913,7 +5913,7 @@
   },
   "kick_sack": {
     "takes": [
-      "kick_sack/kick_sack__take01.wav"
+      "kick_sack/kick_sack__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -5943,7 +5943,7 @@
   },
   "kick_mud": {
     "takes": [
-      "kick_mud/kick_mud__take01.wav"
+      "kick_mud/kick_mud__take01.ogg"
     ],
     "durations_s": [
       0.557
@@ -5973,7 +5973,7 @@
   },
   "kick_water": {
     "takes": [
-      "kick_water/kick_water__take01.wav"
+      "kick_water/kick_water__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -6003,7 +6003,7 @@
   },
   "kick_snowbank": {
     "takes": [
-      "kick_snowbank/kick_snowbank__take01.wav"
+      "kick_snowbank/kick_snowbank__take01.ogg"
     ],
     "durations_s": [
       0.424
@@ -6033,7 +6033,7 @@
   },
   "kick_rope": {
     "takes": [
-      "kick_rope/kick_rope__take01.wav"
+      "kick_rope/kick_rope__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -6063,7 +6063,7 @@
   },
   "kick_treetrunk": {
     "takes": [
-      "kick_treetrunk/kick_treetrunk__take01.wav"
+      "kick_treetrunk/kick_treetrunk__take01.ogg"
     ],
     "durations_s": [
       0.49
@@ -6093,7 +6093,7 @@
   },
   "kick_leafpile": {
     "takes": [
-      "kick_leafpile/kick_leafpile__take01.wav"
+      "kick_leafpile/kick_leafpile__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -6123,7 +6123,7 @@
   },
   "punch_mud": {
     "takes": [
-      "punch_mud/punch_mud__take01.wav"
+      "punch_mud/punch_mud__take01.ogg"
     ],
     "durations_s": [
       0.538
@@ -6153,7 +6153,7 @@
   },
   "punch_hay": {
     "takes": [
-      "punch_hay/punch_hay__take01.wav"
+      "punch_hay/punch_hay__take01.ogg"
     ],
     "durations_s": [
       0.215
@@ -6183,7 +6183,7 @@
   },
   "punch_bread": {
     "takes": [
-      "punch_bread/punch_bread__take01.wav"
+      "punch_bread/punch_bread__take01.ogg"
     ],
     "durations_s": [
       0.432
@@ -6213,7 +6213,7 @@
   },
   "punch_shield": {
     "takes": [
-      "punch_shield/punch_shield__take01.wav"
+      "punch_shield/punch_shield__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -6243,7 +6243,7 @@
   },
   "punch_chainmail": {
     "takes": [
-      "punch_chainmail/punch_chainmail__take01.wav"
+      "punch_chainmail/punch_chainmail__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -6273,7 +6273,7 @@
   },
   "punch_cuirass": {
     "takes": [
-      "punch_cuirass/punch_cuirass__take01.wav"
+      "punch_cuirass/punch_cuirass__take01.ogg"
     ],
     "durations_s": [
       0.431
@@ -6333,7 +6333,7 @@
   },
   "punch_strawdummy": {
     "takes": [
-      "punch_strawdummy/punch_strawdummy__take01.wav"
+      "punch_strawdummy/punch_strawdummy__take01.ogg"
     ],
     "durations_s": [
       0.5
@@ -6363,7 +6363,7 @@
   },
   "punch_gravelbag": {
     "takes": [
-      "punch_gravelbag/punch_gravelbag__take01.wav"
+      "punch_gravelbag/punch_gravelbag__take01.ogg"
     ],
     "durations_s": [
       0.398
@@ -6393,7 +6393,7 @@
   },
   "punch_chest": {
     "takes": [
-      "punch_chest/punch_chest__take01.wav"
+      "punch_chest/punch_chest__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -6423,7 +6423,7 @@
   },
   "monster_hit_mudsmack": {
     "takes": [
-      "monster_hit_mudsmack/monster_hit_mudsmack__take01.wav"
+      "monster_hit_mudsmack/monster_hit_mudsmack__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -6453,7 +6453,7 @@
   },
   "monster_hit_gourd": {
     "takes": [
-      "monster_hit_gourd/monster_hit_gourd__take01.wav"
+      "monster_hit_gourd/monster_hit_gourd__take01.ogg"
     ],
     "durations_s": [
       0.5
@@ -6483,7 +6483,7 @@
   },
   "monster_hit_bristle": {
     "takes": [
-      "monster_hit_bristle/monster_hit_bristle__take01.wav"
+      "monster_hit_bristle/monster_hit_bristle__take01.ogg"
     ],
     "durations_s": [
       0.345
@@ -6513,7 +6513,7 @@
   },
   "monster_hit_sap": {
     "takes": [
-      "monster_hit_sap/monster_hit_sap__take01.wav"
+      "monster_hit_sap/monster_hit_sap__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -6543,7 +6543,7 @@
   },
   "monster_hit_shell": {
     "takes": [
-      "monster_hit_shell/monster_hit_shell__take01.wav"
+      "monster_hit_shell/monster_hit_shell__take01.ogg"
     ],
     "durations_s": [
       0.45
@@ -6573,7 +6573,7 @@
   },
   "monster_hit_seedpod": {
     "takes": [
-      "monster_hit_seedpod/monster_hit_seedpod__take01.wav"
+      "monster_hit_seedpod/monster_hit_seedpod__take01.ogg"
     ],
     "durations_s": [
       0.486
@@ -6603,7 +6603,7 @@
   },
   "monster_hit_tar": {
     "takes": [
-      "monster_hit_tar/monster_hit_tar__take01.wav"
+      "monster_hit_tar/monster_hit_tar__take01.ogg"
     ],
     "durations_s": [
       0.65
@@ -6633,7 +6633,7 @@
   },
   "monster_die_crumble": {
     "takes": [
-      "monster_die_crumble/monster_die_crumble__take01.wav"
+      "monster_die_crumble/monster_die_crumble__take01.ogg"
     ],
     "durations_s": [
       0.905
@@ -6663,7 +6663,7 @@
   },
   "monster_die_shellcrack": {
     "takes": [
-      "monster_die_shellcrack/monster_die_shellcrack__take01.wav"
+      "monster_die_shellcrack/monster_die_shellcrack__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -6693,7 +6693,7 @@
   },
   "monster_die_drip": {
     "takes": [
-      "monster_die_drip/monster_die_drip__take01.wav"
+      "monster_die_drip/monster_die_drip__take01.ogg"
     ],
     "durations_s": [
       1.083
@@ -6723,7 +6723,7 @@
   },
   "monster_die_hiss": {
     "takes": [
-      "monster_die_hiss/monster_die_hiss__take01.wav"
+      "monster_die_hiss/monster_die_hiss__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -6753,7 +6753,7 @@
   },
   "monster_die_slump": {
     "takes": [
-      "monster_die_slump/monster_die_slump__take01.wav"
+      "monster_die_slump/monster_die_slump__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -6783,7 +6783,7 @@
   },
   "monster_die_shatter": {
     "takes": [
-      "monster_die_shatter/monster_die_shatter__take01.wav"
+      "monster_die_shatter/monster_die_shatter__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -6813,7 +6813,7 @@
   },
   "monster_die_sizzle": {
     "takes": [
-      "monster_die_sizzle/monster_die_sizzle__take01.wav"
+      "monster_die_sizzle/monster_die_sizzle__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -6843,7 +6843,7 @@
   },
   "monster_die_suck": {
     "takes": [
-      "monster_die_suck/monster_die_suck__take01.wav"
+      "monster_die_suck/monster_die_suck__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -6873,7 +6873,7 @@
   },
   "monster_die_twigs": {
     "takes": [
-      "monster_die_twigs/monster_die_twigs__take01.wav"
+      "monster_die_twigs/monster_die_twigs__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -6903,7 +6903,7 @@
   },
   "monster_die_gurgle": {
     "takes": [
-      "monster_die_gurgle/monster_die_gurgle__take01.wav"
+      "monster_die_gurgle/monster_die_gurgle__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -6933,7 +6933,7 @@
   },
   "ui_down_spring": {
     "takes": [
-      "ui_down_spring/ui_down_spring__take01.wav"
+      "ui_down_spring/ui_down_spring__take01.ogg"
     ],
     "durations_s": [
       0.249
@@ -6963,7 +6963,7 @@
   },
   "ui_down_plunger": {
     "takes": [
-      "ui_down_plunger/ui_down_plunger__take01.wav"
+      "ui_down_plunger/ui_down_plunger__take01.ogg"
     ],
     "durations_s": [
       0.3
@@ -6993,7 +6993,7 @@
   },
   "ui_down_tumbler": {
     "takes": [
-      "ui_down_tumbler/ui_down_tumbler__take01.wav"
+      "ui_down_tumbler/ui_down_tumbler__take01.ogg"
     ],
     "durations_s": [
       0.25
@@ -7023,7 +7023,7 @@
   },
   "ui_down_dome": {
     "takes": [
-      "ui_down_dome/ui_down_dome__take01.wav"
+      "ui_down_dome/ui_down_dome__take01.ogg"
     ],
     "durations_s": [
       0.22
@@ -7053,7 +7053,7 @@
   },
   "ui_down_stone": {
     "takes": [
-      "ui_down_stone/ui_down_stone__take01.wav"
+      "ui_down_stone/ui_down_stone__take01.ogg"
     ],
     "durations_s": [
       0.221
@@ -7083,7 +7083,7 @@
   },
   "ui_down_stamp": {
     "takes": [
-      "ui_down_stamp/ui_down_stamp__take01.wav"
+      "ui_down_stamp/ui_down_stamp__take01.ogg"
     ],
     "durations_s": [
       0.3
@@ -7113,7 +7113,7 @@
   },
   "ui_down_lever": {
     "takes": [
-      "ui_down_lever/ui_down_lever__take01.wav"
+      "ui_down_lever/ui_down_lever__take01.ogg"
     ],
     "durations_s": [
       0.263
@@ -7143,7 +7143,7 @@
   },
   "ui_down_shutter": {
     "takes": [
-      "ui_down_shutter/ui_down_shutter__take01.wav"
+      "ui_down_shutter/ui_down_shutter__take01.ogg"
     ],
     "durations_s": [
       0.141
@@ -7173,7 +7173,7 @@
   },
   "ui_down_nail": {
     "takes": [
-      "ui_down_nail/ui_down_nail__take01.wav"
+      "ui_down_nail/ui_down_nail__take01.ogg"
     ],
     "durations_s": [
       0.22
@@ -7203,7 +7203,7 @@
   },
   "ui_down_clamp": {
     "takes": [
-      "ui_down_clamp/ui_down_clamp__take01.wav"
+      "ui_down_clamp/ui_down_clamp__take01.ogg"
     ],
     "durations_s": [
       0.167
@@ -7233,7 +7233,7 @@
   },
   "ui_up_spring": {
     "takes": [
-      "ui_up_spring/ui_up_spring__take01.wav"
+      "ui_up_spring/ui_up_spring__take01.ogg"
     ],
     "durations_s": [
       0.3
@@ -7263,7 +7263,7 @@
   },
   "ui_up_plunger": {
     "takes": [
-      "ui_up_plunger/ui_up_plunger__take01.wav"
+      "ui_up_plunger/ui_up_plunger__take01.ogg"
     ],
     "durations_s": [
       0.3
@@ -7293,7 +7293,7 @@
   },
   "ui_up_tumbler": {
     "takes": [
-      "ui_up_tumbler/ui_up_tumbler__take01.wav"
+      "ui_up_tumbler/ui_up_tumbler__take01.ogg"
     ],
     "durations_s": [
       0.3
@@ -7323,7 +7323,7 @@
   },
   "ui_up_dome": {
     "takes": [
-      "ui_up_dome/ui_up_dome__take01.wav"
+      "ui_up_dome/ui_up_dome__take01.ogg"
     ],
     "durations_s": [
       0.146
@@ -7353,7 +7353,7 @@
   },
   "ui_up_stone": {
     "takes": [
-      "ui_up_stone/ui_up_stone__take01.wav"
+      "ui_up_stone/ui_up_stone__take01.ogg"
     ],
     "durations_s": [
       0.3
@@ -7383,7 +7383,7 @@
   },
   "ui_up_stamp": {
     "takes": [
-      "ui_up_stamp/ui_up_stamp__take01.wav"
+      "ui_up_stamp/ui_up_stamp__take01.ogg"
     ],
     "durations_s": [
       0.35
@@ -7413,7 +7413,7 @@
   },
   "ui_up_lever": {
     "takes": [
-      "ui_up_lever/ui_up_lever__take01.wav"
+      "ui_up_lever/ui_up_lever__take01.ogg"
     ],
     "durations_s": [
       0.311
@@ -7443,7 +7443,7 @@
   },
   "ui_up_shutter": {
     "takes": [
-      "ui_up_shutter/ui_up_shutter__take01.wav"
+      "ui_up_shutter/ui_up_shutter__take01.ogg"
     ],
     "durations_s": [
       0.255
@@ -7473,7 +7473,7 @@
   },
   "ui_up_felt": {
     "takes": [
-      "ui_up_felt/ui_up_felt__take01.wav"
+      "ui_up_felt/ui_up_felt__take01.ogg"
     ],
     "durations_s": [
       0.234
@@ -7503,7 +7503,7 @@
   },
   "ui_up_clamp": {
     "takes": [
-      "ui_up_clamp/ui_up_clamp__take01.wav"
+      "ui_up_clamp/ui_up_clamp__take01.ogg"
     ],
     "durations_s": [
       0.198
@@ -7533,16 +7533,16 @@
   },
   "die_voice": {
     "takes": [
-      "die_voice/die_voice__take01.wav",
-      "die_voice/die_voice__take02.wav",
-      "die_voice/die_voice__take03.wav",
-      "die_voice/die_voice__take04.wav",
-      "die_voice/die_voice__take05.wav",
-      "die_voice/die_voice__take06.wav",
-      "die_voice/die_voice__take07.wav",
-      "die_voice/die_voice__take08.wav",
-      "die_voice/die_voice__take09.wav",
-      "die_voice/die_voice__take10.wav"
+      "die_voice/die_voice__take01.ogg",
+      "die_voice/die_voice__take02.ogg",
+      "die_voice/die_voice__take03.ogg",
+      "die_voice/die_voice__take04.ogg",
+      "die_voice/die_voice__take05.ogg",
+      "die_voice/die_voice__take06.ogg",
+      "die_voice/die_voice__take07.ogg",
+      "die_voice/die_voice__take08.ogg",
+      "die_voice/die_voice__take09.ogg",
+      "die_voice/die_voice__take10.ogg"
     ],
     "durations_s": [
       1.203,
@@ -7671,15 +7671,15 @@
   },
   "die_voice_boy": {
     "takes": [
-      "die_voice_boy/die_voice_boy__take01.wav",
-      "die_voice_boy/die_voice_boy__take02.wav",
-      "die_voice_boy/die_voice_boy__take03.wav",
-      "die_voice_boy/die_voice_boy__take04.wav",
-      "die_voice_boy/die_voice_boy__take05.wav",
-      "die_voice_boy/die_voice_boy__take06.wav",
-      "die_voice_boy/die_voice_boy__take07.wav",
-      "die_voice_boy/die_voice_boy__take08.wav",
-      "die_voice_boy/die_voice_boy__take09.wav"
+      "die_voice_boy/die_voice_boy__take01.ogg",
+      "die_voice_boy/die_voice_boy__take02.ogg",
+      "die_voice_boy/die_voice_boy__take03.ogg",
+      "die_voice_boy/die_voice_boy__take04.ogg",
+      "die_voice_boy/die_voice_boy__take05.ogg",
+      "die_voice_boy/die_voice_boy__take06.ogg",
+      "die_voice_boy/die_voice_boy__take07.ogg",
+      "die_voice_boy/die_voice_boy__take08.ogg",
+      "die_voice_boy/die_voice_boy__take09.ogg"
     ],
     "durations_s": [
       1.203,
@@ -7797,7 +7797,7 @@
   },
   "player_die_bodyfall": {
     "takes": [
-      "player_die_bodyfall/player_die_bodyfall__take01.wav"
+      "player_die_bodyfall/player_die_bodyfall__take01.ogg"
     ],
     "durations_s": [
       1.203
@@ -7827,7 +7827,7 @@
   },
   "player_die_armorfall": {
     "takes": [
-      "player_die_armorfall/player_die_armorfall__take01.wav"
+      "player_die_armorfall/player_die_armorfall__take01.ogg"
     ],
     "durations_s": [
       1.386
@@ -7857,7 +7857,7 @@
   },
   "player_die_swordfall": {
     "takes": [
-      "player_die_swordfall/player_die_swordfall__take01.wav"
+      "player_die_swordfall/player_die_swordfall__take01.ogg"
     ],
     "durations_s": [
       1.386
@@ -7887,7 +7887,7 @@
   },
   "player_die_glassfall": {
     "takes": [
-      "player_die_glassfall/player_die_glassfall__take01.wav"
+      "player_die_glassfall/player_die_glassfall__take01.ogg"
     ],
     "durations_s": [
       1.386
@@ -7917,7 +7917,7 @@
   },
   "player_die_lantern": {
     "takes": [
-      "player_die_lantern/player_die_lantern__take01.wav"
+      "player_die_lantern/player_die_lantern__take01.ogg"
     ],
     "durations_s": [
       1.281
@@ -7947,7 +7947,7 @@
   },
   "player_die_hearth": {
     "takes": [
-      "player_die_hearth/player_die_hearth__take01.wav"
+      "player_die_hearth/player_die_hearth__take01.ogg"
     ],
     "durations_s": [
       1.49
@@ -7977,7 +7977,7 @@
   },
   "player_die_doorslam": {
     "takes": [
-      "player_die_doorslam/player_die_doorslam__take01.wav"
+      "player_die_doorslam/player_die_doorslam__take01.ogg"
     ],
     "durations_s": [
       1.272
@@ -8007,7 +8007,7 @@
   },
   "player_die_rockslide": {
     "takes": [
-      "player_die_rockslide/player_die_rockslide__take01.wav"
+      "player_die_rockslide/player_die_rockslide__take01.ogg"
     ],
     "durations_s": [
       1.264
@@ -8037,7 +8037,7 @@
   },
   "player_die_pages": {
     "takes": [
-      "player_die_pages/player_die_pages__take01.wav"
+      "player_die_pages/player_die_pages__take01.ogg"
     ],
     "durations_s": [
       1.386
@@ -8067,7 +8067,7 @@
   },
   "player_die_chainslack": {
     "takes": [
-      "player_die_chainslack/player_die_chainslack__take01.wav"
+      "player_die_chainslack/player_die_chainslack__take01.ogg"
     ],
     "durations_s": [
       1.229
@@ -8097,7 +8097,7 @@
   },
   "kick_anvil": {
     "takes": [
-      "kick_anvil/kick_anvil__take01.wav"
+      "kick_anvil/kick_anvil__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -8127,7 +8127,7 @@
   },
   "kick_cart": {
     "takes": [
-      "kick_cart/kick_cart__take01.wav"
+      "kick_cart/kick_cart__take01.ogg"
     ],
     "durations_s": [
       0.562
@@ -8157,7 +8157,7 @@
   },
   "kick_pumpkin": {
     "takes": [
-      "kick_pumpkin/kick_pumpkin__take01.wav"
+      "kick_pumpkin/kick_pumpkin__take01.ogg"
     ],
     "durations_s": [
       0.586
@@ -8187,7 +8187,7 @@
   },
   "kick_tent": {
     "takes": [
-      "kick_tent/kick_tent__take01.wav"
+      "kick_tent/kick_tent__take01.ogg"
     ],
     "durations_s": [
       0.418
@@ -8217,7 +8217,7 @@
   },
   "kick_bell": {
     "takes": [
-      "kick_bell/kick_bell__take01.wav"
+      "kick_bell/kick_bell__take01.ogg"
     ],
     "durations_s": [
       0.8
@@ -8247,7 +8247,7 @@
   },
   "kick_firewood": {
     "takes": [
-      "kick_firewood/kick_firewood__take01.wav"
+      "kick_firewood/kick_firewood__take01.ogg"
     ],
     "durations_s": [
       0.674
@@ -8277,7 +8277,7 @@
   },
   "kick_rug": {
     "takes": [
-      "kick_rug/kick_rug__take01.wav"
+      "kick_rug/kick_rug__take01.ogg"
     ],
     "durations_s": [
       0.41
@@ -8307,7 +8307,7 @@
   },
   "kick_gate": {
     "takes": [
-      "kick_gate/kick_gate__take01.wav"
+      "kick_gate/kick_gate__take01.ogg"
     ],
     "durations_s": [
       0.685
@@ -8337,7 +8337,7 @@
   },
   "kick_bush": {
     "takes": [
-      "kick_bush/kick_bush__take01.wav"
+      "kick_bush/kick_bush__take01.ogg"
     ],
     "durations_s": [
       0.65
@@ -8367,7 +8367,7 @@
   },
   "kick_earthmound": {
     "takes": [
-      "kick_earthmound/kick_earthmound__take01.wav"
+      "kick_earthmound/kick_earthmound__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -8397,7 +8397,7 @@
   },
   "punch_cheese": {
     "takes": [
-      "punch_cheese/punch_cheese__take01.wav"
+      "punch_cheese/punch_cheese__take01.ogg"
     ],
     "durations_s": [
       0.229
@@ -8427,7 +8427,7 @@
   },
   "punch_plank": {
     "takes": [
-      "punch_plank/punch_plank__take01.wav"
+      "punch_plank/punch_plank__take01.ogg"
     ],
     "durations_s": [
       0.429
@@ -8457,7 +8457,7 @@
   },
   "punch_curtain": {
     "takes": [
-      "punch_curtain/punch_curtain__take01.wav"
+      "punch_curtain/punch_curtain__take01.ogg"
     ],
     "durations_s": [
       0.39
@@ -8487,7 +8487,7 @@
   },
   "punch_anvil": {
     "takes": [
-      "punch_anvil/punch_anvil__take01.wav"
+      "punch_anvil/punch_anvil__take01.ogg"
     ],
     "durations_s": [
       0.5
@@ -8517,7 +8517,7 @@
   },
   "punch_waterskin": {
     "takes": [
-      "punch_waterskin/punch_waterskin__take01.wav"
+      "punch_waterskin/punch_waterskin__take01.ogg"
     ],
     "durations_s": [
       0.521
@@ -8547,7 +8547,7 @@
   },
   "punch_plaster": {
     "takes": [
-      "punch_plaster/punch_plaster__take01.wav"
+      "punch_plaster/punch_plaster__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -8577,7 +8577,7 @@
   },
   "punch_drum": {
     "takes": [
-      "punch_drum/punch_drum__take01.wav"
+      "punch_drum/punch_drum__take01.ogg"
     ],
     "durations_s": [
       0.65
@@ -8607,7 +8607,7 @@
   },
   "punch_sandbank": {
     "takes": [
-      "punch_sandbank/punch_sandbank__take01.wav"
+      "punch_sandbank/punch_sandbank__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -8637,7 +8637,7 @@
   },
   "punch_helmet": {
     "takes": [
-      "punch_helmet/punch_helmet__take01.wav"
+      "punch_helmet/punch_helmet__take01.ogg"
     ],
     "durations_s": [
       0.527
@@ -8667,7 +8667,7 @@
   },
   "punch_dough": {
     "takes": [
-      "punch_dough/punch_dough__take01.wav"
+      "punch_dough/punch_dough__take01.ogg"
     ],
     "durations_s": [
       0.55
@@ -8697,7 +8697,7 @@
   },
   "cross_sink_gravelfill": {
     "takes": [
-      "cross_sink_gravelfill/cross_sink_gravelfill__take01.wav"
+      "cross_sink_gravelfill/cross_sink_gravelfill__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -8727,7 +8727,7 @@
   },
   "mon_forest_poring_idle": {
     "takes": [
-      "mon_forest_poring_idle/mon_forest_poring_idle__take01.wav"
+      "mon_forest_poring_idle/mon_forest_poring_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -8757,7 +8757,7 @@
   },
   "mon_forest_poring_walk": {
     "takes": [
-      "mon_forest_poring_walk/mon_forest_poring_walk__take01.wav"
+      "mon_forest_poring_walk/mon_forest_poring_walk__take01.ogg"
     ],
     "durations_s": [
       0.505
@@ -8787,7 +8787,7 @@
   },
   "mon_forest_poring_angry": {
     "takes": [
-      "mon_forest_poring_angry/mon_forest_poring_angry__take01.wav"
+      "mon_forest_poring_angry/mon_forest_poring_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -8817,7 +8817,7 @@
   },
   "mon_forest_poring_attack": {
     "takes": [
-      "mon_forest_poring_attack/mon_forest_poring_attack__take01.wav"
+      "mon_forest_poring_attack/mon_forest_poring_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -8847,7 +8847,7 @@
   },
   "mon_forest_poring_2_idle": {
     "takes": [
-      "mon_forest_poring_2_idle/mon_forest_poring_2_idle__take01.wav"
+      "mon_forest_poring_2_idle/mon_forest_poring_2_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -8877,7 +8877,7 @@
   },
   "mon_forest_poring_2_walk": {
     "takes": [
-      "mon_forest_poring_2_walk/mon_forest_poring_2_walk__take01.wav"
+      "mon_forest_poring_2_walk/mon_forest_poring_2_walk__take01.ogg"
     ],
     "durations_s": [
       0.493
@@ -8907,7 +8907,7 @@
   },
   "mon_forest_poring_2_angry": {
     "takes": [
-      "mon_forest_poring_2_angry/mon_forest_poring_2_angry__take01.wav"
+      "mon_forest_poring_2_angry/mon_forest_poring_2_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -8937,7 +8937,7 @@
   },
   "mon_forest_poring_2_attack": {
     "takes": [
-      "mon_forest_poring_2_attack/mon_forest_poring_2_attack__take01.wav"
+      "mon_forest_poring_2_attack/mon_forest_poring_2_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -8967,7 +8967,7 @@
   },
   "mon_ice_poring_idle": {
     "takes": [
-      "mon_ice_poring_idle/mon_ice_poring_idle__take01.wav"
+      "mon_ice_poring_idle/mon_ice_poring_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -8997,7 +8997,7 @@
   },
   "mon_ice_poring_walk": {
     "takes": [
-      "mon_ice_poring_walk/mon_ice_poring_walk__take01.wav"
+      "mon_ice_poring_walk/mon_ice_poring_walk__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -9027,7 +9027,7 @@
   },
   "mon_ice_poring_angry": {
     "takes": [
-      "mon_ice_poring_angry/mon_ice_poring_angry__take01.wav"
+      "mon_ice_poring_angry/mon_ice_poring_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -9057,7 +9057,7 @@
   },
   "mon_ice_poring_attack": {
     "takes": [
-      "mon_ice_poring_attack/mon_ice_poring_attack__take01.wav"
+      "mon_ice_poring_attack/mon_ice_poring_attack__take01.ogg"
     ],
     "durations_s": [
       0.777
@@ -9087,7 +9087,7 @@
   },
   "mon_lava_poring_idle": {
     "takes": [
-      "mon_lava_poring_idle/mon_lava_poring_idle__take01.wav"
+      "mon_lava_poring_idle/mon_lava_poring_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -9117,7 +9117,7 @@
   },
   "mon_lava_poring_walk": {
     "takes": [
-      "mon_lava_poring_walk/mon_lava_poring_walk__take01.wav"
+      "mon_lava_poring_walk/mon_lava_poring_walk__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -9147,7 +9147,7 @@
   },
   "mon_lava_poring_angry": {
     "takes": [
-      "mon_lava_poring_angry/mon_lava_poring_angry__take01.wav"
+      "mon_lava_poring_angry/mon_lava_poring_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -9177,7 +9177,7 @@
   },
   "mon_lava_poring_attack": {
     "takes": [
-      "mon_lava_poring_attack/mon_lava_poring_attack__take01.wav"
+      "mon_lava_poring_attack/mon_lava_poring_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -9207,7 +9207,7 @@
   },
   "mon_water_poring_idle": {
     "takes": [
-      "mon_water_poring_idle/mon_water_poring_idle__take01.wav"
+      "mon_water_poring_idle/mon_water_poring_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -9237,7 +9237,7 @@
   },
   "mon_water_poring_walk": {
     "takes": [
-      "mon_water_poring_walk/mon_water_poring_walk__take01.wav"
+      "mon_water_poring_walk/mon_water_poring_walk__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -9267,7 +9267,7 @@
   },
   "mon_water_poring_angry": {
     "takes": [
-      "mon_water_poring_angry/mon_water_poring_angry__take01.wav"
+      "mon_water_poring_angry/mon_water_poring_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -9327,7 +9327,7 @@
   },
   "mon_butterfly_dragon_idle": {
     "takes": [
-      "mon_butterfly_dragon_idle/mon_butterfly_dragon_idle__take01.wav"
+      "mon_butterfly_dragon_idle/mon_butterfly_dragon_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -9357,7 +9357,7 @@
   },
   "mon_butterfly_dragon_walk": {
     "takes": [
-      "mon_butterfly_dragon_walk/mon_butterfly_dragon_walk__take01.wav"
+      "mon_butterfly_dragon_walk/mon_butterfly_dragon_walk__take01.ogg"
     ],
     "durations_s": [
       0.542
@@ -9387,7 +9387,7 @@
   },
   "mon_butterfly_dragon_angry": {
     "takes": [
-      "mon_butterfly_dragon_angry/mon_butterfly_dragon_angry__take01.wav"
+      "mon_butterfly_dragon_angry/mon_butterfly_dragon_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -9417,7 +9417,7 @@
   },
   "mon_butterfly_dragon_attack": {
     "takes": [
-      "mon_butterfly_dragon_attack/mon_butterfly_dragon_attack__take01.wav"
+      "mon_butterfly_dragon_attack/mon_butterfly_dragon_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -9447,7 +9447,7 @@
   },
   "mon_mystical_frog_idle": {
     "takes": [
-      "mon_mystical_frog_idle/mon_mystical_frog_idle__take01.wav"
+      "mon_mystical_frog_idle/mon_mystical_frog_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -9477,7 +9477,7 @@
   },
   "mon_mystical_frog_walk": {
     "takes": [
-      "mon_mystical_frog_walk/mon_mystical_frog_walk__take01.wav"
+      "mon_mystical_frog_walk/mon_mystical_frog_walk__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -9507,7 +9507,7 @@
   },
   "mon_mystical_frog_angry": {
     "takes": [
-      "mon_mystical_frog_angry/mon_mystical_frog_angry__take01.wav"
+      "mon_mystical_frog_angry/mon_mystical_frog_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -9537,7 +9537,7 @@
   },
   "mon_mystical_frog_attack": {
     "takes": [
-      "mon_mystical_frog_attack/mon_mystical_frog_attack__take01.wav"
+      "mon_mystical_frog_attack/mon_mystical_frog_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -9567,7 +9567,7 @@
   },
   "mon_hedgehog_idle": {
     "takes": [
-      "mon_hedgehog_idle/mon_hedgehog_idle__take01.wav"
+      "mon_hedgehog_idle/mon_hedgehog_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -9597,7 +9597,7 @@
   },
   "mon_hedgehog_walk": {
     "takes": [
-      "mon_hedgehog_walk/mon_hedgehog_walk__take01.wav"
+      "mon_hedgehog_walk/mon_hedgehog_walk__take01.ogg"
     ],
     "durations_s": [
       0.41
@@ -9627,7 +9627,7 @@
   },
   "mon_hedgehog_angry": {
     "takes": [
-      "mon_hedgehog_angry/mon_hedgehog_angry__take01.wav"
+      "mon_hedgehog_angry/mon_hedgehog_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -9657,7 +9657,7 @@
   },
   "mon_hedgehog_attack": {
     "takes": [
-      "mon_hedgehog_attack/mon_hedgehog_attack__take01.wav"
+      "mon_hedgehog_attack/mon_hedgehog_attack__take01.ogg"
     ],
     "durations_s": [
       0.809
@@ -9687,7 +9687,7 @@
   },
   "mon_white_rabbit_idle": {
     "takes": [
-      "mon_white_rabbit_idle/mon_white_rabbit_idle__take01.wav"
+      "mon_white_rabbit_idle/mon_white_rabbit_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -9717,7 +9717,7 @@
   },
   "mon_white_rabbit_walk": {
     "takes": [
-      "mon_white_rabbit_walk/mon_white_rabbit_walk__take01.wav"
+      "mon_white_rabbit_walk/mon_white_rabbit_walk__take01.ogg"
     ],
     "durations_s": [
       0.534
@@ -9747,7 +9747,7 @@
   },
   "mon_white_rabbit_angry": {
     "takes": [
-      "mon_white_rabbit_angry/mon_white_rabbit_angry__take01.wav"
+      "mon_white_rabbit_angry/mon_white_rabbit_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -9777,7 +9777,7 @@
   },
   "mon_white_rabbit_attack": {
     "takes": [
-      "mon_white_rabbit_attack/mon_white_rabbit_attack__take01.wav"
+      "mon_white_rabbit_attack/mon_white_rabbit_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -9807,7 +9807,7 @@
   },
   "mon_malformed_creature_idle": {
     "takes": [
-      "mon_malformed_creature_idle/mon_malformed_creature_idle__take01.wav"
+      "mon_malformed_creature_idle/mon_malformed_creature_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -9837,7 +9837,7 @@
   },
   "mon_malformed_creature_walk": {
     "takes": [
-      "mon_malformed_creature_walk/mon_malformed_creature_walk__take01.wav"
+      "mon_malformed_creature_walk/mon_malformed_creature_walk__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -9867,7 +9867,7 @@
   },
   "mon_malformed_creature_angry": {
     "takes": [
-      "mon_malformed_creature_angry/mon_malformed_creature_angry__take01.wav"
+      "mon_malformed_creature_angry/mon_malformed_creature_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -9897,7 +9897,7 @@
   },
   "mon_malformed_creature_attack": {
     "takes": [
-      "mon_malformed_creature_attack/mon_malformed_creature_attack__take01.wav"
+      "mon_malformed_creature_attack/mon_malformed_creature_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -9927,7 +9927,7 @@
   },
   "mon_masked_shadow_creature_idle": {
     "takes": [
-      "mon_masked_shadow_creature_idle/mon_masked_shadow_creature_idle__take01.wav"
+      "mon_masked_shadow_creature_idle/mon_masked_shadow_creature_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -9957,7 +9957,7 @@
   },
   "mon_masked_shadow_creature_walk": {
     "takes": [
-      "mon_masked_shadow_creature_walk/mon_masked_shadow_creature_walk__take01.wav"
+      "mon_masked_shadow_creature_walk/mon_masked_shadow_creature_walk__take01.ogg"
     ],
     "durations_s": [
       0.369
@@ -9987,7 +9987,7 @@
   },
   "mon_masked_shadow_creature_angry": {
     "takes": [
-      "mon_masked_shadow_creature_angry/mon_masked_shadow_creature_angry__take01.wav"
+      "mon_masked_shadow_creature_angry/mon_masked_shadow_creature_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -10017,7 +10017,7 @@
   },
   "mon_masked_shadow_creature_attack": {
     "takes": [
-      "mon_masked_shadow_creature_attack/mon_masked_shadow_creature_attack__take01.wav"
+      "mon_masked_shadow_creature_attack/mon_masked_shadow_creature_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -10047,7 +10047,7 @@
   },
   "mon_night_beast_idle": {
     "takes": [
-      "mon_night_beast_idle/mon_night_beast_idle__take01.wav"
+      "mon_night_beast_idle/mon_night_beast_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -10077,7 +10077,7 @@
   },
   "mon_night_beast_walk": {
     "takes": [
-      "mon_night_beast_walk/mon_night_beast_walk__take01.wav"
+      "mon_night_beast_walk/mon_night_beast_walk__take01.ogg"
     ],
     "durations_s": [
       0.561
@@ -10107,7 +10107,7 @@
   },
   "mon_night_beast_angry": {
     "takes": [
-      "mon_night_beast_angry/mon_night_beast_angry__take01.wav"
+      "mon_night_beast_angry/mon_night_beast_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -10137,7 +10137,7 @@
   },
   "mon_night_beast_attack": {
     "takes": [
-      "mon_night_beast_attack/mon_night_beast_attack__take01.wav"
+      "mon_night_beast_attack/mon_night_beast_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -10167,7 +10167,7 @@
   },
   "mon_lava_salamander_idle": {
     "takes": [
-      "mon_lava_salamander_idle/mon_lava_salamander_idle__take01.wav"
+      "mon_lava_salamander_idle/mon_lava_salamander_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -10197,7 +10197,7 @@
   },
   "mon_lava_salamander_walk": {
     "takes": [
-      "mon_lava_salamander_walk/mon_lava_salamander_walk__take01.wav"
+      "mon_lava_salamander_walk/mon_lava_salamander_walk__take01.ogg"
     ],
     "durations_s": [
       0.533
@@ -10227,7 +10227,7 @@
   },
   "mon_lava_salamander_angry": {
     "takes": [
-      "mon_lava_salamander_angry/mon_lava_salamander_angry__take01.wav"
+      "mon_lava_salamander_angry/mon_lava_salamander_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -10257,7 +10257,7 @@
   },
   "mon_lava_salamander_attack": {
     "takes": [
-      "mon_lava_salamander_attack/mon_lava_salamander_attack__take01.wav"
+      "mon_lava_salamander_attack/mon_lava_salamander_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -10287,7 +10287,7 @@
   },
   "mon_lava_salamander_2_idle": {
     "takes": [
-      "mon_lava_salamander_2_idle/mon_lava_salamander_2_idle__take01.wav"
+      "mon_lava_salamander_2_idle/mon_lava_salamander_2_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -10317,7 +10317,7 @@
   },
   "mon_lava_salamander_2_walk": {
     "takes": [
-      "mon_lava_salamander_2_walk/mon_lava_salamander_2_walk__take01.wav"
+      "mon_lava_salamander_2_walk/mon_lava_salamander_2_walk__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -10347,7 +10347,7 @@
   },
   "mon_lava_salamander_2_angry": {
     "takes": [
-      "mon_lava_salamander_2_angry/mon_lava_salamander_2_angry__take01.wav"
+      "mon_lava_salamander_2_angry/mon_lava_salamander_2_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -10377,7 +10377,7 @@
   },
   "mon_lava_salamander_2_attack": {
     "takes": [
-      "mon_lava_salamander_2_attack/mon_lava_salamander_2_attack__take01.wav"
+      "mon_lava_salamander_2_attack/mon_lava_salamander_2_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -10407,7 +10407,7 @@
   },
   "mon_ice_crystal_golem_idle": {
     "takes": [
-      "mon_ice_crystal_golem_idle/mon_ice_crystal_golem_idle__take01.wav"
+      "mon_ice_crystal_golem_idle/mon_ice_crystal_golem_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -10437,7 +10437,7 @@
   },
   "mon_ice_crystal_golem_walk": {
     "takes": [
-      "mon_ice_crystal_golem_walk/mon_ice_crystal_golem_walk__take01.wav"
+      "mon_ice_crystal_golem_walk/mon_ice_crystal_golem_walk__take01.ogg"
     ],
     "durations_s": [
       0.485
@@ -10467,7 +10467,7 @@
   },
   "mon_ice_crystal_golem_angry": {
     "takes": [
-      "mon_ice_crystal_golem_angry/mon_ice_crystal_golem_angry__take01.wav"
+      "mon_ice_crystal_golem_angry/mon_ice_crystal_golem_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -10497,7 +10497,7 @@
   },
   "mon_ice_crystal_golem_attack": {
     "takes": [
-      "mon_ice_crystal_golem_attack/mon_ice_crystal_golem_attack__take01.wav"
+      "mon_ice_crystal_golem_attack/mon_ice_crystal_golem_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -10527,7 +10527,7 @@
   },
   "mon_stone_turtle_idle": {
     "takes": [
-      "mon_stone_turtle_idle/mon_stone_turtle_idle__take01.wav"
+      "mon_stone_turtle_idle/mon_stone_turtle_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -10557,7 +10557,7 @@
   },
   "mon_stone_turtle_walk": {
     "takes": [
-      "mon_stone_turtle_walk/mon_stone_turtle_walk__take01.wav"
+      "mon_stone_turtle_walk/mon_stone_turtle_walk__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -10587,7 +10587,7 @@
   },
   "mon_stone_turtle_angry": {
     "takes": [
-      "mon_stone_turtle_angry/mon_stone_turtle_angry__take01.wav"
+      "mon_stone_turtle_angry/mon_stone_turtle_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -10617,7 +10617,7 @@
   },
   "mon_stone_turtle_attack": {
     "takes": [
-      "mon_stone_turtle_attack/mon_stone_turtle_attack__take01.wav"
+      "mon_stone_turtle_attack/mon_stone_turtle_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -10647,7 +10647,7 @@
   },
   "mon_tree_stump_idle": {
     "takes": [
-      "mon_tree_stump_idle/mon_tree_stump_idle__take01.wav"
+      "mon_tree_stump_idle/mon_tree_stump_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -10677,7 +10677,7 @@
   },
   "mon_tree_stump_walk": {
     "takes": [
-      "mon_tree_stump_walk/mon_tree_stump_walk__take01.wav"
+      "mon_tree_stump_walk/mon_tree_stump_walk__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -10707,7 +10707,7 @@
   },
   "mon_tree_stump_angry": {
     "takes": [
-      "mon_tree_stump_angry/mon_tree_stump_angry__take01.wav"
+      "mon_tree_stump_angry/mon_tree_stump_angry__take01.ogg"
     ],
     "durations_s": [
       0.822
@@ -10737,7 +10737,7 @@
   },
   "mon_tree_stump_attack": {
     "takes": [
-      "mon_tree_stump_attack/mon_tree_stump_attack__take01.wav"
+      "mon_tree_stump_attack/mon_tree_stump_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -10767,7 +10767,7 @@
   },
   "mon_stone_golem_idle": {
     "takes": [
-      "mon_stone_golem_idle/mon_stone_golem_idle__take01.wav"
+      "mon_stone_golem_idle/mon_stone_golem_idle__take01.ogg"
     ],
     "durations_s": [
       0.87
@@ -10797,7 +10797,7 @@
   },
   "mon_stone_golem_walk": {
     "takes": [
-      "mon_stone_golem_walk/mon_stone_golem_walk__take01.wav"
+      "mon_stone_golem_walk/mon_stone_golem_walk__take01.ogg"
     ],
     "durations_s": [
       0.596
@@ -10827,7 +10827,7 @@
   },
   "mon_stone_golem_angry": {
     "takes": [
-      "mon_stone_golem_angry/mon_stone_golem_angry__take01.wav"
+      "mon_stone_golem_angry/mon_stone_golem_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -10857,7 +10857,7 @@
   },
   "mon_stone_golem_attack": {
     "takes": [
-      "mon_stone_golem_attack/mon_stone_golem_attack__take01.wav"
+      "mon_stone_golem_attack/mon_stone_golem_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -10887,7 +10887,7 @@
   },
   "mon_diablo_idle": {
     "takes": [
-      "mon_diablo_idle/mon_diablo_idle__take01.wav"
+      "mon_diablo_idle/mon_diablo_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -10917,7 +10917,7 @@
   },
   "mon_diablo_walk": {
     "takes": [
-      "mon_diablo_walk/mon_diablo_walk__take01.wav"
+      "mon_diablo_walk/mon_diablo_walk__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -10947,7 +10947,7 @@
   },
   "mon_diablo_angry": {
     "takes": [
-      "mon_diablo_angry/mon_diablo_angry__take01.wav"
+      "mon_diablo_angry/mon_diablo_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -10977,7 +10977,7 @@
   },
   "mon_diablo_2_idle": {
     "takes": [
-      "mon_diablo_2_idle/mon_diablo_2_idle__take01.wav"
+      "mon_diablo_2_idle/mon_diablo_2_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -11007,7 +11007,7 @@
   },
   "mon_diablo_2_walk": {
     "takes": [
-      "mon_diablo_2_walk/mon_diablo_2_walk__take01.wav"
+      "mon_diablo_2_walk/mon_diablo_2_walk__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -11037,7 +11037,7 @@
   },
   "mon_diablo_2_angry": {
     "takes": [
-      "mon_diablo_2_angry/mon_diablo_2_angry__take01.wav"
+      "mon_diablo_2_angry/mon_diablo_2_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -11067,7 +11067,7 @@
   },
   "mon_diablo_2_attack": {
     "takes": [
-      "mon_diablo_2_attack/mon_diablo_2_attack__take01.wav"
+      "mon_diablo_2_attack/mon_diablo_2_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -11097,7 +11097,7 @@
   },
   "mon_snow_demon_idle": {
     "takes": [
-      "mon_snow_demon_idle/mon_snow_demon_idle__take01.wav"
+      "mon_snow_demon_idle/mon_snow_demon_idle__take01.ogg"
     ],
     "durations_s": [
       0.865
@@ -11127,7 +11127,7 @@
   },
   "mon_snow_demon_walk": {
     "takes": [
-      "mon_snow_demon_walk/mon_snow_demon_walk__take01.wav"
+      "mon_snow_demon_walk/mon_snow_demon_walk__take01.ogg"
     ],
     "durations_s": [
       0.489
@@ -11157,7 +11157,7 @@
   },
   "mon_snow_demon_angry": {
     "takes": [
-      "mon_snow_demon_angry/mon_snow_demon_angry__take01.wav"
+      "mon_snow_demon_angry/mon_snow_demon_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -11187,7 +11187,7 @@
   },
   "mon_snow_demon_attack": {
     "takes": [
-      "mon_snow_demon_attack/mon_snow_demon_attack__take01.wav"
+      "mon_snow_demon_attack/mon_snow_demon_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -11217,7 +11217,7 @@
   },
   "mon_dark_donkey_idle": {
     "takes": [
-      "mon_dark_donkey_idle/mon_dark_donkey_idle__take01.wav"
+      "mon_dark_donkey_idle/mon_dark_donkey_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -11247,7 +11247,7 @@
   },
   "mon_dark_donkey_walk": {
     "takes": [
-      "mon_dark_donkey_walk/mon_dark_donkey_walk__take01.wav"
+      "mon_dark_donkey_walk/mon_dark_donkey_walk__take01.ogg"
     ],
     "durations_s": [
       0.6
@@ -11277,7 +11277,7 @@
   },
   "mon_dark_donkey_angry": {
     "takes": [
-      "mon_dark_donkey_angry/mon_dark_donkey_angry__take01.wav"
+      "mon_dark_donkey_angry/mon_dark_donkey_angry__take01.ogg"
     ],
     "durations_s": [
       0.972
@@ -11307,7 +11307,7 @@
   },
   "mon_dark_donkey_attack": {
     "takes": [
-      "mon_dark_donkey_attack/mon_dark_donkey_attack__take01.wav"
+      "mon_dark_donkey_attack/mon_dark_donkey_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -11337,7 +11337,7 @@
   },
   "mon_saber_toothed_tiger_idle": {
     "takes": [
-      "mon_saber_toothed_tiger_idle/mon_saber_toothed_tiger_idle__take01.wav"
+      "mon_saber_toothed_tiger_idle/mon_saber_toothed_tiger_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -11367,7 +11367,7 @@
   },
   "mon_saber_toothed_tiger_walk": {
     "takes": [
-      "mon_saber_toothed_tiger_walk/mon_saber_toothed_tiger_walk__take01.wav"
+      "mon_saber_toothed_tiger_walk/mon_saber_toothed_tiger_walk__take01.ogg"
     ],
     "durations_s": [
       0.437
@@ -11397,7 +11397,7 @@
   },
   "mon_saber_toothed_tiger_angry": {
     "takes": [
-      "mon_saber_toothed_tiger_angry/mon_saber_toothed_tiger_angry__take01.wav"
+      "mon_saber_toothed_tiger_angry/mon_saber_toothed_tiger_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -11427,7 +11427,7 @@
   },
   "mon_saber_toothed_tiger_attack": {
     "takes": [
-      "mon_saber_toothed_tiger_attack/mon_saber_toothed_tiger_attack__take01.wav"
+      "mon_saber_toothed_tiger_attack/mon_saber_toothed_tiger_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -11457,7 +11457,7 @@
   },
   "mon_mammoth_idle": {
     "takes": [
-      "mon_mammoth_idle/mon_mammoth_idle__take01.wav"
+      "mon_mammoth_idle/mon_mammoth_idle__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -11487,7 +11487,7 @@
   },
   "mon_mammoth_walk": {
     "takes": [
-      "mon_mammoth_walk/mon_mammoth_walk__take01.wav"
+      "mon_mammoth_walk/mon_mammoth_walk__take01.ogg"
     ],
     "durations_s": [
       0.584
@@ -11517,7 +11517,7 @@
   },
   "mon_mammoth_angry": {
     "takes": [
-      "mon_mammoth_angry/mon_mammoth_angry__take01.wav"
+      "mon_mammoth_angry/mon_mammoth_angry__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -11547,7 +11547,7 @@
   },
   "mon_mammoth_attack": {
     "takes": [
-      "mon_mammoth_attack/mon_mammoth_attack__take01.wav"
+      "mon_mammoth_attack/mon_mammoth_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -11577,7 +11577,7 @@
   },
   "mon_diablo_attack": {
     "takes": [
-      "mon_diablo_attack/mon_diablo_attack__take01.wav"
+      "mon_diablo_attack/mon_diablo_attack__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -11607,7 +11607,7 @@
   },
   "level_up_hymn": {
     "takes": [
-      "level_up_hymn/level_up_hymn__take01.wav"
+      "level_up_hymn/level_up_hymn__take01.ogg"
     ],
     "durations_s": [
       2.221
@@ -11637,7 +11637,7 @@
   },
   "level_up_glassbloom": {
     "takes": [
-      "level_up_glassbloom/level_up_glassbloom__take01.wav"
+      "level_up_glassbloom/level_up_glassbloom__take01.ogg"
     ],
     "durations_s": [
       2.404
@@ -11667,7 +11667,7 @@
   },
   "level_up_sunrise": {
     "takes": [
-      "level_up_sunrise/level_up_sunrise__take01.wav"
+      "level_up_sunrise/level_up_sunrise__take01.ogg"
     ],
     "durations_s": [
       2.404
@@ -11697,7 +11697,7 @@
   },
   "level_up_fiddle": {
     "takes": [
-      "level_up_fiddle/level_up_fiddle__take01.wav"
+      "level_up_fiddle/level_up_fiddle__take01.ogg"
     ],
     "durations_s": [
       1.386
@@ -11727,7 +11727,7 @@
   },
   "level_up_tambourine": {
     "takes": [
-      "level_up_tambourine/level_up_tambourine__take01.wav"
+      "level_up_tambourine/level_up_tambourine__take01.ogg"
     ],
     "durations_s": [
       1.49
@@ -11757,7 +11757,7 @@
   },
   "level_up_panpipes": {
     "takes": [
-      "level_up_panpipes/level_up_panpipes__take01.wav"
+      "level_up_panpipes/level_up_panpipes__take01.ogg"
     ],
     "durations_s": [
       2.013
@@ -11787,7 +11787,7 @@
   },
   "level_up_hurdygurdy": {
     "takes": [
-      "level_up_hurdygurdy/level_up_hurdygurdy__take01.wav"
+      "level_up_hurdygurdy/level_up_hurdygurdy__take01.ogg"
     ],
     "durations_s": [
       1.777
@@ -11817,7 +11817,7 @@
   },
   "level_up_kalimba": {
     "takes": [
-      "level_up_kalimba/level_up_kalimba__take01.wav"
+      "level_up_kalimba/level_up_kalimba__take01.ogg"
     ],
     "durations_s": [
       2.013
@@ -11847,7 +11847,7 @@
   },
   "level_up_dulcimer": {
     "takes": [
-      "level_up_dulcimer/level_up_dulcimer__take01.wav"
+      "level_up_dulcimer/level_up_dulcimer__take01.ogg"
     ],
     "durations_s": [
       1.641
@@ -11877,7 +11877,7 @@
   },
   "level_up_koto": {
     "takes": [
-      "level_up_koto/level_up_koto__take01.wav"
+      "level_up_koto/level_up_koto__take01.ogg"
     ],
     "durations_s": [
       1.777
@@ -11907,7 +11907,7 @@
   },
   "level_up_nylon": {
     "takes": [
-      "level_up_nylon/level_up_nylon__take01.wav"
+      "level_up_nylon/level_up_nylon__take01.ogg"
     ],
     "durations_s": [
       2.013
@@ -11937,7 +11937,7 @@
   },
   "level_up_ocarina": {
     "takes": [
-      "level_up_ocarina/level_up_ocarina__take01.wav"
+      "level_up_ocarina/level_up_ocarina__take01.ogg"
     ],
     "durations_s": [
       1.621
@@ -11967,7 +11967,7 @@
   },
   "level_up_horn": {
     "takes": [
-      "level_up_horn/level_up_horn__take01.wav"
+      "level_up_horn/level_up_horn__take01.ogg"
     ],
     "durations_s": [
       2.193
@@ -11997,7 +11997,7 @@
   },
   "level_up_reed": {
     "takes": [
-      "level_up_reed/level_up_reed__take01.wav"
+      "level_up_reed/level_up_reed__take01.ogg"
     ],
     "durations_s": [
       2.013
@@ -12027,7 +12027,7 @@
   },
   "level_up_emberrise": {
     "takes": [
-      "level_up_emberrise/level_up_emberrise__take01.wav"
+      "level_up_emberrise/level_up_emberrise__take01.ogg"
     ],
     "durations_s": [
       1.492
@@ -12057,7 +12057,7 @@
   },
   "level_up_waterbloom": {
     "takes": [
-      "level_up_waterbloom/level_up_waterbloom__take01.wav"
+      "level_up_waterbloom/level_up_waterbloom__take01.ogg"
     ],
     "durations_s": [
       1.581
@@ -12087,7 +12087,7 @@
   },
   "level_up_growth": {
     "takes": [
-      "level_up_growth/level_up_growth__take01.wav"
+      "level_up_growth/level_up_growth__take01.ogg"
     ],
     "durations_s": [
       1.957
@@ -12117,7 +12117,7 @@
   },
   "level_up_windgift": {
     "takes": [
-      "level_up_windgift/level_up_windgift__take01.wav"
+      "level_up_windgift/level_up_windgift__take01.ogg"
     ],
     "durations_s": [
       1.777
@@ -12147,7 +12147,7 @@
   },
   "level_up_chestlatch": {
     "takes": [
-      "level_up_chestlatch/level_up_chestlatch__take01.wav"
+      "level_up_chestlatch/level_up_chestlatch__take01.ogg"
     ],
     "durations_s": [
       1.53
@@ -12177,7 +12177,7 @@
   },
   "level_up_forgequench": {
     "takes": [
-      "level_up_forgequench/level_up_forgequench__take01.wav"
+      "level_up_forgequench/level_up_forgequench__take01.ogg"
     ],
     "durations_s": [
       1.926
@@ -12207,7 +12207,7 @@
   },
   "cross_on_earthcrack": {
     "takes": [
-      "cross_on_earthcrack/cross_on_earthcrack__take01.wav"
+      "cross_on_earthcrack/cross_on_earthcrack__take01.ogg"
     ],
     "durations_s": [
       0.695
@@ -12237,7 +12237,7 @@
   },
   "cross_on_crustsplit": {
     "takes": [
-      "cross_on_crustsplit/cross_on_crustsplit__take01.wav"
+      "cross_on_crustsplit/cross_on_crustsplit__take01.ogg"
     ],
     "durations_s": [
       0.959
@@ -12267,7 +12267,7 @@
   },
   "cross_on_stoneheave": {
     "takes": [
-      "cross_on_stoneheave/cross_on_stoneheave__take01.wav"
+      "cross_on_stoneheave/cross_on_stoneheave__take01.ogg"
     ],
     "durations_s": [
       1.203
@@ -12297,7 +12297,7 @@
   },
   "cross_on_claysnap": {
     "takes": [
-      "cross_on_claysnap/cross_on_claysnap__take01.wav"
+      "cross_on_claysnap/cross_on_claysnap__take01.ogg"
     ],
     "durations_s": [
       0.589
@@ -12327,7 +12327,7 @@
   },
   "cross_on_rootburst": {
     "takes": [
-      "cross_on_rootburst/cross_on_rootburst__take01.wav"
+      "cross_on_rootburst/cross_on_rootburst__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -12357,7 +12357,7 @@
   },
   "cross_on_gravelspill": {
     "takes": [
-      "cross_on_gravelspill/cross_on_gravelspill__take01.wav"
+      "cross_on_gravelspill/cross_on_gravelspill__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -12387,7 +12387,7 @@
   },
   "cross_on_timberrise": {
     "takes": [
-      "cross_on_timberrise/cross_on_timberrise__take01.wav"
+      "cross_on_timberrise/cross_on_timberrise__take01.ogg"
     ],
     "durations_s": [
       1.203
@@ -12417,7 +12417,7 @@
   },
   "cross_on_frostheave": {
     "takes": [
-      "cross_on_frostheave/cross_on_frostheave__take01.wav"
+      "cross_on_frostheave/cross_on_frostheave__take01.ogg"
     ],
     "durations_s": [
       1.039
@@ -12447,7 +12447,7 @@
   },
   "cross_on_slateshatter": {
     "takes": [
-      "cross_on_slateshatter/cross_on_slateshatter__take01.wav"
+      "cross_on_slateshatter/cross_on_slateshatter__take01.ogg"
     ],
     "durations_s": [
       0.636
@@ -12477,7 +12477,7 @@
   },
   "cross_on_barkpush": {
     "takes": [
-      "cross_on_barkpush/cross_on_barkpush__take01.wav"
+      "cross_on_barkpush/cross_on_barkpush__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -12507,7 +12507,7 @@
   },
   "cross_on_driftwood": {
     "takes": [
-      "cross_on_driftwood/cross_on_driftwood__take01.wav"
+      "cross_on_driftwood/cross_on_driftwood__take01.ogg"
     ],
     "durations_s": [
       1.042
@@ -12537,7 +12537,7 @@
   },
   "cross_on_husksplit": {
     "takes": [
-      "cross_on_husksplit/cross_on_husksplit__take01.wav"
+      "cross_on_husksplit/cross_on_husksplit__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -12567,7 +12567,7 @@
   },
   "cross_on_sticksnap": {
     "takes": [
-      "cross_on_sticksnap/cross_on_sticksnap__take01.wav"
+      "cross_on_sticksnap/cross_on_sticksnap__take01.ogg"
     ],
     "durations_s": [
       0.758
@@ -12597,7 +12597,7 @@
   },
   "cross_on_shale": {
     "takes": [
-      "cross_on_shale/cross_on_shale__take01.wav"
+      "cross_on_shale/cross_on_shale__take01.ogg"
     ],
     "durations_s": [
       0.988
@@ -12627,7 +12627,7 @@
   },
   "cross_on_groundgroan": {
     "takes": [
-      "cross_on_groundgroan/cross_on_groundgroan__take01.wav"
+      "cross_on_groundgroan/cross_on_groundgroan__take01.ogg"
     ],
     "durations_s": [
       1.164
@@ -12657,7 +12657,7 @@
   },
   "cross_on_ashcrust": {
     "takes": [
-      "cross_on_ashcrust/cross_on_ashcrust__take01.wav"
+      "cross_on_ashcrust/cross_on_ashcrust__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -12687,7 +12687,7 @@
   },
   "cross_on_terracotta": {
     "takes": [
-      "cross_on_terracotta/cross_on_terracotta__take01.wav"
+      "cross_on_terracotta/cross_on_terracotta__take01.ogg"
     ],
     "durations_s": [
       0.335
@@ -12717,7 +12717,7 @@
   },
   "cross_on_thornrise": {
     "takes": [
-      "cross_on_thornrise/cross_on_thornrise__take01.wav"
+      "cross_on_thornrise/cross_on_thornrise__take01.ogg"
     ],
     "durations_s": [
       1.006
@@ -12747,7 +12747,7 @@
   },
   "cross_on_sandcrust": {
     "takes": [
-      "cross_on_sandcrust/cross_on_sandcrust__take01.wav"
+      "cross_on_sandcrust/cross_on_sandcrust__take01.ogg"
     ],
     "durations_s": [
       1.098
@@ -12777,7 +12777,7 @@
   },
   "cross_on_boneyard": {
     "takes": [
-      "cross_on_boneyard/cross_on_boneyard__take01.wav"
+      "cross_on_boneyard/cross_on_boneyard__take01.ogg"
     ],
     "durations_s": [
       1.229
@@ -12807,7 +12807,7 @@
   },
   "cross_on_sod": {
     "takes": [
-      "cross_on_sod/cross_on_sod__take01.wav"
+      "cross_on_sod/cross_on_sod__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -12837,7 +12837,7 @@
   },
   "cross_on_grasspart": {
     "takes": [
-      "cross_on_grasspart/cross_on_grasspart__take01.wav"
+      "cross_on_grasspart/cross_on_grasspart__take01.ogg"
     ],
     "durations_s": [
       0.706
@@ -12867,7 +12867,7 @@
   },
   "cross_on_dirtshrug": {
     "takes": [
-      "cross_on_dirtshrug/cross_on_dirtshrug__take01.wav"
+      "cross_on_dirtshrug/cross_on_dirtshrug__take01.ogg"
     ],
     "durations_s": [
       0.706
@@ -12897,7 +12897,7 @@
   },
   "cross_on_turflift": {
     "takes": [
-      "cross_on_turflift/cross_on_turflift__take01.wav"
+      "cross_on_turflift/cross_on_turflift__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -12927,7 +12927,7 @@
   },
   "cross_on_mossgive": {
     "takes": [
-      "cross_on_mossgive/cross_on_mossgive__take01.wav"
+      "cross_on_mossgive/cross_on_mossgive__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -12957,7 +12957,7 @@
   },
   "cross_on_leaflitter": {
     "takes": [
-      "cross_on_leaflitter/cross_on_leaflitter__take01.wav"
+      "cross_on_leaflitter/cross_on_leaflitter__take01.ogg"
     ],
     "durations_s": [
       0.706
@@ -12987,7 +12987,7 @@
   },
   "cross_on_pineneedles": {
     "takes": [
-      "cross_on_pineneedles/cross_on_pineneedles__take01.wav"
+      "cross_on_pineneedles/cross_on_pineneedles__take01.ogg"
     ],
     "durations_s": [
       0.706
@@ -13017,7 +13017,7 @@
   },
   "cross_on_strawpush": {
     "takes": [
-      "cross_on_strawpush/cross_on_strawpush__take01.wav"
+      "cross_on_strawpush/cross_on_strawpush__take01.ogg"
     ],
     "durations_s": [
       0.706
@@ -13047,7 +13047,7 @@
   },
   "cross_on_barkchips": {
     "takes": [
-      "cross_on_barkchips/cross_on_barkchips__take01.wav"
+      "cross_on_barkchips/cross_on_barkchips__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -13077,7 +13077,7 @@
   },
   "cross_on_pebbleshift": {
     "takes": [
-      "cross_on_pebbleshift/cross_on_pebbleshift__take01.wav"
+      "cross_on_pebbleshift/cross_on_pebbleshift__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -13107,7 +13107,7 @@
   },
   "cross_on_topsoil": {
     "takes": [
-      "cross_on_topsoil/cross_on_topsoil__take01.wav"
+      "cross_on_topsoil/cross_on_topsoil__take01.ogg"
     ],
     "durations_s": [
       0.665
@@ -13137,7 +13137,7 @@
   },
   "cross_on_clod": {
     "takes": [
-      "cross_on_clod/cross_on_clod__take01.wav"
+      "cross_on_clod/cross_on_clod__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -13167,7 +13167,7 @@
   },
   "cross_on_rootlift": {
     "takes": [
-      "cross_on_rootlift/cross_on_rootlift__take01.wav"
+      "cross_on_rootlift/cross_on_rootlift__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -13197,7 +13197,7 @@
   },
   "cross_on_grit": {
     "takes": [
-      "cross_on_grit/cross_on_grit__take01.wav"
+      "cross_on_grit/cross_on_grit__take01.ogg"
     ],
     "durations_s": [
       0.602
@@ -13227,7 +13227,7 @@
   },
   "cross_on_loam": {
     "takes": [
-      "cross_on_loam/cross_on_loam__take01.wav"
+      "cross_on_loam/cross_on_loam__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -13257,7 +13257,7 @@
   },
   "cross_on_thatch": {
     "takes": [
-      "cross_on_thatch/cross_on_thatch__take01.wav"
+      "cross_on_thatch/cross_on_thatch__take01.ogg"
     ],
     "durations_s": [
       0.706
@@ -13287,7 +13287,7 @@
   },
   "cross_on_chaff": {
     "takes": [
-      "cross_on_chaff/cross_on_chaff__take01.wav"
+      "cross_on_chaff/cross_on_chaff__take01.ogg"
     ],
     "durations_s": [
       0.602
@@ -13317,7 +13317,7 @@
   },
   "cross_on_fernpush": {
     "takes": [
-      "cross_on_fernpush/cross_on_fernpush__take01.wav"
+      "cross_on_fernpush/cross_on_fernpush__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -13347,7 +13347,7 @@
   },
   "cross_on_peat": {
     "takes": [
-      "cross_on_peat/cross_on_peat__take01.wav"
+      "cross_on_peat/cross_on_peat__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -13377,7 +13377,7 @@
   },
   "cross_on_sandsift": {
     "takes": [
-      "cross_on_sandsift/cross_on_sandsift__take01.wav"
+      "cross_on_sandsift/cross_on_sandsift__take01.ogg"
     ],
     "durations_s": [
       0.602
@@ -13407,7 +13407,7 @@
   },
   "cross_on_gravelnudge": {
     "takes": [
-      "cross_on_gravelnudge/cross_on_gravelnudge__take01.wav"
+      "cross_on_gravelnudge/cross_on_gravelnudge__take01.ogg"
     ],
     "durations_s": [
       0.706
@@ -13437,7 +13437,7 @@
   },
   "cross_on_twigmat": {
     "takes": [
-      "cross_on_twigmat/cross_on_twigmat__take01.wav"
+      "cross_on_twigmat/cross_on_twigmat__take01.ogg"
     ],
     "durations_s": [
       0.706
@@ -13467,7 +13467,7 @@
   },
   "cross_on_cloverpull": {
     "takes": [
-      "cross_on_cloverpull/cross_on_cloverpull__take01.wav"
+      "cross_on_cloverpull/cross_on_cloverpull__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -13497,7 +13497,7 @@
   },
   "cross_on_dustpuff": {
     "takes": [
-      "cross_on_dustpuff/cross_on_dustpuff__take01.wav"
+      "cross_on_dustpuff/cross_on_dustpuff__take01.ogg"
     ],
     "durations_s": [
       0.602
@@ -13527,7 +13527,7 @@
   },
   "cross_on_stonelip": {
     "takes": [
-      "cross_on_stonelip/cross_on_stonelip__take01.wav"
+      "cross_on_stonelip/cross_on_stonelip__take01.ogg"
     ],
     "durations_s": [
       0.706
@@ -13557,7 +13557,7 @@
   },
   "cross_on_earthsigh": {
     "takes": [
-      "cross_on_earthsigh/cross_on_earthsigh__take01.wav"
+      "cross_on_earthsigh/cross_on_earthsigh__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -13587,7 +13587,7 @@
   },
   "cross_on_crumbfall": {
     "takes": [
-      "cross_on_crumbfall/cross_on_crumbfall__take01.wav"
+      "cross_on_crumbfall/cross_on_crumbfall__take01.ogg"
     ],
     "durations_s": [
       0.602
@@ -13617,7 +13617,7 @@
   },
   "cross_on_weedroot": {
     "takes": [
-      "cross_on_weedroot/cross_on_weedroot__take01.wav"
+      "cross_on_weedroot/cross_on_weedroot__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -13647,7 +13647,7 @@
   },
   "cross_on_moundgive": {
     "takes": [
-      "cross_on_moundgive/cross_on_moundgive__take01.wav"
+      "cross_on_moundgive/cross_on_moundgive__take01.ogg"
     ],
     "durations_s": [
       0.706
@@ -13677,7 +13677,7 @@
   },
   "cross_on_heather": {
     "takes": [
-      "cross_on_heather/cross_on_heather__take01.wav"
+      "cross_on_heather/cross_on_heather__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -13707,7 +13707,7 @@
   },
   "die_girl_gasp": {
     "takes": [
-      "die_girl_gasp/die_girl_gasp__take01.wav"
+      "die_girl_gasp/die_girl_gasp__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -13737,7 +13737,7 @@
   },
   "die_girl_cryout": {
     "takes": [
-      "die_girl_cryout/die_girl_cryout__take01.wav"
+      "die_girl_cryout/die_girl_cryout__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -13767,7 +13767,7 @@
   },
   "die_girl_wail": {
     "takes": [
-      "die_girl_wail/die_girl_wail__take01.wav"
+      "die_girl_wail/die_girl_wail__take01.ogg"
     ],
     "durations_s": [
       2.221
@@ -13797,7 +13797,7 @@
   },
   "die_girl_groan": {
     "takes": [
-      "die_girl_groan/die_girl_groan__take01.wav"
+      "die_girl_groan/die_girl_groan__take01.ogg"
     ],
     "durations_s": [
       1.621
@@ -13827,7 +13827,7 @@
   },
   "die_girl_whimper": {
     "takes": [
-      "die_girl_whimper/die_girl_whimper__take01.wav"
+      "die_girl_whimper/die_girl_whimper__take01.ogg"
     ],
     "durations_s": [
       1.386
@@ -13857,7 +13857,7 @@
   },
   "die_girl_defiant": {
     "takes": [
-      "die_girl_defiant/die_girl_defiant__take01.wav"
+      "die_girl_defiant/die_girl_defiant__take01.ogg"
     ],
     "durations_s": [
       1.386
@@ -13887,7 +13887,7 @@
   },
   "die_girl_yelp": {
     "takes": [
-      "die_girl_yelp/die_girl_yelp__take01.wav"
+      "die_girl_yelp/die_girl_yelp__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -13917,7 +13917,7 @@
   },
   "die_girl_winded": {
     "takes": [
-      "die_girl_winded/die_girl_winded__take01.wav"
+      "die_girl_winded/die_girl_winded__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -13947,7 +13947,7 @@
   },
   "die_girl_sigh": {
     "takes": [
-      "die_girl_sigh/die_girl_sigh__take01.wav"
+      "die_girl_sigh/die_girl_sigh__take01.ogg"
     ],
     "durations_s": [
       2.013
@@ -13977,7 +13977,7 @@
   },
   "die_girl_sob": {
     "takes": [
-      "die_girl_sob/die_girl_sob__take01.wav"
+      "die_girl_sob/die_girl_sob__take01.ogg"
     ],
     "durations_s": [
       1.203
@@ -14007,7 +14007,7 @@
   },
   "die_girl_scream": {
     "takes": [
-      "die_girl_scream/die_girl_scream__take01.wav"
+      "die_girl_scream/die_girl_scream__take01.ogg"
     ],
     "durations_s": [
       1.621
@@ -14037,7 +14037,7 @@
   },
   "die_girl_softoh": {
     "takes": [
-      "die_girl_softoh/die_girl_softoh__take01.wav"
+      "die_girl_softoh/die_girl_softoh__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -14067,7 +14067,7 @@
   },
   "die_girl_grunt": {
     "takes": [
-      "die_girl_grunt/die_girl_grunt__take01.wav"
+      "die_girl_grunt/die_girl_grunt__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -14097,7 +14097,7 @@
   },
   "die_girl_rattle": {
     "takes": [
-      "die_girl_rattle/die_girl_rattle__take01.wav"
+      "die_girl_rattle/die_girl_rattle__take01.ogg"
     ],
     "durations_s": [
       1.974
@@ -14127,7 +14127,7 @@
   },
   "die_girl_inhale": {
     "takes": [
-      "die_girl_inhale/die_girl_inhale__take01.wav"
+      "die_girl_inhale/die_girl_inhale__take01.ogg"
     ],
     "durations_s": [
       0.768
@@ -14157,7 +14157,7 @@
   },
   "die_girl_operatic": {
     "takes": [
-      "die_girl_operatic/die_girl_operatic__take01.wav"
+      "die_girl_operatic/die_girl_operatic__take01.ogg"
     ],
     "durations_s": [
       2.221
@@ -14187,7 +14187,7 @@
   },
   "die_girl_comic": {
     "takes": [
-      "die_girl_comic/die_girl_comic__take01.wav"
+      "die_girl_comic/die_girl_comic__take01.ogg"
     ],
     "durations_s": [
       0.889
@@ -14217,7 +14217,7 @@
   },
   "die_girl_stoic": {
     "takes": [
-      "die_girl_stoic/die_girl_stoic__take01.wav"
+      "die_girl_stoic/die_girl_stoic__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -14247,7 +14247,7 @@
   },
   "die_girl_moan": {
     "takes": [
-      "die_girl_moan/die_girl_moan__take01.wav"
+      "die_girl_moan/die_girl_moan__take01.ogg"
     ],
     "durations_s": [
       1.777
@@ -14277,7 +14277,7 @@
   },
   "die_girl_call": {
     "takes": [
-      "die_girl_call/die_girl_call__take01.wav"
+      "die_girl_call/die_girl_call__take01.ogg"
     ],
     "durations_s": [
       2.013
@@ -14307,7 +14307,7 @@
   },
   "die_boy_gasp": {
     "takes": [
-      "die_boy_gasp/die_boy_gasp__take01.wav"
+      "die_boy_gasp/die_boy_gasp__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -14337,7 +14337,7 @@
   },
   "die_boy_cryout": {
     "takes": [
-      "die_boy_cryout/die_boy_cryout__take01.wav"
+      "die_boy_cryout/die_boy_cryout__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -14367,7 +14367,7 @@
   },
   "die_boy_wail": {
     "takes": [
-      "die_boy_wail/die_boy_wail__take01.wav"
+      "die_boy_wail/die_boy_wail__take01.ogg"
     ],
     "durations_s": [
       2.221
@@ -14397,7 +14397,7 @@
   },
   "die_boy_groan": {
     "takes": [
-      "die_boy_groan/die_boy_groan__take01.wav"
+      "die_boy_groan/die_boy_groan__take01.ogg"
     ],
     "durations_s": [
       1.621
@@ -14427,7 +14427,7 @@
   },
   "die_boy_whimper": {
     "takes": [
-      "die_boy_whimper/die_boy_whimper__take01.wav"
+      "die_boy_whimper/die_boy_whimper__take01.ogg"
     ],
     "durations_s": [
       1.386
@@ -14457,7 +14457,7 @@
   },
   "die_boy_defiant": {
     "takes": [
-      "die_boy_defiant/die_boy_defiant__take01.wav"
+      "die_boy_defiant/die_boy_defiant__take01.ogg"
     ],
     "durations_s": [
       1.386
@@ -14487,7 +14487,7 @@
   },
   "die_boy_yelp": {
     "takes": [
-      "die_boy_yelp/die_boy_yelp__take01.wav"
+      "die_boy_yelp/die_boy_yelp__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -14517,7 +14517,7 @@
   },
   "die_boy_winded": {
     "takes": [
-      "die_boy_winded/die_boy_winded__take01.wav"
+      "die_boy_winded/die_boy_winded__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -14547,7 +14547,7 @@
   },
   "die_boy_sigh": {
     "takes": [
-      "die_boy_sigh/die_boy_sigh__take01.wav"
+      "die_boy_sigh/die_boy_sigh__take01.ogg"
     ],
     "durations_s": [
       2.013
@@ -14577,7 +14577,7 @@
   },
   "die_boy_sob": {
     "takes": [
-      "die_boy_sob/die_boy_sob__take01.wav"
+      "die_boy_sob/die_boy_sob__take01.ogg"
     ],
     "durations_s": [
       1.097
@@ -14607,7 +14607,7 @@
   },
   "die_boy_scream": {
     "takes": [
-      "die_boy_scream/die_boy_scream__take01.wav"
+      "die_boy_scream/die_boy_scream__take01.ogg"
     ],
     "durations_s": [
       1.621
@@ -14637,7 +14637,7 @@
   },
   "die_boy_softoh": {
     "takes": [
-      "die_boy_softoh/die_boy_softoh__take01.wav"
+      "die_boy_softoh/die_boy_softoh__take01.ogg"
     ],
     "durations_s": [
       1.02
@@ -14667,7 +14667,7 @@
   },
   "die_boy_grunt": {
     "takes": [
-      "die_boy_grunt/die_boy_grunt__take01.wav"
+      "die_boy_grunt/die_boy_grunt__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -14697,7 +14697,7 @@
   },
   "die_boy_rattle": {
     "takes": [
-      "die_boy_rattle/die_boy_rattle__take01.wav"
+      "die_boy_rattle/die_boy_rattle__take01.ogg"
     ],
     "durations_s": [
       2.013
@@ -14727,7 +14727,7 @@
   },
   "die_boy_inhale": {
     "takes": [
-      "die_boy_inhale/die_boy_inhale__take01.wav"
+      "die_boy_inhale/die_boy_inhale__take01.ogg"
     ],
     "durations_s": [
       0.97
@@ -14757,7 +14757,7 @@
   },
   "die_boy_operatic": {
     "takes": [
-      "die_boy_operatic/die_boy_operatic__take01.wav"
+      "die_boy_operatic/die_boy_operatic__take01.ogg"
     ],
     "durations_s": [
       2.221
@@ -14787,7 +14787,7 @@
   },
   "die_boy_comic": {
     "takes": [
-      "die_boy_comic/die_boy_comic__take01.wav"
+      "die_boy_comic/die_boy_comic__take01.ogg"
     ],
     "durations_s": [
       0.85
@@ -14817,7 +14817,7 @@
   },
   "die_boy_stoic": {
     "takes": [
-      "die_boy_stoic/die_boy_stoic__take01.wav"
+      "die_boy_stoic/die_boy_stoic__take01.ogg"
     ],
     "durations_s": [
       0.811
@@ -14847,7 +14847,7 @@
   },
   "die_boy_moan": {
     "takes": [
-      "die_boy_moan/die_boy_moan__take01.wav"
+      "die_boy_moan/die_boy_moan__take01.ogg"
     ],
     "durations_s": [
       1.777
@@ -14877,7 +14877,7 @@
   },
   "die_boy_call": {
     "takes": [
-      "die_boy_call/die_boy_call__take01.wav"
+      "die_boy_call/die_boy_call__take01.ogg"
     ],
     "durations_s": [
       1.928
