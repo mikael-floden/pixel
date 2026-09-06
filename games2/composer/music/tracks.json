@@ -1,6 +1,8 @@
 {
   "schema": "composer-music@1",
   "generated_at": "2026-08-22T21:18:39+00:00",
+  "root": "games2/composer/music",
+  "_root_comment": "Repo-root-relative directory holding every path in this file (files[].file, versions[].files[].file). Consumers must JOIN it rather than hardcode a location: the score is moving to music/ so a dedicated music agent can own one directory, and this field is how that move happens without breaking anyone.",
   "target_lufs": -18.0,
   "ceiling_dbtp": -1.5,
   "tracks": {

@@ -131,6 +131,46 @@ def sync_manifest(write: bool) -> int:
     return drift + gone
 
 
+INDEX = FOLEY / "index.json"
+# Where these paths live, repo-root-relative. THE ONE PLACE that changes when
+# the library moves to sounds/ — every consumer joins it instead of hardcoding.
+INDEX_ROOT = "games2/composer/foley"
+
+
+def write_index(write: bool) -> int:
+    """Derive index.json (what exists, and where) from foley.json + the disk.
+
+    Separate from foley.json because that file is a bare {set: entry} map which
+    consumers iterate with Object.entries (wiki/build.mjs:2044) — a layout key
+    added to it becomes a phantom set and throws. foley.json keeps the QA and
+    feature data; this keeps the file list, and is what the engine will read
+    once it stops globbing the disk at build time.
+    """
+    import json
+    if not MANIFEST.exists():
+        return 0
+    fat = json.loads(MANIFEST.read_text())
+    sets = {}
+    for name, e in sorted(fat.items()):
+        takes = list(e.get("takes") or [])
+        pool = [c["file"] for c in (e.get("pool_candidates") or []) if c.get("file")]
+        if takes or pool:
+            sets[name] = {"takes": takes, "pool": pool}
+    doc = {"format": "pixel-foley-index@1", "root": INDEX_ROOT, "sets": sets}
+    missing = [r for v in sets.values() for r in v["takes"] + v["pool"]
+               if not (FOLEY / r).exists()]
+    old = json.loads(INDEX.read_text()) if INDEX.exists() else {}
+    same = old.get("sets") == sets and old.get("root") == INDEX_ROOT
+    if not same and write:
+        keep = {k: old[k] for k in ("_comment", "_root_comment") if k in old}
+        INDEX.write_text(json.dumps({**doc, **keep, "sets": sets}, indent=1) + "\n")
+    n = sum(len(v["takes"]) + len(v["pool"]) for v in sets.values())
+    print(f"index: {len(sets)} sets / {n} files"
+          + ("" if same else "  (REGENERATED)" if write else "  (STALE)")
+          + (f"  {len(missing)} MISSING ON DISK" if missing else ""))
+    return (0 if same else 1) + len(missing)
+
+
 def convert(src: Path, write: bool) -> tuple[bool, str]:
     x, sr = sf.read(src, always_2d=False)
     dst = src.with_suffix(".ogg")
@@ -193,7 +233,7 @@ def main() -> int:
     print(f"{'would convert' if check else 'converted'}: {ok}/{len(wavs)} takes")
     # ALWAYS, even when there was nothing to convert: --check is the CI gate
     # that the manifest still names files that exist.
-    drift = sync_manifest(write=not check)
+    drift = sync_manifest(write=not check) + write_index(write=not check)
     if before:
         shown = after if after else before * 0.088
         print(f"  {before / 1048576:.1f} MB wav -> {shown / 1048576:.1f} MB opus "
