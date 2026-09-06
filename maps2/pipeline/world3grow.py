@@ -475,6 +475,10 @@ class Grow:
             if not piece.startswith(self.INDOOR_OK):
                 self.fail += 1
                 return False
+        if (int(x), int(y)) in getattr(self, "cave_floor", {}):
+            if not piece.startswith(self.CAVE_OK):
+                self.fail += 1
+                return False
         else:
             # outdoor pieces stay out of the up-screen shadow behind a roof —
             # a washing line 2 cells behind the cottage rendered ON its roof
@@ -936,6 +940,156 @@ class Grow:
             "cells": [{"x": c[0], "y": c[1]} for c in sorted(floor)]}
         self.doc["decks"].append(self.new_cave)
         self.placed += [("island2 cave floor", len(floor) + 2)]
+
+    # THE CAVE IS DUG, NOT INHERITED (maintainer 2026-09-06: "the cave floor
+    # should be dark_mud and the inside wall should feel less random ... the
+    # floor and walls inside the cave is a consequence of the top of the
+    # mountain and have not been thought through ... make the corridors a
+    # bit wider (maybe 1 cell) ... the scenery feels a bit random"). Every
+    # cave floor is dark_mud; the walls inside a cave are ONE material per
+    # cave, the rock it is dug into (CAVE_WALL by the lid's ground: ice
+    # under ice, black rock under black rock, grey stone under snow and
+    # stone); the mountain top and its outer walls are untouched. Corridors
+    # are widened by one cell on their east/south side, into interior rock
+    # only, never through a one-cell wall between two passages and never
+    # into the mountain's outer shell. Only cave dressing stands on a cave
+    # floor (CAVE_OK), and it stands along the walls of rooms, never in a
+    # corridor.
+    CAVE_WALL = {"ice": "ice", "snow": "grey_stone", "grey_stone": "grey_stone",
+                 "black_rock": "black_rock"}
+    CAVE_OK = ("braziers/", "crystals/", "geodes/", "cup_fungi/", "mushrooms/",
+               "cairns/", "beast_skulls/", "cliff_fragments/", "cliff_mosses/",
+               "cliff_roots/", "cliff_vines/", "cliff_features/", "frost_flowers/",
+               "frozen_springs/", "dragon_ribcages/", "stones/", "gravel_piles/",
+               "giant_skulls/", "puffballs/")
+    ROCK_MIN = 24      # the mountain's body; a cave is dug into this
+    CAVE_DRESS_PER = 7 # one piece per this many floor cells of a room
+    CAVE_GAP = 3       # cells between pieces
+
+    def caves(self):
+        gi = self.gi
+        self.cave_floor, self.cave_side = {}, {}
+        decks = [(i, dk) for i, dk in enumerate(self.doc["decks"]) if dk.get("kind") == "cave"]
+        cave_all = {(c["x"], c["y"]) for _, dk in decks for c in dk["cells"]}
+
+        def rock(c):
+            x, y = c
+            return (self.g(x, y) and not self.liquid(x, y) and c not in cave_all
+                    and self.lvl[y][x] >= self.ROCK_MIN)
+
+        def interior(c):
+            return all(rock((c[0] + dx, c[1] + dy)) or (c[0] + dx, c[1] + dy) in cave_all
+                       for dx in (-1, 0, 1) for dy in (-1, 0, 1))
+        widened = 0
+        for i, dk in decks:
+            floor = {(c["x"], c["y"]) for c in dk["cells"]}
+            lid = int(dk["level"])
+            fl = min(self.lvl[y][x] for x, y in floor)
+            new = set()
+            for (x, y) in sorted(floor):
+                for n, beyond in (((x + 1, y), (x + 2, y)), ((x, y + 1), (x, y + 2))):
+                    if n in cave_all or n in new or not rock(n):
+                        continue
+                    if self.lvl[n[1]][n[0]] != lid or not interior(n):
+                        continue
+                    if beyond in cave_all or beyond in new or not rock(beyond):
+                        continue                  # keep a wall between passages
+                    new.add(n)
+            for (x, y) in new:
+                self.lvl[y][x] = fl
+                dk["cells"].append({"x": x, "y": y})
+            cave_all |= new
+            floor |= new
+            widened += len(new)
+            for (x, y) in floor:
+                self.grd[y][x] = gi["dark_mud"]
+                self.cave_floor[(x, y)] = i
+            self.cave_side[i] = self.CAVE_WALL.get(dk.get("ground"), "grey_stone")
+        gone = len(self.doc["scenery"])
+        self.doc["scenery"] = [p for p in self.doc["scenery"]
+                               if (int(p["x"]), int(p["y"])) not in self.cave_floor
+                               or p["piece"].startswith(self.CAVE_OK)]
+        self._reindex()
+        self.placed += [("cave floor cells", len(self.cave_floor)),
+                        ("cave corridors widened by", widened),
+                        ("cave: stray scenery evicted", gone - len(self.doc["scenery"]))]
+
+    def cave_dress(self):
+        r = _rng32(0xCA7E5)
+        cave = self.cave_floor
+        n = 0
+        biggest = None
+        for i, dk in enumerate(self.doc["decks"]):
+            if dk.get("kind") != "cave":
+                continue
+            cells = {(c["x"], c["y"]) for c in dk["cells"]}
+            if len(cells) < 12:
+                continue
+            if biggest is None or len(cells) > len(biggest[1]):
+                biggest = (i, cells)
+            side = self.cave_side.get(i, "grey_stone")
+
+            def wall(c):
+                return c not in cave and (not self.g(*c) or self.lvl[c[1]][c[0]] >= self.ROCK_MIN)
+
+            def nfloor(c):
+                return sum(1 for dx in (-1, 0, 1) for dy in (-1, 0, 1)
+                           if (dx or dy) and (c[0] + dx, c[1] + dy) in cave)
+
+            def corridor(c):
+                x, y = c
+                return (wall((x - 1, y)) and wall((x + 1, y))) or (wall((x, y - 1)) and wall((x, y + 1)))
+            room = [c for c in sorted(cells) if nfloor(c) >= 5 and not corridor(c)]
+            edge = [c for c in room if any(wall(m) for m in ((c[0] + 1, c[1]), (c[0] - 1, c[1]), (c[0], c[1] + 1), (c[0], c[1] - 1)))]
+            edgeset = set(edge)
+            # floor pieces stand one cell in from the wall: a crystal's
+            # footprint reaches past its cell, and the wall cell is a level
+            # change the footprint law refuses (measured: 22 of ~60 landed)
+            ring2 = [c for c in room if c not in edgeset and nfloor(c) == 8
+                     and any((c[0] + dx, c[1] + dy) in edgeset
+                             for dx in (-1, 0, 1) for dy in (-1, 0, 1))]
+            floor_groups = ["crystals", "crystals", "crystals", "geodes", "cup_fungi",
+                            "cup_fungi", "mushrooms", "mushrooms", "cairns", "stones",
+                            "beast_skulls", "gravel_piles", "puffballs"]
+            if side == "ice":
+                floor_groups += ["frost_flowers", "frost_flowers", "frozen_springs", "crystals"]
+            hug_groups = ["cliff_roots", "cliff_vines", "cliff_vines", "cliff_mosses",
+                          "cliff_fragments", "cliff_features"]
+            target = max(2, len(room) // self.CAVE_DRESS_PER)
+            taken = [(p["x"], p["y"]) for p in self.doc["scenery"]
+                     if (int(p["x"]), int(p["y"])) in cells]
+            order = [(c, True) for c in edge if wall((c[0], c[1] - 1)) or wall((c[0] - 1, c[1]))] \
+                + [(c, False) for c in ring2]
+            for k in range(len(order) - 1, 0, -1):
+                j = int(r() * (k + 1))
+                order[k], order[j] = order[j], order[k]
+            laid = 0
+            for (x, y), back in order:
+                if laid >= target:
+                    break
+                if any(abs(x + 0.5 - tx) + abs(y + 0.5 - ty) < self.CAVE_GAP for tx, ty in taken):
+                    continue
+                grp = hug_groups if back else floor_groups
+                grp = grp[int(r() * len(grp))]
+                pcs = self.pool(grp)
+                if not pcs:
+                    continue
+                piece = pcs[int(r() * len(pcs))]
+                if self.put(piece, x + 0.5, y + 0.5, on=("dark_mud",)):
+                    taken.append((x + 0.5, y + 0.5))
+                    laid += 1
+            n += laid
+        # one set piece: the bones of something large, in the biggest hall
+        if biggest:
+            i, cells = biggest
+            mids = [c for c in sorted(cells)
+                    if sum(1 for dx in (-1, 0, 1) for dy in (-1, 0, 1)
+                           if (dx or dy) and (c[0] + dx, c[1] + dy) in cave) == 8]
+            for c in mids[len(mids) // 2:] + mids[:len(mids) // 2]:
+                if self.put("dragon_ribcages/dragon_ribcage_001", c[0] + 0.5, c[1] + 0.5, on=("dark_mud",)):
+                    n += 1
+                    break
+        self.placed += [("cave dressing", n)]
 
     def i2_systems(self):
         """The first island's own rule functions, re-run scoped to island 2's
@@ -1435,6 +1589,10 @@ class Grow:
     # same level. A screen offset of dx px is dx/64 of a cell in +x and the
     # same in -y, so half the drawn width is the reach.
     def _art_clear(self, piece, x, y, state=None):
+        # cave dressing leans on the cave wall: that is what roots, vines and
+        # a crystal against the rock look like, so the wall is not a drop
+        if (int(x), int(y)) in getattr(self, "cave_floor", {}):
+            return True
         a = self._art_rect(piece, x, y, state)
         if a is None:
             return True
@@ -3408,6 +3566,12 @@ class Grow:
                 if z <= min(e, sth):
                     continue                 # no exposed face
                 fx, fy = (x + 1, y) if e <= sth else (x, y + 1)
+                cave = getattr(self, "cave_floor", {})
+                if (fx, fy) in cave:              # a wall inside a cave: the cave's rock
+                    side = self.cave_side[cave[(fx, fy)]]
+                    groups[side].append({"x": x, "y": y})
+                    kinds[(top, side)] += 1
+                    continue
                 shore = self.liquid(fx, fy) or self.g(fx, fy) == "light_beach" \
                     or sea[fy][fx] <= self.SHORE_R
                 if top in ("snow", "ice"):
@@ -4425,12 +4589,12 @@ class Grow:
                      # (both measured). A buried tunnel needs an underground
                      # LAYER in the format — flagged; the isthmus road is
                      # the crossing, each massif keeps its own dungeon.
-                     self.town_ground, self.i2_cave,
+                     self.town_ground, self.i2_cave, self.caves,
                      self.i2_road, self.i2_systems, self.groom, self._reindex,
                      self.archipelago, self.pier, self.houses, self.town,
                      self.mountain_back, self.wild, self.terrace_grounds,
                      self.build_no_place, self.interiors, self.village,
-                     self.roads, self.nature, self.dress_islets,
+                     self.roads, self.nature, self.cave_dress, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
                      self.ramp_paths, self.regroom, self.reach_audit,
                      self.snap_hitboxes, self.police_footprints,

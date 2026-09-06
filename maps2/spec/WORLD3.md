@@ -325,6 +325,40 @@ of the build. Four rules, all from one round of photographs (maintainer
   lay under them — a slab of 100% grass, with mud on one bank and soil on
   the other. Both banks take the road for two cells at the deck's level.
 
+### the cave — dug, not inherited
+
+Maintainer 2026-09-06: *"the cave floor should be dark_mud and the inside
+wall should feel less random ... the floor and walls inside the cave is a
+consequence of the top of the mountain and have not been thought through
+... make the corridors a bit wider (maybe 1 cell) ... the scenery feels a
+bit random."* The 12 ported cave lids kept the mountain's own top as their
+floor (snow and ice floors underground) and their inner walls took whatever
+pool the terrace above happened to draw.
+
+`caves()` (right after `i2_cave`): every cave floor cell is **dark_mud**; the
+walls inside a cave are **one material per cave, the rock it is dug into**
+(`CAVE_WALL` by the lid's ground: ice under ice, black rock under black rock,
+grey stone under snow and stone) — `cliff_faces` gives a face whose foot is
+a cave floor that side and no other; the mountain top and its outer walls
+are untouched. **Corridors are one cell wider**: every passage grows one
+cell on its east/south side, into rock at the lid's level that is interior
+on all eight sides, never through a one-cell wall between two passages and
+never into the mountain's shell (the_game: 592 floor cells, 120 added).
+`put()` refuses anything but cave dressing (`CAVE_OK`) on a cave floor.
+
+`cave_dress()` (after `nature`): one piece per `CAVE_DRESS_PER = 7` cells of
+a ROOM (a floor cell with five or more floor neighbours that is not a
+corridor), `CAVE_GAP = 3` cells apart. Wall pieces (roots, vines, mosses,
+fragments, features) stand on a room's edge cell with a wall face behind it
+(rock to the north or west); floor pieces (crystals, geodes, fungi,
+mushrooms, cairns, stones, skulls, gravel, puffballs; frost flowers and a
+frozen spring in the ice cave) stand one cell in from the wall, because a
+footprint that reaches into the wall cell is a level change the footprint
+law refuses. Cave dressing may lean on the wall (`_art_clear` passes it: a
+root against the rock is what a root looks like). One dragon ribcage in the
+biggest hall. The braziers stay as they were. the_game: 43 pieces of 12
+kinds, plus 19 braziers.
+
 ### `scenery` — a placement is centred on its HITBOX, not its art
 
 **The hitbox centre stands in the middle of a tile** (maintainer, 2026-08-30:
