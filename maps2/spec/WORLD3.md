@@ -657,21 +657,52 @@ lit** (`world3grow.lights`, replacing the old greedy `relight`):
 4. a lantern post beside every house door (on the hinge side of the step,
    else beside the path out from it — an east door's step sits in the roof's
    sideways `no_place` band), then the town's gate lanterns
-5. streetlights every `LAMP_EVERY = 10` road cells on a natural-ground cell
-   beside the road, sides alternating; lit waystones every `STONE_EVERY =
-   16` between them
-6. forest glows: a lit mushroom or toadstool ring beside a tree every
-   `GLOW_EVERY = 20` cells
-7. rock glows: a lit crystal on bare rock every `ROCK_EVERY = 24` cells,
+5. streetlights every `LAMP_SPACING = 2.5` lamp radii of road (12 cells
+   at radius 5) on a natural-ground cell beside the road, sides
+   alternating; lit waystones between them at 1.6× that spacing. The
+   spacing follows the lamps' published radius so a brighter lamp table
+   thins the row instead of blowing the window.
+6. **no place is pitch black** (maintainer 2026-09-06: *"some areas can't
+   be completely black and some areas need even more light"* — and not
+   evenly spread, that *"makes the entire game look the same"*): every
+   reachable outdoor cell ends within `DARK_MAX = 12` cells of some pool's
+   edge. The middle of the largest black patch (≥ `BLACK_MIN = 12` cells)
+   gets a light that belongs to the place — a cauldron camp, charcoal kiln,
+   giant mushroom, wayside shrine or ancient tree on the lowland; a crystal
+   tree, rock spire, soulstone or crystal on the rock; a torch or a camp on
+   the beach — until no patch is left. Pools stay islands with dark between
+   them; only the pitch black goes. A patch nothing can stand in is given
+   up; the build may leave `DARK_TOL = 3%` of outdoor cells black and
+   asserts it.
+7. forest glows: a lit mushroom or toadstool ring beside a reachable tree
+   every `GLOW_EVERY = 20` cells (the glows come after the fill: a slot on
+   a radius-2 mushroom is a slot a radius-5 camp could have lit the black
+   with)
+8. rock glows: a lit crystal on bare rock every `ROCK_EVERY = 24` cells,
    hash-jittered off the lattice
 
-Measured on the_game: 164 lit placements (streetlights 48, crystals 45,
-mushrooms + toadstool rings 43, waystones 9, braziers 7, lantern posts 7,
-torches 2, hearth 1, beacon 1), worst window 8/8. Camera spots over
-reachable ground, sampled every 4 cells: 8 lights 2%, 7 5%, 6 4%, 5 8%,
-4 13%, 3 17%, 2 21%, 1 13%, 0 13% — the town sees eight, the mountain's far
-terraces one crystal or none. The build log prints the tally and every
-refusal by reason (`lights: streetlights refused (budget)`).
+**Radius is the lever, not count.** A window is ~28×52 cells and holds 8
+lights, so the share of any screen inside a pool is bounded by
+8·π·R²/1450: ≤ 28% at radius 4, ≤ 85% at radius 7. At the published
+radii (streetlights 3–5, glows 2) the night cannot be made bright by
+placing more — a lamp row every 12 cells fills its windows and leaves the
+land beside the road black — which is why the maintainer asked scenery for
+2× streetlight radii (and half for rune stones). When that table changes
+the world is rebuilt against it: the boxes grow, the row thins, the fill
+reaches further.
+
+Measured on the_game: 258 lit placements (crystals 47, streetlights 39,
+crystal trees 29, cauldron camps 19, wayside shrines 17, charcoal kilns 16,
+giant mushrooms 15, waystones 13, soulstones 12, toadstool rings 11,
+mushrooms 10, braziers 7, lantern posts 7, torches 6, rock spires 4,
+ancient trees 2, hearth 1, beacon 1), worst window 8/8. Outdoor reachable
+cells: 12% inside a pool, 34% within 3 cells of one, 39% at 4–7, 12% at
+8–11, 2.1% black (the level-12 terrace south of the mountain, whose
+windows the town and its road row already fill). Camera spots sampled
+every 4 cells: 8 lights 2%, 7 9%, 6 17%, 5 21%, 4 24%, 3 15%, 2 7%, 1 2%,
+0 0%. The build log prints the tally, every refusal by reason
+(`lights: black-patch fill refused (budget)`) and where each patch was
+given up.
 
 Only braziers that ship a LIT state go into a cave (`brazier_002` has none
 and was a third of the cave's fires). Flicker is deferred (maintainer: "not

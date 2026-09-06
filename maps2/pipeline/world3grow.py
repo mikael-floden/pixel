@@ -2103,8 +2103,11 @@ class Grow:
     # place IS, in priority order, and each is lit only if the worst camera
     # window still holds 8 after it - the EXACT worst window, over every
     # camera position, with each light's own reach (world3.max_overlap).
-    LAMP_EVERY = 10     # road cells between streetlights
-    STONE_EVERY = 16    # road cells between lit waystones, offset from the lamps
+    LAMP_SPACING = 2.5  # streetlight radii between streetlights along a road
+    DARK_MAX = 12       # no reachable outdoor cell further than this from a pool's edge
+    BLACK_MIN = 12      # a black patch smaller than this is contrast, not a hole
+    DARK_TOL = 0.03     # share of outdoor cells the build may leave black (a footprint
+                        # refuses a spot; beside a lamp row the window is already full)
     GLOW_EVERY = 20     # cells between forest glows (lit mushrooms)
     ROCK_EVERY = 24     # cells between lit crystals on the bare rock
     BONFIRE_R = 7       # the game's own campfire at spawn: one world slot
@@ -2314,6 +2317,12 @@ class Grow:
         #    alternating; lit waystones between them
         lamps = self._lit_pool("streetlights")
         stones = self._lit_pool("waystones")
+        # the spacing follows the lamps' reach, so a brighter lamp table
+        # (scenery's) thins the row instead of blowing the window
+        lamp_r = max((world3.light_meta(pc, st)[0] for pc, st in lamps), default=4)
+        lamp_every = max(8, int(round(self.LAMP_SPACING * lamp_r)))
+        stone_every = lamp_every * 8 // 5
+        tally["streetlight spacing (cells)"] = lamp_every
         seen, comps = set(), []
         for c in sorted(roadset):
             if c in seen:
@@ -2332,23 +2341,118 @@ class Grow:
         comps.sort(key=lambda c: min(abs(x - sx) + abs(y - sy) for x, y in c))
         for comp in comps:
             walk = self._road_walk(comp)
-            for k, idx in enumerate(range(self.LAMP_EVERY // 2, len(walk), self.LAMP_EVERY)):
+            for k, idx in enumerate(range(lamp_every // 2, len(walk), lamp_every)):
                 c = walk[idx]
                 m = side_cell(c, walk[idx - 1] if idx else None, k)
                 if not m or not lamps:
                     continue
                 pc, st = lamps[k % len(lamps)]
                 tally["streetlights"] += place(pc, st, m[0] + 0.5, m[1] + 0.5, why="streetlights", on=tuple(self.NATURAL))
-            for k, idx in enumerate(range(self.LAMP_EVERY, len(walk), self.STONE_EVERY)):
+            for k, idx in enumerate(range(lamp_every, len(walk), stone_every)):
                 c = walk[idx]
                 m = side_cell(c, walk[idx - 1] if idx else None, k + 1)
                 if not m or not stones:
                     continue
                 pc, st = stones[k % len(stones)]
                 tally["waystones"] += place(pc, st, m[0] + 0.5, m[1] + 0.5, why="waystones", on=tuple(self.NATURAL))
-        # 7. forest glows: a lit mushroom or toadstool ring in the woods and
-        #    the wild, every GLOW_EVERY cells - the small lights far out
         reach_cells = getattr(self, "reach_cells", None)
+        # 7. NO PLACE IS PITCH BLACK (maintainer 2026-09-06: "some areas
+        #    can't be completely black and some areas need even more light"
+        #    - and NOT evenly spread, that "makes the entire game look the
+        #    same"). Every reachable outdoor cell ends within DARK_MAX cells
+        #    of some pool's edge: the middle of the largest black patch gets
+        #    a light that belongs to the place - a camp or a kiln on the
+        #    lowland, a crystal tree or a spire on the rock, a torch on the
+        #    beach - until no patch is left. Pools stay small islands with
+        #    dark between them; only the pitch black goes. Before the glows:
+        #    a slot spent on a radius-2 mushroom is a slot a radius-5 camp
+        #    could have lit the black with.
+        indoor = set()
+        for rm in self.doc.get("rooms", []):
+            indoor.update((c["x"], c["y"]) for c in rm["cells"])
+        outdoor = {c for c in (reach_cells or set())
+                   if c not in cave and c not in indoor and self.g(*c) and not self.liquid(*c)}
+        INF = 99.0
+        dist = {c: INF for c in outdoor}
+
+        def stamp(lx, ly, rad):
+            R = int(rad + self.DARK_MAX + 2)
+            for yy in range(int(ly) - R, int(ly) + R + 1):
+                for xx in range(int(lx) - R, int(lx) + R + 1):
+                    c = (xx, yy)
+                    if c in dist:
+                        dd = max(0.0, math.hypot(xx + 0.5 - lx, yy + 0.5 - ly) - rad)
+                        if dd < dist[c]:
+                            dist[c] = dd
+        for p in self.doc["scenery"]:
+            if world3.is_lit(p):
+                stamp(p["x"], p["y"], world3.light_meta(p["piece"], p.get("state"))[0])
+        stamp(sx + 0.5, sy + 0.5, self.BONFIRE_R)
+        FILL = {
+            "lowland": [g for g in ("cauldron_camps", "charcoal_kilns", "giant_mushrooms",
+                                    "wayside_shrines", "ancient_trees") if self._lit_pool(g)],
+            "rock": [g for g in ("crystal_trees", "rock_spires", "soulstone_outcrops",
+                                 "crystals") if self._lit_pool(g)],
+            "beach": [g for g in ("torch_posts", "cauldron_camps") if self._lit_pool(g)],
+        }
+        ROCK = ("grey_stone", "black_rock", "snow", "ice")
+        tried, left = set(), 0
+        while True:
+            black = {c for c, v in dist.items() if v > self.DARK_MAX and c not in tried}
+            if not black:
+                break
+            seen, regs = set(), []
+            for c in black:
+                if c in seen:
+                    continue
+                st_, comp = [c], []
+                seen.add(c)
+                while st_:
+                    x, y = st_.pop()
+                    comp.append((x, y))
+                    for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                        if m in black and m not in seen:
+                            seen.add(m)
+                            st_.append(m)
+                regs.append(comp)
+            reg = max(regs, key=len)
+            if len(reg) < self.BLACK_MIN:
+                tried.update(black)          # the rest are smaller still
+                break
+            cx = sum(c[0] for c in reg) / len(reg)
+            cy = sum(c[1] for c in reg) / len(reg)
+            centre = min(reg, key=lambda c: (c[0] - cx) ** 2 + (c[1] - cy) ** 2)
+            near = sorted((c for c in reg if abs(c[0] - centre[0]) + abs(c[1] - centre[1]) <= 6),
+                          key=lambda c: (c[0] - centre[0]) ** 2 + (c[1] - centre[1]) ** 2)
+            done = False
+            for c in near[:24]:
+                gnd = self.g(*c)
+                kind = "beach" if gnd == "light_beach" else "rock" if gnd in ROCK else "lowland"
+                groups = FILL[kind]
+                if not groups or gnd not in self.NATURAL:
+                    continue
+                h = (c[0] * 2654435761 ^ c[1] * 40503 ^ 0x5EED) & 0xffffffff
+                pool = self._lit_pool(groups[h % len(groups)])
+                pc, st = pool[(h >> 8) % len(pool)]
+                if place(pc, st, c[0] + 0.5, c[1] + 0.5, why="black-patch fill", on=tuple(self.NATURAL)):
+                    stamp(c[0] + 0.5, c[1] + 0.5, world3.light_meta(pc, st)[0])
+                    tally[f"black-patch fill: {groups[h % len(groups)]}"] += 1
+                    done = True
+                    break
+            if not done:
+                # nothing stands here; give the patch up around its middle
+                # and keep going with the rest of the world
+                giveup = {c for c in reg if abs(c[0] - centre[0]) + abs(c[1] - centre[1]) <= 10}
+                tried.update(giveup)
+                left += len(giveup)
+                tally[f"black-patch fill gave up at {centre} on {self.g(*centre)} lvl {self.lvl[centre[1]][centre[0]]}"] = len(reg)
+        tally["black cells left (patches nothing could stand in)"] = left
+        tally["black cells left (share of outdoor)"] = f"{100 * left / max(1, len(outdoor)):.1f}%"
+        assert left <= self.DARK_TOL * len(outdoor), (
+            f"{left} of {len(outdoor)} reachable cells still pitch black; "
+            + ", ".join(f"{k}: {v}" for k, v in tally.items() if "fill" in k))
+        # 8. forest glows: a lit mushroom or toadstool ring in the woods and
+        #    the wild, every GLOW_EVERY cells - the small lights far out
         glows = self._lit_pool("mushrooms") + self._lit_pool("toadstool_rings")
         trees = [p for p in self.doc["scenery"] if p["piece"].startswith("trees/")]
         r = _rng32(0x11617)
@@ -2356,6 +2460,8 @@ class Grow:
             taken = []
             for t in sorted(trees, key=lambda p: (round(p["x"] + p["y"]), p["x"])):
                 tx, ty = int(t["x"]), int(t["y"])
+                if reach_cells is not None and (tx, ty) not in reach_cells:
+                    continue          # the wild band and the mountain's back: nobody sees it
                 if any(abs(tx - a) + abs(ty - b) < self.GLOW_EVERY for a, b in taken):
                     continue
                 pc, st = glows[int(r() * len(glows)) % len(glows)]
@@ -2366,7 +2472,7 @@ class Grow:
                             taken.append((tx, ty))
                             tally["forest glows"] += 1
                             break
-        # 8. rock glows: a lit crystal on the bare rock every ROCK_EVERY
+        # 9. rock glows: a lit crystal on the bare rock every ROCK_EVERY
         #    cells - the mountain's terraces are otherwise pitch dark
         crys = self._lit_pool("crystals")
         if crys:
@@ -2388,6 +2494,13 @@ class Grow:
                     if place(pc, st, x + 0.5, y + 0.5, why="rock glows", on=("grey_stone", "black_rock", "snow")):
                         taken.append((x, y))
                         tally["rock glows"] += 1
+        # the darkness the player walks through: cells by distance from a pool
+        bins = collections.Counter()
+        for v in dist.values():
+            bins["inside a pool" if v == 0 else f"{int(v // 4) * 4}-{int(v // 4) * 4 + 3} cells from a pool"] += 1
+        tot = max(1, len(dist))
+        self.placed += [(f"outdoor cells {k}", f"{v} ({100 * v // tot}%)")
+                        for k, v in sorted(bins.items(), key=lambda kv: (kv[0] != "inside a pool", kv[0]))]
         self.placed += [(f"lights: {k}", v) for k, v in tally.items()]
         self.placed += [("lit total", lit_n)]
         # the distribution the maintainer asked for: how many lights a camera
