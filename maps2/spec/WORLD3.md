@@ -650,6 +650,26 @@ runs the same check incrementally on the box of the piece WHERE IT STANDS
 after `put` snapped it (a probe at the asked position was a cell off and
 blew the audit once).
 
+**THE DARK TRACTS ARE THE POINT** (maintainer 2026-09-06, handed an evenly
+lit island: *"I also like extreme contrast to make the game feel very
+different at some locations ... It's always a big jump issue when you try
+to solve the problem by doing it 100% the same everywhere to pass a gate.
+That is for me failing the gate. It's ok some places (not common but it
+happens) to just be dark."*). `DARK_SHARE = 0.35` of the land is dark by
+design: `_dark_lands()` takes two octaves of VALUE noise (hash lattice +
+smoothstep, `DARK_CELL = 90`) and cuts at the 35th percentile over the
+land itself, so the share holds whatever the map looks like and the tracts
+are the same every build. Not sines — three sine terms drew a diamond
+lattice over the island, and a lattice is just another grid.
+
+Inside a tract nothing outdoor is lit **except what a place earns**: the
+roads and their lamps, the doors, the town and village, the cave mouth,
+the beacon. So a road crossing a dark tract is a lit ribbon through real
+night, and a lantern in the lit land means somebody lives there. There is
+no assert on the world's darkness — a gate that says "no cell may be dark"
+is the thing that made the island uniform. The build reports the tracts
+and the holes instead.
+
 **No light stands inside another's core** (maintainer 2026-09-06, at a
 plaza corner: *"I have 3 very bright streetlights very very close together
 ... it's just very very bright here"*). Two lights' centres are at least
@@ -679,24 +699,20 @@ lit** (`world3grow.lights`, replacing the old greedy `relight`):
    alternating; lit waystones between them at 1.6× that spacing. The
    spacing follows the lamps' published radius so a brighter lamp table
    thins the row instead of blowing the window.
-6. **no place is pitch black** (maintainer 2026-09-06: *"some areas can't
-   be completely black and some areas need even more light"* — and not
-   evenly spread, that *"makes the entire game look the same"*): every
-   reachable outdoor cell ends within `DARK_MAX = 12` cells of some pool's
-   edge. The middle of the largest black patch (≥ `BLACK_MIN = 12` cells)
-   gets a light that belongs to the place — a cauldron camp, charcoal kiln,
-   giant mushroom, wayside shrine or ancient tree on the lowland; a crystal
-   tree, rock spire, soulstone or crystal on the rock; a torch or a camp on
-   the beach — until no patch is left. Pools stay islands with dark between
-   them; only the pitch black goes. A patch nothing can stand in is given
-   up; the build may leave `DARK_TOL = 3%` of outdoor cells black and
-   asserts it.
+6. **the lit land has no holes; the dark tracts are left dark.** Inside
+   lit land every outdoor cell ends within `DARK_MAX = 12` cells of some
+   pool's edge: the middle of the largest black patch (≥ `BLACK_MIN = 12`
+   cells) gets a light that belongs to the place — a cauldron camp,
+   charcoal kiln, giant mushroom, wayside shrine or ancient tree on the
+   lowland; a crystal tree, rock spire, soulstone or crystal on the rock; a
+   torch or a camp on the beach — until no patch is left. Inside a dark
+   tract nothing is filled at all.
 7. forest glows: a lit mushroom or toadstool ring beside a reachable tree
-   every `GLOW_EVERY = 20` cells (the glows come after the fill: a slot on
-   a radius-2 mushroom is a slot a radius-5 camp could have lit the black
-   with)
+   every `GLOW_EVERY = 20` cells, never in a dark tract (the glows come
+   after the fill: a slot on a reach-4 mushroom is a slot a reach-9 camp
+   could have lit the black with)
 8. rock glows: a lit crystal on bare rock every `ROCK_EVERY = 24` cells,
-   hash-jittered off the lattice
+   hash-jittered off the lattice, never in a dark tract
 
 **Radius is the lever, not count.** A window is ~28×52 cells and holds 8
 lights, so the share of any screen inside a pool is bounded by
@@ -709,17 +725,14 @@ bright night possible, and the same rescale is why lights had to be spread:
 the count fell 258 → 184 while the lit share of the ground rose 12% → 32%.
 
 Measured on the_game against the published reach (streetlight 9, hearth 13,
-brazier 11, beacon 16–18, camp/kiln 9, torch 8, crystal 5, glow 2–4): 184
-lit placements (crystals 38, streetlights 23, cauldron camps 19, crystal
-trees 15, wayside shrines 13, toadstool rings 12, mushrooms 11, soulstones
-10, giant mushrooms 8, lantern posts 7, braziers 7, charcoal kilns 6,
-ancient trees 5, torches 3, waystones 2, rock spires 2, hearth 1, beacon
-1), worst window 8/8. Fewer lights than the 3-cell table needed and far
-more light: outdoor reachable cells 32% inside a pool, 34% within 3 cells
-of one, 24% at 4–7, 7% at 8–11, 0.6% black. Camera spots sampled every 4
-cells: 8 lights 2%, 7 7%, 6 19%, 5 24%, 4 20%, 3 14%, 2 8%, 1 3%, 0 0%.
-The build log prints the tally and every refusal by reason
-(`lights: streetlights refused (inside another light's core)`).
+brazier 11, beacon 16–18, camp/kiln 9, torch 8, crystal 5, glow 2–4): 145
+lit placements, worst window 8/8, 17,657 cells (35%) in dark tracts. The
+camera spots, sampled every 4 cells over reachable ground, are the shape
+he asked for — *"all the way up to 8 at some locations and down to 1 or
+even 0 at other locations"*: 8 lights 2%, 7 6%, 6 11%, 5 16%, 4 17%,
+3 15%, 2 12%, 1 7%, 0 9%. The build log prints the tally, the tract size,
+and every refusal by reason (`lights: streetlights refused (inside another
+light's core)`).
 
 Only braziers that ship a LIT state go into a cave (`brazier_002` has none
 and was a third of the cave's fires). Flicker is deferred (maintainer: "not

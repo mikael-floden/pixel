@@ -2112,10 +2112,11 @@ class Grow:
     MIN_CORE = 0.8      # a light never stands inside another's core: centres at
                         # least this many of the BIGGER reach apart
     LAMP_SPACING = 2.5  # streetlight radii between streetlights along a road
-    DARK_MAX = 12       # no reachable outdoor cell further than this from a pool's edge
+    DARK_MAX = 12       # in LIT LAND, no outdoor cell further than this from a pool
     BLACK_MIN = 12      # a black patch smaller than this is contrast, not a hole
-    DARK_TOL = 0.03     # share of outdoor cells the build may leave black (a footprint
-                        # refuses a spot; beside a lamp row the window is already full)
+    DARK_SHARE = 0.35   # ...of the land is dark ON PURPOSE ("not common but it
+                        # happens", so a tract is a place you enter, not the norm)
+    DARK_CELL = 90      # the dark tracts' lattice: tracts a few screens across
     GLOW_EVERY = 20     # cells between forest glows (lit mushrooms)
     ROCK_EVERY = 24     # cells between lit crystals on the bare rock
     BONFIRE_R = 7       # the game's own campfire at spawn: one world slot
@@ -2144,6 +2145,40 @@ class Grow:
                 out.append((-rating, pc, st))
         out.sort()
         return [(pc, st) for _, pc, st in out]
+
+    def _dark_noise(self, x, y):
+        """Two octaves of value noise (hash lattice, smoothstep), tracts
+        DARK_CELL across. NOT sines: three sine terms drew a diamond lattice
+        over the island and a lattice is just another grid."""
+        def oct_(f, seed):
+            xi, yi = math.floor(x * f), math.floor(y * f)
+            xf, yf = x * f - xi, y * f - yi
+
+            def h(a, b):
+                n = (a * 374761393 + b * 668265263 + seed) & 0xffffffff
+                n = ((n ^ (n >> 13)) * 1274126177) & 0xffffffff
+                return ((n ^ (n >> 16)) & 0xffff) / 0xffff * 2 - 1
+            u, v = xf * xf * (3 - 2 * xf), yf * yf * (3 - 2 * yf)
+            return ((h(xi, yi) * (1 - u) + h(xi + 1, yi) * u) * (1 - v)
+                    + (h(xi, yi + 1) * (1 - u) + h(xi + 1, yi + 1) * u) * v)
+        f = 1.0 / self.DARK_CELL
+        return oct_(f, 0x5A17) + 0.5 * oct_(f * 2.17, 0x2C99)
+
+    def _dark_lands(self, land):
+        """The cells the world leaves DARK ON PURPOSE (maintainer 2026-09-06,
+        looking at an evenly lit island: "I also like extreme contrast to
+        make the game feel very different at some locations ... It's always
+        a big jump issue when you try to solve the problem by doing it 100%
+        the same everywhere to pass a gate. That is for me failing the gate.
+        It's ok some places to just be dark."). The cut is the DARK_SHARE
+        quantile of the noise over the land itself, so the share holds
+        whatever the map looks like. Nothing outdoor is lit inside a tract
+        except what a PLACE earns - the roads, the doors, the town, the cave
+        mouth, the beacon - so a lantern in the lit land means somebody
+        lives there, and the rest is night."""
+        vals = sorted(self._dark_noise(x, y) for (x, y) in land)
+        cut = vals[int(len(vals) * self.DARK_SHARE)] if vals else 0.0
+        return {c for c in land if self._dark_noise(*c) <= cut}, cut
 
     def _road_walk(self, comp):
         """The cells of one road component in walking order from its
@@ -2406,22 +2441,25 @@ class Grow:
                 pc, st = stones[k % len(stones)]
                 tally["waystones"] += place(pc, st, m[0] + 0.5, m[1] + 0.5, why="waystones", on=tuple(self.NATURAL))
         reach_cells = getattr(self, "reach_cells", None)
-        # 7. NO PLACE IS PITCH BLACK (maintainer 2026-09-06: "some areas
-        #    can't be completely black and some areas need even more light"
-        #    - and NOT evenly spread, that "makes the entire game look the
-        #    same"). Every reachable outdoor cell ends within DARK_MAX cells
-        #    of some pool's edge: the middle of the largest black patch gets
-        #    a light that belongs to the place - a camp or a kiln on the
-        #    lowland, a crystal tree or a spire on the rock, a torch on the
-        #    beach - until no patch is left. Pools stay small islands with
-        #    dark between them; only the pitch black goes. Before the glows:
-        #    a slot spent on a radius-2 mushroom is a slot a radius-5 camp
-        #    could have lit the black with.
+        # 7. THE LIT LAND HAS NO HOLES; THE DARK TRACTS ARE LEFT DARK
+        #    (maintainer 2026-09-06: "It's ok some places to just be dark"
+        #    - the first cut filled every hole in the world and he read the
+        #    result as one even blanket: "always a big jump issue when you
+        #    try to solve the problem by doing it 100% the same everywhere
+        #    to pass a gate"). Inside lit land every outdoor cell ends
+        #    within DARK_MAX of a pool - the middle of the largest black
+        #    patch gets a light that belongs to the place, a camp or a kiln
+        #    on the lowland, a crystal tree or a spire on the rock, a torch
+        #    on the beach - and inside a dark tract nothing is filled at
+        #    all. Before the glows: a slot spent on a reach-4 mushroom is a
+        #    slot a reach-9 camp could have lit the black with.
         indoor = set()
         for rm in self.doc.get("rooms", []):
             indoor.update((c["x"], c["y"]) for c in rm["cells"])
         outdoor = {c for c in (reach_cells or set())
                    if c not in cave and c not in indoor and self.g(*c) and not self.liquid(*c)}
+        self.dark_cells, cut = self._dark_lands(outdoor)
+        lit_land = outdoor - self.dark_cells
         INF = 99.0
         dist = {c: INF for c in outdoor}
 
@@ -2448,7 +2486,8 @@ class Grow:
         ROCK = ("grey_stone", "black_rock", "snow", "ice")
         tried, left = set(), 0
         while True:
-            black = {c for c, v in dist.items() if v > self.DARK_MAX and c not in tried}
+            black = {c for c, v in dist.items()
+                     if v > self.DARK_MAX and c in lit_land and c not in tried}
             if not black:
                 break
             seen, regs = set(), []
@@ -2497,10 +2536,8 @@ class Grow:
                 left += len(giveup)
                 tally[f"black-patch fill gave up at {centre} on {self.g(*centre)} lvl {self.lvl[centre[1]][centre[0]]}"] = len(reg)
         tally["black cells left (patches nothing could stand in)"] = left
-        tally["black cells left (share of outdoor)"] = f"{100 * left / max(1, len(outdoor)):.1f}%"
-        assert left <= self.DARK_TOL * len(outdoor), (
-            f"{left} of {len(outdoor)} reachable cells still pitch black; "
-            + ", ".join(f"{k}: {v}" for k, v in tally.items() if "fill" in k))
+        tally["dark tracts (cells left dark on purpose)"] = len(outdoor) - len(lit_land)
+        tally["lit land: holes nothing could stand in"] = left
         # 8. forest glows: a lit mushroom or toadstool ring in the woods and
         #    the wild, every GLOW_EVERY cells - the small lights far out
         glows = self._lit_pool("mushrooms") + self._lit_pool("toadstool_rings")
@@ -2512,6 +2549,8 @@ class Grow:
                 tx, ty = int(t["x"]), int(t["y"])
                 if reach_cells is not None and (tx, ty) not in reach_cells:
                     continue          # the wild band and the mountain's back: nobody sees it
+                if (tx, ty) in self.dark_cells:
+                    continue          # a dark tract stays dark
                 if any(abs(tx - a) + abs(ty - b) < self.GLOW_EVERY for a, b in taken):
                     continue
                 pc, st = glows[int(r() * len(glows)) % len(glows)]
@@ -2536,6 +2575,8 @@ class Grow:
                         continue
                     if self.g(x, y) not in ("grey_stone", "black_rock", "snow") or (x, y) in cave:
                         continue
+                    if (x, y) in self.dark_cells:
+                        continue      # a dark tract stays dark
                     if reach_cells is not None and (x, y) not in reach_cells:
                         continue
                     if any(abs(x - a) + abs(y - b) < self.ROCK_EVERY for a, b in taken):
