@@ -140,9 +140,10 @@
    "top_source": "maintainer 2026-09-03, from the Shoreline Palette artifact: the tiles2 water read better than tiles3's, and the beach wanted to be slightly brighter. He chose 'Lightness +6' for the sand AND made it conditional on the water being corrected in the same change ('only if the water color is changed as well'), so the two move together and must never be split."
   },
   "deep_water": {
-   "top": "#162843",
+   "top": "#3d7c8a",
    "source": "wall of reference tile tiles/matrix/grass__over__deep_water/sheet_02_chase2/tile_04.png (grass over deep_water) \u2014 the maintainer's chosen look for this material; top reconstructed from deep_water same-over-same lit/shaded ratio (n=6)",
-   "wall": "#102235",
+   "top_source": "maintainer 2026-09-04, from the Deep Water Palette artifact: #162843 read as too dark a blue and he wanted deep_water nearer water. He compared six candidates rendered as real water plates meeting real deep_water plates and chose '+75% toward water'. Top and wall move together by the same proportion \u2014 water itself is unchanged at #4a98a1, and splitting a pair like this is what went wrong when the sand moved without the water.",
+   "wall": "#255e6a",
    "wall_n": 6,
    "transition_surface": "flat",
    "top_extras_source": "maintainer verdict 2026-08-28: good as is, no extra top colour (measured: no common colour jumps far enough to earn a slot)"
