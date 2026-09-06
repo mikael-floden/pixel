@@ -4197,6 +4197,22 @@ export class WorldScene extends Phaser.Scene {
       waterAtScreen: (wx: number, wy: number) => this.isWaterAtScreen(wx, wy),
       // Is it walkable dry TOP ground (not a cliff face / water)? (ambient bird landing)
       landableAtScreen: (wx: number, wy: number) => this.landableAtScreen(wx, wy),
+      /* THE DEEP-SEA CURRENT at a DRAWN point — the ambient layer's seam for
+       * the open-sea effect. `water` and `deep_water` carry IDENTICAL Surface
+       * records (both `swimmable, speed 0.55, sound water`), so waterAtScreen
+       * and surfaceAt cannot tell a lake from the end of the world and the
+       * ambient water effect was painting the same lake chop on both.
+       *
+       * Screen coords in, like waterAtScreen/landableAtScreen; out is exactly
+       * what the movement step integrates (shared `deepCurrentAt`) — a FLAT
+       * world-space unit direction toward the map centre plus wu/s, or null on
+       * land, on a lake, and in the free shallows. Flat, not projected: the
+       * drawing side owns its own projection. */
+      deepCurrentAtScreen: (wx: number, wy: number) => {
+        if (!this.terrain) return null;
+        const p = this.pickGround(wx, wy);
+        return p ? deepCurrentAt(this.terrain, p.x, p.y) : null;
+      },
       // Camera world-view rect (QA: sample effects across the visible world).
       camView: () => {
         const w = this.cameras.main.worldView;

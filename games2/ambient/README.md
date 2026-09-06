@@ -42,6 +42,12 @@ them; folder isolation beats DRY here).
 - The runtime attaches to the `"world"` scene from the outside
   (`scene.events` UPDATE hook) and *adds* its own display objects. It never
   edits, reads privately into, or monkey-patches the games agent's code.
+- **Terrain awareness** likewise: `landableAtScreen` (dry walkable top ground —
+  the crawlers and the bird flock), `waterAtScreen` (any swimmable surface) and
+  `deepCurrentAtScreen` (the open sea's current). The last was ADDED to
+  `WorldScene` for `deepwater/`, because `water` and `deep_water` carry
+  identical `Surface` records and nothing on the probe surface could tell a pond
+  from the end of the world.
 - Time-of-day / weather awareness comes from the game's **documented `__ml`
   probe surface** (`__ml.sunInfo()`, `__ml.weatherInfo()`, `__ml.aurora()`),
   sampled at ~10 Hz with safe fallbacks (no probe → effect fades out). If a
@@ -121,8 +127,11 @@ decision; an earlier version that jumped the world to each effect's
 `preferred` conditions was removed — `preferred` is documentation only; the
 `{v}` world-state message extension in WorldRoom stays, unused). The ring:
 
-  `AUTO → NONE → fireflies → pollen → water → bats → birds → thunder →
-  sandstorm → leaves → AUTO`
+  `AUTO → NONE → <each feature in registry order> → AUTO`
+
+  (currently fireflies, pollen, water, deepwater, ants, spiders, bats, birds,
+  thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
+  folder joins it automatically.)
 
 - **AUTO** — director + fields run normally; the button prints
   `ambient: auto (<current effect>)`, live.
@@ -181,6 +190,9 @@ controller (AUTO / NONE / solo-each).
 |--------|------|---------|--------------------------|
 | `fireflies/` | field | Warm, mystical night — tiny wandering lanterns | Night (fades with sun strength), thinned by cloud |
 | `pollen/` | field | Sunbeam dust / drifting pollen in forest air | Sunlit hours, clear-ish sky, drifts on the cloud wind |
+| `deepwater/` | field | The SEAWARD CURRENT — swells rolling inward with foam skating over them, along the real deep-sea current at its real speed | Open sea only (`deepCurrentAtScreen`); fades in over the shoreline band, full out at sea |
+| `ants/` | field | A foraging TRAIL — 1px ants nose-to-tail along a bowed line, out and back | Dry ground; diurnal, thinned by cloud |
+| `spiders/` | field | The SKITTER — 3px, dart-stop-dart, solitary, keeps out of the player's lap | Dry ground; dusk/night leaning (0.25 by day) |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | Wherever water is on screen (iso water probe); glints tint + thin by time-of-day |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
