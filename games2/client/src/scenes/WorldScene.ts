@@ -4301,7 +4301,8 @@ export class WorldScene extends Phaser.Scene {
       lightAt: (col: number, row: number, z?: number) => {
         if (!this.night || !this.world) return null;
         const zz = z ?? (this.world.rows[Math.floor(row)]?.[Math.floor(col)]?.l ?? 0);
-        return this.night.lightAt(col, row, zz, false).map((v) => +v.toFixed(4));
+        // A GROUND sample (the probe's use): it takes the contact blob a body's tint does not.
+        return this.night.lightAt(col, row, zz, false, 0, undefined, true).map((v) => +v.toFixed(4));
       },
       // Torch switch for gates: measuring a fire's OWN pool needs my torch
       // dark, and the settings button is not reachable headlessly.

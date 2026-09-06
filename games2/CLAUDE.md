@@ -1380,15 +1380,21 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   BEHIND its hitbox centre: a body 0.9 cells behind a signpost drew over it
   (body 11619.4 vs sign 11617.6). Measured after: behind the post the sign paints over the player (sign 11631.6 vs body 11619.9); in front of it the player paints over the sign (11647.9 vs 11631.6).
 - **THE LIFT OVER A NON-SOLID COLUMN STAYS UNCONDITIONAL** (`resolveDrawDepth`).
-  Gating it on the caller being camera-forward of a HIGHER column (to stop a
-  tree standing behind a house lifting over its front wall) made every piece
-  in a room vanish under its own floor: a capped cell's meta `top` is the
-  ROOF, so the floor a barrel stands on read as a higher column it was not
-  forward of (maintainer, 2026-09-06, within the hour of shipping it;
-  reverted). OPEN: the tree behind the house (tree lifted from its 10861.8
-  anchor line to 10918.6, a wall cell's front edge four cells in front, off
-  its diagonal). A fix needs the column description to tell a floor from a
-  wall before it can refuse a lift.
+  A gate (a HIGHER column lifts the caller only when the caller is
+  camera-forward of it — to stop a tree standing behind a house lifting over
+  its front wall) shipped for an hour on 2026-09-06 and was reverted. Two
+  things happened at once: the empty house the maintainer reported was
+  maps2's cave-gate commit dropping the furniture from the world (restored in
+  8b1833249f), AND the gate itself was measured guilty in part — with the
+  furniture back, 4 of the room's 10 roofed pieces had parquet floor tiles
+  drawn above them under the gate (a capped cell's meta `top` is the ROOF, so
+  a floor reads as a higher column a piece is not forward of), 0 without it.
+  OPEN: the tree behind the house (lifted from its 10861.8 anchor line to
+  10918.6, a wall cell's front edge four cells in front, off its diagonal). A
+  fix needs the column to say whether it is STANDABLE at the caller's level
+  (a room floor, a deck plate: unconditional lift; a wall: the gate) — and
+  scenery's `lvl` must be the surface it stands on, deck-aware, before that
+  can work on a bridge.
 
 ## Animation playback (anti-moonwalk)
 
@@ -2729,19 +2735,23 @@ height reads per thing per frame.
   tree 2, a stone 1) — the compact soft pool props cast. NO CANOPY DISC
   (built, measured, removed): a block of crown cells drew a DIAMOND LATTICE
   under every tree by day — the patch then skipped a pixel's own cell, so each
-  cell of a block shaded as its own saw-tooth. THE OWN CELL SHADES
-  DIRECTIONALLY (`SCN_CORE` 0.45 cells, shader + twin, sun patch and torch
-  march alike): the own-cell sample skips stay — they keep the bump's bilinear
-  skirt off the LIT side of a root (measured 21% there) — and a second test
-  shades a pixel wherever the ray to the light passes through its own trunk's
-  core between them, to the cast shadow's own depth. Before it, the cell under
-  a post, a cart, a stone was a BRIGHT DIAMOND inside its cast shadow wherever
-  the art does not cover it, by sun AND by torch (maintainer, 2026-09-06; a
-  uniform own-cell darkening was the first cut and lit nothing on the sunny
-  side wrong but left the torch case). Measured, signpost: Day far/near side
-  of the own cell far 0.66 = the cast shadow's 0.66, near 1.00; Night torch far 0.21 vs near 0.40 (cast 0.19); house barrel far 0.42 vs near 0.73 (cast 0.40). Scenery only
-  (ownShare is 0 on a props world) — the_island2 byte-identical. A canopy disc
-  would still lattice under the sample skip; unbuilt, the maintainer's call.
+  cell of a block shaded as its own saw-tooth. THE OWN CELL IS A CONTACT
+  SHADOW PLUS A DIRECTIONAL CORE (shader + twin, sun patch and torch march
+  alike; `SCN_CONTACT_R` 0.75 cells, `SCN_CONTACT_SUN` 0.7, `SCN_CONTACT_TORCH`
+  0.5, `SCN_CORE` 0.45): the own-cell sample skips stay (they keep the bump's
+  bilinear skirt off the lit side of a root), a soft blob under the trunk
+  shades the cell in EVERY direction, and the core test deepens it to the cast
+  shadow's depth where the ray to the light passes through the trunk. Paid
+  for in three cuts (maintainer, 2026-09-06): a uniform own-cell darkening
+  (never ran on his phone — the switch below); the directional strip alone,
+  which left the cell beside and in front of a post as bright spots against
+  the skirt-shaded ground around it ("darker in corners like this"); and this.
+  Measured, signpost: Day own cell cast side 0.66 = the cast shadow, sunny side 0.78 (was 1.00), ground outside the cell 1.00; Night torch the Night reading caught the phase change mid-flight; the torch case is the barrel; house barrel own cell cast side 0.43 (cast shadow 0.41), near side 0.56 (was 0.73), outside 0.84.
+  The twin takes the contact only for GROUND samples (`groundContact`, the
+  `__ml.lightAt` probe): a body brushing past a post keeps its tint. Scenery
+  only (ownShare is 0 on a props world) — the_island2 byte-identical. A
+  canopy disc would still lattice under the sample skip; unbuilt, the
+  maintainer's call.
   THE SWITCHES ARE PUSHED ON THE SHADER BEING BUILT (`setScenerySwitches(s)`
   in buildShader): pushed through `this.shader` before that field is assigned
   they landed on nothing, and `uSceneryOn`/`uPropGate` sat at 0 in play from

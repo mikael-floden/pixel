@@ -107,6 +107,13 @@ const SCN_EXCL_R = 1.8;
  *  inside a piece's share cell is shaded by its own trunk only where the ray to
  *  the light (or the sun) passes through this core between them. */
 const SCN_CORE = 0.45;
+/** The CONTACT blob under a piece: radius (cells) and strength for the sun
+ *  patch (a `m` share) and the torch march (an occ factor). Every direction —
+ *  the ground beside and in front of a post read as bright spots against the
+ *  skirt-shaded ground around it (maintainer, 2026-09-06). */
+const SCN_CONTACT_R = 0.75;
+const SCN_CONTACT_SUN = 0.7;
+const SCN_CONTACT_TORCH = 0.5;
 /** GLSL smoothstep, for the CPU twins of shader terms (e0 > e1 allowed, as in GLSL). */
 function smoothStep01(e0: number, e1: number, x: number): number {
   const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
@@ -863,6 +870,12 @@ void main() {
     // shadow's own depth; the sunny half of the cell stays lit. Scenery only
     // (ownShare is 0 on a props world) — the_island2 is byte-identical.
     if (ownShare > 0.0) {
+      // CONTACT: a soft blob under the trunk in EVERY direction, then the
+      // directional core on top of it. The strip alone left the cell beside
+      // and in front of a post lit while the skirt shaded the ground around
+      // it — bright spots (maintainer, 2026-09-06: "darker in corners").
+      float ao = smoothstep(${SCN_CONTACT_R}, ${SCN_CONTACT_R} * 0.3, distance(pos, ownC));
+      m = max(m, ${SCN_CONTACT_SUN} * ao);
       float tt = dot(ownC - pos, -uSun.xy);
       if (tt > 0.05) {
         float dq = distance(pos - uSun.xy * tt, ownC);
@@ -1018,6 +1031,8 @@ void main() {
       // barrel's base stayed lit inside its own cast shadow; maintainer,
       // 2026-09-06). To the march's floor, so it meets the cast shadow.
       if (ownShare > 0.0) {
+        float ao = smoothstep(${SCN_CONTACT_R}, ${SCN_CONTACT_R} * 0.3, distance(pos, ownC));
+        occ *= 1.0 - ${SCN_CONTACT_TORCH} * ao; // contact, every direction
         vec2 dl = lp.xy - pos;
         float tt = dot(ownC - pos, dl) / max(dot(dl, dl), 1e-4);
         if (tt > 0.05 && tt < 1.0) {
@@ -3049,6 +3064,7 @@ export class NightLights {
     z: number,
     sun: [number, number, number, number] = this.curSun,
     selfR2 = 0,
+    groundContact = false,
   ): number {
     if (sun[3] <= 0.001) return 1;
     // z < 0 = "use the cell's own terrain height" (headless probe sugar).
@@ -3124,6 +3140,7 @@ export class NightLights {
       if (ownShare > 0) {
         const ocx = oc + 0.5;
         const ocy = orow + 0.5;
+        if (groundContact) m = Math.max(m, SCN_CONTACT_SUN * smoothStep01(SCN_CONTACT_R, SCN_CONTACT_R * 0.3, Math.hypot(col - ocx, row - ocy)));
         const tt = (ocx - col) * -sun[0] + (ocy - row) * -sun[1];
         if (tt > 0.05) {
           const dq = Math.hypot(col - sun[0] * tt - ocx, row - sun[1] * tt - ocy);
@@ -3138,7 +3155,7 @@ export class NightLights {
     return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
   }
 
-  lightAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0, parts?: LightParts): [number, number, number] {
+  lightAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0, parts?: LightParts, groundContact = false): [number, number, number] {
     const W = this.world.width;
     const H = this.world.height;
     const hAt = (c: number, r: number) => {
@@ -3174,7 +3191,7 @@ export class NightLights {
     const geo = this.geo;
     const wxT = this.iso.ox + (col - row) * geo.dx + geo.dx;
     const wyT = this.iso.oy + (col + row) * geo.dy + geo.dy - z * geo.lh;
-    const sunOnly = this.sunFactorAt(col, row, z, this.curSun, selfR2);
+    const sunOnly = this.sunFactorAt(col, row, z, this.curSun, selfR2, groundContact);
     const sunF = sunOnly * this.cloudFactorAt(wxT, wyT);
     const aur = this.auroraAt(wxT, wyT);
     // EXACT TWIN of the fragment's `inRoom` (roomAt): indoors, a cell outside
@@ -3252,6 +3269,7 @@ export class NightLights {
         }
         // THE OWN TRUNK'S CORE, DIRECTIONALLY — the shader's rule.
         if (ownShare > 0 && selfR2 <= 0) {
+          if (groundContact) occ *= 1 - SCN_CONTACT_TORCH * smoothStep01(SCN_CONTACT_R, SCN_CONTACT_R * 0.3, Math.hypot(col - ocx, row - ocy));
           const dd = Math.max(dx * dx + dy * dy, 1e-4);
           const tt = ((ocx - col) * dx + (ocy - row) * dy) / dd;
           if (tt > 0.05 && tt < 1) {
