@@ -12322,7 +12322,15 @@ export class WorldScene extends Phaser.Scene {
           below = Math.min(below, od);
           coverY = Math.min(coverY, o.y0);
         } else if (
-          !o.solid ||
+          /* STANDABLE terrain lifts unconditionally (the flat tile in front
+           * of the feet — see below). A HIGHER non-solid column — a wall, a
+           * cliff face rising above the caller — lifts it only when the
+           * caller is camera-forward of the column: off its diagonal the ray
+           * test cannot see it, and the blanket lift drew a tree standing
+           * BEHIND a house over the house's front wall (measured: the tree
+           * lifted from its 10861.8 anchor line to 10918.6, the wall cell's
+           * front edge, four cells in front of it; maintainer, 2026-09-06). */
+          (!o.solid && (!higher || colf + rowf > o.col + o.row + 1)) ||
           // POINT-ANCHORED (scenery): its own anchor line is the exact
           // comparison — the cell+1 rule is a whole cell of slack, and a body
           // standing under a tree's canopy but in front of its trunk sits
@@ -16887,9 +16895,16 @@ export class WorldScene extends Phaser.Scene {
       const hbY = box0 ? fit.y + (art.canvas.h / 2 + box0.ay - fit.sy) * fit.ky : fit.ay;
       /* THE SORT KEY IS THE FOOTPRINT'S CENTRE, not the sprite's anchor — the
        * maintainer's rule, and the same quantity the body sorts on (its nadir
-       * centre). Expressed as an offset from the anchor's painter line so the
-       * base stays the projection everything else uses. */
-      const hbDepth = this.iso.oy + (p.x + p.y) * dy + (hbY - fit.ay);
+       * centre). IN THE BODY'S OWN PROJECTION: `projectFlat` is what a body's
+       * `lyFlat` comes from, and it carries a `+dy` that the bare
+       * `oy + (x + y) * dy` line does not — so a piece keyed on the bare line
+       * sorted one dy (half a cell diagonal) BEHIND where its hitbox centre
+       * stands, and a body 0.9 cells behind a signpost drew over it
+       * (measured: body 11619.4 vs sign 11617.6; maintainer, 2026-09-06).
+       * The offset from the drawn anchor to the drawn hitbox centre is the
+       * same in both frames (the level lift cancels), so this is that centre's
+       * flat painter line, exactly as a body standing on it would get. */
+      const hbDepth = this.projectFlat(p.x * CELL_WU, p.y * CELL_WU).y + (hbY - fit.ay);
       /* FLAT ON THE GROUND (`collision: false`): a rug is floor, not an object.
        * It draws in the flat band under everything, it gets NO LIT COPY (the
        * copy exists to lift a standing object above the darkness overlay so it

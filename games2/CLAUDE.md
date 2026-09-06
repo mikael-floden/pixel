@@ -1372,6 +1372,22 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   stair/ramp tiles from the maps agent. If the tile "house format" changes,
   re-measure `MAP_GEOMETRY` and update `ISO_DX/ISO_DY`.
 
+- **SCENERY SORTS IN THE BODY'S PROJECTION** (`hbDepth` in rebuildScenery):
+  the hitbox centre's flat painter line, taken from `projectFlat` — the same
+  function a body's `lyFlat` comes from. `projectFlat` carries a `+dy` the
+  bare `oy + (x + y) * dy` line does not (and scenery anchors sit 4 px above a
+  body at equal coordinates), so a piece keyed on the bare line sorted one dy
+  BEHIND its hitbox centre: a body 0.9 cells behind a signpost drew over it
+  (body 11619.4 vs sign 11617.6). Measured after: behind the post the sign paints over the player (sign 11631.6 vs body 11619.9); in front of it the player paints over the sign (11647.9 vs 11631.6).
+- **A HIGHER NON-SOLID COLUMN LIFTS A CALLER ONLY WHEN THE CALLER IS
+  CAMERA-FORWARD OF IT** (`resolveDrawDepth`): standable neighbours lift
+  unconditionally (the flat tile in front of the feet), but a wall or cliff
+  face rising above the caller and off its diagonal — where the ray test
+  cannot see it — lifted it over the wall: a tree standing BEHIND a house drew
+  over the house's front wall (tree lifted 10861.8 → 10918.6, the wall cell's
+  front edge four cells in front). Measured after: the tree stays at its own line (10875.8) under both overlapping wall cells (10946, 10960). (Maintainer,
+  2026-09-06.)
+
 ## Animation playback (anti-moonwalk)
 
 - **State→art mapping is the art domain's contract**: `build-manifest.mjs`
