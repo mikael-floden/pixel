@@ -31,6 +31,7 @@ export interface Surface {
   standable: boolean; // solid ground you can walk/stand on
   swimmable: boolean; // water you can swim across (costs stamina — see stepStamina)
   speed: number; // walk-speed multiplier on this surface
+  harm?: number; // HP per second while swimming in it (lava); absent = harmless
   sound: string; // footstep sound id (for the future audio system, #9)
   stairs?: boolean; // transition tile: crossing it lets you walk a full 1-level step
 }
@@ -50,7 +51,12 @@ const solid: Surface = { standable: false, swimmable: false, speed: 1, sound: ""
 export const SURFACES: Record<string, Surface> = {
   // liquids / hazards
   water: { standable: false, swimmable: true, speed: 0.55, sound: "water" },
-  lava: solid, // deadly later; impassable for now
+  // LAVA SWIMS LIKE WATER AND BURNS (maintainer, 2026-09-06: "works the same
+  // way as water, but it drains your life slowly when swimming in it"). The
+  // drain is `harm` HP per second, landed by the server's tick through
+  // hurtPlayer, so it flinches, slows and can kill. "Impassable for now" was
+  // the placeholder from the day the table was split; the cave has lava now.
+  lava: { standable: false, swimmable: true, speed: 0.4, sound: "water", harm: 4 },
   // ground by feel
   grass: ground(1.0, "grass"),
   meadow: ground(1.0, "grass"),

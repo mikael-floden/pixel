@@ -231,7 +231,11 @@ test("scenery is carried off-grid and blocks nothing", () => {
 // them, and this is where it surfaces.
 test("liquids[] and SURFACES agree on every ground the world uses", () => {
   if (!world) return test.skip("maps2/worlds3/the_game missing");
-  assert.deepEqual(world.liquids, ["water", "deep_water"]);
+  assert.deepEqual(
+    world.liquids,
+    ["water", "deep_water", "lava"],
+    "maps2/worlds3/the_game/world.json `liquids`: lava swims and burns (SURFACES.lava) — maps2 owns the list (board request 2026-09-06)",
+  );
   for (const g of doc.grounds as string[]) {
     assert.equal(
       surfaceFor(g).swimmable,

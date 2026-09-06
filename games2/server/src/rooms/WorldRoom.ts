@@ -1044,6 +1044,15 @@ export class WorldRoom extends Room<WorldState> {
       if (terrain) {
         const surf = surfaceAtWorld(terrain, player.x, player.y);
         player.swimming = surf.swimmable && player.elev <= levelAtWorld(terrain, player.x, player.y) + 0.5;
+        // A HARMFUL liquid (lava) drains `harm` HP per second while you swim
+        // in it — accumulated and landed whole through hurtPlayer once a
+        // second, so it flinches, slows and kills like any hit.
+        if (player.swimming && surf.harm && !player.dead) {
+          const acc = (this.harmAcc.get(id) ?? 0) + surf.harm * dt;
+          const dmg = Math.floor(acc);
+          this.harmAcc.set(id, acc - dmg);
+          if (dmg > 0) this.hurtPlayer(player, dmg, now);
+        } else if (this.harmAcc.has(id)) this.harmAcc.delete(id);
       }
     });
 
@@ -1545,6 +1554,9 @@ export class WorldRoom extends Room<WorldState> {
 
   /** Damage LANDING on a player: hp, the hurt flinch, the hit-slow window —
    * and death when it empties (die clip holds until the respawn snap). */
+  /** Fractional HP owed by a harmful liquid (lava), per session — landed
+   *  whole through hurtPlayer as it accrues. */
+  private harmAcc = new Map<string, number>();
   private hurtPlayer(player: Player, dmg: number, now: number) {
     player.hp = Math.max(0, player.hp - dmg);
     player.hitSeq++;
