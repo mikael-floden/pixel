@@ -25,7 +25,7 @@ import { indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "
 import { hiddenRing, setHiddenRing } from "./hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "./indoorwall";
 import { withV } from "./assetver";
-import { minimapDotPct, mapImageUrls, type MinimapFeed } from "./maps";
+import { minimapDotPct, mapImageUrls, loadMinimapMeta, type MinimapFeed, type MinimapMeta } from "./maps";
 import { gameAudio } from "../../composer/index";
 import { MAX_CHAT_LEN } from "@nangijala/shared";
 
@@ -361,7 +361,14 @@ export class HudBar {
     wrap: HTMLElement; frame: HTMLElement; img: HTMLImageElement; dot: HTMLElement; empty: HTMLElement;
   } | null = null;
   private mapRaf: number | null = null;
-  private mapSrcWorld = ""; // which world's minimap.png is currently loaded
+  private mapSrcWorld = ""; // which world's minimap image is currently loaded
+  /** The render's OWN projection for that world (maps2 `minimap.json`), or
+   *  null while it is in flight / the world ships none. The map render is
+   *  CROPPED to the island now, so a fraction of the full iso canvas is wrong
+   *  by construction — this doc is the only thing that knows where it was
+   *  cut. Until it lands the dot uses the old replica, which is off on a
+   *  cropped render for at most the one frame the fetch takes. */
+  private mapMeta: MinimapMeta | null = null;
   // Chat tab: a persistent history of the last CHAT_HISTORY_MAX log lines (the
   // SAME stream as the bottom-left log — system events + player chat, fed via
   // pushChat). Each carries its RECEIVE time so the page can print HH:MM and
@@ -552,6 +559,12 @@ export class HudBar {
     // request per world per session. No art domain needs a handshake with us.
     if (m.world && m.world !== this.mapSrcWorld) {
       this.mapSrcWorld = m.world;
+      // The projection travels with the image; both are per world, fetched once.
+      this.mapMeta = null;
+      const forWorld = m.world;
+      void loadMinimapMeta(forWorld).then((doc) => {
+        if (this.mapSrcWorld === forWorld) this.mapMeta = doc;
+      });
       els.frame.hidden = false;
       els.empty.hidden = true;
       const img = els.img;
@@ -569,7 +582,7 @@ export class HudBar {
     }
     // Dot at the player's cell, projected onto the ISO minimap. Percent of the
     // frame == percent of the image (the frame is fit to the image by fitMap).
-    const [left, top] = minimapDotPct(m);
+    const [left, top] = minimapDotPct(m, this.mapMeta);
     els.dot.style.left = `${left.toFixed(3)}%`;
     els.dot.style.top = `${top.toFixed(3)}%`;
   }

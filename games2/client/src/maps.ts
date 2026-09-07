@@ -189,24 +189,24 @@ function maps3DotFrac(m: MinimapFeed): [number, number] {
 }
 
 /** Player cell (col,row) at terrain `level` -> [x%, y%] of the world's map
- *  image. Clamped, because `fx/fy` can ease a hair past the rim. */
-export function minimapDotPct(m: MinimapFeed): [number, number] {
-  const [fx, fy] = m.iso ? maps3DotFrac(m) : maps2DotFrac(m);
+ *  image. `meta` is the render's OWN projection when maps2 published one
+ *  (minimap.json) and outranks both replicas — it is the only thing that knows
+ *  where a cropped render was cut. Clamped, because `fx/fy` can ease a hair
+ *  past the rim. */
+export function minimapDotPct(m: MinimapFeed, meta?: MinimapMeta | null): [number, number] {
+  const [fx, fy] = meta ? metaDotFrac(m, meta) : m.iso ? maps3DotFrac(m) : maps2DotFrac(m);
   const clamp = (v: number) => Math.max(0, Math.min(1, v));
   return [clamp(fx) * 100, clamp(fy) * 100];
 }
 
-/** The world's map-tab image, in the order to try it. `minimap` is the name
- *  to ask for in EVERY tree (maintainer 2026-09-06): render2 has always
- *  written `minimap.webp` beside a world@1/@2 world, and render3 now publishes
- *  the same downscale under that name beside a maps3 one (maps2 47e08659d1) —
- *  1200px wide, 164 KB for the_game, where `overview.webp` was the 16300x7576
- *  / 15 MB REVIEW render being scaled into a 300px frame on a phone.
- *  `overview` stays as a FALLBACK for iso worlds only, so a maps3 world that
- *  has not been regenerated since still shows a map; it is the QA render's
- *  name, and it is the one that can silently become enormous again.
- *  The `.png` entries are the format-agnostic probe the Map tab has always
- *  done, so no domain has to hand us a format.
+/** The world's map-tab image, in the order to try it. `minimap` is the ONLY
+ *  name now, in every tree (maps2 d8a399b1a6): render2 has always written
+ *  `minimap.webp` beside a world@1/@2 world, and render3 writes its own map
+ *  render under that name beside a maps3 one. `overview.webp` is DELETED —
+ *  it was the 16300x7576 / 15 MB review render, and asking for it now would
+ *  only 404 on the way to the fallback; the QA render lives behind `--full`
+ *  and never ships. The `.png` entry is the format-agnostic probe the Map tab
+ *  has always done, so no domain has to hand us a format.
  *
  *  DELIBERATELY UNVERSIONED (no `withV`): these names are STABLE and the art
  *  behind them is regenerable, so the URL must never carry a one-year
@@ -217,10 +217,66 @@ export function minimapDotPct(m: MinimapFeed): [number, number] {
  *  these outputs to hashed names + an index, THIS is the function that reads
  *  the index — nothing else in the client names the file. */
 export function mapImageUrls(w: { world: string; iso?: IsoGeometry }): string[] {
-  const stems = w.iso ? ["minimap", "overview"] : ["minimap"];
-  return stems.flatMap((stem) =>
-    [".webp", ".png"].map((ext) => gameUrl(worldFileUrl(w.world, stem + ext))),
-  );
+  return [".webp", ".png"].map((ext) => gameUrl(worldFileUrl(w.world, "minimap" + ext)));
+}
+
+/* -- THE RENDER'S OWN PROJECTION (pixel-maps3/minimap@1) -------------------- */
+// maps2 d8a399b1a6: the map render draws deep water as NOTHING and crops the
+// transparent border away, so the file is only the island — and a fraction of
+// the full iso canvas is then wrong BY CONSTRUCTION. The crop is not something
+// the client can re-derive (it depends on where the land happens to reach), so
+// maps2 publishes the arithmetic beside the image and we use it verbatim:
+//
+//     px = kx*(x - y) + x0        py = ky*(x + y) - kz*level + y0
+//
+// giving the CENTRE of that cell's top face, which is where a body stands.
+// Fractional cells are fine (the player stands between cells). Every world
+// that ships this doc is placed by it; anything that does not falls back to
+// the client's replica of the renderer's own frame, which is still right for
+// an uncropped render.
+export interface MinimapMeta {
+  schema: string;
+  image?: string;
+  size: { w: number; h: number };
+  world?: { w: number; h: number };
+  dot: { kx: number; x0: number; ky: number; kz: number; y0: number };
+}
+
+const MINIMAP_SCHEMA = "pixel-maps3/minimap@1";
+const minimapMeta = new Map<string, MinimapMeta | null>();
+
+/** The doc for a world, fetched once. `null` means "asked, hasn't got one" —
+ *  cached too, so a world without the sidecar costs exactly one 404. */
+export async function loadMinimapMeta(world: string): Promise<MinimapMeta | null> {
+  const seen = minimapMeta.get(world);
+  if (seen !== undefined) return seen;
+  let doc: MinimapMeta | null = null;
+  try {
+    const res = await fetch(gameUrl(worldFileUrl(world, "minimap.json")));
+    if (res.ok) {
+      const j = (await res.json()) as MinimapMeta;
+      // Every field the formula needs, or it is not usable — a half-written
+      // doc must fall back rather than put the dot at NaN%.
+      const d = j?.dot;
+      const num = (v: unknown) => typeof v === "number" && Number.isFinite(v);
+      if (
+        j?.schema === MINIMAP_SCHEMA && num(j?.size?.w) && num(j?.size?.h) &&
+        d && num(d.kx) && num(d.x0) && num(d.ky) && num(d.kz) && num(d.y0)
+      ) doc = j;
+      else console.warn("[nangijala] minimap.json unusable for", world, j?.schema);
+    }
+  } catch {}
+  minimapMeta.set(world, doc);
+  return doc;
+}
+
+/** Cell -> fraction of the PUBLISHED image, straight from the doc. */
+function metaDotFrac(m: MinimapFeed, meta: MinimapMeta): [number, number] {
+  const { kx, x0, ky, kz, y0 } = meta.dot;
+  return [
+    (kx * (m.col - m.row) + x0) / meta.size.w,
+    (ky * (m.col + m.row) - kz * m.level + y0) / meta.size.h,
+  ];
 }
 
 /** Learn every world's TREE from the built manifest, with none of the picker's

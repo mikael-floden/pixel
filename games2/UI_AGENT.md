@@ -94,7 +94,8 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `scripts/verify-levelup.mjs` (the XP bar's level-up),
   `scripts/verify-tagline.mjs` (the logo's tagline pool + the erased art),
   `scripts/verify-map.mjs` (the Map tab: the file it fetches, a ceiling on
-  its size, and the dot checked against the RENDERED image's own diamond),
+  its size, that its minimap.json is not stale, and the dot against maps2's
+  own worked samples),
   `scripts/verify-wikibtn.mjs` (the in-game Wiki button, the wiki's
   remembered reading spot, the game-loop freeze while it is open, the
   🔍 button + its `wiki:near` contract, and that the 🔍 icon really decoded).
@@ -218,6 +219,25 @@ from the games agent), #18 (title/landing screen).
   close and pagehide, applied on the next open — the hash rides the iframe
   src, the scroll waits for the page to be tall enough (the wiki fetches
   data.json before it renders).
+- **THE MAP RENDER IS CROPPED, SO THE DOT COMES FROM `minimap.json`.** maps2
+  d8a399b1a6 draws deep water as nothing and cuts the transparent border away,
+  so the file is only the island — and a fraction of the FULL iso canvas,
+  which is how the client placed the dot for a year, is then wrong by
+  construction. The crop is not re-derivable client-side (it depends on where
+  the land happens to reach), so maps2 publishes the arithmetic beside the
+  image (`pixel-maps3/minimap@1`): `px = kx*(x-y) + x0`,
+  `py = ky*(x+y) - kz*level + y0`, the centre of that cell's top face.
+  `loadMinimapMeta` fetches it once per world and it OUTRANKS both projection
+  replicas; a world without the doc still falls back to them, which stays
+  right for an uncropped render. Validate every field before using it — a
+  half-written doc must fall back, not put the dot at NaN%.
+  ITS OWN WORKED SAMPLES ARE THE GATE'S GROUND TRUTH: maps2 lists real land
+  cells with the pixel each lands on, asserted at build time against the
+  file's own alpha. Re-evaluating their formula in the gate would only agree
+  with the client about a shared misreading of it — including the one thing
+  worth doubting, whether `col` means the same on both sides. And pin that the
+  doc is not STALE (its `world` must be the grid the game loaded), or every
+  sample is describing a different island.
 - **THE MAP TAB FETCHES `minimap.webp`, AND THE DOT IS CHECKED AGAINST THE
   PICTURE.** Every tree publishes that name now (maps2 47e08659d1); `overview`
   survives only as an iso fallback, and it is the QA render's name — for
@@ -225,17 +245,12 @@ from the games agent), #18 (title/landing screen).
   phone and scaled into a ~360px frame, which is what made verify-landscape
   report a 16300px map frame. Hence the size ceiling in `verify-map`: a
   map-tab image over 2400px wide is a review render, not a map.
-  THE DOT'S GROUND TRUTH IS THE RENDERED BITMAP, never a second copy of
-  `isoFrame` — a gate that re-derives the projection agrees with the client
-  about a shared mistake. The render is an iso projection of a square grid, so
-  the four corner CELLS are the four APEXES of the diamond in the picture, and
-  those can be found by reading the pixels. Measured on the new 1200x558
-  downscale: every corner within 0.4% of its apex. That check is also the one
-  that would catch maps2 CROPPING or re-centring the render one day — the
-  client places the dot as a fraction of the FULL iso canvas, so a crop moves
-  every dot and nothing else in the client would notice. (Asked about in
-  2026-09-06: the landmass looks centred because an iso projection of a square
-  grid IS a centred diamond, not because anything was cropped.)
+  (`overview.webp` is deleted now, so it is not even a fallback — asking for
+  it only 404s on the way to one.) The apex check this gate used to make —
+  the four corner CELLS are the four apexes of an uncropped iso diamond —
+  was right for exactly one day: it is the check that CAUGHT the crop
+  landing, and the samples above replaced it because a cropped render has no
+  such relationship to the grid.
 - **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
   The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
   own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font
