@@ -3,6 +3,7 @@ import { surfaceFor, CHARACTER_BODY_PX } from "@nangijala/shared";
 import type { SceneryFootprints } from "@nangijala/shared";
 import { World, MAP_GEOMETRY, geometryFor } from "./maps";
 import { renderedWorldView, ViewRect } from "./camview";
+import { lightScale } from "./lightscale";
 
 /**
  * Serious night lighting: a fullscreen MULTIPLY shader that reconstructs each
@@ -1290,29 +1291,10 @@ const FIELD_KEY = "night-light-field";
  * BLOCK×BLOCK cells holding the maximum of uHeight's R over the block, in the
  * same byte packing, so a march can prove a whole block cannot be hit and skip
  * its fetches. Built beside the heightmaps in buildHeightmap. */
-/** THE LIGHT FIELDS' RESOLUTION, as a fraction of the canvas (dev A/B for the
- *  maintainer's phone): `?light=0.5` renders the three full-screen passes
- *  (light, mist, depth fog) at half size and upsamples them LINEAR, i.e. a
- *  quarter of the fragments; remembered in localStorage `ml-light-scale`,
- *  `?light=1` restores. The passes sample everything normalised over uCam and
- *  Phaser sets `resolution` to the shader's own size, so nothing else moves. */
-function lightScale(): number {
-  try {
-    const q = new URLSearchParams(location.search).get("light");
-    if (q !== null) {
-      const v = Number(q);
-      if (Number.isFinite(v) && v > 0 && v <= 1) {
-        localStorage.setItem("ml-light-scale", String(v));
-        return v;
-      }
-    }
-    const v = Number(localStorage.getItem("ml-light-scale"));
-    if (Number.isFinite(v) && v > 0 && v <= 1) return v;
-  } catch {
-    /* storage/location blocked: full size */
-  }
-  return 1;
-}
+/* THE LIGHT FIELDS' RESOLUTION lives in lightscale.ts — the Settings slider
+ * writes it, the three buildXShader calls below read it, and "ml-light-scale"
+ * rebuilds all three live. `?light=` still works but is unreachable from an
+ * installed PWA, which is why the slider is the real control. */
 
 const BLOCK = 8;
 const BLOCK_KEY = "world-heightmap-blockmax";
@@ -1888,6 +1870,9 @@ export class NightLights {
   private posArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private fieldCount = 0;
+  /** Canvas ÷ render-target size — 1 at full light resolution. See buildShader. */
+  private upX = 1;
+  private upY = 1;
   private hArr!: Float32Array; // CPU occlusion heights (terrain + solid objects)
   private pArr!: Float32Array; // CPU prop share (props get their own shade patch)
   private sArrH!: Float32Array; // CPU SCENERY share in the occlusion heights — setSceneryOccluders
@@ -2225,6 +2210,22 @@ export class NightLights {
       this.buildMistShader(sz.width, sz.height);
       this.buildDepthFogShader(sz.width, sz.height);
     });
+    /* THE SETTINGS SLIDER REBUILDS ALL THREE, same path as a resize — the
+     * render target does not follow a size change, so the only way to move the
+     * scale is to build new ones. Rebuilding puts a pass back ON the display
+     * list (add.shader does), including one that is currently off; the next
+     * update() takes it off again, so the cost is at most one frame of a pass
+     * writing vec4(0). Torn down with the scene so a restart doesn't stack
+     * listeners onto dead shaders. */
+    const onScale = () => {
+      this.buildShader(this.scene.scale.width, this.scene.scale.height);
+      this.buildMistShader(this.scene.scale.width, this.scene.scale.height);
+      this.buildDepthFogShader(this.scene.scale.width, this.scene.scale.height);
+    };
+    window.addEventListener("ml-light-scale", onScale);
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () =>
+      window.removeEventListener("ml-light-scale", onScale),
+    );
   }
 
   /** White radial gradient — the halo brush, tinted per stamp. */
@@ -2406,10 +2407,18 @@ export class NightLights {
     if (ls !== 1) this.scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
     this.shader = s;
     const old = this.overlay!.texture.key;
+    /* THE RT-TO-CANVAS RATIO IS REMEMBERED, because update() rewrites all
+     * three overlay scales every frame for zoom and the field window and would
+     * otherwise drop it — which is exactly what it did: at `?light=0.5` the
+     * half-size field drew at 1:1 as a lit rectangle in the middle of an
+     * unshaded screen. All three passes are built from the same canvas and the
+     * same lightScale(), so one pair of factors covers them. */
+    this.upX = full.width / width;
+    this.upY = full.height / height;
     this.overlay!
       .setTexture(key)
       .setPosition(full.width / 2, full.height / 2)
-      .setScale(full.width / width, full.height / height);
+      .setScale(this.upX, this.upY);
     if (old.startsWith(FIELD_KEY) && this.scene.textures.exists(old)) {
       this.scene.textures.remove(old);
     }
@@ -3870,9 +3879,9 @@ export class NightLights {
     // patterns ≥3, the glow-seams scan) treat canvas pixels as field texels
     // 1:1, and the 2% stretch resamples rows into phantom straight seams.
     const k = this.testPattern >= 3 ? 1 : this.spanScale;
-    this.overlay?.setScale(invZoom * k);
-    this.mistOverlay?.setScale(invZoom * k);
-    this.depthFogOverlay?.setScale(invZoom * k);
+    this.overlay?.setScale(invZoom * k * this.upX, invZoom * k * this.upY);
+    this.mistOverlay?.setScale(invZoom * k * this.upX, invZoom * k * this.upY);
+    this.depthFogOverlay?.setScale(invZoom * k * this.upX, invZoom * k * this.upY);
     // NOT cam.worldView: inside update() that is LAST frame's rectangle, and
     // every night-pass pixel then trails the sprites by one frame of camera
     // motion (measured: lit ground between a running block and its shadow).

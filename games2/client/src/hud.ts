@@ -23,6 +23,14 @@ import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { getHand, toggleHand, handLabel } from "./controls";
 import { indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "./indoorlight";
 import { hiddenRing, setHiddenRing } from "./hiddenring";
+import {
+  lightScale,
+  setLightScale,
+  lightScaleLabel,
+  snapLightScale,
+  LIGHT_SCALE_MIN,
+  LIGHT_SCALE_MAX,
+} from "./lightscale";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "./indoorwall";
 import { withV } from "./assetver";
 import { minimapDotPct, mapImageUrls, loadMinimapMeta, type MinimapFeed, type MinimapMeta } from "./maps";
@@ -822,6 +830,26 @@ export class HudBar {
      * hiddenring.ts owns the value and its persistence. */
     wrap.appendChild(
       pctSlider("Hidden outline", () => hiddenRing(), (v) => setHiddenRing(v)),
+    );
+
+    /* LIGHT RESOLUTION: the fraction of the canvas the three full-screen
+     * passes (light, mist, depth fog) render at before a LINEAR upsample.
+     * A DEV MEASUREMENT, not a player setting — it is the decisive experiment
+     * for whether the phone is GPU-bound, and it exists as a slider because an
+     * installed PWA has no URL bar to put `?light=` in (maintainer 2026-09-07:
+     * "I can't use ?light=0.5. I need a button on the settings page").
+     * STEPPED, because the readout has to name the fragment count: cost is the
+     * SQUARE of the dial, so 50% is a quarter of the work and reads like half.
+     * lightscale.ts owns the value; nightlight.ts rebuilds all three render
+     * targets on "ml-light-scale", so it takes effect without a reload. */
+    const lsSpan = LIGHT_SCALE_MAX - LIGHT_SCALE_MIN;
+    const p2ls = (p: number) => snapLightScale(LIGHT_SCALE_MIN + p * lsSpan);
+    const ls2p = (v: number) => (v - LIGHT_SCALE_MIN) / lsSpan;
+    wrap.appendChild(
+      pctSlider("Light resolution", () => ls2p(lightScale()), (p) => setLightScale(p2ls(p)), {
+        snap: (p) => ls2p(p2ls(p)),
+        format: (p) => lightScaleLabel(p2ls(p)),
+      }),
     );
 
     // INDOOR WALL HEIGHT: how tall the walls stand while you are inside, in

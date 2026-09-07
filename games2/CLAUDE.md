@@ -3070,6 +3070,23 @@ height reads per thing per frame.
   vec4(0) for exactly those fragments — so this is free. Any future pass with an
   early-out uniform gets BOTH treatments: the guard is only as good as the last
   write, and the last write is only as good as not running at all.
+- **THE LIGHT PASSES' RESOLUTION IS A SETTINGS SLIDER** ("Light resolution",
+  lightscale.ts). It is the fraction of the canvas the three full-screen passes
+  render at before a LINEAR upsample, so cost is its SQUARE — 50% is a quarter
+  of the fragments, which is why the readout names the pixel count and not just
+  the percent. `?light=` still sets it, but AN INSTALLED PWA HAS NO URL BAR, and
+  the only person who tests this game plays from his Android home screen: a dev
+  A/B that exists solely as a query parameter is unreachable, so every knob gets
+  a slider. nightlight.ts rebuilds all three render targets on "ml-light-scale",
+  the same path as a resize, so it takes effect without a reload.
+- **AN OVERLAY'S RT-TO-CANVAS RATIO MUST SURVIVE update()** (`upX`/`upY`).
+  buildShader sizes each overlay by `full / rt`, and update() then rewrites all
+  three scales every frame for zoom and the field window — it used to write
+  `invZoom * k` flat, dropping the ratio, so at any scale below 1 the field drew
+  at 1:1 as a LIT RECTANGLE in the middle of an unshaded screen. `?light=` had
+  been broken this way for its whole life and nobody saw it, because nobody
+  could reach it. Any per-frame write to a property a build step also sets has
+  to carry the build step's factor.
 - **THE GLOW FIELD IS HALF-RESOLUTION** (`GLOW_FIELD_DIV` 2, nightlight.ts).
   The shader samples `uGlow` NORMALIZED over uCam's window and the stamps are
   placed by that same mapping (`gscale`, derived from `rt.width`), so the RT's
