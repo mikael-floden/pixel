@@ -1,0 +1,71 @@
+# gnats — the column that hangs over one spot at dusk
+
+A FIELD. Over one patch of ground, a couple of dozen specks fly hard inside a
+narrow vertical volume that itself barely moves. Walk into it and it breaks up
+around you; walk away and it gathers again.
+
+## The column is the effect
+
+A midge swarm is not insects going somewhere — it is a COLUMN that stands
+still. That is the whole thing, and it is the one property the gate really
+guards: measured, the anchor moves **0 px** inside a placement and the swarm's
+centre stays within **8.6 px** of its own axis. A drifting version of this reads
+as dust, and this repo already has dust (`pollen/`).
+
+The volume is a vertical ellipsoid: `COL_H` tall, `COL_RX` wide in the GROUND
+plane, so its horizontal part is squashed by `SQUASH` (0.55) on screen the way
+the moths' orbit is — a circle drawn round on screen is not round in the world.
+Each gnat rides three oscillators (a slow turn around the axis, a rise and fall
+along it, a fast `FLICK`) with its own phases, which is what makes a two dozen
+specks read as a swarm rather than a pattern. The column itself only breathes
+sideways, `SWAY_PX` 3.5.
+
+There is no one-terrace rule here, unlike the ants: a column is one anchor
+point, not a line laid across the terrain, so it has no cliff to walk down.
+
+## When
+
+Dusk — the EVENING phase, with a thinner dawn column in the morning. **Phase,
+not sun**: the sunset RAMP is a few seconds of a two-minute cycle, so gating on
+it would make this something nobody ever sees. Rain, storm, snow and wind take
+it away outright; a real swarm is gone the moment the air moves.
+
+Measured under AUTO: 25 gnats at Evening, **0 by day, 0 at night**.
+
+## Walking through it
+
+`SCATTER_R` 62 px from the axis and the column comes apart: it widens
+(`SCATTER_SPREAD`), thins (`SCATTER_DIM`) and rises. It breaks fast
+(`SCATTER_TAU` 220 ms) and gathers slowly (`REFORM_TAU` 1.4 s), which is the
+asymmetry the real thing has. It never dies — measured half-width 4.0 → 14.8 px
+with mean alpha 0.477 → 0.229 while stood in, and back to 8.9 px after leaving.
+
+## Cost
+
+0.034 ms/frame at dusk, 0.011 by day (the not-dusk path returns before it
+searches, steps or draws anything). Per frame this is trig on pooled sprites:
+no probe except one player read, no allocation. The pool is FIXED AND SLOTTED —
+gnat *i* belongs to column *i % MAX_COLS* at slot *i / MAX_COLS*, and a column
+draws its first `n`. The first cut rolled the population every frame, which is
+a random number per frame deciding how many sprites exist.
+
+## Gate
+
+`node ../scripts/verify-gnats.mjs`. Three traps it was written into, all worth
+keeping:
+
+- **Enabling an effect in Settings FORCES it** (`Toggles.apply` →
+  `setForced(true)`), so the dusk gate can only be measured under AUTO. Soloing
+  gnats and asserting they are absent by day measures a forced effect and
+  reports gain 1 at every hour of the clock.
+- **A column legitimately expires and re-places** (16-44 s), and this harness
+  renders far slower than real time, so a "3 second" window of frames is more
+  like fifteen. Drift is judged WITHIN one placement, segmented on the `places`
+  counter; the first cut read a legitimate move as an 88 px wander.
+- **The centroid is not the column.** Two dozen oscillators in a 40 px volume
+  give a standard error of ~2.4 px, so the centroid's range over a long window
+  is a dozen px of pure sampling noise. The ANCHOR is the position; the swarm is
+  bounded in a box around it.
+- `__ml.pickAt` answers in WORLD UNITS and `__ml.teleport` takes CELLS. Passing
+  one to the other walks off the end of the map, and the swarm you meant to
+  disturb is then nowhere near you.

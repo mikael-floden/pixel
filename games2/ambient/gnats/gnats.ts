@@ -134,6 +134,7 @@ export function gnatsFeature(): AmbientFeature {
   let suppressed = false;
   let forced = false;
   let placeFails = 0;
+  let places = 0;
   let lastPhase = "";
   let seed = 24_593;
   const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
@@ -189,6 +190,7 @@ export function gnatsFeature(): AmbientFeature {
       c.sway = rnd() * Math.PI * 2;
       c.n = Math.round(range(N_GNATS));
       c.life = range(LIFE);
+      places++;
       c.scatter = 0;
       return true;
     }
@@ -335,12 +337,14 @@ export function gnatsFeature(): AmbientFeature {
         phase: lastPhase,
         columns: cols.filter((c) => c.life > 0).length,
         placeFails,
+        places,
         gnats: shown.length,
         cols: cols
           .filter((c) => c.life > 0)
           .map((c) => ({
             x: Math.round(c.x), y: Math.round(c.y),
             h: Math.round(c.h), rx: +c.rx.toFixed(1), lift: Math.round(c.lift),
+            life: Math.round(c.life), n: c.n,
             scatter: +c.scatter.toFixed(3),
           })),
         all: shown.map((q) => {
