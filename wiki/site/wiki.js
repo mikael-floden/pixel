@@ -44,7 +44,13 @@ let composerBase = null;
  *  one back in): it is wiki content, not game content, excluded in
  *  publish.json, and streamed from the repo exactly as the whole composer tree
  *  used to be. `composer/` stays recognised so an old data.json still plays. */
-export function streamsFromRepo(rel) {
+/* NO `export` HERE — this file is a CLASSIC SCRIPT (index.html loads it with a
+ * plain <script src>, no type="module"), so one export keyword is a SyntaxError
+ * that stops the whole file parsing and the wiki never boots. It shipped that
+ * way on 2026-09-06 and production hung on "GATHERING THE WORLD…" for everyone,
+ * player and Game Master alike, until it was taken out. Nothing imports this —
+ * it is called from inside this same file. */
+function streamsFromRepo(rel) {
   return rel.startsWith("music/beds/pool/") || rel.startsWith("composer/");
 }
 async function composerRoot() {
