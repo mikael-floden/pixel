@@ -4768,6 +4768,13 @@ export const DEEP_CURRENT_RAMP_CELLS = 7;
  *  refusing a move, which is what makes it read as water and not as a wall. */
 export const DEEP_CURRENT_MAX = 120;
 
+/** THE SMALLEST LAND MASS THE CURRENT WILL STEER YOU TO, in cells. the_game
+ *  has seven: a 55,651-cell mainland, five islands of 184-304, and one 18-cell
+ *  rock. Everything but the rock is somewhere a swimmer can sensibly be put
+ *  ashore, so this only rules out specks — raise it if "main land" should mean
+ *  the continent alone. */
+export const MAIN_LAND_MIN_CELLS = 64;
+
 /** Cells from the nearest non-deep cell, per cell; 0 for anything not deep.
  *  Built once per grid (multi-source BFS out of the shore) and cached, because
  *  "how far have you swum out" is exactly a distance-to-shore. */
@@ -4807,15 +4814,130 @@ function deepDepth(grid: TerrainGrid): Uint16Array {
   return dist;
 }
 
+/** THE OFFSET TO THE NEAREST MAIN-LAND CELL, per cell, in CELLS: `nlx[i]`,
+ *  `nly[i]`. A EUCLIDEAN feature transform (8SSEDT: two raster sweeps carrying
+ *  the offset vector to the nearest source), because a 4-neighbour BFS answers
+ *  in MANHATTAN distance and that is visibly the wrong land — measured at cell
+ *  182,23, where the wavefront's nearest was straight south while the actually
+ *  closest coast lay south-east, and the swimmer was dragged past it.
+ *
+ *  Sources are the STANDABLE cells of every land mass of at least
+ *  MAIN_LAND_MIN_CELLS. Land, not merely "not deep": the shallows are sources
+ *  of the DEPTH field (a distance-to-shore, which the strength ramp is tuned
+ *  on) but they are not a place to be carried TO. Built once per grid, cached
+ *  beside the depth field. */
+const nearLandCache = new WeakMap<TerrainGrid, { nlx: Int16Array; nly: Int16Array; any: boolean }>();
+function nearestMainLand(grid: TerrainGrid): { nlx: Int16Array; nly: Int16Array; any: boolean } {
+  const hit = nearLandCache.get(grid);
+  if (hit) return hit;
+  const w = grid.width;
+  const h = grid.height;
+  const n = w * h;
+  const standable = new Uint8Array(n);
+  // Memoised by ground NAME: surfaceFor is a table lookup returning an object,
+  // and a world has ~15 distinct grounds against 262,144 cells (12.2 ms of the
+  // build, measured, for 15 distinct answers).
+  const standMemo = new Map<string, number>();
+  for (let i = 0; i < n; i++) {
+    const t = grid.type[i];
+    let v = standMemo.get(t);
+    if (v === undefined) standMemo.set(t, (v = surfaceFor(t).standable ? 1 : 0));
+    standable[i] = v;
+  }
+  // Label the land masses (4-connected) and keep only the ones big enough.
+  const comp = new Int32Array(n).fill(-1);
+  const stack = new Int32Array(n);
+  const big = new Uint8Array(n);
+  let any = false;
+  for (let seed = 0; seed < n; seed++) {
+    if (!standable[seed] || comp[seed] >= 0) continue;
+    let sp = 0;
+    let size = 0;
+    const members: number[] = [];
+    stack[sp++] = seed;
+    comp[seed] = seed;
+    while (sp > 0) {
+      const i = stack[--sp];
+      members.push(i);
+      size++;
+      const c = i % w;
+      const r = (i - c) / w;
+      if (c + 1 < w) { const j = i + 1; if (standable[j] && comp[j] < 0) { comp[j] = seed; stack[sp++] = j; } }
+      if (c > 0) { const j = i - 1; if (standable[j] && comp[j] < 0) { comp[j] = seed; stack[sp++] = j; } }
+      if (r + 1 < h) { const j = i + w; if (standable[j] && comp[j] < 0) { comp[j] = seed; stack[sp++] = j; } }
+      if (r > 0) { const j = i - w; if (standable[j] && comp[j] < 0) { comp[j] = seed; stack[sp++] = j; } }
+    }
+    if (size >= MAIN_LAND_MIN_CELLS) { any = true; for (const i of members) big[i] = 1; }
+  }
+  // 8SSEDT. FAR must exceed any real offset and still square without
+  // overflowing the f64 compare; the grid is at most a few thousand cells.
+  const FAR = 30000;
+  const nlx = new Int16Array(n);
+  const nly = new Int16Array(n);
+  for (let i = 0; i < n; i++) {
+    if (big[i]) { nlx[i] = 0; nly[i] = 0; } else { nlx[i] = FAR; nly[i] = FAR; }
+  }
+  const d2 = (i: number) => nlx[i] * nlx[i] + nly[i] * nly[i];
+  /* Take neighbour j's answer and re-base it on i. The offset is FROM the cell
+   * TO its source, so borrowing from the neighbour at (dc, dr) relative to i
+   * SHIFTS that answer by (dc, dr) — sign it wrong and the field is mirrored:
+   * the drag then points away from land, which is exactly what the sea at 0,0
+   * did before this was fixed. */
+  const put = (i: number, j: number, dc: number, dr: number) => {
+    const cx = nlx[j] + dc;
+    const cy = nly[j] + dr;
+    if (cx * cx + cy * cy < d2(i)) { nlx[i] = cx; nly[i] = cy; }
+  };
+  for (let r = 0; r < h; r++) {
+    for (let c = 0; c < w; c++) {
+      const i = r * w + c;
+      if (c > 0) put(i, i - 1, -1, 0);
+      if (r > 0) put(i, i - w, 0, -1);
+      if (r > 0 && c > 0) put(i, i - w - 1, -1, -1);
+      if (r > 0 && c + 1 < w) put(i, i - w + 1, 1, -1);
+    }
+    for (let c = w - 2; c >= 0; c--) put(r * w + c, r * w + c + 1, 1, 0);
+  }
+  for (let r = h - 1; r >= 0; r--) {
+    for (let c = w - 1; c >= 0; c--) {
+      const i = r * w + c;
+      if (c + 1 < w) put(i, i + 1, 1, 0);
+      if (r + 1 < h) put(i, i + w, 0, 1);
+      if (r + 1 < h && c + 1 < w) put(i, i + w + 1, 1, 1);
+      if (r + 1 < h && c > 0) put(i, i + w - 1, -1, 1);
+    }
+    for (let c = 1; c < w; c++) put(r * w + c, r * w + c - 1, -1, 0);
+  }
+  const out = { nlx, nly, any };
+  nearLandCache.set(grid, out);
+  return out;
+}
+
+/** BUILD THE CURRENT'S FIELDS NOW, at world load. Both are cached per grid and
+ *  would otherwise be built by the FIRST call — which happens the moment a
+ *  player swims into deep water, i.e. in play. Measured on the shipped world:
+ *  ~65 ms on a dev host, so a few hundred on a phone. Call it where the world
+ *  is prepared and it disappears into the loading screen. Idempotent. */
+export function warmDeepCurrent(grid: TerrainGrid): void {
+  deepDepth(grid);
+  nearestMainLand(grid);
+}
+
 /**
  * The current acting on a body at a world position, or null on land and in the
  * shallows. WORLD-space unit direction plus a speed in wu/s — the caller
  * integrates it through the ordinary movement step so terrain still collides
  * and nothing can be pushed through a wall.
  *
- * Direction is toward the MAP CENTRE, as asked, rather than the nearest shore:
- * a swimmer rounding a headland is carried the same way as one straight out,
- * which reads as one ocean-wide current instead of a per-cell nudge.
+ * Direction is toward the NEAREST MAIN LAND (maintainer, 2026-09-07: "the
+ * deep_water should drag the player towards the closest main land, not the map
+ * center"). The map centre was the first cut and it is wrong the moment the
+ * coast is not a circle: swum out from a western bay you were dragged east
+ * along the shore instead of back onto the beach four cells behind you. The
+ * nearest land cell comes from a feature transform (nearestMainLand), so the
+ * direction is exact rather than a gradient, and it points at a cell you can
+ * actually stand on — the shallows carry no current of their own, so the
+ * current simply stops once you reach them.
  */
 export function deepCurrentAt(
   grid: TerrainGrid,
@@ -4831,10 +4953,12 @@ export function deepCurrentAt(
   const t = (depth - DEEP_CURRENT_FREE_CELLS) / (DEEP_CURRENT_RAMP_CELLS - DEEP_CURRENT_FREE_CELLS);
   if (!(t > 0)) return null;
   const speed = Math.min(1, t) * DEEP_CURRENT_MAX;
-  const cx = (grid.width * CELL_WU) / 2;
-  const cy = (grid.height * CELL_WU) / 2;
-  const vx = cx - x;
-  const vy = cy - y;
+  const near = nearestMainLand(grid);
+  if (!near.any) return null; // a world with no land big enough to steer toward
+  // The nearest main-land cell's CENTRE, so the pull does not jitter as you
+  // cross cells: the offset is in cells, from THIS cell.
+  const vx = (c + near.nlx[i] + 0.5) * CELL_WU - x;
+  const vy = (r + near.nly[i] + 0.5) * CELL_WU - y;
   const len = Math.hypot(vx, vy);
   if (len < 1e-6) return null;
   return { dx: vx / len, dy: vy / len, speed };

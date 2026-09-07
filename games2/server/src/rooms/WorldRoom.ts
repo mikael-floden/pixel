@@ -16,6 +16,7 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   deepCurrentAt,
+  warmDeepCurrent,
   stampSceneryCollision,
   ISO_GEOMETRY_MAPS3,
   type SceneryBboxDoc,
@@ -2113,6 +2114,9 @@ export async function loadWorldGrid(name: string): Promise<LoadedWorld> {
     const world = parseWorld(doc);
     if (!world) return open;
     const terrain = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
+    // The deep-sea current's fields, built here rather than by the first
+    // swimmer to reach open water (see warmDeepCurrent).
+    warmDeepCurrent(terrain);
     /* SCENERY BLOCKS THE GROUND IT STANDS ON. world3.ts held this back — "no
      * canonical field ships today" — and scenery now publishes one, so the
      * precondition is met (maintainer 2026-08-29: "WE WANT THE DEFAULT HITBOX

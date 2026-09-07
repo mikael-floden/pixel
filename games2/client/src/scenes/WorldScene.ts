@@ -11,6 +11,7 @@ import {
   ChatBroadcast,
   stepMovement,
   deepCurrentAt,
+  warmDeepCurrent,
   vectorToDirection,
   TerrainGrid,
   buildTerrainGrid,
@@ -2977,6 +2978,10 @@ export class WorldScene extends Phaser.Scene {
       this.worldW = this.world.width * CELL_WU;
       this.worldH = this.world.height * CELL_WU;
       this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows, this.world.props, this.world.decks);
+      // The deep-sea current's fields, built here rather than by the first
+      // swimmer to reach open water (see warmDeepCurrent) — the prediction
+      // calls the same shared function the server integrates.
+      warmDeepCurrent(this.terrain);
       /* THE SAME SCENERY FOOTPRINTS THE SERVER STAMPS, from the same function
        * and the same two documents. Prediction that disagreed with authority
        * would rubber-band the player off every tree, so this is not a second

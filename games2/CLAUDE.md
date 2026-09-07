@@ -3028,6 +3028,25 @@ height reads per thing per frame.
   sits at 0.46-0.60 of unshadowed across 2-4.8 cells. Bigger published radii
   are what put the shadow back inside the lit area, so a lamp's radius is a
   LOOK knob, not just a reach knob.
+- **THE DEEP-SEA CURRENT DRAGS YOU TO THE NEAREST MAIN LAND, NOT THE MAP
+  CENTRE** (maintainer 2026-09-07). The centre was the first cut and it is
+  wrong the moment the coast is not a circle: swum out from a western bay you
+  were carried east along the shore instead of back onto the beach behind you.
+  Direction now comes from a EUCLIDEAN feature transform (8SSEDT, two raster
+  sweeps carrying the offset to the nearest source) over the STANDABLE cells of
+  every land mass of at least `MAIN_LAND_MIN_CELLS` (64). Three traps paid for
+  here: a 4-neighbour BFS answers in MANHATTAN distance and picks visibly the
+  wrong coast (measured at cell 182,23 — its nearest was straight south while
+  the closest land lay south-east); the offset is FROM the cell TO its source,
+  so borrowing a neighbour's answer SHIFTS it by that neighbour's own offset
+  and the obvious sign is backwards (the sea at 0,0 dragged away from land);
+  and the shallows are sources of the DEPTH field — which is a distance-to-
+  shore, and the STRENGTH ramp is tuned on it — but are not a place to be
+  carried TO, so the direction field uses land only. the_game has a 55,651-cell
+  mainland, five islands of 184-304 and one 18-cell rock: 64 keeps the islands
+  and rules out the rock. Both fields are built by `warmDeepCurrent` at world
+  load on BOTH sides — the first call costs ~65 ms on a dev host, and lazily
+  that lands on the first player to swim out, in play.
 - **A PASS THAT IS "OFF" STILL RUNS — WRITE ITS STRENGTH UNIFORM ANYWAY**
   (`uMist`, `uFog` in nightlight.ts). `setVisible(false)` does NOT stop a
   render-to-texture Shader: Phaser's `willRender` returns true for one
