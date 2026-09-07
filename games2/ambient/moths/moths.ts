@@ -42,7 +42,11 @@ const LAMP_MIN_R = 1.5; // cells: a candle draws nobody; a lamp does
 const ORBIT_PX: [number, number] = [11, 27]; // horizontal radius of the circling
 const ORBIT_SQUASH = 0.55; // the iso plane is shallow — an orbit is an ellipse
 const SPIN: [number, number] = [0.7, 1.9]; // radians/s
-const BOB_PX: [number, number] = [3, 9]; // how far above the lamp head it rides
+/* Vertical spread AROUND the head — a moth is above and below the glass, not
+ * parked over it. It used to be a lift above the ANCHOR, which was the post's
+ * foot: the whole dance happened at the bottom of the lamp (maintainer
+ * 2026-09-07). `lightsInView` returns the head now, so this is a spread. */
+const BOB_PX: [number, number] = [-4, 8];
 const WOBBLE = 1.6; // px of flutter, so the circle is not a drawn ring
 
 const DIVE_EVERY: [number, number] = [1400, 5200]; // ms between bumps at the lamp
@@ -72,7 +76,9 @@ interface Moth {
 interface Lamp {
   id: string;
   x: number;
-  y: number;
+  y: number; // THE HEAD — where the lamp shines from, not where the post stands
+  footY: number;
+  z: number; // the head's lift over the anchor, in levels
   r: number;
   color: [number, number, number];
   sealed: boolean;
@@ -214,6 +220,7 @@ export function mothsFeature(): AmbientFeature {
           lamp: m.lamp,
           lampX: Math.round(lamps[Math.min(m.lamp, lamps.length - 1)]?.x ?? 0),
           lampY: Math.round(lamps[Math.min(m.lamp, lamps.length - 1)]?.y ?? 0),
+          lampFootY: Math.round(lamps[Math.min(m.lamp, lamps.length - 1)]?.footY ?? 0),
           rx: +m.rx.toFixed(1),
           diving: m.diving > 0,
           a: +m.sprite.alpha.toFixed(3),

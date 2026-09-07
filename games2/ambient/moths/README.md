@@ -13,6 +13,17 @@ for this, read-only, beside `lightSlots`) returns the ones the camera can see �
 `{id, x, y, r, color, sealed}`. A moth is then two facts: a lamp, and an orbit
 around it.
 
+**THE LIGHT IS NOT AT THE POST'S FOOT**, and getting that wrong is the whole
+of the first bug this effect shipped: the moths circled the bottom of the lamp
+post (maintainer 2026-09-07, with the head and the foot circled on a
+screenshot: "the moths should gather around the light and not around the
+tile"). A light record's `sx/sy` is its ANCHOR — where the piece stands — and
+its `z` is the emissive centroid's own lift above that, 0.3-1.5 levels for a
+scenery lamp, measured off the lit art. The fix is in the SEAM, not here:
+`lightsInView` returns `y` already lifted to the head (with `footY` and `z`
+alongside), so no future consumer can repeat it. Measured on the town's
+street lamp: a 22.5 px lift.
+
 Sealed lamps are skipped. A light inside a room stays in the room, and so
 should whatever circles it — this is an outdoor effect.
 
@@ -63,3 +74,8 @@ week's map — then asserts: moths exist at night, each stays within its own
 lamp's orbit, the count holds under the ceiling, at least one dives, the
 feature's own update stays under its ms/frame ceiling at night, costs ~nothing
 by day, and the lamp list is read about twice a second rather than per frame.
+
+It also asserts they circle the LIGHT and not the post — which containment
+alone cannot catch, because the moths were perfectly contained around the wrong
+point. That arm needs a lamp whose head actually lifts, and FAILS if it finds
+none: with the old seam there was no head to tell from the foot at all.

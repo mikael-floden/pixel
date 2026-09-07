@@ -101,6 +101,36 @@ if (spot) {
     return { dived, offLamp, far, samples, most, probes: window.__mlAmbient.debug("moths").probes };
   });
   console.log(`moths: max ${seen.most} at once, ${seen.samples} samples, ${seen.dived} diving, ${seen.offLamp} off-lamp`);
+
+  /* THEY CIRCLE THE LIGHT, NOT THE POST. A light record's anchor is its foot on
+   * the ground and its `z` is the head's lift above that, so a consumer reading
+   * the anchor puts the whole dance at the bottom of the lamp — which is what
+   * shipped, and what the maintainer photographed on 2026-09-07. Containment
+   * alone cannot catch it (the moths were perfectly contained around the wrong
+   * point), so this asserts the two are DIFFERENT and that the moths are at the
+   * head: it needs a lamp that actually has a lift, or it proves nothing. */
+  const head = await page.evaluate(async () => {
+    const lit = (window.__ml.lightsInView(64) || []).filter((l) => !l.sealed && l.r >= 1.5);
+    const lifted = lit.filter((l) => l.z > 0.05 && l.footY - l.y > 6);
+    let above = 0, below = 0, n = 0;
+    for (let i = 0; i < 120; i++) {
+      for (const m of window.__mlAmbient.debug("moths").all || []) {
+        if (!(m.lampFootY - m.lampY > 6)) continue; // this lamp has no head lift to get wrong
+        n++;
+        if (m.y < m.lampFootY - 4) above++; else below++;
+      }
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    return { lamps: lit.length, lifted: lifted.length, lift: lifted[0] ? +(lifted[0].footY - lifted[0].y).toFixed(1) : 0, above, below, n };
+  });
+  console.log(
+    `head: ${head.lifted} of ${head.lamps} lamps lift their light (first by ${head.lift}px); ` +
+      `${head.above} of ${head.n} moth samples were up at the head`,
+  );
+  if (!head.lifted) fail("no lamp in view lifts its light above its anchor — cannot tell the head from the post here");
+  else if (!head.n) fail("no moths were at a lifted lamp — the head check proved nothing");
+  else if (head.below > head.n * 0.05)
+    fail(`${head.below} of ${head.n} moth samples were down at the post's foot — they must circle the LIGHT`);
   if (!seen.samples) fail("no moths appeared at a lit lamp after dark");
   if (seen.most > 10) fail(`${seen.most} moths at once — the ceiling is 10`);
   if (seen.offLamp) fail(`${seen.offLamp} samples were more than 44px from their own lamp — they must ORBIT it`);

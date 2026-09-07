@@ -4562,12 +4562,39 @@ export class WorldScene extends Phaser.Scene {
        * second, never per frame per moth). `sealed` marks a light inside a room
        * — the caller decides what to do with it; an outdoor effect skips them.
        * Padded cull box, so `worldView` is the right rectangle to use. */
+      /* Every light the camera can see, at the point it actually SHINES FROM.
+       *
+       * `y` IS THE HEAD, NOT THE FOOT, and that is the whole reason this
+       * returns a computed point rather than the record's own anchor. `sx/sy`
+       * is the source's ANCHOR — a lamp post's base on the ground — while `z`
+       * carries the source's height in ABSOLUTE levels: the cell's own level
+       * plus the emissive centroid's lift above it (0.3-1.5 levels for a
+       * scenery lamp, measured off the lit art; 0.5 for an emissive tile).
+       * A consumer that draws at `sy` draws at the bottom of the post, which is
+       * exactly what the first moths did (maintainer 2026-09-07, with the lamp
+       * head and the post's foot circled: "the moths should gather around the
+       * light and not around the tile"). The anchor is already
+       * elevation-lifted, so only the head's OWN lift is added back.
+       * `footY` keeps the anchor for anything that wants the ground contact,
+       * and `z` is the lift in levels so a caller can size against it. */
       lightsInView: (pad = 96) => {
         const v = this.cameras.main.worldView;
-        const out: { id: string; x: number; y: number; r: number; color: [number, number, number]; sealed: boolean }[] = [];
+        const lh = this.geom.lh;
+        const out: {
+          id: string; x: number; y: number; footY: number; z: number;
+          r: number; color: [number, number, number]; sealed: boolean;
+        }[] = [];
         const take = (s: EmissiveSource) => {
-          if (s.sx < v.x - pad || s.sx > v.right + pad || s.sy < v.y - pad || s.sy > v.bottom + pad) return;
-          out.push({ id: s.id, x: s.sx, y: s.sy, r: s.radius, color: s.color, sealed: !!s.sealed });
+          // The cell under the source, floored exactly as its own builder
+          // floors a placement (rebuildScenery's scol/srow).
+          const lvl = this.world?.rows[Math.floor(s.row)]?.[Math.floor(s.col)]?.l ?? 0;
+          const lift = Math.max(0, s.z - lvl);
+          const y = s.sy - lift * lh;
+          if (s.sx < v.x - pad || s.sx > v.right + pad || y < v.y - pad || y > v.bottom + pad) return;
+          out.push({
+            id: s.id, x: s.sx, y, footY: s.sy, z: +lift.toFixed(3),
+            r: s.radius, color: s.color, sealed: !!s.sealed,
+          });
         };
         for (const s of this.emissiveSources) take(s);
         for (const s of this.sceneryLightSources) take(s);

@@ -50,8 +50,11 @@ them; folder isolation beats DRY here).
   from the end of the world.
 - **`lightsInView(pad)`** — the second seam added to `WorldScene`, for
   `moths/`: every `EmissiveSource` the camera can see (emissive tiles AND
-  scenery lamps) as `{id, x, y, r, color, sealed}`, read-only, filtered by a
-  padded `worldView`. Ambient could not derive this — a lamp's DRAWN anchor
+  scenery lamps) as `{id, x, y, footY, z, r, color, sealed}`, read-only,
+  filtered by a padded `worldView`. **`y` is the HEAD** — a record's own anchor
+  is the post's FOOT and its `z` the emissive centroid's lift above it, so the
+  seam does that arithmetic once rather than letting every consumer get it
+  wrong (the moths did, visibly, on their first night). Ambient could not derive this — a lamp's DRAWN anchor
   and its sealed-in-a-room verdict live only in those arrays. It walks every
   source in the world, so a caller reads it on a THROTTLE, never per frame.
 - Time-of-day / weather awareness comes from the game's **documented `__ml`
