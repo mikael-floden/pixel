@@ -20,6 +20,7 @@
 //
 //   node scripts/verify-crawlers.mjs        (needs the dev stack on :5173)
 import { chromium } from "playwright-core";
+import { PNG } from "pngjs";
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
@@ -232,6 +233,82 @@ const spiderSlow = hops.filter((h) => h.spiders < 0);
 if (antSlow.length) fail(`ants never appeared within ${RELOCATE_MS}ms at ${antSlow.length} of ${hops.length} new locations`);
 if (spiderSlow.length)
   fail(`spiders never appeared within ${RELOCATE_MS}ms at ${spiderSlow.length} of ${hops.length} new locations`);
+
+/* ---- THEY MUST BE VISIBLE AGAINST THE GROUND THEY STAND ON ----
+ * The one property that makes a 1-3 px animal an animal rather than a rumour.
+ * They draw UNDER the darkness overlay, graded by the light where they stand,
+ * so a near-black speck on ground the night has taken to luma 33-55 differs
+ * from it by ONE luma. Measured before crawlerTint, day and night: +6.2, -0.3,
+ * -2.2, +0.7 — which is what "I can still only see ants and spiders near the
+ * spawn (the houses near the bonfire)" looks like from inside the feature.
+ * Judged on the SCREENSHOT, where the overlay, the tint and the ground all
+ * land, never on the constants. */
+const MIN_CONTRAST = 18;
+for (const phase of ["Day", "Night"]) {
+  const shot0 = await page.evaluate(async (ph) => {
+    window.__ml.timeOfDay(ph, true);
+    window.__mlAmbient.auto(false);
+    for (const n of window.__mlAmbient.list()) window.__mlAmbient.setEnabled(n, n === "ants" || n === "spiders");
+    for (let i = 0; i < 150; i++) await new Promise((r) => requestAnimationFrame(r));
+    const v = window.__ml.camView();
+    const m = window.__ml.myScreen();
+    const zoom = m ? m.zoom : 1;
+    const css = (x, y) => [(x - v.x) * zoom, (y - v.y) * zoom];
+    /* Only marks that are actually LIT. Both features report every mark they
+     * hold, including one fading out at the end of its life (a spider's last
+     * 1.2 s) — judging one of those measures the fade, not the colour, and it
+     * is what made a night spider read as 2.1 luma of contrast while every
+     * other reading was fine. */
+    const pick = (name) =>
+      (window.__mlAmbient.debug(name).all || [])
+        .filter((k) => k.a === undefined || k.a > 0.35)
+        .slice(0, 6)
+        .map((k) => css(k.x, k.y));
+    return { ants: pick("ants"), spiders: pick("spiders"), zoom };
+  }, phase);
+  const png = PNG.sync.read(await page.screenshot());
+  const luma = (x, y) => {
+    const i = (Math.round(y) * png.width + Math.round(x)) * 4;
+    if (i < 0 || i + 2 >= png.data.length) return null;
+    return 0.2126 * png.data[i] + 0.7152 * png.data[i + 1] + 0.0722 * png.data[i + 2];
+  };
+  /* SEARCH A WINDOW, DO NOT TRUST ONE PIXEL. An ant is ONE art pixel — two or
+   * three device px at the camera's zoom — and the predicted screen position
+   * carries the rounding of the camera, the sprite origin and the zoom. Reading
+   * exactly one pixel therefore lands on bare ground most of the time and
+   * reports the ANIMAL as invisible when it is the SAMPLE that missed: measured
+   * that way, day ants came out "best 44.9, median 7.2" for a population that
+   * is uniformly drawn. So take the strongest difference in a small window
+   * around the predicted spot, against ground sampled outside it. */
+  const R = Math.ceil(shot0.zoom) + 1;
+  for (const [name, pts] of [["ants", shot0.ants], ["spiders", shot0.spiders]]) {
+    const seen = [];
+    for (const [x, y] of pts) {
+      const ring = [[-9, 0], [9, 0], [0, -9], [0, 9], [-7, -7], [7, 7]]
+        .map(([dx, dy]) => luma(x + dx, y + dy))
+        .filter((v) => v !== null);
+      if (!ring.length) continue;
+      const bg = ring.reduce((a, b) => a + b, 0) / ring.length;
+      let best = 0;
+      for (let dx = -R; dx <= R; dx++)
+        for (let dy = -R; dy <= R; dy++) {
+          const v = luma(x + dx, y + dy);
+          if (v !== null) best = Math.max(best, Math.abs(v - bg));
+        }
+      seen.push(best);
+    }
+    if (!seen.length) {
+      console.log(`${phase} ${name}: none lit to judge`);
+      continue;
+    }
+    seen.sort((a, b) => a - b);
+    const median = seen[seen.length >> 1];
+    console.log(`${phase} ${name}: ${seen.length} sampled, median contrast ${median.toFixed(1)} luma (best ${seen[seen.length - 1].toFixed(1)})`);
+    // The MEDIAN, not the best: one visible ant does not make a visible column.
+    if (median < MIN_CONTRAST)
+      fail(`${phase} ${name} are invisible: median contrast against their own ground is ${median.toFixed(1)} luma`);
+  }
+}
 
 // ---- The env gate (AUTO mode, where fields are NOT forced) ----
 // setEnabled() in manual mode calls setForced(), which deliberately bypasses

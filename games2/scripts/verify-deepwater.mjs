@@ -35,6 +35,11 @@ const POP_P99 = 60;
 // The shipped display band (deepwater.ts SHOW_MIN_WU / SHOW_MAX_WU). Mirrored
 // here on purpose: if the look is retuned, this gate must be retuned WITH it,
 // deliberately, rather than following along and asserting whatever ships.
+// How white a glint must get to BE one. Absolute, not a lift over the sea: an
+// additive mark on the day sea saturates at 255 and can lift a channel by ~52
+// at most. The crest beside it is held to a p99 of +60 over the water.
+const GLIMMER_LUMA = 245;
+
 const SHOW_MIN_WU = 17;
 const SHOW_MAX_WU = 41;
 
@@ -246,7 +251,7 @@ if (sea && sea.deep) {
    * always lit is a bead on a string, not a glint. */
   const spark = await page.evaluate(async (deep) => {
     await window.__park(deep.col, deep.row, 120);
-    let frames = 0, sawNone = 0, sawSome = 0, offCrest = 0, most = 0, sparkFrames = 0;
+    let frames = 0, sawNone = 0, sawSome = 0, most = 0, sparkFrames = 0;
     for (let i = 0; i < 200; i++) {
       await new Promise((r) => requestAnimationFrame(r));
       const d = window.__mlAmbient.debug("deepwater");
@@ -257,14 +262,17 @@ if (sea && sea.deep) {
       most = Math.max(most, n);
       if (n === 0) sawNone++;
       else { sawSome++; sparkFrames++; }
-      if (n > swells.length) offCrest++; // more glints than waves to carry them
+      // NOT "one glint per wave" — two may ride the same crest, which is fine
+      // and is what an earlier arm here wrongly failed on. What matters is that
+      // glints stay FEW (asserted below) and that they blink.
     }
-    return { frames, sawNone, sawSome, offCrest, most, sparkFrames };
+    return { frames, sawNone, sawSome, most, sparkFrames };
   }, sea.deep);
   console.log(`sparkle: ${spark.sawSome} of ${spark.frames} frames glinting, at most ${spark.most} at once`);
   if (spark.frames < 30) fail(`only ${spark.frames} frames carried waves — the sparkle check proved nothing`);
   if (!spark.sawSome) fail("the sea never glints");
-  if (spark.offCrest) fail(`${spark.offCrest} frames drew more glints than there are waves to carry them`);
+  // It must BLINK: a glint that is always lit is a bead on a string.
+  if (!spark.sawNone) fail("the glints never go out — a glimmer blinks, it does not stay lit");
   if (spark.most > 8) fail(`${spark.most} glints at once reads as sparkle, not as a wave catching the light`);
 
   /* THE LAKE CHOP MUST STOP AT THE DEEP-WATER LINE. Its wavelets and glints are
@@ -317,7 +325,39 @@ if (sea && sea.deep) {
         `${lifts.length} lifted px, median +${pct(0.5)}, p99 +${pct(0.99)}, max +${lifts[lifts.length - 1] ?? 0}`,
     );
     if (lifts.length < 20) fail(`only ${lifts.length} pixels of the strip carry a mark — the sea is not moving at all`);
-    if (pct(0.99) > POP_P99) fail(`the marks pop: p99 brightening +${pct(0.99)} over the sea (max +${POP_P99})`);
+    /* THE CREST IS RESTRAINED; THE GLIMMER IS NOT. Two different asks, so two
+     * different measurements over the same pixels: the WAVES must sit close to
+     * the sea ("pop less"), and a few pixels must glimmer near-white ("the same
+     * bright sparks as we have in regular water"). p99 is the crest's bound —
+     * the glints are a handful of pixels of a 480x64 strip and cannot reach it
+     * — and the brightest pixels are the glimmer's own. */
+    if (pct(0.99) > POP_P99) fail(`the waves pop: p99 brightening +${pct(0.99)} over the sea (max +${POP_P99})`);
+    /* THE GLIMMER IS MEASURED AS WHITENESS, NOT AS LIFT. The day sea already
+     * sits at 203-216 per channel, so an additive near-white glint SATURATES:
+     * it can raise a channel by at most ~52 before it hits 255, and asking for
+     * a bigger lift is asking for something 8-bit colour cannot do. What
+     * "close to white" means is that the pixel ARRIVES at white. Sampled over
+     * several frames of the whole game view, because at most a handful of
+     * glints are alight at once and each lasts a few hundred ms — a single
+     * screenshot of a 64px strip catches none of them and reports a working
+     * effect as absent, which is exactly what it did. */
+    let glints = 0;
+    let brightest = 0;
+    let marked = 0;
+    for (let shot = 0; shot < 8 && glints === 0; shot++) {
+      await page.evaluate(async () => { for (let i = 0; i < 12; i++) await new Promise((r) => requestAnimationFrame(r)); });
+      const view = PNG.sync.read(await page.screenshot({ clip: { x: 0, y: 0, width: 480, height: 198 } }));
+      for (let i = 0; i < view.data.length; i += 4) {
+        const l = 0.2126 * view.data[i] + 0.7152 * view.data[i + 1] + 0.0722 * view.data[i + 2];
+        brightest = Math.max(brightest, l);
+        if (l >= GLIMMER_LUMA) glints++;
+        if (l > 0.2126 * water[0] + 0.7152 * water[1] + 0.0722 * water[2] + 4) marked++;
+      }
+    }
+    console.log(`glimmer: ${glints} px at luma ${GLIMMER_LUMA}+ (brightest ${brightest.toFixed(0)}) of ${marked} marked px`);
+    if (!glints) fail(`nothing glimmers: the brightest pixel in the view reached luma ${brightest.toFixed(0)}`);
+    if (marked && glints > marked * 0.05)
+      fail(`${glints} of ${marked} marked px are white — a glint is a few pixels of a wave, not the wave`);
   }
 
   // THE POINT OF THE EFFECT: every mark must stream along the current the game

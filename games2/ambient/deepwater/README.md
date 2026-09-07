@@ -20,12 +20,18 @@ neither `waterAtScreen` nor `surfaceAt` sees a difference.
 - **DRIFT** — single specks riding 1.35× the current, so they skate over the
   swells. Accent only. Never SLOWER than the current: drift the swimmer
   overtakes would read as being dragged *out*.
-- **GLITTER** — one-pixel sparks that RIDE a crest: a spark picks a live swell
-  and a point along that swell's own line and travels with it, lit for
-  90–240 ms with a dark gap between (maintainer 2026-09-07: "the wave should
-  sometimes glitter/spark. I mean small parts of the wave should spark (not the
-  entire wave line)"). It is what replaces the lake's chop and glints out here —
-  see the rule below.
+- **GLITTER — THE LAKE'S OWN GLINT, RIDING A WAVE.** The same art and the same
+  sun/moon palette `ambient/water/` sparkles with (`runtime/glint.ts`, shared so
+  the two cannot drift), twinkling in place through its three frames, but
+  PARENTED TO A CREST: it picks a live swell and a point along that swell's own
+  line and travels with it (maintainer 2026-09-07: "I want the same bright
+  sparks as we have in regular water ... we can't put the other effect because
+  it looks like static water and this one moves like waves ... if you do that
+  effect has to move with the waves"). Near-white and DELIBERATELY brighter than
+  the crest it rides — the wave is held close to the sea's colour, and a glint
+  that inherited that restraint would not be a glint. Measured on the open sea:
+  180 of 200 frames carry one, at most 5 at once, 11 px reach luma 245+
+  (brightest 254) out of 10,248 marked pixels.
 
 Both stay CLOSE to `deep_water`'s own `#3d7c8a` — additive, about +25 per
 channel at full envelope, landing a crest near `#577f92`. The sea is meant to

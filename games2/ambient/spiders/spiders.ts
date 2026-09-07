@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
-import { findGround, landableAt, paintPixels } from "../runtime/ground";
+import { crawlerTint, findGround, landableAt, paintPixels } from "../runtime/ground";
 
 // SPIDERS — a FIELD effect, and the other half of the too-small-for-art pair
 // (see ants/ants.ts for why there is no sprite sheet here).
@@ -16,7 +16,26 @@ import { findGround, landableAt, paintPixels } from "../runtime/ground";
 // spider that skitters over your feet is a jump-scare, and this layer is
 // atmosphere.
 
-const DEPTH_BIAS = -0.5; // just under a body standing on the same ground line
+/* ABOVE THE DARKNESS OVERLAY, AND THAT IS DELIBERATE.
+ *
+ * The house rule is that ground-lit matter graded by time of day belongs UNDER
+ * 900_000, and these obeyed it — which is why a night spider measured SIXTEEN
+ * luma of contrast against its own ground even after its tint was paled: the
+ * overlay MULTIPLIES, so it takes a pale 1-3 px speck down exactly as far as it
+ * takes the ground under it, and the two stay indistinguishable by
+ * construction. There is no tint that survives that.
+ *
+ * At this size the two goals cannot both hold: an animal that is one to three
+ * pixels is either graded with the world or visible in it. The game already
+ * makes this call for the hidden-behind outline, which draws above the overlay
+ * for exactly the same reason — legibility beats grading when the mark IS the
+ * information. So the crawlers draw a hair above it, keeping their own y-order,
+ * and take a gentler alpha after dark so they read as a silhouette on the
+ * ground rather than as a light on it. `ctx.outdoor` still stops them indoors.
+ */
+const DEPTH_BASE = 900_000.05; // just over the darkness overlay
+const DEPTH_BIAS = 1e-6; // keeps their own near-far order among themselves
+const NIGHT_ALPHA = 0.8; // a silhouette after dark, never a lamp
 const GAIN_TAU = 1600;
 const MAX_SPIDERS = 2; // solitary by design — a crowd of these reads as vermin
 const SPAWN_EVERY: [number, number] = [7_000, 22_000];
@@ -80,7 +99,8 @@ export function spidersFeature(): AmbientFeature {
     init(ctx) {
       // Three pixels of body with four hinted legs — the most that reads at
       // this size. Anything more detailed is invisible; anything less is a dot.
-      paintPixels(ctx.scene, KEY, 3, 3, SPIDER_DARK, [
+      // WHITE art: the drawn colour is the per-frame tint (crawlerTint).
+      paintPixels(ctx.scene, KEY, 3, 3, 0xffffff, [
         [1, 0],
         [0, 1], [1, 1], [2, 1],
         [0, 2], [2, 2],
@@ -214,8 +234,9 @@ export function spidersFeature(): AmbientFeature {
         const y = Math.round(s.y);
         s.sprite
           .setPosition(x, y)
-          .setDepth(y + DEPTH_BIAS)
-          .setAlpha(g * fade)
+          .setDepth(DEPTH_BASE + y * DEPTH_BIAS)
+          .setTint(crawlerTint(SPIDER_DARK, ctx.env))
+          .setAlpha(g * fade * (1 - (1 - NIGHT_ALPHA) * ctx.env.night))
           .setVisible(true);
       }
     },

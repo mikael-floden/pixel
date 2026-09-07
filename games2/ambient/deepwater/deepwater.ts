@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
 import { ANGLE_STEPS, DrawnFlow, angleIndex, drawnFlow, rasterLine } from "./current";
+import { GLINT_SHAPES, GLINT_SIZE, reflection } from "../runtime/glint";
 
 // THE SEAWARD CURRENT — deep water is the END OF THE WORLD, and this is what
 // that looks like (maintainer 2026-09-06: "deep_water is something we use to
@@ -120,25 +121,34 @@ const SWELL_KEY = (i: number, L: number) => `amb-dwswell${i}_${L}`;
 // angles (the current turns smoothly), and generating all 192 up front would
 // cost the join a stall for art most seas never show.
 const DRIFT_KEY = () => `amb-dwfoam`;
-const SPARK_KEY = "amb-dwspark";
+const SPARK_KEYS = ["amb-dwspark0", "amb-dwspark1", "amb-dwspark2"];
 
-/* THE GLITTER — sunlight catching PART of a wave, never the whole line
- * (maintainer 2026-09-07: "the wave should sometimes glitter/spark. I mean
- * small parts of the wave should spark (not the entire wave line)"). It is what
- * replaces the lake's own chop and glints out here: those are a pond look, they
- * do not move with the current, and drawing both over the same pixels reads as
- * two seas laid on top of each other — so `ambient/water/` now stops at the
- * deep-water line and this is deep water's own sparkle.
+/* THE GLITTER — THE LAKE'S OWN GLINT, RIDING A WAVE (maintainer 2026-09-07:
+ * "I want the same bright sparks as we have in regular water. A small part of
+ * the wave should be able to glimmer in very bright/close to white ... We just
+ * can't glimmer the entire wave because it's longer, and we can't put the other
+ * effect because it looks like static water and this one moves like waves ...
+ * if you do that effect has to move with the waves").
  *
- * A spark RIDES a crest: it picks a live swell and a point along that swell's
- * own line, and travels with it, so the glint belongs to the wave rather than
- * floating over it. One pixel, bright, brief, a few at a time. */
+ * So it IS the other effect, with the one thing that made it wrong out here
+ * fixed: `runtime/glint.ts` holds the shape and the sun/moon palette, `water/`
+ * sparkles with it on a pond, and here each spark is PARENTED TO A CREST — it
+ * picks a live swell and a point along that swell's own line and travels with
+ * it, so the glimmer moves as the wave moves instead of sitting still on water
+ * that is running past it.
+ *
+ * BRIGHT ON PURPOSE, and the one thing here allowed to be: the crest itself
+ * sits close to the sea's own colour ("pop less"), and a glint that inherited
+ * that restraint would not be a glint at all. It is near-white, it is 3x3, and
+ * it is a few pixels of a 27-53px line — a small part of the wave, never the
+ * line. */
 const MAX_SPARK = 7;
-const SPARK_MS: [number, number] = [90, 240]; // a glint, not a lamp
+const SPARK_MS: [number, number] = [220, 460]; // long enough to twinkle through its frames
+const SPARK_FRAME_MS: [number, number] = [70, 130]; // the in-place twinkle, as on the lake
 const SPARK_GAP: [number, number] = [260, 1500]; // dark between glints, per slot
-const SPARK_ALPHA: [number, number] = [0.35, 0.6];
+const SPARK_ALPHA: [number, number] = [0.75, 1]; // near-white: this is the glimmer
 const SPARK_INSET = 0.16; // never at the very tip of a crest: it reads as a longer line
-const SPARK_COLOR = 0xeafcff; // near-white: this is the one thing allowed to catch the eye
+const SPARK_COLOR = 0xffffff; // painted white, TINTED to the sun or moon per mark
 const DRIFT_FRAMES = 1; // a speck has nothing to animate
 
 /* These draw ADDITIVE over the sea, so what ships is water + colour x alpha and
@@ -227,7 +237,9 @@ export function deepWaterFeature(): AmbientFeature {
   const ensureTextures = (scene: Phaser.Scene) => {
     // Drift and sparks are one pixel each; no per-direction art at all.
     paintTex(scene, DRIFT_KEY(), DRIFT_PX, DRIFT_PX, DRIFT_BODY, [[0, 0]]);
-    paintTex(scene, SPARK_KEY, 1, 1, SPARK_COLOR, [[0, 0]]);
+    GLINT_SHAPES.forEach((px, i) =>
+      paintTex(scene, SPARK_KEYS[i], GLINT_SIZE, GLINT_SIZE, SPARK_COLOR, px.map(([x, y]) => [x, y] as [number, number])),
+    );
   };
 
   /** The crest sprite for one angle and length, rasterised the first time that
@@ -367,15 +379,18 @@ export function deepWaterFeature(): AmbientFeature {
     host: number; // index into `swells`
     at: number; // -0.5..0.5 along that crest's own line
     a: number;
+    fi: number; // frame of the twinkle
+    seqT: number;
+    frameDur: number;
   }
   const sparks: Spark[] = [];
 
-  const stepSparks = (ctx: AmbientCtx, dt: number, gain: number, tint: number) => {
+  const stepSparks = (ctx: AmbientCtx, dt: number, gain: number, refl: { tint: number; strength: number }) => {
     const want = gain < 0.02 ? 0 : Math.min(MAX_SPARK, Math.max(0, Math.round(swells.length * 0.45)));
     while (sparks.length < want)
       sparks.push({
         sprite: ctx.scene.add
-          .image(0, 0, SPARK_KEY)
+          .image(0, 0, SPARK_KEYS[0])
           .setDepth(DEPTH_SPARK)
           .setOrigin(0.5, 0.5)
           .setVisible(false)
@@ -385,6 +400,9 @@ export function deepWaterFeature(): AmbientFeature {
         host: 0,
         at: 0,
         a: 0,
+        fi: 0,
+        seqT: 0,
+        frameDur: 100,
       });
     for (let i = 0; i < sparks.length; i++) {
       const s = sparks[i];
@@ -402,17 +420,27 @@ export function deepWaterFeature(): AmbientFeature {
             s.host = live[(rnd() * live.length) | 0];
             s.at = (rnd() - 0.5) * (1 - 2 * SPARK_INSET);
             s.a = range(SPARK_ALPHA);
+            s.fi = 0;
+            s.seqT = 0;
+            s.frameDur = range(SPARK_FRAME_MS);
           }
         }
       }
       const host = s.on ? swells[s.host] : null;
       if (!host || !host.sprite.visible) { s.sprite.setVisible(false); continue; }
+      // The in-place twinkle: full T, shrunk, point — the lake's own sequence.
+      s.seqT += dt;
+      if (s.seqT >= s.frameDur) {
+        s.seqT -= s.frameDur;
+        s.fi = Math.min(GLINT_SHAPES.length - 1, s.fi + 1);
+      }
       // ON the crest: its centre plus an offset along the line it was drawn at.
       const len = SWELL_LENS[host.li];
       s.sprite
+        .setTexture(SPARK_KEYS[s.fi])
         .setPosition(Math.round(host.x + host.cx * s.at * len), Math.round(host.y + host.cy * s.at * len))
-        .setTint(tint)
-        .setAlpha(s.a * gain * host.sprite.alpha * 3.2) // relative to its own wave: a glint fades with it
+        .setTint(refl.tint)
+        .setAlpha(s.a * gain * refl.strength)
         .setVisible(true);
     }
   };
@@ -510,7 +538,9 @@ export function deepWaterFeature(): AmbientFeature {
           .setAlpha(a)
           .setVisible(a > 0.012);
       }
-      stepSparks(ctx, dt, g, tint);
+      // The glimmer takes the sun/moon reflection, exactly as the lake's does:
+      // amber low in the day, white at noon, cool and gentler after dark.
+      stepSparks(ctx, dt, g, reflection(ctx.env));
       spaceOut(swells, SWELL_MIN_DIST);
       spaceOut(drift, DRIFT_MIN_DIST);
       if (swells.length) swellCursor = (swellCursor + SWELL_PROBE_BUDGET) % swells.length;

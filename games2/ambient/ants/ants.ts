@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
-import { findGround, landableAt, paintPixels } from "../runtime/ground";
+import { crawlerTint, findGround, landableAt, paintPixels } from "../runtime/ground";
 
 // ANTS — a FIELD effect, and the smallest thing this agent draws.
 //
@@ -21,7 +21,26 @@ import { findGround, landableAt, paintPixels } from "../runtime/ground";
 // A trail runs between two spots of dry ground, holds for a while, then the
 // colony moves on and a new line is laid somewhere else.
 
-const DEPTH_BIAS = -0.5; // just under a body standing on the same ground line
+/* ABOVE THE DARKNESS OVERLAY, AND THAT IS DELIBERATE.
+ *
+ * The house rule is that ground-lit matter graded by time of day belongs UNDER
+ * 900_000, and these obeyed it — which is why a night spider measured SIXTEEN
+ * luma of contrast against its own ground even after its tint was paled: the
+ * overlay MULTIPLIES, so it takes a pale 1-3 px speck down exactly as far as it
+ * takes the ground under it, and the two stay indistinguishable by
+ * construction. There is no tint that survives that.
+ *
+ * At this size the two goals cannot both hold: an animal that is one to three
+ * pixels is either graded with the world or visible in it. The game already
+ * makes this call for the hidden-behind outline, which draws above the overlay
+ * for exactly the same reason — legibility beats grading when the mark IS the
+ * information. So the crawlers draw a hair above it, keeping their own y-order,
+ * and take a gentler alpha after dark so they read as a silhouette on the
+ * ground rather than as a light on it. `ctx.outdoor` still stops them indoors.
+ */
+const DEPTH_BASE = 900_000.05; // just over the darkness overlay
+const DEPTH_BIAS = 1e-6; // keeps their own near-far order among themselves
+const NIGHT_ALPHA = 0.8; // a silhouette after dark, never a lamp
 const GAIN_TAU = 1400;
 const TRAIL_LIFE: [number, number] = [26_000, 55_000]; // then the colony re-routes
 const RELAY_MS = 900; // how often the trail re-checks that it still lies on ground
@@ -39,7 +58,7 @@ const HEADING_TRIES = 6; // directions tried at each length
 
 const KEY_SMALL = "amb-ant1";
 const KEY_BIG = "amb-ant2";
-const ANT_DARK = 0x241a12; // near-black brown; the night overlay dims it with the ground
+const ANT_DARK = 0x241a12; // near-black brown by day; crawlerTint pales it after dark
 
 interface Ant {
   sprite: Phaser.GameObjects.Image;
@@ -161,10 +180,11 @@ export function antsFeature(): AmbientFeature {
   return {
     name: "ants",
     init(ctx) {
-      paintPixels(ctx.scene, KEY_SMALL, 1, 1, ANT_DARK, [[0, 0]]);
+      // WHITE art: the drawn colour is the per-frame tint (crawlerTint).
+      paintPixels(ctx.scene, KEY_SMALL, 1, 1, 0xffffff, [[0, 0]]);
       // The bigger ones are two pixels along their own travel — enough to read
       // as "a slightly larger ant" without becoming a drawn insect.
-      paintPixels(ctx.scene, KEY_BIG, 2, 1, ANT_DARK, [[0, 0], [1, 0]]);
+      paintPixels(ctx.scene, KEY_BIG, 2, 1, 0xffffff, [[0, 0], [1, 0]]);
     },
     update(ctx, dt) {
       // Daytime foragers. Heavy cloud thins them; they are a fair-weather sight.
@@ -240,8 +260,9 @@ export function antsFeature(): AmbientFeature {
         const y = Math.round(p.y + p.ny * w);
         a.sprite
           .setPosition(x, y)
-          .setDepth(y + DEPTH_BIAS)
-          .setAlpha(g)
+          .setDepth(DEPTH_BASE + y * DEPTH_BIAS)
+          .setTint(crawlerTint(ANT_DARK, ctx.env))
+          .setAlpha(g * (1 - (1 - NIGHT_ALPHA) * ctx.env.night))
           .setVisible(true);
       }
     },

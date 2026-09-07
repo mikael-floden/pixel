@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
+import { GLINT_SHAPES, GLINT_SIZE, reflection } from "../runtime/glint";
 
 // Living water — a FIELD that makes lakes/sea feel ALIVE without building foam
 // (maintainer 2026-07-19: "small waves and random movement", "pixel-art style
@@ -66,9 +67,6 @@ const WF = [wshimmer(1), wshimmer(2), wshimmer(3), wshimmer(4)]; // shimmer trav
 // Glint "tetromino" — a plus with ONE arm pixel missing (asymmetric), so a
 // random quarter-turn gives four distinct sparkles (maintainer). 3×3; the
 // twinkle steps down the shape. White, tinted per mark to sun/moon.
-const G0 = [[1, 0], [1, 1], [1, 2], [2, 1]]; // full T (missing left)
-const G1 = [[1, 1], [2, 1]]; // shrunk
-const G2 = [[1, 1]]; // point
 const WAVE_BRIGHT = 0xffffff; // pure-white shimmer glint — crisp, exactly like the spark
 const WAVE_MID = 0xcdeef2; // the crest LINE — bright cyan-white (additive → crisp punch)
 const WAVE_NIGHT_TINT = 0x9db6d6; // multiplies the crest toward moonlit blue at night
@@ -84,18 +82,6 @@ const lerpC = (a: number, b: number, t: number) => {
   );
 };
 
-/** Reflection look for the current time of day. strength 0..1 scales glint
- * count + brightness; tint is the sparkle colour; moon marks the night look. */
-function reflection(env: { sun: number; night: number; cloud: number }) {
-  if (env.sun > 0.12) {
-    // Daytime SUN: amber at dawn/dusk (low sun), white at noon; strong.
-    const tint = lerpC(0xffcf94, 0xfff4da, Math.min(1, env.sun));
-    return { tint, strength: (0.35 + 0.65 * env.sun) * (1 - 0.5 * env.cloud), moon: false };
-  }
-  // Night MOON: cool and gentle (dimmer + a touch sparser than the sun, but
-  // still a live shimmer on the dark water); washed out under heavy cloud.
-  return { tint: 0xd2e2ff, strength: 0.5 * env.night * (1 - 0.6 * env.cloud), moon: true };
-}
 
 interface Mark {
   sprite: Phaser.GameObjects.Image;
@@ -175,8 +161,12 @@ export function waterFeature(): AmbientFeature {
         { c: WAVE_BRIGHT, px: f.B },
       ]),
     );
-    // Glints are pure white — tinted per mark to the sun/moon colour.
-    [G0, G1, G2].forEach((px, i) => paint(GLINT_FRAMES[i], 3, 3, [{ c: 0xffffff, px }]));
+    // Glints are pure white — tinted per mark to the sun/moon colour. The
+    // shape lives in runtime/glint.ts because deepwater/ rides the SAME glint
+    // along its crests; two copies would drift.
+    GLINT_SHAPES.forEach((px, i) =>
+      paint(GLINT_FRAMES[i], GLINT_SIZE, GLINT_SIZE, [{ c: 0xffffff, px: px.map(([x, y]) => [x, y]) }]),
+    );
   };
 
   const tooClose = (x: number, y: number, self: Mark): boolean => {

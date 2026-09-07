@@ -72,3 +72,33 @@ export function paintPixels(
   g.generateTexture(key, w, h);
   g.destroy();
 }
+
+/* CONTRAST, NOT COLOUR — how a 1-3 px crawler stays VISIBLE.
+ *
+ * These are the smallest things this agent draws and they sit UNDER the
+ * darkness overlay, graded by the light where they stand (which is right: they
+ * are matter on the ground, not UI). But a near-black dot on ground the night
+ * has taken down to luma 33-55 differs from it by ONE TO SIX luma — measured on
+ * the real screen, day and night, at four spots: +6.2, -0.3, -2.2, +0.7. That
+ * is invisible, and it is why the maintainer could "only see ants and spiders
+ * near the spawn (the houses near the bonfire)" — the bonfire is the only
+ * thing lighting the ground enough for a dark speck to read against it.
+ *
+ * So the tint follows the LIGHT, not the animal: dark on lit ground, pale on
+ * dark ground, crossing over as the sun goes. THE ART IS PAINTED WHITE for
+ * this: Phaser's setTint MULTIPLIES, so tinting a near-black texture pale can
+ * only make it darker — the first cut did exactly that and measured a night
+ * spider at 11.6 luma of contrast while claiming to have paled it. White art
+ * plus a tint IS the drawn colour. The creature is the same colour
+ * it always was where there is light to see it by; after dark it reads as a
+ * silhouette the way a moth or a spider does against a night floor. Footsteps
+ * settled this same argument the same way (games2/CLAUDE.md: tints chosen "for
+ * CONTRAST, not match"). */
+export function crawlerTint(dark: number, env: { sun: number; night: number }): number {
+  const pale = 0xb9c4d6; // moonlit grey-blue: a silhouette, never a light source
+  const t = Math.max(0, Math.min(1, env.night - env.sun * 0.5));
+  const mix = (a: number, b: number, k: number) => Math.round(a + (b - a) * k) & 255;
+  const d = [(dark >> 16) & 255, (dark >> 8) & 255, dark & 255];
+  const p = [(pale >> 16) & 255, (pale >> 8) & 255, pale & 255];
+  return (mix(d[0], p[0], t) << 16) | (mix(d[1], p[1], t) << 8) | mix(d[2], p[2], t);
+}
