@@ -34,6 +34,8 @@ const WOBBLE = 1.4; // px of lateral sway — ants do not walk a ruled line
 const SAMPLES = 28; // polyline points the curve is flattened to
 const MARGIN = 10; // dry ground required around each end (see findGround)
 const MIN_ON_SCREEN = 0.3; // re-lay once less than this much of the trail is in view
+const SPAN_FALLBACK = [1, 0.7, 0.45, 0.3]; // shorter rather than no trail at all
+const HEADING_TRIES = 6; // directions tried at each length
 
 const KEY_SMALL = "amb-ant1";
 const KEY_BIG = "amb-ant2";
@@ -77,10 +79,29 @@ export function antsFeature(): AmbientFeature {
     };
     const a = findGround(inner, rnd, MARGIN);
     if (!a) return false;
-    const ang = rnd() * Math.PI * 2;
-    const span = Math.min(range(SPAN), Math.min(ctx.view.width, ctx.view.height * 2) * SPAN_VIEW_FRAC);
-    const b = { x: Math.round(a.x + Math.cos(ang) * span), y: Math.round(a.y + Math.sin(ang) * span * 0.6) };
-    if (!landableAt(b.x, b.y)) return false;
+    /* TRY SHORTER BEFORE GIVING UP. A colony has to be able to lay a line
+     * wherever the player stops, and the full span is a long straight demand on
+     * open ground: in a wood or a village the far end lands in a wall, a
+     * hearth or the sea, the lay fails, and the ants stay hidden — which is
+     * what "I see no spiders and ants if I run away to a different location"
+     * looks like from inside this feature (maintainer 2026-09-07). A short
+     * trail is a real trail; no trail is not. */
+    const full = Math.min(range(SPAN), Math.min(ctx.view.width, ctx.view.height * 2) * SPAN_VIEW_FRAC);
+    let span = 0;
+    let b: { x: number; y: number } | null = null;
+    for (const frac of SPAN_FALLBACK) {
+      for (let t = 0; t < HEADING_TRIES; t++) {
+        const th = rnd() * Math.PI * 2;
+        const L = full * frac;
+        const cand = { x: Math.round(a.x + Math.cos(th) * L), y: Math.round(a.y + Math.sin(th) * L * 0.6) };
+        if (!landableAt(cand.x, cand.y)) continue;
+        span = L;
+        b = cand;
+        break;
+      }
+      if (b) break;
+    }
+    if (!b) return false;
     // Bow the line so a trail never reads as a drawn ruler.
     const mx = (a.x + b.x) / 2;
     const my = (a.y + b.y) / 2;

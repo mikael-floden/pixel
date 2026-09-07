@@ -20,8 +20,18 @@ motion alone names the animal.
   It turns `EDGE_TURN` px before the rim; retiring it past `OFF_VIEW` is only
   the backstop for a camera that walks away from it.
 - They fade out at the end of their life rather than blinking away.
+- **A spider that leaves the view is MOVED, not killed**, and an empty world
+  gets its first one in 900 ms instead of waiting the full 7–22 s gap
+  (maintainer 2026-09-07: "I see no spiders and ants if I run away to a
+  different location ... you can move the simulated ants and spiders to a new
+  location"). Retiring an off-view spider is right for one that skittered off
+  the edge and wrong for what actually happens — the PLAYER left, stranding the
+  population behind. There is nothing to preserve out there (a spider is a
+  position, a heading and a timer), so the same one is re-placed on ground in
+  the view we are looking at now, keeping its life and its dash/rest phase.
 
 QA: `scripts/verify-crawlers.mjs` — asserts both the dash and the rest states
 actually occur (a spider that only glides has lost the one thing that makes it a
 spider), that they stay on walkable ground, that they never enter the player's
-personal space, that one is ON SCREEN whenever one is drawn, and that they favour night while ants favour day.
+personal space, that one is ON SCREEN whenever one is drawn, and that they favour night while ants favour day, and that
+one appears within four seconds of arriving somewhere new (measured 200 ms).

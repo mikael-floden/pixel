@@ -20,6 +20,7 @@ const DEPTH_BIAS = -0.5; // just under a body standing on the same ground line
 const GAIN_TAU = 1600;
 const MAX_SPIDERS = 2; // solitary by design — a crowd of these reads as vermin
 const SPAWN_EVERY: [number, number] = [7_000, 22_000];
+const FIRST_MS = 900; // an EMPTY world waits this long, not the full gap
 const LIFE: [number, number] = [14_000, 34_000];
 const DASH_MS: [number, number] = [140, 420];
 const REST_MS: [number, number] = [420, 2600];
@@ -98,9 +99,9 @@ export function spidersFeature(): AmbientFeature {
         return;
       }
 
-      nextIn -= dt;
-      if (nextIn <= 0 && spiders.length < MAX_SPIDERS) {
-        nextIn = range(SPAWN_EVERY);
+      /* A SPOT IN THE VIEW WE ARE LOOKING AT NOW — used both to spawn and to
+       * MOVE an existing spider (see the relocation rule below). */
+      const spotInView = (): { x: number; y: number } | null => {
         const v = ctx.view;
         const inner = {
           x: v.x + v.width * SPAWN_INSET,
@@ -109,8 +110,25 @@ export function spidersFeature(): AmbientFeature {
           height: v.height * (1 - 2 * SPAWN_INSET),
         };
         const p = findGround(inner, rnd, MARGIN);
-        const me = playerAt(ctx);
-        if (p && (!me || Math.hypot(p.x - me.x, p.y - me.y) > PLAYER_CLEAR * 2)) {
+        const who = playerAt(ctx);
+        if (!p) return null;
+        if (who && Math.hypot(p.x - who.x, p.y - who.y) <= PLAYER_CLEAR * 2) return null;
+        return p;
+      };
+
+      /* THE FIRST ONE COMES QUICKLY. The spawn gap is what keeps a spider a
+       * rare thing to notice rather than a stream of them — but applied to an
+       * EMPTY world it is just a wait, and after running somewhere new the
+       * world is always empty (maintainer 2026-09-07: "I see no spiders and
+       * ants if I run away to a different location"). So the gap governs the
+       * SECOND spider onward; the first one only ever waits FIRST_MS. */
+      if (!spiders.length) nextIn = Math.min(nextIn, FIRST_MS);
+
+      nextIn -= dt;
+      if (nextIn <= 0 && spiders.length < MAX_SPIDERS) {
+        nextIn = range(SPAWN_EVERY);
+        const p = spotInView();
+        if (p) {
           const s: Spider = {
             sprite: ctx.scene.add.image(p.x, p.y, KEY).setOrigin(0, 0).setScale(1).setVisible(false),
             x: p.x,
@@ -159,12 +177,32 @@ export function spidersFeature(): AmbientFeature {
           }
         }
 
-        // A spider that has skittered out of sight is spent: it will not be
-        // seen again, and holding it alive only keeps a slot from a spider that
-        // WOULD be seen. (Ants learned the same lesson the harder way.)
+        /* A SPIDER THAT LEAVES THE VIEW IS MOVED, NOT KILLED (maintainer
+         * 2026-09-07: "you can move the simulated ants and spiders to a new
+         * location when/if the user runs to a new location"). It used to be
+         * retired 300 ms after going out of frame, which is right for one that
+         * skittered off the edge and wrong for the case that actually happens:
+         * the PLAYER left, taking the view with them and stranding the whole
+         * population behind — after which the spawn gap (7-22 s) is a wait with
+         * nothing on screen. There is no simulation to preserve out there (a
+         * spider is a position, a heading and a timer), so the same spider is
+         * re-placed on ground in the view we are looking at now, keeping its
+         * life and its dash/rest phase. If there is nowhere to put it — no dry
+         * ground, or only the player's lap — it keeps skittering where it is
+         * and the next frame tries again; a spider that has run out of world
+         * still retires on its own life. */
         const v2 = ctx.view;
-        if (s.x < v2.x - OFF_VIEW || s.x > v2.x + v2.width + OFF_VIEW || s.y < v2.y - OFF_VIEW || s.y > v2.y + v2.height + OFF_VIEW)
-          s.life = Math.min(s.life, 300);
+        const outside =
+          s.x < v2.x - OFF_VIEW || s.x > v2.x + v2.width + OFF_VIEW ||
+          s.y < v2.y - OFF_VIEW || s.y > v2.y + v2.height + OFF_VIEW;
+        if (outside) {
+          const p = spotInView();
+          if (p) {
+            s.x = p.x;
+            s.y = p.y;
+            s.ang = rnd() * Math.PI * 2;
+          }
+        }
         // Leave quietly: the last stretch of life fades rather than blinking out.
         const fade = s.life < 1200 ? Math.max(0, s.life / 1200) : 1;
         if (s.life <= 0) {

@@ -25,6 +25,13 @@ both wobble extremes — before it is accepted, not every fourth centre point: t
 gate caught an ant standing on water in a 24 px gap between checks. It runs once
 per trail, so exhaustive costs nothing.
 
+**A trail that cannot be laid at full length is laid SHORT** (`SPAN_FALLBACK`,
+then several headings at each length). The full span is a long straight demand
+on open ground: in a wood or a village the far end lands in a wall or the sea,
+the lay fails, and the ants stay hidden — which is what "I see no spiders and
+ants if I run away to a different location" looks like from inside this feature
+(maintainer 2026-09-07). A short trail is a real trail; no trail is not.
+
 **A trail out of frame is not a trail.** Two box tests failed here in turn — the
 first asked only where ONE END was (measured ants at screen (-53, 238) while the
 feature reported itself healthy), the second asked whether the whole extent had
@@ -40,4 +47,13 @@ QA: `scripts/verify-crawlers.mjs` — asserts the ants form a COLUMN (spread alo
 the trail must dominate spread across it), that they advance along it, that
 every one stands on walkable ground, and that some of them are ON SCREEN —
 the one property that reads healthy on every other number while the maintainer
-sees nothing at all.
+sees nothing at all — and that a colony arrives within four seconds of the
+player reaching somewhere new (measured 200 ms).
+
+**The gate DERIVES where to stand.** It used to teleport to cell 416,308, which
+the maps agent later turned into open sea: `landableAtScreen` then answered
+false at all 144 sampled points of the view, both features correctly drew
+nothing, and the gate reported them broken. A crawler gate that names cells is
+measuring last week's map, so it asks the world for standable ground instead.
+(`__ml.surfaceAt` takes WORLD UNITS, not cells — passing cells samples the map's
+corner, which is sea, and the scan reports "no land anywhere".)

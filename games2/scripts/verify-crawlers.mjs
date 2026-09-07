@@ -48,14 +48,46 @@ await page.waitForFunction(() => window.__mlAmbient?.list, null, { timeout: 30_0
 const list = await page.evaluate(() => window.__mlAmbient.list());
 for (const n of ["ants", "spiders"]) if (!list.includes(n)) fail(`${n} is not registered`);
 
-// Open grass, clock frozen at Day, only the crawlers running.
+/* WHERE TO STAND IS DERIVED, NEVER WRITTEN DOWN. This gate used to teleport to
+ * cell 416,308 and it went stale the day the maps agent moved the coastline:
+ * the cell became open sea, `landableAtScreen` answered false at all 144
+ * sampled points of the view, and both features correctly drew nothing while
+ * the gate reported them broken. A crawler gate that names cells is measuring
+ * last week's map. So it asks the world where the land is — standable cells,
+ * spaced well apart so one bad landing cannot decide the run. */
 await page.evaluate(() => {
   window.__ml.timeSpeed(0);
   window.__ml.timeOfDay("Day", true);
   window.__mlAmbient.auto(false);
   for (const n of window.__mlAmbient.list()) window.__mlAmbient.setEnabled(n, n === "ants" || n === "spiders");
-  window.__ml.teleport(416, 308);
 });
+const land = await page.evaluate(() => {
+  const me = window.__ml.me();
+  const c0 = Math.round(me.x / 32);
+  const r0 = Math.round(me.y / 32);
+  const w = window.__ml.worldInfo();
+  const maxC = (w.w ?? 512) - 4;
+  const maxR = (w.h ?? 512) - 4;
+  const out = [];
+  // Rings outward from where we joined, so the spots are near the spawn (where
+  // the art is loaded) but spread over real ground.
+  for (let ring = 0; ring < 60 && out.length < 4; ring += 3)
+    for (let a = 0; a < 12 && out.length < 4; a++) {
+      const c = Math.max(4, Math.min(maxC, c0 + Math.round(Math.cos((a / 12) * 6.283) * ring)));
+      const r = Math.max(4, Math.min(maxR, r0 + Math.round(Math.sin((a / 12) * 6.283) * ring)));
+      // surfaceAt takes WORLD UNITS, not cells (surfaceAtWorld) — passing
+      // cells samples a 60x60 wu box at the map's corner, which is open sea,
+      // and the scan then reports "no land anywhere".
+      const s = window.__ml.surfaceAt(c * 32 + 16, r * 32 + 16);
+      if (!s || !s.standable) continue;
+      if (out.some((p) => Math.abs(p[0] - c) < 10 && Math.abs(p[1] - r) < 10)) continue;
+      out.push([c, r]);
+    }
+  return out;
+});
+console.log(`land found: ${land.map(([c, r]) => `${c},${r}`).join("  ") || "NONE"}`);
+if (land.length < 2) fail(`only ${land.length} standable spots found near the spawn — cannot exercise ground crawlers`);
+await page.evaluate((spot) => window.__ml.teleport(spot[0], spot[1]), land[0] || [416, 308]);
 await page.evaluate(async () => { for (let i = 0; i < 220; i++) await new Promise((r) => requestAnimationFrame(r)); });
 
 // ---- ANTS: a column on real ground ----
@@ -164,6 +196,42 @@ if (sp.maxCount > 0 && (sp.dash === 0 || sp.rest === 0))
   fail(`spiders must SKITTER — saw dash:${sp.dash} rest:${sp.rest} (one of them never happened)`);
 if (sp.offGround) fail(`${sp.offGround} spider samples were off walkable ground`);
 if (sp.tooNear) fail(`${sp.tooNear} spider samples were in the player's lap`);
+
+/* ---- RUN SOMEWHERE NEW: the crawlers must FOLLOW ----
+ * The population is simulated in the view; run away and the old one is behind
+ * you, so the question is how long the new place stays empty (maintainer
+ * 2026-09-07: "I see no spiders and ants if I run away to a different
+ * location ... you can move the simulated ants and spiders to a new location").
+ * Measured on the two failures this found: a spider was RETIRED 300 ms after
+ * going out of frame and the next spawn waited 7-22 s, and an ant trail that
+ * could not be laid at full span in the new terrain gave up rather than laying
+ * a shorter one. Several hops, because one landing spot proves nothing about
+ * the next. */
+const RELOCATE_MS = 4000;
+const hops = await page.evaluate(async ({ budgetMs, spots }) => {
+  const out = [];
+  for (const [col, row] of spots) {
+    window.__ml.teleport(col, row);
+    let antsAt = -1;
+    let spidersAt = -1;
+    const t0 = performance.now();
+    while (performance.now() - t0 < budgetMs && (antsAt < 0 || spidersAt < 0)) {
+      await new Promise((r) => requestAnimationFrame(r));
+      const t = performance.now() - t0;
+      if (antsAt < 0 && (window.__mlAmbient.debug("ants").all || []).length > 0) antsAt = t;
+      if (spidersAt < 0 && (window.__mlAmbient.debug("spiders").all || []).length > 0) spidersAt = t;
+    }
+    out.push({ col, row, ants: Math.round(antsAt), spiders: Math.round(spidersAt) });
+  }
+  return out;
+}, { budgetMs: RELOCATE_MS, spots: land });
+for (const h of hops)
+  console.log(`relocate to ${h.col},${h.row}: ants ${h.ants < 0 ? "NEVER" : h.ants + "ms"}, spiders ${h.spiders < 0 ? "NEVER" : h.spiders + "ms"}`);
+const antSlow = hops.filter((h) => h.ants < 0);
+const spiderSlow = hops.filter((h) => h.spiders < 0);
+if (antSlow.length) fail(`ants never appeared within ${RELOCATE_MS}ms at ${antSlow.length} of ${hops.length} new locations`);
+if (spiderSlow.length)
+  fail(`spiders never appeared within ${RELOCATE_MS}ms at ${spiderSlow.length} of ${hops.length} new locations`);
 
 // ---- The env gate (AUTO mode, where fields are NOT forced) ----
 // setEnabled() in manual mode calls setForced(), which deliberately bypasses
