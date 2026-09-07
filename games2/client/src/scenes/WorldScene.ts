@@ -832,6 +832,14 @@ const GROUND_SLICE_PX = 384;
  *  384 px slice is a SIZE budget and size does not predict cost across devices.
  *  The size is now steered by the measured milliseconds of the slices actually
  *  painted, so the same code lands near the target on both machines. */
+/** THE DRAIN'S PER-FRAME BUDGET, in measured milliseconds of painting. The head
+ *  rect always paints, so this bounds a frame rather than deferring one: at 6 ms
+ *  a typical band finishes in one or two frames instead of the 4-9 it took at
+ *  one rect per frame, and each of those frames pays ONE render-target bracket
+ *  instead of one each. */
+const GROUND_BAND_MS = 6;
+/** UNUSED SINCE THE SIZE RATCHET WENT (see t3paintSliceStep): the rects stay at
+ *  GROUND_SLICE_PX, because the bracket and not the rect area is the cost. */
 const GROUND_SLICE_MS = 2;
 const GROUND_SLICE_MAX = 768;
 /** Composed boundary/plate textures the PREFETCH RING may build per frame. */
@@ -2631,6 +2639,15 @@ export class WorldScene extends Phaser.Scene {
   private t3sheetPaths = new Set<string>();
   private groundDirtyCells: number[] = [];
   private repaintGroundPartial = false;
+  /** THE DROP DRAIN'S REPAINT — OFF. Every drop the drain can see is already
+   *  owned by the landing path (t3missing, recorded by the ground pass's `need`
+   *  closure and repaired by onTerrainBatch -> repaintTiles3Cells), or it is a
+   *  path whose batch completed with no texture — a 404 tombstone no repaint
+   *  can ever fix. `Tiles3Loader.wanted()` is the discriminator and there is no
+   *  third class. So the whole-texture repaint it used to run was work with
+   *  nothing to do, and the drain still observes and counts. See t3drainDrops.
+   *  `__ml.groundDrain(true)` puts it back for an A/B. */
+  private groundDrainRepaint = false;
   private groundPartial = groundPathFast();
   private groundPrefetch = groundPathFast();
   private t3ringQueue: [number, number][] = [];
@@ -2638,9 +2655,29 @@ export class WorldScene extends Phaser.Scene {
   /** The grown window's cell INDICES, for the prune — see t3armRing. */
   private t3keepIdx: Set<number> | null = null;
   /* THE SLICED BAND — see t3paintSliceStep. */
+  /** THE RENDER TARGET A DRAW BRACKET IS ALREADY OPEN ON, or null.
+   *
+   *  Keyed on the TEXTURE, not a depth counter: `repaintTiles3Cells` calls
+   *  drawTiles3Ground against its own `scratch`, and a counter would let that
+   *  draw be swallowed by a bracket open on the ground RT if the two ever met.
+   *  Two invariants this rests on, both silent if broken — (i) nothing between
+   *  beginDraw and endDraw may touch the target except `batchDrawFrame` (t3Blit
+   *  is the only path today); a `draw`/`fill`/`clear` there closes the bracket
+   *  through its own internal endDraw and every later rect paints onto whatever
+   *  framebuffer is then bound. (ii) No ground op may use ERASE or a non-NORMAL
+   *  blend, because merging brackets rests on Porter-Duff `over` being
+   *  associative. */
+  private groundBatchRT: Phaser.GameObjects.RenderTexture | null = null;
+  /** Did a slice drain run this frame? The ring and the boundary retry stand
+   *  down for it — see t3drainSlices. */
+  private groundDrainedThisFrame = false;
   private groundSliceQ: { x0: number; y0: number; x1: number; y1: number }[] = [];
   private groundSliceCtx: { ax: number; ay: number; mask: Map<number, number> | null; cuts: Map<number, number> | null; top: number } | null = null;
-  private groundSliceStats = { runs: 0, slices: 0, ms: 0, flushes: 0 };
+  private groundSliceStats = { runs: 0, slices: 0, ms: 0, flushes: 0, drains: 0 };
+  /** The drain's per-frame budget in force. A dev A/B sets it to ~0 to get the
+   *  OLD topology back — one rect per bracket per frame — so the merge can be
+   *  proved pixel-identical against the behaviour it replaced. */
+  private groundBandMs = GROUND_BAND_MS;
   /** The last anchor shift — the direction the world is travelling, which is
    *  the only direction worth prefetching (t3armRing). */
   private groundLastShift = { x: 0, y: 0 };
@@ -4936,6 +4973,25 @@ export class WorldScene extends Phaser.Scene {
       groundPartial: (on?: boolean) => {
         if (typeof on === "boolean") this.groundPartial = on;
         return this.groundPartial;
+      },
+      /** THE DROP DRAIN'S REPAINT, for an A/B against the census. Off by
+       *  default — see `groundDrainRepaint`. `drains` still counts the idle
+       *  edges either way, so a run with it on and a run with it off differ in
+       *  `longBy["full:redrawGround"]` and nowhere else. */
+      /** The drain's per-frame budget, ms. ~0 restores one rect per bracket per
+       *  frame, which is what the merge replaced — the two must hash alike. */
+      groundBandMs: (v?: number) => {
+        if (typeof v === "number") this.groundBandMs = v;
+        return { budgetMs: this.groundBandMs, ...this.groundSliceStats };
+      },
+      groundDrain: (on?: boolean) => {
+        if (typeof on === "boolean") this.groundDrainRepaint = on;
+        return {
+          on: this.groundDrainRepaint,
+          drains: this.repaintStats.drains,
+          deferred: this.repaintStats.drainsDeferred,
+          pending: this.groundDropsPending,
+        };
       },
       groundPrefetch: (on?: boolean) => {
         if (typeof on === "boolean") {
@@ -9755,6 +9811,12 @@ export class WorldScene extends Phaser.Scene {
     // run — bumping it in the flush instead would make every probe read
     // "this body has no surface" one tick too early.
     this.coverTick++;
+    /* Cleared here, set by t3drainSlices. The two stand-down guards below read
+     * `groundSliceQ.length` AFTER the drain has already shifted its rects, so
+     * the frame that EMPTIES the queue used to look idle to them — and after
+     * the merge that is exactly the frame carrying the whole band. One boolean
+     * restores what those guards were written to mean. */
+    this.groundDrainedThisFrame = false;
     /* ARM THIS FRAME'S COMPOSE ALLOWANCE — the thing that turns a 1,276 ms
      * freeze into a bounded cost. Until the world is up the join paint runs
      * UNBUDGETED: it is behind the loading screen, nothing is being played
@@ -9860,7 +9922,7 @@ export class WorldScene extends Phaser.Scene {
     this.pe("redrawGround");
     if (!this.groundRedrewThisFrame) {
       this.ps();
-      this.t3paintSliceStep(); // one slice of the exposed band
+      this.t3drainSlices(); // as much of the exposed band as one bracket affords
       this.pe("groundSlice");
     }
     this.ps();
@@ -15165,11 +15227,11 @@ export class WorldScene extends Phaser.Scene {
   /** ONE SLICE OF THE EXPOSED BAND, painted into the live texture through the
    *  same clipped pass the whole band used — identical pixels, a frame's worth
    *  at a time. Runs once per frame while anything is owed. */
-  private t3paintSliceStep(): void {
+  private t3paintSliceStep(): number {
     const b = this.groundSliceQ[0];
     const ctx = this.groundSliceCtx;
     const rt = this.groundRT;
-    if (!b || !ctx || !rt || !this.maps3) return;
+    if (!b || !ctx || !rt || !this.maps3) return 0;
     this.groundSliceQ.shift();
     const t0 = performance.now();
     const win = this.t3groundWindow(ctx.ax, ctx.ay, b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
@@ -15182,6 +15244,15 @@ export class WorldScene extends Phaser.Scene {
     const sliceMs = performance.now() - t0;
     this.groundSliceStats.slices++;
     this.groundSliceStats.ms += sliceMs;
+    /* THE SIZE RATCHET IS GONE. It grew `groundSlicePx` only when a slice cost
+     * under GROUND_SLICE_MS/2 = 1 ms, and a slice on his phone costs ~20 ms
+     * because of the bracket — so the condition was unreachable and the size
+     * sat at its initial 384 px for the life of the session. It could only grow
+     * once it was already fast and it was never fast because it never grew. The
+     * bracket is the cost, so the fix is to pay it once per FRAME (see
+     * t3drainSlices) rather than to resize the rects; the cut stays 384 px, so
+     * the rect count per band is unchanged and `slices` stays comparable
+     * across the A/B. */
     /* THE SIZE IS NOT THE LEVER, AND STEERING IT DOWNWARD BACKFIRED. Measured
      * on his phone: shrinking slices took `groundSlice` from 6.48 ms/frame to
      * 16.66 — two and a half times WORSE. The reason is already written down
@@ -15191,10 +15262,42 @@ export class WorldScene extends Phaser.Scene {
      * more brackets for the same band, and each one pays that fixed price.
      * So the size only ever GROWS here, toward fewer brackets, and the floor is
      * the size that was shipping. */
-    if (sliceMs < GROUND_SLICE_MS * 0.5) {
-      this.groundSlicePx = Math.min(GROUND_SLICE_MAX, Math.round(this.groundSlicePx * 1.15));
-    }
     if (!this.groundSliceQ.length) this.groundSliceCtx = null;
+    return sliceMs;
+  }
+
+  /** DRAIN THE BAND UNDER ONE BRACKET, bounded by measured milliseconds.
+   *
+   *  The head rect ALWAYS paints, so this removes work rather than deferring
+   *  it: a frame that used to pay one ~20 ms bracket for one rect now pays one
+   *  bracket for as many rects as fit in GROUND_BAND_MS. Measured over three
+   *  30 s windows, `scroll:groundSlice` was 43% of all the time spent in frames
+   *  over 40 ms — 190 slices, one bracket each, draining one per frame, which
+   *  is the burst of 4-9 slow frames every 1.46 s.
+   *
+   *  The progress guard is not theoretical: t3paintSliceStep returns without
+   *  shifting when ctx/rt/maps3 is falsy, and an ms-keyed loop without it would
+   *  hang the tab rather than stall a queue. */
+  private t3drainSlices(): void {
+    const rt = this.groundRT;
+    if (!this.groundSliceQ.length || !rt || !this.maps3) return;
+    rt.beginDraw();
+    const prev = this.groundBatchRT;
+    this.groundBatchRT = rt;
+    try {
+      let spent = this.t3paintSliceStep();
+      let guard = 4096;
+      while (this.groundSliceQ.length && spent < this.groundBandMs && guard-- > 0) {
+        const n = this.groundSliceQ.length;
+        spent += this.t3paintSliceStep();
+        if (this.groundSliceQ.length === n) break; // no shift = no progress
+      }
+    } finally {
+      this.groundBatchRT = prev;
+      rt.endDraw();
+    }
+    this.groundDrainedThisFrame = true;
+    this.groundSliceStats.drains++;
   }
 
   /** Pay off every owed slice NOW — before a scroll copies the picture forward,
@@ -15202,8 +15305,19 @@ export class WorldScene extends Phaser.Scene {
   private t3flushSlices(): void {
     if (!this.groundSliceQ.length) return;
     this.groundSliceStats.flushes++;
-    let guard = 4096;
-    while (this.groundSliceQ.length && guard-- > 0) this.t3paintSliceStep();
+    const rt = this.groundRT;
+    // Same merge as the drain: every caller is a top-level synchronous call
+    // with no bracket open, so this owns one and pays it once for the lot.
+    if (rt) rt.beginDraw();
+    const prev = this.groundBatchRT;
+    if (rt) this.groundBatchRT = rt;
+    try {
+      let guard = 4096;
+      while (this.groundSliceQ.length && guard-- > 0) this.t3paintSliceStep();
+    } finally {
+      this.groundBatchRT = prev;
+      if (rt) rt.endDraw();
+    }
   }
 
   /** A lit piece's FOG SILHOUETTE: the copy's twin (texture, frame, origin,
@@ -15544,7 +15658,7 @@ export class WorldScene extends Phaser.Scene {
     if (!t3 || !world) return;
     // Never on a frame that already scrolled or painted — those are the frames
     // the player feels, and this is repair work with no deadline.
-    if (this.groundRedrewThisFrame || this.groundSliceQ.length) return;
+    if (this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length) return;
     const tex = this.ensureTiles3Textures();
     if (!tex) return;
     const ready: number[] = [];
@@ -15653,7 +15767,7 @@ export class WorldScene extends Phaser.Scene {
     if (!tex) return; // no composer yet (the pattern sheets): nothing to ask for
     // Never stack the ring onto the frame that scrolled or painted a slice —
     // those are the frames the player would feel.
-    if (this.groundRedrewThisFrame || this.groundSliceQ.length) return;
+    if (this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length) return;
     const built0 = tex.stats.built;
     const ringT0 = performance.now();
     /* MAY THIS FRAME COMPOSE AT ALL? A composition cannot be interrupted, so
@@ -15928,7 +16042,16 @@ export class WorldScene extends Phaser.Scene {
     // The window, once — all three passes walk the same cells.
     const cells = this.t3windowCells(u0, u1, v0, v1);
 
-    rt.beginDraw();
+    /* ONE BRACKET, POSSIBLY OWNED BY THE CALLER. Every beginDraw/endDraw pair
+     * costs a capture-target clear AND a full-texture blit whatever it draws
+     * (Phaser 3.90 DynamicTexture.beginDraw -> RenderTarget.bind, endDraw ->
+     * blitFrame), so on a 1510x1656 target the BRACKET is the cost, not the
+     * area inside it — measured ~20 ms each on his phone. A scrolled band
+     * drains as 4-9 rects and used to pay that 4-9 times, one per frame, which
+     * is the burst of slow frames he feels every 1.5 s. t3drainSlices now opens
+     * one bracket around the whole drain and this defers to it. */
+    const ownBracket = this.groundBatchRT !== rt;
+    if (ownBracket) rt.beginDraw();
     for (const [col, row] of cells) {
       const cell = cellOf(col, row);
       if (!cell) continue;
@@ -16113,7 +16236,7 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
-    rt.endDraw();
+    if (ownBracket) rt.endDraw();
     if (this.groundCacheOn && !this.groundClip) this.t3pruneCache(cells); // a band pass prunes after (scrollTiles3Ground); the ring keeps its cells
     stats.culled = this.groundCulled;
     // COMPOSITIONS this redraw paid for: boundaries/plates built on the fly
@@ -16190,6 +16313,15 @@ export class WorldScene extends Phaser.Scene {
     this.groundDropsPending = false;
     this.t3drainGen = this.t3texGen; // nothing new can drop until art lands
     this.repaintStats.drains++;
+    /* AND IT DOES NOT REPAINT. The drop classes above are all owned elsewhere,
+     * so this was a whole-texture paint with nothing to fix — measured 145
+     * drains of 173 full paints across 14 telemetry windows, i.e. most of the
+     * `full:redrawGround` bucket. THE COST IS WHERE IT RUNS: this is called
+     * from update() AFTER the frame has already set groundRedrewThisFrame, and
+     * after the band slice, the occluder rebuild, the cull, the prefetch ring
+     * and the boundary retry. Nothing stands down for it, so its 21-60 ms
+     * landed on a frame that had already done a frame's work. */
+    if (!this.groundDrainRepaint) return;
     /* GROUND ONLY. A dropped GROUND op is a hole in the ground texture; it says
      * nothing about the occluder set, which draws its own art on its own 96 px
      * latch and is repainted by the landing path anyway (`requestRepaint`

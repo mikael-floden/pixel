@@ -3070,6 +3070,34 @@ height reads per thing per frame.
   vec4(0) for exactly those fragments — so this is free. Any future pass with an
   early-out uniform gets BOTH treatments: the guard is only as good as the last
   write, and the last write is only as good as not running at all.
+- **A RENDER-TARGET BRACKET IS THE COST, NOT THE AREA INSIDE IT.** Every
+  `beginDraw`/`endDraw` pair on a DynamicTexture costs a capture-target clear AND
+  a full-texture blit whatever it draws (Phaser 3.90: `beginDraw` ->
+  `RenderTarget.bind`, `endDraw` -> `blitFrame`), so on the 1510x1656 ground RT
+  one bracket measured ~20 ms on his phone. The scrolled band drains as 4-9
+  rects and used to open one bracket EACH, one per frame — 190 of them per 90 s,
+  which is the burst of 4-9 slow frames every 1.46 s the maintainer feels ("the
+  bad case that happens over and over again"). `t3drainSlices` now opens ONE
+  bracket per frame and pays as many rects as fit in `GROUND_BAND_MS`; the head
+  rect always paints, so it bounds a frame rather than deferring one.
+  MERGING IS PIXEL-EXACT, by associativity and not by sampling: a bracket is a
+  single Porter-Duff `over` of its capture onto the destination, so merged
+  `(later over earlier) over dst` equals split `later over (earlier over dst)` —
+  including at the 1-texel GROUND_SEAM overlap, whatever the alpha. It holds
+  only while every op inside is `over`: nothing between beginDraw and endDraw
+  may touch the target except `batchDrawFrame`, and no ground op may use ERASE
+  or a non-NORMAL blend. `groundBatchRT` keys the guard on the TEXTURE so a
+  nested `repaintTiles3Cells` draw against its own scratch can never be
+  swallowed. A/B it with `__ml.groundBandMs(0.0001)` (one rect per bracket, the
+  old topology) against the default.
+- **THE SLICE-SIZE RATCHET WAS DEAD CODE.** It grew `groundSlicePx` only when a
+  slice cost under `GROUND_SLICE_MS`/2 = 1 ms, and a slice costs ~20 ms on his
+  phone because of the bracket — so the condition was unreachable and the size
+  sat at its initial 384 px for the life of every session. It could only grow
+  once it was already fast and it was never fast because it never grew. Removed:
+  the bracket is the cost, so the fix is to pay it once per FRAME, not to resize
+  rects. Any self-tuning ratchet whose growth test is stricter than its target
+  has this bug.
 - **THE LIGHT PASSES RENDER AT HALF RESOLUTION** (`LIGHT_SCALE_DEFAULT` 0.5,
   lightscale.ts), tuned by the "Light resolution" slider. It is the fraction of
   the canvas the three full-screen passes render at before a LINEAR upsample, so
