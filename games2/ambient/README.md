@@ -146,7 +146,7 @@ decision; an earlier version that jumped the world to each effect's
   `AUTO → NONE → <each feature in registry order> → AUTO`
 
   (currently fireflies, pollen, water, deepwater, ants, spiders, moths, gnats,
-  bats, birds,
+  crabs, bats, birds,
   thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
   folder joins it automatically.)
 
@@ -212,6 +212,7 @@ controller (AUTO / NONE / solo-each).
 | `spiders/` | field | The SKITTER — 3px, dart-stop-dart, solitary, keeps out of the player's lap | Dry ground; dusk/night leaning (0.25 by day) |
 | `moths/` | field | The LAMP DANCE — a few cream specks holding a squashed orbit round a lit lamp, diving at it now and then | Night, outdoors, and only where `lightsInView` reports an unsealed lamp of radius >= 1.5 |
 | `gnats/` | field | THE COLUMN — a couple of dozen specks flying hard inside a narrow vertical volume that stands still over one patch of ground; walk into it and it breaks up, then gathers again | Dusk (Evening full, Morning half), outdoors, dry ground; gone in rain, storm, snow or wind |
+| `crabs/` | field | THE SIDEWAYS SCUTTLE — four-pixel crabs on the sand beside water, still, then running hard along the shore, and all of them at once when you come near | Daylight-leaning (night 0.3), outdoors, dry ground with water within a few steps |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: water on screen (iso probe) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
