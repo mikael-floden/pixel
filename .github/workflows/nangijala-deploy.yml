@@ -159,6 +159,16 @@ jobs:
         working-directory: games2
       - run: npm run typecheck
         working-directory: games2
+      # THE WIKI'S SCRIPT MUST PARSE. wiki/site/wiki.js is loaded by a plain
+      # <script src>, so ONE module keyword in it is a SyntaxError that stops
+      # the whole file and the wiki never boots — production hung on "GATHERING
+      # THE WORLD…" for every visitor on 2026-09-06, from an `export` added in
+      # passing by another domain's refactor, and the deploy that shipped it was
+      # green. NOT `node --check`: Node 22 sees the export, decides the file is
+      # a module and passes it. The check compiles it under classic-script
+      # rules, which is what the <script> tag already committed to.
+      - name: wiki.js parses as a classic script
+        run: node wiki/tools/check-script.mjs
       - run: npm test
         working-directory: games2
 
