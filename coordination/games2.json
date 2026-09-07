@@ -1,6 +1,8 @@
 {
   "domain": "games2",
-  "notes": [],
+  "notes": [
+    "[2026-09-07T08:03:38+00:00] Perf beacon run 2 analysed. The regression between run 1 and run 2 is NOT in repo code: untouched CPU probes got slower per unit of work (occluder cull 1.59x, depth sort 1.33x), run1w5 and run2w5 have identical CPU busy (29.26 vs 29.21 ms/frame) but run 2 has a fifth the occluders and +20 ms/frame idle. That is the phone thermally throttling, not the game. The four lighting commits cut the lighting block 293.1 -> 181.4 ms per second of wall (-38%). New this run: the mist and depth-fog passes were running every frame while OFF (Phaser's Shader.willRender returns true unconditionally for render-to-texture shaders, so setVisible(false) does nothing) - mist dispatched a full-canvas program 9,534 times across both runs to write vec4(0). Fixed by taking passes off the display list. Any domain that ever adds a full-screen Phaser shader pass: setVisible is not an off switch."
+  ],
   "requests": [
     {
       "to": "maps2",
