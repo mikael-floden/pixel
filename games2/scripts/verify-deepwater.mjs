@@ -32,6 +32,12 @@ const URL = process.env.GAME_URL || "http://localhost:5173/";
  * which way it tips at the top of the range. */
 const POP_P99 = 60;
 
+// The shipped display band (deepwater.ts SHOW_MIN_WU / SHOW_MAX_WU). Mirrored
+// here on purpose: if the look is retuned, this gate must be retuned WITH it,
+// deliberately, rather than following along and asserting whatever ships.
+const SHOW_MIN_WU = 17;
+const SHOW_MAX_WU = 41;
+
 let failed = false;
 const fail = (m) => { console.error("FAIL:", m); failed = true; };
 
@@ -206,6 +212,76 @@ if (sea && sea.deep) {
       fail(`${c.crowded} of ${c.frames} ${kind} frames are crowded — the density rule is not holding`);
   }
 
+  /* THE SEA MUST STILL QUICKEN AS YOU SWIM OUT. Narrowing the band is a LOOK;
+   * the mechanic is that the water visibly runs harder the further out you are,
+   * and a flat rate would read as one moving wallpaper everywhere. Measured as
+   * the median mark speed at the shoreline edge against the open sea. */
+  const ranked = await page.evaluate(async ({ deep, edge }) => {
+    const median = (a) => (a.length ? a.slice().sort((x, y) => x - y)[a.length >> 1] : 0);
+    const at = async (c) => {
+      await window.__park(c.col, c.row, 150);
+      const d = window.__mlAmbient.debug("deepwater");
+      return {
+        spd: median((d.all || []).filter((m) => m.a > 0.05).map((m) => m.spd)),
+        n: (d.all || []).length,
+        strength: d.meanStrength,
+      };
+    };
+    const shore = await at(edge);
+    const sea = await at(deep);
+    return { shore, sea };
+  }, { deep: sea.deep, edge: { col: sea.col, row: sea.row } });
+  console.log(
+    `rate ranking: shoreline ${ranked.shore.spd} px/s (strength ${ranked.shore.strength}, ${ranked.shore.n} marks) ` +
+      `vs open sea ${ranked.sea.spd} px/s (strength ${ranked.sea.strength}, ${ranked.sea.n} marks)`,
+  );
+  if (!(ranked.sea.spd > ranked.shore.spd * 1.15))
+    fail(`the sea does not quicken with the current: ${ranked.shore.spd} at the shore vs ${ranked.sea.spd} out at sea`);
+  if (!(ranked.shore.spd > 4))
+    fail(`the shallows are frozen (${ranked.shore.spd} px/s) — a weak current still moves water`);
+
+  /* THE GLITTER RIDES A WAVE, AND ONLY PART OF ONE (maintainer 2026-09-07:
+   * "small parts of the wave should spark (not the entire wave line)"). Two
+   * halves: a spark must sit ON some crest, and it must BLINK — a spark that is
+   * always lit is a bead on a string, not a glint. */
+  const spark = await page.evaluate(async (deep) => {
+    await window.__park(deep.col, deep.row, 120);
+    let frames = 0, sawNone = 0, sawSome = 0, offCrest = 0, most = 0, sparkFrames = 0;
+    for (let i = 0; i < 200; i++) {
+      await new Promise((r) => requestAnimationFrame(r));
+      const d = window.__mlAmbient.debug("deepwater");
+      const swells = (d.all || []).filter((m) => m.kind === "swell");
+      if (!swells.length) continue;
+      frames++;
+      const n = d.sparks || 0;
+      most = Math.max(most, n);
+      if (n === 0) sawNone++;
+      else { sawSome++; sparkFrames++; }
+      if (n > swells.length) offCrest++; // more glints than waves to carry them
+    }
+    return { frames, sawNone, sawSome, offCrest, most, sparkFrames };
+  }, sea.deep);
+  console.log(`sparkle: ${spark.sawSome} of ${spark.frames} frames glinting, at most ${spark.most} at once`);
+  if (spark.frames < 30) fail(`only ${spark.frames} frames carried waves — the sparkle check proved nothing`);
+  if (!spark.sawSome) fail("the sea never glints");
+  if (spark.offCrest) fail(`${spark.offCrest} frames drew more glints than there are waves to carry them`);
+  if (spark.most > 8) fail(`${spark.most} glints at once reads as sparkle, not as a wave catching the light`);
+
+  /* THE LAKE CHOP MUST STOP AT THE DEEP-WATER LINE. Its wavelets and glints are
+   * a POND look and do not move with the current; drawn over the open sea they
+   * read as two seas laid on top of each other. It cannot tell the two apart by
+   * surface (identical Surface records), so it reads the current probe. */
+  const chop = await page.evaluate(async (deep) => {
+    window.__mlAmbient.setEnabled("water", true);
+    await window.__park(deep.col, deep.row, 220);
+    const d = window.__mlAmbient.debug("water");
+    const out = { lit: d.lit, waterFrac: d.waterFrac, gain: d.gain };
+    window.__mlAmbient.setEnabled("water", false);
+    return out;
+  }, sea.deep);
+  console.log(`lake chop out at sea: ${chop.lit} marks lit, waterFrac ${chop.waterFrac}`);
+  if (chop.lit > 0) fail(`the lake chop drew ${chop.lit} marks on the open sea — deep water has its own effect`);
+
   // THE WAVES MUST NOT POP (maintainer 2026-09-06: they "should pop less,
   // should be similar in color to the deep_water"). Measured on the real
   // screen, not on the constants: the marks draw ADDITIVE over deep_water's own
@@ -246,7 +322,7 @@ if (sea && sea.deep) {
 
   // THE POINT OF THE EFFECT: every mark must stream along the current the game
   // would push the player with, at the speed it would push them.
-  const agree = await page.evaluate(async ({ RECHECK_PX, deep }) => {
+  const agree = await page.evaluate(async ({ RECHECK_PX, deep, SHOW_MIN_WU, SHOW_MAX_WU }) => {
     await window.__park(deep.col, deep.row, 20);
     const d = window.__mlAmbient.debug("deepwater");
     const CELL = 32, IDX = 32, IDY = 14;
@@ -254,7 +330,7 @@ if (sea && sea.deep) {
       const px = ((cur.dx - cur.dy) / CELL) * IDX;
       const py = ((cur.dx + cur.dy) / CELL) * IDY;
       const L = Math.hypot(px, py) || 1;
-      return { ux: px / L, uy: py / L, speed: cur.speed * L };
+      return { ux: px / L, uy: py / L, speed: cur.speed * L, scale: L };
     };
     const out = [];
     for (const m of d.all) {
@@ -265,15 +341,26 @@ if (sea && sea.deep) {
       const back = window.__ml.deepCurrentAtScreen(m.x - m.ux * RECHECK_PX, m.y - m.uy * RECHECK_PX);
       const flat = !!back && here.speed >= 119 && back.speed >= 119;
       const w = proj(here);
-      out.push({ dot: m.ux * w.ux + m.uy * w.uy, spd: m.spd, want: w.speed, flat });
+      // The SHIPPED display rate: a narrow band that ranks with the current,
+      // not the current's own speed (see SHOW_MIN_WU/SHOW_MAX_WU).
+      const strength = Math.max(0, Math.min(1, here.speed / 120));
+      const want = w.scale * (SHOW_MIN_WU + (SHOW_MAX_WU - SHOW_MIN_WU) * strength);
+      out.push({ dot: m.ux * w.ux + m.uy * w.uy, spd: m.spd, want, tow: w.speed, strength, flat });
     }
     return out;
-  }, { RECHECK_PX: 44, deep: sea.deep });
+  }, { RECHECK_PX: 44, deep: sea.deep, SHOW_MIN_WU, SHOW_MAX_WU });
   const bad = agree.filter((a) => a.dot < 0.9);
   console.log(`heading agreement: ${agree.length} marks sampled, ${bad.length} off-current`);
   if (agree.length < 5) fail(`only ${agree.length} marks to check — too few to trust`);
   if (bad.length) fail(`${bad.length} marks stream off the real current (worst dot ${Math.min(...bad.map((b) => b.dot)).toFixed(3)})`);
-  /* Speed is checked HERE, in the open sea, and only here. A mark carries the
+  /* THE PICTURE'S RATE IS NOT THE TOW RATE (maintainer 2026-09-07: matching the
+   * two "feels too fast and at the start a bit too slow"). What is asserted is
+   * the shipped band — SHOW_MIN_WU..SHOW_MAX_WU scaled by the projection — and,
+   * below, that it still RANKS with the current, which is the mechanic. The
+   * open sea is checked against a number the tow would fail: at strength 1 the
+   * marks run at about a third of what drags the player.
+   *
+   * Speed is checked HERE, in the open sea, and only here. A mark carries the
    * reading from where it last probed (bounded by RECHECK_PX), so across the
    * shoreline ramp — which climbs 0 to full over ~176 px — a perfectly correct
    * mark legitimately differs from the current under its feet. Out at sea the
@@ -284,6 +371,11 @@ if (sea && sea.deep) {
   console.log(`speed agreement: ${flat.length} of ${agree.length} marks sit in a FLAT field, ${spdOff.length} off-rate`);
   if (flat.length < 3) fail(`only ${flat.length} marks in a flat field — the speed check proved nothing`);
   if (spdOff.length) fail(`${spdOff.length} marks move at the wrong speed (e.g. ${spdOff[0].spd} vs ${spdOff[0].want.toFixed(1)})`);
+  // Non-vacuity: the band must be well clear of the tow speed it replaced, or
+  // this test would still pass against the rate the maintainer rejected.
+  const towed = flat.filter((a) => Math.abs(a.spd - a.tow) < Math.max(2, a.tow * 0.06));
+  if (flat.length && towed.length)
+    fail(`${towed.length} marks still run at the TOW speed (e.g. ${towed[0].spd} vs tow ${towed[0].tow.toFixed(1)})`);
 
   /* THE RAMP MUST RAMP. The current fades in over a shoreline band so the sea
    * does not switch on at a line; if that inverted or flattened, the effect

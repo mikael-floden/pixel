@@ -22,8 +22,13 @@ export interface DrawnFlow {
   /** The CREST's drawn unit direction: a quarter turn in the WORLD, projected. */
   cx: number;
   cy: number;
-  /** Drawn pixels per second — what the player sees the sea move at. */
+  /** Drawn pixels per second the current TRULY runs at (what drags the player). */
   speed: number;
+  /** Drawn px per world unit along this heading — the projection's own scale,
+   * 0.62 to 1.41 depending on direction. A look that picks its own rate still
+   * multiplies by this, or marks on different headings drift out of step with
+   * the water they are drawn on. */
+  scale: number;
   /** 0..1 of DEEP_CURRENT_MAX: 0 in the free shallows, 1 out at sea. */
   strength: number;
 }
@@ -71,6 +76,7 @@ export function drawnFlow(cur: { dx: number; dy: number; speed: number } | null)
     cx: c.x / cl,
     cy: c.y / cl,
     speed: cur.speed * len, // |flat dir| is 1, so the projection's length IS the scale
+    scale: len,
     strength: Math.max(0, Math.min(1, cur.speed / DEEP_CURRENT_MAX)),
   };
 }

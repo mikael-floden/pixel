@@ -44,6 +44,7 @@ import { ANGLE_STEPS, DrawnFlow, angleIndex, drawnFlow, rasterLine } from "./cur
 
 const DEPTH_SWELL = 900_000.34; // above the darkness overlay, below the water feature's chop
 const DEPTH_DRIFT = 900_000.36;
+const DEPTH_SPARK = 900_000.38; // over its own crest
 const GAIN_TAU = 900;
 const SAMPLE_MS = 260; // how often the view is re-scanned for open sea
 const GRID = 5; // GRID x GRID probe samples across the view (spawn candidates)
@@ -67,11 +68,31 @@ const RECHECK_MS = 380; // how often a live mark re-asks whether it is still at 
 const RECHECK_PX = 44;
 const SWELL_PROBE_BUDGET = 2;
 const DRIFT_PROBE_BUDGET = 2;
-const AREA_PER_SWELL = 1800;
-const AREA_PER_DRIFT = 5200;
-const MAX_SWELL = 30;
-const MAX_DRIFT = 16;
+const AREA_PER_SWELL = 3400;
+const AREA_PER_DRIFT = 7600;
+const MAX_SWELL = 16;
+const MAX_DRIFT = 9;
 const DRIFT_LEAD = 1.35; // drift runs this much faster than the current it rides
+
+/* HOW FAST THE PICTURE MOVES — not how fast the current does.
+ *
+ * The marks used to run at the current's own rate, which is 0 in the free
+ * shallows and 120 wu/s out at sea, and the maintainer's verdict on that is the
+ * spec now (2026-09-07): "It's like you try to make them the same speed the
+ * player get pushed back, but that feels too fast and at the start a bit too
+ * slow." Both halves are the same fault — an unbounded range. Water does not
+ * stand still where a current is weak, and a sea running at a swimmer's tow
+ * speed reads as a conveyor belt.
+ *
+ * So the rate is a NARROW BAND that still ranks with the current: strength 0
+ * shows SHOW_MIN_WU, strength 1 shows SHOW_MAX_WU, linearly. The sea still
+ * visibly quickens as you swim out — that ordering is the mechanic, and it is
+ * what the gate checks — it simply no longer runs from a standstill to a
+ * gallop. The projection scale still multiplies (`DrawnFlow.scale`), so marks
+ * on different headings stay in step with the water they are drawn on. */
+const SHOW_MIN_WU = 17; // the shallows drift instead of freezing
+const SHOW_MAX_WU = 41; // the open sea rolls; it does not race (the current is 120)
+const showSpeed = (f: DrawnFlow): number => f.scale * (SHOW_MIN_WU + (SHOW_MAX_WU - SHOW_MIN_WU) * f.strength);
 /* SPACING, and the reason it is enforced every frame rather than only at
  * placement (maintainer 2026-09-07: "the wave speed is so small at the
  * intersection all lines group up at that location ... if a lot of waves group
@@ -99,6 +120,25 @@ const SWELL_KEY = (i: number, L: number) => `amb-dwswell${i}_${L}`;
 // angles (the current turns smoothly), and generating all 192 up front would
 // cost the join a stall for art most seas never show.
 const DRIFT_KEY = () => `amb-dwfoam`;
+const SPARK_KEY = "amb-dwspark";
+
+/* THE GLITTER — sunlight catching PART of a wave, never the whole line
+ * (maintainer 2026-09-07: "the wave should sometimes glitter/spark. I mean
+ * small parts of the wave should spark (not the entire wave line)"). It is what
+ * replaces the lake's own chop and glints out here: those are a pond look, they
+ * do not move with the current, and drawing both over the same pixels reads as
+ * two seas laid on top of each other — so `ambient/water/` now stops at the
+ * deep-water line and this is deep water's own sparkle.
+ *
+ * A spark RIDES a crest: it picks a live swell and a point along that swell's
+ * own line, and travels with it, so the glint belongs to the wave rather than
+ * floating over it. One pixel, bright, brief, a few at a time. */
+const MAX_SPARK = 7;
+const SPARK_MS: [number, number] = [90, 240]; // a glint, not a lamp
+const SPARK_GAP: [number, number] = [260, 1500]; // dark between glints, per slot
+const SPARK_ALPHA: [number, number] = [0.35, 0.6];
+const SPARK_INSET = 0.16; // never at the very tip of a crest: it reads as a longer line
+const SPARK_COLOR = 0xeafcff; // near-white: this is the one thing allowed to catch the eye
 const DRIFT_FRAMES = 1; // a speck has nothing to animate
 
 /* These draw ADDITIVE over the sea, so what ships is water + colour x alpha and
@@ -185,8 +225,9 @@ export function deepWaterFeature(): AmbientFeature {
   };
 
   const ensureTextures = (scene: Phaser.Scene) => {
-    // Drift is one pixel, so it needs no per-direction art at all.
+    // Drift and sparks are one pixel each; no per-direction art at all.
     paintTex(scene, DRIFT_KEY(), DRIFT_PX, DRIFT_PX, DRIFT_BODY, [[0, 0]]);
+    paintTex(scene, SPARK_KEY, 1, 1, SPARK_COLOR, [[0, 0]]);
   };
 
   /** The crest sprite for one angle and length, rasterised the first time that
@@ -249,7 +290,7 @@ export function deepWaterFeature(): AmbientFeature {
       m.uy = flow.uy;
       m.cx = flow.cx;
       m.cy = flow.cy;
-      m.spd = flow.speed;
+      m.spd = showSpeed(flow);
       m.strength = flow.strength;
       return true;
     }
@@ -308,10 +349,72 @@ export function deepWaterFeature(): AmbientFeature {
       m.uy = flow.uy;
       m.cx = flow.cx;
       m.cy = flow.cy;
-      m.spd = flow.speed;
+      m.spd = showSpeed(flow);
       m.strength = flow.strength;
     }
     return true;
+  };
+
+  const range = ([a, b]: [number, number]) => a + rnd() * (b - a);
+
+  /** Sparks live in slots: each is either riding a crest for SPARK_MS, or dark
+   * for SPARK_GAP before picking a new one. A slot with no crest to ride stays
+   * dark, so an empty sea sparkles not at all. */
+  interface Spark {
+    sprite: Phaser.GameObjects.Image;
+    on: boolean;
+    timer: number;
+    host: number; // index into `swells`
+    at: number; // -0.5..0.5 along that crest's own line
+    a: number;
+  }
+  const sparks: Spark[] = [];
+
+  const stepSparks = (ctx: AmbientCtx, dt: number, gain: number, tint: number) => {
+    const want = gain < 0.02 ? 0 : Math.min(MAX_SPARK, Math.max(0, Math.round(swells.length * 0.45)));
+    while (sparks.length < want)
+      sparks.push({
+        sprite: ctx.scene.add
+          .image(0, 0, SPARK_KEY)
+          .setDepth(DEPTH_SPARK)
+          .setOrigin(0.5, 0.5)
+          .setVisible(false)
+          .setBlendMode(Phaser.BlendModes.ADD),
+        on: false,
+        timer: range(SPARK_GAP),
+        host: 0,
+        at: 0,
+        a: 0,
+      });
+    for (let i = 0; i < sparks.length; i++) {
+      const s = sparks[i];
+      if (i >= want) { s.sprite.setVisible(false); s.on = false; continue; }
+      s.timer -= dt;
+      if (s.timer <= 0) {
+        s.on = !s.on;
+        s.timer = range(s.on ? SPARK_MS : SPARK_GAP);
+        if (s.on) {
+          // Pick a live crest to ride, and a point along it that is not its tip.
+          const live: number[] = [];
+          for (let k = 0; k < swells.length; k++) if (swells[k].sprite.visible) live.push(k);
+          if (!live.length) { s.on = false; s.timer = range(SPARK_GAP); }
+          else {
+            s.host = live[(rnd() * live.length) | 0];
+            s.at = (rnd() - 0.5) * (1 - 2 * SPARK_INSET);
+            s.a = range(SPARK_ALPHA);
+          }
+        }
+      }
+      const host = s.on ? swells[s.host] : null;
+      if (!host || !host.sprite.visible) { s.sprite.setVisible(false); continue; }
+      // ON the crest: its centre plus an offset along the line it was drawn at.
+      const len = SWELL_LENS[host.li];
+      s.sprite
+        .setPosition(Math.round(host.x + host.cx * s.at * len), Math.round(host.y + host.cy * s.at * len))
+        .setTint(tint)
+        .setAlpha(s.a * gain * host.sprite.alpha * 3.2) // relative to its own wave: a glint fades with it
+        .setVisible(true);
+    }
   };
 
   return {
@@ -407,6 +510,7 @@ export function deepWaterFeature(): AmbientFeature {
           .setAlpha(a)
           .setVisible(a > 0.012);
       }
+      stepSparks(ctx, dt, g, tint);
       spaceOut(swells, SWELL_MIN_DIST);
       spaceOut(drift, DRIFT_MIN_DIST);
       if (swells.length) swellCursor = (swellCursor + SWELL_PROBE_BUDGET) % swells.length;
@@ -423,6 +527,7 @@ export function deepWaterFeature(): AmbientFeature {
         meanStrength: +meanStrength.toFixed(3),
         swells: live(swells),
         drift: live(drift),
+        sparks: sparks.filter((s) => s.sprite.visible).length,
         probe: !!(window as unknown as { __ml?: Record<string, unknown> }).__ml?.deepCurrentAtScreen,
         sample: s ? { x: Math.round(s.x), y: Math.round(s.y), dir: s.dir, spd: +s.spd.toFixed(1), strength: +s.strength.toFixed(2) } : null,
         // Per-mark drawn heading + speed, for the QA that checks the drift
@@ -437,8 +542,10 @@ export function deepWaterFeature(): AmbientFeature {
     },
     dispose() {
       for (const m of [...swells, ...drift]) m.sprite.destroy();
+      for (const s of sparks) s.sprite.destroy();
       swells.length = 0;
       drift.length = 0;
+      sparks.length = 0;
     },
   };
 }

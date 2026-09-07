@@ -122,10 +122,39 @@ export function waterFeature(): AmbientFeature {
   let seed = 7;
   const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
 
+  /* LAKE CHOP IS FOR LAKES. This is the pond-and-shallows look — diagonal
+   * wavelets and sun glints — and it must stop where the open sea begins
+   * (maintainer 2026-09-07: "the water effect we have on regular water can't be
+   * used on deep_water also"). Deep water has its OWN feature: the seaward
+   * current, whose crests carry the mechanic. Two effects over the same pixels
+   * read as chop laid on top of waves, and the chop does not move with the
+   * current, so it fights it.
+   *
+   * `waterAtScreen` cannot tell the two apart — `water` and `deep_water` carry
+   * identical Surface records — which is why this reads the deep-sea current
+   * probe instead: a non-null answer IS the open sea. The FREE SHALLOWS the
+   * shoreline keeps (DEEP_CURRENT_FREE_CELLS) answer null, so the chop still
+   * runs right up to where the drag starts, and the two effects meet without
+   * overlapping. No probe (an older game build) means no exclusion — the chop
+   * draws as it always did. */
+  const deepAt = (wx: number, wy: number): boolean => {
+    const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
+    const f = ml?.deepCurrentAtScreen as
+      | undefined
+      | ((x: number, y: number) => { dx: number; dy: number; speed: number } | null);
+    if (!f) return false;
+    try {
+      const cur = f(wx, wy);
+      return !!cur && cur.speed > 0;
+    } catch {
+      return false;
+    }
+  };
+
   const waterAt = (wx: number, wy: number): boolean => {
     const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
     const f = ml?.waterAtScreen as undefined | ((x: number, y: number) => boolean);
-    return f ? !!f(wx, wy) : false;
+    return f ? !!f(wx, wy) && !deepAt(wx, wy) : false;
   };
 
   const ensureTextures = (scene: Phaser.Scene) => {

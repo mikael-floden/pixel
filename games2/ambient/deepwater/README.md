@@ -20,16 +20,42 @@ neither `waterAtScreen` nor `surfaceAt` sees a difference.
 - **DRIFT** — single specks riding 1.35× the current, so they skate over the
   swells. Accent only. Never SLOWER than the current: drift the swimmer
   overtakes would read as being dragged *out*.
+- **GLITTER** — one-pixel sparks that RIDE a crest: a spark picks a live swell
+  and a point along that swell's own line and travels with it, lit for
+  90–240 ms with a dark gap between (maintainer 2026-09-07: "the wave should
+  sometimes glitter/spark. I mean small parts of the wave should spark (not the
+  entire wave line)"). It is what replaces the lake's chop and glints out here —
+  see the rule below.
 
 Both stay CLOSE to `deep_water`'s own `#3d7c8a` — additive, about +25 per
 channel at full envelope, landing a crest near `#577f92`. The sea is meant to
 move, not to sparkle (maintainer 2026-09-06: the waves "should pop less, should
 be similar in color to the deep_water").
 
-Both stream along the real vector at the real speed, so the sea visibly carries
-you back at the rate it is actually carrying you.
+They stream along the real current's real DIRECTION. The RATE is a look, not
+the tow — see the rule below.
 
 ## Rules
+
+- **THE PICTURE'S RATE IS NOT THE TOW RATE.** Matching them was the first cut
+  and the maintainer rejected it (2026-09-07): "It's like you try to make them
+  the same speed the player get pushed back, but that feels too fast and at the
+  start a bit too slow." Both halves are one fault — an unbounded range: the
+  current is 0 in the free shallows and 120 wu/s out at sea, so the marks either
+  froze or bolted. The rate is a NARROW BAND (`SHOW_MIN_WU`..`SHOW_MAX_WU`,
+  17–41) that still RANKS with the current, multiplied by the projection scale
+  so headings stay in step with the water. Measured: 34.8 px/s at the shoreline
+  band against 44.4 out at sea, where the tow is ~120. The sea quickening as you
+  swim out is the mechanic and is gated; running at the swimmer's own tow speed
+  is not.
+- **THE LAKE CHOP STOPS AT THE DEEP-WATER LINE.** `ambient/water/` is a POND
+  look — diagonal wavelets and sun glints that do not move with the current —
+  and drawn over the open sea it reads as two seas laid on top of each other
+  ("the water effect we have on regular water can't be used on deep_water
+  also"). It cannot tell the two apart by surface, so its `waterAt` now also
+  asks the deep-current probe and refuses a non-null answer. The FREE SHALLOWS
+  answer null, so the chop runs right up to where the drag starts and the two
+  effects meet without overlapping. No probe (an older build) = no exclusion.
 
 - **The current is FLAT, the picture is ISO.** `deepCurrentAt` answers in flat
   world space; everything drawn lives on the iso plane, where the same delta
