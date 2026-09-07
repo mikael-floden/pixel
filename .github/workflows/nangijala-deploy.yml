@@ -149,6 +149,13 @@ jobs:
             # count how many real light pools can reach one camera window.
             # The FILE only (707 KB) — not the 34 MB of tiles2 art.
             /tiles2/emission.json
+            # ...and the wiki parse gate below reads its own script and the
+            # file it checks. A step that reads a path this list does not
+            # fetch fails MODULE_NOT_FOUND and takes every domain's deploy
+            # with it — three commits in a row on 2026-09-07, none of them
+            # the wiki's own.
+            /wiki/tools/
+            /wiki/site/wiki.js
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
         with:
