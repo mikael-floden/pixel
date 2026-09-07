@@ -91,3 +91,18 @@ test("the long-frame census survives the allowlist — nested blocks are not sca
   assert.equal(r.worst.length, 24);
   assert.ok(r.worst[0].includes("redrawGround"), "a worst record lost its sections");
 });
+
+test("groundDrew reaches the file — the fourth field this allowlist ate", () => {
+  // The client has emitted it all along (the groundDrew block in WorldScene.ts)
+  // and 0 of 40 stored reports carried it, so what a ground paint actually did
+  // — cells, blits, boundaries, composeMs — was invisible while exactly that
+  // question was the open one. A field is emitted AND named here, together.
+  const r = perfReport(
+    { groundDrew: { cells: 4267, blits: 8843, boundaries: 128, underlays: 9, composed: 11, composeMs: 3.7, dropped: 0, built: 6, reused: 2, seam: true, transitionsOn: true } },
+    "2026-09-07T00:00:00.000Z",
+  ) as Record<string, any>;
+  assert.equal(r.groundDrew.cells, 4267);
+  assert.equal(r.groundDrew.blits, 8843);
+  assert.equal(r.groundDrew.composeMs, 3.7);
+  assert.equal(r.groundDrew.seam, true);
+});

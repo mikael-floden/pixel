@@ -108,6 +108,14 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     worst: Array.isArray(body.worst)
       ? (body.worst as unknown[]).slice(0, 24).map((w) => str(JSON.stringify(w), 900))
       : null,
+    /* WHAT A GROUND PAINT ACTUALLY DID — cells resolved, blits issued,
+     * boundaries composed and the ms they took. THE FOURTH FIELD THIS
+     * ALLOWLIST HAS SILENTLY EATEN (after lights, zoomMean/jumps and longBy):
+     * the client has emitted it from WorldScene.ts all along and 0 of 40
+     * reports carried it, which is precisely why the 22-25 ms in a slice has
+     * been guesswork. A field is emitted AND named here, in the same commit,
+     * or it does not exist. */
+    groundDrew: mixed(body.groundDrew, 12),
     /* The long-frame CENSUS — every frame over the threshold bucketed by ground
      * mode and dominant section, not just the unluckiest few. */
     longBy: nested(body.longBy, 24, 8),

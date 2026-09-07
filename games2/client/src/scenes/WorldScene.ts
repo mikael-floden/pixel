@@ -15254,11 +15254,24 @@ export class WorldScene extends Phaser.Scene {
         this.groundSliceQ.push(b);
         continue;
       }
-      // Cut along the band's LONG axis. Disjoint rects, so slice order cannot
-      // change a pixel (the same argument the two bands already rest on).
+      /* CUT BY AREA, NOT BY THE LONG AXIS. The rule was
+       * `ceil(span / groundSlicePx)` on the LONGER side and never looked at the
+       * depth, so a band 1,724 px wide and 8 px deep — which is what a mostly
+       * sideways latch produces — became FIVE slices of 345x8. Five frames, and
+       * five times the per-slice fixed cost, for a sliver: every slice resolves
+       * a window grown by two tiles in each direction whatever its own size, so
+       * that overhead is paid per SLICE and is nearly independent of how much
+       * the slice actually paints.
+       *
+       * Area keys on the work. The same sliver is now one slice; a full 256 px
+       * band goes from five slices to three, same pixels and same order, two
+       * fewer frames carrying a paint. The partition below is unchanged, so
+       * coverage cannot change: the rects still tile the band exactly. */
       const vertical = b.y1 - b.y0 >= b.x1 - b.x0;
       const span = vertical ? b.y1 - b.y0 : b.x1 - b.x0;
-      const n = Math.max(1, Math.ceil(span / this.groundSlicePx));
+      const area = (b.x1 - b.x0) * (b.y1 - b.y0);
+      const target = this.groundSlicePx * this.groundSlicePx;
+      const n = Math.max(1, Math.min(Math.ceil(span / this.groundSlicePx), Math.ceil(area / target)));
       for (let i = 0; i < n; i++) {
         if (vertical) {
           const lo = b.y0 + Math.round(((b.y1 - b.y0) * i) / n);
