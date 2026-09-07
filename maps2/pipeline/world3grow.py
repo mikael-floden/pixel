@@ -429,7 +429,12 @@ class Grow:
                    and out on DIFFERENT schedules - his words exactly.
 
         Within a family the variation is its own NOT_LIT_* state plus hflip,
-        which is the axis the variations were drawn for."""
+        which is the axis the variations were drawn for - and it is drawn PER
+        PIECE (`_variant`), never once per place: the province decides which
+        sculpt a place is built from, the variation is what stops seven of
+        them being the same rock (maintainer 2026-09-07, at a boulder field
+        by the spawn: "You created 7 stones ... but you only used a single
+        variation (state 1). Was this unluck or do you have a bug?")."""
         families = [f for f in families if self._rated(f)[0]]
         if not families:
             return None, None
@@ -458,8 +463,14 @@ class Grow:
         # A logistic on the GAP puts the width in one number.
         p1 = 1.0 / (1.0 + math.exp(-(w1 - w2) / self.FADE))
         piece = pool[i1 if r() < p1 else i2]
+        return piece, self._variant(piece, r)
+
+    def _variant(self, piece, r):
+        """One of the piece's own NOT_LIT_* variations, drawn fresh. Every
+        placement asks; a place that asks once and reuses the answer ships a
+        field of identical rocks."""
         var = self._variations(piece)
-        return piece, (var[int(r() * len(var)) % len(var)] if var else None)
+        return var[int(r() * len(var)) % len(var)] if var else None
 
     def put(self, piece, x, y, on=None, hflip=False, lit=False, dir=None,
             state=None, flush=False):
@@ -3912,7 +3923,7 @@ class Grow:
                 if self._hidden(piece, px, py):
                     continue
                 if self.put(piece, px, py, on=ground, hflip=r() < 0.5,
-                            state=state):
+                            state=self._variant(piece, r)):
                     got += 1
             if got:
                 placed += 1
