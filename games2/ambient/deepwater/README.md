@@ -2,7 +2,8 @@
 
 Deep water is the END OF THE WORLD. Swim out and a current carries you back —
 `deepCurrentAt` (shared), integrated by the server and predicted by the client,
-pointing at the map centre and strengthening the further out you are. It bounds
+pointing at the nearest land you could actually stand on and strengthening the
+further out you are. It bounds
 the map without ever refusing a move, which is what makes it read as weather
 rather than a wall. This feature is what that force LOOKS like.
 
@@ -13,14 +14,17 @@ neither `waterAtScreen` nor `surfaceAt` sees a difference.
 
 ## What it draws
 
-- **SWELLS** — crest lines ACROSS the flow, each with a dimmer line one pixel
-  down-current: the wave's back slope. A bare line is a tick mark; the pair has
-  a front and a back, and a rank of them reads as sea rolling in. Three lengths,
-  so ranks look like water rather than a drawn grid. These are the waves that
-  carry you, and they are the primary read.
-- **FOAM** — short streaks ALONG the flow with a bright head, running 1.35× the
-  current so they skate over the swells. Accent only. Never SLOWER than the
-  current: foam the swimmer overtakes would read as being dragged *out*.
+- **SWELLS** — single crest lines ACROSS the flow, in three lengths so ranks of
+  them look like water rather than a drawn grid. These are the waves that carry
+  you, and they are the primary read.
+- **DRIFT** — single specks riding 1.35× the current, so they skate over the
+  swells. Accent only. Never SLOWER than the current: drift the swimmer
+  overtakes would read as being dragged *out*.
+
+Both stay CLOSE to `deep_water`'s own `#3d7c8a` — additive, about +25 per
+channel at full envelope, landing a crest near `#577f92`. The sea is meant to
+move, not to sparkle (maintainer 2026-09-06: the waves "should pop less, should
+be similar in color to the deep_water").
 
 Both stream along the real vector at the real speed, so the sea visibly carries
 you back at the rate it is actually carrying you.
@@ -30,15 +34,36 @@ you back at the rate it is actually carrying you.
 - **The current is FLAT, the picture is ISO.** `deepCurrentAt` answers in flat
   world space; everything drawn lives on the iso plane, where the same delta
   covers a different distance depending on heading (1.41× along one tile axis,
-  0.62× along the other). `current.ts` projects. Skip that and the foam streams
+  0.62× along the other). `current.ts` projects. Skip that and the drift streams
   visibly askew from the drag — plausibly enough to ship.
+- **NOTHING IS DRAWN ALONG THE FLOW.** A streak along the travel direction
+  crosses every crest at right angles, and the two families read as a mesh
+  rather than as water — the drift used to be an 11px streak and was cut to a
+  speck for exactly that (maintainer 2026-09-06: the waves "should not have that
+  line perpendicular to the wave direction"). A swell's second, dimmer
+  "back-slope" line went the same way: these draw ADDITIVE, so it brightened the
+  water instead of shading it and simply read as a doubled crest.
 - **A crest lies across its travel IN THE WORLD.** The projection is not
   conformal, so that is ~47° on screen along the tile axes, not 90°. "Fixing" it
   to a right angle tilts every swell off the water plane.
-- **Art is quantised to the 8 drawn tile directions** and rasterised as whole
-  pixels. Pixel art may not be rotated to arbitrary angles; a free-rotated 1px
-  streak resamples into a dotted grey smear. Motion stays continuous — only
-  which of the 8 sprites is drawn snaps.
+- **A crest is drawn at ANY angle — rasterised there, never rotated**
+  (maintainer 2026-09-07: "I like the lines to be drawn in any free rotation
+  (always forming a wave that represent the current at that location)"). Eight
+  directions drew a sea of eight tick-mark families; the current turns smoothly
+  across the map and that IS the picture. Pixel art still may not be RESAMPLED —
+  a rotated 1px line becomes a dotted grey smear — but Bresenham at an arbitrary
+  angle is exact pixel art, the same staircase the terrain is drawn with. The
+  ring is quantised to 64 steps (5.6°, 2.6 px at the end of the longest crest)
+  only so the textures can be cached, and they are built ON DEMAND: a view uses
+  a handful of angles, and generating all 192 up front stalls the join.
+- **Spacing is held EVERY FRAME, not just at placement** (maintainer 2026-09-07:
+  "the wave speed is so small at the intersection all lines group up at that
+  location ... they need to be removed earlier so we kinda always have the same
+  wave density"). The field CONVERGES — that is what a current running at land
+  does — so it transports evenly-placed marks into a heap and parks them where
+  it stalls. A crowded mark (or one whose local speed is under `STALL_PX_S`) has
+  its LIFE cut to `CROWD_MS`, so it fades and is re-placed on empty sea: the
+  count never changes, only where the marks are.
 - **Strength fades the effect IN, it does not dim the sea.** Density already
   scales by strength; multiplying alpha by it as well double-dipped and left the
   open sea, where the current is most inescapable, at a fifth of the intended
@@ -48,7 +73,7 @@ you back at the rate it is actually carrying you.
   game's screen→ground resolve (47 levels deep on `the_game`) and its cost
   scales with the frame time — at a starved 5fps every mark came due every frame
   and cost +44 ms. A fixed per-frame budget flattens that, a rotating cursor
-  keeps the foam from starving behind the swells, and `RECHECK_PX` forces a read
+  keeps the drift from starving behind the swells, and `RECHECK_PX` forces a read
   when a mark has drifted far enough for the current to have genuinely changed.
 
 ## Seam

@@ -27,6 +27,9 @@ const DASH_SPEED: [number, number] = [46, 104]; // drawn px/s — quick, that is
 const TURN = 1.5; // radians of heading change allowed between dashes
 const PLAYER_CLEAR = 46; // never skitter closer than this to the player
 const MARGIN = 8;
+const SPAWN_INSET = 0.2; // spawn inside the view, not on its rim
+const OFF_VIEW = 40; // this far outside the view and it has gone for good
+const EDGE_TURN = 6; // it turns this far INSIDE the rim, before it is off it
 
 const KEY = "amb-spider";
 const SPIDER_DARK = 0x14100f;
@@ -98,11 +101,18 @@ export function spidersFeature(): AmbientFeature {
       nextIn -= dt;
       if (nextIn <= 0 && spiders.length < MAX_SPIDERS) {
         nextIn = range(SPAWN_EVERY);
-        const p = findGround(ctx.view, rnd, MARGIN);
+        const v = ctx.view;
+        const inner = {
+          x: v.x + v.width * SPAWN_INSET,
+          y: v.y + v.height * SPAWN_INSET,
+          width: v.width * (1 - 2 * SPAWN_INSET),
+          height: v.height * (1 - 2 * SPAWN_INSET),
+        };
+        const p = findGround(inner, rnd, MARGIN);
         const me = playerAt(ctx);
         if (p && (!me || Math.hypot(p.x - me.x, p.y - me.y) > PLAYER_CLEAR * 2)) {
           const s: Spider = {
-            sprite: ctx.scene.add.image(p.x, p.y, KEY).setScale(1).setVisible(false),
+            sprite: ctx.scene.add.image(p.x, p.y, KEY).setOrigin(0, 0).setScale(1).setVisible(false),
             x: p.x,
             y: p.y,
             ang: rnd() * Math.PI * 2,
@@ -118,6 +128,7 @@ export function spidersFeature(): AmbientFeature {
 
       const me = playerAt(ctx);
       const secs = dt / 1000;
+      const vw = ctx.view;
       for (let i = spiders.length - 1; i >= 0; i--) {
         const s = spiders[i];
         s.life -= dt;
@@ -127,10 +138,19 @@ export function spidersFeature(): AmbientFeature {
         if (s.dashing) {
           const nx = s.x + Math.cos(s.ang) * s.spd * secs;
           const ny = s.y + Math.sin(s.ang) * s.spd * secs * 0.6; // the iso plane is shallow
-          // Turn at anything it cannot walk on, and shy away from the player.
+          // Turn at anything it cannot walk on, shy away from the player — and
+          // treat the EDGE OF THE VIEW as a wall it cannot cross. There are at
+          // most two spiders in the world, so one that skitters off the side of
+          // the screen is the whole effect gone: measured before this, a spider
+          // spent 17 of 191 frames entirely out of frame. Retiring it (below)
+          // is the backstop for a camera that walks away; this is what keeps
+          // the one the player has in view.
           const blocked = !landableAt(Math.round(nx), Math.round(ny));
           const tooNear = me && Math.hypot(nx - me.x, ny - me.y) < PLAYER_CLEAR;
-          if (blocked || tooNear) {
+          const leaving =
+            nx < vw.x + EDGE_TURN || nx > vw.x + vw.width - EDGE_TURN ||
+            ny < vw.y + EDGE_TURN || ny > vw.y + vw.height - EDGE_TURN;
+          if (blocked || tooNear || leaving) {
             s.ang += Math.PI * (0.5 + rnd() * 0.5); // veer, do not reverse exactly
             rest(s);
           } else {
@@ -139,6 +159,12 @@ export function spidersFeature(): AmbientFeature {
           }
         }
 
+        // A spider that has skittered out of sight is spent: it will not be
+        // seen again, and holding it alive only keeps a slot from a spider that
+        // WOULD be seen. (Ants learned the same lesson the harder way.)
+        const v2 = ctx.view;
+        if (s.x < v2.x - OFF_VIEW || s.x > v2.x + v2.width + OFF_VIEW || s.y < v2.y - OFF_VIEW || s.y > v2.y + v2.height + OFF_VIEW)
+          s.life = Math.min(s.life, 300);
         // Leave quietly: the last stretch of life fades rather than blinking out.
         const fade = s.life < 1200 ? Math.max(0, s.life / 1200) : 1;
         if (s.life <= 0) {

@@ -1,13 +1,13 @@
 // The ambient deep-water effect draws the REAL deep-sea current: the same
 // vector the server integrates and the client predicts. Its whole claim is that
-// the foam streams the way the swimmer is actually being pushed, at the rate
+// the drift streams the way the swimmer is actually being pushed, at the rate
 // they are being pushed — so the two things that turn that vector into a
 // picture have to be right, and neither is visible in a screenshot.
 //
 //   1. THE PROJECTION. `deepCurrentAt` answers in FLAT world space; everything
 //      drawn lives on the iso plane. Flat "south" and drawn "south" are
 //      different directions on screen, so an unprojected vector would stream
-//      the foam visibly askew from the drag — and plausibly enough to ship.
+//      the drift visibly askew from the drag — and plausibly enough to ship.
 //   2. THE RAMP. Strength must be 0 in the free shallows and reach 1 out at
 //      sea, because it scales count, brightness and length; an inverted or
 //      clipped ramp would make the current loudest exactly where it does not
@@ -22,7 +22,7 @@ import {
   ISO_DX,
   ISO_DY,
 } from "@nangijala/shared";
-import { crossDir8, dir8, drawnFlow, flatToDrawn, FLOW_DIRS, rasterLine } from "../../ambient/deepwater/current.js";
+import { ANGLE_STEPS, angleIndex, angleOf, drawnFlow, flatToDrawn, rasterLine } from "../../ambient/deepwater/current.js";
 
 test("the projection matches the world's own iso formula, not an approximation", () => {
   // x = (col - row) * ISO_DX, y = (col + row) * ISO_DY. Check it against the
@@ -78,47 +78,77 @@ test("no current, a degenerate vector and a missing reading all draw nothing", (
   assert.equal(drawnFlow({ dx: 0, dy: 0, speed: DEEP_CURRENT_MAX }), null, "map centre must not divide by zero");
 });
 
-test("dir8 picks each of the 8 drawn directions, and the crest lies across the flow", () => {
-  for (let i = 0; i < FLOW_DIRS.length; i++) {
-    assert.equal(dir8(FLOW_DIRS[i][0], FLOW_DIRS[i][1]), i, `direction ${i} should resolve to itself`);
-  }
-  // A crest lies across its travel IN THE WORLD, and the iso projection is not
-  // conformal — a world right angle is NOT a right angle on screen (that is why
-  // a square tile draws as a rhombus). So this asserts the world-space turn and
-  // derives the expectation instead of eyeballing the drawn dot product, which
-  // is ~47 degrees off for the tile axes and looks wrong until you work it out.
+test("the crest lies across the flow IN THE WORLD, not on screen", () => {
+  // The iso projection is not conformal — a world right angle is NOT a right
+  // angle on screen (that is why a square tile draws as a rhombus). So this
+  // derives the expectation from the world turn instead of eyeballing the drawn
+  // dot product, which is ~47 degrees off along the tile axes and looks wrong
+  // until you work it out. Turning the DRAWN vector instead would stand every
+  // crest off the water plane.
   const S = Math.SQRT1_2;
   const flats: [number, number][] = [
     [1, 0], [S, S], [0, 1], [-S, S], [-1, 0], [-S, -S], [0, -1], [S, -S],
   ];
-  const idxOf = (fx: number, fy: number) => {
-    const d = flatToDrawn(fx, fy);
-    const L = Math.hypot(d.x, d.y);
-    return dir8(d.x / L, d.y / L);
-  };
+  let screenPerp = 0;
   for (const [fx, fy] of flats) {
-    assert.equal(idxOf(-fy, fx), crossDir8(idxOf(fx, fy)),
-      `crossDir8 is not a world-space quarter turn at flat (${fx}, ${fy})`);
+    const f = drawnFlow({ dx: fx, dy: fy, speed: 60 })!;
+    const want = flatToDrawn(-fy, fx);
+    const L = Math.hypot(want.x, want.y);
+    assert.ok(
+      Math.abs(f.cx - want.x / L) < 1e-9 && Math.abs(f.cy - want.y / L) < 1e-9,
+      `crest at flat (${fx}, ${fy}) is not the projected world quarter turn`,
+    );
+    if (Math.abs(f.ux * f.cx + f.uy * f.cy) < 1e-9) screenPerp++;
+  }
+  /* Non-vacuity, and the measurement that says which turn shipped. If the crest
+   * were a SCREEN quarter turn, all eight would read exactly perpendicular on
+   * screen. Exactly FOUR do, and it is always the same four: a flat DIAGONAL
+   * projects onto a screen axis (a flat (S,S) draws straight down the screen),
+   * and there the world turn and the screen turn coincide. The four flat
+   * CARDINALS are the tile axes, and there the crest's drawn dot against its
+   * own travel is +-0.6787 — the ~47 degrees the projection makes of a right
+   * angle, measured, not chosen. */
+  assert.equal(screenPerp, 4, `${screenPerp} of ${flats.length} crests are screen-perpendicular — expected the 4 flat diagonals`);
+  for (const [fx, fy] of [[1, 0], [0, 1], [-1, 0], [0, -1]] as [number, number][]) {
+    const f = drawnFlow({ dx: fx, dy: fy, speed: 60 })!;
+    assert.ok(
+      Math.abs(Math.abs(f.ux * f.cx + f.uy * f.cy) - 0.6787) < 0.001,
+      `a tile-axis crest should sit at the projection's own ~47 degrees, got ${(f.ux * f.cx + f.uy * f.cy).toFixed(4)}`,
+    );
   }
 });
 
-test("streaks rasterise as whole pixels on the grid the world is drawn on", () => {
-  for (let i = 0; i < 8; i++) {
+test("art rasterises at ANY angle, as whole pixels, with none drawn twice", () => {
+  // Free rotation is the maintainer's ask (2026-09-07); what may never happen
+  // is RESAMPLING, so every angle has to come out as integer pixels on the
+  // world's own grid rather than as a rotated sprite.
+  for (let i = 0; i < ANGLE_STEPS; i++) {
     const r = rasterLine(i, 9);
-    assert.ok(r.px.length >= 4, `direction ${i} produced only ${r.px.length} pixels`);
+    assert.ok(r.px.length >= 4, `angle ${i} produced only ${r.px.length} pixels`);
     for (const [x, y] of r.px) {
-      assert.ok(Number.isInteger(x) && Number.isInteger(y), `non-integer pixel in direction ${i}`);
-      assert.ok(x >= 0 && y >= 0 && x < r.w && y < r.h, `pixel outside the bitmap in direction ${i}`);
+      assert.ok(Number.isInteger(x) && Number.isInteger(y), `non-integer pixel at angle ${i}`);
+      assert.ok(x >= 0 && y >= 0 && x < r.w && y < r.h, `pixel outside the bitmap at angle ${i}`);
     }
-    // No duplicate cells — the iso stagger repeats a step and a doubled pixel
-    // would paint the same additive spot twice and read as a bright dot.
+    // A doubled pixel would paint the same additive spot twice and read as a
+    // bright dot on the crest.
     const seen = new Set(r.px.map(([x, y]) => `${x},${y}`));
-    assert.equal(seen.size, r.px.length, `direction ${i} has duplicate pixels`);
+    assert.equal(seen.size, r.px.length, `angle ${i} has duplicate pixels`);
   }
-  // The two tile-axis directions must actually STAGGER (32:14), not come out
-  // as a straight diagonal — that stagger is what makes them look like terrain.
-  const diag = rasterLine(1, 9);
-  assert.ok(diag.w > diag.h && diag.h > 1, `tile-axis streak should be shallow, got ${diag.w}x${diag.h}`);
+  // The ring really is fine-grained, and really does turn: 64 distinct shapes'
+  // worth of angles, and a line drawn at one of them lands within half a step
+  // of the direction asked for.
+  assert.ok(ANGLE_STEPS >= 32, `${ANGLE_STEPS} angles is coarse enough to read as a family of tick marks`);
+  const half = Math.PI / ANGLE_STEPS;
+  for (const deg of [0, 7, 23, 41, 88, 179, 271, 359]) {
+    const a = (deg * Math.PI) / 180;
+    const i = angleIndex(Math.cos(a), Math.sin(a));
+    const err = Math.abs(Math.atan2(Math.sin(angleOf(i) - a), Math.cos(angleOf(i) - a)));
+    assert.ok(err <= half + 1e-9, `${deg} deg snapped ${((err * 180) / Math.PI).toFixed(2)} deg away`);
+  }
+  // A shallow angle must STAGGER rather than come out as a straight diagonal —
+  // that stagger is what makes a crest look like it lies on the water.
+  const shallow = rasterLine(2, 21); // ~11 degrees
+  assert.ok(shallow.w > shallow.h && shallow.h > 1, `a shallow line should stagger, got ${shallow.w}x${shallow.h}`);
 });
 
 // THE CURRENT STEERS TO THE NEAREST MAIN LAND, NOT THE MAP CENTRE (maintainer,

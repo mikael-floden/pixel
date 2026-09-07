@@ -14,9 +14,14 @@ motion alone names the animal.
 - They veer at anything they cannot walk on, and keep `PLAYER_CLEAR` away from
   the player: a spider skittering over your feet is a jump-scare, and this layer
   is atmosphere.
+- **The edge of the view is one of those walls.** There are at most two spiders
+  in the world, so one that skitters off the side of the screen is the whole
+  effect gone — measured, a spider spent 17 of 191 frames entirely out of frame.
+  It turns `EDGE_TURN` px before the rim; retiring it past `OFF_VIEW` is only
+  the backstop for a camera that walks away from it.
 - They fade out at the end of their life rather than blinking away.
 
 QA: `scripts/verify-crawlers.mjs` — asserts both the dash and the rest states
 actually occur (a spider that only glides has lost the one thing that makes it a
 spider), that they stay on walkable ground, that they never enter the player's
-personal space, and that they favour night while ants favour day.
+personal space, that one is ON SCREEN whenever one is drawn, and that they favour night while ants favour day.

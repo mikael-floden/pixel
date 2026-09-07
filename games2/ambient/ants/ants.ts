@@ -26,11 +26,14 @@ const GAIN_TAU = 1400;
 const TRAIL_LIFE: [number, number] = [26_000, 55_000]; // then the colony re-routes
 const RELAY_MS = 900; // how often the trail re-checks that it still lies on ground
 const N_ANTS: [number, number] = [9, 20];
-const SPAN: [number, number] = [90, 240]; // drawn px between the trail's two ends
+const SPAN: [number, number] = [70, 170]; // drawn px between the trail's two ends
+const SPAN_VIEW_FRAC = 0.42; // ...and never longer than this much of the view
+const ANCHOR_INSET = 0.22; // lay the first end inside this margin of the view
 const SPEED: [number, number] = [11, 20]; // drawn px/s along the line
 const WOBBLE = 1.4; // px of lateral sway — ants do not walk a ruled line
 const SAMPLES = 28; // polyline points the curve is flattened to
 const MARGIN = 10; // dry ground required around each end (see findGround)
+const MIN_ON_SCREEN = 0.3; // re-lay once less than this much of the trail is in view
 
 const KEY_SMALL = "amb-ant1";
 const KEY_BIG = "amb-ant2";
@@ -48,6 +51,7 @@ interface Ant {
 export function antsFeature(): AmbientFeature {
   const ants: Ant[] = [];
   let path: { x: number; y: number }[] = [];
+  let box = { x0: 0, y0: 0, x1: 0, y1: 0 }; // the trail's extent, for the on-screen test
   let pathLen = 0;
   let life = 0;
   let relay = 0;
@@ -62,10 +66,19 @@ export function antsFeature(): AmbientFeature {
    * control points bow it sideways, then flattened to a polyline. Ants follow
    * the polyline, so nothing downstream has to know about curves. */
   const layTrail = (ctx: AmbientCtx): boolean => {
-    const a = findGround(ctx.view, rnd, MARGIN);
+    // Anchor INSIDE the view, not merely within it: a trail hung on the edge
+    // puts most of its ants off screen, where they are worth nothing.
+    const v = ctx.view;
+    const inner = {
+      x: v.x + v.width * ANCHOR_INSET,
+      y: v.y + v.height * ANCHOR_INSET,
+      width: v.width * (1 - 2 * ANCHOR_INSET),
+      height: v.height * (1 - 2 * ANCHOR_INSET),
+    };
+    const a = findGround(inner, rnd, MARGIN);
     if (!a) return false;
     const ang = rnd() * Math.PI * 2;
-    const span = range(SPAN);
+    const span = Math.min(range(SPAN), Math.min(ctx.view.width, ctx.view.height * 2) * SPAN_VIEW_FRAC);
     const b = { x: Math.round(a.x + Math.cos(ang) * span), y: Math.round(a.y + Math.sin(ang) * span * 0.6) };
     if (!landableAt(b.x, b.y)) return false;
     // Bow the line so a trail never reads as a drawn ruler.
@@ -85,9 +98,26 @@ export function antsFeature(): AmbientFeature {
         y: u * u * a.y + 2 * u * t * c.y + t * t * b.y,
       });
     }
-    // A trail that crosses water or a cliff face is worse than no trail.
-    for (let i = 0; i < pts.length; i += 4) if (!landableAt(Math.round(pts[i].x), Math.round(pts[i].y))) return false;
+    // A trail that crosses water or a cliff face is worse than no trail — so
+    // check the BAND THE ANTS ACTUALLY WALK, every sample and both wobble
+    // extremes, not every fourth centre point. A bowed 170px trail sampled
+    // every fourth point leaves ~24px between checks, and the gate caught an
+    // ant standing on water in the gap. This runs once per trail (every 26-55s
+    // per colony), so exhaustive is free.
+    for (let i = 0; i < pts.length; i++) {
+      const q = pts[i];
+      const r = pts[Math.min(pts.length - 1, i + 1)];
+      const tx = r.x - q.x;
+      const ty = r.y - q.y;
+      const tl = Math.hypot(tx, ty) || 1;
+      for (const w of [0, WOBBLE, -WOBBLE])
+        if (!landableAt(Math.round(q.x - (ty / tl) * w), Math.round(q.y + (tx / tl) * w))) return false;
+    }
     path = pts;
+    box = pts.reduce(
+      (m, q) => ({ x0: Math.min(m.x0, q.x), y0: Math.min(m.y0, q.y), x1: Math.max(m.x1, q.x), y1: Math.max(m.y1, q.y) }),
+      { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity },
+    );
     pathLen = 0;
     for (let i = 1; i < pts.length; i++) pathLen += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
     life = range(TRAIL_LIFE);
@@ -132,9 +162,19 @@ export function antsFeature(): AmbientFeature {
       life -= dt;
       relay -= dt;
       const v = ctx.view;
-      const off =
-        path.length > 0 &&
-        (path[0].x < v.x - 200 || path[0].x > v.x + v.width + 200 || path[0].y < v.y - 200 || path[0].y > v.y + v.height + 200);
+      // OFF SCREEN = too little of the trail is in the view to be worth
+      // drawing. Asked as a FRACTION of the line, not as a box test: the ants
+      // are spread over the whole path, so "some of the line is on screen" is
+      // the only phrasing that guarantees some ANTS are. The box tests before
+      // it both failed the same way — the first asked only where ONE END was
+      // (measured ants at screen (-53, 238) while the feature reported itself
+      // healthy), and the second, "the whole extent has left the view plus 24px
+      // of slack", still kept a trail whose every ant was outside the frame.
+      const inView = path.length
+        ? path.filter((q) => q.x >= v.x && q.x <= v.x + v.width && q.y >= v.y && q.y <= v.y + v.height).length /
+          path.length
+        : 0;
+      const off = path.length > 0 && inView < MIN_ON_SCREEN;
       if (path.length === 0 || life <= 0 || off) {
         if (!layTrail(ctx)) {
           for (const a of ants) a.sprite.setVisible(false);
@@ -143,7 +183,7 @@ export function antsFeature(): AmbientFeature {
         const want = Math.round(range(N_ANTS));
         while (ants.length < want)
           ants.push({
-            sprite: ctx.scene.add.image(0, 0, KEY_SMALL).setScale(1).setVisible(false),
+            sprite: ctx.scene.add.image(0, 0, KEY_SMALL).setOrigin(0, 0).setScale(1).setVisible(false),
             t: rnd(),
             dir: rnd() < 0.5 ? 1 : -1,
             spd: range(SPEED),

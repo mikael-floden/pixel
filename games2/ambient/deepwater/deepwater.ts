@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
-import { DrawnFlow, FLOW_DIRS, crossDir8, dir8, drawnFlow, rasterLine } from "./current";
+import { ANGLE_STEPS, DrawnFlow, angleIndex, drawnFlow, rasterLine } from "./current";
 
 // THE SEAWARD CURRENT — deep water is the END OF THE WORLD, and this is what
 // that looks like (maintainer 2026-09-06: "deep_water is something we use to
@@ -18,26 +18,32 @@ import { DrawnFlow, FLOW_DIRS, crossDir8, dir8, drawnFlow, rasterLine } from "./
 // same function the server integrates and the client predicts, so every mark
 // here streams along the exact vector the swimmer is being pushed along, at the
 // speed they are being pushed. Swim out and the sea visibly carries you back at
-// the rate it is actually carrying you; stop fighting it and the foam and your
+// the rate it is actually carrying you; stop fighting it and the drift and your
 // body drift together. That is the whole idea — a force you can read, not a
 // wall you bump into.
 //
 // TWO LAYERS, because one speed reads as a sliding sheet rather than water:
 //   • SWELLS  — long dim lines ACROSS the flow, marching inward at the current
 //     itself. These are the waves that carry you. Sparse, slow to fade.
-//   • FOAM    — short bright streaks ALONG the flow with a bright leading head,
-//     running slightly FASTER than the current, so they skate over the swells.
-//     Never slower: foam the swimmer overtakes would read as being dragged out.
+//   • DRIFT   — single specks riding slightly FASTER than the current, so they
+//     skate over the swells. Never slower: drift the swimmer overtakes would
+//     read as being dragged out. SPECKS, NOT STREAKS: a streak along the flow
+//     draws a line ACROSS the crests, and the crossing lines read as a mesh
+//     rather than as water (maintainer 2026-09-06: "should not have that line
+//     perpendicular to the wave direction"). A speck carries the same motion
+//     with no line at all.
 //
-// Both are quantised to the 8 drawn tile directions and rasterised as whole
-// pixels (see current.ts) — pixel art may not be rotated to arbitrary angles,
-// and the marks share the world's own pixel grid like every other effect here.
+// A swell is RASTERISED at whatever angle the current runs there — free
+// rotation, never a rotated sprite (see current.ts): pixel art may not be
+// resampled, but Bresenham at any angle is exact pixel art and lands on the
+// world's own grid. A speck needs no angle at all. Both sit CLOSE to
+// deep_water's own colour: this is the sea moving, not sparkling on it.
 // Strength (0 in the free shallows, 1 out at sea) scales count, brightness and
 // length, so the current FADES IN over the shoreline band exactly where the
 // player crosses into it rather than switching on at a line.
 
 const DEPTH_SWELL = 900_000.34; // above the darkness overlay, below the water feature's chop
-const DEPTH_FOAM = 900_000.36;
+const DEPTH_DRIFT = 900_000.36;
 const GAIN_TAU = 900;
 const SAMPLE_MS = 260; // how often the view is re-scanned for open sea
 const GRID = 5; // GRID x GRID probe samples across the view (spawn candidates)
@@ -60,32 +66,50 @@ const RECHECK_MS = 380; // how often a live mark re-asks whether it is still at 
  * healthy frame and pays exactly where correctness needs it on a slow one. */
 const RECHECK_PX = 44;
 const SWELL_PROBE_BUDGET = 2;
-const FOAM_PROBE_BUDGET = 2;
+const DRIFT_PROBE_BUDGET = 2;
 const AREA_PER_SWELL = 1800;
-const AREA_PER_FOAM = 5200;
+const AREA_PER_DRIFT = 5200;
 const MAX_SWELL = 30;
-const MAX_FOAM = 16;
-const FOAM_LEAD = 1.35; // foam runs this much faster than the current it rides
-const MIN_DIST = 13; // marks keep this far apart (Chebyshev, drawn px)
+const MAX_DRIFT = 16;
+const DRIFT_LEAD = 1.35; // drift runs this much faster than the current it rides
+/* SPACING, and the reason it is enforced every frame rather than only at
+ * placement (maintainer 2026-09-07: "the wave speed is so small at the
+ * intersection all lines group up at that location ... if a lot of waves group
+ * up at that spot they need to be removed earlier so we kinda always have the
+ * same wave density"). The current CONVERGES — that is what a current running
+ * at land does — so marks placed evenly are carried together, and where the
+ * flow stalls they arrive and stay: spacing checked once, at birth, cannot
+ * survive a field that transports its own marks into a heap. So a crowded mark
+ * is retired early and re-placed somewhere the sea is empty, which holds the
+ * COUNT (density) constant while keeping the marks apart. */
+const SWELL_MIN_DIST = 26; // crests are 27-53px lines; they need real air
+const DRIFT_MIN_DIST = 13; // a speck needs only its own space
+const STALL_PX_S = 14; // below this a mark is parked, not flowing: retire it
+const CROWD_MS = 260; // how long a retired mark has left — it fades, never blinks
 const PLACE_TRIES = 10;
 
 // Swells come in three lengths so ranks of them read as sea rather than as a
 // drawn grid. Long: a crest has to span a good part of the view to be a WAVE
 // and not a tick mark.
 const SWELL_LENS = [27, 39, 53];
-const FOAM_LEN = 11; // px along the flow
+const DRIFT_PX = 1; // a speck. NOT a streak — see the header.
 
 const SWELL_KEY = (i: number, L: number) => `amb-dwswell${i}_${L}`;
-const FOAM_KEY = (i: number, f: number) => `amb-dwfoam${i}_${f}`;
-const FOAM_FRAMES = 3; // the bright head marches down the streak
+// 64 angles x 3 lengths, so they are built ON DEMAND: a view uses a handful of
+// angles (the current turns smoothly), and generating all 192 up front would
+// cost the join a stall for art most seas never show.
+const DRIFT_KEY = () => `amb-dwfoam`;
+const DRIFT_FRAMES = 1; // a speck has nothing to animate
 
-// Open sea reads COLD and pale against deep_water's own #3d7c8a. Additive, like
-// the water feature's crests — the night overlay sits below these, so the look
-// is driven here by time of day instead of being multiplied into nothing.
-const FOAM_HEAD = 0xffffff;
-const FOAM_BODY = 0xbfe6ef;
-const SWELL_LINE = 0xbfe9f2; // the crest
-const SWELL_BACK = 0x4f8fa0; // its back slope, a pixel down-current
+/* These draw ADDITIVE over the sea, so what ships is water + colour x alpha and
+ * only the COMPOSITE says how loud it is. The maintainer's note (2026-09-06):
+ * the waves "should pop less, should be similar in color to the deep_water".
+ * Measured on the day-lit open sea, which draws far lighter than deep_water's
+ * material colour (#cbd8d8 on screen): a crest lifts it by a median of +27 per
+ * channel and never past +49. Raising either of these is how the effect gets
+ * loud again; verify-deepwater fails past a p99 of +60. */
+const DRIFT_BODY = 0x9fd2de;
+const SWELL_LINE = 0x9fd2de;
 const NIGHT_TINT = 0x8fa8cc; // marks wash toward moonlit blue after dark
 
 const lerpC = (a: number, b: number, t: number) => {
@@ -100,8 +124,10 @@ interface Mark {
   y: number;
   ux: number; // drawn unit direction of travel
   uy: number;
+  cx: number; // drawn unit direction the CREST lies along (a world quarter turn)
+  cy: number;
   spd: number; // drawn px/s
-  dir: number; // which of the 8 sprites
+  dir: number; // which rasterised angle is currently drawn
   fi: number;
   seqT: number;
   frameDur: number;
@@ -116,7 +142,7 @@ interface Mark {
 
 export function deepWaterFeature(): AmbientFeature {
   const swells: Mark[] = [];
-  const foam: Mark[] = [];
+  const drift: Mark[] = [];
   let gain = 0;
   let suppressed = false;
   let forced = false;
@@ -127,7 +153,7 @@ export function deepWaterFeature(): AmbientFeature {
   // Round-robin cursors for the probe budget. A plain "first N due marks win"
   // budget is not fair: the lists are walked in a fixed order, so the head of
   // the first list would take the whole allowance every frame and the tail —
-  // all of the foam — could go unchecked indefinitely and stream up a beach.
+  // all of the drift — could go unchecked indefinitely and stream up a beach.
   let swellCursor = 0;
   let foamCursor = 0;
   let seed = 61;
@@ -149,65 +175,66 @@ export function deepWaterFeature(): AmbientFeature {
     }
   };
 
-  const ensureTextures = (scene: Phaser.Scene) => {
-    if (scene.textures.exists(SWELL_KEY(0, 0))) return;
-    const paint = (key: string, w: number, h: number, layers: { c: number; px: [number, number][] }[]) => {
-      const g = scene.make.graphics({ x: 0, y: 0 }, false);
-      for (const { c, px } of layers) {
-        g.fillStyle(c, 1);
-        for (const [x, y] of px) g.fillRect(x, y, 1, 1);
-      }
-      g.generateTexture(key, w, h);
-      g.destroy();
-    };
-    for (let i = 0; i < 8; i++) {
-      // A SWELL is a crest line across the flow, plus a dimmer line one pixel
-      // DOWN-CURRENT of it — the wave's back slope. A bare line reads as a tick
-      // mark; the pair reads as something with a front and a back, which is
-      // what makes a rank of them look like sea rolling in.
-      const step = FLOW_DIRS[(i + 6) % 8]; // the flow a crest at `i` travels along
-      const ox = Math.round(step[0]);
-      const oy = Math.round(step[1]);
-      for (let L = 0; L < SWELL_LENS.length; L++) {
-        const line = rasterLine(i, SWELL_LENS[L]);
-        const back = line.px.map(([x, y]) => [x + ox, y + oy] as [number, number]);
-        const all = [...line.px, ...back];
-        const mnX = Math.min(...all.map((q) => q[0]));
-        const mnY = Math.min(...all.map((q) => q[1]));
-        const mxX = Math.max(...all.map((q) => q[0]));
-        const mxY = Math.max(...all.map((q) => q[1]));
-        const sh = ([x, y]: [number, number]) => [x - mnX, y - mnY] as [number, number];
-        paint(SWELL_KEY(i, L), mxX - mnX + 1, mxY - mnY + 1, [
-          { c: SWELL_BACK, px: back.map(sh) },
-          { c: SWELL_LINE, px: line.px.map(sh) },
-        ]);
-      }
-      // Foam is a streak ALONG the flow with a BRIGHT HEAD that marches toward
-      // the leading end — an in-place animation, so the streak reads as moving
-      // water even in a still frame (the same trick the lake wavelets use).
-      const f = rasterLine(i, FOAM_LEN);
-      for (let k = 0; k < FOAM_FRAMES; k++) {
-        const headAt = f.px.length - 1 - k; // the head sits near the leading end
-        const body = f.px.filter((_, n) => n !== headAt);
-        const head = f.px.filter((_, n) => n === headAt);
-        paint(FOAM_KEY(i, k), f.w, f.h, [
-          { c: FOAM_BODY, px: body },
-          { c: FOAM_HEAD, px: head },
-        ]);
-      }
-    }
+  const paintTex = (scene: Phaser.Scene, key: string, w: number, h: number, c: number, px: [number, number][]) => {
+    if (scene.textures.exists(key)) return;
+    const g = scene.make.graphics({ x: 0, y: 0 }, false);
+    g.fillStyle(c, 1);
+    for (const [x, y] of px) g.fillRect(x, y, 1, 1);
+    g.generateTexture(key, w, h);
+    g.destroy();
   };
 
-  const tooClose = (x: number, y: number, self: Mark): boolean => {
-    for (const o of foam)
-      if (o !== self && o.sprite.visible && Math.abs(o.x - x) < MIN_DIST && Math.abs(o.y - y) < MIN_DIST) return true;
+  const ensureTextures = (scene: Phaser.Scene) => {
+    // Drift is one pixel, so it needs no per-direction art at all.
+    paintTex(scene, DRIFT_KEY(), DRIFT_PX, DRIFT_PX, DRIFT_BODY, [[0, 0]]);
+  };
+
+  /** The crest sprite for one angle and length, rasterised the first time that
+   * angle is actually used. A crest is a SINGLE line: it used to carry a
+   * second, dimmer line a pixel down-current as a "back slope", but these draw
+   * ADDITIVE, so that line brightened the water instead of shading it and read
+   * as a doubled crest. */
+  const swellKey = (scene: Phaser.Scene, i: number, L: number): string => {
+    const key = SWELL_KEY(i, L);
+    if (!scene.textures.exists(key)) {
+      const line = rasterLine(i, SWELL_LENS[L]);
+      paintTex(scene, key, line.w, line.h, SWELL_LINE, line.px);
+    }
+    return key;
+  };
+
+  const tooClose = (list: Mark[], gap: number, x: number, y: number, self: Mark): boolean => {
+    for (const o of list)
+      if (o !== self && o.sprite.visible && Math.abs(o.x - x) < gap && Math.abs(o.y - y) < gap) return true;
     return false;
+  };
+
+  /** Hold the spacing against a field that carries marks together, and drop a
+   * mark the current has parked. Retiring shortens LIFE rather than hiding the
+   * sprite, so the envelope fades it out and the loop re-places it — the count
+   * never changes, only where the marks are. O(n^2) over at most 30 marks. */
+  const spaceOut = (list: Mark[], gap: number) => {
+    for (let i = 0; i < list.length; i++) {
+      const a = list[i];
+      if (!a.sprite.visible || a.life <= 0) continue;
+      if (a.spd < STALL_PX_S) { a.life = Math.min(a.life, CROWD_MS); continue; }
+      for (let j = i + 1; j < list.length; j++) {
+        const b = list[j];
+        if (!b.sprite.visible || b.life <= 0) continue;
+        if (Math.abs(a.x - b.x) < gap && Math.abs(a.y - b.y) < gap) {
+          // Retire whichever is nearer the end of its life: the older wave has
+          // already been read, and the younger one keeps the sea moving.
+          const go = a.life < b.life ? a : b;
+          go.life = Math.min(go.life, CROWD_MS);
+        }
+      }
+    }
   };
 
   /** Drop a mark on open sea, taking its direction and speed from the current
    * that is actually there. Returns false when no spot is found (the mark stays
    * hidden and tries again next time). */
-  const place = (m: Mark, spaced: boolean): boolean => {
+  const place = (m: Mark, list: Mark[], gap: number, spaced = true): boolean => {
     if (!seaPts.length) return false;
     for (let t = 0; t < PLACE_TRIES; t++) {
       const p = seaPts[(rnd() * seaPts.length) | 0];
@@ -215,11 +242,13 @@ export function deepWaterFeature(): AmbientFeature {
       const y = Math.round(p.y + (rnd() - 0.5) * 60);
       const flow = flowAt(x, y);
       if (!flow) continue; // drifted onto a lake, a beach, or the free shallows
-      if (spaced && tooClose(x, y, m)) continue;
+      if (spaced && tooClose(list, gap, x, y, m)) continue;
       m.x = x;
       m.y = y;
       m.ux = flow.ux;
       m.uy = flow.uy;
+      m.cx = flow.cx;
+      m.cy = flow.cy;
       m.spd = flow.speed;
       m.strength = flow.strength;
       return true;
@@ -229,23 +258,23 @@ export function deepWaterFeature(): AmbientFeature {
 
   const makeMark = (scene: Phaser.Scene, key: string, depth: number): Mark => ({
     sprite: scene.add.image(0, 0, key).setDepth(depth).setScale(1).setVisible(false).setBlendMode(Phaser.BlendModes.ADD),
-    x: 0, y: 0, ux: 1, uy: 0, spd: 0, dir: 0, fi: 0, seqT: 0, frameDur: 120,
+    x: 0, y: 0, ux: 1, uy: 0, cx: 0, cy: 1, spd: 0, dir: 0, fi: 0, seqT: 0, frameDur: 120,
     life: 0, maxLife: 1, base: 1, strength: 0, travel: 0, li: 0, age: 0,
   });
 
   const resetSwell = (m: Mark) => {
     m.maxLife = m.life = 2600 + rnd() * 2600;
     m.li = (rnd() * SWELL_LENS.length) | 0;
-    m.base = 0.58 + rnd() * 0.30;
+    m.base = 0.16 + rnd() * 0.10;
     m.age = 0;
     m.travel = 0;
   };
-  const resetFoam = (m: Mark) => {
-    m.fi = (rnd() * FOAM_FRAMES) | 0;
+  const resetDrift = (m: Mark) => {
+    m.fi = 0;
     m.seqT = 0;
-    m.frameDur = 70 + rnd() * 70;
+    m.frameDur = 0;
     m.maxLife = m.life = 900 + rnd() * 1100;
-    m.base = 0.50 + rnd() * 0.30;
+    m.base = 0.24 + rnd() * 0.14; // one pixel: a speck needs more alpha than a line to read at all
     m.age = 0;
     m.travel = 0;
   };
@@ -261,8 +290,8 @@ export function deepWaterFeature(): AmbientFeature {
 
   /** Move a mark along the current and keep it honest about where it is. The
    * re-check matters: at full strength a mark crosses ~200px in its life, which
-   * is easily far enough to run up a beach, and foam sliding over sand is worse
-   * than no foam at all. */
+   * is easily far enough to run up a beach, and drift sliding over sand is worse
+   * than no drift at all. */
   const advance = (m: Mark, dt: number, lead: number, mayProbe: boolean): boolean => {
     const s = dt / 1000;
     const step = m.spd * lead * s;
@@ -277,6 +306,8 @@ export function deepWaterFeature(): AmbientFeature {
       if (!flow) return false; // left the open sea — let it die and respawn
       m.ux = flow.ux;
       m.uy = flow.uy;
+      m.cx = flow.cx;
+      m.cy = flow.cy;
       m.spd = flow.speed;
       m.strength = flow.strength;
     }
@@ -333,25 +364,26 @@ export function deepWaterFeature(): AmbientFeature {
       const byStrength = (st: number) => 0.45 + 0.55 * st;
       const area = view.width * view.height;
       const wantSwell = g < 0.02 ? 0 : Math.min(MAX_SWELL, Math.round((area / AREA_PER_SWELL) * seaFrac * meanStrength));
-      const wantFoam = g < 0.02 ? 0 : Math.min(MAX_FOAM, Math.round((area / AREA_PER_FOAM) * seaFrac * meanStrength));
+      const wantFoam = g < 0.02 ? 0 : Math.min(MAX_DRIFT, Math.round((area / AREA_PER_DRIFT) * seaFrac * meanStrength));
 
       while (swells.length < wantSwell) swells.push(makeMark(ctx.scene, SWELL_KEY(0, 0), DEPTH_SWELL));
-      while (foam.length < wantFoam) foam.push(makeMark(ctx.scene, FOAM_KEY(0, 0), DEPTH_FOAM));
+      while (drift.length < wantFoam) drift.push(makeMark(ctx.scene, DRIFT_KEY(), DEPTH_DRIFT));
 
       for (let i = 0; i < swells.length; i++) {
         const m = swells[i];
         if (i >= wantSwell) { m.sprite.setVisible(false); continue; }
         if (m.life <= 0) {
-          if (!place(m, false)) { m.sprite.setVisible(false); continue; }
+          if (!place(m, swells, SWELL_MIN_DIST)) { m.sprite.setVisible(false); continue; }
           resetSwell(m);
         }
         const turn = swells.length > 0 && (i - swellCursor + swells.length) % swells.length < SWELL_PROBE_BUDGET;
         if (!advance(m, dt, 1, turn)) { m.life = 0; m.sprite.setVisible(false); continue; }
         const a = envelope(m, dt) * g * dim * byStrength(m.strength);
-        // A swell lies ACROSS its own travel.
-        const d = crossDir8(dir8(m.ux, m.uy));
+        // A swell lies ACROSS its own travel, at whatever angle the current
+        // there actually runs — rasterised at that angle, never rotated.
+        const d = angleIndex(m.cx, m.cy);
         if (d !== m.dir) { m.dir = d; }
-        m.sprite.setTexture(SWELL_KEY(d, m.li));
+        m.sprite.setTexture(swellKey(ctx.scene, d, m.li));
         m.sprite
           .setPosition(Math.round(m.x), Math.round(m.y))
           .setTint(tint)
@@ -359,54 +391,54 @@ export function deepWaterFeature(): AmbientFeature {
           .setVisible(a > 0.012);
       }
 
-      for (let i = 0; i < foam.length; i++) {
-        const m = foam[i];
+      for (let i = 0; i < drift.length; i++) {
+        const m = drift[i];
         if (i >= wantFoam) { m.sprite.setVisible(false); continue; }
         if (m.life <= 0) {
-          if (!place(m, true)) { m.sprite.setVisible(false); continue; }
-          resetFoam(m);
+          if (!place(m, drift, DRIFT_MIN_DIST)) { m.sprite.setVisible(false); continue; }
+          resetDrift(m);
         }
-        const turn = foam.length > 0 && (i - foamCursor + foam.length) % foam.length < FOAM_PROBE_BUDGET;
-        if (!advance(m, dt, FOAM_LEAD, turn)) { m.life = 0; m.sprite.setVisible(false); continue; }
+        const turn = drift.length > 0 && (i - foamCursor + drift.length) % drift.length < DRIFT_PROBE_BUDGET;
+        if (!advance(m, dt, DRIFT_LEAD, turn)) { m.life = 0; m.sprite.setVisible(false); continue; }
         const a = envelope(m, dt) * g * dim * byStrength(m.strength);
-        m.seqT += dt;
-        if (m.seqT >= m.frameDur) { m.seqT -= m.frameDur; m.fi = (m.fi + 1) % FOAM_FRAMES; }
-        const d = dir8(m.ux, m.uy);
-        m.dir = d;
-        m.sprite.setTexture(FOAM_KEY(d, m.fi));
         m.sprite
           .setPosition(Math.round(m.x), Math.round(m.y))
           .setTint(tint)
           .setAlpha(a)
           .setVisible(a > 0.012);
       }
+      spaceOut(swells, SWELL_MIN_DIST);
+      spaceOut(drift, DRIFT_MIN_DIST);
       if (swells.length) swellCursor = (swellCursor + SWELL_PROBE_BUDGET) % swells.length;
-      if (foam.length) foamCursor = (foamCursor + FOAM_PROBE_BUDGET) % foam.length;
+      if (drift.length) foamCursor = (foamCursor + DRIFT_PROBE_BUDGET) % drift.length;
     },
     setSuppressed(on) { suppressed = on; },
     setForced(on) { forced = on; },
     debug() {
       const live = (a: Mark[]) => a.filter((m) => m.sprite.visible).length;
-      const s = foam.find((m) => m.sprite.visible);
+      const s = drift.find((m) => m.sprite.visible);
       return {
         gain: +gain.toFixed(3),
         seaFrac: +seaFrac.toFixed(3),
         meanStrength: +meanStrength.toFixed(3),
         swells: live(swells),
-        foam: live(foam),
+        drift: live(drift),
         probe: !!(window as unknown as { __ml?: Record<string, unknown> }).__ml?.deepCurrentAtScreen,
         sample: s ? { x: Math.round(s.x), y: Math.round(s.y), dir: s.dir, spd: +s.spd.toFixed(1), strength: +s.strength.toFixed(2) } : null,
-        // Per-mark drawn heading + speed, for the QA that checks the foam
+        // Per-mark drawn heading + speed, for the QA that checks the drift
         // really streams the way the player is pushed.
-        all: [...swells, ...foam]
-          .filter((m) => m.sprite.visible)
-          .map((m) => ({ x: Math.round(m.x), y: Math.round(m.y), ux: +m.ux.toFixed(3), uy: +m.uy.toFixed(3), spd: +m.spd.toFixed(1), a: +m.sprite.alpha.toFixed(3) })),
+        // `kind` matters to QA: spacing is a rule WITHIN a family. A speck
+        // riding over a crest is the design (drift skates over the swells), so
+        // measuring the two families together reads intent as crowding.
+        all: [...swells.map((m) => ["swell", m] as const), ...drift.map((m) => ["drift", m] as const)]
+          .filter(([, m]) => m.sprite.visible)
+          .map(([kind, m]) => ({ kind, x: Math.round(m.x), y: Math.round(m.y), ux: +m.ux.toFixed(3), uy: +m.uy.toFixed(3), spd: +m.spd.toFixed(1), a: +m.sprite.alpha.toFixed(3) })),
       };
     },
     dispose() {
-      for (const m of [...swells, ...foam]) m.sprite.destroy();
+      for (const m of [...swells, ...drift]) m.sprite.destroy();
       swells.length = 0;
-      foam.length = 0;
+      drift.length = 0;
     },
   };
 }

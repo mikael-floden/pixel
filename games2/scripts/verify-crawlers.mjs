@@ -10,6 +10,13 @@
 //           entire reason a 1px dot reads as an ant — and must walk on ground.
 //   SPIDERS must SKITTER (dash, stop, dash) rather than glide, stay on ground,
 //           and keep out of the player's lap.
+//   BOTH    must be ON SCREEN. This is the one property a "healthy" feature can
+//           fail while every other number here looks perfect, and it did: the
+//           features reported ants walking a valid trail on valid ground at
+//           measured screen (-53, 238), off the left edge of a 480x198 world-px
+//           view, for the whole 26-55 s of a trail's life (maintainer: "I can't
+//           see the spider and ants"). A crawler nobody can see is not a
+//           crawler, so the gate now asks the question directly.
 //
 //   node scripts/verify-crawlers.mjs        (needs the dev stack on :5173)
 import { chromium } from "playwright-core";
@@ -86,6 +93,45 @@ if (A.length >= 6) {
   const bad = A.filter((a) => !(a.t >= 0 && a.t <= 1));
   if (bad.length) fail(`${bad.length} ants left the trail parameter (e.g. t=${bad[0].t})`);
 }
+
+// ---- ON SCREEN: the crawlers are where the player is looking ----
+// Sampled over time, not once: a trail is laid inside the view and then WALKED,
+// so the honest question is whether it stays in sight, not whether it started
+// there. A creature may hang a little past the edge (that is what the features'
+// own retirement margins allow, 24 px for a trail's extent and 40 for a
+// spider); what must never happen is a whole population out of frame.
+const onScreen = await page.evaluate(async () => {
+  const out = { antBlind: 0, antSamples: 0, antWorst: 0, spBlind: 0, spSamples: 0, spWorst: 0 };
+  // camView() answers {x, y, w, h} — NOT width/height. Reading the wrong names
+  // gives NaN, every comparison against it is false, and the whole check passes
+  // while measuring nothing; it did, once, on the very run it was written for.
+  const outside = (m, v) => Math.max(v.x - m.x, m.x - (v.x + v.w), v.y - m.y, m.y - (v.y + v.h), 0);
+  for (let i = 0; i < 400; i++) {
+    const v = window.__ml.camView();
+    for (const [key, blind, samples, worst] of [["ants", "antBlind", "antSamples", "antWorst"], ["spiders", "spBlind", "spSamples", "spWorst"]]) {
+      const all = window.__mlAmbient.debug(key).all || [];
+      if (!all.length) continue;
+      out[samples]++;
+      const dists = all.map((m) => outside(m, v));
+      out[worst] = Math.max(out[worst], Math.min(...dists));
+      if (Math.min(...dists) > 0) out[blind]++; // not one of them is in the view
+    }
+    await new Promise((r) => requestAnimationFrame(r));
+  }
+  return out;
+});
+console.log(
+  `on screen — ants: ${onScreen.antBlind} of ${onScreen.antSamples} frames with none in view (worst ${onScreen.antWorst.toFixed(0)}px out); ` +
+    `spiders: ${onScreen.spBlind} of ${onScreen.spSamples} (worst ${onScreen.spWorst.toFixed(0)}px out)`,
+);
+if (!(onScreen.antSamples > 100)) fail(`too few frames carried ants to judge visibility (${onScreen.antSamples})`);
+// Guard the guard: a NaN here reads as "never outside" and passes everything.
+if (!Number.isFinite(onScreen.antWorst) || !Number.isFinite(onScreen.spWorst))
+  fail(`the on-screen distance did not compute (ants ${onScreen.antWorst}, spiders ${onScreen.spWorst})`);
+if (onScreen.antBlind) fail(`${onScreen.antBlind} frames drew ants with NONE of them on screen`);
+if (onScreen.spBlind) fail(`${onScreen.spBlind} frames drew a spider with NONE of them on screen`);
+if (onScreen.antWorst > 24) fail(`the whole ant column sat ${onScreen.antWorst.toFixed(0)}px outside the view`);
+if (onScreen.spWorst > 40) fail(`every spider sat ${onScreen.spWorst.toFixed(0)}px outside the view`);
 
 // ---- SPIDERS: a skitter, on ground, out of the player's lap ----
 const sp = await page.evaluate(async () => {

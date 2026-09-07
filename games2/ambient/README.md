@@ -190,7 +190,7 @@ controller (AUTO / NONE / solo-each).
 |--------|------|---------|--------------------------|
 | `fireflies/` | field | Warm, mystical night — tiny wandering lanterns | Night (fades with sun strength), thinned by cloud |
 | `pollen/` | field | Sunbeam dust / drifting pollen in forest air | Sunlit hours, clear-ish sky, drifts on the cloud wind |
-| `deepwater/` | field | The SEAWARD CURRENT — swells rolling inward with foam skating over them, along the real deep-sea current at its real speed | Open sea only (`deepCurrentAtScreen`); fades in over the shoreline band, full out at sea |
+| `deepwater/` | field | The SEAWARD CURRENT — dim crest lines at the current's own angle rolling inward, specks of drift skating over them, at the real deep-sea current's real speed | Open sea only (`deepCurrentAtScreen`); fades in over the shoreline band, full out at sea |
 | `ants/` | field | A foraging TRAIL — 1px ants nose-to-tail along a bowed line, out and back | Dry ground; diurnal, thinned by cloud |
 | `spiders/` | field | The SKITTER — 3px, dart-stop-dart, solitary, keeps out of the player's lap | Dry ground; dusk/night leaning (0.25 by day) |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | Wherever water is on screen (iso water probe); glints tint + thin by time-of-day |
