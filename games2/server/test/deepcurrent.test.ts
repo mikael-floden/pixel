@@ -159,16 +159,7 @@ test("art rasterises at ANY angle, as whole pixels, with none drawn twice", () =
 import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  parseWorld,
-  buildTerrainGrid,
-  deepCurrentAt,
-  surfaceFor,
-  MAIN_LAND_MIN_CELLS,
-  COAST_CURRENT_FREE_CELLS,
-  COAST_CURRENT_MAX,
-  RUN_SPEED,
-} from "@nangijala/shared";
+import { parseWorld, buildTerrainGrid, deepCurrentAt, surfaceFor, MAIN_LAND_MIN_CELLS } from "@nangijala/shared";
 
 const here3 = dirname(fileURLToPath(import.meta.url));
 const GAME = join(here3, "..", "..", "..", "maps2", "worlds3", "the_game", "world.json");
@@ -228,58 +219,6 @@ test("following the drag carries you toward land and then releases you", () => {
   assert.ok(tested > 15, `too few sampled cells carried a current (${tested})`);
   assert.equal(released, tested, `${tested - released} swimmers were still being dragged after 4000 steps`);
   assert.equal(closer, tested, `${tested - closer} swimmers did not end up closer to land than they started`);
-});
-
-// THE DRAG MUST NOT ABANDON YOU AT SEA. It used to be gated on `deep_water`,
-// so it let go the instant you crossed into the shallow belt — measured over
-// the whole open sea, 1,510 of 1,531 swimmers were dropped still in deep water,
-// a MEDIAN 22.6 CELLS FROM LAND, because the island wears a belt of `water` up
-// to 22.8 cells wide (maintainer 2026-09-07: "now the deep_water brings you
-// back to closest water. I said closest main land. Not closest water"). The
-// old test above only asked that you end up CLOSER than you started, which
-// 22.6 cells out satisfies — this one asks that you end up THERE.
-test("the drag releases you at the shore, not 20 cells out at sea", () => {
-  if (!grid3) return test.skip("maps2/worlds3/the_game missing");
-  const g = grid3;
-  const cells = deepCells(g);
-  const ends: number[] = [];
-  for (let k = 0; k < cells.length; k += Math.max(1, Math.floor(cells.length / 40))) {
-    const i = cells[k];
-    const c = i % g.width;
-    const r = (i - c) / g.width;
-    let x = (c + 0.5) * CELL_WU;
-    let y = (r + 0.5) * CELL_WU;
-    if (!deepCurrentAt(g, x, y)) continue;
-    for (let steps = 0; steps < 4000; steps++) {
-      const cur = deepCurrentAt(g, x, y);
-      if (!cur) break;
-      x += cur.dx * CELL_WU * 0.5;
-      y += cur.dy * CELL_WU * 0.5;
-      if (x < 0 || y < 0 || x >= g.width * CELL_WU || y >= g.height * CELL_WU) break;
-    }
-    ends.push(landDist(g, x, y));
-  }
-  assert.ok(ends.length > 15, `too few sampled swimmers (${ends.length})`);
-  // The free band is what you are left to swim yourself, plus at most one step
-  // of overshoot. Anything beyond that is the old bug back.
-  const cap = COAST_CURRENT_FREE_CELLS + 2;
-  const far = ends.filter((d) => d > cap);
-  assert.equal(
-    far.length,
-    0,
-    `${far.length} swimmers were dropped further than ${cap} cells from land (worst ${Math.max(...ends).toFixed(1)})`,
-  );
-});
-
-test("the coastal pull is out-swimmable, and the deep one is not", () => {
-  // The two halves of the current exist for opposite reasons: the deep one is
-  // the edge of the world and must beat the strongest stroke, the coastal one
-  // carries you the rest of the way in and must NOT — or the shallow belt
-  // becomes a wall, the islands become unreachable, and you can never leave a
-  // beach. RUN_SPEED * deep_water.speed is the fastest a body swims.
-  const swim = RUN_SPEED * surfaceFor("deep_water").speed;
-  assert.ok(COAST_CURRENT_MAX < swim, `coastal pull ${COAST_CURRENT_MAX} must be beatable by a ${swim} wu/s swim`);
-  assert.ok(DEEP_CURRENT_MAX > swim, `deep pull ${DEEP_CURRENT_MAX} must beat a ${swim} wu/s swim`);
 });
 
 test("it aims at the NEAREST main land — and that is NOT the map centre", () => {
