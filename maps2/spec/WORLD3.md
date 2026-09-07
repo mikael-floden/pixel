@@ -739,6 +739,43 @@ and was a third of the cave's fires). Flicker is deferred (maintainer: "not
 now"); `hearths`/`braziers` keep their slot even under a roof — indoor mode
 (games2) decides what an under-roof light does.
 
+### the cliff apron — a wall never ends on a hard line
+
+(maintainer 2026-09-07, two photographs: *"when a wall ends we often get a
+hard edge/line if the ground has a different ground type ... maybe it looks
+better if the ground at the boundary uses a transition/boundary tile"*.)
+
+The transition machinery only blends two grounds sharing a plane, and a wall
+face is vertical — there is nothing for it to blend into. So the line MOVES
+one cell out: `cliff_apron()` gives the ground a rock face lands on that same
+rock, the wall then meets its own material and has no edge at all, and
+rock-against-grass one cell away is a boundary the tiles already cover. Zero
+new art. It runs after `cliff_faces` (the faces must be dressed before their
+feet can copy them) and before `audit_ground`.
+
+The three rules that keep it scree and not a takeover, each paid for:
+
+- **only under a CLIFF** — `APRON_DROP = 3` levels. Treating every one-bench
+  step repainted whole snow terraces in the rock the bench above happened to
+  wear; measured, and it read as a material takeover.
+- **only rock sheds it** (`APRON_OF`: grey_stone, black_rock — ice is out for
+  the same reason) **onto soft ground** (`APRON_ON`: grass, dark_mud,
+  light_beach, snow). Made ground is never overwritten: a `light_soil` wall
+  would lay a road along the cliff, and paving, floors, roads, ramps, decks,
+  cave floors and liquids are all held back.
+- **a band, not a dot** — `APRON_MIN = 3` cells per run, 4-connected, and the
+  elbow of every diagonal pair is filled first. An iso cliff foot steps
+  diagonally, so the raw apron was a dotted line: 417 specks by the ground
+  audit's own rule. The dissolver runs after it for what the new band strands.
+
+the_game: 1,730 apron cells, 1,965 of 5,453 wall feet now meet their own
+material (657 before). `NO_APRON=1` builds without the pass, which is how the
+A/B renders are made.
+
+**Still hard, and not fixable from here**: a wall whose foot is in water (227
+cells) or over void (276). You cannot lay talus in the sea — that foot has to
+be softened at draw time, and it is games2' (board request 2026-09-07).
+
 ### `ramps` — the contract with the game
 
 A level change is a cliff. A **ramp** is where the world says a climb is

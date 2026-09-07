@@ -4466,6 +4466,104 @@ class Grow:
         # BUILD ASSERT: no exposed face is grass over grass any more
         assert not any(sd == "grass" for (_, sd) in kinds), "a grass wall survived"
 
+    APRON_ON = ("grass", "dark_mud", "light_beach", "snow")   # what erodes
+    APRON_OF = ("grey_stone", "black_rock")                   # what sheds it
+    APRON_MIN = 3       # cells in a run: below this it is a speck, not talus
+    APRON_DROP = 3      # ...and only under a face this tall: a CLIFF
+
+    def cliff_apron(self):
+        """SCREE AT THE FOOT OF A CLIFF, so a wall never ends on a hard line
+        (maintainer 2026-09-07, two photographs: "when a wall ends we often
+        get a hard edge/line if the ground has a different ground type ...
+        maybe it looks better if the ground at the boundary uses a
+        transition/boundary tile"). The transition machinery only blends two
+        grounds sharing a plane, and a wall face is vertical - there is
+        nothing for it to blend into. So the line MOVES one cell out: the
+        ground a rock face lands on takes that rock, the wall then meets its
+        own material and has no edge at all, and rock-against-grass one cell
+        away is a boundary the tiles already cover. Zero new art.
+
+        Measured before this pass: 4,293 of 5,453 wall-face cells landed on a
+        different dry ground. Only natural rock sheds scree (APRON_OF) and
+        only soft ground takes it (APRON_ON) - a wall of made ground would
+        lay a path of road material along the cliff, and paving, floors,
+        roads, ramps, decks and liquids are never overwritten."""
+        if os.environ.get("NO_APRON"):
+            self.placed += [("cliff apron cells", "OFF (NO_APRON)")]
+            return
+        gi = self.gi
+        keep = set(self.floor_cells) | set(getattr(self, "door_cells", ()))
+        keep |= {(c["x"], c["y"]) for dk in self.doc["decks"] for c in dk["cells"]}
+        keep |= {(c["x"], c["y"]) for r in self.doc.get("ramps", []) for c in r["cells"]}
+        keep |= set(getattr(self, "cave_floor", {}))
+        side, want = {}, {}
+        for w in self.doc["walls"]:
+            if w.get("kind") == "house":
+                continue
+            for c in w["cells"]:
+                side[(c["x"], c["y"])] = w["side"]
+        n = 0
+        for (x, y), sd in side.items():
+            if sd not in self.APRON_OF:
+                continue
+            z = self.lvl[y][x]
+            e = self.lvl[y][x + 1] if self.g(x + 1, y) else 0
+            st = self.lvl[y + 1][x] if self.g(x, y + 1) else 0
+            fx, fy = (x + 1, y) if e <= st else (x, y + 1)
+            # ONLY UNDER A CLIFF. A one-bench step has no hard line worth
+            # fixing, and treating every step repainted whole snow terraces
+            # in the rock the bench above happened to wear - measured, and
+            # it read as a material takeover rather than as scree.
+            if z - min(e, st) < self.APRON_DROP:
+                continue
+            if (fx, fy) in keep or self.g(fx, fy) not in self.APRON_ON:
+                continue
+            if self.g(fx, fy) == sd:
+                continue
+            want.setdefault(sd, set()).add((fx, fy))
+        # THE BAND HAS TO BE 4-CONNECTED. An iso cliff foot steps
+        # DIAGONALLY, so the raw apron is a dotted line - 417 specks by the
+        # ground audit's own rule, and dirt to the eye. Fill the elbow of
+        # every diagonal pair and the band becomes continuous talus, thicker
+        # exactly at the steps, which is where scree gathers anyway.
+        for sd, cells in list(want.items()):
+            for (x0, y0) in list(cells):
+                for (mx, my) in ((x0 + 1, y0 + 1), (x0 - 1, y0 + 1),
+                                 (x0 + 1, y0 - 1), (x0 - 1, y0 - 1)):
+                    if (mx, my) not in cells:
+                        continue
+                    for e in ((mx, y0), (x0, my)):
+                        if (e not in keep and self.g(*e) in self.APRON_ON
+                                and self.g(*e) != sd):
+                            cells.add(e)
+                            break
+        # A BAND, NOT A DOT: a run shorter than APRON_MIN is a speck.
+        for sd, cells in want.items():
+            seen = set()
+            for c in cells:
+                if c in seen:
+                    continue
+                st_, run = [c], []
+                seen.add(c)
+                while st_:
+                    x0, y0 = st_.pop()
+                    run.append((x0, y0))
+                    for m in ((x0 + 1, y0), (x0 - 1, y0), (x0, y0 + 1), (x0, y0 - 1)):
+                        if m in cells and m not in seen:
+                            seen.add(m)
+                            st_.append(m)
+                if len(run) < self.APRON_MIN:
+                    continue
+                for (x0, y0) in run:
+                    self.grd[y0][x0] = gi[sd]
+                    n += 1
+        # ...and the apron can strand what it cut: a two-cell ribbon of grass
+        # between the new talus and the next thing. Same dissolver the grooms
+        # use, so the ground audit's rule is the one that decides.
+        left = self._dissolve_specks()
+        self.placed += [("cliff apron cells", n),
+                        ("cliff apron: specks dissolved after it", left)]
+
     def ramp_paths(self):
         """A ramp is where you walk: light_soil, the road's own material,
         so the way up is a visible path and never grass climbing grass."""
@@ -5454,7 +5552,7 @@ class Grow:
                      self.ramp_paths, self.regroom, self.reach_audit,
                      self.snap_hitboxes, self.police_footprints,
                      self.lights, self.npcs,
-                     self.rooms, self.cliff_faces, self.audit_ground,
+                     self.rooms, self.cliff_faces, self.cliff_apron, self.audit_ground,
                      self.spawns, self.recentre):
             t = time.time()
             step()
