@@ -190,6 +190,36 @@ else {
   if (beach.alongBad > beach.moves * 0.05)
     fail(`${beach.alongBad} of ${beach.moves} runs were off the shore axis — crabs run ALONG the water`);
 
+  /* ---- A CRAB IS RED, AND BIGGER THAN A SPIDER ----
+   * Both were wrong on the first cut and both are the kind of thing that reads
+   * instantly to a person and not at all to a test that only checks positions
+   * (maintainer 2026-09-07: "you know crabs are red and bigger than spiders
+   * right?"). The spider publishes its own art size so this compares the two
+   * rather than hardcoding a number that rots when either changes. */
+  const look = await page.evaluate(() => {
+    const c = window.__mlAmbient.debug("crabs");
+    const sp = window.__mlAmbient.debug("spiders");
+    const tints = (c.all || []).map((q) => q.tint);
+    return { art: c.art, spider: sp.art, tint: c.tint, tints };
+  });
+  const rgb = (n) => [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  const [cr, cg, cb] = rgb(look.tint);
+  console.log(
+    `look: crab art ${look.art.small.join("x")} / ${look.art.big.join("x")} vs spider ${(look.spider || []).join("x")}; ` +
+      `shell rgb(${cr}, ${cg}, ${cb})`,
+  );
+  if (!look.spider) fail("the spider no longer publishes its art size — this comparison is now vacuous");
+  else {
+    const bigger = look.art.small[0] > look.spider[0] && look.art.small[0] * look.art.small[1] > look.spider[0] * look.spider[1];
+    if (!bigger)
+      fail(`a crab (${look.art.small.join("x")}) is not bigger than a spider (${look.spider.join("x")})`);
+  }
+  if (!(cr > cg * 1.7 && cr > cb * 1.7)) fail(`the shell is not red: rgb(${cr}, ${cg}, ${cb})`);
+  for (const t of look.tints) {
+    const [r, g, b] = rgb(t);
+    if (!(r > g * 1.5 && r > b * 1.5)) { fail(`a drawn crab was not red: rgb(${r}, ${g}, ${b})`); break; }
+  }
+
   /* ---- THE WHOLE BEACH MOVES AT ONCE ---- */
   const flee = await page.evaluate(async () => {
     const step = () => new Promise((r) => requestAnimationFrame(r));

@@ -16,6 +16,24 @@ Three things, at four pixels:
 3. **One shared axis.** Every run is along the same line. Measured: 255 of 255
    runs on the shore axis.
 
+## Red, and bigger than a spider
+
+Both were wrong on the first cut and both read instantly to a person while a
+test that only checks positions sees nothing (maintainer 2026-09-07: "you know
+crabs are red and bigger than spiders right?" — it was a 4x2 burnt orange thing
+beside a 3x3 spider). Orange is fine too, his call; what is not fine is a crab
+that does not out-measure a spider HORIZONTALLY.
+
+The scale is arithmetic, not taste: a person in this game stands
+`CHARACTER_BODY_PX` = 88 px, so a hand-sized crab is about 88/15 — which is
+where 5 and 6 px wide come from, against the spider's 3 at 1/29. The shape is a
+wide shell with legs out BOTH sides, because the width is the crab; a tall one
+reads as a beetle.
+
+The gate compares the two features' published art sizes rather than hardcoding
+a number that rots the moment either changes, and checks the drawn tint is
+red-dominant (which the whole red-orange family satisfies).
+
 ## The axis is the shoreline, and it is derived
 
 The search that finds the beach also finds WHICH WAY THE WATER LIES: a

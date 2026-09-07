@@ -30,7 +30,7 @@ import { landableAt, paintPixels } from "../runtime/ground";
  */
 
 const KEY = "amb-crab";
-const KEY_SMALL = "amb-crab-small";
+const KEY_BIG = "amb-crab-big";
 const DEPTH_BASE = 900_000.05; // just over the darkness overlay, like the other crawlers
 const DEPTH_BIAS = 1e-6;
 const GAIN_TAU = 1500;
@@ -63,8 +63,15 @@ const FADE_MS = 550;
 const ARRIVE_SPREAD: [number, number] = [0, 1800];
 const OFF_VIEW = 48; // px past the edge before the colony moves to a new beach
 
-const CRAB_SHELL = 0xb4602f; // wet-sand orange; never paled (the ants' rule)
-const CRAB_PALE = 0xd8b48a; // the odd ghost-pale one
+/* A CRAB IS RED, AND IT IS BIGGER THAN A SPIDER (maintainer 2026-09-07, and he
+ * was right on both: the first cut drew a 4x2 burnt orange thing beside a 3x3
+ * spider). Two reds, never paled — the ants' rule. The scale is checkable
+ * rather than a matter of taste: a person in this game stands
+ * CHARACTER_BODY_PX = 88 px tall, so a hand-sized crab is 88/15 or so, which is
+ * where the 5-6 px shells below come from. A 3 px spider is the same
+ * arithmetic at 1/29. */
+const CRAB_RED = 0xc2372a; // shell red
+const CRAB_DEEP = 0x8f2318; // the older, darker one
 
 interface Crab {
   sprite: Phaser.GameObjects.Image;
@@ -77,7 +84,7 @@ interface Crab {
   wait: number;
   a: number;
   base: number;
-  pale: boolean;
+  big: boolean;
 }
 
 interface Colony {
@@ -193,21 +200,38 @@ export function crabsFeature(): AmbientFeature {
     c.b = (rnd() - 0.5) * BAND;
     c.dir = rnd() < 0.5 ? 1 : -1;
     c.spd = range(DASH_SPEED);
-    c.pale = rnd() < 0.22;
+    c.big = rnd() < 0.3;
     c.base = 0.85 + rnd() * 0.15;
     c.wait = instant ? 0 : range(ARRIVE_SPREAD);
     c.a = instant ? 1 : 0;
-    c.sprite.setTexture(c.pale ? KEY_SMALL : KEY);
+    c.sprite.setTexture(c.big ? KEY_BIG : KEY);
     rest(c);
   };
 
   return {
     name: "crabs",
     init(ctx) {
-      // Four pixels: a body and two claws out to the sides. Painted WHITE —
-      // setTint MULTIPLIES, so the drawn colour is the per-frame tint.
-      paintPixels(ctx.scene, KEY, 4, 2, 0xffffff, [[1, 0], [2, 0], [0, 1], [3, 1]]);
-      paintPixels(ctx.scene, KEY_SMALL, 3, 2, 0xffffff, [[1, 0], [0, 1], [2, 1]]);
+      /* A WIDE SHELL WITH LEGS OUT BOTH SIDES — top-down, which is how this
+       * game sees the ground. The width is the crab: a tall shape reads as a
+       * beetle, and a 3 px one reads as the spider two folders over. Painted
+       * WHITE — setTint MULTIPLIES, so the drawn colour is the per-frame tint.
+       *
+       *   . X X X .        . X X X X .
+       *   X X X X X        X X X X X X
+       *   X . X . X        X . X X . X
+       *                    X . . . . X
+       */
+      paintPixels(ctx.scene, KEY, 5, 3, 0xffffff, [
+        [1, 0], [2, 0], [3, 0],
+        [0, 1], [1, 1], [2, 1], [3, 1], [4, 1],
+        [0, 2], [2, 2], [4, 2],
+      ]);
+      paintPixels(ctx.scene, KEY_BIG, 6, 4, 0xffffff, [
+        [1, 0], [2, 0], [3, 0], [4, 0],
+        [0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1],
+        [0, 2], [2, 2], [3, 2], [5, 2],
+        [0, 3], [5, 3],
+      ]);
     },
     update(ctx, dt) {
       const target = forced ? 1 : suppressed ? 0 : crabGain(ctx.env);
@@ -246,7 +270,7 @@ export function crabsFeature(): AmbientFeature {
         while (crabs.length < MAX_CRABS)
           crabs.push({
             sprite: ctx.scene.add.image(0, 0, KEY).setOrigin(0.5, 0.5).setScale(1).setVisible(false),
-            s: 0, b: 0, dir: 1, dashing: false, timer: 0, spd: 30, wait: 0, a: 0, base: 1, pale: false,
+            s: 0, b: 0, dir: 1, dashing: false, timer: 0, spd: 30, wait: 0, a: 0, base: 1, big: false,
           });
         for (let i = 0; i < crabs.length; i++) {
           seat(crabs[i], colony, false);
@@ -297,7 +321,7 @@ export function crabsFeature(): AmbientFeature {
         c.sprite
           .setPosition(Math.round(x), iy)
           .setDepth(DEPTH_BASE + iy * DEPTH_BIAS)
-          .setTint(c.pale ? CRAB_PALE : CRAB_SHELL)
+          .setTint(c.big ? CRAB_DEEP : CRAB_RED)
           .setAlpha(g * c.a * c.base * (0.55 + 0.45 * sun))
           .setVisible(c.a > 0.01);
       }
@@ -319,10 +343,13 @@ export function crabsFeature(): AmbientFeature {
             }
           : null,
         crabs: shown.length,
+        art: { small: [5, 3], big: [6, 4] }, // QA: a crab must out-measure a spider
+        tint: CRAB_RED,
         dashing: shown.filter((c) => c.dashing).length,
         all: shown.map((c) => ({
           x: Math.round(c.sprite.x), y: Math.round(c.sprite.y),
-          s: +c.s.toFixed(1), dir: c.dir, dashing: c.dashing, a: +c.sprite.alpha.toFixed(3),
+          s: +c.s.toFixed(1), dir: c.dir, dashing: c.dashing, big: c.big,
+          tint: c.sprite.tintTopLeft, a: +c.sprite.alpha.toFixed(3),
         })),
       };
     },

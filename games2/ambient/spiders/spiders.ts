@@ -251,6 +251,7 @@ export function spidersFeature(): AmbientFeature {
     setForced(on) { forced = on; },
     debug() {
       return {
+        art: [3, 3], // QA: the crab gate measures itself against this
         gain: +gain.toFixed(3),
         spiders: spiders.length,
         nextInMs: Math.max(0, Math.round(nextIn)),
