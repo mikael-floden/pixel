@@ -68,3 +68,26 @@ test("zoomMean and jumps reach the file — the allowlist dropped them for two r
   assert.equal(perfReport({ frames: { n: 1 } }, AT).zoomMean, null);
   assert.equal(perfReport({ frames: { n: 1 } }, AT).jumps, null);
 });
+
+test("the long-frame census survives the allowlist — nested blocks are not scalars", () => {
+  // THIS ALLOWLIST HAS SILENTLY EATEN A FIELD THREE TIMES (lights, then
+  // zoomMean/jumps, then this). The failure is always the same and always
+  // invisible: the client emits it, the server drops it, and the next beacon
+  // run comes back missing exactly the evidence it was run to collect. A
+  // record-of-records is the shape that `mixed` drops, so it gets its own test.
+  const body = {
+    longBy: {
+      "full:redrawGround": { n: 7, ms: 512, avg: 73.1, top: 61.2, idle: 1.4 },
+      "scroll:groundSlice": { n: 12, ms: 640, avg: 53.3, top: 28.9, idle: 3.1 },
+    },
+    worst: Array.from({ length: 24 }, (_, i) => ({ f: i, total: 60 + i, sec: { redrawGround: 40 } })),
+  };
+  const r = perfReport(body, "2026-09-07T00:00:00.000Z") as Record<string, any>;
+  assert.equal(r.longBy["full:redrawGround"].n, 7);
+  assert.equal(r.longBy["full:redrawGround"].avg, 73.1);
+  assert.equal(r.longBy["scroll:groundSlice"].ms, 640);
+  // All 24 worst frames, not 8 — and long enough not to lose the tail, where
+  // `mode` and `ring` live.
+  assert.equal(r.worst.length, 24);
+  assert.ok(r.worst[0].includes("redrawGround"), "a worst record lost its sections");
+});

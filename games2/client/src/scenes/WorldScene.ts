@@ -1375,6 +1375,12 @@ interface CoverSlot {
  *  first art request is never more than this late. */
 const SCENERY_MANIFEST_SETTLE_MS = 120;
 
+/** A frame this slow is one the maintainer can feel: 40 ms is 25 fps, well
+ *  under the ~20 ms a normal frame costs on his phone, and comfortably below
+ *  the 60-124 ms band the recurring stutter actually lives in — so the census
+ *  catches the population and its shoulder without counting ordinary frames. */
+const HITCH_LONG_MS = 40;
+
 export class WorldScene extends Phaser.Scene {
   private manifest!: Manifest;
   private myCharacter!: CharacterDef;
@@ -1612,6 +1618,10 @@ export class WorldScene extends Phaser.Scene {
   private hitchSec: Record<string, number> = {};
   private hitchC = { tex: 0, files: 0, built: 0, buildMs: 0, blits: 0, objs: 0 };
   private hitchWorst: Record<string, unknown>[] = [];
+  /** `<ground mode>:<dominant section>` -> how many frames over HITCH_LONG_MS
+   *  fell in that bucket, their total ms, the dominant section's share, and how
+   *  much of it was idle. See the census note in closeHitchFrame. */
+  private hitchBy: Record<string, { n: number; ms: number; top: number; idle: number }> = {};
   private hitchN = 0;
   private hitchSum = 0;
   private hitchPrevBuilt = 0;
@@ -1660,6 +1670,40 @@ export class WorldScene extends Phaser.Scene {
       objs: this.hitchC.objs,
       ring: this.t3ringQueue.length - this.t3ringAt,
     };
+    /* A CENSUS OF THE BAD FRAMES, not a top-N of them. The worst-24 list is
+     * biased to the extremes by construction, and the extremes are NOT what is
+     * felt (maintainer 2026-09-07: "not the best case and not the worst case.
+     * The bad case that happens over and over again" — one frame every 0.8-3.8 s
+     * at 60-124 ms). This counts EVERY frame over the threshold and buckets it
+     * by ground mode and by what dominated it, so one run says which population
+     * to attack instead of which single frame was unluckiest.
+     *
+     * gapIdle and gapBusy are EXCLUDED from the argmax because the frame
+     * accounting overlaps: a measured frame had gapIdle 109.5 inside a 116.5 ms
+     * total that also carried repaintCells 86.5, which cannot both be true.
+     * Idle is summed on the side instead, where it answers a different question
+     * — how much of the stutter is the main thread WAITING (for the GPU, a
+     * texture upload, vsync) rather than working. Until that overlap is fixed,
+     * an argmax including it would just report "idle" for everything. */
+    if (total >= HITCH_LONG_MS) {
+      let cause = "";
+      let best = 0;
+      for (const k in this.hitchSec) {
+        if (k === "gapIdle" || k === "gapBusy") continue;
+        if (this.hitchSec[k] > best) {
+          best = this.hitchSec[k];
+          cause = k;
+        }
+      }
+      // Nothing owns a quarter of the frame: the time is somewhere we do not
+      // time at all, which is itself the finding.
+      if (best < total * 0.25) cause = "unattributed";
+      const b = (this.hitchBy[`${this.groundLastMode}:${cause}`] ??= { n: 0, ms: 0, top: 0, idle: 0 });
+      b.n++;
+      b.ms += total;
+      b.top += best;
+      b.idle += this.hitchSec.gapIdle ?? 0;
+    }
     if (this.hitchWorst.length < 24) this.hitchWorst.push(rec);
     else {
       let wi = 0;
@@ -1944,6 +1988,21 @@ export class WorldScene extends Phaser.Scene {
        * a full repaint wipes them — or the base painting does, and they
        * survive. Two numbers, one answer, and no more of my theories. */
       groundFull: final ? this.groundAfterFullPaint() : null,
+      /* WHAT THE BAD FRAMES ARE, as a population. `worst` is the top 24 and is
+       * biased to the extremes; this counts every frame over HITCH_LONG_MS and
+       * buckets it by ground mode and dominant section. One run answers "which
+       * of these happens over and over", which is the only question that
+       * matters here. Emitted longest-total-first so a truncating reader keeps
+       * the buckets that matter. */
+      longBy: Object.fromEntries(
+        Object.entries(this.hitchBy)
+          .sort((a, b) => b[1].ms - a[1].ms)
+          .slice(0, 24)
+          .map(([k, v]) => [
+            k,
+            { n: v.n, ms: +v.ms.toFixed(0), avg: +(v.ms / v.n).toFixed(1), top: +(v.top / v.n).toFixed(1), idle: +(v.idle / v.n).toFixed(1) },
+          ]),
+      ),
       worst: (() => {
         try {
           const h = (window as unknown as { __ml?: { hitch?: () => { worst?: unknown[] } } }).__ml?.hitch?.();
@@ -5255,6 +5314,7 @@ export class WorldScene extends Phaser.Scene {
         if (typeof on === "boolean") {
           this.hitchOn = on;
           this.hitchWorst = [];
+          this.hitchBy = {};
           this.hitchSec = {};
           this.hitchN = 0;
           this.hitchSum = 0;
@@ -5265,6 +5325,7 @@ export class WorldScene extends Phaser.Scene {
         }
         const worst = [...this.hitchWorst].sort((a, b) => (b.total as number) - (a.total as number));
         this.hitchWorst = [];
+        this.hitchBy = {};
         return { on: this.hitchOn, frames: this.hitchN, avgMs: +(this.hitchSum / Math.max(1, this.hitchN)).toFixed(1), worst };
       },
       /** DIAGNOSTIC: every visible image/sprite whose box meets a world rect. */

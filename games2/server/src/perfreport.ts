@@ -23,6 +23,19 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     }
     return out;
   };
+  /* A RECORD OF RECORDS. `mixed` keeps scalars and silently drops anything
+   * else, so a nested block passed to it arrives as {} — which is how this
+   * allowlist has quietly eaten fields three times now. Anything shaped
+   * `{ bucket: { ...numbers } }` goes through here instead. */
+  const nested = (v: unknown, keys: number, inner: number) => {
+    if (!v || typeof v !== "object" || Array.isArray(v)) return null;
+    const out: Record<string, Record<string, number | boolean | string>> = {};
+    for (const [k, val] of Object.entries(v as Record<string, unknown>).slice(0, keys)) {
+      const m = mixed(val, inner);
+      if (m) out[k.slice(0, 60)] = m;
+    }
+    return out;
+  };
   const flat = (v: unknown, keys: number, hi: number) => {
     if (!v || typeof v !== "object") return null;
     const out: Record<string, number> = {};
@@ -85,9 +98,19 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
       : null,
     // Position jumps the client recorded this window (teleports, rubber-banding).
     jumps: Array.isArray(body.jumps) ? (body.jumps as unknown[]).slice(0, 40).map((j) => str(JSON.stringify(j), 200)) : null,
+    /* ALL 24, NOT 8, AND NOT CUT AT 400 CHARS. The client has kept 24 worst
+     * frames all along and this threw away two thirds of them, then truncated
+     * the survivors mid-JSON — so every record arrived with its tail (`mode`,
+     * `ring`, `tex`) missing exactly when the tail was the evidence. THIS FILE
+     * IS AN ALLOWLIST: a field the client adds arrives as nothing until it is
+     * named here, which has now silently eaten `lights`, `zoomMean`/`jumps`,
+     * and this. Add the field here in the same commit that emits it. */
     worst: Array.isArray(body.worst)
-      ? (body.worst as unknown[]).slice(0, 8).map((w) => str(JSON.stringify(w), 400))
+      ? (body.worst as unknown[]).slice(0, 24).map((w) => str(JSON.stringify(w), 900))
       : null,
+    /* The long-frame CENSUS — every frame over the threshold bucketed by ground
+     * mode and dominant section, not just the unluckiest few. */
+    longBy: nested(body.longBy, 24, 8),
   };
   return report;
 }
