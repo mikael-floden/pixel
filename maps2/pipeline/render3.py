@@ -1543,6 +1543,18 @@ def write_minimap(img_unused, world_dir, doc):
         return [round(kx * (cx - cy) + x0v, 2), round(ky * (cx + cy) - kz * lv + y0v, 2)]
     sx, sy = int(doc["spawn"][0]), int(doc["spawn"][1])
     land = doc.get("land") or {}
+    # SAMPLES ARE REAL LAND CELLS. The land bbox CORNERS are not: the bbox is
+    # a rectangle over a diamond, so its corners are open sea, they are not
+    # drawn any more, and they project outside the cropped island by design
+    # (that is what the first run of this assert caught - the maths was fine).
+    G, grd, lvl = doc["grounds"], doc["ground"], doc["level"]
+    wet = {i for i, g in enumerate(G) if g == "deep_water"}
+    cells = [(x, y) for y in range(H) for x in range(W)
+             if grd[y][x] >= 0 and grd[y][x] not in wet]
+    ends = [("west corner of the land", min(cells, key=lambda c: c[0] - c[1])),
+            ("east corner of the land", max(cells, key=lambda c: c[0] - c[1])),
+            ("north corner of the land", min(cells, key=lambda c: c[0] + c[1])),
+            ("south corner of the land", max(cells, key=lambda c: c[0] + c[1]))]
     meta = {
         "schema": "pixel-maps3/minimap@1",
         "image": "minimap.webp",
@@ -1562,19 +1574,21 @@ def write_minimap(img_unused, world_dir, doc):
                         "of that cell's top face, which is where a body stands."),
         },
         "samples": [
-            {"what": "spawn", "cell": [sx, sy], "level": doc["level"][sy][sx],
-             "px": at(sx, sy, doc["level"][sy][sx])},
-            {"what": "land north-west corner", "cell": [land.get("x0"), land.get("y0")],
-             "level": 0, "px": at(land.get("x0", 0), land.get("y0", 0), 0)},
-            {"what": "land south-east corner", "cell": [land.get("x1"), land.get("y1")],
-             "level": 0, "px": at(land.get("x1", 0), land.get("y1", 0), 0)},
+            {"what": what, "cell": [cx, cy], "level": lvl[cy][cx],
+             "px": at(cx, cy, lvl[cy][cx])}
+            for what, (cx, cy) in [("spawn", (sx, sy))] + ends
         ],
         "land_cells": land,
     }
+    # EVERY SAMPLE MUST LAND ON DRAWN LAND. Inside the frame is not enough -
+    # the alpha under the point is the thing that proves the arithmetic, and
+    # it costs one pixel read.
     for smp in meta["samples"]:
         px, py = smp["px"]
-        assert -1 <= px <= img.width + 1 and -1 <= py <= img.height + 1, \
+        assert 0 <= px < img.width and 0 <= py < img.height, \
             f"the dot maths puts {smp['what']} at {smp['px']} outside {img.size}"
+        assert img.getpixel((int(px), int(py)))[3] > 0, \
+            f"the dot maths puts {smp['what']} at {smp['px']}, which is transparent"
     f = os.path.join(world_dir, "minimap.json")
     json.dump(meta, open(f, "w"), indent=1)
     print("wrote", f, meta["dot"])
