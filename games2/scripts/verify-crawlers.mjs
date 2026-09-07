@@ -323,7 +323,28 @@ for (const phase of ["Day", "Night"]) {
         .map((k) => css(k.x, k.y));
     return { ants: pick("ants"), spiders: pick("spiders"), zoom };
   }, phase);
-  const png = PNG.sync.read(await page.screenshot());
+  /* SEVERAL FRAMES, NOT ONE. A spider is a single 3px animal that dashes,
+   * rests and fades; one screenshot of one of them measures whatever that
+   * instant held — a night spider read 0.9 luma from a single sample while
+   * every other reading was fine. "Invisible" means never visible, so take the
+   * best frame: a creature that reads in ANY frame is not invisible. */
+  const shots = [PNG.sync.read(await page.screenshot())];
+  for (let k = 0; k < 2; k++) {
+    await page.evaluate(async () => { for (let i = 0; i < 25; i++) await new Promise((r) => requestAnimationFrame(r)); });
+    const more = await page.evaluate(() => {
+      const v = window.__ml.camView();
+      const m = window.__ml.myScreen();
+      const zoom = m ? m.zoom : 1;
+      const css = (x, y) => [(x - v.x) * zoom, (y - v.y) * zoom];
+      const pick = (name) =>
+        (window.__mlAmbient.debug(name).all || []).filter((k2) => k2.a === undefined || k2.a > 0.35).slice(0, 6).map((k2) => css(k2.x, k2.y));
+      return { ants: pick("ants"), spiders: pick("spiders") };
+    });
+    shots.push(PNG.sync.read(await page.screenshot()));
+    shot0.antsMore = (shot0.antsMore || []).concat([more.ants]);
+    shot0.spidersMore = (shot0.spidersMore || []).concat([more.spiders]);
+  }
+  const png = shots[0];
   const luma = (x, y) => {
     const i = (Math.round(y) * png.width + Math.round(x)) * 4;
     if (i < 0 || i + 2 >= png.data.length) return null;
@@ -338,21 +359,41 @@ for (const phase of ["Day", "Night"]) {
    * is uniformly drawn. So take the strongest difference in a small window
    * around the predicted spot, against ground sampled outside it. */
   const R = Math.ceil(shot0.zoom) + 1;
-  for (const [name, pts] of [["ants", shot0.ants], ["spiders", shot0.spiders]]) {
-    const seen = [];
-    for (const [x, y] of pts) {
-      const ring = [[-9, 0], [9, 0], [0, -9], [0, 9], [-7, -7], [7, 7]]
-        .map(([dx, dy]) => luma(x + dx, y + dy))
-        .filter((v) => v !== null);
-      if (!ring.length) continue;
-      const bg = ring.reduce((a, b) => a + b, 0) / ring.length;
-      let best = 0;
-      for (let dx = -R; dx <= R; dx++)
-        for (let dy = -R; dy <= R; dy++) {
-          const v = luma(x + dx, y + dy);
-          if (v !== null) best = Math.max(best, Math.abs(v - bg));
-        }
-      seen.push(best);
+  const lumaOf = (img, x, y) => {
+    const i = (Math.round(y) * img.width + Math.round(x)) * 4;
+    if (i < 0 || i + 2 >= img.data.length) return null;
+    return 0.2126 * img.data[i] + 0.7152 * img.data[i + 1] + 0.0722 * img.data[i + 2];
+  };
+  /* Judge a creature at the hour it is OUT. Ants are diurnal and are never
+   * paled after dark (a colony of white dots is not a colony of ants), so
+   * asking them for night contrast is asking for the look that was rejected. */
+  const framesOf = (name) => [
+    [shot0[name], shots[0]],
+    ...(shot0[`${name}More`] || []).map((pts, i) => [pts, shots[i + 1]]),
+  ];
+  const judge = phase === "Night" ? ["spiders"] : ["ants", "spiders"];
+  for (const name of judge) {
+    let seen = [];
+    for (const [pts, img] of framesOf(name)) {
+      const frame = [];
+      for (const [x, y] of pts || []) {
+        const ring = [[-9, 0], [9, 0], [0, -9], [0, 9], [-7, -7], [7, 7]]
+          .map(([dx, dy]) => lumaOf(img, x + dx, y + dy))
+          .filter((v) => v !== null);
+        if (!ring.length) continue;
+        const bg = ring.reduce((a, b) => a + b, 0) / ring.length;
+        let best = 0;
+        for (let dx = -R; dx <= R; dx++)
+          for (let dy = -R; dy <= R; dy++) {
+            const v = lumaOf(img, x + dx, y + dy);
+            if (v !== null) best = Math.max(best, Math.abs(v - bg));
+          }
+        frame.push(best);
+      }
+      if (!frame.length) continue;
+      frame.sort((a, b) => a - b);
+      // Keep the best FRAME, judged by its own median.
+      if (!seen.length || frame[frame.length >> 1] > seen[seen.length >> 1]) seen = frame;
     }
     if (!seen.length) {
       console.log(`${phase} ${name}: none lit to judge`);
@@ -366,6 +407,38 @@ for (const phase of ["Day", "Night"]) {
       fail(`${phase} ${name} are invisible: median contrast against their own ground is ${median.toFixed(1)} luma`);
   }
 }
+
+/* ---- A COLONY LEAVES ONE ANT AT A TIME ----
+ * "I don't like the way you 'pop' the ants out of existence. Can you let the
+ * ant disappear one by one over time?" (maintainer 2026-09-07). So the count
+ * must come DOWN in steps and the population must spend real time part-way —
+ * a colony that vanishes between two frames shows exactly one transition from
+ * full to zero and never a middle. Watched across a natural expiry, forced on
+ * so the env gate cannot end it instead.
+ */
+const thin = await page.evaluate(async () => {
+  window.__mlAmbient.setEnabled("ants", true);
+  const counts = [];
+  for (let i = 0; i < 2600; i++) {
+    if (i % 4 === 0) counts.push((window.__mlAmbient.debug("ants").all || []).length);
+    await new Promise((r) => requestAnimationFrame(r));
+  }
+  const peak = Math.max(...counts);
+  // A drop to zero that was NEVER part-way is a pop; count how long the
+  // population sat strictly between its peak and empty.
+  const partial = counts.filter((c) => c > 0 && c < peak).length;
+  let biggestDrop = 0;
+  for (let i = 1; i < counts.length; i++) biggestDrop = Math.max(biggestDrop, counts[i - 1] - counts[i]);
+  return { peak, samples: counts.length, partial, biggestDrop, zero: counts.filter((c) => c === 0).length };
+});
+console.log(
+  `thinning: peak ${thin.peak} ants, ${thin.partial} of ${thin.samples} samples part-way, ` +
+    `biggest single drop ${thin.biggestDrop}`,
+);
+if (thin.peak < 6) fail(`only ${thin.peak} ants at peak — nothing to watch leave`);
+if (!thin.partial) fail("the colony was never part-way: it appears and vanishes whole, which is the pop");
+if (thin.biggestDrop > Math.max(3, thin.peak * 0.4))
+  fail(`${thin.biggestDrop} ants left between two samples — they should go one at a time`);
 
 // ---- The env gate (AUTO mode, where fields are NOT forced) ----
 // setEnabled() in manual mode calls setForced(), which deliberately bypasses

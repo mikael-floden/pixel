@@ -36,6 +36,7 @@ import { crawlerTint, findGround, flatWith, landableAt, levelAt, paintPixels } f
 const DEPTH_BASE = 900_000.05; // just over the darkness overlay
 const DEPTH_BIAS = 1e-6; // keeps their own near-far order among themselves
 const NIGHT_ALPHA = 0.8; // a silhouette after dark, never a lamp
+const SPIDER_PALE = 0.75; // a NIGHT animal lightens toward grey so it reads on dark ground
 const GAIN_TAU = 1600;
 const MAX_SPIDERS = 2; // solitary by design — a crowd of these reads as vermin
 const SPAWN_EVERY: [number, number] = [7_000, 22_000];
@@ -241,7 +242,7 @@ export function spidersFeature(): AmbientFeature {
         s.sprite
           .setPosition(x, y)
           .setDepth(DEPTH_BASE + y * DEPTH_BIAS)
-          .setTint(crawlerTint(SPIDER_DARK, ctx.env))
+          .setTint(crawlerTint(SPIDER_DARK, ctx.env, SPIDER_PALE))
           .setAlpha(g * fade * (1 - (1 - NIGHT_ALPHA) * ctx.env.night))
           .setVisible(true);
       }

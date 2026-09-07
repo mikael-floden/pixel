@@ -75,28 +75,30 @@ export function paintPixels(
 
 /* CONTRAST, NOT COLOUR — how a 1-3 px crawler stays VISIBLE.
  *
- * These are the smallest things this agent draws and they sit UNDER the
- * darkness overlay, graded by the light where they stand (which is right: they
- * are matter on the ground, not UI). But a near-black dot on ground the night
- * has taken down to luma 33-55 differs from it by ONE TO SIX luma — measured on
- * the real screen, day and night, at four spots: +6.2, -0.3, -2.2, +0.7. That
- * is invisible, and it is why the maintainer could "only see ants and spiders
- * near the spawn (the houses near the bonfire)" — the bonfire is the only
- * thing lighting the ground enough for a dark speck to read against it.
+ * These are the smallest things this agent draws. They used to sit UNDER the
+ * darkness overlay, graded by the light where they stand, and a near-black dot
+ * on ground the night had taken to luma 33-55 differed from it by ONE luma
+ * (measured +6.2, -0.3, -2.2, +0.7) — invisible everywhere except beside the
+ * bonfire. They draw a hair ABOVE the overlay now, which is what actually fixed
+ * that: their own colour survives the night instead of being multiplied into
+ * the ground.
  *
- * So the tint follows the LIGHT, not the animal: dark on lit ground, pale on
- * dark ground, crossing over as the sun goes. THE ART IS PAINTED WHITE for
- * this: Phaser's setTint MULTIPLIES, so tinting a near-black texture pale can
- * only make it darker — the first cut did exactly that and measured a night
- * spider at 11.6 luma of contrast while claiming to have paled it. White art
- * plus a tint IS the drawn colour. The creature is the same colour
- * it always was where there is light to see it by; after dark it reads as a
- * silhouette the way a moth or a spider does against a night floor. Footsteps
- * settled this same argument the same way (games2/CLAUDE.md: tints chosen "for
- * CONTRAST, not match"). */
-export function crawlerTint(dark: number, env: { sun: number; night: number }): number {
-  const pale = 0xb9c4d6; // moonlit grey-blue: a silhouette, never a light source
-  const t = Math.max(0, Math.min(1, env.night - env.sun * 0.5));
+ * AN ANT IS NEVER PALE. The first cut also swung the tint toward a moonlit grey
+ * after dark, and a colony of white dots on night grass is not a colony of ants
+ * (maintainer 2026-09-07: "I don't like the way you make the ants white"). Ants
+ * are diurnal anyway — by day, above the overlay, their own near-black reads
+ * against the ground at 102 luma of contrast, which is the case that matters.
+ * A NIGHT creature is a different argument: a spider is out when the ground is
+ * dark, so it lightens toward a dim grey — a silhouette, never a highlight, and
+ * nowhere near white.
+ *
+ * The art is painted WHITE and the drawn colour is this tint: Phaser's setTint
+ * MULTIPLIES, so tinting near-black art lighter can only darken it.
+ */
+export function crawlerTint(dark: number, env: { sun: number; night: number }, maxPale = 0): number {
+  if (maxPale <= 0) return dark;
+  const pale = 0x8b8f96; // dim grey; NOT the moonlit near-white that was rejected
+  const t = Math.max(0, Math.min(1, env.night - env.sun * 0.5)) * maxPale;
   const mix = (a: number, b: number, k: number) => Math.round(a + (b - a) * k) & 255;
   const d = [(dark >> 16) & 255, (dark >> 8) & 255, dark & 255];
   const p = [(pale >> 16) & 255, (pale >> 8) & 255, pale & 255];

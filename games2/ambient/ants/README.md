@@ -18,6 +18,22 @@ unmistakably ants — the eye reads the column, not the animal.
 - Small lateral wobble — ants do not walk a ruled line.
 - The whole trail re-lays after 26–55 s, when less than 30% of it is left in
   view, or when a spot check finds its ground is no longer walkable.
+- **A COLONY LEAVES ONE ANT AT A TIME** (maintainer 2026-09-07: "I don't like
+  the way you 'pop' the ants out of existence. Can you let the ant disappear one
+  by one over time?"). Each ant keeps its own clock: when a trail's time is up
+  it waits 0.4–7 s before it starts to go, then fades over 0.7 s, so the line
+  thins out instead of blinking away, and the next colony arrives the same way.
+  A trail the player has walked AWAY from is exempt and is replaced outright —
+  nobody can watch that one leave, and waiting out the spread would mean
+  arriving somewhere new and standing in an empty field for seconds.
+- **AN ANT IS NEVER PALE.** The visibility fix once swung the tint toward a
+  moonlit grey after dark and a colony of white dots is not a colony of ants
+  ("I don't like the way you make the ants white"). What actually made them
+  visible is drawing above the darkness overlay; the colour stays near-black
+  brown at every hour, and by day that reads at 38–102 luma of contrast against
+  the ground. Ants are diurnal, so the gate judges their contrast BY DAY — a
+  spider, which is out when the ground is dark, keeps a mild lightening toward
+  a dim grey.
 - Diurnal foragers, thinned by cloud. Stops indoors like every effect here.
 
 **The trail is validated over the BAND THE ANTS WALK** — every sample point and

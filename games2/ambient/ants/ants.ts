@@ -53,12 +53,24 @@ const WOBBLE = 1.4; // px of lateral sway — ants do not walk a ruled line
 const SAMPLES = 28; // polyline points the curve is flattened to
 const MARGIN = 10; // dry ground required around each end (see findGround)
 const MIN_ON_SCREEN = 0.3; // re-lay once less than this much of the trail is in view
+/* A COLONY LEAVES ONE ANT AT A TIME (maintainer 2026-09-07: "I don't like the
+ * way you 'pop' the ants out of existence. Can you let the ant disappear one by
+ * one over time?"). When a trail's time is up the ants do not vanish together:
+ * each has its own delay before it goes and its own fade, so the line thins out
+ * the way a real one does, and the next colony arrives the same way.
+ *
+ * A trail the player has LEFT BEHIND is exempt — it is off screen, nobody can
+ * watch it go, and waiting the spread out before laying a new one would mean
+ * arriving somewhere new and standing in an empty field for eight seconds. */
+const LEAVE_SPREAD: [number, number] = [400, 7000]; // per ant, before it starts to go
+const ARRIVE_SPREAD: [number, number] = [0, 2600]; // per ant, before it joins
+const FADE_MS = 700; // one ant's own fade, either way
 const SPAN_FALLBACK = [1, 0.7, 0.45, 0.3]; // shorter rather than no trail at all
 const HEADING_TRIES = 6; // directions tried at each length
 
 const KEY_SMALL = "amb-ant1";
 const KEY_BIG = "amb-ant2";
-const ANT_DARK = 0x241a12; // near-black brown by day; crawlerTint pales it after dark
+const ANT_DARK = 0x241a12; // near-black brown, at every hour — an ant is never pale
 
 interface Ant {
   sprite: Phaser.GameObjects.Image;
@@ -67,6 +79,12 @@ interface Ant {
   spd: number;
   phase: number; // wobble phase
   big: boolean;
+  /* EACH ANT KEEPS ITS OWN CLOCK. `wait` is the ms before it joins a new trail
+   * or, while the colony is leaving, before it goes; `a` is its own 0..1
+   * opacity, eased so it walks off rather than blinking out. */
+  wait: number;
+  a: number;
+  gone: boolean;
 }
 
 export function antsFeature(): AmbientFeature {
@@ -75,6 +93,7 @@ export function antsFeature(): AmbientFeature {
   let box = { x0: 0, y0: 0, x1: 0, y1: 0 }; // the trail's extent, for the on-screen test
   let pathLen = 0;
   let trailLvl: number | null = null; // the terrace this trail lies on
+  let leaving = false; // the colony is thinning out, one ant at a time
   let life = 0;
   let relay = 0;
   let gain = 0;
@@ -221,28 +240,46 @@ export function antsFeature(): AmbientFeature {
           path.length
         : 0;
       const off = path.length > 0 && inView < MIN_ON_SCREEN;
-      if (path.length === 0 || life <= 0 || off) {
-        if (!layTrail(ctx)) {
-          for (const a of ants) a.sprite.setVisible(false);
-          return;
-        }
+
+      /** Start a colony on a fresh trail: every ant re-rolled, each arriving on
+       * its own delay. `instant` skips the stagger, for a colony nobody is
+       * looking at (see LEAVE_SPREAD). */
+      const settle = (instant: boolean) => {
         const want = Math.round(range(N_ANTS));
         while (ants.length < want)
           ants.push({
             sprite: ctx.scene.add.image(0, 0, KEY_SMALL).setOrigin(0, 0).setScale(1).setVisible(false),
-            t: rnd(),
-            dir: rnd() < 0.5 ? 1 : -1,
-            spd: range(SPEED),
-            phase: rnd() * Math.PI * 2,
-            big: false,
+            t: rnd(), dir: rnd() < 0.5 ? 1 : -1, spd: range(SPEED), phase: rnd() * Math.PI * 2,
+            big: false, wait: 0, a: 0, gone: false,
           });
         for (const a of ants) {
           a.t = rnd();
           a.dir = rnd() < 0.5 ? 1 : -1;
           a.spd = range(SPEED);
           a.big = rnd() < 0.18;
+          a.wait = instant ? 0 : range(ARRIVE_SPREAD);
+          a.a = instant ? 1 : 0;
+          a.gone = false;
           a.sprite.setTexture(a.big ? KEY_BIG : KEY_SMALL);
         }
+        leaving = false;
+      };
+
+      if (path.length === 0 || off) {
+        // No trail, or one the player has walked away from: replace it outright.
+        if (!layTrail(ctx)) {
+          for (const a of ants) a.sprite.setVisible(false);
+          return;
+        }
+        settle(true);
+      } else if (life <= 0 && !leaving) {
+        // Its time is up WHILE IT IS BEING WATCHED: the colony thins out.
+        leaving = true;
+        for (const a of ants) a.wait = range(LEAVE_SPREAD);
+      } else if (leaving && ants.every((a) => a.gone)) {
+        // The last one has left — the colony moves on and a new line forms.
+        if (!layTrail(ctx)) return;
+        settle(false);
       }
       // The ground under a trail can change (a bridge deck, a tide of props);
       // re-check one point occasionally rather than every ant every frame.
@@ -254,6 +291,12 @@ export function antsFeature(): AmbientFeature {
 
       const s = dt / 1000;
       for (const a of ants) {
+        // Its own clock: wait, then fade in or out over FADE_MS.
+        a.wait = Math.max(0, a.wait - dt);
+        const want = leaving ? (a.wait > 0 ? 1 : 0) : a.wait > 0 ? 0 : 1;
+        a.a = want > a.a ? Math.min(1, a.a + dt / FADE_MS) : Math.max(0, a.a - dt / FADE_MS);
+        a.gone = leaving && a.a <= 0;
+        if (a.a <= 0) { a.sprite.setVisible(false); continue; }
         a.t += (a.dir * a.spd * s) / (pathLen || 1);
         // Ants turn round at the ends — a nest and a food source, not a loop.
         if (a.t > 1) { a.t = 1; a.dir = -1; }
@@ -267,7 +310,7 @@ export function antsFeature(): AmbientFeature {
           .setPosition(x, y)
           .setDepth(DEPTH_BASE + y * DEPTH_BIAS)
           .setTint(crawlerTint(ANT_DARK, ctx.env))
-          .setAlpha(g * (1 - (1 - NIGHT_ALPHA) * ctx.env.night))
+          .setAlpha(g * a.a * (1 - (1 - NIGHT_ALPHA) * ctx.env.night))
           .setVisible(true);
       }
     },
