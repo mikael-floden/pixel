@@ -47,71 +47,69 @@
  */
 
 /* -- tuning ------------------------------------------------------------------
- * EVERY NUMBER HERE WAS MEASURED, not guessed, against two failure metrics over
- * 120x16 cells of wall at four world rows (games2/scripts/wall-field.mjs):
+ * THE WALL IS A SURFACE, NOT A GRID OF COLUMNS (maintainer 2026-09-07: "I feel
+ * you are thinking too much in columns ... think the wall is tilted 90 degrees
+ * (becomes floor). Of course you don't think on columns when it comes to
+ * today's ground"). Every number below follows from that, and the first version
+ * of this file got both of the following wrong by reasoning in storeys and
+ * columns instead of in the surface they make.
  *
- *   colSeam   the most storeys a boundary keeps the SAME x. A long one IS the
- *             "whole column switching" the maintainer forbade.
- *   rowStripe the most cells a boundary keeps the SAME storey — the "per-storey
- *             stripe" he forbade.
+ * 1. THE STOREY SCALE IS MEASURED GEOMETRY, NOT A DIAL. A storey is 15px tall
+ *    (ISO_GEOMETRY_MAPS3.lh) and one cell step along a wall face is
+ *    sqrt(32^2 + 14^2) = 34.9px, so a storey is 0.429 of a step. Anything else
+ *    stretches the field on the face: the first cut used 0.8, nearly twice too
+ *    tall, which is exactly what made patches read as column-shaped and made a
+ *    shear necessary to fight the symptom. At the true ratio a patch is round
+ *    on the wall and no axis needs defending.
+ * 2. WALLS ARE MUCH TALLER THAN THEY LOOK IN A TEST. Measured over the_game's
+ *    4,551 exposed wall cells: median 4 storeys, p90 14, p99 36, max 40 — a
+ *    600px face, 17.2 cell-steps tall. The first metrics ran on a 16-storey
+ *    slab and so never saw a mountain at all.
  *
- * The shipping numbers, as `npx tsx games2/scripts/wall-field.mjs` prints them:
- * colSeam 5, rowStripe 16, patches averaging 7.0 cells across and 4.5 storeys
- * tall. Compare against the broken shapes below, whose colSeam ran 11-12.
- *
- * MEASURE OVER MANY ROWS, NOT ONE SLAB. Both metrics are worst-cases over a
- * sample, so a four-row sample tunes to one realisation of the noise: this set
- * was first tuned that way, scored colSeam 4, and scored 9 the moment the hash
- * changed underneath it. Twelve rows is what made the ranking stable. Three earlier shapes are recorded here as
- * one-liners because each looked obviously right and measured wrong:
- *   - Axis-aligned chunks, warp 2.6 against a 5.5-cell region: colSeam 12. Half
- *     a region of warp is not enough to bend a boundary off its plane; the wall
- *     switched by column, exactly the reported bug in a new costume.
- *   - Warp raised to the region size, no shear: colSeam still 11-12. A warp only
- *     wobbles a plane, it does not tilt one.
- *   - Shear in x and y only: colSeam fell to 4 but rowStripe hit 27-45, because
- *     the z-slabs were still horizontal. All three axes have to be sheared or
- *     one of the two forbidden seams survives.
+ * The structure is then THE GROUND'S, because that is the thing the maintainer
+ * pointed at and it is already right: a SET per REGION keeps an area coherent,
+ * a MEMBER per CELL varies the field, and his weights decide the mix. On a wall
+ * the set is the palette and the member is the tile. Per-cell members are what
+ * make a region boundary invisible on the ground, and they do the same here —
+ * which is why this file no longer has, or needs, a shear, a micro-region, or a
+ * "colSeam" metric. There is no constant-tile patch left to have a shape.
  */
 
-/** Region size in CELLS. Patches come out smaller than this (the warp cuts them
- *  up) — 14 measures to ~7.0 cells across. */
-export const WALL_REGION_CELLS = 14;
-/** What one STOREY is worth in cells. Sets how fast the field climbs. */
-export const WALL_REGION_STOREY = 0.8;
-/** How far the point is dragged before it is chunked, in cells. Comparable to
- *  the region size ON PURPOSE — at half of it the boundaries stay planar. */
-export const WALL_WARP_CELLS = 11;
+/** WHAT ONE STOREY IS WORTH IN CELL STEPS. Measured, not tuned: 15px of storey
+ *  against a 34.9px cell step along a face. Changing it stretches the field on
+ *  the wall — raise it and patches elongate vertically until they read as
+ *  columns, lower it and they band by storey. */
+export const WALL_STOREY_CELLS = 0.429;
+
+/** Region size in CELLS — one palette per area.
+ *
+ *  NOT the ground's 24, and the reason is the surface's shape rather than taste.
+ *  A wall face is at most 40 storeys, and 40 * WALL_STOREY_CELLS is 17.2 cell
+ *  steps, so a 24-cell region is TALLER THAN THE TALLEST CLIFF IN THE WORLD:
+ *  the palette could then only ever change sideways, which is a vertical
+ *  boundary, which is the column-shaped result this rule exists to avoid — the
+ *  ground's number reintroducing the ground's blind spot on a surface with a
+ *  short axis. At 10 a tall face crosses one or two regions going up, and the
+ *  median 4-storey wall still sits comfortably inside one, which is right: a
+ *  low wall should be one stone. */
+export const WALL_REGION_CELLS = 10;
+/** How far the point is dragged before it is chunked, in cells. The ground does
+ *  not warp at all — it does not need to, because a region boundary there is
+ *  invisible under the per-cell members. A wall changes its whole palette at
+ *  one, which is a bigger jump, so it is bent into something organic rather
+ *  than left as a plane. */
+export const WALL_WARP_CELLS = 9;
 /** Base period of the warp noise, in cells. */
-export const WALL_WARP_PERIOD = 29;
-/** Octaves of warp noise and their amplitude falloff. THREE, not four: four
- *  measured worse on BOTH seams (colSeam 5, rowStripe 10 against 4 and 7) as
- *  well as costing a third more hashing, because the extra high-frequency
- *  wobble can park a boundary back on one column by accident. */
+export const WALL_WARP_PERIOD = 31;
+/** Octaves of warp noise and their amplitude falloff. */
 export const WALL_WARP_OCTAVES = 3;
 export const WALL_WARP_PERSISTENCE = 0.65;
 
-/* THE SHEAR — the thing that makes a boundary a diagonal instead of a plane.
- * Applied BEFORE the warp, so the lattice itself is tilted and the warp then
- * breaks the tilt up. Without it every boundary is a screen-axis line; with it
- * alone every boundary is a perfectly ruled diagonal at one slope, which reads
- * as drawn-with-a-ruler. Both are needed. */
-/** Elevation into x and y: a boundary moves ~0.88 cells sideways per storey. */
-export const WALL_SHEAR_Z = 1.1;
-/** x into y and y into x, so a face along x and a face along y behave alike. */
-export const WALL_SHEAR_XY = 0.45;
-/** (x - y) into elevation: what tilts the horizontal slabs off the storey grid.
- *  Symmetric in the two wall directions by construction. */
-export const WALL_SHEAR_ZX = 0.55;
-
-/** Macro-region size in CELLS — one palette per massif. Wider than a typical
- *  mountain so a single cliff does not change stone family halfway up. */
-export const WALL_PALETTE_CELLS = 44;
 /** Tiles in a synthetic palette. Two reads as a checker, four as a quilt. */
 export const WALL_PALETTE_N = 3;
-/** Their weights: dominant, secondary, vein. 60/30/10 — the dominant tile IS
- *  the rock face, and the last one is the seam you notice. */
-export const WALL_PALETTE_WEIGHTS: readonly number[] = [6, 3, 1];
+/** Their weights, per CELL: dominant, secondary, accent. The dominant IS the
+ *  rock; the other two are the grain in it. */
+export const WALL_PALETTE_WEIGHTS: readonly number[] = [12, 4, 1];
 
 /* -- hashing ---------------------------------------------------------------- */
 
@@ -170,16 +168,14 @@ export function vnoise3(x: number, y: number, z: number, seed: number): number {
 
 /* -- the field -------------------------------------------------------------- */
 
-/** Seeds for the three warp axes. Different seeds, identical coordinates — a
- *  coordinate offset would decorrelate them too, but only these survive a port
- *  unambiguously. */
+/** Seeds for the three warp axes. */
 const WARP_SEED_X = 0x5741_4c31; // "WAL1"
 const WARP_SEED_Y = 0x5741_4c32;
 const WARP_SEED_Z = 0x5741_4c33;
 
 /** Fractal value noise: WALL_WARP_OCTAVES of vnoise3, each at twice the
  *  frequency and WALL_WARP_PERSISTENCE of the amplitude, normalised back to
- *  [0,1). One octave gives a warp that bends but does not wander. */
+ *  [0,1). One octave bends a boundary; three make it wander. */
 export function fbm3(x: number, y: number, z: number, seed: number): number {
   let acc = 0;
   let amp = 1;
@@ -195,37 +191,30 @@ export function fbm3(x: number, y: number, z: number, seed: number): number {
 }
 
 export interface WallField {
-  /** The micro-region id — what picks the tile. */
-  micro: string;
-  /** The macro-region id — what picks the palette. */
-  macro: string;
+  /** The region id — what picks the palette. */
+  region: string;
 }
 
-/** SHEAR, THEN WARP, THEN CHUNK — twice, at two scales.
+/** THE REGION A CELL BELONGS TO — warp the point, then chunk it, ALL THREE AXES
+ *  IN THE SAME UNITS.
  *
- *  `z` is the STOREY index, so the field is keyed on world position and
- *  elevation together and a patch boundary cuts across x, y and height. That is
- *  what the maps agent asked for, and it is also the only way to be safe from
- *  both forbidden seams at once: the shear tilts every lattice plane off both
- *  screen axes, and the warp stops the tilted planes from reading as ruled
- *  lines. Take either away and one of the two comes back — measured, see the
- *  tuning block. */
+ *  Elevation enters as `z * WALL_STOREY_CELLS`, which is the measured ratio of
+ *  a storey to a cell step, so the field is isotropic in what the eye actually
+ *  sees. A region is therefore a ball in world space, and a ball cut by a wall
+ *  face — in any direction, without this function knowing which way the face
+ *  runs — is a round patch on that face. That is the whole reason there is no
+ *  shear here any more: nothing is stretched, so no axis needs defending. */
 export function wallField(x: number, y: number, z: number): WallField {
-  const zc = z * WALL_REGION_STOREY;
-  const u = x + WALL_SHEAR_Z * zc + WALL_SHEAR_XY * y;
-  const v = y + WALL_SHEAR_Z * zc + WALL_SHEAR_XY * x;
-  const w = zc + WALL_SHEAR_ZX * (x - y);
+  const zc = z * WALL_STOREY_CELLS;
   const p = 1 / WALL_WARP_PERIOD;
   const nx = x * p;
   const ny = y * p;
   const nz = zc * p;
-  const wx = u + WALL_WARP_CELLS * (fbm3(nx, ny, nz, WARP_SEED_X) * 2 - 1);
-  const wy = v + WALL_WARP_CELLS * (fbm3(nx, ny, nz, WARP_SEED_Y) * 2 - 1);
-  const wz = w + WALL_WARP_CELLS * (fbm3(nx, ny, nz, WARP_SEED_Z) * 2 - 1);
-  return {
-    micro: `${Math.floor(wx / WALL_REGION_CELLS)},${Math.floor(wy / WALL_REGION_CELLS)},${Math.floor(wz / WALL_REGION_CELLS)}`,
-    macro: `${Math.floor(wx / WALL_PALETTE_CELLS)},${Math.floor(wy / WALL_PALETTE_CELLS)},${Math.floor(wz / WALL_PALETTE_CELLS)}`,
-  };
+  const wx = x + WALL_WARP_CELLS * (fbm3(nx, ny, nz, WARP_SEED_X) * 2 - 1);
+  const wy = y + WALL_WARP_CELLS * (fbm3(nx, ny, nz, WARP_SEED_Y) * 2 - 1);
+  const wz = zc + WALL_WARP_CELLS * (fbm3(nx, ny, nz, WARP_SEED_Z) * 2 - 1);
+  const R = WALL_REGION_CELLS;
+  return { region: `${Math.floor(wx / R)},${Math.floor(wy / R)},${Math.floor(wz / R)}` };
 }
 
 /* -- the pick --------------------------------------------------------------- */
@@ -375,10 +364,18 @@ export function pickWallIndex(
   if (n <= 0) return -1;
   if (n === 1) return 0;
   const f = field ?? wallField(x, y, z);
-  const pal = wallPalette(pool, f.macro, keys, sigs);
+  const pal = wallPalette(pool, f.region, keys, sigs);
   if (!pal.length) return -1;
+  /* THE MEMBER IS PER CELL, exactly as the ground's is — not per region. A
+   * constant tile over a region is a patch, a patch has edges, and edges on a
+   * wall are either column seams or storey stripes; there is no third option,
+   * which is why the first version of this file spent all its effort shaping
+   * them. Varying per cell removes the edge instead of steering it, and it is
+   * what makes a ground region boundary invisible today. The palette changes
+   * slowly underneath, which is where "a path of different stone running
+   * through a cliff" actually lives. */
   const w = WALL_PALETTE_WEIGHTS.slice(0, pal.length);
-  const i = pickWeighted(w, unitHashStr(`wr1|tile|${pool}|${f.micro}`));
+  const i = pickWeighted(w, unitHashStr(`wr1|tile|${pool}|${x}|${y}|${z}`));
   return pal[i >= 0 ? i : 0];
 }
 
@@ -393,7 +390,7 @@ export const WALL_TEST_VECTORS: {
   hash3: [number, number, number, number, number][];
   vnoise3: [number, number, number, number, number][];
   fbm3: [number, number, number, number, number][];
-  field: [number, number, number, string, string][];
+  field: [number, number, number, string][];
   palette: [string, string, number, number[]][];
   pick: [string, number, number, number, number, number][];
 } = {
@@ -418,12 +415,12 @@ export const WALL_TEST_VECTORS: {
     [1.25,-2.75,3.5,1463897138,0.543485],
   ],
   field: [
-    [0,0,0,"-1,0,-1","-1,0,-1"],
-    [1,0,0,"0,0,-1","0,0,-1"],
-    [0,0,1,"-1,0,-1","-1,0,-1"],
-    [37,214,5,"9,16,-7","3,5,-3"],
-    [120,15,11,"9,5,4","3,1,1"],
-    [393,393,40,"43,43,2","13,13,0"],
+    [0,0,0,"-1,0,-1"],
+    [1,0,0,"0,0,-1"],
+    [0,0,1,"-1,0,-1"],
+    [37,214,5,"3,21,0"],
+    [120,15,11,"12,1,0"],
+    [393,393,40,"39,39,1"],
   ],
   palette: [
     ["grey_stone__over__grey_stone","0,0,0",74,[56,16,72]],
@@ -433,9 +430,9 @@ export const WALL_TEST_VECTORS: {
   ],
   pick: [
     ["grey_stone__over__grey_stone",74,0,0,0,49],
-    ["grey_stone__over__grey_stone",74,37,214,5,71],
-    ["grey_stone__over__grey_stone",74,38,214,5,71],
-    ["grey_stone__over__grey_stone",74,37,214,6,71],
+    ["grey_stone__over__grey_stone",74,37,214,5,53],
+    ["grey_stone__over__grey_stone",74,38,214,5,5],
+    ["grey_stone__over__grey_stone",74,37,214,6,5],
     ["one__over__one",1,5,5,5,0],
     ["none__over__none",0,1,2,3,-1],
   ],

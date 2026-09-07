@@ -13,6 +13,7 @@ import assert from "node:assert/strict";
 import {
   WALL_TEST_VECTORS,
   WALL_PALETTE_N,
+  WALL_PALETTE_WEIGHTS,
   hash3,
   vnoise3,
   fbm3,
@@ -29,11 +30,8 @@ test("the published TEST_VECTORS reproduce — this is what a port is checked ag
   for (const [i, j, k, s, want] of WALL_TEST_VECTORS.hash3) assert.equal(hash3(i, j, k, s), want, `hash3(${i},${j},${k},${s})`);
   for (const [x, y, z, s, want] of WALL_TEST_VECTORS.vnoise3) assert.equal(r6(vnoise3(x, y, z, s)), want, `vnoise3(${x},${y},${z})`);
   for (const [x, y, z, s, want] of WALL_TEST_VECTORS.fbm3) assert.equal(r6(fbm3(x, y, z, s)), want, `fbm3(${x},${y},${z})`);
-  for (const [x, y, z, micro, macro] of WALL_TEST_VECTORS.field) {
-    const f = wallField(x, y, z);
-    assert.equal(f.micro, micro, `field.micro(${x},${y},${z})`);
-    assert.equal(f.macro, macro, `field.macro(${x},${y},${z})`);
-  }
+  for (const [x, y, z, region] of WALL_TEST_VECTORS.field)
+    assert.equal(wallField(x, y, z).region, region, `field(${x},${y},${z})`);
   for (const [pool, macro, n, want] of WALL_TEST_VECTORS.palette)
     assert.deepEqual(wallPalette(pool, macro, keysOf(n)), want, `palette(${pool},${macro},${n})`);
   for (const [pool, n, x, y, z, want] of WALL_TEST_VECTORS.pick)
@@ -61,78 +59,98 @@ test("hash3 does not collapse — the xor-then-multiply version returned 0 for e
   for (const s of [1, 7, 12345]) assert.notEqual(hash3(s, 0, 0, s), 0, `hash3(${s},0,0,${s}) collapsed`);
 });
 
-/** The field over a slab of wall: [storey][along-the-face] region ids. */
-function slab(along: "x" | "y", fixed: number, w = 120, h = 16): string[][] {
-  const g: string[][] = [];
-  for (let z = 0; z < h; z++) {
-    g[z] = [];
-    for (let i = 0; i < w; i++) {
-      const [x, y] = along === "x" ? [i, fixed] : [fixed, i];
-      g[z][i] = wallField(x, y, z).micro;
+/* THE WALL IS A FLOOR STOOD ON ITS EDGE (maintainer 2026-09-07: "I feel you are
+ * thinking too much in columns ... think the wall is tilted 90 degrees (becomes
+ * floor). Of course you don't think on columns when it comes to today's
+ * ground"). So these measure the SURFACE, in pixels, treating both directions
+ * alike — and at the heights the world actually has.
+ *
+ * The tests they replace asserted a "colSeam" and a "rowStripe": the longest run
+ * of a tile boundary along a column and along a storey. Those asked the wrong
+ * question twice. They presume a constant-tile patch WITH an edge, which the
+ * ground's structure does not produce, and they treat the wall's two axes as
+ * different kinds of thing, which is the column-thinking itself. They also ran
+ * on a 16-storey slab when the_game's faces reach 40. */
+const PITCH_PX = 15;                                  // one storey
+const STEP_PX = Math.sqrt(32 * 32 + 14 * 14);         // one cell along a face
+const TALLEST = 40;                                   // measured max in the_game
+const LINES = [7, 23, 40, 61, 90, 128, 171, 200, 244, 301, 340, 377];
+
+/** Region patches on a face, as pixel boxes. Patches touching the sample edge
+ *  are dropped: their extent is the window's, not theirs. */
+function patchBoxes(): { w: number; h: number }[] {
+  const out: { w: number; h: number }[] = [];
+  const W = 90;
+  for (const along of ["x", "y"] as const)
+    for (const fixed of LINES) {
+      const box = new Map<string, { i0: number; i1: number; z0: number; z1: number }>();
+      for (let z = 0; z < TALLEST; z++)
+        for (let i = 0; i < W; i++) {
+          const [x, y] = along === "x" ? [i, fixed] : [fixed, i];
+          const r = wallField(x, y, z).region;
+          const b = box.get(r) ?? { i0: i, i1: i, z0: z, z1: z };
+          b.i0 = Math.min(b.i0, i); b.i1 = Math.max(b.i1, i);
+          b.z0 = Math.min(b.z0, z); b.z1 = Math.max(b.z1, z);
+          box.set(r, b);
+        }
+      for (const b of box.values()) {
+        if (b.i0 === 0 || b.i1 === W - 1 || b.z0 === 0 || b.z1 === TALLEST - 1) continue;
+        out.push({ w: (b.i1 - b.i0 + 1) * STEP_PX, h: (b.z1 - b.z0 + 1) * PITCH_PX });
+      }
     }
-  }
-  return g;
+  return out;
 }
 
-test("NO COLUMN SWITCHES — a boundary never holds one column for many storeys", () => {
-  // "never a whole column switching". A tile boundary that sits between the
-  // same two columns all the way up IS that bug, and it is what an axis-aligned
-  // chunk grid gives you for free: its boundaries are planes of constant x, and
-  // a plane of constant x is a column seam on an iso screen.
-  let worst = 0;
-  let where = "";
-  for (const along of ["x", "y"] as const)
-    for (const fixed of [7, 23, 40, 61, 90, 128, 171, 200, 244, 301, 340, 377]) {
-      const g = slab(along, fixed);
-      for (let i = 1; i < g[0].length; i++) {
-        let run = 0;
-        for (let z = 0; z < g.length; z++) {
-          if (g[z][i] !== g[z][i - 1]) {
-            run++;
-            if (run > worst) { worst = run; where = `${along}=${i} at ${fixed}`; }
-          } else run = 0;
-        }
-      }
-    }
-  assert.ok(worst <= 7, `a boundary held one column for ${worst} storeys (${where}); the broken shapes scored 11-12`);
+test("a region is ROUND on the wall — the field is isotropic in what the eye sees", () => {
+  // A storey is 15px and a cell step is 34.9px, so elevation enters the field at
+  // 0.429. Get that ratio wrong and patches stretch: the first cut used 0.8,
+  // nearly twice too tall, which is what made them read as column-shaped and
+  // made a shear seem necessary to fight the symptom.
+  const boxes = patchBoxes();
+  assert.ok(boxes.length > 40, `too few unclipped patches to judge (${boxes.length})`);
+  const asp = boxes.map((b) => b.w / b.h).sort((a, b) => a - b);
+  const median = asp[Math.floor(asp.length / 2)];
+  assert.ok(median > 0.7 && median < 1.6, `median patch aspect ${median.toFixed(2)} — patches are stretched, not round`);
 });
 
-test("NO STOREY STRIPES — a boundary never holds one storey across many cells", () => {
-  // "never a per-storey stripe". The mirror image of the test above, and the
-  // failure that appeared the moment the shear was applied to x and y only: the
-  // elevation slabs stayed horizontal and scored 27-45 here.
-  let worst = 0;
-  for (const along of ["x", "y"] as const)
-    for (const fixed of [7, 23, 40, 61, 90, 128, 171, 200, 244, 301, 340, 377]) {
-      const g = slab(along, fixed);
-      for (let z = 1; z < g.length; z++) {
-        let run = 0;
-        for (let i = 0; i < g[0].length; i++) {
-          if (g[z][i] !== g[z - 1][i]) { run++; if (run > worst) worst = run; } else run = 0;
-        }
-      }
-    }
-  assert.ok(worst <= 20, `a boundary held one storey for ${worst} cells; the unsheared shape scored 27-45`);
+test("a region is bigger than a typical wall and smaller than the tallest", () => {
+  // the_game's faces: median 4 storeys, p90 14, max 40. A region must be large
+  // enough that an ordinary wall is one stone, and small enough that a MOUNTAIN
+  // is not — a region taller than the tallest cliff can only ever change
+  // sideways, which is a vertical boundary, which is the column-shaped result
+  // this rule exists to avoid.
+  const boxes = patchBoxes();
+  const hs = boxes.map((b) => b.h).sort((a, b) => a - b);
+  const medianH = hs[Math.floor(hs.length / 2)];
+  assert.ok(medianH > 4 * PITCH_PX, `regions (${medianH}px) do not cover an ordinary 4-storey wall`);
+  assert.ok(medianH < TALLEST * PITCH_PX, `regions (${medianH}px) are taller than the tallest cliff (${TALLEST * PITCH_PX}px)`);
 });
 
-test("IT IS NOT PER-CELL RANDOM — neighbours overwhelmingly share a tile", () => {
-  // The other half of "don't make it feel random": a patch has to be a patch.
-  // Per-cell picking over 74 candidates would agree with a neighbour ~1.4% of
-  // the time and paint a quilt.
+test("THE MEMBER VARIES PER CELL, which is what removes the boundary", () => {
+  // The ground's region edges are invisible because each CELL picks its own
+  // member; the same is true here. A constant tile over a region would have an
+  // edge, and an edge on a wall is either a column seam or a storey stripe —
+  // there is no third option. Varying per cell removes the edge rather than
+  // steering it. The share below is the chance two independent cells draw the
+  // same slot under WALL_PALETTE_WEIGHTS, so it pins the mix, not just "varies".
+  const total = WALL_PALETTE_WEIGHTS.reduce((s, w) => s + w, 0);
+  const expected = WALL_PALETTE_WEIGHTS.reduce((s, w) => s + (w / total) ** 2, 0);
   let same = 0;
-  let total = 0;
-  for (let y = 20; y < 60; y++)
-    for (let x = 20; x < 100; x++)
-      for (let z = 0; z < 8; z++) {
-        const a = pickWallIndex("grey_stone__over__grey_stone", keysOf(74), x, y, z);
-        for (const [dx, dy, dz] of [[1, 0, 0], [0, 1, 0], [0, 0, 1]] as const) {
-          if (pickWallIndex("grey_stone__over__grey_stone", keysOf(74), x + dx, y + dy, z + dz) === a) same++;
-          total++;
+  let n = 0;
+  for (const [dx, dy, dz] of [[1, 0, 0], [0, 1, 0], [0, 0, 1]] as const)
+    for (let y = 20; y < 50; y++)
+      for (let x = 20; x < 70; x++)
+        for (let z = 0; z < TALLEST; z += 3) {
+          const a = pickWallIndex("grey_stone__over__grey_stone", keysOf(74), x, y, z);
+          const b = pickWallIndex("grey_stone__over__grey_stone", keysOf(74), x + dx, y + dy, z + dz);
+          if (a === b) same++;
+          n++;
         }
-      }
-  const share = same / total;
-  assert.ok(share > 0.75, `neighbours agreed only ${(share * 100).toFixed(1)}% of the time — that is a quilt, not a rock face`);
-  assert.ok(share < 0.999, `neighbours agreed ${(share * 100).toFixed(2)}% of the time — the field is not varying at all`);
+  const share = same / n;
+  assert.ok(
+    Math.abs(share - expected) < 0.08,
+    `neighbours matched ${(share * 100).toFixed(1)}% against the ${(expected * 100).toFixed(1)}% the weights imply`,
+  );
 });
 
 test("a palette is distinct, ordered and bounded", () => {
