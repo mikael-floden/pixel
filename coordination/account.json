@@ -1,11 +1,12 @@
 {
   "domain": "account",
-  "updated_at": "2026-09-07T18:52:46+00:00",
+  "updated_at": "2026-09-07T19:33:45+00:00",
   "health": "running",
-  "current": "charter written (account/README.md); tech approved by the maintainer; next unit is the account service itself",
+  "current": "Firestore is LIVE (projects/nagijala/(default), europe-north1, freeTier true) — the infrastructure blocker is gone; next unit is the account service itself",
   "progress": {
     "charter_written": 1,
-    "phase": "ready to build phase 1 (Firestore + silent account at first join)"
+    "database_created": 1,
+    "phase": "ready to build phase 1 (silent account at first join, store.ts deleted)"
   },
   "budget_remaining": null,
   "notes": [
@@ -20,7 +21,9 @@
     "TECH APPROVED (maintainer 2026-09-07): Firestore, Standard/Native mode, single region europe-north1, reached ONLY server-side via @google-cloud/firestore. NO Firebase SDK in the client, NO security rules, NO Firebase Auth — Firestore is the database, Firebase is a platform we do not use. Three reasons the line is absolute: a client that can write the database directly can write its own inventory and the server is authoritative; the Firebase client SDK is hundreds of KB into a bundle that ships none of it; and Firebase Auth is precisely the auth aggregator the maintainer was right to refuse in his first message.",
     "SIMPLICITY CORRECTION the maintainer forced, kept as law because it was a real over-build: I proposed EdDSA/JWT signed tokens + jose + Secret Manager so identity could be verified WITHOUT a database read — then the join already reads the account document for level and inventory, so the whole crypto layer bought nothing. Identity is {accountId, secret}: server-minted, compared timing-safe against a hash on the account doc during the read that was already happening. Revocation is rotating a field; multi-process needs no key distribution; zero crypto libraries. GENERAL RULE FOR THIS DOMAIN: separate decisions that cost nothing (naming, data shape, when to write) from technology that costs something (packages, services, ops). Only the second pile is bloat, and it is currently ONE package.",
     "REGION: europe-north1, NOT the eur3 multi-region I first proposed. Multi-region storage under single-region compute buys availability that cannot be used — a europe-north1 outage takes Cloud Run with it and the game is down either way. Cheaper, lower latency, same region as the rest of the stack.",
-    "COST, measured 2026-09-07 (us-central1 rates, EU somewhat higher): reads $0.03/100k, writes $0.09/100k, deletes $0.01/100k, storage ~$0.144/GiB/month. Free daily: 50,000 reads / 20,000 writes / 20,000 deletes / 1 GiB — for the (default) database only, one per project (this project has never used Firebase, so the allowance is unclaimed). Firestore has no instance, node or minimum, so idle is unbilled: development costs nothing at ~0.1% of the free tier. PITR and scheduled backups stay OFF — they bill per GiB and dev data is disposable under the no-migration law."
+    "COST, measured 2026-09-07 (us-central1 rates, EU somewhat higher): reads $0.03/100k, writes $0.09/100k, deletes $0.01/100k, storage ~$0.144/GiB/month. Free daily: 50,000 reads / 20,000 writes / 20,000 deletes / 1 GiB — for the (default) database only, one per project (this project has never used Firebase, so the allowance is unclaimed). Firestore has no instance, node or minimum, so idle is unbilled: development costs nothing at ~0.1% of the free tier. PITR and scheduled backups stay OFF — they bill per GiB and dev data is disposable under the no-migration law.",
+    "DATABASE LIVE 2026-09-07, created by the maintainer from Cloud Shell on a phone: projects/nagijala/databases/(default), europe-north1, FIRESTORE_NATIVE, freeTier true, PITR disabled. NOTE THE PROJECT ID IS 'nagijala' — one n, it does not match the game's name. Full record and the flags that matter in account/README.md.",
+    "TRAP, paid for: `gcloud config get-value project` prints '(unset)' and EXITS 0, so a `cmd && cmd` Cloud-Shell chain runs straight past a missing project and dies one step later with an unrelated-looking error. games2/deploy/ar-cleanup.sh and .github/gcs-backup-bootstrap.sh already carry the correct derivation and the [ \"$PROJECT_ID\" = \"(unset)\" ] guard — reuse them, never hand-roll it. I hand-rolled it and cost the maintainer a round trip."
   ],
   "requests": [
     {

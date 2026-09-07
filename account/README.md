@@ -172,12 +172,35 @@ Both die with `store.ts`. **The change is a net deletion**: `store.ts`,
 `store.test.ts`, `getPlayerToken()` and every `saved?.` migration fallback in
 `onJoin` go; one package and one small module arrive.
 
-## Setup (both Cloud-Shell one-liners — no laptop, per repo law)
+## The database — LIVE since 2026-09-07
+
+`projects/nagijala/databases/(default)` · `europe-north1` · `FIRESTORE_NATIVE`
+· `freeTier: true` · `POINT_IN_TIME_RECOVERY_DISABLED`.
+
+Created from Cloud Shell on a phone (per repo law — no laptop) with:
 
 ```
-gcloud services enable firestore.googleapis.com
-gcloud firestore databases create --location=europe-north1
+gcloud config set project nagijala && \
+gcloud services enable firestore.googleapis.com && \
+gcloud firestore databases create --location=europe-north1 --type=firestore-native
 ```
+
+- **`nagijala`** — one `n`, not "nangijala". The GCP project id does not match
+  the game's name.
+- **No `--database` flag** is what makes it `(default)`, and ONLY the default
+  database gets the free tier. The API confirms it: `freeTier: true`.
+- **`--type=firestore-native`** explicitly. Datastore mode is a different
+  product with a different API.
+- **`--location=europe-north1` is PERMANENT.** A database's location cannot be
+  changed afterwards; a different region means a different database.
+
+TRAP, paid for: **`gcloud config get-value project` prints `(unset)` and exits
+0**, so a `cmd && cmd` chain sails straight past a missing project and fails
+one step later with a confusing error. `games2/deploy/ar-cleanup.sh` and
+`.github/gcs-backup-bootstrap.sh` already guard it
+(`[ "$PROJECT_ID" = "(unset)" ]`) — reuse their derivation, never hand-roll it.
+Not scripted here: this is ONE command, and a bootstrap script for one command
+is the bloat those three exist to avoid.
 
 IAM is likely already done: the deploy passes no `--service-account`, so Cloud
 Run runs as the default compute SA, which carries Editor. A dedicated service
