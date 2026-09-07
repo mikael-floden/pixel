@@ -4756,7 +4756,8 @@ const _needyTiles = new Int32Array(NAV_COARSE * NAV_COARSE);
  * escape". In practice it bounds the map; in play it is weather.
  */
 
-/** The open sea. Only this ground carries the current. */
+/** The open sea. It carries the UNESCAPABLE current; the shallows around the
+ *  coast carry the gentle one below. */
 export const DEEP_WATER_GROUND = "deep_water";
 /** Cells of open sea that stay free, so the shoreline is swimmable. */
 export const DEEP_CURRENT_FREE_CELLS = 1.5;
@@ -4767,6 +4768,43 @@ export const DEEP_CURRENT_RAMP_CELLS = 7;
  *  strongest stroke in the game and the far sea is unreachable — without ever
  *  refusing a move, which is what makes it read as water and not as a wall. */
 export const DEEP_CURRENT_MAX = 120;
+
+/* -- THE COASTAL CURRENT -----------------------------------------------------
+ * The deep current alone leaves you STRANDED IN OPEN WATER (maintainer,
+ * 2026-09-07: "now the deep_water brings you back to closest water. I said
+ * closest main land. Not closest water"). It only acts on `deep_water`, so it
+ * lets go the moment you cross that boundary — measured over 1,531 swimmers
+ * started across the_game's open sea, 1,510 were abandoned still in deep water
+ * and the median drop-off was 22.6 CELLS FROM LAND, because the island wears a
+ * belt of shallow `water` up to 22.8 cells wide that the current never touched.
+ * The drag has to keep going through the shallows or it does not do the thing
+ * it is for.
+ *
+ * It must stay ESCAPABLE there, which the deep current deliberately is not.
+ * The shallow belt is where the islands are reached from and where swimming is
+ * a real move; a shore-ward pull stronger than a stroke would wall the sea off
+ * and beach every swimmer. COAST_MAX is therefore held to half the running
+ * swim (RUN_SPEED * 0.55 = 96.25 wu/s), so it always reads as a pull you can
+ * work against, and the free band keeps the last few cells of shore neutral so
+ * you can set off at all.
+ *
+ * The ramp is keyed on DISTANCE TO THE NEAREST MAIN LAND, not on distance from
+ * the deep-water line — the same field that already gives the direction, so it
+ * costs nothing and it is the quantity the rule is actually about. That also
+ * exempts inland water for free, with no lake/sea labelling: every cell of a
+ * pond is within the free band of its own shore, so a pond has no current by
+ * geometry. the_game's only non-sea water is 31 cells of lava at ≤1.4 cells
+ * from land, well inside it.
+ */
+
+/** Cells from land inside which the shallows are yours — no coastal pull. */
+export const COAST_CURRENT_FREE_CELLS = 6;
+/** Cells from land at which the coastal pull reaches COAST_CURRENT_MAX. */
+export const COAST_CURRENT_RAMP_CELLS = 16;
+/** The coastal pull at full strength, world units per second. HALF the running
+ *  swim, so it is always out-swimmable — the deep current is the wall, this is
+ *  the tide that carries you the rest of the way in. */
+export const COAST_CURRENT_MAX = 48;
 
 /** THE SMALLEST LAND MASS THE CURRENT WILL STEER YOU TO, in cells. the_game
  *  has seven: a 55,651-cell mainland, five islands of 184-304, and one 18-cell
@@ -4924,10 +4962,10 @@ export function warmDeepCurrent(grid: TerrainGrid): void {
 }
 
 /**
- * The current acting on a body at a world position, or null on land and in the
- * shallows. WORLD-space unit direction plus a speed in wu/s — the caller
- * integrates it through the ordinary movement step so terrain still collides
- * and nothing can be pushed through a wall.
+ * The current acting on a body at a world position, or null on land and within
+ * the free band off the shore. WORLD-space unit direction plus a speed in
+ * wu/s — the caller integrates it through the ordinary movement step so
+ * terrain still collides and nothing can be pushed through a wall.
  *
  * Direction is toward the NEAREST MAIN LAND (maintainer, 2026-09-07: "the
  * deep_water should drag the player towards the closest main land, not the map
@@ -4936,8 +4974,14 @@ export function warmDeepCurrent(grid: TerrainGrid): void {
  * along the shore instead of back onto the beach four cells behind you. The
  * nearest land cell comes from a feature transform (nearestMainLand), so the
  * direction is exact rather than a gradient, and it points at a cell you can
- * actually stand on — the shallows carry no current of their own, so the
- * current simply stops once you reach them.
+ * actually stand on.
+ *
+ * IT CARRIES YOU ALL THE WAY IN. Gating the current on `deep_water` let it go
+ * at that boundary and left a swimmer a measured median of 22.6 cells from
+ * land, still at sea ("it brings you back to closest water. I said closest
+ * main land"). Every water cell steers now; see THE COASTAL CURRENT for why
+ * the shallow half of that pull is deliberately weak enough to swim against
+ * and the deep half is not.
  */
 export function deepCurrentAt(
   grid: TerrainGrid,
@@ -4948,13 +4992,32 @@ export function deepCurrentAt(
   const r = Math.floor(y / CELL_WU);
   if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) return null;
   const i = r * grid.width + c;
-  if (grid.type[i] !== DEEP_WATER_GROUND) return null;
-  const depth = deepDepth(grid)[i];
-  const t = (depth - DEEP_CURRENT_FREE_CELLS) / (DEEP_CURRENT_RAMP_CELLS - DEEP_CURRENT_FREE_CELLS);
-  if (!(t > 0)) return null;
-  const speed = Math.min(1, t) * DEEP_CURRENT_MAX;
+  const ground = grid.type[i];
+  const surf = surfaceFor(ground);
+  // Anything you can stand on, and anything solid, carries nothing. The rest
+  // is water, and ALL of it steers: gating on `deep_water` is what used to
+  // abandon a swimmer 22 cells out.
+  if (surf.standable || !surf.swimmable) return null;
   const near = nearestMainLand(grid);
   if (!near.any) return null; // a world with no land big enough to steer toward
+  const landCells = Math.hypot(near.nlx[i], near.nly[i]);
+  const ramp = (d: number, free: number, full: number, max: number) => {
+    const t = (d - free) / (full - free);
+    return t > 0 ? Math.min(1, t) * max : 0;
+  };
+  // The coastal pull acts everywhere at sea, escapable. In deep water the old
+  // unescapable ramp still applies and WINS where it is stronger, so the wall
+  // at the edge of the world is exactly as it was — the coastal term only
+  // fills the gap it used to leave.
+  let speed = ramp(landCells, COAST_CURRENT_FREE_CELLS, COAST_CURRENT_RAMP_CELLS, COAST_CURRENT_MAX);
+  if (ground === DEEP_WATER_GROUND) {
+    const depth = deepDepth(grid)[i];
+    speed = Math.max(
+      speed,
+      ramp(depth, DEEP_CURRENT_FREE_CELLS, DEEP_CURRENT_RAMP_CELLS, DEEP_CURRENT_MAX),
+    );
+  }
+  if (!(speed > 0)) return null;
   // The nearest main-land cell's CENTRE, so the pull does not jitter as you
   // cross cells: the offset is in cells, from THIS cell.
   const vx = (c + near.nlx[i] + 0.5) * CELL_WU - x;
