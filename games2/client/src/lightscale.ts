@@ -22,26 +22,62 @@
 
 const KEY = "ml-light-scale";
 
-/** Full resolution. Lowering this is a measurement, not a default — the
- * maintainer picks the shipping value by eye after a beacon run. */
-export const LIGHT_SCALE_DEFAULT = 1;
+/* REACHED THROUGH globalThis, not as bare globals. The curve here is pure and
+ * is unit-tested under Node (server/test/lightscale.test.ts), which puts this
+ * file in a project with no DOM lib — bare `location`/`window` do not compile
+ * there, and the try/catch that already guards a private-mode browser guards
+ * their absence too. */
+const g = globalThis as unknown as {
+  location?: { search: string };
+  window?: { dispatchEvent(e: unknown): void };
+  CustomEvent?: new (t: string, i?: { detail?: unknown }) => unknown;
+};
 
-/** The slider's travel. Below a quarter the upsample smears a light's edge
- * into a visible staircase across a cliff face; above 1 there is nothing to
- * gain, the passes are already canvas-sized. */
-export const LIGHT_SCALE_MIN = 0.25;
+/** HALF (maintainer 2026-09-07: "I think 50% is a perfect default"), picked by
+ * eye against a measurement rather than either alone. Two of his beacon runs on
+ * the same build, cooled between: 100% -> 50% moved fps 43.4 -> 48.7 (+12%),
+ * frame p90 34.4 -> 28.0 ms, p99 73.8 -> 47.6 ms, while CPU work per frame was
+ * flat at -3% and idle per frame fell 27% — the signature of a fragment-bound
+ * frame, and the answer to whether his Mali-G715 is GPU-limited. It is. He
+ * could not see 50% at all; 25% is where he first could. */
+export const LIGHT_SCALE_DEFAULT = 0.5;
+
+/** The slider's travel. The floor is deliberately absurd — at 2% of a 1079px
+ * canvas the field is 22 texels wide, one per ~25 screen pixels, which is far
+ * past anything shippable. That is the point: the maintainer went to the old
+ * 25% floor and still saw nothing ("I can't see any difference... maybe I even
+ * feel the game looks better"), so the slider has to reach somewhere he CAN
+ * see it break or it cannot tell him where the knee is. Above 1 there is
+ * nothing to gain; the passes are already canvas-sized. */
+export const LIGHT_SCALE_MIN = 0.02;
 export const LIGHT_SCALE_MAX = 1;
-/** Steps of 5% — fine enough to find the knee between speed and softness,
- * coarse enough to hit with a thumb. */
-export const LIGHT_SCALE_STEP = 0.05;
+
+/** THE TRAVEL IS GEOMETRIC, not linear — each step is the same RATIO (~10%),
+ * so half the slider lives below 14% where the interesting region is. Linear
+ * travel would bury the whole hunt in the bottom fifth of the track, and it is
+ * the ratio that matters anyway: 4%->8% is the same doubling of coarseness as
+ * 40%->80%, while costing a fiftieth as much. 40 steps over a 50x range. */
+export const LIGHT_SCALE_STEPS = 40;
+const RATIO = LIGHT_SCALE_MAX / LIGHT_SCALE_MIN;
 
 const clamp = (v: number) =>
   v < LIGHT_SCALE_MIN ? LIGHT_SCALE_MIN : v > LIGHT_SCALE_MAX ? LIGHT_SCALE_MAX : v;
 
-/** Snap to the step grid, then round the float — 0.35000000000000003 as a
- * localStorage string survives a reload and comes back off-grid forever. */
-export const snapLightScale = (v: number) =>
-  Math.round(clamp(Math.round(v / LIGHT_SCALE_STEP) * LIGHT_SCALE_STEP) * 100) / 100;
+/** Slider position 0..1 -> scale, and back. Exported so the HUD does not carry
+ * its own copy of the curve. */
+export const lightScaleFromSlider = (p: number) =>
+  snapLightScale(LIGHT_SCALE_MIN * Math.pow(RATIO, p < 0 ? 0 : p > 1 ? 1 : p));
+export const sliderFromLightScale = (v: number) =>
+  Math.log(clamp(v) / LIGHT_SCALE_MIN) / Math.log(RATIO);
+
+/** Snap to the geometric grid, then round the float — 0.35000000000000003 as a
+ * localStorage string survives a reload and comes back off-grid forever. Three
+ * decimals, because the low end needs them (0.024, 0.026) and a hashed-name
+ * style exactness is not the point here, reproducibility is. */
+export const snapLightScale = (v: number) => {
+  const k = Math.round((Math.log(clamp(v) / LIGHT_SCALE_MIN) / Math.log(RATIO)) * LIGHT_SCALE_STEPS);
+  return Math.round(LIGHT_SCALE_MIN * Math.pow(RATIO, k / LIGHT_SCALE_STEPS) * 1000) / 1000;
+};
 
 let value = load();
 
@@ -49,7 +85,7 @@ function load(): number {
   try {
     /* `?light=` STILL WINS AND WRITES THROUGH, so a browser tab can set the
      * scale for a home-screen PWA that shares the origin's storage. */
-    const q = new URLSearchParams(location.search).get("light");
+    const q = new URLSearchParams(g.location?.search ?? "").get("light");
     if (q !== null) {
       const v = Number(q);
       if (Number.isFinite(v) && v > 0) {
@@ -84,12 +120,18 @@ export function setLightScale(v: number): void {
   } catch {
     /* storage disabled — the setting simply does not persist */
   }
-  window.dispatchEvent(new CustomEvent("ml-light-scale", { detail: next }));
+  if (g.window && g.CustomEvent) g.window.dispatchEvent(new g.CustomEvent("ml-light-scale", { detail: next }));
 }
 
 /** Slider readout. Names the side that matters — the fragment count, which is
  * the square — because 50% sounds like half the work and is a quarter of it. */
 export function lightScaleLabel(v: number = value): string {
   if (v >= 1) return "100% (full)";
-  return `${Math.round(v * 100)}% · ${Math.round(v * v * 100)}% of the pixels`;
+  // One decimal under 10%, where whole percents would print three steps of the
+  // slider as the same number.
+  const pct = v * 100;
+  const side = pct < 10 ? pct.toFixed(1) : String(Math.round(pct));
+  const area = v * v * 100;
+  const frac = area < 1 ? area.toFixed(2) : area < 10 ? area.toFixed(1) : String(Math.round(area));
+  return `${side}% · ${frac}% of the pixels`;
 }

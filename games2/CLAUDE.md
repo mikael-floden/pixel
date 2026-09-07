@@ -3070,11 +3070,20 @@ height reads per thing per frame.
   vec4(0) for exactly those fragments — so this is free. Any future pass with an
   early-out uniform gets BOTH treatments: the guard is only as good as the last
   write, and the last write is only as good as not running at all.
-- **THE LIGHT PASSES' RESOLUTION IS A SETTINGS SLIDER** ("Light resolution",
-  lightscale.ts). It is the fraction of the canvas the three full-screen passes
-  render at before a LINEAR upsample, so cost is its SQUARE — 50% is a quarter
-  of the fragments, which is why the readout names the pixel count and not just
-  the percent. `?light=` still sets it, but AN INSTALLED PWA HAS NO URL BAR, and
+- **THE LIGHT PASSES RENDER AT HALF RESOLUTION** (`LIGHT_SCALE_DEFAULT` 0.5,
+  lightscale.ts), tuned by the "Light resolution" slider. It is the fraction of
+  the canvas the three full-screen passes render at before a LINEAR upsample, so
+  cost is its SQUARE — 50% is a quarter of the fragments, which is why the
+  readout names the pixel count and not just the percent. THE PHONE IS
+  FRAGMENT-BOUND, measured: two beacon runs on one build, cooled between, 100%
+  vs 50% moved fps 43.4 -> 48.7 (+12%), frame p90 34.4 -> 28.0 ms and p99 73.8
+  -> 47.6 ms, while CPU work per frame stayed flat (-3%) and idle per frame fell
+  27%. Unchanged CPU + shorter frames + less idle is what GPU-limited looks
+  like; it is the one lever that moved this device. The maintainer could not see
+  50% at all and first saw 25%, so the default sits a full step above what he
+  can detect. The travel is GEOMETRIC (40 steps of ~10% each, floor 2%) because
+  the thing being hunted is a ratio and linear travel buries it in the bottom
+  fifth of the track. `?light=` still sets it, but AN INSTALLED PWA HAS NO URL BAR, and
   the only person who tests this game plays from his Android home screen: a dev
   A/B that exists solely as a query parameter is unreachable, so every knob gets
   a slider. nightlight.ts rebuilds all three render targets on "ml-light-scale",

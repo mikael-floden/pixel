@@ -27,9 +27,8 @@ import {
   lightScale,
   setLightScale,
   lightScaleLabel,
-  snapLightScale,
-  LIGHT_SCALE_MIN,
-  LIGHT_SCALE_MAX,
+  lightScaleFromSlider,
+  sliderFromLightScale,
 } from "./lightscale";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "./indoorwall";
 import { withV } from "./assetver";
@@ -842,14 +841,16 @@ export class HudBar {
      * SQUARE of the dial, so 50% is a quarter of the work and reads like half.
      * lightscale.ts owns the value; nightlight.ts rebuilds all three render
      * targets on "ml-light-scale", so it takes effect without a reload. */
-    const lsSpan = LIGHT_SCALE_MAX - LIGHT_SCALE_MIN;
-    const p2ls = (p: number) => snapLightScale(LIGHT_SCALE_MIN + p * lsSpan);
-    const ls2p = (v: number) => (v - LIGHT_SCALE_MIN) / lsSpan;
     wrap.appendChild(
-      pctSlider("Light resolution", () => ls2p(lightScale()), (p) => setLightScale(p2ls(p)), {
-        snap: (p) => ls2p(p2ls(p)),
-        format: (p) => lightScaleLabel(p2ls(p)),
-      }),
+      pctSlider(
+        "Light resolution",
+        () => sliderFromLightScale(lightScale()),
+        (p) => setLightScale(lightScaleFromSlider(p)),
+        {
+          snap: (p) => sliderFromLightScale(lightScaleFromSlider(p)),
+          format: (p) => lightScaleLabel(lightScaleFromSlider(p)),
+        },
+      ),
     );
 
     // INDOOR WALL HEIGHT: how tall the walls stand while you are inside, in
