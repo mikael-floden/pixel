@@ -3806,6 +3806,26 @@ export class NightLights {
     }
   }
 
+  /** RUN OR DON'T RUN A PASS. `setVisible(false)` does NOT stop a
+   *  render-to-texture Shader — Phaser's `willRender` returns true for one
+   *  unconditionally (gameobjects/shader/Shader.js) — so a pass that is "off"
+   *  still dispatches a full-canvas fragment program every frame, and each
+   *  dispatch also breaks the batch (the renderer clears and rebinds the
+   *  pipeline around it). Weather was Clear sky in all ten windows of both
+   *  beacon runs, so the mist pass ran 9,534 times to write vec4(0). Only
+   *  leaving the display list actually stops it. Writing the strength uniform
+   *  unconditionally (see uMist) stays as the belt to this braces: if a pass is
+   *  ever on the list with stale strength, its own first line still returns.
+   *  Coming back on, the shader may sit after the overlay in the list, so the
+   *  overlay can sample one frame of stale field — mist and fog both ramp from
+   *  zero over seconds, so that frame is zero either way. */
+  private setPassRunning(sh: Phaser.GameObjects.Shader | undefined, on: boolean): void {
+    if (!sh) return;
+    const inList = !!(sh as unknown as { displayList?: unknown }).displayList;
+    if (on && !inList) sh.addToDisplayList();
+    else if (!on && inList) sh.removeFromDisplayList();
+  }
+
   update(
     cam: Phaser.Cameras.Scene2D.Camera,
     lights: ShaderLight[],
@@ -4004,6 +4024,7 @@ export class NightLights {
     const showMist = mist > 0.003;
     this.mistShader?.setVisible(showMist);
     this.mistOverlay?.setVisible(showMist);
+    this.setPassRunning(this.mistShader, showMist);
     /* uMist IS WRITTEN EVEN WHEN THE PASS IS "OFF", or it LATCHES ON.
      * `setVisible(false)` does not stop a render-to-texture Shader — Phaser's
      * willRender returns true for one unconditionally, as this file's own note
@@ -4043,6 +4064,7 @@ export class NightLights {
     this.depthFogShader?.setUniform("uFog.value", this.fogStrength * this.fogScale);
     this.depthFogShader?.setVisible(showFog);
     this.depthFogOverlay?.setVisible(showFog);
+    this.setPassRunning(this.depthFogShader, showFog);
     if (showFog && this.depthFogShader) {
       const f = this.depthFogShader;
       f.setUniform("uCam.value.x", camX);

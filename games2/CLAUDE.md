@@ -2759,14 +2759,14 @@ height reads per thing per frame.
   bisecting the fragment with early colour returns). Eases on the ~4s cloud
   roll. Exact JS twin `mistAt()` — change together. **A SHADER PASS WITH
   `setRenderToTexture` IS NEVER SKIPPED BY `setVisible(false)`**:
-  `Shader.willRender` returns true unconditionally in that case, so all three
-  full-screen passes run EVERY frame whatever the visibility says — this note
-  used to claim mist was "skipped while clear" and it never was. A pass is made
-  cheap only by a uniform guard on the FIRST line of its own `main`, which is
-  where DEPTHFOG_FRAG's `uFog` test has always been and where MIST_FRAG's
-  `uMist` test now is; before that it sat after the 128-iteration surface
-  march, so clear weather paid for the expensive part of a pass that then
-  returned nothing.
+  `Shader.willRender` returns true unconditionally in that case. A pass is
+  STOPPED only by taking it off the display list (`setPassRunning`, which mist
+  and fog go through), and made cheap WHILE ON only by a uniform guard on the
+  FIRST line of its own `main` — which is where DEPTHFOG_FRAG's `uFog` test has
+  always been and where MIST_FRAG's `uMist` test now is; before that it sat
+  after the 128-iteration surface march, so clear weather paid for the
+  expensive part of a pass that then returned nothing. Full rule under Night
+  lighting: "A PASS THAT IS 'OFF' MUST LEAVE THE DISPLAY LIST".
   Probes: `__ml.mistAt(wx,wy)`, mist in weatherInfo.
 
 ## Directional sun shadows (day phases)
@@ -3047,20 +3047,29 @@ height reads per thing per frame.
   and rules out the rock. Both fields are built by `warmDeepCurrent` at world
   load on BOTH sides — the first call costs ~65 ms on a dev host, and lazily
   that lands on the first player to swim out, in play.
-- **A PASS THAT IS "OFF" STILL RUNS — WRITE ITS STRENGTH UNIFORM ANYWAY**
-  (`uMist`, `uFog` in nightlight.ts). `setVisible(false)` does NOT stop a
-  render-to-texture Shader: Phaser's `willRender` returns true for one
-  unconditionally, so all three passes execute every frame regardless. The only
-  thing that makes mist cheap when it is off is the shader's own first line,
-  `if (uMist <= 0.001) return`. Both strength uniforms used to be written ONLY
-  inside their "is it on" branch, so once mist (or fog) had ever been on, the
-  last value written stayed > 0.001 and was never written again: the full
-  128-iteration surface march ran over every one of his 1,514,916 fragments,
-  every frame, forever, painting into a texture nobody composites. Entering a
-  house during mist latches it, and so does the snap to 0. The picture is
-  identical either way — the shader already returns vec4(0) for exactly those
-  fragments — so this is free. Any future pass with an early-out uniform gets
-  the same treatment: the guard is only as good as the last write.
+- **A PASS THAT IS "OFF" MUST LEAVE THE DISPLAY LIST** (`setPassRunning` in
+  nightlight.ts). `setVisible(false)` does NOT stop a render-to-texture Shader:
+  Phaser's `willRender` returns true for one unconditionally
+  (`gameobjects/shader/Shader.js`), so an "off" pass still dispatches a
+  full-canvas fragment program every frame, and each dispatch also breaks the
+  batch — the renderer flushes and rebinds the pipeline around it, which the
+  cheap-shader case pays for in full. Weather was Clear sky in all ten windows
+  of both beacon runs, so the mist pass ran 9,534 times to write vec4(0).
+  `removeFromDisplayList()` is the only thing that stops it; `addToDisplayList()`
+  brings it back. Coming back on, the shader can sit AFTER the overlay in the
+  list, so the overlay may sample one frame of stale field — mist and fog both
+  ramp from zero over seconds, so that frame is zero either way.
+- **AND WRITE ITS STRENGTH UNIFORM UNCONDITIONALLY** (`uMist`, `uFog`) — the
+  belt to that braces, covering any frame a pass is on the list with a stale
+  strength. Both used to be written ONLY inside their "is it on" branch, so once
+  mist (or fog) had ever been on, the last value written stayed > 0.001 and was
+  never written again: the full 128-iteration surface march ran over every one
+  of his 1,514,916 fragments, every frame, forever, painting into a texture
+  nobody composites. Entering a house during mist latches it, and so does the
+  snap to 0. The picture is identical either way — the shader already returns
+  vec4(0) for exactly those fragments — so this is free. Any future pass with an
+  early-out uniform gets BOTH treatments: the guard is only as good as the last
+  write, and the last write is only as good as not running at all.
 - **THE GLOW FIELD IS HALF-RESOLUTION** (`GLOW_FIELD_DIV` 2, nightlight.ts).
   The shader samples `uGlow` NORMALIZED over uCam's window and the stamps are
   placed by that same mapping (`gscale`, derived from `rt.width`), so the RT's
