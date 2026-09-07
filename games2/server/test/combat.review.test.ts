@@ -1,7 +1,7 @@
 // Regressions from the pre-deploy adversarial review (2026-08-05): the chase
 // leash give-up (was unreachable dead code — kited monsters wedged at the rim
 // in "chase" forever), world-agnostic progression (was forked per world), and
-// the one-live-session-per-token rule (double login duped/ate items).
+// the one-live-session-per-ACCOUNT rule (double login duped/ate items).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "http";
@@ -10,7 +10,7 @@ import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
 import { ROOM_NAME } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
-import { progressStore } from "../src/store.js";
+import { accountStore, hashSecret, mintId, newAccount } from "../src/account/store.js";
 
 async function waitFor(cond: () => boolean, timeout = 8000, label = "condition"): Promise<void> {
   const start = Date.now();
@@ -194,24 +194,23 @@ test("dropping a stack drops exactly the asked-for count (clamped to what is hel
   const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
   gameServer.define(ROOM_NAME, WorldRoom);
   await gameServer.listen(port);
-  const token = `qty-${Date.now()}`;
+  const id = mintId();
+  const secret = `qty-${Date.now()}`;
   try {
-    // Seed a real STACK through the shared progress store — the backpack is
+    // Seed a real STACK straight into the account document — the backpack is
     // private, so this is the only way in without farming 7 kills.
-    progressStore().save(token, {
-      level: 1,
-      xp: 0,
-      hp: 40,
-      ep: 20,
-      inv: [{ item: "green_slime_glob", n: 7 }],
-    });
+    const rec = newAccount(hashSecret(secret), "Hoarder", "default_girl");
+    rec.hp = 40;
+    rec.ep = 20;
+    rec.inv = [{ item: "green_slime_glob", n: 7 }];
+    await accountStore().save(id, rec);
     const c1 = new Client(`ws://localhost:${port}`);
     const invs: any[] = [];
     const r1: any = await c1.joinOrCreate(ROOM_NAME, {
       name: "Hoarder",
       character: "default_girl",
       world: "prop_demo",
-      token,
+      account: { id, secret },
     });
     r1.onMessage("inv", (m: any) => invs.push(m));
     for (const t of ["chat", "star", "live:update", "levelup"]) r1.onMessage(t, () => {});
@@ -311,37 +310,39 @@ test("a PREDATOR that aggros on proximity also gives up once you outrun it", asy
   }
 });
 
-test("progression is world-agnostic and one token means one live session", async () => {
+test("progression is world-agnostic and one account means one live session", async () => {
   const port = 2980;
   const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
   gameServer.define(ROOM_NAME, WorldRoom);
   await gameServer.listen(port);
-  const token = `review-${Date.now()}`;
+  const id = mintId();
+  const secret = `review-${Date.now()}`;
   try {
-    // Seed the SHARED progress store (what a previous session in any world
-    // would have written), then join a world this token has never visited.
-    progressStore().save(token, {
-      level: 3,
-      xp: 10,
-      hp: 50,
-      ep: 20,
-      inv: [{ item: "green_slime_glob", n: 2 }],
-    });
+    // Seed the account (what a previous session in ANY world would have
+    // written), then join a world this account has never visited. Position is
+    // the only per-world field, so nothing here is world-scoped.
+    const rec = newAccount(hashSecret(secret), "Nomad", "default_girl");
+    rec.level = 3;
+    rec.xp = 10;
+    rec.hp = 50;
+    rec.ep = 20;
+    rec.inv = [{ item: "green_slime_glob", n: 2 }];
+    await accountStore().save(id, rec);
     const c1 = new Client(`ws://localhost:${port}`);
     const invs1: any[] = [];
-    const opts = { name: "Nomad", character: "default_girl", world: "prop_demo", token };
+    const opts = { name: "Nomad", character: "default_girl", world: "prop_demo", account: { id, secret } };
     const r1: any = await c1.joinOrCreate(ROOM_NAME, opts);
     r1.onMessage("inv", (m: any) => invs1.push(m));
     for (const t of ["chat", "star", "live:update", "levelup"]) r1.onMessage(t, () => {});
     await waitFor(() => r1.state.players.size >= 1 && !!r1.state.players.get(r1.sessionId), 8000, "join");
     const p1 = r1.state.players.get(r1.sessionId);
-    assert.equal(p1.level, 3, "level follows the token across worlds");
+    assert.equal(p1.level, 3, "level follows the account across worlds");
     assert.equal(p1.xp, 10);
     assert.equal(p1.hp, 50);
     await waitFor(() => invs1.length >= 1, 3000, "inv on join");
     assert.deepEqual(invs1[0].items, [{ item: "green_slime_glob", n: 2 }], "backpack follows too");
 
-    // Second login on the SAME token: the old session is kicked (RO-style)
+    // Second login on the SAME account: the old session is kicked (RO-style)
     // and the newcomer takes over the live progression — no dup, no
     // last-writer-wins eating items.
     let kicked = false;

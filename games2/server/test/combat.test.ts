@@ -39,11 +39,15 @@ test("combat end to end: engage, kill, loot, pickup, drop, slow, persistence", a
   const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
   gameServer.define(ROOM_NAME, WorldRoom);
   await gameServer.listen(port);
-  const token = `combat-${Date.now()}`;
+  // Identity is SERVER-MINTED now: this client carries its pair across the
+  // relog exactly as a browser's localStorage does.
+  let account: { id?: string; secret?: string } = {};
   try {
     const c1 = new Client(`ws://localhost:${port}`);
     const opts = { world: "monster_demo", monsterSeed: 4242, monsterCount: 1, lootChance: 1 };
-    const r1: any = await c1.joinOrCreate(ROOM_NAME, { name: "Duelist", character: "default_boy", token, ...opts });
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { name: "Duelist", character: "default_boy", account, ...opts });
+    r1.onMessage("account", (a: any) => { account = a; });
+    r1.send("account:want");
     const invs: any[] = [];
     r1.onMessage("inv", (msg: any) => invs.push(msg));
     r1.onMessage("chat", () => {});
@@ -149,11 +153,12 @@ test("combat end to end: engage, kill, loot, pickup, drop, slow, persistence", a
     });
     assert.ok(farthest < 200, "drops land near the player, never flung");
 
-    // PERSISTENCE: leave with xp+empty-ish inv, rejoin same token.
+    // PERSISTENCE: leave with xp+empty-ish inv, rejoin as the SAME ACCOUNT.
+    assert.match(String(account.id ?? ""), /^[0-9a-f]{32}$/, "the server minted and handed over an account");
     const xpAtLeave = me().xp;
     await r1.leave();
     const c2 = new Client(`ws://localhost:${port}`);
-    const r2: any = await c2.joinOrCreate(ROOM_NAME, { name: "Duelist", character: "default_boy", token, ...opts });
+    const r2: any = await c2.joinOrCreate(ROOM_NAME, { name: "Duelist", character: "default_boy", account, ...opts });
     r2.onMessage("inv", () => {});
     r2.onMessage("chat", () => {});
     r2.onMessage("star", () => {});

@@ -1,6 +1,7 @@
 import { Schema, MapSchema, ArraySchema, defineTypes } from "@colyseus/schema";
 import { DEFAULT_DIRECTION, DEFAULT_TIME_IDX, MAX_STAMINA } from "@nangijala/shared";
 import type { AutopilotTrip } from "@nangijala/shared";
+import type { AccountRecord } from "../account/store.js";
 
 /**
  * One connected player. Synced fields are declared with `declare` (so no class
@@ -45,7 +46,22 @@ export class Player extends Schema {
   jumpUntil = 0; // ms timestamp: jump window ends
   jumpReadyAt = 0; // ms timestamp: earliest next jump (cooldown)
   lastChatAt = 0;
-  token = ""; // persistence key (server-only)
+  accountId = ""; // the account of record (server-only; see src/account/store.ts)
+  /** Has this player EARNED something since their last save? Set on level, xp
+   *  and inventory changes only — never on hp/ep, which regenerate and are not
+   *  worth a durable write. The periodic flush saves the dirty and skips the
+   *  rest, so an idle world writes nothing at all. */
+  dirty = false;
+  /** The loaded account document. Held so a save REWRITES it rather than
+   *  rebuilding one from the live player — rebuilding would wipe the fields
+   *  the room never sees (secretHash, createdAt, and every OTHER world's
+   *  saved position). */
+  rec: AccountRecord | null = null;
+  /** Set ONLY when this join minted a brand-new account, and handed over when
+   *  the client asks. Not pushed at join time: a message sent from onJoin can
+   *  land before the client has registered its handler, and a dropped pair
+   *  means a silently NEW account on every visit. */
+  mintedSecret = "";
   // Server-only combat bookkeeping.
   target = ""; // engaged monster id ("" = none)
   nextSwingAt = 0;

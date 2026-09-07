@@ -224,28 +224,64 @@ credentials.
 - **PROTOCOL.md and the agent table are the maintainer's.** This domain does
   not edit them.
 
-## Where the implementation lives — OPEN, needs the maintainer
+## Where the implementation lives — `games2/server/src/account/`
 
-This directory is docs. The service itself must run inside the game server
-process (it shares the Express app and the Colyseus room), so it cannot live
-here.
+This directory is docs. The service runs inside the game server process (it
+shares the Express app and the Colyseus room), so the code lives at
+**`games2/server/src/account/`** — a subdirectory owned by this agent, one
+writer, inside the server workspace.
 
-**Recommendation: a `games2/account/` carve-out owned by this agent**, exactly
-the precedent of `games2/ambient/` (games-ambient) and `games2/composer/`
-(games-audio) — one-writer-per-file inside a shared domain. Needs the
-maintainer's blessing and a line in `coordination/PROTOCOL.md`.
+**NOT a top-level `games2/account/`**, which was the plan until the Dockerfile
+was read: the runtime stage copies `games2/shared/`, `games2/server/` and
+`games2/config/` and nothing else, so a top-level module would typecheck, test,
+build green and then be MISSING from the running image. Under `server/src/` it
+ships with a COPY that already exists — no Dockerfile edit, no new allowlist
+entry, no tsconfig change, and no way to hit the silent-404 trap.
 
-Docs-only, this directory ships nothing: `.dockerignore` is `*` + allowlist,
-so a new top-level name is excluded by default, and `account/**` is not a
-deploy trigger path. **If code ever lands here it must be named in all three
+Docs-only, THIS directory ships nothing: `.dockerignore` is `*` + allowlist, so
+a new top-level name is excluded by default and `account/**` is not a deploy
+trigger path. **If code ever lands here it must be named in all three
 allowlists** (`.dockerignore`, `games2/Dockerfile` COPY, and the deploy
 workflow's trigger paths) — missing one fails silently.
 
+## The wire contract
+
+- **Join** carries `JoinOptions.account = {id, secret}`, or nothing at all on a
+  first-ever visit.
+- **The client PULLS a minted pair, the server never pushes it.** After joining,
+  the client registers its handler and sends `account:want`; the server answers
+  `account {id, secret}` only for a join that actually minted one, and drops it
+  from memory as it goes out.
+  **A message sent from `onJoin` can arrive before the client has registered its
+  handler** — caught by a test, and the failure mode is silent and total: the
+  pair is dropped, so the browser becomes a NEW player on every single visit,
+  which is the exact bug this domain exists to end. Never push it.
+- **A wrong secret, an unknown id and no claim at all are answered identically**
+  — with a fresh account. Anything else turns the join into an oracle for which
+  account ids exist.
+
+## Persistence rules the room obeys
+
+- **`Player.dirty` marks what was EARNED** — level, xp, inventory. Never hp/ep:
+  they regenerate, and marking them would write on every tick of combat.
+- **The periodic flush saves only dirty players**, so an idle world costs zero
+  writes. Eager saves stay on leave, death, level-up and the session kick.
+- **Saves are fire-and-forget** — a durable write is never awaited inside the
+  20Hz loop.
+- **A save REWRITES the held document** (`Player.rec`) rather than building a
+  fresh one: the room cannot see `secretHash`, `createdAt` or any OTHER world's
+  saved position, and a rebuild would silently drop all three.
+- **`onJoin` awaits a database read**, so it checks `client.state` before adding
+  the player to the room — a link dropped inside that window would otherwise
+  leave a body no client owns and nothing ever removes.
+
 ## Build order
 
-1. **The account service.** Firestore + silent account at first join +
-   `{accountId, secret}`. Deletes `store.ts` and the flush stall. Invisible to
-   players.
+1. ~~**The account service.**~~ **DONE 2026-09-07.** Firestore + a silent
+   account at first join + `{accountId, secret}`. `server/src/store.ts`,
+   `server/test/store.test.ts`, `client/src/net.ts`'s `getPlayerToken()` and
+   the `ml-token` key are gone, and so is the synchronous whole-file write on
+   the game loop. Invisible to players — nothing about entry changed.
 2. **Attach: Google.** "Save your character." Verify the ID token via Google's
    `tokeninfo` endpoint — one fetch, zero libraries; sign-ins are rare events,
    so the round trip costs nothing. Local JWKS verification only if volume

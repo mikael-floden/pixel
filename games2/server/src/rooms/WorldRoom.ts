@@ -1,4 +1,4 @@
-import { Room, Client } from "@colyseus/core";
+import { Room, Client, ClientState } from "@colyseus/core";
 import {
   InputMessage,
   JoinOptions,
@@ -101,7 +101,7 @@ import { WorldState, Player, Monster, MonsterArea, GroundItem } from "../schema/
 import { ChessManager, chessBoardsFor, ChessBoardCfg } from "../chess.js";
 import { monsterStatsFor, monsterRadiusFor, MonsterStats } from "../tuning.js";
 import { onLiveChange, liveTuning, sceneryHitboxOverrides } from "../live.js";
-import { JsonPlayerStore, PlayerStore, progressStore } from "../store.js";
+import { AccountRecord, AccountStore, accountStore, resolveAccount } from "../account/store.js";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
@@ -164,8 +164,10 @@ export class WorldRoom extends Room<WorldState> {
   // A generous cap; a real deployment can shard once this fills.
   maxClients = 200;
 
-  // Persistence: swap JsonPlayerStore for a DB-backed store later.
-  private store: PlayerStore = new JsonPlayerStore(join(process.cwd(), ".data", "players.json"));
+  // The account of record. ONE store for the whole process, not one file per
+  // world: progression is world-agnostic (your character IS the level) and
+  // position is a field keyed by world inside the same document.
+  private store: AccountStore = accountStore();
 
   // Per-room world state (NOT module-level — the server hosts many rooms, one
   // per selected world, and they can be different sizes / have different spawns).
@@ -327,7 +329,6 @@ export class WorldRoom extends Room<WorldState> {
       this.worldH = w.worldH;
       this.setMetadata({ world });
       this.worldName = world;
-      this.store = new JsonPlayerStore(join(process.cwd(), ".data", `players-${world}.json`));
       // The maps2 spawn zones for THIS world (sidecar next to world.json),
       // resolved against the grid: which cells are truly standable/swimmable
       // at each zone's elev band. No grid (open world) → no monsters.
@@ -398,6 +399,16 @@ export class WorldRoom extends Room<WorldState> {
     this.onMessage("torch", (client, message: { on?: boolean }) => {
       const player = this.state.players.get(client.sessionId);
       if (player) player.torch = !!message?.on;
+    });
+
+    /** "Did you just give me an account?" Asked by every client right after it
+     *  registers its handlers; answered only for a join that actually minted
+     *  one, and once — the pair is dropped from memory as it goes out. */
+    this.onMessage("account:want", (client) => {
+      const p = this.state.players.get(client.sessionId);
+      if (!p?.mintedSecret) return;
+      client.send("account", { id: p.accountId, secret: p.mintedSecret });
+      p.mintedSecret = "";
     });
 
     // DISABLE AGGRO — a per-player testing switch (maintainer 2026-08-07: "I
@@ -546,6 +557,7 @@ export class WorldRoom extends Room<WorldState> {
       player.nextItemMsgAt += 20 * (want - 1);
       entry.n -= want;
       if (entry.n <= 0) player.inv.splice(slot, 1);
+      player.dirty = true;
       for (let i = 0; i < want; i++) this.spawnDrop(item, player.x, player.y, player.elev);
       client.send("inv", { items: player.inv });
     });
@@ -763,23 +775,32 @@ export class WorldRoom extends Room<WorldState> {
    *  They leave for good; only a DROPPED link gets its seat held. */
   private kicked = new Set<string>();
 
-  onJoin(client: Client, options: JoinOptions = {}) {
+  async onJoin(client: Client, options: JoinOptions = {}) {
     // Current live tuning straight to the joiner (updates arrive as broadcasts).
     client.send("live:update", liveTuning());
     const player = new Player();
-    player.token = (options.token || "").slice(0, 64);
     player.name = (options.name || `wanderer-${client.sessionId.slice(0, 4)}`).slice(0, 24);
     player.character = options.character || "";
 
-    // ONE live session per token (RO kicks the older login): a second tab on
-    // the same browser shares the localStorage token, and two live sessions on
-    // one store record dup/eat items on last-writer-wins saves. The newcomer
-    // takes over the LIVE progression (fresher than the store) and the old
-    // session is disconnected.
-    if (player.token) {
+    // THE ACCOUNT. A first-time player presents nothing and is GIVEN one right
+    // here, on the join call the client already makes — no screen, no extra
+    // tap, no step added to the one that gets someone into the world.
+    const acc = await resolveAccount(this.store, options.account, player.name, player.character);
+    player.accountId = acc.id;
+    player.rec = acc.rec;
+    // NOT pushed here — see Player.mintedSecret. The client asks once it is
+    // listening, which is the only ordering that cannot drop the pair.
+    player.mintedSecret = acc.secret ?? "";
+
+    // ONE live session per account (RO kicks the older login): a second tab on
+    // the same browser shares the localStorage pair, and two live sessions on
+    // one account document dup/eat items on last-writer-wins saves. The
+    // newcomer takes over the LIVE progression (fresher than the store) and
+    // the old session is disconnected.
+    if (player.accountId) {
       let oldSid = "";
       this.state.players.forEach((p: Player, sid: string) => {
-        if (!oldSid && p.token === player.token && sid !== client.sessionId) oldSid = sid;
+        if (!oldSid && p.accountId === player.accountId && sid !== client.sessionId) oldSid = sid;
       });
       if (oldSid) {
         const oldPlayer = this.state.players.get(oldSid);
@@ -793,38 +814,45 @@ export class WorldRoom extends Room<WorldState> {
       }
     }
 
-    // Returning player? Restore their last position (server-authoritative),
-    // but rescue anyone whose saved spot is now blocked (terrain can change).
-    const saved = player.token ? this.store.load(player.token) : undefined;
-    if (saved && !(this.terrain && !isStandableAtWorld(this.terrain, saved.x, saved.y))) {
+    // Returning player? Restore where they stood IN THIS WORLD
+    // (server-authoritative), but rescue anyone whose saved spot is now
+    // blocked (terrain can change).
+    const spot = acc.rec.pos?.[this.worldName];
+    if (spot && !(this.terrain && !isStandableAtWorld(this.terrain, spot.x, spot.y))) {
       // Returning player: restore their last position on the base ground there.
-      player.x = saved.x;
-      player.y = saved.y;
+      player.x = spot.x;
+      player.y = spot.y;
       player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
     } else {
       this.placeAtSpawn(player);
     }
     // Progression survives relogs (RO: your character IS the level) and is
-    // WORLD-AGNOSTIC — it lives in the shared progress store, not the
-    // per-world position file, so switching worlds never forks the character.
-    // Migration: tokens whose progression still rides an old per-world record
-    // (or none at all — pre-combat records) seed from `saved` once.
-    const prog = player.token ? progressStore().load(player.token) : undefined;
-    player.level = Math.min(LEVEL_CAP, Math.max(1, prog?.level ?? saved?.level ?? 1));
-    player.xp = Math.max(0, prog?.xp ?? saved?.xp ?? 0);
+    // WORLD-AGNOSTIC — one account document, with position the only field
+    // keyed by world, so switching worlds can never fork the character.
+    player.level = Math.min(LEVEL_CAP, Math.max(1, acc.rec.level || 1));
+    player.xp = Math.max(0, acc.rec.xp || 0);
     player.hpMax = hpMaxFor(player.level);
     player.epMax = epMaxFor(player.level);
     // Never restore a corpse: a save written at 0 hp comes back at 1 (limping,
-    // not dead — dying logs you out at the spawn next tick otherwise).
-    player.hp = Math.min(player.hpMax, Math.max(1, prog?.hp ?? saved?.hp ?? player.hpMax));
-    player.ep = Math.min(player.epMax, Math.max(0, prog?.ep ?? saved?.ep ?? player.epMax));
-    const invSrc = prog?.inv ?? saved?.inv;
-    player.inv = Array.isArray(invSrc)
-      ? invSrc
+    // not dead — dying logs you out at the spawn next tick otherwise). A
+    // brand-new account stores 0 and takes full pools from the level curve.
+    player.hp = acc.rec.hp > 0 ? Math.min(player.hpMax, Math.max(1, acc.rec.hp)) : player.hpMax;
+    player.ep = acc.rec.ep > 0 ? Math.min(player.epMax, Math.max(0, acc.rec.ep)) : player.epMax;
+    player.inv = Array.isArray(acc.rec.inv)
+      ? acc.rec.inv
           .filter((s) => s && typeof s.item === "string" && typeof s.n === "number" && s.n > 0)
           .map((s) => ({ item: s.item, n: Math.min(INV_MAX_STACK, Math.floor(s.n)) }))
           .slice(0, INV_MAX_SLOTS)
       : [];
+    // onJoin AWAITS A DATABASE READ NOW, and a phone can drop the link inside
+    // that window. onLeave would then find no player, delete nothing, and this
+    // line would add a body no client owns and nothing ever removes — a ghost
+    // that walks nowhere and never leaves. Cheap to check, impossible to spot
+    // in production if we do not.
+    if (client.state === ClientState.LEAVING || client.state === ClientState.CLOSED) {
+      this.savePlayer(player); // they still earned whatever the account arrived with
+      return;
+    }
     this.state.players.set(client.sessionId, player);
     // The backpack is PRIVATE — targeted message, never schema-synced.
     client.send("inv", { items: player.inv });
@@ -869,25 +897,35 @@ export class WorldRoom extends Room<WorldState> {
     this.chess?.onPlayerLeave(client.sessionId);
   }
 
-  /** Persist one player: position to the per-world store, progression to the
-   * shared world-agnostic store. Called on leave, death, level-up and the
-   * periodic flush — onLeave-only persistence meant a crash ate every
-   * connected player's session gains. */
+  /** Persist one player into their account document. Called on leave, death,
+   * level-up and the periodic flush of DIRTY players — onLeave-only
+   * persistence meant a crash ate every connected player's session gains.
+   *
+   * FIRE AND FORGET, on purpose: a durable write must never be awaited inside
+   * the 20Hz loop. The store this replaces was worse than slow — it was
+   * `writeFileSync(JSON.stringify(every player ever seen))`, once per player,
+   * synchronously, which stalled the tick outright.
+   *
+   * It REWRITES the held document rather than building a fresh one: the room
+   * has no idea what secretHash, createdAt or another world's position are,
+   * and a rebuild would silently drop all three. */
   private savePlayer(player: Player) {
-    if (!player.token) return;
-    this.store.save(player.token, {
-      character: player.character,
-      name: player.name,
-      x: player.x,
-      y: player.y,
-    });
-    progressStore().save(player.token, {
-      level: player.level,
-      xp: player.xp,
-      hp: player.hp,
-      ep: player.ep,
-      inv: player.inv,
-    });
+    const rec = player.rec;
+    if (!player.accountId || !rec) return;
+    player.dirty = false;
+    rec.name = player.name;
+    rec.character = player.character;
+    rec.level = player.level;
+    rec.xp = player.xp;
+    rec.hp = player.hp;
+    rec.ep = player.ep;
+    // COPY, never alias: a live Player.inv sharing the stored array is the bug
+    // that silently corrupted saves in the store this replaces.
+    rec.inv = player.inv.map((s) => ({ item: s.item, n: s.n }));
+    if (this.worldName) rec.pos[this.worldName] = { x: player.x, y: player.y };
+    void this.store
+      .save(player.accountId, rec)
+      .catch((e) => console.error(`[account] save failed for ${player.accountId}:`, e));
   }
 
   private update(dt: number) {
@@ -1618,6 +1656,7 @@ export class WorldRoom extends Room<WorldState> {
     // At the cap xp has nowhere to go (RO shows a frozen bar) — don't let it
     // accumulate into a meaningless ever-growing number in the save file.
     if (killer.level < LEVEL_CAP) killer.xp += stats.xp;
+    killer.dirty = true; // xp is EARNED — hp/ep are not, they regenerate
     let leveled = false;
     while (killer.level < LEVEL_CAP && killer.xp >= xpToNext(killer.level)) {
       killer.xp -= xpToNext(killer.level);
@@ -1741,10 +1780,12 @@ export class WorldRoom extends Room<WorldState> {
     const slot = player.inv.find((s) => s.item === item && s.n < INV_MAX_STACK);
     if (slot) {
       slot.n++;
+      player.dirty = true;
       return true;
     }
     if (player.inv.length >= INV_MAX_SLOTS) return false;
     player.inv.push({ item, n: 1 });
+    player.dirty = true;
     return true;
   }
 
@@ -1775,7 +1816,13 @@ export class WorldRoom extends Room<WorldState> {
     // death and level-up flush eagerly on top of this).
     if (now >= this.storeFlushAt) {
       this.storeFlushAt = now + 30_000;
-      this.state.players.forEach((p: Player) => this.savePlayer(p));
+      // ONLY THE DIRTY. Write on meaning, not on a timer: a player who earned
+      // nothing this window is not written at all, so an idle world costs zero
+      // writes. (Measured at the 20k-concurrent target: an unconditional 30s
+      // flush is ~$1,550/month of mostly-unchanged documents.)
+      this.state.players.forEach((p: Player) => {
+        if (p.dirty) this.savePlayer(p);
+      });
     }
     // Ground items despawn (1s sweep granularity is plenty for a 90s TTL).
     if (now >= this.dropSweepAt) {

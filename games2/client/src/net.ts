@@ -17,15 +17,38 @@ export function serverEndpoint(): string {
   return `${proto}://${location.hostname}:2567`;
 }
 
-/** A stable per-browser id used for persistence (created once, kept in localStorage). */
-export function getPlayerToken(): string {
-  const KEY = "ml-token";
-  let token = localStorage.getItem(KEY) || "";
-  if (!token) {
-    token = (crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`);
-    localStorage.setItem(KEY, token);
+/** THE ACCOUNT THIS BROWSER IS.
+ *
+ *  `{id, secret}`, both MINTED BY THE SERVER — the client no longer invents
+ *  its own identity, which it used to (a random uuid the server simply
+ *  believed, so anyone who knew the string WAS that character).
+ *
+ *  Absent on a first-ever visit: the server creates an account on the join
+ *  call we already make and sends the pair back, so a new player still reaches
+ *  the world in one tap and never sees a login screen.
+ *
+ *  Storage can throw outright (Safari private mode, site data blocked), and
+ *  that must not stop anyone playing — it just means this browser arrives as
+ *  somebody new each time, which is exactly what attaching a login later
+ *  fixes. */
+const ACCOUNT_KEY = "ml-account";
+
+export function getAccount(): { id?: string; secret?: string } {
+  try {
+    const raw = localStorage.getItem(ACCOUNT_KEY);
+    if (!raw) return {};
+    const a = JSON.parse(raw);
+    return typeof a?.id === "string" && typeof a?.secret === "string" ? { id: a.id, secret: a.secret } : {};
+  } catch {
+    return {};
   }
-  return token;
+}
+
+export function setAccount(a: { id: string; secret: string }): void {
+  if (typeof a?.id !== "string" || typeof a?.secret !== "string") return;
+  try {
+    localStorage.setItem(ACCOUNT_KEY, JSON.stringify({ id: a.id, secret: a.secret }));
+  } catch {}
 }
 
 /** A JOIN THAT CANNOT HANG FOREVER (maintainer 2026-09-04, third report:
@@ -91,8 +114,15 @@ export async function joinWorld(
       forgetSeat();
     }
   }
-  const joining = client.joinOrCreate(room, { token: getPlayerToken(), ...options });
+  const joining = client.joinOrCreate(room, { account: getAccount(), ...options });
   const joined = await withJoinTimeout(joining, timeoutMs, (r) => void r.leave(false));
+  // A MINTED PAIR IS PULLED, NEVER PUSHED. A message the server sends from
+  // onJoin can arrive before this handler exists — and a dropped pair means
+  // this browser silently becomes a NEW player on every visit, which is the
+  // exact bug the account system exists to end. So: register, then ask. The
+  // server answers only when this join actually minted one.
+  joined.onMessage("account", (a: { id: string; secret: string }) => setAccount(a));
+  joined.send("account:want");
   rememberSeat(joined);
   return joined;
 }

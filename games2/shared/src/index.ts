@@ -2977,7 +2977,12 @@ export function findPath(
 export interface JoinOptions {
   name?: string;
   character?: string; // character uid from the pixel catalog
-  token?: string; // opaque per-player id for persistence (from localStorage)
+  /** The account this client claims to be, from localStorage. Absent on a
+   *  first-ever visit — the server mints one and sends it back as "account",
+   *  which is what keeps entry at a single tap with no login screen. An
+   *  unknown id or a wrong secret is answered exactly like no claim at all
+   *  (a fresh account), never with someone else's character. */
+  account?: { id?: string; secret?: string };
   world?: string; // maps2 world name to load/join (rooms are filtered by it)
 }
 
