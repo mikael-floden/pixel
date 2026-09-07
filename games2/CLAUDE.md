@@ -3070,26 +3070,28 @@ height reads per thing per frame.
   vec4(0) for exactly those fragments — so this is free. Any future pass with an
   early-out uniform gets BOTH treatments: the guard is only as good as the last
   write, and the last write is only as good as not running at all.
-- **A RENDER-TARGET BRACKET IS THE COST, NOT THE AREA INSIDE IT.** Every
-  `beginDraw`/`endDraw` pair on a DynamicTexture costs a capture-target clear AND
-  a full-texture blit whatever it draws (Phaser 3.90: `beginDraw` ->
-  `RenderTarget.bind`, `endDraw` -> `blitFrame`), so on the 1510x1656 ground RT
-  one bracket measured ~20 ms on his phone. The scrolled band drains as 4-9
-  rects and used to open one bracket EACH, one per frame — 190 of them per 90 s,
-  which is the burst of 4-9 slow frames every 1.46 s the maintainer feels ("the
-  bad case that happens over and over again"). `t3drainSlices` now opens ONE
-  bracket per frame and pays as many rects as fit in `GROUND_BAND_MS`; the head
-  rect always paints, so it bounds a frame rather than deferring one.
-  MERGING IS PIXEL-EXACT, by associativity and not by sampling: a bracket is a
-  single Porter-Duff `over` of its capture onto the destination, so merged
-  `(later over earlier) over dst` equals split `later over (earlier over dst)` —
-  including at the 1-texel GROUND_SEAM overlap, whatever the alpha. It holds
-  only while every op inside is `over`: nothing between beginDraw and endDraw
-  may touch the target except `batchDrawFrame`, and no ground op may use ERASE
-  or a non-NORMAL blend. `groundBatchRT` keys the guard on the TEXTURE so a
-  nested `repaintTiles3Cells` draw against its own scratch can never be
-  swallowed. A/B it with `__ml.groundBandMs(0.0001)` (one rect per bracket, the
-  old topology) against the default.
+- **A RENDER-TARGET BRACKET IS ~FREE — AND BELIEVING OTHERWISE COST A SHIPPED
+  REGRESSION.** The claim was that every `beginDraw`/`endDraw` on the 1510x1656
+  ground RT costs a capture clear plus a full-texture blit, ~20 ms, so the 4-9
+  rects of a scrolled band should share one bracket. It was asserted by review,
+  believed, and shipped without ever being measured. MEASURED on the real RT
+  with `gl.finish()` forcing GPU completion: an empty bracket is 0.015 ms, nine
+  brackets with one blit each 0.137 ms, one bracket with nine blits 0.125 ms —
+  a marginal cost per extra bracket of ~0.00 ms. His own run agreed: with the
+  merge live, `scroll:groundSlice` went 47.6 -> 50.8 ms mean, i.e. nothing.
+  The 22-25 ms that bucket costs is the PAINT. `GROUND_BAND_MS` is therefore
+  set so the drain paints one rect per frame, the topology it always had; the
+  merge machinery survives only for its dev switch and its bracket-ownership
+  guard. Probe: `scratchpad/fx/bench.mjs` — rerun it before believing any
+  per-call cost model on this path.
+- **DO NOT REMOVE THE DROP DRAIN'S REPAINT.** Turning it off removed all 32
+  `full:redrawGround` frames per 90 s (1,914 ms) and cost more than that back:
+  the repaint re-anchors the ground mid-latch and absorbs about half of each
+  256 px latch step, so without it those latches return as SCROLLS.
+  Measured across two census runs, `scroll:groundSlice` went 76 -> 175 frames
+  and the ground's total went 62.9 -> 94.5 ms per second of wall clock. It is
+  kept for what it does by accident, not for what it was written to do.
+  `__ml.groundDrain(false)` turns it off for an A/B.
 - **THE SLICE-SIZE RATCHET WAS DEAD CODE.** It grew `groundSlicePx` only when a
   slice cost under `GROUND_SLICE_MS`/2 = 1 ms, and a slice costs ~20 ms on his
   phone because of the bracket — so the condition was unreachable and the size

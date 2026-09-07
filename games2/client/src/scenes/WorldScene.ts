@@ -832,12 +832,27 @@ const GROUND_SLICE_PX = 384;
  *  384 px slice is a SIZE budget and size does not predict cost across devices.
  *  The size is now steered by the measured milliseconds of the slices actually
  *  painted, so the same code lands near the target on both machines. */
-/** THE DRAIN'S PER-FRAME BUDGET, in measured milliseconds of painting. The head
- *  rect always paints, so this bounds a frame rather than deferring one: at 6 ms
- *  a typical band finishes in one or two frames instead of the 4-9 it took at
- *  one rect per frame, and each of those frames pays ONE render-target bracket
- *  instead of one each. */
-const GROUND_BAND_MS = 6;
+/** THE DRAIN'S PER-FRAME BUDGET, in measured milliseconds of PAINTING.
+ *
+ *  SET SO THE DRAIN PAINTS ONE RECT PER FRAME — the topology this file had
+ *  before the merge — because THE BRACKET IS NOT THE COST. That claim ("~20 ms
+ *  per beginDraw/endDraw on a 1510x1656 target, so merge them") was asserted,
+ *  believed and shipped without being measured, and it is wrong. Measured on
+ *  the real ground RT with gl.finish() forcing GPU completion: an empty bracket
+ *  is 0.015 ms, nine brackets with one blit each are 0.137 ms, one bracket with
+ *  nine blits is 0.125 ms — a marginal cost per extra bracket of ~0.00 ms.
+ *  The shipped run agrees independently: with the merge live, the
+ *  `scroll:groundSlice` bucket went 47.6 -> 50.8 ms mean. Collapsing 9 brackets
+ *  into 2 moved nothing, because there was nothing there to collapse.
+ *
+ *  So the 22-25 ms that bucket costs is the PAINT, and the merge machinery is
+ *  kept only for its dev switch (`__ml.groundBandMs`) and its bracket-ownership
+ *  guard, both of which are harmless. Raising this budget would put a whole
+ *  band's paint into one frame — ~200 ms — which is strictly worse.
+ *
+ *  DO NOT OPTIMISE A COST MODEL THAT HAS NOT BEEN MEASURED ON THE PATH IT
+ *  DESCRIBES. That is the whole lesson of this constant. */
+const GROUND_BAND_MS = 0.0001;
 /** UNUSED SINCE THE SIZE RATCHET WENT (see t3paintSliceStep): the rects stay at
  *  GROUND_SLICE_PX, because the bracket and not the rect area is the cost. */
 const GROUND_SLICE_MS = 2;
@@ -865,7 +880,7 @@ const GROUND_RING_MS = 2;
  *  GROUND_RING_MS, which bounds the same work from the other side. */
 /** An occluder image carries the cell it came from as plain properties — see
  *  `tagOccluder`. Read only by `__ml.occAudit()` and `__ml.occDump()`. */
-type OccTagged = Phaser.GameObjects.Image & { ocCol?: number; ocRow?: number };
+type OccTagged = Phaser.GameObjects.Image & { ocCol?: number; ocRow?: number; ocBase?: number };
 
 const GROUND_COMPOSE_MS = 2;
 /** How often a boundary repair may force an occluder rebuild, in ms. A RAISED
@@ -2639,15 +2654,24 @@ export class WorldScene extends Phaser.Scene {
   private t3sheetPaths = new Set<string>();
   private groundDirtyCells: number[] = [];
   private repaintGroundPartial = false;
-  /** THE DROP DRAIN'S REPAINT — OFF. Every drop the drain can see is already
+  /** THE DROP DRAIN'S REPAINT — ON, after a measured revert. Turning it OFF
+   *  did remove every one of the 32 `full:redrawGround` frames per 90 s (1,914
+   *  ms), and it cost MORE than that back: the drain's repaint re-anchors the
+   *  ground mid-latch and so absorbs about half of each 256 px latch step, and
+   *  without it those latches return as SCROLLS. Measured across two runs of the
+   *  census, `scroll:groundSlice` went 76 -> 175 frames and the ground's total
+   *  went 62.9 -> 94.5 ms per second of wall clock. Do not turn it off again
+   *  without first making a band drain cheap — the slice path is what pays.
+   *
+   *  Every drop the drain can see is still already
    *  owned by the landing path (t3missing, recorded by the ground pass's `need`
    *  closure and repaired by onTerrainBatch -> repaintTiles3Cells), or it is a
    *  path whose batch completed with no texture — a 404 tombstone no repaint
-   *  can ever fix. `Tiles3Loader.wanted()` is the discriminator and there is no
-   *  third class. So the whole-texture repaint it used to run was work with
-   *  nothing to do, and the drain still observes and counts. See t3drainDrops.
+   *  can ever fix, so the repaint has nothing to FIX. It is kept for what it
+   *  does by accident: it re-anchors, and re-anchoring is cheaper than the
+   *  scrolls it prevents. See t3drainDrops.
    *  `__ml.groundDrain(true)` puts it back for an A/B. */
-  private groundDrainRepaint = false;
+  private groundDrainRepaint = true;
   private groundPartial = groundPathFast();
   private groundPrefetch = groundPathFast();
   private t3ringQueue: [number, number][] = [];
@@ -2804,11 +2828,14 @@ export class WorldScene extends Phaser.Scene {
   /** Pure-JS cost of the last rebuild's destroy pass(es), for the probe. */
   private occDestroyMs = 0;
   /* THE OCCLUDER POOL — see occImage. `occNext` holds the CURRENT set keyed by
-   * everything that makes an image what it is; a rebuild moves it to `occPool`,
+   * CELL; a rebuild moves it to `occPool`,
    * takes what it can back out, and destroys the rest. Dev switch `occPoolOn`
    * exists only for the A/B in `__ml.occRebuild`. */
-  private occPool = new Map<string, Phaser.GameObjects.Image[]>();
-  private occNext = new Map<string, Phaser.GameObjects.Image[]>();
+  private occPool = new Map<number, Phaser.GameObjects.Image[]>();
+  private occNext = new Map<number, Phaser.GameObjects.Image[]>();
+  /** Row stride for the pool's cell key — the world's width, so `row*stride+col`
+   *  is unique per cell. Set at the top of every rebuild. */
+  private occStride = 1;
   private occPoolOn = true;
   /* THE SCENERY POOL — the same two maps for the same reason; see `scnImage`.
    * ART ONLY: the lit copies and their fog silhouettes are deliberately outside
@@ -18384,19 +18411,38 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private occImage(tex: string, x: number, y: number, depth: number, col: number, row: number): Phaser.GameObjects.Image {
-    const k = `${col},${row},${tex},${x},${y},${depth}`;
+    /* KEYED BY CELL, NOT BY A STRING OF EVERYTHING. The key used to be
+     * `${col},${row},${tex},${x},${y},${depth}` — six fields rendered to a
+     * string, built for EVERY occluder on EVERY rebuild, with 3,400-7,800
+     * occluders live and a rebuild running 2-5 times a second. Benched on
+     * Phaser-shaped stand-ins over 3,800 images across 2,700 cells, keying on
+     * the cell and comparing the image's own fields instead: 3.13 ms -> 0.56 ms
+     * per rebuild, with the created and leftover counts identical in both arms.
+     *
+     * SCAN BACKWARD. The swap-pop moves the tail element — already examined —
+     * into the freed slot, which `i--` then skips correctly. A forward scan
+     * would move an UNEXAMINED tail element into a slot already passed and lose
+     * it; it benched ~0.1 ms faster and is not worth the hazard. */
+    const k = row * this.occStride + col;
     const have = this.occPool.get(k);
-    let img: Phaser.GameObjects.Image | undefined;
-    while (have && have.length) {
-      const cand = have.pop()!;
-      if (cand.scene) {
-        img = cand;
-        break;
+    let img: OccTagged | undefined;
+    if (have)
+      for (let i = have.length - 1; i >= 0; i--) {
+        const c = have[i] as OccTagged;
+        // A pooled image the scene has destroyed is DROPPED here, exactly as
+        // the pop-loop this replaced dropped it, so it never reaches the drain.
+        const dead = !c.scene;
+        if (dead || (c.ocBase === depth && c.x === x && c.y === y && c.texture.key === tex)) {
+          if (!dead) img = c;
+          have[i] = have[have.length - 1]; // swap-pop: order in a bucket is not read
+          have.length--;
+          if (!dead) break;
+        }
       }
-    }
     if (img) this.occReused++;
     else {
-      img = this.tagOccluder(this.add.image(x, y, tex).setOrigin(0, 0), col, row);
+      img = this.tagOccluder(this.add.image(x, y, tex).setOrigin(0, 0), col, row) as OccTagged;
+      img.ocBase = depth;
       this.occCreated++;
     }
     img.setDepth(depth + this.occSeq++ * OCC_DEPTH_EPS);
@@ -18487,6 +18533,8 @@ export class WorldScene extends Phaser.Scene {
 
   private rebuildOccluders() {
     if (!this.world) return;
+    // The pool's cell key is row*stride+col; the stride is the world's width.
+    this.occStride = this.world.width;
     const cam = this.cameras.main;
     const ccx = cam.worldView.centerX;
     const ccy = cam.worldView.centerY;
