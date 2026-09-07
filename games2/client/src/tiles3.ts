@@ -4,8 +4,11 @@
  * cell, a level per cell, decks, walls, scenery. No tile ids, no art paths. The
  * art is resolved at DRAW time, and this module is that resolution — the ground
  * runtime, the occluder pass, the atlas builder and every future consumer call
- * it, so it is pure, synchronous, dependency-free and provable: no Phaser, no
- * DOM, no fs, no fetch. Every document it reads is handed in.
+ * it, so it is pure, synchronous and provable: no Phaser, no DOM, no fs, no
+ * fetch. Every document it reads is handed in. Its ONE import is `wallregion`,
+ * which is pure under the same rules and holds the wall-variety field — the
+ * rule has to be a separate module because render3.py and the wiki port it and
+ * check themselves against its published TEST_VECTORS.
  *
  * THE SPEC IS `maps2/pipeline/render3.py`, because it is what draws the map.
  * Where a doc and render3 disagree, render3 wins and the disagreement is called
@@ -37,6 +40,8 @@
  * `top_only` review tile borrows from another. Both are rasters the draw layer
  * builds; this module says which.
  */
+
+import { pickWallIndex, wallField, type WallField } from "./wallregion";
 
 /* -- geometry (render3 / tiles/docs/GEOMETRY.md) ---------------------------- */
 
@@ -574,6 +579,13 @@ export interface Tiles3Data {
   /** live/tuning/tile_walls.json `.overrides` — `top_only` keeps a top that
    *  repeats badly out of a storey fill. */
   wallOverrides?: Record<string, { top_only?: boolean }>;
+  /** games2/client/src/wallsig.json — what each approved wall tile LOOKS like,
+   *  so the wall-variety palette can put tiles that match beside each other.
+   *  Bundled rather than fetched: it is generated from the review art, it is
+   *  ~92 KB, and a bundled import is content-hashed by the build, so it can
+   *  never go stale against a cached page. Absent, walls still vary but with no
+   *  coherence guarantee — see `wallPalette`. */
+  wallSigs?: Record<string, Record<string, readonly [number, number, number]>>;
   /** live/tuning/base_tiles.json `.overrides` — the maintainer's promoted base
    *  tiles, keyed by review key. */
   basePromotions?: Record<string, { type?: string }>;
@@ -995,6 +1007,16 @@ export class Tiles3 {
   private plateCache = new Map<string, PlateArt>();
   private candCache = new Map<string, ReviewCandidate[]>();
   private tileCache = new Map<string, TileArt>();
+  /** The wall field, memoised per cell+storey. It costs three axes x three
+   *  octaves x eight lattice hashes and is asked for once per storey of every
+   *  exposed wall cell on every ground repaint — the one path this repo is
+   *  currently trying to make shorter — so it is not recomputed. The key packs
+   *  x, y and z into 30 bits, exact for a world up to 1024 cells and 1024
+   *  storeys (the_game is 394 and ~46). */
+  private wallFieldMemo = new Map<number, WallField>();
+  /** Candidate list -> its signature keys. Keyed on the ARRAY, which candCache
+   *  already keeps stable per (top, side), so this is built once per pool. */
+  private wallKeyCache = new WeakMap<ReviewCandidate[], string[]>();
   private detailCache = new Map<string, string[]>();
   private fadeCache = new Map<string, FadePoolTile[]>();
   /** cell index -> its room's anchor index. Built once per world. */
@@ -1376,22 +1398,93 @@ export class Tiles3 {
     return out;
   }
 
-  /** The approved candidate, else rank 0. For a STOREY fill (the repeated wall
-   *  below the cap), candidates the maintainer flagged `top_only` are skipped: a
-   *  top that repeats poorly vertically needs same-over-same backup. */
-  approvedCandidate(top: string, side: string, storey = false): ReviewCandidate | null {
-    let cands = this.candidates(top, side);
-    if (storey) {
-      const ov = this.data.wallOverrides ?? {};
-      const rest = cands.filter((c) => !ov[c.key]?.top_only);
-      cands = rest.length ? rest : cands;
+  /** The wall field at a cell and storey, memoised. See wallregion.ts. */
+  private wallFieldAt(x: number, y: number, z: number): WallField {
+    const k = ((x & 0x3ff) << 20) | ((y & 0x3ff) << 10) | (z & 0x3ff);
+    let f = this.wallFieldMemo.get(k);
+    if (!f) {
+      f = wallField(x, y, z);
+      // Bounded. It is a speed aid and not state, so dropping it whole is
+      // correct and O(1); a full repaint touches a few thousand wall cells.
+      if (this.wallFieldMemo.size > 60000) this.wallFieldMemo.clear();
+      this.wallFieldMemo.set(k, f);
     }
-    return cands[0] ?? null;
+    return f;
   }
 
-  /** The candidate behind the x-over-y tile — same-over-same is the fallback. */
-  overCandidate(top: string, side: string): ReviewCandidate {
-    const c = this.approvedCandidate(top, side) ?? this.approvedCandidate(top, top);
+  /** The candidate list for a wall with the STOREY filter applied, and the name
+   *  of that pool. Split out because the pick AND its palette are keyed on the
+   *  pool, and a storey-filtered pool is a different pool. */
+  private wallPool(
+    top: string,
+    side: string,
+    storey: boolean,
+  ): { cands: ReviewCandidate[]; pool: string; cell: string } {
+    const cell = `${top}__over__${side}`;
+    const cands = this.candidates(top, side);
+    if (!storey) return { cands, pool: cell, cell };
+    const ov = this.data.wallOverrides ?? {};
+    const rest = cands.filter((c) => !ov[c.key]?.top_only);
+    return rest.length && rest.length !== cands.length
+      ? { cands: rest, pool: `${cell}|s`, cell }
+      : { cands, pool: cell, cell };
+  }
+
+  /** The key the signature table is indexed by — a candidate key's last path
+   *  segment, which is what `wall-signatures.py` writes. */
+  private wallKeys(cands: ReviewCandidate[]): string[] {
+    let ks = this.wallKeyCache.get(cands);
+    if (!ks) {
+      ks = cands.map((c) => {
+        const p = strip(c.key).split("/");
+        return p[p.length - 1];
+      });
+      this.wallKeyCache.set(cands, ks);
+    }
+    return ks;
+  }
+
+  /** WHICH APPROVED TILE THIS CELL OF THE WALL WEARS.
+   *
+   *  This returned `cands[0]` unconditionally, for every cell in the world, so
+   *  all 74 approved grey_stone__over__grey_stone tiles rendered as ONE and
+   *  "the mountain reads as wallpaper" (maps agent, 2026-09-07). The choice is
+   *  now a region field keyed on world position AND elevation, so the tile
+   *  changes along a boundary that cuts across columns and storeys instead of
+   *  running along either. wallregion.ts owns the rule, its measured tuning and
+   *  its TEST_VECTORS; this only supplies the pool.
+   *
+   *  POSITION IS OPTIONAL, and falling back to rank 0 without it is deliberate,
+   *  not a stub: a caller with no cell to speak of — the flat-tile ladder, a
+   *  borrowed wall, a preview, a probe — must keep getting the old stable
+   *  answer rather than whatever tile happens to live at cell (0,0,0). */
+  approvedCandidate(
+    top: string,
+    side: string,
+    storey = false,
+    x?: number,
+    y?: number,
+    z?: number,
+  ): ReviewCandidate | null {
+    const { cands, pool, cell } = this.wallPool(top, side, storey);
+    if (!cands.length) return null;
+    if (x === undefined || y === undefined || z === undefined) return cands[0];
+    const i = pickWallIndex(
+      pool,
+      this.wallKeys(cands),
+      x,
+      y,
+      z,
+      this.wallFieldAt(x, y, z),
+      this.data.wallSigs?.[cell],
+    );
+    return cands[i >= 0 ? i : 0];
+  }
+
+  /** The candidate behind the x-over-y tile — same-over-same is the fallback.
+   *  Takes the cell so the wall varies; without one it is rank 0, as before. */
+  overCandidate(top: string, side: string, x?: number, y?: number, z?: number): ReviewCandidate {
+    const c = this.approvedCandidate(top, side, false, x, y, z) ?? this.approvedCandidate(top, top, false, x, y, z);
     if (!c)
       throw new Error(
         `tiles3: no review cell for ${top} over ${side} (nor ${top} over ${top}) — ` +
@@ -1409,11 +1502,16 @@ export class Tiles3 {
    *  keeps its top and BORROWS a wall, which is the only thing the two files
    *  mean together. Without the pairing the mark was dead: it filtered a storey
    *  pool it could never match. */
-  overTile(top: string, side: string): TileArt {
-    const k = `over|${top}|${side}`;
+  overTile(top: string, side: string, x?: number, y?: number, z?: number): TileArt {
+    const c = this.overCandidate(top, side, x, y, z);
+    /* KEYED ON THE RESOLVED CANDIDATE, NOT ON THE CELL. The cell chooses the
+     * candidate; the ART for a candidate is the same everywhere. Keying the
+     * cache by position would make it one entry per wall cell in the world and
+     * turn a hit into a miss on every frame — the same cache that made the
+     * whole mountain one tile now holds one entry per tile actually used. */
+    const k = `over|${top}|${side}|${c.key}`;
     const hit = this.tileCache.get(k);
     if (hit) return hit;
-    const c = this.overCandidate(top, side);
     const t: TileArt = { role: "over", top, side, key: c.key, path: c.file, w: TILE, h: TILE };
     if (this.topOnly(c.key)) {
       const lend = this.borrowedWall(c.key) ?? this.approvedCandidate(side, side);
@@ -1449,12 +1547,12 @@ export class Tiles3 {
   }
 
   /** The repeated storey below a cap: same-over-same, honouring `top_only`. */
-  storeyTile(ground: string): TileArt {
-    const k = `storey|${ground}`;
+  storeyTile(ground: string, x?: number, y?: number, z?: number): TileArt {
+    const c = this.approvedCandidate(ground, ground, true, x, y, z);
+    if (!c) throw new Error(`tiles3: no same-over-same review cell for ${ground}`);
+    const k = `storey|${ground}|${c.key}`;
     const hit = this.tileCache.get(k);
     if (hit) return hit;
-    const c = this.approvedCandidate(ground, ground, true);
-    if (!c) throw new Error(`tiles3: no same-over-same review cell for ${ground}`);
     const t: TileArt = { role: "storey", ground, key: c.key, path: c.file, w: TILE, h: TILE };
     this.tileCache.set(k, t);
     return t;
@@ -1814,14 +1912,27 @@ export class Tiles3 {
     const exposed = frontLow < zl;
     let dressed = true;
     if (exposed) {
-      const cap = this.overTile(gr, side);
+      const cap = this.overTile(gr, side, x, y, zl);
       /* The repeated course is the WALL's own material in every case — keying it
        * on the top ground drew 407 cells whose courses were a different material
        * from their own cap. */
-      const mid = this.storeyTile(side);
+      /* PER STOREY, NOT PER COLUMN. Resolving the course once and repeating it
+       * is what made a wall one tile from its foot to its cap; the region field
+       * is keyed on elevation precisely so a boundary can cross a column, and
+       * hoisting this call back out of the loop would throw that away and leave
+       * the field able to change only between columns — which is the "whole
+       * column switching" the maintainer explicitly ruled out. */
       const stack: WallStackStep[] = [];
-      for (let f = Math.max(0, frontLow); f <= zl; f++)
-        stack.push({ storey: f, tile: f === zl ? cap : mid, y: columnY(frame, x, y, f) - TOP_Y });
+      const lowest = Math.max(0, frontLow);
+      for (let f = lowest; f <= zl; f++)
+        stack.push({
+          storey: f,
+          tile: f === zl ? cap : this.storeyTile(side, x, y, f),
+          y: columnY(frame, x, y, f) - TOP_Y,
+        });
+      /* `mid` is the record's representative course — the stack carries the
+       * real per-storey tiles and is what draws. */
+      const mid = lowest < zl ? this.storeyTile(side, x, y, lowest) : this.storeyTile(side, x, y, zl);
       cell.kind = "wall";
       cell.wall = {
         side,
@@ -1835,7 +1946,7 @@ export class Tiles3 {
         midGround: side,
         stack,
       };
-      dressed = !this.ownTop(this.overCandidate(gr, side).key);
+      dressed = !this.ownTop(this.overCandidate(gr, side, x, y, zl).key);
     }
     /* ...and the SURFACE goes on the cap: the wall is x-over-y art, the top is
      * the maintainer's set. TOP FACE ONLY at every raised level, exposed or not,
@@ -2461,11 +2572,15 @@ export class Tiles3 {
     const lo = frontCovered ? dl : Math.max(0, dl - th);
     /* A cave lid is rock from underneath whatever its top is made of. */
     const body = dk.kind === "cave" && dg !== "black_rock" && dg !== "grey_stone" ? "grey_stone" : dg;
-    const cap = frontCovered ? this.flatTile(dg) : this.overTile(dg, body);
-    const mid = this.storeyTile(body);
+    const cap = frontCovered ? this.flatTile(dg) : this.overTile(dg, body, x, y, dl);
     const stack: WallStackStep[] = [];
     for (let f = lo; f <= dl; f++)
-      stack.push({ storey: f, tile: f === dl ? cap : mid, y: columnY(frame, x, y, f) - TOP_Y });
+      stack.push({
+        storey: f,
+        tile: f === dl ? cap : this.storeyTile(body, x, y, f),
+        y: columnY(frame, x, y, f) - TOP_Y,
+      });
+    const mid = this.storeyTile(body, x, y, lo < dl ? lo : dl);
     /* A SLAB IS ONE SURFACE — ONE SET AND ONE MEMBER FOR THE WHOLE DECK,
      * anchored at its own first cell, exactly as render3 does it (render3.py
      * :1387 "a roof, a bridge and a cave lid are GROUND too ... ONE set and ONE

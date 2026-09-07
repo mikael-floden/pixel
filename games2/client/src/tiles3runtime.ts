@@ -63,6 +63,12 @@ import {
   type Tiles3Textures,
   type UrlRoute,
 } from "./tiles3draw";
+/* THE WALL SIGNATURES ARE BUNDLED, not fetched. They are generated from the
+ * review art by games2/scripts/wall-signatures.py, they are ~92 KB, and a
+ * bundled import is content-hashed by the build — so a cached page can never
+ * hold a signature table that disagrees with the code that reads it. A fetched
+ * doc would be one more request per world load and one more staleness axis. */
+import wallSigDoc from "./wallsig.json";
 
 /* -- the world, as the resolver reads it ------------------------------------ */
 
@@ -389,6 +395,7 @@ export function tiles3DataFrom(
     review: docs.review as ReviewManifest | undefined,
     feedback: docs.feedback?.entries,
     wallOverrides: docs.tileWalls?.overrides,
+    wallSigs: (wallSigDoc as unknown as { pools?: Record<string, Record<string, readonly [number, number, number]>> }).pools,
     basePromotions: docs.basePromotions?.overrides,
     fades: docs.fades as FadesDoc | undefined,
     slopes: docs.slopes as SlopesDoc | undefined,
