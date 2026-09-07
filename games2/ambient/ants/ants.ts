@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
-import { crawlerTint, findGround, landableAt, paintPixels } from "../runtime/ground";
+import { crawlerTint, findGround, flatWith, landableAt, levelAt, paintPixels } from "../runtime/ground";
 
 // ANTS — a FIELD effect, and the smallest thing this agent draws.
 //
@@ -74,6 +74,7 @@ export function antsFeature(): AmbientFeature {
   let path: { x: number; y: number }[] = [];
   let box = { x0: 0, y0: 0, x1: 0, y1: 0 }; // the trail's extent, for the on-screen test
   let pathLen = 0;
+  let trailLvl: number | null = null; // the terrace this trail lies on
   let life = 0;
   let relay = 0;
   let gain = 0;
@@ -98,6 +99,9 @@ export function antsFeature(): AmbientFeature {
     };
     const a = findGround(inner, rnd, MARGIN);
     if (!a) return false;
+    /* ONE TERRACE. Everything below is checked against the ANCHOR's level, so a
+     * trail can never run over a cliff edge — see `levelAt`. */
+    const lvl = levelAt(a.x, a.y);
     /* TRY SHORTER BEFORE GIVING UP. A colony has to be able to lay a line
      * wherever the player stops, and the full span is a long straight demand on
      * open ground: in a wood or a village the far end lands in a wall, a
@@ -113,7 +117,7 @@ export function antsFeature(): AmbientFeature {
         const th = rnd() * Math.PI * 2;
         const L = full * frac;
         const cand = { x: Math.round(a.x + Math.cos(th) * L), y: Math.round(a.y + Math.sin(th) * L * 0.6) };
-        if (!landableAt(cand.x, cand.y)) continue;
+        if (!flatWith(lvl, cand.x, cand.y)) continue;
         span = L;
         b = cand;
         break;
@@ -151,7 +155,7 @@ export function antsFeature(): AmbientFeature {
       const ty = r.y - q.y;
       const tl = Math.hypot(tx, ty) || 1;
       for (const w of [0, WOBBLE, -WOBBLE])
-        if (!landableAt(Math.round(q.x - (ty / tl) * w), Math.round(q.y + (tx / tl) * w))) return false;
+        if (!flatWith(lvl, Math.round(q.x - (ty / tl) * w), Math.round(q.y + (tx / tl) * w))) return false;
     }
     path = pts;
     box = pts.reduce(
@@ -160,6 +164,7 @@ export function antsFeature(): AmbientFeature {
     );
     pathLen = 0;
     for (let i = 1; i < pts.length; i++) pathLen += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+    trailLvl = lvl;
     life = range(TRAIL_LIFE);
     return true;
   };
@@ -244,7 +249,7 @@ export function antsFeature(): AmbientFeature {
       if (relay <= 0) {
         relay = RELAY_MS;
         const p = path[(rnd() * path.length) | 0];
-        if (!landableAt(Math.round(p.x), Math.round(p.y))) life = 0;
+        if (!flatWith(trailLvl, Math.round(p.x), Math.round(p.y))) life = 0;
       }
 
       const s = dt / 1000;

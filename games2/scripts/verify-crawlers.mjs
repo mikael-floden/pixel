@@ -234,6 +234,44 @@ if (antSlow.length) fail(`ants never appeared within ${RELOCATE_MS}ms at ${antSl
 if (spiderSlow.length)
   fail(`spiders never appeared within ${RELOCATE_MS}ms at ${spiderSlow.length} of ${hops.length} new locations`);
 
+/* ---- FLAT GROUND: A TRAIL MAY NOT RUN OVER A CLIFF ----
+ * `landableAtScreen` says whether the surface DRAWN at a point can be stood on,
+ * and a cliff answers yes twice — the plateau top and the ground at its foot
+ * are both walkable and are drawn a few pixels apart, because the projection
+ * subtracts level x storey height from screen y. So a straight screen-space
+ * line from one to the other passes every walkability check while crossing a
+ * wall in the world, which is an ant trail walking down a cliff face
+ * (maintainer 2026-09-07, with a screenshot). The only way to see it is to ask
+ * the game for the LEVEL under each mark (`__ml.pickAt`) — same level
+ * everywhere, whatever it looks like on screen. */
+const flat = await page.evaluate(async ({ spots }) => {
+  const out = [];
+  for (const [col, row] of spots) {
+    window.__ml.teleport(col, row);
+    for (let i = 0; i < 150; i++) await new Promise((r) => requestAnimationFrame(r));
+    for (const kind of ["ants", "spiders"]) {
+      const all = window.__mlAmbient.debug(kind).all || [];
+      const lv = all
+        .map((m) => window.__ml.pickAt(m.x, m.y))
+        .filter((p) => p)
+        .map((p) => p.lvl);
+      if (lv.length < 2) continue;
+      const span = Math.max(...lv) - Math.min(...lv);
+      out.push({ at: `${col},${row}`, kind, n: lv.length, span, levels: [...new Set(lv)].sort((a, b) => a - b) });
+    }
+  }
+  return out;
+}, { spots: land });
+for (const f of flat)
+  console.log(`flat (${f.kind} at ${f.at}): ${f.n} marks across levels [${f.levels.join(", ")}]`);
+const steppy = flat.filter((f) => f.span > 0);
+if (flat.length < 2) fail(`only ${flat.length} populations sampled — the flat-ground check proved nothing`);
+if (steppy.length)
+  fail(
+    `${steppy.length} population(s) span a level change — a trail must lie on ONE terrace ` +
+      `(e.g. ${steppy[0].kind} at ${steppy[0].at} across levels ${steppy[0].levels.join(", ")})`,
+  );
+
 /* ---- THEY MUST BE VISIBLE AGAINST THE GROUND THEY STAND ON ----
  * The one property that makes a 1-3 px animal an animal rather than a rumour.
  * They draw UNDER the darkness overlay, graded by the light where they stand,

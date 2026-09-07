@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
-import { crawlerTint, findGround, landableAt, paintPixels } from "../runtime/ground";
+import { crawlerTint, findGround, flatWith, landableAt, levelAt, paintPixels } from "../runtime/ground";
 
 // SPIDERS — a FIELD effect, and the other half of the too-small-for-art pair
 // (see ants/ants.ts for why there is no sprite sheet here).
@@ -59,6 +59,7 @@ interface Spider {
   x: number;
   y: number;
   ang: number;
+  lvl: number | null; // the terrace it is skittering on
   spd: number;
   dashing: boolean;
   timer: number; // ms left in the current dash/rest
@@ -154,6 +155,7 @@ export function spidersFeature(): AmbientFeature {
             x: p.x,
             y: p.y,
             ang: rnd() * Math.PI * 2,
+            lvl: levelAt(p.x, p.y),
             spd: 0,
             dashing: false,
             timer: 0,
@@ -183,7 +185,10 @@ export function spidersFeature(): AmbientFeature {
           // spent 17 of 191 frames entirely out of frame. Retiring it (below)
           // is the backstop for a camera that walks away; this is what keeps
           // the one the player has in view.
-          const blocked = !landableAt(Math.round(nx), Math.round(ny));
+          // Not merely walkable: the SAME TERRACE. A cliff foot is walkable
+          // and is drawn a few pixels below the plateau it stands under, so a
+          // walkability test alone lets a skitter run down the cliff face.
+          const blocked = !flatWith(s.lvl, Math.round(nx), Math.round(ny));
           const tooNear = me && Math.hypot(nx - me.x, ny - me.y) < PLAYER_CLEAR;
           const leaving =
             nx < vw.x + EDGE_TURN || nx > vw.x + vw.width - EDGE_TURN ||
@@ -221,6 +226,7 @@ export function spidersFeature(): AmbientFeature {
             s.x = p.x;
             s.y = p.y;
             s.ang = rnd() * Math.PI * 2;
+            s.lvl = levelAt(p.x, p.y);
           }
         }
         // Leave quietly: the last stretch of life fades rather than blinking out.

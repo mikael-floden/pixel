@@ -14,6 +14,11 @@ motion alone names the animal.
 - They veer at anything they cannot walk on, and keep `PLAYER_CLEAR` away from
   the player: a spider skittering over your feet is a jump-scare, and this layer
   is atmosphere.
+- **So is a change of LEVEL.** A cliff foot is walkable and is drawn a few
+  pixels below the plateau standing over it, so a walkability test alone lets a
+  skitter run down the cliff face. A dash onto a different terrace is refused
+  like a step into water (`flatWith`, over `__ml.pickAt`); the spider re-reads
+  its level when it relocates.
 - **The edge of the view is one of those walls.** There are at most two spiders
   in the world, so one that skitters off the side of the screen is the whole
   effect gone — measured, a spider spent 17 of 191 frames entirely out of frame.

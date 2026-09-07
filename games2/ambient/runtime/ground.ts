@@ -102,3 +102,41 @@ export function crawlerTint(dark: number, env: { sun: number; night: number }): 
   const p = [(pale >> 16) & 255, (pale >> 8) & 255, pale & 255];
   return (mix(d[0], p[0], t) << 16) | (mix(d[1], p[1], t) << 8) | mix(d[2], p[2], t);
 }
+
+/* THE LEVEL UNDER A DRAWN POINT — what makes "flat" answerable.
+ *
+ * `landableAt` asks whether the surface drawn at a screen point can be stood
+ * on, and a CLIFF answers yes twice: the plateau top and the ground at its
+ * foot are drawn at different screen points, both walkable, and a straight
+ * screen-space line from one to the other passes every walkability check while
+ * crossing a wall in the world. That is an ant trail walking down a cliff face
+ * (maintainer 2026-09-07, with the screenshot: "I don't want ants to walk down
+ * from uphill to downhill like this. You must make sure the ground is flat").
+ *
+ * There is no way to see that in screen space alone — the projection subtracts
+ * level x storey height from y, so a point 6 levels up and 6 storeys down the
+ * screen is the SAME pixel. The game's own picker resolves it (`__ml.pickAt`
+ * returns the world cell AND its level), so ask that: same level everywhere =
+ * flat ground, whatever it looks like on screen.
+ */
+export function levelAt(wx: number, wy: number): number | null {
+  const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
+  const f = ml?.pickAt as undefined | ((x: number, y: number) => { x: number; y: number; lvl: number } | null);
+  if (!f) return null; // no probe: every level reads the same, i.e. no constraint
+  try {
+    const p = f(wx, wy);
+    return p ? p.lvl : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Is the drawn point walkable AND on the same terrace as `lvl`? A null `lvl`
+ * (or no picker) means "level unknown", which must not block placement — the
+ * feature degrades to the walkability test it had before. */
+export function flatWith(lvl: number | null, wx: number, wy: number): boolean {
+  if (!landableAt(wx, wy)) return false;
+  if (lvl === null) return true;
+  const here = levelAt(wx, wy);
+  return here === null || here === lvl;
+}
