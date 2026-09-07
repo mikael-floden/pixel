@@ -1925,6 +1925,12 @@ export class NightLights {
    *  73 uniform writes and the overlay bookkeeping. */
   private updMs = 0;
   private updGlowMs = 0;
+  /** How many stamps the pass actually DREW, accumulated per update. The bill
+   *  reported `sceneryStamps` (scenery only) and that was not the number that
+   *  drives the glow bracket: run 2 measured glowMs 4.07 ms/frame in a window
+   *  with ZERO scenery stamps, which is only possible if the pass was drawing
+   *  prop/emissive ones. Report what the loop iterates, not a subset of it. */
+  private updStamps = 0;
   /** Dev switch (__ml.sceneryShadows(on, gate)): the sparse sun-patch gate (uPropGate). Identity when off. */
   sunGate = true;
   /** Measured costs, ms: the once-per-world heightmap build and the last scenery apply. */
@@ -3529,10 +3535,12 @@ export class NightLights {
       // the rest (uniform writes + overlay bookkeeping) as updMs - glowMs.
       updMs: +(this.updMs / f).toFixed(3),
       glowMs: +(this.updGlowMs / f).toFixed(3),
+      stampsDrawn: +(this.updStamps / f).toFixed(2),
     };
     this.bill = { frames: 0, n: 0, shadowing: 0, poolCells: 0, nMax: 0, shadowMax: 0, ambient: this.bill.ambient };
     this.updMs = 0;
     this.updGlowMs = 0;
+    this.updStamps = 0;
     return out;
   }
 
@@ -3876,6 +3884,7 @@ export class NightLights {
       // A clear of an already-empty field is a whole extra render pass on a
       // tile-based GPU (~6 MB of writes at dpr 2.75): clear only when there
       // is something to draw or something to erase.
+      this.updStamps += stamps.length;
       if (stamps.length || this.glowDirty) rt.clear();
       this.glowDirty = stamps.length > 0;
       if (stamps.length) {
