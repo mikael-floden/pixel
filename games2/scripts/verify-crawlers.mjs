@@ -249,6 +249,18 @@ const flat = await page.evaluate(async ({ spots }) => {
   for (const [col, row] of spots) {
     window.__ml.teleport(col, row);
     for (let i = 0; i < 150; i++) await new Promise((r) => requestAnimationFrame(r));
+    /* IS THERE A CLIFF TO GET WRONG HERE? Sample the levels the VIEW shows: a
+     * spot whose whole view is one terrace cannot fail this check however
+     * broken the feature is, so the run has to include at least one place
+     * where the ground steps. */
+    const v = window.__ml.camView();
+    const seen = new Set();
+    for (let i = 0; i < 14; i++)
+      for (let j = 0; j < 14; j++) {
+        const p = window.__ml.pickAt(v.x + (v.w * i) / 13, v.y + (v.h * j) / 13);
+        if (p) seen.add(p.lvl);
+      }
+    const viewLevels = seen.size;
     for (const kind of ["ants", "spiders"]) {
       const all = window.__mlAmbient.debug(kind).all || [];
       const lv = all
@@ -257,15 +269,22 @@ const flat = await page.evaluate(async ({ spots }) => {
         .map((p) => p.lvl);
       if (lv.length < 2) continue;
       const span = Math.max(...lv) - Math.min(...lv);
-      out.push({ at: `${col},${row}`, kind, n: lv.length, span, levels: [...new Set(lv)].sort((a, b) => a - b) });
+      out.push({ at: `${col},${row}`, kind, n: lv.length, span, viewLevels, levels: [...new Set(lv)].sort((a, b) => a - b) });
     }
   }
   return out;
 }, { spots: land });
 for (const f of flat)
-  console.log(`flat (${f.kind} at ${f.at}): ${f.n} marks across levels [${f.levels.join(", ")}]`);
+  console.log(
+    `flat (${f.kind} at ${f.at}): ${f.n} marks across levels [${f.levels.join(", ")}] ` +
+      `(the view shows ${f.viewLevels} level${f.viewLevels === 1 ? "" : "s"})`,
+  );
 const steppy = flat.filter((f) => f.span > 0);
 if (flat.length < 2) fail(`only ${flat.length} populations sampled — the flat-ground check proved nothing`);
+// NON-VACUITY: at least one sampled spot must actually have a step in view.
+const stepped = flat.filter((f) => f.viewLevels > 1);
+if (!stepped.length)
+  fail("every sampled view was a single terrace — this check cannot catch a crawler walking down a cliff");
 if (steppy.length)
   fail(
     `${steppy.length} population(s) span a level change — a trail must lie on ONE terrace ` +
