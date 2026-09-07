@@ -157,6 +157,7 @@ import {
   worldFileUrl,
 } from "../maps";
 import type { MapGeometry, PlaceLookup } from "../maps";
+import { renderedWorldView, type ViewRect } from "../camview";
 // ---- TILES 3.0 (maps3 worlds) -------------------------------------------
 // The resolver (what draws on this cell), the draw layer (the two pixel ops +
 // the texture factory), the streaming per-cell runtime, and scenery. All four
@@ -740,6 +741,11 @@ const PERF_BEACON_MS = 30_000;
 // (a mammoth spans ~190px) — a column that could still sort against an
 // on-screen body must keep its images, not just the ones that draw.
 const OCC_CULL_PAD = OCC_STEP + 64 + 200;
+/** Slack on the per-frame SUBMIT cull, in world px. Small on purpose: the cull
+ *  tests the rect the RENDERER will use, so this covers only rounding, not a
+ *  frame of camera travel. See cullOccluderSubmits. */
+const CULL_EDGE_PX = 4;
+
 // Living camera (maintainer): the camera CHASES the player instead of pinning
 // them dead-centre — exponential ease toward the sprite with the trail capped,
 // plus a small speed-coupled ZOOM-OUT so the player still sees a bit further
@@ -5161,7 +5167,7 @@ export class WorldScene extends Phaser.Scene {
       occCull: (on?: boolean) => {
         if (typeof on === "boolean") {
           this.occCullOn = on;
-          if (!on) for (const im of this.occluders) im.cameraFilter = 0;
+          if (!on) for (const l of this.cullLists) for (const im of l) im.cameraFilter = 0;
         }
         /* AUDITED AGAINST PHASER'S OWN BOUNDS, never against the cull's own
          * arithmetic — the same rule `__ml.occAudit` and `__ml.monsterGate`
@@ -18503,28 +18509,76 @@ export class WorldScene extends Phaser.Scene {
    * session that set it"). A filter that is only ever set, never cleared, would
    * strand a recycled image invisible for good. */
   private cullOccluderSubmits(): void {
-    const list = this.occluders;
-    if (!list.length || !this.occCullOn) {
+    if (!this.occCullOn) {
       this.occCulledSubmits = 0; // never report the previous window's count
       return;
     }
     const cam = this.cameras.main;
     const id = cam.id;
     const v = cam.worldView;
-    const x0 = v.x;
-    const y0 = v.y;
-    const x1 = v.right;
-    const y1 = v.bottom;
+    /* THE RECT THE RENDERER WILL USE, NOT LAST FRAME'S. Inside update()
+     * `cam.worldView` is the PREVIOUS frame's rectangle — this file already
+     * knows that, which is why the night pass takes renderedWorldView — so
+     * culling against it can drop an image that is inside the rect actually
+     * drawn, one frame of camera travel later. Padding around that staleness
+     * was tried and it is self-defeating: 32 px of slack put the submit count
+     * straight back to 817 from 613, because a 32 px band around the view holds
+     * ~200 more tiles than it saves. Computing the CURRENT rect removes the
+     * problem instead of paying for it, and leaves CULL_EDGE_PX to cover only
+     * the half-pixel rounding inside renderedWorldView. */
+    const rv = renderedWorldView(cam, this.cullRect);
+    const x0 = rv.x - CULL_EDGE_PX;
+    const y0 = rv.y - CULL_EDGE_PX;
+    const x1 = rv.x + rv.width + CULL_EDGE_PX;
+    const y1 = rv.y + rv.height + CULL_EDGE_PX;
     let off = 0;
-    for (let i = 0; i < list.length; i++) {
-      const im = list[i];
-      const w = im.displayWidth;
-      const h = im.displayHeight;
-      const hidden = im.x + w < x0 || im.x - w > x1 || im.y + h < y0 || im.y - h > y1;
-      im.cameraFilter = hidden ? id : 0;
-      if (hidden) off++;
+    /* EVERY WORLD IMAGE, NOT JUST THE OCCLUDERS. Measured live at the mountain:
+     * 814 objects were submitted, 559 were on screen and 255 were not — 31% of
+     * the submits, and 55% of them at the spawn. The occluders were already
+     * culled (1,625 of 2,287); the residue is scenery, prop and roofed-scenery
+     * art, which nothing culled at all.
+     *
+     * AND THE BOX IS THE REAL ONE NOW. It used to be `im.x +/- displayWidth`,
+     * i.e. a box of DOUBLE the sprite's size centred on its origin, chosen so
+     * the test would be right whatever the origin convention. That is a free
+     * pass to anything within a full sprite of the view, which is most of the
+     * residue. Using originX/originY makes it exact and stays origin-agnostic
+     * by construction. NO FIXED PAD: a 64 px one was tried and it made things
+     * WORSE — measured, submits went 814 -> 936 at the mountain — because for
+     * the tile art, which is most of the residue, a flat 64 px is LARGER than
+     * the per-image slack it replaced. Rotation is handled per image instead. */
+    for (const list of this.cullLists) {
+      for (let i = 0; i < list.length; i++) {
+        const im = list[i];
+        // ABS: a flip done with a negative scale gives a negative displayWidth,
+        // and a negative box tests inside-out — it would cull things that are
+        // on screen, which is a hole in the picture, not a slow frame.
+        const w = Math.abs(im.displayWidth);
+        const h = Math.abs(im.displayHeight);
+        // A rotated image's AABB is bigger than w x h; pad by the long side
+        // rather than reason about the angle. Nothing in the world art rotates
+        // today, so this is the branch that never runs and cannot bite.
+        const pad = im.rotation === 0 ? 0 : Math.max(w, h);
+        const ix = im.x - w * im.originX - pad;
+        const iy = im.y - h * im.originY - pad;
+        const bw = w + pad * 2;
+        const bh = h + pad * 2;
+        const hidden = ix + bw < x0 || ix > x1 || iy + bh < y0 || iy > y1;
+        im.cameraFilter = hidden ? id : 0;
+        if (hidden) off++;
+      }
     }
     this.occCulledSubmits = off;
+  }
+
+  /** The lists cullOccluderSubmits walks. Held as an array so the loop is one
+   *  pass and a new class of world art is added in one place. */
+  /** Scratch for the cull's view rect — held so the per-frame test allocates
+   *  nothing. Separate from the night pass's own rect, which it reuses too. */
+  private cullRect: ViewRect = { x: 0, y: 0, width: 0, height: 0 };
+
+  private get cullLists(): Phaser.GameObjects.Image[][] {
+    return [this.occluders, this.sceneryImgs, this.sceneryRoofedImgs, this.propImgs];
   }
   /** Occluders whose submit the last frame skipped — reported by the beacon. */
   private occCulledSubmits = 0;
