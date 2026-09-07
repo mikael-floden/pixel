@@ -17,7 +17,8 @@
  *
  *   npx tsx games2/scripts/wall-field.mjs [--show]
  */
-import { wallField, pickWallIndex, WALL_STOREY_CELLS } from "../client/src/wallregion.ts";
+import { wallField, pickWallIndex, WALL_STOREY_CELLS, WALL_REGION_CELLS } from "../client/src/wallregion.ts";
+import setsDoc from "../client/src/wallsets.json" with { type: "json" };
 
 const PITCH = 15;
 const STEP = Math.sqrt(32 * 32 + 14 * 14);
@@ -25,6 +26,7 @@ const H = 40;                       // the tallest face the world actually has
 const W = 90;                       // a long run of wall
 const LINES = [7, 23, 40, 61, 90, 128, 171, 200, 244, 301, 340, 377];
 const POOL = "grey_stone__over__grey_stone";
+const SETS = setsDoc.pools[POOL] ?? [];
 const KEYS = Array.from({ length: 74 }, (_, i) => `k${i}`);
 
 /** Region patches on one face: their extent in PIXELS, and their aspect. */
@@ -47,8 +49,8 @@ for (const along of ["x", "y"]) {
         box.set(r, b);
         // Per-cell variation: does the neighbour up the wall wear the same tile?
         if (z > 0) {
-          const a = pickWallIndex(POOL, KEYS, x, y, z);
-          const c = pickWallIndex(POOL, KEYS, x, y, z - 1);
+          const a = pickWallIndex(POOL, KEYS, x, y, z, undefined, SETS);
+          const c = pickWallIndex(POOL, KEYS, x, y, z - 1, undefined, SETS);
           if (a === c) neighbourSame++;
           neighbourTotal++;
         }
@@ -66,6 +68,9 @@ for (const along of ["x", "y"]) {
 const med = (a) => { const s = [...a].sort((p, q) => p - q); return s[Math.floor(s.length / 2)]; };
 console.log(JSON.stringify({
   storeyCells: WALL_STOREY_CELLS,
+  regionCells: WALL_REGION_CELLS,
+  setsForPool: SETS.length,
+  usableSets: SETS.filter((s) => s.cost <= 2).length,
   patches: aspects.length,
   medianWidthPx: Math.round(med(widths)),
   medianHeightPx: Math.round(med(heights)),

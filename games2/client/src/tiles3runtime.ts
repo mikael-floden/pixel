@@ -68,7 +68,7 @@ import {
  * bundled import is content-hashed by the build — so a cached page can never
  * hold a signature table that disagrees with the code that reads it. A fetched
  * doc would be one more request per world load and one more staleness axis. */
-import wallSigDoc from "./wallsig.json";
+import wallSetsDoc from "./wallsets.json";
 
 /* -- the world, as the resolver reads it ------------------------------------ */
 
@@ -395,7 +395,7 @@ export function tiles3DataFrom(
     review: docs.review as ReviewManifest | undefined,
     feedback: docs.feedback?.entries,
     wallOverrides: docs.tileWalls?.overrides,
-    wallSigs: (wallSigDoc as unknown as { pools?: Record<string, Record<string, readonly [number, number, number]>> }).pools,
+    wallSets: (wallSetsDoc as unknown as { pools?: Record<string, { cost: number; tiles: string[] }[]> }).pools,
     basePromotions: docs.basePromotions?.overrides,
     fades: docs.fades as FadesDoc | undefined,
     slopes: docs.slopes as SlopesDoc | undefined,

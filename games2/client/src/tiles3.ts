@@ -579,13 +579,13 @@ export interface Tiles3Data {
   /** live/tuning/tile_walls.json `.overrides` — `top_only` keeps a top that
    *  repeats badly out of a storey fill. */
   wallOverrides?: Record<string, { top_only?: boolean }>;
-  /** games2/client/src/wallsig.json — what each approved wall tile LOOKS like,
-   *  so the wall-variety palette can put tiles that match beside each other.
-   *  Bundled rather than fetched: it is generated from the review art, it is
-   *  ~92 KB, and a bundled import is content-hashed by the build, so it can
-   *  never go stale against a cached page. Absent, walls still vary but with no
-   *  coherence guarantee — see `wallPalette`. */
-  wallSigs?: Record<string, Record<string, readonly [number, number, number]>>;
+  /** games2/client/src/wallsets.json — trios of wall tiles that MEASURABLY join
+   *  well, per pool, with the cost of their worst join. Bundled rather than
+   *  fetched: generated from the review art, ~105 KB, and a bundled import is
+   *  content-hashed by the build, so it can never go stale against a cached
+   *  page. Absent, or with no set clearing the gate, a wall is one tile — see
+   *  `wallPalette`. */
+  wallSets?: Record<string, readonly { cost: number; tiles: string[] }[]>;
   /** live/tuning/base_tiles.json `.overrides` — the maintainer's promoted base
    *  tiles, keyed by review key. */
   basePromotions?: Record<string, { type?: string }>;
@@ -1476,7 +1476,7 @@ export class Tiles3 {
       y,
       z,
       this.wallFieldAt(x, y, z),
-      this.data.wallSigs?.[cell],
+      this.data.wallSets?.[cell],
     );
     return cands[i >= 0 ? i : 0];
   }

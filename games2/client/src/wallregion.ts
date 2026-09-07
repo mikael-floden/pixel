@@ -81,18 +81,21 @@
  *  columns, lower it and they band by storey. */
 export const WALL_STOREY_CELLS = 0.429;
 
-/** Region size in CELLS — one palette per area.
+/** Region size in CELLS — ONE SET PER MASSIF, deliberately much larger than a
+ *  cliff rather than smaller.
  *
- *  NOT the ground's 24, and the reason is the surface's shape rather than taste.
- *  A wall face is at most 40 storeys, and 40 * WALL_STOREY_CELLS is 17.2 cell
- *  steps, so a 24-cell region is TALLER THAN THE TALLEST CLIFF IN THE WORLD:
- *  the palette could then only ever change sideways, which is a vertical
- *  boundary, which is the column-shaped result this rule exists to avoid — the
- *  ground's number reintroducing the ground's blind spot on a surface with a
- *  short axis. At 10 a tall face crosses one or two regions going up, and the
- *  median 4-storey wall still sits comfortably inside one, which is right: a
- *  low wall should be one stone. */
-export const WALL_REGION_CELLS = 10;
+ *  The set's three tiles are gated against each other, but two ADJACENT SETS
+ *  are not: nothing measures the join between a tile of set A and a tile of set
+ *  B, so a region boundary is the one place a bad seam can still appear. Making
+ *  regions big makes that boundary rare and puts it between massifs, where a
+ *  change of rock is the point — rather than every ~10 cells across the face of
+ *  one, which is where it showed as a mismatched strip. All the variety inside
+ *  a cliff comes from the per-cell member, which is gated.
+ *
+ *  Earlier this was 10, chosen so the set could change going UP a tall face.
+ *  That was the column-thinking surviving one more round: a cliff wants ONE
+ *  rock, and a set changing partway up it is the seam, not the feature. */
+export const WALL_REGION_CELLS = 40;
 /** How far the point is dragged before it is chunked, in cells. The ground does
  *  not warp at all — it does not need to, because a region boundary there is
  *  invisible under the per-cell members. A wall changes its whole palette at
@@ -253,127 +256,94 @@ export function unitHashStr(s: string): number {
   return (h >>> 0) / U32;
 }
 
-/** A tile's look, as `wall-signatures.py` measures it: mean luminance 0-255,
- *  contrast 0-99, and a directional term -100..100 (positive = horizontal
- *  layering, negative = vertical cracking). */
-export type WallSig = readonly [number, number, number];
-/** One pool's signatures, by the candidate key's last path segment. */
-export type WallSigs = Readonly<Record<string, WallSig>>;
-
-/** HOW DIFFERENT TWO WALL TILES LOOK, normalised so the terms are comparable.
- *
- *  Luminance is weighted hardest because a bright tile abutting a dark one is
- *  the seam you see from across the map; the directional term is next, because
- *  it is what separates a layered face from a cracked one and those two read as
- *  different ROCK, not as one rock in two moods. Measured over the approved
- *  grey_stone pool the ranges are lum 80.6-119.2, contrast 30.2-44.4 and
- *  direction -0.48..+0.35, so contrast is genuinely the least informative of
- *  the three and is weighted accordingly. */
-export function sigDistance(a: WallSig, b: WallSig): number {
-  const dl = (a[0] - b[0]) / 255;
-  const dc = (a[1] - b[1]) / 99;
-  const da = (a[2] - b[2]) / 200;
-  return Math.sqrt(1.0 * dl * dl + 0.35 * dc * dc + 0.8 * da * da);
+/** One measured set from `wallsets.json`: tiles that JOIN well, and how badly
+ *  the worst join in the set shows. */
+export interface WallSet {
+  cost: number;
+  tiles: readonly string[];
 }
 
-/** How many nearest neighbours the palette may draw its minority tiles from.
- *  Small enough that they match the dominant, large enough that two massifs
- *  with the same dominant still differ. */
-export const WALL_PALETTE_NEIGHBOURS = 8;
+/** THE GATE. A set is only used when its worst join is at most this many times
+ *  the art's OWN texture step — i.e. the seam is no more visible than the
+ *  cracks already in the stone.
+ *
+ *  It exists because for most pools NO good trio exists: measured over all 199
+ *  pools with three or more approved walls, the best set's cost is 0.75 at the
+ *  bottom and 11.97 at the top, median 3.52. At 2.0 exactly 40 pools qualify —
+ *  including the ones a mountain is made of, grey_stone and black_rock — and
+ *  the other 159 fall back to ONE tile, which is the old behaviour and is the
+ *  right answer for them: no variety beats a visible seam, and the maintainer
+ *  should not have to police that by eye. Raise it only against a picture. */
+export const WALL_SET_MAX_COST = 2.0;
 
-/** THE PALETTE FOR ONE MASSIF — the dominant stone plus tiles that LOOK LIKE
- *  IT. Entry 0 is the dominant.
+/** THE PALETTE FOR ONE REGION — one measured SET, mapped onto this pool's
+ *  candidate list. Entry 0 is the dominant.
  *
- *  Approval is not compatibility. The maintainer approved 74 grey_stone walls,
- *  meaning each is good art, not that any two belong side by side — composited,
- *  their mean luminance spans 80.6 to 119.2 and one of them is horizontally
- *  layered where the rest are vertically cracked, so an arbitrary pair abutting
- *  makes a hard seam down the cliff. That IS the "random" look the rule exists
- *  to avoid, so the palette is drawn from a NEIGHBOURHOOD in signature space:
- *  a dominant chosen freely, then its nearest look-alikes.
+ *  WHAT THIS REPLACED, AND WHY. The first version scored each tile with a
+ *  global signature — mean luminance, contrast, directional energy — and drew
+ *  look-alikes. It was taste dressed as measurement and it is measurably
+ *  worthless for the job: across the 5,402 ordered pairs of approved
+ *  grey_stone walls that signature's distance correlates with the real seam
+ *  cost at +0.105, and the 200 pairs it called most similar had a median seam
+ *  of 2.09 against a pool median of 1.91 — it picked slightly WORSE than
+ *  chance. A global descriptor cannot see a join. The maintainer caught it in a
+ *  render before the numbers did: "in the image you sent me I can already tell
+ *  you the bottom center tiles look misplaced."
  *
- *  WITHOUT SIGNATURES it falls back to a free draw over the whole pool. That is
- *  the honest degradation — variety with no coherence guarantee — and it is what
- *  a pool the generator has never seen gets, rather than no variety at all.
+ *  Sets now come from wall-sets.py, which composites every ordered pair exactly
+ *  as the game stacks them and measures the luminance step across the join
+ *  against the step the tiles show inside themselves. A tile's join WITH ITSELF
+ *  is in the score, because the dominant repeats against itself far more often
+ *  than against anything else.
  *
- *  Drawn WITHOUT REPLACEMENT either way: a repeat would silently merge two
- *  weights, so the 10% vein would vanish on some massifs and the rule would
- *  look like it had failed intermittently.
- *
- *  This whole function is the stand-in for a hand-made wall base set. When the
- *  tiles agent ships one, its members and weights replace this and nothing else
- *  in the file changes. */
-export function wallPalette(pool: string, macro: string, keys: readonly string[], sigs?: WallSigs): number[] {
+ *  Returns a single index when no set clears the gate — no variety, no seam. */
+export function wallPalette(
+  pool: string,
+  region: string,
+  keys: readonly string[],
+  sets?: readonly WallSet[],
+): number[] {
   const n = keys.length;
-  const k = Math.min(WALL_PALETTE_N, n);
   if (n <= 0) return [];
-  const draw = (from: number[], salt: string, want: number): number[] => {
-    const bag = from.slice();
-    const out: number[] = [];
-    for (let d = 0; d < want && d < bag.length; d++) {
-      const rest = bag.length - d;
-      let j = d + Math.floor(unitHashStr(`wr1|pal|${pool}|${macro}|${salt}|${d}`) * rest);
-      if (j >= bag.length) j = bag.length - 1; // float crumb at the top
-      const t = bag[d];
-      bag[d] = bag[j];
-      bag[j] = t;
-      out.push(bag[d]);
+  const usable: number[][] = [];
+  for (const set of sets ?? []) {
+    if (set.cost > WALL_SET_MAX_COST) continue;
+    const idx: number[] = [];
+    for (const t of set.tiles) {
+      const at = keys.indexOf(t);
+      if (at >= 0) idx.push(at);
     }
-    return out;
-  };
-  const all = [];
-  for (let i = 0; i < n; i++) all.push(i);
-  const dom = draw(all, "dom", 1)[0];
-  if (k === 1) return [dom];
-  const ds = sigs?.[keys[dom]];
-  if (!ds) return draw(all, "free", k);
-  // The nearest look-alikes to the dominant, then a free draw among them.
-  const near = all
-    .filter((i) => i !== dom && sigs[keys[i]])
-    .map((i) => ({ i, d: sigDistance(ds, sigs[keys[i]]) }))
-    .sort((a, b) => (a.d === b.d ? a.i - b.i : a.d - b.d))
-    .slice(0, WALL_PALETTE_NEIGHBOURS)
-    .map((e) => e.i);
-  if (near.length < k - 1) return draw(all, "free", k);
-  return [dom, ...draw(near, "near", k - 1)];
+    // A set whose tiles are not all in THIS pool is not this pool's set — the
+    // storey filter can remove one, and a partial set is a different set.
+    if (idx.length === set.tiles.length && idx.length > 1) usable.push(idx);
+  }
+  if (!usable.length) return [0]; // the old behaviour, deliberately
+  const pick = Math.floor(unitHashStr(`wr1|set|${pool}|${region}`) * usable.length);
+  return usable[Math.min(pick, usable.length - 1)];
 }
 
-/** WHICH APPROVED TILE PAINTS THIS CELL — the whole rule, in one call.
- *
- *  `pool` names the candidate list (with a marker when the storey filter has
- *  removed `top_only` tiles) so two different pools cannot share a palette
- *  draw. `keys` is the pool's candidate keys, in order; the return is an index
- *  into it, or -1 when it is empty.
- *
- *  A one-candidate pool returns 0 for every cell, which is the old behaviour
- *  and is correct: with one tile there is nothing to vary. */
+/** WHICH APPROVED TILE PAINTS THIS CELL — the whole rule, in one call. */
 export function pickWallIndex(
   pool: string,
   keys: readonly string[],
   x: number,
   y: number,
   z: number,
-  /** A precomputed `wallField(x, y, z)`. The caller passes one when it is
-   *  memoising; omitted, it is computed here. Passing a field for a DIFFERENT
-   *  cell would silently paint the wrong tile, so a caller passes the one it
-   *  just looked up under the same key and nothing else. */
+  /** A precomputed `wallField(x, y, z)`, when the caller is memoising. */
   field?: WallField,
-  sigs?: WallSigs,
+  sets?: readonly WallSet[],
 ): number {
   const n = keys.length;
   if (n <= 0) return -1;
   if (n === 1) return 0;
   const f = field ?? wallField(x, y, z);
-  const pal = wallPalette(pool, f.region, keys, sigs);
-  if (!pal.length) return -1;
+  const pal = wallPalette(pool, f.region, keys, sets);
+  if (pal.length <= 1) return pal[0] ?? 0;
   /* THE MEMBER IS PER CELL, exactly as the ground's is — not per region. A
-   * constant tile over a region is a patch, a patch has edges, and edges on a
-   * wall are either column seams or storey stripes; there is no third option,
-   * which is why the first version of this file spent all its effort shaping
-   * them. Varying per cell removes the edge instead of steering it, and it is
-   * what makes a ground region boundary invisible today. The palette changes
-   * slowly underneath, which is where "a path of different stone running
-   * through a cliff" actually lives. */
+   * constant tile over a region is a patch, a patch has edges, and an edge on a
+   * wall is either a column seam or a storey stripe; there is no third option.
+   * Varying per cell removes the edge instead of steering it, and it is what
+   * makes a ground region boundary invisible today. */
   const w = WALL_PALETTE_WEIGHTS.slice(0, pal.length);
   const i = pickWeighted(w, unitHashStr(`wr1|tile|${pool}|${x}|${y}|${z}`));
   return pal[i >= 0 ? i : 0];
@@ -418,21 +388,21 @@ export const WALL_TEST_VECTORS: {
     [0,0,0,"-1,0,-1"],
     [1,0,0,"0,0,-1"],
     [0,0,1,"-1,0,-1"],
-    [37,214,5,"3,21,0"],
-    [120,15,11,"12,1,0"],
-    [393,393,40,"39,39,1"],
+    [37,214,5,"0,5,0"],
+    [120,15,11,"3,0,0"],
+    [393,393,40,"9,9,0"],
   ],
   palette: [
-    ["grey_stone__over__grey_stone","0,0,0",74,[56,16,72]],
-    ["grey_stone__over__grey_stone","1,-2,0",74,[17,32,24]],
-    ["a__over__b","0,0,0",2,[1,0]],
+    ["grey_stone__over__grey_stone","0,0,0",74,[3,7,11]],
+    ["grey_stone__over__grey_stone","1,-2,0",74,[2,5,9]],
+    ["a__over__b","0,0,0",2,[0]],
     ["a__over__b","0,0,0",1,[0]],
   ],
   pick: [
-    ["grey_stone__over__grey_stone",74,0,0,0,49],
-    ["grey_stone__over__grey_stone",74,37,214,5,53],
-    ["grey_stone__over__grey_stone",74,38,214,5,5],
-    ["grey_stone__over__grey_stone",74,37,214,6,5],
+    ["grey_stone__over__grey_stone",74,0,0,0,3],
+    ["grey_stone__over__grey_stone",74,37,214,5,7],
+    ["grey_stone__over__grey_stone",74,38,214,5,3],
+    ["grey_stone__over__grey_stone",74,37,214,6,3],
     ["one__over__one",1,5,5,5,0],
     ["none__over__none",0,1,2,3,-1],
   ],
