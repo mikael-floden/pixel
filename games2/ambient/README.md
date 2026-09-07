@@ -48,6 +48,12 @@ them; folder isolation beats DRY here).
   `WorldScene` for `deepwater/`, because `water` and `deep_water` carry
   identical `Surface` records and nothing on the probe surface could tell a pond
   from the end of the world.
+- **`lightsInView(pad)`** — the second seam added to `WorldScene`, for
+  `moths/`: every `EmissiveSource` the camera can see (emissive tiles AND
+  scenery lamps) as `{id, x, y, r, color, sealed}`, read-only, filtered by a
+  padded `worldView`. Ambient could not derive this — a lamp's DRAWN anchor
+  and its sealed-in-a-room verdict live only in those arrays. It walks every
+  source in the world, so a caller reads it on a THROTTLE, never per frame.
 - Time-of-day / weather awareness comes from the game's **documented `__ml`
   probe surface** (`__ml.sunInfo()`, `__ml.weatherInfo()`, `__ml.aurora()`),
   sampled at ~10 Hz with safe fallbacks (no probe → effect fades out). If a
@@ -62,6 +68,13 @@ them; folder isolation beats DRY here).
   because the HudBar rebuilds on re-joins.
 - Diagnostics live on `window.__mlAmbient` (`list()`, `debug(name)`),
   mirroring the game's `__ml` idiom.
+- **`cost(reset?)` is the LAG ANSWER, per feature**: the mount times every
+  feature's own `update` and reports `{ms, peak, frames}` — mean ms/frame,
+  worst single frame, and how many frames were measured. Whole-frame time in a
+  software-GL harness is far too noisy to see a 0.2 ms effect inside it, so a
+  "does this feature lag" question is answered here and nowhere else. Measured
+  2026-09-07: `moths` 0.027 ms/frame at night, 0.018 by day (both at the
+  timer's own noise floor — `performance.now()` granularity, not work).
 
 ## Depth + blend conventions (inherited from the game — do not drift)
 
@@ -129,7 +142,8 @@ decision; an earlier version that jumped the world to each effect's
 
   `AUTO → NONE → <each feature in registry order> → AUTO`
 
-  (currently fireflies, pollen, water, deepwater, ants, spiders, bats, birds,
+  (currently fireflies, pollen, water, deepwater, ants, spiders, moths, bats,
+  birds,
   thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
   folder joins it automatically.)
 
@@ -193,6 +207,7 @@ controller (AUTO / NONE / solo-each).
 | `deepwater/` | field | The SEAWARD CURRENT — dim crest lines at the current's own angle rolling inward, specks of drift skating over them, sparks glinting along parts of a crest | Open sea only (`deepCurrentAtScreen`); fades in over the shoreline band, full out at sea |
 | `ants/` | field | A foraging TRAIL — 1px ants nose-to-tail along a bowed line, out and back | Dry ground; diurnal, thinned by cloud |
 | `spiders/` | field | The SKITTER — 3px, dart-stop-dart, solitary, keeps out of the player's lap | Dry ground; dusk/night leaning (0.25 by day) |
+| `moths/` | field | The LAMP DANCE — a few cream specks holding a squashed orbit round a lit lamp, diving at it now and then | Night, outdoors, and only where `lightsInView` reports an unsealed lamp of radius >= 1.5 |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: water on screen (iso probe) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |

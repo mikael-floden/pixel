@@ -6,6 +6,7 @@ import { waterFeature } from "./water/water";
 import { deepWaterFeature } from "./deepwater/deepwater";
 import { antsFeature } from "./ants/ants";
 import { spidersFeature } from "./spiders/spiders";
+import { mothsFeature } from "./moths/moths";
 import { batsFeature } from "./bats/bats";
 import { birdsFeature } from "./birds/birds";
 import { thunderFeature } from "./thunder/thunder";
@@ -33,6 +34,7 @@ export function mountAmbient(game: Phaser.Game) {
     deepWaterFeature(),
     antsFeature(),
     spidersFeature(),
+    mothsFeature(),
     batsFeature(),
     birdsFeature(),
     thunderFeature(),

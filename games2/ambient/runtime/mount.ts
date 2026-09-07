@@ -48,6 +48,7 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       }
     };
     let lastTick = 0;
+    const cost = new Map<string, { sum: number; n: number; peak: number }>();
     const onUpdate = (_time: number, phaserDt: number) => {
       const cam = scene.cameras?.main;
       if (!cam) return;
@@ -78,7 +79,22 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         inited = true;
         for (const f of features) safe(() => f.init(ctx));
       }
-      for (const f of features) safe(() => f.update(ctx, dt));
+      /* WHAT EACH EFFECT COSTS, measured rather than argued about. Every
+       * feature draws into the same frame the player is walking in, so "does
+       * this lag?" has to be answerable per feature and not just per frame —
+       * the harness's own frame time is far too noisy to see a 0.2 ms effect
+       * inside it. Two `performance.now()` calls per feature per frame is
+       * ~2 us total, which is cheaper than the question. */
+      for (const f of features) {
+        const t0 = performance.now();
+        safe(() => f.update(ctx, dt));
+        const ms = performance.now() - t0;
+        const c = cost.get(f.name) ?? { sum: 0, n: 0, peak: 0 };
+        c.sum += ms;
+        c.n++;
+        c.peak = Math.max(c.peak, ms);
+        cost.set(f.name, c);
+      }
     };
     scene.events.on(Phaser.Scenes.Events.UPDATE, onUpdate);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -88,6 +104,15 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
     // QA probe surface, mirroring the game's __ml idiom.
     (window as unknown as { __mlAmbient?: unknown }).__mlAmbient = {
       list: () => features.map((f) => f.name),
+      /** Per-feature update cost since the last reset: mean and worst ms of a
+       * frame. `cost(true)` reads and resets, which is how an A/B is taken. */
+      cost: (reset = false) => {
+        const out: Record<string, { ms: number; peak: number; frames: number }> = {};
+        for (const [k, c] of cost)
+          out[k] = { ms: +(c.sum / Math.max(1, c.n)).toFixed(4), peak: +c.peak.toFixed(3), frames: c.n };
+        if (reset) cost.clear();
+        return out;
+      },
       debug: (name: string) => features.find((f) => f.name === name)?.debug() ?? null,
       env: () => ({ ...ctx.env }),
       // INDOOR/OUTDOOR: the game's geometry verdict, the gain every effect

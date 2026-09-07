@@ -73,3 +73,19 @@ nothing, and the gate reported them broken. A crawler gate that names cells is
 measuring last week's map, so it asks the world for standable ground instead.
 (`__ml.surfaceAt` takes WORLD UNITS, not cells — passing cells samples the map's
 corner, which is sea, and the scan reports "no land anywhere".)
+
+**And it derives a CLIFF to stand near, and waits for a MANNED trail.** Two
+ways this gate could pass or fail while measuring nothing, both found by
+running it twice:
+
+- The one-terrace rule below is vacuous where the whole view is one terrace —
+  no cliff, nothing to walk down. Which spots the land scan lands on is the
+  map's business, so the run now derives a cliff-side spot as well, by reading
+  the terrain grid (`__ml.gridAround`, rows of 3-char fields) for a standable
+  cell with a level step within a few cells, and it FAILS if the view it
+  samples never steps.
+- The colony arrives and leaves ONE ANT AT A TIME, so a single instant is not
+  the population: a read taken the moment the run teleports caught a trail two
+  ants deep and called a colony that peaked at 20 broken. Both samples of the
+  walk-the-trail pair are taken from a window where the trail is manned — the
+  pair is compared ant by ant, so both ends must be the same colony.

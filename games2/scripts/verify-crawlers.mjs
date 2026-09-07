@@ -87,15 +87,74 @@ const land = await page.evaluate(() => {
   return out;
 });
 console.log(`land found: ${land.map(([c, r]) => `${c},${r}`).join("  ") || "NONE"}`);
+
+/* A CLIFF TO GET WRONG. The flat-ground check below is vacuous on a spot whose
+ * whole view is one terrace — it cannot catch a trail walking down a cliff if
+ * there is no cliff — and which spots the scan above happens to land on is the
+ * map's business, not ours: one run found a step in view, the next found four
+ * flat fields and the check proved nothing. So the run DERIVES a cliff-side
+ * spot as well, by reading the terrain grid the game already holds
+ * (`gridAround`, whose rows are 3-char fields: a level, `#` solid, `?` off
+ * map) and asking for a standable cell with a level step within a few cells. */
+const cliff = await page.evaluate(() => {
+  const me = window.__ml.me();
+  const c0 = Math.round(me.x / 32);
+  const r0 = Math.round(me.y / 32);
+  const w = window.__ml.worldInfo();
+  const maxC = (w.w ?? 512) - 4;
+  const maxR = (w.h ?? 512) - 4;
+  for (let ring = 3; ring < 96; ring += 3)
+    for (let a = 0; a < 16; a++) {
+      const c = Math.max(4, Math.min(maxC, c0 + Math.round(Math.cos((a / 16) * 6.283) * ring)));
+      const r = Math.max(4, Math.min(maxR, r0 + Math.round(Math.sin((a / 16) * 6.283) * ring)));
+      const s = window.__ml.surfaceAt(c * 32 + 16, r * 32 + 16);
+      if (!s || !s.standable) continue;
+      const g = window.__ml.gridAround(c * 32 + 16, r * 32 + 16, 7);
+      if (!g) continue;
+      const levels = new Set();
+      for (const line of g.rows)
+        for (let i = 0; i + 3 <= line.length; i += 3) {
+          const t = line.slice(i, i + 3).trim();
+          if (t && t !== "#" && t !== "?") levels.add(Number(t));
+        }
+      if (levels.size > 1) return [c, r];
+    }
+  return null;
+});
+console.log(`cliff-side spot: ${cliff ? cliff.join(",") : "NONE"}`);
+if (!cliff) fail("no standable cell with a level step within 96 cells of the spawn — the flat-ground check cannot be exercised");
 if (land.length < 2) fail(`only ${land.length} standable spots found near the spawn — cannot exercise ground crawlers`);
 await page.evaluate((spot) => window.__ml.teleport(spot[0], spot[1]), land[0] || [416, 308]);
 await page.evaluate(async () => { for (let i = 0; i < 220; i++) await new Promise((r) => requestAnimationFrame(r)); });
 
 // ---- ANTS: a column on real ground ----
 const ants = await page.evaluate(async () => {
-  const first = window.__mlAmbient.debug("ants");
-  for (let i = 0; i < 70; i++) await new Promise((r) => requestAnimationFrame(r));
-  const second = window.__mlAmbient.debug("ants");
+  /* THE COLONY ARRIVES AND LEAVES ONE ANT AT A TIME — that is the point of the
+   * stagger (maintainer 2026-09-07: "let the ant disappear one by one over
+   * time"), so a single instant is not the population. A run that reads the
+   * debug the moment it teleports catches a trail two ants deep and calls a
+   * healthy colony broken; it did, on a run where the same colony peaked at 20.
+   * So wait for the trail to be MANNED, and take BOTH samples from that window
+   * — the pair is compared ant by ant, so both ends have to be the same
+   * colony. */
+  const step = () => new Promise((r) => requestAnimationFrame(r));
+  const manned = (d) => (d.all || []).length >= 6;
+  let first = null;
+  let second = null;
+  for (let tries = 0; tries < 6 && !second; tries++) {
+    for (let i = 0; i < 240 && !first; i++) {
+      const d = window.__mlAmbient.debug("ants");
+      if (manned(d)) first = d;
+      else await step();
+    }
+    if (!first) break;
+    for (let i = 0; i < 70; i++) await step();
+    const d = window.__mlAmbient.debug("ants");
+    if (manned(d)) second = d;
+    else first = null; // the colony thinned out under us — wait for the next one
+  }
+  first = first || window.__mlAmbient.debug("ants");
+  second = second || window.__mlAmbient.debug("ants");
   const onGround = (second.all || []).filter((a) => window.__ml.landableAtScreen(a.x, a.y)).length;
   return { first, second, onGround };
 });
@@ -273,7 +332,7 @@ const flat = await page.evaluate(async ({ spots }) => {
     }
   }
   return out;
-}, { spots: land });
+}, { spots: cliff ? [...land, cliff] : land });
 for (const f of flat)
   console.log(
     `flat (${f.kind} at ${f.at}): ${f.n} marks across levels [${f.levels.join(", ")}] ` +

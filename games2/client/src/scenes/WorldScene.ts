@@ -4513,6 +4513,29 @@ export class WorldScene extends Phaser.Scene {
         if (on !== undefined && on !== this.torchOn) this.toggleTorch();
         return this.torchOn;
       },
+      /* LAMPS IN VIEW at their DRAWN positions — the ambient layer's seam for
+       * anything that gathers at a light (moths first). The layer can already
+       * ask what the light is WORTH at a cell (`lightAt`) and how many slots
+       * are held (`lightSlots`), but neither says WHERE a lamp is, and a moth
+       * has to circle the lamp itself. Both kinds are the same record: the
+       * emissive TILES (`emissiveSources`) and the scenery lamps
+       * (`sceneryLightSources`), each carrying its own projected anchor.
+       *
+       * Read-only, and called on a throttle by the ambient side (a few times a
+       * second, never per frame per moth). `sealed` marks a light inside a room
+       * — the caller decides what to do with it; an outdoor effect skips them.
+       * Padded cull box, so `worldView` is the right rectangle to use. */
+      lightsInView: (pad = 96) => {
+        const v = this.cameras.main.worldView;
+        const out: { id: string; x: number; y: number; r: number; color: [number, number, number]; sealed: boolean }[] = [];
+        const take = (s: EmissiveSource) => {
+          if (s.sx < v.x - pad || s.sx > v.right + pad || s.sy < v.y - pad || s.sy > v.bottom + pad) return;
+          out.push({ id: s.id, x: s.sx, y: s.sy, r: s.radius, color: s.color, sealed: !!s.sealed });
+        };
+        for (const s of this.emissiveSources) take(s);
+        for (const s of this.sceneryLightSources) take(s);
+        return out;
+      },
       lightSlots: () => ({
         max: MAX_SHADER_LIGHTS,
         reserved: RESERVED_LIGHT_SLOTS,
