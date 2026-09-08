@@ -106,3 +106,18 @@ test("groundDrew reaches the file — the fourth field this allowlist ate", () =
   assert.equal(r.groundDrew.composeMs, 3.7);
   assert.equal(r.groundDrew.seam, true);
 });
+
+test("texFam reaches the file — the fifth field, and the one that names gapBusy", () => {
+  // `texturesAdded` said 2,099 in one 30 s window of his 2026-09-08 run and
+  // nothing said WHAT. A texture add is a decode plus a GPU upload on the main
+  // thread, so it lands in `gapBusy` — 3.59 ms/frame, the second-biggest bucket
+  // in that run and the only one no section owns. The client has grouped adds
+  // by key family for the `perf()` probe all along; it was never sent.
+  const r = perfReport(
+    { texFam: { "t3f:": 812, "f:": 1004, "s3n:": 61, "cover:": 222 } },
+    "2026-09-08T00:00:00.000Z",
+  ) as Record<string, any>;
+  assert.equal(r.texFam["t3f:"], 812);
+  assert.equal(r.texFam["f:"], 1004);
+  assert.equal(r.texFam["cover:"], 222);
+});

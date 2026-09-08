@@ -1974,6 +1974,12 @@ export class WorldScene extends Phaser.Scene {
         drains: this.repaintStats.drains - prevDrain,
         drainsDeferred: this.repaintStats.drainsDeferred - prevDefer,
       },
+      /* THE TEXTURE ADDS, BY KEY FAMILY — see perfreport's `texFam`. A texture
+       * add is a decode and a GPU upload on the main thread, which lands in
+       * `gapBusy`; knowing whether 2,000 of them are the deferred animation
+       * batch, composed ground rasters or cover surfaces decides whether that
+       * cost is a one-off boot tail or something a run keeps paying. */
+      texFam: snap.texFamilies as Record<string, number>,
       // Every jump of the AUTHORITATIVE body over 2 cells in one frame, with
       // the unacked-input depth at the time — a rejoin restore, a respawn, an
       // unstick and a reconciliation blow-up all land here and are told apart

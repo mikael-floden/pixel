@@ -64,6 +64,13 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     frames: flat(body.frames, 12, 100000),
     sections: flat(body.sections, 40, 100000),
     counts: flat(body.counts, 40, 1e9),
+    /* WHAT IS BEING UPLOADED, BY KEY FAMILY. `texturesAdded` said 2,099 in one
+     * 30 s window of his 2026-09-08 run and nothing said what they were — and a
+     * texture add is a decode plus a GPU upload on the main thread, i.e. a
+     * prime suspect for `gapBusy`, the second-biggest bucket in that run and
+     * the only one no section owns. The client already groups adds by the first
+     * path segment of the key; it was simply never sent. */
+    texFam: flat(body.texFam, 20, 1e9),
     /* THE LIGHT BILL — what the night pass uploaded on HIS device (lights in
      * the shader, how many march shadows, summed pool area in cells, ambient),
      * plus the GPU string and backing store the cost scales with. MIXED types,
