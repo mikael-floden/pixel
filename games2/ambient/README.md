@@ -59,8 +59,12 @@ them; folder isolation beats DRY here).
   ground under a tall streetlight dark. A lamp whose lantern is four levels up
   reports 1.5, and anything drawn there lands on the post. The unclamped point
   travels on the record as `hx`/`hy` for exactly this.
-  `flicker` says whether it is a FIRE (flame-like sources flicker, steady lamps
-  do not) — for anything that belongs over a fire rather than a lamp. Ambient could not derive this — a lamp's DRAWN anchor
+  `kind` and `embers` say WHAT the light is — published per piece by the scenery
+  domain, classified by eye off the lit art, because nothing derivable works
+  (99 of 500 pieces override their own group, and the game's own `flicker` is a
+  brightness decision that calls a street lamp a flame). **Embers is not
+  flame**: a lantern is a real fire and throws nothing, the glass being between
+  it and the world. `flicker` remains for anything that wants the animation. Ambient could not derive this — a lamp's DRAWN anchor
   and its sealed-in-a-room verdict live only in those arrays. It walks every
   source in the world, so a caller reads it on a THROTTLE, never per frame.
 - Time-of-day / weather awareness comes from the game's **documented `__ml`
@@ -152,7 +156,7 @@ decision; an earlier version that jumped the world to each effect's
   `AUTO → NONE → <each feature in registry order> → AUTO`
 
   (currently fireflies, pollen, water, deepwater, ants, spiders, moths, gnats,
-  crabs, bubbles, bats, birds,
+  crabs, bubbles, embers, bats, birds,
   thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
   folder joins it automatically.)
 
@@ -220,6 +224,7 @@ controller (AUTO / NONE / solo-each).
 | `gnats/` | field | THE COLUMN — dozens of specks flying hard inside a column of AIR (about a metre across and two tall) that stands still over one patch of ground; walk into it and it breaks up, then gathers again | Dusk (Evening full, Morning half), outdoors, dry ground; gone in rain, storm, snow or wind |
 | `crabs/` | field | THE SIDEWAYS SCUTTLE — red crabs strung out along the WHOLE beach (the shoreline is walked, so a curving bay comes out as a curve), still, then running hard along it; the ones at your feet bolt as you pass | Daylight-leaning (night 0.3), outdoors, dry ground with water within a few steps |
 | `bubbles/` | field | A STRING FROM THE DEEP — bubbles climbing out of one spot on the open sea, growing and sharpening as they rise, bursting into a ring at the top, leaning downstream on the real current | Open sea only (`deepCurrentAtScreen`); nothing at all over land |
+| `embers/` | field | SPARKS OFF A FIRE — they leave the flame, rise on its heat and slow, cool from the fire's own colour toward deep red, and wink out; a blue flame throws blue sparks | Outdoor, unsealed sources whose published `light.embers` is true (a lantern is a fire and throws none); night-leaning, never off by day |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: water on screen (iso probe) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |

@@ -10,27 +10,20 @@ import { AmbientCtx, AmbientFeature } from "../runtime/types";
  * DRAWN position of a source's glowing pixels, so a spark leaves the flame
  * rather than the object's foot.
  *
- * WHETHER IT IS A FIRE IS NOT IN THE DATA, and that is worth stating plainly
- * because it decides how this file is written. Nothing published says a light
- * burns:
- *   - the scenery light block is {strength, color, radius, states} — no type;
- *   - `tags` is ["SCENERY"] on every piece;
- *   - the game's own `flicker` is a BRIGHTNESS decision, not a semantic one:
- *     `lightKindOf` matches /light|lamp|lantern|torch|brazier|fire|candle|
- *     beacon|hearth|forge/, so a street lamp is "flame" to it;
- *   - and colour cannot classify — the_game's torch_post_004 is a blue resin
- *     flame (#b4d7ff) and brazier_001's first state is cyan, while plenty of
- *     cold glows are warm.
- * The world lights 143 pieces across 17 groups and most of them are crystals,
- * mushrooms, toadstool rings, waystones and streetlights.
+ * WHETHER IT IS A FIRE IS PUBLISHED, and this effect waited for it rather than
+ * guessing. The scenery domain classified all 500 lit pieces BY EYE off the lit
+ * art (2026-09-08), because nothing derivable works: `brazier_001` is a bowl of
+ * teal crystals, `lantern_post_017` is an open flame on a post, `torch_post_004`
+ * burns blue, 13 trees have a lantern hung in them, and 99 of 500 pieces
+ * override their own group — so a name test is wrong about one time in five.
+ * The game's own `flicker` is no better: it is a BRIGHTNESS decision that calls
+ * a street lamp a flame.
  *
- * So until the scenery domain publishes a `type` beside `strength` (the game's
- * own light notes already anticipate it), this file classifies by the piece's
- * GROUP — the published `group/id` the placement carries. An allowlist, and it
- * is deliberately CONSERVATIVE: a fire that is missed shows nothing, while a
- * crystal that is wrongly counted throws sparks out of a rock, which is a bug
- * anyone can see. `FIRE_GROUPS` is the single line to delete when the real
- * field lands — see `isFire`.
+ * EMBERS IS NOT FLAME, which is the part worth knowing and which this file
+ * would have got wrong on its own: a lantern IS a real fire (`fire/enclosed`)
+ * and throws nothing, because the glass is between it and the world. 142 pieces
+ * are fire; 82 throw embers. So this reads `light.embers` — the published
+ * boolean — and nothing else. No path parsing, no allowlist, no group names.
  *
  * THE LOOK: a spark leaves the flame fast, slows as it rises (it is riding
  * heat, not thrown), wobbles across, COOLS from the fire's own colour toward a
@@ -47,21 +40,6 @@ const LIGHT_MS = 560; // how often the light list is re-read (NOT per frame)
 const MAX_SPARKS = 30;
 const PER_FIRE = 10;
 const MIN_R = 1; // cells — even a candle-sized fire may spark
-
-/** The fires, by published piece group. THE ONE LINE TO REPLACE when scenery
- * publishes a light type. Conservative on purpose: crystal_trees, crystals,
- * giant_mushrooms, mushrooms, toadstool_rings, soulstone_outcrops, waystones,
- * ancient_trees, streetlights and lantern_posts all light the_game and none of
- * them burns. wayside_shrines and beacons are left OUT pending his call — a
- * shrine may hold a votive flame and a beacon may be a bonfire, but may equally
- * be a magic light, and inventing that is how sparks end up over a rock. */
-const FIRE_GROUPS = new Set([
-  "campfire", "campfires", "bonfires",
-  "braziers", "hearths", "forges", "fire_pits", "firepits",
-  "cauldron_camps", "charcoal_kilns", "torch_posts", "torches",
-]);
-
-const isFire = (piece: string): boolean => FIRE_GROUPS.has((piece || "").split("/")[0]);
 
 const LIFE: [number, number] = [700, 1700];
 const RISE0: [number, number] = [34, 78]; // px/s at the flame
@@ -97,6 +75,8 @@ interface Fire {
   id: string;
   x: number;
   y: number;
+  kind: string; // its published light kind — fire/open, fire/ember, ...
+  piece: string;
   color: number;
   gap: number;
 }
@@ -119,7 +99,8 @@ export function embersFeature(): AmbientFeature {
     const f = ml?.lightsInView as
       | undefined
       | ((pad?: number) => {
-          id: string; x: number; y: number; r: number; piece: string;
+          id: string; x: number; y: number; r: number;
+          piece: string; kind: string; embers: boolean;
           color: [number, number, number]; sealed: boolean;
         }[]);
     if (!f) return [];
@@ -128,14 +109,14 @@ export function embersFeature(): AmbientFeature {
       const all = f(48) || [];
       lit = all.length;
       return all
-        .filter((l) => !l.sealed && l.r >= MIN_R && isFire(l.piece))
+        .filter((l) => !l.sealed && l.r >= MIN_R && l.embers)
         .map((l) => {
           // The light's own colour, normalised — a blue resin torch throws blue
           // sparks, which is the whole reason this is read rather than assumed.
           const peak = Math.max(l.color[0], l.color[1], l.color[2], 0.001);
           const ch = (v: number) => Math.max(60, Math.min(255, Math.round((v / peak) * 255)));
           return {
-            id: l.id, x: l.x, y: l.y,
+            id: l.id, x: l.x, y: l.y, kind: l.kind, piece: l.piece,
             color: (ch(l.color[0]) << 16) | (ch(l.color[1]) << 8) | ch(l.color[2]),
             gap: range(BURST_GAP),
           };
@@ -263,7 +244,10 @@ export function embersFeature(): AmbientFeature {
         probes, // QA: the light list walks every source — it must stay throttled
         lights: lit, // how many lights were in view at all
         fires: fires.length, // ...and how many of those are fires
-        fireList: fires.map((f) => ({ id: f.id, x: Math.round(f.x), y: Math.round(f.y), color: f.color })),
+        fireList: fires.map((f) => ({
+          id: f.id, x: Math.round(f.x), y: Math.round(f.y),
+          kind: f.kind, piece: f.piece, color: f.color,
+        })),
         sparks: live.length,
         all: live.map((s) => ({
           x: Math.round(s.sprite.x), y: Math.round(s.sprite.y),

@@ -274,6 +274,20 @@ export interface SceneryLightLevel {
 }
 export interface SceneryLight extends SceneryLightLevel {
   states: Record<string, SceneryLightLevel>;
+  /* WHAT THE LIGHT IS, published by the scenery domain per piece (2026-09-08),
+   * classified by eye off the lit art because neither name nor colour works:
+   * brazier_001 is a bowl of teal crystals, lantern_post_017 is an open flame
+   * on a post, torch_post_004's fire is blue, and 99 of 500 pieces override
+   * their own group. `kind` is a path (fire/open, fire/ember, fire/enclosed,
+   * glow/magic, glow/mineral, glow/bio, glow/water, none) and the two booleans
+   * are derived from it so no consumer parses that path.
+   *
+   * EMBERS IS NOT FLAME. A lantern is a real fire and throws nothing, because
+   * the glass is between it and the world — anything sparking on `flame` rains
+   * embers out of every street lamp. 142 pieces are fire; 82 throw embers. */
+  kind: string;
+  flame: boolean;
+  embers: boolean;
 }
 
 /** `#rrggbb` (or `#rgb`) → 0..1 rgb; anything else → warm white. */
@@ -307,7 +321,16 @@ export function parseLight(json: any): SceneryLight | null {
       if (lv) states[k] = lv;
     }
   }
-  return { ...top, states };
+  return {
+    ...top,
+    states,
+    kind: str(json.kind),
+    // Absent means NO, deliberately: an unclassified piece must not start
+    // throwing sparks, and the scenery gate already fails a lit piece with no
+    // kind, so a missing flag here is a data bug rather than a default.
+    flame: json.flame === true,
+    embers: json.embers === true,
+  };
 }
 
 /** The light a placement in state `stateKey` shines with: the state's own
