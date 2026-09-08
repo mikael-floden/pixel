@@ -2136,6 +2136,7 @@ export class WorldScene extends Phaser.Scene {
         ...(this.night?.lightBill() ?? {}),
         sceneryShares: !!this.night?.hasSceneryShares,
         sceneryShadows: !!this.night?.sceneryShadows,
+        sceneryLight: this.sceneryLightOn,
         scenerySources: this.sceneryLightSources.length,
         sceneryStamps: this.sceneryStamps.length,
         emissive: this.emissiveSources.length,
@@ -3035,7 +3036,7 @@ export class WorldScene extends Phaser.Scene {
   /* SCENERY LIGHT — per-pixel lighting of scenery lit copies (scenerylit.ts +
    * scenerylight.ts). Default ON; `__ml.sceneryLight(false)` returns every
    * copy to the flat tint for an A/B. */
-  private sceneryLightOn = true;
+  private sceneryLightOn = localStorage.getItem("ml-scenery-light") !== "0";
   private sceneryLitPipe: SceneryLitPipeline | null = null;
   /** Shape maps by their content key: the GL texture, or null = could not be built. */
   private shapeMaps = new Map<string, { tex: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper; w: number; h: number; opaque: number; ms: number } | null>();
@@ -3578,6 +3579,7 @@ export class WorldScene extends Phaser.Scene {
         this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
         this.night.create();
         this.night.atmoOff = !this.fogOn;
+        this.night.sceneryShadows = localStorage.getItem("ml-scenery-shadows") !== "0"; // the persisted Settings switch
         // Footprints stamped before the night existed (the boot restamp, or docs
         // that landed first) become occluders now; later stamps re-apply themselves.
         this.night.setSceneryOccluders(this.terrain?.footprints);
@@ -4019,7 +4021,10 @@ export class WorldScene extends Phaser.Scene {
          * and sun shadows a piece casts (nightlight.setSceneryOccluders). Both
          * default ON; each tap flips one so the maintainer can judge the look
          * against the flat tint / no shadow on his own screen. Same paths as
-         * `__ml.sceneryLight(on)` / `__ml.sceneryShadows(on)`. */
+         * `__ml.sceneryLight(on)` / `__ml.sceneryShadows(on)`. Both PERSIST
+         * (`ml-scenery-light` / `ml-scenery-shadows`) and the beacon's `lights`
+         * block names the arm (`sceneryLight` / `sceneryShadows`) — a perf run
+         * spans reloads, and an arm the telemetry cannot name is a wasted run. */
         {
           label: "scenery light",
           act: () => {
@@ -17542,6 +17547,7 @@ export class WorldScene extends Phaser.Scene {
   private setSceneryLight(on: boolean): void {
     if (on === this.sceneryLightOn) return;
     this.sceneryLightOn = on;
+    localStorage.setItem("ml-scenery-light", on ? "1" : "0");
     if (on) this.ensureSceneryLitPipeline();
     for (const lo of this.litOccluders) {
       if (!on && lo.shape) {
@@ -17557,6 +17563,7 @@ export class WorldScene extends Phaser.Scene {
   private setSceneryShadows(on: boolean): void {
     if (!this.night) return;
     this.night.sceneryShadows = on;
+    localStorage.setItem("ml-scenery-shadows", on ? "1" : "0");
     this.night.setSceneryOccluders(this.terrain?.footprints);
   }
 
