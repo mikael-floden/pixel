@@ -192,10 +192,24 @@ by construction, so no existing branch changed.
   is the whole licence for the fast path. Measured: 38ms for the whole-world
   region flood fill once at load, 32ms per ground redraw (which runs on the RT's
   own latch, every GROUND_MARGIN/2 of camera drift, not per frame).
-- **REGIONS ARE WHOLE-WORLD**, computed once. A region id is `<ground>@<lexicographic
-  minimum cell>`, so a window-local component gets a different id, a different
-  set and different art every time the camera moves — the ground would visibly
-  reshuffle as you walk.
+- **A REGION IS A 24-CELL CHUNK, NOT A COMPONENT** — `regionAt` is
+  `<ground>@<floor(x/24)>,<floor(y/24)>` (`REGION_CHUNK`), pure coordinate
+  arithmetic with no scan at all. The id must not depend on the CAMERA (a
+  window-local answer changes as you walk and the ground visibly reshuffles),
+  but it never depended on the whole world either.
+  THIS ENTRY USED TO SAY "REGIONS ARE WHOLE-WORLD, computed once … a region id
+  is `<ground>@<lexicographic minimum cell>`", describing a 4-connected flood
+  fill that the resolver had already stopped using. The stale text cost real
+  work twice in one day: it is why an offline-precompute audit concluded that
+  editing one cell could re-key half the map's grass, and why the game agent
+  told the maintainer that baking the ground would need whole-world
+  invalidation. Neither is true — **a cell edit is bounded by its own 24-cell
+  chunk, plus the 5x5 neighbourhood the boundary and fade rules read**, which is
+  what makes runtime world editing affordable at all. `computeRegions` still
+  exists and still produces the component list, but ONLY `server/test/` reads
+  it, so it is lazy (`Tiles3World.regions`) rather than a 23-46 ms whole-world
+  scan on every world load. (A stale doc is worse than no doc — this file says
+  so three entries down, about the painter-order note that cost a day.)
 - **PAINTER ORDER: A CELL DRAWS ONCE, AND EVERYTHING THAT CELL WEARS DRAWS
   INSIDE THAT SLOT.** Cells in painter order (`col+row`, then `col`), each one's
   composed boundary WITH IT, then the deck slabs. **The boundary is NOT a second

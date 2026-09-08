@@ -137,7 +137,24 @@ export class Tiles3World {
   readonly view: World3View;
   readonly tiles: Tiles3;
   readonly frame: Frame;
-  readonly regions: Regions;
+  /** THE WHOLE-WORLD REGION SCAN, AND NOTHING IN THE GAME READS IT.
+   *
+   *  `computeRegions` walks every cell of the world — 155,236 on the_game,
+   *  23-46 ms — and the only readers of the result are `server/test/`, which
+   *  compare it against the proven sweep. What the RENDERER uses is `regionAt`,
+   *  and that has been pure chunk arithmetic (`ground@floor(x/24),floor(y/24)`,
+   *  REGION_CHUNK = 24) for a while now; it never touches this list.
+   *
+   *  It became worth fixing when the resolve worker landed, because that builds
+   *  a second `Tiles3World` and so paid the scan TWICE per session — and again
+   *  on both threads every time a live-tuning document lands mid-session and
+   *  `initTiles3` rebuilds. Lazy: the tests get the same value on first read,
+   *  the game never asks. */
+  private regionsMemo: Regions | null = null;
+  get regions(): Regions {
+    if (!this.regionsMemo) this.regionsMemo = computeRegions(this.bounds, (x, y) => this.g(x, y));
+    return this.regionsMemo;
+  }
   readonly bounds: Bounds;
   /** The patterns index, for the boundary's `pattern` id. Passed rather than
    *  read back off `Tiles3` — the resolver keeps its data private, and the one
@@ -152,7 +169,6 @@ export class Tiles3World {
     this.frame = o.frame;
     this.patterns = o.patterns;
     this.bounds = o.bounds ?? { x0: o.view.x0, y0: o.view.y0, x1: o.view.x1, y1: o.view.y1 };
-    this.regions = computeRegions(this.bounds, (x, y) => this.g(x, y));
     this.view.decks.forEach((dk, di) => {
       for (const c of dk.cells) {
         const k = c.y * this.view.width + c.x;
