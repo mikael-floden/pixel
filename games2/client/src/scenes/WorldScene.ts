@@ -2054,7 +2054,6 @@ export class WorldScene extends Phaser.Scene {
          * comparing two reports. Numbers, because `counts` is flattened. */
         monstersOn: this.monstersMock ? 2 : this.monstersOn ? 1 : 0, // 2 = pink mock
         sceneryOn: this.sceneryMock ? 2 : this.sceneryOn ? 1 : 0,
-        drainOn: this.groundDrainRepaint ? 1 : 0,
         capPool: this.capturePool ? 1 : 0,
         // Capture-target size switches this window = re-allocations stock Phaser
         // would do (does, with the pool off), and the distinct sizes seen.
@@ -2217,7 +2216,6 @@ export class WorldScene extends Phaser.Scene {
         subMax: gb.maxSub,
         texBinds: gb.binds,
         maxTex: (this.game.renderer as unknown as { maxTextures?: number }).maxTextures ?? -1,
-        multi: this.groundMulti ? 1 : 0,
         pipe: String((this.groundRT?.texture as unknown as { pipeline?: { name?: string } } | undefined)?.pipeline?.name ?? ""),
       },
       ground: this.groundTexelReport(final),
@@ -2963,7 +2961,7 @@ export class WorldScene extends Phaser.Scene {
    *  does by accident: it re-anchors, and re-anchoring is cheaper than the
    *  scrolls it prevents. See t3drainDrops.
    *  `__ml.groundDrain(true)` puts it back for an A/B. */
-  private groundDrainRepaint = localStorage.getItem("ml-ground-drain") !== "0";
+  private groundDrainRepaint = true; // `__ml.groundDrain(false)` for a dev A/B; the Settings switch is gone (no felt change)
   private groundPartial = groundPathFast();
   private groundPrefetch = groundPathFast();
   private t3ringQueue: [number, number][] = [];
@@ -2996,7 +2994,6 @@ export class WorldScene extends Phaser.Scene {
   private groundBandMs = GROUND_BAND_MS;
   /** THE GROUND RT DRAWS THROUGH THE MULTI PIPELINE, NOT PHASER'S SINGLE ONE.
    *  See the "ground multi" switch and makeGroundRT. Default ON; "0" is off. */
-  private groundMulti = localStorage.getItem("ml-ground-multi") !== "0";
   /** One capture target per size instead of Phaser's re-allocating one — see capturepool.ts. Default ON. */
   private capturePool = localStorage.getItem("ml-capture-pool") !== "0";
   /** The last anchor shift — the direction the world is travelling, which is
@@ -3946,21 +3943,6 @@ export class WorldScene extends Phaser.Scene {
          * isolates ONE pass at a time for debugging and is not remembered: this
          * is a persisted two-state switch for looking at the world. The light
          * pass stays on, so the scene is still lit and still shadowed. */
-        /* GROUND MULTI — the ground render texture batched 16 textures per draw
-         * call (MultiPipeline) instead of one (Phaser's SinglePipeline default
-         * for every DynamicTexture). Rebuilds the texture on toggle; the anchor
-         * reset makes the next redraw a full paint, as a resize does. */
-        {
-          label: "ground multi",
-          act: () => {
-            this.groundMulti = !this.groundMulti;
-            localStorage.setItem("ml-ground-multi", this.groundMulti ? "1" : "0");
-            this.makeGroundRT();
-            this.chat.addLog("—", `ground multi: ${this.groundMulti ? "ON — 16 textures per draw call" : "off — Phaser's one-texture default"}`);
-          },
-          get: () => this.groundMulti,
-          state: () => (this.groundMulti ? "on" : "off"),
-        },
         /* CAPTURE POOL — one GPU capture texture per DynamicTexture size, so a
          * ground bracket followed by a cover-surface bracket no longer frees and
          * re-allocates ~12 MB of VRAM (capturepool.ts has the mechanism). Live
@@ -3976,26 +3958,6 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.capturePool,
           state: () => (this.capturePool ? "on" : "off"),
-        },
-        /* GROUND DRAIN — the drop drain's FULL ground repaint, as a switch the
-         * phone can reach. Measured across every arm the maintainer has run:
-         * fullPaints == drains in each one (every full paint IS this drain);
-         * 6.4 per window with scenery on, 3.5 off, 1.4 standing still; and the
-         * frames it lands in average 88 ms — the longest in the dataset. It
-         * arms whenever a paint dropped ops and terrain has landed since the
-         * last drain (nearly always while running), and fires on the next
-         * loader idle edge. `__ml.groundDrain(false)` already exists for this
-         * A/B; this is the same flag from Settings, so it can be flipped
-         * mid-run without a deploy. Beacon: counts.drainOn. */
-        {
-          label: "ground drain",
-          act: () => {
-            this.groundDrainRepaint = !this.groundDrainRepaint;
-            localStorage.setItem("ml-ground-drain", this.groundDrainRepaint ? "1" : "0");
-            this.chat.addLog("—", `ground drain: ${this.groundDrainRepaint ? "on — full repaint on drops" : "OFF — no drop-drain full paints"}`);
-          },
-          get: () => this.groundDrainRepaint,
-          state: () => (this.groundDrainRepaint ? "on" : "off"),
         },
         {
           label: "fog",
@@ -18459,11 +18421,11 @@ export class WorldScene extends Phaser.Scene {
        *
        * MultiPipeline is what SinglePipeline inherits from: same vertex math,
        * same blend, same UVs, sixteen samplers instead of one. The device
-       * passed the 16-sampler compile check (`maxTex` 16 in the beacon). A
-       * switch, default on, so it can be flipped off mid-run without a deploy;
-       * `groundDrew.pipe` reports which pipeline the texture really holds so a
-       * silent fallback cannot read as a null result. */
-      if (this.groundMulti) {
+       * passed the 16-sampler compile check (`maxTex` 16 in the beacon).
+       * Always on (the Settings A/B moved draw calls 45x and the frame not at
+       * all, so the switch went); `groundDrew.pipe` reports which pipeline the
+       * texture really holds so a silent fallback cannot read as a null result. */
+      {
         const multi = (this.game.renderer as unknown as { pipelines?: { get(n: string): unknown } }).pipelines?.get(
           "MultiPipeline",
         );
