@@ -95,6 +95,7 @@ import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../
 import { withV, assetIndexInfo } from "../assetver";
 import { netPerfStart, netPerfTake } from "../netperf";
 import { installTexUploadProbe, texUploadTake } from "../texupload";
+import { installCaptureProbe, installCapturePool, uninstallCapturePool, captureTake } from "../capturepool";
 import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -1983,6 +1984,7 @@ export class WorldScene extends Phaser.Scene {
     };
     const netTake = netPerfTake();
     const texUp = texUploadTake(secs);
+    const cap = captureTake();
     const gb = this.groundBatchStats;
     this.groundBatchStats = { brackets: 0, subBatches: 0, binds: 0, maxSub: 0 };
     const body = {
@@ -2032,6 +2034,11 @@ export class WorldScene extends Phaser.Scene {
         monstersOn: this.monstersMock ? 2 : this.monstersOn ? 1 : 0, // 2 = pink mock
         sceneryOn: this.sceneryMock ? 2 : this.sceneryOn ? 1 : 0,
         drainOn: this.groundDrainRepaint ? 1 : 0,
+        capPool: this.capturePool ? 1 : 0,
+        // Capture-target size switches this window = re-allocations stock Phaser
+        // would do (does, with the pool off), and the distinct sizes seen.
+        capSwitch: cap.switches,
+        capSizes: cap.sizes,
         // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
         // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
         // every "full" frame in the last beacon was a `repaintWorld` — so these
@@ -2534,6 +2541,7 @@ export class WorldScene extends Phaser.Scene {
      * the recent history, and an unarmed session accumulates nothing. */
     netPerfStart();
     installTexUploadProbe(this.renderer);
+    installCaptureProbe(this.renderer);
     this.perfPrevFullPaints = this.groundFullRuns;
     this.perfPrevDrains = this.repaintStats.drains;
     this.perfPrevDeferred = this.repaintStats.drainsDeferred;
@@ -2964,6 +2972,8 @@ export class WorldScene extends Phaser.Scene {
   /** THE GROUND RT DRAWS THROUGH THE MULTI PIPELINE, NOT PHASER'S SINGLE ONE.
    *  See the "ground multi" switch and makeGroundRT. Default ON; "0" is off. */
   private groundMulti = localStorage.getItem("ml-ground-multi") !== "0";
+  /** One capture target per size instead of Phaser's re-allocating one — see capturepool.ts. Default ON. */
+  private capturePool = localStorage.getItem("ml-capture-pool") !== "0";
   /** The last anchor shift — the direction the world is travelling, which is
    *  the only direction worth prefetching (t3armRing). */
   private groundLastShift = { x: 0, y: 0 };
@@ -3514,6 +3524,9 @@ export class WorldScene extends Phaser.Scene {
   }
 
   async create() {
+    /* Before the first DynamicTexture bracket (cover surfaces, ground RT):
+     * one capture texture per size — see capturepool.ts. */
+    if (this.capturePool && this.game.renderer.type === Phaser.WEBGL) installCapturePool(this.renderer);
     /* A BEACON ARMED AT BOOT (`?perf=1`, or remembered) gets the same
      * instruments the settings toggle installs. Without this the two arming
      * paths measure different things, and the boot path is the one he uses. */
@@ -3919,6 +3932,22 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.groundMulti,
           state: () => (this.groundMulti ? "on" : "off"),
+        },
+        /* CAPTURE POOL — one GPU capture texture per DynamicTexture size, so a
+         * ground bracket followed by a cover-surface bracket no longer frees and
+         * re-allocates ~12 MB of VRAM (capturepool.ts has the mechanism). Live
+         * toggle; the beacon carries capPool / capSwitch / capSizes. */
+        {
+          label: "capture pool",
+          act: () => {
+            this.capturePool = !this.capturePool;
+            localStorage.setItem("ml-capture-pool", this.capturePool ? "1" : "0");
+            if (this.capturePool) installCapturePool(this.renderer);
+            else uninstallCapturePool();
+            this.chat.addLog("—", `capture pool: ${this.capturePool ? "ON — one capture texture per size" : "off — Phaser's one re-allocating texture"}`);
+          },
+          get: () => this.capturePool,
+          state: () => (this.capturePool ? "on" : "off"),
         },
         /* GROUND DRAIN — the drop drain's FULL ground repaint, as a switch the
          * phone can reach. Measured across every arm the maintainer has run:
