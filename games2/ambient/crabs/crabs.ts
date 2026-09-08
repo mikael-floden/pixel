@@ -66,7 +66,28 @@ const SHORE_STEPS = 10; // each way, so up to ~480px of shoreline
 const SPAN_MIN = 52; // a cove still gets a colony
 const RING = 12; // directions sampled to estimate which way the water lies
 const RING_R = 22; // px out
-const BAND = 11; // how far off the water line a crab strays
+
+/* CRABS KEEP A MEASURED CLEARANCE FROM THE WATER.
+ *
+ * Every water probe in this game answers PER CELL, and a transition tile is one
+ * cell whose ART is part sand and part water. So `landableAtScreen` says "you
+ * may stand here" for a point the player sees as sea, and a crab standing there
+ * is standing in the water (maintainer 2026-09-07: "we have a transition tile
+ * and part of it is water and part of it is sand. Would be nice if they avoid
+ * the water on tiles like this"). No probe can see that boundary — it is in the
+ * artwork, not in the grid.
+ *
+ * What CAN be measured is where the water CELLS start, and a tile's wet part is
+ * bounded by the tile: a diamond is 64 px across, so half of one is ~22 px along
+ * any direction. Standing that far back from the first water cell clears the wet
+ * half of the last dry tile whatever the transition art does. Each point of the
+ * shoreline measures its own edge, so this tracks a ragged coast instead of
+ * assuming a straight one — and it also makes the colony HUG the waterline at a
+ * constant distance, which is where crabs actually are. */
+const EDGE_STEP = 6; // px per probe when looking for the first water cell
+const EDGE_MAX = 54; // and how far to look
+const WATER_CLEAR = 22; // stand this far back from it: half a tile diamond
+const BAND = 12; // and how much further inland than that they scatter
 
 /* And the population follows the beach: one crab per this many px of it, so a
  * long strand is busy and a cove is not. */
@@ -116,7 +137,8 @@ interface Colony {
   wx: number; // and the direction the water lies in there (unit)
   wy: number;
   span: number; // length of the walked shoreline
-  pts: { x: number; y: number; wx: number; wy: number }[]; // the shoreline itself
+  // the shoreline itself, each point carrying its own distance to the water
+  pts: { x: number; y: number; wx: number; wy: number; edge: number }[];
   cum: number[]; // cumulative length at each point — a crab's coordinate
   life: number;
   sandy: boolean; // the ground really is sand, not just any shore
@@ -201,12 +223,19 @@ export function crabsFeature(): AmbientFeature {
     return { wx: sx / len, wy: sy / len };
   };
 
+  /** How far along `w` the first WATER CELL is, from this point. */
+  const waterEdge = (x: number, y: number, wx: number, wy: number): number => {
+    for (let d = EDGE_STEP; d <= EDGE_MAX; d += EDGE_STEP)
+      if (waterAt(x + wx * d, y + wy * d)) return d;
+    return EDGE_MAX;
+  };
+
   /** WALK THE SHORE from a point, turning to follow the water as it curves.
    * Returns the points in order, each with the local direction to the water. */
   const walkShore = (
     x0: number, y0: number, tx0: number, ty0: number,
-  ): { x: number; y: number; wx: number; wy: number }[] => {
-    const out: { x: number; y: number; wx: number; wy: number }[] = [];
+  ): { x: number; y: number; wx: number; wy: number; edge: number }[] => {
+    const out: { x: number; y: number; wx: number; wy: number; edge: number }[] = [];
     let x = x0;
     let y = y0;
     let tx = tx0;
@@ -217,7 +246,7 @@ export function crabsFeature(): AmbientFeature {
       if (!landAt(x, y)) break;
       const w = waterDir(x, y);
       if (!w) break; // the sea has left us — this is no longer a beach
-      out.push({ x, y, wx: w.wx, wy: w.wy });
+      out.push({ x, y, wx: w.wx, wy: w.wy, edge: waterEdge(x, y, w.wx, w.wy) });
       // Turn to the new coast, keeping the direction of travel.
       let nx = -w.wy;
       let ny = w.wx;
@@ -252,9 +281,25 @@ export function crabsFeature(): AmbientFeature {
           const back = walkShore(x, y, -rx, -ry);
           const pts = [
             ...back.slice().reverse(),
-            { x, y, wx: w0.wx, wy: w0.wy },
+            { x, y, wx: w0.wx, wy: w0.wy, edge: waterEdge(x, y, w0.wx, w0.wy) },
             ...fwd,
           ];
+          /* SMOOTH THE MEASURED EDGES. Each point measures its own distance to
+           * the water in 6px steps, so neighbouring points can disagree by a
+           * whole step for no reason a player would see — and since a crab
+           * stands relative to that edge, an unsmoothed run makes it jink in
+           * and out as it goes. A three-point average takes the quantisation
+           * out and leaves the coast's real shape (measured: 53 of 562 runs
+           * left the shore tangent before this, 9%, all of it at the steps). */
+          for (let k = 0; k < 2; k++) {
+            const prev = pts.map((q) => q.edge);
+            for (let j = 0; j < pts.length; j++) {
+              const a2 = prev[Math.max(0, j - 1)];
+              const b2 = prev[j];
+              const c3 = prev[Math.min(prev.length - 1, j + 1)];
+              pts[j].edge = (a2 + b2 * 2 + c3) / 4;
+            }
+          }
           // Cumulative length along it — this is the coordinate a crab runs in.
           const cum = [0];
           for (let k = 1; k < pts.length; k++)
@@ -270,12 +315,23 @@ export function crabsFeature(): AmbientFeature {
     return null;
   };
 
-  /** A point `s` px along the walked shoreline, offset `b` px toward the water.
-   * The shoreline is a polyline, so this is a segment lookup plus a lerp — the
-   * whole reason a curving bay works. */
+  /** A point `s` px along the walked shoreline, standing `b` px further inland
+   * than the water's own clearance line. The shoreline is a polyline, so this is
+   * a segment lookup plus a lerp — the whole reason a curving bay works.
+   *
+   * THE OFFSET IS MEASURED FROM THE WATER, NOT FROM THE LINE: each point knows
+   * how far its own first water cell is (`edge`), so a crab stands at
+   * `edge - WATER_CLEAR - b` along that direction. Where the water is right
+   * there, that is negative and pushes the crab inland; where it is further off,
+   * the crab moves out to meet it. Either way the clearance is constant, which
+   * is both what keeps them off the wet half of a transition tile and why a
+   * colony hugs the waterline the way real ones do. */
   const onShore = (col: Colony, s: number, b: number): { x: number; y: number } => {
     const { pts, cum } = col;
-    if (pts.length < 2) return { x: col.x + col.rx * s + col.wx * b, y: col.y + col.ry * s + col.wy * b };
+    if (pts.length < 2) {
+      const off = -WATER_CLEAR - b;
+      return { x: col.x + col.rx * s + col.wx * off, y: col.y + col.ry * s + col.wy * off };
+    }
     const t = Math.max(0, Math.min(cum[cum.length - 1], s));
     let i = 1;
     while (i < cum.length - 1 && cum[i] < t) i++;
@@ -283,9 +339,12 @@ export function crabsFeature(): AmbientFeature {
     const k = (t - cum[i - 1]) / seg;
     const a = pts[i - 1];
     const c2 = pts[i];
+    const wx = a.wx + (c2.wx - a.wx) * k;
+    const wy = a.wy + (c2.wy - a.wy) * k;
+    const off = a.edge + (c2.edge - a.edge) * k - WATER_CLEAR - b;
     return {
-      x: a.x + (c2.x - a.x) * k + (a.wx + (c2.wx - a.wx) * k) * b,
-      y: a.y + (c2.y - a.y) * k + (a.wy + (c2.wy - a.wy) * k) * b,
+      x: a.x + (c2.x - a.x) * k + wx * off,
+      y: a.y + (c2.y - a.y) * k + wy * off,
     };
   };
 
@@ -304,7 +363,7 @@ export function crabsFeature(): AmbientFeature {
 
   const seat = (c: Crab, col: Colony, instant: boolean) => {
     c.s = rnd() * col.span;
-    c.b = (rnd() - 0.5) * BAND;
+    c.b = rnd() * BAND;
     c.dir = rnd() < 0.5 ? 1 : -1;
     c.spd = range(DASH_SPEED);
     c.big = rnd() < 0.3;
@@ -452,6 +511,7 @@ export function crabsFeature(): AmbientFeature {
               toWater: [+colony.wx.toFixed(3), +colony.wy.toFixed(3)],
               span: Math.round(colony.span),
               pts: colony.pts.map((q) => [Math.round(q.x), Math.round(q.y)]),
+              edges: colony.pts.map((q) => q.edge),
               sandy: colony.sandy,
               life: Math.round(colony.life),
               want: crabs.filter((c) => c.wait !== Infinity).length,

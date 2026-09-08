@@ -248,6 +248,48 @@ else {
       fail(`only ${shoreTruth.square} of ${shoreTruth.checked} shoreline segments are square to the water — that polyline is not the shore`);
   }
 
+  /* ---- AND THEY KEEP OFF THE WET HALF OF A TRANSITION TILE ----
+   * Every water probe answers PER CELL, so "not standing on a water cell" is a
+   * weaker claim than it sounds: a transition tile is one cell whose art is part
+   * sand and part water, and a crab on its wet half passes that test while
+   * standing in the sea (maintainer 2026-09-07). What can be checked is the
+   * CLEARANCE — how far the first water cell is from where the crab stands. Half
+   * a tile diamond is ~22px, so a crab that keeps that much back is clear of the
+   * wet part whatever the transition art does. */
+  const clear = await page.evaluate(async () => {
+    const step = () => new Promise((r) => requestAnimationFrame(r));
+    let worst = Infinity;
+    let checked = 0;
+    let tight = 0;
+    for (let i = 0; i < 60; i++) {
+      const d = window.__mlAmbient.debug("crabs");
+      const c = d.colony;
+      const q = (d.all || [])[i % Math.max(1, (d.all || []).length)];
+      if (c && q) {
+        // Nearest water in ANY direction, not just the colony's — a spit or a
+        // river mouth puts water behind them too.
+        let near = 99;
+        for (let a = 0; a < 8; a++) {
+          const ang = (a / 8) * Math.PI * 2;
+          for (let k = 1; k <= 5; k++) {
+            const dd = k * 6;
+            if (window.__ml.waterAtScreen(q.x + Math.cos(ang) * dd, q.y + Math.sin(ang) * dd)) { near = Math.min(near, dd); break; }
+          }
+        }
+        checked++;
+        worst = Math.min(worst, near);
+        if (near < 12) tight++;
+      }
+      await step();
+    }
+    return { checked, worst: worst === Infinity ? null : worst, tight };
+  });
+  console.log(
+    `clearance: ${clear.checked} crab positions checked, nearest water cell ${clear.worst === null ? "none within 30px" : clear.worst + "px"}` +
+      (clear.tight ? `, ${clear.tight} stood within 12px of it` : ""),
+  );
+  if (clear.tight) fail(`${clear.tight} of ${clear.checked} crabs stood within 12px of a water cell — the wet half of a transition tile is still water`);
+
   /* ---- THEY USE THE WHOLE BEACH ----
    * "I have seen lots of crabs on a beach before, but not on a spot that
    * small! They usually use up the entire beach" (maintainer 2026-09-07). The

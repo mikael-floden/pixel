@@ -21,6 +21,30 @@ of about a metre across and two tall is ~50 px wide and ~100 tall, which is
 where `COL_RX` 14-30 and `COL_H` 58-112 come from. More air in view earns more
 columns, held `COL_APART`, so dusk reads as a few swarms in a landscape.
 
+### A tight core and a few fading wanderers
+
+The second round of sizing, and the reason the distribution is a MIXTURE rather
+than one curve. The maintainer drew the extent he wants and then said the thing
+that matters: *"I don't want that as the new dense size, just more spread out
+(better fading)"* — the bright middle stays as it is and a thin population
+reaches out to there. Widening one distribution cannot do that: every curve with
+a fatter tail drags its median out too, so the core spreads with the rim and the
+whole swarm reads thinner.
+
+So most gnats are drawn from a tight core and `WIDE_FRAC` are wanderers spread
+over the whole reach, which makes the two independent. The wanderers are also
+DIMMER in proportion to how far out they range (`WIDE_FADE`) — the swarm thins
+AND pales toward its edges instead of ending at a hard rim. Measured: median
+reach 6 px, ninetieth percentile 20 px, widest 42 px, and the outer third sits at
+0.61 the opacity of the inner.
+
+**`0.65 + 0.35·sin`, not `0.4 + 0.6·sin`.** The radius breathes, and the width
+of that swing quietly decides whether a wanderer is ever SEEN out wide: it only
+appears at full reach when the breathing and the orbit angle peak together, so
+with the wide swing, raising the column radius from 40 to 70 moved the widest
+gnat actually observed from 36 px to 41. Measured. A narrow swing puts it where
+it belongs.
+
 The volume is a vertical ellipsoid: `COL_H` tall, `COL_RX` wide in the GROUND
 plane, so its horizontal part is squashed by `SQUASH` (0.55) on screen the way
 the moths' orbit is — a circle drawn round on screen is not round in the world.

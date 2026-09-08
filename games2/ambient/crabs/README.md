@@ -62,6 +62,30 @@ That is what makes the perpendicular a real tangent.
 (two extra probes, asked ONCE per accepted colony, never in the search loop).
 A shore that isn't sand still gets crabs; the flag is there so QA can say which.
 
+## They keep clear of the water, which no probe can see
+
+Every water probe in this game answers PER CELL, and a transition tile is one
+cell whose ART is part sand and part water. So `landableAtScreen` says "you may
+stand here" for a point the player sees as sea (maintainer 2026-09-07: "we have
+a transition tile and part of it is water and part of it is sand. Would be nice
+if they avoid the water on tiles like this"). The boundary is in the artwork,
+not in the grid, so nothing can be asked about it directly.
+
+What CAN be measured is where the water CELLS start, and a tile bounds its own
+wet part: a diamond is 64 px across, so half of one is ~22 px along any
+direction. Every point of the shoreline measures its own distance to the first
+water cell, and a crab stands `WATER_CLEAR` back from THAT — so it clears the
+wet half of the last dry tile whatever the transition art does, on a ragged
+coast as much as a straight one. It also makes the colony hug the waterline at
+a constant distance, which is where crabs actually are. Measured: nearest water
+cell 18 px from any crab.
+
+**The measured edges are smoothed** (two passes of a 3-point average). Each
+point measures in 6 px steps, so neighbours disagree by a whole step for no
+reason a player would see — and since a crab stands relative to that edge, the
+raw numbers make it jink in and out as it runs. Measured: 53 of 562 runs left
+the shore tangent before smoothing, 1 of 528 after.
+
 ## Fleeing is LOCAL — a wave of panic that travels with you
 
 One distance test for the whole colony was right when a colony was one tile and

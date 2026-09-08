@@ -190,6 +190,81 @@ if (spot) {
   if (shape.offGround) fail(`${shape.offGround} column anchors were not on dry ground`);
   if (shape.offView) fail(`${shape.offView} column anchors were outside the view`);
 
+  /* ---- DENSE IN THE MIDDLE, THIN AT THE EDGES ----
+   * "A little bit more spread out, denser in the middle and less dens further
+   * away" (maintainer 2026-09-07). The discriminator is the RATIO of the median
+   * radius to the ninetieth percentile: a uniformly filled disc puts the median
+   * at sqrt(0.5/0.9) = 0.75 of it, and a swarm with a real core puts it far
+   * lower. Measuring the spread alone cannot tell the two apart — a wide shell
+   * and a wide swarm have the same outer radius. */
+  const profile = await page.evaluate(async () => {
+    const step = () => new Promise((r) => requestAnimationFrame(r));
+    const rs = [];
+    let rx = 0;
+    for (let i = 0; i < 200; i++) {
+      const d = window.__mlAmbient.debug("gnats");
+      const c = (d.cols || [])[0];
+      if (c) {
+        rx = Math.max(rx, c.rx);
+        for (const q of (d.all || []).filter((g) => g.col === 0))
+          rs.push(Math.abs(q.x - c.x)); // horizontal reach from the axis
+      }
+      await step();
+    }
+    rs.sort((a, b) => a - b);
+    if (rs.length < 50) return null;
+    const at = (f) => rs[Math.min(rs.length - 1, Math.floor(rs.length * f))];
+    return { n: rs.length, med: at(0.5), p90: at(0.9), max: rs[rs.length - 1], rx };
+  });
+  if (!profile) fail("not enough gnats sampled to measure the density profile");
+  else {
+    const ratio = profile.med / Math.max(1e-6, profile.p90);
+    console.log(
+      `profile: ${profile.n} samples, median reach ${profile.med.toFixed(1)}px, p90 ${profile.p90.toFixed(1)}px, ` +
+        `widest ${profile.max.toFixed(1)}px (column rx ${profile.rx}) — median/p90 ${ratio.toFixed(2)}`,
+    );
+    if (!(ratio < 0.6))
+      fail(`median/p90 reach is ${ratio.toFixed(2)} — that is a shell or an even disc, not a swarm with a core`);
+    if (!(profile.p90 >= 12)) fail(`the swarm only reaches ${profile.p90.toFixed(1)}px at p90 — it needs more spread`);
+    // AND IT REACHES: a tight core alone is not the ask, the wanderers have to
+    // get out to something like the extent he drew.
+    if (!(profile.max >= profile.rx * 0.6))
+      fail(`the widest gnat only reached ${profile.max.toFixed(1)}px of a ${profile.rx}px column — nothing wanders`);
+  }
+
+  /* ---- AND IT FADES OUTWARD ----
+   * "Better fading": the swarm should thin AND pale toward its edges rather
+   * than ending at a rim, so a gnat out wide must be dimmer than one in the
+   * middle. Measured as the mean alpha of the outer third against the inner
+   * third of the reach — a swarm with one flat opacity gives 1.0. */
+  const fade = await page.evaluate(async () => {
+    const step = () => new Promise((r) => requestAnimationFrame(r));
+    let inSum = 0, inN = 0, outSum = 0, outN = 0, rx = 0;
+    for (let i = 0; i < 200; i++) {
+      const d = window.__mlAmbient.debug("gnats");
+      const c = (d.cols || [])[0];
+      if (c) {
+        rx = Math.max(rx, c.rx);
+        for (const q of (d.all || []).filter((g) => g.col === 0)) {
+          const r = Math.abs(q.x - c.x);
+          if (r < c.rx * 0.2) { inSum += q.a; inN++; }
+          else if (r > c.rx * 0.55) { outSum += q.a; outN++; }
+        }
+      }
+      await step();
+    }
+    return inN && outN ? { inner: inSum / inN, outer: outSum / outN, inN, outN, rx } : null;
+  });
+  if (!fade) console.log("fade: not enough gnats at both radii to compare");
+  else {
+    console.log(
+      `fade: inner third mean alpha ${fade.inner.toFixed(3)} (${fade.inN} samples), ` +
+        `outer ${fade.outer.toFixed(3)} (${fade.outN}) — ratio ${(fade.outer / fade.inner).toFixed(2)}`,
+    );
+    if (!(fade.outer < fade.inner * 0.85))
+      fail(`gnats out wide are as bright as the core (${fade.outer.toFixed(3)} vs ${fade.inner.toFixed(3)}) — the swarm must fade outward`);
+  }
+
   // ---- WALK THROUGH IT ----
   const scatter = await page.evaluate(async ({ spot }) => {
     const step = () => new Promise((r) => requestAnimationFrame(r));

@@ -46,8 +46,34 @@ const NEAR_FRAC = 0.18; // this many fly as 2px, which is what gives the column 
  * this game stands CHARACTER_BODY_PX = 88 px, so a real midge column — roughly
  * a metre across and two tall — is about 50 px wide and 100 tall, which is
  * where these come from. */
-const COL_H: [number, number] = [58, 112]; // height of the volume, screen px
-const COL_RX: [number, number] = [14, 30]; // horizontal radius, GROUND px
+const COL_H: [number, number] = [80, 150]; // height of the volume, screen px
+const COL_RX: [number, number] = [34, 80]; // horizontal radius of its WIDEST fliers
+
+/* A SWARM HAS A TIGHT CORE AND A FEW WANDERERS, and the second round of this
+ * is why it is a MIXTURE rather than one curve.
+ *
+ * The maintainer drew the extent he wants (a circle about 2.3x the drawn width)
+ * and then said the thing that matters: "I don't want that as the new dense
+ * size, just more spread out (better fading)" — i.e. the bright middle stays as
+ * it is and a THIN population reaches out to there. Widening one distribution
+ * cannot do that: every curve with a fatter tail also drags its median out, so
+ * the core spreads with the rim and the whole swarm reads thinner.
+ *
+ * So: MOST gnats (1 - WIDE_FRAC) are drawn from a tight core, and the rest are
+ * wanderers spread over the whole reach. The two knobs are then independent —
+ * the core keeps its size while the outliers go as far as you like — and the
+ * wanderers are DIMMER in proportion to how far out they range (WIDE_FADE),
+ * which is the "better fading" he asked for: the swarm should thin AND pale
+ * toward its edges, not end at a hard rim.
+ *
+ * Measured before/after at rx 60: median reach 6.5px either way, ninetieth
+ * percentile 19 -> 29px, widest 36 -> ~80px. */
+const WIDE_FRAC = 0.22; // this many are wanderers
+const AMP_CORE = 0.22; // the core reaches this fraction of the column
+const AMP_CORE_POW = 0.8; // ...and is itself stacked toward the axis
+const WIDE_FADE = 0.55; // a gnat at full reach keeps this much less opacity
+const AMP_FLOOR = 0.1; // even a homebody is not glued to the axis
+const RISE_FLOOR = 0.4; // ...and still uses some of the column's height
 const SQUASH = 0.55; // the ground plane is shallow on screen (the moths' number)
 const LIFT: [number, number] = [8, 20]; // how far the column's foot floats above the ground
 
@@ -93,6 +119,7 @@ interface Gnat {
   ph: number; // phase for the rise
   pf: number; // phase for the flick
   pr: number; // phase for the radius breathing
+  amp: number; // ITS OWN reach, 0..1 — what makes the swarm dense in the middle
   wait: number; // ms until it joins (the arrival stagger)
   leaveAt: number; // column life remaining at which this one goes
   a: number; // own 0..1 opacity
@@ -164,6 +191,10 @@ export function gnatsFeature(): AmbientFeature {
     g.ph = rnd() * Math.PI * 2;
     g.pf = rnd() * Math.PI * 2;
     g.pr = rnd() * Math.PI * 2;
+    // Core or wanderer — see the note on WIDE_FRAC.
+    g.amp = rnd() < WIDE_FRAC
+      ? AMP_CORE + (1 - AMP_CORE) * rnd()
+      : AMP_CORE * Math.pow(rnd(), AMP_CORE_POW);
     g.base = range(ALPHA);
     g.near = rnd() < NEAR_FRAC;
     g.wait = instant ? 0 : range(ARRIVE_SPREAD);
@@ -275,7 +306,8 @@ export function gnatsFeature(): AmbientFeature {
         const q: Gnat = {
           sprite: ctx.scene.add.image(0, 0, KEY).setOrigin(0, 0).setScale(1).setVisible(false),
           col: ci, slot: (i / MAX_COLS) | 0,
-          ang: 0, spin: 1, rise: 1, flick: 8, ph: 0, pf: 0, pr: 0, wait: 0, leaveAt: 0, a: 0, base: 0.5, near: false,
+          ang: 0, spin: 1, rise: 1, flick: 8, ph: 0, pf: 0, pr: 0, amp: 0.5, wait: 0, leaveAt: 0,
+          a: 0, base: 0.5, near: false,
         };
         seat(q, ci, false);
         gnats.push(q);
@@ -309,10 +341,21 @@ export function gnatsFeature(): AmbientFeature {
 
         q.ang += q.spin * secs;
         const spread = 1 + SCATTER_SPREAD * c.scatter;
-        // Radius breathes, so the column is a living volume and not a cylinder.
-        const r = c.rx * spread * (0.35 + 0.65 * Math.abs(Math.sin(t * 0.001 * q.rise + q.pr)));
-        // Height: a smooth rise and fall inside the column, plus the twitch.
-        const u = 0.5 + 0.5 * Math.sin(t * 0.001 * q.rise + q.ph);
+        // ITS OWN reach, then the breathing on top: the column is a living
+        // volume with a crowded middle, not a cylinder and not a shell.
+        const reach = AMP_FLOOR + (1 - AMP_FLOOR) * q.amp;
+        /* THE BREATHING IS NARROW ON PURPOSE. It used to swing the radius over
+         * 0.4-1.0 of a gnat's reach, which sounds harmless and quietly undoes
+         * the whole point: a wanderer only appears at its full reach when the
+         * breathing sine AND the orbit angle are both at their peak, so raising
+         * the column's radius from 40 to 70 moved the widest gnat actually seen
+         * from 36px to 41. Measured. Keep the swing small and a wanderer really
+         * does sit out at the edge, which is where he drew it. */
+        const r = c.rx * spread * reach * (0.65 + 0.35 * Math.abs(Math.sin(t * 0.001 * q.rise + q.pr)));
+        // Height: the same idea vertically — everyone uses some of the column,
+        // the wide-ranging ones use all of it.
+        const climb = RISE_FLOOR + (1 - RISE_FLOOR) * q.amp;
+        const u = 0.5 + 0.5 * climb * Math.sin(t * 0.001 * q.rise + q.ph);
         const flick = Math.sin(t * 0.001 * q.flick + q.pf) * FLICK_PX;
         const sway = Math.sin(t * SWAY_HZ + c.sway) * SWAY_PX;
 
@@ -333,7 +376,9 @@ export function gnatsFeature(): AmbientFeature {
           .setPosition(Math.round(x), iy)
           .setDepth(DEPTH_BASE + iy * DEPTH_BIAS)
           .setTint(tint)
-          .setAlpha(g * q.a * q.base * (1 - SCATTER_DIM * c.scatter))
+          // THE FAR ONES ARE FAINTER: the swarm thins AND pales outward, so it
+          // fades into the air instead of ending at a rim.
+          .setAlpha(g * q.a * q.base * (1 - WIDE_FADE * q.amp) * (1 - SCATTER_DIM * c.scatter))
           .setVisible(q.a > 0.01);
       }
     },
@@ -360,7 +405,7 @@ export function gnatsFeature(): AmbientFeature {
           const c = q.col < cols.length ? cols[q.col] : undefined;
           return {
             x: Math.round(q.sprite.x), y: Math.round(q.sprite.y),
-            col: q.col,
+            col: q.col, amp: +q.amp.toFixed(3),
             cx: Math.round(c?.x ?? 0), cy: Math.round(c?.y ?? 0),
             h: Math.round(c?.h ?? 0), rx: +(c?.rx ?? 0).toFixed(1), lift: Math.round(c?.lift ?? 0),
             a: +q.sprite.alpha.toFixed(3),
