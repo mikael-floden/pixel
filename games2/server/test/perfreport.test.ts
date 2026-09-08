@@ -178,3 +178,21 @@ test("the net block survives the allowlist as a record of records", () => {
   // Junk is not a report.
   assert.equal((perfReport({ net: "none" }, "2026-09-08T00:00:00.000Z") as Record<string, any>).net, null);
 });
+
+test("the heap block reaches the file — it was dropped for five commits", () => {
+  // The client has sent `heap` since db459b988a and this allowlist silently
+  // discarded every sample, which is the FIFTH field lost this way. It is a
+  // flat record of numbers, so `mixed` is right — but the assertion has to
+  // name the fields, because a dropped key and a zero read identically and
+  // that is exactly how the earlier four went unnoticed.
+  const r = perfReport(
+    { heap: { meanMb: 412.6, maxMb: 501.3, limitMb: 2048, grewMb: 188.4, grewMbPerSec: 6.3, drops: 11 } },
+    "2026-09-08T00:00:00.000Z",
+  ) as Record<string, any>;
+  assert.equal(r.heap.grewMbPerSec, 6.3);
+  assert.equal(r.heap.drops, 11);
+  assert.equal(r.heap.maxMb, 501.3);
+  // A window with no sample must arrive as null, not as a zeroed heap — "no
+  // data" and "allocated nothing" are opposite readings of the same question.
+  assert.equal((perfReport({ heap: null }, "2026-09-08T00:00:00.000Z") as Record<string, any>).heap, null);
+});

@@ -88,6 +88,13 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * as zero, which is indistinguishable from one that booted and was never
      * needed. */
     worker: mixed(body.worker, 16),
+    /* THE HEAP AND ITS COLLECTIONS. The client has sent this since db459b988a
+     * and THIS ALLOWLIST DROPPED EVERY SAMPLE — the fifth field lost the same
+     * way, and lost while chasing the one question it answers: whether GC
+     * explains why a paint that draws no scenery gets 3x dearer when scenery
+     * is on. `grewMbPerSec` is the allocation RATE and `drops` the collection
+     * count; a latch that rebuilds every scenery lit copy shows up in both. */
+    heap: mixed(body.heap, 8),
     /* THE LIGHT BILL — what the night pass uploaded on HIS device (lights in
      * the shader, how many march shadows, summed pool area in cells, ambient),
      * plus the GPU string and backing store the cost scales with. MIXED types,
