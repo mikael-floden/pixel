@@ -66,7 +66,10 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     final: body.final === true,
     frames: flat(body.frames, 12, 100000),
     sections: flat(body.sections, 40, 100000),
-    counts: flat(body.counts, 40, 1e9),
+    /* 48, not 40: `flat` keeps the FIRST N entries and silently drops the rest,
+     * so a cap close to the real key count turns "add a counter" into "lose the
+     * counter at the end". 34 arrive today; the headroom is the point. */
+    counts: flat(body.counts, 48, 1e9),
     /* WHAT IS BEING UPLOADED, BY KEY FAMILY. `texturesAdded` said 2,099 in one
      * 30 s window of his 2026-09-08 run and nothing said what they were — and a
      * texture add is a decode plus a GPU upload on the main thread, i.e. a

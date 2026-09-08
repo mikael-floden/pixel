@@ -1997,6 +1997,7 @@ export class WorldScene extends Phaser.Scene {
          * comparing two reports. Numbers, because `counts` is flattened. */
         monstersOn: this.monstersOn ? 1 : 0,
         sceneryOn: this.sceneryOn ? 1 : 0,
+        bandMerge: this.groundBandMs >= 1e8 ? 1 : 0,
         // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
         // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
         // every "full" frame in the last beacon was a `repaintWorld` — so these
@@ -2901,7 +2902,11 @@ export class WorldScene extends Phaser.Scene {
   /** The drain's per-frame budget in force. A dev A/B sets it to ~0 to get the
    *  OLD topology back — one rect per bracket per frame — so the merge can be
    *  proved pixel-identical against the behaviour it replaced. */
-  private groundBandMs = GROUND_BAND_MS;
+  /** ONE BRACKET PER BAND, OR ONE PER FRAME. See the "band merge" switch: a
+   *  bracket resizes Phaser's SHARED capture target, and a resize is a
+   *  deleteTexture + deleteFramebuffer + allocate of a 1510x1656 (10 MB)
+   *  texture. Merged, a band pays that once instead of 4-8 times. */
+  private groundBandMs = localStorage.getItem("ml-band-merge") === "1" ? 1e9 : GROUND_BAND_MS;
   /** The last anchor shift — the direction the world is travelling, which is
    *  the only direction worth prefetching (t3armRing). */
   private groundLastShift = { x: 0, y: 0 };
@@ -3842,6 +3847,31 @@ export class WorldScene extends Phaser.Scene {
          * isolates ONE pass at a time for debugging and is not remembered: this
          * is a persisted two-state switch for looking at the world. The light
          * pass stays on, so the scene is still lit and still shadowed. */
+        /* BAND MERGE — the ground band under ONE bracket instead of one per
+         * frame. Every beginDraw routes through Phaser's SHARED capture target
+         * (WebGLRenderer.renderTarget, autoResize TRUE), and binding it at a
+         * size it is not already at DELETES and REALLOCATES its texture and
+         * framebuffer — 1510x1656 for the ground, against the 1024x512 the
+         * cover atlases bracket at seven times per flush. So a frame that
+         * flushes cover surfaces AND paints a slice tears that target down and
+         * rebuilds it both ways. Merging pays it once per band, not per slice.
+         *
+         * IT IS A SWITCH BECAUSE THE STANDING COST MODEL SAYS THIS IS POINTLESS
+         * (GROUND_BAND_MS: "an empty bracket is 0.015 ms"). That bench ran nine
+         * ground brackets IN A ROW — same size every time, so willResize was
+         * false after the first and they really were free. It never alternated
+         * sizes, which is the only thing that costs. Measure, do not argue. */
+        {
+          label: "band merge",
+          act: () => {
+            const on = this.groundBandMs < 1e8;
+            this.groundBandMs = on ? 1e9 : GROUND_BAND_MS;
+            localStorage.setItem("ml-band-merge", on ? "1" : "0");
+            this.chat.addLog("—", `band merge: ${on ? "ON — whole band, one bracket" : "off — one slice per frame"}`);
+          },
+          get: () => this.groundBandMs >= 1e8,
+          state: () => (this.groundBandMs >= 1e8 ? "on" : "off"),
+        },
         {
           label: "fog",
           act: () => {
