@@ -547,11 +547,44 @@ export function surfaceY(cell: Tiles3Cell): number | null {
   return cell.pasteY ?? cell.sy;
 }
 
-/** The repeated storey tile's key for a cell's column — the FACE an occluder
- *  stacks below the cap. */
+/** The column's REPRESENTATIVE course — the streaming guard and the fallback,
+ *  never the thing a band is drawn from. `faceKeyAt` is what draws. */
 export function faceKey(tex: TextureManagerLike, cell: Tiles3Cell): string | null {
   const p = cell.wall?.mid.path;
   if (!p) return null;
   const k = artKey(p);
   return tex.exists(k) ? k : null;
+}
+
+/** THE FACE AN OCCLUDER STACKS AT ONE STOREY — that storey's own tile.
+ *
+ *  THE OCCLUDER PASS USED TO STACK `faceKey` FOR THE WHOLE COLUMN, one tile
+ *  from the lowest exposed face to the cap, and that is what the maintainer
+ *  photographed: "my photo was from the game with code that used the same tile
+ *  the entire vertical strip" (2026-09-08). The bug hid behind a true statement
+ *  — the resolver DOES vary the tile per storey, and the ground texture is
+ *  painted from `wall.stack`, correctly — because the occluder copies are
+ *  sprites drawn OVER that texture, so the varied ground was there and covered.
+ *  Any check that reads the resolver, or the ground RT, sees variety; only the
+ *  screen shows the repeat. Reproduce a wall report from the SCREEN.
+ *
+ *  `wall.stack` is contiguous from its first storey, so this indexes rather
+ *  than searching: it runs per storey per wall cell on every occluder rebuild,
+ *  which is thousands of columns up to forty storeys tall.
+ *
+ *  Falls back to the representative course when this storey's own art has not
+ *  landed — a band with a hole in it is a body drawn through a mountain. */
+export function faceKeyAt(
+  tex: TextureManagerLike,
+  cell: Tiles3Cell,
+  storey: number,
+): string | null {
+  const w = cell.wall;
+  if (!w) return null;
+  const s = w.stack.length ? w.stack[storey - w.stack[0].storey] : undefined;
+  if (s && s.storey === storey && s.tile.path) {
+    const k = artKey(s.tile.path);
+    if (tex.exists(k)) return k;
+  }
+  return faceKey(tex, cell);
 }

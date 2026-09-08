@@ -199,6 +199,7 @@ import {
   deckArtPaths,
   docUrl,
   faceKey as t3FaceKey,
+  faceKeyAt as t3FaceKeyAt,
   sheetPaths,
   surfaceKey as t3SurfaceKey,
   surfaceY as t3SurfaceY,
@@ -13887,7 +13888,9 @@ export class WorldScene extends Phaser.Scene {
         const topKey = t3SurfaceKey(tex, this.t3tm, cell);
         const fk = t3FaceKey(this.t3tm, cell) ?? topKey;
         if (topKey && fk) {
-          for (let lvl = cutE + 1; lvl < cell.level; lvl++) if (shows(bx, by - lvl * lh)) push(bx, by - lvl * lh, fk, depth);
+          for (let lvl = cutE + 1; lvl < cell.level; lvl++)
+            if (shows(bx, by - lvl * lh))
+              push(bx, by - lvl * lh, t3FaceKeyAt(this.t3tm, cell, lvl) ?? fk, depth);
           const sy = t3SurfaceY(cell);
           const capX = sy !== null ? cell.sx : bx;
           const capY = sy !== null ? sy : by - cell.level * lh;
@@ -16561,7 +16564,12 @@ export class WorldScene extends Phaser.Scene {
             culled++;
             continue;
           }
-          this.occluders.push(this.occTint(this.occImage(fk, bx, by - lvl * lh, oDepth, col, row), "face"));
+          /* EACH STOREY DRAWS ITS OWN TILE. Stacking one key up the column is
+           * what put a single repeated tile down the whole height of every
+           * mountain on the maintainer's screen, with the correctly varied
+           * ground texture painted underneath it and covered. */
+          const faceArt = t3FaceKeyAt(this.t3tm, cell, lvl) ?? fk;
+          this.occluders.push(this.occTint(this.occImage(faceArt, bx, by - lvl * lh, oDepth, col, row), "face"));
         }
         /* THE CAP IS PASTED WHERE THE GROUND PASS PASTES IT. A surface is a
          * 64x46 plate anchored at the cell's own `sy`; a wall course is 64x64
