@@ -1061,8 +1061,9 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     lag that spans a greater period … I cannot get a smooth FPS"). The sustained
     floor measured on this machine is 6.5-7.0 ms of JS per frame — x3-6 on a
     phone against a 16.7 ms budget — spread across the sliced band, the ring,
-    the occluder+scenery rebuild and the per-frame fog/lit-copy pass. Reducing
-    that floor, not spreading it, is the open work.
+    the occluder+scenery rebuild and the per-frame fog/lit-copy pass. The lag
+    he FELT was not this floor: it was the capture-target re-allocation (see
+    "THE RUNNING-INTO-A-NEW-AREA LAG", below).
   - **COMPOSING IS BUDGETED, AND A CELL WITHOUT ITS TRANSITION YET DRAWS THE
     PLAIN PLATE** (`Tiles3Textures.armCompose`, `GROUND_COMPOSE_MS` = 2). One
     composition costs **6.0-9.6 ms on his phone** (measured composeMs/composed
@@ -3084,20 +3085,42 @@ height reads per thing per frame.
   vec4(0) for exactly those fragments — so this is free. Any future pass with an
   early-out uniform gets BOTH treatments: the guard is only as good as the last
   write, and the last write is only as good as not running at all.
-- **A RENDER-TARGET BRACKET IS ~FREE — AND BELIEVING OTHERWISE COST A SHIPPED
-  REGRESSION.** The claim was that every `beginDraw`/`endDraw` on the 1510x1656
-  ground RT costs a capture clear plus a full-texture blit, ~20 ms, so the 4-9
-  rects of a scrolled band should share one bracket. It was asserted by review,
-  believed, and shipped without ever being measured. MEASURED on the real RT
-  with `gl.finish()` forcing GPU completion: an empty bracket is 0.015 ms, nine
-  brackets with one blit each 0.137 ms, one bracket with nine blits 0.125 ms —
-  a marginal cost per extra bracket of ~0.00 ms. His own run agreed: with the
-  merge live, `scroll:groundSlice` went 47.6 -> 50.8 ms mean, i.e. nothing.
-  The 22-25 ms that bucket costs is the PAINT. `GROUND_BAND_MS` is therefore
-  set so the drain paints one rect per frame, the topology it always had; the
-  merge machinery survives only for its dev switch and its bracket-ownership
-  guard. Probe: `scratchpad/fx/bench.mjs` — rerun it before believing any
-  per-call cost model on this path.
+- **THE RUNNING-INTO-A-NEW-AREA LAG WAS PHASER'S SHARED CAPTURE TARGET
+  RE-ALLOCATING** (`client/src/capturepool.ts`; maintainer 2026-09-08, on his
+  phone, same route, one build: "I felt 0 lag when capture pool was on").
+  Every `DynamicTexture.beginDraw` binds `renderer.renderTarget`, ONE
+  autoResize RenderTarget, and `bind` -> `resize` deletes and re-creates its
+  texture and framebuffer whenever the size differs from the previous bracket.
+  The ground RT is 1510x1656, the cover atlases 1024x512, the light fields
+  544x708 — so once scenery is on (cover flushes ~50/s against ~16 off), every
+  frame that paints a ground slice frees and re-allocates ~12 MB of VRAM twice.
+  Measured in his beacon, pool off vs on: 967 texture deletes + 967 framebuffer
+  creates + 967 deletes in one 30 s window against 0; 430 MB of allocation
+  bytes against 199; p90 31.4 -> 18.7 ms, p99 53.6 -> 28.0, long-frame ms
+  938 -> 260, fps 48 -> 59. The pool keys one NON-resizing RenderTarget per
+  WxH and swaps it into `renderer.renderTarget` before `bind` (`endCapture`
+  reads that field; nothing else in Phaser 3.90 does). Settings "capture pool"
+  (`ml-capture-pool`, default ON) is the A/B; the beacon's `capPool`,
+  `capSwitch` (size switches = stock re-allocations) and `capSizes` name the
+  arm. RULE: no bracket may ever resize the capture target — a new
+  DynamicTexture size costs one pooled texture, never a per-frame realloc.
+  WHY EVERY EARLIER MEASUREMENT MISSED IT: `createTextureFromSource(null, w,
+  h)` returns in ~0.1 ms because the driver only QUEUES the allocation (the
+  upload probe saw 1,389 in one window at 150 ms total); the cost lands in the
+  GPU process, in later frames, in nobody's section. The `scratchpad/fx/bench.mjs`
+  bracket bench (0.015 ms per empty bracket) was true and irrelevant: it never
+  interleaved two sizes. Rejected on the way, all A/B'd on his phone and felt
+  identical: merging the band under one bracket (2x worse — the whole band's
+  paint in one frame); the ground RT on MultiPipeline (draw calls 45x fewer,
+  frame unchanged); the drop drain's full repaint off; light resolution 2% vs
+  100%; scenery+monster art replaced by one pink texture (lag identical —
+  image fetch, decode and upload were never it); scenery light flat and
+  shadows off (laggiest run of all). What did hold through every arm: travel
+  is necessary (circling paints no ground), scenery or monsters are necessary
+  (a second target size in the same frame), the OFF run with 723 monster
+  strips still loading in the background was "insanely smooth".
+  `GROUND_BAND_MS` stays so the drain paints one rect per frame; the merge
+  machinery survives only for its dev switch and its bracket-ownership guard.
 - **DO NOT REMOVE THE DROP DRAIN'S REPAINT.** Turning it off removed all 32
   `full:redrawGround` frames per 90 s (1,914 ms) and cost more than that back:
   the repaint re-anchors the ground mid-latch and absorbs about half of each
@@ -3108,12 +3131,11 @@ height reads per thing per frame.
   `__ml.groundDrain(false)` turns it off for an A/B.
 - **THE SLICE-SIZE RATCHET WAS DEAD CODE.** It grew `groundSlicePx` only when a
   slice cost under `GROUND_SLICE_MS`/2 = 1 ms, and a slice costs ~20 ms on his
-  phone because of the bracket — so the condition was unreachable and the size
-  sat at its initial 384 px for the life of every session. It could only grow
-  once it was already fast and it was never fast because it never grew. Removed:
-  the bracket is the cost, so the fix is to pay it once per FRAME, not to resize
-  rects. Any self-tuning ratchet whose growth test is stricter than its target
-  has this bug.
+  phone (the capture re-allocation above, since removed) — so the condition was
+  unreachable and the size sat at its initial 384 px for the life of every
+  session. It could only grow once it was already fast and it was never fast
+  because it never grew. Removed. Any self-tuning ratchet whose growth test is
+  stricter than its target has this bug.
 - **THE LIGHT PASSES RENDER AT HALF RESOLUTION** (`LIGHT_SCALE_DEFAULT` 0.5,
   lightscale.ts), tuned by the "Light resolution" slider. It is the fraction of
   the canvas the three full-screen passes render at before a LINEAR upsample, so

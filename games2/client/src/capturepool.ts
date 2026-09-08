@@ -25,6 +25,13 @@
  *  surfaces; monsters bring their own), and it survives the pink mock, the
  *  flat tint and shadows off, because none of those change the SIZES drawn.
  *
+ *  MEASURED ON HIS PHONE (2026-09-08, same route, one build, pool off vs on):
+ *  967 texture deletes + 967 framebuffer creates and deletes per 30 s window
+ *  against 0; frame p90 31.4 -> 18.7 ms, p99 53.6 -> 28.0; long-frame ms
+ *  938 -> 260; 48 -> 59 fps. His words: "I felt 0 lag when capture pool was
+ *  on." This is the fix for the running-into-a-new-area lag; the switch stays
+ *  as the A/B and the default is ON.
+ *
  *  THE FIX: a pool keyed by `${w}x${h}`, each entry a RenderTarget with
  *  autoResize = false, so a bracket only ever binds a texture that already
  *  exists. Steady-state VRAM is the sum of the distinct sizes (~14 MB here)
