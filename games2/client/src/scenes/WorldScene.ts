@@ -1615,6 +1615,8 @@ export class WorldScene extends Phaser.Scene {
   /** Boot options for `t3worker`, applied on first use — see initTiles3. */
   private t3workerOpts: Parameters<ResolveWorker["init"]>[0] | null = null;
   private t3workerBooted = false;
+  /** The worker's own cursor into `t3ringQueue` — see t3workerStep. */
+  private t3workerAt = 0;
   private t3pitchChecked = false;
   private t3regionMs = 0;
   private t3Failed = new Set<string>(); // see t3Try — one line per distinct resolver failure
@@ -10166,6 +10168,7 @@ export class WorldScene extends Phaser.Scene {
     this.ps();
     this.cullOccluderSubmits();
     this.pe("occCull");
+    this.t3workerStep(); // a postMessage, unguarded — see t3workerStep
     this.ps();
     this.t3prefetchStep();
     this.t3retryBoundaries();
@@ -15951,6 +15954,7 @@ export class WorldScene extends Phaser.Scene {
     this.t3keepIdx = keep;
     this.t3ringQueue = queue;
     this.t3ringAt = 0;
+    this.t3workerAt = 0;
   }
 
   /** A SLICE of the ring per frame: resolve (cached) and ask for the art, so it
@@ -16076,6 +16080,40 @@ export class WorldScene extends Phaser.Scene {
     }
   })();
 
+  /** ASK THE OTHER CORE, AHEAD OF EVERY GUARD THE RING HAS.
+   *
+   *  This was inside `t3prefetchStep` at first, and that put it behind the
+   *  ring's own stand-down — `if (groundRedrewThisFrame || groundDrainedThisFrame
+   *  || groundSliceQ.length) return`. That guard is right for the RING, whose
+   *  work is on this thread and must never stack onto a frame the player would
+   *  feel; it is exactly wrong for the worker, because `groundSliceQ` is
+   *  non-empty for most frames of a run, so the dispatch stood down precisely
+   *  when the band needed warming. Sending is a postMessage — microseconds — so
+   *  it runs on every frame, including the ones painting a slice.
+   *
+   *  ITS OWN CURSOR, not the ring's. `t3ringAt` advances as the MAIN thread
+   *  consumes the queue; the worker has to race ahead of it, and sharing one
+   *  cursor would cap it at the speed of the thing it is trying to get in front
+   *  of. Cells already resolved, and cells already in flight, are never sent. */
+  private t3workerStep(): void {
+    if (!this.t3workerBooted && this.t3workerOpts) {
+      this.t3workerBooted = true; // once per resolver, whether or not it succeeds
+      this.t3worker.init(this.t3workerOpts);
+    }
+    const w = this.world;
+    if (!w || !this.worldUp || !this.t3worker.isReady) return;
+    if (this.t3workerAt >= this.t3ringQueue.length) return;
+    const ahead: number[] = [];
+    const stop = Math.min(this.t3ringQueue.length, this.t3workerAt + GROUND_RING_WORKER);
+    for (let k = this.t3workerAt; k < stop; k++) {
+      const [c, r] = this.t3ringQueue[k];
+      const i = r * w.width + c;
+      if (!this.t3cells.get(i)?.cell) ahead.push(i); // already known: nothing to ask
+    }
+    this.t3workerAt = stop;
+    this.t3worker.request(ahead);
+  }
+
   private t3prefetchStep(): void {
     const load = this.t3load;
     const t3 = this.t3;
@@ -16085,30 +16123,6 @@ export class WorldScene extends Phaser.Scene {
     // Never stack the ring onto the frame that scrolled or painted a slice —
     // those are the frames the player would feel.
     if (this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length) return;
-    /* SEND THE STRIP TO THE OTHER CORE FIRST. Everything below this is the
-     * main thread's own pass over the same cells: it resolves what the worker
-     * has not answered yet (the fallback, and the behaviour with no worker at
-     * all) and composes the rasters, which a worker cannot do because it has no
-     * textures. The further ahead this runs, the more of that loop is a cache
-     * hit rather than a resolve — which is the 60-75% of a cold ground paint
-     * this feature exists to move. */
-    if (!this.t3workerBooted && this.t3workerOpts) {
-      this.t3workerBooted = true; // once per resolver, whether or not it succeeds
-      this.t3worker.init(this.t3workerOpts);
-    }
-    if (this.t3worker.isReady) {
-      const w = this.world;
-      if (w) {
-        const ahead: number[] = [];
-        const stop = Math.min(this.t3ringQueue.length, this.t3ringAt + GROUND_RING_WORKER);
-        for (let k = this.t3ringAt; k < stop; k++) {
-          const [c, r] = this.t3ringQueue[k];
-          const i = r * w.width + c;
-          if (!this.t3cells.get(i)?.cell) ahead.push(i); // already known: nothing to ask
-        }
-        this.t3worker.request(ahead);
-      }
-    }
     const built0 = tex.stats.built;
     const ringT0 = performance.now();
     /* MAY THIS FRAME COMPOSE AT ALL? A composition cannot be interrupted, so
