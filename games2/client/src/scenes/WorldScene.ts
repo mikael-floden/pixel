@@ -453,6 +453,16 @@ const OVERLAYS = [
 const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
+/** THE PINK MOCK (maintainer 2026-09-08, driving the bisection himself): one
+ *  already-resident 64x64 magenta texture that EVERY monster and EVERY scenery
+ *  piece is drawn with in "mock" mode. The bodies, sprites, shadows, lit copies,
+ *  fog silhouettes, cover surfaces, occluders, depth sort and per-frame loops
+ *  all still run; the ONLY thing removed is fetching, decoding and uploading
+ *  each thing's own unique texture. If the lag goes with it, the cost is in
+ *  that path and nowhere else; if it stays, it is not. */
+const MOCK_TEX = "mock:pink";
+type SubMode = "on" | "off" | "mock";
+const subModeOf = (v: string | null): SubMode => (v === "0" ? "off" : v === "mock" ? "mock" : "on");
 const SHADOW_TEX = "avatar:shadow";
 // Monsters use a softer, more diffuse variant (see ensureMonsterShadowTexture):
 // a light core with a long penumbra tail, spread MONSTER_SHADOW_SPREAD beyond
@@ -1510,8 +1520,12 @@ export class WorldScene extends Phaser.Scene {
    * for bodies either way — an A/B that also changed where you can walk would
    * compare two different games. Monster DODGE does change (its near-list is
    * empty), which is stated rather than worked around: there are no monsters. */
-  private monstersOn = localStorage.getItem("ml-monsters") !== "0";
-  private sceneryOn = localStorage.getItem("ml-scenery") !== "0";
+  private monstersMode: SubMode = subModeOf(localStorage.getItem("ml-monsters"));
+  private monstersOn = this.monstersMode !== "off";
+  private monstersMock = this.monstersMode === "mock";
+  private sceneryMode: SubMode = subModeOf(localStorage.getItem("ml-scenery"));
+  private sceneryOn = this.sceneryMode !== "off";
+  private sceneryMock = this.sceneryMode === "mock";
   /** Settings "fog" — the two atmospherics (depth fog + weather mist), ON by
    *  default and remembered. A SCREENSHOT instrument: both wash the picture,
    *  and the maintainer photographs walls to review the art on them. */
@@ -2015,8 +2029,8 @@ export class WorldScene extends Phaser.Scene {
          * monsters-off run is indistinguishable from one where nothing
          * happened to be on screen, and the whole point of the switches is
          * comparing two reports. Numbers, because `counts` is flattened. */
-        monstersOn: this.monstersOn ? 1 : 0,
-        sceneryOn: this.sceneryOn ? 1 : 0,
+        monstersOn: this.monstersMock ? 2 : this.monstersOn ? 1 : 0, // 2 = pink mock
+        sceneryOn: this.sceneryMock ? 2 : this.sceneryOn ? 1 : 0,
         drainOn: this.groundDrainRepaint ? 1 : 0,
         // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
         // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
@@ -3434,7 +3448,7 @@ export class WorldScene extends Phaser.Scene {
     // requests), but only the kinds with a zone near where the player will
     // stand ride the boot batch. The rest queue in the deferred batch and
     // their bodies stay parked until their own strips land.
-    for (const def of this.monstersOn ? (this.monsterManifest?.monsters ?? []) : []) {
+    for (const def of this.monstersOn && !this.monstersMock ? (this.monsterManifest?.monsters ?? []) : []) {
       if (this.monsterBootKinds && !this.monsterBootKinds.has(def.id)) {
         this.monsterDeferredKinds.add(def.id);
         continue;
@@ -3943,22 +3957,34 @@ export class WorldScene extends Phaser.Scene {
         {
           label: "monsters",
           act: () => {
-            this.monstersOn = !this.monstersOn;
-            localStorage.setItem("ml-monsters", this.monstersOn ? "1" : "0");
+            // on → off → mock → on. Mock: every monster drawn with the one pink
+            // texture, nothing of its own loaded, everything else still runs.
+            this.monstersMode = this.monstersMode === "on" ? "off" : this.monstersMode === "off" ? "mock" : "on";
+            this.monstersOn = this.monstersMode !== "off";
+            this.monstersMock = this.monstersMode === "mock";
+            localStorage.setItem("ml-monsters", this.monstersMode === "on" ? "1" : this.monstersMode === "off" ? "0" : "mock");
             if (!this.monstersOn) {
               for (const id of [...this.monsters.keys()]) this.removeMonster(id);
               this.monsters.clear();
             }
-            this.chat.addLog("—", `monsters: ${this.monstersOn ? "on — rejoin to bring them back" : "OFF (rendering, art and per-frame loop)"}`);
+            this.chat.addLog("—", `monsters: ${this.monstersMode === "on" ? "on — rejoin to bring them back" : this.monstersMode === "off" ? "OFF (rendering, art and per-frame loop)" : "MOCK — rejoin: all monsters drawn with one pink texture, nothing loaded"}`);
           },
           get: () => this.monstersOn,
-          state: () => (this.monstersOn ? `on (${this.monsters.size})` : "off"),
+          state: () => (this.monstersMode === "on" ? `on (${this.monsters.size})` : this.monstersMode),
         },
         {
           label: "scenery",
           act: () => {
-            this.sceneryOn = !this.sceneryOn;
-            localStorage.setItem("ml-scenery", this.sceneryOn ? "1" : "0");
+            this.sceneryMode = this.sceneryMode === "on" ? "off" : this.sceneryMode === "off" ? "mock" : "on";
+            this.sceneryOn = this.sceneryMode !== "off";
+            this.sceneryMock = this.sceneryMode === "mock";
+            localStorage.setItem("ml-scenery", this.sceneryMode === "on" ? "1" : this.sceneryMode === "off" ? "0" : "mock");
+            if (this.sceneryOn) {
+              // on↔mock: the keys changed under every piece, so rebuild now.
+              this.sceneryFit.clear();
+              this.rebuildScenery(this.cameras.main);
+              this.requestRepaint("scenery");
+            }
             if (!this.sceneryOn) {
               this.scenery = null;
               this.rebuildScenery(this.cameras.main); // drains the pool at its own guard
@@ -3966,10 +3992,10 @@ export class WorldScene extends Phaser.Scene {
               this.sceneryStamps = [];
               this.night?.setSceneryOccluders(undefined); // and its shadows
             }
-            this.chat.addLog("—", `scenery: ${this.sceneryOn ? "on — rejoin to bring it back" : "OFF (sprites, lights, shadows and shape maps)"}`);
+            this.chat.addLog("—", `scenery: ${this.sceneryMode === "on" ? "on — rejoin to bring it back" : this.sceneryMode === "off" ? "OFF (sprites, lights, shadows and shape maps)" : "MOCK — every piece drawn with one pink texture, nothing loaded"}`);
           },
           get: () => this.sceneryOn,
-          state: () => (this.sceneryOn ? "on" : "off"),
+          state: () => this.sceneryMode,
         },
         /* THE RESOLVER ON ANOTHER CORE — the A/B for the stutter, on his own
          * phone, without a URL bar. Off = today's behaviour exactly (the main
@@ -7300,6 +7326,25 @@ export class WorldScene extends Phaser.Scene {
     mv.shadow.setRotation(e.theta);
   }
 
+  /** The pink mock texture, made on first use (Graphics → generateTexture works
+   *  on both renderers). Idempotent. */
+  private ensureMockTex(): string {
+    if (!this.textures.exists(MOCK_TEX)) {
+      const g = this.add.graphics();
+      g.fillStyle(0xff00ff, 1).fillRect(0, 0, 64, 64);
+      g.generateTexture(MOCK_TEX, 64, 64);
+      g.destroy();
+    }
+    return MOCK_TEX;
+  }
+  /** Every scenery texture key goes through here: in mock mode all of them are
+   *  the one pink texture, so `needScenery` finds it resident and never queues
+   *  a file, and every consumer (fit, image, lit copy, fog silhouette, occluder)
+   *  agrees because they all ask this. */
+  private sKey(spritePath: string): string {
+    return this.sceneryMock ? this.ensureMockTex() : sceneryArtKey(spritePath);
+  }
+
   private addMonster(id: string, m: any) {
     if (!this.monstersOn) return; // Settings "monsters" — see monstersOn
     const def = this.monsterManifest?.monsters.find((d) => d.id === m.kind);
@@ -7311,7 +7356,7 @@ export class WorldScene extends Phaser.Scene {
     const elev0 = (m.elev ?? f0.lvl) * this.geom.lh;
     const p0 = { x: f0.x, y: f0.y - elev0 };
     const walk = def ? monsterWalkKey(def) : "jump";
-    const initKey = monsterSheetKey(m.kind, walk, DEFAULT_DIRECTION);
+    const initKey = this.monstersMock ? this.ensureMockTex() : monsterSheetKey(m.kind, walk, DEFAULT_DIRECTION);
     const hasArt = this.textures.exists(initKey);
     // 48px art, drawn at scale 1 (the camera zoom already scales the world);
     // origin near the feet so it y-sorts and lifts like a player. Fall back to
@@ -7329,7 +7374,7 @@ export class WorldScene extends Phaser.Scene {
     // the shadow beside the body (maintainer 2026-07-30, round 2). The parked
     // frame is the direction's planted CONTACT frame, never an airborne f0.
     const g0 = def?.ground?.[DEFAULT_DIRECTION];
-    if (hasArt) sprite.setFrame(g0?.contact ?? 0);
+    if (hasArt && !this.monstersMock) sprite.setFrame(g0?.contact ?? 0);
     sprite.setOrigin(g0?.cx ?? 0.5, g0?.f ?? def?.artBottom ?? 0.85).setScale(1);
     // THE TUNED SHADOW WINS. When the Game Master has placed this monster's
     // one shadow in the wiki, its centre IS the monster's position: the sprite
@@ -9292,6 +9337,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private playMonsterAnim(mv: MonsterAvatar, moving: boolean, dir: string, mstate = "roam", actionSeq = 0) {
+    if (this.monstersMock) return; // the pink mock holds one pose; nothing to play
     const want = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     // Monsters take EVERY turn (even 90-180°) through hysteresis: they are
     // remote puppets, so a 160ms facing lag is invisible — while autopilot
@@ -13526,7 +13572,7 @@ export class WorldScene extends Phaser.Scene {
     // must not regress), and the fight art streams in behind the live world.
     // Sliced with each strip's OWN measured frame size (stripDims) — the
     // monster-level size goes stale on in-place art repairs and frames bleed.
-    for (const def of this.monsterManifest?.monsters ?? []) {
+    for (const def of this.monstersMock ? [] : (this.monsterManifest?.monsters ?? [])) {
       for (const state of ["attack", "angry", "die"]) {
         const anim = resolveMonsterAnim(def, state);
         if (!anim) continue;
@@ -17545,7 +17591,7 @@ export class WorldScene extends Phaser.Scene {
       if (unlitKey && piece.states[unlitKey]) {
         const us = piece.states[unlitKey];
         const usprite = (p.dir ? us.rotations[p.dir] : "") || us.rotations.south || us.sprite;
-        const ukey = sceneryArtKey(usprite);
+        const ukey = this.sKey(usprite);
         upix = this.textures.exists(ukey) ? this.texPixels(ukey) : null;
       }
       const e = deriveEmissive(pix, upix);
@@ -17766,7 +17812,7 @@ export class WorldScene extends Phaser.Scene {
    *  tiles loader uses: a 404 must not re-fire every frame the piece is on
    *  screen. Flushed once per rebuild by `flushScenery`. */
   private needScenery(spritePath: string): boolean {
-    const key = sceneryArtKey(spritePath);
+    const key = this.sKey(spritePath);
     if (this.textures.exists(key)) return true;
     if (!this.sceneryAsked.has(key)) {
       this.sceneryAsked.add(key);
@@ -17979,7 +18025,7 @@ export class WorldScene extends Phaser.Scene {
        * out this far. Everything below builds a sprite. */
       if (p.ax < rect.x - 256 || p.ax > rect.x + rect.w + 256 || p.ay < rect.y - 512 || p.ay > rect.y + rect.h + 256)
         continue;
-      const art = this.sceneryArtFit(sceneryArtKey(sprite));
+      const art = this.sceneryArtFit(this.sKey(sprite));
       if (!art) continue;
       /* Scale by the PIECE's own base sprite, never by the one being drawn — see
        * fitSprite. The bbox DOC is the source rather than the loaded texture:
@@ -18066,7 +18112,7 @@ export class WorldScene extends Phaser.Scene {
        * LEVELS, so a rug claimed to cover the player standing on it — the
        * "wall hack border in open ground" this file already warns about). */
       const flat = !piece.collision;
-      const key = sceneryArtKey(sprite);
+      const key = this.sKey(sprite);
       // Resolved in a SECOND PASS below, once every piece has registered — a
       // piece must sort against its neighbours, not only against terrain.
       const tex = this.textures.get(key);
