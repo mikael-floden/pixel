@@ -21,32 +21,43 @@ of about a metre across and two tall is ~50 px wide and ~100 tall, which is
 where `COL_RX` 14-30 and `COL_H` 58-112 come from. More air in view earns more
 columns, held `COL_APART`, so dusk reads as a few swarms in a landscape.
 
-### A tight core and a few fading wanderers
+### A cloud, not a column
 
-The second round of sizing, and the reason the distribution is a MIXTURE rather
-than one curve. The maintainer drew the extent he wants and then said the thing
-that matters: *"I don't want that as the new dense size, just more spread out
-(better fading)"* — the bright middle stays as it is and a thin population
-reaches out to there. Widening one distribution cannot do that: every curve with
-a fatter tail drags its median out too, so the core spreads with the rim and the
-whole swarm reads thinner.
+Sized three times, and the last round is the one that matters — the first two
+are kept only because they were each wrong in an instructive way.
 
-So most gnats are drawn from a tight core and `WIDE_FRAC` are wanderers spread
-over the whole reach, which makes the two independent. The wanderers are also
-DIMMER in proportion to how far out they range (`WIDE_FADE`) — the swarm thins
-AND pales toward its edges instead of ending at a hard rim. Measured: median
-reach 6 px, ninetieth percentile 20 px, widest 42 px, and the outer third sits at
-0.61 the opacity of the inner.
+The maintainer drew it beside the drawn swarm: *"I feel they should be spread
+out more horizontally ... You only draw them on top of one tile. I want it to be
+more like a cloud."* Calibrated against the character he was standing next to
+(`CHARACTER_BODY_PX` = 88 px), his circle scales to roughly **130 wu across and
+118 tall** — a body of air about as wide as it is tall, spanning two tiles,
+where the drawn swarm was ~50 wu: one tile, and half the height.
+
+**A distribution's tail is not its silhouette.** The round before this read
+"denser in the middle" as a tight core plus a few far wanderers, and it made the
+swarm NARROWER while the measurements said it had got wider: the widest gnat
+reached 42 px, but that was one rare individual at its extreme, and the bulk —
+which is what the eye reads as the swarm's size — sat at 6 px. The gate now
+asserts the NINETIETH PERCENTILE clears a tile, not the maximum.
+
+So: one smooth curve, mildly stacked toward the middle (`AMP_POW` 1.2 puts the
+median gnat at 0.44 of the cloud and the p90 at 0.89 — denser in the middle,
+where a uniformly filled disc would sit at 0.71, while still being a body rather
+than a line). `WIDE_FADE` keeps the part he liked: the further out a gnat
+ranges, the fainter it is, so the cloud thins AND pales at its edges instead of
+ending at a rim.
+
+Measured: median reach 17 px, bulk spanning 100 px, widest 88 px, mean
+tall-to-wide 1.11, outer third at 0.71 the opacity of the inner.
 
 **`0.65 + 0.35·sin`, not `0.4 + 0.6·sin`.** The radius breathes, and the width
-of that swing quietly decides whether a wanderer is ever SEEN out wide: it only
+of that swing quietly decides whether a gnat is ever SEEN out wide: it only
 appears at full reach when the breathing and the orbit angle peak together, so
-with the wide swing, raising the column radius from 40 to 70 moved the widest
+with the wide swing, raising the cloud radius from 40 to 70 moved the widest
 gnat actually observed from 36 px to 41. Measured. A narrow swing puts it where
 it belongs.
 
-The volume is a vertical ellipsoid: `COL_H` tall, `COL_RX` wide in the GROUND
-plane, so its horizontal part is squashed by `SQUASH` (0.55) on screen the way
+The volume is an ellipsoid: `COL_H` tall, `COL_RX` wide in the GROUND plane, so its horizontal part is squashed by `SQUASH` (0.55) on screen the way
 the moths' orbit is — a circle drawn round on screen is not round in the world.
 Each gnat rides three oscillators (a slow turn around the axis, a rise and fall
 along it, a fast `FLICK`) with its own phases, which is what makes a two dozen

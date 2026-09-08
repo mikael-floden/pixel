@@ -122,7 +122,7 @@ if (spot) {
     let cur = null;
     let lastPlaces = -1;
     let tall = 0, wide = 0, offGround = 0, offView = 0, samples = 0;
-    let ratio = 0;
+    let ratio = 0, aspSum = 0, aspN = 0;
     for (let i = 0; i < 240; i++) {
       const d = window.__mlAmbient.debug("gnats");
       const all = (d.all || []).filter((q) => q.col === 0);
@@ -137,6 +137,8 @@ if (spot) {
         const sy = Math.sqrt(all.reduce((s, q) => s + (q.y - my) ** 2, 0) / all.length);
         if (sy > sx) tall++; else wide++;
         ratio = sy / Math.max(0.001, sx);
+        aspSum += ratio;
+        aspN++;
         samples++;
       }
       const v = window.__ml.camView();
@@ -165,23 +167,29 @@ if (spot) {
       if (my < top || my > bot) outOfBand++;
     }
     return {
-      samples, tall, wide, ratio: +ratio.toFixed(2), rx,
+      samples, tall, wide, ratio: +ratio.toFixed(2), aspect: aspN ? aspSum / aspN : 0, rx,
       anchorMove: +anchorMove.toFixed(1), offAxis: +offAxis.toFixed(1), outOfBand,
       held: best.length, places: segs.length, offGround, offView,
     };
   });
   console.log(
     `column: ${shape.samples} samples over ${shape.places} placement(s), taller than wide in ${shape.tall} ` +
-      `(last ratio ${shape.ratio}); within one placement the anchor moved ${shape.anchorMove}px and the swarm ` +
+      `(mean tall:wide ${shape.aspect.toFixed(2)}); within one placement the anchor moved ${shape.anchorMove}px and the swarm ` +
       `stayed within ${shape.offAxis}px of its axis (${shape.outOfBand} samples out of the height band); ` +
       `${shape.offGround} anchors off ground, ${shape.offView} off view`,
   );
   if (!shape.samples) fail("never saw a populated column to measure");
-  // IT MUST NOT FIT ON ONE TILE. A tile draws 64px wide here; a column that
-  // sits inside one is the thing he asked to be rid of.
-  if (!(shape.rx * 2 >= 26)) fail(`the column is only ${(shape.rx * 2).toFixed(0)}px across — it reads as one tile`);
+  // IT MUST NOT FIT ON ONE TILE. A tile draws 64px wide here, and "you only
+  // draw them on top of one tile" is the complaint in his own words.
+  if (!(shape.rx * 2 >= 100)) fail(`the cloud is only ${(shape.rx * 2).toFixed(0)}px across — it reads as one tile`);
   if (shape.held < 30) fail(`only ${shape.held} samples of a single placement — the drift check proved nothing`);
-  if (shape.wide > shape.tall / 4) fail(`${shape.wide} of ${shape.samples} samples were WIDER than tall — a column is vertical`);
+  /* A CLOUD, NOT A LINE AND NOT A PANCAKE. This used to demand "taller than
+   * wide in every sample", which was right for the narrow column it was written
+   * against and is wrong for what he asked for next — a body of air about as
+   * wide as it is tall. What still matters is that it stands OFF THE GROUND
+   * rather than lying on it, so the aspect is checked as a band. */
+  if (!(shape.aspect >= 0.55)) fail(`the swarm is ${shape.aspect.toFixed(2)} as tall as it is wide — a cloud, not a puddle`);
+  if (!(shape.aspect <= 4)) fail(`the swarm is ${shape.aspect.toFixed(2)} as tall as it is wide — that is a line, not a cloud`);
   if (shape.anchorMove > 0.5) fail(`the column's anchor moved ${shape.anchorMove}px inside one placement — it must stand still`);
   if (shape.offAxis > OFF_AXIS(shape.rx))
     fail(`the swarm's centre strayed ${shape.offAxis}px from its own axis (allowed ${OFF_AXIS(shape.rx).toFixed(1)} at rx ${shape.rx}) — a column hangs over one spot`);
@@ -229,7 +237,13 @@ if (spot) {
     // AND IT REACHES: a tight core alone is not the ask, the wanderers have to
     // get out to something like the extent he drew.
     if (!(profile.max >= profile.rx * 0.6))
-      fail(`the widest gnat only reached ${profile.max.toFixed(1)}px of a ${profile.rx}px column — nothing wanders`);
+      fail(`the widest gnat only reached ${profile.max.toFixed(1)}px of a ${profile.rx}px cloud — nothing reaches the edge`);
+    /* THE BULK IS THE SILHOUETTE, NOT THE TAIL. The round before this measured
+     * a swarm reaching 42px and still looked like one tile, because that was a
+     * single rare gnat at its extreme while the body of it sat at 6px. So the
+     * NINETIETH PERCENTILE has to clear a tile, not the maximum. */
+    if (!(profile.p90 * 2 >= 70))
+      fail(`the bulk of the swarm spans ${(profile.p90 * 2).toFixed(0)}px — a tile is 64, and "only on one tile" is the complaint`);
   }
 
   /* ---- AND IT FADES OUTWARD ----

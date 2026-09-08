@@ -36,7 +36,7 @@ const GAIN_TAU = 1600;
 
 const MAX_COLS = 3;
 const COL_APART = 150; // px between two columns — a swarm is a landmark, not a texture
-const N_GNATS: [number, number] = [24, 44];
+const N_GNATS: [number, number] = [34, 58];
 const NEAR_FRAC = 0.18; // this many fly as 2px, which is what gives the column depth
 
 /* THE COLUMN IS A COLUMN OF AIR, NOT A DOT ON A TILE. The first cut was 10-22px
@@ -47,31 +47,33 @@ const NEAR_FRAC = 0.18; // this many fly as 2px, which is what gives the column 
  * a metre across and two tall — is about 50 px wide and 100 tall, which is
  * where these come from. */
 const COL_H: [number, number] = [80, 150]; // height of the volume, screen px
-const COL_RX: [number, number] = [34, 80]; // horizontal radius of its WIDEST fliers
+const COL_RX: [number, number] = [58, 100]; // horizontal radius — see A CLOUD, NOT A COLUMN
 
-/* A SWARM HAS A TIGHT CORE AND A FEW WANDERERS, and the second round of this
- * is why it is a MIXTURE rather than one curve.
+/* A CLOUD, NOT A COLUMN — and the third round of sizing is the one that got it.
  *
- * The maintainer drew the extent he wants (a circle about 2.3x the drawn width)
- * and then said the thing that matters: "I don't want that as the new dense
- * size, just more spread out (better fading)" — i.e. the bright middle stays as
- * it is and a THIN population reaches out to there. Widening one distribution
- * cannot do that: every curve with a fatter tail also drags its median out, so
- * the core spreads with the rim and the whole swarm reads thinner.
+ * The maintainer drew it twice. The second time, beside the drawn swarm: "I
+ * feel they should be spread out more horizontally ... You only draw them on
+ * top of one tile. I want it to be more like a cloud." Calibrated against the
+ * character he was standing next to (CHARACTER_BODY_PX = 88 px, so his circle
+ * scales to roughly 130 wu across and 118 tall), that is a body of air about
+ * AS WIDE AS IT IS TALL and spanning two tiles, where the drawn swarm was ~50
+ * wu — one tile, and half the height.
  *
- * So: MOST gnats (1 - WIDE_FRAC) are drawn from a tight core, and the rest are
- * wanderers spread over the whole reach. The two knobs are then independent —
- * the core keeps its size while the outliers go as far as you like — and the
- * wanderers are DIMMER in proportion to how far out they range (WIDE_FADE),
- * which is the "better fading" he asked for: the swarm should thin AND pale
- * toward its edges, not end at a hard rim.
+ * WHAT WENT WRONG IN BETWEEN is worth keeping, because it looked right on
+ * paper: reading "denser in the middle" as a TIGHT core plus a few wanderers
+ * made the bulk narrower, not wider. The measurements said the swarm reached
+ * 42px, but that was one rare gnat at its extreme — the BULK, which is what the
+ * eye reads as the swarm's size, sat at 6px. A distribution's tail is not its
+ * silhouette.
  *
- * Measured before/after at rx 60: median reach 6.5px either way, ninetieth
- * percentile 19 -> 29px, widest 36 -> ~80px. */
-const WIDE_FRAC = 0.22; // this many are wanderers
-const AMP_CORE = 0.22; // the core reaches this fraction of the column
-const AMP_CORE_POW = 0.8; // ...and is itself stacked toward the axis
-const WIDE_FADE = 0.55; // a gnat at full reach keeps this much less opacity
+ * So one smooth curve, mildly stacked toward the middle: `AMP_POW` 1.2 puts the
+ * median gnat at 0.44 of the cloud and the ninetieth percentile at 0.89, which
+ * is denser in the middle (a uniformly filled disc would sit at 0.71) while
+ * still being a body rather than a line. `WIDE_FADE` keeps the part he did
+ * like: the further out a gnat ranges the fainter it is, so the cloud thins AND
+ * pales at its edges instead of ending at a rim. */
+const AMP_POW = 1.2;
+const WIDE_FADE = 0.5; // a gnat at full reach keeps this much less opacity
 const AMP_FLOOR = 0.1; // even a homebody is not glued to the axis
 const RISE_FLOOR = 0.4; // ...and still uses some of the column's height
 const SQUASH = 0.55; // the ground plane is shallow on screen (the moths' number)
@@ -191,10 +193,7 @@ export function gnatsFeature(): AmbientFeature {
     g.ph = rnd() * Math.PI * 2;
     g.pf = rnd() * Math.PI * 2;
     g.pr = rnd() * Math.PI * 2;
-    // Core or wanderer — see the note on WIDE_FRAC.
-    g.amp = rnd() < WIDE_FRAC
-      ? AMP_CORE + (1 - AMP_CORE) * rnd()
-      : AMP_CORE * Math.pow(rnd(), AMP_CORE_POW);
+    g.amp = Math.pow(rnd(), AMP_POW); // see A CLOUD, NOT A COLUMN
     g.base = range(ALPHA);
     g.near = rnd() < NEAR_FRAC;
     g.wait = instant ? 0 : range(ARRIVE_SPREAD);
