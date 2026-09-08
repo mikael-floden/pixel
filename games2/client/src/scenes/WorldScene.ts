@@ -16743,10 +16743,18 @@ export class WorldScene extends Phaser.Scene {
        * is not plate geometry, and an unguarded throw here escapes the whole
        * pass — one bad cell would black out the entire world instead of
        * costing its own diamond. */
-      const bop =
-        b && !cutSuppressed
-          ? this.t3Try(`boundary art ${col},${row}`, () => tex.opsForBoundary(b), null)
-          : null;
+      /* THE GUARDS ARE INLINE, NOT `t3Try`. Each t3Try call built a template
+       * string AND a closure per cell per paint — three of each for every cell
+       * of every slice, all thrown away on the success path. The catch is the
+       * same once-per-message warning; only the error path allocates now. */
+      let bop: ReturnType<typeof tex.opsForBoundary> = null;
+      if (b && !cutSuppressed) {
+        try {
+          bop = tex.opsForBoundary(b);
+        } catch (e) {
+          this.t3Warn("boundary art", col, row, e);
+        }
+      }
       // THE TILE IS THE BOUNDARY: on a flat cell the composed tile replaces the
       // plate rather than covering it — same silhouette, so the plate under it
       // was pure overdraw, and render3 composites exactly one tile here
@@ -16797,7 +16805,15 @@ export class WorldScene extends Phaser.Scene {
        * transition tile that still covered 924 texels would leave the same
        * 1088-texel hole with nothing beneath it. The two changes go together. */
       const useBoundary = !!bop && cell.kind === "field" && !this.noTransitions;
-      const ops = useBoundary ? null : this.t3Try(`blits ${col},${row}`, () => cellBlits(tex, this.t3tm, cell, cut), []);
+      let ops: ReturnType<typeof cellBlits> | null = null;
+      if (!useBoundary) {
+        try {
+          ops = cellBlits(tex, this.t3tm, cell, cut);
+        } catch (e) {
+          ops = [];
+          this.t3Warn("blits", col, row, e);
+        }
+      }
       /* COVERED MEANS THE WHOLE FOOTPRINT, not merely "something drew". A
        * TOP-FACE-ONLY raster — a raised cell's surface, a raised or liquid
        * boundary — paints 924 of the plate's 2,012 texels, so treating it as
@@ -16808,7 +16824,12 @@ export class WorldScene extends Phaser.Scene {
       const covered =
         !topFaceOnly && (useBoundary || (ops !== null && ops.some((o) => o.role === "surface")));
       if (!covered && cell.kind === "field" && cell.art?.kind !== "liquid") {
-        const under = this.t3Try(`under ${col},${row}`, () => tex.groundUnderlay(cell), null);
+        let under: ReturnType<typeof tex.groundUnderlay> = null;
+        try {
+          under = tex.groundUnderlay(cell);
+        } catch (e) {
+          this.t3Warn("under", col, row, e);
+        }
         if (under) {
           this.t3Blit(rt, under, ax, ay, tint);
           stats.blits++;
@@ -16846,7 +16867,9 @@ export class WorldScene extends Phaser.Scene {
        * repaintTiles3Cells bill of 4-19 ms per frame under every roof. */
       if (b && !bop && !cutSuppressed) this.t3boundaryOwed.add(idx);
       else this.t3boundaryOwed.delete(idx);
-      if (useBoundary) {
+      if (useBoundary && bop) {
+        // `useBoundary` already implies `bop`; the `&& bop` only restores the
+        // narrowing the inlined guard took from the type checker.
         this.t3Blit(rt, bop, ax, ay, tint);
         stats.blits++;
         stats.boundaries++;
@@ -16991,6 +17014,15 @@ export class WorldScene extends Phaser.Scene {
    *  same throw would kill the whole update loop, every frame, for one
    *  unpublished tile. So it is reported ONCE per distinct message and the cell
    *  is skipped: a hole in the map, loudly, rather than a black screen. */
+  /** t3Try's catch, for the inlined hot-path guards: the label is built HERE,
+   *  on the error path only. */
+  private t3Warn(what: string, col: number, row: number, e: unknown): void {
+    const m = String((e as Error)?.message ?? e);
+    if (this.t3Failed.has(m)) return;
+    this.t3Failed.add(m);
+    console.warn(`[nangijala] tiles3: ${what} ${col},${row} could not resolve — ${m}`);
+  }
+
   private t3Try<T>(where: string, f: () => T, fallback: T): T {
     try {
       return f();

@@ -826,7 +826,43 @@ export interface Tiles3Blit {
  *  so the courses build a solid block under the top. A liquid's diamond is a
  *  painted texture keyed by its colour (`liquidKey`), which is why nothing
  *  downstream needs a special case for it. */
+/** THE BASE OPS, MEMOISED PER CELL.
+ *
+ *  `cellOpsBuild` is a PURE function of the cell — it reads nothing else — and
+ *  a `Tiles3Cell` comes out of the scene's resolution cache, so the same object
+ *  is handed here on every paint of every window it survives. Rebuilding its
+ *  ops each time allocated one array plus one object per op for EVERY cell of
+ *  EVERY paint, and the ground pass walks thousands of cells several times a
+ *  second: measured on the maintainer's phone, 78.2 MB/s allocated and 3,435
+ *  collections in one 30 s running window, against 21.4 MB/s and 554 while
+ *  standing still in the same place.
+ *
+ *  A WeakMap, so the memo dies with the cell: a rebuilt resolver makes new cell
+ *  objects and the old entries are collected with them, which is what keeps
+ *  this from becoming a cache that can go stale. Nothing mutates a returned ops
+ *  array — every `push` in this file is a builder filling its OWN local array —
+ *  and that is the invariant this sharing rests on. */
+const cellOpsMemo = new WeakMap<Tiles3Cell, Tiles3Blit[]>();
+/** `LIQUID_TILE_GROUNDS.includes` ran a linear scan per cell per paint. */
+const LIQUID_SET = new Set<string>(LIQUID_TILE_GROUNDS);
+
+/** `{ ...art, topOnly: true }`, once per art object rather than once per cell
+ *  per paint. Pure: the variant depends on nothing but the art, and generic so
+ *  it carries the caller's own type exactly as the inline spread did. */
+const topOnlyMemo = new WeakMap<object, unknown>();
+function topOnlyOf<T extends object>(art: T): T & { topOnly: true } {
+  let v = topOnlyMemo.get(art) as (T & { topOnly: true }) | undefined;
+  if (v === undefined) topOnlyMemo.set(art, (v = { ...art, topOnly: true }));
+  return v;
+}
+
 export function cellOps(cell: Tiles3Cell): Tiles3Blit[] {
+  let hit = cellOpsMemo.get(cell);
+  if (hit === undefined) cellOpsMemo.set(cell, (hit = cellOpsBuild(cell)));
+  return hit;
+}
+
+function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
   if (cell.kind === "field") {
     const art = cell.art;
     if (!art) return [];
@@ -1261,8 +1297,34 @@ export class Tiles3Textures {
   /** The drawable texture key for a resolved plate: the plain art key for a
    *  published or clean plate (nothing is built), the conformed raster's own
    *  key otherwise. */
+  /** THE KEY STRINGS, ONCE PER (ART, GROUND). `plateKey` and the `t3s:` prefix
+   *  were rebuilt as template strings on every call — a fresh string object
+   *  each time, so every Map and dictionary lookup downstream rehashed ~50
+   *  characters instead of reading a cached hash. The art object comes out of
+   *  the resolution cache and is immutable, so the memo is exact and dies with
+   *  it (WeakMap). */
+  private plateKeyMemo = new WeakMap<object, Map<string, { key: string; skey: string }>>();
+  private keysFor(art: PlateLike, ground: string): { key: string; skey: string } {
+    const o = art as unknown as object;
+    let m = this.plateKeyMemo.get(o);
+    if (!m) this.plateKeyMemo.set(o, (m = new Map()));
+    let k = m.get(ground);
+    if (!k) {
+      const key = plateKey(art, ground);
+      m.set(ground, (k = { key, skey: "t3s:" + key }));
+    }
+    return k;
+  }
+  /** The hit half of `ensure` with no builder — so a caller on the hot path
+   *  does not allocate a closure it will never call. */
+  private ensureHit(key: string): string | null {
+    if (!this.o.textures.exists(key)) return null;
+    this.stats.reused++;
+    return key;
+  }
+
   plate(art: PlateLike, ground: string): string | null {
-    const key = plateKey(art, ground);
+    const { key, skey } = this.keysFor(art, ground);
     /* A published or clean plate is drawn straight from its loaded file and is
      * never copied — UNLESS it is top-only, which is a different picture and so
      * a built raster under its own key. */
@@ -1272,11 +1334,13 @@ export class Tiles3Textures {
        * failed — which dropped the op and put TILE-SIZED black holes across the
        * whole map. The fallback makes this strictly no worse than drawing the
        * file: worst case is exactly today's picture. */
-      const capped = this.ensure(`t3s:${key}`, () => this.platePixels(art, ground));
+      const hit = this.ensureHit(skey);
+      if (hit) return hit;
+      const capped = this.ensure(skey, () => this.platePixels(art, ground));
       if (capped) return capped;
       return this.o.textures.exists(key) ? key : null;
     }
-    return this.ensure(key, () => this.platePixels(art, ground));
+    return this.ensureHit(key) ?? this.ensure(key, () => this.platePixels(art, ground));
   }
 
   /** THE FADE SCATTER for one file on one ground, built once and cached. Null
@@ -1304,8 +1368,15 @@ export class Tiles3Textures {
    *  than substituted: a hole this frame is a hole, and the next window fills
    *  it; a fallback tile is a wrong picture that nothing ever corrects. */
   opsForCell(cell: Tiles3Cell): Tiles3Blit[] {
-    const out: Tiles3Blit[] = [];
-    for (const op of cellOps(cell)) {
+    const base = cellOps(cell);
+    /* COPY ON WRITE. Every op that passes through unchanged is the SAME object
+     * the memo already holds, so the overwhelmingly common case — a window
+     * whose art is all resident — now returns the memoised array itself and
+     * allocates nothing at all. `out` is materialised only at the first op this
+     * cell actually substitutes or drops, and carries the ops before it. */
+    let out: Tiles3Blit[] | null = null;
+    for (let i = 0; i < base.length; i++) {
+      const op = base[i];
       /* THE SURFACE OP CARRIES THE ART, whatever the cell's kind — a raised
        * cell's cap wears one too (see cellOps). Keyed off the ROLE, not the
        * kind, or a wall cell's surface would take the raw-file branch and skip
@@ -1315,8 +1386,13 @@ export class Tiles3Textures {
       if (op.role === "fade") {
         const f = cell.fade;
         const built = f ? this.fade(f.file, cell.ground) : null;
-        if (built) out.push(op.key === built ? op : { ...op, key: built });
-        else this.droppedOps++;
+        if (built) {
+          if (built !== op.key && !out) out = base.slice(0, i);
+          if (out) out.push(built === op.key ? op : { ...op, key: built });
+        } else {
+          this.droppedOps++;
+          if (!out) out = base.slice(0, i);
+        }
         continue;
       }
       const art = op.role === "surface" ? cell.art : undefined;
@@ -1339,12 +1415,14 @@ export class Tiles3Textures {
        * resolver; a ground in LIQUID_TILE_GROUNDS now takes the top-face path
        * whatever its art says, so no future resolver change can leak a wall
        * onto the sea again. */
-      const liquidGround = LIQUID_TILE_GROUNDS.includes(cell.ground);
+      const liquidGround = LIQUID_SET.has(cell.ground);
       if (art && art.kind === "liquid") key = this.liquid(art.topRGB);
       else if (art && (art.kind === "conform" || art.topOnly || liquidGround))
         // a CONFORM repaints its own wall band and must keep it (see plateKey's
         // note); only a liquid ground is forced onto the top-face path.
-        key = this.plate(liquidGround ? { ...art, topOnly: true } : art, cell.ground);
+        // MEMOISED: this spread ran per liquid-ground CELL per paint, and the
+        // sea is a large part of the_game. One variant per art object.
+        key = this.plate(liquidGround ? topOnlyOf(art) : art, cell.ground);
       /* EVERY FIELD ART GOES THROUGH `plate()`, INCLUDING A PUBLISHED OR CLEAN
        * ONE — and this is the LAND zigzag (2026-09-04).
        *
@@ -1384,9 +1462,14 @@ export class Tiles3Textures {
         // ...and, while the switch is on, draw the hole instead of leaving it.
         if (this.debugDrops) key = this.liquid([255, 0, 255]);
       }
-      if (key) out.push(key === op.key ? op : { ...op, key });
+      if (!key) {
+        if (!out) out = base.slice(0, i);
+        continue;
+      }
+      if (key !== op.key && !out) out = base.slice(0, i);
+      if (out) out.push(key === op.key ? op : { ...op, key });
     }
-    return out;
+    return out ?? base;
   }
 
   /** A flat diamond in PLATE geometry (fw x fh, `libTop` at its own rows) —
@@ -1433,7 +1516,20 @@ export class Tiles3Textures {
    *
    *  Uses the liquid diamond, which is already a cached flat diamond per RGB
    *  and exactly the right shape (a plate's own top-face mask). */
+  private underlayMemo = new WeakMap<Tiles3Cell, Tiles3Blit>();
   groundUnderlay(cell: Tiles3Cell): Tiles3Blit | null {
+    /* A PURE FUNCTION OF THE CELL — ground colour from static world data, x/y
+     * from the cell — rebuilt per paint as: a hex parse (four string slices),
+     * a template-string key, a closure and a fresh blit object. Once per cell
+     * instead; a null (no colour, or the flat diamond failed to register) is
+     * deliberately not memoised so it is retried. */
+    const hit = this.underlayMemo.get(cell);
+    if (hit) return hit;
+    const built = this.groundUnderlayBuild(cell);
+    if (built) this.underlayMemo.set(cell, built);
+    return built;
+  }
+  private groundUnderlayBuild(cell: Tiles3Cell): Tiles3Blit | null {
     const g = this.o.groundTypes[cell.ground];
     const hex = g?.palette?.top ?? g?.base_color;
     if (!hex) return null;
@@ -1500,9 +1596,15 @@ export class Tiles3Textures {
 
   private ensure(key: string, build: () => Pixels | null): string | null {
     if (this.o.textures.exists(key)) {
-      if (this.mine.has(key)) {
+      /* NO LRU TOUCH UNLESS SOMETHING EVICTS. The shipped configuration passes
+       * `limit: 0` (the pool holds texture objects across rebuilds and must
+       * never evict), so `mine`'s insertion order is read by nothing — and the
+       * delete+set here was two Map mutations per cell per paint, on a fresh
+       * template-string key that V8 had to rehash every time. Profiled on the
+       * dev stack: 21.5% of the slice's self time, the single largest item. */
+      if ((this.o.limit ?? 0) > 0 && this.mine.has(key)) {
         this.mine.delete(key);
-        this.mine.set(key, true); // LRU touch
+        this.mine.set(key, true);
       }
       this.stats.reused++;
       return key;
