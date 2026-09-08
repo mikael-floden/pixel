@@ -2045,6 +2045,11 @@ export class WorldScene extends Phaser.Scene {
       groundDrew: {
         cells: this.t3stats.cells,
         blits: this.t3stats.blits,
+        /* FLUSHES IN THAT SAME PAINT. Read as `flushes / blits`: ~1 means every
+         * blit is its own draw call and an atlas is the fix; ~0 means they batch
+         * and the cost is fill or JS, and an atlas would buy nothing. This is
+         * the question the resolve worker's null result left standing. */
+        flushes: this.t3paintFlushes,
         boundaries: this.t3stats.boundaries,
         underlays: this.t3stats.underlays,
         composed: this.t3stats.composed,
@@ -5348,6 +5353,7 @@ export class WorldScene extends Phaser.Scene {
         // The pass's own counters (incl. its `ms`) plus the whole redraw's wall clock.
         const out = {
           ...this.t3stats,
+          flushes: this.t3paintFlushes, // see drawTiles3Ground: binds or fill
           cull: this.groundCull,
           cache: this.groundCacheOn,
           cached: this.t3cells.size,
@@ -5733,7 +5739,7 @@ export class WorldScene extends Phaser.Scene {
         if (!world) return null;
         const before = { ...this.groundCellStats };
         this.repaintTiles3Cells(cells.map(([c, r]) => r * world.width + c));
-        return { ...this.t3stats, mode: this.groundLastMode, runs: this.groundCellStats.runs - before.runs, full: this.groundCellStats.full - before.full, totalMs: +(this.groundCellStats.ms - before.ms).toFixed(1) };
+        return { ...this.t3stats, flushes: this.t3paintFlushes, mode: this.groundLastMode, runs: this.groundCellStats.runs - before.runs, full: this.groundCellStats.full - before.full, totalMs: +(this.groundCellStats.ms - before.ms).toFixed(1) };
       },
       /** LENS: STAMP EXACTNESS. Clears the ground RT to opaque black straight
        *  on its framebuffer, lays ONE `rt.stamp` of a 1x1 white texture over
@@ -16349,6 +16355,11 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
+  /** PIPELINE FLUSHES INSIDE THE LAST GROUND PAINT — see drawTiles3Ground.
+   *  The frame-scoped `flushes` counter cannot answer this: a paint happens in
+   *  update(), and the number the beacon reports is the whole frame's. */
+  private t3paintFlushes = 0;
+
   private drawTiles3Ground(
     rt: Phaser.GameObjects.RenderTexture,
     ax: number,
@@ -16364,6 +16375,21 @@ export class WorldScene extends Phaser.Scene {
     const t3 = this.t3;
     const world = this.world;
     if (!t3 || !world) return;
+    /* IS THIS PASS BIND-BOUND OR FILL-BOUND? The hook at perfHookRender already
+     * says what to conclude: "a flush count near the display-list size means the
+     * ground is being drawn one object per draw call; a count in the dozens
+     * means the cost is elsewhere and atlasing would buy nothing." It has never
+     * been able to answer for the GROUND, because it is reset per rendered frame
+     * and a paint runs inside update() among everything else. Scoped to the
+     * pass, `flushes / blits` is the whole question: ~1 and every blit is its own
+     * draw call; ~0 and they batch and the cost is fill or JS.
+     *
+     * THIS IS WHY IT MATTERS NOW. The resolve worker moved 840-1,604 ms of
+     * resolution off his frame thread and the slice cost did not move — 30.2 ms
+     * with it on against 29.4 ms off, at the same spot at the same time of day.
+     * So the slice is its DRAWS, and there are only two ways to make draws
+     * cheaper: fewer of them, or fewer bindings between them. */
+    const flush0 = this.perfFlushes;
     const tex = this.ensureTiles3Textures();
     const load = this.t3load;
     // A file the pass wanted and does not have yet is remembered AGAINST THE
@@ -16599,6 +16625,7 @@ export class WorldScene extends Phaser.Scene {
     stats.composed = (tex?.stats.built ?? 0) - built0;
     stats.composeMs = +((tex?.stats.buildMs ?? 0) - buildMs0).toFixed(1);
     stats.ms = +(performance.now() - t0).toFixed(1);
+    this.t3paintFlushes = this.perfFlushes - flush0;
     if (stats.blits > 0) this.groundPainted = true;
     /* DID THIS PAINT DROP ANYTHING? See groundDropsPending — and only ARM the
      * repaint when something has landed since the last one. Re-arming
