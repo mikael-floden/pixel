@@ -1783,7 +1783,10 @@ export class WorldScene extends Phaser.Scene {
      * is 1,037 ms, and the one instrument built to say what those frames were
      * doing was switched off. */
     this.hitchOn = this.perfBeacon;
-    if (this.perfBeacon) this.perfHookRender();
+    if (this.perfBeacon) {
+      this.perfHookRender();
+      this.perfArmBaselines();
+    }
     this.perfBeaconAt = 0;
     this.perfBeaconFrom = null;
     this.perfAcc = {};
@@ -1920,7 +1923,11 @@ export class WorldScene extends Phaser.Scene {
         coverQuads: this.coverStat.quads,
         coverCands: this.coverStat.cands,
         coverSlots: this.coverStat.slots,
-        texGen: this.t3texGen, // ground-drain residency counter (see t3drainDrops)
+        texGen: this.t3texGen, // every texture the game added — a diagnostic
+        /* WHAT THE DRAIN NOW GATES ON: terrain batches landed. Reported beside
+         * texGen so a run says which of the two moved. `drains` with texGen
+         * climbing and terrainGen flat is the bug this pair was added for. */
+        terrainGen: this.t3terrainGen,
         // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
         // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
         // every "full" frame in the last beacon was a `repaintWorld` — so these
@@ -2349,6 +2356,16 @@ export class WorldScene extends Phaser.Scene {
    * small means the cost is elsewhere and the hunt moves on. `sortMs`/`sorts`
    * separate the depth sort from the drawing, and `drawCount` says how many
    * objects actually reached the GPU versus how many we built. */
+  /** Snapshot the since-load counters the report sends as WINDOW deltas. Called
+   *  wherever the beacon or a dev `perf(true)` arms, so the first window is a
+   *  window and not "everything since page load". */
+  private perfArmBaselines(): void {
+    this.perfPrevFullPaints = this.groundFullRuns;
+    this.perfPrevDrains = this.repaintStats.drains;
+    this.perfPrevDeferred = this.repaintStats.drainsDeferred;
+    this.perfPrevCtxRestores = this.ctxRestores;
+  }
+
   private perfHookRender(): void {
     if (this.perfRenderHooked) return;
     this.perfRenderHooked = true;
@@ -2479,6 +2496,14 @@ export class WorldScene extends Phaser.Scene {
   /** Ground repaints forced by a context restore or a tab-in — see
    *  hookContextRestore. Reported per window by the beacon. */
   private ctxRestores = 0;
+  /* THE DELTA BASELINES ARE SNAPSHOTTED WHEN THE BEACON ARMS, not left at zero.
+   * They only advanced when a report was SENT, so the FIRST window of every run
+   * reported every full paint and drain since page LOAD — boot included — while
+   * `texturesAdded` (which resets on read) reported the window honestly. His
+   * 2026-09-08 run read "fullPaints 27, drains 24, texturesAdded 0", which is
+   * an impossible combination and cost an hour: the honest windows were the
+   * second and third, at 9 and 5. A metric that is per-window in one field and
+   * since-load in the next is worse than no metric. */
   private perfPrevDrains = 0;
   private perfPrevDeferred = 0;
   /** Server-side position jumps for the local body — see the recorder in the
@@ -2660,6 +2685,10 @@ export class WorldScene extends Phaser.Scene {
    *  construction, and a full paint costs 52.9-271.6 ms of redrawGround on his
    *  phone. That is where 2 of his 3.3 seconds of >50 ms tasks went. */
   private t3texGen = 0;
+  /** Terrain BATCHES landed — the drain's real residency signal (see
+   *  onTerrainBatch). Distinct from t3texGen, which counts every texture in the
+   *  game and is a diagnostic, not a gate. */
+  private t3terrainGen = 0;
   /** The generation at the last drain — see groundDropsPending's setter. */
   private t3drainGen = -1;
   private t3sheetPaths = new Set<string>();
@@ -5960,7 +5989,10 @@ export class WorldScene extends Phaser.Scene {
           // Arming perf from the console must install them too, or a dev A/B
           // silently measures a section table with the three biggest entries
           // missing — which is exactly what it did.
-          if (on) this.perfHookRender();
+          if (on) {
+            this.perfHookRender();
+            this.perfArmBaselines();
+          }
           this.perfAcc = {};
           this.perfFrames = [];
           this.perfStack = [];
@@ -15461,6 +15493,16 @@ export class WorldScene extends Phaser.Scene {
    *  (coalesce off) and the switch off keep the old full repaint. */
   private onTerrainBatch(paths: string[]): void {
     this.repaintStats.terrain++;
+    /* THE ONLY THING THAT CAN REPAIR A DROPPED GROUND OP. See t3drainDrops:
+     * the drain's residency guard used to read `t3texGen`, which counts EVERY
+     * texture the game adds — a monster strip, an NPC frame, a scenery piece,
+     * a composed cover surface. None of those can make a dropped ground op
+     * drawable, but each one re-armed the guard and bought a FULL ground
+     * repaint. Measured on his phone: 2,099 texture adds in one 30 s window,
+     * 9 full paints out of it, each ~70 ms of ground work inside a ~117 ms
+     * frame. Terrain art landing is the real event, and this is where it
+     * lands. */
+    this.t3terrainGen++;
     if (!this.repaintCoalesce) {
       this.repaintWorld();
       this.repaintStats.groundRuns++;
@@ -16365,7 +16407,7 @@ export class WorldScene extends Phaser.Scene {
      * again, and pays a full paint at every loader idle edge for a picture that
      * cannot change. One repaint per drop episode is the feature; the rest was
      * the bug. */
-    if ((tex?.droppedOps ?? 0) > drops0 && this.t3texGen !== this.t3drainGen) this.groundDropsPending = true;
+    if ((tex?.droppedOps ?? 0) > drops0 && this.t3terrainGen !== this.t3drainGen) this.groundDropsPending = true;
     load?.flush();
     this.checkTiles3Pitch();
   }
@@ -16424,7 +16466,7 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     this.groundDropsPending = false;
-    this.t3drainGen = this.t3texGen; // nothing new can drop until art lands
+    this.t3drainGen = this.t3terrainGen; // nothing new can drop until TERRAIN art lands
     this.repaintStats.drains++;
     /* AND IT DOES NOT REPAINT. The drop classes above are all owned elsewhere,
      * so this was a whole-texture paint with nothing to fix — measured 145
