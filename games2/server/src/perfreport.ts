@@ -58,6 +58,9 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * against a mean of 5,682). */
     zoomMean: num(body.zoomMean, 0, 16),
     dpr: num(body.dpr, 0, 8),
+    /* Logical cores on his device. The client uses exactly one of them; this
+     * says how many are sitting idle while a ground slice holds the frame. */
+    cores: num(body.cores, 0, 256),
     view: str(body.view, 24),
     secs: num(body.secs, 0, 3600),
     final: body.final === true,

@@ -1903,6 +1903,14 @@ export class WorldScene extends Phaser.Scene {
       zoom: cam.zoom, // INSTANTANEOUS — see zoomMean; the snapshot instant is atypical
       zoomMean: +zoomMean.toFixed(2),
       dpr: window.devicePixelRatio || 1,
+      /* HOW MANY CORES THE PHONE HAS — and how many the game uses, which is
+       * ONE. Every line of this client runs on the main thread: the resolver,
+       * the ground slice, the occluder rebuild, the lighting twins and the
+       * render commands, so a 25 ms slice does not run BESIDE a frame, it runs
+       * INSTEAD of one (maintainer 2026-09-08: "doesn't my phone have several
+       * cores?"). This is the number that decides how many workers are worth
+       * starting, and nothing has ever reported it. */
+      cores: navigator.hardwareConcurrency || 0,
       view: `${this.scale.width}x${this.scale.height}`,
       secs: +secs.toFixed(1),
       final,

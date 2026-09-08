@@ -121,3 +121,15 @@ test("texFam reaches the file — the fifth field, and the one that names gapBus
   assert.equal(r.texFam["f:"], 1004);
   assert.equal(r.texFam["cover:"], 222);
 });
+
+test("cores reaches the file — how many the phone has against the one we use", () => {
+  // Every line of the client runs on the main thread, so a ground slice does
+  // not run beside a frame, it runs instead of one. How many cores are idle
+  // while that happens decides how many workers are worth starting, and no
+  // report has ever carried the number.
+  const r = perfReport({ cores: 8, dpr: 2.75 }, "2026-09-08T00:00:00.000Z") as Record<string, any>;
+  assert.equal(r.cores, 8);
+  assert.equal(r.dpr, 2.75);
+  // Junk must not become a core count.
+  assert.equal((perfReport({ cores: "lots" }, "2026-09-08T00:00:00.000Z") as Record<string, any>).cores, null);
+});
