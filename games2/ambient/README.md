@@ -48,6 +48,18 @@ them; folder isolation beats DRY here).
   `WorldScene` for `deepwater/`, because `water` and `deep_water` carry
   identical `Surface` records and nothing on the probe surface could tell a pond
   from the end of the world.
+- **A SOURCE-ATTACHED EFFECT FOLLOWS ITS SOURCE, NOT THE ROOF.** The outdoor
+  rule (`ctx.outdoor`, below) exists because rain, pollen and birds fall through
+  a roof the game has just cut away. A spark from a fire does not: it belongs to
+  a thing you can SEE, and the most atmospheric fire in this world is a brazier
+  in a cave — `embers/` inherited the rule and was silently dead beside one
+  (maintainer 2026-09-08). So an effect anchored to a visible object gates on
+  the OBJECT: an unsealed source works wherever you are, and a sealed one (in a
+  room) works only while you are indoors, when the roof over it is cut away.
+  Without that second half its marks would draw over the roof hiding their own
+  source — they sit above the darkness overlay — which is the wall-hack the
+  cut-away exists to prevent. Everything that fills the air keeps the plain
+  outdoor rule.
 - **`lightsInView(pad)`** — the second seam added to `WorldScene`, for
   `moths/`: every `EmissiveSource` the camera can see (emissive tiles AND
   scenery lamps) as `{id, x, y, footY, z, r, color, flicker, sealed}`,

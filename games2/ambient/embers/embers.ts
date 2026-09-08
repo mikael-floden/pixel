@@ -87,6 +87,7 @@ export function embersFeature(): AmbientFeature {
   let lightAge = 0;
   let probes = 0;
   let lit = 0; // how many lights were in view at the last read (QA)
+  let inside = false; // is the player under a roof? read on the light throttle
   let gain = 0;
   let suppressed = false;
   let forced = false;
@@ -96,6 +97,11 @@ export function embersFeature(): AmbientFeature {
 
   const readFires = (): Fire[] => {
     const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
+    // On the same throttle as the light list — never per frame.
+    try {
+      const ind = ml?.indoor?.() as { indoor?: boolean } | null | undefined;
+      inside = ind?.indoor === true;
+    } catch { inside = false; }
     const f = ml?.lightsInView as
       | undefined
       | ((pad?: number) => {
@@ -109,7 +115,9 @@ export function embersFeature(): AmbientFeature {
       const all = f(48) || [];
       lit = all.length;
       return all
-        .filter((l) => !l.sealed && l.r >= MIN_R && l.embers)
+        // A sealed fire is one inside a room: it sparks only while you are in
+        // there with it, or the sparks would draw over its own roof.
+        .filter((l) => l.embers && l.r >= MIN_R && (!l.sealed || inside))
         .map((l) => {
           // The light's own colour, normalised — a blue resin torch throws blue
           // sparks, which is the whole reason this is read rather than assumed.
@@ -176,7 +184,8 @@ export function embersFeature(): AmbientFeature {
       // leans on night without switching off in daylight.
       const target = forced ? 1 : suppressed ? 0 : 0.25 + 0.75 * ctx.env.night;
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
-      const g = gain * ctx.outdoor;
+      // NOT multiplied by ctx.outdoor — see the note at the top of this file.
+      const g = gain;
       if (g <= 0.02) {
         for (const s of sparks) if (s.sprite.visible) { s.sprite.setVisible(false); s.live = false; }
         fires = [];
@@ -243,6 +252,7 @@ export function embersFeature(): AmbientFeature {
         gain: +gain.toFixed(3),
         probes, // QA: the light list walks every source — it must stay throttled
         lights: lit, // how many lights were in view at all
+        inside, // ...and whether the player is under a roof (sealed fires need it)
         fires: fires.length, // ...and how many of those are fires
         fireList: fires.map((f) => ({
           id: f.id, x: Math.round(f.x), y: Math.round(f.y),

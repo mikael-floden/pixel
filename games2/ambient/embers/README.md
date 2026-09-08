@@ -42,13 +42,30 @@ parsing, no allowlist, no group names.
   breath (`IN_MS`) and dies by cooling. Measured mean alpha 0.478 at birth,
   0.662 mid-life, 0.002 at the end.
 
-## Where you will and won't see them
+## It follows the fire, not the roof
 
-Most ember fires on the_game are INDOORS — a hearth in a house, braziers in a
-cave — and those are `sealed`, which this skips, exactly as the moths skip a
-sealed lamp. Every ambient effect is outdoor by charter, and standing inside one
-drops `ctx.outdoor` to 0 anyway. Measured: of the first fourteen ember
-placements, eleven are sealed or roofed and three are in the open.
+Every other ambient effect is outdoor by charter and multiplies by
+`ctx.outdoor`, because rain, pollen and birds fall through a roof the game has
+just cut away. **A spark does not.** It belongs to a fire you can SEE, and the
+most atmospheric fire in this world is a brazier in a cave — so this effect
+inherited that rule and was silently dead beside one. The maintainer stood next
+to a cave brazier with the switch on and got nothing (2026-09-08; measured at
+his spot, 256,167: outdoor gain 0, so the whole feature returned before it read
+anything). Most ember placements on the_game are indoors, so that was the common
+case, not an edge one.
+
+The rule that replaces it, and why it is not simply "always":
+
+- an **unsealed** source sparks wherever you are — it is out in the world;
+- a **sealed** one (inside a room) sparks only while you are **indoors**, when
+  the roof over it is cut away and you can see it.
+
+Without the second half, sparks from a fire behind a wall would draw over the
+roof that hides it — these marks sit above the darkness overlay — which is the
+wall-hack the cut-away exists to prevent. The player's roof state is read on the
+same throttle as the light list, never per frame.
+
+Gated: the run stands in a cave with a hearth and requires sparks (measured 10).
 
 ## Cost
 

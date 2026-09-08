@@ -250,6 +250,37 @@ else {
   }
 }
 
+/* ---- A FIRE IN A CAVE SPARKS, AND YOU HAVE TO BE IN THERE ----
+ * Every other ambient effect is outdoor by charter, and embers inherited that
+ * and were silently dead beside the most atmospheric fire in the world: the
+ * maintainer stood next to a cave brazier with the effect switched on and got
+ * nothing (2026-09-08 — measured at his spot, outdoor gain 0). A spark belongs
+ * to a fire you can SEE, so it follows the source instead of the sky, with the
+ * sealed half of the rule keeping sparks off a roof that hides their own fire.
+ * Most ember placements on the_game are indoors, so this is the common case
+ * rather than an edge one. */
+const roofed = await page.evaluate(async ({ spots }) => {
+  const step = () => new Promise((r) => requestAnimationFrame(r));
+  for (const spot of spots) {
+    window.__ml.teleport(spot.col, spot.row);
+    for (let i = 0; i < 220; i++) await step();
+    const d = window.__mlAmbient.debug("embers");
+    if (!d.inside || !d.fires) continue;
+    let most = 0;
+    for (let i = 0; i < 200; i++) { most = Math.max(most, window.__mlAmbient.debug("embers").sparks); await step(); }
+    return { ...spot, inside: d.inside, fires: d.fires, sparks: most };
+  }
+  return null;
+}, { spots: emberSpots.slice(0, 10) });
+if (!roofed) console.log("roofed: no indoor ember fire was reached — the cave case was not exercised");
+else {
+  console.log(
+    `roofed: ${roofed.piece} (${roofed.kind}) at ${roofed.col},${roofed.row} — indoors, ` +
+      `${roofed.fires} fire(s), up to ${roofed.sparks} sparks`,
+  );
+  if (!roofed.sparks) fail("a fire under a roof, with the player in there with it, threw no sparks");
+}
+
 /* ---- COST ---- */
 const cost = await page.evaluate(async () => {
   const step = () => new Promise((r) => requestAnimationFrame(r));
