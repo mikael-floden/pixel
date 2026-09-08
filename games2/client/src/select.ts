@@ -386,6 +386,20 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
           JSON.stringify({ world, characterUid: chars[selected].uid, name }),
         );
       } catch {}
+      /* STOP THE PREVIEW SPINNING BEFORE LEAVING. `setSpin` drives the
+       * rotation by reassigning `img.src` on a setInterval, and the only thing
+       * that ever cleared it was `setSpin(false)` — which runs when a DIFFERENT
+       * character is selected. Committing removed the overlay and left the
+       * SELECTED character's timer firing for the rest of the session,
+       * re-fetching and re-decoding eight 112x112 rotations on a detached <img>
+       * nobody can see. Measured in a browser before this line existed: 27
+       * requests per rotation URL and 334 character-art requests during a 45 s
+       * walk, every one for art already loaded. The decodes land on the main
+       * thread outside every profiler span, i.e. in the beacon's `gapBusy`,
+       * which is where its worst windows differ most from its best.
+       * (Found hunting the maintainer's stutter by trapping the
+       * HTMLImageElement `src` setter and reading the stacks.) */
+      spins.forEach((s) => s(false));
       // The loading overlay's black FADES IN over this screen — keep the
       // select mounted beneath it until the black is opaque, then drop it.
       showLoading();

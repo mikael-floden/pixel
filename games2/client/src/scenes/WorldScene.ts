@@ -2041,6 +2041,20 @@ export class WorldScene extends Phaser.Scene {
       // unstick and a reconciliation blow-up all land here and are told apart
       // by `pending` and `seq`.
       jumps: this.posJumps.slice(0, 40),
+      /* THE HEAP OVER THIS WINDOW. `grewMb` is how much was allocated (rises
+       * only), `drops` how many times it fell — a collection each. Together
+       * they are the allocation RATE, which is what decides whether GC explains
+       * `gapBusy`. */
+      heap: this.perfHeapN
+        ? {
+            meanMb: +(this.perfHeapSum / this.perfHeapN).toFixed(1),
+            maxMb: +this.perfHeapMax.toFixed(1),
+            limitMb: Math.round(this.perfHeapLimit),
+            grewMb: +this.perfHeapGrew.toFixed(1),
+            grewMbPerSec: +(this.perfHeapGrew / Math.max(1, secs)).toFixed(1),
+            drops: this.perfHeapDrops,
+          }
+        : null,
       /* THE LIGHT BILL (maintainer 2026-09-07: every light shadows scenery; his
        * run decides whether the phone pays for it) — what the night pass
        * uploaded, plus what could feed it. */
@@ -2459,6 +2473,43 @@ export class WorldScene extends Phaser.Scene {
       t0 = 0;
       this.perfDrawCount = this.perfFlushes;
       this.perfFlushes = 0;
+      /* THE HEAP, ONCE PER FRAME — because GC is the last suspect standing and
+       * nothing here has ever looked at it.
+       *
+       * His bisection (2026-09-08) put the stutter on SCENERY, and then ruled
+       * out the drawing of it: "the game is perfectly smooth if I just run
+       * around in a small circle", where exactly the same scenery is drawn every
+       * frame. So it is work that happens when the world MOVES. Texture arrivals
+       * do not explain it either — his two smoothest windows added the MOST
+       * textures (2,131 and 2,766, at 6.0% and 6.7% long-frame time) and his
+       * worst added few. What does track, across all fourteen windows, is
+       * `gapBusy` (1.9-2.1 ms/frame in the best, 4.9-6.7 in the worst) and the
+       * long-frame time no section owns (0-133 ms against 2,071-3,851). Both are
+       * where a garbage collection lands: it is not our frame and it is inside
+       * no span.
+       *
+       * A sawtooth here — heap climbing fast while he runs, then dropping — is
+       * GC, and the fix is to stop allocating per rebuild. A flat heap says the
+       * thread is being held by something else and this line of enquiry is
+       * wrong, which is worth just as much. Chrome-only and non-standard, so it
+       * is read defensively and simply absent elsewhere. */
+      const mem = (performance as unknown as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
+      if (mem && this.perfOn) {
+        const mb = mem.usedJSHeapSize / 1048576;
+        if (this.perfHeapLast > 0) {
+          const d = mb - this.perfHeapLast;
+          // Growth is summed only where it RISES: the drops are the collections
+          // themselves, and averaging them in would report a heap that never
+          // grows on a thread that is collecting constantly.
+          if (d > 0) this.perfHeapGrew += d;
+          else this.perfHeapDrops++;
+        }
+        this.perfHeapLast = mb;
+        this.perfHeapSum += mb;
+        this.perfHeapN++;
+        if (mb > this.perfHeapMax) this.perfHeapMax = mb;
+        this.perfHeapLimit = mem.jsHeapSizeLimit / 1048576;
+      }
       /* THE GAP, AND WHETHER THE PHONE IS WORKING OR WAITING.
        *
        * `total` is marker-to-marker between two `update()` calls, so it is the
@@ -2547,6 +2598,14 @@ export class WorldScene extends Phaser.Scene {
   /** Batch flushes in the last rendered frame — see perfHookRender. */
   private perfDrawCount = 0;
   private perfFlushes = 0;
+  /* The heap sampler's window accumulators — see the POST_RENDER hook. */
+  private perfHeapLast = 0;
+  private perfHeapGrew = 0;
+  private perfHeapDrops = 0;
+  private perfHeapSum = 0;
+  private perfHeapN = 0;
+  private perfHeapMax = 0;
+  private perfHeapLimit = 0;
   /** What building the last report cost — see the beacon tick. */
   private beaconSelfMs = 0;
   private perfPostAt = 0;
