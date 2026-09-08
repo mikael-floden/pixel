@@ -2170,6 +2170,8 @@ export class WorldScene extends Phaser.Scene {
         subMax: gb.maxSub,
         texBinds: gb.binds,
         maxTex: (this.game.renderer as unknown as { maxTextures?: number }).maxTextures ?? -1,
+        multi: this.groundMulti ? 1 : 0,
+        pipe: String((this.groundRT?.texture as unknown as { pipeline?: { name?: string } } | undefined)?.pipeline?.name ?? ""),
       },
       ground: this.groundTexelReport(final),
       /* THE DISCRIMINATOR. On a flush, sample the texture, then FORCE a full
@@ -2943,6 +2945,9 @@ export class WorldScene extends Phaser.Scene {
    *  OLD topology back — one rect per bracket per frame — so the merge can be
    *  proved pixel-identical against the behaviour it replaced. */
   private groundBandMs = GROUND_BAND_MS;
+  /** THE GROUND RT DRAWS THROUGH THE MULTI PIPELINE, NOT PHASER'S SINGLE ONE.
+   *  See the "ground multi" switch and makeGroundRT. Default ON; "0" is off. */
+  private groundMulti = localStorage.getItem("ml-ground-multi") !== "0";
   /** The last anchor shift — the direction the world is travelling, which is
    *  the only direction worth prefetching (t3armRing). */
   private groundLastShift = { x: 0, y: 0 };
@@ -3883,6 +3888,21 @@ export class WorldScene extends Phaser.Scene {
          * isolates ONE pass at a time for debugging and is not remembered: this
          * is a persisted two-state switch for looking at the world. The light
          * pass stays on, so the scene is still lit and still shadowed. */
+        /* GROUND MULTI — the ground render texture batched 16 textures per draw
+         * call (MultiPipeline) instead of one (Phaser's SinglePipeline default
+         * for every DynamicTexture). Rebuilds the texture on toggle; the anchor
+         * reset makes the next redraw a full paint, as a resize does. */
+        {
+          label: "ground multi",
+          act: () => {
+            this.groundMulti = !this.groundMulti;
+            localStorage.setItem("ml-ground-multi", this.groundMulti ? "1" : "0");
+            this.makeGroundRT();
+            this.chat.addLog("—", `ground multi: ${this.groundMulti ? "ON — 16 textures per draw call" : "off — Phaser's one-texture default"}`);
+          },
+          get: () => this.groundMulti,
+          state: () => (this.groundMulti ? "on" : "off"),
+        },
         {
           label: "fog",
           act: () => {
@@ -18262,6 +18282,30 @@ export class WorldScene extends Phaser.Scene {
       if (this.textures.exists(key)) this.textures.remove(key);
       rt.saveTexture(key);
       rt.texture?.setFilter(Phaser.Textures.FilterMode.NEAREST); // ...and after saveTexture rewires it
+      /* THE ONE-LINE BUG. Phaser 3.90's DynamicTexture picks its pipeline as
+       *   this.pipeline = renderer.pipelines.get(PIPELINES.SINGLE_PIPELINE)
+       * (DynamicTexture.js:229), and SinglePipeline sets `forceZero = true` —
+       * under which pushBatch opens a NEW sub-batch on EVERY texture change
+       * instead of every 16th. So the whole tiles3 ground pass has been
+       * single-texture batched: measured on the maintainer's phone, 500-568
+       * drawArrays per slice (2,972 in one full paint) with EXACTLY one texture
+       * bound per draw, while `flushes` read 0-2. At a mobile driver's ~50 us
+       * per draw that is the flat ~25 ms every slice frame has cost in every
+       * arm he ran — scenery on/off, monsters on/off, light at 2% and 100% —
+       * the one number nothing else moved.
+       *
+       * MultiPipeline is what SinglePipeline inherits from: same vertex math,
+       * same blend, same UVs, sixteen samplers instead of one. The device
+       * passed the 16-sampler compile check (`maxTex` 16 in the beacon). A
+       * switch, default on, so it can be flipped off mid-run without a deploy;
+       * `groundDrew.pipe` reports which pipeline the texture really holds so a
+       * silent fallback cannot read as a null result. */
+      if (this.groundMulti) {
+        const multi = (this.game.renderer as unknown as { pipelines?: { get(n: string): unknown } }).pipelines?.get(
+          "MultiPipeline",
+        );
+        if (multi && rt.texture) (rt.texture as unknown as { pipeline: unknown }).pipeline = multi;
+      }
       return rt;
     };
     this.groundRT = make("ground-rt-a");
