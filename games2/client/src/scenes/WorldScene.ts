@@ -2017,6 +2017,7 @@ export class WorldScene extends Phaser.Scene {
          * comparing two reports. Numbers, because `counts` is flattened. */
         monstersOn: this.monstersOn ? 1 : 0,
         sceneryOn: this.sceneryOn ? 1 : 0,
+        drainOn: this.groundDrainRepaint ? 1 : 0,
         // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
         // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
         // every "full" frame in the last beacon was a `repaintWorld` — so these
@@ -2914,7 +2915,7 @@ export class WorldScene extends Phaser.Scene {
    *  does by accident: it re-anchors, and re-anchoring is cheaper than the
    *  scrolls it prevents. See t3drainDrops.
    *  `__ml.groundDrain(true)` puts it back for an A/B. */
-  private groundDrainRepaint = true;
+  private groundDrainRepaint = localStorage.getItem("ml-ground-drain") !== "0";
   private groundPartial = groundPathFast();
   private groundPrefetch = groundPathFast();
   private t3ringQueue: [number, number][] = [];
@@ -3902,6 +3903,26 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.groundMulti,
           state: () => (this.groundMulti ? "on" : "off"),
+        },
+        /* GROUND DRAIN — the drop drain's FULL ground repaint, as a switch the
+         * phone can reach. Measured across every arm the maintainer has run:
+         * fullPaints == drains in each one (every full paint IS this drain);
+         * 6.4 per window with scenery on, 3.5 off, 1.4 standing still; and the
+         * frames it lands in average 88 ms — the longest in the dataset. It
+         * arms whenever a paint dropped ops and terrain has landed since the
+         * last drain (nearly always while running), and fires on the next
+         * loader idle edge. `__ml.groundDrain(false)` already exists for this
+         * A/B; this is the same flag from Settings, so it can be flipped
+         * mid-run without a deploy. Beacon: counts.drainOn. */
+        {
+          label: "ground drain",
+          act: () => {
+            this.groundDrainRepaint = !this.groundDrainRepaint;
+            localStorage.setItem("ml-ground-drain", this.groundDrainRepaint ? "1" : "0");
+            this.chat.addLog("—", `ground drain: ${this.groundDrainRepaint ? "on — full repaint on drops" : "OFF — no drop-drain full paints"}`);
+          },
+          get: () => this.groundDrainRepaint,
+          state: () => (this.groundDrainRepaint ? "on" : "off"),
         },
         {
           label: "fog",
