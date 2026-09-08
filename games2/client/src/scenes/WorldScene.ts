@@ -96,6 +96,7 @@ import { withV, assetIndexInfo } from "../assetver";
 import { netPerfStart, netPerfTake } from "../netperf";
 import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { installCaptureProbe, installCapturePool, uninstallCapturePool, captureTake } from "../capturepool";
+import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, type GlFrame } from "../glframe";
 import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -1738,6 +1739,11 @@ export class WorldScene extends Phaser.Scene {
   private hitchSec: Record<string, number> = {};
   private hitchC = { tex: 0, files: 0, built: 0, buildMs: 0, blits: 0, objs: 0 };
   private hitchWorst: Record<string, unknown>[] = [];
+  /** The previous frame's GL work (glframe.ts) — a long frame is read against
+   *  what the frame BEFORE it queued, because that is where a driver pays. */
+  private hitchGlPrev: GlFrame | null = null;
+  /** Consecutive frames over HITCH_LONG_MS including this one: the burst the player feels. */
+  private hitchBurst = 0;
   /** `<ground mode>:<dominant section>` -> how many frames over HITCH_LONG_MS
    *  fell in that bucket, their total ms, the dominant section's share, and how
    *  much of it was idle. See the census note in closeHitchFrame. */
@@ -1774,6 +1780,10 @@ export class WorldScene extends Phaser.Scene {
     for (const k in this.hitchSec) secMs += this.hitchSec[k];
     this.hitchN++;
     this.hitchSum += total;
+    const gl = glFrameTake();
+    const glPrev = this.hitchGlPrev;
+    this.hitchGlPrev = gl;
+    this.hitchBurst = total >= HITCH_LONG_MS ? this.hitchBurst + 1 : 0;
     const rec: Record<string, unknown> = {
       f: this.hitchN,
       total: +total.toFixed(1),
@@ -1789,6 +1799,17 @@ export class WorldScene extends Phaser.Scene {
       files: this.hitchC.files,
       objs: this.hitchC.objs,
       ring: this.t3ringQueue.length - this.t3ringAt,
+      /* THE GPU SIDE OF THE FRAME (glframe.ts): brackets per DynamicTexture
+       * with begin/end ms, allocations, bytes uploaded, capture-size switches;
+       * `glPrev` the same for the frame before (queued there, paid here);
+       * `burst` how many long frames in a row this makes; `q` the slices still
+       * owed; `dl`/`occ` what the scene held. */
+      gl,
+      glPrev: glPrev && !glFrameEmpty(glPrev) ? glPrev : undefined,
+      burst: this.hitchBurst,
+      q: this.groundSliceQ.length,
+      dl: this.children.length,
+      occ: this.occluders.length,
     };
     /* A CENSUS OF THE BAD FRAMES, not a top-N of them. The worst-24 list is
      * biased to the extremes by construction, and the extremes are NOT what is
@@ -2039,6 +2060,9 @@ export class WorldScene extends Phaser.Scene {
         // would do (does, with the pool off), and the distinct sizes seen.
         capSwitch: cap.switches,
         capSizes: cap.sizes,
+        // GL allocations and bytes this window (glframe.ts): textures and
+        // framebuffers created / deleted, MB handed to texImage2D/texSubImage2D.
+        ...glWindowTake(),
         // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
         // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
         // every "full" frame in the last beacon was a `repaintWorld` — so these
@@ -2542,6 +2566,7 @@ export class WorldScene extends Phaser.Scene {
     netPerfStart();
     installTexUploadProbe(this.renderer);
     installCaptureProbe(this.renderer);
+    installGlFrameProbe(this.renderer, { ps: () => this.ps(), pe: (k) => this.pe(k) });
     this.perfPrevFullPaints = this.groundFullRuns;
     this.perfPrevDrains = this.repaintStats.drains;
     this.perfPrevDeferred = this.repaintStats.drainsDeferred;
@@ -3533,6 +3558,9 @@ export class WorldScene extends Phaser.Scene {
     if (this.perfBeacon) {
       this.hitchOn = true;
       this.perfHookRender();
+      // The probes too (net, texture upload, capture, GL frame): a remembered
+      // beacon otherwise carried no GL data for its first window.
+      this.perfArmBaselines();
     }
     /* The residency counter the ground drain gates on (t3texGen). Always on
      * and one increment per texture — the perf hook is armed only with the

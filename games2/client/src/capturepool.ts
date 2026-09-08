@@ -50,6 +50,7 @@ type Renderer = Phaser.Renderer.WebGL.WebGLRenderer & {
 
 const stats: Stats = { brackets: 0, switches: 0, sizes: 0 };
 let prevKey = "";
+let frameSwitches = 0; // size switches since the last captureFrameSwitches()
 let installed: { renderer: Renderer; orig: Renderer["beginCapture"]; base: Phaser.Renderer.WebGL.RenderTarget } | null = null;
 const pool = new Map<string, Phaser.Renderer.WebGL.RenderTarget>();
 const seen = new Set<string>();
@@ -58,7 +59,10 @@ function note(w: number, h: number): string {
   const key = `${w}x${h}`;
   stats.brackets++;
   if (key !== prevKey) {
-    if (prevKey) stats.switches++;
+    if (prevKey) {
+      stats.switches++;
+      frameSwitches++;
+    }
     prevKey = key;
   }
   if (!seen.has(key)) {
@@ -119,6 +123,13 @@ export function uninstallCapturePool(): void {
 }
 
 export const capturePoolInstalled = (): boolean => installed !== null;
+
+/** Size switches since the last call — one frame's worth when called per frame. */
+export function captureFrameSwitches(): number {
+  const n = frameSwitches;
+  frameSwitches = 0;
+  return n;
+}
 
 /** Window snapshot for the beacon; `switches` resets so it is per window. */
 export function captureTake(): Stats {
