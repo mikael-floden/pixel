@@ -15,6 +15,7 @@
 import { chromium } from "playwright-core";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { PNG } from "pngjs";
 
 function chromePath() {
   const root = "/opt/pw-browsers";
@@ -279,6 +280,65 @@ else {
       `${roofed.fires} fire(s), up to ${roofed.sparks} sparks`,
   );
   if (!roofed.sparks) fail("a fire under a roof, with the player in there with it, threw no sparks");
+}
+
+/* ---- AND IT IS ON THE SCREEN ----
+ * THE ARM THAT WOULD HAVE CAUGHT THE FIRST SHIPPED VERSION. Every other check
+ * here reads the effect's own numbers, and all of them passed while the game
+ * showed nothing: the sparks were visible, at the right depth, with the right
+ * alpha, at the right place, and drawn as 1x1 quads CENTRED on integer
+ * positions — straddling two pixels each, so the screen never got them
+ * (measured: a spark at alpha 0.81 moved its pixel by 0.1 luma). A counter
+ * cannot see that. This centres the camera on the fire, finds the brightest
+ * spark actually inside the frame, and requires the pixel under it to CHANGE
+ * when the effect is switched off. */
+const onScreen = await page.evaluate(async (spot) => {
+  const step = () => new Promise((r) => requestAnimationFrame(r));
+  window.__ml.teleport(spot.col, spot.row);
+  for (let i = 0; i < 200; i++) await step();
+  const f = (window.__mlAmbient.debug("embers").fireList || [])[0];
+  if (f) { const c = window.__ml.pickAt(f.x, f.y); if (c) window.__ml.lookAt(c.x / 32, c.y / 32); }
+  for (let i = 0; i < 120; i++) await step();
+  const v = window.__ml.camView();
+  const z = window.__ml.myScreen()?.zoom ?? 1;
+  let best = null;
+  for (let i = 0; i < 300; i++) {
+    for (const s of window.__mlAmbient.debug("embers").all || []) {
+      const sx = (s.x - v.x) * z, sy = (s.y - v.y) * z;
+      if (sx < 6 || sy < 6 || sx > 474 || sy > 314) continue;
+      if (!best || s.a > best.a) best = { a: s.a, sx: Math.round(sx), sy: Math.round(sy) };
+    }
+    if (best && best.a > 0.6) break;
+    await step();
+  }
+  return best;
+}, { col: found.col, row: found.row });
+if (!onScreen) fail("no spark ever landed inside the frame — cannot judge it on pixels");
+else {
+  const shot = async () => PNG.sync.read(await page.screenshot({ type: "png" }));
+  const on = await shot();
+  await page.evaluate(async () => {
+    window.__mlAmbient.setEnabled("embers", false);
+    for (let i = 0; i < 200; i++) await new Promise((r) => requestAnimationFrame(r));
+  });
+  const off = await shot();
+  await page.evaluate(async () => {
+    window.__mlAmbient.setEnabled("embers", true);
+    for (let i = 0; i < 80; i++) await new Promise((r) => requestAnimationFrame(r));
+  });
+  const lum = (im, x, y) => {
+    const i = (y * im.width + x) * 4;
+    return 0.299 * im.data[i] + 0.587 * im.data[i + 1] + 0.114 * im.data[i + 2];
+  };
+  let delta = 0;
+  for (let dy = -2; dy <= 2; dy++)
+    for (let dx = -2; dx <= 2; dx++) {
+      const x = onScreen.sx + dx, y = onScreen.sy + dy;
+      if (x < 0 || y < 0 || x >= on.width || y >= on.height) continue;
+      delta = Math.max(delta, Math.abs(lum(on, x, y) - lum(off, x, y)));
+    }
+  console.log(`screen: brightest spark alpha ${onScreen.a.toFixed(2)} at (${onScreen.sx},${onScreen.sy}) moves its pixel by ${delta.toFixed(1)} luma`);
+  if (delta < 12) fail(`a spark at alpha ${onScreen.a.toFixed(2)} changed the screen by ${delta.toFixed(1)} luma — it is not being drawn`);
 }
 
 /* ---- COST ---- */

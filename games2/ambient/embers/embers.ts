@@ -51,7 +51,11 @@ const START_SPREAD = 4; // px — sparks leave the flame's width, not one point
 const BURST_GAP: [number, number] = [240, 1500]; // ms between bursts from one fire
 const BURST: [number, number] = [1, 4]; // sparks per burst
 
-const IN_MS = 90; // brighten out of the flame — fast, it is already burning
+/* Brighten out of the flame. Fast — it is already burning — but a REAL ramp:
+ * at 90ms this was under two frames on a phone, which is a pop wearing a
+ * fade's clothes, and the gate caught it (mean alpha 0.493 at birth against
+ * 0.628 mid-life, where a fade should be far below). */
+const IN_MS = 190;
 const COOL = 0x8c1c06; // what an ember cools toward before it dies
 const ALPHA: [number, number] = [0.55, 1];
 
@@ -144,7 +148,15 @@ export function embersFeature(): AmbientFeature {
     let s = sparks.find((q) => !q.live);
     if (!s && sparks.length < MAX_SPARKS) {
       s = {
-        sprite: ctx.scene.add.image(0, 0, KEY).setOrigin(0.5, 0.5).setScale(1).setVisible(false),
+        /* ORIGIN (0,0), LIKE EVERY OTHER PIXEL MARK IN THIS FOLDER — and it is
+         * load-bearing, not tidiness. A 1x1 quad CENTRED on an integer position
+         * spans x-0.5 to x+0.5, straddling the boundary between two pixels, and
+         * a sampler with nothing whole to hit all but drops it: measured, a
+         * spark at alpha 0.81 sitting on screen changed the pixel under it by
+         * 0.1 luma. Every counter said the effect was working — visible, right
+         * depth, right alpha, right position — and the screen showed nothing,
+         * which is exactly why the gate now judges PIXELS. */
+        sprite: ctx.scene.add.image(0, 0, KEY).setOrigin(0, 0).setScale(1).setVisible(false),
         fire: fi, x: 0, y: 0, age: 0, life: 0, up: 0, side: 0, ph: 0, hz: 1, base: 1,
         tint: 0xffffff, live: false,
       };
@@ -259,6 +271,27 @@ export function embersFeature(): AmbientFeature {
           kind: f.kind, piece: f.piece, color: f.color,
         })),
         sparks: live.length,
+        /* WHAT THE SPRITE ITSELF SAYS. A mark can be positioned, tinted and
+         * given an alpha and still never reach the screen, and from outside
+         * this feature there is no way to tell the two apart — the debug
+         * numbers look identical. So the first live spark reports its own
+         * render state. */
+        draw: (() => {
+          const q = live[0];
+          if (!q) return null;
+          const sp = q.sprite as unknown as {
+            visible: boolean; alpha: number; depth: number; blendMode: number;
+            displayWidth: number; displayHeight: number; scrollFactorX: number;
+            texture: { key: string }; scene: unknown;
+          };
+          return {
+            visible: sp.visible, alpha: +sp.alpha.toFixed(3), depth: sp.depth,
+            blend: sp.blendMode, dw: sp.displayWidth, dh: sp.displayHeight,
+            sfx: sp.scrollFactorX, tex: sp.texture?.key,
+            texExists: (q.sprite.scene?.textures?.exists?.(KEY)) ?? null,
+            inScene: !!q.sprite.scene,
+          };
+        })(),
         all: live.map((s) => ({
           x: Math.round(s.sprite.x), y: Math.round(s.sprite.y),
           fire: s.fire, t: +(s.age / s.life).toFixed(3),

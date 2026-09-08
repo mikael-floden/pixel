@@ -73,6 +73,26 @@ Gated: the run stands in a cave with a hearth and requires sparks (measured 10).
 (`LIGHT_MS`), 1.62 times a second, never per frame and never per spark. At most
 `MAX_SPARKS` pooled 1px marks, drawn additive.
 
+## The bug that every counter said was not there
+
+The first shipped version was invisible, and the maintainer said so twice. Its
+sprites were `setOrigin(0.5, 0.5)` on a 1x1 texture — **a one-pixel quad centred
+on an integer position straddles the boundary between two pixels**, so the
+renderer has nothing whole to hit and all but drops it. Measured: a spark on
+screen at alpha 0.81 moved the pixel under it by **0.1 luma**. Every other pixel
+mark in this folder uses `setOrigin(0, 0)`; that is not tidiness, it is the
+reason they can be seen.
+
+What makes it worth writing down is how it hid: the effect's own numbers were
+all correct and all irrelevant — visible true, right depth, right alpha, right
+position, texture present, additive blend. **A counter cannot see the screen.**
+After the fix the same spark moves its pixel by 54 luma, and the gate now has an
+arm that judges pixels, which is the lasting part.
+
+The same round caught a second one: `IN_MS` was 90 ms, under two frames on a
+phone — a pop wearing a fade's clothes. At 190 ms the measured mean alpha at
+birth is 0.28 against 0.65 mid-life, which is a fade.
+
 ## Gate
 
 `node ../scripts/verify-embers.mjs`. Its targets are DERIVED from the game's own
@@ -83,6 +103,11 @@ was the first cut and it does not work: the nearest ember piece to the spawn is
 53 cells out, the ring it sits on has 12 sample angles and a view is ~7 cells
 wide, so the walk missed it and reported "no fire anywhere" — a statement about
 the search, not the map.
+
+It also judges the effect ON THE PIXELS: it centres the camera on the fire,
+finds the brightest spark inside the frame, and requires the pixel under it to
+change when the effect is switched off (measured 54.4 luma). Nothing else here
+could have caught the origin bug.
 
 Two traps it was written into, both of which made it lie once: the search for a
 quiet fire runs before the measurement and LEAVES THE PLAYER THERE, so the burn
