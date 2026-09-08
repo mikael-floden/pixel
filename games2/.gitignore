@@ -18,12 +18,21 @@ client/public/worlds.json
 /_*.json
 scripts/_tmp-*.mjs
 scripts/_tmp-*.mts
+scripts/_tmp-*.ts
 scripts/_tmp-*.py
 scripts/_tmp-*.png
 scripts/_tmp-*.log
 scripts/_tmp-*.json
 scripts/_tmp-*/
 scripts/_wf-*.mjs
+# ...and the DOTTED form. A `.tmpbench3.ts` at this root is invisible to `ls`
+# and to a casual `git status`, so it sits untracked until a stop hook trips
+# over it — which is exactly how these arrived (four of them, from audit
+# subagents benchmarking scenery and navigation, 2026-09-08). Same rule, both
+# spellings, or the convention only covers the scratch you remember to name.
+/.tmp*.ts
+/.tmp*.mjs
+/.tmp*.json
 
 # Persistence + env / logs
 .data/
