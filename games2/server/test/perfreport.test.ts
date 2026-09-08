@@ -151,3 +151,30 @@ test("the worker block reaches the file — strings first, or zero is ambiguous"
   assert.equal(f.worker.state, "failed");
   assert.equal(f.worker.error, "module workers unsupported");
 });
+
+test("the net block survives the allowlist as a record of records", () => {
+  // THE TRAP THIS PINS: `mixed` keeps scalars and drops everything else, so a
+  // per-family block passed through it arrives as {} — a 200 with an empty
+  // answer, which is how three earlier fields were lost. `nested` is required,
+  // and the assertion has to reach INSIDE a bucket or it cannot tell them apart.
+  const r = perfReport(
+    {
+      net: {
+        scenery: { n: 31, cached: 31, net: 0, kb: 0, decKb: 412.5, slow: 9, p50: 2.1, p90: 18.4, max: 41.7 },
+        tiles3: { n: 214, cached: 214, net: 0, kb: 0, decKb: 190.2, slow: 1, p50: 0.6, p90: 1.4, max: 9.2 },
+      },
+      netWorst: ["41.7ms cache 96.0kb /assets/scenery/ancient_trees/ancient_tree_002/sprite.webp"],
+    },
+    "2026-09-08T00:00:00.000Z",
+  ) as Record<string, any>;
+  assert.equal(r.net.scenery.max, 41.7);
+  assert.equal(r.net.scenery.cached, 31);
+  assert.equal(r.net.tiles3.n, 214);
+  // `net: 0` must survive as the number 0 — it is the whole answer to "are we
+  // re-requesting art", and a dropped key reads the same as a zero.
+  assert.equal(r.net.scenery.net, 0);
+  assert.equal(r.netWorst.length, 1);
+  assert.match(r.netWorst[0], /ancient_tree_002/);
+  // Junk is not a report.
+  assert.equal((perfReport({ net: "none" }, "2026-09-08T00:00:00.000Z") as Record<string, any>).net, null);
+});

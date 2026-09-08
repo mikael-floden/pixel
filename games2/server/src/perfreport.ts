@@ -74,6 +74,14 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * the only one no section owns. The client already groups adds by the first
      * path segment of the key; it was simply never sent. */
     texFam: flat(body.texFam, 20, 1e9),
+    /* THE NETWORK/DISK BILL PER ASSET FAMILY (client/src/netperf.ts). `nested`,
+     * not `mixed` — every bucket is itself a record of numbers, and `mixed`
+     * would flatten each one to {}, which is how this allowlist has quietly
+     * eaten fields before. */
+    net: nested(body.net, 12, 16),
+    netWorst: Array.isArray(body.netWorst)
+      ? (body.netWorst as unknown[]).slice(0, 12).map((w) => String(w).slice(0, 140))
+      : null,
     /* THE GROUND RESOLVER ON ANOTHER CORE (client/src/resolveworker.ts). MIXED,
      * not flat: `state` and `error` are strings and they are the first thing to
      * read — a worker that never booted on his device reports every millisecond

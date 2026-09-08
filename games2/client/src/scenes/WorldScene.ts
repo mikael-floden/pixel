@@ -93,6 +93,7 @@ import { indoorAmbient, indoorLight, indoorLightLit, setIndoorLight, setIndoorLi
 import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import { withV, assetIndexInfo } from "../assetver";
+import { netPerfStart, netPerfTake } from "../netperf";
 import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -1933,6 +1934,7 @@ export class WorldScene extends Phaser.Scene {
       occMean: Math.round(occN),
       dlMean: Math.round(dlN),
     };
+    const netTake = netPerfTake();
     const body = {
       build: assetIndexInfo().buildSha,
       where: at ? `${at.x.toFixed(1)},${at.y.toFixed(1)}` : "unknown",
@@ -2031,6 +2033,18 @@ export class WorldScene extends Phaser.Scene {
        * batch, composed ground rasters or cover surfaces decides whether that
        * cost is a one-off boot tail or something a run keeps paying. */
       texFam: snap.texFamilies as Record<string, number>,
+      /* WHAT WE ASKED THE NETWORK AND THE DISK FOR, PER FAMILY (netperf.ts).
+       * `cached` vs `net` answers "are we re-requesting art we already have"
+       * directly — the browser reports zero bytes transferred only when it
+       * served the file itself. `p90`/`max` with `net` at zero is the DISK READ
+       * AND DECODE, which is what a scenery piece (5x a tile's pixels at the
+       * median, 45x at the max) is suspected of spending on the main thread. */
+      net: netTake.fams,
+      /* THE SLOWEST INDIVIDUAL LOADS, NAMED. A percentile cannot tell a 40 ms
+       * scenery piece from forty 1 ms tiles, and the whole question is which
+       * of those we are paying. Each row says cache or NET, its decoded size
+       * and its path. */
+      netWorst: netTake.worst,
       /* THE WORKER'S BILL. `workerMs` is resolve time that did NOT happen on the
        * frame thread; `applyMs` is the only cost it ADDS to it. If applyMs is
        * not far below workerMs the feature is not paying for itself, and
@@ -2441,6 +2455,10 @@ export class WorldScene extends Phaser.Scene {
    *  wherever the beacon or a dev `perf(true)` arms, so the first window is a
    *  window and not "everything since page load". */
   private perfArmBaselines(): void {
+    /* The resource observer starts WITH the beacon, not at boot: `buffered:
+     * true` replays what the browser already holds, so arming late still sees
+     * the recent history, and an unarmed session accumulates nothing. */
+    netPerfStart();
     this.perfPrevFullPaints = this.groundFullRuns;
     this.perfPrevDrains = this.repaintStats.drains;
     this.perfPrevDeferred = this.repaintStats.drainsDeferred;
