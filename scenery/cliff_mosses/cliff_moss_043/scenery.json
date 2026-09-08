@@ -138,7 +138,7 @@
   "type": "NATURE",
   "light": {
     "strength": 0.08,
-    "color": "#b0ffb0",
+    "color": "#a8ff98",
     "radius": 1,
     "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
     "states": {
@@ -152,6 +152,9 @@
         "color": "#ffd064",
         "radius": 1
       }
-    }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
   }
 }

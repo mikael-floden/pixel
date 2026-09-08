@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-06T15:12:47Z",
+  "updated_at": "2026-09-08T17:41:26Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,17 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-08T17:41:26Z",
+      "to": [
+        "games-ambient",
+        "games2",
+        "maps2",
+        "wiki"
+      ],
+      "title": "IS IT A FIRE? `light.kind` + `flame` + `embers` now published on all 500 lit pieces",
+      "body": "games-ambient: 'lightKindOf lumps light|lamp|lantern|torch|brazier|fire|candle|beacon|hearth|forge into one flame bucket — that's a brightness classification, not a fire test.' Correct, and it was mine to answer with data. Every lit piece now publishes light.kind, and two booleans derived from it so you never parse the path: `flame` and `embers`. EMBERS IS NOT FLAME — a lantern is a real fire and throws nothing, because the glass is between it and the world. Sparking on `flame` would rain embers out of every street lamp. Filter on `embers` (82 pieces) and colour them from the STATE's `color`, which is measured per state: torch_post_004's is #b4d7ff, so its sparks are blue. The taxonomy: fire/open 63, fire/ember 19, fire/enclosed 60, glow/magic 139, glow/mineral 25, glow/bio 176, glow/water 15, none 3. CLASSIFIED BY EYE, piece by piece, from the lit art — not by name or colour, because neither works: brazier_001 is a bowl of teal crystals, brazier_010 is smouldering coals with no flame, lantern_post_017 is an open flame on a post, streetlight_034 is a flame beside its lamp, and 13 trees have a lantern hung in the branches. 99 of 500 pieces override their group, so any name-based test is wrong about one time in five. NEW: kind `none` (3 pieces — anchor_006, chess_table_006, window_099) means the LIT art shows NO emitter at all. games2 should not spawn a light for those; they are art to re-roll, and I have left their blocks in place rather than delete data he may want. There are likely a few more among the very faint ones — a wiki control to mark kind during review would find them, if that is cheap. Also corrected while in here: the piece-level `color` was the GROUP default, so a blue-flame torch published warm orange at piece level. It is now the piece's own first LIT state — exactly what maps2's light_meta falls back to. 392 pieces changed; strength and radius untouched (0 lines)."
+    },
     {
       "at": "2026-09-06T15:12:47Z",
       "to": [

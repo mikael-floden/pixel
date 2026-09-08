@@ -46,6 +46,7 @@ quite what was run):
     python3 scenery/pipeline/light.py --fill          # every gap, every piece
     python3 scenery/pipeline/light.py --scale 2 [--write]   # the brightness (core) knob
     python3 scenery/pipeline/light.py --reach   [--write]   # the reach knob, from config
+    python3 scenery/pipeline/light.py --kinds   [--write]   # stamp kind + flame/embers
 """
 from __future__ import annotations
 
@@ -55,6 +56,20 @@ from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import factory, viewer_build
+
+# WHAT KIND OF LIGHT IT IS. Read off the art, not the group name: brazier_001 is
+# a bowl of teal crystals, brazier_010 is smouldering coals with no flame, and
+# torch_post_004's flame is blue. The ambient agent needs this to decide whether
+# a light throws ember sparks, and the game to decide whether it flickers — a
+# street lamp should not gutter like a campfire.
+KINDS = ("fire/open",      # a visible flame: torch, candle, hearth, campfire
+         "fire/ember",     # coals, hot metal, molten rock, smoulder — heat, no flame
+         "fire/enclosed",  # a flame behind glass or horn: lantern, lamp, jack-o'-lantern
+         "glow/magic",     # runes, wisps, enchanted liquid, spirit light, electricity
+         "glow/mineral",   # crystal, geode, gem, meteor
+         "glow/bio",       # living light: fireflies, fungi, foliage, blossom, honey, moss
+         "glow/water",     # luminous water: well, spring, fountain, pool
+         "none")           # the LIT art shows no emitter at all — do not light it
 
 V_MIN, S_MIN = 0.8, 0.2          # what counts as an emissive pixel
 MIN_EMISSIVE_PX = 24             # fewer than this and the colour is not trusted
@@ -86,6 +101,27 @@ def _emissive(path):
     c = (rgb[em] * w[:, None]).sum(0) / w.sum()
     c = c / c.max()
     return share, "#%02x%02x%02x" % tuple(int(round(x * 255)) for x in c)
+
+
+def kind_of(rel, man):
+    """The piece's own `light.kind` if it overrides, else its group's from config.
+    Returns (kind, None) or (None, reason)."""
+    own = (man.get("light") or {}).get("kind")
+    if own:
+        return (own, None) if own in KINDS else (None, f"unknown kind {own!r}")
+    table, _, _ = _cfg_light()
+    g = (table.get(group_of(rel)) or {}).get("kind")
+    if not g:
+        return None, f"group {group_of(rel)!r} has no `light.kind` in config/factory.json"
+    return (g, None) if g in KINDS else (None, f"unknown group kind {g!r}")
+
+
+def flags_for(kind):
+    """The two booleans every consumer actually wants, so nobody parses the path.
+    `embers` is NOT `flame`: a lantern is a real fire and throws nothing, because
+    the glass is between it and the world."""
+    return {"flame": kind.startswith("fire/"),
+            "embers": kind in ("fire/open", "fire/ember")}
 
 
 def _radius(strength):
@@ -190,7 +226,13 @@ def ensure(rel, force=False, cache=None, write=True):
     block, why = derive(rel, man, cache)
     if not block:
         return "REFUSED", why
+    if existing and existing.get("kind"):
+        block["kind"] = existing["kind"]        # keep a classification he made
     man["light"] = block
+    kind, why = kind_of(rel, man)
+    if kind:
+        block["kind"] = kind
+        block.update(flags_for(kind))
     if write:
         factory.write_manifest(rel, man)
     return "written" if not existing else "rewritten", list(block["states"])
@@ -298,8 +340,52 @@ def apply_reach(write=False, table=None):
     return n
 
 
+def sync_piece_colour(write=False):
+    """The piece-level colour must be the piece's OWN light, not its group's.
+
+    A blue-flame torch (torch_post_004, states #b4d7ff) was publishing the warm
+    group default #ffb45c at piece level. Nothing broke, because every reader
+    resolves a state first — maps2's light_meta falls back to the alphabetically
+    first LIT_* — but a consumer that reads only the piece default was being told
+    a blue fire is orange, and the ambient agent colours ember sparks from it.
+    So the piece default becomes exactly what that fallback resolves to."""
+    n = 0
+    for rel, man in factory.discover():
+        L = man.get("light")
+        sts = (L or {}).get("states") or {}
+        if not L or not sts:
+            continue
+        first = sorted(sts)[0]
+        want = sts[first].get("color")
+        if want and L.get("color") != want:
+            L["color"] = want
+            n += 1
+            if write:
+                factory.write_manifest(rel, man)
+    return n
+
+
+def apply_kinds(write=False):
+    """Stamp every block with its resolved kind and the two derived booleans."""
+    n, bad = 0, []
+    for rel, man in factory.discover():
+        L = man.get("light")
+        if not L or not lit_states(man):
+            continue
+        kind, why = kind_of(rel, man)
+        if not kind:
+            bad.append((rel, why)); continue
+        L["kind"] = kind
+        L.update(flags_for(kind))
+        n += 1
+        if write:
+            factory.write_manifest(rel, man)
+    return n, bad
+
+
 def check():
-    """The gate: every lit piece and every LIT state carries an entry."""
+    """The gate: every lit piece and every LIT state carries an entry, and every
+    piece says what KIND of light it is."""
     bad = []
     for rel, man in factory.discover():
         ls = lit_states(man)
@@ -311,6 +397,11 @@ def check():
         for s in ls:
             if s not in (L.get("states") or {}):
                 bad.append((rel, f"state {s} has no entry"))
+        kind, why = kind_of(rel, man)
+        if not kind:
+            bad.append((rel, why))
+        elif L.get("kind") != kind or L.get("flame") != flags_for(kind)["flame"]:
+            bad.append((rel, "kind/flags not stamped — run light.py --kinds"))
     return bad
 
 
@@ -359,6 +450,27 @@ if __name__ == "__main__":
         print(f"  strength exact (2dp)  : {r['strength_exact']} / {r['states']}")
         print(f"  colour warm/cool same : {r['colour_family']} / {r['states']}")
         sys.exit(0)
+    if "--kinds" in sys.argv:
+        dry = "--write" not in sys.argv
+        c = sync_piece_colour(write=not dry)
+        if c:
+            print("piece-default colour corrected to the piece's own first LIT state: %d" % c)
+        n, bad = apply_kinds(write=not dry)
+        for rel, why in bad[:20]:
+            print(f"  {rel:<44} {why}")
+        import collections as _c
+        tally = _c.Counter()
+        for rel, man in factory.discover():
+            L = man.get("light")
+            if L and L.get("kind"):
+                tally[L["kind"]] += 1
+        for k, v in tally.most_common():
+            f = flags_for(k)
+            print("  %-14s %4d   flame %-5s embers %s" % (k, v, f["flame"], f["embers"]))
+        print("%d block(s) stamped%s; %d problem(s)" % (n, "" if not dry else " (DRY RUN)", len(bad)))
+        if not dry and n:
+            viewer_build.build(); print("viewer_data.json rebuilt")
+        sys.exit(1 if bad else 0)
     if "--reach" in sys.argv:
         dry = "--write" not in sys.argv
         t = reach_table(write=not dry)

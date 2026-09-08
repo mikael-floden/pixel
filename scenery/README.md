@@ -333,6 +333,30 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   67%). The 500 first-pass blocks are kept as the reference; only regenerated
   pieces feel this. (The first pass's own script is not in the repo; these
   constants were fitted back out of its output.)
+- **What KIND of light it is** — `kind`, a two-level path, read off the art
+  piece by piece (2026-09-08), plus two booleans derived from it so no
+  consumer parses the path:
+  | kind | `flame` | `embers` | what it is |
+  |---|---|---|---|
+  | `fire/open` | yes | **yes** | a visible flame: torch, candle, hearth, campfire |
+  | `fire/ember` | yes | **yes** | coals, hot metal, molten rock, smoulder — heat, no flame |
+  | `fire/enclosed` | yes | no | a flame behind glass or horn: lantern, oil lamp, street lamp |
+  | `glow/magic` | no | no | runes, wisps, enchanted liquid, spirit light, electricity |
+  | `glow/mineral` | no | no | crystal, geode, gem, meteor |
+  | `glow/bio` | no | no | fireflies, fungi, foliage, blossom, honey, moss |
+  | `glow/water` | no | no | well, spring, fountain, pool |
+  | `none` | no | no | the LIT art shows no emitter — do not light it |
+
+  **`embers` is not `flame`**: a lantern is a real fire and throws nothing,
+  because the glass is between it and the world. **The group name is not the
+  answer** — `brazier_001` is a bowl of teal crystals, `brazier_010` is
+  smouldering coals with no flame, `lantern_post_017` is an open flame on a
+  post, and `torch_post_004`'s fire is blue. 99 of 500 pieces override their
+  group, so a name- or colour-based test is wrong roughly one time in five.
+  Group default in `config/factory.json` `groups[].light.kind`, per-piece
+  override in the manifest's `light.kind`; `light.py --kinds` stamps the block
+  and `--check` fails if any is missing. One `kind` per piece, read from its
+  first LIT state — if a piece ever needs one per state, that is the extension.
 - Read contract: `states[<LIT state>]` wins for a placement drawn in that
   state, else the top-level piece default (`maps2/pipeline/world3.py
   light_meta`). Published whole in `viewer_data.json` as `light` so the wiki

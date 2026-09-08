@@ -422,7 +422,7 @@
   "hitbox_shape": "ellipse",
   "light": {
     "strength": 0.2,
-    "color": "#fff0a0",
+    "color": "#ffb250",
     "radius": 4,
     "reference": "the spawn bonfire is 1.0 (radius 7); strength 0 is no light",
     "states": {
@@ -446,6 +446,9 @@
         "color": "#ffb27a",
         "radius": 4
       }
-    }
+    },
+    "kind": "glow/bio",
+    "flame": false,
+    "embers": false
   }
 }
