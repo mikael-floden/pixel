@@ -24,13 +24,16 @@ export type { ResolvedCell };
 
 const KEY = "ml-resolve-worker";
 
-/** OFF is remembered; anything else is on. Read per call so the Settings switch
- *  and a console poke agree without a reload. */
+/** ON is remembered; anything else is off. OFF is the configuration every
+ *  beacon run the maintainer has sent was measured in (worker.state "off" in
+ *  all of them) and the one he calls smooth; the Settings switch went at his
+ *  request (2026-09-08), so the default follows the tested state and a console
+ *  poke (`setResolveWorkerEnabled(true)`) is the remaining A/B. */
 export function resolveWorkerEnabled(): boolean {
   try {
-    return localStorage.getItem(KEY) !== "0";
+    return localStorage.getItem(KEY) === "1";
   } catch {
-    return true; // private mode / storage blocked: the feature, not the fallback
+    return false;
   }
 }
 

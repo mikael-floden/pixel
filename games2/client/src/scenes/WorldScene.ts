@@ -3068,7 +3068,7 @@ export class WorldScene extends Phaser.Scene {
   /* SCENERY LIGHT — per-pixel lighting of scenery lit copies (scenerylit.ts +
    * scenerylight.ts). Default ON; `__ml.sceneryLight(false)` returns every
    * copy to the flat tint for an A/B. */
-  private sceneryLightOn = localStorage.getItem("ml-scenery-light") !== "0";
+  private sceneryLightOn = true;
   private sceneryLitPipe: SceneryLitPipeline | null = null;
   /** Shape maps by their content key: the GL texture, or null = could not be built. */
   private shapeMaps = new Map<string, { tex: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper; w: number; h: number; opaque: number; ms: number } | null>();
@@ -3546,6 +3546,9 @@ export class WorldScene extends Phaser.Scene {
   }
 
   async create() {
+    // The "enforce unmodified audio" switch is gone (maintainer 2026-09-08);
+    // a remembered pure mode would otherwise be unreachable, so it is released.
+    if (gameAudio.pureEnabled) gameAudio.togglePure();
     /* Before the first DynamicTexture bracket (cover surfaces, ground RT):
      * one capture texture per size — see capturepool.ts. */
     if (this.capturePool && this.game.renderer.type === Phaser.WEBGL) installCapturePool(this.renderer);
@@ -3617,7 +3620,6 @@ export class WorldScene extends Phaser.Scene {
         this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
         this.night.create();
         this.night.atmoOff = !this.fogOn;
-        this.night.sceneryShadows = localStorage.getItem("ml-scenery-shadows") !== "0"; // the persisted Settings switch
         // Footprints stamped before the night existed (the boot restamp, or docs
         // that landed first) become occluders now; later stamps re-apply themselves.
         this.night.setSceneryOccluders(this.terrain?.footprints);
@@ -3878,16 +3880,8 @@ export class WorldScene extends Phaser.Scene {
         // Audio (composer agent): master sound + music, persisted switches.
         { label: "sound", act: () => gameAudio.toggleSound(), get: () => gameAudio.soundEnabled },
         { label: "music", act: () => gameAudio.toggleMusic(), get: () => gameAudio.musicEnabled },
-        // Maintainer's A/B test switch: raw audio files, zero composer
-        // processing — pins a bad sound on the asset or on the composer.
-        {
-          label: "enforce unmodified audio",
-          act: () => gameAudio.togglePure(),
-          get: () => gameAudio.pureEnabled,
-        },
         { label: "respawn", act: () => this.room?.send("respawn") },
         { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
-        { label: "bonfire", act: () => this.toggleBonfire(), get: () => this.fireOn },
         // Monster spawn zones (maps2 spawns@1) — a DEBUG overlay, off by
         // default (maintainer 2026-07-30: "not visible by default").
         { label: "spawn areas", act: () => this.toggleSpawnAreas(), get: () => this.spawnAreasOn },
@@ -4018,70 +4012,6 @@ export class WorldScene extends Phaser.Scene {
           get: () => this.sceneryOn,
           state: () => this.sceneryMode,
         },
-        /* THE RESOLVER ON ANOTHER CORE — the A/B for the stutter, on his own
-         * phone, without a URL bar. Off = today's behaviour exactly (the main
-         * thread resolves every cell itself), so this switch is the honest
-         * before/after and not a degraded mode. */
-        {
-          label: "worker resolve",
-          act: () => {
-            const on = !resolveWorkerEnabled();
-            setResolveWorkerEnabled(on);
-            if (!on) this.t3worker.stop();
-            this.initTiles3();
-            this.repaintWorld();
-            this.chat.addLog("—", `worker resolve: ${on ? "on" : "off"} (${navigator.hardwareConcurrency || "?"} cores)`);
-          },
-          get: () => resolveWorkerEnabled(),
-          state: () => (resolveWorkerEnabled() ? this.t3worker.stats.state : "off"),
-        },
-        /* THE TWO SCENERY LIGHTING SWITCHES, for the phone: "scenery light" is
-         * the per-pixel lit copy (scenerylit.ts), "scenery shadows" the torch
-         * and sun shadows a piece casts (nightlight.setSceneryOccluders). Both
-         * default ON; each tap flips one so the maintainer can judge the look
-         * against the flat tint / no shadow on his own screen. Same paths as
-         * `__ml.sceneryLight(on)` / `__ml.sceneryShadows(on)`. Both PERSIST
-         * (`ml-scenery-light` / `ml-scenery-shadows`) and the beacon's `lights`
-         * block names the arm (`sceneryLight` / `sceneryShadows`) — a perf run
-         * spans reloads, and an arm the telemetry cannot name is a wasted run. */
-        {
-          label: "scenery light",
-          act: () => {
-            this.setSceneryLight(!this.sceneryLightOn);
-            this.chat.addLog("—", `scenery light: ${this.sceneryLightOn ? "per pixel" : "flat tint"}`);
-          },
-          get: () => this.sceneryLightOn,
-          state: () => (this.sceneryLightOn ? "per pixel" : "flat"),
-        },
-        {
-          label: "scenery shadows",
-          act: () => {
-            const on = !(this.night?.sceneryShadows ?? true);
-            this.setSceneryShadows(on);
-            this.chat.addLog("—", `scenery shadows: ${on ? "on" : "off"}`);
-          },
-          get: () => !!this.night?.sceneryShadows,
-          state: () => (this.night?.sceneryShadows ? "on" : "off"),
-        },
-        /* DROPPED OPS, PAINTED MAGENTA. The maintainer's artefact is bare
-         * ground fill inside the painted field on a FULL paint, and neighbours
-         * overlap by 32 rows, so the only way to expose the background is a
-         * tile that never drew — which `opsForCell` has always done silently.
-         * This paints those spots magenta instead. A zigzag that turns MAGENTA
-         * is dropped ops and the cause is a missing texture; one that stays
-         * dark is not, and that kills this whole line of enquiry in one tap.
-         * His idea, from the pink-background test. */
-        {
-          label: "seam",
-          act: () => {
-            this.seamOn = !this.seamOn;
-            this.t3tex = null; // rebuilt on next use: the seam is part of the picture, so part of the key
-            this.chat.addLog("—", `transition seam: ${this.seamOn ? "on — transitions blend" : "OFF — transitions are a hard cut"}`);
-            this.repaintWorld();
-          },
-          get: () => this.seamOn,
-          state: () => (this.seamOn ? "on" : "off"),
-        },
         {
           label: "clear: pink",
           act: () => {
@@ -4101,18 +4031,6 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => !this.noTransitions,
           state: () => (this.noTransitions ? "off" : "on"),
-        },
-        {
-          label: "dropped ops",
-          act: () => {
-            const t = this.t3tex;
-            if (!t) return;
-            t.debugDrops = !t.debugDrops;
-            this.chat.addLog("—", `dropped ops: ${t.debugDrops ? "MAGENTA" : "hidden"} (dropped so far: ${t.droppedOps})`);
-            this.repaintWorld();
-          },
-          get: () => !!this.t3tex?.debugDrops,
-          state: () => (this.t3tex?.debugDrops ? "magenta" : "off"),
         },
         /* THE PERF BEACON, as a BUTTON — because the maintainer plays from an
          * INSTALLED HOME-SCREEN APP, which has no address bar, so `?perf=1`
@@ -17560,13 +17478,12 @@ export class WorldScene extends Phaser.Scene {
    *  SHAPE_ROWS_PER_STEP rows, so a frame never overruns the budget by more
    *  than one slice (~0.3 ms). The raster is registered under its content key
    *  (`s3n:<path>@v<version>:<hitbox>`) and never rewritten. */
-  /** ONE PATH FOR THE PHONE SWITCH AND THE PROBE. Settings -> "scenery light"
-   *  and `__ml.sceneryLight(on)` both land here, so an A/B tapped on the
-   *  maintainer's phone is exactly the one the harness measures. */
+  /** `__ml.sceneryLight(on)` — the per-pixel lit copy on scenery, always on
+   *  in the game (the Settings switch went at the maintainer's request,
+   *  2026-09-08; the lag it was an arm for was the capture-target realloc). */
   private setSceneryLight(on: boolean): void {
     if (on === this.sceneryLightOn) return;
     this.sceneryLightOn = on;
-    localStorage.setItem("ml-scenery-light", on ? "1" : "0");
     if (on) this.ensureSceneryLitPipeline();
     for (const lo of this.litOccluders) {
       if (!on && lo.shape) {
@@ -17582,7 +17499,6 @@ export class WorldScene extends Phaser.Scene {
   private setSceneryShadows(on: boolean): void {
     if (!this.night) return;
     this.night.sceneryShadows = on;
-    localStorage.setItem("ml-scenery-shadows", on ? "1" : "0");
     this.night.setSceneryOccluders(this.terrain?.footprints);
   }
 
