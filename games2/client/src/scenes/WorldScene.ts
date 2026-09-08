@@ -538,6 +538,16 @@ interface EmissiveSource {
   shadows: boolean; // false → negative radius = the shader's shadow-free glow pool
   sx: number; // projected screen anchor (elevation-lifted) for view culling
   sy: number;
+  /* WHERE THE LIGHT IS ACTUALLY DRAWN — the middle of the glowing pixels, in
+   * screen space, NOT clamped. `z` above is the LIGHTING height and is capped
+   * at 1.5 levels on purpose (a head four levels up leaves the ground under a
+   * streetlight near the pool's edge — measured), so it is the wrong number for
+   * anything that has to DRAW at the flame: a lamp whose lantern sits three
+   * levels up reports 1.5 and everything placed there lands on the post. Kept
+   * beside it rather than instead of it, because both are right for their own
+   * job. */
+  hx: number;
+  hy: number;
   // The source stands inside a SEALED ROOM (the indoor verdict's own rule — a
   // bridge or arch is not a room). Such a light is INDOOR-ONLY: lit exactly to
   // the degree I am in its room, never from outside. Probed via the cell's
@@ -4878,18 +4888,22 @@ export class WorldScene extends Phaser.Scene {
         const lh = this.geom.lh;
         const out: {
           id: string; x: number; y: number; footY: number; z: number;
-          r: number; color: [number, number, number]; sealed: boolean;
+          r: number; color: [number, number, number]; flicker: number; sealed: boolean;
         }[] = [];
         const take = (s: EmissiveSource) => {
-          // The cell under the source, floored exactly as its own builder
-          // floors a placement (rebuildScenery's scol/srow).
-          const lvl = this.world?.rows[Math.floor(s.row)]?.[Math.floor(s.col)]?.l ?? 0;
-          const lift = Math.max(0, s.z - lvl);
-          const y = s.sy - lift * lh;
-          if (s.sx < v.x - pad || s.sx > v.right + pad || y < v.y - pad || y > v.bottom + pad) return;
+          // `hx`/`hy` is where the glow is DRAWN — the middle of the lit pixels
+          // — and is the whole point of this probe. Deriving it from `z`
+          // instead reads the LIGHTING height, which is clamped to 1.5 levels,
+          // and a three-level lamp then reports its flame down on the post.
+          if (s.hx < v.x - pad || s.hx > v.right + pad || s.hy < v.y - pad || s.hy > v.bottom + pad) return;
           out.push({
-            id: s.id, x: s.sx, y, footY: s.sy, z: +lift.toFixed(3),
-            r: s.radius, color: s.color, sealed: !!s.sealed,
+            id: s.id, x: s.hx, y: s.hy, footY: s.sy,
+            z: +((s.sy - s.hy) / lh).toFixed(3), // the TRUE lift, in levels
+            // IS IT A FIRE? A flame-like source flickers and a steady lamp does
+            // not — the game already decides this from the piece's own kind or
+            // its manifest, so anything that belongs over a FIRE (embers) can
+            // ask here instead of guessing from an id.
+            r: s.radius, color: s.color, flicker: s.flicker, sealed: !!s.sealed,
           });
         };
         for (const s of this.emissiveSources) take(s);
@@ -17388,6 +17402,7 @@ export class WorldScene extends Phaser.Scene {
     // The emissive centroid on screen → levels above the anchor line (a piece
     // whose art shows nothing bright but whose manifest lights it: 1 level).
     const headY = rec ? fit.y + (rec.cy - fit.sy) * fit.ky : fit.ay - this.geom.lh;
+    const headX = rec ? fit.x + (rec.cx - fit.sx) * fit.kx : p.ax;
     // Capped at 1.5 levels: the pool attenuates on the 3D distance, and a
     // head 4 levels up put the ground under a streetlight near the radius'
     // edge (ring at 1 cell 0.56–0.77 vs 0.72 at 4.5 cells, measured). The
@@ -17402,7 +17417,7 @@ export class WorldScene extends Phaser.Scene {
     const pr = params;
     this.sceneryLightSources.push({
       id, col: p.x, row: p.y, z: lvl + z, radius: pr.radius, color: pr.color, flicker: pr.flicker, shadows: pr.shadows,
-      sx: p.ax, sy: p.ay, sealed,
+      sx: p.ax, sy: p.ay, hx: headX, hy: headY, sealed,
     });
     const { dx, dy } = this.geom;
     const peak = Math.max(pr.color[0], pr.color[1], pr.color[2], 0.001);
@@ -19907,6 +19922,10 @@ export class WorldScene extends Phaser.Scene {
         shadows: cfg?.shadows ?? false,
         sx: pj.x,
         sy: pj.y,
+        // An emissive TILE has no lantern to find: the glow is the tile itself,
+        // so its drawn light point is its own anchor lifted by its own z.
+        hx: pj.x,
+        hy: pj.y - (cfg?.z ?? 0.5) * this.geom.lh,
         sealed,
       });
       if (sealed) this.sealedEmissiveCells.add(p.row * this.world.width + p.col);

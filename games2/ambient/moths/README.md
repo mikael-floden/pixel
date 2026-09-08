@@ -13,16 +13,28 @@ for this, read-only, beside `lightSlots`) returns the ones the camera can see �
 `{id, x, y, r, color, sealed}`. A moth is then two facts: a lamp, and an orbit
 around it.
 
-**THE LIGHT IS NOT AT THE POST'S FOOT**, and getting that wrong is the whole
-of the first bug this effect shipped: the moths circled the bottom of the lamp
-post (maintainer 2026-09-07, with the head and the foot circled on a
-screenshot: "the moths should gather around the light and not around the
-tile"). A light record's `sx/sy` is its ANCHOR — where the piece stands — and
-its `z` is the emissive centroid's own lift above that, 0.3-1.5 levels for a
-scenery lamp, measured off the lit art. The fix is in the SEAM, not here:
-`lightsInView` returns `y` already lifted to the head (with `footY` and `z`
-alongside), so no future consumer can repeat it. Measured on the town's
-street lamp: a 22.5 px lift.
+**THE LIGHT IS NOT AT THE POST'S FOOT, AND ITS *LIGHTING* HEIGHT IS NOT THE
+DRAWN ONE EITHER.** This took two rounds and the second is the interesting one.
+
+A light record's `sx/sy` is its ANCHOR — where the piece stands on the ground —
+so a consumer reading it draws at the bottom of the post. That was round one
+(maintainer 2026-09-07, with the head and the foot circled).
+
+Round two: lifting by the record's `z` is *still* wrong, and looks almost
+right, which is worse. The game derives a lit piece's glowing centroid from its
+own pixels and then **clamps that height to 1.5 levels** for the light pool — a
+head four levels up leaves the ground under a streetlight near the pool's edge
+(measured, and correct for lighting). So every tall lamp reports its flame at
+22.5 px, which is still down on the post. The maintainer photographed it twice.
+
+The unclamped centroid was being computed and thrown away. It is now carried on
+the record as `hx`/`hy` — where the glow is DRAWN — beside the clamped `z`,
+because both are right for their own job. Measured on the town's street lamp:
+the true lift is **61.6 px, 4.1 levels**, against the clamp's 22.5.
+
+No new art data was needed: the game already measures the glowing pixels. The
+gate fails if every lamp in view reports a lift of exactly 1.5 levels, which is
+the signature of reading the clamp again.
 
 Sealed lamps are skipped. A light inside a room stays in the room, and so
 should whatever circles it — this is an outdoor effect.

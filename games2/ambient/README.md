@@ -50,11 +50,17 @@ them; folder isolation beats DRY here).
   from the end of the world.
 - **`lightsInView(pad)`** — the second seam added to `WorldScene`, for
   `moths/`: every `EmissiveSource` the camera can see (emissive tiles AND
-  scenery lamps) as `{id, x, y, footY, z, r, color, sealed}`, read-only,
-  filtered by a padded `worldView`. **`y` is the HEAD** — a record's own anchor
-  is the post's FOOT and its `z` the emissive centroid's lift above it, so the
-  seam does that arithmetic once rather than letting every consumer get it
-  wrong (the moths did, visibly, on their first night). Ambient could not derive this — a lamp's DRAWN anchor
+  scenery lamps) as `{id, x, y, footY, z, r, color, flicker, sealed}`,
+  read-only, filtered by a padded `worldView`.
+  **`x`/`y` IS WHERE THE GLOW IS DRAWN** — the middle of the lit pixels, which
+  the game derives from a piece's own art. Two wrong answers sit next to it and
+  both shipped once: the record's ANCHOR is the post's foot, and the record's
+  `z` is the LIGHTING height, capped at 1.5 levels so a pool does not leave the
+  ground under a tall streetlight dark. A lamp whose lantern is four levels up
+  reports 1.5, and anything drawn there lands on the post. The unclamped point
+  travels on the record as `hx`/`hy` for exactly this.
+  `flicker` says whether it is a FIRE (flame-like sources flicker, steady lamps
+  do not) — for anything that belongs over a fire rather than a lamp. Ambient could not derive this — a lamp's DRAWN anchor
   and its sealed-in-a-room verdict live only in those arrays. It walks every
   source in the world, so a caller reads it on a THROTTLE, never per frame.
 - Time-of-day / weather awareness comes from the game's **documented `__ml`

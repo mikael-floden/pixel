@@ -121,12 +121,26 @@ if (spot) {
       }
       await new Promise((r) => requestAnimationFrame(r));
     }
-    return { lamps: lit.length, lifted: lifted.length, lift: lifted[0] ? +(lifted[0].footY - lifted[0].y).toFixed(1) : 0, above, below, n };
+    return {
+      lamps: lit.length, lifted: lifted.length,
+      lifts: lifted.map((l) => +(l.footY - l.y).toFixed(1)),
+      levels: lifted.map((l) => l.z),
+      above, below, n,
+    };
   });
   console.log(
-    `head: ${head.lifted} of ${head.lamps} lamps lift their light (first by ${head.lift}px); ` +
-      `${head.above} of ${head.n} moth samples were up at the head`,
+    `head: ${head.lifted} of ${head.lamps} lamps lift their light (lifts ${head.lifts.join(", ")}px = ` +
+      `${head.levels.join(", ")} levels); ${head.above} of ${head.n} moth samples were up at the head`,
   );
+  /* AND IT IS THE ART'S HEAD, NOT THE LIGHTING CLAMP. The game derives a lit
+   * piece's glowing centroid from its own pixels and then CAPS it at 1.5 levels
+   * for the light pool (a head four levels up leaves the ground under a
+   * streetlight near the pool's edge — measured, and correct for lighting). Read
+   * that capped number and every tall lamp reports its flame at 22.5px, which is
+   * down on the post: exactly what the maintainer photographed twice. If every
+   * lamp in view reports the cap to the pixel, this probe is reading it again. */
+  if (head.levels.length && head.levels.every((z) => Math.abs(z - 1.5) < 0.02))
+    fail("every lamp reports a lift of exactly 1.5 levels — that is the lighting clamp, not the art's own head");
   if (!head.lifted) fail("no lamp in view lifts its light above its anchor — cannot tell the head from the post here");
   else if (!head.n) fail("no moths were at a lifted lamp — the head check proved nothing");
   else if (head.below > head.n * 0.05)
