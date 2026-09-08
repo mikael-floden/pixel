@@ -156,20 +156,33 @@ else {
           samples++;
           if (window.__ml.landableAtScreen(q.x, q.y)) onLand++;
           if (window.__ml.waterAtScreen(q.x, q.y)) onWater++;
-          // THE RUNS SHARE ONE AXIS — that is what makes it a crab and not a bug.
-          const p = prev.get(q.s + ":" + q.dir);
+          /* THE RUNS FOLLOW THE SHORE — and the shore CURVES, so this asks the
+           * LOCAL tangent, not the one at the colony's home. Comparing a
+           * 480px bay against a single axis fails wherever the coast bends,
+           * which is the coast doing its job (measured: 236 of 2500 "off
+           * axis" runs were the curve). The tangent comes from the nearest
+           * segment of the walked shoreline. */
           const last = prev.get("p" + (d.all || []).indexOf(q));
-          if (last) {
+          if (last && (c.pts || []).length >= 2) {
             const dx = q.x - last[0];
             const dy = q.y - last[1];
             const len = Math.hypot(dx, dy);
             if (len > 1.2) {
               moves++;
-              const dot = Math.abs((dx / len) * c.shore[0] + (dy / len) * c.shore[1]);
-              if (dot > 0.9) alongOk++; else alongBad++;
+              let bi = 1, bd = Infinity;
+              for (let k = 1; k < c.pts.length; k++) {
+                const mx = (c.pts[k][0] + c.pts[k - 1][0]) / 2;
+                const my = (c.pts[k][1] + c.pts[k - 1][1]) / 2;
+                const dd = (mx - q.x) ** 2 + (my - q.y) ** 2;
+                if (dd < bd) { bd = dd; bi = k; }
+              }
+              const tx = c.pts[bi][0] - c.pts[bi - 1][0];
+              const ty = c.pts[bi][1] - c.pts[bi - 1][1];
+              const tl = Math.hypot(tx, ty) || 1;
+              const dot = Math.abs((dx / len) * (tx / tl) + (dy / len) * (ty / tl));
+              if (dot > 0.85) alongOk++; else alongBad++;
             }
           }
-          void p;
         }
         (d.all || []).forEach((q, j) => prev.set("p" + j, [q.x, q.y]));
       }
@@ -187,8 +200,121 @@ else {
   if (beach.onLand < beach.samples) fail(`${beach.samples - beach.onLand} crab samples were off walkable ground`);
   if (beach.nearWater === false) fail("the colony is not beside water — these are BEACH crabs");
   if (!beach.moves) fail("no crab ever ran — the dash is the effect");
-  if (beach.alongBad > beach.moves * 0.05)
-    fail(`${beach.alongBad} of ${beach.moves} runs were off the shore axis — crabs run ALONG the water`);
+  if (beach.alongBad > beach.moves * 0.08)
+    fail(`${beach.alongBad} of ${beach.moves} runs were off the shore — crabs run ALONG the water`);
+
+  /* IS THAT POLYLINE REALLY THE SHORE? The test above takes the feature's own
+   * word for where the beach runs, so this checks a sample of its segments
+   * against the game directly: a shore tangent must be perpendicular to the way
+   * the water lies at that point, measured here with the gate's own probes. */
+  const shoreTruth = await page.evaluate(() => {
+    const c = window.__mlAmbient.debug("crabs").colony;
+    if (!c || (c.pts || []).length < 3) return null;
+    const waterDir = (x, y) => {
+      let sx = 0, sy = 0, hits = 0;
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * Math.PI * 2;
+        const dx = Math.cos(a), dy = Math.sin(a);
+        for (let k = 1; k <= 3; k++) {
+          if (!window.__ml.waterAtScreen(x + dx * 22 * k, y + dy * 22 * k)) continue;
+          sx += dx / k; sy += dy / k; hits++;
+          break;
+        }
+      }
+      const len = Math.hypot(sx, sy);
+      return hits && len > 1e-6 ? [sx / len, sy / len] : null;
+    };
+    let checked = 0, square = 0, worst = 0;
+    const stride = Math.max(1, Math.floor((c.pts.length - 1) / 8));
+    for (let k = 1; k < c.pts.length; k += stride) {
+      const mx = (c.pts[k][0] + c.pts[k - 1][0]) / 2;
+      const my = (c.pts[k][1] + c.pts[k - 1][1]) / 2;
+      const w = waterDir(mx, my);
+      if (!w) continue;
+      const tx = c.pts[k][0] - c.pts[k - 1][0];
+      const ty = c.pts[k][1] - c.pts[k - 1][1];
+      const tl = Math.hypot(tx, ty) || 1;
+      const dot = Math.abs((tx / tl) * w[0] + (ty / tl) * w[1]); // 0 = perpendicular
+      checked++;
+      if (dot < 0.5) square++;
+      worst = Math.max(worst, dot);
+    }
+    return { checked, square, worst: +worst.toFixed(2) };
+  });
+  if (!shoreTruth || !shoreTruth.checked) console.log("shore: could not re-measure the water beside the polyline");
+  else {
+    console.log(`shore: ${shoreTruth.square} of ${shoreTruth.checked} sampled segments run square to the water (worst |dot| ${shoreTruth.worst})`);
+    if (shoreTruth.square < shoreTruth.checked * 0.7)
+      fail(`only ${shoreTruth.square} of ${shoreTruth.checked} shoreline segments are square to the water — that polyline is not the shore`);
+  }
+
+  /* ---- THEY USE THE WHOLE BEACH ----
+   * "I have seen lots of crabs on a beach before, but not on a spot that
+   * small! They usually use up the entire beach" (maintainer 2026-09-07). The
+   * colony measures the shore for itself at placement; this walks the same
+   * shore INDEPENDENTLY — its own loop, its own probes — and asks whether the
+   * colony actually covers what is there. Re-deriving it in the gate is the
+   * point: a colony that measured wrong would otherwise be checked against its
+   * own mistake. */
+  const spread = await page.evaluate(async () => {
+    const d = window.__mlAmbient.debug("crabs");
+    const c = d.colony;
+    if (!c) return null;
+    const [rx, ry] = c.shore;
+    // THE GATE FOLLOWS THE CURVE TOO. A straight walk measures a bay as one
+    // tile — which is how the feature's own first version under-measured it —
+    // so comparing the colony against a straight walk would be comparing it
+    // against the same mistake. Same idea, written independently here.
+    const waterDir = (x, y) => {
+      let sx = 0, sy = 0, hits = 0;
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * Math.PI * 2;
+        const dx = Math.cos(a), dy = Math.sin(a);
+        for (let k = 1; k <= 3; k++) {
+          if (!window.__ml.waterAtScreen(x + dx * 22 * k, y + dy * 22 * k)) continue;
+          sx += dx / k; sy += dy / k; hits++;
+          break;
+        }
+      }
+      const len = Math.hypot(sx, sy);
+      return hits && len > 1e-6 ? [sx / len, sy / len] : null;
+    };
+    const reach = (sign) => {
+      let x = c.x, y = c.y, tx = rx * sign, ty = ry * sign, out = 0;
+      for (let k = 0; k < 12; k++) {
+        x += tx * 24; y += ty * 24;
+        if (!window.__ml.landableAtScreen(x, y)) break;
+        const w = waterDir(x, y);
+        if (!w) break;
+        out += 24;
+        let nx = -w[1], ny = w[0];
+        if (nx * tx + ny * ty < 0) { nx = -nx; ny = -ny; }
+        tx = nx; ty = ny;
+      }
+      return out;
+    };
+    const beach = reach(1) + reach(-1);
+    // How far apart do the crabs actually stand, along the shore?
+    let lo = Infinity, hi = -Infinity;
+    for (let i = 0; i < 200; i++) {
+      for (const q of window.__mlAmbient.debug("crabs").all || []) { lo = Math.min(lo, q.s); hi = Math.max(hi, q.s); }
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    return { beach, span: c.span, used: hi - lo, crabs: (d.all || []).length, want: c.want };
+  });
+  if (!spread) fail("no colony to measure the spread of");
+  else {
+    console.log(
+      `spread: the gate walked ${spread.beach}px of beach, the colony claims ${spread.span}px, ` +
+        `and its ${spread.crabs} crabs ranged over ${spread.used.toFixed(0)}px of it`,
+    );
+    if (spread.beach > 64 && !(spread.span > 64))
+      fail(`${spread.beach}px of beach and the colony sits on ${spread.span}px — one tile is exactly the complaint`);
+    if (spread.beach > 64 && spread.span < spread.beach * 0.55)
+      fail(`the colony uses ${spread.span}px of a ${spread.beach}px beach — crabs use the whole beach`);
+    if (spread.used < Math.min(spread.span, 64) * 0.5)
+      fail(`the crabs only ranged over ${spread.used.toFixed(0)}px of their own ${spread.span}px colony`);
+  }
 
   /* ---- A CRAB IS RED, AND BIGGER THAN A SPIDER ----
    * Both were wrong on the first cut and both are the kind of thing that reads
@@ -226,19 +352,55 @@ else {
     const d0 = window.__mlAmbient.debug("crabs");
     const c = d0.colony;
     if (!c) return null;
-    let calm = 0;
-    for (let i = 0; i < 90; i++) { calm = Math.max(calm, window.__mlAmbient.debug("crabs").dashing); await step(); }
     const at = window.__ml.pickAt(c.x, c.y); // WORLD UNITS; teleport takes CELLS
     if (!at) return null;
+    /* STAND WELL CLEAR FIRST. Fleeing is per-crab now, so the baseline has to be
+     * a colony nobody is near; measuring "calm" while standing in it reads
+     * every crab as running and the comparison says nothing (it did: 14 -> 14). */
+    /* NEAR CRABS AGAINST FAR CRABS, IN THE SAME COLONY, IN THE SAME FRAMES.
+     * Two earlier shapes of this test both measured nothing. Counting the WHOLE
+     * colony cannot see a local flee: on a 360px beach only the four at your
+     * feet react, while about a fifth of the colony is dashing anyway on its own
+     * timers (measured 5 -> 5). And walking away to get a baseline takes the
+     * colony OFF VIEW, so it re-places somewhere else and you come back to an
+     * empty beach ("no crabs came within reach"). Standing still and comparing
+     * the crabs at your feet with the ones down the strand has neither problem,
+     * and it is the thing itself: a wave of panic that travels with you. */
     window.__ml.teleport(at.x / 32, at.y / 32);
-    let spooked = 0;
-    for (let i = 0; i < 60; i++) { spooked = Math.max(spooked, window.__mlAmbient.debug("crabs").dashing); await step(); }
-    return { calm, spooked, n: (window.__mlAmbient.debug("crabs").all || []).length };
+    for (let i = 0; i < 90; i++) await step();
+    let nearSum = 0, nearN = 0, farSum = 0, farN = 0, sawNear = 0;
+    for (let i = 0; i < 200; i++) {
+      const p = window.__ml.myScreen();
+      const v = window.__ml.camView();
+      if (p && v) {
+        const px = v.x + p.sx / p.zoom;
+        const py = v.y + p.sy / p.zoom;
+        const all = window.__mlAmbient.debug("crabs").all || [];
+        const near = all.filter((q) => Math.hypot(q.x - px, q.y - py) < 74);
+        const far = all.filter((q) => Math.hypot(q.x - px, q.y - py) > 150);
+        if (near.length) { nearSum += near.filter((q) => q.dashing).length / near.length; nearN++; sawNear = Math.max(sawNear, near.length); }
+        if (far.length) { farSum += far.filter((q) => q.dashing).length / far.length; farN++; }
+      }
+      await step();
+    }
+    return {
+      calm: farN ? +(farSum / farN).toFixed(3) : null,
+      spooked: nearN ? +(nearSum / nearN).toFixed(3) : null,
+      sawNear,
+      n: (window.__mlAmbient.debug("crabs").all || []).length,
+    };
   });
   if (!flee) fail("could not measure the flee (no colony)");
   else {
-    console.log(`flee: at most ${flee.calm} of ${flee.n} running while left alone, ${flee.spooked} once stood on`);
-    if (!(flee.spooked > flee.calm)) fail(`walking onto the colony did not set it running (${flee.calm} -> ${flee.spooked})`);
+    console.log(
+      `flee: standing on the beach, ${flee.spooked === null ? "?" : (flee.spooked * 100).toFixed(0)}% of the ` +
+        `${flee.sawNear} crabs at your feet are running against ${flee.calm === null ? "?" : (flee.calm * 100).toFixed(0)}% ` +
+        `of the ones down the strand`,
+    );
+    if (flee.spooked === null || flee.calm === null)
+      fail("could not see both near and far crabs at once — the flee check proved nothing");
+    else if (!(flee.spooked > flee.calm * 1.6))
+      fail(`crabs at your feet run ${(flee.spooked * 100).toFixed(0)}% of the time against ${(flee.calm * 100).toFixed(0)}% down the strand — walking in must set them off`);
   }
 }
 

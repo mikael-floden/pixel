@@ -34,26 +34,44 @@ The gate compares the two features' published art sizes rather than hardcoding
 a number that rots the moment either changes, and checks the drawn tint is
 red-dominant (which the whole red-orange family satisfies).
 
-## The axis is the shoreline, and it is derived
+## They use the whole beach, because the beach is WALKED
 
-The search that finds the beach also finds WHICH WAY THE WATER LIES: a
-candidate is dry ground with water within a few steps, and the direction that
-found the water is recorded. The run axis is its perpendicular. So crabs run
-ALONG the water on any coast, at any angle, with no per-map data and nothing to
-hand-place. Measured on the_game: a colony on real sand with the water 48 px
-away and a shore axis of [-0.707, -0.707] — a diagonal beach, handled by
-construction.
+"I have seen lots of crabs on a beach before, but not on a spot that small!
+They usually use up the entire beach" (maintainer 2026-09-07). Two versions of
+this before it was right, and the middle one is the lesson:
+
+1. A fixed span put the whole colony on one tile.
+2. Measuring along a straight shore AXIS barely helped — **78 px, about one
+   tile** — because the water direction was snapped to one of eight sample
+   offsets, so its perpendicular could be 22° off the real coast and a straight
+   walk left the sand after two steps.
+3. So the shore is **walked**: step along the current tangent, re-estimate the
+   water direction AT THE NEW POINT, turn to follow it. The colony is the
+   resulting POLYLINE, and a crab's position is a distance along it. A curving
+   bay comes out as a curve.
+
+Measured after: **480 px of shoreline, 14 crabs ranging over 458 px** of a
+576 px beach — and 10 of 10 sampled segments run square to the water when the
+gate re-measures them with its own probes.
+
+The water direction is a GRADIENT, not a snapped offset: sample a ring of
+directions and average the ones that hit water, weighted toward the near ones.
+That is what makes the perpendicular a real tangent.
 
 `sandy` on the colony records whether the ground is really the sand material
 (two extra probes, asked ONCE per accepted colony, never in the search loop).
 A shore that isn't sand still gets crabs; the flag is there so QA can say which.
 
-## The whole beach moves at once
+## Fleeing is LOCAL — a wave of panic that travels with you
 
-One distance test for the COLONY, not one per crab — what makes it read is that
-they all go together. Inside `FLEE_R` nobody sits still, everybody runs the same
-way (away, along the shore), and `FLEE_SPEED` faster. Measured: at most 4 of 7
-running while left alone, 7 of 7 once stood on.
+One distance test for the whole colony was right when a colony was one tile and
+wrong the moment it became a 480 px shoreline: standing anywhere near the beach
+set every crab on it running for as long as you were there. Now each crab asks
+its own distance, so the ones at your feet bolt and the ones down the strand
+carry on — truer, and better looking.
+
+Measured standing on the beach: **86% of the crabs at your feet are running,
+against 18% of the ones down the strand.**
 
 ## It must not cost a frame
 

@@ -24,7 +24,12 @@ let failed = false;
 const fail = (m) => { console.error("FAIL:", m); failed = true; };
 
 const COST_MS = 0.45; // its own update, averaged — up to 52 pooled specks of trig
-const OFF_AXIS_PX = 16; // SWAY_PX (3.5) + FLICK_PX + the centroid's own sampling noise
+/* The off-axis allowance SCALES WITH THE COLUMN. The centroid of n oscillators
+ * spread over radius r carries about r/sqrt(n) of standard error, so a fixed
+ * pixel threshold silently tightens every time the column grows — and it grew,
+ * when the maintainer asked for one that does not sit on a single tile. This is
+ * the sway and flick, plus a few standard errors of that noise. */
+const OFF_AXIS = (rx) => 8 + rx * 0.75;
 
 const browser = await chromium.launch({ executablePath: chromePath(), args: ["--no-sandbox"] });
 const page = await browser.newPage({ viewport: { width: 480, height: 320 } });
@@ -127,7 +132,7 @@ if (spot) {
         const mx = all.reduce((s, q) => s + q.x, 0) / all.length;
         const my = all.reduce((s, q) => s + q.y, 0) / all.length;
         // Offset of the swarm's centre from its own anchor, and the anchor.
-        cur.push([mx, my, c0.x, c0.y, c0.h, c0.lift]);
+        cur.push([mx, my, c0.x, c0.y, c0.h, c0.lift, c0.rx]);
         const sx = Math.sqrt(all.reduce((s, q) => s + (q.x - mx) ** 2, 0) / all.length);
         const sy = Math.sqrt(all.reduce((s, q) => s + (q.y - my) ** 2, 0) / all.length);
         if (sy > sx) tall++; else wide++;
@@ -150,8 +155,9 @@ if (spot) {
      * placement, and the swarm must stay in a box around it. That catches a
      * column that TRANSLATES — the failure that would matter — without
      * fighting the noise. */
-    let anchorMove = 0, offAxis = 0, outOfBand = 0;
-    for (const [mx, my, ax, ay, h, lift] of best) {
+    let anchorMove = 0, offAxis = 0, outOfBand = 0, rx = 0;
+    for (const [mx, my, ax, ay, h, lift, r] of best) {
+      rx = Math.max(rx, r || 0);
       anchorMove = Math.max(anchorMove, Math.hypot(ax - best[0][2], ay - best[0][3]));
       offAxis = Math.max(offAxis, Math.abs(mx - ax));
       const top = ay - lift - h - 12;
@@ -159,7 +165,7 @@ if (spot) {
       if (my < top || my > bot) outOfBand++;
     }
     return {
-      samples, tall, wide, ratio: +ratio.toFixed(2),
+      samples, tall, wide, ratio: +ratio.toFixed(2), rx,
       anchorMove: +anchorMove.toFixed(1), offAxis: +offAxis.toFixed(1), outOfBand,
       held: best.length, places: segs.length, offGround, offView,
     };
@@ -171,10 +177,14 @@ if (spot) {
       `${shape.offGround} anchors off ground, ${shape.offView} off view`,
   );
   if (!shape.samples) fail("never saw a populated column to measure");
+  // IT MUST NOT FIT ON ONE TILE. A tile draws 64px wide here; a column that
+  // sits inside one is the thing he asked to be rid of.
+  if (!(shape.rx * 2 >= 26)) fail(`the column is only ${(shape.rx * 2).toFixed(0)}px across — it reads as one tile`);
   if (shape.held < 30) fail(`only ${shape.held} samples of a single placement — the drift check proved nothing`);
   if (shape.wide > shape.tall / 4) fail(`${shape.wide} of ${shape.samples} samples were WIDER than tall — a column is vertical`);
   if (shape.anchorMove > 0.5) fail(`the column's anchor moved ${shape.anchorMove}px inside one placement — it must stand still`);
-  if (shape.offAxis > OFF_AXIS_PX) fail(`the swarm's centre strayed ${shape.offAxis}px from its own axis — a column hangs over one spot`);
+  if (shape.offAxis > OFF_AXIS(shape.rx))
+    fail(`the swarm's centre strayed ${shape.offAxis}px from its own axis (allowed ${OFF_AXIS(shape.rx).toFixed(1)} at rx ${shape.rx}) — a column hangs over one spot`);
   if (shape.outOfBand > shape.held * 0.02)
     fail(`${shape.outOfBand} of ${shape.held} samples put the swarm outside its own column height`);
   if (shape.offGround) fail(`${shape.offGround} column anchors were not on dry ground`);

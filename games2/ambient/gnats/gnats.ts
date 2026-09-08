@@ -34,13 +34,20 @@ const DEPTH_BASE = 900_000.07; // just over the darkness overlay, like the crawl
 const DEPTH_BIAS = 1e-6;
 const GAIN_TAU = 1600;
 
-const MAX_COLS = 2;
-const COL_APART = 120; // px between two columns — a swarm is a landmark, not a texture
-const N_GNATS: [number, number] = [14, 26];
+const MAX_COLS = 3;
+const COL_APART = 150; // px between two columns — a swarm is a landmark, not a texture
+const N_GNATS: [number, number] = [24, 44];
 const NEAR_FRAC = 0.18; // this many fly as 2px, which is what gives the column depth
 
-const COL_H: [number, number] = [26, 52]; // height of the volume, screen px
-const COL_RX: [number, number] = [5, 11]; // horizontal radius, GROUND px
+/* THE COLUMN IS A COLUMN OF AIR, NOT A DOT ON A TILE. The first cut was 10-22px
+ * across and 26-52 tall, which is a third of a tile — it read as specks pressed
+ * onto one square (maintainer 2026-09-07: "they was pressed togather on a
+ * single tile and I'm trying to make the game feel less tiles"). A person in
+ * this game stands CHARACTER_BODY_PX = 88 px, so a real midge column — roughly
+ * a metre across and two tall — is about 50 px wide and 100 tall, which is
+ * where these come from. */
+const COL_H: [number, number] = [58, 112]; // height of the volume, screen px
+const COL_RX: [number, number] = [14, 30]; // horizontal radius, GROUND px
 const SQUASH = 0.55; // the ground plane is shallow on screen (the moths' number)
 const LIFT: [number, number] = [8, 20]; // how far the column's foot floats above the ground
 
@@ -220,7 +227,9 @@ export function gnatsFeature(): AmbientFeature {
 
       // ---- the columns: place, expire, and follow the player ----
       const v = ctx.view;
-      const want = Math.min(MAX_COLS, 1 + (v.width * v.height > 260_000 ? 1 : 0));
+      // More air in view, more columns — and they are held COL_APART, so the
+      // dusk reads as a few swarms in a landscape rather than one clump.
+      const want = Math.min(MAX_COLS, 1 + Math.floor((v.width * v.height) / 150_000));
       while (cols.length < want)
         cols.push({ x: 0, y: 0, h: 36, rx: 8, lift: 12, sway: 0, life: 0, n: 0, scatter: 0 });
       if (cols.length > want) cols.length = want; // the view shrank

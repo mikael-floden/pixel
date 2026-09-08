@@ -12,6 +12,15 @@ guards: measured, the anchor moves **0 px** inside a placement and the swarm's
 centre stays within **8.6 px** of its own axis. A drifting version of this reads
 as dust, and this repo already has dust (`pollen/`).
 
+**IT IS A COLUMN OF AIR, NOT A DOT ON A TILE.** The first cut was 10-22 px
+across and 26-52 tall — a third of a tile — and read as specks pressed onto one
+square (maintainer 2026-09-07: "they was pressed togather on a single tile and
+I'm trying to make the game feel less tiles"). The size is arithmetic, not
+taste: a person here stands `CHARACTER_BODY_PX` = 88 px, so a real midge column
+of about a metre across and two tall is ~50 px wide and ~100 tall, which is
+where `COL_RX` 14-30 and `COL_H` 58-112 come from. More air in view earns more
+columns, held `COL_APART`, so dusk reads as a few swarms in a landscape.
+
 The volume is a vertical ellipsoid: `COL_H` tall, `COL_RX` wide in the GROUND
 plane, so its horizontal part is squashed by `SQUASH` (0.55) on screen the way
 the moths' orbit is — a circle drawn round on screen is not round in the world.
@@ -65,7 +74,11 @@ keeping:
 - **The centroid is not the column.** Two dozen oscillators in a 40 px volume
   give a standard error of ~2.4 px, so the centroid's range over a long window
   is a dozen px of pure sampling noise. The ANCHOR is the position; the swarm is
-  bounded in a box around it.
+  bounded in a box around it — and that box SCALES WITH THE COLUMN (`OFF_AXIS`),
+  because a fixed pixel allowance silently tightens every time the column grows,
+  which it did the moment the maintainer asked for one bigger than a tile. The
+  gate also fails a column narrower than 26 px: fitting on one tile is the
+  complaint itself.
 - `__ml.pickAt` answers in WORLD UNITS and `__ml.teleport` takes CELLS. Passing
   one to the other walks off the end of the map, and the swarm you meant to
   disturb is then nowhere near you.

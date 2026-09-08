@@ -35,8 +35,8 @@ const DEPTH_BASE = 900_000.05; // just over the darkness overlay, like the other
 const DEPTH_BIAS = 1e-6;
 const GAIN_TAU = 1500;
 
-const MAX_CRABS = 9;
-const N_CRABS: [number, number] = [4, 9];
+const MAX_CRABS = 18;
+const N_CRABS: [number, number] = [4, 18];
 
 /* Finding the beach. A candidate is dry ground with WATER within reach; the
  * offsets are deliberately few — this is the feature's only costly call. */
@@ -48,8 +48,29 @@ const DIRS: ReadonlyArray<readonly [number, number]> = [
   [1, 0], [-1, 0], [0, 1], [0, -1], [0.7, 0.7], [-0.7, 0.7], [0.7, -0.7], [-0.7, -0.7],
 ];
 
-const SPAN: [number, number] = [34, 78]; // how far along the shore a colony spreads
-const BAND = 9; // and how far off the water line a crab strays
+/* THE COLONY FOLLOWS THE SHORELINE, and that is why it is a POLYLINE rather
+ * than an axis. A fixed span put every crab on one tile (maintainer 2026-09-07:
+ * "they usually use up the entire beach"), and the obvious fix — measure along
+ * a straight shore axis — barely helped, for a reason worth writing down: the
+ * water direction was snapped to one of eight sample offsets, so its
+ * perpendicular could be 22 degrees off the real coast, and a straight walk
+ * left the sand after two steps. Measured on the_game: 78 px of "beach", about
+ * one tile, which is exactly the complaint.
+ *
+ * So the beach is WALKED: step along the current tangent, re-estimate the water
+ * direction AT EACH NEW POINT, and turn to follow it. A curving bay comes out
+ * as a curve. Bounded by SHORE_STEPS each way and paid once per colony, on
+ * success only — a failed hunt never reaches it. */
+const SHORE_STEP = 24; // px per step of the walk
+const SHORE_STEPS = 10; // each way, so up to ~480px of shoreline
+const SPAN_MIN = 52; // a cove still gets a colony
+const RING = 12; // directions sampled to estimate which way the water lies
+const RING_R = 22; // px out
+const BAND = 11; // how far off the water line a crab strays
+
+/* And the population follows the beach: one crab per this many px of it, so a
+ * long strand is busy and a cove is not. */
+const PX_PER_CRAB = 34;
 
 const DASH_MS: [number, number] = [170, 420];
 const REST_MS: [number, number] = [500, 2600];
@@ -90,11 +111,13 @@ interface Crab {
 interface Colony {
   x: number;
   y: number; // home: a point of dry ground with water nearby
-  rx: number; // the SHORE axis (unit, screen px) — runs are along this
+  rx: number; // the shore TANGENT at home (unit) — the walk starts along this
   ry: number;
-  wx: number; // and the direction the water lies in (unit)
+  wx: number; // and the direction the water lies in there (unit)
   wy: number;
-  span: number;
+  span: number; // length of the walked shoreline
+  pts: { x: number; y: number; wx: number; wy: number }[]; // the shoreline itself
+  cum: number[]; // cumulative length at each point — a crab's coordinate
   life: number;
   sandy: boolean; // the ground really is sand, not just any shore
 }
@@ -152,6 +175,59 @@ export function crabsFeature(): AmbientFeature {
     return { x: ctx.view.x + ms.sx / ms.zoom, y: ctx.view.y + ms.sy / ms.zoom };
   };
 
+  /** WHICH WAY IS THE WATER, smoothly. Averaging the directions that actually
+   * hit water gives a gradient, where taking the first hit of eight offsets
+   * gives one of eight angles — and the perpendicular of a snapped angle is a
+   * shore axis up to 22 degrees off the real coast. */
+  const waterDir = (x: number, y: number): { wx: number; wy: number } | null => {
+    let sx = 0;
+    let sy = 0;
+    let hits = 0;
+    for (let i = 0; i < RING; i++) {
+      const a = (i / RING) * Math.PI * 2;
+      const dx = Math.cos(a);
+      const dy = Math.sin(a);
+      for (let k = 1; k <= WATER_LOOK; k++) {
+        if (!waterAt(x + dx * RING_R * k, y + dy * RING_R * k)) continue;
+        sx += dx / k; // nearer water weighs more
+        sy += dy / k;
+        hits++;
+        break;
+      }
+    }
+    if (!hits) return null;
+    const len = Math.hypot(sx, sy);
+    if (!(len > 1e-6)) return null;
+    return { wx: sx / len, wy: sy / len };
+  };
+
+  /** WALK THE SHORE from a point, turning to follow the water as it curves.
+   * Returns the points in order, each with the local direction to the water. */
+  const walkShore = (
+    x0: number, y0: number, tx0: number, ty0: number,
+  ): { x: number; y: number; wx: number; wy: number }[] => {
+    const out: { x: number; y: number; wx: number; wy: number }[] = [];
+    let x = x0;
+    let y = y0;
+    let tx = tx0;
+    let ty = ty0;
+    for (let k = 0; k < SHORE_STEPS; k++) {
+      x += tx * SHORE_STEP;
+      y += ty * SHORE_STEP;
+      if (!landAt(x, y)) break;
+      const w = waterDir(x, y);
+      if (!w) break; // the sea has left us — this is no longer a beach
+      out.push({ x, y, wx: w.wx, wy: w.wy });
+      // Turn to the new coast, keeping the direction of travel.
+      let nx = -w.wy;
+      let ny = w.wx;
+      if (nx * tx + ny * ty < 0) { nx = -nx; ny = -ny; }
+      tx = nx;
+      ty = ny;
+    }
+    return out;
+  };
+
   /** A beach in view: dry ground with water within a few steps. Returns the
    * home point, the direction the water lies in, and the shore axis. */
   const findBeach = (ctx: AmbientCtx): Colony | null => {
@@ -168,17 +244,49 @@ export function crabsFeature(): AmbientFeature {
           if (!waterAt(px, py)) continue;
           // THE SHORE AXIS IS THE PERPENDICULAR OF THE WAY THE WATER LIES, so
           // the runs follow the coast whatever angle it is drawn at.
-          const len = Math.hypot(dx, dy) || 1;
-          const wx = dx / len;
-          const wy = dy / len;
+          const w0 = waterDir(x, y) ?? { wx: dx / (Math.hypot(dx, dy) || 1), wy: dy / (Math.hypot(dx, dy) || 1) };
+          const rx = -w0.wy;
+          const ry = w0.wx;
+          // WALK IT BOTH WAYS and stitch the halves into one shoreline.
+          const fwd = walkShore(x, y, rx, ry);
+          const back = walkShore(x, y, -rx, -ry);
+          const pts = [
+            ...back.slice().reverse(),
+            { x, y, wx: w0.wx, wy: w0.wy },
+            ...fwd,
+          ];
+          // Cumulative length along it — this is the coordinate a crab runs in.
+          const cum = [0];
+          for (let k = 1; k < pts.length; k++)
+            cum.push(cum[k - 1] + Math.hypot(pts[k].x - pts[k - 1].x, pts[k].y - pts[k - 1].y));
+          const span = Math.max(SPAN_MIN, cum[cum.length - 1]);
           return {
-            x, y, wx, wy, rx: -wy, ry: wx,
-            span: range(SPAN), life: range(LIFE), sandy: sandAt(x, y),
+            x, y, wx: w0.wx, wy: w0.wy, rx, ry, span, pts, cum,
+            life: range(LIFE), sandy: sandAt(x, y),
           };
         }
       }
     }
     return null;
+  };
+
+  /** A point `s` px along the walked shoreline, offset `b` px toward the water.
+   * The shoreline is a polyline, so this is a segment lookup plus a lerp — the
+   * whole reason a curving bay works. */
+  const onShore = (col: Colony, s: number, b: number): { x: number; y: number } => {
+    const { pts, cum } = col;
+    if (pts.length < 2) return { x: col.x + col.rx * s + col.wx * b, y: col.y + col.ry * s + col.wy * b };
+    const t = Math.max(0, Math.min(cum[cum.length - 1], s));
+    let i = 1;
+    while (i < cum.length - 1 && cum[i] < t) i++;
+    const seg = Math.max(1e-6, cum[i] - cum[i - 1]);
+    const k = (t - cum[i - 1]) / seg;
+    const a = pts[i - 1];
+    const c2 = pts[i];
+    return {
+      x: a.x + (c2.x - a.x) * k + (a.wx + (c2.wx - a.wx) * k) * b,
+      y: a.y + (c2.y - a.y) * k + (a.wy + (c2.wy - a.wy) * k) * b,
+    };
   };
 
   const rest = (c: Crab) => { c.dashing = false; c.timer = range(REST_MS); };
@@ -190,13 +298,12 @@ export function crabsFeature(): AmbientFeature {
     else if (rnd() < TURN_CHANCE) c.dir = -c.dir;
     // ONE GROUND PROBE PER DASH: where this run would end. Off the sand (into
     // the sea, off a ledge) and it goes the other way instead.
-    const ex = col.x + col.rx * (c.s + c.dir * 22) + col.wx * c.b;
-    const ey = col.y + col.ry * (c.s + c.dir * 22) + col.wy * c.b;
-    if (!landAt(ex, ey)) c.dir = -c.dir;
+    const e = onShore(col, c.s + c.dir * 22, c.b);
+    if (!landAt(e.x, e.y)) c.dir = -c.dir;
   };
 
   const seat = (c: Crab, col: Colony, instant: boolean) => {
-    c.s = (rnd() - 0.5) * col.span;
+    c.s = rnd() * col.span;
     c.b = (rnd() - 0.5) * BAND;
     c.dir = rnd() < 0.5 ? 1 : -1;
     c.spd = range(DASH_SPEED);
@@ -266,7 +373,10 @@ export function crabsFeature(): AmbientFeature {
           for (const c of crabs) if (c.sprite.visible) c.sprite.setVisible(false);
           return;
         }
-        const want = Math.round(range(N_CRABS));
+        const want = Math.max(
+          N_CRABS[0],
+          Math.min(N_CRABS[1], Math.round(colony.span / PX_PER_CRAB)),
+        );
         while (crabs.length < MAX_CRABS)
           crabs.push({
             sprite: ctx.scene.add.image(0, 0, KEY).setOrigin(0.5, 0.5).setScale(1).setVisible(false),
@@ -280,17 +390,6 @@ export function crabsFeature(): AmbientFeature {
 
       const col = colony;
       const player = playerAt(ctx);
-      // THE WHOLE BEACH REACTS AT ONCE. One distance test for the colony, not
-      // one per crab: what makes it read is that they all go together.
-      let flee = 0;
-      if (player) {
-        const d = Math.hypot(player.x - col.x, player.y - col.y);
-        if (d < FLEE_R + col.span * 0.5) {
-          // Which way is away, along the shore axis?
-          const along = (player.x - col.x) * col.rx + (player.y - col.y) * col.ry;
-          flee = along > 0 ? -1 : 1;
-        }
-      }
 
       const secs = dt / 1000;
       const sun = Math.min(1, Math.max(0, ctx.env.sun));
@@ -298,6 +397,18 @@ export function crabsFeature(): AmbientFeature {
         if (c.wait === Infinity) { c.sprite.setVisible(false); continue; }
         if (c.wait > 0) { c.wait -= dt; c.sprite.setVisible(false); continue; }
         c.a = Math.min(1, c.a + dt / FADE_MS);
+
+        /* FLEEING IS LOCAL, AND THAT IS THE POINT. It used to be one distance
+         * test for the whole colony, which was fine when a colony was one tile
+         * — and wrong the moment it became a 480px shoreline, because then
+         * standing anywhere near the beach set every crab on it running, for as
+         * long as you were there. A wave of panic that travels with you is both
+         * truer and better looking: the crabs at your feet bolt, the ones down
+         * the strand carry on. */
+        const here = onShore(col, c.s, c.b);
+        const flee = player && Math.hypot(player.x - here.x, player.y - here.y) < FLEE_R
+          ? ((player.x - here.x) * col.rx + (player.y - here.y) * col.ry > 0 ? -1 : 1)
+          : 0;
 
         c.timer -= dt;
         if (c.timer <= 0) {
@@ -310,13 +421,13 @@ export function crabsFeature(): AmbientFeature {
 
         if (c.dashing) {
           c.s += c.dir * c.spd * (flee ? FLEE_SPEED : 1) * secs;
-          const half = col.span * 0.5;
-          if (c.s > half) { c.s = half; c.dir = -1; }
-          if (c.s < -half) { c.s = -half; c.dir = 1; }
+          if (c.s > col.span) { c.s = col.span; c.dir = -1; }
+          if (c.s < 0) { c.s = 0; c.dir = 1; }
         }
 
-        const x = col.x + col.rx * c.s + col.wx * c.b;
-        const y = col.y + col.ry * c.s + col.wy * c.b;
+        const at = onShore(col, c.s, c.b);
+        const x = at.x;
+        const y = at.y;
         const iy = Math.round(y);
         c.sprite
           .setPosition(Math.round(x), iy)
@@ -339,7 +450,11 @@ export function crabsFeature(): AmbientFeature {
               x: Math.round(colony.x), y: Math.round(colony.y),
               shore: [+colony.rx.toFixed(3), +colony.ry.toFixed(3)],
               toWater: [+colony.wx.toFixed(3), +colony.wy.toFixed(3)],
-              span: Math.round(colony.span), sandy: colony.sandy, life: Math.round(colony.life),
+              span: Math.round(colony.span),
+              pts: colony.pts.map((q) => [Math.round(q.x), Math.round(q.y)]),
+              sandy: colony.sandy,
+              life: Math.round(colony.life),
+              want: crabs.filter((c) => c.wait !== Infinity).length,
             }
           : null,
         crabs: shown.length,
