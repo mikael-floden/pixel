@@ -1457,6 +1457,27 @@ export class WorldScene extends Phaser.Scene {
   // other switches (maintainer 2026-07-30 — the zones are map data, not part
   // of the played world).
   private spawnAreasOn = localStorage.getItem("ml-spawn-areas") === "1";
+  /* THE TWO SUBTRACTION SWITCHES (maintainer 2026-09-08: "place the disable at
+   * a smart location so we completely get rid of that feature and not only in
+   * the draw call"). They exist to answer one question each — does the game
+   * still stutter with no monsters, and with no scenery — so each one is cut at
+   * the point where the WHOLE pipeline hangs off it, not at its blit:
+   *   monsters  -> `addMonster` never builds an avatar, so there is no sprite,
+   *                shadow, lit copy, fog silhouette, target ring, hp bar or
+   *                depth resolve to run, the per-frame monster loop iterates an
+   *                empty map, and the boot batch queues none of the 912 strips.
+   *   scenery   -> `initScenery` never builds the placement index, so
+   *                `rebuildScenery` returns at its own guard and there are no
+   *                sprites, lit copies, shape maps, light sources or
+   *                occluderMeta; `setSceneryOccluders` is fed nothing, so the
+   *                night pass stops shading scenery shadows too.
+   * COLLISION IS DELIBERATELY KEPT on both. `restampScenery` reads
+   * `world.scenery` and not the render index, and the server is authoritative
+   * for bodies either way — an A/B that also changed where you can walk would
+   * compare two different games. Monster DODGE does change (its near-list is
+   * empty), which is stated rather than worked around: there are no monsters. */
+  private monstersOn = localStorage.getItem("ml-monsters") !== "0";
+  private sceneryOn = localStorage.getItem("ml-scenery") !== "0";
   /** Settings "fog" — the two atmospherics (depth fog + weather mist), ON by
    *  default and remembered. A SCREENSHOT instrument: both wash the picture,
    *  and the maintainer photographs walls to review the art on them. */
@@ -1952,6 +1973,12 @@ export class WorldScene extends Phaser.Scene {
          * texGen so a run says which of the two moved. `drains` with texGen
          * climbing and terrainGen flat is the bug this pair was added for. */
         terrainGen: this.t3terrainGen,
+        /* WHICH ARM THIS WINDOW IS. Without these a report from a
+         * monsters-off run is indistinguishable from one where nothing
+         * happened to be on screen, and the whole point of the switches is
+         * comparing two reports. Numbers, because `counts` is flattened. */
+        monstersOn: this.monstersOn ? 1 : 0,
+        sceneryOn: this.sceneryOn ? 1 : 0,
         // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
         // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
         // every "full" frame in the last beacon was a `repaintWorld` — so these
@@ -3267,7 +3294,7 @@ export class WorldScene extends Phaser.Scene {
     // requests), but only the kinds with a zone near where the player will
     // stand ride the boot batch. The rest queue in the deferred batch and
     // their bodies stay parked until their own strips land.
-    for (const def of this.monsterManifest?.monsters ?? []) {
+    for (const def of this.monstersOn ? (this.monsterManifest?.monsters ?? []) : []) {
       if (this.monsterBootKinds && !this.monsterBootKinds.has(def.id)) {
         this.monsterDeferredKinds.add(def.id);
         continue;
@@ -3730,6 +3757,44 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.fogOn,
           state: () => (this.fogOn ? "on" : "off"),
+        },
+        /* THE TWO SUBTRACTION SWITCHES — "does it still stutter without X?".
+         * Turning one OFF takes effect immediately, because that is the arm
+         * being measured: the bodies are destroyed and the index dropped here
+         * and now. Turning one back ON needs a rejoin, because the things it
+         * removed are built from server state and world load, and half-rebuilding
+         * them from a settings tap is a second construction path — the one thing
+         * this scene has been burned by most. Both say so in the log. */
+        {
+          label: "monsters",
+          act: () => {
+            this.monstersOn = !this.monstersOn;
+            localStorage.setItem("ml-monsters", this.monstersOn ? "1" : "0");
+            if (!this.monstersOn) {
+              for (const id of [...this.monsters.keys()]) this.removeMonster(id);
+              this.monsters.clear();
+            }
+            this.chat.addLog("—", `monsters: ${this.monstersOn ? "on — rejoin to bring them back" : "OFF (rendering, art and per-frame loop)"}`);
+          },
+          get: () => this.monstersOn,
+          state: () => (this.monstersOn ? `on (${this.monsters.size})` : "off"),
+        },
+        {
+          label: "scenery",
+          act: () => {
+            this.sceneryOn = !this.sceneryOn;
+            localStorage.setItem("ml-scenery", this.sceneryOn ? "1" : "0");
+            if (!this.sceneryOn) {
+              this.scenery = null;
+              this.rebuildScenery(this.cameras.main); // drains the pool at its own guard
+              this.sceneryLightSources = [];
+              this.sceneryStamps = [];
+              this.night?.setSceneryOccluders(undefined); // and its shadows
+            }
+            this.chat.addLog("—", `scenery: ${this.sceneryOn ? "on — rejoin to bring it back" : "OFF (sprites, lights, shadows and shape maps)"}`);
+          },
+          get: () => this.sceneryOn,
+          state: () => (this.sceneryOn ? "on" : "off"),
         },
         /* THE RESOLVER ON ANOTHER CORE — the A/B for the stutter, on his own
          * phone, without a URL bar. Off = today's behaviour exactly (the main
@@ -7055,6 +7120,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private addMonster(id: string, m: any) {
+    if (!this.monstersOn) return; // Settings "monsters" — see monstersOn
     const def = this.monsterManifest?.monsters.find((d) => d.id === m.kind);
     // The roster's own display name ("Dewling" for forest_poring) — resolved
     // HERE, once, because updateMonsterHpBar runs per monster per frame and a
@@ -16958,6 +17024,7 @@ export class WorldScene extends Phaser.Scene {
 
   private initScenery(view: { levelAt: (x: number, y: number) => number }) {
     const world = this.world;
+    if (!this.sceneryOn) return; // Settings "scenery" — see sceneryOn
     if (!world?.scenery?.length || !this.t3) return;
     this.scenery = new SceneryIndex(
       buildPlacements(world.scenery, {
@@ -17038,7 +17105,10 @@ export class WorldScene extends Phaser.Scene {
     // The same footprints are the pieces' LIGHT occluders (nightlight
     // setSceneryOccluders) — re-applied here because the footprints only exist
     // once the docs land, after the heightmap was built, and change on wiki edits.
-    this.night?.setSceneryOccluders(this.terrain.footprints);
+    // Footprints are the pieces' LIGHT occluders as well as their collision, so
+    // the switch has to reach here or a world with no scenery drawn would still
+    // pay for every scenery shadow the night pass casts.
+    this.night?.setSceneryOccluders(this.sceneryOn ? this.terrain.footprints : undefined);
     // The lit copies' VOLUMES are keyed on the hitbox too (attachSceneryShape):
     // poison the occluder latch so the next frame re-attaches them under the
     // new keys, and drop the maps built from the tile-radius fallback now that
