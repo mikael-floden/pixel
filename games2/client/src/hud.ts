@@ -1877,7 +1877,27 @@ function injectStyles() {
   .ml-amb-check.on::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;
     border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
   /* ── bird-density slider ── */
-  .ml-amb-slider{display:flex;flex-direction:column;gap:6px;width:100%;padding:0 2px 6px}
+  /* EVERY SLIDER ROW LEAVES A SCROLL GUTTER DOWN THE RIGHT (maintainer
+     2026-09-08, with the strip circled on a screenshot: "when scrolling in
+     settings it's hard to not by mistake edit a slider … this is because the
+     sliders spawn 100% width. I want [this area] free from sliders").
+     A track takes the value on POINTERDOWN — a tap anywhere on it jumps
+     there, which is deliberate — so the first touch of a scroll that happens
+     to land on a track has already changed the setting before it moved a
+     pixel. This gutter is a place his thumb can always start a drag safely.
+     WHY NOT touch-action:pan-y on the track instead: the browser only
+     decides a gesture is a vertical pan AFTER some movement, and pointerdown
+     has applied the value by then — the setting would change and the page
+     would scroll away from it, which is worse than today.
+     BUTTONS KEEP THE FULL WIDTH: dragging one does nothing, so there is
+     nothing to protect (his words: "buttons can still take up 100% … because
+     settings won't change if I drag the screen").
+     The gutter is on the WRAP, so the value readout stays right-aligned with
+     the track's end and the row reads as one narrower control rather than a
+     track that got cut off. */
+  :root{--ml-slider-gutter:80px}
+  .ml-amb-slider{display:flex;flex-direction:column;gap:6px;width:100%;
+    padding:0 var(--ml-slider-gutter) 6px 2px}
   .ml-amb-slider-head{display:flex;justify-content:space-between;align-items:baseline;
     font:600 13px/1.2 var(--sans);color:var(--ink)}
   .ml-amb-slider-val{color:var(--muted);font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:12px}

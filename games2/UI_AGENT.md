@@ -251,6 +251,22 @@ from the games agent), #18 (title/landing screen).
   was right for exactly one day: it is the check that CAUGHT the crop
   landing, and the samples above replaced it because a cropped render has no
   such relationship to the grid.
+- **SLIDER ROWS LEAVE A SCROLL GUTTER; BUTTONS DO NOT** (`--ml-slider-gutter`,
+  80px, maintainer 2026-09-08 with the strip circled on a screenshot: "when
+  scrolling in settings it's hard to not by mistake edit a slider … this is
+  because the sliders spawn 100% width"). A track takes its value on
+  POINTERDOWN — a tap anywhere on it jumps there, which is deliberate — so the
+  first touch of a scroll that lands on a track has already changed the
+  setting before it moved a pixel. The gutter is a strip his thumb can always
+  start a drag in. NOT `touch-action:pan-y` on the track: the browser only
+  rules a gesture a vertical pan after some movement, by which time pointerdown
+  has applied the value, so the setting would change AND the page scroll away
+  from it. BUTTONS KEEP THE FULL WIDTH on his instruction — dragging one does
+  nothing, so there is nothing to protect — and the gate asserts BOTH
+  directions, or "fix" it by narrowing the whole page and it still passes.
+  The padding is on the row WRAP, so the value readout right-aligns with the
+  track's end and the row reads as one narrower control instead of a track
+  that got cut off.
 - **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
   The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
   own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font

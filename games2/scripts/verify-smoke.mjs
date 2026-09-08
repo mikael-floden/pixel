@@ -220,6 +220,34 @@ try {
     }
     if (!label.endsWith(t1)) fail(`time-of-day button reads "${label}" while the world is ${t1}`);
     console.log(`HUD tabs OK (6 tabs; settings time button ${t0} → ${t1}, label "${label}")`);
+
+    // SLIDER ROWS LEAVE A SCROLL GUTTER DOWN THE RIGHT (maintainer
+    // 2026-09-08, circled on a screenshot): a slider takes its value on
+    // POINTERDOWN, so a scroll that starts on a track has already changed the
+    // setting. The right edge of the page must be a place his thumb can
+    // always begin a drag. BUTTONS are deliberately exempt — dragging one
+    // does nothing, so they keep the full width.
+    const gutter = await page.evaluate(() => {
+      const page_ = document.querySelector(".ml-page.show") ?? document.querySelector(".ml-page");
+      const right = page_.getBoundingClientRect().right;
+      const tracks = [...document.querySelectorAll(".ml-slider")].map(
+        (t) => right - t.getBoundingClientRect().right,
+      );
+      const btns = [...page_.querySelectorAll("button")].map(
+        (b) => right - b.getBoundingClientRect().right,
+      );
+      return { n: tracks.length, worst: tracks.length ? Math.min(...tracks) : null,
+               btnMin: btns.length ? Math.min(...btns) : null };
+    });
+    // 44px is the smallest touch target worth calling a target; the shipped
+    // gutter is 80px + the page's own padding.
+    if (!gutter.n) fail("no sliders on the Settings page to check the gutter on");
+    else if (!(gutter.worst >= 44))
+      fail(`a slider track reaches within ${Math.round(gutter.worst)}px of the page's right edge — that strip is the one place a scroll can safely start`);
+    else if (!(gutter.btnMin < 40))
+      fail(`buttons were narrowed too (${Math.round(gutter.btnMin)}px gutter) — only SLIDERS give up the width`);
+    else
+      console.log(`Settings slider gutter OK (${gutter.n} tracks, ${Math.round(gutter.worst)}px clear; buttons still reach ${Math.round(gutter.btnMin)}px)`);
   }
 
   // ---- keyboard cancels the trip ----
