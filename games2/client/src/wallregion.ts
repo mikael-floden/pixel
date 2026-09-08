@@ -96,23 +96,64 @@ export const WALL_STOREY_CELLS = 0.429;
  *  That was the column-thinking surviving one more round: a cliff wants ONE
  *  rock, and a set changing partway up it is the seam, not the feature. */
 export const WALL_REGION_CELLS = 40;
-/** How far the point is dragged before it is chunked, in cells. The ground does
- *  not warp at all — it does not need to, because a region boundary there is
- *  invisible under the per-cell members. A wall changes its whole palette at
- *  one, which is a bigger jump, so it is bent into something organic rather
- *  than left as a plane. */
-export const WALL_WARP_CELLS = 9;
-/** Base period of the warp noise, in cells. */
-export const WALL_WARP_PERIOD = 31;
+/** How far the point is dragged before it is chunked — A FRACTION OF THE REGION,
+ *  not a fixed number of cells, because that is the only thing that keeps a
+ *  boundary organic when the region size changes.
+ *
+ *  IT WAS 9 CELLS WHILE THE REGION WAS 40, i.e. 22%, and a 22% warp does not
+ *  bend a boundary, it merely nudges it. On a 24-storey wall face at x=284 that
+ *  showed as a HARD VERTICAL LINE running the full height where the palette
+ *  changed — "I can only see you changing tiles in columns" (maintainer
+ *  2026-09-08, with a screenshot of the mountain). The earlier 10-cell region
+ *  had the same 9-cell warp, which was 90% of it, and that is why boundaries
+ *  wandered then and stopped wandering when the region grew.
+ *
+ *  Elevation only contributes WALL_STOREY_CELLS per storey, so a 24-storey face
+ *  spans ~10 cells of field — a quarter of a 40-cell region. Without a warp of
+ *  the region's own scale, a region boundary crossing a tall wall is a plane of
+ *  constant y, and a plane of constant y IS a column seam. */
+export const WALL_WARP_CELLS = 18;
+/** Base period of the warp noise, in cells — near the region size, so the bend
+ *  happens ON the scale of a patch rather than under it. */
+export const WALL_WARP_PERIOD = 47;
+/** HOW FAST THE WARP VARIES WITH HEIGHT, as a multiple of its horizontal rate.
+ *
+ *  The region field is isotropic on purpose — a region is a ball, so a patch is
+ *  round on the face — but the WARP must not be. Elevation enters the field at
+ *  WALL_STOREY_CELLS (0.429), so a 24-storey wall spans ~10 cells of field and,
+ *  at a 47-cell noise period, only 0.22 of a period: the displacement is
+ *  effectively CONSTANT up the whole face. A boundary crossing that wall
+ *  therefore cannot wander vertically no matter how large the warp is — which
+ *  is why raising the amplitude from 9 to 18 moved the seam by one cell over 24
+ *  storeys and left it a column.
+ *
+ *  At 6 the same face spans ~1.3 periods, so the seam bends several times
+ *  between the foot of a cliff and its cap. This scales the noise INPUT only;
+ *  the region lattice stays isotropic. */
+export const WALL_WARP_Z_SCALE = 6;
 /** Octaves of warp noise and their amplitude falloff. */
 export const WALL_WARP_OCTAVES = 3;
 export const WALL_WARP_PERSISTENCE = 0.65;
 
-/** Tiles in a synthetic palette. Two reads as a checker, four as a quilt. */
-export const WALL_PALETTE_N = 3;
-/** Their weights, per CELL: dominant, secondary, accent. The dominant IS the
- *  rock; the other two are the grain in it. */
-export const WALL_PALETTE_WEIGHTS: readonly number[] = [12, 4, 1];
+/** Tiles in a palette. FIVE, not three (maintainer 2026-09-08, red lines drawn
+ *  down every vertical band of one mountain: "each red line I draw is the same
+ *  ... it's the entire mountain wall").
+ *
+ *  THE VARIETY HAS TO FIT INSIDE ONE FACE. He liked an offline render of this
+ *  same resolved data, and what that render showed him was the MASSIF — several
+ *  faces of different material beside each other, 30-odd distinct tiles over the
+ *  window. A player standing at the foot of one wall sees ONE face: one region,
+ *  one set, and with three members weighted 12/4/1 the dominant carried 71% of
+ *  its cells, which is one rock with occasional relief. Five members at 8/5/3/2/1
+ *  put the dominant at 42%. */
+export const WALL_PALETTE_N = 5;
+/** Their weights, per CELL, dominant first. These ARE the pair frequencies
+ *  `wall-sets.py --weights` scores a set by, so the two must be changed
+ *  together: a set's published cost is the seam you get under exactly this mix,
+ *  and a flatter runtime than the generator assumed shows joins it never
+ *  priced. SLICED to the palette's length, so a shorter set still resolves —
+ *  but a palette LONGER than this list would leave its tail unreachable. */
+export const WALL_PALETTE_WEIGHTS: readonly number[] = [8, 5, 3, 2, 1];
 
 /* -- hashing ---------------------------------------------------------------- */
 
@@ -212,7 +253,7 @@ export function wallField(x: number, y: number, z: number): WallField {
   const p = 1 / WALL_WARP_PERIOD;
   const nx = x * p;
   const ny = y * p;
-  const nz = zc * p;
+  const nz = zc * p * WALL_WARP_Z_SCALE;
   const wx = x + WALL_WARP_CELLS * (fbm3(nx, ny, nz, WARP_SEED_X) * 2 - 1);
   const wy = y + WALL_WARP_CELLS * (fbm3(nx, ny, nz, WARP_SEED_Y) * 2 - 1);
   const wz = zc + WALL_WARP_CELLS * (fbm3(nx, ny, nz, WARP_SEED_Z) * 2 - 1);
@@ -259,21 +300,36 @@ export function unitHashStr(s: string): number {
 /** One measured set from `wallsets.json`: tiles that JOIN well, and how badly
  *  the worst join in the set shows. */
 export interface WallSet {
+  /** The EXPECTED seam under WALL_PALETTE_WEIGHTS — how visible the average
+   *  join on a wall built from this set is, not how bad its worst pair is. A
+   *  max over all ordered pairs prices (accent, accent), under one join in
+   *  three hundred, the same as (dominant, dominant) at about a half, and that
+   *  is what kept the game's snow walls on a single tile. */
   cost: number;
+  /** The worst single pair, kept for diagnosis; nothing gates on it. */
+  worst?: number;
   tiles: readonly string[];
 }
 
-/** THE GATE. A set is only used when its worst join is at most this many times
- *  the art's OWN texture step — i.e. the seam is no more visible than the
- *  cracks already in the stone.
+/** THE GATE. A set is only used when its EXPECTED join — averaged over the pair
+ *  frequencies WALL_PALETTE_WEIGHTS actually produces — is at most this many
+ *  times the art's OWN texture step, i.e. the typical seam is no more visible
+ *  than the cracks already in the stone.
  *
- *  It exists because for most pools NO good trio exists: measured over all 199
- *  pools with three or more approved walls, the best set's cost is 0.75 at the
- *  bottom and 11.97 at the top, median 3.52. At 2.0 exactly 40 pools qualify —
- *  including the ones a mountain is made of, grey_stone and black_rock — and
- *  the other 159 fall back to ONE tile, which is the old behaviour and is the
- *  right answer for them: no variety beats a visible seam, and the maintainer
- *  should not have to police that by eye. Raise it only against a picture. */
+ *  Measured over the 182 pools with five or more approved walls: the best set's
+ *  expected cost is 0.63 at the bottom, 3.02 at the median, 10.71 at the top. At
+ *  2.0, 54 pools qualify — grey_stone 0.64, black_rock 0.76, dark_mud 0.83, ice
+ *  1.79 and, since the cost stopped being a max, SNOW at 1.93. The rest fall
+ *  back to ONE tile.
+ *
+ *  THAT FALLBACK IS NOT THE SAFE DIRECTION, and this note used to claim it was
+ *  ("no variety beats a visible seam"). One tile for a whole massif is the
+ *  defect the maintainer reports, twice, with photographs — a wall of identical
+ *  vertical bands. A seam slightly worse than the art's own cracks is a
+ *  judgement call; a mountain of wallpaper is not. So the gate's job is only to
+ *  rule out tiles that plainly do not belong together, and it is the cost MODEL,
+ *  not the threshold, that should move when a pool is stuck. Raise the number
+ *  only against a picture. */
 export const WALL_SET_MAX_COST = 2.0;
 
 /** THE PALETTE FOR ONE REGION — one measured SET, mapped onto this pool's
@@ -386,23 +442,23 @@ export const WALL_TEST_VECTORS: {
   ],
   field: [
     [0,0,0,"-1,0,-1"],
-    [1,0,0,"0,0,-1"],
+    [1,0,0,"-1,0,-1"],
     [0,0,1,"-1,0,-1"],
-    [37,214,5,"0,5,0"],
+    [37,214,5,"0,5,-1"],
     [120,15,11,"3,0,0"],
-    [393,393,40,"9,9,0"],
+    [393,393,40,"9,10,0"],
   ],
   palette: [
-    ["grey_stone__over__grey_stone","0,0,0",74,[3,7,11]],
-    ["grey_stone__over__grey_stone","1,-2,0",74,[2,5,9]],
+    ["grey_stone__over__grey_stone","0,0,0",74,[3,7,11,13,17]],
+    ["grey_stone__over__grey_stone","1,-2,0",74,[2,5,9,12,15]],
     ["a__over__b","0,0,0",2,[0]],
     ["a__over__b","0,0,0",1,[0]],
   ],
   pick: [
     ["grey_stone__over__grey_stone",74,0,0,0,3],
-    ["grey_stone__over__grey_stone",74,37,214,5,7],
+    ["grey_stone__over__grey_stone",74,37,214,5,11],
     ["grey_stone__over__grey_stone",74,38,214,5,3],
-    ["grey_stone__over__grey_stone",74,37,214,6,3],
+    ["grey_stone__over__grey_stone",74,37,214,6,7],
     ["one__over__one",1,5,5,5,0],
     ["none__over__none",0,1,2,3,-1],
   ],

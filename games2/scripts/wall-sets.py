@@ -24,16 +24,28 @@ show INSIDE themselves. A join no worse than the art's own texture is invisible;
 one several times worse is a seam you can see across the map. The ratio is the
 cost, so it is scale-free and comparable between pools.
 
-A SET IS THREE TILES THAT ALL JOIN WELL, in every order and with themselves —
-the dominant repeats against itself far more often than against anything else,
-so `cost(i, i)` is in the score. Sets are emitted per pool, best first, with
-distinct dominants so different massifs get different rock.
+A SET IS `--members` TILES THAT ALL JOIN WELL, in every order and with
+themselves. The cost is the EXPECTED seam, not the worst one: a set is used with
+the runtime's own weights, so the ordered pair (dominant, dominant) is about half
+of all joins while (accent, accent) is under one in three hundred, and scoring a
+set by its worst pair let a join nobody will ever see veto it. Sets are emitted
+per pool, best first, with distinct dominants so different massifs get different
+rock.
+
+FIVE MEMBERS, NOT THREE (maintainer 2026-09-08, drawing a red line down every
+vertical band of one mountain: "each red line I draw is the same ... it's the
+entire mountain wall"). At his camera one face fills the screen, and a 3-tile set
+whose dominant carries 71% of the cells is one rock with occasional relief — the
+variety he liked in an offline render of the same data was the MASSIF's, several
+faces of different material side by side, which a player standing at the foot of
+one wall never sees. More members per set puts that variety inside a single
+face.
 
 This file is the stand-in for hand-authored wall base sets. When the tiles agent
 ships real ones they replace it wholesale; the runtime already reads a set the
 same way either way.
 
-    python3 games2/scripts/wall-sets.py [--pool NAME] [--sets 12]
+    python3 games2/scripts/wall-sets.py [--pool NAME] [--sets 12] [--members 5]
 """
 import argparse, json, os, sys
 import numpy as np
@@ -93,6 +105,9 @@ def main():
     ap_ = argparse.ArgumentParser()
     ap_.add_argument("--pool")
     ap_.add_argument("--sets", type=int, default=12)
+    ap_.add_argument("--members", type=int, default=5)
+    ap_.add_argument("--weights", default="8,5,3,2,1",
+                     help="the runtime's WALL_PALETTE_WEIGHTS — the pair frequencies the cost is weighted by")
     args = ap_.parse_args()
 
     man = json.load(open(os.path.join(REPO, "tiles", "review", "manifest.json")))
@@ -102,7 +117,7 @@ def main():
         if args.pool and name != args.pool:
             continue
         cands = [c for c in cell["candidates"] if fb.get(c["key"], {}).get("status") == "approved"]
-        if len(cands) < 3:
+        if len(cands) < args.members:
             continue
         keys = [c["key"].strip("/").split("/")[-1] for c in cands]
         tiles = [load(c["file"]) for c in cands]
@@ -121,18 +136,35 @@ def main():
                 if s is not None: parts.append(s / rh)
                 if t is not None: parts.append(t / rv)
                 C[i, j] = sum(parts) / len(parts)
-        # A set's cost is its WORST join, in any order, including each tile
-        # against itself: a bad pair anywhere is a seam you will find.
+        # A set's cost is the EXPECTED join under the runtime's own weights: how
+        # visible the average seam on a wall built from this set will be. A max
+        # over all ordered pairs weights (accent, accent) — 0.3% of joins — the
+        # same as (dominant, dominant) at 50%, and that is what left the biggest
+        # mountain in the game on a single tile.
+        P = np.array([float(w) for w in args.weights.split(",")][: args.members])
+        P = P / P.sum()
+
         def cost(members):
-            vals = [C[a, b] for a in members for b in members]
-            vals = [v for v in vals if not np.isnan(v)]
+            tot, wsum = 0.0, 0.0
+            for a_, ia in enumerate(members):
+                for b_, ib in enumerate(members):
+                    v = C[ia, ib]
+                    if np.isnan(v):
+                        return float("inf")
+                    w = P[a_] * P[b_]
+                    tot += w * v
+                    wsum += w
+            return tot / wsum if wsum else float("inf")
+
+        def worst(members):
+            vals = [C[a, b] for a in members for b in members if not np.isnan(C[a, b])]
             return max(vals) if vals else float("inf")
         sets = []
         for d in range(n):
             if np.isnan(C[d, d]):
                 continue
             chosen = [d]
-            while len(chosen) < 3:
+            while len(chosen) < args.members:
                 best, bi = float("inf"), None
                 for k in range(n):
                     if k in chosen:
@@ -143,7 +175,7 @@ def main():
                 if bi is None:
                     break
                 chosen.append(bi)
-            if len(chosen) == 3:
+            if len(chosen) == args.members:
                 sets.append((cost(chosen), chosen))
         sets.sort(key=lambda s: s[0])
         seen, kept = set(), []
@@ -151,7 +183,8 @@ def main():
             if mem[0] in seen:
                 continue
             seen.add(mem[0])
-            kept.append({"cost": round(float(c), 3), "tiles": [keys[i] for i in mem]})
+            kept.append({"cost": round(float(c), 3), "worst": round(float(worst(mem)), 3),
+                         "tiles": [keys[i] for i in mem]})
             if len(kept) >= args.sets:
                 break
         if kept:

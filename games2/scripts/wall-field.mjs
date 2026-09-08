@@ -27,7 +27,14 @@ const W = 90;                       // a long run of wall
 const LINES = [7, 23, 40, 61, 90, 128, 171, 200, 244, 301, 340, 377];
 const POOL = "grey_stone__over__grey_stone";
 const SETS = setsDoc.pools[POOL] ?? [];
-const KEYS = Array.from({ length: 74 }, (_, i) => `k${i}`);
+/** THE KEYS MUST BE THE POOL'S REAL TILE IDS. `wallPalette` resolves a measured
+ *  set by `keys.indexOf(tile)`, so a synthetic key list matches NO set, every
+ *  cell falls back to the single-tile path, and every variety number this tool
+ *  prints is 1 by construction — it measured the fallback, not the rule. */
+const SET_TILES = Array.from(new Set(SETS.flatMap((s) => s.tiles)));
+const KEYS = SET_TILES.concat(
+  Array.from({ length: Math.max(0, 74 - SET_TILES.length) }, (_, i) => `filler${i}`),
+);
 
 /** Region patches on one face: their extent in PIXELS, and their aspect. */
 const aspects = [];
@@ -65,6 +72,43 @@ for (const along of ["x", "y"]) {
     }
   }
 }
+/** HOW FAR A REGION SEAM WANDERS AS IT CLIMBS — the maintainer's actual
+ *  complaint, as a number. A seam that does not move with height IS a column
+ *  ("on this gigantic wall in front of the player I can only see you changing
+ *  tiles in columns", 2026-09-08, with a screenshot). For every sampled face,
+ *  every seam is followed storey by storey and its horizontal spread over the
+ *  face's height is recorded in CELLS. Zero is a plumb line; the fix has to
+ *  keep this comfortably above one cell on a 24-storey face. */
+const wanders = [];
+for (const along of ["x", "y"]) {
+  for (const fixed of LINES) {
+    // Seam positions per storey: the i where the region id changes.
+    const perZ = [];
+    for (let z = 0; z < 24; z++) {
+      const cuts = [];
+      let prev = null;
+      for (let i = 0; i < W; i++) {
+        const [x, y] = along === "x" ? [i, fixed] : [fixed, i];
+        const r = wallField(x, y, z).region;
+        if (prev !== null && r !== prev) cuts.push(i);
+        prev = r;
+      }
+      perZ.push(cuts);
+    }
+    // Follow each seam of the bottom storey upward, nearest-cut matching.
+    for (const start of perZ[0]) {
+      let at = start, lo = start, hi = start, alive = true;
+      for (let z = 1; z < perZ.length && alive; z++) {
+        let best = null;
+        for (const c of perZ[z]) if (best === null || Math.abs(c - at) < Math.abs(best - at)) best = c;
+        if (best === null || Math.abs(best - at) > 6) { alive = false; break; }
+        at = best; lo = Math.min(lo, at); hi = Math.max(hi, at);
+      }
+      if (alive) wanders.push(hi - lo);
+    }
+  }
+}
+
 const med = (a) => { const s = [...a].sort((p, q) => p - q); return s[Math.floor(s.length / 2)]; };
 console.log(JSON.stringify({
   storeyCells: WALL_STOREY_CELLS,
@@ -78,6 +122,10 @@ console.log(JSON.stringify({
   aspectP10: +[...aspects].sort((a, b) => a - b)[Math.floor(aspects.length * 0.1)].toFixed(2),
   aspectP90: +[...aspects].sort((a, b) => a - b)[Math.floor(aspects.length * 0.9)].toFixed(2),
   neighbourSameShare: +(neighbourSame / neighbourTotal).toFixed(3),
+  seams: wanders.length,
+  seamWanderCellsMedian: wanders.length ? med(wanders) : null,
+  seamWanderCellsMin: wanders.length ? Math.min(...wanders) : null,
+  plumbSeams: wanders.filter((w) => w === 0).length,
 }, null, 2));
 
 if (process.argv.includes("--show")) {
@@ -93,8 +141,8 @@ if (process.argv.includes("--show")) {
       for (let i = 0; i < 78; i++) {
         const [x, y, zz] = at(i, z);
         const f = wallField(x, y, zz);
-        const pal = wallPalette(POOL, f.region, KEYS);
-        const k = pickWallIndex(POOL, KEYS, x, y, zz);
+        const pal = wallPalette(POOL, f.region, KEYS, SETS);
+        const k = pickWallIndex(POOL, KEYS, x, y, zz, f, SETS);
         r += "#+."[pal.indexOf(k)] ?? "?";
       }
       console.log(String(z).padStart(2) + " " + r);

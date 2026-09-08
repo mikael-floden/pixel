@@ -29,10 +29,16 @@ const r6 = (v: number) => Math.round(v * 1e6) / 1e6;
 const keysOf = (n: number) => Array.from({ length: n }, (_, i) => `k${i}`);
 /** Two sets that clear the gate and one that does not — the shape wallsets.json
  *  ships, with the gate exercised. */
+/* MUST MATCH the SETS fixture in scripts/wall-vectors.mjs, which generates the
+ * vectors this file checks — a drift fails "TEST_VECTORS reproduce" instead of
+ * passing quietly. Five members, matching WALL_PALETTE_N: the runtime slices the
+ * weights to the palette's length, so a short fixture would silently test a
+ * different mix from the one that ships. The third set is over the gate and must
+ * never be used. */
 const SETS = [
-  { cost: 0.9, tiles: ["k3", "k7", "k11"] },
-  { cost: 1.8, tiles: ["k2", "k5", "k9"] },
-  { cost: 9, tiles: ["k0", "k1", "k4"] },
+  { cost: 0.9, tiles: ["k3", "k7", "k11", "k13", "k17"] },
+  { cost: 1.8, tiles: ["k2", "k5", "k9", "k12", "k15"] },
+  { cost: 9, tiles: ["k0", "k1", "k4", "k6", "k8"] },
 ];
 
 test("the published TEST_VECTORS reproduce — this is what a port is checked against", () => {
@@ -165,7 +171,7 @@ test("a palette is distinct, ordered and bounded", () => {
   for (const macro of ["0,0,0", "1,-2,0", "5,5,5", "-3,7,-1"]) {
     const p = wallPalette("grey_stone__over__grey_stone", macro, keysOf(74), SETS);
     assert.equal(p.length, WALL_PALETTE_N);
-    assert.ok(p.every((i) => [3, 7, 11, 2, 5, 9].includes(i)), "a gated-out set was used");
+    assert.ok(p.every((i) => [3, 7, 11, 13, 17, 2, 5, 9, 12, 15].includes(i)), "a gated-out set was used");
     assert.equal(new Set(p).size, p.length, `palette repeated a member at ${macro}`);
     for (const i of p) assert.ok(i >= 0 && i < 74, `palette index ${i} out of range`);
   }
