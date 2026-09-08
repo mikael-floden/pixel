@@ -29,6 +29,14 @@ import { leavesFeature } from "./leaves/leaves";
  * mist pass, lit copies) and is too risky for the ambient layer, which must
  * never break the game. rainbow removed the same day (maintainer's call).
  * Both live in git history if ever revisited. */
+/* NOT REGISTERED: embers/ is written but PARKED. It needs to know whether a
+ * light is a FIRE, and nothing published says so — the scenery light block is
+ * {strength, color, radius, states} with no type, `tags` is ["SCENERY"] on every
+ * piece, the game's own `flicker` is a brightness decision that calls a street
+ * lamp a flame, and colour cannot classify (the_game ships a blue resin torch).
+ * Classifying by piece GROUP was written and works, but it is a guess in this
+ * repo's clothing, and the maintainer is having the scenery domain publish the
+ * real field instead (2026-09-08). Add the line back when it lands. */
 export function mountAmbient(game: Phaser.Game) {
   mount(game, [
     firefliesFeature(),

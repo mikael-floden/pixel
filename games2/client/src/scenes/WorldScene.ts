@@ -548,6 +548,12 @@ interface EmissiveSource {
    * job. */
   hx: number;
   hy: number;
+  /** The placement's piece, "group/id" — a scenery light only. Neutral data:
+   *  the game itself never classifies a source beyond flame-vs-glow for its
+   *  BRIGHTNESS (lightKindOf lumps lamp, lantern and fire together), so anything
+   *  that needs to know WHAT a light is has to read the piece. Empty for an
+   *  emissive tile. */
+  piece: string;
   // The source stands inside a SEALED ROOM (the indoor verdict's own rule — a
   // bridge or arch is not a room). Such a light is INDOOR-ONLY: lit exactly to
   // the degree I am in its room, never from outside. Probed via the cell's
@@ -4887,7 +4893,7 @@ export class WorldScene extends Phaser.Scene {
         const v = this.cameras.main.worldView;
         const lh = this.geom.lh;
         const out: {
-          id: string; x: number; y: number; footY: number; z: number;
+          id: string; x: number; y: number; footY: number; z: number; piece: string;
           r: number; color: [number, number, number]; flicker: number; sealed: boolean;
         }[] = [];
         const take = (s: EmissiveSource) => {
@@ -4903,7 +4909,7 @@ export class WorldScene extends Phaser.Scene {
             // not — the game already decides this from the piece's own kind or
             // its manifest, so anything that belongs over a FIRE (embers) can
             // ask here instead of guessing from an id.
-            r: s.radius, color: s.color, flicker: s.flicker, sealed: !!s.sealed,
+            r: s.radius, color: s.color, flicker: s.flicker, piece: s.piece, sealed: !!s.sealed,
           });
         };
         for (const s of this.emissiveSources) take(s);
@@ -17417,7 +17423,7 @@ export class WorldScene extends Phaser.Scene {
     const pr = params;
     this.sceneryLightSources.push({
       id, col: p.x, row: p.y, z: lvl + z, radius: pr.radius, color: pr.color, flicker: pr.flicker, shadows: pr.shadows,
-      sx: p.ax, sy: p.ay, hx: headX, hy: headY, sealed,
+      sx: p.ax, sy: p.ay, hx: headX, hy: headY, piece: p.piece, sealed,
     });
     const { dx, dy } = this.geom;
     const peak = Math.max(pr.color[0], pr.color[1], pr.color[2], 0.001);
@@ -19926,6 +19932,7 @@ export class WorldScene extends Phaser.Scene {
         // so its drawn light point is its own anchor lifted by its own z.
         hx: pj.x,
         hy: pj.y - (cfg?.z ?? 0.5) * this.geom.lh,
+        piece: "",
         sealed,
       });
       if (sealed) this.sealedEmissiveCells.add(p.row * this.world.width + p.col);
