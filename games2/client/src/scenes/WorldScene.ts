@@ -1969,6 +1969,8 @@ export class WorldScene extends Phaser.Scene {
     };
     const netTake = netPerfTake();
     const texUp = texUploadTake(secs);
+    const gb = this.groundBatchStats;
+    this.groundBatchStats = { brackets: 0, subBatches: 0, binds: 0, maxSub: 0 };
     const body = {
       build: assetIndexInfo().buildSha,
       where: at ? `${at.x.toFixed(1)},${at.y.toFixed(1)}` : "unknown",
@@ -2157,6 +2159,17 @@ export class WorldScene extends Phaser.Scene {
         reused: this.t3tex?.stats.reused ?? -1,
         seam: this.seamOn,
         transitionsOn: !this.noTransitions,
+        /* THE SUB-BATCHES (see t3countBatches). `subPerBracket` is the number
+         * of drawArrays one slice really costs; `flushes` above is what it
+         * looked like. `maxTex` is the device's unit count — 16 on a Mali,
+         * so a slice touching 200 distinct textures is 13+ sub-batches at
+         * the very best and far more in painter order. */
+        subBatches: gb.subBatches,
+        subBrackets: gb.brackets,
+        subPerBracket: gb.brackets ? +(gb.subBatches / gb.brackets).toFixed(1) : 0,
+        subMax: gb.maxSub,
+        texBinds: gb.binds,
+        maxTex: (this.game.renderer as unknown as { maxTextures?: number }).maxTextures ?? -1,
       },
       ground: this.groundTexelReport(final),
       /* THE DISCRIMINATOR. On a flush, sample the texture, then FORCE a full
@@ -15803,6 +15816,7 @@ export class WorldScene extends Phaser.Scene {
       }
     } finally {
       this.groundBatchRT = prev;
+      this.t3countBatches(rt);
       rt.endDraw();
     }
     this.groundDrainedThisFrame = true;
@@ -15825,7 +15839,10 @@ export class WorldScene extends Phaser.Scene {
       while (this.groundSliceQ.length && guard-- > 0) this.t3paintSliceStep();
     } finally {
       this.groundBatchRT = prev;
-      if (rt) rt.endDraw();
+      if (rt) {
+        this.t3countBatches(rt);
+        rt.endDraw();
+      }
     }
   }
 
@@ -16552,6 +16569,36 @@ export class WorldScene extends Phaser.Scene {
    *  The frame-scoped `flushes` counter cannot answer this: a paint happens in
    *  update(), and the number the beacon reports is the whole frame's. */
   private t3paintFlushes = 0;
+  /** SUB-BATCHES PER GROUND BRACKET — the number `flushes` cannot see.
+   *
+   *  Phaser 3.90's multi-texture batching starts a NEW sub-batch every time a
+   *  draw uses a texture the current batch has no unit for (pushBatch →
+   *  createBatch, once the batch holds `maxTextures` distinct textures — 16 on
+   *  a Mali, hard-clamped in checkShaderMax). Each sub-batch is its own
+   *  `drawArrays` and up to 16 `bindTexture` calls when `endDraw` flushes.
+   *  The ground pass draws hundreds of DISTINCT textures per slice in painter
+   *  order — every composed boundary is unique (55-916 per paint) — so one
+   *  `flush()` can hide a hundred draw calls, and a mobile GL driver bills
+   *  each one in CPU time INSIDE the bracket, i.e. inside `groundSlice`.
+   *
+   *  That would explain the one number nothing has moved: the slice's own
+   *  cost is a flat 22-29 ms on his phone whether scenery is on or off and
+   *  whether the light pass runs at 2% or 100% — a fixed CPU price per slice,
+   *  15x the 1.7 ms the same slice costs on a desktop driver. The atlas was
+   *  rejected on `flushes` reading 0-2 per paint; this is what it never saw.
+   *  Read right before each ground `endDraw`, while `pipeline.batch` still
+   *  holds the bracket's sub-batches. */
+  private groundBatchStats = { brackets: 0, subBatches: 0, binds: 0, maxSub: 0 };
+  private t3countBatches(rt: Phaser.GameObjects.RenderTexture): void {
+    const pipe = (rt.texture as unknown as { pipeline?: { batch?: { texture: unknown[] }[] } }).pipeline;
+    const b = pipe?.batch;
+    if (!b) return;
+    const g = this.groundBatchStats;
+    g.brackets++;
+    g.subBatches += b.length;
+    if (b.length > g.maxSub) g.maxSub = b.length;
+    for (const e of b) g.binds += e.texture.length;
+  }
 
   private drawTiles3Ground(
     rt: Phaser.GameObjects.RenderTexture,
@@ -16810,7 +16857,10 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
-    if (ownBracket) rt.endDraw();
+    if (ownBracket) {
+      this.t3countBatches(rt);
+      rt.endDraw();
+    }
     if (this.groundCacheOn && !this.groundClip) this.t3pruneCache(cells); // a band pass prunes after (scrollTiles3Ground); the ring keeps its cells
     stats.culled = this.groundCulled;
     // COMPOSITIONS this redraw paid for: boundaries/plates built on the fly

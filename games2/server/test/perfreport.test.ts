@@ -213,3 +213,13 @@ test("the texUp block reaches the file — it measures the theory under test", (
   assert.equal(r.texUp.installed, true);
   assert.match(r.texUpWorst[0], /381kpx/);
 });
+
+
+test("groundDrew carries every key the client sends — it was capped one short", () => {
+  const body = { groundDrew: Object.fromEntries([...Array(19)].map((_, i) => [`k${i}`, i])) };
+  const r = perfReport(body, "2026-09-08T00:00:00.000Z") as Record<string, any>;
+  // 19 keys is what the client sends after subBatches/subBrackets/subPerBracket/
+  // subMax/texBinds/maxTex; a cap of 12 dropped seven of them, silently.
+  assert.equal(Object.keys(r.groundDrew).length, 19);
+  assert.equal(r.groundDrew.k18, 18);
+});

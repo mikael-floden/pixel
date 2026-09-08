@@ -159,7 +159,10 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * reports carried it, which is precisely why the 22-25 ms in a slice has
      * been guesswork. A field is emitted AND named here, in the same commit,
      * or it does not exist. */
-    groundDrew: mixed(body.groundDrew, 12),
+    /* 24, not 12: the client already sent 13 keys against a cap of 12, so one
+     * was being dropped before the sub-batch fields were added. Same trap,
+     * seventh time — `mixed` keeps the first N and says nothing. */
+    groundDrew: mixed(body.groundDrew, 24),
     /* The long-frame CENSUS — every frame over the threshold bucketed by ground
      * mode and dominant section, not just the unluckiest few. */
     longBy: nested(body.longBy, 24, 8),
