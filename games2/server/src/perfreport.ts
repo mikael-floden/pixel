@@ -74,6 +74,12 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * the only one no section owns. The client already groups adds by the first
      * path segment of the key; it was simply never sent. */
     texFam: flat(body.texFam, 20, 1e9),
+    /* THE GROUND RESOLVER ON ANOTHER CORE (client/src/resolveworker.ts). MIXED,
+     * not flat: `state` and `error` are strings and they are the first thing to
+     * read — a worker that never booted on his device reports every millisecond
+     * as zero, which is indistinguishable from one that booted and was never
+     * needed. */
+    worker: mixed(body.worker, 16),
     /* THE LIGHT BILL — what the night pass uploaded on HIS device (lights in
      * the shader, how many march shadows, summed pool area in cells, ambient),
      * plus the GPU string and backing store the cost scales with. MIXED types,

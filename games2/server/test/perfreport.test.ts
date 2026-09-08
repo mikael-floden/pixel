@@ -133,3 +133,21 @@ test("cores reaches the file — how many the phone has against the one we use",
   // Junk must not become a core count.
   assert.equal((perfReport({ cores: "lots" }, "2026-09-08T00:00:00.000Z") as Record<string, any>).cores, null);
 });
+
+test("the worker block reaches the file — strings first, or zero is ambiguous", () => {
+  // A resolve worker that never booted reports every millisecond as 0, which
+  // looks exactly like one that booted and was never needed. `state` is what
+  // tells those apart, so the block is MIXED and not flat.
+  const r = perfReport(
+    { worker: { state: "ready", resolved: 4820, inFlight: 120, stale: 0, batches: 41, workerMs: 1830.4, applyMs: 61.2, bootMs: 940, regionMs: 38.1, cores: 8, error: "" } },
+    "2026-09-08T00:00:00.000Z",
+  ) as Record<string, any>;
+  assert.equal(r.worker.state, "ready");
+  assert.equal(r.worker.resolved, 4820);
+  assert.equal(r.worker.workerMs, 1830.4);
+  assert.equal(r.worker.cores, 8);
+  // A failure must arrive as its reason, not as silence.
+  const f = perfReport({ worker: { state: "failed", error: "module workers unsupported" } }, "2026-09-08T00:00:00.000Z") as Record<string, any>;
+  assert.equal(f.worker.state, "failed");
+  assert.equal(f.worker.error, "module workers unsupported");
+});

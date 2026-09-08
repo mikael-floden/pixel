@@ -158,6 +158,7 @@ import {
 } from "../maps";
 import type { MapGeometry, PlaceLookup } from "../maps";
 import { renderedWorldView, type ViewRect } from "../camview";
+import { ResolveWorker, resolveWorkerEnabled, setResolveWorkerEnabled, type ResolvedCell } from "../resolveworker";
 // ---- TILES 3.0 (maps3 worlds) -------------------------------------------
 // The resolver (what draws on this cell), the draw layer (the two pixel ops +
 // the texture factory), the streaming per-cell runtime, and scenery. All four
@@ -822,6 +823,13 @@ function groundPathFast(): boolean {
  *  known (the first paint after a join or a teleport) — see t3armRing. */
 const GROUND_RING = 512;
 const GROUND_RING_STEP = 80;
+/** HOW FAR AHEAD THE WORKER IS SENT, in cells — much further than the main
+ *  thread's own 80, because the whole point is that its work is not on the
+ *  frame. The ring queues the strip the NEXT band will paint (~2,000-6,000
+ *  cells); sending it in chunks this size keeps the worker busy without
+ *  building a message backlog the generation counter would then have to throw
+ *  away after a rebuild. Cells already in flight are never re-sent. */
+const GROUND_RING_WORKER = 600;
 /** THE BAND IS PAINTED IN SLICES, one per frame — see t3paintSliceStep. Slice
  *  depth in texture px along the band's long axis. The texture reaches
  *  GROUND_MARGIN (512 px) beyond the view and a step exposes at most 256 px, so
@@ -1601,6 +1609,12 @@ export class WorldScene extends Phaser.Scene {
    *  count; a cell leaves the moment it draws its boundary. */
   private t3boundaryOwed = new Set<number>();
   private t3cells = new Map<number, { cell?: Tiles3Cell | null; boundary?: Tiles3Boundary | null; decks?: Tiles3DeckCell[] }>();
+  /** THE RESOLVER ON ANOTHER CORE — see resolveworker.ts. It fills `t3cells`
+   *  ahead of the band that needs them; every answer is optional. */
+  private t3worker = new ResolveWorker();
+  /** Boot options for `t3worker`, applied on first use — see initTiles3. */
+  private t3workerOpts: Parameters<ResolveWorker["init"]>[0] | null = null;
+  private t3workerBooted = false;
   private t3pitchChecked = false;
   private t3regionMs = 0;
   private t3Failed = new Set<string>(); // see t3Try — one line per distinct resolver failure
@@ -1988,6 +2002,11 @@ export class WorldScene extends Phaser.Scene {
        * batch, composed ground rasters or cover surfaces decides whether that
        * cost is a one-off boot tail or something a run keeps paying. */
       texFam: snap.texFamilies as Record<string, number>,
+      /* THE WORKER'S BILL. `workerMs` is resolve time that did NOT happen on the
+       * frame thread; `applyMs` is the only cost it ADDS to it. If applyMs is
+       * not far below workerMs the feature is not paying for itself, and
+       * `state` says whether it ran at all on his device. */
+      worker: { ...this.t3worker.stats, cores: navigator.hardwareConcurrency || 0 },
       // Every jump of the AUTHORITATIVE body over 2 cells in one frame, with
       // the unacked-input depth at the time — a rejoin restore, a respawn, an
       // unstick and a reconciliation blow-up all land here and are told apart
@@ -3521,6 +3540,12 @@ export class WorldScene extends Phaser.Scene {
       window.removeEventListener("touchend", touchAllUp, { capture: true } as any);
       window.removeEventListener("touchcancel", touchAllUp, { capture: true } as any);
       window.removeEventListener("touchstart", touchFresh, { capture: true } as any);
+      /* A WORKER OUTLIVES ITS SCENE UNLESS TERMINATED. This one holds a second
+       * copy of the resolver documents (13.5 MB of JSON, more once parsed), so
+       * a world change or a reconnect that left it running would stack another
+       * one on a phone. */
+      this.t3worker.stop();
+      this.t3workerBooted = false;
     });
 
     // Chat: Enter opens the input; while typing, Phaser keyboard is disabled so
@@ -3698,6 +3723,23 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.fogOn,
           state: () => (this.fogOn ? "on" : "off"),
+        },
+        /* THE RESOLVER ON ANOTHER CORE — the A/B for the stutter, on his own
+         * phone, without a URL bar. Off = today's behaviour exactly (the main
+         * thread resolves every cell itself), so this switch is the honest
+         * before/after and not a degraded mode. */
+        {
+          label: "worker resolve",
+          act: () => {
+            const on = !resolveWorkerEnabled();
+            setResolveWorkerEnabled(on);
+            if (!on) this.t3worker.stop();
+            this.initTiles3();
+            this.repaintWorld();
+            this.chat.addLog("—", `worker resolve: ${on ? "on" : "off"} (${navigator.hardwareConcurrency || "?"} cores)`);
+          },
+          get: () => resolveWorkerEnabled(),
+          state: () => (resolveWorkerEnabled() ? this.t3worker.stats.state : "off"),
         },
         /* THE TWO SCENERY LIGHTING SWITCHES, for the phone: "scenery light" is
          * the per-pixel lit copy (scenerylit.ts), "scenery shadows" the torch
@@ -5885,6 +5927,64 @@ export class WorldScene extends Phaser.Scene {
             }
           });
         }),
+      /** THE GROUND RESOLVER ON ANOTHER CORE (resolveworker.ts). No argument
+       *  reports; a boolean flips the switch and rebuilds, so an A/B needs no
+       *  reload. `applyMs` against `workerMs` is the whole verdict: workerMs is
+       *  time that did not happen on this thread, applyMs is what the feature
+       *  costs the frame. */
+      resolveWorker: (on?: boolean) => {
+        if (typeof on === "boolean") {
+          setResolveWorkerEnabled(on);
+          if (!on) this.t3worker.stop();
+          this.initTiles3();
+          this.repaintWorld();
+        }
+        return { enabled: resolveWorkerEnabled(), cores: navigator.hardwareConcurrency || 0, ...this.t3worker.stats };
+      },
+      /** DOES THE OTHER CORE AGREE? Resolves `n` cells of the drawn window on
+       *  BOTH sides and deep-compares. The worker runs the same modules over
+       *  the same documents so it must agree exactly; this is what turns "must"
+       *  into a number, and it is the check to run before believing any picture
+       *  drawn with the worker on. */
+      workerParity: async (n = 200) => {
+        const t3 = this.t3;
+        const w = this.world;
+        if (!t3 || !w) return { error: "no resolver" };
+        const cells: number[] = [];
+        const win = this.t3keepIdx;
+        if (win) for (const i of win) { if (cells.length >= n) break; cells.push(i); }
+        if (!cells.length) return { error: "no drawn window yet — walk first" };
+        const mine = cells.map((i) => {
+          const col = i % w.width;
+          const row = (i - col) / w.width;
+          return JSON.stringify({
+            cell: this.t3Try(`p ${col},${row}`, () => t3.cell(col, row), null),
+            boundary: this.t3Try(`pb ${col},${row}`, () => t3.boundary(col, row), null),
+            decks: this.t3Try(`pd ${col},${row}`, () => t3.decks(col, row), []),
+          });
+        });
+        return await new Promise((done) => {
+          const probe = new ResolveWorker();
+          const docUrls: Partial<Record<Tiles3DocKey, string>> = {};
+          for (const k of Object.keys(TILES3_DOCS) as Tiles3DocKey[]) docUrls[k] = docUrl(TILES3_DOCS[k], this.t3route);
+          const timer = setTimeout(() => { probe.stop(); done({ error: "worker did not answer in 30s" }); }, 30000);
+          probe.onResolved((got) => {
+            clearTimeout(timer);
+            let same = 0;
+            const diff: number[] = [];
+            for (const r of got) {
+              const at = cells.indexOf(r.i);
+              if (at < 0) continue;
+              if (JSON.stringify({ cell: r.cell, boundary: r.boundary, decks: r.decks }) === mine[at]) same++;
+              else diff.push(r.i);
+            }
+            probe.stop();
+            done({ compared: got.length, identical: same, differing: diff.length, firstDiffs: diff.slice(0, 8) });
+          });
+          probe.init({ docUrls, worldUrl: gameUrl(worldFileUrl(this.worldName, "world.json")), frame: this.tiles3Frame(), pitch: this.geom.lh });
+          const wait = setInterval(() => { if (probe.isReady) { clearInterval(wait); probe.request(cells); } }, 100);
+        });
+      },
       /** THE STREAMING REPAINTS: how many landings asked, how many passes ran.
        *  `coalesce` flips the A/B switch (legacy = every landing repaints
        *  synchronously). Counters reset on read. */
@@ -14805,6 +14905,33 @@ export class WorldScene extends Phaser.Scene {
     this.t3cells.clear(); // a new resolver: nothing cached against the old one may survive
     this.t3 = new Tiles3World({ view, tiles, frame: this.tiles3Frame(), patterns: data.patterns });
     this.t3regionMs = +(performance.now() - t0).toFixed(1);
+    /* AND THE SAME RESOLVER ON ANOTHER CORE. Booted from the URLs THIS thread
+     * would use, so staging's `/assets/**` -> CDN rewrite is applied once, here,
+     * and never re-derived in the worker. Rebuilt with the resolver: initTiles3
+     * runs again when the live tuning channel lands, and an answer resolved
+     * against the old documents is a wrong picture, not a slow one — the
+     * generation counter inside ResolveWorker is what discards those. */
+    const docUrls: Partial<Record<Tiles3DocKey, string>> = {};
+    for (const k of Object.keys(TILES3_DOCS) as Tiles3DocKey[])
+      docUrls[k] = docUrl(TILES3_DOCS[k], this.t3route);
+    this.t3worker.onResolved((cells, paths) => this.onWorkerResolved(cells, paths));
+    /* BOOTED HERE, WITH THE RESOLVER. Deferring it to the first prefetch step
+     * was tried and reverted: the suspicion was that the worker's own thirteen
+     * document fetches were delaying the boot hold, and the measurement says
+     * they are not — the hold released at 20 s with the eager boot and 25 s
+     * with the lazy one, i.e. the headless harness is slow either way and the
+     * worker is not the reason. Booting late only means it is still "booting"
+     * when the player has already started walking, which is exactly when the
+     * ring needs it. */
+    this.t3workerOpts = {
+      docUrls,
+      worldUrl: gameUrl(worldFileUrl(this.worldName, "world.json")),
+      frame: this.tiles3Frame(),
+      pitch: this.geom.lh,
+    };
+    this.t3worker.stop();
+    this.t3workerBooted = true;
+    this.t3worker.init(this.t3workerOpts);
     this.t3load = new Tiles3Loader({
       loader: this.tiles3LoaderAdapter(),
       textures: this.t3tm,
@@ -15197,6 +15324,27 @@ export class WorldScene extends Phaser.Scene {
     if (!e) this.t3cells.set(i, (e = {}));
     return e;
   }
+  /** AN ANSWER FROM THE OTHER CORE. Fills the resolution cache the ground pass
+   *  and the occluder pass both read, and queues the art those cells named.
+   *
+   *  IT NEVER OVERWRITES. A cell this thread has already resolved keeps its own
+   *  answer: the two are the same code over the same documents and should agree
+   *  exactly (`__ml.workerParity()` checks that on demand), but "should" is not
+   *  a reason to let a message replace a value the frame may already have drawn
+   *  with. The worker's job is the cells nobody has looked at YET. */
+  private onWorkerResolved(cells: readonly ResolvedCell[], paths: readonly string[]): void {
+    if (!this.groundCacheOn || !this.t3) return; // cache off: an answer has nowhere to live
+    for (const r of cells) {
+      let e = this.t3cells.get(r.i);
+      if (!e) this.t3cells.set(r.i, (e = {}));
+      if (e.cell === undefined) e.cell = r.cell;
+      if (e.boundary === undefined) e.boundary = r.boundary;
+      if (e.decks === undefined) e.decks = r.decks;
+    }
+    const load = this.t3load;
+    if (load) for (const p of paths) load.need(p);
+  }
+
   private t3cellOf(t3: Tiles3World, col: number, row: number): Tiles3Cell | null {
     if (!this.groundCacheOn) return this.t3Try(`cell ${col},${row}`, () => t3.cell(col, row), null);
     const e = this.t3entry(col, row);
@@ -15937,6 +16085,30 @@ export class WorldScene extends Phaser.Scene {
     // Never stack the ring onto the frame that scrolled or painted a slice —
     // those are the frames the player would feel.
     if (this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length) return;
+    /* SEND THE STRIP TO THE OTHER CORE FIRST. Everything below this is the
+     * main thread's own pass over the same cells: it resolves what the worker
+     * has not answered yet (the fallback, and the behaviour with no worker at
+     * all) and composes the rasters, which a worker cannot do because it has no
+     * textures. The further ahead this runs, the more of that loop is a cache
+     * hit rather than a resolve — which is the 60-75% of a cold ground paint
+     * this feature exists to move. */
+    if (!this.t3workerBooted && this.t3workerOpts) {
+      this.t3workerBooted = true; // once per resolver, whether or not it succeeds
+      this.t3worker.init(this.t3workerOpts);
+    }
+    if (this.t3worker.isReady) {
+      const w = this.world;
+      if (w) {
+        const ahead: number[] = [];
+        const stop = Math.min(this.t3ringQueue.length, this.t3ringAt + GROUND_RING_WORKER);
+        for (let k = this.t3ringAt; k < stop; k++) {
+          const [c, r] = this.t3ringQueue[k];
+          const i = r * w.width + c;
+          if (!this.t3cells.get(i)?.cell) ahead.push(i); // already known: nothing to ask
+        }
+        this.t3worker.request(ahead);
+      }
+    }
     const built0 = tex.stats.built;
     const ringT0 = performance.now();
     /* MAY THIS FRAME COMPOSE AT ALL? A composition cannot be interrupted, so
