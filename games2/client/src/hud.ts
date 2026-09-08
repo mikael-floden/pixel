@@ -1892,16 +1892,25 @@ function injectStyles() {
      BUTTONS KEEP THE FULL WIDTH: dragging one does nothing, so there is
      nothing to protect (his words: "buttons can still take up 100% … because
      settings won't change if I drag the screen").
-     The gutter is on the WRAP, so the value readout stays right-aligned with
-     the track's end and the row reads as one narrower control rather than a
-     track that got cut off. */
-  :root{--ml-slider-gutter:80px}
-  .ml-amb-slider{display:flex;flex-direction:column;gap:6px;width:100%;
-    padding:0 var(--ml-slider-gutter) 6px 2px}
+     THE GUTTER IS ON THE TRACK, NOT THE ROW. Insetting the whole row put the
+     value readout on the track's right edge, which reads more deliberately —
+     but it also narrows the LABEL LINE, and at 100px "Light resolution ·
+     50% · 25% of the pixels" wrapped onto two centred lines and looked
+     broken. Only the track is draggable, so only the track has to move: the
+     label and its readout keep the full width and stay on one line. */
+  /* HIS THUMB, MEASURED BY HIM, NOT A TOUCH-TARGET GUIDELINE: 80px was the
+     strip he circled and it worked but ran close ("my thumb is just a little
+     bit bigger than what you simulated"). FIXED PX ON PURPOSE — a thumb is
+     the same size on every screen, so this must not be a fraction of the
+     viewport. At his 393px width it leaves the track 259px, which is still
+     ample for a percentage. */
+  :root{--ml-slider-gutter:100px}
+  .ml-amb-slider{display:flex;flex-direction:column;gap:6px;width:100%;padding:0 2px 6px}
   .ml-amb-slider-head{display:flex;justify-content:space-between;align-items:baseline;
     font:600 13px/1.2 var(--sans);color:var(--ink)}
   .ml-amb-slider-val{color:var(--muted);font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:12px}
-  .ml-slider{position:relative;height:26px;touch-action:none;cursor:pointer}
+  .ml-slider{position:relative;height:26px;touch-action:none;cursor:pointer;
+    margin-right:var(--ml-slider-gutter)}
   .ml-slider::before{content:"";position:absolute;left:0;right:0;top:50%;height:8px;
     transform:translateY(-50%);background:var(--surface-2);
     border:1px solid var(--border);border-radius:999px}

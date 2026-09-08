@@ -239,10 +239,12 @@ try {
       return { n: tracks.length, worst: tracks.length ? Math.min(...tracks) : null,
                btnMin: btns.length ? Math.min(...btns) : null };
     });
-    // 44px is the smallest touch target worth calling a target; the shipped
-    // gutter is 80px + the page's own padding.
+    // The floor is HIS THUMB, not the 44px generic touch target: he reported
+    // 80px + padding as working but tight, so a change that shrinks this back
+    // toward a guideline number must fail rather than pass. Shipped is 100px
+    // + the page's own padding.
     if (!gutter.n) fail("no sliders on the Settings page to check the gutter on");
-    else if (!(gutter.worst >= 44))
+    else if (!(gutter.worst >= 96))
       fail(`a slider track reaches within ${Math.round(gutter.worst)}px of the page's right edge — that strip is the one place a scroll can safely start`);
     else if (!(gutter.btnMin < 40))
       fail(`buttons were narrowed too (${Math.round(gutter.btnMin)}px gutter) — only SLIDERS give up the width`);

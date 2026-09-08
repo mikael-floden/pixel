@@ -264,9 +264,17 @@ from the games agent), #18 (title/landing screen).
   from it. BUTTONS KEEP THE FULL WIDTH on his instruction — dragging one does
   nothing, so there is nothing to protect — and the gate asserts BOTH
   directions, or "fix" it by narrowing the whole page and it still passes.
-  The padding is on the row WRAP, so the value readout right-aligns with the
-  track's end and the row reads as one narrower control instead of a track
-  that got cut off.
+  THE GUTTER IS ON THE TRACK, NOT THE ROW, and that was learned the second
+  time: insetting the whole row right-aligns the readout with the track and
+  reads more deliberately, but it narrows the LABEL LINE too, and at 100px
+  "Light resolution · 50% · 25% of the pixels" wrapped onto two centred lines.
+  Only the track is draggable, so only the track moves.
+  THE WIDTH IS HIS THUMB, MEASURED BY HIM — 80px was the strip he circled and
+  he came back with "my thumb is just a little bit bigger", so it is 100px
+  (118px clear of the screen edge at his 393px width). FIXED PX on purpose: a
+  thumb is the same size on every screen, so this must never become a
+  fraction of the viewport. The gate's floor is that number rather than the
+  44px generic touch target, so shrinking it back toward a guideline fails.
 - **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
   The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
   own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font
