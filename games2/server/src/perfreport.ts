@@ -81,6 +81,16 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * not `mixed` — every bucket is itself a record of numbers, and `mixed`
      * would flatten each one to {}, which is how this allowlist has quietly
      * eaten fields before. */
+    /* THE GPU UPLOAD BILL (client/src/texupload.ts) — the main-thread cost of
+     * getting art into video memory, which is the maintainer's own theory of
+     * the lag and the one thing no instrument here measured: netperf times the
+     * fetch, texFam counts the adds. `msPerSec` against 1000 is the share of
+     * the budget; texUpWorst names the biggest uploads with their pixel size,
+     * because the claim is about SIZE. */
+    texUp: mixed(body.texUp, 12),
+    texUpWorst: Array.isArray(body.texUpWorst)
+      ? (body.texUpWorst as unknown[]).slice(0, 10).map((w) => String(w).slice(0, 80))
+      : null,
     net: nested(body.net, 12, 16),
     netWorst: Array.isArray(body.netWorst)
       ? (body.netWorst as unknown[]).slice(0, 12).map((w) => String(w).slice(0, 140))

@@ -196,3 +196,20 @@ test("the heap block reaches the file — it was dropped for five commits", () =
   // data" and "allocated nothing" are opposite readings of the same question.
   assert.equal((perfReport({ heap: null }, "2026-09-08T00:00:00.000Z") as Record<string, any>).heap, null);
 });
+
+test("the texUp block reaches the file — it measures the theory under test", () => {
+  const r = perfReport(
+    {
+      texUp: { n: 957, ms: 812.4, msPerSec: 27.1, mpx: 118.3, p50: 0.31, p90: 2.4, p99: 11.8, max: 41.2, slow: 63, installed: true },
+      texUpWorst: ["41.2ms 592x644 (381kpx)"],
+    },
+    "2026-09-08T00:00:00.000Z",
+  ) as Record<string, any>;
+  assert.equal(r.texUp.msPerSec, 27.1);
+  assert.equal(r.texUp.max, 41.2);
+  assert.equal(r.texUp.slow, 63);
+  // `installed` is the difference between "uploads cost nothing" and "the probe
+  // never wrapped anything" — opposite readings that both show up as zeros.
+  assert.equal(r.texUp.installed, true);
+  assert.match(r.texUpWorst[0], /381kpx/);
+});

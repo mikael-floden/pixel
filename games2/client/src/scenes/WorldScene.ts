@@ -94,6 +94,7 @@ import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import { withV, assetIndexInfo } from "../assetver";
 import { netPerfStart, netPerfTake } from "../netperf";
+import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -884,6 +885,16 @@ const GROUND_SLICE_PX = 384;
  *
  *  DO NOT OPTIMISE A COST MODEL THAT HAS NOT BEEN MEASURED ON THE PATH IT
  *  DESCRIBES. That is the whole lesson of this constant. */
+/*  MEASURED ON HIS PHONE AND REJECTED, 2026-09-08. Merging the band under one
+ *  bracket was tried as a Settings A/B on the real device, same route, one
+ *  session: long-frame time per window came to 5,019 ms with the merge OFF and
+ *  9,722 ms with it ON — about TWICE AS BAD, not neutral. So the reasoning that
+ *  reached for it is also wrong: a bracket does resize Phaser's shared capture
+ *  target (deleteTexture + deleteFramebuffer + allocate, 1510x1656 for the
+ *  ground against the cover atlases' 1024x512), and that is a real cost that is
+ *  really paid — but it is not what makes this bucket expensive, and putting a
+ *  whole band's paint in one frame costs more than it saves. Finding a real
+ *  inefficiency is not the same as finding the cause. DO NOT RE-MERGE. */
 const GROUND_BAND_MS = 0.0001;
 /** UNUSED SINCE THE SIZE RATCHET WENT (see t3paintSliceStep): the rects stay at
  *  GROUND_SLICE_PX, because the bracket and not the rect area is the cost. */
@@ -1951,6 +1962,7 @@ export class WorldScene extends Phaser.Scene {
       dlMean: Math.round(dlN),
     };
     const netTake = netPerfTake();
+    const texUp = texUploadTake(secs);
     const body = {
       build: assetIndexInfo().buildSha,
       where: at ? `${at.x.toFixed(1)},${at.y.toFixed(1)}` : "unknown",
@@ -1997,7 +2009,6 @@ export class WorldScene extends Phaser.Scene {
          * comparing two reports. Numbers, because `counts` is flattened. */
         monstersOn: this.monstersOn ? 1 : 0,
         sceneryOn: this.sceneryOn ? 1 : 0,
-        bandMerge: this.groundBandMs >= 1e8 ? 1 : 0,
         // WHOLE-WORLD REPAINTS AND WHAT CAUSED THEM. A full ground paint costs
         // 52.9-271.6 ms on his phone plus 7.6-252.2 ms of occluder rebuild, and
         // every "full" frame in the last beacon was a `repaintWorld` — so these
@@ -2056,6 +2067,15 @@ export class WorldScene extends Phaser.Scene {
        * served the file itself. `p90`/`max` with `net` at zero is the DISK READ
        * AND DECODE, which is what a scenery piece (5x a tile's pixels at the
        * median, 45x at the max) is suspected of spending on the main thread. */
+      /* WHAT THE GPU UPLOADS COST THE FRAME THREAD (texupload.ts). The
+       * maintainer's theory is that big art — scenery, big monsters — is what
+       * lags a run into a new area, and NOTHING here measured it: netperf times
+       * the fetch, texFam counts the adds, and neither touches the decode or
+       * the upload. `msPerSec` against 1000 is the share of the budget this
+       * costs; `texUpWorst` names the biggest single uploads with their size,
+       * because the claim is specifically about SIZE. */
+      texUp: texUp.stats,
+      texUpWorst: texUp.worst,
       net: netTake.fams,
       /* THE SLOWEST INDIVIDUAL LOADS, NAMED. A percentile cannot tell a 40 ms
        * scenery piece from forty 1 ms tiles, and the whole question is which
@@ -2476,6 +2496,7 @@ export class WorldScene extends Phaser.Scene {
      * true` replays what the browser already holds, so arming late still sees
      * the recent history, and an unarmed session accumulates nothing. */
     netPerfStart();
+    installTexUploadProbe(this.renderer);
     this.perfPrevFullPaints = this.groundFullRuns;
     this.perfPrevDrains = this.repaintStats.drains;
     this.perfPrevDeferred = this.repaintStats.drainsDeferred;
@@ -2902,11 +2923,7 @@ export class WorldScene extends Phaser.Scene {
   /** The drain's per-frame budget in force. A dev A/B sets it to ~0 to get the
    *  OLD topology back — one rect per bracket per frame — so the merge can be
    *  proved pixel-identical against the behaviour it replaced. */
-  /** ONE BRACKET PER BAND, OR ONE PER FRAME. See the "band merge" switch: a
-   *  bracket resizes Phaser's SHARED capture target, and a resize is a
-   *  deleteTexture + deleteFramebuffer + allocate of a 1510x1656 (10 MB)
-   *  texture. Merged, a band pays that once instead of 4-8 times. */
-  private groundBandMs = localStorage.getItem("ml-band-merge") === "1" ? 1e9 : GROUND_BAND_MS;
+  private groundBandMs = GROUND_BAND_MS;
   /** The last anchor shift — the direction the world is travelling, which is
    *  the only direction worth prefetching (t3armRing). */
   private groundLastShift = { x: 0, y: 0 };
@@ -3847,31 +3864,6 @@ export class WorldScene extends Phaser.Scene {
          * isolates ONE pass at a time for debugging and is not remembered: this
          * is a persisted two-state switch for looking at the world. The light
          * pass stays on, so the scene is still lit and still shadowed. */
-        /* BAND MERGE — the ground band under ONE bracket instead of one per
-         * frame. Every beginDraw routes through Phaser's SHARED capture target
-         * (WebGLRenderer.renderTarget, autoResize TRUE), and binding it at a
-         * size it is not already at DELETES and REALLOCATES its texture and
-         * framebuffer — 1510x1656 for the ground, against the 1024x512 the
-         * cover atlases bracket at seven times per flush. So a frame that
-         * flushes cover surfaces AND paints a slice tears that target down and
-         * rebuilds it both ways. Merging pays it once per band, not per slice.
-         *
-         * IT IS A SWITCH BECAUSE THE STANDING COST MODEL SAYS THIS IS POINTLESS
-         * (GROUND_BAND_MS: "an empty bracket is 0.015 ms"). That bench ran nine
-         * ground brackets IN A ROW — same size every time, so willResize was
-         * false after the first and they really were free. It never alternated
-         * sizes, which is the only thing that costs. Measure, do not argue. */
-        {
-          label: "band merge",
-          act: () => {
-            const on = this.groundBandMs < 1e8;
-            this.groundBandMs = on ? 1e9 : GROUND_BAND_MS;
-            localStorage.setItem("ml-band-merge", on ? "1" : "0");
-            this.chat.addLog("—", `band merge: ${on ? "ON — whole band, one bracket" : "off — one slice per frame"}`);
-          },
-          get: () => this.groundBandMs >= 1e8,
-          state: () => (this.groundBandMs >= 1e8 ? "on" : "off"),
-        },
         {
           label: "fog",
           act: () => {
