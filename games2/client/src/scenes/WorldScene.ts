@@ -1449,6 +1449,10 @@ export class WorldScene extends Phaser.Scene {
   // other switches (maintainer 2026-07-30 — the zones are map data, not part
   // of the played world).
   private spawnAreasOn = localStorage.getItem("ml-spawn-areas") === "1";
+  /** Settings "fog" — the two atmospherics (depth fog + weather mist), ON by
+   *  default and remembered. A SCREENSHOT instrument: both wash the picture,
+   *  and the maintainer photographs walls to review the art on them. */
+  private fogOn = localStorage.getItem("ml-fog") !== "0";
   private spawnZones: SpawnZone[] | null = null; // lazily fetched when first shown
   private spawnZonesLoading = false;
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
@@ -3323,6 +3327,7 @@ export class WorldScene extends Phaser.Scene {
       try {
         this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
         this.night.create();
+        this.night.atmoOff = !this.fogOn;
         // Footprints stamped before the night existed (the boot restamp, or docs
         // that landed first) become occluders now; later stamps re-apply themselves.
         this.night.setSceneryOccluders(this.terrain?.footprints);
@@ -3634,6 +3639,22 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => !!this.night && this.night.dbgOverlays !== 0,
           state: () => ["all", "no fog", "no mist", "none"][this.night?.dbgOverlays ?? 0],
+        },
+        /* FOG: both atmospherics off in one tap — the always-on depth fog and
+         * the weather mist (maintainer 2026-09-08: "a toggle in settings for
+         * enabling/disabling fog. That will make it easier to take a screenshot
+         * in the game"). Distinct from the "overlays" cycler beside it, which
+         * isolates ONE pass at a time for debugging and is not remembered: this
+         * is a persisted two-state switch for looking at the world. The light
+         * pass stays on, so the scene is still lit and still shadowed. */
+        {
+          label: "fog",
+          act: () => {
+            this.setFog(!this.fogOn);
+            this.chat.addLog("—", `fog: ${this.fogOn ? "on" : "off"}`);
+          },
+          get: () => this.fogOn,
+          state: () => (this.fogOn ? "on" : "off"),
         },
         /* THE TWO SCENERY LIGHTING SWITCHES, for the phone: "scenery light" is
          * the per-pixel lit copy (scenerylit.ts), "scenery shadows" the torch
@@ -4411,6 +4432,13 @@ export class WorldScene extends Phaser.Scene {
         const av = this.avatars.get(this.room?.sessionId ?? "");
         return {
           strength: this.night?.fogStrength ?? 0,
+          /* THE SWITCH, BESIDE THE DIAL. A probe that reports `strength` alone
+           * says "fog is on" while the Settings switch has it off — an
+           * instrument that cannot see the control is how a wall bug survived
+           * five rounds here today. `fogOn` is the switch, `mist` the other
+           * atmospheric it also kills. */
+          fogOn: this.fogOn,
+          mist: this.fogOn ? this.curMist : 0,
           testZ: this.night?.fogTestZ ?? null,
           testXY: this.night?.fogTestXY ?? null,
           playerZ: av ? +Math.max(0, av.elev / this.geom.lh).toFixed(2) : 0,
@@ -11262,6 +11290,15 @@ export class WorldScene extends Phaser.Scene {
 
   /** Show/hide the maps2 monster spawn-zone outlines (debug). Persisted so a
    * QA session keeps them on across reloads; OFF for everyone by default. */
+  /** The Settings "fog" switch. Remembered, and applied to the pass if there is
+   *  one — a world joined with fog off must not come back foggy. */
+  private setFog(on: boolean) {
+    this.fogOn = on;
+    localStorage.setItem("ml-fog", on ? "1" : "0");
+    if (this.night) this.night.atmoOff = !on;
+    this.hud?.refreshSettings(); // the switch prints its own state
+  }
+
   private toggleSpawnAreas(on = !this.spawnAreasOn) {
     this.spawnAreasOn = on;
     try {

@@ -2023,6 +2023,31 @@ export class NightLights {
    *  disappears at a step names the pass that paints it. */
   dbgOverlays = 0;
 
+  /** THE FOG SWITCH — Settings "fog", ON by default (maintainer 2026-09-08:
+   *  "add a toggle in settings for enabling/disabling fog. That will make it
+   *  easier to take a screenshot in the game"). It kills BOTH atmospherics —
+   *  the always-on depth fog and the weather mist — because both wash a
+   *  screenshot, and leaves the multiply light pass alone so the world is
+   *  still lit and still shadowed.
+   *
+   *  NOT `dbgOverlays`: that is a four-step isolation CYCLER that hides passes
+   *  with `setVisible(false)`, which this file's own law says does not stop a
+   *  render-to-texture Shader. This zeroes the two STRENGTHS instead, so the
+   *  passes leave the display list through `setPassRunning` on the documented
+   *  cheap path — off costs nothing rather than costing everything invisibly.
+   *  The CPU twin (`fogFor`, which paints the fog silhouettes on bodies and
+   *  scenery) reads the same amount, or a body would wear a fog figure with no
+   *  fog on the ground behind it. */
+  atmoOff = false;
+
+  /** The depth fog's live strength — the master dial, the per-frame scene
+   *  scale, and the switch. ONE expression, because it feeds the shader
+   *  uniform, the pass's on/off test AND the CPU twin, and those three
+   *  disagreeing is a silhouette without a fog or a fog without a pass. */
+  private fogAmount(): number {
+    return this.atmoOff ? 0 : this.fogStrength * this.fogScale;
+  }
+
   constructor(
     scene: Phaser.Scene,
     world: World,
@@ -3854,6 +3879,7 @@ export class NightLights {
     this.curSun = sun;
     this.curCloud = cloud;
     this.curAurora = aurora;
+    if (this.atmoOff) mist = 0;
     this.curMist = mist;
     this.curPlayerZ = this.fogTestZ ?? playerZ;
     this.curPlayerXY = this.fogTestXY ?? [playerCol, playerRow];
@@ -4068,9 +4094,9 @@ export class NightLights {
 
     // ELEVATION DEPTH-FOG overlay — same world window as the light field. Only
     // drawn when the master strength is on (0 = disabled, costs nothing).
-    const showFog = this.fogStrength * this.fogScale > 0.003;
+    const showFog = this.fogAmount() > 0.003;
     // ...and the same for the depth-fog pass, for the same reason (see uMist).
-    this.depthFogShader?.setUniform("uFog.value", this.fogStrength * this.fogScale);
+    this.depthFogShader?.setUniform("uFog.value", this.fogAmount());
     this.depthFogShader?.setVisible(showFog);
     this.depthFogOverlay?.setVisible(showFog);
     this.setPassRunning(this.depthFogShader, showFog);
@@ -4090,7 +4116,7 @@ export class NightLights {
       f.setUniform("uPlayerZ.value", this.curPlayerZ);
       f.setUniform("uPlayerXY.value.x", this.curPlayerXY[0]);
       f.setUniform("uPlayerXY.value.y", this.curPlayerXY[1]);
-      f.setUniform("uFog.value", this.fogStrength * this.fogScale);
+      f.setUniform("uFog.value", this.fogAmount());
       f.setUniform("uAmbient.value.x", ambient[0]);
       f.setUniform("uAmbient.value.y", ambient[1]);
       f.setUniform("uAmbient.value.z", ambient[2]);
@@ -4252,7 +4278,7 @@ export class NightLights {
   /** The fog formula proper for a horizontal distance (cells), a surface level
    *  and the cell the room test reads (the fragment's mix(1, roomAt, uIndoorMix)). */
   private fogFor(distH: number, z: number, snap: boolean, col: number, row: number): { a: number; r: number; g: number; b: number } {
-    const uFog = this.fogStrength * this.fogScale;
+    const uFog = this.fogAmount();
     const NONE = { a: 0, r: 0, g: 0, b: 0 };
     if (uFog <= 0.003) return NONE;
     // MUST MATCH the GLSL consts atop DEPTHFOG_FRAG.
