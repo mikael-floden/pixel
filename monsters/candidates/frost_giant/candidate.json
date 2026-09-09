@@ -1,0 +1,141 @@
+{
+  "id": "frost_giant",
+  "name": "Rimeking",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The glacier's landlord. It comes down once a century to see what has grown on its land and remove it.",
+  "biome": [
+    "ice",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy frost giant shown full body from head to feet, pale blue skin crusted with ice, a long white beard hung with icicles, a crown of jagged ice, furs and iron armor, a massive ice-bladed axe held upright, and huge boots.",
+  "size": [
+    240,
+    240
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "frost_giant/rotations/south.webp",
+    "south-east": "frost_giant/rotations/south-east.webp",
+    "east": "frost_giant/rotations/east.webp",
+    "north-east": "frost_giant/rotations/north-east.webp",
+    "north": "frost_giant/rotations/north.webp",
+    "north-west": "frost_giant/rotations/north-west.webp",
+    "west": "frost_giant/rotations/west.webp",
+    "south-west": "frost_giant/rotations/south-west.webp"
+  },
+  "sheet": "frost_giant/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "3f3c875f-63a1-45f4-affc-f2de25538860",
+  "seed": 1425220825,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:45:09+00:00",
+  "elapsed_s": 224.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.69,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.69,
+        "bbox": [
+          38,
+          11,
+          210,
+          230
+        ],
+        "fill": 0.654,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.719,
+        "bbox": [
+          92,
+          10,
+          152,
+          233
+        ],
+        "fill": 0.232,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.748,
+        "bbox": [
+          74,
+          10,
+          169,
+          232
+        ],
+        "fill": 0.366,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.712,
+        "bbox": [
+          28,
+          9,
+          192,
+          231
+        ],
+        "fill": 0.632,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.738,
+        "bbox": [
+          51,
+          9,
+          211,
+          233
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.702,
+        "bbox": [
+          65,
+          11,
+          176,
+          232
+        ],
+        "fill": 0.426,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.704,
+        "bbox": [
+          33,
+          10,
+          180,
+          232
+        ],
+        "fill": 0.567,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.727,
+        "bbox": [
+          54,
+          10,
+          173,
+          232
+        ],
+        "fill": 0.459,
+        "touches_edge": false
+      }
+    }
+  }
+}
