@@ -9,10 +9,10 @@
     "black_rock"
   ],
   "items": [],
-  "prompt": "Fat fantasy slug with a body of dark cooled rock split by glowing orange magma seams, two thick eyestalks with ember eyes, a trail of molten drips beneath it, and small vents on its back puffing smoke.",
+  "prompt": "Fat fantasy slug with a body of dark cooled rock split by glowing orange magma seams, two short thick eyestalks with ember eyes held close to its body, a trail of molten drips beneath it, and small vents on its back puffing smoke.",
   "size": [
-    88,
-    88
+    96,
+    96
   ],
   "template_id": "bear",
   "directions": [
@@ -37,105 +37,103 @@
   },
   "sheet": "lava_slug/sheet.webp",
   "review": "pending",
-  "pixellab_id": "f19a102b-de21-4da3-9e69-f2b61431b4fb",
-  "seed": 1336685778,
-  "version": 1,
+  "pixellab_id": "9a6737d3-dc01-4751-808d-a2724dbe1578",
+  "seed": 1453679976,
+  "version": 2,
   "usage": null,
-  "generated_at": "2026-09-09T18:05:56+00:00",
-  "elapsed_s": 279.7,
+  "generated_at": "2026-09-09T19:27:41+00:00",
+  "elapsed_s": 185.1,
   "qa": {
-    "status": "fail",
-    "min_run1": 0.747,
-    "reasons": [
-      "south-east: content touches the canvas edge (clipped)"
-    ],
+    "status": "pass",
+    "min_run1": 0.726,
+    "reasons": [],
     "directions": {
       "south": {
-        "run1": 0.747,
+        "run1": 0.726,
         "bbox": [
+          10,
           5,
-          2,
-          83,
-          83
+          88,
+          88
         ],
-        "fill": 0.816,
+        "fill": 0.702,
         "touches_edge": false
       },
       "south-east": {
-        "run1": 0.821,
+        "run1": 0.811,
         "bbox": [
-          9,
-          0,
-          75,
-          82
+          8,
+          5,
+          86,
+          84
         ],
-        "fill": 0.699,
-        "touches_edge": true
+        "fill": 0.669,
+        "touches_edge": false
       },
       "east": {
-        "run1": 0.804,
+        "run1": 0.806,
         "bbox": [
+          9,
           5,
-          3,
-          82,
-          85
+          83,
+          88
         ],
-        "fill": 0.815,
+        "fill": 0.666,
         "touches_edge": false
       },
       "north-east": {
-        "run1": 0.807,
+        "run1": 0.778,
         "bbox": [
-          4,
-          10,
-          78,
-          83
+          6,
+          8,
+          87,
+          87
         ],
-        "fill": 0.698,
+        "fill": 0.694,
         "touches_edge": false
       },
       "north": {
-        "run1": 0.798,
+        "run1": 0.8,
         "bbox": [
-          9,
-          4,
-          80,
-          83
+          12,
+          13,
+          89,
+          82
         ],
-        "fill": 0.724,
+        "fill": 0.576,
         "touches_edge": false
       },
       "north-west": {
-        "run1": 0.81,
+        "run1": 0.82,
         "bbox": [
           9,
-          3,
-          81,
-          84
+          9,
+          86,
+          88
         ],
-        "fill": 0.753,
+        "fill": 0.66,
         "touches_edge": false
       },
       "west": {
         "run1": 0.785,
         "bbox": [
           10,
-          8,
-          82,
-          84
+          16,
+          87,
+          85
         ],
-        "fill": 0.707,
+        "fill": 0.576,
         "touches_edge": false
       },
       "south-west": {
-        "run1": 0.813,
+        "run1": 0.8,
         "bbox": [
-          4,
-          4,
-          83,
-          82
+          8,
+          9,
+          90,
+          89
         ],
-        "fill": 0.796,
+        "fill": 0.712,
         "touches_edge": false
       }
     }
