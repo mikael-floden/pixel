@@ -104,8 +104,11 @@ What makes a base sound, and how much of it is machine-checked:
   a bigger canvas — there is nothing to stitch. Wrap-around is an ANIMATION
   bug and `postprocess.py` repairs it inside sync, once a candidate is
   approved and animated.
-- **Each facing IS its facing; no text baked into the art** — a human, or
-  the agent reading `sheet.webp`. The machine cannot judge this.
+- **Each facing IS its facing; no text and no ground shadow baked into the
+  art** — a human, or the agent reading `sheet.webp`. The machine cannot
+  judge this (baked shadows are fully opaque, measured — no alpha to key on),
+  so every prompt ends with the tier's expression clause and 'no drop shadow
+  on the ground' (config `defaults.style_suffix`).
 - **High-detail prompts** (maintainer: low detail confuses the model — it
   cannot tell what is what). Prompts never name a facing or a background: v3
   rotates a south sprite and always renders transparent.
