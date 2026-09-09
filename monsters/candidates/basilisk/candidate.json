@@ -335,6 +335,244 @@
         "west": "basilisk/animations/idle__west.webp",
         "north-west": "basilisk/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.2063,
+          "step_max": 0.3158,
+          "drift": 6.59,
+          "loop": 0.3058,
+          "loop_ratio": 1.48,
+          "travel": 4.92,
+          "pin": 0.931,
+          "reasons": [
+            "frame 2 touches a canvas edge the base does not (overflow / wrap risk)",
+            "drifts 6.6 px — eyeball it",
+            "4.9 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "018b56ce-3020-4308-b1d1-94ff78d427ad",
+          "group": "6fdfa90b-284b-4d0f-b0bf-402a9f4034e0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:00:32+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.2082,
+          "step_max": 0.2299,
+          "drift": 4.8,
+          "loop": 0.4222,
+          "loop_ratio": 2.03,
+          "travel": 4.8,
+          "pin": 0.848,
+          "reasons": [
+            "last→first hand-off 2.0× a step — eyeball the loop",
+            "4.8 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "a135f4e6-fb38-4070-8534-830fc116756b",
+          "group": "8d68f353-75a1-4971-8e6c-d13716ed619e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:00:33+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1826,
+          "step_max": 0.235,
+          "drift": 2.84,
+          "loop": 0.3259,
+          "loop_ratio": 1.78,
+          "travel": 1.76,
+          "pin": 0.817,
+          "reasons": [],
+          "cut": 0,
+          "sub": "1ced765f-ea7c-47d5-a5a7-66744ce8ea8f",
+          "group": "8bd340d4-05fd-4768-b478-408d6078d0ec",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:00:33+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.174,
+          "step_max": 0.2363,
+          "drift": 4.59,
+          "loop": 0.1725,
+          "loop_ratio": 0.99,
+          "travel": 3.49,
+          "pin": 0.842,
+          "reasons": [],
+          "cut": 0,
+          "sub": "edf18fe4-a997-411b-b92f-9cb42fe3ef2c",
+          "group": "018c633e-5bc0-456e-981c-d30a8998b001",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:00:34+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.201,
+          "step_max": 0.2486,
+          "drift": 2.19,
+          "loop": 0.1983,
+          "loop_ratio": 0.99,
+          "travel": 3.42,
+          "pin": 0.874,
+          "reasons": [],
+          "cut": 0,
+          "sub": "268d830a-c118-4972-a468-b2da1db12c40",
+          "group": "6478bfa1-866d-4394-a0f4-3dcc03546978",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:00:35+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.2082,
+          "step_max": 0.2299,
+          "drift": 4.8,
+          "loop": 0.4222,
+          "loop_ratio": 2.03,
+          "travel": 4.8,
+          "pin": 0.848,
+          "reasons": [
+            "last→first hand-off 2.0× a step — eyeball the loop",
+            "4.8 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "a135f4e6-fb38-4070-8534-830fc116756b",
+          "group": "8d68f353-75a1-4971-8e6c-d13716ed619e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:00:33+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1826,
+          "step_max": 0.235,
+          "drift": 2.84,
+          "loop": 0.3259,
+          "loop_ratio": 1.78,
+          "travel": 1.76,
+          "pin": 0.817,
+          "reasons": [],
+          "cut": 0,
+          "sub": "1ced765f-ea7c-47d5-a5a7-66744ce8ea8f",
+          "group": "8bd340d4-05fd-4768-b478-408d6078d0ec",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:00:33+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.174,
+          "step_max": 0.2363,
+          "drift": 4.59,
+          "loop": 0.1725,
+          "loop_ratio": 0.99,
+          "travel": 3.49,
+          "pin": 0.842,
+          "reasons": [],
+          "cut": 0,
+          "sub": "edf18fe4-a997-411b-b92f-9cb42fe3ef2c",
+          "group": "018c633e-5bc0-456e-981c-d30a8998b001",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:00:34+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "basilisk/animations/walk/south/00.webp",
+          "basilisk/animations/walk/south/01.webp",
+          "basilisk/animations/walk/south/02.webp",
+          "basilisk/animations/walk/south/03.webp",
+          "basilisk/animations/walk/south/04.webp",
+          "basilisk/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "basilisk/animations/walk/south-east/00.webp",
+          "basilisk/animations/walk/south-east/01.webp",
+          "basilisk/animations/walk/south-east/02.webp",
+          "basilisk/animations/walk/south-east/03.webp",
+          "basilisk/animations/walk/south-east/04.webp",
+          "basilisk/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "basilisk/animations/walk/east/00.webp",
+          "basilisk/animations/walk/east/01.webp",
+          "basilisk/animations/walk/east/02.webp",
+          "basilisk/animations/walk/east/03.webp",
+          "basilisk/animations/walk/east/04.webp",
+          "basilisk/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "basilisk/animations/walk/north-east/00.webp",
+          "basilisk/animations/walk/north-east/01.webp",
+          "basilisk/animations/walk/north-east/02.webp",
+          "basilisk/animations/walk/north-east/03.webp",
+          "basilisk/animations/walk/north-east/04.webp",
+          "basilisk/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "basilisk/animations/walk/north/00.webp",
+          "basilisk/animations/walk/north/01.webp",
+          "basilisk/animations/walk/north/02.webp",
+          "basilisk/animations/walk/north/03.webp",
+          "basilisk/animations/walk/north/04.webp",
+          "basilisk/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "basilisk/animations/walk/south-west/00.webp",
+          "basilisk/animations/walk/south-west/01.webp",
+          "basilisk/animations/walk/south-west/02.webp",
+          "basilisk/animations/walk/south-west/03.webp",
+          "basilisk/animations/walk/south-west/04.webp",
+          "basilisk/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "basilisk/animations/walk/west/00.webp",
+          "basilisk/animations/walk/west/01.webp",
+          "basilisk/animations/walk/west/02.webp",
+          "basilisk/animations/walk/west/03.webp",
+          "basilisk/animations/walk/west/04.webp",
+          "basilisk/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "basilisk/animations/walk/north-west/00.webp",
+          "basilisk/animations/walk/north-west/01.webp",
+          "basilisk/animations/walk/north-west/02.webp",
+          "basilisk/animations/walk/north-west/03.webp",
+          "basilisk/animations/walk/north-west/04.webp",
+          "basilisk/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "basilisk/animations/walk__south.webp",
+        "south-east": "basilisk/animations/walk__south-east.webp",
+        "east": "basilisk/animations/walk__east.webp",
+        "north-east": "basilisk/animations/walk__north-east.webp",
+        "north": "basilisk/animations/walk__north.webp",
+        "south-west": "basilisk/animations/walk__south-west.webp",
+        "west": "basilisk/animations/walk__west.webp",
+        "north-west": "basilisk/animations/walk__north-west.webp"
+      }
     }
   }
 }
