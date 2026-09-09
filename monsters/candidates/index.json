@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:35:15+00:00",
+  "generated_at": "2026-09-09T18:35:57+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 42,
+  "count": 43,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -5431,6 +5431,133 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:34:58+00:00"
+    },
+    {
+      "id": "lava_toad",
+      "name": "Magmatoad",
+      "tier": "mid",
+      "lore": "It basks in the lava as other toads bask on stone. Its croak carries sulphur and its bite carries fire.",
+      "biome": [
+        "lava"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "3b596d69-fe21-4b8e-b8a4-e3ff07e6ce7a",
+      "version": 1,
+      "sheet": "lava_toad/sheet.webp",
+      "rotations": {
+        "south": "lava_toad/rotations/south.webp",
+        "south-east": "lava_toad/rotations/south-east.webp",
+        "east": "lava_toad/rotations/east.webp",
+        "north-east": "lava_toad/rotations/north-east.webp",
+        "north": "lava_toad/rotations/north.webp",
+        "north-west": "lava_toad/rotations/north-west.webp",
+        "west": "lava_toad/rotations/west.webp",
+        "south-west": "lava_toad/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.592,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.592,
+            "bbox": [
+              3,
+              4,
+              93,
+              90
+            ],
+            "fill": 0.84,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.687,
+            "bbox": [
+              10,
+              8,
+              91,
+              90
+            ],
+            "fill": 0.721,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.688,
+            "bbox": [
+              5,
+              8,
+              85,
+              90
+            ],
+            "fill": 0.712,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.622,
+            "bbox": [
+              6,
+              6,
+              89,
+              85
+            ],
+            "fill": 0.711,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.7,
+            "bbox": [
+              4,
+              11,
+              87,
+              92
+            ],
+            "fill": 0.729,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.643,
+            "bbox": [
+              4,
+              6,
+              93,
+              92
+            ],
+            "fill": 0.831,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.651,
+            "bbox": [
+              11,
+              6,
+              90,
+              91
+            ],
+            "fill": 0.729,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.697,
+            "bbox": [
+              9,
+              11,
+              92,
+              92
+            ],
+            "fill": 0.729,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:35:57+00:00"
     }
   ]
 }
