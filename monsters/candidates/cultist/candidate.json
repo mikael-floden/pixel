@@ -1,0 +1,141 @@
+{
+  "id": "cultist",
+  "name": "Hexbrother",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "One of many, and all of them the same. What they worship is under the floor, and it is listening.",
+  "biome": [
+    "grey_paving_stone",
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Hooded cultist shown full body from head to feet, realistic proportions, a long dark crimson robe with black sigils, the face hidden in the hood's shadow except a pale chin, a curved sacrificial dagger held low, and a bone amulet on a cord.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cultist/rotations/south.webp",
+    "south-east": "cultist/rotations/south-east.webp",
+    "east": "cultist/rotations/east.webp",
+    "north-east": "cultist/rotations/north-east.webp",
+    "north": "cultist/rotations/north.webp",
+    "north-west": "cultist/rotations/north-west.webp",
+    "west": "cultist/rotations/west.webp",
+    "south-west": "cultist/rotations/south-west.webp"
+  },
+  "sheet": "cultist/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ab588bbf-2f0c-43c5-823c-08af8594b2bb",
+  "seed": 144596249,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:08:00+00:00",
+  "elapsed_s": 205.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.649,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.663,
+        "bbox": [
+          21,
+          3,
+          74,
+          92
+        ],
+        "fill": 0.512,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.68,
+        "bbox": [
+          10,
+          4,
+          62,
+          92
+        ],
+        "fill": 0.497,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.694,
+        "bbox": [
+          34,
+          4,
+          82,
+          92
+        ],
+        "fill": 0.458,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.666,
+        "bbox": [
+          23,
+          3,
+          74,
+          91
+        ],
+        "fill": 0.487,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.746,
+        "bbox": [
+          27,
+          3,
+          71,
+          93
+        ],
+        "fill": 0.43,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.649,
+        "bbox": [
+          28,
+          3,
+          78,
+          92
+        ],
+        "fill": 0.483,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.662,
+        "bbox": [
+          24,
+          4,
+          69,
+          92
+        ],
+        "fill": 0.43,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.739,
+        "bbox": [
+          18,
+          3,
+          67,
+          93
+        ],
+        "fill": 0.479,
+        "touches_edge": false
+      }
+    }
+  }
+}
