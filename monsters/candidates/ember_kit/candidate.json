@@ -1,0 +1,141 @@
+{
+  "id": "ember_kit",
+  "name": "Cinderkit",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "A fox born in the ash beds. It is warm to the touch and will not be held.",
+  "biome": [
+    "lava",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Small fantasy fire fox kit with dark ash-grey fur, glowing orange ember patterns along its back and tail, bright amber eyes, large ears tipped with small flames, and a fluffy tail curled around its paws.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ember_kit/rotations/south.webp",
+    "south-east": "ember_kit/rotations/south-east.webp",
+    "east": "ember_kit/rotations/east.webp",
+    "north-east": "ember_kit/rotations/north-east.webp",
+    "north": "ember_kit/rotations/north.webp",
+    "north-west": "ember_kit/rotations/north-west.webp",
+    "west": "ember_kit/rotations/west.webp",
+    "south-west": "ember_kit/rotations/south-west.webp"
+  },
+  "sheet": "ember_kit/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "2bdef42a-c504-4d1a-88fe-b5bf209c4d35",
+  "seed": 996244031,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:54:39+00:00",
+  "elapsed_s": 224.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.695,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.74,
+        "bbox": [
+          8,
+          5,
+          44,
+          44
+        ],
+        "fill": 0.609,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.723,
+        "bbox": [
+          6,
+          4,
+          44,
+          44
+        ],
+        "fill": 0.66,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.721,
+        "bbox": [
+          4,
+          4,
+          41,
+          44
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.698,
+        "bbox": [
+          13,
+          4,
+          36,
+          44
+        ],
+        "fill": 0.399,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.762,
+        "bbox": [
+          11,
+          5,
+          37,
+          44
+        ],
+        "fill": 0.44,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.695,
+        "bbox": [
+          4,
+          3,
+          40,
+          44
+        ],
+        "fill": 0.641,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.73,
+        "bbox": [
+          10,
+          4,
+          38,
+          45
+        ],
+        "fill": 0.498,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.751,
+        "bbox": [
+          7,
+          4,
+          45,
+          43
+        ],
+        "fill": 0.643,
+        "touches_edge": false
+      }
+    }
+  }
+}
