@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T17:48:14+00:00",
+  "generated_at": "2026-09-09T17:49:10+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -146,6 +146,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:35:11+00:00"
     },
     {
@@ -277,6 +278,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:38:33+00:00"
     },
     {
@@ -406,6 +408,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:41:07+00:00"
     },
     {
@@ -422,12 +425,12 @@
         "plated beetle"
       ],
       "size": [
-        88,
-        88
+        96,
+        96
       ],
       "template_id": "bear",
-      "pixellab_id": "9b480878-3c60-4f4e-9a6b-ad7b0a51e0d0",
-      "version": 1,
+      "pixellab_id": "857bc7c6-deb3-4180-a157-6ae5a4697a96",
+      "version": 2,
       "sheet": "iron_beetle/sheet.webp",
       "rotations": {
         "south": "iron_beetle/rotations/south.webp",
@@ -441,103 +444,105 @@
       },
       "qa": {
         "status": "fail",
-        "min_run1": 0.718,
+        "min_run1": 0.69,
         "reasons": [
-          "west: content touches the canvas edge (clipped)"
+          "west: content touches the canvas edge (clipped)",
+          "north-east: content touches the canvas edge (clipped)"
         ],
         "directions": {
           "south": {
-            "run1": 0.718,
+            "run1": 0.69,
             "bbox": [
-              2,
-              3,
-              86,
-              85
+              4,
+              15,
+              95,
+              91
             ],
-            "fill": 0.889,
+            "fill": 0.75,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.76,
+            "run1": 0.732,
             "bbox": [
-              0,
-              6,
-              84,
-              81
+              5,
+              7,
+              96,
+              90
             ],
-            "fill": 0.814,
+            "fill": 0.82,
             "touches_edge": true
           },
           "east": {
-            "run1": 0.761,
+            "run1": 0.747,
             "bbox": [
-              5,
-              5,
-              87,
-              82
+              3,
+              18,
+              88,
+              92
             ],
-            "fill": 0.815,
+            "fill": 0.683,
             "touches_edge": false
           },
           "north": {
-            "run1": 0.76,
+            "run1": 0.715,
             "bbox": [
-              7,
-              6,
-              80,
-              86
+              2,
+              5,
+              81,
+              92
             ],
-            "fill": 0.754,
+            "fill": 0.746,
             "touches_edge": false
           },
           "south-east": {
-            "run1": 0.778,
+            "run1": 0.785,
             "bbox": [
-              7,
-              2,
-              86,
-              86
+              4,
+              18,
+              88,
+              89
             ],
-            "fill": 0.857,
+            "fill": 0.647,
             "touches_edge": false
           },
           "north-east": {
-            "run1": 0.759,
+            "run1": 0.743,
             "bbox": [
-              7,
-              4,
-              83,
-              83
+              0,
+              12,
+              91,
+              91
             ],
-            "fill": 0.775,
-            "touches_edge": false
+            "fill": 0.78,
+            "touches_edge": true
           },
           "north-west": {
-            "run1": 0.765,
+            "run1": 0.756,
             "bbox": [
               8,
               5,
-              83,
-              83
+              89,
+              92
             ],
-            "fill": 0.755,
+            "fill": 0.765,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.773,
+            "run1": 0.757,
             "bbox": [
-              5,
               3,
-              83,
-              86
+              11,
+              93,
+              87
             ],
-            "fill": 0.836,
+            "fill": 0.742,
             "touches_edge": false
           }
         }
       },
       "review": "pending",
-      "generated_at": "2026-09-09T17:44:26+00:00"
+      "notes": null,
+      "generated_at": "2026-09-09T17:49:09+00:00"
     },
     {
       "id": "twig_dragonfly",
@@ -670,6 +675,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:48:05+00:00"
     },
     {
@@ -801,6 +807,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:36:10+00:00"
     },
     {
@@ -929,6 +936,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:43:57+00:00"
     },
     {
@@ -1058,6 +1066,9 @@
         }
       },
       "review": "pending",
+      "notes": [
+        "agent eyeball: south-east frame carries a baked-in ground shadow the other seven lack — the game draws its own shadow, so this facing would double up in play. Everything else clean; re-roll only if you reject."
+      ],
       "generated_at": "2026-09-09T17:43:02+00:00"
     },
     {
@@ -1186,6 +1197,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:47:01+00:00"
     },
     {
@@ -1312,6 +1324,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:31:12+00:00"
     },
     {
@@ -1438,6 +1451,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:42:51+00:00"
     },
     {
@@ -1565,6 +1579,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:37:23+00:00"
     },
     {
@@ -1694,6 +1709,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:40:26+00:00"
     },
     {
@@ -1820,6 +1836,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:44:30+00:00"
     },
     {
@@ -1952,6 +1969,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:48:14+00:00"
     }
   ]
