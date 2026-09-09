@@ -1,0 +1,141 @@
+{
+  "id": "naga",
+  "name": "Coilblade",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The temple in the swamp is hers and the swamp is the temple. Every stone step is guarded, and she is the steps.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Naga warrior with realistic proportions, a scaled serpent lower body coiled tightly beneath a humanoid torso, dark green scales with a pale belly, a hooded cobra-like head with yellow slit eyes, and a curved bronze blade held close.",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "naga/rotations/south.webp",
+    "south-east": "naga/rotations/south-east.webp",
+    "east": "naga/rotations/east.webp",
+    "north-east": "naga/rotations/north-east.webp",
+    "north": "naga/rotations/north.webp",
+    "north-west": "naga/rotations/north-west.webp",
+    "west": "naga/rotations/west.webp",
+    "south-west": "naga/rotations/south-west.webp"
+  },
+  "sheet": "naga/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "6151a93a-f950-4b6f-a7eb-5e26f18083d0",
+  "seed": 746762510,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:09:44+00:00",
+  "elapsed_s": 267.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.702,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.702,
+        "bbox": [
+          11,
+          5,
+          115,
+          122
+        ],
+        "fill": 0.743,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.752,
+        "bbox": [
+          23,
+          7,
+          118,
+          123
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.759,
+        "bbox": [
+          10,
+          7,
+          102,
+          124
+        ],
+        "fill": 0.657,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.737,
+        "bbox": [
+          20,
+          7,
+          109,
+          119
+        ],
+        "fill": 0.608,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.764,
+        "bbox": [
+          17,
+          6,
+          119,
+          123
+        ],
+        "fill": 0.728,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.752,
+        "bbox": [
+          16,
+          6,
+          107,
+          123
+        ],
+        "fill": 0.65,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.749,
+        "bbox": [
+          21,
+          6,
+          109,
+          123
+        ],
+        "fill": 0.628,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.769,
+        "bbox": [
+          9,
+          6,
+          118,
+          123
+        ],
+        "fill": 0.778,
+        "touches_edge": false
+      }
+    }
+  }
+}
