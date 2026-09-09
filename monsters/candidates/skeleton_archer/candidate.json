@@ -335,6 +335,251 @@
         "west": "skeleton_archer/animations/idle__west.webp",
         "north-west": "skeleton_archer/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.2177,
+          "step_max": 0.2909,
+          "drift": 2.63,
+          "loop": 0.4515,
+          "loop_ratio": 2.07,
+          "travel": 2.63,
+          "pin": 0.813,
+          "reasons": [
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "3842e707-7c9f-455d-9db3-df65690e442f",
+          "group": "df8159c2-4eaf-41cf-a534-e9b72f2acf56",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:56:58+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.2373,
+          "step_max": 0.277,
+          "drift": 3.63,
+          "loop": 0.4799,
+          "loop_ratio": 2.02,
+          "travel": 1.25,
+          "pin": 0.757,
+          "reasons": [
+            "frame 5 touches a canvas edge the base does not (overflow / wrap risk)",
+            "last→first hand-off 2.0× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "2c9c03fb-9bf6-40ca-a2ae-530126a2df47",
+          "group": "82b28b42-8024-4e80-9de5-f420141966b4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:56:58+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.2641,
+          "step_max": 0.3095,
+          "drift": 4.86,
+          "loop": 0.4697,
+          "loop_ratio": 1.78,
+          "travel": 4.94,
+          "pin": 0.671,
+          "reasons": [
+            "4.9 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "7a55cb8c-4961-4bb0-9b1b-e23abdd96f6f",
+          "group": "f0088365-9da0-4022-9529-dc04050ebdfe",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:56:59+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2497,
+          "step_max": 0.3018,
+          "drift": 2.18,
+          "loop": 0.3918,
+          "loop_ratio": 1.57,
+          "travel": 2.82,
+          "pin": 0.772,
+          "reasons": [],
+          "cut": 0,
+          "sub": "2c3e844d-8311-489f-af51-d12e10319c4e",
+          "group": "43a8abfb-7df3-4ad9-baea-e09b01fe214f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:56:59+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1973,
+          "step_max": 0.2261,
+          "drift": 5.05,
+          "loop": 0.4675,
+          "loop_ratio": 2.37,
+          "travel": 5.48,
+          "pin": 0.802,
+          "reasons": [
+            "frame 4 touches a canvas edge the base does not (overflow / wrap risk)",
+            "drifts 5.1 px — eyeball it",
+            "last→first hand-off 2.4× a step — eyeball the loop",
+            "5.5 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "b058e823-a519-48e7-8c91-38729273ef8f",
+          "group": "9832733b-2e9f-4633-97fa-6af1879cb3a4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:57:00+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.2373,
+          "step_max": 0.277,
+          "drift": 3.63,
+          "loop": 0.4799,
+          "loop_ratio": 2.02,
+          "travel": 1.25,
+          "pin": 0.757,
+          "reasons": [
+            "frame 5 touches a canvas edge the base does not (overflow / wrap risk)",
+            "last→first hand-off 2.0× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "2c9c03fb-9bf6-40ca-a2ae-530126a2df47",
+          "group": "82b28b42-8024-4e80-9de5-f420141966b4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:56:58+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.2641,
+          "step_max": 0.3095,
+          "drift": 4.86,
+          "loop": 0.4697,
+          "loop_ratio": 1.78,
+          "travel": 4.94,
+          "pin": 0.671,
+          "reasons": [
+            "4.9 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "7a55cb8c-4961-4bb0-9b1b-e23abdd96f6f",
+          "group": "f0088365-9da0-4022-9529-dc04050ebdfe",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:56:59+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2497,
+          "step_max": 0.3018,
+          "drift": 2.18,
+          "loop": 0.3918,
+          "loop_ratio": 1.57,
+          "travel": 2.82,
+          "pin": 0.772,
+          "reasons": [],
+          "cut": 0,
+          "sub": "2c3e844d-8311-489f-af51-d12e10319c4e",
+          "group": "43a8abfb-7df3-4ad9-baea-e09b01fe214f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:56:59+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "skeleton_archer/animations/walk/south/00.webp",
+          "skeleton_archer/animations/walk/south/01.webp",
+          "skeleton_archer/animations/walk/south/02.webp",
+          "skeleton_archer/animations/walk/south/03.webp",
+          "skeleton_archer/animations/walk/south/04.webp",
+          "skeleton_archer/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "skeleton_archer/animations/walk/south-east/00.webp",
+          "skeleton_archer/animations/walk/south-east/01.webp",
+          "skeleton_archer/animations/walk/south-east/02.webp",
+          "skeleton_archer/animations/walk/south-east/03.webp",
+          "skeleton_archer/animations/walk/south-east/04.webp",
+          "skeleton_archer/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "skeleton_archer/animations/walk/east/00.webp",
+          "skeleton_archer/animations/walk/east/01.webp",
+          "skeleton_archer/animations/walk/east/02.webp",
+          "skeleton_archer/animations/walk/east/03.webp",
+          "skeleton_archer/animations/walk/east/04.webp",
+          "skeleton_archer/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "skeleton_archer/animations/walk/north-east/00.webp",
+          "skeleton_archer/animations/walk/north-east/01.webp",
+          "skeleton_archer/animations/walk/north-east/02.webp",
+          "skeleton_archer/animations/walk/north-east/03.webp",
+          "skeleton_archer/animations/walk/north-east/04.webp",
+          "skeleton_archer/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "skeleton_archer/animations/walk/north/00.webp",
+          "skeleton_archer/animations/walk/north/01.webp",
+          "skeleton_archer/animations/walk/north/02.webp",
+          "skeleton_archer/animations/walk/north/03.webp",
+          "skeleton_archer/animations/walk/north/04.webp",
+          "skeleton_archer/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "skeleton_archer/animations/walk/south-west/00.webp",
+          "skeleton_archer/animations/walk/south-west/01.webp",
+          "skeleton_archer/animations/walk/south-west/02.webp",
+          "skeleton_archer/animations/walk/south-west/03.webp",
+          "skeleton_archer/animations/walk/south-west/04.webp",
+          "skeleton_archer/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "skeleton_archer/animations/walk/west/00.webp",
+          "skeleton_archer/animations/walk/west/01.webp",
+          "skeleton_archer/animations/walk/west/02.webp",
+          "skeleton_archer/animations/walk/west/03.webp",
+          "skeleton_archer/animations/walk/west/04.webp",
+          "skeleton_archer/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "skeleton_archer/animations/walk/north-west/00.webp",
+          "skeleton_archer/animations/walk/north-west/01.webp",
+          "skeleton_archer/animations/walk/north-west/02.webp",
+          "skeleton_archer/animations/walk/north-west/03.webp",
+          "skeleton_archer/animations/walk/north-west/04.webp",
+          "skeleton_archer/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "skeleton_archer/animations/walk__south.webp",
+        "south-east": "skeleton_archer/animations/walk__south-east.webp",
+        "east": "skeleton_archer/animations/walk__east.webp",
+        "north-east": "skeleton_archer/animations/walk__north-east.webp",
+        "north": "skeleton_archer/animations/walk__north.webp",
+        "south-west": "skeleton_archer/animations/walk__south-west.webp",
+        "west": "skeleton_archer/animations/walk__west.webp",
+        "north-west": "skeleton_archer/animations/walk__north-west.webp"
+      }
     }
   }
 }
