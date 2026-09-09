@@ -1,0 +1,144 @@
+{
+  "id": "bog_viper",
+  "name": "Fenfang",
+  "tier": "mid",
+  "scale": "small",
+  "lore": "It lies in the shallows with only its eyes above the water. The bite is small, and the swelling is not.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Small fantasy bog viper coiled tightly on the mud with its head raised, dark olive scales with black diamond markings, a pale belly, yellow slit eyes, and a forked tongue.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bog_viper/rotations/south.webp",
+    "south-east": "bog_viper/rotations/south-east.webp",
+    "east": "bog_viper/rotations/east.webp",
+    "north-east": "bog_viper/rotations/north-east.webp",
+    "north": "bog_viper/rotations/north.webp",
+    "north-west": "bog_viper/rotations/north-west.webp",
+    "west": "bog_viper/rotations/west.webp",
+    "south-west": "bog_viper/rotations/south-west.webp"
+  },
+  "sheet": "bog_viper/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "6090b201-012b-4ef9-8a01-2628d588cf7e",
+  "seed": 214988142,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:01:09+00:00",
+  "elapsed_s": 168.2,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.674,
+    "reasons": [
+      "north: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.751,
+        "bbox": [
+          1,
+          4,
+          39,
+          37
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.7,
+        "bbox": [
+          3,
+          2,
+          37,
+          38
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.734,
+        "bbox": [
+          3,
+          2,
+          37,
+          38
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.674,
+        "bbox": [
+          0,
+          3,
+          38,
+          37
+        ],
+        "fill": 0.807,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.761,
+        "bbox": [
+          1,
+          3,
+          39,
+          38
+        ],
+        "fill": 0.831,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.713,
+        "bbox": [
+          2,
+          2,
+          37,
+          38
+        ],
+        "fill": 0.787,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.713,
+        "bbox": [
+          2,
+          2,
+          38,
+          38
+        ],
+        "fill": 0.81,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.741,
+        "bbox": [
+          0,
+          3,
+          38,
+          38
+        ],
+        "fill": 0.831,
+        "touches_edge": true
+      }
+    }
+  }
+}

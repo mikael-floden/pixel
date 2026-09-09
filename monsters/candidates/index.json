@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T19:00:32+00:00",
+  "generated_at": "2026-09-09T19:01:25+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -8121,136 +8121,6 @@
       "generated_at": "2026-09-09T18:54:39+00:00"
     },
     {
-      "id": "river_otter",
-      "name": "Sleekfang",
-      "tier": "cute",
-      "lore": "Quick in the water and quicker out of it. It guards the ford and takes a toll in fingers.",
-      "biome": [
-        "water",
-        "light_beach"
-      ],
-      "items": [],
-      "size": [
-        104,
-        104
-      ],
-      "template_id": "bear",
-      "scale": "standard",
-      "pixellab_id": "6becc74c-57a0-481e-8463-7d537af397eb",
-      "version": 2,
-      "sheet": "river_otter/sheet.webp",
-      "rotations": {
-        "south": "river_otter/rotations/south.webp",
-        "south-east": "river_otter/rotations/south-east.webp",
-        "east": "river_otter/rotations/east.webp",
-        "north-east": "river_otter/rotations/north-east.webp",
-        "north": "river_otter/rotations/north.webp",
-        "north-west": "river_otter/rotations/north-west.webp",
-        "west": "river_otter/rotations/west.webp",
-        "south-west": "river_otter/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "fail",
-        "min_run1": 0.62,
-        "reasons": [
-          "south-west: content touches the canvas edge (clipped)"
-        ],
-        "directions": {
-          "south": {
-            "run1": 0.62,
-            "bbox": [
-              8,
-              9,
-              99,
-              96
-            ],
-            "fill": 0.732,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.663,
-            "bbox": [
-              1,
-              5,
-              96,
-              97
-            ],
-            "fill": 0.808,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.677,
-            "bbox": [
-              9,
-              12,
-              99,
-              98
-            ],
-            "fill": 0.716,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.644,
-            "bbox": [
-              6,
-              5,
-              84,
-              94
-            ],
-            "fill": 0.642,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.714,
-            "bbox": [
-              19,
-              13,
-              92,
-              95
-            ],
-            "fill": 0.553,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.67,
-            "bbox": [
-              5,
-              7,
-              103,
-              93
-            ],
-            "fill": 0.779,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.662,
-            "bbox": [
-              11,
-              5,
-              83,
-              97
-            ],
-            "fill": 0.612,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.697,
-            "bbox": [
-              0,
-              10,
-              98,
-              95
-            ],
-            "fill": 0.77,
-            "touches_edge": true
-          }
-        }
-      },
-      "review": "pending",
-      "notes": null,
-      "generated_at": "2026-09-09T18:57:23+00:00"
-    },
-    {
       "id": "marsh_heron",
       "name": "Stiltwing",
       "tier": "mid",
@@ -9144,6 +9014,137 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:58:23+00:00"
+    },
+    {
+      "id": "bog_viper",
+      "name": "Fenfang",
+      "tier": "mid",
+      "lore": "It lies in the shallows with only its eyes above the water. The bite is small, and the swelling is not.",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        40,
+        40
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "6090b201-012b-4ef9-8a01-2628d588cf7e",
+      "version": 1,
+      "sheet": "bog_viper/sheet.webp",
+      "rotations": {
+        "south": "bog_viper/rotations/south.webp",
+        "south-east": "bog_viper/rotations/south-east.webp",
+        "east": "bog_viper/rotations/east.webp",
+        "north-east": "bog_viper/rotations/north-east.webp",
+        "north": "bog_viper/rotations/north.webp",
+        "north-west": "bog_viper/rotations/north-west.webp",
+        "west": "bog_viper/rotations/west.webp",
+        "south-west": "bog_viper/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.674,
+        "reasons": [
+          "north: content touches the canvas edge (clipped)",
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.751,
+            "bbox": [
+              1,
+              4,
+              39,
+              37
+            ],
+            "fill": 0.784,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.7,
+            "bbox": [
+              3,
+              2,
+              37,
+              38
+            ],
+            "fill": 0.765,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.734,
+            "bbox": [
+              3,
+              2,
+              37,
+              38
+            ],
+            "fill": 0.765,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.674,
+            "bbox": [
+              0,
+              3,
+              38,
+              37
+            ],
+            "fill": 0.807,
+            "touches_edge": true
+          },
+          "south-east": {
+            "run1": 0.761,
+            "bbox": [
+              1,
+              3,
+              39,
+              38
+            ],
+            "fill": 0.831,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.713,
+            "bbox": [
+              2,
+              2,
+              37,
+              38
+            ],
+            "fill": 0.787,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.713,
+            "bbox": [
+              2,
+              2,
+              38,
+              38
+            ],
+            "fill": 0.81,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.741,
+            "bbox": [
+              0,
+              3,
+              38,
+              38
+            ],
+            "fill": 0.831,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T19:01:09+00:00"
     },
     {
       "id": "ant_lion",

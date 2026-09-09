@@ -989,21 +989,6 @@
       "lore": "A fox born in the ash beds. It is warm to the touch and will not be held."
     },
     {
-      "id": "river_otter",
-      "name": "Sleekfang",
-      "tier": "cute",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 120,
-      "biome": [
-        "water",
-        "light_beach"
-      ],
-      "items": [],
-      "prompt": "Fantasy river otter with sleek dark brown fur, a pale throat, small rounded ears, sharp white teeth, webbed paws, and a thick tapered tail tucked tightly under its body, water beading on its coat.",
-      "lore": "Quick in the water and quicker out of it. It guards the ford and takes a toll in fingers."
-    },
-    {
       "id": "marsh_heron",
       "name": "Stiltwing",
       "tier": "mid",
@@ -1540,6 +1525,21 @@
       "items": [],
       "prompt": "Vampire lord shown full body from head to feet, realistic proportions, gaunt pale skin, slicked black hair, narrow crimson eyes, two long fangs behind thin lips, a high-collared black cloak lined in dark red, a black doublet with silver clasps, and long clawed fingers.",
       "lore": "The manor on the ridge has had one master for three hundred years. He receives guests at dusk and none of them are seen leaving."
+    },
+    {
+      "id": "mountain_ram",
+      "name": "Cragram",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "horse",
+      "size": 112,
+      "biome": [
+        "grey_stone",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Mountain ram with realistic proportions, thick shaggy grey-white wool, huge curled horns of ridged brown bone, dark hooves, a proud bearded face with pale eyes, and small stones caught in its coat.",
+      "lore": "It holds the high ledge against anything that climbs. The horns have broken shields, and the mountain has never won."
     }
   ],
   "retired": [
@@ -2408,6 +2408,24 @@
       "retired": "maintainer bar: rendered as a grinning cartoon with legs and a crown — the model plays a beholder for laughs. Replaced by vampire_lord.",
       "retired_at": "2026-09-09T18:39:58+00:00",
       "versions_tried": 1
+    },
+    {
+      "id": "river_otter",
+      "name": "Sleekfang",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 120,
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "items": [],
+      "prompt": "Fantasy river otter with sleek dark brown fur, a pale throat, small rounded ears, sharp white teeth, webbed paws, and a thick tapered tail tucked tightly under its body, water beading on its coat.",
+      "lore": "Quick in the water and quicker out of it. It guards the ford and takes a toll in fingers.",
+      "retired": "the rotation model offsets the otter to the canvas edge in SW at 96, 104 and 120 — three rolls, three clips. Replaced by mountain_ram.",
+      "retired_at": "2026-09-09T19:01:25+00:00",
+      "versions_tried": 3
     }
   ]
 }
