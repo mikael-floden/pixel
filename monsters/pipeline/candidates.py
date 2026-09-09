@@ -219,7 +219,8 @@ def rebuild_index(cfg):
         if man:
             items.append({k: man.get(k) for k in (
                 "id", "name", "tier", "lore", "biome", "items", "size", "template_id",
-                "pixellab_id", "version", "sheet", "rotations", "qa", "review", "generated_at")})
+                "pixellab_id", "version", "sheet", "rotations", "qa", "review", "notes",
+                "generated_at")})
     os.makedirs(OUT, exist_ok=True)
     with open(INDEX, "w") as f:
         json.dump({

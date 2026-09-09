@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T17:43:02+00:00",
+  "generated_at": "2026-09-09T17:43:57+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -556,8 +556,8 @@
         176
       ],
       "template_id": "mannequin",
-      "pixellab_id": "24ec4916-61df-4daf-b9cc-50c5e8d0b649",
-      "version": 1,
+      "pixellab_id": "e31ae5b5-a1eb-4692-afe3-aa6c4fae398f",
+      "version": 2,
       "sheet": "ember_king/sheet.webp",
       "rotations": {
         "south": "ember_king/rotations/south.webp",
@@ -570,111 +570,102 @@
         "south-west": "ember_king/rotations/south-west.webp"
       },
       "qa": {
-        "status": "fail",
-        "min_run1": 0.676,
-        "reasons": [
-          "south: content touches the canvas edge (clipped)",
-          "west: content touches the canvas edge (clipped)",
-          "east: content touches the canvas edge (clipped)",
-          "north: content touches the canvas edge (clipped)",
-          "south-east: content touches the canvas edge (clipped)",
-          "north-east: content touches the canvas edge (clipped)",
-          "north-west: content touches the canvas edge (clipped)",
-          "south-west: content touches the canvas edge (clipped)"
-        ],
+        "status": "pass",
+        "min_run1": 0.678,
+        "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.676,
+            "run1": 0.678,
             "bbox": [
-              14,
-              2,
-              165,
-              176
+              23,
+              5,
+              153,
+              170
             ],
-            "fill": 0.848,
-            "touches_edge": true
+            "fill": 0.692,
+            "touches_edge": false
           },
           "west": {
-            "run1": 0.777,
+            "run1": 0.769,
             "bbox": [
               58,
-              0,
-              122,
-              176
+              3,
+              114,
+              173
             ],
-            "fill": 0.364,
-            "touches_edge": true
+            "fill": 0.307,
+            "touches_edge": false
           },
           "east": {
-            "run1": 0.779,
+            "run1": 0.773,
             "bbox": [
-              52,
-              0,
-              130,
-              176
+              56,
+              3,
+              118,
+              173
             ],
-            "fill": 0.443,
-            "touches_edge": true
+            "fill": 0.34,
+            "touches_edge": false
           },
           "north": {
-            "run1": 0.753,
+            "run1": 0.724,
             "bbox": [
-              17,
-              0,
-              159,
-              176
+              26,
+              3,
+              150,
+              169
             ],
-            "fill": 0.807,
-            "touches_edge": true
+            "fill": 0.665,
+            "touches_edge": false
           },
           "south-east": {
-            "run1": 0.779,
-            "bbox": [
-              21,
-              0,
-              159,
-              176
-            ],
-            "fill": 0.784,
-            "touches_edge": true
-          },
-          "north-east": {
-            "run1": 0.756,
+            "run1": 0.778,
             "bbox": [
               30,
-              0,
-              148,
-              176
+              6,
+              143,
+              174
             ],
-            "fill": 0.67,
-            "touches_edge": true
+            "fill": 0.613,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.731,
+            "bbox": [
+              39,
+              3,
+              139,
+              171
+            ],
+            "fill": 0.542,
+            "touches_edge": false
           },
           "north-west": {
-            "run1": 0.757,
+            "run1": 0.732,
             "bbox": [
-              24,
-              0,
-              150,
-              176
+              35,
+              3,
+              140,
+              171
             ],
-            "fill": 0.716,
-            "touches_edge": true
+            "fill": 0.569,
+            "touches_edge": false
           },
           "south-west": {
-            "run1": 0.771,
+            "run1": 0.769,
             "bbox": [
-              22,
-              0,
-              153,
-              176
+              34,
+              6,
+              146,
+              174
             ],
-            "fill": 0.744,
-            "touches_edge": true
+            "fill": 0.607,
+            "touches_edge": false
           }
         }
       },
       "review": "pending",
-      "generated_at": "2026-09-09T17:40:15+00:00"
+      "generated_at": "2026-09-09T17:43:57+00:00"
     },
     {
       "id": "mist_wisp",
