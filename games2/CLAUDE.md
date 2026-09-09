@@ -336,12 +336,12 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   "ml-fade-tune" re-resolves and repaints the world 400 ms after the thumb
   rests). Maintainer 2026-09-09, on the beach: the fades "look like random
   dots and don't read 'a transition' at all ... I kinda feel I need 3 sliders
-  in order to nail this." REACH is the Chebyshev band in cells (0-4; the
-  shipped FADE_BAND is 2 and stays the default). AMOUNT multiplies the
-  placement probability linearly (0-3x; "twice the value means twice as much
-  grass fade") — up to the ceiling of the lonely rule, which still forbids two
-  fades edge-on; density is linear in distance. FALLOFF is the COVERAGE curve
-  (0.25-4, log dial): the pool's densest tile (most of the other ground on it)
+  in order to nail this." REACH is the Chebyshev band in cells (0-8). AMOUNT
+  multiplies the placement probability linearly (0-4x; "twice the value means
+  twice as much grass fade") — up to the ceiling of the lonely rule, which
+  still forbids two fades edge-on; density is linear in distance. FALLOFF is
+  the COVERAGE curve (0.1-32, log dial): the pool's densest tile (most of the
+  other ground on it)
   is the target at the nearest ring and its sparsest at the far end, target =
   pctMin + span·pos^falloff, so >1 keeps the dense tiles to the transition
   (maintainer 2026-09-09: "fade tiles that has very much light_soil on top of
@@ -351,8 +351,12 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   its far-band tiles. ON TRANSITION lets `wangSurface` give a composed
   boundary cell a fade too ("a transition tile that is 50% sand and 50% grass
   can end up 75% grass") — drawn over the boundary by `overlayOps`, since the
-  ground pass draws the boundary INSTEAD of the cell's own ops. Every default
-  is the shipped picture byte for byte, so the render3 parity fixtures hold.
+  ground pass draws the boundary INSTEAD of the cell's own ops. THE DEFAULTS
+  ARE HIS: reach 4, amount 0.46x, falloff exp 4 (2026-09-09, "This is good
+  fade defaults" — found with reach and falloff pinned at the old top of
+  their tracks, hence the wider dials: "you limited the sliders enormously").
+  The resolver's own constants (FADE_BAND 2, 1x, exp 1) are what the render3
+  parity fixtures pin; only the game's dial defaults moved.
   How much of the other ground a fade tile actually paints is `pct` on every
   pool tile (from tiles/fades/index.json); exposing that per placement is
   not built.
