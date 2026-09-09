@@ -26,8 +26,15 @@ const TERRAIN_NAMES = /cliff|stair|step|ramp|bank|ledge|bed|road|floor|deck|wate
 const worldNames = existsSync(WORLDS_DIR)
   ? readdirSync(WORLDS_DIR).filter((n) => existsSync(join(WORLDS_DIR, n, "world.json")))
   : [];
+if (!existsSync(WORLDS_DIR)) {
+  // AN ABSENT TREE IS "NOT CHECKED OUT HERE", NOT A FAILURE — the deploy's test
+  // job sparse-checks-out games2 + characters2 + live and no world tree (the rule
+  // check-scenery-bbox, shipset --check-policy and verify-deckwalk apply).
+  console.log("check-surfaces: maps2/worlds3 not checked out — skipped");
+  process.exit(0);
+}
 if (worldNames.length === 0) {
-  console.error("check-surfaces: FAIL — no maps2/worlds3/*/world.json found (nothing playable to gate)");
+  console.error("check-surfaces: FAIL — maps2/worlds3 holds no <name>/world.json (nothing playable to gate)");
   process.exit(1);
 }
 const used = new Set();
