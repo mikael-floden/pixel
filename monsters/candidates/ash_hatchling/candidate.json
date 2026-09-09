@@ -1,0 +1,141 @@
+{
+  "id": "ash_hatchling",
+  "name": "Ashling",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Hatched in the cinder beds beneath the caldera. It will grow into a mouthful of flame; for now it only glows.",
+  "biome": [
+    "lava",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Small fantasy salamander hatchling with dark ash-grey scales, glowing ember-orange eyes, a short thick tail curled around it, small clawed feet, and faint heat glow between its scales.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ash_hatchling/rotations/south.webp",
+    "south-east": "ash_hatchling/rotations/south-east.webp",
+    "east": "ash_hatchling/rotations/east.webp",
+    "north-east": "ash_hatchling/rotations/north-east.webp",
+    "north": "ash_hatchling/rotations/north.webp",
+    "north-west": "ash_hatchling/rotations/north-west.webp",
+    "west": "ash_hatchling/rotations/west.webp",
+    "south-west": "ash_hatchling/rotations/south-west.webp"
+  },
+  "sheet": "ash_hatchling/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ccf6589c-4af9-4ec3-bdfc-2c2da94e1e08",
+  "seed": 970073303,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:01:54+00:00",
+  "elapsed_s": 234.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.695,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.771,
+        "bbox": [
+          2,
+          2,
+          37,
+          39
+        ],
+        "fill": 0.809,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.722,
+        "bbox": [
+          2,
+          2,
+          38,
+          38
+        ],
+        "fill": 0.81,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.727,
+        "bbox": [
+          2,
+          2,
+          38,
+          38
+        ],
+        "fill": 0.81,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.695,
+        "bbox": [
+          6,
+          6,
+          34,
+          36
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.752,
+        "bbox": [
+          2,
+          2,
+          37,
+          39
+        ],
+        "fill": 0.809,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.73,
+        "bbox": [
+          5,
+          5,
+          37,
+          38
+        ],
+        "fill": 0.66,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.713,
+        "bbox": [
+          3,
+          4,
+          38,
+          38
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.756,
+        "bbox": [
+          3,
+          2,
+          36,
+          39
+        ],
+        "fill": 0.763,
+        "touches_edge": false
+      }
+    }
+  }
+}

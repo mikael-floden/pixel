@@ -1,0 +1,141 @@
+{
+  "id": "dire_wolf",
+  "name": "Greyfang",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The pack's old leader, scarred from every winter it has outlived. It does not chase; it waits where the trail narrows.",
+  "biome": [
+    "grass",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Large adult dire wolf with realistic proportions, thick coarse grey fur darker along the spine, a heavy muzzle with bared yellow fangs, pale watchful eyes, scarred ears, powerful shoulders and large paws.",
+  "size": [
+    120,
+    120
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "dire_wolf/rotations/south.webp",
+    "south-east": "dire_wolf/rotations/south-east.webp",
+    "east": "dire_wolf/rotations/east.webp",
+    "north-east": "dire_wolf/rotations/north-east.webp",
+    "north": "dire_wolf/rotations/north.webp",
+    "north-west": "dire_wolf/rotations/north-west.webp",
+    "west": "dire_wolf/rotations/west.webp",
+    "south-west": "dire_wolf/rotations/south-west.webp"
+  },
+  "sheet": "dire_wolf/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "1cdb89f6-e562-49dd-b87b-9718095ed798",
+  "seed": 15963700,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:02:09+00:00",
+  "elapsed_s": 195.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.685,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.685,
+        "bbox": [
+          20,
+          5,
+          107,
+          116
+        ],
+        "fill": 0.671,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.731,
+        "bbox": [
+          4,
+          8,
+          114,
+          112
+        ],
+        "fill": 0.794,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.752,
+        "bbox": [
+          3,
+          8,
+          115,
+          113
+        ],
+        "fill": 0.817,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.703,
+        "bbox": [
+          26,
+          6,
+          95,
+          113
+        ],
+        "fill": 0.513,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.796,
+        "bbox": [
+          14,
+          7,
+          105,
+          116
+        ],
+        "fill": 0.689,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.719,
+        "bbox": [
+          5,
+          5,
+          103,
+          115
+        ],
+        "fill": 0.749,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.735,
+        "bbox": [
+          20,
+          5,
+          103,
+          115
+        ],
+        "fill": 0.634,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.784,
+        "bbox": [
+          12,
+          7,
+          116,
+          116
+        ],
+        "fill": 0.787,
+        "touches_edge": false
+      }
+    }
+  }
+}

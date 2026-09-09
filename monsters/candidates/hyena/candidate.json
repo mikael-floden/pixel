@@ -1,0 +1,141 @@
+{
+  "id": "hyena",
+  "name": "Boneback",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It follows the caravans a day behind and eats what they leave. When they leave nothing, it eats what they are.",
+  "biome": [
+    "light_soil",
+    "grass"
+  ],
+  "items": [],
+  "prompt": "Adult spotted hyena with realistic proportions, mottled tan fur with dark spots, a bristling black mane along the spine, a heavy skull and massive jaws, rounded ears and small amber eyes.",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hyena/rotations/south.webp",
+    "south-east": "hyena/rotations/south-east.webp",
+    "east": "hyena/rotations/east.webp",
+    "north-east": "hyena/rotations/north-east.webp",
+    "north": "hyena/rotations/north.webp",
+    "north-west": "hyena/rotations/north-west.webp",
+    "west": "hyena/rotations/west.webp",
+    "south-west": "hyena/rotations/south-west.webp"
+  },
+  "sheet": "hyena/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "cdeec400-9b86-4526-ad03-5fb09eb5c513",
+  "seed": 1664780336,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:02:01+00:00",
+  "elapsed_s": 218.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.631,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.679,
+        "bbox": [
+          25,
+          4,
+          79,
+          100
+        ],
+        "fill": 0.479,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.662,
+        "bbox": [
+          5,
+          6,
+          99,
+          97
+        ],
+        "fill": 0.791,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.661,
+        "bbox": [
+          5,
+          6,
+          98,
+          97
+        ],
+        "fill": 0.782,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.631,
+        "bbox": [
+          27,
+          4,
+          77,
+          99
+        ],
+        "fill": 0.439,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.749,
+        "bbox": [
+          12,
+          8,
+          96,
+          99
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.716,
+        "bbox": [
+          13,
+          5,
+          90,
+          100
+        ],
+        "fill": 0.676,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.696,
+        "bbox": [
+          14,
+          5,
+          90,
+          100
+        ],
+        "fill": 0.668,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.754,
+        "bbox": [
+          8,
+          8,
+          91,
+          99
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      }
+    }
+  }
+}
