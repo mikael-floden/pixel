@@ -217,6 +217,9 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     mountain over the cave). The collision overlay skips parked bodies. An
     entrance cell is not sealed, so a body leaving the cave mouth un-parks
     under open sky; entering its room un-parks it under the opaque debris.
+    GATED ON THE DRAWN STATE (`sealedAway`: not while the room's light mask
+    still holds the cell) — keyed on the verdict alone, the bodies in the
+    room you leave vanish on the flip frame under a roof still 30% in.
   - **Anything drawn ABOVE the darkness overlay must gate itself** — zero
     ambient can't touch depth 900_001+. `indoorOutside(fx,fy,z)` is the
     predicate (NOT a visibility test; bodies are always drawn): name labels

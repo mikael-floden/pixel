@@ -9659,7 +9659,7 @@ export class WorldScene extends Phaser.Scene {
       const halfW = Math.max(sp.displayWidth, 40) * 0.5;
       const cutA = this.cutFade(npc.surfLevel ?? 0, npc.fx, npc.fy);
       const on =
-        !this.inHiddenRoom(npc.fx, npc.fy, npc.surfLevel ?? 0) && // sealed in a room I am not in — see the monster loop
+        !this.sealedAway(npc.fx, npc.fy, npc.surfLevel ?? 0) && // sealed in a room I am not in — see the monster loop
         npc.lx + halfW >= cam.x - MONSTER_CULL_SLACK &&
         npc.lx - halfW <= cam.right + MONSTER_CULL_SLACK &&
         npc.ly + 20 >= cam.y - MONSTER_CULL_SLACK &&
@@ -10943,7 +10943,7 @@ export class WorldScene extends Phaser.Scene {
         // of the cave mouth un-parks under open sky.
         const onScreen =
           !mv.artPending && // parked until its strips land — see addMonster
-          !this.inHiddenRoom(m.x, m.y, m.elev ?? g.lvl) &&
+          !this.sealedAway(m.x, m.y, m.elev ?? g.lvl) &&
           g.x + halfW >= vL &&
           g.x - halfW <= vR &&
           ay + down >= vT &&
@@ -14695,6 +14695,22 @@ export class WorldScene extends Phaser.Scene {
   private cutFade(z: number, fx: number, fy: number): number {
     if (!this.aboveCut(z, fx, fy)) return 1;
     return this.indoorDebris ? this.debrisAlpha() : 0;
+  }
+
+  /** SHOULD THIS BODY BE PARKED FOR BEING SEALED IN A ROOM I AM NOT IN? The
+   *  verdict is `inHiddenRoom`, gated on the DRAWN state like aboveCut: the
+   *  room I am leaving stays mine while its light mask is up — until the
+   *  grade lands and the real roof is swapped in — or the bodies in it
+   *  vanished on the flip frame, under a roof still 30% in (measured on the
+   *  rabbit house the first time this park shipped, 2026-09-09). */
+  private sealedAway(fx: number, fy: number, z: number): boolean {
+    if (!this.inHiddenRoom(fx, fy, z)) return false;
+    const w = this.world;
+    if (!this.roomMask || !w) return true;
+    const c = Math.floor(fx / CELL_WU);
+    const r = Math.floor(fy / CELL_WU);
+    if (c < 0 || r < 0 || c >= w.width || r >= w.height) return true;
+    return (this.roomMask.get(r * w.width + c) ?? 0) === 0;
   }
 
   /** IS THIS BODY UNDER A ROOF THE CUT-AWAY HAS REMOVED — on a deck-covered
