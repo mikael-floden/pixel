@@ -138,5 +138,205 @@
       }
     }
   },
-  "approved_at": "2026-09-09T19:59:24+00:00"
+  "approved_at": "2026-09-09T19:59:24+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0585,
+          "step_max": 0.0643,
+          "drift": 1.9,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "e013fa56-c443-45e0-97c8-eaf46a012018",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:21:33+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0285,
+          "step_max": 0.0525,
+          "drift": 1.69,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "77810f9d-1daa-4c39-b14d-276d25537aa2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:21:34+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0217,
+          "step_max": 0.0337,
+          "drift": 0.25,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "b71d4958-2f3b-4f41-8a9b-24b6e75c7bbb",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:21:34+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0475,
+          "step_max": 0.0671,
+          "drift": 1.44,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "62cd4aad-d84a-4a82-a1e6-7e75d492d9ab",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:21:35+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0984,
+          "step_max": 0.1099,
+          "drift": 4.21,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [
+            "drifts 4.2 px — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "48182371-5505-4f30-8c6f-b83c6389549e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:21:36+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0285,
+          "step_max": 0.0525,
+          "drift": 1.69,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "77810f9d-1daa-4c39-b14d-276d25537aa2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:21:34+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0217,
+          "step_max": 0.0337,
+          "drift": 0.25,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "b71d4958-2f3b-4f41-8a9b-24b6e75c7bbb",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:21:34+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0475,
+          "step_max": 0.0671,
+          "drift": 1.44,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "62cd4aad-d84a-4a82-a1e6-7e75d492d9ab",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:21:35+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "cave_troll_boss/animations/idle/south/00.webp",
+          "cave_troll_boss/animations/idle/south/01.webp",
+          "cave_troll_boss/animations/idle/south/02.webp",
+          "cave_troll_boss/animations/idle/south/03.webp",
+          "cave_troll_boss/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "cave_troll_boss/animations/idle/south-east/00.webp",
+          "cave_troll_boss/animations/idle/south-east/01.webp",
+          "cave_troll_boss/animations/idle/south-east/02.webp",
+          "cave_troll_boss/animations/idle/south-east/03.webp",
+          "cave_troll_boss/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "cave_troll_boss/animations/idle/east/00.webp",
+          "cave_troll_boss/animations/idle/east/01.webp",
+          "cave_troll_boss/animations/idle/east/02.webp",
+          "cave_troll_boss/animations/idle/east/03.webp",
+          "cave_troll_boss/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "cave_troll_boss/animations/idle/north-east/00.webp",
+          "cave_troll_boss/animations/idle/north-east/01.webp",
+          "cave_troll_boss/animations/idle/north-east/02.webp",
+          "cave_troll_boss/animations/idle/north-east/03.webp",
+          "cave_troll_boss/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "cave_troll_boss/animations/idle/north/00.webp",
+          "cave_troll_boss/animations/idle/north/01.webp",
+          "cave_troll_boss/animations/idle/north/02.webp",
+          "cave_troll_boss/animations/idle/north/03.webp",
+          "cave_troll_boss/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "cave_troll_boss/animations/idle/south-west/00.webp",
+          "cave_troll_boss/animations/idle/south-west/01.webp",
+          "cave_troll_boss/animations/idle/south-west/02.webp",
+          "cave_troll_boss/animations/idle/south-west/03.webp",
+          "cave_troll_boss/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "cave_troll_boss/animations/idle/west/00.webp",
+          "cave_troll_boss/animations/idle/west/01.webp",
+          "cave_troll_boss/animations/idle/west/02.webp",
+          "cave_troll_boss/animations/idle/west/03.webp",
+          "cave_troll_boss/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "cave_troll_boss/animations/idle/north-west/00.webp",
+          "cave_troll_boss/animations/idle/north-west/01.webp",
+          "cave_troll_boss/animations/idle/north-west/02.webp",
+          "cave_troll_boss/animations/idle/north-west/03.webp",
+          "cave_troll_boss/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "cave_troll_boss/animations/idle__south.webp",
+        "south-east": "cave_troll_boss/animations/idle__south-east.webp",
+        "east": "cave_troll_boss/animations/idle__east.webp",
+        "north-east": "cave_troll_boss/animations/idle__north-east.webp",
+        "north": "cave_troll_boss/animations/idle__north.webp",
+        "south-west": "cave_troll_boss/animations/idle__south-west.webp",
+        "west": "cave_troll_boss/animations/idle__west.webp",
+        "north-west": "cave_troll_boss/animations/idle__north-west.webp"
+      }
+    }
+  }
 }
