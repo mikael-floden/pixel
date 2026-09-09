@@ -1172,7 +1172,13 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
         if (!clip?.base) continue;
         const f = solve(clip.base, "south-east"), b = rec.boxes[0];
         const pos = b.pos_by_dir?.["south-east"] ?? { ax: b.ax, ay: b.ay };
-        errs2.push({ key, drx: Math.abs(f.rx - b.rx), dry: Math.abs(f.ry - b.ry),
+        /* THE SIZE HE FITTED FOR THIS FACING, if he opted into one. Since
+         * 2026-09-03 a state can carry size_by_dir, and comparing a south-east
+         * measurement against his SOUTH size measures the opt-in rather than
+         * the fit — which is what pushed this to 1.50px mean the day he used
+         * it on carts. Same resolution the page uses (boxSize). */
+        const sz = b.size_by_dir?.["south-east"] ?? { rx: b.rx, ry: b.ry };
+        errs2.push({ key, drx: Math.abs(f.rx - sz.rx), dry: Math.abs(f.ry - sz.ry),
           dc: Math.hypot(f.C[0] - (clip.fw / 2 + pos.ax), f.C[1] - (clip.fh / 2 + pos.ay)) });
       }
       const mean = (k) => errs2.reduce((n, e) => n + e[k], 0) / (errs2.length || 1);
@@ -1297,6 +1303,17 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
     const out = {};
     await p2.goto(`${W}#/objects/${id}`, { waitUntil: "load" });
     await p2.waitForTimeout(3400);
+    // His own per-facing tuning, dropped IN THE PAGE (never committed) so what
+    // is measured below is the DEFAULT — see the note above.
+    await p2.evaluate(() => {
+      const ov = window.__wiki?.state?.tuning?.scenery_hitbox?.overrides ?? {};
+      for (const [k, v] of Object.entries(ov)) {
+        if (!/beached_rowboat_001/.test(k)) continue;
+        for (const b2 of v.boxes ?? []) { delete b2.rot_by_dir; delete b2.size_by_dir; delete b2.pos_by_dir; }
+      }
+      window.__wiki?.route?.();
+    });
+    await p2.waitForTimeout(1200);
     for (const [label, key] of [["S", "south"], ["SE", "south-east"], ["SW", "south-west"]]) {
       await p2.evaluate((d) => [...document.querySelectorAll("button")].find((x) => x.textContent.trim() === d && /south/.test(x.title || ""))?.click(), label);
       await p2.waitForTimeout(900);
@@ -1305,6 +1322,12 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
     }
     return out;
   };
+  /* MEASURED ON THE DEFAULT, not on his tuning. He has since fitted this very
+   * boat by hand — south-east 149 degrees, south-west 32, with per-facing sizes
+   * and placements — which is the feature working, and it means the published
+   * record no longer answers "what does an untuned ellipse do on a turned
+   * view". So the override is cleared IN THE PAGE first (never committed), and
+   * his stored angles are asserted separately below. */
   const boat = await dirs("beached_rowboat_001");
   await cx.close();
   console.log("dinghy per facing:", JSON.stringify(boat));
@@ -1326,6 +1349,35 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
                   k * Math.hypot(sx * Math.sin(th), (sy / k) * Math.cos(th))];
     ok(Math.abs(ex - want[0]) < 0.05 && Math.abs(ey - want[1]) < 0.05,
       `and it is the GROUND ellipse projected, the same frame a rect uses (${ex}x${ey}, want ${want[0].toFixed(2)}x${want[1].toFixed(2)})`);
+  }
+  /* AND HIS OWN ANGLE OUTRANKS THE DEFAULT. He fitted this boat by hand the day
+   * the rotation landed; a default that overrode that would undo his evening. */
+  const tuned = JSON.parse((await import("node:fs")).readFileSync(new URL("../../live/tuning/scenery_hitbox.json", import.meta.url), "utf8"));
+  const key = Object.keys(tuned.overrides ?? {}).find((k) => /beached_rowboat_001/.test(k) && (tuned.overrides[k].boxes ?? [])[0]?.rot_by_dir);
+  if (key) {
+    const want = tuned.overrides[key].boxes[0].rot_by_dir["south-east"];
+    const cx2 = await b.newContext({ viewport: { width: 420, height: 1300 } });
+    const p3 = await cx2.newPage();
+    await p3.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+    await p3.addInitScript(() => {
+      localStorage.setItem("wiki-admin-token", "gate");
+      localStorage.setItem("ml-staging-base", `${location.origin}/assets/`);
+      localStorage.setItem("wiki-hitbox-always", "1");
+    });
+    await p3.goto(`${W}#/objects/beached_rowboat_001`, { waitUntil: "load" });
+    await p3.waitForTimeout(3200);
+    await p3.evaluate((s) => [...document.querySelectorAll(".seg-states button")].find((x) => (x.title ?? "").startsWith(s))?.click(), key.split("#")[1]);
+    await p3.waitForTimeout(700);
+    await p3.evaluate(() => [...document.querySelectorAll("button")].find((x) => x.textContent.trim() === "SE" && /south/.test(x.title || ""))?.click());
+    await p3.waitForTimeout(900);
+    // WHICH STATE IS ACTUALLY ON SCREEN decides what to compare against: he
+    // fitted each of this boat's states separately (147, 148, 149...), so
+    // reading one state's angle against another's is a gate bug, not a finding.
+    const seen = await p3.evaluate(() => ({ drawn: window.__wikiHitbox?.drawn?.[0] ?? null, st: window.__wikiHitbox?.variation ?? null }));
+    await cx2.close();
+    const stored = tuned.overrides[`${key.split("#")[0]}#${seen.st}`]?.boxes?.[0]?.rot_by_dir?.["south-east"] ?? want;
+    ok(seen.drawn === stored,
+      `the angle HE fitted for a facing outranks the default (${seen.drawn}° drawn on ${seen.st}, ${stored}° stored)`);
   }
 }
 

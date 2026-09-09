@@ -2762,7 +2762,11 @@ const constants = buildConstants();
 // produces identical numbers, just a few seconds slower.
 const artBoundsPath = join(ROOT, "wiki", "art_bounds.json");
 const artPrior = readJson(artBoundsPath);
-let artBases = artPrior?.bases ?? {};    // rect footprint cache, keyed by the clip's art hash
+/** The footprint rule's own version — part of every cache key below, so a
+ *  change to how a corner is chosen re-measures instead of reading back the
+ *  answer the old rule gave. */
+const BASE_RULE = "hull-4px+8pct";
+let artBases = artPrior?.bases ?? {};    // rect footprint cache, keyed by art hash @ rule
 const artClips = {}, artHashes = {};
 const artFailed = [];
 let artCachedN = 0, artMeasuredN = 0;
@@ -2933,9 +2937,19 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
       for (let i = dir < 0 ? bi - 1 : bi + 1; dir < 0 ? i > to : i < to; i += dir) {
         const v = hull[i];
         if (v[0] === B[0]) continue;
-        const slope = (B[1] - v[1]) / (B[0] - v[0]);
-        const want = dir < 0 ? K : -K;
-        if (Math.abs(slope - want) <= 0.35 * Math.abs(want) + 0.06) best = v;
+        /* HOW FAR OFF THE ISO LINE A CORNER MAY SIT — in PIXELS that grow
+         * with the run, not as a fraction of the slope. A slope tolerance is
+         * length-blind: 35% of K over a 90px chord admits a vertex 20px above
+         * the footprint, which is how cart_004's raised shoulder became its
+         * left corner and the fit came out 6.6px half-wide where he had drawn
+         * 35.2 (measured 2026-09-09, his worst of 31 hand fits). A flat band
+         * fails the other way — 6px flat put bed_002 54px out, the long-edge
+         * accumulation this file already learned once. 4px + 8% of the run is
+         * the best of both against his own fits: mean error 1.50px -> 1.06px,
+         * worst 28.6px -> 15.0px, and the plateau is flat from 3 to 5px so the
+         * constant is not perched on a peak. */
+        const dx = Math.abs(v[0] - B[0]), dy = B[1] - v[1];
+        if (Math.abs(dy - K * dx) <= 4 + 0.08 * dx) best = v;
       }
       return best;
     };
@@ -2950,10 +2964,17 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
       for (const dname of ["south", "south-east", "south-west"]) {
         const c = o.animations[st]?.dirs?.[dname];
         if (!c?.strip || !c.h) continue;
-        if (priorBase[c.h] !== undefined) { bases[c.h] = priorBase[c.h]; if (priorBase[c.h]) { c.base = priorBase[c.h]; any = true; } baseCached++; continue; }
+        /* KEYED BY THE ART *AND* THE RULE THAT MEASURED IT. The cache used to
+         * key on the clip's art hash alone, so changing the corner rule left
+         * every cached footprint in place and a rebuilt registry described the
+         * OLD measurement — the tolerance fix on 2026-09-09 looked like it had
+         * done nothing, twice, before this was the reason. Bump BASE_RULE
+         * whenever footprint() changes and the next build re-measures. */
+        const ck = `${c.h}@${BASE_RULE}`;
+        if (priorBase[ck] !== undefined) { bases[ck] = priorBase[ck]; if (priorBase[ck]) { c.base = priorBase[ck]; any = true; } baseCached++; continue; }
         let m = null;
         try { m = footprint(c.strip, c.fw, c.fh, dname !== "south"); } catch { m = null; }
-        bases[c.h] = m; baseMeasured++;
+        bases[`${c.h}@${BASE_RULE}`] = m; baseMeasured++;
         if (m) { c.base = m; any = true; }
       }
     }
