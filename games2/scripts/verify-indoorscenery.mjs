@@ -50,7 +50,12 @@ const inside = [...house.cells]
   .filter(([x, y]) => !occupied.has(`${x},${y}`) && doc.level?.[y]?.[x] === 0)
   .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
 if (!inside.length) die("the furnished room has no free floor cell to stand on");
-const stand = inside[Math.floor(inside.length / 2)];
+// THE FREEST FLOOR CELL, not the middle one: since 2026-09-09 maps2 stands
+// furniture against the walls, and a cupboard's footprint reaches the cell
+// beside it — a probe teleported there was pushed off it by the rescue. The
+// cell farthest from every piece's anchor is the one a body can stand on.
+const far = (c) => Math.min(...house.furniture.map((p) => Math.hypot(p.x - (c[0] + 0.5), p.y - (c[1] + 0.5))));
+const stand = inside.reduce((best, c) => (far(c) > far(best) ? c : best), inside[0]);
 const spawn0 = doc.spawn ?? [Math.round(doc.size.w / 2), Math.round(doc.size.h / 2)];
 console.log(`[indoorscenery] ${WORLD}: room of ${house.cells.size} cells with ${house.furniture.length} pieces; standing at ${stand}, outside at ${spawn0}`);
 

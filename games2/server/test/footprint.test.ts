@@ -488,3 +488,28 @@ test("a placement carrying `z` stamps no footprint", () => {
   assert.ok(n > 0);
   assert.equal(footprintBlocks(grid, 10 * CELL_WU, 10 * CELL_WU, 0), false, "nothing under the window");
 });
+
+/* THE RESCUE NEVER CLIMBS. A cupboard against a wall points its footprint's
+ * gradient into the wall; the unstick used to follow it onto the wall's top
+ * (measured at the inn, 2026-09-09). With the body's elevation known, a push
+ * that would step more than a walk can climb is refused. */
+test("unstickFromSolids refuses a push up a wall", () => {
+  const rows = Array.from({ length: H }, () => Array.from({ length: W }, (_, x) => ({ t: "grass", l: x <= 6 ? 6 : 0 })));
+  const grid = buildTerrainGrid(W, H, rows, [], []);
+  const bbox: SceneryBboxDoc = { pieces: { p: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" } }, boxes: { s: [0, 0, 100, 100, 100, 100] } };
+  const hitbox: SceneryHitboxDoc = { "scenery/p": { boxes: [{ ax: 0, ay: -50, rx: 40, ry: 30 }] } };
+  stampSceneryCollision(grid, [{ piece: "p", x: 11, y: 10 }], bbox, hitbox, GEOM);
+  const fp = grid.footprints!;
+  const [cx, cy] = [fp.cx[0], fp.cy[0]]; // the ellipse lands west of its anchor, beside the wall at x <= 6
+  assert.ok(Math.floor(cx) === 7, `fixture: the centre cell is the floor cell beside the wall (cx ${cx.toFixed(2)})`);
+  // A body just west of the centre: inside the ellipse, gradient pointing west, into the wall.
+  const x = (cx - 0.3) * CELL_WU, y = cy * CELL_WU;
+  const blind = unstickFromSolids(grid, x, y, 100);
+  const aware = unstickFromSolids(grid, x, y, 100, undefined, 0);
+  assert.ok(blind.x < 7 * CELL_WU, `without the elevation the rescue climbs the wall (to cell ${(blind.x / CELL_WU).toFixed(2)})`);
+  assert.deepEqual(aware, { x, y }, "with it the body stays where it is");
+  // ...and a push that stays on the floor still frees the body.
+  const ex = (cx + 0.3) * CELL_WU;
+  const free = unstickFromSolids(grid, ex, y, 100, undefined, 0);
+  assert.ok(free.x > ex + 5, "a push east, onto open floor, still happens");
+});

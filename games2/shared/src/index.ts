@@ -1991,7 +1991,25 @@ export function unstickFromSolids(
   const pl = Math.hypot(px, py);
   if (pl < 1e-6) return { x, y };
   const step = Math.min(maxPush, pl);
-  return { x: x + (px / pl) * step, y: y + (py / pl) * step };
+  const nx2 = x + (px / pl) * step;
+  const ny2 = y + (py / pl) * step;
+  /* THE RESCUE NEVER CLIMBS. It frees a body from a footprint along the
+   * ellipse's own gradient, and a cupboard against a wall points that gradient
+   * INTO the wall: measured at the inn's corner cell 306,226, a body standing
+   * beside cupboard_003 was pushed 12 wu west onto the level-6 wall ring and
+   * `resolveElevAt` then stood it on top of the wall (the indoor gate found
+   * itself outdoors on a rooftop). A push that would step more than a walk
+   * can climb — or drop, which the fall law forbids the nav to cause — onto a
+   * cell with no deck at the body's own level is refused; the body stays put
+   * and the ordinary movement rules take over, as they always did for a body
+   * that never overlapped anything. Callers without an elevation keep the
+   * old rescue. */
+  if (elev !== undefined) {
+    const j = cellIndex(grid, nx2, ny2);
+    if (j >= 0 && Math.abs(grid.level[j] - elev) > WALK_CLIMB + 1e-9 && !(grid.deck[j] >= 0 && Math.abs(grid.deck[j] - elev) <= WALK_CLIMB + 1e-9))
+      return { x, y };
+  }
+  return { x: nx2, y: ny2 };
 }
 
 /** stepMovement's LATERAL corner-probe predicate: only SOLIDS block sideways

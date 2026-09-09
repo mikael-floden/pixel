@@ -1445,6 +1445,15 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   the base level put a lid-walker back INSIDE the cave. KNOWN GAP: a piece
   placed ON a deck reads the base under it (none in the_game). Gate: the
   floor test in `server/test/footprint.test.ts`.
+- **THE RESCUE NEVER CLIMBS** (`unstickFromSolids` with the body's elevation):
+  a push that would step more than a walk can climb, or drop, onto a cell
+  with no deck at the body's level is refused — a cupboard against a wall
+  points its footprint's gradient into the wall, and the rescue followed it
+  onto the level-6 wall ring where `resolveElevAt` stood the body on the
+  wall top (the inn's corner cell 306,226, 2026-09-09; the indoor gate found
+  itself outdoors on a rooftop). Callers without an elevation keep the old
+  rescue. Gate: the climb test in `server/test/footprint.test.ts`; the
+  indoor scenery gate stands on the room's FREEST cell for the same reason.
 - **Steer assist** (`shared/steerAssist`): running DIRECT input (WASD/HUD
   stick) into a SOLID PROP dead-stops even when the player obviously meant to
   pass beside it. Deliberately NOT navigation: on a real stall, inspect ONLY
