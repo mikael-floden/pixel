@@ -138,5 +138,181 @@
       }
     }
   },
-  "approved_at": "2026-09-09T19:59:25+00:00"
+  "approved_at": "2026-09-09T19:59:25+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0842,
+          "step_max": 0.094,
+          "drift": 1.1,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "c615e38d-0f28-43c8-bf00-c3bfb856e1f9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:23:02+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.05,
+          "step_max": 0.056,
+          "drift": 0.38,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "c9e33179-7299-4e87-8033-7aa2b6cc393f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:23:02+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0794,
+          "step_max": 0.1058,
+          "drift": 1.43,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "0e14a90c-146d-475d-a0c8-6a75a2c75339",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:23:03+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1061,
+          "step_max": 0.1146,
+          "drift": 1.12,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [
+            "body turned the wrong way: matches mirrored north-west (0.92) better than north-east (0.92)"
+          ],
+          "cut": 0,
+          "sub": "e5344c20-203b-4696-8622-c1fa27095aef",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:23:03+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0621,
+          "step_max": 0.0983,
+          "drift": 0.57,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "3a09892e-6510-4932-a4bf-d14f0e777768",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:23:04+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.05,
+          "step_max": 0.056,
+          "drift": 0.38,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "c9e33179-7299-4e87-8033-7aa2b6cc393f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:23:02+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0794,
+          "step_max": 0.1058,
+          "drift": 1.43,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "0e14a90c-146d-475d-a0c8-6a75a2c75339",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:23:03+00:00",
+          "source": "east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "turtle_hatchling/animations/idle/south/00.webp",
+          "turtle_hatchling/animations/idle/south/01.webp",
+          "turtle_hatchling/animations/idle/south/02.webp",
+          "turtle_hatchling/animations/idle/south/03.webp",
+          "turtle_hatchling/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "turtle_hatchling/animations/idle/south-east/00.webp",
+          "turtle_hatchling/animations/idle/south-east/01.webp",
+          "turtle_hatchling/animations/idle/south-east/02.webp",
+          "turtle_hatchling/animations/idle/south-east/03.webp",
+          "turtle_hatchling/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "turtle_hatchling/animations/idle/east/00.webp",
+          "turtle_hatchling/animations/idle/east/01.webp",
+          "turtle_hatchling/animations/idle/east/02.webp",
+          "turtle_hatchling/animations/idle/east/03.webp",
+          "turtle_hatchling/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "turtle_hatchling/animations/idle/north-east/00.webp",
+          "turtle_hatchling/animations/idle/north-east/01.webp",
+          "turtle_hatchling/animations/idle/north-east/02.webp",
+          "turtle_hatchling/animations/idle/north-east/03.webp",
+          "turtle_hatchling/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "turtle_hatchling/animations/idle/north/00.webp",
+          "turtle_hatchling/animations/idle/north/01.webp",
+          "turtle_hatchling/animations/idle/north/02.webp",
+          "turtle_hatchling/animations/idle/north/03.webp",
+          "turtle_hatchling/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "turtle_hatchling/animations/idle/south-west/00.webp",
+          "turtle_hatchling/animations/idle/south-west/01.webp",
+          "turtle_hatchling/animations/idle/south-west/02.webp",
+          "turtle_hatchling/animations/idle/south-west/03.webp",
+          "turtle_hatchling/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "turtle_hatchling/animations/idle/west/00.webp",
+          "turtle_hatchling/animations/idle/west/01.webp",
+          "turtle_hatchling/animations/idle/west/02.webp",
+          "turtle_hatchling/animations/idle/west/03.webp",
+          "turtle_hatchling/animations/idle/west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "turtle_hatchling/animations/idle__south.webp",
+        "south-east": "turtle_hatchling/animations/idle__south-east.webp",
+        "east": "turtle_hatchling/animations/idle__east.webp",
+        "north-east": "turtle_hatchling/animations/idle__north-east.webp",
+        "north": "turtle_hatchling/animations/idle__north.webp",
+        "south-west": "turtle_hatchling/animations/idle__south-west.webp",
+        "west": "turtle_hatchling/animations/idle__west.webp"
+      }
+    }
+  }
 }
