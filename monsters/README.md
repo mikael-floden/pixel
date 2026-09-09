@@ -73,8 +73,8 @@ New monsters are **designed by this agent** (`config/candidates.json`) and
 born on PixelLab as an 8-direction base only — `create-character-v3` from
 scratch, zero animations — tagged **`MONSTER_CANDIDATE`**, never `MONSTER`
 (sync would import a base with no animations as a broken monster). The set
-is **100 candidates**; the maintainer picks the **25 best in the wiki**, and
-only an approved base earns its five states, because a bad direction cannot
+is **100 candidates**; the maintainer picks the best (he asked for 25 and
+picked 39 on 2026-09-09), and only an approved base earns its five states, because a bad direction cannot
 be fixed later (maintainer 2026-09-09: "if the initial 8 directions is not
 perfect — don't even think about continuing with that monster").
 
