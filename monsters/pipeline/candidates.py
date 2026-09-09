@@ -251,8 +251,11 @@ def generate_one(client, cfg, design, version, verbose=True):
         raise PixelLabError(f"{cid}: size {size} > {MAX_SIZE} — that is the zoomed-render regime")
     seed = seed_for(cid, version)
     t0 = time.monotonic()
+    # Expression by tier (maintainer 2026-09-09: what sank five rejected bases
+    # was execution, not concept — a derpy face on a sound design).
+    suffix = (dflt.get("style_suffix") or {}).get(design.get("tier"), "")
     pl_id, usage = client.create_character_v3(
-        description=design["prompt"], size=size,
+        description=design["prompt"].rstrip(".") + suffix, size=size,
         view=design.get("view") or dflt.get("view", "low top-down"),
         template_id=design.get("template_id") or "mannequin",
         name=design["name"], seed=seed,

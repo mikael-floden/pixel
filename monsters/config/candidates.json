@@ -4,7 +4,13 @@
     "view": "low top-down",
     "outline": "single color black outline",
     "detail": "high detail",
-    "candidate_tag": "MONSTER_CANDIDATE"
+    "candidate_tag": "MONSTER_CANDIDATE",
+    "style_suffix": {
+      "cute": ", calm serious expression, clean deliberate creature design, no cartoon grin.",
+      "mid": ", grim menacing expression, dark fantasy, no cartoon grin.",
+      "evil": ", grim menacing expression, dark fantasy, no cartoon grin.",
+      "boss": ", grim menacing expression, dark fantasy, imposing, no cartoon grin."
+    }
   },
   "candidates": [
     {
@@ -1222,36 +1228,6 @@
       "lore": "It circles the road for days and lands only when it is certain. It has never once been wrong."
     },
     {
-      "id": "raven",
-      "name": "Nightcaw",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 64,
-      "biome": [
-        "grass",
-        "grey_stone"
-      ],
-      "items": [],
-      "prompt": "Large raven standing upright shown full body from head to feet, realistic proportions, glossy black feathers with a faint violet sheen, wings folded neatly, a heavy black beak, one pale eye, and a small tarnished ring on one leg.",
-      "lore": "It carried a king's letters and kept the ones it liked. It knows every secret in the valley and sells none."
-    },
-    {
-      "id": "badger",
-      "name": "Brockfang",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 88,
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "items": [],
-      "prompt": "Adult badger with realistic proportions, a stocky grey body, a black-and-white striped face, small dark eyes, long digging claws and a muddy snout with bared teeth.",
-      "lore": "It digs under walls and does not go around. Nothing has ever moved it that it did not choose to let."
-    },
-    {
       "id": "wolverine",
       "name": "Gulo",
       "tier": "mid",
@@ -1402,21 +1378,6 @@
       "lore": "The last of the wild herd, and it knows it. It charges anything that crosses the meadow, and the meadow is wide."
     },
     {
-      "id": "grey_rat",
-      "name": "Greyrat",
-      "tier": "mid",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 40,
-      "biome": [
-        "grey_paving_stone",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Large sewer rat with realistic proportions, greasy grey-brown fur, a long scaly tail curled beside it, yellow chisel teeth, small black eyes and torn ears.",
-      "lore": "Where one is seen, a hundred are not. It carries the sickness that emptied the lower town."
-    },
-    {
       "id": "sand_scorpling",
       "name": "Sandsting",
       "tier": "mid",
@@ -1429,81 +1390,6 @@
       "items": [],
       "prompt": "Small desert scorpion with realistic proportions, a pale sand-yellow armored body, two pincers held close, a segmented tail curled over its back ending in a dark stinger, and eight short legs.",
       "lore": "It hides in boots and bedrolls. The sting is small; the fever it brings is not."
-    },
-    {
-      "id": "carrion_crow",
-      "name": "Grimcrow",
-      "tier": "mid",
-      "scale": "small",
-      "template_id": "mannequin",
-      "size": 40,
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "items": [],
-      "prompt": "Carrion crow standing upright shown full body from head to feet, realistic proportions, dull black feathers, wings folded, a thick black beak, and small bright black eyes.",
-      "lore": "It sits on the gibbet and waits. It has learned that everything on the road ends up beneath it."
-    },
-    {
-      "id": "field_vole",
-      "name": "Burrowkin",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 32,
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "items": [],
-      "prompt": "Field vole with realistic proportions, soft brown fur, a blunt rounded snout, small ears, dark beady eyes and a short tail.",
-      "lore": "It undermines the granary one tunnel at a time. Farmers lose more to it than to any wolf."
-    },
-    {
-      "id": "rock_skink",
-      "name": "Rockskink",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 32,
-      "biome": [
-        "grey_stone",
-        "black_rock"
-      ],
-      "items": [],
-      "prompt": "Small rock skink with realistic proportions, smooth dark grey scales banded with pale stripes, a blunt head with small dark eyes, short legs and a thick tail held close.",
-      "lore": "It basks on the warm stones and vanishes into the cracks. Its bite is nothing; its poison is slow."
-    },
-    {
-      "id": "marsh_frog",
-      "name": "Marshfrog",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 32,
-      "biome": [
-        "water",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Marsh frog with realistic proportions, mottled green-brown skin, a pale throat, large golden eyes, and long folded hind legs.",
-      "lore": "The chorus at dusk is a thousand of them. When the chorus stops, something is in the water."
-    },
-    {
-      "id": "stoat",
-      "name": "Whitestoat",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 40,
-      "biome": [
-        "snow",
-        "grass"
-      ],
-      "items": [],
-      "prompt": "Stoat in winter coat with realistic proportions, sleek white fur, a black-tipped tail, small rounded ears, dark bright eyes and a long low body.",
-      "lore": "Small, quick and entirely without fear. It kills hares three times its size and drags them home."
     },
     {
       "id": "iron_rhino",
@@ -1534,6 +1420,126 @@
       "items": [],
       "prompt": "Colossal wild boar with realistic proportions, a mountainous body of dark bristled hide scarred by old spears, two enormous yellowed tusks, a heavy wedge-shaped head with small red eyes, and thick legs with cloven hooves.",
       "lore": "Every hunt in the valley's history has failed against it. The spear shafts in its hide are the trophies."
+    },
+    {
+      "id": "chest_mimic",
+      "name": "Hoardmaw",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 96,
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Ancient treasure chest mimic, a heavy iron-bound oak chest with a dark weathered lid raised just enough to show a black maw lined with long thin needle teeth, two narrow glowing amber eyes deep under the lid, gold coins fused into the wood, and four thick clawed legs of dark wood.",
+      "lore": "It has waited in the vault longer than the vault has had a door. It does not lure; it is simply there, and patient."
+    },
+    {
+      "id": "grimoire",
+      "name": "Gravetome",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 72,
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Floating cursed grimoire, a thick tome bound in dark cracked leather with iron corners and a chained clasp broken open, pages fanned like a jaw with faint red script glowing on them, and a single unblinking eye set in the cover.",
+      "lore": "Written by a hand that would not stop. Anyone who reads it adds a page, and the last page is always theirs."
+    },
+    {
+      "id": "lantern_wraith",
+      "name": "Palewick",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 88,
+      "biome": [
+        "grey_paving_stone",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Floating spectral lantern of black iron with tall narrow panes, a cold pale blue flame inside shaped like a gaunt hooded face, a rusted chain hanging beneath it, and thin trails of freezing mist.",
+      "lore": "It was carried into the mine and came back alone. The light it gives leads only one way."
+    },
+    {
+      "id": "cave_bat",
+      "name": "Duskwing",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 88,
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Large cave bat with realistic proportions, coarse dark grey fur, a wrinkled leaf-nosed face with small black eyes and long fangs, tall ribbed ears, and leathery wings folded tightly against its body.",
+      "lore": "The old galleries are theirs and they hunt in silence. The first warning is the wind of the wings."
+    },
+    {
+      "id": "great_owl",
+      "name": "Greyhorn",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "grass",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Great horned owl standing upright shown full body from ear tufts to talons, realistic proportions, mottled grey-brown feathers, wings folded, tall dark ear tufts, huge unblinking amber eyes, a hooked beak and heavy feathered talons.",
+      "lore": "It watches the road from the dead oak and misses nothing. Small things that cross the moonlight do not cross back."
+    },
+    {
+      "id": "seed_husk",
+      "name": "Huskling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 48,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Small seed-pod creature with a hard ridged brown husk for a body split open at the front, two pale green eyes glowing inside the split, a single dark green shoot rising from its top, and short knotted root legs.",
+      "lore": "It fell from a tree nobody has found. Where it roots, the ground goes hard and the crops go quiet."
+    },
+    {
+      "id": "black_ooze",
+      "name": "Pitchooze",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 80,
+      "biome": [
+        "slime",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Dark corrosive ooze, a heavy mound of glossy black slime with a rib cage and a rusted helm half-sunk inside it, sluggish drips smoking where they land, and two dim red points of light deep within.",
+      "lore": "It spread from a crack in the lower vault and has not stopped. What it swallows it keeps, and what it keeps it wears."
+    },
+    {
+      "id": "stone_imp",
+      "name": "Grimimp",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 72,
+      "biome": [
+        "black_rock",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Small gargoyle-like imp shown full body from horns to feet, realistic proportions, dark grey stone-like hide, two curved black horns, narrow burning orange eyes, a mouth of small sharp teeth set in a hard line, bat-like wings folded tight, clawed hands and feet.",
+      "lore": "The gargoyles' lesser kin, cut from the same stone. It sits in the eaves and drops on whatever passes beneath."
     }
   ],
   "retired": [
@@ -2238,6 +2244,134 @@
       "prompt": "Small fantasy moss golem with a stout body of packed earth and thick green moss, two small glowing amber eyes, stubby arms and legs, and a single fern frond growing from its head.",
       "lore": "Old earth-magic in a small measure. It tends the clearing it woke in and lets nothing be picked there.",
       "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "raven",
+      "name": "Nightcaw",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "grass",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Large raven standing upright shown full body from head to feet, realistic proportions, glossy black feathers with a faint violet sheen, wings folded neatly, a heavy black beak, one pale eye, and a small tarnished ring on one leg.",
+      "lore": "It carried a king's letters and kept the ones it liked. It knows every secret in the valley and sells none.",
+      "retired": "swapped out 2026-09-09 for serious object/creature concepts the maintainer re-allowed (dull vermin slot)"
+    },
+    {
+      "id": "badger",
+      "name": "Brockfang",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 88,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Adult badger with realistic proportions, a stocky grey body, a black-and-white striped face, small dark eyes, long digging claws and a muddy snout with bared teeth.",
+      "lore": "It digs under walls and does not go around. Nothing has ever moved it that it did not choose to let.",
+      "retired": "swapped out 2026-09-09 for serious object/creature concepts the maintainer re-allowed (dull vermin slot)"
+    },
+    {
+      "id": "grey_rat",
+      "name": "Greyrat",
+      "tier": "mid",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "grey_paving_stone",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Large sewer rat with realistic proportions, greasy grey-brown fur, a long scaly tail curled beside it, yellow chisel teeth, small black eyes and torn ears.",
+      "lore": "Where one is seen, a hundred are not. It carries the sickness that emptied the lower town.",
+      "retired": "swapped out 2026-09-09 for serious object/creature concepts the maintainer re-allowed (dull vermin slot)"
+    },
+    {
+      "id": "carrion_crow",
+      "name": "Grimcrow",
+      "tier": "mid",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 40,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Carrion crow standing upright shown full body from head to feet, realistic proportions, dull black feathers, wings folded, a thick black beak, and small bright black eyes.",
+      "lore": "It sits on the gibbet and waits. It has learned that everything on the road ends up beneath it.",
+      "retired": "swapped out 2026-09-09 for serious object/creature concepts the maintainer re-allowed (dull vermin slot)"
+    },
+    {
+      "id": "field_vole",
+      "name": "Burrowkin",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 32,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Field vole with realistic proportions, soft brown fur, a blunt rounded snout, small ears, dark beady eyes and a short tail.",
+      "lore": "It undermines the granary one tunnel at a time. Farmers lose more to it than to any wolf.",
+      "retired": "swapped out 2026-09-09 for serious object/creature concepts the maintainer re-allowed (dull vermin slot)"
+    },
+    {
+      "id": "rock_skink",
+      "name": "Rockskink",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 32,
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Small rock skink with realistic proportions, smooth dark grey scales banded with pale stripes, a blunt head with small dark eyes, short legs and a thick tail held close.",
+      "lore": "It basks on the warm stones and vanishes into the cracks. Its bite is nothing; its poison is slow.",
+      "retired": "swapped out 2026-09-09 for serious object/creature concepts the maintainer re-allowed (dull vermin slot)"
+    },
+    {
+      "id": "marsh_frog",
+      "name": "Marshfrog",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 32,
+      "biome": [
+        "water",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Marsh frog with realistic proportions, mottled green-brown skin, a pale throat, large golden eyes, and long folded hind legs.",
+      "lore": "The chorus at dusk is a thousand of them. When the chorus stops, something is in the water.",
+      "retired": "swapped out 2026-09-09 for serious object/creature concepts the maintainer re-allowed (dull vermin slot)"
+    },
+    {
+      "id": "stoat",
+      "name": "Whitestoat",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "snow",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Stoat in winter coat with realistic proportions, sleek white fur, a black-tipped tail, small rounded ears, dark bright eyes and a long low body.",
+      "lore": "Small, quick and entirely without fear. It kills hares three times its size and drags them home.",
+      "retired": "swapped out 2026-09-09 for serious object/creature concepts the maintainer re-allowed (dull vermin slot)"
     }
   ]
 }
