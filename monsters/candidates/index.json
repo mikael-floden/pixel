@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:55:51+00:00",
+  "generated_at": "2026-09-09T18:56:13+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 66,
+  "count": 69,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -7747,13 +7747,13 @@
       ],
       "items": [],
       "size": [
-        232,
-        232
+        240,
+        240
       ],
       "template_id": "mannequin",
       "scale": "big",
-      "pixellab_id": "07b2385d-073f-4c95-856a-32b7fe2cca4f",
-      "version": 1,
+      "pixellab_id": "47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",
+      "version": 2,
       "sheet": "cave_troll_boss/sheet.webp",
       "rotations": {
         "south": "cave_troll_boss/rotations/south.webp",
@@ -7766,107 +7766,103 @@
         "south-west": "cave_troll_boss/rotations/south-west.webp"
       },
       "qa": {
-        "status": "fail",
-        "min_run1": 0.594,
-        "reasons": [
-          "east: content touches the canvas edge (clipped)",
-          "north-west: content touches the canvas edge (clipped)",
-          "south-west: content touches the canvas edge (clipped)"
-        ],
+        "status": "pass",
+        "min_run1": 0.575,
+        "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.594,
+            "run1": 0.575,
             "bbox": [
-              7,
-              9,
-              221,
-              226
+              19,
+              11,
+              213,
+              227
             ],
-            "fill": 0.863,
+            "fill": 0.728,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.66,
+            "run1": 0.649,
             "bbox": [
-              63,
-              4,
-              168,
+              70,
+              18,
+              165,
               231
             ],
-            "fill": 0.443,
+            "fill": 0.351,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.677,
+            "run1": 0.659,
             "bbox": [
-              55,
-              5,
-              176,
-              232
+              79,
+              11,
+              170,
+              231
             ],
-            "fill": 0.51,
-            "touches_edge": true
+            "fill": 0.348,
+            "touches_edge": false
           },
           "north": {
-            "run1": 0.636,
+            "run1": 0.611,
             "bbox": [
-              27,
-              1,
-              227,
-              227
+              28,
+              15,
+              220,
+              225
             ],
-            "fill": 0.84,
+            "fill": 0.7,
             "touches_edge": false
           },
           "south-east": {
-            "run1": 0.687,
+            "run1": 0.662,
             "bbox": [
-              36,
-              6,
-              213,
-              229
+              45,
+              11,
+              199,
+              230
             ],
-            "fill": 0.733,
+            "fill": 0.586,
             "touches_edge": false
           },
           "north-east": {
-            "run1": 0.674,
+            "run1": 0.629,
             "bbox": [
-              66,
-              5,
-              200,
-              230
+              42,
+              11,
+              198,
+              227
             ],
-            "fill": 0.56,
+            "fill": 0.585,
             "touches_edge": false
           },
           "north-west": {
-            "run1": 0.643,
+            "run1": 0.609,
             "bbox": [
-              29,
-              0,
+              44,
+              19,
               206,
-              228
+              227
             ],
-            "fill": 0.75,
-            "touches_edge": true
+            "fill": 0.585,
+            "touches_edge": false
           },
           "south-west": {
-            "run1": 0.674,
+            "run1": 0.661,
             "bbox": [
-              28,
-              8,
-              188,
-              232
+              31,
+              15,
+              197,
+              231
             ],
-            "fill": 0.666,
-            "touches_edge": true
+            "fill": 0.623,
+            "touches_edge": false
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-09T18:52:27+00:00"
+      "generated_at": "2026-09-09T18:56:12+00:00"
     },
     {
       "id": "fawn_spirit",
@@ -8383,6 +8379,134 @@
       "generated_at": "2026-09-09T18:55:51+00:00"
     },
     {
+      "id": "turtle_hatchling",
+      "name": "Shellet",
+      "tier": "cute",
+      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
+      "biome": [
+        "light_beach",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        40,
+        40
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "fd162650-47e9-4699-ac47-9e5d3f6c8050",
+      "version": 1,
+      "sheet": "turtle_hatchling/sheet.webp",
+      "rotations": {
+        "south": "turtle_hatchling/rotations/south.webp",
+        "south-east": "turtle_hatchling/rotations/south-east.webp",
+        "east": "turtle_hatchling/rotations/east.webp",
+        "north-east": "turtle_hatchling/rotations/north-east.webp",
+        "north": "turtle_hatchling/rotations/north.webp",
+        "north-west": "turtle_hatchling/rotations/north-west.webp",
+        "west": "turtle_hatchling/rotations/west.webp",
+        "south-west": "turtle_hatchling/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.655,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.665,
+            "bbox": [
+              2,
+              4,
+              38,
+              35
+            ],
+            "fill": 0.698,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.69,
+            "bbox": [
+              2,
+              5,
+              38,
+              36
+            ],
+            "fill": 0.698,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.689,
+            "bbox": [
+              2,
+              5,
+              38,
+              36
+            ],
+            "fill": 0.698,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.655,
+            "bbox": [
+              5,
+              3,
+              35,
+              36
+            ],
+            "fill": 0.619,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.74,
+            "bbox": [
+              2,
+              4,
+              39,
+              36
+            ],
+            "fill": 0.74,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.733,
+            "bbox": [
+              3,
+              6,
+              34,
+              35
+            ],
+            "fill": 0.562,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.709,
+            "bbox": [
+              6,
+              6,
+              37,
+              35
+            ],
+            "fill": 0.562,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.724,
+            "bbox": [
+              1,
+              4,
+              38,
+              36
+            ],
+            "fill": 0.74,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:56:11+00:00"
+    },
+    {
       "id": "glow_grub",
       "name": "Glowgrub",
       "tier": "cute",
@@ -8509,6 +8633,262 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:55:22+00:00"
+    },
+    {
+      "id": "ant_lion",
+      "name": "Pitjaw",
+      "tier": "mid",
+      "lore": "It digs the pit and lies beneath the floor of it. The sand slides, and whatever stood on the slope goes down to the jaws.",
+      "biome": [
+        "light_soil",
+        "light_beach"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "cadb92cf-6f75-4afd-abdb-bf958fc007a3",
+      "version": 1,
+      "sheet": "ant_lion/sheet.webp",
+      "rotations": {
+        "south": "ant_lion/rotations/south.webp",
+        "south-east": "ant_lion/rotations/south-east.webp",
+        "east": "ant_lion/rotations/east.webp",
+        "north-east": "ant_lion/rotations/north-east.webp",
+        "north": "ant_lion/rotations/north.webp",
+        "north-west": "ant_lion/rotations/north-west.webp",
+        "west": "ant_lion/rotations/west.webp",
+        "south-west": "ant_lion/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.715,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.715,
+            "bbox": [
+              3,
+              5,
+              85,
+              83
+            ],
+            "fill": 0.826,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.82,
+            "bbox": [
+              5,
+              6,
+              86,
+              83
+            ],
+            "fill": 0.805,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.777,
+            "bbox": [
+              4,
+              9,
+              84,
+              84
+            ],
+            "fill": 0.775,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.737,
+            "bbox": [
+              7,
+              4,
+              83,
+              83
+            ],
+            "fill": 0.775,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.741,
+            "bbox": [
+              8,
+              11,
+              80,
+              81
+            ],
+            "fill": 0.651,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.761,
+            "bbox": [
+              5,
+              4,
+              81,
+              83
+            ],
+            "fill": 0.775,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.774,
+            "bbox": [
+              4,
+              9,
+              84,
+              84
+            ],
+            "fill": 0.775,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.822,
+            "bbox": [
+              2,
+              6,
+              83,
+              83
+            ],
+            "fill": 0.805,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:38:03+00:00"
+    },
+    {
+      "id": "vampire_lord",
+      "name": "Nightthirst",
+      "tier": "evil",
+      "lore": "The manor on the ridge has had one master for three hundred years. He receives guests at dusk and none of them are seen leaving.",
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "398e1796-638c-43c9-b073-5701f54803e7",
+      "version": 1,
+      "sheet": "vampire_lord/sheet.webp",
+      "rotations": {
+        "south": "vampire_lord/rotations/south.webp",
+        "south-east": "vampire_lord/rotations/south-east.webp",
+        "east": "vampire_lord/rotations/east.webp",
+        "north-east": "vampire_lord/rotations/north-east.webp",
+        "north": "vampire_lord/rotations/north.webp",
+        "north-west": "vampire_lord/rotations/north-west.webp",
+        "west": "vampire_lord/rotations/west.webp",
+        "south-west": "vampire_lord/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.537,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.676,
+            "bbox": [
+              20,
+              5,
+              90,
+              106
+            ],
+            "fill": 0.564,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.758,
+            "bbox": [
+              23,
+              6,
+              82,
+              109
+            ],
+            "fill": 0.484,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.7,
+            "bbox": [
+              28,
+              6,
+              71,
+              107
+            ],
+            "fill": 0.346,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.593,
+            "bbox": [
+              24,
+              6,
+              81,
+              107
+            ],
+            "fill": 0.459,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.537,
+            "bbox": [
+              20,
+              6,
+              90,
+              105
+            ],
+            "fill": 0.552,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.588,
+            "bbox": [
+              28,
+              6,
+              88,
+              107
+            ],
+            "fill": 0.483,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.679,
+            "bbox": [
+              39,
+              6,
+              82,
+              107
+            ],
+            "fill": 0.346,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.766,
+            "bbox": [
+              29,
+              6,
+              87,
+              109
+            ],
+            "fill": 0.476,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:43:07+00:00"
     }
   ]
 }

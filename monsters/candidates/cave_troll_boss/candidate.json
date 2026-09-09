@@ -9,10 +9,10 @@
     "grey_stone"
   ],
   "items": [],
-  "prompt": "Gigantic fantasy cave troll shown full body from head to feet, pale hairless grey skin, tiny blind white eyes, an enormous underbite with broken tusks, a hunched back covered in fungus, huge knuckle-dragging arms, and a stalactite held as a club.",
+  "prompt": "Gigantic fantasy cave troll shown full body from head to feet, pale hairless grey skin, tiny blind white eyes, an enormous underbite with broken tusks, a hunched back covered in fungus, huge knuckle-dragging arms, and a stalactite club resting on one shoulder.",
   "size": [
-    232,
-    232
+    240,
+    240
   ],
   "template_id": "mannequin",
   "directions": [
@@ -37,108 +37,104 @@
   },
   "sheet": "cave_troll_boss/sheet.webp",
   "review": "pending",
-  "pixellab_id": "07b2385d-073f-4c95-856a-32b7fe2cca4f",
-  "seed": 1030410061,
-  "version": 1,
+  "pixellab_id": "47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",
+  "seed": 610508535,
+  "version": 2,
   "usage": null,
-  "generated_at": "2026-09-09T18:52:27+00:00",
-  "elapsed_s": 176.3,
+  "generated_at": "2026-09-09T18:56:12+00:00",
+  "elapsed_s": 194.6,
   "qa": {
-    "status": "fail",
-    "min_run1": 0.594,
-    "reasons": [
-      "east: content touches the canvas edge (clipped)",
-      "north-west: content touches the canvas edge (clipped)",
-      "south-west: content touches the canvas edge (clipped)"
-    ],
+    "status": "pass",
+    "min_run1": 0.575,
+    "reasons": [],
     "directions": {
       "south": {
-        "run1": 0.594,
+        "run1": 0.575,
         "bbox": [
-          7,
-          9,
-          221,
-          226
+          19,
+          11,
+          213,
+          227
         ],
-        "fill": 0.863,
+        "fill": 0.728,
         "touches_edge": false
       },
       "west": {
-        "run1": 0.66,
+        "run1": 0.649,
         "bbox": [
-          63,
-          4,
-          168,
+          70,
+          18,
+          165,
           231
         ],
-        "fill": 0.443,
+        "fill": 0.351,
         "touches_edge": false
       },
       "east": {
-        "run1": 0.677,
+        "run1": 0.659,
         "bbox": [
-          55,
-          5,
-          176,
-          232
+          79,
+          11,
+          170,
+          231
         ],
-        "fill": 0.51,
-        "touches_edge": true
+        "fill": 0.348,
+        "touches_edge": false
       },
       "north": {
-        "run1": 0.636,
+        "run1": 0.611,
         "bbox": [
-          27,
-          1,
-          227,
-          227
+          28,
+          15,
+          220,
+          225
         ],
-        "fill": 0.84,
+        "fill": 0.7,
         "touches_edge": false
       },
       "south-east": {
-        "run1": 0.687,
+        "run1": 0.662,
         "bbox": [
-          36,
-          6,
-          213,
-          229
+          45,
+          11,
+          199,
+          230
         ],
-        "fill": 0.733,
+        "fill": 0.586,
         "touches_edge": false
       },
       "north-east": {
-        "run1": 0.674,
+        "run1": 0.629,
         "bbox": [
-          66,
-          5,
-          200,
-          230
+          42,
+          11,
+          198,
+          227
         ],
-        "fill": 0.56,
+        "fill": 0.585,
         "touches_edge": false
       },
       "north-west": {
-        "run1": 0.643,
+        "run1": 0.609,
         "bbox": [
-          29,
-          0,
+          44,
+          19,
           206,
-          228
+          227
         ],
-        "fill": 0.75,
-        "touches_edge": true
+        "fill": 0.585,
+        "touches_edge": false
       },
       "south-west": {
-        "run1": 0.674,
+        "run1": 0.661,
         "bbox": [
-          28,
-          8,
-          188,
-          232
+          31,
+          15,
+          197,
+          231
         ],
-        "fill": 0.666,
-        "touches_edge": true
+        "fill": 0.623,
+        "touches_edge": false
       }
     }
   }

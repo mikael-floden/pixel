@@ -1,0 +1,141 @@
+{
+  "id": "turtle_hatchling",
+  "name": "Shellet",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
+  "biome": [
+    "light_beach",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "turtle_hatchling/rotations/south.webp",
+    "south-east": "turtle_hatchling/rotations/south-east.webp",
+    "east": "turtle_hatchling/rotations/east.webp",
+    "north-east": "turtle_hatchling/rotations/north-east.webp",
+    "north": "turtle_hatchling/rotations/north.webp",
+    "north-west": "turtle_hatchling/rotations/north-west.webp",
+    "west": "turtle_hatchling/rotations/west.webp",
+    "south-west": "turtle_hatchling/rotations/south-west.webp"
+  },
+  "sheet": "turtle_hatchling/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fd162650-47e9-4699-ac47-9e5d3f6c8050",
+  "seed": 951283235,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:56:11+00:00",
+  "elapsed_s": 168.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.655,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.665,
+        "bbox": [
+          2,
+          4,
+          38,
+          35
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.69,
+        "bbox": [
+          2,
+          5,
+          38,
+          36
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.689,
+        "bbox": [
+          2,
+          5,
+          38,
+          36
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.655,
+        "bbox": [
+          5,
+          3,
+          35,
+          36
+        ],
+        "fill": 0.619,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.74,
+        "bbox": [
+          2,
+          4,
+          39,
+          36
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.733,
+        "bbox": [
+          3,
+          6,
+          34,
+          35
+        ],
+        "fill": 0.562,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.709,
+        "bbox": [
+          6,
+          6,
+          37,
+          35
+        ],
+        "fill": 0.562,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.724,
+        "bbox": [
+          1,
+          4,
+          38,
+          36
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      }
+    }
+  }
+}
