@@ -1,0 +1,141 @@
+{
+  "id": "bramble_boar",
+  "name": "Thornhog",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The hedge got up and charged. Its back is a bramble patch and the berries are the only thing that has ever calmed it.",
+  "biome": [
+    "grass",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Stocky fantasy wild boar with dark brown bristled hide, a thicket of thorny bramble vines growing across its back dotted with red berries, two yellowed tusks, small angry red eyes, and cloven hooves.",
+  "size": [
+    120,
+    120
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bramble_boar/rotations/south.webp",
+    "south-east": "bramble_boar/rotations/south-east.webp",
+    "east": "bramble_boar/rotations/east.webp",
+    "north-east": "bramble_boar/rotations/north-east.webp",
+    "north": "bramble_boar/rotations/north.webp",
+    "north-west": "bramble_boar/rotations/north-west.webp",
+    "west": "bramble_boar/rotations/west.webp",
+    "south-west": "bramble_boar/rotations/south-west.webp"
+  },
+  "sheet": "bramble_boar/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "80c4ae09-8ec9-4c6e-9e1d-935b0e072dd3",
+  "seed": 197879907,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:05:19+00:00",
+  "elapsed_s": 242.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.578,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.578,
+        "bbox": [
+          8,
+          4,
+          114,
+          117
+        ],
+        "fill": 0.832,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.671,
+        "bbox": [
+          6,
+          4,
+          114,
+          114
+        ],
+        "fill": 0.825,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.682,
+        "bbox": [
+          10,
+          4,
+          110,
+          118
+        ],
+        "fill": 0.792,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.683,
+        "bbox": [
+          7,
+          3,
+          108,
+          117
+        ],
+        "fill": 0.8,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.725,
+        "bbox": [
+          16,
+          5,
+          98,
+          116
+        ],
+        "fill": 0.632,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.716,
+        "bbox": [
+          5,
+          4,
+          118,
+          111
+        ],
+        "fill": 0.84,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.713,
+        "bbox": [
+          25,
+          3,
+          101,
+          116
+        ],
+        "fill": 0.596,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.724,
+        "bbox": [
+          2,
+          4,
+          117,
+          113
+        ],
+        "fill": 0.87,
+        "touches_edge": false
+      }
+    }
+  }
+}
