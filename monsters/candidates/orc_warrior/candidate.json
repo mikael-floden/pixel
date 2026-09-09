@@ -609,6 +609,274 @@
         "west": "orc_warrior/animations/walk__west.webp",
         "north-west": "orc_warrior/animations/walk__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1314,
+          "step_max": 0.236,
+          "drift": 7.95,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 8.33,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "3a977bbb-98d2-4479-982b-49269e065da3",
+          "group": "e9c8ab73-19bc-47f8-95f7-259c005bbdf0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:46:47+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1601,
+          "step_max": 0.2296,
+          "drift": 6.94,
+          "loop": 0.0009,
+          "loop_ratio": 0.01,
+          "travel": 6.95,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "a54b937d-be14-4d7f-98a3-96dbb4c5171f",
+          "group": "39fc5236-bd84-4d17-bab9-6c80437e2b8d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:46:48+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2353,
+          "step_max": 0.3653,
+          "drift": 10.23,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 10.67,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "9b3a22ce-7a77-407d-a2d6-7dd332036726",
+          "group": "7250e934-72ea-4d5a-b1aa-1e715deb0e91",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:46:48+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1324,
+          "step_max": 0.2084,
+          "drift": 5.38,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 5.88,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "d54597dd-791e-4c5c-810d-603abfcc50a7",
+          "group": "b20f27bf-55ee-4511-89f7-f152a055e8d5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:46:49+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1911,
+          "step_max": 0.2573,
+          "drift": 6.68,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 6.68,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "8f382e05-4bae-472d-9a2f-d0bcf1b62388",
+          "group": "95d7ab9c-5064-4d60-9223-5212023b9fc2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:46:49+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1601,
+          "step_max": 0.2296,
+          "drift": 6.94,
+          "loop": 0.0009,
+          "loop_ratio": 0.01,
+          "travel": 6.95,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "a54b937d-be14-4d7f-98a3-96dbb4c5171f",
+          "group": "39fc5236-bd84-4d17-bab9-6c80437e2b8d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:46:48+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2353,
+          "step_max": 0.3653,
+          "drift": 10.23,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 10.67,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "9b3a22ce-7a77-407d-a2d6-7dd332036726",
+          "group": "7250e934-72ea-4d5a-b1aa-1e715deb0e91",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:46:48+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1324,
+          "step_max": 0.2084,
+          "drift": 5.38,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 5.88,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [],
+          "sub": "d54597dd-791e-4c5c-810d-603abfcc50a7",
+          "group": "b20f27bf-55ee-4511-89f7-f152a055e8d5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:46:49+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "swings the battle axe in one heavy sideways cleave, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "orc_warrior/animations/attack/south/00.webp",
+          "orc_warrior/animations/attack/south/01.webp",
+          "orc_warrior/animations/attack/south/02.webp",
+          "orc_warrior/animations/attack/south/03.webp",
+          "orc_warrior/animations/attack/south/04.webp",
+          "orc_warrior/animations/attack/south/05.webp",
+          "orc_warrior/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "orc_warrior/animations/attack/south-east/00.webp",
+          "orc_warrior/animations/attack/south-east/01.webp",
+          "orc_warrior/animations/attack/south-east/02.webp",
+          "orc_warrior/animations/attack/south-east/03.webp",
+          "orc_warrior/animations/attack/south-east/04.webp",
+          "orc_warrior/animations/attack/south-east/05.webp",
+          "orc_warrior/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "orc_warrior/animations/attack/east/00.webp",
+          "orc_warrior/animations/attack/east/01.webp",
+          "orc_warrior/animations/attack/east/02.webp",
+          "orc_warrior/animations/attack/east/03.webp",
+          "orc_warrior/animations/attack/east/04.webp",
+          "orc_warrior/animations/attack/east/05.webp",
+          "orc_warrior/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "orc_warrior/animations/attack/north-east/00.webp",
+          "orc_warrior/animations/attack/north-east/01.webp",
+          "orc_warrior/animations/attack/north-east/02.webp",
+          "orc_warrior/animations/attack/north-east/03.webp",
+          "orc_warrior/animations/attack/north-east/04.webp",
+          "orc_warrior/animations/attack/north-east/05.webp",
+          "orc_warrior/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "orc_warrior/animations/attack/north/00.webp",
+          "orc_warrior/animations/attack/north/01.webp",
+          "orc_warrior/animations/attack/north/02.webp",
+          "orc_warrior/animations/attack/north/03.webp",
+          "orc_warrior/animations/attack/north/04.webp",
+          "orc_warrior/animations/attack/north/05.webp",
+          "orc_warrior/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "orc_warrior/animations/attack/south-west/00.webp",
+          "orc_warrior/animations/attack/south-west/01.webp",
+          "orc_warrior/animations/attack/south-west/02.webp",
+          "orc_warrior/animations/attack/south-west/03.webp",
+          "orc_warrior/animations/attack/south-west/04.webp",
+          "orc_warrior/animations/attack/south-west/05.webp",
+          "orc_warrior/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "orc_warrior/animations/attack/west/00.webp",
+          "orc_warrior/animations/attack/west/01.webp",
+          "orc_warrior/animations/attack/west/02.webp",
+          "orc_warrior/animations/attack/west/03.webp",
+          "orc_warrior/animations/attack/west/04.webp",
+          "orc_warrior/animations/attack/west/05.webp",
+          "orc_warrior/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "orc_warrior/animations/attack/north-west/00.webp",
+          "orc_warrior/animations/attack/north-west/01.webp",
+          "orc_warrior/animations/attack/north-west/02.webp",
+          "orc_warrior/animations/attack/north-west/03.webp",
+          "orc_warrior/animations/attack/north-west/04.webp",
+          "orc_warrior/animations/attack/north-west/05.webp",
+          "orc_warrior/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "orc_warrior/animations/attack__south.webp",
+        "south-east": "orc_warrior/animations/attack__south-east.webp",
+        "east": "orc_warrior/animations/attack__east.webp",
+        "north-east": "orc_warrior/animations/attack__north-east.webp",
+        "north": "orc_warrior/animations/attack__north.webp",
+        "south-west": "orc_warrior/animations/attack__south-west.webp",
+        "west": "orc_warrior/animations/attack__west.webp",
+        "north-west": "orc_warrior/animations/attack__north-west.webp"
+      }
     }
   }
 }

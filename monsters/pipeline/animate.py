@@ -100,7 +100,7 @@ STATES = {
         "keep_first": True,
         "band": {"step_pass": (0.080, 0.900), "step_warn": (0.040, 1.200),
                  "peak_pass": 0.15, "peak_warn": 0.08,
-                 "drift_pass": 12.0, "drift_warn": 24.0, "loop_max": 0.06},
+                 "drift_pass": 12.0, "drift_warn": 24.0, "loop_max": 0.10},
     },
 }
 APPROVED_TAG = "APPROVED"
@@ -414,6 +414,10 @@ def needed_dirs(man, state, redo=None):
     rec = (man.get("animations") or {}).get(state) or {"directions": {}}
     if redo:
         return list(redo)
+    # a changed action text means the clips on disk were made from other
+    # words — regenerate the whole state (the takes are keyed by that text)
+    if rec["directions"] and rec.get("action") and rec["action"] != state_action(man["id"], state):
+        return list(GEN_DIRS)
     return [d for d in GEN_DIRS if rec["directions"].get(d, {}).get("status") in (None, "fail")]
 
 

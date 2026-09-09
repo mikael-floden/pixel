@@ -367,30 +367,29 @@
           "generated_at": "2026-09-09T21:15:11+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.0993,
-          "step_max": 0.1258,
-          "drift": 7.62,
-          "loop": 0.3046,
-          "loop_ratio": 3.07,
-          "travel": 4.67,
-          "pin": 0.885,
+          "status": "pass",
+          "step_mean": 0.1102,
+          "step_max": 0.1292,
+          "drift": 5.34,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.25,
+          "pin": 1.0,
           "pad": 0,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "motion 0.099 outside the calm band 0.1–0.4 — eyeball it",
-            "drifts 7.6 px — eyeball it",
-            "last→first hand-off is 3.1× a normal step — the loop hitches"
+            "PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)"
           ],
-          "sub": "bf7c6bad-218b-485b-ab40-12fdf6c8191c",
-          "group": "12c35f34-0759-40ab-b449-ca8af4c9cc9a",
+          "pinned": true,
+          "sub": "c5b6be3f-d68b-4c78-979d-3ea9de645c6b",
+          "group": "9d3874c8-d670-440a-8ede-3f1ba9c96e11",
           "takes": 3,
-          "version": 3,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:38:08+00:00"
+          "generated_at": "2026-09-09T21:48:07+00:00"
         },
         "east": {
           "status": "warn",
@@ -513,6 +512,32 @@
           "mirrored": true,
           "generated_at": "2026-09-09T21:15:14+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1102,
+          "step_max": 0.1292,
+          "drift": 5.34,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.25,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [
+            "PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)"
+          ],
+          "pinned": true,
+          "sub": "c5b6be3f-d68b-4c78-979d-3ea9de645c6b",
+          "group": "9d3874c8-d670-440a-8ede-3f1ba9c96e11",
+          "takes": 3,
+          "version": 4,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:48:07+00:00",
+          "source": "south-east"
         }
       },
       "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
@@ -572,6 +597,14 @@
           "crag_troll/animations/walk/north-west/03.webp",
           "crag_troll/animations/walk/north-west/04.webp",
           "crag_troll/animations/walk/north-west/05.webp"
+        ],
+        "south-west": [
+          "crag_troll/animations/walk/south-west/00.webp",
+          "crag_troll/animations/walk/south-west/01.webp",
+          "crag_troll/animations/walk/south-west/02.webp",
+          "crag_troll/animations/walk/south-west/03.webp",
+          "crag_troll/animations/walk/south-west/04.webp",
+          "crag_troll/animations/walk/south-west/05.webp"
         ]
       },
       "strips": {
@@ -581,7 +614,8 @@
         "north-east": "crag_troll/animations/walk__north-east.webp",
         "north": "crag_troll/animations/walk__north.webp",
         "west": "crag_troll/animations/walk__west.webp",
-        "north-west": "crag_troll/animations/walk__north-west.webp"
+        "north-west": "crag_troll/animations/walk__north-west.webp",
+        "south-west": "crag_troll/animations/walk__south-west.webp"
       }
     }
   }

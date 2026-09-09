@@ -595,6 +595,244 @@
         "west": "ghost_hound/animations/walk__west.webp",
         "north-west": "ghost_hound/animations/walk__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1456,
+          "step_max": 0.2565,
+          "drift": 4.16,
+          "loop": 0.0037,
+          "loop_ratio": 0.03,
+          "travel": 2.52,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "7d29208a-4643-4a7e-85bf-4ffa1e25a771",
+          "group": "ba8923aa-5017-4216-baeb-627ebe897d3f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:48:46+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.2944,
+          "step_max": 0.4779,
+          "drift": 9.51,
+          "loop": 0.0007,
+          "loop_ratio": 0.0,
+          "travel": 3.76,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "04813c0d-112b-4c01-b37b-43dc53c514d7",
+          "group": "a9e9c9d7-3912-4bfe-b3d4-f1c6458bae35",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:48:46+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2431,
+          "step_max": 0.3195,
+          "drift": 1.31,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.82,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "698fd69b-283a-46ec-9f2e-b6caf3095da6",
+          "group": "52507b00-ed3d-41d0-acc5-dafcf3550866",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:48:46+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.2093,
+          "step_max": 0.2457,
+          "drift": 6.02,
+          "loop": 0.0708,
+          "loop_ratio": 0.34,
+          "travel": 3.93,
+          "pin": 1.0,
+          "pad": 1,
+          "canvas": [
+            106,
+            106
+          ],
+          "reasons": [
+            "loop does not close (last vs first 0.071)",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "2210f8b4-f640-481f-bbd0-b39f385d5914",
+          "group": "45b72934-ae01-417c-a2c0-bef295b19ea9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:48:47+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.2495,
+          "step_max": 0.3747,
+          "drift": 2.75,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.41,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "0edbf954-7c64-4660-adb7-c9befd908019",
+          "group": "36202a8c-3784-4425-ae9a-d731116cd887",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:48:47+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.2944,
+          "step_max": 0.4779,
+          "drift": 9.51,
+          "loop": 0.0007,
+          "loop_ratio": 0.0,
+          "travel": 3.76,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "04813c0d-112b-4c01-b37b-43dc53c514d7",
+          "group": "a9e9c9d7-3912-4bfe-b3d4-f1c6458bae35",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:48:46+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2431,
+          "step_max": 0.3195,
+          "drift": 1.31,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.82,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "698fd69b-283a-46ec-9f2e-b6caf3095da6",
+          "group": "52507b00-ed3d-41d0-acc5-dafcf3550866",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:48:46+00:00",
+          "source": "east"
+        }
+      },
+      "action": "lunges forward with a snapping bite, mist trailing, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "ghost_hound/animations/attack/south/00.webp",
+          "ghost_hound/animations/attack/south/01.webp",
+          "ghost_hound/animations/attack/south/02.webp",
+          "ghost_hound/animations/attack/south/03.webp",
+          "ghost_hound/animations/attack/south/04.webp",
+          "ghost_hound/animations/attack/south/05.webp",
+          "ghost_hound/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "ghost_hound/animations/attack/south-east/00.webp",
+          "ghost_hound/animations/attack/south-east/01.webp",
+          "ghost_hound/animations/attack/south-east/02.webp",
+          "ghost_hound/animations/attack/south-east/03.webp",
+          "ghost_hound/animations/attack/south-east/04.webp",
+          "ghost_hound/animations/attack/south-east/05.webp",
+          "ghost_hound/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "ghost_hound/animations/attack/east/00.webp",
+          "ghost_hound/animations/attack/east/01.webp",
+          "ghost_hound/animations/attack/east/02.webp",
+          "ghost_hound/animations/attack/east/03.webp",
+          "ghost_hound/animations/attack/east/04.webp",
+          "ghost_hound/animations/attack/east/05.webp",
+          "ghost_hound/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "ghost_hound/animations/attack/north-east/00.webp",
+          "ghost_hound/animations/attack/north-east/01.webp",
+          "ghost_hound/animations/attack/north-east/02.webp",
+          "ghost_hound/animations/attack/north-east/03.webp",
+          "ghost_hound/animations/attack/north-east/04.webp",
+          "ghost_hound/animations/attack/north-east/05.webp",
+          "ghost_hound/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "ghost_hound/animations/attack/north/00.webp",
+          "ghost_hound/animations/attack/north/01.webp",
+          "ghost_hound/animations/attack/north/02.webp",
+          "ghost_hound/animations/attack/north/03.webp",
+          "ghost_hound/animations/attack/north/04.webp",
+          "ghost_hound/animations/attack/north/05.webp",
+          "ghost_hound/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "ghost_hound/animations/attack/south-west/00.webp",
+          "ghost_hound/animations/attack/south-west/01.webp",
+          "ghost_hound/animations/attack/south-west/02.webp",
+          "ghost_hound/animations/attack/south-west/03.webp",
+          "ghost_hound/animations/attack/south-west/04.webp",
+          "ghost_hound/animations/attack/south-west/05.webp",
+          "ghost_hound/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "ghost_hound/animations/attack/west/00.webp",
+          "ghost_hound/animations/attack/west/01.webp",
+          "ghost_hound/animations/attack/west/02.webp",
+          "ghost_hound/animations/attack/west/03.webp",
+          "ghost_hound/animations/attack/west/04.webp",
+          "ghost_hound/animations/attack/west/05.webp",
+          "ghost_hound/animations/attack/west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "ghost_hound/animations/attack__south.webp",
+        "south-east": "ghost_hound/animations/attack__south-east.webp",
+        "east": "ghost_hound/animations/attack__east.webp",
+        "north-east": "ghost_hound/animations/attack__north-east.webp",
+        "north": "ghost_hound/animations/attack__north.webp",
+        "south-west": "ghost_hound/animations/attack__south-west.webp",
+        "west": "ghost_hound/animations/attack__west.webp"
+      }
     }
   }
 }
