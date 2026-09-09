@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:38:23+00:00",
+  "generated_at": "2026-09-09T18:38:42+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 45,
+  "count": 46,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -5813,6 +5813,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:36:29+00:00"
+    },
+    {
+      "id": "fox_spirit",
+      "name": "Foxfire",
+      "tier": "mid",
+      "lore": "Three tails, three lies, and one truth it will tell you for a price you will not like.",
+      "biome": [
+        "grass",
+        "snow"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "dog",
+      "scale": "standard",
+      "pixellab_id": "bf268569-1fe1-4af7-b0ee-f45b1f4b9735",
+      "version": 1,
+      "sheet": "fox_spirit/sheet.webp",
+      "rotations": {
+        "south": "fox_spirit/rotations/south.webp",
+        "south-east": "fox_spirit/rotations/south-east.webp",
+        "east": "fox_spirit/rotations/east.webp",
+        "north-east": "fox_spirit/rotations/north-east.webp",
+        "north": "fox_spirit/rotations/north.webp",
+        "north-west": "fox_spirit/rotations/north-west.webp",
+        "west": "fox_spirit/rotations/west.webp",
+        "south-west": "fox_spirit/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.681,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.681,
+            "bbox": [
+              5,
+              5,
+              91,
+              92
+            ],
+            "fill": 0.812,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.724,
+            "bbox": [
+              7,
+              9,
+              91,
+              91
+            ],
+            "fill": 0.747,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.73,
+            "bbox": [
+              6,
+              4,
+              86,
+              90
+            ],
+            "fill": 0.747,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.719,
+            "bbox": [
+              3,
+              5,
+              89,
+              91
+            ],
+            "fill": 0.803,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.767,
+            "bbox": [
+              5,
+              3,
+              84,
+              92
+            ],
+            "fill": 0.763,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.742,
+            "bbox": [
+              4,
+              5,
+              85,
+              92
+            ],
+            "fill": 0.765,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.736,
+            "bbox": [
+              12,
+              5,
+              93,
+              90
+            ],
+            "fill": 0.747,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.758,
+            "bbox": [
+              12,
+              5,
+              92,
+              90
+            ],
+            "fill": 0.738,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:38:42+00:00"
     }
   ]
 }

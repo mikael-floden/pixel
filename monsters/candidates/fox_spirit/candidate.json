@@ -1,0 +1,141 @@
+{
+  "id": "fox_spirit",
+  "name": "Foxfire",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Three tails, three lies, and one truth it will tell you for a price you will not like.",
+  "biome": [
+    "grass",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Fantasy fox spirit with pale cream fur, three bushy tails tipped with blue flame curled around its body, glowing blue eyes, red markings on its face, and small blue flames floating around it.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "fox_spirit/rotations/south.webp",
+    "south-east": "fox_spirit/rotations/south-east.webp",
+    "east": "fox_spirit/rotations/east.webp",
+    "north-east": "fox_spirit/rotations/north-east.webp",
+    "north": "fox_spirit/rotations/north.webp",
+    "north-west": "fox_spirit/rotations/north-west.webp",
+    "west": "fox_spirit/rotations/west.webp",
+    "south-west": "fox_spirit/rotations/south-west.webp"
+  },
+  "sheet": "fox_spirit/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "bf268569-1fe1-4af7-b0ee-f45b1f4b9735",
+  "seed": 1004046732,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:38:42+00:00",
+  "elapsed_s": 164.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.681,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.681,
+        "bbox": [
+          5,
+          5,
+          91,
+          92
+        ],
+        "fill": 0.812,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.724,
+        "bbox": [
+          7,
+          9,
+          91,
+          91
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.73,
+        "bbox": [
+          6,
+          4,
+          86,
+          90
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.719,
+        "bbox": [
+          3,
+          5,
+          89,
+          91
+        ],
+        "fill": 0.803,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.767,
+        "bbox": [
+          5,
+          3,
+          84,
+          92
+        ],
+        "fill": 0.763,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.742,
+        "bbox": [
+          4,
+          5,
+          85,
+          92
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.736,
+        "bbox": [
+          12,
+          5,
+          93,
+          90
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.758,
+        "bbox": [
+          12,
+          5,
+          92,
+          90
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      }
+    }
+  }
+}
