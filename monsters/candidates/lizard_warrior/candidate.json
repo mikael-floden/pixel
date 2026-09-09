@@ -138,5 +138,181 @@
       }
     }
   },
-  "approved_at": "2026-09-09T19:59:21+00:00"
+  "approved_at": "2026-09-09T19:59:21+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0646,
+          "step_max": 0.0856,
+          "drift": 1.65,
+          "loop": 0.0003,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "96a66ef1-cb8b-43de-8bce-c5be136214d1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:13:20+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.077,
+          "step_max": 0.1032,
+          "drift": 1.22,
+          "loop": 0.0005,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "05ccb98a-e1f5-4085-8fdd-da18669a75bd",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:13:21+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0652,
+          "step_max": 0.0924,
+          "drift": 1.94,
+          "loop": 0.0006,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "9d1a201b-364f-42fe-a675-044e2961685c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:13:21+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0003,
+          "step_max": 0.0005,
+          "drift": 0.01,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [
+            "frozen: silhouette moves 0.000 per frame"
+          ],
+          "cut": 0,
+          "sub": "d48a7295-773a-44b6-a8d1-e562dceeb96f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:13:22+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0155,
+          "step_max": 0.0277,
+          "drift": 0.22,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "12f6ff0a-2137-4358-a6ce-976850d8fbcc",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:13:22+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.077,
+          "step_max": 0.1032,
+          "drift": 1.22,
+          "loop": 0.0005,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "05ccb98a-e1f5-4085-8fdd-da18669a75bd",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:13:21+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0652,
+          "step_max": 0.0924,
+          "drift": 1.94,
+          "loop": 0.0006,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "9d1a201b-364f-42fe-a675-044e2961685c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:13:21+00:00",
+          "source": "east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "lizard_warrior/animations/idle/south/00.webp",
+          "lizard_warrior/animations/idle/south/01.webp",
+          "lizard_warrior/animations/idle/south/02.webp",
+          "lizard_warrior/animations/idle/south/03.webp",
+          "lizard_warrior/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "lizard_warrior/animations/idle/south-east/00.webp",
+          "lizard_warrior/animations/idle/south-east/01.webp",
+          "lizard_warrior/animations/idle/south-east/02.webp",
+          "lizard_warrior/animations/idle/south-east/03.webp",
+          "lizard_warrior/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "lizard_warrior/animations/idle/east/00.webp",
+          "lizard_warrior/animations/idle/east/01.webp",
+          "lizard_warrior/animations/idle/east/02.webp",
+          "lizard_warrior/animations/idle/east/03.webp",
+          "lizard_warrior/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "lizard_warrior/animations/idle/north-east/00.webp",
+          "lizard_warrior/animations/idle/north-east/01.webp",
+          "lizard_warrior/animations/idle/north-east/02.webp",
+          "lizard_warrior/animations/idle/north-east/03.webp",
+          "lizard_warrior/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "lizard_warrior/animations/idle/north/00.webp",
+          "lizard_warrior/animations/idle/north/01.webp",
+          "lizard_warrior/animations/idle/north/02.webp",
+          "lizard_warrior/animations/idle/north/03.webp",
+          "lizard_warrior/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "lizard_warrior/animations/idle/south-west/00.webp",
+          "lizard_warrior/animations/idle/south-west/01.webp",
+          "lizard_warrior/animations/idle/south-west/02.webp",
+          "lizard_warrior/animations/idle/south-west/03.webp",
+          "lizard_warrior/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "lizard_warrior/animations/idle/west/00.webp",
+          "lizard_warrior/animations/idle/west/01.webp",
+          "lizard_warrior/animations/idle/west/02.webp",
+          "lizard_warrior/animations/idle/west/03.webp",
+          "lizard_warrior/animations/idle/west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "lizard_warrior/animations/idle__south.webp",
+        "south-east": "lizard_warrior/animations/idle__south-east.webp",
+        "east": "lizard_warrior/animations/idle__east.webp",
+        "north-east": "lizard_warrior/animations/idle__north-east.webp",
+        "north": "lizard_warrior/animations/idle__north.webp",
+        "south-west": "lizard_warrior/animations/idle__south-west.webp",
+        "west": "lizard_warrior/animations/idle__west.webp"
+      }
+    }
+  }
 }
