@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T19:11:41+00:00",
+  "generated_at": "2026-09-09T19:12:03+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 83,
+  "count": 84,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -10294,6 +10294,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T19:08:37+00:00"
+    },
+    {
+      "id": "plague_doctor",
+      "name": "Beakmask",
+      "tier": "evil",
+      "lore": "It came to cure the lower town and stayed after the last patient. Nobody has seen what is under the mask.",
+      "biome": [
+        "grey_paving_stone",
+        "dark_mud"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "b144166c-5ab5-45d3-ab67-e983049b9c29",
+      "version": 1,
+      "sheet": "plague_doctor/sheet.webp",
+      "rotations": {
+        "south": "plague_doctor/rotations/south.webp",
+        "south-east": "plague_doctor/rotations/south-east.webp",
+        "east": "plague_doctor/rotations/east.webp",
+        "north-east": "plague_doctor/rotations/north-east.webp",
+        "north": "plague_doctor/rotations/north.webp",
+        "north-west": "plague_doctor/rotations/north-west.webp",
+        "west": "plague_doctor/rotations/west.webp",
+        "south-west": "plague_doctor/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.612,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.679,
+            "bbox": [
+              16,
+              3,
+              80,
+              101
+            ],
+            "fill": 0.58,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.665,
+            "bbox": [
+              31,
+              3,
+              70,
+              102
+            ],
+            "fill": 0.357,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.718,
+            "bbox": [
+              36,
+              3,
+              74,
+              103
+            ],
+            "fill": 0.351,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.614,
+            "bbox": [
+              26,
+              3,
+              88,
+              102
+            ],
+            "fill": 0.567,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.725,
+            "bbox": [
+              28,
+              3,
+              79,
+              103
+            ],
+            "fill": 0.472,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.667,
+            "bbox": [
+              32,
+              3,
+              82,
+              102
+            ],
+            "fill": 0.458,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.612,
+            "bbox": [
+              27,
+              3,
+              76,
+              101
+            ],
+            "fill": 0.444,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.745,
+            "bbox": [
+              17,
+              3,
+              74,
+              103
+            ],
+            "fill": 0.527,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T19:12:03+00:00"
     },
     {
       "id": "naga",
