@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:04:12+00:00",
+  "generated_at": "2026-09-09T18:04:50+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -2758,6 +2758,134 @@
       "generated_at": "2026-09-09T18:02:13+00:00"
     },
     {
+      "id": "moss_snail",
+      "name": "Mosscoil",
+      "tier": "cute",
+      "lore": "Too slow to chase anyone and too stubborn to move aside. Its shell is a garden and it defends the garden.",
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "size": [
+        40,
+        40
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "97c1307f-4eaa-4cc4-8b95-04e3f866cef7",
+      "version": 1,
+      "sheet": "moss_snail/sheet.webp",
+      "rotations": {
+        "south": "moss_snail/rotations/south.webp",
+        "south-east": "moss_snail/rotations/south-east.webp",
+        "east": "moss_snail/rotations/east.webp",
+        "north-east": "moss_snail/rotations/north-east.webp",
+        "north": "moss_snail/rotations/north.webp",
+        "north-west": "moss_snail/rotations/north-west.webp",
+        "west": "moss_snail/rotations/west.webp",
+        "south-west": "moss_snail/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.766,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.766,
+            "bbox": [
+              1,
+              3,
+              39,
+              37
+            ],
+            "fill": 0.807,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.781,
+            "bbox": [
+              5,
+              2,
+              35,
+              36
+            ],
+            "fill": 0.637,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.774,
+            "bbox": [
+              5,
+              4,
+              36,
+              38
+            ],
+            "fill": 0.659,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.778,
+            "bbox": [
+              4,
+              4,
+              36,
+              38
+            ],
+            "fill": 0.68,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.781,
+            "bbox": [
+              2,
+              4,
+              38,
+              38
+            ],
+            "fill": 0.765,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.778,
+            "bbox": [
+              10,
+              5,
+              31,
+              38
+            ],
+            "fill": 0.433,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.815,
+            "bbox": [
+              2,
+              3,
+              39,
+              37
+            ],
+            "fill": 0.786,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.809,
+            "bbox": [
+              7,
+              2,
+              30,
+              38
+            ],
+            "fill": 0.517,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:04:50+00:00"
+    },
+    {
       "id": "bone_colossus",
       "name": "Ossuar",
       "tier": "boss",
@@ -3013,133 +3141,6 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:02:55+00:00"
-    },
-    {
-      "id": "sand_scorpion",
-      "name": "Duststing",
-      "tier": "mid",
-      "lore": "It sleeps under the dune and wakes under your boot. The sting comes first; the pincers only keep you still for it.",
-      "biome": [
-        "light_soil"
-      ],
-      "items": [],
-      "size": [
-        104,
-        104
-      ],
-      "template_id": "bear",
-      "scale": "standard",
-      "pixellab_id": "6a585a50-d34f-42a3-be05-2e3cab6d0008",
-      "version": 1,
-      "sheet": "sand_scorpion/sheet.webp",
-      "rotations": {
-        "south": "sand_scorpion/rotations/south.webp",
-        "south-east": "sand_scorpion/rotations/south-east.webp",
-        "east": "sand_scorpion/rotations/east.webp",
-        "north-east": "sand_scorpion/rotations/north-east.webp",
-        "north": "sand_scorpion/rotations/north.webp",
-        "north-west": "sand_scorpion/rotations/north-west.webp",
-        "west": "sand_scorpion/rotations/west.webp",
-        "south-west": "sand_scorpion/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.723,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.723,
-            "bbox": [
-              18,
-              4,
-              88,
-              99
-            ],
-            "fill": 0.615,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.804,
-            "bbox": [
-              10,
-              16,
-              92,
-              90
-            ],
-            "fill": 0.561,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.798,
-            "bbox": [
-              12,
-              14,
-              94,
-              90
-            ],
-            "fill": 0.576,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.819,
-            "bbox": [
-              19,
-              31,
-              84,
-              86
-            ],
-            "fill": 0.331,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.839,
-            "bbox": [
-              13,
-              6,
-              94,
-              98
-            ],
-            "fill": 0.689,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.827,
-            "bbox": [
-              14,
-              29,
-              94,
-              91
-            ],
-            "fill": 0.459,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.822,
-            "bbox": [
-              10,
-              29,
-              88,
-              91
-            ],
-            "fill": 0.447,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.83,
-            "bbox": [
-              10,
-              8,
-              92,
-              98
-            ],
-            "fill": 0.682,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "pending",
-      "notes": null,
-      "generated_at": "2026-09-09T18:04:12+00:00"
     }
   ]
 }

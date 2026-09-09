@@ -1,0 +1,141 @@
+{
+  "id": "frost_fox",
+  "name": "Rimetail",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "It leaves no tracks and takes the warmth from a fire by sitting near it. Hunters call it the cold's own dog.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Fantasy arctic fox with thick white fur tipped in pale blue, ice crystals growing from its ear tips, bright ice-blue eyes, a bushy tail wrapped around its body, and small frost patterns on its back.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "dog",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "frost_fox/rotations/south.webp",
+    "south-east": "frost_fox/rotations/south-east.webp",
+    "east": "frost_fox/rotations/east.webp",
+    "north-east": "frost_fox/rotations/north-east.webp",
+    "north": "frost_fox/rotations/north.webp",
+    "north-west": "frost_fox/rotations/north-west.webp",
+    "west": "frost_fox/rotations/west.webp",
+    "south-west": "frost_fox/rotations/south-west.webp"
+  },
+  "sheet": "frost_fox/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "e59cc282-8f4a-433e-8020-40fbdd780fad",
+  "seed": 1689417928,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:04:48+00:00",
+  "elapsed_s": 212.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.715,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.715,
+        "bbox": [
+          7,
+          4,
+          92,
+          94
+        ],
+        "fill": 0.83,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.771,
+        "bbox": [
+          2,
+          2,
+          88,
+          91
+        ],
+        "fill": 0.831,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.776,
+        "bbox": [
+          16,
+          3,
+          90,
+          92
+        ],
+        "fill": 0.715,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.749,
+        "bbox": [
+          3,
+          3,
+          77,
+          90
+        ],
+        "fill": 0.699,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.817,
+        "bbox": [
+          25,
+          4,
+          83,
+          94
+        ],
+        "fill": 0.566,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.746,
+        "bbox": [
+          6,
+          1,
+          87,
+          91
+        ],
+        "fill": 0.791,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.763,
+        "bbox": [
+          12,
+          1,
+          75,
+          91
+        ],
+        "fill": 0.615,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.797,
+        "bbox": [
+          3,
+          4,
+          91,
+          94
+        ],
+        "fill": 0.859,
+        "touches_edge": false
+      }
+    }
+  }
+}
