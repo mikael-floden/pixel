@@ -2196,7 +2196,24 @@ class Grow:
         if his and his.get("verdict"):
             return his["verdict"] == "ANIMATION_APPROVED"
         anims = (meta.get("states") or {}).get(state, {}).get("animations") or {}
-        return any(a.get("review") in self.ANIM_GOOD for a in anims.values())
+        return any(a.get("review") in self.ANIM_GOOD and self._anim_plays(a)
+                   for a in anims.values())
+
+    @staticmethod
+    def _anim_plays(a):
+        """A judged-good animation the consumers can actually PLAY: the game
+        wants `frame_paths` or `strip` on the animation itself (scenery3.ts
+        parseAnims ignores one without: "names no frames"), the wiki reads
+        `directions.south.strip`. brazier_008#LIT_1 carried a PROBABLY_GOOD
+        verdict on a clip neither could find and was lit as "animates well"
+        (maintainer 2026-09-09: "Why did you place 'Antlered iron brazier
+        008' lit state 1? It has no animation."). 38 of the 194 good LIT
+        clips are like it; reported to scenery."""
+        if not (a.get("frame_paths") or a.get("strip")):
+            return False
+        d = a.get("directions")
+        south = d.get("south") if isinstance(d, dict) else None
+        return bool(south) and (bool(south.get("strip")) or len(south.get("frame_paths") or []) > 1)
 
     def _best_lit_state(self, piece):
         """The LIT state to light: ONE THAT ANIMATES WELL FIRST, then the best
