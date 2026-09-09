@@ -32,23 +32,42 @@ import { AmbientCtx, AmbientFeature } from "../runtime/types";
  * BURSTS, because a fire pops rather than pours.
  */
 
-const KEY = "amb-ember";
+const KEY = "amb-ember"; // 2x2 — see A SPARK HAS TO READ
+const KEY_DIM = "amb-ember-dim"; // 1x1, what it shrinks to as it dies
 const DEPTH = 900_000.08; // over the darkness overlay, like every other ambient mark
 const GAIN_TAU = 1400;
 
 const LIGHT_MS = 560; // how often the light list is re-read (NOT per frame)
-const MAX_SPARKS = 30;
-const PER_FIRE = 10;
+const MAX_SPARKS = 34;
+const PER_FIRE = 14;
 const MIN_R = 1; // cells — even a candle-sized fire may spark
 
-const LIFE: [number, number] = [700, 1700];
-const RISE0: [number, number] = [34, 78]; // px/s at the flame
-const RISE_DRAG = 0.55; // how much of that speed is left at the end of its life
+/* A SPARK HAS TO READ, AND ONE WORLD PIXEL DOES NOT.
+ *
+ * The first version drew 1x1 marks. On the maintainer's phone the camera sits
+ * at zoom 3 against a device ratio of 2.75, so one world pixel is about ONE CSS
+ * PIXEL — an additive speck over a brightly lit fireplace. It was genuinely
+ * being drawn (54 luma of pixel change on a dark harness background) and he
+ * still could not find one, three times, which is the answer: technically
+ * visible is not visible.
+ *
+ * So a spark is 2x2 while it is hot and shrinks to 1x1 as it dies, and it
+ * leaves the flame WHITE-HOT rather than in the fire's colour — an ember's core
+ * is brighter than the flame it came from, which is both true and the thing
+ * that lets it stand out against one. It cools through the fire's own colour
+ * and then to a deep red. */
+const HOT = 0xfff6e2; // the core, leaving the flame
+const HOT_MS = 0.28; // fraction of life spent cooling from HOT to the fire's colour
+const SHRINK = 0.62; // ...and where it drops to the 1x1 art
+
+const LIFE: [number, number] = [900, 2100];
+const RISE0: [number, number] = [40, 96]; // px/s at the flame
+const RISE_DRAG = 0.5; // how much of that speed is left at the end of its life
 const SIDE: [number, number] = [4, 16]; // px of sideways wander over the whole rise
 const WOBBLE_HZ: [number, number] = [0.9, 2.4];
 const START_SPREAD = 4; // px — sparks leave the flame's width, not one point
 
-const BURST_GAP: [number, number] = [240, 1500]; // ms between bursts from one fire
+const BURST_GAP: [number, number] = [200, 1100]; // ms between bursts from one fire
 const BURST: [number, number] = [1, 4]; // sparks per burst
 
 /* Brighten out of the flame. Fast — it is already burning — but a REAL ramp:
@@ -57,7 +76,7 @@ const BURST: [number, number] = [1, 4]; // sparks per burst
  * 0.628 mid-life, where a fade should be far below). */
 const IN_MS = 190;
 const COOL = 0x8c1c06; // what an ember cools toward before it dies
-const ALPHA: [number, number] = [0.55, 1];
+const ALPHA: [number, number] = [0.7, 1];
 
 interface Spark {
   sprite: Phaser.GameObjects.Image;
@@ -183,13 +202,16 @@ export function embersFeature(): AmbientFeature {
     init(ctx) {
       // One pixel, painted WHITE — setTint multiplies, so the drawn colour is
       // the fire's own, cooling as the spark rises.
-      if (!ctx.scene.textures.exists(KEY)) {
+      const paint = (key: string, n: number) => {
+        if (ctx.scene.textures.exists(key)) return;
         const g = ctx.scene.make.graphics({ x: 0, y: 0 }, false);
         g.fillStyle(0xffffff, 1);
-        g.fillRect(0, 0, 1, 1);
-        g.generateTexture(KEY, 1, 1);
+        g.fillRect(0, 0, n, n);
+        g.generateTexture(key, n, n);
         g.destroy();
-      }
+      };
+      paint(KEY, 2);
+      paint(KEY_DIM, 1);
     },
     update(ctx, dt) {
       // Embers read at any hour but they only really tell after dark, so this
@@ -246,13 +268,20 @@ export function embersFeature(): AmbientFeature {
          * from the fire's own colour toward a deep red as the alpha falls, which
          * is what an ember does and what keeps it from reading as a fading dot. */
         const rise = Math.min(1, s.age / IN_MS);
-        const fade = t < 0.35 ? 1 : 1 - (t - 0.35) / 0.65;
+        // Hold, then fall away linearly — squaring this made a spark dim for
+        // most of its life, which is half of why none of them could be found.
+        const fade = t < 0.5 ? 1 : 1 - (t - 0.5) / 0.5;
+        // WHITE-HOT, then the fire's colour, then a dying red.
+        const tint = t < HOT_MS
+          ? mix(HOT, s.tint, t / HOT_MS)
+          : mix(s.tint, COOL, Math.min(1, (t - HOT_MS) / (1 - HOT_MS)));
         const iy = Math.round(s.y);
         s.sprite
+          .setTexture(t < SHRINK ? KEY : KEY_DIM)
           .setPosition(Math.round(s.x), iy)
           .setDepth(DEPTH + iy * 1e-6)
-          .setTint(mix(s.tint, COOL, Math.min(1, t * 1.3)))
-          .setAlpha(g * s.base * rise * fade * fade)
+          .setTint(tint)
+          .setAlpha(g * s.base * rise * fade)
           .setBlendMode(Phaser.BlendModes.ADD);
       }
     },
@@ -277,7 +306,14 @@ export function embersFeature(): AmbientFeature {
          * numbers look identical. So the first live spark reports its own
          * render state. */
         draw: (() => {
-          const q = live[0];
+          /* THE BIGGEST live spark, not the first: a spark shrinks to 1x1 as it
+           * dies, so sampling whichever happens to be first reports the dying
+           * art and reads as "the marks are one pixel" — which is the exact bug
+           * this field exists to catch. */
+          const q = live.reduce(
+            (a: Spark | null, c) => (!a || c.sprite.displayWidth > a.sprite.displayWidth ? c : a),
+            null as Spark | null,
+          );
           if (!q) return null;
           const sp = q.sprite as unknown as {
             visible: boolean; alpha: number; depth: number; blendMode: number;

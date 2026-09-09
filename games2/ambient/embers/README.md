@@ -73,7 +73,34 @@ Gated: the run stands in a cave with a hearth and requires sparks (measured 10).
 (`LIGHT_MS`), 1.62 times a second, never per frame and never per spark. At most
 `MAX_SPARKS` pooled 1px marks, drawn additive.
 
-## The bug that every counter said was not there
+## Two bugs that every counter said were not there
+
+Both were "the effect is invisible", both shipped, and the maintainer reported
+them three times between them.
+
+**One: the origin.** The sprites were `setOrigin(0.5, 0.5)` on a 1x1 texture — a
+one-pixel quad centred on an integer position straddles the boundary between two
+pixels, so the renderer has nothing whole to hit and all but drops it. Measured:
+a spark on screen at alpha 0.81 moved the pixel under it by **0.1 luma**. Every
+other pixel mark in this folder uses `setOrigin(0, 0)`; that is not tidiness, it
+is the reason they can be seen.
+
+**Two: one world pixel is not a visible thing.** With the origin fixed the
+sparks were genuinely drawn — and still could not be found on his phone, because
+the camera sits at zoom 3 against a device ratio of 2.75, so ONE WORLD PIXEL IS
+ABOUT ONE CSS PIXEL. An additive speck that size over a lit fireplace is
+nothing. **Technically visible is not visible.** A spark is now 2x2 while it is
+hot and shrinks to 1x1 as it dies, and it leaves the flame WHITE-HOT rather than
+in the fire's colour — an ember's core is brighter than the flame it came from,
+which is both true and what lets it stand out against one. Measured after: the
+sparks brighten a pixel above the fire by **244 luma**.
+
+What makes these worth writing down is how they hid: the effect's own numbers
+were all correct and all irrelevant — visible true, right depth, right alpha,
+right position, texture present, additive blend. **A counter cannot see the
+screen.**
+
+## The old note, kept for the fade
 
 The first shipped version was invisible, and the maintainer said so twice. Its
 sprites were `setOrigin(0.5, 0.5)` on a 1x1 texture — **a one-pixel quad centred
@@ -104,10 +131,31 @@ was the first cut and it does not work: the nearest ember piece to the spawn is
 wide, so the walk missed it and reported "no fire anywhere" — a statement about
 the search, not the map.
 
-It also judges the effect ON THE PIXELS: it centres the camera on the fire,
-finds the brightest spark inside the frame, and requires the pixel under it to
-change when the effect is switched off (measured 54.4 luma). Nothing else here
-could have caught the origin bug.
+It also judges the effect ON THE PIXELS, against an ENVELOPE: a hearth's art is ANIMATED and its light flickers, so one
+"off" frame is one phase of a moving picture — comparing against it measured 195
+luma of change with the effect switched OFF, which is the fire, not a spark. The
+baseline is the PER-PIXEL MAXIMUM over eight off frames spanning the animation,
+so a spark has to beat the fire at its brightest, at that pixel, in every phase.
+Measured: **47.5 luma past the envelope, against 0.6 for a sparkless control
+frame.**
+
+Three earlier shapes of this arm all measured nothing, and each is a way to fool
+yourself with pixels:
+
+- **A point is a race.** Reading one spark's position and then screenshotting is
+  two round trips; the spark has risen tens of pixels by the time the picture
+  lands. That version passed or failed on luck — 54, then 30, then 5 luma on
+  identical code.
+- **A region without a control measures the fire.** 244 luma, all of it flame.
+- **A collapsed box measures nothing.** `pickAt` on a point up in the air
+  resolves to a different cell, so centring the camera on the FLAME put the fire
+  45 px from the top and the air above it framed as 15 px tall. The camera is
+  now driven a cell at a time until the fire is actually framed, and the arm
+  FAILS if it is not — a check that cannot see its subject must say so.
+
+It also pins the drawn SIZE (>= 2 world px, measured on the biggest live spark —
+sampling whichever is first reports the dying 1x1 art and reads as the very bug
+the field exists to catch).
 
 Two traps it was written into, both of which made it lie once: the search for a
 quiet fire runs before the measurement and LEAVES THE PLAYER THERE, so the burn

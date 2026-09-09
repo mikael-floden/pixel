@@ -182,7 +182,11 @@ else {
       (d.all || []).forEach((s, j) => {
         samples++;
         // BORN AT THE FLAME: a young spark must be within a few px of its fire.
-        if (s.t < 0.12 && Math.hypot(s.x - s.fx, s.y - s.fy) > 14) farFromFlame++;
+        /* BORN AT THE FLAME. The window has to track the physics: a spark
+         * leaves at up to RISE0 px/s, so "the first 12% of a 2.1s life" is a
+         * quarter of a second and 24px of legitimate travel. Judge it in the
+         * first 5% instead, where the bound is real. */
+        if (s.t < 0.05 && Math.hypot(s.x - s.fx, s.y - s.fy) > 16) farFromFlame++;
         // AND IT GOES UP.
         const last = prev.get("p" + j);
         if (last && last[2] < s.t) { if (s.y < last[1]) up++; else if (s.y > last[1]) down++; }
@@ -211,7 +215,7 @@ else {
       `${burn.mid === null ? "?" : burn.mid.toFixed(3)} mid-life, ${burn.late === null ? "?" : burn.late.toFixed(3)} at the end`,
   );
   if (!burn.samples) fail("a fire was in view and it threw no sparks at all");
-  if (burn.farFromFlame) fail(`${burn.farFromFlame} sparks were born more than 14px from their fire — they must leave the FLAME`);
+  if (burn.farFromFlame) fail(`${burn.farFromFlame} sparks were born more than 16px from their fire — they must leave the FLAME`);
   if (!(burn.up > burn.down * 8)) fail(`sparks rose ${burn.up} times and fell ${burn.down} — embers go UP`);
   if (burn.early !== null && burn.mid !== null && !(burn.early < burn.mid * 0.75))
     fail(`sparks appear at ${burn.early.toFixed(3)} against ${burn.mid.toFixed(3)} mid-life — they must brighten out of the flame`);
@@ -289,56 +293,147 @@ else {
  * alpha, at the right place, and drawn as 1x1 quads CENTRED on integer
  * positions — straddling two pixels each, so the screen never got them
  * (measured: a spark at alpha 0.81 moved its pixel by 0.1 luma). A counter
- * cannot see that. This centres the camera on the fire, finds the brightest
- * spark actually inside the frame, and requires the pixel under it to CHANGE
- * when the effect is switched off. */
-const onScreen = await page.evaluate(async (spot) => {
+ * cannot see that.
+ *
+ * IT COMPARES A REGION OVER TIME, NOT A POINT. Reading one spark's position and
+ * then screenshotting is a race — the screenshot is a separate round trip and
+ * the spark has risen tens of pixels by the time it lands, so the arm passed or
+ * failed on luck (54, then 30, then 5 luma on identical code). Instead: one
+ * baseline with the effect OFF, then several frames with it ON, and the best
+ * local brightening anywhere above the fire wins. The fire's own flicker is the
+ * noise floor this has to beat.
+ */
+const shot = async () => PNG.sync.read(await page.screenshot({ type: "png" }));
+const region = await page.evaluate(async (spot) => {
   const step = () => new Promise((r) => requestAnimationFrame(r));
   window.__ml.teleport(spot.col, spot.row);
   for (let i = 0; i < 200; i++) await step();
-  const f = (window.__mlAmbient.debug("embers").fireList || [])[0];
-  if (f) { const c = window.__ml.pickAt(f.x, f.y); if (c) window.__ml.lookAt(c.x / 32, c.y / 32); }
+  /* CENTRE ON THE FIRE'S FOOT, NOT ITS FLAME. `pickAt` answers "which cell is
+   * DRAWN at this screen point", and a point up in the air resolves to a cell
+   * further up-screen — so centring on the flame put the fire 45px from the top
+   * edge and the box of air above it collapsed to fifteen pixels. The light's
+   * own `footY` is on the ground, where the question has one answer. */
+  const l0 = (window.__ml.lightsInView(48) || []).filter((l) => l.embers)[0];
+  const cell = l0 ? window.__ml.pickAt(l0.x, l0.footY) : null;
+  /* DRIVE THE CAMERA UNTIL THE FIRE IS ACTUALLY FRAMED, rather than assuming a
+   * centring worked. Two ways to be wrong here have already cost a run each:
+   * `pickAt` on a point up in the air resolves to a different cell, and a
+   * camera centred on the fire's own cell still leaves the flame near the top
+   * once the piece's height is added. So: step the camera up-screen a cell at a
+   * time (which walks the fire DOWN the frame) until there is room above it. */
+  if (cell) {
+    const c0 = cell.x / 32, r0 = cell.y / 32;
+    for (let k = 0; k <= 6; k++) {
+      window.__ml.lookAt(c0 - k, r0 - k);
+      for (let i = 0; i < 60; i++) await step();
+      const v = window.__ml.camView();
+      const z = window.__ml.myScreen()?.zoom ?? 1;
+      const f = (window.__mlAmbient.debug("embers").fireList || [])[0];
+      if (!f) continue;
+      if ((f.y - v.y) * z >= 150) break;
+    }
+  }
   for (let i = 0; i < 120; i++) await step();
   const v = window.__ml.camView();
   const z = window.__ml.myScreen()?.zoom ?? 1;
-  let best = null;
-  for (let i = 0; i < 300; i++) {
-    for (const s of window.__mlAmbient.debug("embers").all || []) {
-      const sx = (s.x - v.x) * z, sy = (s.y - v.y) * z;
-      if (sx < 6 || sy < 6 || sx > 474 || sy > 314) continue;
-      if (!best || s.a > best.a) best = { a: s.a, sx: Math.round(sx), sy: Math.round(sy) };
-    }
-    if (best && best.a > 0.6) break;
-    await step();
-  }
-  return best;
+  const d = window.__mlAmbient.debug("embers");
+  const fire = (d.fireList || [])[0];
+  if (!fire) return null;
+  return { sx: Math.round((fire.x - v.x) * z), sy: Math.round((fire.y - v.y) * z), z };
 }, { col: found.col, row: found.row });
-if (!onScreen) fail("no spark ever landed inside the frame — cannot judge it on pixels");
+if (!region) fail("no fire on screen to judge the sparks against");
 else {
-  const shot = async () => PNG.sync.read(await page.screenshot({ type: "png" }));
-  const on = await shot();
+  /* WITH A CONTROL, because THE FIRE ITSELF MOVES. A hearth's art is animated
+   * and its light flickers, so "the picture changed above the fire" is not
+   * evidence of anything on its own — the first version of this arm measured
+   * 244 luma of change and could not tell a spark from the flame's own next
+   * frame. So: two frames with the effect OFF give the noise floor, and the
+   * signal has to beat it. */
+  /* AN ENVELOPE, NOT A FRAME. A hearth's art is ANIMATED and its light flickers,
+   * so one "off" frame is one phase of a moving picture: comparing against it
+   * measured 195 luma of change with the effect off, which is the fire, not a
+   * spark. So the baseline is the PER-PIXEL MAXIMUM over several off frames
+   * spanning the animation, and a spark has to beat the fire at its brightest,
+   * in every phase, at that pixel. */
   await page.evaluate(async () => {
     window.__mlAmbient.setEnabled("embers", false);
-    for (let i = 0; i < 200; i++) await new Promise((r) => requestAnimationFrame(r));
+    for (let i = 0; i < 220; i++) await new Promise((r) => requestAnimationFrame(r));
   });
-  const off = await shot();
+  const offs = [];
+  for (let i = 0; i < 8; i++) {
+    offs.push(await shot());
+    await page.evaluate(async () => { for (let k = 0; k < 14; k++) await new Promise((r) => requestAnimationFrame(r)); });
+  }
+  const off = offs[0];
   await page.evaluate(async () => {
     window.__mlAmbient.setEnabled("embers", true);
-    for (let i = 0; i < 80; i++) await new Promise((r) => requestAnimationFrame(r));
+    for (let i = 0; i < 200; i++) await new Promise((r) => requestAnimationFrame(r));
   });
   const lum = (im, x, y) => {
     const i = (y * im.width + x) * 4;
     return 0.299 * im.data[i] + 0.587 * im.data[i + 1] + 0.114 * im.data[i + 2];
   };
-  let delta = 0;
-  for (let dy = -2; dy <= 2; dy++)
-    for (let dx = -2; dx <= 2; dx++) {
-      const x = onScreen.sx + dx, y = onScreen.sy + dy;
-      if (x < 0 || y < 0 || x >= on.width || y >= on.height) continue;
-      delta = Math.max(delta, Math.abs(lum(on, x, y) - lum(off, x, y)));
-    }
-  console.log(`screen: brightest spark alpha ${onScreen.a.toFixed(2)} at (${onScreen.sx},${onScreen.sy}) moves its pixel by ${delta.toFixed(1)} luma`);
-  if (delta < 12) fail(`a spark at alpha ${onScreen.a.toFixed(2)} changed the screen by ${delta.toFixed(1)} luma — it is not being drawn`);
+  /* THE AIR ABOVE THE FIRE, not the fire. The flame's own frames are the loudest
+   * thing in this picture, so the box starts well clear of it — sparks rise, so
+   * that is where they are anyway. */
+  const x0 = Math.max(0, region.sx - 55), x1 = Math.min(off.width, region.sx + 55);
+  const y0 = Math.max(0, region.sy - 105), y1 = Math.max(0, region.sy - 12);
+  if (y1 - y0 < 40 || x1 - x0 < 60)
+    fail(`the air above the fire framed as ${x1 - x0}x${y1 - y0}px — the camera is not showing the sparks, so this proves nothing`);
+  // Per-pixel brightest the room ever gets with NO sparks in it.
+  const envelope = new Float32Array((x1 - x0) * (y1 - y0));
+  for (const im of offs)
+    for (let y = y0; y < y1; y++)
+      for (let x = x0; x < x1; x++) {
+        const i = (y - y0) * (x1 - x0) + (x - x0);
+        const l = lum(im, x, y);
+        if (l > envelope[i]) envelope[i] = l;
+      }
+  const peak = (a) => {
+    let best = 0, at = null;
+    for (let y = y0; y < y1; y++)
+      for (let x = x0; x < x1; x++) {
+        const d = lum(a, x, y) - envelope[(y - y0) * (x1 - x0) + (x - x0)];
+        if (d > best) { best = d; at = [x, y]; }
+      }
+    return { best, at };
+  };
+  // The control: one MORE off frame against the envelope built from the others.
+  await page.evaluate(async () => {
+    window.__mlAmbient.setEnabled("embers", false);
+    for (let i = 0; i < 200; i++) await new Promise((r) => requestAnimationFrame(r));
+  });
+  const noise = peak(await shot()).best;
+  await page.evaluate(async () => {
+    window.__mlAmbient.setEnabled("embers", true);
+    for (let i = 0; i < 200; i++) await new Promise((r) => requestAnimationFrame(r));
+  });
+  let best = 0, bestAt = null;
+  for (let f = 0; f < 8; f++) {
+    const p = peak(await shot());
+    if (p.best > best) { best = p.best; bestAt = p.at; }
+    await page.evaluate(async () => { for (let i = 0; i < 20; i++) await new Promise((r) => requestAnimationFrame(r)); });
+  }
+  console.log(
+    `screen: over ${x1 - x0}x${y1 - y0}px of air above the fire, the sparks brighten a pixel by ` +
+      `${best.toFixed(1)} luma past the fire's own brightest at ${bestAt ? bestAt.join(",") : "?"} — ` +
+      `against ${noise.toFixed(1)} for a frame with no sparks in it`,
+  );
+  if (best < 25) fail(`the brightest thing the sparks add to the screen is ${best.toFixed(1)} luma — too faint to find`);
+  if (best < noise * 1.8)
+    fail(`the sparks add ${best.toFixed(1)} luma where the flame's own animation moves ${noise.toFixed(1)} — that is not a spark, that is the fire`);
+
+  /* AND BIG ENOUGH TO SEE. One WORLD pixel is about one CSS pixel on the
+   * maintainer's phone (camera zoom 3 against device ratio 2.75), and an
+   * additive speck that size over a lit fireplace cannot be found even when it
+   * is genuinely drawn — measured, three times. */
+  const size = await page.evaluate(() => window.__mlAmbient.debug("embers").draw);
+  if (!size) console.log("size: no live spark to measure");
+  else {
+    console.log(`size: a spark draws ${size.dw}x${size.dh} world px, blend ${size.blend}`);
+    if (size.dw < 2 || size.dh < 2)
+      fail(`a spark is ${size.dw}x${size.dh} world px — about one CSS pixel on his phone, which is not visible`);
+  }
 }
 
 /* ---- COST ---- */
