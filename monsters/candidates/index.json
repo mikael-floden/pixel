@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T19:12:16+00:00",
+  "generated_at": "2026-09-09T19:14:13+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 89,
+  "count": 86,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -10939,516 +10939,132 @@
       "generated_at": "2026-09-09T19:12:14+00:00"
     },
     {
-      "id": "ant_lion",
-      "name": "Pitjaw",
-      "tier": "mid",
-      "lore": "It digs the pit and lies beneath the floor of it. The sand slides, and whatever stood on the slope goes down to the jaws.",
+      "id": "iron_rhino",
+      "name": "Ironhorn",
+      "tier": "boss",
+      "lore": "Siege engines were built to imitate it and none have matched it. When it charges, the wall is the softer thing.",
       "biome": [
         "light_soil",
-        "light_beach"
+        "grey_stone"
       ],
       "items": [],
       "size": [
-        88,
-        88
+        240,
+        240
       ],
       "template_id": "bear",
-      "scale": "standard",
-      "pixellab_id": "cadb92cf-6f75-4afd-abdb-bf958fc007a3",
+      "scale": "big",
+      "pixellab_id": "b26a5127-e201-493c-b7f6-7706d4b1adb4",
       "version": 1,
-      "sheet": "ant_lion/sheet.webp",
+      "sheet": "iron_rhino/sheet.webp",
       "rotations": {
-        "south": "ant_lion/rotations/south.webp",
-        "south-east": "ant_lion/rotations/south-east.webp",
-        "east": "ant_lion/rotations/east.webp",
-        "north-east": "ant_lion/rotations/north-east.webp",
-        "north": "ant_lion/rotations/north.webp",
-        "north-west": "ant_lion/rotations/north-west.webp",
-        "west": "ant_lion/rotations/west.webp",
-        "south-west": "ant_lion/rotations/south-west.webp"
+        "south": "iron_rhino/rotations/south.webp",
+        "south-east": "iron_rhino/rotations/south-east.webp",
+        "east": "iron_rhino/rotations/east.webp",
+        "north-east": "iron_rhino/rotations/north-east.webp",
+        "north": "iron_rhino/rotations/north.webp",
+        "north-west": "iron_rhino/rotations/north-west.webp",
+        "west": "iron_rhino/rotations/west.webp",
+        "south-west": "iron_rhino/rotations/south-west.webp"
       },
       "qa": {
         "status": "pass",
-        "min_run1": 0.715,
+        "min_run1": 0.595,
         "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.715,
-            "bbox": [
-              3,
-              5,
-              85,
-              83
-            ],
-            "fill": 0.826,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.82,
-            "bbox": [
-              5,
-              6,
-              86,
-              83
-            ],
-            "fill": 0.805,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.777,
-            "bbox": [
-              4,
-              9,
-              84,
-              84
-            ],
-            "fill": 0.775,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.737,
-            "bbox": [
-              7,
-              4,
-              83,
-              83
-            ],
-            "fill": 0.775,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.741,
-            "bbox": [
-              8,
-              11,
-              80,
-              81
-            ],
-            "fill": 0.651,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.761,
-            "bbox": [
-              5,
-              4,
-              81,
-              83
-            ],
-            "fill": 0.775,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.774,
-            "bbox": [
-              4,
-              9,
-              84,
-              84
-            ],
-            "fill": 0.775,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.822,
-            "bbox": [
-              2,
-              6,
-              83,
-              83
-            ],
-            "fill": 0.805,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "pending",
-      "notes": null,
-      "generated_at": "2026-09-09T18:38:03+00:00"
-    },
-    {
-      "id": "vampire_lord",
-      "name": "Nightthirst",
-      "tier": "evil",
-      "lore": "The manor on the ridge has had one master for three hundred years. He receives guests at dusk and none of them are seen leaving.",
-      "biome": [
-        "parquet_floor",
-        "grey_paving_stone"
-      ],
-      "items": [],
-      "size": [
-        112,
-        112
-      ],
-      "template_id": "mannequin",
-      "scale": "standard",
-      "pixellab_id": "398e1796-638c-43c9-b073-5701f54803e7",
-      "version": 1,
-      "sheet": "vampire_lord/sheet.webp",
-      "rotations": {
-        "south": "vampire_lord/rotations/south.webp",
-        "south-east": "vampire_lord/rotations/south-east.webp",
-        "east": "vampire_lord/rotations/east.webp",
-        "north-east": "vampire_lord/rotations/north-east.webp",
-        "north": "vampire_lord/rotations/north.webp",
-        "north-west": "vampire_lord/rotations/north-west.webp",
-        "west": "vampire_lord/rotations/west.webp",
-        "south-west": "vampire_lord/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.537,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.676,
-            "bbox": [
-              20,
-              5,
-              90,
-              106
-            ],
-            "fill": 0.564,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.758,
-            "bbox": [
-              23,
-              6,
-              82,
-              109
-            ],
-            "fill": 0.484,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.7,
-            "bbox": [
-              28,
-              6,
-              71,
-              107
-            ],
-            "fill": 0.346,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.593,
-            "bbox": [
-              24,
-              6,
-              81,
-              107
-            ],
-            "fill": 0.459,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.537,
-            "bbox": [
-              20,
-              6,
-              90,
-              105
-            ],
-            "fill": 0.552,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.588,
-            "bbox": [
-              28,
-              6,
-              88,
-              107
-            ],
-            "fill": 0.483,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.679,
-            "bbox": [
-              39,
-              6,
-              82,
-              107
-            ],
-            "fill": 0.346,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.766,
-            "bbox": [
-              29,
-              6,
-              87,
-              109
-            ],
-            "fill": 0.476,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "pending",
-      "notes": null,
-      "generated_at": "2026-09-09T18:43:07+00:00"
-    },
-    {
-      "id": "mountain_ram",
-      "name": "Cragram",
-      "tier": "mid",
-      "lore": "It holds the high ledge against anything that climbs. The horns have broken shields, and the mountain has never won.",
-      "biome": [
-        "grey_stone",
-        "snow"
-      ],
-      "items": [],
-      "size": [
-        112,
-        112
-      ],
-      "template_id": "horse",
-      "scale": "standard",
-      "pixellab_id": "b43be5e0-0c75-47c9-9b65-0ed0a9497864",
-      "version": 1,
-      "sheet": "mountain_ram/sheet.webp",
-      "rotations": {
-        "south": "mountain_ram/rotations/south.webp",
-        "south-east": "mountain_ram/rotations/south-east.webp",
-        "east": "mountain_ram/rotations/east.webp",
-        "north-east": "mountain_ram/rotations/north-east.webp",
-        "north": "mountain_ram/rotations/north.webp",
-        "north-west": "mountain_ram/rotations/north-west.webp",
-        "west": "mountain_ram/rotations/west.webp",
-        "south-west": "mountain_ram/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.706,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.706,
-            "bbox": [
-              9,
-              3,
-              102,
-              109
-            ],
-            "fill": 0.786,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.752,
-            "bbox": [
-              9,
-              3,
-              105,
-              106
-            ],
-            "fill": 0.788,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.759,
-            "bbox": [
-              7,
-              3,
-              102,
-              106
-            ],
-            "fill": 0.78,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.751,
-            "bbox": [
-              13,
-              3,
-              98,
-              109
-            ],
-            "fill": 0.718,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.797,
-            "bbox": [
-              10,
-              4,
-              105,
-              108
-            ],
-            "fill": 0.788,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.736,
+            "run1": 0.595,
             "bbox": [
               12,
-              3,
-              103,
-              109
+              26,
+              223,
+              219
             ],
-            "fill": 0.769,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.724,
-            "bbox": [
-              9,
-              3,
-              101,
-              109
-            ],
-            "fill": 0.777,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.791,
-            "bbox": [
-              6,
-              4,
-              101,
-              108
-            ],
-            "fill": 0.788,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "pending",
-      "notes": null,
-      "generated_at": "2026-09-09T19:05:29+00:00"
-    },
-    {
-      "id": "warthog",
-      "name": "Tuskrooter",
-      "tier": "mid",
-      "lore": "It roots up the fields at night and charges whatever comes to stop it. The tusks are why the fields stay rooted.",
-      "biome": [
-        "light_soil",
-        "dark_mud"
-      ],
-      "items": [],
-      "size": [
-        104,
-        104
-      ],
-      "template_id": "bear",
-      "scale": "standard",
-      "pixellab_id": "2244a19a-9bde-4468-8086-f435c05ab4f0",
-      "version": 1,
-      "sheet": "warthog/sheet.webp",
-      "rotations": {
-        "south": "warthog/rotations/south.webp",
-        "south-east": "warthog/rotations/south-east.webp",
-        "east": "warthog/rotations/east.webp",
-        "north-east": "warthog/rotations/north-east.webp",
-        "north": "warthog/rotations/north.webp",
-        "north-west": "warthog/rotations/north-west.webp",
-        "west": "warthog/rotations/west.webp",
-        "south-west": "warthog/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.679,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.679,
-            "bbox": [
-              10,
-              4,
-              96,
-              101
-            ],
-            "fill": 0.771,
+            "fill": 0.707,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.742,
+            "run1": 0.66,
             "bbox": [
-              6,
-              3,
-              94,
-              101
+              4,
+              24,
+              233,
+              215
             ],
-            "fill": 0.797,
+            "fill": 0.759,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.745,
+            "run1": 0.654,
             "bbox": [
-              13,
-              5,
-              98,
-              100
+              15,
+              18,
+              209,
+              221
+            ],
+            "fill": 0.684,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.643,
+            "bbox": [
+              55,
+              17,
+              189,
+              224
+            ],
+            "fill": 0.482,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.664,
+            "bbox": [
+              1,
+              24,
+              234,
+              218
+            ],
+            "fill": 0.785,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.644,
+            "bbox": [
+              52,
+              17,
+              180,
+              224
+            ],
+            "fill": 0.46,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.664,
+            "bbox": [
+              15,
+              19,
+              228,
+              221
             ],
             "fill": 0.747,
             "touches_edge": false
           },
-          "north": {
-            "run1": 0.748,
-            "bbox": [
-              18,
-              4,
-              91,
-              102
-            ],
-            "fill": 0.661,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.804,
-            "bbox": [
-              27,
-              5,
-              85,
-              101
-            ],
-            "fill": 0.515,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.761,
-            "bbox": [
-              3,
-              3,
-              101,
-              99
-            ],
-            "fill": 0.87,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.77,
-            "bbox": [
-              17,
-              4,
-              79,
-              101
-            ],
-            "fill": 0.556,
-            "touches_edge": false
-          },
           "south-west": {
-            "run1": 0.79,
+            "run1": 0.682,
             "bbox": [
-              2,
-              4,
-              100,
-              100
+              46,
+              26,
+              208,
+              218
             ],
-            "fill": 0.87,
+            "fill": 0.54,
             "touches_edge": false
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-09T19:12:16+00:00"
+      "generated_at": "2026-09-09T19:14:13+00:00"
     }
   ]
 }

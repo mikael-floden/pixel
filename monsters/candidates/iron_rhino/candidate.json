@@ -1,0 +1,141 @@
+{
+  "id": "iron_rhino",
+  "name": "Ironhorn",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Siege engines were built to imitate it and none have matched it. When it charges, the wall is the softer thing.",
+  "biome": [
+    "light_soil",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Colossal armored rhinoceros beast with realistic proportions, thick grey hide plated like riveted iron, a single massive curved horn of dark iron, a smaller horn behind it, small deep-set eyes, heavy pillar legs and three-toed feet.",
+  "size": [
+    240,
+    240
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "iron_rhino/rotations/south.webp",
+    "south-east": "iron_rhino/rotations/south-east.webp",
+    "east": "iron_rhino/rotations/east.webp",
+    "north-east": "iron_rhino/rotations/north-east.webp",
+    "north": "iron_rhino/rotations/north.webp",
+    "north-west": "iron_rhino/rotations/north-west.webp",
+    "west": "iron_rhino/rotations/west.webp",
+    "south-west": "iron_rhino/rotations/south-west.webp"
+  },
+  "sheet": "iron_rhino/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b26a5127-e201-493c-b7f6-7706d4b1adb4",
+  "seed": 1381829453,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:14:13+00:00",
+  "elapsed_s": 170.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.595,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.595,
+        "bbox": [
+          12,
+          26,
+          223,
+          219
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.66,
+        "bbox": [
+          4,
+          24,
+          233,
+          215
+        ],
+        "fill": 0.759,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.654,
+        "bbox": [
+          15,
+          18,
+          209,
+          221
+        ],
+        "fill": 0.684,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.643,
+        "bbox": [
+          55,
+          17,
+          189,
+          224
+        ],
+        "fill": 0.482,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.664,
+        "bbox": [
+          1,
+          24,
+          234,
+          218
+        ],
+        "fill": 0.785,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.644,
+        "bbox": [
+          52,
+          17,
+          180,
+          224
+        ],
+        "fill": 0.46,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.664,
+        "bbox": [
+          15,
+          19,
+          228,
+          221
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.682,
+        "bbox": [
+          46,
+          26,
+          208,
+          218
+        ],
+        "fill": 0.54,
+        "touches_edge": false
+      }
+    }
+  }
+}
