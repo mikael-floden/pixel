@@ -6419,6 +6419,7 @@ export class WorldScene extends Phaser.Scene {
           culled: !!mv.culled,
           artPending: !!mv.artPending,
           spriteVisible: mv.sprite.visible,
+          alpha: +mv.sprite.alpha.toFixed(3), // cutFade: a body above the cut mid-crossfade
           // Combat mirrors (verify-combat drives fights through these).
           x: mv.fx,
           y: mv.fy,
@@ -8605,11 +8606,13 @@ export class WorldScene extends Phaser.Scene {
       );
     };
     this.monsters.forEach((mv) => {
+      if (mv.culled) return; // a parked body (off-screen, above the cut, sealed in another room) wears no ring
       if (Math.abs(mv.fx - me.fx) > 400 || Math.abs(mv.fy - me.fy) > 400) return;
       ring(mv.fx, mv.fy, mv.radius, mv.elev, 0x51cf66, 0.95);
       ring(mv.fx, mv.fy, dodgePersonal(mv.radius, PLAYER_BODY_RADIUS), mv.elev, 0x51cf66, 0.35);
     });
     this.npcs.forEach((npc) => {
+      if (npc.culled) return;
       if (Math.abs(npc.fx - me.fx) > 400 || Math.abs(npc.fy - me.fy) > 400) return;
       ring(npc.fx, npc.fy, NPC_BODY_RADIUS, npc.elev, 0x51cf66, 0.95);
       ring(npc.fx, npc.fy, dodgePersonal(NPC_BODY_RADIUS, PLAYER_BODY_RADIUS), npc.elev, 0x51cf66, 0.35);
@@ -9656,6 +9659,7 @@ export class WorldScene extends Phaser.Scene {
       const halfW = Math.max(sp.displayWidth, 40) * 0.5;
       const cutA = this.cutFade(npc.surfLevel ?? 0, npc.fx, npc.fy);
       const on =
+        !this.inHiddenRoom(npc.fx, npc.fy, npc.surfLevel ?? 0) && // sealed in a room I am not in — see the monster loop
         npc.lx + halfW >= cam.x - MONSTER_CULL_SLACK &&
         npc.lx - halfW <= cam.right + MONSTER_CULL_SLACK &&
         npc.ly + 20 >= cam.y - MONSTER_CULL_SLACK &&
@@ -10929,8 +10933,17 @@ export class WorldScene extends Phaser.Scene {
           ? Math.max(mv.shadowH, sp.displayHeight * (1 - sp.originY))
           : mv.shadowH;
         const cutA = this.cutFade(m.elev ?? g.lvl, m.x, m.y);
+        // SEALED IN A ROOM I AM NOT IN: parked like an off-screen body. Its
+        // roof or mountain covers every pixel of it, yet it animated, cast a
+        // depth ray, synced a lit copy and wore a hitbox ring through the rock
+        // (maintainer 2026-09-09, on the mountain over the cave: "I can see
+        // monster hitboxes moving as if they are not culled ... what happens
+        // under me will still be processed"). Same memoised verdict the white
+        // outline uses; an entrance cell is not sealed, so a body walking out
+        // of the cave mouth un-parks under open sky.
         const onScreen =
           !mv.artPending && // parked until its strips land — see addMonster
+          !this.inHiddenRoom(m.x, m.y, m.elev ?? g.lvl) &&
           g.x + halfW >= vL &&
           g.x - halfW <= vR &&
           ay + down >= vT &&
@@ -13058,6 +13071,18 @@ export class WorldScene extends Phaser.Scene {
     // rather than by fading the copy: a faded copy composited to a·a fog
     // against the ground's a (see applyObjectLights).
     const sp0 = b.sprite;
+    // UNDER A ROOF THE CUT-AWAY HAS REMOVED the copy crosses with that roof's
+    // debris exactly as the furniture does (roofedFade): it draws ABOVE the
+    // darkness overlay and is cropped only by REAL occluders, so through the
+    // exit fade it rode on top of the returning roof — and at the entry flip
+    // it appeared over a roof still opaque (maintainer 2026-09-09, leaving
+    // the rabbit house: "the rabbits look like they are on top of the house").
+    const rf = this.underCutRoof(b.fx, b.fy, lvl) ? this.roofedFade() : 1;
+    if (rf <= 0.004) {
+      b.lit.setVisible(false);
+      b.fog?.setVisible(false);
+      return null;
+    }
     const fog = this.night!.depthFogAtFoot(sp0.x, sp0.y, Math.floor(lvl), b.fx / CELL_WU, b.fy / CELL_WU);
     const r = Math.min(255, Math.round(((baseTint >> 16) & 0xff) * Math.min(1, l[0])));
     const g = Math.min(255, Math.round(((baseTint >> 8) & 0xff) * Math.min(1, l[1])));
@@ -13083,7 +13108,7 @@ export class WorldScene extends Phaser.Scene {
       .setFlipX(slot ? false : sp.flipX)
       .setScale(sp.scaleX, sp.scaleY)
       .setDepth(litDepth(sp.depth))
-      .setAlpha(sp.alpha) // a body fading with the cut takes its copy with it
+      .setAlpha(sp.alpha * rf) // a body fading with the cut takes its copy with it
       .setTint((r << 16) | (g << 8) | bl);
     if (slot) {
       if (b.lit.isCropped) b.lit.setCrop();
@@ -13110,7 +13135,7 @@ export class WorldScene extends Phaser.Scene {
         .setFlipX(b.lit.flipX)
         .setScale(b.lit.scaleX, b.lit.scaleY)
         .setDepth(b.lit.depth)
-        .setAlpha(fa * sp.alpha)
+        .setAlpha(fa * sp.alpha * rf)
         .setTintFill((c(fog.r) << 16) | (c(fog.g) << 8) | c(fog.b));
       if (b.lit.isCropped) {
         const cc = (b.lit as unknown as { _crop: { width: number; height: number } })._crop;
@@ -14670,6 +14695,21 @@ export class WorldScene extends Phaser.Scene {
   private cutFade(z: number, fx: number, fy: number): number {
     if (!this.aboveCut(z, fx, fy)) return 1;
     return this.indoorDebris ? this.debrisAlpha() : 0;
+  }
+
+  /** IS THIS BODY UNDER A ROOF THE CUT-AWAY HAS REMOVED — on a deck-covered
+   *  cell whose deck is not drawn this frame? The lit copy's question (see
+   *  syncLitCopy); a body on the street in the covering cone is NOT under a
+   *  roof and keeps its copy whole. */
+  private underCutRoof(fx: number, fy: number, lvl: number): boolean {
+    const w = this.world;
+    if (!w || !this.indoorMask) return false;
+    const c = Math.floor(fx / CELL_WU);
+    const r = Math.floor(fy / CELL_WU);
+    if (c < 0 || r < 0 || c >= w.width || r >= w.height) return false;
+    const dk = this.deckIndex.get(r * w.width + c);
+    if (!dk || dk.deck.level <= lvl) return false;
+    return this.roofCutAwayAt(c, r, lvl);
   }
 
   /** IS THE ROOF OVER THIS CELL CUT AWAY RIGHT NOW? — the one question a piece
@@ -16735,6 +16775,17 @@ export class WorldScene extends Phaser.Scene {
         this.t3Blit(rt, bop, ax, ay, tint);
         stats.blits++;
         stats.boundaries++;
+        /* ...AND WHAT THE TRANSITION TILE WEARS: its fade (the maintainer's
+         * "fade on transition" switch) and its wall-foot band — the boundary
+         * replaced the cell's own ops, so these are asked for separately. IN
+         * THIS BRANCH: it once sat in the other one, behind a `useBoundary`
+         * test that branch can never see true, so no transition tile on the
+         * ground ever wore either (maintainer 2026-09-09, the wall foot
+         * "can't be seen when water is part of a transition tile"). */
+        for (const op of tex.overlayOps(cell)) {
+          this.t3Blit(rt, op, ax, ay, tint);
+          stats.blits++;
+        }
       } else {
         for (const op of ops ?? []) {
           this.t3Blit(rt, op, ax, ay, tint);
@@ -16743,15 +16794,6 @@ export class WorldScene extends Phaser.Scene {
         if (bop) {
           this.t3Blit(rt, bop, ax, ay, tint);
           stats.boundaries++;
-          /* ...AND WHAT THE TRANSITION TILE WEARS: its fade (the maintainer's
-           * "fade on transition" switch) and its wall-foot band — the boundary
-           * replaced the cell's own ops, so these are asked for separately. */
-          if (useBoundary) {
-            for (const op of tex.overlayOps(cell)) {
-              this.t3Blit(rt, op, ax, ay, tint);
-              stats.blits++;
-            }
-          }
         }
       }
     }

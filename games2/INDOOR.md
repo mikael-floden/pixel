@@ -198,11 +198,25 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
       silhouette, drop), parked at ≤0.004 as before. A binary `aboveCut`
       hid the monster on the flip frame, before the mountain top had begun
       to dissolve (maintainer 2026-09-09: "monsters still pop").
+    - **A LIT COPY UNDER THE CUT ROOF CROSSES WITH THE ROOF** (`underCutRoof`
+      → `roofedFade`, syncLitCopy): the copy draws above the darkness overlay
+      and only REAL occluders crop it, so through the exit fade the rabbits
+      in the house rode on top of the returning roof, and at the entry flip
+      they appeared over a roof still opaque (maintainer 2026-09-09). Keyed
+      on a deck-covered cell whose deck is cut — a street body in the cone
+      keeps its copy whole.
     - **The chrome fades on the GRADE**: a body outside my room keeps its hp
       bar/name/Lv and a remote player their name tag and bubble at alpha
       `1 − indoorGrade()` — darkening with the body under them, gone when
       the grade lands. A tag that blinks off a frame after the sill is its
       own pop.
+  - **A body SEALED IN A ROOM I AM NOT IN IS PARKED** (monsters, NPCs: the
+    same cull as off-screen, on `inHiddenRoom`): its roof or mountain covers
+    every pixel, yet it animated, cast a depth ray, synced a lit copy and
+    wore a hitbox ring through the rock (maintainer 2026-09-09, on the
+    mountain over the cave). The collision overlay skips parked bodies. An
+    entrance cell is not sealed, so a body leaving the cave mouth un-parks
+    under open sky; entering its room un-parks it under the opaque debris.
   - **Anything drawn ABOVE the darkness overlay must gate itself** — zero
     ambient can't touch depth 900_001+. `indoorOutside(fx,fy,z)` is the
     predicate (NOT a visibility test; bodies are always drawn): name labels

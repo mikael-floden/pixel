@@ -364,6 +364,12 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   re-issued here, at its own paste point, after the cap and the boundary,
   only on a column drawn at full height. Probe: `__ml.occDump().occluders`
   keys — `t3d:` are fades, `t3fb:` foot bands.
+  THE GROUND PASS HAS THE SAME DUTY ON A TRANSITION TILE: the boundary blit
+  REPLACES the cell's own ops, so the fade and the foot band are drawn from
+  `overlayOps` in the boundary branch itself — until 2026-09-09 that draw sat
+  in the other branch behind a test it could never pass, so no transition
+  tile on the ground wore either (maintainer: the wall foot "can't be seen
+  when water is part of a transition tile").
 - **EVERY FIELD ART GOES THROUGH `plate()`, INCLUDING A PUBLISHED OR CLEAN
   ONE** (`tiles3draw` opsForCell). Its last branch drew `op.key` — the RAW FILE
   — for any field art that was not conform, not `topOnly` and not a liquid

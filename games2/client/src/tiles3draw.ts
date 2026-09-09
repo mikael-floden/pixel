@@ -633,31 +633,36 @@ export function liquidDiamond(rgb: readonly [number, number, number], sheets: Pa
   return out;
 }
 
-/** HOW FAR THE WALL'S FOOT REACHES ONTO THE GROUND, in texels measured down
+/** HOW FAR THE WALL'S FOOT REACHES INTO THE WATER, in texels measured down
  *  the screen from where the face ends, and how it lands. The maintainer chose
  *  the look off test images (2026-09-09): "it kinda looks like the wall is
  *  extended down into the water ... please continue", then "I want the edge to
  *  be more water so you clearly see this is the line where the wall starts to
- *  go down under the water". So:
- *  - ON LAND the face's own colour continues at full strength for FOOT_SOLID
- *    rows, then fades in flat steps (pixel art at 2-3 screen px per texel: a
- *    smooth ramp dithers to mush).
- *  - IN WATER a WATERLINE first — one bright crest texel and one lighter one,
- *    the liquid's own top colour lifted toward white — and below it the wall
- *    seen THROUGH the water: its colour pulled toward the water's, fading with
- *    depth.
+ *  go down under the water". So, IN WATER ONLY: a WATERLINE first — one
+ *  bright crest texel and one lighter one, the liquid's own top colour lifted
+ *  toward white — and below it the wall seen THROUGH the water: its colour
+ *  pulled toward the water's, fading with depth.
+ *  NOT ON LAND (maintainer 2026-09-09, five circles on one frame: "you have
+ *  destroyed the game"): the land variant — the face's darkened colour
+ *  continuing FOOT_SOLID rows and fading — read as a dark smear under every
+ *  step, sill and cliff foot. A liquid cell is the only ground that wears a
+ *  band; land keeps the hard foot line.
  *  The band starts FOOT_UNDER rows ABOVE where the face is computed to end and
  *  the face sprite covers that overlap: his zoom found a 1 px line of water
  *  between face and band, i.e. the face ends a row earlier than WALL - pitch
  *  says on his device, and overlapping under a sprite costs nothing while a
- *  gap is what he sees. The colour is the wall's palette wall, darkened a
- *  little. What he ASKED for was a transition tile at the foot, the way the
- *  overhang eases the top; this is the games-side stand-in and the look he
- *  approved. */
+ *  gap is what he sees. THE OVERLAP ROWS WEAR WHAT SITS BELOW THEM — the
+ *  crest in water, the face's own undarkened wall colour on land — never the
+ *  darkened band colour: the face sprite and the band meet through two
+ *  different draw paths at a fractional device scale, so on his phone the
+ *  face still rounds a device pixel short at some cells, and a darkened
+ *  overlap row there read as a 1 px dark seam (his red circles, 2026-09-09);
+ *  a crest row a pixel taller reads as nothing. The colour below is the
+ *  wall's palette wall, darkened a little. What he ASKED for was a transition
+ *  tile at the foot, the way the overhang eases the top; this is the
+ *  games-side stand-in and the look he approved. */
 export const FOOT_ROWS = 14;
 const FOOT_UNDER = 2;
-const FOOT_SOLID = 6;
-const FOOT_TAIL = [0.8, 0.65, 0.5, 0.35, 0.2, 0.1];
 const FOOT_DARKEN = 0.82;
 /** Under water: crest, second crest, then the submerged wall's alpha by depth. */
 const FOOT_CREST = [0.5, 0.22]; // how far each crest row is lifted toward white
@@ -674,13 +679,12 @@ const mix = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
  *  storey up (`stackFrom`: frontLow + 1) at `pitch` px per storey, as 64x64
  *  review art whose wall band hangs WALL rows under its diamond's lower edges —
  *  so the face's last drawn row is about `WALL - pitch` rows below the edge
- *  this cell shares with it. `water` is the liquid's top colour when this cell
- *  is a liquid, else null. */
+ *  this cell shares with it. `water` is the liquid's top colour. */
 export function footBand(
   walls: string,
   wall: readonly [number, number, number],
   pitch: number,
-  water: readonly [number, number, number] | null,
+  water: readonly [number, number, number],
 ): Pixels {
   const out = newPixels(TILE, PLATE_H);
   const centres: [number, number][] = [];
@@ -722,15 +726,10 @@ export function footBand(
       }
       if (covered || d >= FOOT_ROWS) continue;
       const row = Math.floor(d);
-      if (!water) {
-        // Land: the wall continues, then fades.
-        if (row < FOOT_UNDER + FOOT_SOLID) put(px, py, wr, wg, wb, 1);
-        else if (row - FOOT_UNDER - FOOT_SOLID < FOOT_TAIL.length) put(px, py, wr, wg, wb, FOOT_TAIL[row - FOOT_UNDER - FOOT_SOLID]);
-        continue;
-      }
-      // Water: the overlap under the face, the crest, then the sunk wall.
+      // The overlap under the face (crest-coloured), the crest, then the sunk wall.
       if (row < FOOT_UNDER) {
-        put(px, py, wr, wg, wb, 1);
+        const k = FOOT_CREST[0];
+        put(px, py, mix(water[0], 255, k), mix(water[1], 255, k), mix(water[2], 255, k), 1);
       } else if (row - FOOT_UNDER < FOOT_CREST.length) {
         const k = FOOT_CREST[row - FOOT_UNDER];
         put(px, py, mix(water[0], 255, k), mix(water[1], 255, k), mix(water[2], 255, k), 1);
@@ -980,12 +979,13 @@ export function cellOps(cell: Tiles3Cell): Tiles3Blit[] {
   return hit;
 }
 
-/** The wall-foot band(s) a cell wears, drawn last in its slot — over its
- *  surface, its fade and (on a wall cell) its cap — so the higher neighbour's
- *  face reads as standing IN this ground rather than cut off by it. */
+/** The wall-foot band(s) a LIQUID cell wears, drawn last in its slot — over
+ *  its surface and its fade — so the higher neighbour's face reads as going
+ *  down under the water rather than cut off by it. Land wears none (see
+ *  `footBand`). */
 function pushFoot(cell: Tiles3Cell, ops: Tiles3Blit[]): void {
   const f = cell.foot;
-  if (!f) return;
+  if (!f || !LIQUID_SET.has(cell.ground)) return;
   const walls = (["ul", "ur", "uu"] as const).filter((d) => f[d]);
   if (!walls.length) return;
   // One band, one material: the first wall's, in that order (a corner where the
@@ -1918,13 +1918,10 @@ export class Tiles3Textures {
    *  IF THE BAND EVER BECOMES VISIBLE — a renderer that draws a flat cell's wall
    *  — this must go back to `palette.wall` and the leak fixed properly. */
   /** Paint a wall-foot band on first use — see `footBand`. The key carries the
-   *  walls, the wall's side material and this cell's own ground (a liquid
-   *  ground gets the waterline). */
+   *  walls, the wall's side material and this cell's own (liquid) ground. */
   private ensureFoot(key: string): void {
     const [walls, side, ground] = key.slice("t3fb:".length).split("|");
-    this.ensure(key, () =>
-      footBand(walls, this.wallPaletteRGB(side), this.o.pitch ?? 16, LIQUID_SET.has(ground) ? this.topRGB(ground) : null),
-    );
+    this.ensure(key, () => footBand(walls, this.wallPaletteRGB(side), this.o.pitch ?? 16, this.topRGB(ground)));
   }
 
   /** The ground's WALL palette colour — what its x-over-y face is drawn in. */
