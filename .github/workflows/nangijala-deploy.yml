@@ -269,7 +269,7 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --port 8080 \
-            --cpu 1 --memory 512Mi \
+            --cpu 1 --memory 1Gi \
             --min-instances 0 \
             --max-instances 1 \
             --no-cpu-throttling \

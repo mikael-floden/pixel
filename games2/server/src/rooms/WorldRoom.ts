@@ -384,7 +384,7 @@ export class WorldRoom extends Room<WorldState> {
     const stamp = hitboxStamp();
     if (!stamp || stamp === this.sceneryHbStamp || !this.worldName) return;
     this.sceneryHbStamp = stamp;
-    const w = await loadWorldGrid(this.worldName);
+    const w = await loadWorldGrid(this.worldName, stamp);
     if (!w.terrain) return; // open world, or the reload failed — keep what works
     this.terrain = w.terrain;
     console.log(`[scenery] hitboxes changed — restamped "${this.worldName}" collision`);
@@ -2968,6 +2968,7 @@ export async function readWorldDoc(name: string, file: string): Promise<unknown 
  * worldRootFor/readWorldDoc/loadWorldGrid are exported for the same reason —
  * server/test/worldserve.test.ts proves the REAL server path, not a copy. */
 export function resetWorldSourceCaches(): void {
+  worldGridCache.clear();
   worldRootCache.clear();
   stagingCache.clear();
 }
@@ -2995,7 +2996,24 @@ function hitboxStamp(): string {
  * `parseWorld` dispatches on the doc's own schema.
  * Async since the staging path (2026-08-15): a world absent from disk may
  * stream from the repo — see readWorldDoc. */
-export async function loadWorldGrid(name: string): Promise<LoadedWorld> {
+/** ONE GRID PER WORLD PER PROCESS, shared by every zone room (spec/ZONES.md).
+ *  A room never writes the grid; the scenery restamp REPLACES it through a
+ *  fresh load keyed by the hitbox stamp, so every room adopts the same new
+ *  grid. Measured: 16 warm rooms each building their own grid was 850 MB rss
+ *  on a 512 MiB Cloud Run instance. */
+const worldGridCache = new Map<string, Promise<LoadedWorld>>();
+export function loadWorldGrid(name: string, stamp = hitboxStamp()): Promise<LoadedWorld> {
+  const key = `${name}@${stamp ?? ""}`;
+  let p = worldGridCache.get(key);
+  if (!p) {
+    p = loadWorldGridUncached(name);
+    worldGridCache.set(key, p);
+    // A failed load must not be cached as the world forever.
+    p.then((w) => { if (!w.terrain) worldGridCache.delete(key); }).catch(() => worldGridCache.delete(key));
+  }
+  return p;
+}
+async function loadWorldGridUncached(name: string): Promise<LoadedWorld> {
   const open: LoadedWorld = { terrain: null, spawn: null, worldW: WORLD_WIDTH, worldH: WORLD_HEIGHT };
   try {
     const doc = await readWorldDoc(name, "world.json");

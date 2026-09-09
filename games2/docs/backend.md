@@ -167,11 +167,31 @@ grid, all bots packed within a few cells in one zone (the crowded-room case):
   listen (16 rooms of the_game in 1.7 s), so the race has no window in play
   and no join waits for a terrain load. Gate: the duplicate test in
   `zones.test.ts`.
-- Idle cost with 16 warm rooms: ~20% of a core (the monster brains, spread
-  over rooms — zone 6 with 63 monsters ticks 2 ms p50) and 850 MB rss
-  (each room builds its own terrain grid and stamps scenery; sharing one
-  grid per world is the obvious cut). Both are the next things to measure,
-  not yet done.
+- **ONE TERRAIN GRID PER WORLD PER PROCESS** (`loadWorldGrid` caches by
+  world + hitbox stamp; the scenery restamp loads a fresh one under the new
+  stamp and every room adopts it). Each warm room building its own grid and
+  stamping 1,335 scenery pieces was 850 MB rss for 16 rooms — over the 512
+  MiB Cloud Run instance; shared, 400 MB (dev, tsx) and the 16 rooms warm in
+  0.9 s. The instance is 1 GiB now (deploy workflow) for headroom.
+- Idle cost with 16 warm rooms: ~20% of a core, the monster brains spread
+  over rooms (zone 6 with 63 monsters ticks 2 ms p50). A room with no
+  clients could tick its brains slower; not built.
+- **A JOIN BURST IS A LIMIT OF ITS OWN**: 400 bots joining one zone within
+  10 s from two processes on a box already at 100% CPU expired 65 seat
+  reservations ("seat reservation expired"), 100 joins failed, and every
+  failed joinOrCreate created another room of the zone (50+ duplicates,
+  each locked and handing its arrivals on — the guard held, rss reached
+  1.5 GB). 200 joins in 10 s on a quiet core were clean. Hold the join rate
+  near 20/s per core until reservations are measured on the real instance.
+- Border crossings at 300 bots straddling x = 99 (two processes): 341
+  hand-offs in 60 s, 0 stuck, 0 decode errors, ack p50 101 / p95 151 ms,
+  the busiest room (zone 6, 62 monsters) at tick p95 8.8 ms, server ~100%
+  of a core with 17 rooms live — the crossings themselves are cheap; the
+  ghost bands are what the border rooms carry (up to 228 ghosts in zone
+  10).
+- Fights at 200 packed bots (`--fight`, everyone engaging the nearest
+  monster): ack p50 101 / p95 104 ms, tick p95 12 ms, 65% of a core, 0
+  stuck — combat adds nothing visible over walking at this scale.
 - The ceiling for a packed room on one core is therefore around 200-250
   clients before ack latency moves; the cost is the per-client patch
   encoding, not the tick. Border crossings and fights at scale: not yet

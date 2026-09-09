@@ -7,6 +7,8 @@ the Colyseus WebSocket world on one port. Domain: **nangijala.online**.
 
 - **Scales to zero** — an instance only exists while someone is playing.
 - **Managed HTTPS + domain mapping** — no VM, no Caddy to run.
+- **`--memory 1Gi`** — 16 warm zone rooms on one shared terrain grid are
+  ~400 MB in dev; 512 MiB left no headroom (see `games2/docs/backend.md`).
 - **`--max-instances 1`** — one instance *is* the single shared world, so the
   "instances don't share state" caveat doesn't apply until we deliberately
   scale out (which needs Redis anyway — see *Scaling later*).
@@ -51,7 +53,7 @@ IMAGE=europe-north1-docker.pkg.dev/$PROJECT_ID/nangijala/nangijala
 docker build -f games2/Dockerfile -t $IMAGE:manual .   # from repo root
 docker push $IMAGE:manual
 gcloud run deploy nangijala --image $IMAGE:manual --region europe-north1 \
-  --allow-unauthenticated --port 8080 --min-instances 0 --max-instances 1 \
+  --allow-unauthenticated --port 8080 --min-instances 0 --max-instances 1 --memory 1Gi \
   --no-cpu-throttling --session-affinity --timeout 3600
 ```
 

@@ -79,7 +79,7 @@ async function bot(i) {
   };
   try {
     room = await client.joinOrCreate("world", { name, character: "default_boy", world: WORLD, zone: spawnZone, ...(NOINTEREST ? { interestRadius: 0 } : {}) });
-  } catch (e) { joinFails++; return; }
+  } catch (e) { joinFails++; if (joinFails <= 3) console.error("join failed:", String(e?.message ?? e).slice(0, 120)); return; }
   bind(room, true);
   // Park near the border: x within ±6 cells, y random over the middle band.
   const x = PACK ? (PACK[0] + Math.random() * 6 - 3) * CELL : (BORDER + (Math.random() * 12 - 6)) * CELL;
