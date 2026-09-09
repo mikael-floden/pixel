@@ -1918,7 +1918,7 @@ input[type="range"] { accent-color: var(--accent); }
 .cand-entry { display: block; margin: 10px 0 4px; padding: 10px 14px; border: 1px solid var(--accent); border-radius: 10px; background: var(--accent-soft); color: var(--ink); font-weight: 600; text-decoration: none; }
 .cand-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 .cand-card { text-decoration: none; color: inherit; }
-.cand-thumb { display: flex; align-items: flex-end; justify-content: center; height: 150px; border-radius: 8px; overflow: hidden; margin-bottom: 6px; }
+.cand-thumb { display: flex; align-items: center; justify-content: center; height: 150px; border-radius: 8px; overflow: hidden; margin-bottom: 6px; }
 .cand-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; image-rendering: pixelated; }
 .cand-marks { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; min-height: 0; }
 .cand-judge { margin: 8px 0 12px; }
