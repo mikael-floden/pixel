@@ -1,0 +1,141 @@
+{
+  "id": "cobra",
+  "name": "Hoodfang",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It sways so you will watch the hood. The bite comes from where you were not watching.",
+  "biome": [
+    "light_soil",
+    "grass"
+  ],
+  "items": [],
+  "prompt": "Fantasy giant cobra coiled tightly on the ground with its upper body raised, black and gold scales, a wide flared hood marked with a pale eye pattern, glowing green eyes, and long dripping fangs.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cobra/rotations/south.webp",
+    "south-east": "cobra/rotations/south-east.webp",
+    "east": "cobra/rotations/east.webp",
+    "north-east": "cobra/rotations/north-east.webp",
+    "north": "cobra/rotations/north.webp",
+    "north-west": "cobra/rotations/north-west.webp",
+    "west": "cobra/rotations/west.webp",
+    "south-west": "cobra/rotations/south-west.webp"
+  },
+  "sheet": "cobra/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "45be20e3-f240-458f-ab35-811670257508",
+  "seed": 38500265,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:39:13+00:00",
+  "elapsed_s": 254.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.744,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.784,
+        "bbox": [
+          8,
+          6,
+          79,
+          83
+        ],
+        "fill": 0.706,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.821,
+        "bbox": [
+          11,
+          4,
+          74,
+          85
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.81,
+        "bbox": [
+          14,
+          4,
+          77,
+          85
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.746,
+        "bbox": [
+          9,
+          8,
+          79,
+          82
+        ],
+        "fill": 0.669,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.803,
+        "bbox": [
+          11,
+          5,
+          77,
+          84
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.752,
+        "bbox": [
+          11,
+          4,
+          73,
+          84
+        ],
+        "fill": 0.64,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.744,
+        "bbox": [
+          13,
+          4,
+          78,
+          84
+        ],
+        "fill": 0.671,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.803,
+        "bbox": [
+          10,
+          5,
+          77,
+          84
+        ],
+        "fill": 0.683,
+        "touches_edge": false
+      }
+    }
+  }
+}

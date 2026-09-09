@@ -1,0 +1,141 @@
+{
+  "id": "dread_gazer",
+  "name": "Gazer",
+  "tier": "boss",
+  "scale": "standard",
+  "lore": "An eye for every direction and a hatred for every eye. It cannot bear to be seen, and cannot stop seeing.",
+  "biome": [
+    "black_rock",
+    "grey_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy beholder-like eye tyrant, a floating round body of purple leathery hide with one huge central eye, a wide fanged mouth beneath it, and a crown of short thick eyestalks curled close, each ending in a smaller glowing eye.",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "dread_gazer/rotations/south.webp",
+    "south-east": "dread_gazer/rotations/south-east.webp",
+    "east": "dread_gazer/rotations/east.webp",
+    "north-east": "dread_gazer/rotations/north-east.webp",
+    "north": "dread_gazer/rotations/north.webp",
+    "north-west": "dread_gazer/rotations/north-west.webp",
+    "west": "dread_gazer/rotations/west.webp",
+    "south-west": "dread_gazer/rotations/south-west.webp"
+  },
+  "sheet": "dread_gazer/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c02104e7-fc53-461f-8e26-38a4c9206556",
+  "seed": 115025413,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:39:19+00:00",
+  "elapsed_s": 169.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.697,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.744,
+        "bbox": [
+          10,
+          9,
+          118,
+          119
+        ],
+        "fill": 0.725,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.731,
+        "bbox": [
+          27,
+          7,
+          97,
+          120
+        ],
+        "fill": 0.483,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.739,
+        "bbox": [
+          29,
+          7,
+          99,
+          120
+        ],
+        "fill": 0.483,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.697,
+        "bbox": [
+          10,
+          12,
+          118,
+          118
+        ],
+        "fill": 0.699,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.789,
+        "bbox": [
+          23,
+          8,
+          111,
+          120
+        ],
+        "fill": 0.602,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.714,
+        "bbox": [
+          17,
+          10,
+          105,
+          119
+        ],
+        "fill": 0.585,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.714,
+        "bbox": [
+          21,
+          10,
+          110,
+          119
+        ],
+        "fill": 0.592,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.785,
+        "bbox": [
+          17,
+          8,
+          104,
+          120
+        ],
+        "fill": 0.595,
+        "touches_edge": false
+      }
+    }
+  }
+}

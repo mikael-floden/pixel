@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:38:42+00:00",
+  "generated_at": "2026-09-09T18:39:19+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 46,
+  "count": 48,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -5815,6 +5815,134 @@
       "generated_at": "2026-09-09T18:36:29+00:00"
     },
     {
+      "id": "cobra",
+      "name": "Hoodfang",
+      "tier": "mid",
+      "lore": "It sways so you will watch the hood. The bite comes from where you were not watching.",
+      "biome": [
+        "light_soil",
+        "grass"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "45be20e3-f240-458f-ab35-811670257508",
+      "version": 1,
+      "sheet": "cobra/sheet.webp",
+      "rotations": {
+        "south": "cobra/rotations/south.webp",
+        "south-east": "cobra/rotations/south-east.webp",
+        "east": "cobra/rotations/east.webp",
+        "north-east": "cobra/rotations/north-east.webp",
+        "north": "cobra/rotations/north.webp",
+        "north-west": "cobra/rotations/north-west.webp",
+        "west": "cobra/rotations/west.webp",
+        "south-west": "cobra/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.744,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.784,
+            "bbox": [
+              8,
+              6,
+              79,
+              83
+            ],
+            "fill": 0.706,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.821,
+            "bbox": [
+              11,
+              4,
+              74,
+              85
+            ],
+            "fill": 0.659,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.81,
+            "bbox": [
+              14,
+              4,
+              77,
+              85
+            ],
+            "fill": 0.659,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.746,
+            "bbox": [
+              9,
+              8,
+              79,
+              82
+            ],
+            "fill": 0.669,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.803,
+            "bbox": [
+              11,
+              5,
+              77,
+              84
+            ],
+            "fill": 0.673,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.752,
+            "bbox": [
+              11,
+              4,
+              73,
+              84
+            ],
+            "fill": 0.64,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.744,
+            "bbox": [
+              13,
+              4,
+              78,
+              84
+            ],
+            "fill": 0.671,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.803,
+            "bbox": [
+              10,
+              5,
+              77,
+              84
+            ],
+            "fill": 0.683,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:39:13+00:00"
+    },
+    {
       "id": "fox_spirit",
       "name": "Foxfire",
       "tier": "mid",
@@ -5941,6 +6069,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:38:42+00:00"
+    },
+    {
+      "id": "dread_gazer",
+      "name": "Gazer",
+      "tier": "boss",
+      "lore": "An eye for every direction and a hatred for every eye. It cannot bear to be seen, and cannot stop seeing.",
+      "biome": [
+        "black_rock",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "c02104e7-fc53-461f-8e26-38a4c9206556",
+      "version": 1,
+      "sheet": "dread_gazer/sheet.webp",
+      "rotations": {
+        "south": "dread_gazer/rotations/south.webp",
+        "south-east": "dread_gazer/rotations/south-east.webp",
+        "east": "dread_gazer/rotations/east.webp",
+        "north-east": "dread_gazer/rotations/north-east.webp",
+        "north": "dread_gazer/rotations/north.webp",
+        "north-west": "dread_gazer/rotations/north-west.webp",
+        "west": "dread_gazer/rotations/west.webp",
+        "south-west": "dread_gazer/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.697,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.744,
+            "bbox": [
+              10,
+              9,
+              118,
+              119
+            ],
+            "fill": 0.725,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.731,
+            "bbox": [
+              27,
+              7,
+              97,
+              120
+            ],
+            "fill": 0.483,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.739,
+            "bbox": [
+              29,
+              7,
+              99,
+              120
+            ],
+            "fill": 0.483,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.697,
+            "bbox": [
+              10,
+              12,
+              118,
+              118
+            ],
+            "fill": 0.699,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.789,
+            "bbox": [
+              23,
+              8,
+              111,
+              120
+            ],
+            "fill": 0.602,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.714,
+            "bbox": [
+              17,
+              10,
+              105,
+              119
+            ],
+            "fill": 0.585,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.714,
+            "bbox": [
+              21,
+              10,
+              110,
+              119
+            ],
+            "fill": 0.592,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.785,
+            "bbox": [
+              17,
+              8,
+              104,
+              120
+            ],
+            "fill": 0.595,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:39:19+00:00"
     }
   ]
 }
