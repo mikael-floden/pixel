@@ -1330,6 +1330,27 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   "Option 2B": `WALK_CLIMB = 0.5` (no walking up a full 1-level ledge); a
   timed **jump** (`JUMP_CLIMB = 1`, Space) climbs it. `stepMovement` resolves
   axis-separated (wall-slide), scaled by the current surface speed.
+- **A FOOTPRINT BELONGS TO THE FLOOR ITS PIECE STANDS ON, AND SO DOES A
+  BODY** (`SceneryFootprints.lvl`, `FOOTPRINT_LEVEL_SLACK` 1.5; `nearBodies`
+  in WorldScene). Position is flat (x, y) and a cave shares its x/y range with
+  the mountain over it, so the cave's braziers and crystals — stamped with no
+  level — stopped a body walking the cave LID 24 levels up, and the cave's
+  monsters deflected its input through the rock (maintainer 2026-09-09: "as
+  if the player is walking around things that doesn't exist"). Every query
+  that knows the body's surface level passes it — the lateral probes
+  (`makeSideBlocked`), `canEnter` through `makeBlocked`, the glide contact
+  normal, `unstickFromSolids`, the stall detectors via `walkHeading`'s
+  `fromElev`, the follower's openness probe, the client's dodge/standoff body
+  list — and skips footprints and bodies more than the slack away; the nav
+  bake and `spawnCellOk` ask at the cell's BASE level (the nav layer is the
+  base surface); a caller without a level keeps the old answer. `canEnterElev`
+  needed nothing: a body above a deck never reaches the base candidate.
+  Measured on the_game: 1,291 footprints, 101 under a deck two or more levels
+  above their floor; replayed at 267.5,184.5 on the lid, left/right/down-left
+  moved 11-15 wu in 2 s with 113-117 stalled ticks before, 249 wu and 0 after
+  (`scripts/_tmp-lidsim.mts`-style: the real shared tick, no browser). KNOWN
+  GAP: a piece placed ON a deck reads the base under it (none in the_game).
+  Gate: the floor test in `server/test/footprint.test.ts`.
 - **Steer assist** (`shared/steerAssist`): running DIRECT input (WASD/HUD
   stick) into a SOLID PROP dead-stops even when the player obviously meant to
   pass beside it. Deliberately NOT navigation: on a real stall, inspect ONLY

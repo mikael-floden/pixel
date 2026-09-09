@@ -16,6 +16,7 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   stampSceneryCollision,
+  FOOTPRINT_LEVEL_SLACK,
   sceneryDrawnPx,
   rectGroundRot,
   footprintsInCells,
@@ -10482,12 +10483,12 @@ export class WorldScene extends Phaser.Scene {
           let speed = 1;
           if (this.terrain) {
             // Mirror the server exactly: unstick before integrating.
-            const u = unstickFromSolids(this.terrain, rx, ry, 80 * sdt);
+            const u = unstickFromSolids(this.terrain, rx, ry, 80 * sdt, undefined, predElev);
             rx = u.x;
             ry = u.y;
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             blocked = makeBlockedElev(this.terrain, ctx, () => predElev);
-            sideBlocked = makeSideBlocked(this.terrain, ctx); // corner probes: solids only
+            sideBlocked = makeSideBlocked(this.terrain, ctx, () => predElev); // corner probes: solids only
             // THE SAME ELEVATION-AWARE SURFACE THE SERVER USES. On a deck the
             // feet are on the deck's material, not the water it spans — and
             // prediction must ask the identical question or the two disagree
@@ -12063,8 +12064,8 @@ export class WorldScene extends Phaser.Scene {
      * Its own memo: the two paths must not share a commitment. */
     if (this.terrain && !this.keysActive && (ax !== 0 || ay !== 0)) {
       const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
-      if (me && bodyStalled(this.terrain, me.fx, me.fy, ax, ay)) {
-        const sl = slideAlong(this.terrain, me.fx, me.fy, ax, ay, this.tapSlide);
+      if (me && bodyStalled(this.terrain, me.fx, me.fy, ax, ay, me.surfLevel)) {
+        const sl = slideAlong(this.terrain, me.fx, me.fy, ax, ay, this.tapSlide, me.surfLevel);
         if (sl) {
           ax = sl.ax;
           ay = sl.ay;
@@ -12100,7 +12101,7 @@ export class WorldScene extends Phaser.Scene {
                 me.fx, me.fy, hax, hay, false, dt,
                 makeBlockedElev(this.terrain!, walk, () => me.surfLevel ?? 0),
                 1, true, this.worldW, this.worldH,
-                makeSideBlocked(this.terrain!, walk),
+                makeSideBlocked(this.terrain!, walk, () => me.surfLevel ?? 0),
               );
               return Math.hypot(r.x - me.fx, r.y - me.fy) > WALK_SPEED * dt * 0.35;
             }
@@ -12652,12 +12653,20 @@ export class WorldScene extends Phaser.Scene {
    * not the old fixed 48 — a mammoth deflects from ~4× a poring's distance. */
   private nearBodies(fx: number, fy: number): Array<{ id: string; x: number; y: number; r: number }> {
     const near: Array<{ id: string; x: number; y: number; r: number }> = [];
+    /* ON MY FLOOR ONLY. Position is flat (x, y); a monster roaming the cave
+     * under the mountain I stand on shares my x/y range and used to deflect my
+     * input through the rock (maintainer 2026-09-09, on the cave lid: "as if
+     * the player is walking around things that doesn't exist"). The surface
+     * level is what tells the two floors apart — same slack as a footprint's. */
+    const mine = this.room?.state?.players?.get(this.room.sessionId)?.elev;
+    const sameFloor = (lvl: number | undefined) =>
+      mine === undefined || lvl === undefined || Math.abs(lvl - mine) <= FOOTPRINT_LEVEL_SLACK;
     this.monsters.forEach((mv, id) => {
-      if (Math.abs(mv.fx - fx) < 140 && Math.abs(mv.fy - fy) < 140)
+      if (Math.abs(mv.fx - fx) < 140 && Math.abs(mv.fy - fy) < 140 && sameFloor(mv.surfLevel))
         near.push({ id, x: mv.fx, y: mv.fy, r: mv.radius });
     });
     this.npcs.forEach((npc, id) => {
-      if (Math.abs(npc.fx - fx) < 140 && Math.abs(npc.fy - fy) < 140)
+      if (Math.abs(npc.fx - fx) < 140 && Math.abs(npc.fy - fy) < 140 && sameFloor(npc.surfLevel))
         near.push({ id: `npc:${id}`, x: npc.fx, y: npc.fy, r: NPC_BODY_RADIUS });
     });
     return near;

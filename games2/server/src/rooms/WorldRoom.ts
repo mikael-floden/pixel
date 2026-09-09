@@ -987,7 +987,7 @@ export class WorldRoom extends Room<WorldState> {
         if (terrain) {
           // Free a body overlapping a solid's margin BEFORE integrating (the
           // client prediction runs the identical call — lockstep).
-          const u = unstickFromSolids(terrain, player.x, player.y, 80 * eff);
+          const u = unstickFromSolids(terrain, player.x, player.y, 80 * eff, undefined, player.elev);
           player.x = u.x;
           player.y = u.y;
           // Surface under the feet drives walk speed; a jump raises how high
@@ -1016,7 +1016,7 @@ export class WorldRoom extends Room<WorldState> {
             true, // iso world → input is screen-relative (Up walks up on screen)
             this.worldW,
             this.worldH,
-            makeSideBlocked(terrain, ctx), // corner probes: solids only (no ledge-wedging)
+            makeSideBlocked(terrain, ctx, () => player.elev), // corner probes: solids only (no ledge-wedging)
           );
         } else {
           r = stepMovement(player.x, player.y, inp.ax, inp.ay, inp.running, eff);
@@ -1037,7 +1037,7 @@ export class WorldRoom extends Room<WorldState> {
               cur.speed / WALK_SPEED,
               false, // already a WORLD-space direction, not screen-relative
               this.worldW, this.worldH,
-              makeSideBlocked(terrain, ctxC),
+              makeSideBlocked(terrain, ctxC, () => player.elev),
             );
           }
         }
@@ -1333,7 +1333,7 @@ export class WorldRoom extends Room<WorldState> {
             true,
             this.worldW,
             this.worldH,
-            makeSideBlocked(grid, ctx),
+            makeSideBlocked(grid, ctx, () => m.elev),
           );
           if (contained(r2.x, r2.y)) {
             m.x = r2.x;
@@ -1488,7 +1488,7 @@ export class WorldRoom extends Room<WorldState> {
         true, // iso world → screen-relative input (matches players/autopilot)
         this.worldW,
         this.worldH,
-        makeSideBlocked(grid, ctx),
+        makeSideBlocked(grid, ctx, () => m.elev),
       );
       m.x = r.x;
       m.y = r.y;

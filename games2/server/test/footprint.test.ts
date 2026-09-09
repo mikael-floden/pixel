@@ -4,7 +4,7 @@ import {
   CHARACTER_BODY_PX,
   buildTerrainGrid, stampSceneryCollision, stepMovement, makeBlocked, makeSideBlocked,
   makeBlockedElev, canEnterElev, isBlockedAtWorld, resolveElevAt, footprintBlocks,
-  footprintContact, screenToWorldVector, findSpawn,
+  footprintContact, screenToWorldVector, findSpawn, unstickFromSolids,
   CELL_WU, PLAYER_RADIUS, WALK_CLIMB, MIN_FOOTPRINT_SEMI, ISO_GEOMETRY_MAPS3,
   type TerrainGrid, type SceneryBboxDoc, type SceneryHitboxDoc, type BlockedFn,
 } from "@nangijala/shared";
@@ -434,4 +434,39 @@ test("a variation's own hitbox wins over another variation's", () => {
   // with no footprint is worse than an approximate one) — the last resort.
   const none = stamp("NOT_LIT_9");
   assert.ok(none.rx > 0 && none.ry > 0, "an untuned variation falls back rather than losing its hitbox");
+});
+
+/* A FOOTPRINT BELONGS TO THE FLOOR ITS PIECE STANDS ON.
+ *
+ * Position is flat, and the cave under a mountain shares its x/y range with the
+ * mountain top: a brazier on the cave floor stamped a footprint that the body
+ * on the lid 16 levels above collided with, through the rock (maintainer
+ * 2026-09-09: "as if the player is walking around things that doesn't exist").
+ * Every query that knows the body's surface level skips footprints on another
+ * floor; a query without one keeps the old answer, so the nav bake and the
+ * headless sims are unchanged. */
+test("a footprint on the cave floor never touches a body on the deck above it", () => {
+  const grid = oneFootprint(40, 30, [{ x: 10, y: 10 }]);
+  const fp = grid.footprints!;
+  assert.equal(fp.lvl[0], 0, "the piece stands on level-0 ground");
+  const c = { x: fp.cx[0] * CELL_WU, y: fp.cy[0] * CELL_WU };
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  // Same floor: everything blocks, exactly as before.
+  assert.equal(footprintBlocks(grid, c.x, c.y, 0), true);
+  assert.equal(footprintBlocks(grid, c.x, c.y, 0, 0), true);
+  assert.equal(footprintBlocks(grid, c.x, c.y, 0, 1), true, "one step up still collides (slack)");
+  assert.equal(isBlockedAtWorld(grid, c.x, c.y, 0), true);
+  assert.equal(makeSideBlocked(grid, walk, () => 0)(c.x, c.y, c.x, c.y), true);
+  // Sixteen levels up — the deck over the cave — nothing is there.
+  assert.equal(footprintBlocks(grid, c.x, c.y, 0, 16), false);
+  assert.equal(isBlockedAtWorld(grid, c.x, c.y, 16), false);
+  assert.equal(makeSideBlocked(grid, walk, () => 16)(c.x, c.y, c.x, c.y), false);
+  assert.equal(footprintContact(grid, c.x, c.y, PLAYER_RADIUS, undefined, undefined, 16), null);
+  const u = unstickFromSolids(grid, c.x, c.y, 10, undefined, 16);
+  assert.deepEqual(u, { x: c.x, y: c.y }, "the rescue leaves a body on the upper floor alone");
+  const u0 = unstickFromSolids(grid, c.x, c.y, 10, undefined, 0);
+  assert.notDeepEqual(u0, { x: c.x, y: c.y }, "and still frees one on the piece's own floor");
+  // The nav bake is a base-level question and stays blocked.
+  const i = Math.floor(fp.cy[0]) * W + Math.floor(fp.cx[0]);
+  assert.equal(grid.blocked[i], true);
 });

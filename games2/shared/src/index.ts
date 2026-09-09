@@ -1283,6 +1283,16 @@ export interface SceneryFootprints {
    *  here, beside the ellipse, from the same box and scale — a second reading of
    *  the docs would drift. */
   artH: Float64Array;
+  /** THE LEVEL THE PIECE STANDS ON — the BASE level of its centre cell. A
+   *  footprint is a thing on a floor, so it belongs to that floor: a body on
+   *  a deck 16 levels above a cave brazier never touches it (the maintainer's
+   *  mountain top, 2026-09-09: "as if the player is walking around things that
+   *  doesn't exist"). Every query that knows the body's surface level passes
+   *  it and skips footprints more than FOOTPRINT_LEVEL_SLACK away; a query
+   *  without one (the nav bake at base level, a headless sim) keeps the old
+   *  elevation-blind answer. KNOWN GAP: a piece placed ON a deck reads the base
+   *  under the deck (no the_game piece stands on one). */
+  lvl: Float64Array;
   /** CSR bucket index over the grid: the footprints whose reach covers cell i
    *  are items[start[i] .. start[i+1]-1]. */
   start: Int32Array;
@@ -1333,6 +1343,11 @@ export const MIN_FOOTPRINT_SEMI = PLAYER_RADIUS * 0.375; // 4.5wu — half the l
  *  this, so any query up to this radius — the glide's contact query included,
  *  which asks from the body's own centre — sees every piece that could matter. */
 export const FOOTPRINT_REACH = Math.hypot(PLAYER_RADIUS, PLAYER_RADIUS * 0.75); // 15wu
+/** How far (in levels) a body's surface may sit from a footprint's floor and
+ *  still collide with it: a piece on a one-step terrace beside you still stops
+ *  you, a piece under the deck you stand on never does. See
+ *  SceneryFootprints.lvl. */
+export const FOOTPRINT_LEVEL_SLACK = 1.5;
 
 /** Root of F(s) = (r0*z0/(s+r0))^2 + (z1/(s+1))^2 - 1, bracketed and bisected.
  *  Eberly's formulation ("Distance from a Point to an Ellipse"): F is strictly
@@ -1571,7 +1586,7 @@ function footprintBucket(grid: TerrainGrid, x: number, y: number): number {
  * within that of the queried cell, and silently missing one is worse than
  * answering for a slightly smaller body.
  */
-export function footprintBlocks(grid: TerrainGrid, x: number, y: number, r: number): boolean {
+export function footprintBlocks(grid: TerrainGrid, x: number, y: number, r: number, elev?: number): boolean {
   const fp = grid.footprints;
   if (!fp || fp.n === 0) return false;
   const i = footprintBucket(grid, x, y);
@@ -1580,6 +1595,7 @@ export function footprintBlocks(grid: TerrainGrid, x: number, y: number, r: numb
   if (hi === fp.start[i]) return false;
   const rc = Math.min(r, fp.pad * CELL_WU);
   for (let k = fp.start[i]; k < hi; k++) {
+    if (elev !== undefined && Math.abs(fp.lvl[fp.items[k]] - elev) > FOOTPRINT_LEVEL_SLACK) continue;
     if (footprintPenetration(fp, fp.items[k], x, y, rc, null) > 0) return true;
   }
   return false;
@@ -1590,7 +1606,7 @@ export function footprintBlocks(grid: TerrainGrid, x: number, y: number, r: numb
  *  over-estimate, so the nav bake can read it as "every point within this far
  *  of here is blocked too" (moving a point by d changes its distance to a shape
  *  by at most d) and skip that whole neighbourhood. */
-function footprintDepth(grid: TerrainGrid, x: number, y: number, r: number): number {
+function footprintDepth(grid: TerrainGrid, x: number, y: number, r: number, elev?: number): number {
   const fp = grid.footprints;
   if (!fp || fp.n === 0) return -1;
   const i = footprintBucket(grid, x, y);
@@ -1599,6 +1615,7 @@ function footprintDepth(grid: TerrainGrid, x: number, y: number, r: number): num
   const rc = Math.min(r, fp.pad * CELL_WU);
   let best = -1;
   for (let k = fp.start[i]; k < hi; k++) {
+    if (elev !== undefined && Math.abs(fp.lvl[fp.items[k]] - elev) > FOOTPRINT_LEVEL_SLACK) continue;
     const d = footprintPenetration(fp, fp.items[k], x, y, rc, null);
     if (d > best) best = d;
   }
@@ -1620,6 +1637,7 @@ export function footprintContact(
   r: number,
   ux?: number,
   uy?: number,
+  elev?: number,
 ): { nx: number; ny: number; depth: number } | null {
   const fp = grid.footprints;
   if (!fp || fp.n === 0) return null;
@@ -1633,6 +1651,7 @@ export function footprintContact(
   let bestScore = -Infinity;
   const aimed = ux !== undefined && uy !== undefined;
   for (let k = fp.start[i]; k < hi; k++) {
+    if (elev !== undefined && Math.abs(fp.lvl[fp.items[k]] - elev) > FOOTPRINT_LEVEL_SLACK) continue;
     const d = footprintPenetration(fp, fp.items[k], x, y, rc, n);
     if (d <= 0) continue;
     /* WHICH contact, when several are in reach. Deepest by default; but the
@@ -1716,11 +1735,13 @@ export function isStandableAtWorld(grid: TerrainGrid, x: number, y: number): boo
  * The cell half reads `propBlocked`, NOT `blocked`: `blocked` is the derived
  * nav layer, and re-testing it here would put the cell quantisation straight
  * back into the collision the ellipse exists to replace. */
-export function isBlockedAtWorld(grid: TerrainGrid, x: number, y: number): boolean {
+export function isBlockedAtWorld(grid: TerrainGrid, x: number, y: number, elev?: number): boolean {
   const i = cellIndex(grid, x, y);
   if (i < 0) return false;
   if (grid.propBlocked[i]) return true;
-  return footprintBlocks(grid, x, y, 0); // the RAW ellipse, at the probe point
+  // `elev`: the body's surface level, so a footprint on another floor (the
+  // cave under the deck you stand on) is not in the way — SceneryFootprints.lvl.
+  return footprintBlocks(grid, x, y, 0, elev); // the RAW ellipse, at the probe point
 }
 
 /** State that gates a move: how high the player may step, and whether they may
@@ -1741,8 +1762,9 @@ export function canEnter(
   toX: number,
   toY: number,
   ctx: MoveContext,
+  elev?: number,
 ): boolean {
-  if (isBlockedAtWorld(grid, toX, toY)) return false; // solid prop in the way
+  if (isBlockedAtWorld(grid, toX, toY, elev)) return false; // solid prop in the way
   const to = surfaceAtWorld(grid, toX, toY);
   const enterable = to.standable || (to.swimmable && ctx.canSwim);
   if (!enterable) return false;
@@ -1755,17 +1777,17 @@ export function canEnter(
 }
 
 /** The glide's contact query for a grid: see BlockedFn.contactNormal. */
-function gridContactNormal(grid: TerrainGrid) {
+function gridContactNormal(grid: TerrainGrid, getElev?: () => number) {
   return (x: number, y: number, ux: number, uy: number) => {
-    const c = footprintContact(grid, x, y, FOOTPRINT_REACH, ux, uy);
+    const c = footprintContact(grid, x, y, FOOTPRINT_REACH, ux, uy, getElev?.());
     return c ? { nx: c.nx, ny: c.ny } : null;
   };
 }
 
 /** Adapt canEnter into stepMovement's blocked() predicate for a given context. */
-export function makeBlocked(grid: TerrainGrid, ctx: MoveContext): BlockedFn {
-  const f: BlockedFn = (toX, toY, fromX, fromY) => !canEnter(grid, fromX, fromY, toX, toY, ctx);
-  f.contactNormal = gridContactNormal(grid);
+export function makeBlocked(grid: TerrainGrid, ctx: MoveContext, getElev?: () => number): BlockedFn {
+  const f: BlockedFn = (toX, toY, fromX, fromY) => !canEnter(grid, fromX, fromY, toX, toY, ctx, getElev?.());
+  f.contactNormal = gridContactNormal(grid, getElev);
   return f;
 }
 
@@ -1881,7 +1903,7 @@ export function resolveElevAt(grid: TerrainGrid, elev: number, x: number, y: num
  * (via getElev, read each probe) so decks resolve correctly. */
 export function makeBlockedElev(grid: TerrainGrid, ctx: MoveContext, getElev: () => number): BlockedFn {
   const f: BlockedFn = (toX, toY, fromX, fromY) => !canEnterElev(grid, getElev(), fromX, fromY, toX, toY, ctx).ok;
-  f.contactNormal = gridContactNormal(grid);
+  f.contactNormal = gridContactNormal(grid, getElev);
   return f;
 }
 
@@ -1901,6 +1923,7 @@ export function unstickFromSolids(
   y: number,
   maxPush: number,
   clearance: number = PLAYER_RADIUS * 0.75 + 0.5,
+  elev?: number,
 ): { x: number; y: number } {
   let px = 0;
   let py = 0;
@@ -1957,7 +1980,7 @@ export function unstickFromSolids(
   // PLAYER_RADIUS, not `clearance`: this is "the body OVERLAPS the shape", and
   // it is the same radius the nav layer and clearanceAdjust use, so the rescue
   // agrees with them about where a body is allowed to stand.
-  const fpHit = footprintContact(grid, x, y, PLAYER_RADIUS);
+  const fpHit = footprintContact(grid, x, y, PLAYER_RADIUS, undefined, undefined, elev);
   if (fpHit) {
     px += fpHit.nx * fpHit.depth;
     py += fpHit.ny * fpHit.depth;
@@ -1973,13 +1996,13 @@ export function unstickFromSolids(
  * The forward centre probe (full canEnter) still stops head-on wall walks;
  * this keeps a wall BESIDE the path from vetoing a parallel/escaping move,
  * which wedged players at inside corners right after a cliff descent. */
-export function makeSideBlocked(grid: TerrainGrid, ctx: MoveContext): BlockedFn {
+export function makeSideBlocked(grid: TerrainGrid, ctx: MoveContext, getElev?: () => number): BlockedFn {
   const f: BlockedFn = (toX, toY) => {
-    if (isBlockedAtWorld(grid, toX, toY)) return true;
+    if (isBlockedAtWorld(grid, toX, toY, getElev?.())) return true;
     const to = surfaceAtWorld(grid, toX, toY);
     return !(to.standable || (to.swimmable && ctx.canSwim));
   };
-  f.contactNormal = gridContactNormal(grid);
+  f.contactNormal = gridContactNormal(grid, getElev);
   return f;
 }
 
@@ -2038,7 +2061,7 @@ function cellStandable(grid: TerrainGrid, col: number, row: number): boolean {
    * which is a body spawned in a trunk (maintainer 2026-08-29: "after dying I
    * spawned like this and was stuck"). Ask the ellipse about the exact point
    * findSpawn is going to return. */
-  if (footprintBlocks(grid, (col + 0.5) * CELL_WU, (row + 0.5) * CELL_WU, PLAYER_RADIUS)) return false;
+  if (footprintBlocks(grid, (col + 0.5) * CELL_WU, (row + 0.5) * CELL_WU, PLAYER_RADIUS, grid.level[i])) return false;
   const t = grid.type[i];
   return t ? surfaceFor(t).standable : false;
 }
@@ -2154,17 +2177,19 @@ export function steerAssist(
   y: number,
   ax: number,
   ay: number,
+  elev?: number,
 ): { ax: number; ay: number } | null {
   if (ax === 0 && ay === 0) return null;
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   const worldW = worldWidthOf(grid);
   const worldH = worldHeightOf(grid);
   const dt = 0.08; // probe step ≈ 5.6wu at walk speed — spans a substep + margin
+  const ge = elev === undefined ? undefined : () => elev;
   const sim = (iax: number, iay: number) =>
     stepMovement(
       x, y, iax, iay, false, dt,
-      makeBlocked(grid, walk), 1, true, worldW, worldH,
-      makeSideBlocked(grid, walk),
+      makeBlocked(grid, walk, ge), 1, true, worldW, worldH,
+      makeSideBlocked(grid, walk, ge),
     );
   const moved = (r: { x: number; y: number }) => Math.hypot(r.x - x, r.y - y);
   // Only assist a real STALL. A wall-slide (diagonal input with one free axis)
@@ -3116,13 +3141,15 @@ export function bodyStalled(
   y: number,
   ax: number,
   ay: number,
+  elev?: number,
 ): boolean {
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   const dt = 0.08;
+  const ge = elev === undefined ? undefined : () => elev;
   const r = stepMovement(
     x, y, ax, ay, false, dt,
-    makeBlocked(grid, walk), 1, true, worldWidthOf(grid), worldHeightOf(grid),
-    makeSideBlocked(grid, walk),
+    makeBlocked(grid, walk, ge), 1, true, worldWidthOf(grid), worldHeightOf(grid),
+    makeSideBlocked(grid, walk, ge),
   );
   return Math.hypot(r.x - x, r.y - y) <= WALK_SPEED * dt * 0.35;
 }
@@ -3169,18 +3196,20 @@ export function headingClear(
   y: number,
   ax: number,
   ay: number,
+  elev?: number,
 ): boolean {
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   const dt = 0.08;
   const worldW = worldWidthOf(grid);
   const worldH = worldHeightOf(grid);
+  const ge = elev === undefined ? undefined : () => elev;
   let cx = x;
   let cy = y;
   for (let i = 0; i < CLEAR_LOOKAHEAD_STEPS; i++) {
     const r = stepMovement(
       cx, cy, ax, ay, false, dt,
-      makeBlocked(grid, walk), 1, true, worldW, worldH,
-      makeSideBlocked(grid, walk),
+      makeBlocked(grid, walk, ge), 1, true, worldW, worldH,
+      makeSideBlocked(grid, walk, ge),
     );
     if (Math.hypot(r.x - cx, r.y - cy) <= WALK_SPEED * dt * 0.35) return false;
     cx = r.x;
@@ -3213,9 +3242,11 @@ export function slideAlong(
   ax: number,
   ay: number,
   memo?: SlideMemo,
+  elev?: number,
 ): { ax: number; ay: number } | null {
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   const dt = 0.08;
+  const ge = elev === undefined ? undefined : () => elev;
   const worldW = worldWidthOf(grid);
   const worldH = worldHeightOf(grid);
   const w = screenToWorldVector(ax, ay);
@@ -3224,8 +3255,8 @@ export function slideAlong(
   const moves = (cax: number, cay: number) => {
     const r = stepMovement(
       x, y, cax, cay, false, dt,
-      makeBlocked(grid, walk), 1, true, worldW, worldH,
-      makeSideBlocked(grid, walk),
+      makeBlocked(grid, walk, ge), 1, true, worldW, worldH,
+      makeSideBlocked(grid, walk, ge),
     );
     return Math.hypot(r.x - x, r.y - y) > WALK_SPEED * dt * 0.35;
   };
@@ -3285,7 +3316,7 @@ export function walkHeading(
   }
   const worldW = opts.worldW ?? worldWidthOf(grid);
   const worldH = opts.worldH ?? worldHeightOf(grid);
-  const rawClear = headingClear(grid, x, y, ax, ay);
+  const rawClear = headingClear(grid, x, y, ax, ay, opts.fromElev);
   const skirted = Math.hypot(x - (hold.fromX ?? x), y - (hold.fromY ?? y));
   /* THE HOLD IS RELEASED BY ITS OWN CONDITION, NOT RE-ASKED EVERY TICK. Gating
    * the hold on "is the raw heading clear right now" reintroduces the flap it
@@ -3299,14 +3330,14 @@ export function walkHeading(
   const latched = hold.ax !== 0 || hold.ay !== 0;
   const release = rawClear && skirted >= HOLD_MIN_TRAVEL;
   if (latched && !release) {
-    if (!bodyStalled(grid, x, y, hold.ax, hold.ay)) return { ax: hold.ax, ay: hold.ay, trip: null };
+    if (!bodyStalled(grid, x, y, hold.ax, hold.ay, opts.fromElev)) return { ax: hold.ax, ay: hold.ay, trip: null };
     /* The committed heading ground to a stop against the same obstacle. Pick
      * ANOTHER deflection — never fall back to the raw heading, which is the one
      * pointing into the thing being avoided. Traced at tree_031: the held (1,0)
      * stalls every third tick, the fallback handed control to the raw (0,1),
      * and the body was pulled back onto the trunk it had just left — 90 flaps
      * with the deflection latched the whole way through. */
-    const sl = slideAlong(grid, x, y, ax, ay, hold);
+    const sl = slideAlong(grid, x, y, ax, ay, hold, opts.fromElev);
     if (sl) return { ax: sl.ax, ay: sl.ay, trip: null };
     hold.ax = 0;
     hold.ay = 0;
@@ -3330,12 +3361,12 @@ export function walkHeading(
   }
   if (!trip) {
     // 3. The local assist.
-    const a = steerAssist(grid, x, y, ax, ay);
+    const a = steerAssist(grid, x, y, ax, ay, opts.fromElev);
     if (a) {
       hx = a.ax;
       hy = a.ay;
       deflected = true;
-    } else if (!opts.noDetour && bodyStalled(grid, x, y, ax, ay)) {
+    } else if (!opts.noDetour && bodyStalled(grid, x, y, ax, ay, opts.fromElev)) {
       // 4. Plan round it.
       trip = startStickDetour(grid, x, y, ax, ay, opts.nowMs, opts.fromElev);
       if (trip) {
@@ -3370,8 +3401,8 @@ export function walkHeading(
     }
   }
   // 5. Never motionless while there is a way out.
-  if (bodyStalled(grid, x, y, hx, hy)) {
-    const sl = slideAlong(grid, x, y, ax, ay, hold);
+  if (bodyStalled(grid, x, y, hx, hy, opts.fromElev)) {
+    const sl = slideAlong(grid, x, y, ax, ay, hold, opts.fromElev);
     if (sl) {
       hx = sl.ax;
       hy = sl.ay;
@@ -3640,7 +3671,7 @@ export function stepAutopilot(
   // without decks are byte-identical.
   const probeElev = grid ? resolveElevAt(grid, fromElev ?? levelAtWorld(grid, x, y), x, y, walkCtx) : 0;
   const probeBlocked = grid ? makeBlockedElev(grid, walkCtx, () => probeElev) : undefined;
-  const probeSide = grid ? makeSideBlocked(grid, walkCtx) : undefined;
+  const probeSide = grid ? makeSideBlocked(grid, walkCtx, () => probeElev) : undefined;
   const PROBE_DT = 0.15; // one honest walk step (~10.5wu): reaches past the next cell edge
   const cand: { ax: number; ay: number; dot: number; open: boolean }[] = [];
   for (let iy = -1; iy <= 1; iy++) {
@@ -4363,6 +4394,7 @@ export function stampSceneryCollision(
   const erot: number[] = [];
   const eplace: number[] = [];
   const eartH: number[] = [];
+  const elvl: number[] = [];
   const recCache = new Map<string, SceneryHitboxDoc[string] | null | undefined>();
   for (let pi = 0; pi < scenery.length; pi++) {
     const pl = scenery[pi];
@@ -4491,6 +4523,10 @@ export function stampSceneryCollision(
       erot.push(th);
       eplace.push(pi);
       eartH.push(Math.max(0, (bcy - by0) * k));
+      // The floor the piece stands on — see SceneryFootprints.lvl.
+      const lc = Math.floor(wx);
+      const lr = Math.floor(wy);
+      elvl.push(lc >= 0 && lr >= 0 && lc < grid.width && lr < grid.height ? grid.level[lr * grid.width + lc] : 0);
     }
   }
   const n = ecx.length;
@@ -4522,6 +4558,7 @@ export function stampSceneryCollision(
     q: new Float64Array(n),
     place: Int32Array.from(eplace),
     artH: Float64Array.from(eartH),
+    lvl: Float64Array.from(elvl),
     start: new Int32Array(cells + 1),
     items: new Int32Array(0),
     pad: FOOTPRINT_REACH / CELL_WU,
@@ -4638,13 +4675,15 @@ export function stampSceneryCollision(
  */
 function navCellOpen(grid: TerrainGrid, col: number, row: number): boolean {
   const step = CELL_WU / NAV_COARSE;
+  const lvl = grid.level[row * grid.width + col]; // the nav layer is the BASE surface
+
   const cover = step * Math.SQRT1_2; // half-diagonal of one coarse tile
   const x0 = col * CELL_WU;
   const y0 = row * CELL_WU;
   let needy = 0;
   for (let a = 0; a < NAV_COARSE; a++) {
     for (let b = 0; b < NAV_COARSE; b++) {
-      const d = footprintDepth(grid, x0 + (b + 0.5) * step, y0 + (a + 0.5) * step, PLAYER_RADIUS);
+      const d = footprintDepth(grid, x0 + (b + 0.5) * step, y0 + (a + 0.5) * step, PLAYER_RADIUS, lvl);
       if (d <= 0) return true; // a legal body position, proved
       if (d < cover) _needyTiles[needy++] = a * NAV_COARSE + b;
     }
@@ -4658,7 +4697,7 @@ function navCellOpen(grid: TerrainGrid, col: number, row: number): boolean {
       for (let b = 0; b < NAV_SUB; b++) {
         const x = x0 + tb * step + (b + 0.5) * sub;
         const y = y0 + ta * step + (a + 0.5) * sub;
-        if (footprintDepth(grid, x, y, PLAYER_RADIUS) <= 0) return true; // open, barely
+        if (footprintDepth(grid, x, y, PLAYER_RADIUS, lvl) <= 0) return true; // open, barely
       }
     }
   }
