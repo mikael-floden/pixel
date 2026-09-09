@@ -2253,7 +2253,31 @@ export class Tiles3 {
      * one-step quads are the terrace rims) and removes all 3,350 cross-storey
      * ones. */
     const zs = [z0, L(x + 1, y), L(x, y + 1), L(x + 1, y + 1)];
-    let gs: (string | null)[] = [g0, g1, g2, g3].map((gv, i) =>
+    /* A CORNER UNDER A DECK AT THIS PLANE VOTES THE DECK'S GROUND
+     * (Tiles3Data.deckBoundary). The lattice reads a cell's BASE ground, and
+     * the base under a cave lid is the cave floor sixteen levels down — folded
+     * away, so the rock beside the lid composed nothing on its side of the
+     * seam while the lid composed on its own, and the maintainer's mountain top
+     * kept its hard edge (2026-09-09, 270,180: "the ground transition at the
+     * mountain top over the cave still looks broken"). The deck cell's quad
+     * already reads decks; this is the other half of every such seam. */
+    const gz = [g1, g2, g3];
+    if (this.data.deckBoundary) {
+      const at: [number, number][] = [[x + 1, y], [x, y + 1], [x + 1, y + 1]];
+      for (let i = 0; i < 3; i++) {
+        const dis = this.decksOn(view, at[i][0], at[i][1]);
+        if (!dis) continue;
+        for (const di of dis) {
+          const dl = Math.trunc(view.decks[di].level);
+          if (Math.abs(dl - z0) <= BOUNDARY_STEP) {
+            gz[i] = view.decks[di].ground || "grey_stone";
+            zs[i + 1] = dl;
+            break;
+          }
+        }
+      }
+    }
+    let gs: (string | null)[] = [g0, gz[0], gz[1], gz[2]].map((gv, i) =>
       Math.abs(zs[i] - z0) <= BOUNDARY_STEP ? gv : g0,
     );
     /* The foot overrides the fold: the face is ON this plane by construction. */
