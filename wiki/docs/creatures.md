@@ -90,6 +90,45 @@ Gate: `wiki/tools/check-litstate.mjs` — drives the real page, corrects a state
 commits, and asserts the file, the key, the `was`, that nothing lands in the
 feedback file, that agreeing again DELETES, that the switch follows the state
 chip (unlit → 💡lit) and that a reader never sees the control at all.
+## A new monster is judged on its 8 DIRECTIONS before it earns animations
+
+A candidate is an 8-direction base and nothing else. The monsters agent
+designs and generates its own monsters now, and "the first step before
+generating a monster is generating a character in 8 directions. If you are
+happy with this character you can go on and generate all animations needed"
+(maintainer 2026-09-09) — and a bad facing cannot be fixed later, so the
+verdict comes BEFORE the five states are spent on it.
+
+- **Contract in:** `monsters/candidates/index.json` (`monster-candidates@1`).
+  `build.mjs` publishes it as `domains.monsterCandidates` (+ `counts
+  .monster_candidates`): id, name, tier, lore, biome, items, size, `version`,
+  `generatedAt`, the 8 `rotations` paths, the agent's `qa` and its `review`.
+- **Contract out:** `live/feedback/monsters.json` under
+  `monsters/candidates/<id>` — `approved` = generate every animation in all 8
+  directions; `redo` = same design, next seed; `rejected` = drop the design.
+  Rating and note ride as on every other feedback entry.
+- **Every verdict is stamped with the candidate's `version`.** A redo rolls
+  the next seed and the agent deletes the old record, so a verdict carrying an
+  older version is about a picture that no longer exists: the page shows
+  "regenerated — judge again", the queue counts it as unjudged, and the agent
+  must ignore it. (Same rule the scenery states use with their art hash.)
+- **Pages:** `#/monsters/candidates` — chips `to judge | approved | redo |
+  removed | all` with counts, "to judge" by default, newest first; a card is
+  the south facing + name + tier/size/version + marks. `#/monsters/candidates/
+  <id>` — the 8 facings in MIRROR PAIRS, two per row (S|N, E|W, SE|SW, NE|NW),
+  so the twin the generator gets wrong (a SE drawn as SW) sits beside its
+  mirror; zoom 1×/2×/3× (`wiki-cand-zoom`), default the largest whole zoom at
+  which the pair fits the measured content column, and the pair STACKS when
+  even 1× does not fit rather than shrinking pixel art to a blur. The verdict
+  row sits UNDER the pictures, where his thumb is after reading them. ‹ ›
+  walks the current chip's list.
+- **The door** is on the Creatures page (admin): "N of M new designs wait for
+  your verdict on their 8 directions →". The nav count stays the shipped
+  creatures — a candidate is not in the game.
+- Gate: `wiki/tools/check-candidates.mjs` (door, chips, 8 loaded facings,
+  approve stamps `version` and leaves the queue, an older-version verdict
+  reads as judge-again). Runs in `wiki-guard.yml`.
+
 ## The facet block is ONE idiom — a label column, chip radios, a pill
 
 Maintainer 2026-09-09: *"I can see you have added a lot of UX/UI that doesn't

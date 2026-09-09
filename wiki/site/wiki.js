@@ -4523,6 +4523,11 @@ function viewMonsters() {
     h("p", { class: "muted" }, state.admin
       ? `${list.length} creatures from the monsters agent — ${nAggro} attack on sight. Click one to preview every animation, check its shadow, edit its stats and loot.`
       : `${list.length} creatures roam Nangijala, ${nAggro} of them aggressive. Click one to watch every animation and study its stats.`),
+    // THE CANDIDATES' DOOR. New designs are born as 8 directions only and wait
+    // for his verdict before any animation is generated — the count of the
+    // unjudged ones is the whole message.
+    state.admin && candidates().length ? h("a", { class: "cand-entry", href: "#/monsters/candidates" },
+      `${candList("pending").length} of ${candidates().length} new designs wait for your verdict on their 8 directions →`) : null,
     sortBar(MONSTER_SORT_KEY, [
       ["name", "by name", "Alphabetical"],
       ["level", "by level", "Hardest first"],
@@ -4588,6 +4593,145 @@ function viewMonsters() {
           h("div", { class: "card-sub" },
             `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`)));
     })));
+}
+/* ================= MONSTER CANDIDATES — the 8 directions, judged FIRST =====
+ * Maintainer 2026-09-09: the monsters agent now designs and generates its own
+ * monsters, and "the first step before generating a monster is generating a
+ * character in 8 directions. If you are happy with this character you can go
+ * on and generate all animations needed." A candidate is that 8-direction
+ * base and nothing else (monsters/candidates/index.json, format
+ * monster-candidates@1); it becomes a creature only once he approves it here.
+ *
+ * THE VERDICT IS ABOUT ONE VERSION OF THE ART. A redo rolls the next seed and
+ * the agent deletes the old record, so every verdict is stamped with the
+ * candidate's `version` — a verdict carrying an older version is a decision
+ * about a picture that no longer exists and reads as undecided (the same rule
+ * the scenery states use with their art hash).
+ *
+ * The three verdicts, in the vocabulary the agent consumes from
+ * live/feedback/monsters.json under monsters/candidates/<id>:
+ *   approved → generate every animation in all 8 directions
+ *   redo     → same design, next seed (all 8 directions again)
+ *   rejected → drop the design; the agent never continues it
+ *
+ * THE FACINGS SIT IN MIRROR PAIRS. Two columns — S|N, E|W, SE|SW, NE|NW — so
+ * the twin the generator is most likely to get wrong (SE drawn as SW, his
+ * scenery complaint) is side by side with its mirror, and two 136px sprites
+ * still fit a 393px phone at 1×. */
+const CAND_FILTER_KEY = "wiki-cand-filter";
+const CAND_ZOOM_KEY = "wiki-cand-zoom";
+const CAND_PAIRS = [["south", "north"], ["east", "west"], ["south-east", "south-west"], ["north-east", "north-west"]];
+const candidates = () => state.data.domains.monsterCandidates ?? [];
+const candById = (id) => candidates().find((c) => c.id === id) ?? null;
+const candFb = (c) => fb("monsters", c.path);
+const candStale = (c) => { const e = candFb(c); return !!e.status && e.version != null && e.version !== c.version; };
+const candStatus = (c) => (candStale(c) ? null : (candFb(c).status ?? null));
+const CAND_FILTERS = {
+  pending:  { label: "to judge", title: "No verdict of yours yet on this version of the 8 directions", hit: (c) => !candStatus(c) },
+  approved: { label: "approved", title: "Approved — the monsters agent generates every animation", hit: (c) => candStatus(c) === "approved" },
+  redo:     { label: "redo",     title: "Same design, next seed", hit: (c) => candStatus(c) === "redo" },
+  rejected: { label: "removed",  title: "Dropped — the design is not continued", hit: (c) => candStatus(c) === "rejected" },
+  all:      { label: "all",      title: "Every candidate", hit: () => true },
+};
+const candFilter = () => {
+  try { return CAND_FILTERS[localStorage.getItem(CAND_FILTER_KEY)] ? localStorage.getItem(CAND_FILTER_KEY) : "pending"; }
+  catch { return "pending"; }
+};
+/** Newest first: the ones just born are the ones he has not seen. */
+const candList = (mode = candFilter()) => candidates().filter(CAND_FILTERS[mode].hit)
+  .sort((a, b) => String(b.generatedAt ?? "").localeCompare(String(a.generatedAt ?? "")) || a.name.localeCompare(b.name));
+const candSizeLine = (c) => [c.tier, c.size ? `${c.size[0]}px` : null, `v${c.version}`].filter(Boolean).join(" · ");
+/** The marks that ride on a card or head the page: his verdict (or that it is
+ *  stale), the machine QA, and whether the agent has acted on the verdict. */
+function candMarks(c) {
+  const out = [];
+  if (candStale(c)) out.push(h("span", { class: "pill warn", title: "You judged an earlier version of these 8 directions — the agent has rolled a new seed since. Judge this one." }, "regenerated — judge again"));
+  else out.push(...entityBadge("monsters", c.path));
+  if (c.qa?.status && c.qa.status !== "pass") out.push(h("span", { class: `pill ${c.qa.status === "fail" ? "err" : "warn"}`, title: (c.qa.reasons ?? []).join("; ") || "The agent's own density/clipping checks" }, `qa ${c.qa.status}`));
+  if (c.review && c.review !== "pending") out.push(h("span", { class: "pill", title: "The monsters agent's own record of this candidate — what it has acted on" }, `agent: ${c.review}`));
+  return out;
+}
+function candFeedback(c) {
+  return feedbackRow("monsters", c.path, {
+    stamp: { version: c.version },
+    stale: () => candStale(c),
+    rejectTitle: "Remove = drop this design; the monsters agent never continues it",
+    rejectedLabel: "dropped",
+    redo: { label: "↻ redo", title: "Keep the design, roll the next seed — the agent regenerates all 8 directions", doneLabel: "next seed requested" },
+  });
+}
+function viewCandidates() {
+  const mode = candFilter();
+  const all = candidates();
+  const shown = candList(mode).filter((c) => matches(state.query, c.id, c.name, c.tier, c.lore));
+  return h("div", {},
+    h("div", { class: "crumb-row" }, h("a", { class: "crumb", href: "#/monsters" }, "← Creatures")),
+    h("div", { class: "sect-head" }, sectionIcon("monsters"), h("h1", {}, "Candidates")),
+    h("p", { class: "muted" }, state.admin
+      ? `${all.length} new creature designs from the monsters agent, born as 8 directions only. Approve one and it earns every animation; redo rolls the next seed; remove drops the design.`
+      : `${all.length} creature designs the monsters agent is auditioning. None of these roam Nangijala yet.`),
+    all.length ? sortBar(CAND_FILTER_KEY,
+      Object.entries(CAND_FILTERS).map(([id, f]) => [id, `${f.label} ${all.filter(f.hit).length}`, f.title]),
+      mode, () => route()) : null,
+    shown.length ? h("div", { class: "grid cand-grid" }, ...shown.map((c) => {
+      const south = c.rotations.south ?? Object.values(c.rotations)[0];
+      return h("a", { class: "card cand-card", href: `#/monsters/candidates/${c.id}` },
+        h("div", { class: "cand-thumb checker" }, south ? h("img", { src: assetUrl(south), alt: `${c.name}, facing south`, loading: "lazy" }) : null),
+        h("div", { class: "card-name" }, c.name),
+        h("div", { class: "card-sub" }, candSizeLine(c)),
+        h("div", { class: "cand-marks" }, ...candMarks(c)));
+    })) : h("p", { class: "muted" }, all.length
+      ? (mode === "pending" ? "Every candidate has a verdict. Nothing left to judge." : "No candidate in this state.")
+      : "The monsters agent has not generated a candidate yet."));
+}
+function viewCandidate(id) {
+  const c = candById(id);
+  if (!c) return h("p", {}, "Unknown candidate.");
+  const list = candList();
+  const walk = list.some((x) => x.id === id) ? list : candList("all");
+  const size = c.size?.[0] ?? 128;
+  // The biggest whole zoom at which the PAIR still fits the screen — two 136px
+  // sprites at 1×, two 80px at 2× — unless he picked one himself.
+  let zoom = 0;
+  try { zoom = Number(localStorage.getItem(CAND_ZOOM_KEY)) || 0; } catch { /* private mode */ }
+  // The room is the content column's inner width — measured, not assumed:
+  // 26px of padding a side on a 393px phone leaves 341px, which two 176px
+  // sprites do not fit even at 1×. Then the pair stacks (S over N) rather than
+  // overflowing or shrinking to a blur.
+  const col = $("#content"), cs = col ? getComputedStyle(col) : null;
+  const room = col ? col.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) : 341;
+  const gap = 8;
+  const fit = Math.max(1, Math.floor((room - gap) / 2 / size));
+  const z = zoom || Math.min(fit, 3);
+  const cols = 2 * size * z + gap <= room ? 2 : 1;
+  const grid = h("div", { class: "cand-dirs" });
+  grid.style.setProperty("--cand-w", `${size * z}px`);
+  grid.style.setProperty("--cand-cols", String(cols));
+  for (const pair of CAND_PAIRS) for (const d of pair) {
+    const src = c.rotations[d];
+    grid.append(h("figure", { class: "cand-dir checker", "data-dir": d },
+      src ? h("img", { src: assetUrl(src), alt: `${c.name}, facing ${d}`, width: size * z, height: size * z }) : h("span", { class: "pill err" }, "missing"),
+      h("figcaption", {}, h("b", {}, DIR_LABEL[d] ?? d), " ", d.replace("-", " "))));
+  }
+  const zoomSeg = h("div", { class: "seg cand-zoom", role: "radiogroup" },
+    ...[1, 2, 3].map((n) => h("button", { class: n === z ? "on" : "", type: "button", "aria-checked": n === z ? "true" : "false", role: "radio",
+      onclick: () => { try { localStorage.setItem(CAND_ZOOM_KEY, String(n)); } catch { /* private mode */ } route(); } }, `${n}×`)));
+  return h("div", {},
+    crumbRow("#/monsters/candidates", "← Candidates", "monsters/candidates", walk, id),
+    h("div", { class: "sect-head" }, sectionIcon("monsters"), h("h1", {}, c.name)),
+    c.lore ? h("p", { class: "lore" }, c.lore) : null,
+    h("p", { class: "muted" }, [candSizeLine(c), c.biome.length ? `lives in ${c.biome.map(titleish).join(", ")}` : null,
+      c.items.length ? `drops ${c.items.join(", ")}` : null, c.qa?.minRun1 != null ? `density ${c.qa.minRun1}` : null].filter(Boolean).join(" · ")),
+    h("div", { class: "cand-marks" }, ...candMarks(c)),
+    h("div", { class: "card-sub lit-mode" }, h("span", { class: "muted lit-label" }, "Zoom"), zoomSeg),
+    grid,
+    // THE VERDICT COMES AFTER THE EIGHT PICTURES. He reads down through the
+    // pairs and judges at the bottom, where his thumb already is — buttons at
+    // the top would make every verdict a scroll back up.
+    state.admin ? h("div", { class: "cand-judge" },
+      h("p", { class: "muted cand-hint" }, "Every facing must BE its facing — a wrong direction cannot be fixed later. Approve = the agent generates all animations in all 8 directions. Redo = same design, next seed. Remove = drop it."),
+      candFeedback(c)) : null,
+    c.pixellab ? h("p", { class: "muted" }, "PixelLab id ", h("code", {}, c.pixellab)) : null);
 }
 const monsterLore = (m) => m.loreDesc ?? m.lore ?? `Travellers tell of the ${m.name} roaming the wilds of Nangijala. What it wants — and what it guards — no chronicler has written down yet.`;
 // The admin tail is folded INTO the accessor, not added as a second <p>:
@@ -13044,7 +13188,7 @@ function route() {
   if (!(page === "world" && id === "transition")) fadeOrder = { key: null, keys: [], firstDone: 0 };
   let view;
   if (state.query && !id) view = viewSearch();
-  else if (page === "monsters") view = id ? viewMonster(id) : viewMonsters();
+  else if (page === "monsters") view = id === "candidates" ? (sub ? viewCandidate(sub) : viewCandidates()) : id ? viewMonster(id) : viewMonsters();
   // #/characters/<hero>/<event> lights that hero's own sound card — where the
   // 🔍 page's voice-scoped rows (player.jump@default_boy) land.
   else if (page === "characters") { view = id ? viewCharacter(id) : viewCharacters(); if (id && sub) spotlight(`[data-event="${CSS.escape(sub)}"]`); }

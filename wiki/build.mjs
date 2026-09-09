@@ -2765,8 +2765,45 @@ function seedMonsterTuning(monsters, levels) {
   return { tuning: out, added, levelled };
 }
 
+// ------------------------------------------------------- monster candidates
+// A NEW MONSTER IS JUDGED ON ITS 8 DIRECTIONS BEFORE IT EARNS ANIMATIONS
+// (maintainer 2026-09-09: "if the initial 8 directions is not perfect — don't
+// even think about continuing with that monster"). The monsters agent births
+// a candidate as an 8-direction base only and publishes
+// monsters/candidates/index.json (format monster-candidates@1); the wiki
+// shows the 8 facings and his verdict lands in live/feedback/monsters.json
+// under `monsters/candidates/<id>` — approved = generate every animation,
+// redo = same design next seed, rejected = drop the design. The agent's own
+// `review` field (pending/approved/rejected) rides along so the page can say
+// whether it has acted on the verdict yet.
+function buildMonsterCandidates() {
+  const base = join(ROOT, "monsters", "candidates");
+  const ix = readJson(join(base, "index.json"));
+  if (!ix || !Array.isArray(ix.candidates)) return [];
+  const dirs = Array.isArray(ix.directions) && ix.directions.length === 8 ? ix.directions : DIRS;
+  const rel = (p) => (p ? `monsters/candidates/${p}` : null);
+  return ix.candidates.filter((c) => c && c.id).map((c) => ({
+    id: c.id,
+    name: c.name ?? titleCase(c.id),
+    path: `monsters/candidates/${c.id}`,
+    tier: c.tier ?? null,
+    lore: c.lore ?? null,
+    biome: Array.isArray(c.biome) ? c.biome : [],
+    items: Array.isArray(c.items) ? c.items : [],
+    size: Array.isArray(c.size) ? c.size : null,
+    version: c.version ?? 1,
+    generatedAt: c.generated_at ?? ix.generated_at ?? null,
+    pixellab: c.pixellab_id ?? null,
+    sheet: rel(c.sheet),
+    rotations: Object.fromEntries(dirs.map((d) => [d, rel(c.rotations?.[d])]).filter(([, v]) => v)),
+    qa: c.qa ? { status: c.qa.status ?? null, minRun1: c.qa.min_run1 ?? null, reasons: c.qa.reasons ?? [] } : null,
+    review: c.review ?? "pending",
+  }));
+}
+
 // -------------------------------------------------------------------- main
 const monsters = buildMonsters();
+const monsterCandidates = buildMonsterCandidates();
 const characters = buildCharacters();
 const tiles = buildTiles();
 const worldCells = buildWorld();
@@ -3184,6 +3221,7 @@ const data = {
   loreMeta,
   counts: {
     monsters: monsters?.length ?? 0,
+    monster_candidates: monsterCandidates.length,
     // Heroes and NPCs counted apart: the nav and start tile stay about the
     // PLAYABLE cast (maintainer 2026-08-01 — "player selectable Characters
     // foremost"); the NPC block carries its own count in its heading.
@@ -3210,6 +3248,7 @@ const data = {
     monsters: monsters ?? [], characters: characters ?? [], tiles: tiles ?? [],
     objects: objects ?? [], sounds: sounds ?? [], music: music ?? [], items: items ?? [],
     lore: lore ?? [], world: worldCells ?? [],
+    monsterCandidates,
   },
   // The tiles agent's own vocabulary and acceptance thresholds.
   worldMeta,

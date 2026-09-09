@@ -20,6 +20,7 @@ on:
       - "wiki/site/**"
       - "wiki/tools/check-routes.mjs"
       - "wiki/tools/check-stage.mjs"
+      - "wiki/tools/check-candidates.mjs"
       - "wiki/tools/check-script.mjs"
       - ".github/workflows/wiki-guard.yml"
 
@@ -52,3 +53,5 @@ jobs:
         run: node wiki/tools/check-routes.mjs
       - name: The preview stage never outgrows a phone screen
         run: node wiki/tools/check-stage.mjs
+      - name: A new monster is judged on its 8 directions before it earns animations
+        run: node wiki/tools/check-candidates.mjs

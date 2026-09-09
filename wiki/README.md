@@ -73,6 +73,7 @@ feedback ids are repo paths — but nothing user-visible says "monsters" or
 | route | shown as | route | shown as |
 | --- | --- | --- | --- |
 | `#/monsters` | **Creatures** | `#/sounds` | **Sound Effects** |
+| `#/monsters/candidates` | **Candidates** (a new creature's 8 directions, judged before it earns animations — `docs/creatures.md`) | | |
 | `#/characters` | **Races** | `#/music` | **Music** |
 | `#/tiles` | **World** | `#/items` | **Items** |
 | `#/objects` | **Scenery** | `#/tuning` | **Parameters** (admin) |

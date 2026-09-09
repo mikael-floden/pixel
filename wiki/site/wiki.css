@@ -1911,3 +1911,20 @@ input[type="range"] { accent-color: var(--accent); }
 .light-rails .shadow-val { min-width: 64px; text-align: right; }
 /* A rail's readout: the same mono chip the sound picker's rails use. */
 .shadow-val { font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted); }
+
+/* ---- MONSTER CANDIDATES: the 8 directions, judged before any animation ----
+ * Facings sit in MIRROR PAIRS (S|N, E|W, SE|SW, NE|NW): the twin the generator
+ * gets wrong is next to its mirror, and two sprites fit a phone at 1×. */
+.cand-entry { display: block; margin: 10px 0 4px; padding: 10px 14px; border: 1px solid var(--accent); border-radius: 10px; background: var(--accent-soft); color: var(--ink); font-weight: 600; text-decoration: none; }
+.cand-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.cand-card { text-decoration: none; color: inherit; }
+.cand-thumb { display: flex; align-items: flex-end; justify-content: center; height: 150px; border-radius: 8px; overflow: hidden; margin-bottom: 6px; }
+.cand-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; image-rendering: pixelated; }
+.cand-marks { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; min-height: 0; }
+.cand-judge { margin: 8px 0 12px; }
+.cand-hint { margin: 0 0 6px; }
+.cand-dirs { display: grid; grid-template-columns: repeat(var(--cand-cols, 2), var(--cand-w, 136px)); gap: 8px; justify-content: start; max-width: 100%; overflow-x: auto; padding-bottom: 8px; }
+.cand-dir { margin: 0; width: var(--cand-w, 136px); border-radius: 8px; overflow: hidden; position: relative; }
+.cand-dir img { display: block; width: var(--cand-w, 136px); height: var(--cand-w, 136px); image-rendering: pixelated; }
+.cand-dir figcaption { position: absolute; top: 4px; left: 6px; font-size: 12px; color: var(--muted); background: var(--bg); padding: 1px 6px; border-radius: 6px; opacity: .9; }
+.cand-dir figcaption b { color: var(--ink); }

@@ -29,8 +29,11 @@ const first = (dom) => (DATA.domains?.[dom] ?? [])[0]?.id ?? null;
 const ROUTES = [
   "#/", "#/objects", "#/monsters", "#/items", "#/sounds", "#/music", "#/world",
   "#/characters", "#/lore", "#/tiles", "#/near",
-  ...[["objects", "objects"], ["monsters", "monsters"], ["items", "items"], ["characters", "characters"]]
+  ...[["objects", "objects"], ["monsters", "monsters"], ["items", "items"], ["characters", "characters"],
+      // A new monster's 8-direction base, judged before it earns animations.
+      ["monsterCandidates", "monsters/candidates"]]
     .map(([dom, path]) => (first(dom) ? `#/${path}/${first(dom)}` : null)).filter(Boolean),
+  ...(first("monsterCandidates") ? ["#/monsters/candidates"] : []),
 ];
 const fails = [];
 /* THE BROWSER, wherever it is: this sandbox bakes one in at a fixed path, CI
