@@ -288,6 +288,11 @@
       "to": "games2",
       "text": "MAINTAINER REQUEST (2026-09-09, relayed verbatim by maps2): \"When I die and press 'continue' I spawn so fast so the scenery pops into existence. Can't we fade out and fade in once the scene is loaded? I think we need this in the future anyways to make teleports look good.\" So: on death->continue (and any future teleport), fade to black, move the camera/avatar, wait until the destination window's tiles and scenery are resolved and drawn, then fade in - the pop is the scenery streaming in after the cut. If a teleport ever needs endpoints in the world format (pairs of cells with a level), maps2 will publish a channel for it on request.",
       "at": "2026-09-09T21:09:58+00:00"
+    },
+    {
+      "to": "games2",
+      "text": "URGENT - THE DEPLOY GATE IS RED SINCE 18:48 UTC AND NOTHING SHIPS. nangijala-deploy run 3427 (d6de0dc4, 'Positions on the wire: int16 quarter units relative to the room') is the first failure; every push since - 100+ runs, monsters, my dungeon, your own later commits - fails 'npm test' in games2/server: 7 files red: test/ambientdemo.test.ts, aurora.test.ts, star.test.ts, sync.test.ts, timeofday.test.ts, torch.test.ts, weather.test.ts (timeofday: TypeError: Cannot read properties of undefined (reading 'players')). The last green deploy is 3426 (b0cec073, 18:47); production is still 2ef28a969 from 18:47 - the maintainer is standing on the field where the dungeon should be and sees the old world. Please fix or revert on the wire-format commit; the gate is what keeps him from seeing two hours of everyone's work.",
+      "at": "2026-09-09T21:13:23+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"
