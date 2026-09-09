@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T19:02:42+00:00",
+  "generated_at": "2026-09-09T19:04:08+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -9154,13 +9154,13 @@
       ],
       "items": [],
       "size": [
-        40,
-        40
+        48,
+        48
       ],
       "template_id": "bear",
       "scale": "small",
-      "pixellab_id": "6090b201-012b-4ef9-8a01-2628d588cf7e",
-      "version": 1,
+      "pixellab_id": "773fdded-88d8-4155-8ca4-3c938c723cb8",
+      "version": 2,
       "sheet": "bog_viper/sheet.webp",
       "rotations": {
         "south": "bog_viper/rotations/south.webp",
@@ -9173,106 +9173,103 @@
         "south-west": "bog_viper/rotations/south-west.webp"
       },
       "qa": {
-        "status": "fail",
-        "min_run1": 0.674,
-        "reasons": [
-          "north: content touches the canvas edge (clipped)",
-          "south-west: content touches the canvas edge (clipped)"
-        ],
+        "status": "pass",
+        "min_run1": 0.672,
+        "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.751,
+            "run1": 0.721,
             "bbox": [
               1,
-              4,
-              39,
-              37
+              2,
+              47,
+              47
             ],
-            "fill": 0.784,
+            "fill": 0.898,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.7,
+            "run1": 0.708,
             "bbox": [
-              3,
+              1,
               2,
-              37,
-              38
+              46,
+              47
             ],
-            "fill": 0.765,
+            "fill": 0.879,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.734,
+            "run1": 0.705,
             "bbox": [
-              3,
+              1,
               2,
-              37,
-              38
+              47,
+              47
             ],
-            "fill": 0.765,
+            "fill": 0.898,
             "touches_edge": false
           },
           "north": {
-            "run1": 0.674,
-            "bbox": [
-              0,
-              3,
-              38,
-              37
-            ],
-            "fill": 0.807,
-            "touches_edge": true
-          },
-          "south-east": {
-            "run1": 0.761,
+            "run1": 0.672,
             "bbox": [
               1,
-              3,
-              39,
-              38
+              2,
+              47,
+              47
             ],
-            "fill": 0.831,
+            "fill": 0.898,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.749,
+            "bbox": [
+              2,
+              1,
+              47,
+              47
+            ],
+            "fill": 0.898,
             "touches_edge": false
           },
           "north-east": {
-            "run1": 0.713,
+            "run1": 0.723,
             "bbox": [
+              1,
               2,
-              2,
-              37,
-              38
+              47,
+              47
             ],
-            "fill": 0.787,
+            "fill": 0.898,
             "touches_edge": false
           },
           "north-west": {
-            "run1": 0.713,
+            "run1": 0.701,
             "bbox": [
               2,
               2,
-              38,
-              38
+              46,
+              47
             ],
-            "fill": 0.81,
+            "fill": 0.859,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.741,
+            "run1": 0.734,
             "bbox": [
-              0,
-              3,
-              38,
-              38
+              1,
+              2,
+              47,
+              47
             ],
-            "fill": 0.831,
-            "touches_edge": true
+            "fill": 0.898,
+            "touches_edge": false
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-09T19:01:09+00:00"
+      "generated_at": "2026-09-09T19:04:08+00:00"
     },
     {
       "id": "dire_wolf",
