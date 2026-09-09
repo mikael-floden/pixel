@@ -3873,6 +3873,12 @@ export class WorldScene extends Phaser.Scene {
         this.clearMoveTarget();
       },
       settings: [
+        // Disable aggro FIRST (maintainer 2026-08-07: "I will use this feature
+        // to test walk around in the cave without dying"; 2026-09-09: "add
+        // back the settings option so I can make monsters non aggro" — it was
+        // the 24th of ~35 buttons, below the fold on a phone). Server-side and
+        // per player — see the "noaggro" handler in WorldRoom.
+        { label: "disable aggro", act: () => this.toggleNoAggro(), get: () => this.noAggroOn },
         // Time-of-day is the one plain BUTTON; the rest are switches
         // (down = ON) — no keyboard-digit prefixes (maintainer).
         {
@@ -4123,10 +4129,6 @@ export class WorldScene extends Phaser.Scene {
           get: () => this.perfBeacon,
           state: () => (this.perfBeacon ? "reporting" : "off"),
         },
-        // Disable aggro (maintainer 2026-08-07: "I will use this feature to
-        // test walk around in the cave without dying"). Server-side and per
-        // player — see the "noaggro" handler in WorldRoom.
-        { label: "disable aggro", act: () => this.toggleNoAggro(), get: () => this.noAggroOn },
         {
           label: "overlay",
           act: () => this.setOverlay((this.overlayIdx + 1) % OVERLAYS.length),
