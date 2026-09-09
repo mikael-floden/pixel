@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:35:57+00:00",
+  "generated_at": "2026-09-09T18:36:29+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 43,
+  "count": 44,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -5558,6 +5558,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:35:57+00:00"
+    },
+    {
+      "id": "mummy",
+      "name": "Wrapwarden",
+      "tier": "evil",
+      "lore": "Its name was carved off the tomb, so it went looking for it. It checks every face and none of them fit.",
+      "biome": [
+        "light_soil",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "968db5e3-3077-4a39-b88a-811f7aa91eb0",
+      "version": 1,
+      "sheet": "mummy/sheet.webp",
+      "rotations": {
+        "south": "mummy/rotations/south.webp",
+        "south-east": "mummy/rotations/south-east.webp",
+        "east": "mummy/rotations/east.webp",
+        "north-east": "mummy/rotations/north-east.webp",
+        "north": "mummy/rotations/north.webp",
+        "north-west": "mummy/rotations/north-west.webp",
+        "west": "mummy/rotations/west.webp",
+        "south-west": "mummy/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.772,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.772,
+            "bbox": [
+              9,
+              4,
+              93,
+              99
+            ],
+            "fill": 0.738,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.84,
+            "bbox": [
+              32,
+              4,
+              75,
+              102
+            ],
+            "fill": 0.39,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.84,
+            "bbox": [
+              26,
+              4,
+              72,
+              102
+            ],
+            "fill": 0.417,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.777,
+            "bbox": [
+              12,
+              3,
+              92,
+              99
+            ],
+            "fill": 0.71,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.842,
+            "bbox": [
+              17,
+              4,
+              87,
+              101
+            ],
+            "fill": 0.628,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.802,
+            "bbox": [
+              20,
+              3,
+              77,
+              99
+            ],
+            "fill": 0.506,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.796,
+            "bbox": [
+              24,
+              3,
+              86,
+              99
+            ],
+            "fill": 0.55,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.854,
+            "bbox": [
+              19,
+              4,
+              86,
+              101
+            ],
+            "fill": 0.601,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:36:29+00:00"
     }
   ]
 }
