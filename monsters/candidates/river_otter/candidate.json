@@ -1,0 +1,143 @@
+{
+  "id": "river_otter",
+  "name": "Sleekfang",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "Quick in the water and quicker out of it. It guards the ford and takes a toll in fingers.",
+  "biome": [
+    "water",
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Fantasy river otter with sleek dark brown fur, a pale throat, small rounded ears, sharp white teeth, webbed paws, and a thick tapered tail curled beside its body, water beading on its coat.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "river_otter/rotations/south.webp",
+    "south-east": "river_otter/rotations/south-east.webp",
+    "east": "river_otter/rotations/east.webp",
+    "north-east": "river_otter/rotations/north-east.webp",
+    "north": "river_otter/rotations/north.webp",
+    "north-west": "river_otter/rotations/north-west.webp",
+    "west": "river_otter/rotations/west.webp",
+    "south-west": "river_otter/rotations/south-west.webp"
+  },
+  "sheet": "river_otter/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "e23440db-cdb4-459d-b0e0-dd8d322196c8",
+  "seed": 1988312107,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:52:52+00:00",
+  "elapsed_s": 156.0,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.553,
+    "reasons": [
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.576,
+        "bbox": [
+          6,
+          8,
+          92,
+          90
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.587,
+        "bbox": [
+          4,
+          5,
+          91,
+          88
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.618,
+        "bbox": [
+          7,
+          7,
+          95,
+          88
+        ],
+        "fill": 0.773,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.553,
+        "bbox": [
+          6,
+          5,
+          75,
+          82
+        ],
+        "fill": 0.576,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.683,
+        "bbox": [
+          15,
+          9,
+          80,
+          91
+        ],
+        "fill": 0.578,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.588,
+        "bbox": [
+          3,
+          6,
+          93,
+          83
+        ],
+        "fill": 0.752,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.577,
+        "bbox": [
+          14,
+          6,
+          80,
+          88
+        ],
+        "fill": 0.587,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.647,
+        "bbox": [
+          0,
+          8,
+          93,
+          85
+        ],
+        "fill": 0.777,
+        "touches_edge": true
+      }
+    }
+  }
+}

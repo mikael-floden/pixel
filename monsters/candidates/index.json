@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:50:54+00:00",
+  "generated_at": "2026-09-09T18:52:52+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 60,
+  "count": 62,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -7738,6 +7738,268 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:50:15+00:00"
+    },
+    {
+      "id": "cave_troll_boss",
+      "name": "Deepmaul",
+      "tier": "boss",
+      "lore": "It has never seen the sun and hates it on principle. Anything with a torch gets the club first.",
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        232,
+        232
+      ],
+      "template_id": "mannequin",
+      "scale": "big",
+      "pixellab_id": "07b2385d-073f-4c95-856a-32b7fe2cca4f",
+      "version": 1,
+      "sheet": "cave_troll_boss/sheet.webp",
+      "rotations": {
+        "south": "cave_troll_boss/rotations/south.webp",
+        "south-east": "cave_troll_boss/rotations/south-east.webp",
+        "east": "cave_troll_boss/rotations/east.webp",
+        "north-east": "cave_troll_boss/rotations/north-east.webp",
+        "north": "cave_troll_boss/rotations/north.webp",
+        "north-west": "cave_troll_boss/rotations/north-west.webp",
+        "west": "cave_troll_boss/rotations/west.webp",
+        "south-west": "cave_troll_boss/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.594,
+        "reasons": [
+          "east: content touches the canvas edge (clipped)",
+          "north-west: content touches the canvas edge (clipped)",
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.594,
+            "bbox": [
+              7,
+              9,
+              221,
+              226
+            ],
+            "fill": 0.863,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.66,
+            "bbox": [
+              63,
+              4,
+              168,
+              231
+            ],
+            "fill": 0.443,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.677,
+            "bbox": [
+              55,
+              5,
+              176,
+              232
+            ],
+            "fill": 0.51,
+            "touches_edge": true
+          },
+          "north": {
+            "run1": 0.636,
+            "bbox": [
+              27,
+              1,
+              227,
+              227
+            ],
+            "fill": 0.84,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.687,
+            "bbox": [
+              36,
+              6,
+              213,
+              229
+            ],
+            "fill": 0.733,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.674,
+            "bbox": [
+              66,
+              5,
+              200,
+              230
+            ],
+            "fill": 0.56,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.643,
+            "bbox": [
+              29,
+              0,
+              206,
+              228
+            ],
+            "fill": 0.75,
+            "touches_edge": true
+          },
+          "south-west": {
+            "run1": 0.674,
+            "bbox": [
+              28,
+              8,
+              188,
+              232
+            ],
+            "fill": 0.666,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:52:27+00:00"
+    },
+    {
+      "id": "river_otter",
+      "name": "Sleekfang",
+      "tier": "cute",
+      "lore": "Quick in the water and quicker out of it. It guards the ford and takes a toll in fingers.",
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "e23440db-cdb4-459d-b0e0-dd8d322196c8",
+      "version": 1,
+      "sheet": "river_otter/sheet.webp",
+      "rotations": {
+        "south": "river_otter/rotations/south.webp",
+        "south-east": "river_otter/rotations/south-east.webp",
+        "east": "river_otter/rotations/east.webp",
+        "north-east": "river_otter/rotations/north-east.webp",
+        "north": "river_otter/rotations/north.webp",
+        "north-west": "river_otter/rotations/north-west.webp",
+        "west": "river_otter/rotations/west.webp",
+        "south-west": "river_otter/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.553,
+        "reasons": [
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.576,
+            "bbox": [
+              6,
+              8,
+              92,
+              90
+            ],
+            "fill": 0.765,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.587,
+            "bbox": [
+              4,
+              5,
+              91,
+              88
+            ],
+            "fill": 0.784,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.618,
+            "bbox": [
+              7,
+              7,
+              95,
+              88
+            ],
+            "fill": 0.773,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.553,
+            "bbox": [
+              6,
+              5,
+              75,
+              82
+            ],
+            "fill": 0.576,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.683,
+            "bbox": [
+              15,
+              9,
+              80,
+              91
+            ],
+            "fill": 0.578,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.588,
+            "bbox": [
+              3,
+              6,
+              93,
+              83
+            ],
+            "fill": 0.752,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.577,
+            "bbox": [
+              14,
+              6,
+              80,
+              88
+            ],
+            "fill": 0.587,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.647,
+            "bbox": [
+              0,
+              8,
+              93,
+              85
+            ],
+            "fill": 0.777,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:52:52+00:00"
     }
   ]
 }
