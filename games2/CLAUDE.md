@@ -415,6 +415,24 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   silhouette swap frames together under the still's own crop (frames are the
   still's canvas), and the lit copy keeps the still's shape map. Strip-only
   clips do not play. Probe: `__ml.sceneryAnims()`.
+  A LIT CLIP MOVES ITS LIGHT (`applySceneryLightFrame`; scenery
+  `light_frames`, one `{intensity, dx, dy}` per frame; dials in
+  `client/src/lightanim.ts`, Settings "Light intensity swing" / "Light centre
+  swing", log dials 0.05-20x, 1x = the data as published). While the clip
+  plays the placement's light source — the object the ledger reads every
+  frame — takes 1 + (intensity − 1) x the intensity dial as a multiplier on
+  the block's colour, and the frame's emissive centre minus the STILL's
+  (canvas px, from the same emissive test the block's colour comes from)
+  through the drawn scale and the hitbox convention onto the ground plane,
+  times the position dial; the clip's end restores the rest values and a
+  rebuild mid-play is re-applied every step. Maintainer 2026-09-09: "the
+  spotlight differs a bit with the animation and the game will feel more
+  alive ... 0.5 means half the effect and 2.0 means twice the effect ...
+  This is for me to test what looks best. Will give you the defaults once I
+  found it" — the defaults are 1x until he does. Measured on the cauldron
+  camp at 349.8,248.8: 1x swings 0.70-1.40 of strength and up to 0.07 cells,
+  4x 0.05-2.61 and 0.29 cells, rest exactly the block. Probe:
+  `__ml.sceneryAnims().lit`.
 - **SCENERY ON A WALL — WINDOWS AND HANGINGS** (maps2 `z`, WORLD3.md
   "windows and hangings"; `scenery3.ts` `SceneryPlacement.z/wall`,
   `WorldScene.registerSceneryWall` / `stepSceneryWalls` / `windowGlow`;

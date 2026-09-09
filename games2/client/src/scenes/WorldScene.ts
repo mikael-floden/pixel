@@ -227,6 +227,7 @@ import {
   type SceneryAnim,
 } from "../scenery3";
 import { sceneryAnimClass, scenerySleepMs, SCENERY_ANIM_FPS, type SceneryAnimClass } from "../sceneryanim";
+import { lightAnimTune } from "../lightanim";
 import { sceneryAnimVerdict } from "../live";
 
 // Fallback loop rates when a state has no measured gaitFps. The jump clip is
@@ -1416,6 +1417,23 @@ interface SceneryAnimLive {
   stillKey: string;
   frameName: string;
   crop: [number, number, number, number];
+  /** Frame px -> screen px, for the per-frame light centre. */
+  kx: number;
+  ky: number;
+  /** THE PLACEMENT'S LIGHT while its clip plays (`light_frames`): the source
+   *  the ledger reads every frame, its at-rest values, and the still's own
+   *  emissive centroid in canvas px (the frames' `dx`/`dy` are measured from
+   *  the frame centre; the still's centroid is where the light stands at
+   *  rest, so the per-frame offset is the difference). Resolved lazily on the
+   *  first played frame; `false` once looked up and absent (an unlit piece). */
+  light?: {
+    src: EmissiveSource;
+    base: { col: number; row: number; color: [number, number, number]; hx: number; hy: number };
+    stillDx: number;
+    stillDy: number;
+  } | false;
+  /** What the last step applied, for the probe. */
+  lightNow?: { i: number; dcol: number; drow: number };
 }
 
 interface BodyVisual {
@@ -6422,6 +6440,14 @@ export class WorldScene extends Phaser.Scene {
           byClass: runs.reduce<Record<string, number>>((acc, r) => ((acc[r.run.cls] = (acc[r.run.cls] ?? 0) + 1), acc), {}),
           nextMs: runs.filter((r) => r.run.frame < 0).map((r) => Math.round(r.run.next - now)).sort((a, b) => a - b).slice(0, 8),
           resident: runs.filter((r) => r.run.keys.every((k) => this.textures.exists(k))).length,
+          // The per-frame light (scenery light_frames x the lightanim.ts dials).
+          lit: this.sceneryAnimLive.filter((l) => !!l.light).map((l) => {
+            const L = l.light as Exclude<SceneryAnimLive["light"], false | undefined>;
+            return { place: l.place, frame: this.sceneryAnimRuns.get(l.place)?.frame ?? -1, frames: this.sceneryAnimRuns.get(l.place)?.clip.lightFrames?.length ?? 0,
+              now: l.lightNow ?? null, base: { col: +L.base.col.toFixed(2), row: +L.base.row.toFixed(2), peak: +Math.max(...L.base.color).toFixed(2) },
+              src: { col: +L.src.col.toFixed(3), row: +L.src.row.toFixed(3), peak: +Math.max(...L.src.color).toFixed(3) } };
+          }),
+          tune: lightAnimTune(),
           // Geometry through a swap: the box must not move between still and frame.
           boxes: this.sceneryAnimLive.slice(0, 6).map((l) => ({ place: l.place, tex: l.img.texture.key.slice(-28), frame: this.sceneryAnimRuns.get(l.place)?.frame ?? -1, w: +l.img.displayWidth.toFixed(1), h: +l.img.displayHeight.toFixed(1), x: Math.round(l.img.x), y: Math.round(l.img.y) })),
         };
@@ -16134,7 +16160,11 @@ export class WorldScene extends Phaser.Scene {
       this.sceneryAnimRuns.set(place, run);
     }
     for (const f of clip.frames) this.needScenery(f);
-    const live: SceneryAnimLive = { place, img, lo, stillKey, frameName, crop };
+    const live: SceneryAnimLive = {
+      place, img, lo, stillKey, frameName, crop,
+      kx: crop[2] > 0 ? img.displayWidth / crop[2] : 1,
+      ky: crop[3] > 0 ? img.displayHeight / crop[3] : 1,
+    };
     this.sceneryAnimLive.push(live);
     if (run.frame >= 0) this.setSceneryFrame(live, run.keys[run.frame] ?? stillKey);
   }
@@ -16178,13 +16208,79 @@ export class WorldScene extends Phaser.Scene {
         run.frame = -1;
         run.next = now + scenerySleepMs(run.cls);
         this.setSceneryFrame(live, live.stillKey);
+        this.applySceneryLightFrame(live, null);
         continue;
       }
       if (f !== run.frame) {
         run.frame = f;
         this.setSceneryFrame(live, run.keys[f]);
       }
+      // Every step, not only on a frame change: a rebuild mid-play re-pushes
+      // the source at rest, and the dials are read live.
+      if (run.clip.lightFrames) this.applySceneryLightFrame(live, run.clip.lightFrames[Math.min(f, run.clip.lightFrames.length - 1)] ?? null);
     }
+  }
+
+  /** PER-FRAME LIGHT (scenery `light_frames`, dials in lightanim.ts): while a
+   *  LIT clip plays, the placement's light source — the object the ledger
+   *  reads every frame — takes the frame's intensity as a swing about the
+   *  block's strength (1 + (intensity − 1) x the intensity dial) and the
+   *  frame's emissive centre as an offset from the STILL's centre, in frame
+   *  px through the drawn scale to screen px and onto the ground plane by the
+   *  hitbox convention (the same map the footprint stamp uses), times the
+   *  position dial. `null` restores the at-rest values (the clip ended).
+   *  Maintainer 2026-09-09: "the spotlight differs a bit with the animation
+   *  and the game will feel more alive" — and the dials: "0.5 means half the
+   *  effect and 2.0 means twice the effect ... 0.05 to 20x". */
+  private applySceneryLightFrame(live: SceneryAnimLive, lf: { intensity: number; dx: number; dy: number } | null): void {
+    if (live.light === false) return;
+    if (!live.light) {
+      const id = `s3:${live.place}`;
+      const src = this.sceneryLightSources.find((s) => s.id === id);
+      if (!src) {
+        live.light = false;
+        return;
+      }
+      const rec = this.sceneryLightCache.get(live.stillKey);
+      const art = this.sceneryArtFit(live.stillKey);
+      live.light = {
+        src,
+        base: { col: src.col, row: src.row, color: [src.color[0], src.color[1], src.color[2]], hx: src.hx, hy: src.hy },
+        stillDx: rec && art ? rec.cx - art.canvas.w / 2 : 0,
+        stillDy: rec && art ? rec.cy - art.canvas.h / 2 : 0,
+      };
+    }
+    const L = live.light;
+    // The source is rebuilt with every occluder rebuild: if the object we hold
+    // is no longer in the ledger, look the new one up next time.
+    if (!this.sceneryLightSources.includes(L.src)) {
+      live.light = undefined;
+      if (lf) this.applySceneryLightFrame(live, lf);
+      return;
+    }
+    const { src, base } = L;
+    if (!lf) {
+      src.col = base.col;
+      src.row = base.row;
+      src.color = base.color;
+      src.hx = base.hx;
+      src.hy = base.hy;
+      live.lightNow = undefined;
+      return;
+    }
+    const tune = lightAnimTune();
+    const i = Math.max(0.05, 1 + (lf.intensity - 1) * tune.intensity);
+    const sx = (lf.dx - L.stillDx) * live.kx * tune.position;
+    const sy = (lf.dy - L.stillDy) * live.ky * tune.position;
+    const { dx, dy } = this.geom;
+    const dcol = (sx / dx + sy / dy) / 2;
+    const drow = (sy / dy - sx / dx) / 2;
+    src.col = base.col + dcol;
+    src.row = base.row + drow;
+    src.hx = base.hx + sx;
+    src.hy = base.hy + sy;
+    src.color = [base.color[0] * i, base.color[1] * i, base.color[2] * i];
+    live.lightNow = { i, dcol, drow };
   }
 
   private makeFogSilhouette(lo: (typeof this.litOccluders)[number]): void {

@@ -40,6 +40,7 @@ import {
   sceneryAnimTune,
   setSceneryAnimTune,
 } from "./sceneryanim";
+import { lightAnimTune, setLightAnimTune, ratioFromSlider, sliderFromRatio } from "./lightanim";
 import {
   lightScale,
   setLightScale,
@@ -901,6 +902,29 @@ export class HudBar {
         ),
       );
     }
+
+    /* LIGHT ANIMATION (maintainer 2026-09-09): a LIT clip's per-frame light —
+     * the intensity swing and the centre offset the scenery domain publishes
+     * (`light_frames`) — each scaled by a RATIO: "0.5 means half the effect
+     * and 2.0 means twice the effect ... 0.05 to 20x. This is for me to test
+     * what looks best." Log dials; lightanim.ts owns the values; the scene
+     * reads them every frame. */
+    wrap.appendChild(
+      pctSlider(
+        "Light intensity swing",
+        () => sliderFromRatio(lightAnimTune().intensity),
+        (p) => setLightAnimTune({ intensity: ratioFromSlider(p) }),
+        { format: (p) => `${ratioFromSlider(p).toFixed(2)}x` },
+      ),
+    );
+    wrap.appendChild(
+      pctSlider(
+        "Light centre swing",
+        () => sliderFromRatio(lightAnimTune().position),
+        (p) => setLightAnimTune({ position: ratioFromSlider(p) }),
+        { format: (p) => `${ratioFromSlider(p).toFixed(2)}x` },
+      ),
+    );
 
     /* LIGHT RESOLUTION: the fraction of the canvas the three full-screen
      * passes (light, mist, depth fog) render at before a LINEAR upsample.

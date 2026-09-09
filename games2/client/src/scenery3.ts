@@ -187,6 +187,12 @@ export interface SceneryAnim {
    *  the review judged the clip by and the one the game draws its sleep from
    *  (sceneryanim.ts). Null when the library names none. */
   cls: string | null;
+  /** PER-FRAME LIGHT on a LIT clip (`light_frames`, scenery/README.md): one
+   *  entry per frame in frame order — `intensity` relative to the clip's mean
+   *  (0.5–1.5; strength x intensity is that frame's strength), `dx`/`dy` the
+   *  emissive centroid's offset from the frame centre in FRAME px (the hitbox
+   *  convention). Null when the clip carries none (windows, unlit clips). */
+  lightFrames: { intensity: number; dx: number; dy: number }[] | null;
 }
 
 export interface SceneryState {
@@ -269,6 +275,13 @@ function parseAnims(raw: unknown, where: string, warn: (m: string) => void): Rec
       keepFirstFrame: a.keep_first_frame !== false,
       review: str(a.review) || null,
       cls: str(a.review_metrics?.class) || null,
+      lightFrames: Array.isArray(a.light_frames) && a.light_frames.length
+        ? a.light_frames.map((lf: any) => ({
+            intensity: Number.isFinite(lf?.intensity) ? lf.intensity : 1,
+            dx: Number.isFinite(lf?.dx) ? lf.dx : 0,
+            dy: Number.isFinite(lf?.dy) ? lf.dy : 0,
+          }))
+        : null,
     };
   }
   return out;
