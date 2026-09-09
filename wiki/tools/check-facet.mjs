@@ -846,7 +846,7 @@ await pub.close();
   await p.goto(`${W}#/objects/${victim.id}`, { waitUntil: "load" });
   await p.waitForTimeout(2800);
   const row = await p.evaluate(() => {
-    const s = document.querySelector(".type-mode .type-pick");
+    const s = document.querySelector(".type-mode .wiki-select");
     return s ? { present: true, value: s.value, options: [...s.options].map((o) => o.value) } : { present: false };
   });
   console.log("kind row:", JSON.stringify(row));
@@ -854,7 +854,7 @@ await pub.close();
   ok(row.value === "MOUNTAIN_WALL" && row.options.includes("TOWN"),
     `it opens on what the agent tagged and offers the domain's other kinds (${row.options?.join(",")})`);
   await p.evaluate(() => {
-    const s = document.querySelector(".type-mode .type-pick");
+    const s = document.querySelector(".type-mode .wiki-select");
     s.value = "TOWN"; s.dispatchEvent(new Event("change"));
   });
   await p.waitForTimeout(900);
@@ -879,7 +879,7 @@ await pub.close();
   await p.goto(`${W}#/objects/${victim.id}`, { waitUntil: "load" });
   await p.waitForTimeout(2600);
   await p.evaluate(() => {
-    const s = document.querySelector(".type-mode .type-pick");
+    const s = document.querySelector(".type-mode .wiki-select");
     s.value = "MOUNTAIN_WALL"; s.dispatchEvent(new Event("change"));
   });
   await p.waitForTimeout(800);
@@ -913,8 +913,10 @@ await pub.close();
         kinds: [...(r.querySelector("select")?.options ?? [])].map((o) => o.value),
         color: r.querySelector('input[type="color"]')?.value ?? null,
         rails: [...r.querySelectorAll('input[type="range"]')].map((x) => +x.value),
-        flags: [...r.querySelectorAll(".light-flag")].map((x) => x.textContent.trim()),
+        flags: [...r.querySelectorAll(".light-flags button.on")].map((x) => x.textContent.trim()),
         text: r.textContent.replace(/\s+/g, " "),
+        // The bonfire scale is the strength rail's tooltip, not a line of its own.
+        scale: [...r.querySelectorAll('input[type="range"]')].map((x) => x.title).join(" "),
       } : null;
     });
     console.log("light row:", JSON.stringify(row && { ...row, text: row.text.slice(0, 60) }));
@@ -925,7 +927,7 @@ await pub.close();
       `and the values are THIS STATE's, not the piece's fallback (colour ${row?.color} vs published ${pub.color})`);
     ok(row?.rails?.some((v) => Math.abs(v - Number(pub.strength ?? -1)) < 1e-6),
       `strength reads what was published (${row?.rails?.join(", ")} vs ${pub.strength})`);
-    ok(/the spawn bonfire is 1\.0/.test(row?.text ?? ""), "and the scale it is judged against is on the row");
+    ok(/the spawn bonfire is 1\.0/.test(row?.scale ?? ""), "and the scale it is judged against is on the strength rail");
 
     // EDIT: a correction carries what he chose AND what was generated.
     await p.evaluate(() => { const s = document.querySelector(".light-mode select"); s.value = "fire/open"; s.dispatchEvent(new Event("change")); });
@@ -951,11 +953,13 @@ await pub.close();
       // — that lamp IS the state's label, so it is what picks the chip.
       await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => !/💡/.test(x.textContent))?.click());
       await p.waitForTimeout(1000);
-      const off = await p.evaluate(() => {
-        const r = document.querySelector(".light-mode");
-        return { rails: r ? r.querySelectorAll('input[type="range"]').length : -1, text: r?.textContent.replace(/\s+/g, " ") ?? "" };
-      });
-      ok(off.rails === 0 && /unlit/.test(off.text), `an unlit state offers no light to tune ("${off.text.slice(0, 48)}")`);
+      const off = await p.evaluate(() => ({
+        detail: !!document.querySelector(".lit-detail"),
+        rails: document.querySelectorAll('.light-mode input[type="range"]').length,
+        lightRows: [...document.querySelectorAll(".lit-mode .lit-label")].filter((x) => x.textContent === "Light").length,
+      }));
+      ok(!off.detail && off.rails === 0, `an unlit state offers no light to tune (detail line ${off.detail}, ${off.rails} rails)`);
+      ok(off.lightRows === 1, `and there is ONE row called Light, not two (${off.lightRows})`);
     }
   }
 }
@@ -995,7 +999,7 @@ await pub.close();
       const r = await p.evaluate(() => {
         const el = document.querySelector(".anim-mode");
         return el ? { pills: [...el.querySelectorAll(".pill")].map((x) => x.textContent),
-                      buttons: [...el.querySelectorAll("button")].map((x) => x.textContent.trim()) } : null;
+                      buttons: [...el.querySelectorAll(".sortbar-btn")].map((x) => x.textContent.trim()) } : null;
       });
       if (r?.pills?.includes(want)) { row = r; break; }
       row = row ?? r;
@@ -1004,17 +1008,17 @@ await pub.close();
     ok(!!row, "an animated state carries an animation row");
     ok(row?.pills?.includes(want),
       `and it prints the root movement the build measured (${row?.pills?.join(" | ")})`);
-    ok(row?.buttons?.length === 2 && /approve/.test(row.buttons[0]) && /redo/.test(row.buttons[1]),
-      `with his two verdicts and no others (${row?.buttons?.join(" | ")})`);
+    ok(row?.buttons?.length === 3 && /^(probably (good|bad)|unclassified)$/.test(row.buttons[0]) && row.buttons[1] === "approved" && row.buttons[2] === "redo",
+      `one chip radio: the agent's call, then his two verdicts — no second "approve" on the page (${row?.buttons?.join(" | ")})`);
     // REDO, then withdrawn — the same toggle every verdict in the wiki has.
-    await p.evaluate(() => [...document.querySelectorAll(".anim-mode button")].find((x) => /redo/.test(x.textContent))?.click());
+    await p.evaluate(() => [...document.querySelectorAll(".anim-mode .sortbar-btn")].find((x) => /redo/.test(x.textContent))?.click());
     await p.waitForTimeout(600);
     const rec = await p.evaluate((k) => window.__wiki.state.tuning.scenery_animation?.overrides?.[k] ?? null, `${worst.o.path}#${worst.st}`);
     ok(rec?.verdict === "ANIMATION_REDO", `redo files against the STATE (${JSON.stringify(rec)})`);
-    await p.evaluate(() => [...document.querySelectorAll(".anim-mode button")].find((x) => /redo/.test(x.textContent))?.click());
+    await p.evaluate(() => document.querySelector(".anim-mode .sortbar-btn")?.click());   // the agent's own chip
     await p.waitForTimeout(600);
     const gone = await p.evaluate((k) => window.__wiki.state.tuning.scenery_animation?.overrides?.[k] ?? null, `${worst.o.path}#${worst.st}`);
-    ok(!gone, "and pressing it again hands the state back to the agent's classification");
+    ok(!gone, "and choosing the agent's chip hands the state back to their classification");
   }
   // THE FILTER HE ASKED FOR, counted off the registry rather than trusted.
   await p.goto(`${W}#/objects`, { waitUntil: "load" });

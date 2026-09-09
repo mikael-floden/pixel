@@ -4742,7 +4742,7 @@ function typeRow(o, onChange) {
     // itself (the same rule OBJ_TYPES' comment sets for the chips).
     const present = [...new Set([...state.data.domains.objects.map((x) => x.type), ...Object.keys(OBJ_TYPES), now, o.type])]
       .filter(Boolean).sort((a, b) => objTypeLabel(a).localeCompare(objTypeLabel(b)));
-    const sel = h("select", { class: "type-pick", "aria-label": "what kind of scenery this is" },
+    const sel = h("select", { class: "wiki-select", "aria-label": "what kind of scenery this is" },
       ...present.map((tp) => {
         const opt = h("option", { value: tp }, objTypeLabel(tp));
         if (tp === now) opt.selected = true;
@@ -4862,70 +4862,52 @@ function lightKinds(cur) {
   if (cur) seen.add(cur);
   return [...seen].sort();
 }
-/** The light editor for the state on screen: what it is, and every part of it
- *  changeable in place. Shown only where there IS a light — an unlit state has
- *  nothing to describe, and a row of dead sliders on 206 pieces would be noise
- *  on the page he reviews from. */
+/** The light's own controls — the second line of the Light row. Kind is a
+ *  select because eight kinds do not fit a phone as chips; flame and embers
+ *  are two chips in one strip, each its own switch; strength and radius are
+ *  the hitbox editor's rails, so a slider looks like a slider everywhere on
+ *  this page. The bonfire scale lives in the strength rail's tooltip. */
 function lightRow(o, st, onChange) {
-  const box = h("div", { class: "card-sub light-mode" });
+  const box = h("div", { class: "light-mode" });
   const draw = () => {
     const L = lightOf(o, st);
     if (!L) { box.replaceChildren(); return; }
-    const lit = litOf(o.path, st);
-    if (!lit) {
-      // Its own light still exists in the data; it just does not shine here.
-      box.replaceChildren(h("span", { class: "muted lit-label" }, "Light"),
-        h("span", { class: "muted", style: "font-size:12.5px" }, "this state is unlit — nothing shines"));
-      return;
-    }
-    const num = (field, min, max, step, unit, label, hint) => {
-      const val = Number(L[field] ?? 0);
-      const out = h("code", { class: "sfx-val" }, `${stFmt(val)}${unit}`);
-      const inp = h("input", { type: "range", min: String(min), max: String(max), step: String(step), value: String(val), title: hint });
-      inp.addEventListener("input", () => { out.textContent = `${stFmt(Number(inp.value))}${unit}`; });
-      // WRITTEN ON RELEASE, not on every pixel of the drag: a change per input
-      // event would file one correction per intermediate value and count them
-      // all as pending changes.
-      const commit = () => { setLight(o, st, field, Number(inp.value)); onChange?.(); };
-      inp.addEventListener("change", commit);
-      return h("label", { class: "picker-ctl" }, h("span", {}, label), inp, out);
-    };
-    const kindSel = h("select", { class: "type-pick", "aria-label": "what kind of light" },
+    const kindSel = h("select", { class: "wiki-select", "aria-label": "what kind of light" },
       ...lightKinds(L.kind).map((k) => {
         const opt = h("option", { value: k }, k);
         if (k === L.kind) opt.selected = true;
         return opt;
       }));
     kindSel.addEventListener("change", () => { setLight(o, st, "kind", kindSel.value); draw(); onChange?.(); });
-    const col = h("input", { type: "color", class: "light-color", value: /^#[0-9a-f]{6}$/i.test(L.color ?? "") ? L.color : "#ffffff",
-      "aria-label": "the colour this light casts" });
+    const col = h("input", { type: "color", class: "light-color", "aria-label": "the colour this light casts",
+      title: `Colour ${L.color ?? "—"}`, value: /^#[0-9a-f]{6}$/i.test(L.color ?? "") ? L.color : "#ffffff" });
     col.addEventListener("change", () => { setLight(o, st, "color", col.value); draw(); onChange?.(); });
-    const flag = (field, label, hint) => {
-      const b = h("button", { class: `ghost-btn light-flag${L[field] ? " on" : ""}`, title: hint },
-        `${L[field] ? "✓" : "✕"} ${label}`);
-      b.addEventListener("click", () => { setLight(o, st, field, !L[field]); draw(); onChange?.(); });
-      return b;
+    const flags = h("span", { class: "seg light-flags", role: "group", "aria-label": "what the art shows" },
+      ...[["flame", "There is an open flame in this art"], ["embers", "There are embers in this art"]].map(([field, hint]) => {
+        const b = h("button", { class: L[field] ? "on" : "", type: "button", title: hint, "aria-pressed": L[field] ? "true" : "false" }, field);
+        b.addEventListener("click", () => { setLight(o, st, field, !L[field]); draw(); onChange?.(); });
+        return b;
+      }));
+    const rail = (field, min, max, step, unit, label, hint) => {
+      const val = Number(L[field] ?? 0);
+      const out = h("code", { class: "shadow-val" }, `${stFmt(val)}${unit}`);
+      const inp = h("input", { type: "range", class: "shadow-slider", min: String(min), max: String(max), step: String(step), value: String(val), title: hint, "aria-label": label });
+      inp.addEventListener("input", () => { out.textContent = `${stFmt(Number(inp.value))}${unit}`; });
+      // Written on release, not per pixel of the drag — one drag, one correction.
+      inp.addEventListener("change", () => { setLight(o, st, field, Number(inp.value)); onChange?.(); });
+      return h("label", {}, h("span", {}, label), inp, out);
     };
     box.replaceChildren(...[
-      h("span", { class: "muted lit-label" }, "Light"),
-      kindSel,
-      col,
-      h("code", { class: "sfx-val" }, L.color ?? "—"),
-      flag("flame", "flame", "There is an open flame in this art"),
-      flag("embers", "embers", "There are embers in this art"),
-      num("strength", 0, 1, 0.05, "", "strength", L.reference ?? "0 is no light"),
-      num("radius", 0, 16, 1, " cells", "radius", "How far the light reaches, in cells"),
-      L.reference ? h("span", { class: "muted", style: "font-size:12px;flex-basis:100%" }, L.reference) : null,
-      L.edited
-        ? h("span", { class: "pill warn", title: "Your correction. The scenery agent applies it to the piece and clears it." }, "edited")
-        : (L.fromState ? h("span", { class: "pill", title: "This state carries its own light values; the piece's are the fallback." }, "per state") : null),
-      L.edited
-        ? (() => {
-          const b = h("button", { class: "ghost-btn" }, "↩ as generated");
+      h("div", { class: "light-line" }, kindSel, col, flags,
+        L.edited ? h("span", { class: "pill warn", title: "Your correction. The scenery agent applies it to the piece and clears it." }, "edited") : null,
+        L.edited ? (() => {
+          const b = h("button", { class: "ghost-btn", type: "button" }, "↩ as generated");
           b.addEventListener("click", () => { for (const k of LIGHT_FIELDS) setLight(o, st, k, null); draw(); onChange?.(); });
           return b;
-        })()
-        : null,
+        })() : null),
+      h("div", { class: "shadow-sliders light-rails" },
+        rail("strength", 0, 1, 0.05, "", "strength", L.reference ?? "0 is no light"),
+        rail("radius", 0, 16, 1, " cells", "radius", "How far the light reaches, in cells")),
     ].filter(Boolean));
   };
   draw();
@@ -4994,56 +4976,50 @@ function animDrift(o, st) {
   }
   return worst;
 }
-/** The row: what it is, what moves, and the two verdicts he asked for. */
+/** The row: the agent's call as the first chip (choosing it withdraws his
+ *  verdict), then his two — the same radio every other row on this block
+ *  uses, so nothing here reads as a second "approve" beside the state's own. */
 function animRow(o, st, onChange) {
   const box = h("div", { class: "card-sub lit-mode anim-mode" });
   const draw = () => {
     const d = animDrift(o, st);
     if (!d) { box.replaceChildren(); return; }          // nothing animated here
-    const now = animStateOf(o, st), tag = animTagged(o, st), mine = now && now !== tag;
-    const verdict = (id) => {
-      const on = now === id;
-      const b = h("button", { class: `${id === "ANIMATION_REDO" ? "reject-btn" : ""}${on ? " approved" : ""}`, title: ANIM_STATES[id].title },
-        `${id === "ANIMATION_REDO" ? "↻ redo" : "✓ approve"}`);
-      b.addEventListener("click", () => { setAnimState(o, st, id); draw(); onChange?.(); });
-      return b;
-    };
+    const tag = animTagged(o, st);
+    const mine = sceneryAnim().overrides?.[`${o.path}#${st}`]?.verdict ?? null;
+    // THE AGENT'S CHIP READS THEIR CLASS AND NOTHING ELSE. "agent: probably
+    // bad" pushed the three chips onto a second line on his phone, and the
+    // tooltip already says whose call it is — so does the fact that the two
+    // beside it are the only ones he can give.
+    const agentLabel = tag ? ANIM_STATES[tag].label : "unclassified";
+    const names = o.animations?.[st]?.animStates ?? {};
+    const agentTitle = (tag ? ANIM_STATES[tag].title : "The scenery agent has not classified this animation yet")
+      + (Object.keys(names).length > 1 ? ` — this state has ${Object.entries(names).map(([n2, v2]) => `${n2}: ${ANIM_STATES[v2]?.label ?? v2}`).join(", ")}; the worse one counts` : "")
+      + (mine ? ". Choosing this withdraws your verdict" : "");
     box.replaceChildren(...[
       h("span", { class: "muted lit-label" }, "Animation"),
-      now
-        ? h("span", { class: `pill ${ANIM_STATES[now].cls}`, title: `${ANIM_STATES[now].title}${
-          Object.keys(o.animations?.[st]?.animStates ?? {}).length > 1
-            ? ` — this state has ${Object.entries(o.animations[st].animStates).map(([n2, v2]) => `${n2}: ${ANIM_STATES[v2]?.label ?? v2}`).join(", ")}, and the row shows the worse of them`
-            : ""}` },
-          `${ANIM_STATES[now].label}${mine ? "" : " · agent"}`)
-        : h("span", { class: "pill muted", title: "The scenery agent has not classified this animation yet" }, "unclassified"),
-      /* THE ROOT'S OWN NUMBER, because that is the rule: "as soon as the root
-       * moves it looks wrong". Green under half a pixel, amber to two, red
-       * beyond — measured across every facing of this state, worst first. */
+      sortBar(`scenery-anim:${o.path}#${st}`, [
+        ["agent", agentLabel, agentTitle],
+        ["ANIMATION_APPROVED", "approved", ANIM_STATES.ANIMATION_APPROVED.title],
+        ["ANIMATION_REDO", "redo", ANIM_STATES.ANIMATION_REDO.title],
+      ], mine ?? "agent", (id) => { setAnimState(o, st, id === "agent" ? null : id); draw(); onChange?.(); }, { persist: false }),
       /* THE SILHOUETTE'S OWN MOVEMENT — a corroboration, not the verdict. It
        * catches an object that SLIDES (tree_045's trunk travels 14.1px) and is
        * blind to one repainted in place, which the scenery agent measured
-       * before building their per-class test: "alpha-based movement cannot see
-       * a trunk repainted in place — it scored tree_040 and tree_066
-       * identically at ~0.0". Against their 1,942 judgements it separates but
-       * does not decide: their PROBABLY_GOOD sits at a median 0.00px and 3%
-       * over a pixel, their PROBABLY_BAD at 0.15px and 14%. So it is shown as
-       * what it is, beside their call rather than instead of it. */
+       * before building their per-class test. Against their 1,942 judgements
+       * it separates but does not decide (their PROBABLY_GOOD sits at a median
+       * 0.00px, their PROBABLY_BAD at 0.15px), so it stands beside their call. */
       h("span", { class: `pill ${d.base > 2 ? "err" : d.base > 0.5 ? "warn" : "ok"}`,
         title: `The SILHOUETTE's bottom quarter travels ${d.base}px across the ${d.frames} frames; its top quarter travels ${d.top}px, and ${Math.round(d.low * 100)}% of what changes is down at the foot. A hint, not the answer: it catches an object that slides and cannot see one repainted in place.` },
         `outline slides ${d.base}px`),
       d.base === 0 && d.top === 0
         ? h("span", { class: "pill warn", title: "Not one pixel differs between the frames — there is nothing to watch" }, "nothing moves")
         : null,
-      h("span", { class: "spacer" }),
-      verdict("ANIMATION_APPROVED"),
-      verdict("ANIMATION_REDO"),
     ].filter(Boolean));
   };
   draw();
   return box;
 }
-function litRow(path, st, onChange) {
+function litRow(path, st, onChange, detail = null) {
   // NOT `.wall-mode`: that class exists to SHRINK a strip into a dense tiles
   // card (3px padding, 12px type), and reusing it made this the smallest thing
   // on a page full of normal controls (maintainer 2026-08-18: "why did you make
@@ -5068,6 +5044,11 @@ function litRow(path, st, onChange) {
         ? h("span", { class: "pill warn", title: `The scenery agent generated this state as ${stateWords(st)}` },
           `generated as ${claimed ? "💡 lit" : "unlit"}`)
         : null,
+      /* WHAT THE LIGHT IS, under the switch that says there is one (maintainer
+       * 2026-09-09: "the page starts to become a bit hard to understand" — two
+       * rows both labelled Light was the worst of it). One row, one label; the
+       * details are its second line and exist only while it is lit. */
+      now && detail ? h("div", { class: "lit-detail" }, detail()) : null,
     ].filter(Boolean));
   };
   draw();
@@ -11383,9 +11364,14 @@ function viewObject(id) {
       // question below only makes sense once the kind is right.
       state.admin ? typeRow(o, () => { player?.refreshMarks?.(); route(); }) : null,
       state.admin ? wallRow(o, () => { player?.refreshMarks?.(); route(); }) : null,
-      state.admin ? litRow(o.path, st, () => { player.refreshMarks(); renderFacet(); }) : null,
-      // ...and, where it shines, WHAT it shines: the light this state gives off.
-      state.admin ? lightRow(o, st, () => player.refreshMarks()) : null,
+      /* THE PIECE ABOVE, THE STATE BELOW. Kind and Placed are one decision for
+       * the whole piece; everything under this line is about the one state and
+       * facing named in the pill. The rule that keeps this block readable
+       * (maintainer 2026-09-09): one label column, chip radios, and a row's
+       * details as its own second line rather than as more rows. */
+      state.admin ? h("div", { class: "facet-divider", role: "separator" }) : null,
+      state.admin ? litRow(o.path, st, () => { player.refreshMarks(); renderFacet(); },
+        () => lightRow(o, st, () => player.refreshMarks())) : null,
       // WHICH WAY THIS FACING FACES — per direction, because that is where the
       // fault is: one of the two three-quarter views is the other one again.
       state.admin ? flipRow(o, st, dir, () => player.redraw?.()) : null,

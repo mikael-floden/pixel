@@ -1869,23 +1869,33 @@ input[type="range"] { accent-color: var(--accent); }
    the verdict — green matches, amber is a difference he can see. */
 .fade-tile .tone-chip { display: inline-block; margin: 6px 0 0; font-variant-numeric: tabular-nums; }
 
-/* The change-type picker (maintainer 2026-09-05: "I need a change type
-   button"). Sized like the other review controls, not like a form field. */
-.type-mode .type-pick {
-  background: var(--surface); color: var(--fg); border: 1px solid var(--border);
-  border-radius: 8px; padding: 7px 10px; font-size: 14px; min-height: 40px;
+/* THE FACET BLOCK'S ONE IDIOM (maintainer 2026-09-09: "you have added a lot of
+   UX/UI that doesn't follow the CSS style guide. And the page starts to become
+   a bit hard to understand"). Every row is: a label in ONE column, then the
+   page's own controls — a chip radio (.sortbar), or a select dressed exactly
+   like one, or the hitbox editor's rails. A row's details are its second line,
+   never more rows. Nothing here defines a new look. */
+.lit-mode .lit-label { flex: 0 0 84px; }
+.facet-divider { flex-basis: 100%; height: 1px; background: var(--border); margin: 2px 0 10px; }
+/* A select that reads as a chip strip: the seg's surface, border, radius and
+   type, with the lit row's chip padding, so Kind and the light's kind look like
+   the Placed and Light chips beside them rather than like a form field. */
+.wiki-select {
+  appearance: none; -webkit-appearance: none;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+  border-radius: 9px; padding: 9px 34px 9px 14px; font: inherit; font-size: 13.5px; min-height: 38px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 55%, calc(100% - 13px) 55%; background-size: 5px 5px; background-repeat: no-repeat;
   max-width: 60vw;
 }
-
-/* The light editor on a scenery state (maintainer 2026-09-09: "I want to be
-   able to see this and edit/change this when doing a review"). Wraps, because
-   it carries a kind, a colour, two flags and two rails and a phone is 393px. */
-.light-mode { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.light-mode .picker-ctl { display: flex; align-items: center; gap: 6px; }
-.light-mode .picker-ctl input[type="range"] { width: 116px; }
-.light-mode .light-color {
-  width: 44px; height: 32px; padding: 0; border: 1px solid var(--border);
-  border-radius: 8px; background: none;
-}
-.light-mode .light-flag { padding: 6px 10px; min-height: 34px; font-size: 13px; }
-.light-mode .light-flag.on { border-color: var(--accent); color: var(--fg); }
+/* The Light row's second line: the light's own controls, aligned under the
+   chips, present only while the state is lit. */
+.lit-detail { flex-basis: 100%; margin-left: 94px; display: flex; flex-direction: column; gap: 10px; }
+@media (max-width: 480px) { .lit-detail { margin-left: 0; } }
+.light-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.light-color { width: 38px; height: 38px; padding: 2px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); }
+.light-flags button { min-height: 38px; padding: 0 14px; font-size: 13.5px; }
+.light-rails label > span { width: 64px; }
+.light-rails .shadow-val { min-width: 64px; text-align: right; }
+/* A rail's readout: the same mono chip the sound picker's rails use. */
+.shadow-val { font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted); }
