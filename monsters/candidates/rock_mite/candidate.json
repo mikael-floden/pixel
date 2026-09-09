@@ -335,6 +335,246 @@
         "north-west": "rock_mite/animations/idle__north-west.webp",
         "west": "rock_mite/animations/idle__west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.0482,
+          "step_max": 0.0744,
+          "drift": 0.59,
+          "loop": 0.021,
+          "loop_ratio": 0.44,
+          "travel": 0.08,
+          "pin": 0.907,
+          "reasons": [
+            "frozen: silhouette moves 0.048 per frame"
+          ],
+          "cut": 0,
+          "sub": "a9fe697e-7750-464a-808a-a99eb36f8854",
+          "group": "f016af2b-f1d6-47de-a17d-d8e1062d5c2b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:03:46+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1046,
+          "step_max": 0.1254,
+          "drift": 1.15,
+          "loop": 0.0603,
+          "loop_ratio": 0.58,
+          "travel": 1.03,
+          "pin": 0.89,
+          "reasons": [],
+          "cut": 0,
+          "sub": "c38f23da-7cd4-414c-a101-2407c15e12ba",
+          "group": "d2bffb8f-aac5-43bb-abcf-e8281887ef98",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:03:47+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.0629,
+          "step_max": 0.1136,
+          "drift": 1.01,
+          "loop": 0.0315,
+          "loop_ratio": 0.5,
+          "travel": 0.1,
+          "pin": 0.887,
+          "reasons": [
+            "motion 0.063 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "bf8d5fe7-fa5c-41e4-938c-0c5618576b3f",
+          "group": "38821d09-8eb4-4dc4-9eb8-4d8c4d5788b0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:03:47+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.0716,
+          "step_max": 0.1005,
+          "drift": 1.26,
+          "loop": 0.0653,
+          "loop_ratio": 0.91,
+          "travel": 0.13,
+          "pin": 0.902,
+          "reasons": [
+            "motion 0.072 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "8eafbf67-fd76-4f2b-8a7c-75493c2b38c9",
+          "group": "9a5e8519-dfe3-499a-a57b-207cd82d3af9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:03:47+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0584,
+          "step_max": 0.0902,
+          "drift": 1.52,
+          "loop": 0.0518,
+          "loop_ratio": 0.89,
+          "travel": 0.07,
+          "pin": 0.997,
+          "reasons": [
+            "motion 0.058 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "65d8636d-8b38-48ae-a6b4-adcc06bfba9e",
+          "group": "83b74873-7395-4297-9f08-326843ae7c60",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:03:48+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1046,
+          "step_max": 0.1254,
+          "drift": 1.15,
+          "loop": 0.0603,
+          "loop_ratio": 0.58,
+          "travel": 1.03,
+          "pin": 0.89,
+          "reasons": [],
+          "cut": 0,
+          "sub": "c38f23da-7cd4-414c-a101-2407c15e12ba",
+          "group": "d2bffb8f-aac5-43bb-abcf-e8281887ef98",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:03:47+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.0629,
+          "step_max": 0.1136,
+          "drift": 1.01,
+          "loop": 0.0315,
+          "loop_ratio": 0.5,
+          "travel": 0.1,
+          "pin": 0.887,
+          "reasons": [
+            "motion 0.063 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "bf8d5fe7-fa5c-41e4-938c-0c5618576b3f",
+          "group": "38821d09-8eb4-4dc4-9eb8-4d8c4d5788b0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:03:47+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.0716,
+          "step_max": 0.1005,
+          "drift": 1.26,
+          "loop": 0.0653,
+          "loop_ratio": 0.91,
+          "travel": 0.13,
+          "pin": 0.902,
+          "reasons": [
+            "motion 0.072 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "8eafbf67-fd76-4f2b-8a7c-75493c2b38c9",
+          "group": "9a5e8519-dfe3-499a-a57b-207cd82d3af9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:03:47+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "rock_mite/animations/walk/south/00.webp",
+          "rock_mite/animations/walk/south/01.webp",
+          "rock_mite/animations/walk/south/02.webp",
+          "rock_mite/animations/walk/south/03.webp",
+          "rock_mite/animations/walk/south/04.webp",
+          "rock_mite/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "rock_mite/animations/walk/south-east/00.webp",
+          "rock_mite/animations/walk/south-east/01.webp",
+          "rock_mite/animations/walk/south-east/02.webp",
+          "rock_mite/animations/walk/south-east/03.webp",
+          "rock_mite/animations/walk/south-east/04.webp",
+          "rock_mite/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "rock_mite/animations/walk/east/00.webp",
+          "rock_mite/animations/walk/east/01.webp",
+          "rock_mite/animations/walk/east/02.webp",
+          "rock_mite/animations/walk/east/03.webp",
+          "rock_mite/animations/walk/east/04.webp",
+          "rock_mite/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "rock_mite/animations/walk/north-east/00.webp",
+          "rock_mite/animations/walk/north-east/01.webp",
+          "rock_mite/animations/walk/north-east/02.webp",
+          "rock_mite/animations/walk/north-east/03.webp",
+          "rock_mite/animations/walk/north-east/04.webp",
+          "rock_mite/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "rock_mite/animations/walk/north/00.webp",
+          "rock_mite/animations/walk/north/01.webp",
+          "rock_mite/animations/walk/north/02.webp",
+          "rock_mite/animations/walk/north/03.webp",
+          "rock_mite/animations/walk/north/04.webp",
+          "rock_mite/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "rock_mite/animations/walk/south-west/00.webp",
+          "rock_mite/animations/walk/south-west/01.webp",
+          "rock_mite/animations/walk/south-west/02.webp",
+          "rock_mite/animations/walk/south-west/03.webp",
+          "rock_mite/animations/walk/south-west/04.webp",
+          "rock_mite/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "rock_mite/animations/walk/west/00.webp",
+          "rock_mite/animations/walk/west/01.webp",
+          "rock_mite/animations/walk/west/02.webp",
+          "rock_mite/animations/walk/west/03.webp",
+          "rock_mite/animations/walk/west/04.webp",
+          "rock_mite/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "rock_mite/animations/walk/north-west/00.webp",
+          "rock_mite/animations/walk/north-west/01.webp",
+          "rock_mite/animations/walk/north-west/02.webp",
+          "rock_mite/animations/walk/north-west/03.webp",
+          "rock_mite/animations/walk/north-west/04.webp",
+          "rock_mite/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "rock_mite/animations/walk__south.webp",
+        "south-east": "rock_mite/animations/walk__south-east.webp",
+        "east": "rock_mite/animations/walk__east.webp",
+        "north-east": "rock_mite/animations/walk__north-east.webp",
+        "north": "rock_mite/animations/walk__north.webp",
+        "south-west": "rock_mite/animations/walk__south-west.webp",
+        "west": "rock_mite/animations/walk__west.webp",
+        "north-west": "rock_mite/animations/walk__north-west.webp"
+      }
     }
   }
 }
