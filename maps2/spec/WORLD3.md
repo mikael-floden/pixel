@@ -37,7 +37,9 @@ and the fade upgrades itself to art.
   "ramps":  [{"from": 0, "to": 4, "ground": "light_soil",
               "cells": [{"x","y"}, ...]}],                   // THE WAY UP
   "scenery": [{"piece": "trees/tree_014", "x": 123.5, "y": 88.5,
-               "hflip": true, "lit": true}]                  // off-grid, fractional
+               "hflip": true, "lit": true},                  // off-grid, fractional
+              {"piece": "windows/window_102", "x": 305.54, "y": 237.001,
+               "dir": "south-west", "z": 1.007}]             // ON a wall: see `z`
 }
 ```
 
@@ -412,9 +414,72 @@ landed).
 **THE CLIFF FAMILIES (`cliff_*`: roots, vines, mosses, fragments, features,
 shrubs) ARE NEVER PLACED** — build-asserted. Maintainer 2026-09-06: *"You
 should not use the scenery type 'Mountain wall', we will use that scenery
-later, but that scenery will need training to use right. They are like
-windows — you are not ready to use them yet."* the_game: 29 pieces of 9
-kinds, plus 19 braziers.
+later, but that scenery will need training to use right."* (Windows were held
+back under the same ruling until 2026-09-09, when he asked for them — see
+"windows and hangings".) the_game: 29 pieces of 9 kinds, plus 19 braziers.
+
+### windows and hangings — scenery ON a wall, not in front of it
+
+**`z` is the placement's height up the wall, in STOREYS.** A placement's feet
+stand on the ground of its anchor cell (`int(x)`, `int(y)`); `z` lifts them
+that many storeys — `screen_y = column_y(x, y, level + z)`. Storeys, never
+pixels: render3 stacks a storey at LP = 17 and the game at its measured 15, and
+"a little above the middle of a six-storey wall" must be true in both. Absent
+means 0, so every placement that existed before carries on unchanged. A piece
+carrying `z` **takes no ground**: `_reindex` leaves it out of the occupancy
+index, `snap_hitboxes` and `police_footprints` skip it, and the footprint audit
+does not judge it — it hangs on the wall behind the cell, and the wall is what
+blocks. (`_wall_put`.) The game is asked to read `z` the same way and to draw
+such a piece with the wall rather than y-sorting it against bodies; until it
+does, a window draws with its sill on the ground, still on its wall.
+
+**Windows** (`windows()`, after `village`; maintainer 2026-09-09: *"It's now
+time for you to add windows to the houses. Make sure enough space exist to the
+left and to the right ... between windows. Use one window type per house ...
+Think about even spacing. But don't make it too even/regular. Some rooms/walls
+might not have a window ... add the correct ground offset so the window doesn't
+render over the wall and the window vertical center is slightly above the wall
+center."*). Every roof deck is a house — the two the base build ports from v2
+never pass through `house()`, so the ring is the deck's rim, the floor its
+inside, the door the rim cell at floor level. A house shows two faces, **south
+(screen bottom-left) and east (bottom-right)**, and a window hangs on one of
+them: feet on the ground cell in FRONT of the wall, on the wall's foot line
+(`y = row + 0.001` for a south face, `x = col + 0.001` for an east one, so the
+anchor cell is the outdoor one at the floor's level), lifted so the window's
+centre sits at `WIN_CENTRE = 0.55` of the wall — a little above the middle
+(`_lift`, clamped 4 px off the ground and 4 px under the roof course). **The
+south face wants the `south-west` rotation and the east face `south-east`**,
+the same rule as furniture with its back to a wall. **One window type per
+house**, drawn from the approved pool weighted by his rating (5 → ×3, 4 → ×2),
+and only pieces that fit a face: drawn height ≤ `WIN_MAX_H = 0.80` of the wall
+(a taller window is a door — window_004 at 106 px, 017, 063, 099 are out) and
+width ≤ `WIN_MAX_W = 64` px (two face cells). **Spacing** (`_slots`): a face is
+`FACE_PX = 32` screen px per cell; at least `WIN_EDGE = 20` px (or 0.35 of the
+window) of bare wall at each end, so the corner is never wrapped; at least
+`WIN_GAP = 40` px (or 0.8 of the window) between two; the door cuts the face
+into two runs with 8 px clear of the frame; windows spaced evenly over what is
+left, each nudged by up to ±6 px, and **one fewer than the wall would take with
+probability `WIN_SKIP = 0.30`**, a whole face bare with `FACE_BARE = 0.15` — the
+second face always delivers, and **every house gets at least one window**
+(build-asserted, as is that every window's anchor cell is outdoor ground at the
+floor's own level). The first gap rule (24 px, half a window) put five windows
+on the hall's twelve-cell east face against the three of his sketch; 40 px and
+0.8 gives four and three. the_game: 11 houses, 40 windows of 8 types, 3 faces
+left bare. Windows are placed unlit (`LIGHTS_OFF` is the base state; the
+night-time `LIGHTS_ON` is the game's to switch, and it spends no light slot).
+
+**Hangings** (`_hang`, from `interiors`; *"you can also make the indoor scenery
+like paintings be placed not on the ground"*): a room of `HANG_MIN = 12` cells
+gets one, 24 cells two, on the walls a room shows — its **north and west**
+ones, whose inner faces are the south face of the ring cell behind the north
+row and the east face of the one beside the west column (the south and east
+walls hide to unveil the player). Feet on the floor cell at the foot of that
+face, centre at `HANG_CENTRE = 0.62` of the wall — higher than a window, it is
+looked at rather than through — in the wall's rotation, with a `NOT_LIT_*`
+variation per piece. **Not behind a dresser**: the slot farthest from the
+furniture already standing against that wall wins, and a wall with no clear
+cell gets nothing (a cupboard is as tall as the hanging is high). The old rule
+stood the hanging on the floor against the north wall like a chest.
 
 ### `scenery` — a placement is centred on its HITBOX, not its art
 

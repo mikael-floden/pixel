@@ -41,6 +41,8 @@ import math
 import os
 import sys
 
+from PIL import Image
+
 _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _HERE)
 MAPS2 = os.path.dirname(_HERE)
@@ -208,6 +210,8 @@ class Grow:
         scan per placement measured the build into the minutes)."""
         self.occ = {}
         for p in self.doc["scenery"]:
+            if p.get("z") is not None:
+                continue                 # hangs on a wall: claims no ground
             tree = p["piece"].startswith(("trees/", "bushes/", "ancient_trees/"))
             self.occ.setdefault((int(p["x"]), int(p["y"])), []).append(
                 (p["x"], p["y"], tree))
@@ -2018,6 +2022,9 @@ class Grow:
         for p in self.doc["scenery"]:
             if id(p) in getattr(self, "_flush_ids", ()):
                 continue                 # placed flush against a wall
+            if p.get("z") is not None:
+                skipped += 1             # hangs ON the wall: no footprint
+                continue
             off = self._hitbox_offset(p)
             if off is None:
                 skipped += 1
@@ -2042,7 +2049,7 @@ class Grow:
         # from 550 of 1,421 (39%) to 11, while the total cells blocked barely
         # moves (3,158 -> 3,188), so the footprints got ACCURATE, not bigger.
         for p in self.doc["scenery"]:
-            if id(p) in getattr(self, "_flush_ids", ()):
+            if id(p) in getattr(self, "_flush_ids", ()) or p.get("z") is not None:
                 continue
             off = self._hitbox_offset(p)
             if off is None:
@@ -2078,6 +2085,9 @@ class Grow:
                                       self.doc["scenery"][i]["piece"]))
         for i in order:
             p = self.doc["scenery"][i]
+            if p.get("z") is not None:   # on a wall, not on the ground
+                keep.append(i)
+                continue
             sh = self._fp_shape(p)
             if sh:
                 kind, dwx, dwy, hx, hy = sh
@@ -2105,6 +2115,8 @@ class Grow:
         # BUILD ASSERT: the world is clean under all three rules.
         self._fp = {}
         for p in self.doc["scenery"]:
+            if p.get("z") is not None:   # on a wall: the law is about ground
+                continue
             sh = self._fp_shape(p)
             if sh:
                 kind, dwx, dwy, hx, hy = sh
@@ -3408,6 +3420,225 @@ class Grow:
                     self.no_place.add((x, y))
 
     # -- interiors ------------------------------------------------------------
+    # -- scenery ON a wall ----------------------------------------------------
+    # A placement's feet stand on the ground of its anchor cell; `z` lifts them
+    # that many STOREYS up the wall behind. Storeys, not pixels: render3 stacks
+    # a storey at LP=17 and the game at its measured 15, and a window that is
+    # "a little above the middle of a six-storey wall" must be so in both.
+    PITCH_GAME = 15      # the game's storey pitch (scenery3.ts Frame.pitch)
+    FACE_PX = 32         # one cell of a wall face is DX (32) screen px wide
+    WIN_CENTRE = 0.55    # the window's centre, as a share of the wall's height
+    HANG_CENTRE = 0.62   # a hanging sits higher - it is looked at, not through
+    WIN_MAX_H = 0.80     # a window taller than this share of the wall is a door
+    WIN_MAX_W = 64       # ...and wider than two face cells is a shopfront
+    WIN_EDGE = 20        # px of bare wall at each end of a face, at least
+    WIN_GAP = 40         # px of bare wall between two windows, at least
+    WIN_SKIP = 0.30      # one window fewer than the wall would take
+    FACE_BARE = 0.15     # a whole face with no window at all
+    HANG_MIN = 12        # a room this big gets a hanging
+
+    def _wall_art(self, piece, d):
+        """(w, h) in screen px of the piece's `d` rotation as the game draws
+        it: the base sprite's scale (sceneryscale) applied to the rotation's
+        own alpha bbox, exactly render3's fit."""
+        key = (piece, d)
+        if not hasattr(self, "_wart"):
+            self._wart = {}
+        if key not in self._wart:
+            base = Image.open(os.path.join(REPO, "scenery", piece, "sprite.webp")).convert("RGBA")
+            bb0 = base.getbbox() or (0, 0, base.width, base.height)
+            k = drawn_px_for_piece(piece) / max(1, bb0[3] - bb0[1])
+            rot = os.path.join(REPO, "scenery", piece, "rotations", d + ".webp")
+            sp = Image.open(rot).convert("RGBA") if os.path.isfile(rot) else base
+            bb = sp.getbbox() or (0, 0, sp.width, sp.height)
+            self._wart[key] = ((bb[2] - bb[0]) * k, (bb[3] - bb[1]) * k)
+        return self._wart[key]
+
+    def _wall_put(self, piece, x, y, d, z, state=None):
+        """Hang a piece on the wall behind cell (int(x), int(y)): feet at (x,
+        y) on that cell's ground, lifted `z` storeys. No footprint, no
+        occupancy - the hitbox passes and `free()` skip anything carrying z."""
+        assert os.path.isdir(os.path.join(REPO, "scenery", piece)), piece
+        assert 0 <= int(x) < NEW and 0 <= int(y) < NEW and self.g(int(x), int(y)), (piece, x, y)
+        p = {"piece": piece, "x": round(x, 4), "y": round(y, 4), "hflip": False,
+             "dir": d, "z": round(z, 3)}
+        if state:
+            p["state"] = state
+        self.doc["scenery"].append(p)
+        return True
+
+    def _lift(self, h, rise, centre):
+        """Storeys the feet rise so a piece h px tall is centred at `centre`
+        of a `rise`-storey wall - clamped so it neither rests on the ground
+        nor breaks the roof line."""
+        wall = rise * self.PITCH_GAME
+        z_px = centre * wall - h / 2
+        z_px = max(4.0, min(z_px, wall - 4.0 - h))
+        return z_px / self.PITCH_GAME
+
+    def _slots(self, span, w, r):
+        """Where along a face of `span` px pieces `w` px wide go: spaced
+        evenly between WIN_EDGE margins, then nudged, sometimes one fewer
+        than fit - a row of windows that a ruler would confirm reads as a
+        barracks (maintainer: "Think about even spacing. But don't make it
+        too even/regular")."""
+        m = max(self.WIN_EDGE, 0.35 * w)
+        gap = max(self.WIN_GAP, 0.8 * w)
+        usable = span - 2 * m
+        if usable < w:
+            return []
+        n = int((usable + gap) // (w + gap))
+        if n > 1 and r() < self.WIN_SKIP:
+            n -= 1
+        if n == 1:
+            return [m + usable / 2 + (r() - 0.5) * min(16.0, usable - w)]
+        step = (usable - w) / (n - 1)
+        return [m + w / 2 + i * step + (r() - 0.5) * min(12.0, step - w)
+                for i in range(n)]
+
+    def windows(self):
+        """WINDOWS ON THE HOUSES (maintainer 2026-09-09: "It's now time for you
+        to add windows to the houses ... enough space to the left and to the
+        right ... between windows. Use one window type per house ... Think
+        about even spacing. But don't make it too even/regular. Some
+        rooms/walls might not have a window").
+
+        A house shows two faces, south (screen bottom-left) and east (bottom-
+        right), and a window hangs on one of them: its feet on the ground cell
+        in FRONT of the wall, on the wall's foot line, lifted `z` storeys so
+        its centre sits at WIN_CENTRE of the wall - a little above the middle,
+        where a window is. The south face wants the south-west rotation and
+        the east face the south-east one - the same rule as furniture with
+        its back to a wall. The door and the corner keep bare wall around
+        them. ONE window type per house, chosen by the maintainer's rating."""
+        # EVERY ROOF IS A HOUSE, including the two the base build ports from
+        # v2 that never pass through house(): the ring is the deck's rim, the
+        # floor its inside, the door the rim cell at floor level.
+        houses = []
+        for dk in self.doc["decks"]:
+            if dk.get("kind") != "roof":
+                continue
+            xs = [c["x"] for c in dk["cells"]]
+            ys = [c["y"] for c in dk["cells"]]
+            x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+            inner = [(x, y) for y in range(y0 + 1, y1) for x in range(x0 + 1, x1)]
+            if not inner:
+                continue
+            base = min(self.lvl[y][x] for (x, y) in inner)
+            ring = [(x, y) for y in range(y0, y1 + 1) for x in range(x0, x1 + 1)
+                    if x in (x0, x1) or y in (y0, y1)]
+            doors = [c for c in ring if self.lvl[c[1]][c[0]] == base]
+            houses.append({"x0": x0, "y0": y0, "w": x1 - x0 + 1, "h": y1 - y0 + 1,
+                           "base": base, "rise": int(dk["level"]) - base,
+                           "door": doors[0] if doors else None})
+        pool = []
+        for q in self.pool("windows"):
+            ok, rating = self._rated(q)
+            if not ok:
+                continue
+            w, h = self._wall_art(q, "south-west")
+            w2, h2 = self._wall_art(q, "south-east")
+            if max(h, h2) > self.WIN_MAX_H * self.HOUSE_RISE * self.PITCH_GAME \
+                    or max(w, w2) > self.WIN_MAX_W:
+                continue
+            pool += [q] * {5: 3, 4: 2}.get(rating, 1)
+        assert pool, "no window piece fits a six-storey wall"
+        placed, bare = 0, 0
+        for hs in houses:
+            x0, y0, w, h = hs["x0"], hs["y0"], hs["w"], hs["h"]
+            base, door, rise = hs["base"], hs["door"], hs["rise"]
+            r = _rng32((x0 * 2654435761 ^ y0 * 40503 ^ 0x51DE) & 0xffffffff)
+            piece = pool[int(r() * len(pool)) % len(pool)]
+            faces = []
+            # south face: cells (x, y0+h-1), foot line y = y0+h, left to right
+            # is +x; east face: cells (x0+w-1, y), foot line x = x0+w, and +y
+            # runs from the right-hand end down to the front corner
+            sy = y0 + h - 1
+            faces.append(("south", [(x, sy) for x in range(x0, x0 + w)],
+                          lambda t: (x0 + t / self.FACE_PX, sy + 1 + 1e-3),
+                          "south-west"))
+            ex = x0 + w - 1
+            faces.append(("east", [(ex, y) for y in range(y0, y0 + h)],
+                          lambda t: (ex + 1 + 1e-3, y0 + t / self.FACE_PX),
+                          "south-east"))
+            got = 0
+            for fi, (name, cells, at, d) in enumerate(faces):
+                if fi == 1 and got == 0:
+                    pass                          # the last face must deliver
+                elif r() < self.FACE_BARE:
+                    bare += 1
+                    continue
+                wpx, hpx = self._wall_art(piece, d)
+                z = self._lift(hpx, rise, self.WIN_CENTRE)
+                # the face in px, cut where the door is (8 px clear of it)
+                n = len(cells)
+                segs = [(0.0, n * self.FACE_PX)]
+                if door in cells:
+                    k = cells.index(door)
+                    segs = [(0.0, k * self.FACE_PX - 8),
+                            ((k + 1) * self.FACE_PX + 8, n * self.FACE_PX)]
+                for (a, b) in segs:
+                    for t in self._slots(b - a, wpx, r):
+                        x, y = at(a + t)
+                        cx, cy = int(x), int(y)
+                        assert self.lvl[cy][cx] == base and (cx, cy) not in self.floor_cells, \
+                            (f"window of the house at {(x0, y0)} would hang over "
+                             f"{(cx, cy)}: level {self.lvl[cy][cx]} against {base}")
+                        self._wall_put(piece, x, y, d, z)
+                        placed += 1
+                        got += 1
+            assert got > 0, f"the house at {(x0, y0)} got no window"
+        self._reindex()
+        self.placed += [("houses with windows", len(houses)),
+                        ("windows hung", placed),
+                        ("house faces left bare", bare)]
+
+    def _hang(self, x0, y0, x1, y1, r, count):
+        """Hangings ON the room's back walls, not on the floor in front of
+        them. The walls a room shows are its north and west ones (the south
+        and east walls hide to unveil the player), and their inner faces are
+        the south face of the ring cell behind the north row and the east face
+        of the one beside the west column. Feet on the floor cell at the foot
+        of that face, lifted to HANG_CENTRE of the wall."""
+        pool = [q for q in self.pool("wall_hangings") if self._rated(q)[0]]
+        if not pool or count <= 0:
+            return 0
+        n = 0
+        walls = [("north", (x1 - x0 + 1) * self.FACE_PX, "south-west",
+                  lambda t: (x0 + t / self.FACE_PX, y0 + 1e-3)),
+                 ("west", (y1 - y0 + 1) * self.FACE_PX, "south-east",
+                  lambda t: (x0 + 1e-3, y0 + t / self.FACE_PX))]
+        if r() < 0.4:
+            walls.reverse()
+        for (name, span, d, at) in walls:
+            if n >= count:
+                break
+            piece = pool[int(r() * len(pool)) % len(pool)]
+            wpx, hpx = self._wall_art(piece, d)
+            slots = self._slots(span, wpx, r)
+            if not slots:
+                continue
+            # NOT BEHIND A DRESSER: a cupboard against the same wall is as tall
+            # as the hanging is high, so the slot farthest from the furniture
+            # on this wall wins, and a wall with no clear cell gets nothing.
+            axis = "x" if name == "west" else "y"
+            here = [(px if axis == "y" else py)
+                    for (_pc, px, py, _d, ax, _face) in getattr(self, "_against", [])
+                    if ax == axis and (abs((py if axis == "x" else px)
+                                           - (y0 if axis == "y" else x0)) < 1.5)]
+            def clear(t):
+                v = (x0 if name == "north" else y0) + t / self.FACE_PX
+                return min((abs(v - h0) for h0 in here), default=9.0)
+            slots.sort(key=clear, reverse=True)
+            if clear(slots[0]) < 1.0:
+                continue
+            t = slots[0]
+            x, y = at(t)
+            z = self._lift(hpx, self.HOUSE_RISE, self.HANG_CENTRE)
+            self._wall_put(piece, x, y, d, z, state=self._variant(piece, r))
+            n += 1
+        return n
+
     def interiors(self):
         self._against = []
         """Furnish EVERY parquet room (the indoor-scenery ask). The renderer
@@ -3637,8 +3868,8 @@ class Grow:
                     else:                    # ... on the west wall
                         n += self.put(pk("chairs_and_benches", "south-west"),
                                       tx, ty - 1.0, on=IN, dir="south-west")
-            if len(cells) >= 12:
-                n += against("wall_hangings", north, max(0, len(north) - 2))
+            if len(cells) >= self.HANG_MIN:
+                n += self._hang(x0, y0, x1, y1, r, 1 + (len(cells) >= 24))
                 n += self.put(pk("rugs_and_hides"), cx, cy + 1.0, on=IN)
                 n += self.put(pk("house_clutter"), x1 + 0.5, y1 + 0.5, on=IN)
             for k in range(len(cells) // 20):
@@ -5730,7 +5961,7 @@ class Grow:
                      self.i2_road, self.i2_systems, self.groom, self._reindex,
                      self.archipelago, self.pier, self.houses, self.town,
                      self.mountain_back, self.wild, self.terrace_grounds, self.lava,
-                     self.build_no_place, self.interiors, self.village,
+                     self.build_no_place, self.interiors, self.village, self.windows,
                      self.roads, self.nature, self.cave_dress, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
                      self.ramp_paths, self.regroom, self.reach_audit,

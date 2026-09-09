@@ -1471,7 +1471,10 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
         # data is exact - the hitbox centre is ON the cell centre to 0.0000
         # cells - so this is the renderer's to fix, and a renderer fixes it by
         # putting both on the same plane, not by moving the data.
-        z = L(int(px), int(py))
+        # `z` (storeys) lifts the feet up the wall behind the cell: a window
+        # on a house, a hanging on a room's back wall. Storeys, so the game's
+        # 15px pitch and this renderer's 17 agree on where on the wall it is.
+        z = L(int(px), int(py)) + float(p.get("z") or 0.0)
         sx = ox + (px - x0 - (py - y0)) * DX
         sy = oy + (px - x0 + py - y0) * DY - z * LP - TOP_Y
         img.alpha_composite(art, (int(sx - art.width / 2), int(sy - art.height)))
