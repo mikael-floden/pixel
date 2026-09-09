@@ -337,6 +337,227 @@
         "west": "cave_troll_boss/animations/idle__west.webp",
         "north-west": "cave_troll_boss/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1577,
+          "step_max": 0.1955,
+          "drift": 8.29,
+          "loop": 0.2657,
+          "loop_ratio": 1.69,
+          "travel": 3.45,
+          "pin": 0.923,
+          "reasons": [
+            "drifts 8.3 px"
+          ],
+          "cut": 0,
+          "sub": "6a347fae-1fe2-43dc-b30e-8e7ff720bf88",
+          "group": "4c88cc74-f347-458d-8be3-db7251219b72",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:09:12+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1699,
+          "step_max": 0.2201,
+          "drift": 7.84,
+          "loop": 0.4751,
+          "loop_ratio": 2.8,
+          "travel": 1.81,
+          "pin": 0.911,
+          "reasons": [
+            "drifts 7.8 px — eyeball it",
+            "last→first hand-off is 2.8× a normal step — the loop hitches"
+          ],
+          "cut": 0,
+          "sub": "5ba3c119-9a94-44d3-943f-24bd47dcace6",
+          "group": "387796ac-479f-4a4e-b321-1e6dbe56ac99",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:09:13+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.2107,
+          "step_max": 0.2715,
+          "drift": 6.99,
+          "loop": 0.4356,
+          "loop_ratio": 2.07,
+          "travel": 3.45,
+          "pin": 0.77,
+          "reasons": [
+            "drifts 7.0 px — eyeball it",
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "150137fa-ace7-47b4-8914-d86400cc1c6f",
+          "group": "9c2b0ef4-bcb3-42fb-a9a2-d55dcfe3d0fa",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:09:14+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.1944,
+          "step_max": 0.2643,
+          "drift": 5.96,
+          "loop": 0.4266,
+          "loop_ratio": 2.19,
+          "travel": 4.41,
+          "pin": 0.829,
+          "reasons": [
+            "drifts 6.0 px — eyeball it",
+            "last→first hand-off 2.2× a step — eyeball the loop",
+            "4.4 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "ad3b4c56-c63d-47c4-b033-b280adb9875b",
+          "group": "15fcc1cc-8d2e-48eb-a839-be4a5730ff18",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:09:15+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.178,
+          "step_max": 0.2416,
+          "drift": 16.77,
+          "loop": 0.3535,
+          "loop_ratio": 1.99,
+          "travel": 3.74,
+          "pin": 0.914,
+          "reasons": [
+            "drifts 16.8 px"
+          ],
+          "cut": 0,
+          "sub": "2917498b-835b-4561-bf61-af2e42199c9c",
+          "group": "85e8c1bd-4412-46d6-aad3-24fc09db0ae0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:09:15+00:00"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.2107,
+          "step_max": 0.2715,
+          "drift": 6.99,
+          "loop": 0.4356,
+          "loop_ratio": 2.07,
+          "travel": 3.45,
+          "pin": 0.77,
+          "reasons": [
+            "drifts 7.0 px — eyeball it",
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "150137fa-ace7-47b4-8914-d86400cc1c6f",
+          "group": "9c2b0ef4-bcb3-42fb-a9a2-d55dcfe3d0fa",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:09:14+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1944,
+          "step_max": 0.2643,
+          "drift": 5.96,
+          "loop": 0.4266,
+          "loop_ratio": 2.19,
+          "travel": 4.41,
+          "pin": 0.829,
+          "reasons": [
+            "drifts 6.0 px — eyeball it",
+            "last→first hand-off 2.2× a step — eyeball the loop",
+            "4.4 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "ad3b4c56-c63d-47c4-b033-b280adb9875b",
+          "group": "15fcc1cc-8d2e-48eb-a839-be4a5730ff18",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:09:15+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "cave_troll_boss/animations/walk/south/00.webp",
+          "cave_troll_boss/animations/walk/south/01.webp",
+          "cave_troll_boss/animations/walk/south/02.webp",
+          "cave_troll_boss/animations/walk/south/03.webp",
+          "cave_troll_boss/animations/walk/south/04.webp",
+          "cave_troll_boss/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "cave_troll_boss/animations/walk/south-east/00.webp",
+          "cave_troll_boss/animations/walk/south-east/01.webp",
+          "cave_troll_boss/animations/walk/south-east/02.webp",
+          "cave_troll_boss/animations/walk/south-east/03.webp",
+          "cave_troll_boss/animations/walk/south-east/04.webp",
+          "cave_troll_boss/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "cave_troll_boss/animations/walk/east/00.webp",
+          "cave_troll_boss/animations/walk/east/01.webp",
+          "cave_troll_boss/animations/walk/east/02.webp",
+          "cave_troll_boss/animations/walk/east/03.webp",
+          "cave_troll_boss/animations/walk/east/04.webp",
+          "cave_troll_boss/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "cave_troll_boss/animations/walk/north-east/00.webp",
+          "cave_troll_boss/animations/walk/north-east/01.webp",
+          "cave_troll_boss/animations/walk/north-east/02.webp",
+          "cave_troll_boss/animations/walk/north-east/03.webp",
+          "cave_troll_boss/animations/walk/north-east/04.webp",
+          "cave_troll_boss/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "cave_troll_boss/animations/walk/north/00.webp",
+          "cave_troll_boss/animations/walk/north/01.webp",
+          "cave_troll_boss/animations/walk/north/02.webp",
+          "cave_troll_boss/animations/walk/north/03.webp",
+          "cave_troll_boss/animations/walk/north/04.webp",
+          "cave_troll_boss/animations/walk/north/05.webp"
+        ],
+        "west": [
+          "cave_troll_boss/animations/walk/west/00.webp",
+          "cave_troll_boss/animations/walk/west/01.webp",
+          "cave_troll_boss/animations/walk/west/02.webp",
+          "cave_troll_boss/animations/walk/west/03.webp",
+          "cave_troll_boss/animations/walk/west/04.webp",
+          "cave_troll_boss/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "cave_troll_boss/animations/walk/north-west/00.webp",
+          "cave_troll_boss/animations/walk/north-west/01.webp",
+          "cave_troll_boss/animations/walk/north-west/02.webp",
+          "cave_troll_boss/animations/walk/north-west/03.webp",
+          "cave_troll_boss/animations/walk/north-west/04.webp",
+          "cave_troll_boss/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "cave_troll_boss/animations/walk__south.webp",
+        "south-east": "cave_troll_boss/animations/walk__south-east.webp",
+        "east": "cave_troll_boss/animations/walk__east.webp",
+        "north-east": "cave_troll_boss/animations/walk__north-east.webp",
+        "north": "cave_troll_boss/animations/walk__north.webp",
+        "west": "cave_troll_boss/animations/walk__west.webp",
+        "north-west": "cave_troll_boss/animations/walk__north-west.webp"
+      }
     }
   }
 }
