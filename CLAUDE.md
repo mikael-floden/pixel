@@ -152,9 +152,8 @@ invisible to the game image until added there, and a subtree can be excluded
 from the image while staying in the repo. If an asset 404s at `/assets/...`
 in the deployed game but exists on GitHub, **this file is the first place to
 look** — it is the only thing that produces that symptom. Currently excluded
-while staying in the repo: `tiles2/*/raw` (pre-postprocess sheets, 4,648 files
-/ 34 MB, served by nothing), `live/telemetry` (the perf beacon's log, written
-through the GitHub API and never read from the image), and `music/**/*.wav` —
+while staying in the repo: `live/telemetry` (the perf beacon's log, written
+through the GitHub API and never read from the image) and `music/**/*.wav` —
 which since 2026-09-09 guards against a regression rather than filtering
 anything, because no master is left to exclude.
 
