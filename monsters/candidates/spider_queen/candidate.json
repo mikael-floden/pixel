@@ -1,0 +1,144 @@
+{
+  "id": "spider_queen",
+  "name": "Broodmother",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Every spider in the dark is hers and every dark is a nursery. She does not hunt; she waits, and the dark brings supper.",
+  "biome": [
+    "dark_mud",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy spider queen with a bloated black abdomen covered in pale egg sacs, eight thick armored legs tucked close beneath her body, a crown of bone spikes, eight glowing violet eyes, and huge dripping fangs.",
+  "size": [
+    232,
+    232
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "spider_queen/rotations/south.webp",
+    "south-east": "spider_queen/rotations/south-east.webp",
+    "east": "spider_queen/rotations/east.webp",
+    "north-east": "spider_queen/rotations/north-east.webp",
+    "north": "spider_queen/rotations/north.webp",
+    "north-west": "spider_queen/rotations/north-west.webp",
+    "west": "spider_queen/rotations/west.webp",
+    "south-west": "spider_queen/rotations/south-west.webp"
+  },
+  "sheet": "spider_queen/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "e26c9f37-691d-4d6b-a468-e4145b71091f",
+  "seed": 2072268964,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:43:05+00:00",
+  "elapsed_s": 225.7,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.596,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.596,
+        "bbox": [
+          6,
+          5,
+          226,
+          225
+        ],
+        "fill": 0.899,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.68,
+        "bbox": [
+          44,
+          9,
+          215,
+          225
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.675,
+        "bbox": [
+          16,
+          13,
+          204,
+          229
+        ],
+        "fill": 0.754,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.658,
+        "bbox": [
+          17,
+          1,
+          217,
+          212
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.673,
+        "bbox": [
+          15,
+          7,
+          224,
+          232
+        ],
+        "fill": 0.874,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.67,
+        "bbox": [
+          16,
+          5,
+          192,
+          226
+        ],
+        "fill": 0.723,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.659,
+        "bbox": [
+          16,
+          1,
+          212,
+          212
+        ],
+        "fill": 0.768,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.671,
+        "bbox": [
+          11,
+          10,
+          224,
+          232
+        ],
+        "fill": 0.879,
+        "touches_edge": true
+      }
+    }
+  }
+}
