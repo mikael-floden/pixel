@@ -1,0 +1,141 @@
+{
+  "id": "war_elephant",
+  "name": "Ironbrow",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It carried a king to war and carried him home dead. It still wears the tower, and it still wants a war.",
+  "biome": [
+    "light_soil",
+    "grass"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy armored war elephant with wrinkled grey hide, riveted iron plates on its brow and flanks, capped brass tusks, a short curled trunk, small wise eyes, and a howdah-tower of wood strapped to its back.",
+  "size": [
+    240,
+    240
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "war_elephant/rotations/south.webp",
+    "south-east": "war_elephant/rotations/south-east.webp",
+    "east": "war_elephant/rotations/east.webp",
+    "north-east": "war_elephant/rotations/north-east.webp",
+    "north": "war_elephant/rotations/north.webp",
+    "north-west": "war_elephant/rotations/north-west.webp",
+    "west": "war_elephant/rotations/west.webp",
+    "south-west": "war_elephant/rotations/south-west.webp"
+  },
+  "sheet": "war_elephant/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "9a645c87-6da7-4d45-9bb2-a725e7493778",
+  "seed": 655270357,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:49:12+00:00",
+  "elapsed_s": 243.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.579,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.579,
+        "bbox": [
+          13,
+          9,
+          225,
+          229
+        ],
+        "fill": 0.81,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.665,
+        "bbox": [
+          18,
+          17,
+          206,
+          231
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.688,
+        "bbox": [
+          45,
+          8,
+          214,
+          231
+        ],
+        "fill": 0.654,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.648,
+        "bbox": [
+          29,
+          17,
+          225,
+          231
+        ],
+        "fill": 0.728,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.665,
+        "bbox": [
+          39,
+          9,
+          197,
+          225
+        ],
+        "fill": 0.593,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.678,
+        "bbox": [
+          19,
+          14,
+          232,
+          222
+        ],
+        "fill": 0.769,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.664,
+        "bbox": [
+          44,
+          11,
+          194,
+          231
+        ],
+        "fill": 0.573,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.677,
+        "bbox": [
+          6,
+          14,
+          225,
+          223
+        ],
+        "fill": 0.795,
+        "touches_edge": false
+      }
+    }
+  }
+}
