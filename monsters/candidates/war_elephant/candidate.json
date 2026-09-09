@@ -611,6 +611,284 @@
         "west": "war_elephant/animations/walk__west.webp",
         "north-west": "war_elephant/animations/walk__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.0508,
+          "step_max": 0.0608,
+          "drift": 2.11,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.53,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "motion 0.051 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.103 — eyeball it"
+          ],
+          "sub": "3e8b69e1-66bb-42b3-95bd-cc91233d2d05",
+          "group": "a3e6cd79-c002-4a78-89a8-b65bdd518b5f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:08:00+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1064,
+          "step_max": 0.1641,
+          "drift": 13.32,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 0.62,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "523338db-1427-4ae9-9f31-c5e61885fc43",
+          "group": "926211c0-ed66-427c-a762-ae81ff536670",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:08:01+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1056,
+          "step_max": 0.1391,
+          "drift": 2.52,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 3.71,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "d64374cd-66f3-434b-8617-b603c1d1b7d1",
+          "group": "cdc970f8-895e-4b3a-8cf2-1e4e74e2c34e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:08:01+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.0703,
+          "step_max": 0.1064,
+          "drift": 4.1,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 2.06,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "motion 0.070 outside the calm band 0.08–0.9 — eyeball it"
+          ],
+          "sub": "62bb8db4-b42b-4159-a093-8ddc0cf1cf59",
+          "group": "5323c42b-14c4-4620-b9b0-c6f77ac04eca",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:08:02+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0613,
+          "step_max": 0.1178,
+          "drift": 3.17,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 4.19,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "motion 0.061 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.139 — eyeball it"
+          ],
+          "sub": "4e3b18de-0351-4340-9f49-b46289699607",
+          "group": "82d6a42c-ea32-475c-9639-0e1cdd23ac8e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:08:14+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1064,
+          "step_max": 0.1641,
+          "drift": 13.32,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 0.62,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "523338db-1427-4ae9-9f31-c5e61885fc43",
+          "group": "926211c0-ed66-427c-a762-ae81ff536670",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:08:01+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1056,
+          "step_max": 0.1391,
+          "drift": 2.52,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 3.71,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "d64374cd-66f3-434b-8617-b603c1d1b7d1",
+          "group": "cdc970f8-895e-4b3a-8cf2-1e4e74e2c34e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:08:01+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.0703,
+          "step_max": 0.1064,
+          "drift": 4.1,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 2.06,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "motion 0.070 outside the calm band 0.08–0.9 — eyeball it"
+          ],
+          "sub": "62bb8db4-b42b-4159-a093-8ddc0cf1cf59",
+          "group": "5323c42b-14c4-4620-b9b0-c6f77ac04eca",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:08:02+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "lowers its head and gores forward with both iron-capped tusks in one heavy thrust, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "war_elephant/animations/attack/south/00.webp",
+          "war_elephant/animations/attack/south/01.webp",
+          "war_elephant/animations/attack/south/02.webp",
+          "war_elephant/animations/attack/south/03.webp",
+          "war_elephant/animations/attack/south/04.webp",
+          "war_elephant/animations/attack/south/05.webp",
+          "war_elephant/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "war_elephant/animations/attack/south-east/00.webp",
+          "war_elephant/animations/attack/south-east/01.webp",
+          "war_elephant/animations/attack/south-east/02.webp",
+          "war_elephant/animations/attack/south-east/03.webp",
+          "war_elephant/animations/attack/south-east/04.webp",
+          "war_elephant/animations/attack/south-east/05.webp",
+          "war_elephant/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "war_elephant/animations/attack/east/00.webp",
+          "war_elephant/animations/attack/east/01.webp",
+          "war_elephant/animations/attack/east/02.webp",
+          "war_elephant/animations/attack/east/03.webp",
+          "war_elephant/animations/attack/east/04.webp",
+          "war_elephant/animations/attack/east/05.webp",
+          "war_elephant/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "war_elephant/animations/attack/north-east/00.webp",
+          "war_elephant/animations/attack/north-east/01.webp",
+          "war_elephant/animations/attack/north-east/02.webp",
+          "war_elephant/animations/attack/north-east/03.webp",
+          "war_elephant/animations/attack/north-east/04.webp",
+          "war_elephant/animations/attack/north-east/05.webp",
+          "war_elephant/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "war_elephant/animations/attack/north/00.webp",
+          "war_elephant/animations/attack/north/01.webp",
+          "war_elephant/animations/attack/north/02.webp",
+          "war_elephant/animations/attack/north/03.webp",
+          "war_elephant/animations/attack/north/04.webp",
+          "war_elephant/animations/attack/north/05.webp",
+          "war_elephant/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "war_elephant/animations/attack/south-west/00.webp",
+          "war_elephant/animations/attack/south-west/01.webp",
+          "war_elephant/animations/attack/south-west/02.webp",
+          "war_elephant/animations/attack/south-west/03.webp",
+          "war_elephant/animations/attack/south-west/04.webp",
+          "war_elephant/animations/attack/south-west/05.webp",
+          "war_elephant/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "war_elephant/animations/attack/west/00.webp",
+          "war_elephant/animations/attack/west/01.webp",
+          "war_elephant/animations/attack/west/02.webp",
+          "war_elephant/animations/attack/west/03.webp",
+          "war_elephant/animations/attack/west/04.webp",
+          "war_elephant/animations/attack/west/05.webp",
+          "war_elephant/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "war_elephant/animations/attack/north-west/00.webp",
+          "war_elephant/animations/attack/north-west/01.webp",
+          "war_elephant/animations/attack/north-west/02.webp",
+          "war_elephant/animations/attack/north-west/03.webp",
+          "war_elephant/animations/attack/north-west/04.webp",
+          "war_elephant/animations/attack/north-west/05.webp",
+          "war_elephant/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "war_elephant/animations/attack__south.webp",
+        "south-east": "war_elephant/animations/attack__south-east.webp",
+        "east": "war_elephant/animations/attack__east.webp",
+        "north-east": "war_elephant/animations/attack__north-east.webp",
+        "north": "war_elephant/animations/attack__north.webp",
+        "south-west": "war_elephant/animations/attack__south-west.webp",
+        "west": "war_elephant/animations/attack__west.webp",
+        "north-west": "war_elephant/animations/attack__north-west.webp"
+      }
     }
   }
 }
