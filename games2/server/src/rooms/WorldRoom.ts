@@ -2576,6 +2576,12 @@ export class WorldRoom extends Room<WorldState> {
     return super.broadcastPatch();
   }
   private syncAllPositions() {
+    /* THE PATCH TIMER CAN FIRE BEFORE THE STATE EXISTS: onCreate loads the
+     * world first and calls setState after, and a room whose world failed to
+     * load (CI's sparse checkout has no maps2) never gets one — an unguarded
+     * read here was an uncaught TypeError that killed seven test files in
+     * CI, and with them every deploy since it landed (2026-09-09). */
+    if (!this.state) return;
     this.state.players.forEach((p) => this.syncPos(p));
     this.state.monsters.forEach((m) => this.syncPos(m));
     this.state.drops.forEach((g) => this.syncPos(g));
