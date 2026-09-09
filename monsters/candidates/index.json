@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:13:08+00:00",
+  "generated_at": "2026-09-09T18:18:09+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 22,
+  "count": 26,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -2487,6 +2487,136 @@
       "generated_at": "2026-09-09T18:05:19+00:00"
     },
     {
+      "id": "goblin_scout",
+      "name": "Snaggle",
+      "tier": "mid",
+      "lore": "It takes what it can carry and runs. It is never alone; the rest of the warren is a whistle away.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "3601f70a-9fb4-409e-b910-5c5c5921894c",
+      "version": 1,
+      "sheet": "goblin_scout/sheet.webp",
+      "rotations": {
+        "south": "goblin_scout/rotations/south.webp",
+        "south-east": "goblin_scout/rotations/south-east.webp",
+        "east": "goblin_scout/rotations/east.webp",
+        "north-east": "goblin_scout/rotations/north-east.webp",
+        "north": "goblin_scout/rotations/north.webp",
+        "north-west": "goblin_scout/rotations/north-west.webp",
+        "west": "goblin_scout/rotations/west.webp",
+        "south-west": "goblin_scout/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.777,
+        "reasons": [
+          "north: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.781,
+            "bbox": [
+              3,
+              3,
+              82,
+              85
+            ],
+            "fill": 0.837,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.811,
+            "bbox": [
+              22,
+              3,
+              67,
+              86
+            ],
+            "fill": 0.482,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.812,
+            "bbox": [
+              21,
+              3,
+              66,
+              86
+            ],
+            "fill": 0.482,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.778,
+            "bbox": [
+              9,
+              3,
+              88,
+              83
+            ],
+            "fill": 0.816,
+            "touches_edge": true
+          },
+          "south-east": {
+            "run1": 0.814,
+            "bbox": [
+              17,
+              3,
+              76,
+              86
+            ],
+            "fill": 0.632,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.789,
+            "bbox": [
+              19,
+              3,
+              84,
+              84
+            ],
+            "fill": 0.68,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.777,
+            "bbox": [
+              14,
+              3,
+              80,
+              84
+            ],
+            "fill": 0.69,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.812,
+            "bbox": [
+              3,
+              3,
+              74,
+              86
+            ],
+            "fill": 0.761,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:17:38+00:00"
+    },
+    {
       "id": "goblin_shaman",
       "name": "Hexgob",
       "tier": "mid",
@@ -2872,6 +3002,390 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:12:22+00:00"
+    },
+    {
+      "id": "ghoul",
+      "name": "Gravemaw",
+      "tier": "evil",
+      "lore": "It eats what the graves give up and waits for more. Its patience is only hunger, drawn out.",
+      "biome": [
+        "grey_paving_stone",
+        "dark_mud"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "ef31bc2a-533d-4538-86a7-425ba828d177",
+      "version": 1,
+      "sheet": "ghoul/sheet.webp",
+      "rotations": {
+        "south": "ghoul/rotations/south.webp",
+        "south-east": "ghoul/rotations/south-east.webp",
+        "east": "ghoul/rotations/east.webp",
+        "north-east": "ghoul/rotations/north-east.webp",
+        "north": "ghoul/rotations/north.webp",
+        "north-west": "ghoul/rotations/north-west.webp",
+        "west": "ghoul/rotations/west.webp",
+        "south-west": "ghoul/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.75,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.759,
+            "bbox": [
+              16,
+              5,
+              87,
+              100
+            ],
+            "fill": 0.624,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.822,
+            "bbox": [
+              29,
+              4,
+              71,
+              100
+            ],
+            "fill": 0.373,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.83,
+            "bbox": [
+              32,
+              4,
+              75,
+              100
+            ],
+            "fill": 0.382,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.75,
+            "bbox": [
+              17,
+              4,
+              86,
+              98
+            ],
+            "fill": 0.6,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.844,
+            "bbox": [
+              23,
+              5,
+              86,
+              101
+            ],
+            "fill": 0.559,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.759,
+            "bbox": [
+              25,
+              4,
+              79,
+              98
+            ],
+            "fill": 0.469,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.751,
+            "bbox": [
+              25,
+              4,
+              79,
+              98
+            ],
+            "fill": 0.469,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.84,
+            "bbox": [
+              19,
+              5,
+              79,
+              101
+            ],
+            "fill": 0.533,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:17:58+00:00"
+    },
+    {
+      "id": "owlbear",
+      "name": "Hootclaw",
+      "tier": "evil",
+      "lore": "Half of it hunts by night and half by day, and they never agreed to sleep. It is always awake, and always hungry.",
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "size": [
+        144,
+        144
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "825a7520-b631-47cc-9381-2ee63a0c0f9c",
+      "version": 1,
+      "sheet": "owlbear/sheet.webp",
+      "rotations": {
+        "south": "owlbear/rotations/south.webp",
+        "south-east": "owlbear/rotations/south-east.webp",
+        "east": "owlbear/rotations/east.webp",
+        "north-east": "owlbear/rotations/north-east.webp",
+        "north": "owlbear/rotations/north.webp",
+        "north-west": "owlbear/rotations/north-west.webp",
+        "west": "owlbear/rotations/west.webp",
+        "south-west": "owlbear/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.507,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.507,
+            "bbox": [
+              15,
+              4,
+              135,
+              140
+            ],
+            "fill": 0.787,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.631,
+            "bbox": [
+              4,
+              4,
+              141,
+              135
+            ],
+            "fill": 0.865,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.665,
+            "bbox": [
+              3,
+              4,
+              133,
+              137
+            ],
+            "fill": 0.834,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.579,
+            "bbox": [
+              16,
+              6,
+              117,
+              138
+            ],
+            "fill": 0.643,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.701,
+            "bbox": [
+              11,
+              6,
+              128,
+              140
+            ],
+            "fill": 0.756,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.608,
+            "bbox": [
+              4,
+              3,
+              133,
+              140
+            ],
+            "fill": 0.852,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.619,
+            "bbox": [
+              13,
+              3,
+              132,
+              140
+            ],
+            "fill": 0.786,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.691,
+            "bbox": [
+              14,
+              7,
+              140,
+              140
+            ],
+            "fill": 0.808,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:17:57+00:00"
+    },
+    {
+      "id": "clockwork_knight",
+      "name": "Gearwarden",
+      "tier": "evil",
+      "lore": "Wound once by a hand long dead, it has not run down. It guards a door that no longer has a room behind it.",
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "016b248e-c18b-4423-a429-05b67450429f",
+      "version": 1,
+      "sheet": "clockwork_knight/sheet.webp",
+      "rotations": {
+        "south": "clockwork_knight/rotations/south.webp",
+        "south-east": "clockwork_knight/rotations/south-east.webp",
+        "east": "clockwork_knight/rotations/east.webp",
+        "north-east": "clockwork_knight/rotations/north-east.webp",
+        "north": "clockwork_knight/rotations/north.webp",
+        "north-west": "clockwork_knight/rotations/north-west.webp",
+        "west": "clockwork_knight/rotations/west.webp",
+        "south-west": "clockwork_knight/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.767,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.767,
+            "bbox": [
+              10,
+              7,
+              99,
+              102
+            ],
+            "fill": 0.674,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.788,
+            "bbox": [
+              15,
+              8,
+              91,
+              105
+            ],
+            "fill": 0.588,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.787,
+            "bbox": [
+              17,
+              7,
+              98,
+              105
+            ],
+            "fill": 0.633,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.775,
+            "bbox": [
+              13,
+              6,
+              96,
+              101
+            ],
+            "fill": 0.629,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.809,
+            "bbox": [
+              20,
+              7,
+              97,
+              105
+            ],
+            "fill": 0.602,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.795,
+            "bbox": [
+              24,
+              7,
+              87,
+              103
+            ],
+            "fill": 0.482,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.795,
+            "bbox": [
+              14,
+              7,
+              87,
+              103
+            ],
+            "fill": 0.559,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.822,
+            "bbox": [
+              18,
+              8,
+              90,
+              105
+            ],
+            "fill": 0.557,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:18:09+00:00"
     }
   ]
 }

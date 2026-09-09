@@ -1,0 +1,141 @@
+{
+  "id": "owlbear",
+  "name": "Hootclaw",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Half of it hunts by night and half by day, and they never agreed to sleep. It is always awake, and always hungry.",
+  "biome": [
+    "grass",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Fantasy owlbear with a massive brown bear body, thick shaggy fur, a great horned-owl head with huge yellow eyes and a hooked beak, tufted feather ears, and enormous clawed paws.",
+  "size": [
+    144,
+    144
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "owlbear/rotations/south.webp",
+    "south-east": "owlbear/rotations/south-east.webp",
+    "east": "owlbear/rotations/east.webp",
+    "north-east": "owlbear/rotations/north-east.webp",
+    "north": "owlbear/rotations/north.webp",
+    "north-west": "owlbear/rotations/north-west.webp",
+    "west": "owlbear/rotations/west.webp",
+    "south-west": "owlbear/rotations/south-west.webp"
+  },
+  "sheet": "owlbear/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "825a7520-b631-47cc-9381-2ee63a0c0f9c",
+  "seed": 1892902816,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:17:57+00:00",
+  "elapsed_s": 188.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.507,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.507,
+        "bbox": [
+          15,
+          4,
+          135,
+          140
+        ],
+        "fill": 0.787,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.631,
+        "bbox": [
+          4,
+          4,
+          141,
+          135
+        ],
+        "fill": 0.865,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.665,
+        "bbox": [
+          3,
+          4,
+          133,
+          137
+        ],
+        "fill": 0.834,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.579,
+        "bbox": [
+          16,
+          6,
+          117,
+          138
+        ],
+        "fill": 0.643,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.701,
+        "bbox": [
+          11,
+          6,
+          128,
+          140
+        ],
+        "fill": 0.756,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.608,
+        "bbox": [
+          4,
+          3,
+          133,
+          140
+        ],
+        "fill": 0.852,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.619,
+        "bbox": [
+          13,
+          3,
+          132,
+          140
+        ],
+        "fill": 0.786,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.691,
+        "bbox": [
+          14,
+          7,
+          140,
+          140
+        ],
+        "fill": 0.808,
+        "touches_edge": false
+      }
+    }
+  }
+}

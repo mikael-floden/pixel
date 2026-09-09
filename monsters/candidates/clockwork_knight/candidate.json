@@ -1,0 +1,141 @@
+{
+  "id": "clockwork_knight",
+  "name": "Gearwarden",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Wound once by a hand long dead, it has not run down. It guards a door that no longer has a room behind it.",
+  "biome": [
+    "parquet_floor",
+    "grey_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy clockwork automaton knight shown full body from head to feet, a body of tarnished brass plates and exposed spinning gears, a glowing amber lens for a single eye, a keyed windup crank on its back, a short sword held upright, and a round shield.",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "clockwork_knight/rotations/south.webp",
+    "south-east": "clockwork_knight/rotations/south-east.webp",
+    "east": "clockwork_knight/rotations/east.webp",
+    "north-east": "clockwork_knight/rotations/north-east.webp",
+    "north": "clockwork_knight/rotations/north.webp",
+    "north-west": "clockwork_knight/rotations/north-west.webp",
+    "west": "clockwork_knight/rotations/west.webp",
+    "south-west": "clockwork_knight/rotations/south-west.webp"
+  },
+  "sheet": "clockwork_knight/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "016b248e-c18b-4423-a429-05b67450429f",
+  "seed": 1504588096,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:18:09+00:00",
+  "elapsed_s": 199.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.767,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.767,
+        "bbox": [
+          10,
+          7,
+          99,
+          102
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.788,
+        "bbox": [
+          15,
+          8,
+          91,
+          105
+        ],
+        "fill": 0.588,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.787,
+        "bbox": [
+          17,
+          7,
+          98,
+          105
+        ],
+        "fill": 0.633,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.775,
+        "bbox": [
+          13,
+          6,
+          96,
+          101
+        ],
+        "fill": 0.629,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.809,
+        "bbox": [
+          20,
+          7,
+          97,
+          105
+        ],
+        "fill": 0.602,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.795,
+        "bbox": [
+          24,
+          7,
+          87,
+          103
+        ],
+        "fill": 0.482,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.795,
+        "bbox": [
+          14,
+          7,
+          87,
+          103
+        ],
+        "fill": 0.559,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.822,
+        "bbox": [
+          18,
+          8,
+          90,
+          105
+        ],
+        "fill": 0.557,
+        "touches_edge": false
+      }
+    }
+  }
+}

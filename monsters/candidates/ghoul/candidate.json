@@ -1,0 +1,141 @@
+{
+  "id": "ghoul",
+  "name": "Gravemaw",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It eats what the graves give up and waits for more. Its patience is only hunger, drawn out.",
+  "biome": [
+    "grey_paving_stone",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Hunched fantasy ghoul shown full body from head to feet, pale grey mottled skin stretched over a bony frame, a wide mouth of needle teeth, sunken white eyes, long clawed fingers, and rags of a burial shroud.",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ghoul/rotations/south.webp",
+    "south-east": "ghoul/rotations/south-east.webp",
+    "east": "ghoul/rotations/east.webp",
+    "north-east": "ghoul/rotations/north-east.webp",
+    "north": "ghoul/rotations/north.webp",
+    "north-west": "ghoul/rotations/north-west.webp",
+    "west": "ghoul/rotations/west.webp",
+    "south-west": "ghoul/rotations/south-west.webp"
+  },
+  "sheet": "ghoul/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ef31bc2a-533d-4538-86a7-425ba828d177",
+  "seed": 1064456398,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:17:58+00:00",
+  "elapsed_s": 189.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.75,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.759,
+        "bbox": [
+          16,
+          5,
+          87,
+          100
+        ],
+        "fill": 0.624,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.822,
+        "bbox": [
+          29,
+          4,
+          71,
+          100
+        ],
+        "fill": 0.373,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.83,
+        "bbox": [
+          32,
+          4,
+          75,
+          100
+        ],
+        "fill": 0.382,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.75,
+        "bbox": [
+          17,
+          4,
+          86,
+          98
+        ],
+        "fill": 0.6,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.844,
+        "bbox": [
+          23,
+          5,
+          86,
+          101
+        ],
+        "fill": 0.559,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.759,
+        "bbox": [
+          25,
+          4,
+          79,
+          98
+        ],
+        "fill": 0.469,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.751,
+        "bbox": [
+          25,
+          4,
+          79,
+          98
+        ],
+        "fill": 0.469,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.84,
+        "bbox": [
+          19,
+          5,
+          79,
+          101
+        ],
+        "fill": 0.533,
+        "touches_edge": false
+      }
+    }
+  }
+}

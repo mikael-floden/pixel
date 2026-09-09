@@ -1,0 +1,143 @@
+{
+  "id": "goblin_scout",
+  "name": "Snaggle",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It takes what it can carry and runs. It is never alone; the rest of the warren is a whistle away.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Small fantasy goblin shown full body from head to feet, green warty skin, a large hooked nose, pointed ears, a patched leather cap, a ragged brown tunic, a rusty dagger in one hand and a lumpy loot sack in the other.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "goblin_scout/rotations/south.webp",
+    "south-east": "goblin_scout/rotations/south-east.webp",
+    "east": "goblin_scout/rotations/east.webp",
+    "north-east": "goblin_scout/rotations/north-east.webp",
+    "north": "goblin_scout/rotations/north.webp",
+    "north-west": "goblin_scout/rotations/north-west.webp",
+    "west": "goblin_scout/rotations/west.webp",
+    "south-west": "goblin_scout/rotations/south-west.webp"
+  },
+  "sheet": "goblin_scout/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "3601f70a-9fb4-409e-b910-5c5c5921894c",
+  "seed": 1795536248,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:17:38+00:00",
+  "elapsed_s": 169.0,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.777,
+    "reasons": [
+      "north: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.781,
+        "bbox": [
+          3,
+          3,
+          82,
+          85
+        ],
+        "fill": 0.837,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.811,
+        "bbox": [
+          22,
+          3,
+          67,
+          86
+        ],
+        "fill": 0.482,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.812,
+        "bbox": [
+          21,
+          3,
+          66,
+          86
+        ],
+        "fill": 0.482,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.778,
+        "bbox": [
+          9,
+          3,
+          88,
+          83
+        ],
+        "fill": 0.816,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.814,
+        "bbox": [
+          17,
+          3,
+          76,
+          86
+        ],
+        "fill": 0.632,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.789,
+        "bbox": [
+          19,
+          3,
+          84,
+          84
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.777,
+        "bbox": [
+          14,
+          3,
+          80,
+          84
+        ],
+        "fill": 0.69,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.812,
+        "bbox": [
+          3,
+          3,
+          74,
+          86
+        ],
+        "fill": 0.761,
+        "touches_edge": false
+      }
+    }
+  }
+}
