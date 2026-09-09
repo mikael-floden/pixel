@@ -6112,6 +6112,24 @@ class Grow:
             self.doc["scenery"], [(sx + 0.5, sy + 0.5, self.BONFIRE_R)])
         json.dump(self.doc, open(os.path.join(OUT, "world.json"), "w"),
                   separators=(",", ":"))
+        # EVERY PLACEMENT SETTLES ON A STATE, whichever path placed it: the
+        # base build's ported trees are appended straight into the list, and
+        # the light pass un-lights a lamp but left its LIT state on it.
+        settled = 0
+        for p in self.doc["scenery"]:
+            var = self._variations(p["piece"])
+            st = p.get("state")
+            if p.get("lit"):
+                if not st or not st.startswith("LIT"):
+                    st = self._lit_variant(p["piece"], p["x"], p["y"], st)
+            elif not st or st not in var:
+                st = self._variant(p["piece"], self._pos_rng(p["piece"], p["x"], p["y"]))
+                if st is None and self._best_lit_state(p["piece"]):
+                    st = self._lit_variant(p["piece"], p["x"], p["y"])
+            if st and st != p.get("state"):
+                p["state"] = st
+                settled += 1
+        self.placed += [("placements settled on a state late", settled)]
         # NOTHING UNLIT WEARS A LIT LOOK, and nothing lit is still: a lit
         # placement names a LIT state; an unlit one names a NOT_LIT variation
         # or is a piece whose base still is not a LIT state.
@@ -6121,7 +6139,8 @@ class Grow:
             st = meta.get("states") or {}
             base = next((k for k, v in st.items() if v.get("sprite") == meta.get("sprite")), "")
             look = p.get("state") or base
-            can_unlit = any(k.startswith("NOT_LIT") for k in st)
+            can_unlit = bool(self._variations(p["piece"]))   # a usable one:
+                                                              # a rejected NOT_LIT is no way out
             if bool(p.get("lit")) != look.startswith("LIT") and (p.get("lit") or can_unlit):
                 fakes.append((p["piece"], p["x"], p["y"], p.get("state"), base))
         assert not fakes, ("placements whose look disagrees with lit", len(fakes), fakes[:5])
