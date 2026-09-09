@@ -347,6 +347,240 @@
         "south-west": "ash_hatchling/animations/idle__south-west.webp",
         "west": "ash_hatchling/animations/idle__west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1279,
+          "step_max": 0.2141,
+          "drift": 1.85,
+          "loop": 0.0862,
+          "loop_ratio": 0.67,
+          "travel": 0.26,
+          "pin": 0.845,
+          "reasons": [
+            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)"
+          ],
+          "cut": 0,
+          "sub": "966af920-068c-44a0-8382-b97c4d2123d6",
+          "group": "7f325d4d-c0ec-4ac9-9e46-c977114213b3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:11:49+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1134,
+          "step_max": 0.1488,
+          "drift": 0.51,
+          "loop": 0.2105,
+          "loop_ratio": 1.86,
+          "travel": 0.46,
+          "pin": 0.845,
+          "reasons": [],
+          "cut": 0,
+          "sub": "74969406-b3d6-4fa6-93a4-5aad0972ec4d",
+          "group": "11ee16ba-401b-4ae6-9241-ac82cec429c0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:11:50+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.1088,
+          "step_max": 0.1598,
+          "drift": 0.84,
+          "loop": 0.2493,
+          "loop_ratio": 2.29,
+          "travel": 0.84,
+          "pin": 0.888,
+          "reasons": [
+            "last→first hand-off 2.3× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "ccb598f5-ab28-4b66-810b-f0493ccc1335",
+          "group": "f9dc4fc4-3ccc-4cc6-969d-99fc3d9f2ab8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:11:50+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1646,
+          "step_max": 0.1837,
+          "drift": 1.07,
+          "loop": 0.2707,
+          "loop_ratio": 1.64,
+          "travel": 0.69,
+          "pin": 0.856,
+          "reasons": [],
+          "cut": 0,
+          "sub": "31a155ad-8dd8-4961-9d41-36cff6b3601a",
+          "group": "d6efb8cb-0d26-41de-b96d-6504ce874ca6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:11:51+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1073,
+          "step_max": 0.1246,
+          "drift": 1.23,
+          "loop": 0.0852,
+          "loop_ratio": 0.79,
+          "travel": 1.0,
+          "pin": 0.883,
+          "reasons": [],
+          "cut": 0,
+          "sub": "b622373f-2c99-4372-8c90-d1409d7c06fb",
+          "group": "b1cc2eb8-d119-4cef-89c9-ac90c032bd84",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:11:52+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1134,
+          "step_max": 0.1488,
+          "drift": 0.51,
+          "loop": 0.2105,
+          "loop_ratio": 1.86,
+          "travel": 0.46,
+          "pin": 0.845,
+          "reasons": [],
+          "cut": 0,
+          "sub": "74969406-b3d6-4fa6-93a4-5aad0972ec4d",
+          "group": "11ee16ba-401b-4ae6-9241-ac82cec429c0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:11:50+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1088,
+          "step_max": 0.1598,
+          "drift": 0.84,
+          "loop": 0.2493,
+          "loop_ratio": 2.29,
+          "travel": 0.84,
+          "pin": 0.888,
+          "reasons": [
+            "last→first hand-off 2.3× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "ccb598f5-ab28-4b66-810b-f0493ccc1335",
+          "group": "f9dc4fc4-3ccc-4cc6-969d-99fc3d9f2ab8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:11:50+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1646,
+          "step_max": 0.1837,
+          "drift": 1.07,
+          "loop": 0.2707,
+          "loop_ratio": 1.64,
+          "travel": 0.69,
+          "pin": 0.856,
+          "reasons": [],
+          "cut": 0,
+          "sub": "31a155ad-8dd8-4961-9d41-36cff6b3601a",
+          "group": "d6efb8cb-0d26-41de-b96d-6504ce874ca6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:11:51+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "ash_hatchling/animations/walk/south/00.webp",
+          "ash_hatchling/animations/walk/south/01.webp",
+          "ash_hatchling/animations/walk/south/02.webp",
+          "ash_hatchling/animations/walk/south/03.webp",
+          "ash_hatchling/animations/walk/south/04.webp",
+          "ash_hatchling/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "ash_hatchling/animations/walk/south-east/00.webp",
+          "ash_hatchling/animations/walk/south-east/01.webp",
+          "ash_hatchling/animations/walk/south-east/02.webp",
+          "ash_hatchling/animations/walk/south-east/03.webp",
+          "ash_hatchling/animations/walk/south-east/04.webp",
+          "ash_hatchling/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "ash_hatchling/animations/walk/east/00.webp",
+          "ash_hatchling/animations/walk/east/01.webp",
+          "ash_hatchling/animations/walk/east/02.webp",
+          "ash_hatchling/animations/walk/east/03.webp",
+          "ash_hatchling/animations/walk/east/04.webp",
+          "ash_hatchling/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "ash_hatchling/animations/walk/north-east/00.webp",
+          "ash_hatchling/animations/walk/north-east/01.webp",
+          "ash_hatchling/animations/walk/north-east/02.webp",
+          "ash_hatchling/animations/walk/north-east/03.webp",
+          "ash_hatchling/animations/walk/north-east/04.webp",
+          "ash_hatchling/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "ash_hatchling/animations/walk/north/00.webp",
+          "ash_hatchling/animations/walk/north/01.webp",
+          "ash_hatchling/animations/walk/north/02.webp",
+          "ash_hatchling/animations/walk/north/03.webp",
+          "ash_hatchling/animations/walk/north/04.webp",
+          "ash_hatchling/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "ash_hatchling/animations/walk/south-west/00.webp",
+          "ash_hatchling/animations/walk/south-west/01.webp",
+          "ash_hatchling/animations/walk/south-west/02.webp",
+          "ash_hatchling/animations/walk/south-west/03.webp",
+          "ash_hatchling/animations/walk/south-west/04.webp",
+          "ash_hatchling/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "ash_hatchling/animations/walk/west/00.webp",
+          "ash_hatchling/animations/walk/west/01.webp",
+          "ash_hatchling/animations/walk/west/02.webp",
+          "ash_hatchling/animations/walk/west/03.webp",
+          "ash_hatchling/animations/walk/west/04.webp",
+          "ash_hatchling/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "ash_hatchling/animations/walk/north-west/00.webp",
+          "ash_hatchling/animations/walk/north-west/01.webp",
+          "ash_hatchling/animations/walk/north-west/02.webp",
+          "ash_hatchling/animations/walk/north-west/03.webp",
+          "ash_hatchling/animations/walk/north-west/04.webp",
+          "ash_hatchling/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "ash_hatchling/animations/walk__south.webp",
+        "south-east": "ash_hatchling/animations/walk__south-east.webp",
+        "east": "ash_hatchling/animations/walk__east.webp",
+        "north-east": "ash_hatchling/animations/walk__north-east.webp",
+        "north": "ash_hatchling/animations/walk__north.webp",
+        "south-west": "ash_hatchling/animations/walk__south-west.webp",
+        "west": "ash_hatchling/animations/walk__west.webp",
+        "north-west": "ash_hatchling/animations/walk__north-west.webp"
+      }
     }
   }
 }
