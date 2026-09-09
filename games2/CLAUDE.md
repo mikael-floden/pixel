@@ -429,7 +429,8 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   spotlight differs a bit with the animation and the game will feel more
   alive ... 0.5 means half the effect and 2.0 means twice the effect ...
   This is for me to test what looks best. Will give you the defaults once I
-  found it" — the defaults are 1x until he does. Measured on the cauldron
+  found it" — and he did: 0.12x on both ("This is good defaults", same day),
+  an eighth of the published swing. Measured on the cauldron
   camp at 349.8,248.8: 1x swings 0.70-1.40 of strength and up to 0.07 cells,
   4x 0.05-2.61 and 0.29 cells, rest exactly the block. Probe:
   `__ml.sceneryAnims().lit`.
