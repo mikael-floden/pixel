@@ -335,6 +335,224 @@
         "west": "lizard_warrior/animations/idle__west.webp",
         "north-west": "lizard_warrior/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1573,
+          "step_max": 0.1955,
+          "drift": 2.52,
+          "loop": 0.2602,
+          "loop_ratio": 1.65,
+          "travel": 0.73,
+          "pin": 0.873,
+          "reasons": [],
+          "cut": 0,
+          "sub": "518de8fe-467c-4b59-8b75-b6376a744502",
+          "group": "1992c55e-5edf-4832-9bb6-9039b08f5d87",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:59:06+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.2384,
+          "step_max": 0.273,
+          "drift": 2.48,
+          "loop": 0.2815,
+          "loop_ratio": 1.18,
+          "travel": 1.64,
+          "pin": 0.808,
+          "reasons": [
+            "frame 3 touches a canvas edge the base does not (overflow / wrap risk)"
+          ],
+          "cut": 0,
+          "sub": "069fb853-0021-4298-bdfe-adb9422e999e",
+          "group": "c08e4a5c-a076-43c2-8931-f5977e381f5f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:59:07+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.1904,
+          "step_max": 0.2492,
+          "drift": 5.21,
+          "loop": 0.4511,
+          "loop_ratio": 2.37,
+          "travel": 5.21,
+          "pin": 0.782,
+          "reasons": [
+            "drifts 5.2 px — eyeball it",
+            "last→first hand-off 2.4× a step — eyeball the loop",
+            "5.2 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "ff1b3d57-6830-4d8a-91d0-39d242c7d6d5",
+          "group": "219c622a-265c-4344-858d-b60b579242f3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:59:08+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.2603,
+          "step_max": 0.299,
+          "drift": 4.42,
+          "loop": 0.2528,
+          "loop_ratio": 0.97,
+          "travel": 2.2,
+          "pin": 0.775,
+          "reasons": [
+            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)",
+            "36 px of motion fell outside the base canvas (overflow)"
+          ],
+          "cut": 36,
+          "sub": "d225d0fd-a21f-444b-a3db-08735461de95",
+          "group": "a34da9c5-8ad7-492d-835a-d990a45f0cac",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:59:08+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.2024,
+          "step_max": 0.2415,
+          "drift": 4.13,
+          "loop": 0.3487,
+          "loop_ratio": 1.72,
+          "travel": 1.91,
+          "pin": 0.833,
+          "reasons": [
+            "frame 0 touches a canvas edge the base does not (overflow / wrap risk)",
+            "41 px of motion fell outside the base canvas (overflow)"
+          ],
+          "cut": 41,
+          "sub": "0f59ffac-b8d8-4a6f-9dc8-8d39a40f145b",
+          "group": "57ba59ce-fdb2-434c-af84-f85b8abc5267",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:59:09+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.2384,
+          "step_max": 0.273,
+          "drift": 2.48,
+          "loop": 0.2815,
+          "loop_ratio": 1.18,
+          "travel": 1.64,
+          "pin": 0.808,
+          "reasons": [
+            "frame 3 touches a canvas edge the base does not (overflow / wrap risk)"
+          ],
+          "cut": 0,
+          "sub": "069fb853-0021-4298-bdfe-adb9422e999e",
+          "group": "c08e4a5c-a076-43c2-8931-f5977e381f5f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:59:07+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1904,
+          "step_max": 0.2492,
+          "drift": 5.21,
+          "loop": 0.4511,
+          "loop_ratio": 2.37,
+          "travel": 5.21,
+          "pin": 0.782,
+          "reasons": [
+            "drifts 5.2 px — eyeball it",
+            "last→first hand-off 2.4× a step — eyeball the loop",
+            "5.2 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "ff1b3d57-6830-4d8a-91d0-39d242c7d6d5",
+          "group": "219c622a-265c-4344-858d-b60b579242f3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:59:08+00:00",
+          "source": "east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "lizard_warrior/animations/walk/south/00.webp",
+          "lizard_warrior/animations/walk/south/01.webp",
+          "lizard_warrior/animations/walk/south/02.webp",
+          "lizard_warrior/animations/walk/south/03.webp",
+          "lizard_warrior/animations/walk/south/04.webp",
+          "lizard_warrior/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "lizard_warrior/animations/walk/south-east/00.webp",
+          "lizard_warrior/animations/walk/south-east/01.webp",
+          "lizard_warrior/animations/walk/south-east/02.webp",
+          "lizard_warrior/animations/walk/south-east/03.webp",
+          "lizard_warrior/animations/walk/south-east/04.webp",
+          "lizard_warrior/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "lizard_warrior/animations/walk/east/00.webp",
+          "lizard_warrior/animations/walk/east/01.webp",
+          "lizard_warrior/animations/walk/east/02.webp",
+          "lizard_warrior/animations/walk/east/03.webp",
+          "lizard_warrior/animations/walk/east/04.webp",
+          "lizard_warrior/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "lizard_warrior/animations/walk/north-east/00.webp",
+          "lizard_warrior/animations/walk/north-east/01.webp",
+          "lizard_warrior/animations/walk/north-east/02.webp",
+          "lizard_warrior/animations/walk/north-east/03.webp",
+          "lizard_warrior/animations/walk/north-east/04.webp",
+          "lizard_warrior/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "lizard_warrior/animations/walk/north/00.webp",
+          "lizard_warrior/animations/walk/north/01.webp",
+          "lizard_warrior/animations/walk/north/02.webp",
+          "lizard_warrior/animations/walk/north/03.webp",
+          "lizard_warrior/animations/walk/north/04.webp",
+          "lizard_warrior/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "lizard_warrior/animations/walk/south-west/00.webp",
+          "lizard_warrior/animations/walk/south-west/01.webp",
+          "lizard_warrior/animations/walk/south-west/02.webp",
+          "lizard_warrior/animations/walk/south-west/03.webp",
+          "lizard_warrior/animations/walk/south-west/04.webp",
+          "lizard_warrior/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "lizard_warrior/animations/walk/west/00.webp",
+          "lizard_warrior/animations/walk/west/01.webp",
+          "lizard_warrior/animations/walk/west/02.webp",
+          "lizard_warrior/animations/walk/west/03.webp",
+          "lizard_warrior/animations/walk/west/04.webp",
+          "lizard_warrior/animations/walk/west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "lizard_warrior/animations/walk__south.webp",
+        "south-east": "lizard_warrior/animations/walk__south-east.webp",
+        "east": "lizard_warrior/animations/walk__east.webp",
+        "north-east": "lizard_warrior/animations/walk__north-east.webp",
+        "north": "lizard_warrior/animations/walk__north.webp",
+        "south-west": "lizard_warrior/animations/walk__south-west.webp",
+        "west": "lizard_warrior/animations/walk__west.webp"
+      }
     }
   }
 }
