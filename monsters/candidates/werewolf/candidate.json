@@ -626,7 +626,7 @@
           "travel": 3.92,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.001,
           "peak": 0.3311,
           "canvas": [
             128,
@@ -638,9 +638,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:34:43+00:00"
+          "generated_at": "2026-09-09T22:34:43+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance"
         },
         "south-east": {
           "status": "warn",
@@ -652,23 +651,22 @@
           "travel": 2.73,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.045,
+          "flash": 0.048,
           "peak": 0.2995,
           "canvas": [
             128,
             128
           ],
           "reasons": [
-            "some bright effect pixels (0.04) — eyeball it"
+            "some bright effect pixels (0.05) — eyeball it"
           ],
           "sub": "3f127534-b79d-42cf-9a95-17addeee2bb2",
           "group": "a121357a-9bfa-42e5-aa07-d40bf006bb29",
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:34:43+00:00"
+          "generated_at": "2026-09-09T22:34:43+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance"
         },
         "east": {
           "status": "pass",
@@ -680,7 +678,7 @@
           "travel": 3.91,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.002,
           "peak": 0.2518,
           "canvas": [
             128,
@@ -692,9 +690,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:34:44+00:00"
+          "generated_at": "2026-09-09T22:34:44+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance"
         },
         "north-east": {
           "status": "warn",
@@ -706,23 +703,22 @@
           "travel": 6.48,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.061,
+          "flash": 0.08,
           "peak": 0.3807,
           "canvas": [
             128,
             128
           ],
           "reasons": [
-            "some bright effect pixels (0.06) — eyeball it"
+            "some bright effect pixels (0.08) — eyeball it"
           ],
           "sub": "41548470-6fa4-4772-910c-8734d4a57fdf",
           "group": "9368655b-a97d-489e-84a4-c7fa4ea725f3",
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:34:44+00:00"
+          "generated_at": "2026-09-09T22:34:44+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance"
         },
         "north": {
           "status": "fail",
@@ -734,7 +730,7 @@
           "travel": 4.1,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.117,
+          "flash": 0.12,
           "peak": 0.3488,
           "canvas": [
             128,
@@ -745,12 +741,11 @@
           ],
           "sub": "12f9435a-ea11-448f-8f02-3ee117020e33",
           "group": "d4335d24-2b5f-43a9-944c-cbd8f86d311f",
-          "takes": 1,
-          "version": 2,
+          "takes": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:34:44+00:00"
+          "generated_at": "2026-09-09T22:53:37+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance"
         },
         "south-west": {
           "status": "warn",
@@ -762,23 +757,22 @@
           "travel": 2.73,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.045,
+          "flash": 0.048,
           "peak": 0.2995,
           "canvas": [
             128,
             128
           ],
           "reasons": [
-            "some bright effect pixels (0.04) — eyeball it"
+            "some bright effect pixels (0.05) — eyeball it"
           ],
           "sub": "3f127534-b79d-42cf-9a95-17addeee2bb2",
           "group": "a121357a-9bfa-42e5-aa07-d40bf006bb29",
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:34:43+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
@@ -791,7 +785,7 @@
           "travel": 3.91,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.002,
           "peak": 0.2518,
           "canvas": [
             128,
@@ -803,9 +797,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:34:44+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
@@ -818,23 +811,22 @@
           "travel": 6.48,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.061,
+          "flash": 0.08,
           "peak": 0.3807,
           "canvas": [
             128,
             128
           ],
           "reasons": [
-            "some bright effect pixels (0.06) — eyeball it"
+            "some bright effect pixels (0.08) — eyeball it"
           ],
           "sub": "41548470-6fa4-4772-910c-8734d4a57fdf",
           "group": "9368655b-a97d-489e-84a4-c7fa4ea725f3",
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:34:44+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
           "source": "north-east"
         }
       },

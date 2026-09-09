@@ -611,7 +611,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1786,
           "step_max": 0.2343,
           "drift": 3.94,
@@ -620,21 +620,22 @@
           "travel": 0.44,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.296,
+          "flash": 0.283,
           "peak": 0.2762,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "some bright effect pixels (0.28) — eyeball it"
+          ],
           "sub": "d0654e08-fcb6-4b88-b344-45e4209b9c44",
           "group": "b503050b-c716-4c25-8582-308ef277f9d8",
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:33:14+00:00"
+          "generated_at": "2026-09-09T22:33:14+00:00",
+          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance"
         },
         "south-east": {
           "status": "pass",
@@ -646,7 +647,7 @@
           "travel": 2.4,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.069,
           "peak": 0.382,
           "canvas": [
             96,
@@ -658,12 +659,11 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:33:15+00:00"
+          "generated_at": "2026-09-09T22:33:15+00:00",
+          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2569,
           "step_max": 0.4799,
           "drift": 6.34,
@@ -672,21 +672,22 @@
           "travel": 2.45,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.037,
+          "flash": 0.775,
           "peak": 0.4799,
           "canvas": [
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "painted effect: 0.78 of the body in new bright pixels (flare/slash arc)"
+          ],
           "sub": "8b14b0ef-c5a0-42f8-a7e5-bb09742f3efd",
           "group": "a0395d48-76da-46e1-932b-4a0875515c47",
-          "takes": 1,
-          "version": 2,
+          "takes": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:33:15+00:00"
+          "generated_at": "2026-09-09T22:52:20+00:00",
+          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance"
         },
         "north-east": {
           "status": "pass",
@@ -698,7 +699,7 @@
           "travel": 1.37,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.173,
+          "flash": 0.236,
           "peak": 0.3121,
           "canvas": [
             96,
@@ -710,9 +711,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:33:15+00:00"
+          "generated_at": "2026-09-09T22:33:15+00:00",
+          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance"
         },
         "north": {
           "status": "pass",
@@ -724,7 +724,7 @@
           "travel": 0.02,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.009,
+          "flash": 0.0,
           "peak": 0.2024,
           "canvas": [
             96,
@@ -736,9 +736,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:33:16+00:00"
+          "generated_at": "2026-09-09T22:33:16+00:00",
+          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance"
         },
         "south-west": {
           "status": "pass",
@@ -750,7 +749,7 @@
           "travel": 2.4,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.069,
           "peak": 0.382,
           "canvas": [
             96,
@@ -762,9 +761,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:33:15+00:00",
+          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
@@ -804,7 +802,7 @@
           "travel": 1.37,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.173,
+          "flash": 0.236,
           "peak": 0.3121,
           "canvas": [
             96,
@@ -816,9 +814,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:33:15+00:00",
+          "action": "Water Whip - Lashes forward once with a whip of water from one arm, then returns to idle stance",
           "source": "north-east"
         }
       },

@@ -606,238 +606,226 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.0463,
-          "step_max": 0.0744,
-          "drift": 1.57,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.18,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.109,
-          "peak": 0.0868,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "motion 0.046 outside the calm band 0.06–0.9 — eyeball it",
-            "weak strike: peak 0.087 — eyeball it",
-            "painted effect: 0.11 of the body in new bright pixels (flare/slash arc)"
-          ],
-          "sub": "78c4d14a-0608-41f8-b55c-a7e2cabd2d72",
-          "group": "fdd92c4a-1ef8-4604-ad2e-a1578ccd47b6",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:05+00:00"
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.0625,
-          "step_max": 0.0772,
-          "drift": 1.31,
-          "loop": 0.0002,
-          "loop_ratio": 0.0,
-          "travel": 0.45,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1007,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "weak strike: peak 0.101 — eyeball it"
-          ],
-          "sub": "8e98ca2b-3cf2-4cd2-bb08-aef7083b4f92",
-          "group": "77d7efde-cb7d-4ea4-941e-94bfa6592fae",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:05+00:00"
-        },
-        "east": {
-          "status": "warn",
-          "step_mean": 0.0557,
-          "step_max": 0.0766,
-          "drift": 1.54,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.1,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.096,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "motion 0.056 outside the calm band 0.06–0.9 — eyeball it",
-            "weak strike: peak 0.096 — eyeball it"
-          ],
-          "sub": "380baedd-efbf-4c39-944c-e25d3f70fcb4",
-          "group": "4775beb4-9dd0-4a43-a0a7-4e82313b9ad0",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:06+00:00"
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.039,
-          "step_max": 0.0479,
-          "drift": 1.55,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.08,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.0731,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "motion 0.039 outside the calm band 0.06–0.9 — eyeball it",
-            "weak strike: peak 0.073 — eyeball it"
-          ],
-          "sub": "882f18c9-ecbb-4144-b60f-86d630fcb429",
-          "group": "844ca886-cc99-455f-947d-d16eff09ab49",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:06+00:00"
-        },
-        "north": {
           "status": "pass",
-          "step_mean": 0.0867,
-          "step_max": 0.1083,
-          "drift": 1.26,
+          "step_mean": 0.0893,
+          "step_max": 0.1014,
+          "drift": 0.57,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.19,
+          "travel": 0.2,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.009,
-          "peak": 0.153,
+          "flash": 0.0,
+          "peak": 0.1602,
           "canvas": [
             96,
             96
           ],
           "reasons": [],
-          "sub": "12d96769-2200-4bbc-83cb-971268e2390a",
-          "group": "13c0480c-251f-4005-8487-de8473f43f52",
+          "sub": "fe63514f-ba97-40e8-9a1e-3d2c1540304e",
+          "group": "69f86693-a9a5-41c6-82f7-ed026379851f",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:07+00:00"
+          "generated_at": "2026-09-09T22:49:44+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
         },
-        "south-west": {
+        "south-east": {
           "status": "warn",
-          "step_mean": 0.0625,
-          "step_max": 0.0772,
-          "drift": 1.31,
+          "step_mean": 0.0802,
+          "step_max": 0.1067,
+          "drift": 1.18,
           "loop": 0.0002,
           "loop_ratio": 0.0,
-          "travel": 0.45,
+          "travel": 1.04,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
-          "peak": 0.1007,
+          "peak": 0.116,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "weak strike: peak 0.101 — eyeball it"
+            "weak strike: peak 0.116 — eyeball it"
           ],
-          "sub": "8e98ca2b-3cf2-4cd2-bb08-aef7083b4f92",
-          "group": "77d7efde-cb7d-4ea4-941e-94bfa6592fae",
+          "sub": "f4b92347-bb66-4a97-a5bd-afa7913c3d98",
+          "group": "09bbcdc5-a057-4216-b475-7fcd02d60c80",
           "takes": 1,
-          "version": 2,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:44+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.0582,
+          "step_max": 0.0695,
+          "drift": 1.46,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.75,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.0885,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.058 outside the calm band 0.06–0.9 — eyeball it",
+            "weak strike: peak 0.089 — eyeball it"
+          ],
+          "sub": "7180d95e-1042-47dd-a046-fbe7ebf5e2e2",
+          "group": "550518cd-61b3-4dec-9ddd-77d11691b434",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:45+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.0516,
+          "step_max": 0.0742,
+          "drift": 1.39,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.44,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.0685,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.052 outside the calm band 0.06–0.9 — eyeball it",
+            "weak strike: peak 0.069 — eyeball it"
+          ],
+          "sub": "3b0a9fa7-c718-4f4e-b179-85be2ce850a0",
+          "group": "a351c76c-67bb-480d-9ea3-a14030eab0f5",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:45+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1417,
+          "step_max": 0.1536,
+          "drift": 4.02,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.29,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2023,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "cce2dfd7-b462-4e27-bf4e-8ca8644b1c7a",
+          "group": "f8e3ec9a-bfab-4153-a546-1c070ef7f456",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:46+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.0802,
+          "step_max": 0.1067,
+          "drift": 1.18,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 1.04,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.116,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.116 — eyeball it"
+          ],
+          "sub": "f4b92347-bb66-4a97-a5bd-afa7913c3d98",
+          "group": "09bbcdc5-a057-4216-b475-7fcd02d60c80",
+          "takes": 1,
+          "version": 3,
           "mirrored": true,
-          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:05+00:00",
+          "generated_at": "2026-09-09T22:49:44+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
           "status": "warn",
-          "step_mean": 0.0557,
-          "step_max": 0.0766,
-          "drift": 1.54,
+          "step_mean": 0.0582,
+          "step_max": 0.0695,
+          "drift": 1.46,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.1,
+          "travel": 0.75,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
-          "peak": 0.096,
+          "peak": 0.0885,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "motion 0.056 outside the calm band 0.06–0.9 — eyeball it",
-            "weak strike: peak 0.096 — eyeball it"
+            "motion 0.058 outside the calm band 0.06–0.9 — eyeball it",
+            "weak strike: peak 0.089 — eyeball it"
           ],
-          "sub": "380baedd-efbf-4c39-944c-e25d3f70fcb4",
-          "group": "4775beb4-9dd0-4a43-a0a7-4e82313b9ad0",
+          "sub": "7180d95e-1042-47dd-a046-fbe7ebf5e2e2",
+          "group": "550518cd-61b3-4dec-9ddd-77d11691b434",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": true,
-          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:06+00:00",
+          "generated_at": "2026-09-09T22:49:45+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
           "status": "warn",
-          "step_mean": 0.039,
-          "step_max": 0.0479,
-          "drift": 1.55,
+          "step_mean": 0.0516,
+          "step_max": 0.0742,
+          "drift": 1.39,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.08,
+          "travel": 1.44,
           "pin": 1.0,
           "pad": 0,
           "flash": 0.0,
-          "peak": 0.0731,
+          "peak": 0.0685,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "motion 0.039 outside the calm band 0.06–0.9 — eyeball it",
-            "weak strike: peak 0.073 — eyeball it"
+            "motion 0.052 outside the calm band 0.06–0.9 — eyeball it",
+            "weak strike: peak 0.069 — eyeball it"
           ],
-          "sub": "882f18c9-ecbb-4144-b60f-86d630fcb429",
-          "group": "844ca886-cc99-455f-947d-d16eff09ab49",
+          "sub": "3b0a9fa7-c718-4f4e-b179-85be2ce850a0",
+          "group": "a351c76c-67bb-480d-9ea3-a14030eab0f5",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": true,
-          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:06+00:00",
+          "generated_at": "2026-09-09T22:49:45+00:00",
+          "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance",
           "source": "north-east"
         }
       },
-      "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
+      "action": "Tentacle Slam - Raises two front tentacles high, then brings them down once, then returns to idle stance",
       "frame_paths": {
         "south": [
           "octopus/animations/attack/south/00.webp",

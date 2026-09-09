@@ -622,7 +622,7 @@
           "travel": 1.48,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.001,
           "peak": 0.1333,
           "canvas": [
             128,
@@ -634,9 +634,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:34:27+00:00"
+          "generated_at": "2026-09-09T22:34:27+00:00",
+          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance"
         },
         "south-east": {
           "status": "pass",
@@ -648,7 +647,7 @@
           "travel": 6.61,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.001,
           "peak": 0.4568,
           "canvas": [
             128,
@@ -660,9 +659,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:34:27+00:00"
+          "generated_at": "2026-09-09T22:34:27+00:00",
+          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance"
         },
         "east": {
           "status": "pass",
@@ -674,7 +672,7 @@
           "travel": 4.41,
           "pin": 1.0,
           "pad": 5,
-          "flash": 0.002,
+          "flash": 0.009,
           "peak": 0.4709,
           "canvas": [
             138,
@@ -688,9 +686,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:34:28+00:00"
+          "generated_at": "2026-09-09T22:34:28+00:00",
+          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance"
         },
         "north-east": {
           "status": "pass",
@@ -714,9 +711,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:34:28+00:00"
+          "generated_at": "2026-09-09T22:34:28+00:00",
+          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance"
         },
         "north": {
           "status": "pass",
@@ -740,9 +736,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:34:29+00:00"
+          "generated_at": "2026-09-09T22:34:29+00:00",
+          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance"
         },
         "south-west": {
           "status": "pass",
@@ -754,7 +749,7 @@
           "travel": 6.61,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.001,
           "peak": 0.4568,
           "canvas": [
             128,
@@ -766,9 +761,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:34:27+00:00",
+          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
@@ -781,7 +775,7 @@
           "travel": 4.41,
           "pin": 1.0,
           "pad": 5,
-          "flash": 0.002,
+          "flash": 0.009,
           "peak": 0.4709,
           "canvas": [
             138,
@@ -795,9 +789,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:34:28+00:00",
+          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
@@ -822,9 +815,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:34:28+00:00",
+          "action": "Spear Thrust - Thrusts the spear forward in one fast stab, shield held up, then returns to idle stance",
           "source": "north-east"
         }
       },

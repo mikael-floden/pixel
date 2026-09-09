@@ -612,7 +612,7 @@
           "travel": 4.25,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.01,
+          "flash": 0.009,
           "peak": 0.1366,
           "canvas": [
             240,
@@ -624,12 +624,11 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:39:51+00:00"
+          "generated_at": "2026-09-09T22:39:51+00:00",
+          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1353,
           "step_max": 0.1918,
           "drift": 11.89,
@@ -638,21 +637,22 @@
           "travel": 11.89,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.284,
+          "flash": 0.293,
           "peak": 0.2534,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "some bright effect pixels (0.29) — eyeball it"
+          ],
           "sub": "fe0cb1d5-fad7-42e5-8ffb-d4be9a04f40b",
           "group": "a2b9356d-bcbe-4502-83cf-57d18defb2bb",
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:39:52+00:00"
+          "generated_at": "2026-09-09T22:39:52+00:00",
+          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
         },
         "east": {
           "status": "pass",
@@ -664,7 +664,7 @@
           "travel": 4.48,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.018,
+          "flash": 0.017,
           "peak": 0.1863,
           "canvas": [
             240,
@@ -676,9 +676,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:39:53+00:00"
+          "generated_at": "2026-09-09T22:39:53+00:00",
+          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
         },
         "north-east": {
           "status": "pass",
@@ -702,9 +701,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:39:53+00:00"
+          "generated_at": "2026-09-09T22:39:53+00:00",
+          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
         },
         "north": {
           "status": "pass",
@@ -716,7 +714,7 @@
           "travel": 3.43,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.009,
           "peak": 0.1408,
           "canvas": [
             240,
@@ -728,12 +726,11 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:39:54+00:00"
+          "generated_at": "2026-09-09T22:39:54+00:00",
+          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance"
         },
         "south-west": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1353,
           "step_max": 0.1918,
           "drift": 11.89,
@@ -742,21 +739,22 @@
           "travel": 11.89,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.284,
+          "flash": 0.293,
           "peak": 0.2534,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "some bright effect pixels (0.29) — eyeball it"
+          ],
           "sub": "fe0cb1d5-fad7-42e5-8ffb-d4be9a04f40b",
           "group": "a2b9356d-bcbe-4502-83cf-57d18defb2bb",
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:39:52+00:00",
+          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
@@ -769,7 +767,7 @@
           "travel": 4.48,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.018,
+          "flash": 0.017,
           "peak": 0.1863,
           "canvas": [
             240,
@@ -781,9 +779,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:39:53+00:00",
+          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
@@ -808,9 +805,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:39:53+00:00",
+          "action": "Fire Breath - Rears its head back and breathes one short jet of fire forward, then returns to idle stance",
           "source": "north-east"
         }
       },

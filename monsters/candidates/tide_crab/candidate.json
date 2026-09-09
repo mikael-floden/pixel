@@ -626,9 +626,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:26:42+00:00"
+          "generated_at": "2026-09-09T22:26:42+00:00",
+          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance"
         },
         "south-east": {
           "status": "pass",
@@ -652,9 +651,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:26:42+00:00"
+          "generated_at": "2026-09-09T22:26:42+00:00",
+          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance"
         },
         "east": {
           "status": "pass",
@@ -678,9 +676,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:26:43+00:00"
+          "generated_at": "2026-09-09T22:26:43+00:00",
+          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance"
         },
         "north-east": {
           "status": "pass",
@@ -704,37 +701,33 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:26:43+00:00"
+          "generated_at": "2026-09-09T22:26:43+00:00",
+          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance"
         },
         "north": {
-          "status": "warn",
-          "step_mean": 0.1486,
-          "step_max": 0.1627,
-          "drift": 1.83,
-          "loop": 0.0,
+          "status": "pass",
+          "step_mean": 0.1644,
+          "step_max": 0.2053,
+          "drift": 3.64,
+          "loop": 0.0004,
           "loop_ratio": 0.0,
-          "travel": 0.49,
+          "travel": 0.15,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.065,
-          "peak": 0.2714,
+          "flash": 0.0,
+          "peak": 0.2676,
           "canvas": [
             112,
             112
           ],
-          "reasons": [
-            "some bright effect pixels (0.07) — eyeball it"
-          ],
-          "sub": "bdcb56c0-e4f3-4428-ac4a-150e673e8a65",
-          "group": "476e58f5-9a92-444f-8957-870a07a7b0f5",
+          "reasons": [],
+          "sub": "4640b626-98ee-4eb3-ab8c-2ec2083ca8e1",
+          "group": "b15e6491-06c9-4c79-867c-090226428be7",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:26:44+00:00"
+          "generated_at": "2026-09-09T22:51:53+00:00",
+          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance"
         },
         "south-west": {
           "status": "pass",
@@ -758,9 +751,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:26:42+00:00",
+          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
@@ -785,9 +777,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:26:43+00:00",
+          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
@@ -812,9 +803,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:26:43+00:00",
+          "action": "Claw Snap - Lunges slightly forward and snaps the big claw shut once, then returns to idle stance",
           "source": "north-east"
         }
       },

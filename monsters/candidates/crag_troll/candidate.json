@@ -621,30 +621,31 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
-          "step_mean": 0.0929,
-          "step_max": 0.1217,
-          "drift": 6.83,
-          "loop": 0.0001,
+          "status": "fail",
+          "step_mean": 0.1168,
+          "step_max": 0.1334,
+          "drift": 6.47,
+          "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 6.84,
+          "travel": 6.89,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.001,
-          "peak": 0.1486,
+          "flash": 0.201,
+          "peak": 0.1585,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
-          "sub": "3e51ac24-5bd0-4daa-bf0e-f9f34719e603",
-          "group": "5215d3db-58b4-4606-86e4-c03907421c53",
-          "takes": 1,
-          "version": 2,
+          "reasons": [
+            "painted effect: 0.20 of the body in new bright pixels (flare/slash arc)"
+          ],
+          "sub": "893fb3a1-fae1-47c3-a3b3-9b8ffafafe10",
+          "group": "04365344-1047-4d55-94b9-ca7d0ea595fa",
+          "takes": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:30:25+00:00"
+          "generated_at": "2026-09-09T22:51:15+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
         },
         "south-east": {
           "status": "pass",
@@ -668,38 +669,35 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:30:26+00:00"
+          "generated_at": "2026-09-09T22:30:26+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
         },
         "east": {
-          "status": "fail",
-          "step_mean": 0.0595,
-          "step_max": 0.0884,
-          "drift": 1.63,
-          "loop": 0.0,
+          "status": "warn",
+          "step_mean": 0.1426,
+          "step_max": 0.2081,
+          "drift": 3.59,
+          "loop": 0.0002,
           "loop_ratio": 0.0,
-          "travel": 3.12,
+          "travel": 4.61,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
-          "peak": 0.0483,
+          "flash": 0.05,
+          "peak": 0.2122,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "motion 0.059 outside the calm band 0.06–0.9 — eyeball it",
-            "no strike: peak 0.048 of the silhouette away from the base"
+            "some bright effect pixels (0.05) — eyeball it"
           ],
-          "sub": "0a5e8805-7ebe-48c6-b6dc-d91d94d7c02d",
-          "group": "92966f30-a6ad-4f04-885b-45203c36eb15",
-          "takes": 1,
-          "version": 2,
+          "sub": "b6454c5a-9b30-4591-8d7d-b8b13a7eee66",
+          "group": "9f30f727-a61f-493c-8e4d-0b0b1a1e81e1",
+          "takes": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:30:26+00:00"
+          "generated_at": "2026-09-09T22:51:15+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
         },
         "north-east": {
           "status": "pass",
@@ -723,9 +721,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:30:27+00:00"
+          "generated_at": "2026-09-09T22:30:27+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
         },
         "north": {
           "status": "pass",
@@ -751,9 +748,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:30:28+00:00"
+          "generated_at": "2026-09-09T22:30:28+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
         },
         "south-west": {
           "status": "pass",
@@ -777,32 +773,36 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:30:26+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
-          "status": "pass",
-          "step_mean": 0.2111,
-          "step_max": 0.3766,
-          "drift": 14.72,
-          "loop": 0.0,
+          "status": "warn",
+          "step_mean": 0.1426,
+          "step_max": 0.2081,
+          "drift": 3.59,
+          "loop": 0.0002,
           "loop_ratio": 0.0,
-          "travel": 10.75,
+          "travel": 4.61,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.05,
+          "peak": 0.2122,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
-          "sub": "ab727860-b126-433b-b379-26b1f10d0cf6",
-          "group": "4c32706d-c549-4f81-871a-69d270bb71c3",
-          "takes": 1,
-          "version": 1,
+          "reasons": [
+            "some bright effect pixels (0.05) — eyeball it"
+          ],
+          "sub": "b6454c5a-9b30-4591-8d7d-b8b13a7eee66",
+          "group": "9f30f727-a61f-493c-8e4d-0b0b1a1e81e1",
+          "takes": 2,
+          "version": 3,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:55:00+00:00",
+          "generated_at": "2026-09-09T22:51:15+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
@@ -827,9 +827,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:30:27+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
           "source": "north-east"
         }
       },

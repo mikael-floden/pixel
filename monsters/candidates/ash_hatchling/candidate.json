@@ -616,257 +616,269 @@
       "directions": {
         "south": {
           "status": "pass",
-          "step_mean": 0.1479,
-          "step_max": 0.2128,
-          "drift": 2.97,
+          "step_mean": 0.1876,
+          "step_max": 0.2687,
+          "drift": 2.08,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.1,
+          "travel": 0.76,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2687,
           "canvas": [
             40,
             40
           ],
           "reasons": [],
-          "sub": "e150c466-42ad-4f27-ad08-d55eefa75968",
-          "group": "9b1918ff-0da7-408b-90e8-0baeebe009ae",
+          "sub": "7ff0cf51-9667-45bd-b93b-0da516c81242",
+          "group": "a68594fd-e5a1-43a1-8457-e7d28e55d9e2",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:10:16+00:00"
+          "generated_at": "2026-09-09T22:44:15+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, a small puff of embers, then returns to idle stance"
         },
         "south-east": {
           "status": "pass",
-          "step_mean": 0.14,
-          "step_max": 0.2127,
-          "drift": 0.97,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.97,
-          "pin": 1.0,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "a048069a-8217-4026-8fe0-c7152991cc90",
-          "group": "abc922c3-7b94-4684-8f8b-4c2719a98cba",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:10:17+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1307,
-          "step_max": 0.1627,
-          "drift": 1.15,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.51,
-          "pin": 1.0,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "bf491cc1-ff2b-44b9-9ae2-08f643e4c2ea",
-          "group": "04b1cf28-7189-4010-8e02-6b35b1e1988c",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:10:17+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1705,
-          "step_max": 0.2006,
-          "drift": 1.8,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.41,
-          "pin": 1.0,
-          "pad": 0,
-          "canvas": [
-            40,
-            40
-          ],
-          "reasons": [],
-          "sub": "7f72ecdb-3d89-4ec9-95f2-67e45895e5b6",
-          "group": "614199d5-65c5-4e73-b96e-41120e22e4cf",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:10:18+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.0835,
-          "step_max": 0.1139,
-          "drift": 1.7,
+          "step_mean": 0.2343,
+          "step_max": 0.2689,
+          "drift": 1.54,
           "loop": 0.0,
           "loop_ratio": 0.0,
           "travel": 0.43,
           "pin": 1.0,
+          "pad": 1,
+          "flash": 0.089,
+          "peak": 0.3512,
+          "canvas": [
+            42,
+            42
+          ],
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "c8e80683-62d7-48bd-adbd-cc47113512c8",
+          "group": "443fbf0b-2ec4-45a7-8493-b0d97c4aa3fd",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:44:16+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, a small puff of embers, then returns to idle stance"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1705,
+          "step_max": 0.2273,
+          "drift": 0.31,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.33,
+          "pin": 1.0,
           "pad": 0,
+          "flash": 0.004,
+          "peak": 0.2869,
           "canvas": [
             40,
             40
           ],
           "reasons": [],
-          "sub": "c5803177-c687-4dd6-b125-3941c653fe3c",
-          "group": "630168ab-cd74-4c25-8da4-bf87212dd9ef",
+          "sub": "9961c0a6-483e-447b-9a79-225540e25661",
+          "group": "a86df427-f1c6-43db-9a59-6e6897a44f03",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:10:18+00:00"
+          "generated_at": "2026-09-09T22:44:16+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, a small puff of embers, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1633,
+          "step_max": 0.1965,
+          "drift": 1.67,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.95,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2547,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "c71502d0-5388-4102-becb-b014bd1f445b",
+          "group": "b799131a-4388-469b-b07e-94fb311f9dee",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:44:16+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, a small puff of embers, then returns to idle stance"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1262,
+          "step_max": 0.1892,
+          "drift": 1.56,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.32,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.04,
+          "peak": 0.2231,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "99965dff-081b-4c7b-9aea-b6dd6fb840b0",
+          "group": "ad7d0d12-0f48-4b95-a072-197d3b9cf03b",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:44:17+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, a small puff of embers, then returns to idle stance"
         },
         "south-west": {
           "status": "pass",
-          "step_mean": 0.14,
-          "step_max": 0.2127,
-          "drift": 0.97,
+          "step_mean": 0.2343,
+          "step_max": 0.2689,
+          "drift": 1.54,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.97,
+          "travel": 0.43,
           "pin": 1.0,
-          "pad": 0,
+          "pad": 1,
+          "flash": 0.089,
+          "peak": 0.3512,
           "canvas": [
-            40,
-            40
+            42,
+            42
           ],
-          "reasons": [],
-          "sub": "a048069a-8217-4026-8fe0-c7152991cc90",
-          "group": "abc922c3-7b94-4684-8f8b-4c2719a98cba",
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "c8e80683-62d7-48bd-adbd-cc47113512c8",
+          "group": "443fbf0b-2ec4-45a7-8493-b0d97c4aa3fd",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:10:17+00:00",
+          "generated_at": "2026-09-09T22:44:16+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, a small puff of embers, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
           "status": "pass",
-          "step_mean": 0.1307,
-          "step_max": 0.1627,
-          "drift": 1.15,
+          "step_mean": 0.1705,
+          "step_max": 0.2273,
+          "drift": 0.31,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.51,
+          "travel": 0.33,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.004,
+          "peak": 0.2869,
           "canvas": [
             40,
             40
           ],
           "reasons": [],
-          "sub": "bf491cc1-ff2b-44b9-9ae2-08f643e4c2ea",
-          "group": "04b1cf28-7189-4010-8e02-6b35b1e1988c",
+          "sub": "9961c0a6-483e-447b-9a79-225540e25661",
+          "group": "a86df427-f1c6-43db-9a59-6e6897a44f03",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:10:17+00:00",
+          "generated_at": "2026-09-09T22:44:16+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, a small puff of embers, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
           "status": "pass",
-          "step_mean": 0.1705,
-          "step_max": 0.2006,
-          "drift": 1.8,
+          "step_mean": 0.1633,
+          "step_max": 0.1965,
+          "drift": 1.67,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.41,
+          "travel": 0.95,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2547,
           "canvas": [
             40,
             40
           ],
           "reasons": [],
-          "sub": "7f72ecdb-3d89-4ec9-95f2-67e45895e5b6",
-          "group": "614199d5-65c5-4e73-b96e-41120e22e4cf",
+          "sub": "c71502d0-5388-4102-becb-b014bd1f445b",
+          "group": "b799131a-4388-469b-b07e-94fb311f9dee",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:10:18+00:00",
+          "generated_at": "2026-09-09T22:44:16+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, a small puff of embers, then returns to idle stance",
           "source": "north-east"
         }
       },
-      "action": "lunges forward and bites with a small puff of embers, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "action": "Bite - Quickly lunges forward, bites once, a small puff of embers, then returns to idle stance",
       "frame_paths": {
         "south": [
           "ash_hatchling/animations/attack/south/00.webp",
           "ash_hatchling/animations/attack/south/01.webp",
           "ash_hatchling/animations/attack/south/02.webp",
           "ash_hatchling/animations/attack/south/03.webp",
-          "ash_hatchling/animations/attack/south/04.webp",
-          "ash_hatchling/animations/attack/south/05.webp",
-          "ash_hatchling/animations/attack/south/06.webp"
+          "ash_hatchling/animations/attack/south/04.webp"
         ],
         "south-east": [
           "ash_hatchling/animations/attack/south-east/00.webp",
           "ash_hatchling/animations/attack/south-east/01.webp",
           "ash_hatchling/animations/attack/south-east/02.webp",
           "ash_hatchling/animations/attack/south-east/03.webp",
-          "ash_hatchling/animations/attack/south-east/04.webp",
-          "ash_hatchling/animations/attack/south-east/05.webp",
-          "ash_hatchling/animations/attack/south-east/06.webp"
+          "ash_hatchling/animations/attack/south-east/04.webp"
         ],
         "east": [
           "ash_hatchling/animations/attack/east/00.webp",
           "ash_hatchling/animations/attack/east/01.webp",
           "ash_hatchling/animations/attack/east/02.webp",
           "ash_hatchling/animations/attack/east/03.webp",
-          "ash_hatchling/animations/attack/east/04.webp",
-          "ash_hatchling/animations/attack/east/05.webp",
-          "ash_hatchling/animations/attack/east/06.webp"
+          "ash_hatchling/animations/attack/east/04.webp"
         ],
         "north-east": [
           "ash_hatchling/animations/attack/north-east/00.webp",
           "ash_hatchling/animations/attack/north-east/01.webp",
           "ash_hatchling/animations/attack/north-east/02.webp",
           "ash_hatchling/animations/attack/north-east/03.webp",
-          "ash_hatchling/animations/attack/north-east/04.webp",
-          "ash_hatchling/animations/attack/north-east/05.webp",
-          "ash_hatchling/animations/attack/north-east/06.webp"
+          "ash_hatchling/animations/attack/north-east/04.webp"
         ],
         "north": [
           "ash_hatchling/animations/attack/north/00.webp",
           "ash_hatchling/animations/attack/north/01.webp",
           "ash_hatchling/animations/attack/north/02.webp",
           "ash_hatchling/animations/attack/north/03.webp",
-          "ash_hatchling/animations/attack/north/04.webp",
-          "ash_hatchling/animations/attack/north/05.webp",
-          "ash_hatchling/animations/attack/north/06.webp"
+          "ash_hatchling/animations/attack/north/04.webp"
         ],
         "south-west": [
           "ash_hatchling/animations/attack/south-west/00.webp",
           "ash_hatchling/animations/attack/south-west/01.webp",
           "ash_hatchling/animations/attack/south-west/02.webp",
           "ash_hatchling/animations/attack/south-west/03.webp",
-          "ash_hatchling/animations/attack/south-west/04.webp",
-          "ash_hatchling/animations/attack/south-west/05.webp",
-          "ash_hatchling/animations/attack/south-west/06.webp"
+          "ash_hatchling/animations/attack/south-west/04.webp"
         ],
         "west": [
           "ash_hatchling/animations/attack/west/00.webp",
           "ash_hatchling/animations/attack/west/01.webp",
           "ash_hatchling/animations/attack/west/02.webp",
           "ash_hatchling/animations/attack/west/03.webp",
-          "ash_hatchling/animations/attack/west/04.webp",
-          "ash_hatchling/animations/attack/west/05.webp",
-          "ash_hatchling/animations/attack/west/06.webp"
+          "ash_hatchling/animations/attack/west/04.webp"
         ],
         "north-west": [
           "ash_hatchling/animations/attack/north-west/00.webp",
           "ash_hatchling/animations/attack/north-west/01.webp",
           "ash_hatchling/animations/attack/north-west/02.webp",
           "ash_hatchling/animations/attack/north-west/03.webp",
-          "ash_hatchling/animations/attack/north-west/04.webp",
-          "ash_hatchling/animations/attack/north-west/05.webp",
-          "ash_hatchling/animations/attack/north-west/06.webp"
+          "ash_hatchling/animations/attack/north-west/04.webp"
         ]
       },
       "strips": {

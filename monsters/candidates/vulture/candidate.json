@@ -607,266 +607,268 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "warn",
-          "step_mean": 0.0743,
-          "step_max": 0.1199,
-          "drift": 0.65,
+          "status": "pass",
+          "step_mean": 0.1083,
+          "step_max": 0.1571,
+          "drift": 1.05,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.16,
+          "travel": 0.14,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.001,
+          "peak": 0.1915,
           "canvas": [
             96,
             96
           ],
-          "reasons": [
-            "motion 0.074 outside the calm band 0.08–0.9 — eyeball it"
-          ],
-          "sub": "fad90312-2b35-4a08-ad0d-d675ef56e735",
-          "group": "39a0c5ed-e1bb-46a0-9cb1-32063fe85313",
+          "reasons": [],
+          "sub": "19214279-e783-4007-b848-cd421c965e1a",
+          "group": "ca3eb976-3535-4fc7-a2e6-60cc67d12611",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:12:52+00:00"
+          "generated_at": "2026-09-09T22:43:34+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
         },
         "south-east": {
           "status": "pass",
-          "step_mean": 0.097,
-          "step_max": 0.1518,
-          "drift": 1.29,
+          "step_mean": 0.1003,
+          "step_max": 0.1283,
+          "drift": 1.46,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.29,
+          "travel": 0.38,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1861,
           "canvas": [
             96,
             96
           ],
           "reasons": [],
-          "sub": "223282d0-ba91-426e-8f70-05e4371bddf2",
-          "group": "59791dbf-1838-4259-b35c-5c295ad88c89",
+          "sub": "b4aaea2f-18ab-4eca-9c57-f4a04b81b0fb",
+          "group": "560c585d-4499-4800-b9dc-19e579388f4a",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:12:53+00:00"
+          "generated_at": "2026-09-09T22:43:34+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
         },
         "east": {
           "status": "pass",
-          "step_mean": 0.1293,
-          "step_max": 0.1903,
-          "drift": 1.48,
+          "step_mean": 0.1093,
+          "step_max": 0.128,
+          "drift": 2.14,
           "loop": 0.0003,
           "loop_ratio": 0.0,
-          "travel": 1.29,
+          "travel": 2.14,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2077,
           "canvas": [
             96,
             96
           ],
           "reasons": [],
-          "sub": "48413461-9aa5-4d49-8014-002aff6995ec",
-          "group": "e984927f-4781-40dd-a272-c4f137fbca05",
+          "sub": "6fc4b995-8794-48c2-a9c6-c7d7f85a2a72",
+          "group": "c0e6871d-f2f7-4c16-9f1a-bfee75942249",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:12:53+00:00"
+          "generated_at": "2026-09-09T22:43:35+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
         },
         "north-east": {
-          "status": "warn",
-          "step_mean": 0.0684,
-          "step_max": 0.088,
-          "drift": 1.1,
+          "status": "pass",
+          "step_mean": 0.107,
+          "step_max": 0.1459,
+          "drift": 0.61,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.05,
+          "travel": 0.4,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.004,
+          "peak": 0.1616,
           "canvas": [
             96,
             96
           ],
-          "reasons": [
-            "motion 0.068 outside the calm band 0.08–0.9 — eyeball it"
-          ],
-          "sub": "6f042d06-9655-45d3-823b-a1c6acb32678",
-          "group": "d0ec376b-ebb5-462c-8e00-940d927f0fe4",
+          "reasons": [],
+          "sub": "54b12543-22c1-40ab-a13a-b355c47c5ea1",
+          "group": "f87547ed-40d9-4f3c-8d44-dbb7f8eee04d",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:12:54+00:00"
+          "generated_at": "2026-09-09T22:43:35+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
         },
         "north": {
           "status": "warn",
-          "step_mean": 0.0587,
-          "step_max": 0.1089,
-          "drift": 2.31,
+          "step_mean": 0.1318,
+          "step_max": 0.1611,
+          "drift": 0.52,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.08,
+          "travel": 0.1,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.065,
+          "peak": 0.2027,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "motion 0.059 outside the calm band 0.08–0.9 — eyeball it"
+            "some bright effect pixels (0.06) — eyeball it"
           ],
-          "sub": "2fcb9216-ebaa-4fd9-a7f8-9790f0832051",
-          "group": "c95fd462-e666-4399-9bcb-9fcbe03e395f",
+          "sub": "75d36ff8-224d-4983-b6ae-625159bc664b",
+          "group": "9b3e0696-14ec-4393-805b-35595e81dc9b",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:12:54+00:00"
+          "generated_at": "2026-09-09T22:43:36+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance"
         },
         "south-west": {
           "status": "pass",
-          "step_mean": 0.097,
-          "step_max": 0.1518,
-          "drift": 1.29,
+          "step_mean": 0.1003,
+          "step_max": 0.1283,
+          "drift": 1.46,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.29,
+          "travel": 0.38,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1861,
           "canvas": [
             96,
             96
           ],
           "reasons": [],
-          "sub": "223282d0-ba91-426e-8f70-05e4371bddf2",
-          "group": "59791dbf-1838-4259-b35c-5c295ad88c89",
+          "sub": "b4aaea2f-18ab-4eca-9c57-f4a04b81b0fb",
+          "group": "560c585d-4499-4800-b9dc-19e579388f4a",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:12:53+00:00",
+          "generated_at": "2026-09-09T22:43:34+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
           "status": "pass",
-          "step_mean": 0.1293,
-          "step_max": 0.1903,
-          "drift": 1.48,
+          "step_mean": 0.1093,
+          "step_max": 0.128,
+          "drift": 2.14,
           "loop": 0.0003,
           "loop_ratio": 0.0,
-          "travel": 1.29,
+          "travel": 2.14,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2077,
           "canvas": [
             96,
             96
           ],
           "reasons": [],
-          "sub": "48413461-9aa5-4d49-8014-002aff6995ec",
-          "group": "e984927f-4781-40dd-a272-c4f137fbca05",
+          "sub": "6fc4b995-8794-48c2-a9c6-c7d7f85a2a72",
+          "group": "c0e6871d-f2f7-4c16-9f1a-bfee75942249",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:12:53+00:00",
+          "generated_at": "2026-09-09T22:43:35+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
-          "status": "warn",
-          "step_mean": 0.0684,
-          "step_max": 0.088,
-          "drift": 1.1,
+          "status": "pass",
+          "step_mean": 0.107,
+          "step_max": 0.1459,
+          "drift": 0.61,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.05,
+          "travel": 0.4,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.004,
+          "peak": 0.1616,
           "canvas": [
             96,
             96
           ],
-          "reasons": [
-            "motion 0.068 outside the calm band 0.08–0.9 — eyeball it"
-          ],
-          "sub": "6f042d06-9655-45d3-823b-a1c6acb32678",
-          "group": "d0ec376b-ebb5-462c-8e00-940d927f0fe4",
+          "reasons": [],
+          "sub": "54b12543-22c1-40ab-a13a-b355c47c5ea1",
+          "group": "f87547ed-40d9-4f3c-8d44-dbb7f8eee04d",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:12:54+00:00",
+          "generated_at": "2026-09-09T22:43:35+00:00",
+          "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
           "source": "north-east"
         }
       },
-      "action": "lunges forward with a stabbing peck of its hooked beak, wings half raised, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "action": "Beak Stab - Lunges forward with one stabbing peck of its hooked beak, wings half raised, then returns to idle stance",
       "frame_paths": {
         "south": [
           "vulture/animations/attack/south/00.webp",
           "vulture/animations/attack/south/01.webp",
           "vulture/animations/attack/south/02.webp",
           "vulture/animations/attack/south/03.webp",
-          "vulture/animations/attack/south/04.webp",
-          "vulture/animations/attack/south/05.webp",
-          "vulture/animations/attack/south/06.webp"
+          "vulture/animations/attack/south/04.webp"
         ],
         "south-east": [
           "vulture/animations/attack/south-east/00.webp",
           "vulture/animations/attack/south-east/01.webp",
           "vulture/animations/attack/south-east/02.webp",
           "vulture/animations/attack/south-east/03.webp",
-          "vulture/animations/attack/south-east/04.webp",
-          "vulture/animations/attack/south-east/05.webp",
-          "vulture/animations/attack/south-east/06.webp"
+          "vulture/animations/attack/south-east/04.webp"
         ],
         "east": [
           "vulture/animations/attack/east/00.webp",
           "vulture/animations/attack/east/01.webp",
           "vulture/animations/attack/east/02.webp",
           "vulture/animations/attack/east/03.webp",
-          "vulture/animations/attack/east/04.webp",
-          "vulture/animations/attack/east/05.webp",
-          "vulture/animations/attack/east/06.webp"
+          "vulture/animations/attack/east/04.webp"
         ],
         "north-east": [
           "vulture/animations/attack/north-east/00.webp",
           "vulture/animations/attack/north-east/01.webp",
           "vulture/animations/attack/north-east/02.webp",
           "vulture/animations/attack/north-east/03.webp",
-          "vulture/animations/attack/north-east/04.webp",
-          "vulture/animations/attack/north-east/05.webp",
-          "vulture/animations/attack/north-east/06.webp"
+          "vulture/animations/attack/north-east/04.webp"
         ],
         "north": [
           "vulture/animations/attack/north/00.webp",
           "vulture/animations/attack/north/01.webp",
           "vulture/animations/attack/north/02.webp",
           "vulture/animations/attack/north/03.webp",
-          "vulture/animations/attack/north/04.webp",
-          "vulture/animations/attack/north/05.webp",
-          "vulture/animations/attack/north/06.webp"
+          "vulture/animations/attack/north/04.webp"
         ],
         "south-west": [
           "vulture/animations/attack/south-west/00.webp",
           "vulture/animations/attack/south-west/01.webp",
           "vulture/animations/attack/south-west/02.webp",
           "vulture/animations/attack/south-west/03.webp",
-          "vulture/animations/attack/south-west/04.webp",
-          "vulture/animations/attack/south-west/05.webp",
-          "vulture/animations/attack/south-west/06.webp"
+          "vulture/animations/attack/south-west/04.webp"
         ],
         "west": [
           "vulture/animations/attack/west/00.webp",
           "vulture/animations/attack/west/01.webp",
           "vulture/animations/attack/west/02.webp",
           "vulture/animations/attack/west/03.webp",
-          "vulture/animations/attack/west/04.webp",
-          "vulture/animations/attack/west/05.webp",
-          "vulture/animations/attack/west/06.webp"
+          "vulture/animations/attack/west/04.webp"
         ],
         "north-west": [
           "vulture/animations/attack/north-west/00.webp",
           "vulture/animations/attack/north-west/01.webp",
           "vulture/animations/attack/north-west/02.webp",
           "vulture/animations/attack/north-west/03.webp",
-          "vulture/animations/attack/north-west/04.webp",
-          "vulture/animations/attack/north-west/05.webp",
-          "vulture/animations/attack/north-west/06.webp"
+          "vulture/animations/attack/north-west/04.webp"
         ]
       },
       "strips": {

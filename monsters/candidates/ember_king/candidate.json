@@ -617,30 +617,31 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
-          "step_mean": 0.199,
-          "step_max": 0.2632,
-          "drift": 3.82,
+          "status": "fail",
+          "step_mean": 0.1398,
+          "step_max": 0.1634,
+          "drift": 3.98,
           "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 3.82,
+          "travel": 1.02,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.016,
-          "peak": 0.2851,
+          "flash": 0.557,
+          "peak": 0.2686,
           "canvas": [
             176,
             176
           ],
-          "reasons": [],
-          "sub": "c357f83c-0feb-4f53-8aef-67a9c8d4953d",
-          "group": "dfb668f8-bf9f-4b85-8a9c-26b169629a20",
+          "reasons": [
+            "painted effect: 0.56 of the body in new bright pixels (flare/slash arc)"
+          ],
+          "sub": "9bbc1cbe-68f3-481a-9436-28422177c8ea",
+          "group": "5e02e141-e37f-4f2f-acee-22ebceb04fd1",
           "takes": 1,
-          "version": 3,
+          "version": 4,
           "mirrored": false,
-          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:29:00+00:00"
+          "generated_at": "2026-09-09T22:49:04+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
         },
         "south-east": {
           "status": "pass",
@@ -664,9 +665,8 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
-          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:29:00+00:00"
+          "generated_at": "2026-09-09T22:29:00+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
         },
         "east": {
           "status": "pass",
@@ -690,9 +690,8 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
-          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:29:01+00:00"
+          "generated_at": "2026-09-09T22:29:01+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
         },
         "north-east": {
           "status": "pass",
@@ -716,9 +715,8 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
-          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:29:01+00:00"
+          "generated_at": "2026-09-09T22:29:01+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
         },
         "north": {
           "status": "pass",
@@ -742,9 +740,8 @@
           "takes": 1,
           "version": 3,
           "mirrored": false,
-          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:29:02+00:00"
+          "generated_at": "2026-09-09T22:29:02+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance"
         },
         "south-west": {
           "status": "pass",
@@ -768,9 +765,8 @@
           "takes": 1,
           "version": 3,
           "mirrored": true,
-          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:29:00+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
@@ -795,9 +791,8 @@
           "takes": 1,
           "version": 3,
           "mirrored": true,
-          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:29:01+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
@@ -822,9 +817,8 @@
           "takes": 1,
           "version": 3,
           "mirrored": true,
-          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:29:01+00:00",
+          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
           "source": "north-east"
         }
       },

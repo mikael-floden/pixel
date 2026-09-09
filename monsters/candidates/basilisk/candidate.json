@@ -629,9 +629,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:07+00:00"
+          "generated_at": "2026-09-09T22:35:07+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance"
         },
         "south-east": {
           "status": "pass",
@@ -655,9 +654,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:07+00:00"
+          "generated_at": "2026-09-09T22:35:07+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance"
         },
         "east": {
           "status": "pass",
@@ -681,9 +679,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:08+00:00"
+          "generated_at": "2026-09-09T22:35:08+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance"
         },
         "north-east": {
           "status": "pass",
@@ -707,38 +704,36 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:08+00:00"
+          "generated_at": "2026-09-09T22:35:08+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance"
         },
         "north": {
           "status": "fail",
-          "step_mean": 0.1674,
-          "step_max": 0.201,
-          "drift": 9.5,
+          "step_mean": 0.1698,
+          "step_max": 0.2475,
+          "drift": 9.6,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.82,
+          "travel": 0.34,
           "pin": 1.0,
-          "pad": 3,
-          "flash": 0.285,
-          "peak": 0.2502,
+          "pad": 1,
+          "flash": 0.322,
+          "peak": 0.2475,
           "canvas": [
-            142,
-            142
+            138,
+            138
           ],
           "reasons": [
-            "painted effect: 0.29 of the body in new bright pixels (flare/slash arc)",
-            "canvas grown by 3 px a side to hold the motion"
+            "painted effect: 0.32 of the body in new bright pixels (flare/slash arc)",
+            "canvas grown by 1 px a side to hold the motion"
           ],
-          "sub": "a66da00e-6ce5-4853-85c9-c6bef7a8e665",
-          "group": "e31b5495-eb78-4b8d-b67c-aa1f0e49d645",
-          "takes": 1,
-          "version": 2,
+          "sub": "50fd7935-2f70-43a7-a500-a60f0217bf45",
+          "group": "bfa79b78-21f8-4a6c-baf6-9f5f4caaa422",
+          "takes": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:35:09+00:00"
+          "generated_at": "2026-09-09T22:50:57+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance"
         },
         "south-west": {
           "status": "pass",
@@ -762,9 +757,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:35:07+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
@@ -789,9 +783,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:35:08+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
@@ -816,9 +809,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:35:08+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
           "source": "north-east"
         }
       },

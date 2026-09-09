@@ -615,114 +615,137 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
-          "step_mean": 0.1568,
-          "step_max": 0.2745,
-          "drift": 4.91,
+          "status": "fail",
+          "step_mean": 0.1523,
+          "step_max": 0.2115,
+          "drift": 3.89,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 5.43,
+          "travel": 2.26,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.406,
+          "peak": 0.2115,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
-          "sub": "29d4cada-f646-4618-86a4-f92f15e88b7e",
-          "group": "40b5b892-3e34-4e6c-88be-e4b3ca0b0811",
-          "takes": 1,
-          "version": 1,
+          "reasons": [
+            "painted effect: 0.41 of the body in new bright pixels (flare/slash arc)"
+          ],
+          "sub": "3d014a51-d723-4612-8755-421b212ce3ac",
+          "group": "9234f4ba-e099-481b-9fc1-76730f86b4fd",
+          "takes": 2,
+          "version": 3,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:09:10+00:00"
+          "generated_at": "2026-09-09T22:50:26+00:00",
+          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
-          "step_mean": 0.0995,
-          "step_max": 0.1215,
-          "drift": 3.48,
+          "status": "fail",
+          "step_mean": 0.1514,
+          "step_max": 0.1754,
+          "drift": 5.57,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.06,
+          "travel": 3.54,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.247,
+          "peak": 0.2522,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
-          "sub": "38204cf1-7da2-4b5a-b58c-ef40750fc976",
-          "group": "0bda905a-8395-41d4-9207-2ece48d81b50",
-          "takes": 1,
-          "version": 1,
+          "reasons": [
+            "painted effect: 0.25 of the body in new bright pixels (flare/slash arc)"
+          ],
+          "sub": "2a994c34-77d8-4d02-b2a5-60f133370a9b",
+          "group": "116b04f7-7bd3-4da2-bfe7-ab9e256ccd1c",
+          "takes": 2,
+          "version": 3,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:09:10+00:00"
+          "generated_at": "2026-09-09T22:50:27+00:00",
+          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance"
         },
         "east": {
-          "status": "pass",
-          "step_mean": 0.1988,
-          "step_max": 0.3976,
-          "drift": 13.16,
+          "status": "fail",
+          "step_mean": 0.2266,
+          "step_max": 0.3646,
+          "drift": 10.9,
           "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 19.45,
+          "travel": 10.9,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.124,
+          "peak": 0.3646,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
-          "sub": "6273cc60-793d-48b9-bdd1-7aeb50dd5f56",
-          "group": "937e9571-07a2-4382-8293-aab4f4773de5",
+          "reasons": [
+            "painted effect: 0.12 of the body in new bright pixels (flare/slash arc)"
+          ],
+          "sub": "3d990c57-da52-4b81-bc59-0f99dd2b6778",
+          "group": "65ca403a-16f2-4e5d-aab5-b881e159a720",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:09:11+00:00"
+          "generated_at": "2026-09-09T22:41:58+00:00",
+          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance"
         },
         "north-east": {
-          "status": "pass",
-          "step_mean": 0.1902,
-          "step_max": 0.2592,
-          "drift": 2.82,
+          "status": "fail",
+          "step_mean": 0.2684,
+          "step_max": 0.4,
+          "drift": 8.64,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.4,
+          "travel": 6.16,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.436,
+          "peak": 0.4061,
           "canvas": [
             232,
             232
           ],
-          "reasons": [],
-          "sub": "95d0761a-0b20-4f95-b1fd-9e73c91959d1",
-          "group": "487f068a-53f5-45ce-8ec9-7880ce9bc091",
+          "reasons": [
+            "painted effect: 0.44 of the body in new bright pixels (flare/slash arc)"
+          ],
+          "sub": "95d87553-0cc4-4338-8842-f5e5cbbca653",
+          "group": "77608ebe-05dc-41e6-9898-86828101e3bc",
           "takes": 1,
-          "version": 1,
+          "version": 3,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:09:12+00:00"
+          "generated_at": "2026-09-09T22:50:27+00:00",
+          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance"
         },
         "north": {
           "status": "pass",
-          "step_mean": 0.1628,
-          "step_max": 0.2102,
-          "drift": 4.15,
-          "loop": 0.0,
+          "step_mean": 0.1068,
+          "step_max": 0.1233,
+          "drift": 1.81,
+          "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 5.37,
+          "travel": 0.37,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.002,
+          "peak": 0.1886,
           "canvas": [
             232,
             232
           ],
           "reasons": [],
-          "sub": "9c647ae5-85db-49db-b291-ac5033b4ba87",
-          "group": "1f86984d-b45e-497a-a5be-3861b8a0cf5a",
+          "sub": "876bcfd4-fa47-456d-a9ff-34bcc488a12f",
+          "group": "501e9ca1-7f85-4d28-a8dc-c64264e153ef",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:09:13+00:00"
+          "generated_at": "2026-09-09T22:41:59+00:00",
+          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance"
         },
         "south-west": {
           "status": "pass",
@@ -749,25 +772,28 @@
         },
         "west": {
           "status": "pass",
-          "step_mean": 0.1988,
-          "step_max": 0.3976,
-          "drift": 13.16,
+          "step_mean": 0.2266,
+          "step_max": 0.3646,
+          "drift": 10.9,
           "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 19.45,
+          "travel": 10.9,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3646,
           "canvas": [
             232,
             232
           ],
           "reasons": [],
-          "sub": "6273cc60-793d-48b9-bdd1-7aeb50dd5f56",
-          "group": "937e9571-07a2-4382-8293-aab4f4773de5",
+          "sub": "3d990c57-da52-4b81-bc59-0f99dd2b6778",
+          "group": "65ca403a-16f2-4e5d-aab5-b881e159a720",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:09:11+00:00",
+          "generated_at": "2026-09-09T22:41:58+00:00",
+          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
@@ -794,79 +820,63 @@
           "source": "north-east"
         }
       },
-      "action": "swings one crystal-bladed arm in a wide sweeping slash, light flaring, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance",
       "frame_paths": {
         "south": [
           "crystal_titan/animations/attack/south/00.webp",
           "crystal_titan/animations/attack/south/01.webp",
           "crystal_titan/animations/attack/south/02.webp",
           "crystal_titan/animations/attack/south/03.webp",
-          "crystal_titan/animations/attack/south/04.webp",
-          "crystal_titan/animations/attack/south/05.webp",
-          "crystal_titan/animations/attack/south/06.webp"
+          "crystal_titan/animations/attack/south/04.webp"
         ],
         "south-east": [
           "crystal_titan/animations/attack/south-east/00.webp",
           "crystal_titan/animations/attack/south-east/01.webp",
           "crystal_titan/animations/attack/south-east/02.webp",
           "crystal_titan/animations/attack/south-east/03.webp",
-          "crystal_titan/animations/attack/south-east/04.webp",
-          "crystal_titan/animations/attack/south-east/05.webp",
-          "crystal_titan/animations/attack/south-east/06.webp"
+          "crystal_titan/animations/attack/south-east/04.webp"
         ],
         "east": [
           "crystal_titan/animations/attack/east/00.webp",
           "crystal_titan/animations/attack/east/01.webp",
           "crystal_titan/animations/attack/east/02.webp",
           "crystal_titan/animations/attack/east/03.webp",
-          "crystal_titan/animations/attack/east/04.webp",
-          "crystal_titan/animations/attack/east/05.webp",
-          "crystal_titan/animations/attack/east/06.webp"
+          "crystal_titan/animations/attack/east/04.webp"
         ],
         "north-east": [
           "crystal_titan/animations/attack/north-east/00.webp",
           "crystal_titan/animations/attack/north-east/01.webp",
           "crystal_titan/animations/attack/north-east/02.webp",
           "crystal_titan/animations/attack/north-east/03.webp",
-          "crystal_titan/animations/attack/north-east/04.webp",
-          "crystal_titan/animations/attack/north-east/05.webp",
-          "crystal_titan/animations/attack/north-east/06.webp"
+          "crystal_titan/animations/attack/north-east/04.webp"
         ],
         "north": [
           "crystal_titan/animations/attack/north/00.webp",
           "crystal_titan/animations/attack/north/01.webp",
           "crystal_titan/animations/attack/north/02.webp",
           "crystal_titan/animations/attack/north/03.webp",
-          "crystal_titan/animations/attack/north/04.webp",
-          "crystal_titan/animations/attack/north/05.webp",
-          "crystal_titan/animations/attack/north/06.webp"
+          "crystal_titan/animations/attack/north/04.webp"
         ],
         "south-west": [
           "crystal_titan/animations/attack/south-west/00.webp",
           "crystal_titan/animations/attack/south-west/01.webp",
           "crystal_titan/animations/attack/south-west/02.webp",
           "crystal_titan/animations/attack/south-west/03.webp",
-          "crystal_titan/animations/attack/south-west/04.webp",
-          "crystal_titan/animations/attack/south-west/05.webp",
-          "crystal_titan/animations/attack/south-west/06.webp"
+          "crystal_titan/animations/attack/south-west/04.webp"
         ],
         "west": [
           "crystal_titan/animations/attack/west/00.webp",
           "crystal_titan/animations/attack/west/01.webp",
           "crystal_titan/animations/attack/west/02.webp",
           "crystal_titan/animations/attack/west/03.webp",
-          "crystal_titan/animations/attack/west/04.webp",
-          "crystal_titan/animations/attack/west/05.webp",
-          "crystal_titan/animations/attack/west/06.webp"
+          "crystal_titan/animations/attack/west/04.webp"
         ],
         "north-west": [
           "crystal_titan/animations/attack/north-west/00.webp",
           "crystal_titan/animations/attack/north-west/01.webp",
           "crystal_titan/animations/attack/north-west/02.webp",
           "crystal_titan/animations/attack/north-west/03.webp",
-          "crystal_titan/animations/attack/north-west/04.webp",
-          "crystal_titan/animations/attack/north-west/05.webp",
-          "crystal_titan/animations/attack/north-west/06.webp"
+          "crystal_titan/animations/attack/north-west/04.webp"
         ]
       },
       "strips": {

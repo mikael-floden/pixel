@@ -634,9 +634,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:31:08+00:00"
+          "generated_at": "2026-09-09T22:31:08+00:00",
+          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance"
         },
         "south-east": {
           "status": "pass",
@@ -660,9 +659,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:31:09+00:00"
+          "generated_at": "2026-09-09T22:31:09+00:00",
+          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance"
         },
         "east": {
           "status": "pass",
@@ -674,7 +672,7 @@
           "travel": 4.96,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.001,
           "peak": 0.3531,
           "canvas": [
             112,
@@ -686,9 +684,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:31:10+00:00"
+          "generated_at": "2026-09-09T22:31:10+00:00",
+          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance"
         },
         "north-east": {
           "status": "pass",
@@ -712,9 +709,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:31:11+00:00"
+          "generated_at": "2026-09-09T22:31:11+00:00",
+          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance"
         },
         "north": {
           "status": "pass",
@@ -738,9 +734,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:31:11+00:00"
+          "generated_at": "2026-09-09T22:31:11+00:00",
+          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance"
         },
         "south-west": {
           "status": "pass",
@@ -764,9 +759,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:31:09+00:00",
+          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
@@ -779,7 +773,7 @@
           "travel": 4.96,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.0,
+          "flash": 0.001,
           "peak": 0.3531,
           "canvas": [
             112,
@@ -791,9 +785,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:31:10+00:00",
+          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
@@ -818,9 +811,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:31:11+00:00",
+          "action": "Bow Shot - Draws the bowstring back and releases one arrow, then returns to idle stance",
           "source": "north-east"
         }
       },

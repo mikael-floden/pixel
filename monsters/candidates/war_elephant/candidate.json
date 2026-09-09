@@ -638,37 +638,33 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:39:05+00:00"
+          "generated_at": "2026-09-09T22:39:05+00:00",
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.1213,
-          "step_max": 0.1648,
-          "drift": 9.56,
+          "status": "pass",
+          "step_mean": 0.1105,
+          "step_max": 0.1312,
+          "drift": 6.73,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.61,
+          "travel": 0.44,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.125,
-          "peak": 0.2148,
+          "flash": 0.0,
+          "peak": 0.1915,
           "canvas": [
             240,
             240
           ],
-          "reasons": [
-            "painted effect: 0.13 of the body in new bright pixels (flare/slash arc)"
-          ],
-          "sub": "3ce20ab5-495b-4c19-80e3-bcf24b91448e",
-          "group": "a3102ce6-8a6e-4552-b9b3-4348eb3ee016",
-          "takes": 1,
-          "version": 2,
+          "reasons": [],
+          "sub": "7be868be-0c5d-4acf-b41c-707b890ff81d",
+          "group": "95267151-42f6-4b9f-be83-b1b3c2dc1d10",
+          "takes": 2,
+          "version": 3,
           "mirrored": false,
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:39:06+00:00"
+          "generated_at": "2026-09-09T22:48:34+00:00",
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
         },
         "east": {
           "status": "pass",
@@ -692,9 +688,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:39:08+00:00"
+          "generated_at": "2026-09-09T22:39:08+00:00",
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
         },
         "north-east": {
           "status": "pass",
@@ -718,9 +713,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:39:08+00:00"
+          "generated_at": "2026-09-09T22:39:08+00:00",
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
         },
         "north": {
           "status": "pass",
@@ -744,31 +738,33 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:39:09+00:00"
+          "generated_at": "2026-09-09T22:39:09+00:00",
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance"
         },
         "south-west": {
           "status": "pass",
-          "step_mean": 0.1064,
-          "step_max": 0.1641,
-          "drift": 13.32,
-          "loop": 0.0001,
+          "step_mean": 0.1105,
+          "step_max": 0.1312,
+          "drift": 6.73,
+          "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.62,
+          "travel": 0.44,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1915,
           "canvas": [
             240,
             240
           ],
           "reasons": [],
-          "sub": "523338db-1427-4ae9-9f31-c5e61885fc43",
-          "group": "926211c0-ed66-427c-a762-ae81ff536670",
-          "takes": 1,
-          "version": 1,
+          "sub": "7be868be-0c5d-4acf-b41c-707b890ff81d",
+          "group": "95267151-42f6-4b9f-be83-b1b3c2dc1d10",
+          "takes": 2,
+          "version": 3,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:08:01+00:00",
+          "generated_at": "2026-09-09T22:48:34+00:00",
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
@@ -793,9 +789,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:39:08+00:00",
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
@@ -820,9 +815,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:39:08+00:00",
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
           "source": "north-east"
         }
       },

@@ -603,7 +603,7 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "warn",
           "step_mean": 0.1476,
           "step_max": 0.1811,
           "drift": 0.42,
@@ -612,21 +612,22 @@
           "travel": 0.05,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.015,
+          "flash": 0.052,
           "peak": 0.2531,
           "canvas": [
             32,
             32
           ],
-          "reasons": [],
+          "reasons": [
+            "some bright effect pixels (0.05) — eyeball it"
+          ],
           "sub": "a51c4867-bcc8-456e-afe3-c7b972650983",
           "group": "91438d1f-ec9e-4a6f-9dba-fe5c8ba918cc",
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:38:23+00:00"
+          "generated_at": "2026-09-09T22:38:23+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
         },
         "south-east": {
           "status": "pass",
@@ -638,7 +639,7 @@
           "travel": 0.25,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.023,
+          "flash": 0.013,
           "peak": 0.3496,
           "canvas": [
             32,
@@ -650,9 +651,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:38:23+00:00"
+          "generated_at": "2026-09-09T22:38:23+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
         },
         "east": {
           "status": "pass",
@@ -664,7 +664,7 @@
           "travel": 1.01,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.011,
+          "flash": 0.016,
           "peak": 0.25,
           "canvas": [
             32,
@@ -676,9 +676,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:38:24+00:00"
+          "generated_at": "2026-09-09T22:38:24+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
         },
         "north-east": {
           "status": "pass",
@@ -690,7 +689,7 @@
           "travel": 0.59,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.003,
+          "flash": 0.019,
           "peak": 0.2873,
           "canvas": [
             32,
@@ -702,9 +701,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:38:24+00:00"
+          "generated_at": "2026-09-09T22:38:24+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
         },
         "north": {
           "status": "pass",
@@ -716,7 +714,7 @@
           "travel": 1.23,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.003,
+          "flash": 0.022,
           "peak": 0.2814,
           "canvas": [
             32,
@@ -728,9 +726,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
-          "tries": 1,
-          "generated_at": "2026-09-09T22:38:24+00:00"
+          "generated_at": "2026-09-09T22:38:24+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance"
         },
         "south-west": {
           "status": "pass",
@@ -742,7 +739,7 @@
           "travel": 0.25,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.023,
+          "flash": 0.013,
           "peak": 0.3496,
           "canvas": [
             32,
@@ -754,9 +751,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:38:23+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
           "source": "south-east"
         },
         "west": {
@@ -769,7 +765,7 @@
           "travel": 1.01,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.011,
+          "flash": 0.016,
           "peak": 0.25,
           "canvas": [
             32,
@@ -781,9 +777,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:38:24+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
           "source": "east"
         },
         "north-west": {
@@ -796,7 +791,7 @@
           "travel": 0.59,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.003,
+          "flash": 0.019,
           "peak": 0.2873,
           "canvas": [
             32,
@@ -808,9 +803,8 @@
           "takes": 1,
           "version": 2,
           "mirrored": true,
-          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
-          "tries": 1,
           "generated_at": "2026-09-09T22:38:24+00:00",
+          "action": "Bite - Hops forward and bites once with its small mandibles, then returns to idle stance",
           "source": "north-east"
         }
       },

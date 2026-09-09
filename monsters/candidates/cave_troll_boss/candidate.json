@@ -618,142 +618,165 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
-          "step_mean": 0.146,
-          "step_max": 0.3014,
-          "drift": 4.02,
-          "loop": 0.0,
+          "status": "warn",
+          "step_mean": 0.2157,
+          "step_max": 0.2887,
+          "drift": 9.72,
+          "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 4.24,
+          "travel": 3.43,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.09,
+          "peak": 0.3428,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
-          "sub": "6bd9af20-8f65-40f4-8440-b3c160b988e9",
-          "group": "703ef3ae-649b-4edc-99bc-afbfe59f040b",
+          "reasons": [
+            "some bright effect pixels (0.09) — eyeball it"
+          ],
+          "sub": "9e5d0c3f-1c37-452d-8522-bf421c64a72f",
+          "group": "066d59ee-ca29-479b-ba40-c7d31866fa81",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:08:35+00:00"
+          "generated_at": "2026-09-09T22:42:23+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
         },
         "south-east": {
-          "status": "pass",
-          "step_mean": 0.0899,
-          "step_max": 0.1357,
-          "drift": 5.44,
-          "loop": 0.0002,
+          "status": "fail",
+          "step_mean": 0.0912,
+          "step_max": 0.0983,
+          "drift": 2.03,
+          "loop": 0.0001,
           "loop_ratio": 0.0,
           "travel": 2.05,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.233,
+          "peak": 0.146,
           "canvas": [
             240,
             240
-          ],
-          "reasons": [],
-          "sub": "7909f3f0-6384-41cd-b4f2-ed19f3255f3e",
-          "group": "93079230-a71b-46b9-b0a4-cca315ac7806",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:08:36+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.272,
-          "step_max": 0.428,
-          "drift": 16.57,
-          "loop": 0.0001,
-          "loop_ratio": 0.0,
-          "travel": 19.29,
-          "pin": 1.0,
-          "pad": 0,
-          "canvas": [
-            240,
-            240
-          ],
-          "reasons": [],
-          "sub": "427e18bc-e6cb-43de-836b-e57dd3c82d75",
-          "group": "de858711-693d-400f-90d7-40f9e34508b1",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:08:36+00:00"
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.0887,
-          "step_max": 0.1645,
-          "drift": 4.92,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 7.85,
-          "pin": 1.0,
-          "pad": 7,
-          "canvas": [
-            254,
-            254
           ],
           "reasons": [
-            "weak strike: peak 0.149 — eyeball it",
-            "canvas grown by 7 px a side to hold the motion"
+            "painted effect: 0.23 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "f4c41049-e916-41a8-b655-aebd6819dc9f",
-          "group": "053a526e-e9dd-47a8-a118-b101f5574806",
-          "takes": 1,
-          "version": 1,
+          "sub": "adfb934c-0180-4fc0-8bc8-ce1b1c47e536",
+          "group": "68149712-4396-42ad-a436-58222061e8f6",
+          "takes": 2,
+          "version": 3,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:08:37+00:00"
+          "generated_at": "2026-09-09T22:52:50+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.2308,
+          "step_max": 0.3313,
+          "drift": 7.85,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 7.9,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.22,
+          "peak": 0.3797,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "painted effect: 0.22 of the body in new bright pixels (flare/slash arc)"
+          ],
+          "sub": "04e0bb6d-e123-4ce7-859d-6a2c4c141995",
+          "group": "bf337745-9091-423d-b3c8-c191c5a72dc3",
+          "takes": 2,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:52:51+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.135,
+          "step_max": 0.1545,
+          "drift": 3.21,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.69,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2571,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "2a7cdb5f-5e2f-4734-93a0-89aad24c1dad",
+          "group": "3a4da3b5-fa53-4f9a-a9ad-d0baf0ec65f1",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:42:25+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
         },
         "north": {
           "status": "warn",
-          "step_mean": 0.0667,
-          "step_max": 0.0917,
-          "drift": 1.46,
+          "step_mean": 0.062,
+          "step_max": 0.0849,
+          "drift": 0.38,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.77,
+          "travel": 0.09,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1113,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "motion 0.067 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.123 — eyeball it"
+            "weak strike: peak 0.111 — eyeball it"
           ],
-          "sub": "3bc2aa06-8840-42b9-ae54-5196eebb4032",
-          "group": "07067233-edb4-4b75-83b7-4c0ebc475d69",
-          "takes": 1,
-          "version": 1,
+          "sub": "d3b4992d-239f-4f66-9f40-12ae9b1bced6",
+          "group": "06c361a6-f161-4694-86dc-0bb5bb1238db",
+          "takes": 2,
+          "version": 3,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:08:38+00:00"
+          "generated_at": "2026-09-09T22:52:52+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
         },
         "south-west": {
-          "status": "pass",
-          "step_mean": 0.0899,
-          "step_max": 0.1357,
-          "drift": 5.44,
+          "status": "warn",
+          "step_mean": 0.2076,
+          "step_max": 0.2257,
+          "drift": 5.52,
           "loop": 0.0002,
           "loop_ratio": 0.0,
-          "travel": 2.05,
+          "travel": 4.41,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.091,
+          "peak": 0.2656,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
-          "sub": "7909f3f0-6384-41cd-b4f2-ed19f3255f3e",
-          "group": "93079230-a71b-46b9-b0a4-cca315ac7806",
+          "reasons": [
+            "some bright effect pixels (0.09) — eyeball it"
+          ],
+          "sub": "e8045101-0fc9-4e62-8aac-71729dc38216",
+          "group": "04dd02b8-78a0-4101-bfa8-ca853f6109a3",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:08:36+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:42:24+00:00",
           "source": "south-east"
         },
         "west": {
@@ -780,105 +803,89 @@
           "source": "east"
         },
         "north-west": {
-          "status": "warn",
-          "step_mean": 0.0887,
-          "step_max": 0.1645,
-          "drift": 4.92,
+          "status": "pass",
+          "step_mean": 0.135,
+          "step_max": 0.1545,
+          "drift": 3.21,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 7.85,
+          "travel": 1.69,
           "pin": 1.0,
-          "pad": 7,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2571,
           "canvas": [
-            254,
-            254
+            240,
+            240
           ],
-          "reasons": [
-            "weak strike: peak 0.149 — eyeball it",
-            "canvas grown by 7 px a side to hold the motion"
-          ],
-          "sub": "f4c41049-e916-41a8-b655-aebd6819dc9f",
-          "group": "053a526e-e9dd-47a8-a118-b101f5574806",
+          "reasons": [],
+          "sub": "2a7cdb5f-5e2f-4734-93a0-89aad24c1dad",
+          "group": "3a4da3b5-fa53-4f9a-a9ad-d0baf0ec65f1",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:08:37+00:00",
+          "generated_at": "2026-09-09T22:42:25+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
           "source": "north-east"
         }
       },
-      "action": "raises the stalactite club overhead and smashes it down, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
       "frame_paths": {
         "south": [
           "cave_troll_boss/animations/attack/south/00.webp",
           "cave_troll_boss/animations/attack/south/01.webp",
           "cave_troll_boss/animations/attack/south/02.webp",
           "cave_troll_boss/animations/attack/south/03.webp",
-          "cave_troll_boss/animations/attack/south/04.webp",
-          "cave_troll_boss/animations/attack/south/05.webp",
-          "cave_troll_boss/animations/attack/south/06.webp"
+          "cave_troll_boss/animations/attack/south/04.webp"
         ],
         "south-east": [
           "cave_troll_boss/animations/attack/south-east/00.webp",
           "cave_troll_boss/animations/attack/south-east/01.webp",
           "cave_troll_boss/animations/attack/south-east/02.webp",
           "cave_troll_boss/animations/attack/south-east/03.webp",
-          "cave_troll_boss/animations/attack/south-east/04.webp",
-          "cave_troll_boss/animations/attack/south-east/05.webp",
-          "cave_troll_boss/animations/attack/south-east/06.webp"
+          "cave_troll_boss/animations/attack/south-east/04.webp"
         ],
         "east": [
           "cave_troll_boss/animations/attack/east/00.webp",
           "cave_troll_boss/animations/attack/east/01.webp",
           "cave_troll_boss/animations/attack/east/02.webp",
           "cave_troll_boss/animations/attack/east/03.webp",
-          "cave_troll_boss/animations/attack/east/04.webp",
-          "cave_troll_boss/animations/attack/east/05.webp",
-          "cave_troll_boss/animations/attack/east/06.webp"
+          "cave_troll_boss/animations/attack/east/04.webp"
         ],
         "north-east": [
           "cave_troll_boss/animations/attack/north-east/00.webp",
           "cave_troll_boss/animations/attack/north-east/01.webp",
           "cave_troll_boss/animations/attack/north-east/02.webp",
           "cave_troll_boss/animations/attack/north-east/03.webp",
-          "cave_troll_boss/animations/attack/north-east/04.webp",
-          "cave_troll_boss/animations/attack/north-east/05.webp",
-          "cave_troll_boss/animations/attack/north-east/06.webp"
+          "cave_troll_boss/animations/attack/north-east/04.webp"
         ],
         "north": [
           "cave_troll_boss/animations/attack/north/00.webp",
           "cave_troll_boss/animations/attack/north/01.webp",
           "cave_troll_boss/animations/attack/north/02.webp",
           "cave_troll_boss/animations/attack/north/03.webp",
-          "cave_troll_boss/animations/attack/north/04.webp",
-          "cave_troll_boss/animations/attack/north/05.webp",
-          "cave_troll_boss/animations/attack/north/06.webp"
+          "cave_troll_boss/animations/attack/north/04.webp"
         ],
         "south-west": [
           "cave_troll_boss/animations/attack/south-west/00.webp",
           "cave_troll_boss/animations/attack/south-west/01.webp",
           "cave_troll_boss/animations/attack/south-west/02.webp",
           "cave_troll_boss/animations/attack/south-west/03.webp",
-          "cave_troll_boss/animations/attack/south-west/04.webp",
-          "cave_troll_boss/animations/attack/south-west/05.webp",
-          "cave_troll_boss/animations/attack/south-west/06.webp"
+          "cave_troll_boss/animations/attack/south-west/04.webp"
         ],
         "west": [
           "cave_troll_boss/animations/attack/west/00.webp",
           "cave_troll_boss/animations/attack/west/01.webp",
           "cave_troll_boss/animations/attack/west/02.webp",
           "cave_troll_boss/animations/attack/west/03.webp",
-          "cave_troll_boss/animations/attack/west/04.webp",
-          "cave_troll_boss/animations/attack/west/05.webp",
-          "cave_troll_boss/animations/attack/west/06.webp"
+          "cave_troll_boss/animations/attack/west/04.webp"
         ],
         "north-west": [
           "cave_troll_boss/animations/attack/north-west/00.webp",
           "cave_troll_boss/animations/attack/north-west/01.webp",
           "cave_troll_boss/animations/attack/north-west/02.webp",
           "cave_troll_boss/animations/attack/north-west/03.webp",
-          "cave_troll_boss/animations/attack/north-west/04.webp",
-          "cave_troll_boss/animations/attack/north-west/05.webp",
-          "cave_troll_boss/animations/attack/north-west/06.webp"
+          "cave_troll_boss/animations/attack/north-west/04.webp"
         ]
       },
       "strips": {
