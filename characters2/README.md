@@ -171,6 +171,42 @@ folder and FAILS if one is missing. There is deliberately **ONE `jump` state**
 (maintainer decision): the old high-jump and `runjump` were consolidated into
 the steeplechase run-jump.
 
+## Retouch layer (`retouch.json`) — `characters2-retouch@1`
+
+PixelLab is the source of truth for art, and its generator sometimes bakes in
+what the GAME must own. The pick-up animation came back with a different
+hallucinated object per direction (white scroll, dark pot, blue crystal…) in
+the hero's hand — while the picked-up item in the game is dynamic. Those
+pixels are declared away here: not painted over in the mirror (a `--force`
+resync would silently restore them) and not prompted away on PixelLab (the
+maintainer could not — generation text is not a control surface).
+
+- `retouch.json` maps a frame key (`humans/<hero>/animations/<slug>/<dir>/<i>`)
+  to a pixel patch — `erase` spans and `paint` spans (repaired outlines) —
+  pinned to `source_sha256`, the decoded-pixel sha of the PixelLab frame it was
+  authored for, plus `result_sha256` of the frame the mirror ships.
+- `sync.py` applies the patch to every frame it downloads whose source sha
+  matches. When it does not (the animation was regenerated on PixelLab) the RAW
+  frame is written and a `RETOUCH STALE` line printed: a patch is never applied
+  to pixels it was not authored for, so a regenerated frame shows the real new
+  art (object and all) until the rules are re-authored.
+- `verify_sync.py` checks both shas against the live API on every run;
+  `python characters2/pipeline/retouch.py --check` verifies the on-disk result
+  without the API.
+- Authoring: `pipeline/retouch_author.py` holds the per-frame boxes (RULES) and
+  the erase logic — foreign colours (never ≥20× in the hero's object-free
+  animations), explicitly listed colours (the pot is drawn in his hair grey,
+  the scroll in eye white), disconnected components, then the object's own
+  outline; holes inside the body are inpainted and body that now borders
+  transparency gets its black outline back. Re-run it after a PixelLab
+  regeneration (`--src <pristine tree>` or straight from the API); it writes
+  the JSON and the frames. Review in the viewer before committing. Never
+  hand-edit `retouch.json`.
+- Today: 117 frames of the heroes' `pickup` state (65 boy, 52 girl; 4626 px
+  erased). W/NW/SW derive from E/NE/SE, which PixelLab mirrors exactly.
+- The game sees only pixels: frame counts, paths and the `animation_map.json`
+  contract are unchanged; whatever is in the hand is the game's to draw.
+
 ## Staying in sync
 
 The maintainer adds animations (and later outfits / extra models) in the
@@ -181,7 +217,9 @@ downloads only what changed:
 - an animation skipped entirely when its `animation_group_id` is unchanged and
   all frames are on disk (newly-added *directions* still get picked up);
 - a true mirror — animations / directions / stray frames deleted in the UI are
-  removed locally too.
+  removed locally too;
+- declared retouches (`retouch.json`) re-applied to every downloaded frame —
+  see "Retouch layer" above.
 
 ```bash
 export PIXELLAB_API_KEY=...
@@ -201,6 +239,7 @@ characters2/
   config.json                    pinned hero IDs (+ frame_format: webp)
   metadata.json                  authored metadata for ALL characters (see above)
   animation_map.json             game-state -> folder contract (see above)
+  retouch.json                   pixel patches on the mirror, sha-pinned (see above)
   humans/
     default_boy/
       character.json             manifest: pixellab id, prompt, style, states, per-file source URLs
@@ -214,7 +253,8 @@ characters2/
     index.json                   the NPC roll-up (characters2-npcs@1)
     <id8>/                       one NPC, same shape as a hero
   pipeline/
-    pixellab_client.py  sync.py  verify_sync.py  to_webp.py  generate.py (legacy explorer)
+    pixellab_client.py  sync.py  verify_sync.py  retouch.py  retouch_author.py
+    to_webp.py  generate.py (legacy explorer)
 ```
 
 Verify a sync is exact (read-only; re-fetches PixelLab and diffs the repo —

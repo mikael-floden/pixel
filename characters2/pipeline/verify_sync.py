@@ -26,6 +26,7 @@ import sys
 from PIL import Image
 
 from pixellab_client import DIRECTIONS_8, PixelLabClient
+from retouch import frame_key, load_spec, pixel_sha
 from sync import (HUMANS, NPCS, load_config, frame_ext, list_npcs, npc_folder,
                   npc_state_map, _assign_slugs, _slug)
 
@@ -46,13 +47,14 @@ def _expected_from_api(detail):
         if not atype:
             continue
         slug = slug_by_type[atype]
-        dirs = {}
+        dirs, urls = {}, {}
         for dp in (a.get("directions") or []):
             dd = dp.get("direction")
-            n = len([u for u in (dp.get("frames") or []) if u])
-            if dd and n:
-                dirs[dd] = n
-        exp[slug] = {"animation_type": atype, "dirs": dirs}
+            fr = [u for u in (dp.get("frames") or []) if u]
+            if dd and fr:
+                dirs[dd] = len(fr)
+                urls[dd] = fr
+        exp[slug] = {"animation_type": atype, "dirs": dirs, "urls": urls}
     return sorted(rot), exp
 
 
@@ -135,6 +137,31 @@ def verify_character(client, name, cid, dest=None):
     # stale animation folders
     for slug in sorted(on_disk - expected_slugs):
         problems.append(f"{name}/animations: STALE folder '{slug}' (not on PixelLab)")
+
+    # -- declared retouches (retouch.json) --------------------------------
+    # Both ends of every patch: the PixelLab frame still has the pixels the
+    # patch was authored for (else the sync wrote a RAW frame and warned), and
+    # the frame on disk carries the patched result.
+    tree = "npcs" if dest == NPCS else "humans"
+    spec = load_spec()
+    for slug, info in exp_anims.items():
+        for dd, urls in info["urls"].items():
+            for i, url in enumerate(urls):
+                key = frame_key(tree, name, slug, dd, i)
+                entry = spec["frames"].get(key)
+                if not entry:
+                    continue
+                src = client.download_image(url)
+                if src is None:
+                    problems.append(f"{key}: retouch source frame not downloadable")
+                    continue
+                if pixel_sha(src) != entry["source_sha256"]:
+                    problems.append(f"{key}: RETOUCH STALE — PixelLab frame changed since the patch "
+                                    f"was authored; re-run retouch_author.py")
+                p = os.path.join(root, "animations", slug, dd, f"{i}{EXT}")
+                if os.path.exists(p) and pixel_sha(Image.open(p)) != entry["result_sha256"]:
+                    problems.append(f"{key}: retouch NOT APPLIED on disk (raw frame; re-run "
+                                    f"retouch_author.py or sync --force)")
 
     # -- manifest consistency ------------------------------------------------
     manifest = os.path.join(root, "character.json")
