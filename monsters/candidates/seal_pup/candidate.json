@@ -1,0 +1,141 @@
+{
+  "id": "seal_pup",
+  "name": "Blubberling",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "Everyone who sees one wants to pick it up. Its mother is the reason nobody does it twice.",
+  "biome": [
+    "ice",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Small cute fantasy seal pup with fluffy white fur, huge dark wet eyes, a black button nose, tiny flippers, and a few snowflakes on its back.",
+  "size": [
+    64,
+    64
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "seal_pup/rotations/south.webp",
+    "south-east": "seal_pup/rotations/south-east.webp",
+    "east": "seal_pup/rotations/east.webp",
+    "north-east": "seal_pup/rotations/north-east.webp",
+    "north": "seal_pup/rotations/north.webp",
+    "north-west": "seal_pup/rotations/north-west.webp",
+    "west": "seal_pup/rotations/west.webp",
+    "south-west": "seal_pup/rotations/south-west.webp"
+  },
+  "sheet": "seal_pup/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "4422a7ad-a992-425f-b9af-715aad7abd24",
+  "seed": 1914736521,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:32:23+00:00",
+  "elapsed_s": 233.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.624,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.669,
+        "bbox": [
+          5,
+          5,
+          59,
+          58
+        ],
+        "fill": 0.699,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.66,
+        "bbox": [
+          2,
+          5,
+          60,
+          58
+        ],
+        "fill": 0.75,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.702,
+        "bbox": [
+          6,
+          6,
+          58,
+          59
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.624,
+        "bbox": [
+          11,
+          4,
+          57,
+          59
+        ],
+        "fill": 0.618,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.746,
+        "bbox": [
+          10,
+          4,
+          54,
+          59
+        ],
+        "fill": 0.591,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.667,
+        "bbox": [
+          4,
+          5,
+          61,
+          56
+        ],
+        "fill": 0.71,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.651,
+        "bbox": [
+          9,
+          4,
+          54,
+          59
+        ],
+        "fill": 0.604,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.717,
+        "bbox": [
+          3,
+          6,
+          60,
+          59
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      }
+    }
+  }
+}

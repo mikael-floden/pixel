@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:31:08+00:00",
+  "generated_at": "2026-09-09T18:32:29+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 39,
+  "count": 40,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -4545,13 +4545,13 @@
       ],
       "items": [],
       "size": [
-        128,
-        128
+        136,
+        136
       ],
       "template_id": "bear",
       "scale": "standard",
-      "pixellab_id": "3d0f82b8-32f9-4437-8c1d-e07846720523",
-      "version": 1,
+      "pixellab_id": "af64ca9e-8bb0-4e39-8423-ebcac8197678",
+      "version": 2,
       "sheet": "basilisk/sheet.webp",
       "rotations": {
         "south": "basilisk/rotations/south.webp",
@@ -4564,105 +4564,103 @@
         "south-west": "basilisk/rotations/south-west.webp"
       },
       "qa": {
-        "status": "fail",
-        "min_run1": 0.685,
-        "reasons": [
-          "south-west: content touches the canvas edge (clipped)"
-        ],
+        "status": "pass",
+        "min_run1": 0.669,
+        "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.685,
+            "run1": 0.669,
             "bbox": [
+              11,
               7,
-              5,
-              118,
-              125
+              123,
+              129
             ],
-            "fill": 0.813,
+            "fill": 0.739,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.745,
+            "run1": 0.779,
             "bbox": [
-              6,
-              4,
-              126,
-              125
+              8,
+              8,
+              128,
+              126
             ],
-            "fill": 0.886,
+            "fill": 0.766,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.747,
+            "run1": 0.781,
             "bbox": [
-              10,
-              7,
-              122,
-              125
+              8,
+              9,
+              128,
+              126
             ],
-            "fill": 0.807,
+            "fill": 0.759,
             "touches_edge": false
           },
           "north": {
-            "run1": 0.72,
+            "run1": 0.739,
             "bbox": [
-              8,
-              2,
-              115,
-              124
+              14,
+              6,
+              119,
+              120
             ],
-            "fill": 0.797,
+            "fill": 0.647,
             "touches_edge": false
           },
           "south-east": {
-            "run1": 0.787,
+            "run1": 0.801,
             "bbox": [
-              3,
-              7,
-              124,
-              125
+              10,
+              9,
+              118,
+              130
             ],
-            "fill": 0.871,
+            "fill": 0.707,
             "touches_edge": false
           },
           "north-east": {
-            "run1": 0.75,
+            "run1": 0.772,
             "bbox": [
-              12,
-              4,
+              18,
+              10,
               115,
-              127
+              126
             ],
-            "fill": 0.773,
+            "fill": 0.608,
             "touches_edge": false
           },
           "north-west": {
-            "run1": 0.757,
+            "run1": 0.765,
             "bbox": [
-              7,
-              3,
-              122,
-              118
+              18,
+              10,
+              124,
+              126
             ],
-            "fill": 0.807,
+            "fill": 0.665,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.786,
+            "run1": 0.8,
             "bbox": [
-              12,
-              7,
-              121,
-              128
+              16,
+              9,
+              120,
+              130
             ],
-            "fill": 0.805,
-            "touches_edge": true
+            "fill": 0.68,
+            "touches_edge": false
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-09T18:28:29+00:00"
+      "generated_at": "2026-09-09T18:32:29+00:00"
     },
     {
       "id": "hornet_knight",
@@ -5047,6 +5045,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:31:07+00:00"
+    },
+    {
+      "id": "seal_pup",
+      "name": "Blubberling",
+      "tier": "cute",
+      "lore": "Everyone who sees one wants to pick it up. Its mother is the reason nobody does it twice.",
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "items": [],
+      "size": [
+        64,
+        64
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "4422a7ad-a992-425f-b9af-715aad7abd24",
+      "version": 1,
+      "sheet": "seal_pup/sheet.webp",
+      "rotations": {
+        "south": "seal_pup/rotations/south.webp",
+        "south-east": "seal_pup/rotations/south-east.webp",
+        "east": "seal_pup/rotations/east.webp",
+        "north-east": "seal_pup/rotations/north-east.webp",
+        "north": "seal_pup/rotations/north.webp",
+        "north-west": "seal_pup/rotations/north-west.webp",
+        "west": "seal_pup/rotations/west.webp",
+        "south-west": "seal_pup/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.624,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.669,
+            "bbox": [
+              5,
+              5,
+              59,
+              58
+            ],
+            "fill": 0.699,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.66,
+            "bbox": [
+              2,
+              5,
+              60,
+              58
+            ],
+            "fill": 0.75,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.702,
+            "bbox": [
+              6,
+              6,
+              58,
+              59
+            ],
+            "fill": 0.673,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.624,
+            "bbox": [
+              11,
+              4,
+              57,
+              59
+            ],
+            "fill": 0.618,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.746,
+            "bbox": [
+              10,
+              4,
+              54,
+              59
+            ],
+            "fill": 0.591,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.667,
+            "bbox": [
+              4,
+              5,
+              61,
+              56
+            ],
+            "fill": 0.71,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.651,
+            "bbox": [
+              9,
+              4,
+              54,
+              59
+            ],
+            "fill": 0.604,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.717,
+            "bbox": [
+              3,
+              6,
+              60,
+              59
+            ],
+            "fill": 0.738,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:32:23+00:00"
     }
   ]
 }

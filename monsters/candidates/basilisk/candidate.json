@@ -9,10 +9,10 @@
     "grey_stone"
   ],
   "items": [],
-  "prompt": "Fantasy basilisk with a stocky six-legged lizard body of dull green scales, a heavy head with a crest of spines, glowing pale green eyes, a wide fanged mouth, and a short thick tail held low.",
+  "prompt": "Fantasy basilisk with a stocky six-legged lizard body of dull green scales, a heavy head with a crest of spines, glowing pale green eyes, a wide fanged mouth, and a short thick tail tucked close against its body.",
   "size": [
-    128,
-    128
+    136,
+    136
   ],
   "template_id": "bear",
   "directions": [
@@ -37,106 +37,104 @@
   },
   "sheet": "basilisk/sheet.webp",
   "review": "pending",
-  "pixellab_id": "3d0f82b8-32f9-4437-8c1d-e07846720523",
-  "seed": 1802475977,
-  "version": 1,
+  "pixellab_id": "af64ca9e-8bb0-4e39-8423-ebcac8197678",
+  "seed": 1919338611,
+  "version": 2,
   "usage": null,
-  "generated_at": "2026-09-09T18:28:29+00:00",
-  "elapsed_s": 168.4,
+  "generated_at": "2026-09-09T18:32:29+00:00",
+  "elapsed_s": 207.8,
   "qa": {
-    "status": "fail",
-    "min_run1": 0.685,
-    "reasons": [
-      "south-west: content touches the canvas edge (clipped)"
-    ],
+    "status": "pass",
+    "min_run1": 0.669,
+    "reasons": [],
     "directions": {
       "south": {
-        "run1": 0.685,
+        "run1": 0.669,
         "bbox": [
+          11,
           7,
-          5,
-          118,
-          125
+          123,
+          129
         ],
-        "fill": 0.813,
+        "fill": 0.739,
         "touches_edge": false
       },
       "west": {
-        "run1": 0.745,
+        "run1": 0.779,
         "bbox": [
-          6,
-          4,
-          126,
-          125
+          8,
+          8,
+          128,
+          126
         ],
-        "fill": 0.886,
+        "fill": 0.766,
         "touches_edge": false
       },
       "east": {
-        "run1": 0.747,
+        "run1": 0.781,
         "bbox": [
-          10,
-          7,
-          122,
-          125
+          8,
+          9,
+          128,
+          126
         ],
-        "fill": 0.807,
+        "fill": 0.759,
         "touches_edge": false
       },
       "north": {
-        "run1": 0.72,
+        "run1": 0.739,
         "bbox": [
-          8,
-          2,
-          115,
-          124
+          14,
+          6,
+          119,
+          120
         ],
-        "fill": 0.797,
+        "fill": 0.647,
         "touches_edge": false
       },
       "south-east": {
-        "run1": 0.787,
+        "run1": 0.801,
         "bbox": [
-          3,
-          7,
-          124,
-          125
+          10,
+          9,
+          118,
+          130
         ],
-        "fill": 0.871,
+        "fill": 0.707,
         "touches_edge": false
       },
       "north-east": {
-        "run1": 0.75,
+        "run1": 0.772,
         "bbox": [
-          12,
-          4,
+          18,
+          10,
           115,
-          127
+          126
         ],
-        "fill": 0.773,
+        "fill": 0.608,
         "touches_edge": false
       },
       "north-west": {
-        "run1": 0.757,
+        "run1": 0.765,
         "bbox": [
-          7,
-          3,
-          122,
-          118
+          18,
+          10,
+          124,
+          126
         ],
-        "fill": 0.807,
+        "fill": 0.665,
         "touches_edge": false
       },
       "south-west": {
-        "run1": 0.786,
+        "run1": 0.8,
         "bbox": [
-          12,
-          7,
-          121,
-          128
+          16,
+          9,
+          120,
+          130
         ],
-        "fill": 0.805,
-        "touches_edge": true
+        "fill": 0.68,
+        "touches_edge": false
       }
     }
   }
