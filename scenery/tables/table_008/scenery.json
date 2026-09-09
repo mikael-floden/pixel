@@ -171,7 +171,42 @@
             "class": "fire",
             "base": 0.0789,
             "still": 0.486
-          }
+          },
+          "frame_paths": [
+            "tables/table_008/animations/flame/south/00.webp",
+            "tables/table_008/animations/flame/south/01.webp",
+            "tables/table_008/animations/flame/south/02.webp",
+            "tables/table_008/animations/flame/south/03.webp",
+            "tables/table_008/animations/flame/south/04.webp"
+          ],
+          "strip": "tables/table_008/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": -0.0,
+              "dy": -15.1
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.4,
+              "dy": -13.7
+            },
+            {
+              "intensity": 1.5,
+              "dx": -1.3,
+              "dy": -10.3
+            },
+            {
+              "intensity": 1.5,
+              "dx": -1.3,
+              "dy": -10.3
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.2,
+              "dy": -13.8
+            }
+          ]
         }
       },
       "rotations": {
@@ -317,7 +352,42 @@
             "class": "fire",
             "base": 0.1505,
             "still": 0.644
-          }
+          },
+          "frame_paths": [
+            "tables/table_008/lit_2/animations/flame/south/00.webp",
+            "tables/table_008/lit_2/animations/flame/south/01.webp",
+            "tables/table_008/lit_2/animations/flame/south/02.webp",
+            "tables/table_008/lit_2/animations/flame/south/03.webp",
+            "tables/table_008/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "tables/table_008/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.483,
+              "dx": -0.2,
+              "dy": -21.0
+            },
+            {
+              "intensity": 0.97,
+              "dx": -0.1,
+              "dy": -19.7
+            },
+            {
+              "intensity": 0.926,
+              "dx": -0.1,
+              "dy": -19.7
+            },
+            {
+              "intensity": 0.913,
+              "dx": -0.0,
+              "dy": -19.4
+            },
+            {
+              "intensity": 0.709,
+              "dx": 0.1,
+              "dy": -17.1
+            }
+          ]
         }
       },
       "rotations": {
@@ -463,7 +533,42 @@
             "class": "fire",
             "base": 0.0041,
             "still": 0.57
-          }
+          },
+          "frame_paths": [
+            "tables/table_008/lit_3/animations/flame/south/00.webp",
+            "tables/table_008/lit_3/animations/flame/south/01.webp",
+            "tables/table_008/lit_3/animations/flame/south/02.webp",
+            "tables/table_008/lit_3/animations/flame/south/03.webp",
+            "tables/table_008/lit_3/animations/flame/south/04.webp"
+          ],
+          "strip": "tables/table_008/lit_3/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.794,
+              "dx": 0.0,
+              "dy": -16.0
+            },
+            {
+              "intensity": 1.041,
+              "dx": -1.8,
+              "dy": -14.2
+            },
+            {
+              "intensity": 1.5,
+              "dx": -8.2,
+              "dy": -12.1
+            },
+            {
+              "intensity": 0.679,
+              "dx": 0.0,
+              "dy": -13.3
+            },
+            {
+              "intensity": 0.669,
+              "dx": 0.0,
+              "dy": -13.3
+            }
+          ]
         }
       },
       "rotations": {
@@ -609,7 +714,42 @@
             "class": "fire",
             "base": 0.0659,
             "still": 0.429
-          }
+          },
+          "frame_paths": [
+            "tables/table_008/lit_4/animations/flame/south/00.webp",
+            "tables/table_008/lit_4/animations/flame/south/01.webp",
+            "tables/table_008/lit_4/animations/flame/south/02.webp",
+            "tables/table_008/lit_4/animations/flame/south/03.webp",
+            "tables/table_008/lit_4/animations/flame/south/04.webp"
+          ],
+          "strip": "tables/table_008/lit_4/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": -0.1,
+              "dy": -15.3
+            },
+            {
+              "intensity": 0.874,
+              "dx": -0.4,
+              "dy": -14.8
+            },
+            {
+              "intensity": 1.5,
+              "dx": -1.7,
+              "dy": -12.2
+            },
+            {
+              "intensity": 0.59,
+              "dx": -0.1,
+              "dy": -15.4
+            },
+            {
+              "intensity": 0.509,
+              "dx": 0.0,
+              "dy": -14.9
+            }
+          ]
         }
       },
       "rotations": {

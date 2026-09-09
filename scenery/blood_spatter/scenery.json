@@ -167,7 +167,16 @@
         "class": "rigid",
         "base": 1.0,
         "still": 0.0
-      }
+      },
+      "frame_paths": [
+        "blood_spatter/animations/spatter/south/00.webp",
+        "blood_spatter/animations/spatter/south/01.webp",
+        "blood_spatter/animations/spatter/south/02.webp",
+        "blood_spatter/animations/spatter/south/03.webp",
+        "blood_spatter/animations/spatter/south/04.webp",
+        "blood_spatter/animations/spatter/south/05.webp"
+      ],
+      "strip": "blood_spatter/animations/spatter__south.webp"
     }
   },
   "type": "OTHER",

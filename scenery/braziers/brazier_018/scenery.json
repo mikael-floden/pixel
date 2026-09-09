@@ -135,7 +135,42 @@
             "class": "fire",
             "base": 0.0,
             "still": 0.751
-          }
+          },
+          "frame_paths": [
+            "braziers/brazier_018/animations/flame/south/00.webp",
+            "braziers/brazier_018/animations/flame/south/01.webp",
+            "braziers/brazier_018/animations/flame/south/02.webp",
+            "braziers/brazier_018/animations/flame/south/03.webp",
+            "braziers/brazier_018/animations/flame/south/04.webp"
+          ],
+          "strip": "braziers/brazier_018/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.236,
+              "dx": -0.5,
+              "dy": -14.8
+            },
+            {
+              "intensity": 1.198,
+              "dx": 0.0,
+              "dy": -15.1
+            },
+            {
+              "intensity": 0.897,
+              "dx": -1.3,
+              "dy": -15.1
+            },
+            {
+              "intensity": 0.732,
+              "dx": -2.0,
+              "dy": -15.7
+            },
+            {
+              "intensity": 0.937,
+              "dx": -2.5,
+              "dy": -14.9
+            }
+          ]
         }
       },
       "rotations": {
@@ -243,7 +278,42 @@
             "class": "fire",
             "base": 0.0702,
             "still": 0.857
-          }
+          },
+          "frame_paths": [
+            "braziers/brazier_018/lit_2/animations/flame/south/00.webp",
+            "braziers/brazier_018/lit_2/animations/flame/south/01.webp",
+            "braziers/brazier_018/lit_2/animations/flame/south/02.webp",
+            "braziers/brazier_018/lit_2/animations/flame/south/03.webp",
+            "braziers/brazier_018/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "braziers/brazier_018/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.075,
+              "dx": 0.3,
+              "dy": -15.2
+            },
+            {
+              "intensity": 0.911,
+              "dx": 0.1,
+              "dy": -15.2
+            },
+            {
+              "intensity": 0.919,
+              "dx": 0.1,
+              "dy": -14.8
+            },
+            {
+              "intensity": 1.017,
+              "dx": 0.1,
+              "dy": -14.6
+            },
+            {
+              "intensity": 1.077,
+              "dx": 0.1,
+              "dy": -15.5
+            }
+          ]
         }
       },
       "rotations": {
@@ -389,7 +459,42 @@
             "class": "fire",
             "base": 0.0,
             "still": 0.88
-          }
+          },
+          "frame_paths": [
+            "braziers/brazier_018/lit_3/animations/flame/south/00.webp",
+            "braziers/brazier_018/lit_3/animations/flame/south/01.webp",
+            "braziers/brazier_018/lit_3/animations/flame/south/02.webp",
+            "braziers/brazier_018/lit_3/animations/flame/south/03.webp",
+            "braziers/brazier_018/lit_3/animations/flame/south/04.webp"
+          ],
+          "strip": "braziers/brazier_018/lit_3/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.113,
+              "dx": -0.8,
+              "dy": -16.8
+            },
+            {
+              "intensity": 1.168,
+              "dx": -0.1,
+              "dy": -16.2
+            },
+            {
+              "intensity": 0.9,
+              "dx": -0.7,
+              "dy": -16.1
+            },
+            {
+              "intensity": 0.748,
+              "dx": 0.0,
+              "dy": -16.1
+            },
+            {
+              "intensity": 1.07,
+              "dx": 0.2,
+              "dy": -16.8
+            }
+          ]
         }
       },
       "rotations": {
@@ -535,7 +640,42 @@
             "class": "fire",
             "base": 0.2786,
             "still": 0.737
-          }
+          },
+          "frame_paths": [
+            "braziers/brazier_018/lit_4/animations/flame/south/00.webp",
+            "braziers/brazier_018/lit_4/animations/flame/south/01.webp",
+            "braziers/brazier_018/lit_4/animations/flame/south/02.webp",
+            "braziers/brazier_018/lit_4/animations/flame/south/03.webp",
+            "braziers/brazier_018/lit_4/animations/flame/south/04.webp"
+          ],
+          "strip": "braziers/brazier_018/lit_4/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.359,
+              "dx": -0.2,
+              "dy": -14.9
+            },
+            {
+              "intensity": 1.007,
+              "dx": 0.5,
+              "dy": -13.6
+            },
+            {
+              "intensity": 0.908,
+              "dx": 1.0,
+              "dy": -13.8
+            },
+            {
+              "intensity": 0.811,
+              "dx": -0.2,
+              "dy": -13.7
+            },
+            {
+              "intensity": 0.915,
+              "dx": -0.4,
+              "dy": -13.6
+            }
+          ]
         }
       },
       "rotations": {

@@ -171,7 +171,42 @@
             "class": "fire",
             "base": 0.9427,
             "still": 0.049
-          }
+          },
+          "frame_paths": [
+            "house_clutter/clutter_008/animations/flame/south/00.webp",
+            "house_clutter/clutter_008/animations/flame/south/01.webp",
+            "house_clutter/clutter_008/animations/flame/south/02.webp",
+            "house_clutter/clutter_008/animations/flame/south/03.webp",
+            "house_clutter/clutter_008/animations/flame/south/04.webp"
+          ],
+          "strip": "house_clutter/clutter_008/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.699,
+              "dx": 9.8,
+              "dy": 9.2
+            },
+            {
+              "intensity": 0.562,
+              "dx": 11.2,
+              "dy": 10.2
+            },
+            {
+              "intensity": 0.556,
+              "dx": 12.7,
+              "dy": 10.9
+            },
+            {
+              "intensity": 1.5,
+              "dx": 6.6,
+              "dy": 6.4
+            },
+            {
+              "intensity": 1.5,
+              "dx": 5.3,
+              "dy": 6.9
+            }
+          ]
         }
       },
       "rotations": {
@@ -317,7 +352,42 @@
             "class": "fire",
             "base": 0.1631,
             "still": 0.609
-          }
+          },
+          "frame_paths": [
+            "house_clutter/clutter_008/lit_2/animations/flame/south/00.webp",
+            "house_clutter/clutter_008/lit_2/animations/flame/south/01.webp",
+            "house_clutter/clutter_008/lit_2/animations/flame/south/02.webp",
+            "house_clutter/clutter_008/lit_2/animations/flame/south/03.webp",
+            "house_clutter/clutter_008/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "house_clutter/clutter_008/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.976,
+              "dx": -5.0,
+              "dy": 4.4
+            },
+            {
+              "intensity": 1.017,
+              "dx": -4.6,
+              "dy": 4.4
+            },
+            {
+              "intensity": 0.999,
+              "dx": -4.8,
+              "dy": 4.1
+            },
+            {
+              "intensity": 1.0,
+              "dx": -4.9,
+              "dy": 4.1
+            },
+            {
+              "intensity": 1.007,
+              "dx": -4.9,
+              "dy": 4.4
+            }
+          ]
         }
       },
       "rotations": {

@@ -177,7 +177,42 @@
             "class": "fire",
             "base": 0.2243,
             "still": 0.63
-          }
+          },
+          "frame_paths": [
+            "beds/bed_001/lit_1/animations/flame/south/00.webp",
+            "beds/bed_001/lit_1/animations/flame/south/01.webp",
+            "beds/bed_001/lit_1/animations/flame/south/02.webp",
+            "beds/bed_001/lit_1/animations/flame/south/03.webp",
+            "beds/bed_001/lit_1/animations/flame/south/04.webp"
+          ],
+          "strip": "beds/bed_001/lit_1/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.015,
+              "dx": -0.1,
+              "dy": -26.2
+            },
+            {
+              "intensity": 1.003,
+              "dx": 0.0,
+              "dy": -25.8
+            },
+            {
+              "intensity": 0.993,
+              "dx": 0.0,
+              "dy": -25.4
+            },
+            {
+              "intensity": 0.998,
+              "dx": 0.0,
+              "dy": -25.5
+            },
+            {
+              "intensity": 0.991,
+              "dx": -0.0,
+              "dy": -25.3
+            }
+          ]
         },
         "motion": {
           "group_id": "a15526f9-64e0-49c9-9719-a53fa014f598",

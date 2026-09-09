@@ -368,6 +368,17 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   `color` (V ≥ 0.8, S ≥ 0.2), V-weighted. A pure function of the frames, always
   recomputed; `light_frames.py --check` gates it. (maintainer 2026-09-09: "the
   spotlight differs a bit with the animation and the game will feel more alive")
+- **Animation shape, and the strip trap.** Every animation object carries
+  top-level `frame_paths`, `strip` and `light_frames` for SOUTH (the game's
+  `parseAnims` reads only the top level and drops a clip with neither), with
+  `directions` holding the per-facing detail; `normalize_anims.py` lifts them
+  and is idempotent. **An anchor state's strips live at the PIECE ROOT** while
+  its animation is registered under `states.<ANCHOR>` — a strip is dead only
+  when no state and no root animation names it. (Paid for 2026-09-10: a rule
+  that checked the root's animations alone deleted 288 live strips and the map
+  agent lit a brazier off a verdict on a clip the game could not find.)
+  `anim_review.py --check` refuses a playable verdict on a clip either
+  consumer cannot resolve.
 - Read contract: `states[<LIT state>]` wins for a placement drawn in that
   state, else the top-level piece default (`maps2/pipeline/world3.py
   light_meta`). Published whole in `viewer_data.json` as `light` so the wiki

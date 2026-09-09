@@ -171,7 +171,42 @@
             "class": "fire",
             "base": 0.0192,
             "still": 0.428
-          }
+          },
+          "frame_paths": [
+            "chairs_and_benches/chair_012/animations/flame/south/00.webp",
+            "chairs_and_benches/chair_012/animations/flame/south/01.webp",
+            "chairs_and_benches/chair_012/animations/flame/south/02.webp",
+            "chairs_and_benches/chair_012/animations/flame/south/03.webp",
+            "chairs_and_benches/chair_012/animations/flame/south/04.webp"
+          ],
+          "strip": "chairs_and_benches/chair_012/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.979,
+              "dx": -0.1,
+              "dy": -3.5
+            },
+            {
+              "intensity": 1.033,
+              "dx": -0.1,
+              "dy": -4.2
+            },
+            {
+              "intensity": 0.971,
+              "dx": -0.1,
+              "dy": -4.3
+            },
+            {
+              "intensity": 0.986,
+              "dx": -0.1,
+              "dy": -5.3
+            },
+            {
+              "intensity": 1.03,
+              "dx": -0.1,
+              "dy": -4.4
+            }
+          ]
         }
       },
       "rotations": {
@@ -317,7 +352,42 @@
             "class": "fire",
             "base": 0.1255,
             "still": 0.85
-          }
+          },
+          "frame_paths": [
+            "chairs_and_benches/chair_012/lit_2/animations/flame/south/00.webp",
+            "chairs_and_benches/chair_012/lit_2/animations/flame/south/01.webp",
+            "chairs_and_benches/chair_012/lit_2/animations/flame/south/02.webp",
+            "chairs_and_benches/chair_012/lit_2/animations/flame/south/03.webp",
+            "chairs_and_benches/chair_012/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "chairs_and_benches/chair_012/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.887,
+              "dx": -23.9,
+              "dy": -5.0
+            },
+            {
+              "intensity": 0.809,
+              "dx": -23.9,
+              "dy": -3.9
+            },
+            {
+              "intensity": 0.812,
+              "dx": -23.9,
+              "dy": -4.3
+            },
+            {
+              "intensity": 1.21,
+              "dx": -8.4,
+              "dy": -8.5
+            },
+            {
+              "intensity": 1.282,
+              "dx": -9.4,
+              "dy": -9.1
+            }
+          ]
         }
       },
       "rotations": {
@@ -463,7 +533,42 @@
             "class": "fire",
             "base": 0.763,
             "still": 0.751
-          }
+          },
+          "frame_paths": [
+            "chairs_and_benches/chair_012/lit_3/animations/flame/south/00.webp",
+            "chairs_and_benches/chair_012/lit_3/animations/flame/south/01.webp",
+            "chairs_and_benches/chair_012/lit_3/animations/flame/south/02.webp",
+            "chairs_and_benches/chair_012/lit_3/animations/flame/south/03.webp",
+            "chairs_and_benches/chair_012/lit_3/animations/flame/south/04.webp"
+          ],
+          "strip": "chairs_and_benches/chair_012/lit_3/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.512,
+              "dx": 18.4,
+              "dy": 16.9
+            },
+            {
+              "intensity": 1.165,
+              "dx": -2.9,
+              "dy": 3.7
+            },
+            {
+              "intensity": 1.101,
+              "dx": -2.9,
+              "dy": 2.0
+            },
+            {
+              "intensity": 1.139,
+              "dx": -2.6,
+              "dy": 0.2
+            },
+            {
+              "intensity": 1.083,
+              "dx": -2.4,
+              "dy": -0.7
+            }
+          ]
         }
       },
       "rotations": {
@@ -609,7 +714,42 @@
             "class": "fire",
             "base": 0.1618,
             "still": 0.676
-          }
+          },
+          "frame_paths": [
+            "chairs_and_benches/chair_012/lit_4/animations/flame/south/00.webp",
+            "chairs_and_benches/chair_012/lit_4/animations/flame/south/01.webp",
+            "chairs_and_benches/chair_012/lit_4/animations/flame/south/02.webp",
+            "chairs_and_benches/chair_012/lit_4/animations/flame/south/03.webp",
+            "chairs_and_benches/chair_012/lit_4/animations/flame/south/04.webp"
+          ],
+          "strip": "chairs_and_benches/chair_012/lit_4/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": -0.0,
+              "dy": -15.4
+            },
+            {
+              "intensity": 1.224,
+              "dx": 0.0,
+              "dy": -9.3
+            },
+            {
+              "intensity": 1.5,
+              "dx": -0.1,
+              "dy": -14.8
+            },
+            {
+              "intensity": 0.997,
+              "dx": -0.1,
+              "dy": -22.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.0,
+              "dy": -15.4
+            }
+          ]
         }
       },
       "rotations": {

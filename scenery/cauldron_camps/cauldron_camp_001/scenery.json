@@ -140,7 +140,42 @@
             "class": "fire",
             "base": 0.7567,
             "still": 0.172
-          }
+          },
+          "frame_paths": [
+            "cauldron_camps/cauldron_camp_001/lit_1/animations/flame/south/00.webp",
+            "cauldron_camps/cauldron_camp_001/lit_1/animations/flame/south/01.webp",
+            "cauldron_camps/cauldron_camp_001/lit_1/animations/flame/south/02.webp",
+            "cauldron_camps/cauldron_camp_001/lit_1/animations/flame/south/03.webp",
+            "cauldron_camps/cauldron_camp_001/lit_1/animations/flame/south/04.webp"
+          ],
+          "strip": "cauldron_camps/cauldron_camp_001/lit_1/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.979,
+              "dx": -0.8,
+              "dy": 0.7
+            },
+            {
+              "intensity": 0.984,
+              "dx": -1.1,
+              "dy": 0.8
+            },
+            {
+              "intensity": 0.973,
+              "dx": -1.2,
+              "dy": 0.4
+            },
+            {
+              "intensity": 1.047,
+              "dx": -0.9,
+              "dy": 0.8
+            },
+            {
+              "intensity": 1.018,
+              "dx": -1.0,
+              "dy": 0.8
+            }
+          ]
         },
         "motion": {
           "group_id": "2bb39e4f-779a-41c5-9494-9c2c0f18d4ed",
@@ -340,7 +375,42 @@
             "class": "fire",
             "base": 0.1374,
             "still": 0.377
-          }
+          },
+          "frame_paths": [
+            "cauldron_camps/cauldron_camp_001/lit_2/animations/flame/south/00.webp",
+            "cauldron_camps/cauldron_camp_001/lit_2/animations/flame/south/01.webp",
+            "cauldron_camps/cauldron_camp_001/lit_2/animations/flame/south/02.webp",
+            "cauldron_camps/cauldron_camp_001/lit_2/animations/flame/south/03.webp",
+            "cauldron_camps/cauldron_camp_001/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "cauldron_camps/cauldron_camp_001/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.891,
+              "dx": -0.8,
+              "dy": -2.0
+            },
+            {
+              "intensity": 0.928,
+              "dx": -0.6,
+              "dy": -2.4
+            },
+            {
+              "intensity": 0.929,
+              "dx": -0.5,
+              "dy": -3.4
+            },
+            {
+              "intensity": 1.314,
+              "dx": -0.6,
+              "dy": -5.9
+            },
+            {
+              "intensity": 0.939,
+              "dx": -0.5,
+              "dy": -3.5
+            }
+          ]
         }
       },
       "rotations": {

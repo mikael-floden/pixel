@@ -170,13 +170,26 @@ def stamp(write=False):
 
 
 def check():
+    """Every animation carries a state, and a PLAYABLE verdict is only given to
+    a clip both consumers can find: the game reads top-level frame_paths/strip
+    (parseAnims), the wiki the on-disk <name>__south.webp. A verdict on a clip
+    neither can see is what sent the map agent lighting brazier_008 off a
+    PROBABLY_GOOD the game silently dropped (2026-09-10)."""
     bad = []
     for rel, man in factory.discover():
-        for state, name, _d, _f in clips(man):
+        for state, name, _d, fps in clips(man):
             c = man if state is None else man["states"][state]
             a = (c.get("animations") or {}).get(name) or {}
-            if a.get("review") not in STATES:
-                bad.append((f"{rel}#{state}#{name}", a.get("review")))
+            r = a.get("review")
+            if r not in STATES:
+                bad.append((f"{rel}#{state}#{name}", f"review={r!r}")); continue
+            if r in ("ANIMATION_PROBABLY_GOOD", "ANIMATION_APPROVED"):
+                if not (a.get("frame_paths") or a.get("strip")):
+                    bad.append((f"{rel}#{state}#{name}", "playable verdict but no top-level frame_paths/strip — the game drops it"))
+                rel_dir = os.path.dirname(fps[0]).rsplit("/animations", 1)[0]
+                if not os.path.exists(os.path.join(factory.ROOT, f"{rel_dir}/animations/{name}__south.webp")) \
+                        and not a.get("strip"):
+                    bad.append((f"{rel}#{state}#{name}", "playable verdict but no south strip — the wiki draws a still"))
     return bad
 
 
@@ -184,7 +197,7 @@ if __name__ == "__main__":
     if "--check" in sys.argv:
         bad = check()
         for k, v in bad[:15]:
-            print(f"  {k:<56} review={v!r}")
+            print(f"  {k:<56} {v}")
         print(f"{len(bad)} animation(s) unjudged" if bad
               else "PASS — every animation carries a review state")
         sys.exit(1 if bad else 0)

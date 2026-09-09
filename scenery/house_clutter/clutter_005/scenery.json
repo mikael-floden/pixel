@@ -177,7 +177,42 @@
             "class": "fire",
             "base": 0.4144,
             "still": 0.41
-          }
+          },
+          "frame_paths": [
+            "house_clutter/clutter_005/lit_2/animations/flame/south/00.webp",
+            "house_clutter/clutter_005/lit_2/animations/flame/south/01.webp",
+            "house_clutter/clutter_005/lit_2/animations/flame/south/02.webp",
+            "house_clutter/clutter_005/lit_2/animations/flame/south/03.webp",
+            "house_clutter/clutter_005/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "house_clutter/clutter_005/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.067,
+              "dx": -10.1,
+              "dy": -1.2
+            },
+            {
+              "intensity": 0.961,
+              "dx": -8.5,
+              "dy": -4.1
+            },
+            {
+              "intensity": 0.826,
+              "dx": -7.4,
+              "dy": -6.4
+            },
+            {
+              "intensity": 0.931,
+              "dx": -8.8,
+              "dy": -7.0
+            },
+            {
+              "intensity": 1.215,
+              "dx": -11.8,
+              "dy": -2.7
+            }
+          ]
         }
       },
       "rotations": {

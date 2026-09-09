@@ -177,7 +177,42 @@
             "class": "fire",
             "base": 0.5296,
             "still": 0.457
-          }
+          },
+          "frame_paths": [
+            "hearths/hearth_001/lit_1/animations/flame/south/00.webp",
+            "hearths/hearth_001/lit_1/animations/flame/south/01.webp",
+            "hearths/hearth_001/lit_1/animations/flame/south/02.webp",
+            "hearths/hearth_001/lit_1/animations/flame/south/03.webp",
+            "hearths/hearth_001/lit_1/animations/flame/south/04.webp"
+          ],
+          "strip": "hearths/hearth_001/lit_1/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.015,
+              "dx": 15.9,
+              "dy": 29.3
+            },
+            {
+              "intensity": 1.054,
+              "dx": 15.5,
+              "dy": 29.4
+            },
+            {
+              "intensity": 1.044,
+              "dx": 15.5,
+              "dy": 29.3
+            },
+            {
+              "intensity": 0.966,
+              "dx": 15.7,
+              "dy": 28.9
+            },
+            {
+              "intensity": 0.92,
+              "dx": 15.9,
+              "dy": 29.0
+            }
+          ]
         }
       },
       "rotations": {
@@ -323,7 +358,42 @@
             "class": "fire",
             "base": 0.7231,
             "still": 0.394
-          }
+          },
+          "frame_paths": [
+            "hearths/hearth_001/lit_2/animations/flame/south/00.webp",
+            "hearths/hearth_001/lit_2/animations/flame/south/01.webp",
+            "hearths/hearth_001/lit_2/animations/flame/south/02.webp",
+            "hearths/hearth_001/lit_2/animations/flame/south/03.webp",
+            "hearths/hearth_001/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "hearths/hearth_001/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.029,
+              "dx": 4.3,
+              "dy": 29.6
+            },
+            {
+              "intensity": 0.975,
+              "dx": 5.0,
+              "dy": 30.1
+            },
+            {
+              "intensity": 0.978,
+              "dx": 5.1,
+              "dy": 30.3
+            },
+            {
+              "intensity": 1.009,
+              "dx": 6.0,
+              "dy": 30.4
+            },
+            {
+              "intensity": 1.009,
+              "dx": 6.3,
+              "dy": 30.4
+            }
+          ]
         }
       },
       "rotations": {

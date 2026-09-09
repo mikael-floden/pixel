@@ -139,7 +139,42 @@
             "class": "fire",
             "base": 0.0943,
             "still": 0.497
-          }
+          },
+          "frame_paths": [
+            "braziers/brazier_003/lit_2/animations/flame/south/00.webp",
+            "braziers/brazier_003/lit_2/animations/flame/south/01.webp",
+            "braziers/brazier_003/lit_2/animations/flame/south/02.webp",
+            "braziers/brazier_003/lit_2/animations/flame/south/03.webp",
+            "braziers/brazier_003/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "braziers/brazier_003/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -1.5,
+              "dy": -5.4
+            },
+            {
+              "intensity": 0.904,
+              "dx": -0.3,
+              "dy": -6.1
+            },
+            {
+              "intensity": 0.878,
+              "dx": -2.0,
+              "dy": -5.2
+            },
+            {
+              "intensity": 0.836,
+              "dx": -0.5,
+              "dy": -5.4
+            },
+            {
+              "intensity": 0.819,
+              "dx": 0.7,
+              "dy": -5.4
+            }
+          ]
         }
       },
       "rotations": {

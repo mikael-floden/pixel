@@ -171,7 +171,42 @@
             "class": "fire",
             "base": 1.0,
             "still": 0.127
-          }
+          },
+          "frame_paths": [
+            "scarecrows/scarecrow_020/animations/flame/south/00.webp",
+            "scarecrows/scarecrow_020/animations/flame/south/01.webp",
+            "scarecrows/scarecrow_020/animations/flame/south/02.webp",
+            "scarecrows/scarecrow_020/animations/flame/south/03.webp",
+            "scarecrows/scarecrow_020/animations/flame/south/04.webp"
+          ],
+          "strip": "scarecrows/scarecrow_020/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.002,
+              "dx": 0.0,
+              "dy": -15.0
+            },
+            {
+              "intensity": 1.002,
+              "dx": 0.0,
+              "dy": -17.0
+            },
+            {
+              "intensity": 0.994,
+              "dx": -0.0,
+              "dy": -18.0
+            },
+            {
+              "intensity": 1.002,
+              "dx": 0.0,
+              "dy": -18.0
+            },
+            {
+              "intensity": 1.002,
+              "dx": 0.0,
+              "dy": -18.0
+            }
+          ]
         }
       },
       "rotations": {
@@ -279,7 +314,42 @@
             "class": "fire",
             "base": 0.9636,
             "still": 0.184
-          }
+          },
+          "frame_paths": [
+            "scarecrows/scarecrow_020/lit_2/animations/flame/south/00.webp",
+            "scarecrows/scarecrow_020/lit_2/animations/flame/south/01.webp",
+            "scarecrows/scarecrow_020/lit_2/animations/flame/south/02.webp",
+            "scarecrows/scarecrow_020/lit_2/animations/flame/south/03.webp",
+            "scarecrows/scarecrow_020/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "scarecrows/scarecrow_020/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 0.0,
+              "dy": -14.0
+            },
+            {
+              "intensity": 1.402,
+              "dx": -0.2,
+              "dy": -10.8
+            },
+            {
+              "intensity": 1.119,
+              "dx": 2.7,
+              "dy": -16.4
+            },
+            {
+              "intensity": 1.383,
+              "dx": 4.1,
+              "dy": -12.6
+            },
+            {
+              "intensity": 0.761,
+              "dx": 3.1,
+              "dy": -20.0
+            }
+          ]
         }
       },
       "rotations": {
@@ -425,7 +495,42 @@
             "class": "fire",
             "base": 1.0,
             "still": 0.045
-          }
+          },
+          "frame_paths": [
+            "scarecrows/scarecrow_020/lit_3/animations/flame/south/00.webp",
+            "scarecrows/scarecrow_020/lit_3/animations/flame/south/01.webp",
+            "scarecrows/scarecrow_020/lit_3/animations/flame/south/02.webp",
+            "scarecrows/scarecrow_020/lit_3/animations/flame/south/03.webp",
+            "scarecrows/scarecrow_020/lit_3/animations/flame/south/04.webp"
+          ],
+          "strip": "scarecrows/scarecrow_020/lit_3/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.904,
+              "dx": -0.1,
+              "dy": -14.1
+            },
+            {
+              "intensity": 1.038,
+              "dx": -0.2,
+              "dy": -15.0
+            },
+            {
+              "intensity": 0.937,
+              "dx": -0.1,
+              "dy": -16.2
+            },
+            {
+              "intensity": 1.135,
+              "dx": 0.0,
+              "dy": -17.4
+            },
+            {
+              "intensity": 0.986,
+              "dx": -0.1,
+              "dy": -16.3
+            }
+          ]
         }
       },
       "rotations": {

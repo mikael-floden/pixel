@@ -172,7 +172,42 @@
             "class": "fire",
             "base": 0.0461,
             "still": 0.827
-          }
+          },
+          "frame_paths": [
+            "lantern_posts/lantern_post_018/animations/flame/south/00.webp",
+            "lantern_posts/lantern_post_018/animations/flame/south/01.webp",
+            "lantern_posts/lantern_post_018/animations/flame/south/02.webp",
+            "lantern_posts/lantern_post_018/animations/flame/south/03.webp",
+            "lantern_posts/lantern_post_018/animations/flame/south/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_018/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.977,
+              "dx": 0.5,
+              "dy": -17.4
+            },
+            {
+              "intensity": 1.006,
+              "dx": 0.5,
+              "dy": -18.4
+            },
+            {
+              "intensity": 1.007,
+              "dx": 0.5,
+              "dy": -18.3
+            },
+            {
+              "intensity": 1.005,
+              "dx": 0.6,
+              "dy": -18.3
+            },
+            {
+              "intensity": 1.005,
+              "dx": 0.5,
+              "dy": -18.3
+            }
+          ]
         }
       },
       "rotations": {
@@ -318,7 +353,42 @@
             "class": "fire",
             "base": 0.1974,
             "still": 0.719
-          }
+          },
+          "frame_paths": [
+            "lantern_posts/lantern_post_018/lit_2/animations/flame/south/00.webp",
+            "lantern_posts/lantern_post_018/lit_2/animations/flame/south/01.webp",
+            "lantern_posts/lantern_post_018/lit_2/animations/flame/south/02.webp",
+            "lantern_posts/lantern_post_018/lit_2/animations/flame/south/03.webp",
+            "lantern_posts/lantern_post_018/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_018/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.028,
+              "dx": -0.1,
+              "dy": -16.3
+            },
+            {
+              "intensity": 0.959,
+              "dx": -0.1,
+              "dy": -15.4
+            },
+            {
+              "intensity": 1.016,
+              "dx": -0.1,
+              "dy": -15.3
+            },
+            {
+              "intensity": 1.016,
+              "dx": -0.1,
+              "dy": -15.3
+            },
+            {
+              "intensity": 0.98,
+              "dx": -0.1,
+              "dy": -15.4
+            }
+          ]
         }
       },
       "rotations": {
@@ -464,7 +534,42 @@
             "class": "fire",
             "base": 0.037,
             "still": 0.657
-          }
+          },
+          "frame_paths": [
+            "lantern_posts/lantern_post_018/lit_3/animations/flame/south/00.webp",
+            "lantern_posts/lantern_post_018/lit_3/animations/flame/south/01.webp",
+            "lantern_posts/lantern_post_018/lit_3/animations/flame/south/02.webp",
+            "lantern_posts/lantern_post_018/lit_3/animations/flame/south/03.webp",
+            "lantern_posts/lantern_post_018/lit_3/animations/flame/south/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_018/lit_3/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.002,
+              "dx": 0.0,
+              "dy": -17.1
+            },
+            {
+              "intensity": 0.999,
+              "dx": -0.0,
+              "dy": -16.1
+            },
+            {
+              "intensity": 1.0,
+              "dx": -0.0,
+              "dy": -13.1
+            },
+            {
+              "intensity": 0.999,
+              "dx": -0.0,
+              "dy": -13.1
+            },
+            {
+              "intensity": 1.0,
+              "dx": -0.0,
+              "dy": -14.1
+            }
+          ]
         }
       },
       "rotations": {
@@ -610,7 +715,42 @@
             "class": "fire",
             "base": 0.3846,
             "still": 0.637
-          }
+          },
+          "frame_paths": [
+            "lantern_posts/lantern_post_018/lit_4/animations/flame/south/00.webp",
+            "lantern_posts/lantern_post_018/lit_4/animations/flame/south/01.webp",
+            "lantern_posts/lantern_post_018/lit_4/animations/flame/south/02.webp",
+            "lantern_posts/lantern_post_018/lit_4/animations/flame/south/03.webp",
+            "lantern_posts/lantern_post_018/lit_4/animations/flame/south/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_018/lit_4/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.167,
+              "dx": -0.1,
+              "dy": -16.0
+            },
+            {
+              "intensity": 0.802,
+              "dx": 0.1,
+              "dy": -15.5
+            },
+            {
+              "intensity": 0.789,
+              "dx": 0.1,
+              "dy": -15.0
+            },
+            {
+              "intensity": 0.966,
+              "dx": -0.1,
+              "dy": -15.2
+            },
+            {
+              "intensity": 1.276,
+              "dx": 0.0,
+              "dy": -15.8
+            }
+          ]
         }
       },
       "rotations": {

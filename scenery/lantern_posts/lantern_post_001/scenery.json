@@ -177,7 +177,42 @@
             "class": "fire",
             "base": 0.9219,
             "still": 0.166
-          }
+          },
+          "frame_paths": [
+            "lantern_posts/lantern_post_001/lit_1/animations/flame/south/00.webp",
+            "lantern_posts/lantern_post_001/lit_1/animations/flame/south/01.webp",
+            "lantern_posts/lantern_post_001/lit_1/animations/flame/south/02.webp",
+            "lantern_posts/lantern_post_001/lit_1/animations/flame/south/03.webp",
+            "lantern_posts/lantern_post_001/lit_1/animations/flame/south/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_001/lit_1/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 1.029,
+              "dx": 0.5,
+              "dy": 10.5
+            },
+            {
+              "intensity": 1.04,
+              "dx": 0.3,
+              "dy": 10.5
+            },
+            {
+              "intensity": 1.009,
+              "dx": 0.4,
+              "dy": 10.3
+            },
+            {
+              "intensity": 0.946,
+              "dx": 0.4,
+              "dy": 9.7
+            },
+            {
+              "intensity": 0.975,
+              "dx": 0.5,
+              "dy": 9.7
+            }
+          ]
         },
         "motion": {
           "group_id": "c8af6322-3ee0-49c8-a119-9d8942faf3bc",

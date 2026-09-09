@@ -171,7 +171,42 @@
             "class": "fire",
             "base": 0.0171,
             "still": 0.542
-          }
+          },
+          "frame_paths": [
+            "anvils/anvil_004/animations/flame/south/00.webp",
+            "anvils/anvil_004/animations/flame/south/01.webp",
+            "anvils/anvil_004/animations/flame/south/02.webp",
+            "anvils/anvil_004/animations/flame/south/03.webp",
+            "anvils/anvil_004/animations/flame/south/04.webp"
+          ],
+          "strip": "anvils/anvil_004/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 2.7,
+              "dy": -15.6
+            },
+            {
+              "intensity": 1.467,
+              "dx": 0.4,
+              "dy": -15.0
+            },
+            {
+              "intensity": 1.5,
+              "dx": 0.0,
+              "dy": -17.5
+            },
+            {
+              "intensity": 1.475,
+              "dx": 0.0,
+              "dy": -17.9
+            },
+            {
+              "intensity": 0.5,
+              "dx": 3.0,
+              "dy": -16.5
+            }
+          ]
         }
       },
       "rotations": {
@@ -317,7 +352,42 @@
             "class": "fire",
             "base": 0.0,
             "still": 0.521
-          }
+          },
+          "frame_paths": [
+            "anvils/anvil_004/lit_2/animations/flame/south/00.webp",
+            "anvils/anvil_004/lit_2/animations/flame/south/01.webp",
+            "anvils/anvil_004/lit_2/animations/flame/south/02.webp",
+            "anvils/anvil_004/lit_2/animations/flame/south/03.webp",
+            "anvils/anvil_004/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "anvils/anvil_004/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": -2.3,
+              "dy": -14.8
+            },
+            {
+              "intensity": 0.76,
+              "dx": -5.1,
+              "dy": -14.7
+            },
+            {
+              "intensity": 1.5,
+              "dx": -10.6,
+              "dy": -15.8
+            },
+            {
+              "intensity": 1.273,
+              "dx": -6.2,
+              "dy": -16.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": -6.0,
+              "dy": -5.0
+            }
+          ]
         }
       },
       "rotations": {
@@ -463,7 +533,42 @@
             "class": "fire",
             "base": 0.1657,
             "still": 0.778
-          }
+          },
+          "frame_paths": [
+            "anvils/anvil_004/lit_3/animations/flame/south/00.webp",
+            "anvils/anvil_004/lit_3/animations/flame/south/01.webp",
+            "anvils/anvil_004/lit_3/animations/flame/south/02.webp",
+            "anvils/anvil_004/lit_3/animations/flame/south/03.webp",
+            "anvils/anvil_004/lit_3/animations/flame/south/04.webp"
+          ],
+          "strip": "anvils/anvil_004/lit_3/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 0.2,
+              "dy": -15.4
+            },
+            {
+              "intensity": 0.662,
+              "dx": -1.5,
+              "dy": -17.1
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.8,
+              "dy": -14.6
+            },
+            {
+              "intensity": 1.5,
+              "dx": -2.3,
+              "dy": -14.5
+            },
+            {
+              "intensity": 1.5,
+              "dx": -4.3,
+              "dy": -14.8
+            }
+          ]
         }
       },
       "rotations": {
@@ -609,7 +714,42 @@
             "class": "fire",
             "base": 0.0,
             "still": 0.479
-          }
+          },
+          "frame_paths": [
+            "anvils/anvil_004/lit_4/animations/flame/south/00.webp",
+            "anvils/anvil_004/lit_4/animations/flame/south/01.webp",
+            "anvils/anvil_004/lit_4/animations/flame/south/02.webp",
+            "anvils/anvil_004/lit_4/animations/flame/south/03.webp",
+            "anvils/anvil_004/lit_4/animations/flame/south/04.webp"
+          ],
+          "strip": "anvils/anvil_004/lit_4/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.872,
+              "dx": -0.5,
+              "dy": -15.0
+            },
+            {
+              "intensity": 1.123,
+              "dx": -0.4,
+              "dy": -14.8
+            },
+            {
+              "intensity": 1.013,
+              "dx": -0.4,
+              "dy": -17.3
+            },
+            {
+              "intensity": 1.044,
+              "dx": -0.8,
+              "dy": -19.5
+            },
+            {
+              "intensity": 0.947,
+              "dx": -0.5,
+              "dy": -20.1
+            }
+          ]
         }
       },
       "rotations": {

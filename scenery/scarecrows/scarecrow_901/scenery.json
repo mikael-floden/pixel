@@ -248,7 +248,42 @@
             "class": "fire",
             "base": 1.0,
             "still": 0.032
-          }
+          },
+          "frame_paths": [
+            "scarecrows/scarecrow_901/lit_2/animations/flame/south/00.webp",
+            "scarecrows/scarecrow_901/lit_2/animations/flame/south/01.webp",
+            "scarecrows/scarecrow_901/lit_2/animations/flame/south/02.webp",
+            "scarecrows/scarecrow_901/lit_2/animations/flame/south/03.webp",
+            "scarecrows/scarecrow_901/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "scarecrows/scarecrow_901/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.946,
+              "dx": 0.3,
+              "dy": -21.5
+            },
+            {
+              "intensity": 1.058,
+              "dx": 0.0,
+              "dy": -24.2
+            },
+            {
+              "intensity": 0.944,
+              "dx": 0.1,
+              "dy": -26.5
+            },
+            {
+              "intensity": 1.092,
+              "dx": 0.4,
+              "dy": -25.6
+            },
+            {
+              "intensity": 0.958,
+              "dx": 0.2,
+              "dy": -24.2
+            }
+          ]
         }
       },
       "rotations": {

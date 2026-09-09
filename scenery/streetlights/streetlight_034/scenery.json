@@ -140,7 +140,42 @@
             "class": "fire",
             "base": 0.0,
             "still": 0.581
-          }
+          },
+          "frame_paths": [
+            "streetlights/streetlight_034/animations/flame/south/00.webp",
+            "streetlights/streetlight_034/animations/flame/south/01.webp",
+            "streetlights/streetlight_034/animations/flame/south/02.webp",
+            "streetlights/streetlight_034/animations/flame/south/03.webp",
+            "streetlights/streetlight_034/animations/flame/south/04.webp"
+          ],
+          "strip": "streetlights/streetlight_034/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.83,
+              "dx": 2.9,
+              "dy": -2.7
+            },
+            {
+              "intensity": 1.039,
+              "dx": 4.4,
+              "dy": -3.8
+            },
+            {
+              "intensity": 1.127,
+              "dx": 4.5,
+              "dy": -5.0
+            },
+            {
+              "intensity": 1.309,
+              "dx": 4.6,
+              "dy": -5.5
+            },
+            {
+              "intensity": 0.694,
+              "dx": 5.8,
+              "dy": -2.3
+            }
+          ]
         }
       },
       "rotations": {
@@ -286,7 +321,42 @@
             "class": "fire",
             "base": 0.0339,
             "still": 0.484
-          }
+          },
+          "frame_paths": [
+            "streetlights/streetlight_034/lit_2/animations/flame/south/00.webp",
+            "streetlights/streetlight_034/lit_2/animations/flame/south/01.webp",
+            "streetlights/streetlight_034/lit_2/animations/flame/south/02.webp",
+            "streetlights/streetlight_034/lit_2/animations/flame/south/03.webp",
+            "streetlights/streetlight_034/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "streetlights/streetlight_034/lit_2/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 2.0,
+              "dy": 1.0
+            },
+            {
+              "intensity": 1.466,
+              "dx": -12.0,
+              "dy": 3.2
+            },
+            {
+              "intensity": 1.454,
+              "dx": -16.5,
+              "dy": 6.2
+            },
+            {
+              "intensity": 0.866,
+              "dx": -16.2,
+              "dy": 10.3
+            },
+            {
+              "intensity": 0.754,
+              "dx": -20.3,
+              "dy": 13.4
+            }
+          ]
         }
       },
       "rotations": {
@@ -432,7 +502,42 @@
             "class": "fire",
             "base": 0.0138,
             "still": 0.556
-          }
+          },
+          "frame_paths": [
+            "streetlights/streetlight_034/lit_4/animations/flame/south/00.webp",
+            "streetlights/streetlight_034/lit_4/animations/flame/south/01.webp",
+            "streetlights/streetlight_034/lit_4/animations/flame/south/02.webp",
+            "streetlights/streetlight_034/lit_4/animations/flame/south/03.webp",
+            "streetlights/streetlight_034/lit_4/animations/flame/south/04.webp"
+          ],
+          "strip": "streetlights/streetlight_034/lit_4/animations/flame__south.webp",
+          "light_frames": [
+            {
+              "intensity": 0.971,
+              "dx": -0.6,
+              "dy": -3.1
+            },
+            {
+              "intensity": 1.024,
+              "dx": -0.5,
+              "dy": -3.0
+            },
+            {
+              "intensity": 1.052,
+              "dx": -1.1,
+              "dy": -3.6
+            },
+            {
+              "intensity": 1.006,
+              "dx": -1.4,
+              "dy": -4.3
+            },
+            {
+              "intensity": 0.947,
+              "dx": -1.2,
+              "dy": -4.8
+            }
+          ]
         }
       },
       "rotations": {
