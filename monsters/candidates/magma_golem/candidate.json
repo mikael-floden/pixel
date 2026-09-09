@@ -1,0 +1,141 @@
+{
+  "id": "magma_golem",
+  "name": "Slagfist",
+  "tier": "boss",
+  "scale": "standard",
+  "lore": "The mountain's own fist. Where it strikes, the ground splits and the fire comes up.",
+  "biome": [
+    "lava",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Massive fantasy magma golem shown full body from head to feet, a body of black volcanic rock with glowing orange magma seams, two burning white eyes, huge fists of molten rock, and a molten glowing core visible in its chest.",
+  "size": [
+    144,
+    144
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "magma_golem/rotations/south.webp",
+    "south-east": "magma_golem/rotations/south-east.webp",
+    "east": "magma_golem/rotations/east.webp",
+    "north-east": "magma_golem/rotations/north-east.webp",
+    "north": "magma_golem/rotations/north.webp",
+    "north-west": "magma_golem/rotations/north-west.webp",
+    "west": "magma_golem/rotations/west.webp",
+    "south-west": "magma_golem/rotations/south-west.webp"
+  },
+  "sheet": "magma_golem/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "051eb9b6-e544-408e-9f9e-0cfaeb616372",
+  "seed": 746719583,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:34:58+00:00",
+  "elapsed_s": 230.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.709,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.709,
+        "bbox": [
+          4,
+          6,
+          140,
+          137
+        ],
+        "fill": 0.859,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.832,
+        "bbox": [
+          9,
+          6,
+          134,
+          141
+        ],
+        "fill": 0.814,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.817,
+        "bbox": [
+          37,
+          6,
+          101,
+          141
+        ],
+        "fill": 0.417,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.782,
+        "bbox": [
+          21,
+          4,
+          125,
+          138
+        ],
+        "fill": 0.672,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.783,
+        "bbox": [
+          10,
+          4,
+          134,
+          135
+        ],
+        "fill": 0.783,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.784,
+        "bbox": [
+          19,
+          4,
+          125,
+          138
+        ],
+        "fill": 0.685,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.807,
+        "bbox": [
+          46,
+          6,
+          102,
+          141
+        ],
+        "fill": 0.365,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.818,
+        "bbox": [
+          16,
+          6,
+          134,
+          141
+        ],
+        "fill": 0.768,
+        "touches_edge": false
+      }
+    }
+  }
+}
