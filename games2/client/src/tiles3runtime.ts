@@ -449,9 +449,19 @@ export function cellBlits(
   cell: Tiles3Cell,
   cut?: number,
 ): Tiles3Blit[] {
-  // A field cell is level 0 (or a liquid): it has no column, so a cut cannot
-  // shorten it and the unconstrained path IS the constrained one.
-  if (cell.kind === "field" || cut === undefined) return t3.opsForCell(cell);
+  if (cut === undefined) return t3.opsForCell(cell);
+  /* A FIELD CELL ABOVE THE CUT DRAWS NOTHING. A field is a cell with no exposed
+   * face — level 0, a liquid, OR THE INTERIOR OF A PLATEAU: the snow cap in
+   * front of the cave is `field snow L28`, and its only op is its surface,
+   * pasted 28 storeys up the screen. This arm used to say "a field cell is
+   * level 0, so a cut cannot shorten it" and draw it whole — so with the cut
+   * clamping that column to level 1, its clean snow plate still landed 420 px
+   * up-screen, on the cave floor of the chamber BEHIND it, as a plain white
+   * band under the maintainer's feet (2026-09-09, 267.9,157.8: "What is this
+   * plain white ground I'm standing on that doesn't use the ground base
+   * set?"). Its cap is roof volume the cut removes; the occluder pass
+   * re-issues the stump's cap at the cut level, as for every raised cell. */
+  if (cell.kind === "field") return cell.level > cut ? [] : t3.opsForCell(cell);
   const w = cell.wall;
   if (!w) return [];
   const hi = Math.min(cell.level, cut);

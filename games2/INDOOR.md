@@ -306,6 +306,19 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
   roof daylights the room), and skipping the surface clamp recreates the
   roof-in-the-heightmap bug one level up (a floor behind a level-3-drawn
   wall resolving at 6, torches attenuated across 48px of phantom gap).
+- **A FIELD CELL ABOVE THE CUT DRAWS NOTHING in the ground pass**
+  (`cellBlits`). A field is any cell with no exposed face — level 0, a
+  liquid, or the INTERIOR of a plateau — and a plateau interior's only op is
+  its cap, pasted `level` storeys up the screen. The arm read "a field is
+  level 0, a cut cannot shorten it" and drew it whole, so the snow cap in
+  front of the cave (`field snow L28`, cut to 1 in the cone) put its clean
+  plate 420 px up-screen, on the floor of the chamber behind it: a plain white
+  band under the maintainer's feet (2026-09-09, 267.9,157.8). The insurance
+  diamond is skipped with it (`cutAbove`) — it is anchored at the same cap
+  and would paint the same band in the palette colour. The occluder pass
+  already issues the stump's cap at the cut level for every raised cell; for
+  a field that cap is a PLATE, so it keeps the plate anchor slid down to the
+  cut (`capSurface`), not the course anchor (ten rows too high).
 - **A tap resolves against what is DRAWN, and only the floor is a target**:
   indoors `pickGround` starts its top-down scan at `indoorTop`, skips decks
   (the roof slab matched every indoor tap at level 6 — 6.40 cells

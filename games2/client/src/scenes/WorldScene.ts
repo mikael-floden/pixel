@@ -17325,7 +17325,13 @@ export class WorldScene extends Phaser.Scene {
       const topFaceOnly = useBoundary ? !!b?.topOnly : !!(cell.kind === "field" && cell.art?.topOnly);
       const covered =
         !topFaceOnly && (useBoundary || (ops !== null && ops.some((o) => o.role === "surface")));
-      if (!covered && cell.kind === "field" && cell.art?.kind !== "liquid") {
+      /* ...AND NOT UNDER A FIELD CELL THE CUT REMOVED. `cellBlits` returns no
+       * ops for a plateau-interior cell above the cut (its cap IS the removed
+       * volume); the insurance diamond is anchored at that cap's own height and
+       * would paint the cell's flat colour exactly where the plate used to
+       * land — the same white band, in snow's palette colour instead. */
+      const cutAbove = cut !== undefined && cell.level > cut;
+      if (!covered && !cutAbove && cell.kind === "field" && cell.art?.kind !== "liquid") {
         let under: ReturnType<typeof tex.groundUnderlay> = null;
         try {
           under = tex.groundUnderlay(cell);
@@ -17698,7 +17704,12 @@ export class WorldScene extends Phaser.Scene {
          * put every surface cap ten pixels above its own copy in the ground
          * texture. A cut column (topL < level) draws the face art, which is a
          * course, so it keeps the column's own top. */
-        const capSurface = topL === cell.level ? t3SurfaceY(cell) : null;
+        /* A FIELD cell has no course to fall back on: `fk` IS its plate, so a
+         * truncated plateau interior (the snow cap in front of the cave, cut to
+         * level 1) keeps the plate anchor too, slid down to the cut level —
+         * anchoring it as a course put the stump's cap ten rows too high. */
+        const surfY = t3SurfaceY(cell);
+        const capSurface = surfY === null ? null : surfY + (cell.level - topL) * lh;
         const capX = capSurface !== null ? cell.sx : bx;
         const capY = capSurface !== null ? capSurface : by - topL * lh;
         if (columnShows(capX, capY, by + tileSize)) {

@@ -30,7 +30,9 @@ import {
   type World3View,
   type Deck3,
 } from "../../client/src/tiles3";
-import { Tiles3World, viewFromParsed } from "../../client/src/tiles3runtime";
+import { Tiles3World, viewFromParsed, cellBlits } from "../../client/src/tiles3runtime";
+import type { Tiles3Textures, TextureManagerLike } from "../../client/src/tiles3draw";
+import type { Tiles3Cell } from "../../client/src/tiles3";
 import { parseWorld } from "@nangijala/shared";
 // @ts-expect-error — plain .mjs helper shared with the build scripts
 import { imgRGBA } from "../../scripts/imagelib.mjs";
@@ -283,4 +285,24 @@ test("a deck slab composes transitions at its own level, with its own anchored m
   // down never reaches the lattice.
   assert.equal(on.deckCell(view, frame, A, 0, 3, 3).boundary, undefined, "no seam inside the slab");
   assert.equal(on.deckCell(view, frame, A, 0, 2, 2).boundary, undefined, "the rim over a 6-level drop is a hard edge");
+});
+
+/* THE CUT ON A FIELD CELL — pure, no fixture. A field is any cell with no
+ * exposed face, and that includes the interior of a plateau: `field snow L28`
+ * in front of the cave. Above the cut it draws NOTHING (its cap is the volume
+ * the cut removes; the arm used to draw it whole and its plate landed on the
+ * cave floor behind it as a plain white band — maintainer 2026-09-09,
+ * 267.9,157.8). At or below the cut, and with no cut at all, it draws whole. */
+test("a field cell above the cut draws nothing; at, below, or without a cut it draws whole", () => {
+  const op = { key: "k", x: 0, y: 0, sx: 0, sy: 0, sw: 64, sh: 46, role: "surface" as const };
+  const t3 = { opsForCell: () => [op] } as unknown as Tiles3Textures;
+  const tex = { exists: () => true } as unknown as TextureManagerLike;
+  const field = (level: number) => ({ kind: "field", level, ground: "snow" }) as unknown as Tiles3Cell;
+  assert.deepEqual(cellBlits(t3, tex, field(28), 1), []);
+  assert.deepEqual(cellBlits(t3, tex, field(28), 0), []);
+  assert.deepEqual(cellBlits(t3, tex, field(28), 28), [op]);
+  assert.deepEqual(cellBlits(t3, tex, field(28), 40), [op]);
+  assert.deepEqual(cellBlits(t3, tex, field(28), undefined), [op]);
+  assert.deepEqual(cellBlits(t3, tex, field(0), 1), [op]);
+  assert.deepEqual(cellBlits(t3, tex, field(0), 0), [op]);
 });

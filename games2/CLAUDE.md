@@ -1239,6 +1239,12 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     drawable source — `rawTexPixels` is what keeps `__ml.t3png` working.
     Bisects: `__ml.groundCompose(Infinity)` (pre-budget), `__ml.groundRaw(false)`
     (back to the canvas). Beacon: `bnd`, `defer`, `owed`.
+  - **A FIELD CELL ABOVE THE CUT DRAWS NOTHING** (`cellBlits`, 2026-09-09). A
+    plateau interior is a field (no exposed face) at level 28, and the arm that
+    said "a field is level 0, a cut cannot shorten it" drew its cap 28 storeys
+    up-screen — onto the cave floor behind it, as a plain white band under the
+    maintainer's feet at 267.9,157.8. Underlay skipped with it; the occluder's
+    stump cap for a field keeps the plate anchor. Rule + reason: `INDOOR.md`.
   - **A BOUNDARY IS SKIPPED INDOORS ONLY WHERE ITS OWN COLUMN IS TRUNCATED,
     AND A CUT-SUPPRESSED CELL IS NEVER OWED** (`cutSuppressed`, 2026-09-05).
     The transition raster replaces the cell's plate at its own uncut level; if
