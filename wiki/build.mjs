@@ -2787,6 +2787,9 @@ function buildMonsterCandidates() {
     name: c.name ?? titleCase(c.id),
     path: `monsters/candidates/${c.id}`,
     tier: c.tier ?? null,
+    // small | standard | big — the agent's own size class (2026-09-09).
+    scale: c.scale ?? null,
+    notes: c.notes ?? null,
     lore: c.lore ?? null,
     biome: Array.isArray(c.biome) ? c.biome : [],
     items: Array.isArray(c.items) ? c.items : [],

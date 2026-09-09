@@ -4640,7 +4640,7 @@ const candFilter = () => {
 /** Newest first: the ones just born are the ones he has not seen. */
 const candList = (mode = candFilter()) => candidates().filter(CAND_FILTERS[mode].hit)
   .sort((a, b) => String(b.generatedAt ?? "").localeCompare(String(a.generatedAt ?? "")) || a.name.localeCompare(b.name));
-const candSizeLine = (c) => [c.tier, c.size ? `${c.size[0]}px` : null, `v${c.version}`].filter(Boolean).join(" · ");
+const candSizeLine = (c) => [c.tier, c.scale && c.scale !== "standard" ? c.scale : null, c.size ? `${c.size[0]}px` : null, `v${c.version}`].filter(Boolean).join(" · ");
 /** The marks that ride on a card or head the page: his verdict (or that it is
  *  stale), the machine QA, and whether the agent has acted on the verdict. */
 function candMarks(c) {
@@ -4720,6 +4720,7 @@ function viewCandidate(id) {
     crumbRow("#/monsters/candidates", "← Candidates", "monsters/candidates", walk, id),
     h("div", { class: "sect-head" }, sectionIcon("monsters"), h("h1", {}, c.name)),
     c.lore ? h("p", { class: "lore" }, c.lore) : null,
+    c.notes ? h("p", { class: "muted" }, String(c.notes)) : null,
     h("p", { class: "muted" }, [candSizeLine(c), c.biome.length ? `lives in ${c.biome.map(titleish).join(", ")}` : null,
       c.items.length ? `drops ${c.items.join(", ")}` : null, c.qa?.minRun1 != null ? `density ${c.qa.minRun1}` : null].filter(Boolean).join(" · ")),
     h("div", { class: "cand-marks" }, ...candMarks(c)),
