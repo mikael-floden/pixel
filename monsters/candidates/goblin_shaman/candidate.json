@@ -335,6 +335,217 @@
         "west": "goblin_shaman/animations/idle__west.webp",
         "north-west": "goblin_shaman/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1276,
+          "step_max": 0.1588,
+          "drift": 1.95,
+          "loop": 0.1668,
+          "loop_ratio": 1.31,
+          "travel": 0.74,
+          "pin": 0.943,
+          "reasons": [
+            "frame 4 touches a canvas edge the base does not (overflow / wrap risk)"
+          ],
+          "cut": 0,
+          "sub": "ef16fef3-0972-48c8-83d3-232a3578cb62",
+          "group": "44b937ce-240b-4f7a-9e1d-74a6e51e2d15",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:45:51+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.142,
+          "step_max": 0.1726,
+          "drift": 2.48,
+          "loop": 0.3129,
+          "loop_ratio": 2.2,
+          "travel": 2.05,
+          "pin": 0.864,
+          "reasons": [
+            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)",
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "80501362-2919-4378-86ca-78c001c8cb41",
+          "group": "768b6608-6a68-4ecf-a0d4-1236c450bb91",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:45:52+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1567,
+          "step_max": 0.1753,
+          "drift": 2.2,
+          "loop": 0.2092,
+          "loop_ratio": 1.34,
+          "travel": 1.77,
+          "pin": 0.878,
+          "reasons": [],
+          "cut": 0,
+          "sub": "cf66d5c5-00e1-464b-9b9f-724f7978ea0e",
+          "group": "fa663fa2-186a-4b4c-8668-19a5aaa27f88",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:45:53+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1298,
+          "step_max": 0.1659,
+          "drift": 0.88,
+          "loop": 0.2387,
+          "loop_ratio": 1.84,
+          "travel": 1.26,
+          "pin": 0.854,
+          "reasons": [
+            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)",
+            "38 px of motion fell outside the base canvas (overflow)"
+          ],
+          "cut": 38,
+          "sub": "28a46641-e48a-4603-8f54-3ef75ab9c0c5",
+          "group": "b8c85a22-c014-4f0a-aa7a-0da030121d9e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:45:53+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1145,
+          "step_max": 0.1281,
+          "drift": 1.68,
+          "loop": 0.1515,
+          "loop_ratio": 1.32,
+          "travel": 1.68,
+          "pin": 0.894,
+          "reasons": [],
+          "cut": 0,
+          "sub": "a5208a30-66f5-46bd-88ff-0d9329220b31",
+          "group": "a647ff71-77d7-49b5-b6fa-6e1cb893da18",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:45:54+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.142,
+          "step_max": 0.1726,
+          "drift": 2.48,
+          "loop": 0.3129,
+          "loop_ratio": 2.2,
+          "travel": 2.05,
+          "pin": 0.864,
+          "reasons": [
+            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)",
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "80501362-2919-4378-86ca-78c001c8cb41",
+          "group": "768b6608-6a68-4ecf-a0d4-1236c450bb91",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:45:52+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1567,
+          "step_max": 0.1753,
+          "drift": 2.2,
+          "loop": 0.2092,
+          "loop_ratio": 1.34,
+          "travel": 1.77,
+          "pin": 0.878,
+          "reasons": [],
+          "cut": 0,
+          "sub": "cf66d5c5-00e1-464b-9b9f-724f7978ea0e",
+          "group": "fa663fa2-186a-4b4c-8668-19a5aaa27f88",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:45:53+00:00",
+          "source": "east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "goblin_shaman/animations/walk/south/00.webp",
+          "goblin_shaman/animations/walk/south/01.webp",
+          "goblin_shaman/animations/walk/south/02.webp",
+          "goblin_shaman/animations/walk/south/03.webp",
+          "goblin_shaman/animations/walk/south/04.webp",
+          "goblin_shaman/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "goblin_shaman/animations/walk/south-east/00.webp",
+          "goblin_shaman/animations/walk/south-east/01.webp",
+          "goblin_shaman/animations/walk/south-east/02.webp",
+          "goblin_shaman/animations/walk/south-east/03.webp",
+          "goblin_shaman/animations/walk/south-east/04.webp",
+          "goblin_shaman/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "goblin_shaman/animations/walk/east/00.webp",
+          "goblin_shaman/animations/walk/east/01.webp",
+          "goblin_shaman/animations/walk/east/02.webp",
+          "goblin_shaman/animations/walk/east/03.webp",
+          "goblin_shaman/animations/walk/east/04.webp",
+          "goblin_shaman/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "goblin_shaman/animations/walk/north-east/00.webp",
+          "goblin_shaman/animations/walk/north-east/01.webp",
+          "goblin_shaman/animations/walk/north-east/02.webp",
+          "goblin_shaman/animations/walk/north-east/03.webp",
+          "goblin_shaman/animations/walk/north-east/04.webp",
+          "goblin_shaman/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "goblin_shaman/animations/walk/north/00.webp",
+          "goblin_shaman/animations/walk/north/01.webp",
+          "goblin_shaman/animations/walk/north/02.webp",
+          "goblin_shaman/animations/walk/north/03.webp",
+          "goblin_shaman/animations/walk/north/04.webp",
+          "goblin_shaman/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "goblin_shaman/animations/walk/south-west/00.webp",
+          "goblin_shaman/animations/walk/south-west/01.webp",
+          "goblin_shaman/animations/walk/south-west/02.webp",
+          "goblin_shaman/animations/walk/south-west/03.webp",
+          "goblin_shaman/animations/walk/south-west/04.webp",
+          "goblin_shaman/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "goblin_shaman/animations/walk/west/00.webp",
+          "goblin_shaman/animations/walk/west/01.webp",
+          "goblin_shaman/animations/walk/west/02.webp",
+          "goblin_shaman/animations/walk/west/03.webp",
+          "goblin_shaman/animations/walk/west/04.webp",
+          "goblin_shaman/animations/walk/west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "goblin_shaman/animations/walk__south.webp",
+        "south-east": "goblin_shaman/animations/walk__south-east.webp",
+        "east": "goblin_shaman/animations/walk__east.webp",
+        "north-east": "goblin_shaman/animations/walk__north-east.webp",
+        "north": "goblin_shaman/animations/walk__north.webp",
+        "south-west": "goblin_shaman/animations/walk__south-west.webp",
+        "west": "goblin_shaman/animations/walk__west.webp"
+      }
     }
   }
 }
