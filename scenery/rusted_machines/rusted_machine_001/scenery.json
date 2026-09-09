@@ -78,7 +78,34 @@
             "class": "rigid",
             "base": 0.1383,
             "still": 0.5
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 0.773,
+              "dx": -0.9,
+              "dy": -41.5
+            },
+            {
+              "intensity": 1.045,
+              "dx": 0.4,
+              "dy": -41.9
+            },
+            {
+              "intensity": 1.104,
+              "dx": 1.8,
+              "dy": -41.2
+            },
+            {
+              "intensity": 1.096,
+              "dx": 2.4,
+              "dy": -40.9
+            },
+            {
+              "intensity": 0.982,
+              "dx": -1.5,
+              "dy": -40.0
+            }
+          ]
         }
       }
     },
@@ -107,7 +134,34 @@
                 "rusted_machines/rusted_machine_001/lit_2/animations/flame/south/03.webp",
                 "rusted_machines/rusted_machine_001/lit_2/animations/flame/south/04.webp"
               ],
-              "strip": "rusted_machines/rusted_machine_001/lit_2/animations/flame__south.webp"
+              "strip": "rusted_machines/rusted_machine_001/lit_2/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.949,
+                  "dx": -3.6,
+                  "dy": 34.0
+                },
+                {
+                  "intensity": 0.941,
+                  "dx": -3.5,
+                  "dy": 35.3
+                },
+                {
+                  "intensity": 0.807,
+                  "dx": -3.1,
+                  "dy": 34.3
+                },
+                {
+                  "intensity": 1.164,
+                  "dx": -3.0,
+                  "dy": 33.0
+                },
+                {
+                  "intensity": 1.138,
+                  "dx": -3.3,
+                  "dy": 33.1
+                }
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -118,7 +172,34 @@
                 "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-east/03.webp",
                 "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-east/04.webp"
               ],
-              "strip": "rusted_machines/rusted_machine_001/lit_2/animations/flame__south-east.webp"
+              "strip": "rusted_machines/rusted_machine_001/lit_2/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -0.3,
+                  "dy": -45.3
+                },
+                {
+                  "intensity": 0.605,
+                  "dx": -0.9,
+                  "dy": -43.9
+                },
+                {
+                  "intensity": 0.657,
+                  "dx": -0.9,
+                  "dy": -45.3
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 0.3,
+                  "dy": -46.1
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 0.3,
+                  "dy": -45.7
+                }
+              ]
             },
             "south-west": {
               "frames": 5,
@@ -129,7 +210,34 @@
                 "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-west/03.webp",
                 "rusted_machines/rusted_machine_001/lit_2/animations/flame/south-west/04.webp"
               ],
-              "strip": "rusted_machines/rusted_machine_001/lit_2/animations/flame__south-west.webp"
+              "strip": "rusted_machines/rusted_machine_001/lit_2/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -14.2,
+                  "dy": 11.6
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -16.9,
+                  "dy": 13.7
+                },
+                {
+                  "intensity": 1.449,
+                  "dx": -13.1,
+                  "dy": 12.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -13.3,
+                  "dy": 10.4
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -13.3,
+                  "dy": 10.3
+                }
+              ]
             }
           },
           "generated_at": "2026-08-29T08:26:03+00:00",

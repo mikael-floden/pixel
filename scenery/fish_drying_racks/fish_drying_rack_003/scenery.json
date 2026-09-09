@@ -65,7 +65,34 @@
                 "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame/south/03.webp",
                 "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame/south/04.webp"
               ],
-              "strip": "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame__south.webp"
+              "strip": "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.98,
+                  "dx": -0.1,
+                  "dy": 19.3
+                },
+                {
+                  "intensity": 1.018,
+                  "dx": -0.3,
+                  "dy": 19.0
+                },
+                {
+                  "intensity": 0.968,
+                  "dx": 0.3,
+                  "dy": 19.2
+                },
+                {
+                  "intensity": 1.053,
+                  "dx": 0.3,
+                  "dy": 18.5
+                },
+                {
+                  "intensity": 0.98,
+                  "dx": -0.1,
+                  "dy": 18.4
+                }
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -76,7 +103,34 @@
                 "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame/south-east/03.webp",
                 "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame/south-east/04.webp"
               ],
-              "strip": "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame__south-east.webp"
+              "strip": "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.74,
+                  "dx": 5.9,
+                  "dy": 16.8
+                },
+                {
+                  "intensity": 0.866,
+                  "dx": 5.1,
+                  "dy": 16.1
+                },
+                {
+                  "intensity": 0.985,
+                  "dx": 4.0,
+                  "dy": 16.0
+                },
+                {
+                  "intensity": 1.177,
+                  "dx": 4.2,
+                  "dy": 14.6
+                },
+                {
+                  "intensity": 1.232,
+                  "dx": 4.2,
+                  "dy": 14.1
+                }
+              ]
             },
             "south-west": {
               "frames": 5,
@@ -87,7 +141,34 @@
                 "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame/south-west/03.webp",
                 "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame/south-west/04.webp"
               ],
-              "strip": "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame__south-west.webp"
+              "strip": "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.956,
+                  "dx": -4.5,
+                  "dy": 16.9
+                },
+                {
+                  "intensity": 0.978,
+                  "dx": -4.5,
+                  "dy": 16.3
+                },
+                {
+                  "intensity": 1.007,
+                  "dx": -4.3,
+                  "dy": 16.4
+                },
+                {
+                  "intensity": 1.045,
+                  "dx": -4.0,
+                  "dy": 16.6
+                },
+                {
+                  "intensity": 1.013,
+                  "dx": -2.9,
+                  "dy": 16.7
+                }
+              ]
             }
           },
           "generated_at": "2026-08-29T08:13:24+00:00",
@@ -123,7 +204,34 @@
             "class": "fire",
             "base": 0.0639,
             "still": 0.617
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 1.133,
+              "dx": -0.1,
+              "dy": 19.3
+            },
+            {
+              "intensity": 1.157,
+              "dx": -0.9,
+              "dy": 19.2
+            },
+            {
+              "intensity": 0.948,
+              "dx": -0.7,
+              "dy": 18.8
+            },
+            {
+              "intensity": 0.893,
+              "dx": -0.7,
+              "dy": 17.3
+            },
+            {
+              "intensity": 0.868,
+              "dx": -0.8,
+              "dy": 17.0
+            }
+          ]
         }
       },
       "rotations": {

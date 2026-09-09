@@ -69,7 +69,34 @@
             "class": "foliage",
             "base": 0.2085,
             "still": 0.589
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 0.53,
+              "dx": 0.2,
+              "dy": 2.1
+            },
+            {
+              "intensity": 1.345,
+              "dx": 1.4,
+              "dy": 3.5
+            },
+            {
+              "intensity": 1.318,
+              "dx": 2.6,
+              "dy": 3.5
+            },
+            {
+              "intensity": 1.013,
+              "dx": 2.9,
+              "dy": 2.8
+            },
+            {
+              "intensity": 0.793,
+              "dx": 3.6,
+              "dy": 2.9
+            }
+          ]
         }
       }
     },
@@ -105,7 +132,34 @@
             "class": "foliage",
             "base": 0.1,
             "still": 0.385
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 1.026,
+              "dx": -9.4,
+              "dy": -1.1
+            },
+            {
+              "intensity": 1.032,
+              "dx": -9.4,
+              "dy": -1.8
+            },
+            {
+              "intensity": 1.026,
+              "dx": -9.4,
+              "dy": -1.4
+            },
+            {
+              "intensity": 0.891,
+              "dx": -16.5,
+              "dy": 1.4
+            },
+            {
+              "intensity": 1.026,
+              "dx": -9.4,
+              "dy": -0.7
+            }
+          ]
         }
       }
     },
@@ -141,7 +195,34 @@
             "class": "foliage",
             "base": 0.5395,
             "still": 0.671
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": -3.3,
+              "dy": 0.4
+            },
+            {
+              "intensity": 1.086,
+              "dx": -0.9,
+              "dy": -11.9
+            },
+            {
+              "intensity": 1.194,
+              "dx": 0.2,
+              "dy": -11.9
+            },
+            {
+              "intensity": 1.278,
+              "dx": -1.2,
+              "dy": -9.8
+            },
+            {
+              "intensity": 1.188,
+              "dx": -1.0,
+              "dy": -9.6
+            }
+          ]
         }
       }
     },

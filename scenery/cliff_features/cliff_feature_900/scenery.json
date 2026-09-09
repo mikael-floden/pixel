@@ -80,7 +80,34 @@
             "class": "rigid",
             "base": 0.3359,
             "still": 0.456
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -8.6,
+              "dy": 15.0
+            },
+            {
+              "intensity": 1.5,
+              "dx": -7.3,
+              "dy": 14.0
+            },
+            {
+              "intensity": 1.5,
+              "dx": -9.1,
+              "dy": 13.3
+            },
+            {
+              "intensity": 0.5,
+              "dx": -8.3,
+              "dy": 14.1
+            },
+            {
+              "intensity": 0.5,
+              "dx": -8.3,
+              "dy": 14.1
+            }
+          ]
         }
       }
     },

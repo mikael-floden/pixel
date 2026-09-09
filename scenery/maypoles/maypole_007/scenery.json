@@ -71,7 +71,34 @@
             "class": "foliage",
             "base": 0.0044,
             "still": 0.613
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 1.117,
+              "dx": 1.7,
+              "dy": -37.8
+            },
+            {
+              "intensity": 1.035,
+              "dx": 3.8,
+              "dy": -35.4
+            },
+            {
+              "intensity": 0.963,
+              "dx": 0.8,
+              "dy": -36.6
+            },
+            {
+              "intensity": 0.944,
+              "dx": 2.1,
+              "dy": -36.0
+            },
+            {
+              "intensity": 0.941,
+              "dx": 2.2,
+              "dy": -36.0
+            }
+          ]
         }
       }
     },

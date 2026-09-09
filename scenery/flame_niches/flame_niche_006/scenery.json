@@ -61,6 +61,33 @@
                 "flame_niches/flame_niche_006/animations/flame/south/02.webp",
                 "flame_niches/flame_niche_006/animations/flame/south/03.webp",
                 "flame_niches/flame_niche_006/animations/flame/south/04.webp"
+              ],
+              "light_frames": [
+                {
+                  "intensity": 0.992,
+                  "dx": 0.8,
+                  "dy": 4.8
+                },
+                {
+                  "intensity": 0.95,
+                  "dx": 0.6,
+                  "dy": 5.2
+                },
+                {
+                  "intensity": 0.997,
+                  "dx": 0.6,
+                  "dy": 5.6
+                },
+                {
+                  "intensity": 1.026,
+                  "dx": 0.6,
+                  "dy": 5.4
+                },
+                {
+                  "intensity": 1.035,
+                  "dx": 0.7,
+                  "dy": 4.8
+                }
               ]
             },
             "south-east": {
@@ -71,6 +98,33 @@
                 "flame_niches/flame_niche_006/animations/flame/south-east/02.webp",
                 "flame_niches/flame_niche_006/animations/flame/south-east/03.webp",
                 "flame_niches/flame_niche_006/animations/flame/south-east/04.webp"
+              ],
+              "light_frames": [
+                {
+                  "intensity": 1.128,
+                  "dx": 2.1,
+                  "dy": -0.1
+                },
+                {
+                  "intensity": 1.053,
+                  "dx": 1.9,
+                  "dy": -1.0
+                },
+                {
+                  "intensity": 1.026,
+                  "dx": 1.7,
+                  "dy": -1.1
+                },
+                {
+                  "intensity": 0.987,
+                  "dx": 1.6,
+                  "dy": -1.1
+                },
+                {
+                  "intensity": 0.805,
+                  "dx": 1.1,
+                  "dy": -2.8
+                }
               ]
             },
             "south-west": {
@@ -81,6 +135,33 @@
                 "flame_niches/flame_niche_006/animations/flame/south-west/02.webp",
                 "flame_niches/flame_niche_006/animations/flame/south-west/03.webp",
                 "flame_niches/flame_niche_006/animations/flame/south-west/04.webp"
+              ],
+              "light_frames": [
+                {
+                  "intensity": 0.987,
+                  "dx": -1.0,
+                  "dy": -0.7
+                },
+                {
+                  "intensity": 0.977,
+                  "dx": -1.0,
+                  "dy": -0.6
+                },
+                {
+                  "intensity": 0.966,
+                  "dx": -1.0,
+                  "dy": -0.8
+                },
+                {
+                  "intensity": 1.04,
+                  "dx": -1.1,
+                  "dy": -0.6
+                },
+                {
+                  "intensity": 1.03,
+                  "dx": -1.2,
+                  "dy": -0.6
+                }
               ]
             }
           },
@@ -124,7 +205,34 @@
                 "flame_niches/flame_niche_006/lit_2/animations/flame/south/03.webp",
                 "flame_niches/flame_niche_006/lit_2/animations/flame/south/04.webp"
               ],
-              "strip": "flame_niches/flame_niche_006/lit_2/animations/flame__south.webp"
+              "strip": "flame_niches/flame_niche_006/lit_2/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": 0.8,
+                  "dy": 12.6
+                },
+                {
+                  "intensity": 1.035,
+                  "dx": 1.0,
+                  "dy": 13.9
+                },
+                {
+                  "intensity": 0.728,
+                  "dx": 1.0,
+                  "dy": 15.2
+                },
+                {
+                  "intensity": 0.624,
+                  "dx": 0.9,
+                  "dy": 15.6
+                },
+                {
+                  "intensity": 0.939,
+                  "dx": 1.0,
+                  "dy": 14.3
+                }
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -135,7 +243,34 @@
                 "flame_niches/flame_niche_006/lit_2/animations/flame/south-east/03.webp",
                 "flame_niches/flame_niche_006/lit_2/animations/flame/south-east/04.webp"
               ],
-              "strip": "flame_niches/flame_niche_006/lit_2/animations/flame__south-east.webp"
+              "strip": "flame_niches/flame_niche_006/lit_2/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.324,
+                  "dx": 8.2,
+                  "dy": 10.1
+                },
+                {
+                  "intensity": 1.204,
+                  "dx": 9.1,
+                  "dy": 10.2
+                },
+                {
+                  "intensity": 1.063,
+                  "dx": 9.8,
+                  "dy": 9.7
+                },
+                {
+                  "intensity": 1.007,
+                  "dx": 10.8,
+                  "dy": 9.1
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 11.7,
+                  "dy": 10.7
+                }
+              ]
             },
             "south-west": {
               "frames": 5,
@@ -146,7 +281,34 @@
                 "flame_niches/flame_niche_006/lit_2/animations/flame/south-west/03.webp",
                 "flame_niches/flame_niche_006/lit_2/animations/flame/south-west/04.webp"
               ],
-              "strip": "flame_niches/flame_niche_006/lit_2/animations/flame__south-west.webp"
+              "strip": "flame_niches/flame_niche_006/lit_2/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": -6.8,
+                  "dy": 10.9
+                },
+                {
+                  "intensity": 1.002,
+                  "dx": -7.1,
+                  "dy": 11.7
+                },
+                {
+                  "intensity": 0.624,
+                  "dx": -7.2,
+                  "dy": 12.7
+                },
+                {
+                  "intensity": 0.735,
+                  "dx": -7.1,
+                  "dy": 11.9
+                },
+                {
+                  "intensity": 1.084,
+                  "dx": -6.7,
+                  "dy": 10.8
+                }
+              ]
             }
           },
           "generated_at": "2026-08-29T08:14:16+00:00",
@@ -189,7 +351,34 @@
                 "flame_niches/flame_niche_006/lit_3/animations/flame/south/03.webp",
                 "flame_niches/flame_niche_006/lit_3/animations/flame/south/04.webp"
               ],
-              "strip": "flame_niches/flame_niche_006/lit_3/animations/flame__south.webp"
+              "strip": "flame_niches/flame_niche_006/lit_3/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": 0.8,
+                  "dy": 10.2
+                },
+                {
+                  "intensity": 1.155,
+                  "dx": 1.2,
+                  "dy": 10.1
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 1.1,
+                  "dy": 11.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 1.2,
+                  "dy": 9.9
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 0.9,
+                  "dy": 10.1
+                }
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -200,7 +389,34 @@
                 "flame_niches/flame_niche_006/lit_3/animations/flame/south-east/03.webp",
                 "flame_niches/flame_niche_006/lit_3/animations/flame/south-east/04.webp"
               ],
-              "strip": "flame_niches/flame_niche_006/lit_3/animations/flame__south-east.webp"
+              "strip": "flame_niches/flame_niche_006/lit_3/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.418,
+                  "dx": 6.7,
+                  "dy": 9.2
+                },
+                {
+                  "intensity": 0.982,
+                  "dx": 7.5,
+                  "dy": 9.4
+                },
+                {
+                  "intensity": 0.974,
+                  "dx": 7.5,
+                  "dy": 9.3
+                },
+                {
+                  "intensity": 0.861,
+                  "dx": 8.2,
+                  "dy": 9.0
+                },
+                {
+                  "intensity": 0.764,
+                  "dx": 8.3,
+                  "dy": 8.2
+                }
+              ]
             },
             "south-west": {
               "frames": 5,
@@ -211,7 +427,34 @@
                 "flame_niches/flame_niche_006/lit_3/animations/flame/south-west/03.webp",
                 "flame_niches/flame_niche_006/lit_3/animations/flame/south-west/04.webp"
               ],
-              "strip": "flame_niches/flame_niche_006/lit_3/animations/flame__south-west.webp"
+              "strip": "flame_niches/flame_niche_006/lit_3/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.014,
+                  "dx": -4.8,
+                  "dy": 9.4
+                },
+                {
+                  "intensity": 0.981,
+                  "dx": -5.5,
+                  "dy": 10.7
+                },
+                {
+                  "intensity": 1.028,
+                  "dx": -6.1,
+                  "dy": 11.5
+                },
+                {
+                  "intensity": 0.978,
+                  "dx": -6.3,
+                  "dy": 11.1
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": -6.2,
+                  "dy": 10.8
+                }
+              ]
             }
           },
           "generated_at": "2026-08-29T08:14:26+00:00",
@@ -254,7 +497,34 @@
                 "flame_niches/flame_niche_006/lit_4/animations/flame/south/03.webp",
                 "flame_niches/flame_niche_006/lit_4/animations/flame/south/04.webp"
               ],
-              "strip": "flame_niches/flame_niche_006/lit_4/animations/flame__south.webp"
+              "strip": "flame_niches/flame_niche_006/lit_4/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.08,
+                  "dx": -3.5,
+                  "dy": -5.9
+                },
+                {
+                  "intensity": 1.049,
+                  "dx": -3.2,
+                  "dy": -5.9
+                },
+                {
+                  "intensity": 0.957,
+                  "dx": -3.5,
+                  "dy": -7.8
+                },
+                {
+                  "intensity": 0.921,
+                  "dx": -3.6,
+                  "dy": -8.5
+                },
+                {
+                  "intensity": 0.993,
+                  "dx": -3.6,
+                  "dy": -8.4
+                }
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -265,7 +535,34 @@
                 "flame_niches/flame_niche_006/lit_4/animations/flame/south-east/03.webp",
                 "flame_niches/flame_niche_006/lit_4/animations/flame/south-east/04.webp"
               ],
-              "strip": "flame_niches/flame_niche_006/lit_4/animations/flame__south-east.webp"
+              "strip": "flame_niches/flame_niche_006/lit_4/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.089,
+                  "dx": -0.7,
+                  "dy": -8.0
+                },
+                {
+                  "intensity": 1.118,
+                  "dx": -0.3,
+                  "dy": -7.4
+                },
+                {
+                  "intensity": 1.017,
+                  "dx": -0.6,
+                  "dy": -8.7
+                },
+                {
+                  "intensity": 0.974,
+                  "dx": -1.4,
+                  "dy": -9.5
+                },
+                {
+                  "intensity": 0.802,
+                  "dx": -2.4,
+                  "dy": -14.0
+                }
+              ]
             },
             "south-west": {
               "frames": 5,
@@ -276,7 +573,34 @@
                 "flame_niches/flame_niche_006/lit_4/animations/flame/south-west/03.webp",
                 "flame_niches/flame_niche_006/lit_4/animations/flame/south-west/04.webp"
               ],
-              "strip": "flame_niches/flame_niche_006/lit_4/animations/flame__south-west.webp"
+              "strip": "flame_niches/flame_niche_006/lit_4/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.888,
+                  "dx": 1.9,
+                  "dy": -7.7
+                },
+                {
+                  "intensity": 1.024,
+                  "dx": 1.6,
+                  "dy": -7.5
+                },
+                {
+                  "intensity": 1.076,
+                  "dx": 2.3,
+                  "dy": -12.0
+                },
+                {
+                  "intensity": 0.975,
+                  "dx": 2.0,
+                  "dy": -11.5
+                },
+                {
+                  "intensity": 1.036,
+                  "dx": 1.5,
+                  "dy": -9.5
+                }
+              ]
             }
           },
           "generated_at": "2026-08-29T08:14:43+00:00",

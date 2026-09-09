@@ -89,7 +89,34 @@
             "class": "water",
             "base": 0.1701,
             "still": 0.738
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 0.73,
+              "dx": 0.0,
+              "dy": 13.6
+            },
+            {
+              "intensity": 0.915,
+              "dx": 0.3,
+              "dy": 14.0
+            },
+            {
+              "intensity": 1.005,
+              "dx": 0.4,
+              "dy": 13.4
+            },
+            {
+              "intensity": 1.161,
+              "dx": 0.3,
+              "dy": 6.8
+            },
+            {
+              "intensity": 1.19,
+              "dx": 0.1,
+              "dy": 5.6
+            }
+          ]
         }
       }
     },

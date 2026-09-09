@@ -89,7 +89,34 @@
             "class": "water",
             "base": 0.0331,
             "still": 0.83
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 0.946,
+              "dx": 0.1,
+              "dy": 18.3
+            },
+            {
+              "intensity": 1.024,
+              "dx": -0.2,
+              "dy": 18.1
+            },
+            {
+              "intensity": 1.018,
+              "dx": 0.1,
+              "dy": 18.2
+            },
+            {
+              "intensity": 1.005,
+              "dx": -0.4,
+              "dy": 18.2
+            },
+            {
+              "intensity": 1.006,
+              "dx": -0.1,
+              "dy": 18.1
+            }
+          ]
         }
       }
     },
@@ -131,7 +158,34 @@
             "class": "water",
             "base": 0.0494,
             "still": 0.805
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": -3.0,
+              "dy": 20.8
+            },
+            {
+              "intensity": 0.568,
+              "dx": -2.7,
+              "dy": 20.6
+            },
+            {
+              "intensity": 1.273,
+              "dx": -0.6,
+              "dy": 21.2
+            },
+            {
+              "intensity": 1.384,
+              "dx": -0.3,
+              "dy": 21.2
+            },
+            {
+              "intensity": 1.412,
+              "dx": 0.2,
+              "dy": 21.1
+            }
+          ]
         }
       }
     }

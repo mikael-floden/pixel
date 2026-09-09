@@ -91,7 +91,34 @@
             "class": "fire",
             "base": 0.0106,
             "still": 0.983
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 0.999,
+              "dx": 0.5,
+              "dy": -2.6
+            },
+            {
+              "intensity": 1.001,
+              "dx": 0.5,
+              "dy": -2.6
+            },
+            {
+              "intensity": 1.001,
+              "dx": 0.5,
+              "dy": -2.6
+            },
+            {
+              "intensity": 1.001,
+              "dx": 0.5,
+              "dy": -2.6
+            },
+            {
+              "intensity": 0.998,
+              "dx": 0.5,
+              "dy": -2.6
+            }
+          ]
         }
       }
     },

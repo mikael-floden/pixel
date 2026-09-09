@@ -84,6 +84,10 @@ def build():
                 # per-state one rode through on the states spread.
                 "review": a.get("review"),
                 "review_metrics": a.get("review_metrics"),
+                # PER-FRAME LIGHT (light_frames.py): intensity + centre offset per
+                # frame, per direction, so the light breathes with the art.
+                "light_frames": {d: v.get("light_frames") for d, v in dirs.items()
+                                 if v.get("light_frames")} or a.get("light_frames"),
             })
         categories[cat] = categories.get(cat, 0) + 1
         pieces.append({

@@ -62,6 +62,33 @@
                 "lantern_posts/lantern_post_018/animations/flame/south/02.webp",
                 "lantern_posts/lantern_post_018/animations/flame/south/03.webp",
                 "lantern_posts/lantern_post_018/animations/flame/south/04.webp"
+              ],
+              "light_frames": [
+                {
+                  "intensity": 0.977,
+                  "dx": 0.5,
+                  "dy": -17.4
+                },
+                {
+                  "intensity": 1.006,
+                  "dx": 0.5,
+                  "dy": -18.4
+                },
+                {
+                  "intensity": 1.007,
+                  "dx": 0.5,
+                  "dy": -18.3
+                },
+                {
+                  "intensity": 1.005,
+                  "dx": 0.6,
+                  "dy": -18.3
+                },
+                {
+                  "intensity": 1.005,
+                  "dx": 0.5,
+                  "dy": -18.3
+                }
               ]
             },
             "south-east": {
@@ -72,6 +99,33 @@
                 "lantern_posts/lantern_post_018/animations/flame/south-east/02.webp",
                 "lantern_posts/lantern_post_018/animations/flame/south-east/03.webp",
                 "lantern_posts/lantern_post_018/animations/flame/south-east/04.webp"
+              ],
+              "light_frames": [
+                {
+                  "intensity": 1.1,
+                  "dx": 1.7,
+                  "dy": -16.8
+                },
+                {
+                  "intensity": 0.906,
+                  "dx": 1.7,
+                  "dy": -16.2
+                },
+                {
+                  "intensity": 0.971,
+                  "dx": 1.7,
+                  "dy": -16.1
+                },
+                {
+                  "intensity": 1.011,
+                  "dx": 1.8,
+                  "dy": -16.0
+                },
+                {
+                  "intensity": 1.011,
+                  "dx": 1.5,
+                  "dy": -16.4
+                }
               ]
             },
             "south-west": {
@@ -82,6 +136,33 @@
                 "lantern_posts/lantern_post_018/animations/flame/south-west/02.webp",
                 "lantern_posts/lantern_post_018/animations/flame/south-west/03.webp",
                 "lantern_posts/lantern_post_018/animations/flame/south-west/04.webp"
+              ],
+              "light_frames": [
+                {
+                  "intensity": 1.143,
+                  "dx": -2.5,
+                  "dy": -16.9
+                },
+                {
+                  "intensity": 0.871,
+                  "dx": -3.1,
+                  "dy": -16.3
+                },
+                {
+                  "intensity": 0.798,
+                  "dx": -3.3,
+                  "dy": -16.4
+                },
+                {
+                  "intensity": 1.013,
+                  "dx": -2.9,
+                  "dy": -15.7
+                },
+                {
+                  "intensity": 1.175,
+                  "dx": -3.0,
+                  "dy": -15.4
+                }
               ]
             }
           },
@@ -125,7 +206,34 @@
                 "lantern_posts/lantern_post_018/lit_2/animations/flame/south/03.webp",
                 "lantern_posts/lantern_post_018/lit_2/animations/flame/south/04.webp"
               ],
-              "strip": "lantern_posts/lantern_post_018/lit_2/animations/flame__south.webp"
+              "strip": "lantern_posts/lantern_post_018/lit_2/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.028,
+                  "dx": -0.1,
+                  "dy": -16.3
+                },
+                {
+                  "intensity": 0.959,
+                  "dx": -0.1,
+                  "dy": -15.4
+                },
+                {
+                  "intensity": 1.016,
+                  "dx": -0.1,
+                  "dy": -15.3
+                },
+                {
+                  "intensity": 1.016,
+                  "dx": -0.1,
+                  "dy": -15.3
+                },
+                {
+                  "intensity": 0.98,
+                  "dx": -0.1,
+                  "dy": -15.4
+                }
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -136,7 +244,34 @@
                 "lantern_posts/lantern_post_018/lit_2/animations/flame/south-east/03.webp",
                 "lantern_posts/lantern_post_018/lit_2/animations/flame/south-east/04.webp"
               ],
-              "strip": "lantern_posts/lantern_post_018/lit_2/animations/flame__south-east.webp"
+              "strip": "lantern_posts/lantern_post_018/lit_2/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.095,
+                  "dx": 0.0,
+                  "dy": -15.4
+                },
+                {
+                  "intensity": 0.991,
+                  "dx": 0.0,
+                  "dy": -14.8
+                },
+                {
+                  "intensity": 0.993,
+                  "dx": 0.0,
+                  "dy": -14.8
+                },
+                {
+                  "intensity": 0.845,
+                  "dx": -0.0,
+                  "dy": -14.9
+                },
+                {
+                  "intensity": 1.075,
+                  "dx": -0.0,
+                  "dy": -15.5
+                }
+              ]
             },
             "south-west": {
               "frames": 5,
@@ -147,7 +282,34 @@
                 "lantern_posts/lantern_post_018/lit_2/animations/flame/south-west/03.webp",
                 "lantern_posts/lantern_post_018/lit_2/animations/flame/south-west/04.webp"
               ],
-              "strip": "lantern_posts/lantern_post_018/lit_2/animations/flame__south-west.webp"
+              "strip": "lantern_posts/lantern_post_018/lit_2/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.024,
+                  "dx": -1.0,
+                  "dy": -15.4
+                },
+                {
+                  "intensity": 1.006,
+                  "dx": -1.0,
+                  "dy": -15.5
+                },
+                {
+                  "intensity": 0.959,
+                  "dx": -1.0,
+                  "dy": -14.5
+                },
+                {
+                  "intensity": 1.01,
+                  "dx": -1.0,
+                  "dy": -14.4
+                },
+                {
+                  "intensity": 1.001,
+                  "dx": -1.0,
+                  "dy": -15.5
+                }
+              ]
             }
           },
           "generated_at": "2026-08-29T08:24:37+00:00",
@@ -190,7 +352,34 @@
                 "lantern_posts/lantern_post_018/lit_3/animations/flame/south/03.webp",
                 "lantern_posts/lantern_post_018/lit_3/animations/flame/south/04.webp"
               ],
-              "strip": "lantern_posts/lantern_post_018/lit_3/animations/flame__south.webp"
+              "strip": "lantern_posts/lantern_post_018/lit_3/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.002,
+                  "dx": 0.0,
+                  "dy": -17.1
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": -0.0,
+                  "dy": -16.1
+                },
+                {
+                  "intensity": 1.0,
+                  "dx": -0.0,
+                  "dy": -13.1
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": -0.0,
+                  "dy": -13.1
+                },
+                {
+                  "intensity": 1.0,
+                  "dx": -0.0,
+                  "dy": -14.1
+                }
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -201,7 +390,34 @@
                 "lantern_posts/lantern_post_018/lit_3/animations/flame/south-east/03.webp",
                 "lantern_posts/lantern_post_018/lit_3/animations/flame/south-east/04.webp"
               ],
-              "strip": "lantern_posts/lantern_post_018/lit_3/animations/flame__south-east.webp"
+              "strip": "lantern_posts/lantern_post_018/lit_3/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.019,
+                  "dx": 0.1,
+                  "dy": -17.6
+                },
+                {
+                  "intensity": 0.989,
+                  "dx": 0.1,
+                  "dy": -16.8
+                },
+                {
+                  "intensity": 0.989,
+                  "dx": 0.1,
+                  "dy": -16.8
+                },
+                {
+                  "intensity": 0.987,
+                  "dx": -0.1,
+                  "dy": -16.8
+                },
+                {
+                  "intensity": 1.016,
+                  "dx": -0.0,
+                  "dy": -16.7
+                }
+              ]
             },
             "south-west": {
               "frames": 5,
@@ -212,7 +428,34 @@
                 "lantern_posts/lantern_post_018/lit_3/animations/flame/south-west/03.webp",
                 "lantern_posts/lantern_post_018/lit_3/animations/flame/south-west/04.webp"
               ],
-              "strip": "lantern_posts/lantern_post_018/lit_3/animations/flame__south-west.webp"
+              "strip": "lantern_posts/lantern_post_018/lit_3/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.131,
+                  "dx": -0.0,
+                  "dy": -17.7
+                },
+                {
+                  "intensity": 0.964,
+                  "dx": 0.2,
+                  "dy": -16.9
+                },
+                {
+                  "intensity": 0.968,
+                  "dx": 0.2,
+                  "dy": -15.9
+                },
+                {
+                  "intensity": 0.97,
+                  "dx": 0.2,
+                  "dy": -15.9
+                },
+                {
+                  "intensity": 0.966,
+                  "dx": 0.2,
+                  "dy": -16.9
+                }
+              ]
             }
           },
           "generated_at": "2026-08-29T08:24:45+00:00",
@@ -255,7 +498,34 @@
                 "lantern_posts/lantern_post_018/lit_4/animations/flame/south/03.webp",
                 "lantern_posts/lantern_post_018/lit_4/animations/flame/south/04.webp"
               ],
-              "strip": "lantern_posts/lantern_post_018/lit_4/animations/flame__south.webp"
+              "strip": "lantern_posts/lantern_post_018/lit_4/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.167,
+                  "dx": -0.1,
+                  "dy": -16.0
+                },
+                {
+                  "intensity": 0.802,
+                  "dx": 0.1,
+                  "dy": -15.5
+                },
+                {
+                  "intensity": 0.789,
+                  "dx": 0.1,
+                  "dy": -15.0
+                },
+                {
+                  "intensity": 0.966,
+                  "dx": -0.1,
+                  "dy": -15.2
+                },
+                {
+                  "intensity": 1.276,
+                  "dx": 0.0,
+                  "dy": -15.8
+                }
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -266,7 +536,34 @@
                 "lantern_posts/lantern_post_018/lit_4/animations/flame/south-east/03.webp",
                 "lantern_posts/lantern_post_018/lit_4/animations/flame/south-east/04.webp"
               ],
-              "strip": "lantern_posts/lantern_post_018/lit_4/animations/flame__south-east.webp"
+              "strip": "lantern_posts/lantern_post_018/lit_4/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.312,
+                  "dx": 0.0,
+                  "dy": -16.1
+                },
+                {
+                  "intensity": 0.93,
+                  "dx": 0.3,
+                  "dy": -14.9
+                },
+                {
+                  "intensity": 0.694,
+                  "dx": 0.4,
+                  "dy": -14.8
+                },
+                {
+                  "intensity": 1.066,
+                  "dx": 0.1,
+                  "dy": -15.4
+                },
+                {
+                  "intensity": 0.997,
+                  "dx": 0.2,
+                  "dy": -16.3
+                }
+              ]
             },
             "south-west": {
               "frames": 5,
@@ -277,7 +574,34 @@
                 "lantern_posts/lantern_post_018/lit_4/animations/flame/south-west/03.webp",
                 "lantern_posts/lantern_post_018/lit_4/animations/flame/south-west/04.webp"
               ],
-              "strip": "lantern_posts/lantern_post_018/lit_4/animations/flame__south-west.webp"
+              "strip": "lantern_posts/lantern_post_018/lit_4/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.771,
+                  "dx": 0.0,
+                  "dy": -16.2
+                },
+                {
+                  "intensity": 1.308,
+                  "dx": -0.1,
+                  "dy": -15.1
+                },
+                {
+                  "intensity": 1.075,
+                  "dx": -0.8,
+                  "dy": -14.6
+                },
+                {
+                  "intensity": 1.007,
+                  "dx": -0.4,
+                  "dy": -14.8
+                },
+                {
+                  "intensity": 0.839,
+                  "dx": -0.4,
+                  "dy": -14.9
+                }
+              ]
             }
           },
           "generated_at": "2026-08-29T08:25:43+00:00",

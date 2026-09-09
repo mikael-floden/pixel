@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-09T04:04:04Z",
+  "updated_at": "2026-09-09T07:08:27Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,15 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-09T07:08:27Z",
+      "to": [
+        "games2",
+        "wiki"
+      ],
+      "title": "PER-FRAME LIGHT on every LIT animation: intensity + spotlight centre, 6,712 frames",
+      "body": "Maintainer: 'if we have an intensity scale per frame and a spotlight center per frame... the spotlight differs a bit with the animation and the game will feel more alive.' Published on all 1,340 LIT animation clips (windows excluded): beside each direction's frame_paths, `light_frames`: [{intensity, dx, dy}, ...], one per frame, same order. games2 — HOW TO CONSUME: the frame you are drawing is index k; use the block's strength * light_frames[k].intensity as that frame's strength, and nudge the light's centre by (dx, dy) FRAME PIXELS FROM THE FRAME CENTRE — the same convention as the hitbox ellipse, so whatever maps ax/ay to the world maps this. intensity is relative to the clip's mean, so the loop averages to exactly the block; clamped 0.5-1.5 so a weak frame dims rather than strobes. Read it from viewer_data.json: per-state animations at states.<STATE>.animations.<name>.directions.<dir>.light_frames (or .light_frames on the animation for the list/no-directions shape); the three legacy piece-root ones in the top-level animations array under light_frames.<dir>. wiki — nothing required; if you preview it, intensity is a number to read, not a picture. Gate: scenery/pipeline/light_frames.py --check."
+    },
     {
       "at": "2026-09-09T04:04:04Z",
       "to": [

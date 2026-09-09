@@ -79,7 +79,34 @@
                 "wall_hangings/wall_hanging_017/lit_2/animations/flame/south/03.webp",
                 "wall_hangings/wall_hanging_017/lit_2/animations/flame/south/04.webp"
               ],
-              "strip": "wall_hangings/wall_hanging_017/lit_2/animations/flame__south.webp"
+              "strip": "wall_hangings/wall_hanging_017/lit_2/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -0.6,
+                  "dy": 2.4
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -0.6,
+                  "dy": -7.7
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -0.6,
+                  "dy": -8.1
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -0.5,
+                  "dy": 1.6
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -0.5,
+                  "dy": 2.0
+                }
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -90,7 +117,34 @@
                 "wall_hangings/wall_hanging_017/lit_2/animations/flame/south-east/03.webp",
                 "wall_hangings/wall_hanging_017/lit_2/animations/flame/south-east/04.webp"
               ],
-              "strip": "wall_hangings/wall_hanging_017/lit_2/animations/flame__south-east.webp"
+              "strip": "wall_hangings/wall_hanging_017/lit_2/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.2,
+                  "dx": 10.5,
+                  "dy": 3.5
+                },
+                {
+                  "intensity": 1.151,
+                  "dx": 10.4,
+                  "dy": 4.2
+                },
+                {
+                  "intensity": 1.196,
+                  "dx": 10.4,
+                  "dy": 3.8
+                },
+                {
+                  "intensity": 1.162,
+                  "dx": 10.4,
+                  "dy": 3.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 10.6,
+                  "dy": -2.6
+                }
+              ]
             },
             "south-west": {
               "frames": 5,
@@ -101,7 +155,34 @@
                 "wall_hangings/wall_hanging_017/lit_2/animations/flame/south-west/03.webp",
                 "wall_hangings/wall_hanging_017/lit_2/animations/flame/south-west/04.webp"
               ],
-              "strip": "wall_hangings/wall_hanging_017/lit_2/animations/flame__south-west.webp"
+              "strip": "wall_hangings/wall_hanging_017/lit_2/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.94,
+                  "dx": -11.4,
+                  "dy": 3.3
+                },
+                {
+                  "intensity": 1.04,
+                  "dx": -11.4,
+                  "dy": 3.4
+                },
+                {
+                  "intensity": 1.105,
+                  "dx": -11.4,
+                  "dy": 3.3
+                },
+                {
+                  "intensity": 1.044,
+                  "dx": -11.4,
+                  "dy": 2.6
+                },
+                {
+                  "intensity": 0.87,
+                  "dx": -11.4,
+                  "dy": 3.6
+                }
+              ]
             }
           },
           "generated_at": "2026-08-29T08:32:36+00:00",

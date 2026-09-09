@@ -79,7 +79,34 @@
             "class": "foliage",
             "base": 0.1121,
             "still": 0.621
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -1.0,
+              "dy": -6.5
+            },
+            {
+              "intensity": 1.23,
+              "dx": -4.3,
+              "dy": -7.3
+            },
+            {
+              "intensity": 1.336,
+              "dx": -2.1,
+              "dy": -7.7
+            },
+            {
+              "intensity": 0.5,
+              "dx": -11.7,
+              "dy": -6.9
+            },
+            {
+              "intensity": 0.5,
+              "dx": -11.7,
+              "dy": -6.9
+            }
+          ]
         }
       }
     },
@@ -116,7 +143,34 @@
             "class": "foliage",
             "base": 0.0,
             "still": 0.401
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": 1.1,
+              "dy": -2.8
+            },
+            {
+              "intensity": 0.5,
+              "dx": -10.4,
+              "dy": -12.3
+            },
+            {
+              "intensity": 0.5,
+              "dx": -2.7,
+              "dy": -6.0
+            },
+            {
+              "intensity": 1.5,
+              "dx": 1.1,
+              "dy": -2.8
+            },
+            {
+              "intensity": 0.5,
+              "dx": -2.7,
+              "dy": -6.0
+            }
+          ]
         }
       }
     },

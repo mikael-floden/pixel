@@ -78,7 +78,34 @@
             "class": "fire",
             "base": 0.0,
             "still": 0.582
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 0.559,
+              "dx": 0.4,
+              "dy": -8.3
+            },
+            {
+              "intensity": 1.018,
+              "dx": 0.0,
+              "dy": -9.9
+            },
+            {
+              "intensity": 1.5,
+              "dx": 1.0,
+              "dy": -12.6
+            },
+            {
+              "intensity": 1.381,
+              "dx": 1.0,
+              "dy": -15.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.1,
+              "dy": -12.8
+            }
+          ]
         }
       }
     },
@@ -120,7 +147,34 @@
             "class": "fire",
             "base": 0.1169,
             "still": 0.731
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 0.991,
+              "dx": -2.1,
+              "dy": -10.8
+            },
+            {
+              "intensity": 1.016,
+              "dx": -2.3,
+              "dy": -11.3
+            },
+            {
+              "intensity": 1.051,
+              "dx": -2.9,
+              "dy": -12.3
+            },
+            {
+              "intensity": 1.014,
+              "dx": -2.4,
+              "dy": -12.0
+            },
+            {
+              "intensity": 0.927,
+              "dx": -2.4,
+              "dy": -10.7
+            }
+          ]
         }
       }
     },

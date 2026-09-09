@@ -357,6 +357,17 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   override in the manifest's `light.kind`; `light.py --kinds` stamps the block
   and `--check` fails if any is missing. One `kind` per piece, read from its
   first LIT state — if a piece ever needs one per state, that is the extension.
+- **Per-frame light on LIT animations** — `light_frames` beside each
+  direction's `frame_paths` (windows excluded), one `{intensity, dx, dy}` per
+  frame in frame order. `intensity` is relative to the clip's own mean, so
+  `strength × intensity` is that frame's strength and a loop averages to the
+  block; clamped to 0.5–1.5 (a frame the emissive test barely catches would
+  otherwise strobe the room — dimmer is the effect, blackout is not).
+  `dx`/`dy` are the emissive centroid's offset from the frame centre in frame
+  pixels, the hitbox convention. Measured from the same emissive pixels as
+  `color` (V ≥ 0.8, S ≥ 0.2), V-weighted. A pure function of the frames, always
+  recomputed; `light_frames.py --check` gates it. (maintainer 2026-09-09: "the
+  spotlight differs a bit with the animation and the game will feel more alive")
 - Read contract: `states[<LIT state>]` wins for a placement drawn in that
   state, else the top-level piece default (`maps2/pipeline/world3.py
   light_meta`). Published whole in `viewer_data.json` as `light` so the wiki

@@ -65,7 +65,34 @@
                 "ivy_posts/ivy_post_005/lit_2/animations/flame/south/03.webp",
                 "ivy_posts/ivy_post_005/lit_2/animations/flame/south/04.webp"
               ],
-              "strip": "ivy_posts/ivy_post_005/lit_2/animations/flame__south.webp"
+              "strip": "ivy_posts/ivy_post_005/lit_2/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": -3.1,
+                  "dy": 12.1
+                },
+                {
+                  "intensity": 1.356,
+                  "dx": -3.2,
+                  "dy": 13.5
+                },
+                {
+                  "intensity": 0.731,
+                  "dx": -4.1,
+                  "dy": 12.1
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -4.2,
+                  "dy": 13.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -2.0,
+                  "dy": 10.4
+                }
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -76,7 +103,34 @@
                 "ivy_posts/ivy_post_005/lit_2/animations/flame/south-east/03.webp",
                 "ivy_posts/ivy_post_005/lit_2/animations/flame/south-east/04.webp"
               ],
-              "strip": "ivy_posts/ivy_post_005/lit_2/animations/flame__south-east.webp"
+              "strip": "ivy_posts/ivy_post_005/lit_2/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -5.2,
+                  "dy": 21.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -1.6,
+                  "dy": -17.7
+                },
+                {
+                  "intensity": 0.629,
+                  "dx": -1.3,
+                  "dy": -29.3
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -1.6,
+                  "dy": -33.1
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -1.9,
+                  "dy": -35.3
+                }
+              ]
             },
             "south-west": {
               "frames": 5,
@@ -87,7 +141,34 @@
                 "ivy_posts/ivy_post_005/lit_2/animations/flame/south-west/03.webp",
                 "ivy_posts/ivy_post_005/lit_2/animations/flame/south-west/04.webp"
               ],
-              "strip": "ivy_posts/ivy_post_005/lit_2/animations/flame__south-west.webp"
+              "strip": "ivy_posts/ivy_post_005/lit_2/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 4.6,
+                  "dy": 19.7
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 4.6,
+                  "dy": 18.7
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 11.1,
+                  "dy": -2.8
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 6.0,
+                  "dy": -32.8
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 7.1,
+                  "dy": -35.9
+                }
+              ]
             }
           },
           "generated_at": "2026-08-29T08:22:27+00:00",

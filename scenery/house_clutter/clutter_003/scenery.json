@@ -65,7 +65,34 @@
                 "house_clutter/clutter_003/lit_2/animations/flame/south/03.webp",
                 "house_clutter/clutter_003/lit_2/animations/flame/south/04.webp"
               ],
-              "strip": "house_clutter/clutter_003/lit_2/animations/flame__south.webp"
+              "strip": "house_clutter/clutter_003/lit_2/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.999,
+                  "dx": -7.0,
+                  "dy": 6.5
+                },
+                {
+                  "intensity": 0.991,
+                  "dx": -7.1,
+                  "dy": 6.5
+                },
+                {
+                  "intensity": 1.013,
+                  "dx": -6.9,
+                  "dy": 6.8
+                },
+                {
+                  "intensity": 1.011,
+                  "dx": -7.0,
+                  "dy": 6.9
+                },
+                {
+                  "intensity": 0.985,
+                  "dx": -7.1,
+                  "dy": 6.5
+                }
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -76,7 +103,34 @@
                 "house_clutter/clutter_003/lit_2/animations/flame/south-east/03.webp",
                 "house_clutter/clutter_003/lit_2/animations/flame/south-east/04.webp"
               ],
-              "strip": "house_clutter/clutter_003/lit_2/animations/flame__south-east.webp"
+              "strip": "house_clutter/clutter_003/lit_2/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.039,
+                  "dx": -13.8,
+                  "dy": 7.5
+                },
+                {
+                  "intensity": 0.978,
+                  "dx": -14.0,
+                  "dy": 7.5
+                },
+                {
+                  "intensity": 0.994,
+                  "dx": -14.0,
+                  "dy": 6.9
+                },
+                {
+                  "intensity": 1.0,
+                  "dx": -14.1,
+                  "dy": 6.4
+                },
+                {
+                  "intensity": 0.988,
+                  "dx": -14.2,
+                  "dy": 5.5
+                }
+              ]
             },
             "south-west": {
               "frames": 5,
@@ -87,7 +141,34 @@
                 "house_clutter/clutter_003/lit_2/animations/flame/south-west/03.webp",
                 "house_clutter/clutter_003/lit_2/animations/flame/south-west/04.webp"
               ],
-              "strip": "house_clutter/clutter_003/lit_2/animations/flame__south-west.webp"
+              "strip": "house_clutter/clutter_003/lit_2/animations/flame__south-west.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.046,
+                  "dx": 1.1,
+                  "dy": 6.9
+                },
+                {
+                  "intensity": 1.018,
+                  "dx": 0.7,
+                  "dy": 6.0
+                },
+                {
+                  "intensity": 0.977,
+                  "dx": 0.4,
+                  "dy": 5.6
+                },
+                {
+                  "intensity": 0.997,
+                  "dx": 0.8,
+                  "dy": 6.0
+                },
+                {
+                  "intensity": 0.962,
+                  "dx": 0.5,
+                  "dy": 5.8
+                }
+              ]
             }
           },
           "generated_at": "2026-08-29T08:21:03+00:00",

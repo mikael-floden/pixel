@@ -66,7 +66,34 @@
                 "flame_niches/flame_niche_015/lit_1/animations/flame/south/03.webp",
                 "flame_niches/flame_niche_015/lit_1/animations/flame/south/04.webp"
               ],
-              "strip": "flame_niches/flame_niche_015/lit_1/animations/flame__south.webp"
+              "strip": "flame_niches/flame_niche_015/lit_1/animations/flame__south.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.027,
+                  "dx": 0.3,
+                  "dy": 0.2
+                },
+                {
+                  "intensity": 0.975,
+                  "dx": 0.2,
+                  "dy": 0.4
+                },
+                {
+                  "intensity": 0.986,
+                  "dx": 0.1,
+                  "dy": -0.1
+                },
+                {
+                  "intensity": 1.025,
+                  "dx": 0.2,
+                  "dy": -0.2
+                },
+                {
+                  "intensity": 0.987,
+                  "dx": 0.2,
+                  "dy": -0.7
+                }
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -77,7 +104,34 @@
                 "flame_niches/flame_niche_015/lit_1/animations/flame/south-east/03.webp",
                 "flame_niches/flame_niche_015/lit_1/animations/flame/south-east/04.webp"
               ],
-              "strip": "flame_niches/flame_niche_015/lit_1/animations/flame__south-east.webp"
+              "strip": "flame_niches/flame_niche_015/lit_1/animations/flame__south-east.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.025,
+                  "dx": 7.9,
+                  "dy": 2.0
+                },
+                {
+                  "intensity": 0.996,
+                  "dx": 7.8,
+                  "dy": 1.7
+                },
+                {
+                  "intensity": 1.014,
+                  "dx": 7.8,
+                  "dy": 1.8
+                },
+                {
+                  "intensity": 0.982,
+                  "dx": 7.8,
+                  "dy": 1.7
+                },
+                {
+                  "intensity": 0.983,
+                  "dx": 7.8,
+                  "dy": 2.0
+                }
+              ]
             }
           },
           "generated_at": "2026-08-29T08:17:25+00:00",
@@ -134,7 +188,34 @@
             "class": "fire",
             "base": 0.0,
             "still": 0.961
-          }
+          },
+          "light_frames": [
+            {
+              "intensity": 0.878,
+              "dx": -0.7,
+              "dy": 4.8
+            },
+            {
+              "intensity": 1.033,
+              "dx": -0.6,
+              "dy": 4.4
+            },
+            {
+              "intensity": 0.995,
+              "dx": -0.6,
+              "dy": 4.0
+            },
+            {
+              "intensity": 1.171,
+              "dx": -0.4,
+              "dy": 4.4
+            },
+            {
+              "intensity": 0.923,
+              "dx": -0.6,
+              "dy": 5.5
+            }
+          ]
         }
       }
     },
