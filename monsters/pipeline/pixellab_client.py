@@ -367,7 +367,7 @@ class PixelLabClient:
             time.sleep(poll)
 
     def animate_v3(self, character_id, name, action, direction, frame_count=4,
-                   end_frame=None, seed=None):
+                   end_frame=None, seed=None, keep_first=True):
         """Start ONE v3 custom animation job for ONE direction of an existing
         character. Returns the background job id.
 
@@ -383,7 +383,7 @@ class PixelLabClient:
             "mode": "v3",
             "frame_count": int(frame_count),
             "directions": [direction],
-            "keep_first_frame": True,
+            "keep_first_frame": bool(keep_first),
         }
         if end_frame is not None:
             payload["end_frame"] = _image_to_b64obj(end_frame)
@@ -409,7 +409,8 @@ class PixelLabClient:
                 for x in a.get("directions") or []:
                     urls = [u for u in (x.get("frames") or []) if u]
                     if x.get("direction") and urls:
-                        out.setdefault(x["direction"], []).append(urls)
+                        out.setdefault(x["direction"], []).append(
+                            {"urls": urls, "group": a.get("animation_group_id")})
         return out
 
     def delete_animation(self, character_id, animation_type=None, group_id=None, direction=None):

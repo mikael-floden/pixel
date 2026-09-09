@@ -61,9 +61,29 @@ STATES = {
                    "rise and fall a little, feet planted, no other movement, ends in the "
                    "same neutral pose it started in"),
         "frames": 4,
-        "pin_end": True,
+        "pin_end": True,        # end_frame = base → neutral → breathing → neutral
+        "keep_first": True,     # base stored as frame 0 (5 frames)
         "band": {"step_pass": (0.010, 0.200), "step_warn": (0.005, 0.300),
                  "drift_pass": 4.0, "drift_warn": 6.0, "loop_max": 0.05},
+    },
+    # A walk is a FULL CYCLE that repeats without a hitch (maintainer): six free
+    # frames, nothing pinned — pinning the base gives neutral→walk→neutral, which
+    # is not a loop (his fallback "if you can't get anything sane at all"). The
+    # maintainer's own 37 accepted 6-frame walks (measured, east): silhouette
+    # step 0.13–0.39 (median 0.22), last→first hand-off 0.5–2.7× a normal step
+    # (median 1.47), centroid drift median 2.2 px, x-travel median 1.3 px — they
+    # walk IN PLACE; the game moves the sprite.
+    "walk": {
+        "action": ("walk loop, full walk cycle in place, legs alternate naturally, normal "
+                   "calm walking pace, body stays centered, seamless loop whose last frame "
+                   "leads straight back into the first, no turning"),
+        "frames": 6,
+        "pin_end": False,
+        "keep_first": False,    # exactly 6 generated frames, the loop is theirs to close
+        "band": {"step_pass": (0.100, 0.400), "step_warn": (0.050, 0.550),
+                 "drift_pass": 5.0, "drift_warn": 8.0,
+                 "loop_ratio_pass": 2.0, "loop_ratio_warn": 2.7,
+                 "travel_pass": 4.0, "travel_warn": 7.0},
     },
 }
 APPROVED_TAG = "APPROVED"
@@ -108,7 +128,7 @@ def save_frames(cid, state, d, frames):
 
 # --- canvas ---------------------------------------------------------------------
 
-def align_to_base(frames, base):
+def align_to_base(frames, base, pinned=True):
     """v3 returns each direction's clip on ITS OWN padded canvas (measured
     2026-09-09 on a 112 px base: south 148×132, north 128×128, east 140×132)
     at the same pixel scale, frame 0 being the base shifted by some offset.
@@ -116,11 +136,17 @@ def align_to_base(frames, base):
     lands exactly on the base canvas and the clip shares the monster's
     canvas. Returns (frames, cut) — cut = opaque pixels that fell outside the
     base canvas over the whole clip (overflow; 0 for a calm idle)."""
-    b0 = base.getbbox(); f0 = frames[0].getbbox()
-    if not b0 or not f0:
-        return frames, 0
-    dx, dy = f0[0] - b0[0], f0[1] - b0[1]
     W, H = base.size
+    if pinned:
+        b0 = base.getbbox(); f0 = frames[0].getbbox()
+        if not b0 or not f0:
+            return frames, 0
+        dx, dy = f0[0] - b0[0], f0[1] - b0[1]
+    else:
+        # v3 pads symmetrically around the base canvas (measured on the idle
+        # probes: every pinned offset equalled ((W'-W)/2, (H'-H)/2)), so an
+        # unpinned clip is the centred base-size window
+        dx, dy = (frames[0].width - W) // 2, (frames[0].height - H) // 2
     out, cut = [], 0
     for fr in frames:
         canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -147,7 +173,8 @@ def qa_clip(cid, state, d, frames):
     """Machine verdict for one direction's clip. See module docstring."""
     band = STATES[state]["band"]
     reasons = []
-    want = STATES[state]["frames"] + 1
+    spec = STATES[state]
+    want = spec["frames"] + (1 if spec.get("keep_first", True) else 0)
     if len(frames) != want:
         reasons.append(f"{len(frames)} frames, expected {want}")
     if not frames:
@@ -162,11 +189,14 @@ def qa_clip(cid, state, d, frames):
     cs = [np.argwhere(o).mean(0) if o.any() else np.zeros(2) for o in ops]
     drift = float(max(np.abs(np.array(cs) - cs[0]).max(1))) if cs else 0.0
     loop = float((ops[0] ^ ops[-1]).sum() / sil)
-    # frame 0 must be the pinned base
     b0 = _sil(base)
     pin = _iou(b0, ops[0])
-    if pin < 0.98:
+    if spec.get("keep_first", True) and pin < 0.98:
+        # frame 0 must be the pinned base
         reasons.append(f"frame 0 is not the base rotation (IoU {pin:.2f})")
+    xs = [np.argwhere(o)[:, 1].mean() if o.any() else 0 for o in ops]
+    travel = float(max(xs) - min(xs))
+    loop_ratio = float(loop / step_mean) if step_mean > 1e-6 else 0.0
     # overflow: a frame touching an edge the base does not
     h, w = b0.shape
     def edges(o):
@@ -200,8 +230,18 @@ def qa_clip(cid, state, d, frames):
         reasons.append(f"drifts {drift:.1f} px"); status = "fail"
     elif drift > band["drift_pass"]:
         reasons.append(f"drifts {drift:.1f} px — eyeball it"); status = "warn" if status != "fail" else status
-    if loop > band["loop_max"]:
+    if "loop_max" in band and loop > band["loop_max"]:
         reasons.append(f"loop does not close (last vs first {loop:.3f})"); status = "fail"
+    if "loop_ratio_pass" in band:
+        if loop_ratio > band["loop_ratio_warn"]:
+            reasons.append(f"last→first hand-off is {loop_ratio:.1f}× a normal step — the loop hitches"); status = "fail"
+        elif loop_ratio > band["loop_ratio_pass"]:
+            reasons.append(f"last→first hand-off {loop_ratio:.1f}× a step — eyeball the loop"); status = "warn" if status != "fail" else status
+    if "travel_pass" in band:
+        if travel > band["travel_warn"]:
+            reasons.append(f"walks across the canvas: {travel:.1f} px of x-travel (should be in place)"); status = "fail"
+        elif travel > band["travel_pass"]:
+            reasons.append(f"{travel:.1f} px of x-travel — eyeball it"); status = "warn" if status != "fail" else status
     if any(("not the base" in r) or ("wrong way" in r) or ("expected" in r) for r in reasons):
         status = "fail"
     elif any("overflow" in r for r in reasons) and status == "pass":
@@ -209,7 +249,8 @@ def qa_clip(cid, state, d, frames):
         # pixels separately, and those do fail); eyeball it
         status = "warn"
     return {"status": status, "step_mean": round(step_mean, 4), "step_max": round(float(max(step)) if step else 0, 4),
-            "drift": round(drift, 2), "loop": round(loop, 4), "pin": round(float(pin), 3), "reasons": reasons}
+            "drift": round(drift, 2), "loop": round(loop, 4), "loop_ratio": round(loop_ratio, 2),
+            "travel": round(travel, 2), "pin": round(float(pin), 3), "reasons": reasons}
 
 
 # --- manifest ------------------------------------------------------------------
@@ -248,7 +289,8 @@ def generate_state(client, cid, state, dirs, version, verbose=True):
         seed = seed_for(cid, state, d, version)
         end = rotation(cid, d) if spec["pin_end"] else None
         job = client.animate_v3(man["pixellab_id"], state, spec["action"], d,
-                                frame_count=spec["frames"], end_frame=end, seed=seed)
+                                frame_count=spec["frames"], end_frame=end, seed=seed,
+                                keep_first=spec.get("keep_first", True))
         jobs[d] = job
         if verbose:
             print(f"  {cid:16s} {state} {d:11s} job {job} seed {seed}", flush=True)
@@ -274,19 +316,19 @@ def collect_state(client, cid, state, dirs, version, verbose=True):
         if not cands:
             out[d] = {"status": "fail", "reasons": ["no frames returned"]}
             continue
-        urls = cands[-1]
+        urls, group = cands[-1]["urls"], cands[-1]["group"]
         frames = [f for f in client.download_many(urls) if f is not None]
         if len(frames) != len(urls):
             out[d] = {"status": "fail", "reasons": [f"downloaded {len(frames)}/{len(urls)} frames"]}
             continue
-        frames, cut = align_to_base(frames, rotation(cid, d))
+        frames, cut = align_to_base(frames, rotation(cid, d), pinned=spec.get("keep_first", True))
         save_frames(cid, state, d, frames)
         qa = qa_clip(cid, state, d, frames)
         if cut:
             qa["reasons"].append(f"{cut} px of motion fell outside the base canvas (overflow)")
             qa["status"] = "fail" if cut > 20 else ("warn" if qa["status"] == "pass" else qa["status"])
         qa["cut"] = cut
-        qa.update({"sub": client.sub_id(urls[0]), "takes": len(cands), "version": version, "mirrored": False,
+        qa.update({"sub": client.sub_id(urls[0]), "group": group, "takes": len(cands), "version": version, "mirrored": False,
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         rec["directions"][d] = qa
         out[d] = qa
@@ -298,8 +340,9 @@ def collect_state(client, cid, state, dirs, version, verbose=True):
             frames = mirror_direction(cid, state, d)
             if frames:
                 rec["directions"][d] = dict(rec["directions"][src], mirrored=True, source=src)
+    nfr = spec["frames"] + (1 if spec.get("keep_first", True) else 0)
     rec["frame_paths"] = {d: [os.path.join(cid, "animations", state, d, f"{i:02d}{mirror.ART_EXT}")
-                              for i in range(spec["frames"] + 1)] for d in rec["directions"]}
+                              for i in range(nfr)] for d in rec["directions"]}
     rec["strips"] = {d: os.path.join(cid, "animations", f"{state}__{d}{mirror.ART_EXT}") for d in rec["directions"]}
     write_manifest(cid, man)
     return out
@@ -342,8 +385,11 @@ def cmd_state(args, state):
         if redo:
             # a redo replaces the take: delete the old direction on PixelLab first
             for d in dirs:
+                old_group = rec["directions"].get(d, {}).get("group")
+                if not old_group:
+                    continue
                 try:
-                    client.delete_animation(man["pixellab_id"], animation_type=f"custom-{state}", direction=d)
+                    client.delete_animation(man["pixellab_id"], group_id=old_group, direction=d)
                 except PixelLabError as e:
                     print(f"  {cid} {d}: old take not deleted ({e})")
         try:
@@ -418,7 +464,8 @@ def cmd_requal(args):
                     # (re)create the mirror — it was skipped if the source failed at generation time
                     if mirror_direction(cid, args.state, md):
                         rec["directions"][md] = dict(rec["directions"][d], mirrored=True, source=src)
-                        rec.setdefault("frame_paths", {})[md] = [os.path.join(cid, "animations", args.state, md, f"{i:02d}{mirror.ART_EXT}") for i in range(STATES[args.state]["frames"] + 1)]
+                        nfr = STATES[args.state]["frames"] + (1 if STATES[args.state].get("keep_first", True) else 0)
+                        rec.setdefault("frame_paths", {})[md] = [os.path.join(cid, "animations", args.state, md, f"{i:02d}{mirror.ART_EXT}") for i in range(nfr)]
                         rec.setdefault("strips", {})[md] = os.path.join(cid, "animations", f"{args.state}__{md}{mirror.ART_EXT}")
         write_manifest(cid, man)
     cand.rebuild_index(cfg)
