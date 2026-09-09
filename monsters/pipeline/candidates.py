@@ -58,7 +58,10 @@ CFG = os.path.join(ROOT, "config", "candidates.json")
 OUT = os.path.join(ROOT, "candidates")
 INDEX = os.path.join(OUT, "index.json")
 
-MAX_SIZE = 176          # density holds through 184, degrades from ~236 (measured)
+MAX_SIZE = 256          # v3 hard limit. Density holds through 184 and is a coin
+                        # flip from ~236 (measured over the 57 shipped: Cragback 236
+                        # and Magmane 252 crisp, Voltshell 256 and Voidmaw 236 zoomed)
+                        # — the run1 check, not the size cap, decides a big roll.
 RUN1_PASS, RUN1_WARN = 0.50, 0.45
 FILL_MIN, FILL_MAX = 0.12, 0.98   # content bbox area / canvas area
 MIN_USD = 5.0           # stop generating below this many credits
@@ -192,6 +195,7 @@ def write_candidate(cid, design, rots, meta):
         "id": cid,
         "name": design["name"],
         "tier": design.get("tier"),
+        "scale": design.get("scale", "standard"),
         "lore": design.get("lore"),
         "biome": design.get("biome") or [],
         "items": design.get("items") or [],
@@ -219,7 +223,7 @@ def rebuild_index(cfg):
         if man:
             items.append({k: man.get(k) for k in (
                 "id", "name", "tier", "lore", "biome", "items", "size", "template_id",
-                "pixellab_id", "version", "sheet", "rotations", "qa", "review", "notes",
+                "scale", "pixellab_id", "version", "sheet", "rotations", "qa", "review", "notes",
                 "generated_at")})
     os.makedirs(OUT, exist_ok=True)
     with open(INDEX, "w") as f:
