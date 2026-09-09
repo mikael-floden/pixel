@@ -350,6 +350,20 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   pool tile (from tiles/fades/index.json) and already weights the pick toward
   the mix that matches the distance; exposing that per placement is the next
   thing he asked for and is not built.
+- **A RAISED CAP'S SPRITE WEARS EVERYTHING THE GROUND PASS PAINTED ON IT —
+  transition, fade AND foot band** (`tiles3Occluders`, via `overlayOps`). The
+  occluder pass re-issues every raised cell's cap as a sprite ABOVE the ground
+  texture so bodies can interleave, and whatever the sprite omits is covered
+  one frame after the texture drew it. The boundary learned this first ("the
+  transition only works on level 0"); the fade had the identical defect until
+  2026-09-09 ("the fade tiles only work on level 0", two photographs):
+  measured at his plateau (257,236, level 4), 11 fades resolved and emitted in
+  a 99-cell window, 0 fade sprites among the occluders before, 12 after.
+  Level 0 emits no occluder, which is why level 0 is where every such bug
+  hides. RULE: anything `cellOps` draws after the surface must also be
+  re-issued here, at its own paste point, after the cap and the boundary,
+  only on a column drawn at full height. Probe: `__ml.occDump().occluders`
+  keys — `t3d:` are fades, `t3fb:` foot bands.
 - **EVERY FIELD ART GOES THROUGH `plate()`, INCLUDING A PUBLISHED OR CLEAN
   ONE** (`tiles3draw` opsForCell). Its last branch drew `op.key` — the RAW FILE
   — for any field art that was not conform, not `topOnly` and not a liquid

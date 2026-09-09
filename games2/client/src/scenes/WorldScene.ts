@@ -17035,6 +17035,24 @@ export class WorldScene extends Phaser.Scene {
             // one the ground pass blits it at) — never re-derive it here.
             if (obop) this.occluders.push(this.occTint(this.occImage(obop.key, obop.x, obop.y, oDepth, col, row), "boundary"));
           }
+          /* AND THE CAP WEARS ITS FADE AND ITS WALL-FOOT BAND, for exactly the
+           * reason it wears its transition: the ground pass paints them into
+           * the texture and this sprite lands on top a frame later. The resolver
+           * placed fades on every raised terrace and `cellBlits` emitted them —
+           * measured at his plateau (257,236, level 4): 11 fades resolved in a
+           * 99-cell window, every one covered by the plain cap. Level 0 emits no
+           * occluder, which is why "the fade tiles only work on level 0"
+           * (maintainer 2026-09-09, two photographs). Same ops the ground pass
+           * blits after the boundary (`overlayOps`: the fade, the foot band —
+           * never the surface), at their own absolute paste points, after the
+           * cap and the boundary so they land in the same order. Only on a
+           * column drawn at full height, as the boundary above. */
+          if (topL === cell.level) {
+            const extra = this.t3Try(`occ overlay ${col},${row}`, () => tex.overlayOps(cell), null);
+            if (extra)
+              for (const op of extra)
+                this.occluders.push(this.occTint(this.occImage(op.key, op.x, op.y, oDepth, col, row), op.role));
+          }
         } else culled++;
         // The roof over a wall top — see capDecks above. Only on a column drawn
         // whole: a truncated column's deck was already skipped by occCut.
