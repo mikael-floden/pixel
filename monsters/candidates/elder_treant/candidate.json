@@ -1,895 +1,892 @@
 {
- "id": "elder_treant",
- "name": "Rootfather",
- "tier": "boss",
- "scale": "big",
- "lore": "Older than the road that was cut around it. It has forgiven the axe once, and says so, and will not do it twice.",
- "biome": [
-  "grass",
-  "dark_mud"
- ],
- "items": [],
- "prompt": "Enormous ancient fantasy treant shown full body from crown to roots, a thick gnarled oak trunk for a torso with a hollow glowing amber face, a wide crown of dense green leaves, two massive branch arms with clawed twig fingers, and two sturdy root-bundle legs planted on the ground.",
- "size": [
-  224,
-  224
- ],
- "template_id": "mannequin",
- "directions": [
-  "south",
-  "south-east",
-  "east",
-  "north-east",
-  "north",
-  "north-west",
-  "west",
-  "south-west"
- ],
- "rotations": {
-  "south": "elder_treant/rotations/south.webp",
-  "south-east": "elder_treant/rotations/south-east.webp",
-  "east": "elder_treant/rotations/east.webp",
-  "north-east": "elder_treant/rotations/north-east.webp",
-  "north": "elder_treant/rotations/north.webp",
-  "north-west": "elder_treant/rotations/north-west.webp",
-  "west": "elder_treant/rotations/west.webp",
-  "south-west": "elder_treant/rotations/south-west.webp"
- },
- "sheet": "elder_treant/sheet.webp",
- "review": "approved",
- "pixellab_id": "8b10fb4b-a3a2-4510-9d56-2fabd851e20a",
- "seed": 179077326,
- "version": 1,
- "usage": null,
- "generated_at": "2026-09-09T18:02:55+00:00",
- "elapsed_s": 207.1,
- "qa": {
-  "status": "pass",
-  "min_run1": 0.73,
-  "reasons": [],
-  "directions": {
-   "south": {
-    "run1": 0.73,
-    "bbox": [
-     27,
-     8,
-     197,
-     215
-    ],
-    "fill": 0.701,
-    "touches_edge": false
-   },
-   "south-east": {
-    "run1": 0.764,
-    "bbox": [
-     47,
-     8,
-     186,
-     219
-    ],
-    "fill": 0.585,
-    "touches_edge": false
-   },
-   "east": {
-    "run1": 0.773,
-    "bbox": [
-     65,
-     7,
-     153,
-     218
-    ],
-    "fill": 0.37,
-    "touches_edge": false
-   },
-   "north-east": {
-    "run1": 0.741,
-    "bbox": [
-     52,
-     7,
-     184,
-     212
-    ],
-    "fill": 0.539,
-    "touches_edge": false
-   },
-   "north": {
-    "run1": 0.736,
-    "bbox": [
-     26,
-     6,
-     198,
-     209
-    ],
-    "fill": 0.696,
-    "touches_edge": false
-   },
-   "north-west": {
-    "run1": 0.737,
-    "bbox": [
-     34,
-     7,
-     172,
-     212
-    ],
-    "fill": 0.564,
-    "touches_edge": false
-   },
-   "west": {
-    "run1": 0.768,
-    "bbox": [
-     74,
-     7,
-     156,
-     218
-    ],
-    "fill": 0.345,
-    "touches_edge": false
-   },
-   "south-west": {
-    "run1": 0.748,
-    "bbox": [
-     37,
-     8,
-     173,
-     219
-    ],
-    "fill": 0.572,
-    "touches_edge": false
-   }
-  }
- },
- "approved_at": "2026-09-09T19:59:20+00:00",
- "animations": {
-  "idle": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.0836,
-     "step_max": 0.0911,
-     "drift": 2.7,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "d3f44ba3-539e-4253-9aa4-fdfce1fb8769",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:09:50+00:00",
-     "cut": 0
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.0736,
-     "step_max": 0.0763,
-     "drift": 2.1,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "4de9885a-ee55-4b44-906b-a491d63584c8",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:09:50+00:00",
-     "cut": 0
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.074,
-     "step_max": 0.0806,
-     "drift": 3.03,
-     "loop": 0.0009,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "72bb5520-0e4f-4b08-858f-6f962d8fc068",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:09:51+00:00",
-     "cut": 0
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.0607,
-     "step_max": 0.0696,
-     "drift": 1.28,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "c0c91f01-ca71-452c-ae4d-5b3f773afea4",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:09:52+00:00",
-     "cut": 0
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.0954,
-     "step_max": 0.1012,
-     "drift": 2.13,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "d4c1f34f-11e0-47b5-938e-a8d8d5f2c02e",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:09:52+00:00",
-     "cut": 0
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.0736,
-     "step_max": 0.0763,
-     "drift": 2.1,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "4de9885a-ee55-4b44-906b-a491d63584c8",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:09:50+00:00",
-     "cut": 0,
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.074,
-     "step_max": 0.0806,
-     "drift": 3.03,
-     "loop": 0.0009,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "72bb5520-0e4f-4b08-858f-6f962d8fc068",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:09:51+00:00",
-     "cut": 0,
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.0607,
-     "step_max": 0.0696,
-     "drift": 1.28,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "c0c91f01-ca71-452c-ae4d-5b3f773afea4",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:09:52+00:00",
-     "cut": 0,
-     "source": "north-east"
-    }
-   },
-   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-   "frame_paths": {
-    "south": [
-     "elder_treant/animations/idle/south/00.webp",
-     "elder_treant/animations/idle/south/01.webp",
-     "elder_treant/animations/idle/south/02.webp",
-     "elder_treant/animations/idle/south/03.webp",
-     "elder_treant/animations/idle/south/04.webp"
-    ],
-    "south-east": [
-     "elder_treant/animations/idle/south-east/00.webp",
-     "elder_treant/animations/idle/south-east/01.webp",
-     "elder_treant/animations/idle/south-east/02.webp",
-     "elder_treant/animations/idle/south-east/03.webp",
-     "elder_treant/animations/idle/south-east/04.webp"
-    ],
-    "east": [
-     "elder_treant/animations/idle/east/00.webp",
-     "elder_treant/animations/idle/east/01.webp",
-     "elder_treant/animations/idle/east/02.webp",
-     "elder_treant/animations/idle/east/03.webp",
-     "elder_treant/animations/idle/east/04.webp"
-    ],
-    "north-east": [
-     "elder_treant/animations/idle/north-east/00.webp",
-     "elder_treant/animations/idle/north-east/01.webp",
-     "elder_treant/animations/idle/north-east/02.webp",
-     "elder_treant/animations/idle/north-east/03.webp",
-     "elder_treant/animations/idle/north-east/04.webp"
-    ],
-    "north": [
-     "elder_treant/animations/idle/north/00.webp",
-     "elder_treant/animations/idle/north/01.webp",
-     "elder_treant/animations/idle/north/02.webp",
-     "elder_treant/animations/idle/north/03.webp",
-     "elder_treant/animations/idle/north/04.webp"
-    ],
-    "south-west": [
-     "elder_treant/animations/idle/south-west/00.webp",
-     "elder_treant/animations/idle/south-west/01.webp",
-     "elder_treant/animations/idle/south-west/02.webp",
-     "elder_treant/animations/idle/south-west/03.webp",
-     "elder_treant/animations/idle/south-west/04.webp"
-    ],
-    "west": [
-     "elder_treant/animations/idle/west/00.webp",
-     "elder_treant/animations/idle/west/01.webp",
-     "elder_treant/animations/idle/west/02.webp",
-     "elder_treant/animations/idle/west/03.webp",
-     "elder_treant/animations/idle/west/04.webp"
-    ],
-    "north-west": [
-     "elder_treant/animations/idle/north-west/00.webp",
-     "elder_treant/animations/idle/north-west/01.webp",
-     "elder_treant/animations/idle/north-west/02.webp",
-     "elder_treant/animations/idle/north-west/03.webp",
-     "elder_treant/animations/idle/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "elder_treant/animations/idle__south.webp",
-    "south-east": "elder_treant/animations/idle__south-east.webp",
-    "east": "elder_treant/animations/idle__east.webp",
-    "north-east": "elder_treant/animations/idle__north-east.webp",
-    "north": "elder_treant/animations/idle__north.webp",
-    "south-west": "elder_treant/animations/idle__south-west.webp",
-    "west": "elder_treant/animations/idle__west.webp",
-    "north-west": "elder_treant/animations/idle__north-west.webp"
-   }
+  "id": "elder_treant",
+  "name": "Rootfather",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Older than the road that was cut around it. It has forgiven the axe once, and says so, and will not do it twice.",
+  "biome": [
+    "grass",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Enormous ancient fantasy treant shown full body from crown to roots, a thick gnarled oak trunk for a torso with a hollow glowing amber face, a wide crown of dense green leaves, two massive branch arms with clawed twig fingers, and two sturdy root-bundle legs planted on the ground.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "elder_treant/rotations/south.webp",
+    "south-east": "elder_treant/rotations/south-east.webp",
+    "east": "elder_treant/rotations/east.webp",
+    "north-east": "elder_treant/rotations/north-east.webp",
+    "north": "elder_treant/rotations/north.webp",
+    "north-west": "elder_treant/rotations/north-west.webp",
+    "west": "elder_treant/rotations/west.webp",
+    "south-west": "elder_treant/rotations/south-west.webp"
   },
-  "walk": {
-   "directions": {
-    "south": {
-     "status": "warn",
-     "step_mean": 0.2245,
-     "step_max": 0.273,
-     "drift": 7.72,
-     "loop": 0.4908,
-     "loop_ratio": 2.19,
-     "travel": 1.08,
-     "pin": 0.839,
-     "pad": 0,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [
-      "drifts 7.7 px — eyeball it",
-      "last→first hand-off 2.2× a step — eyeball the loop"
-     ],
-     "sub": "5327f991-de20-4927-ad7e-20d908b15c19",
-     "group": "8db1d56b-d901-4ec8-8a25-6a324193b1cf",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:05+00:00"
-    },
-    "south-east": {
-     "status": "warn",
-     "step_mean": 0.2271,
-     "step_max": 0.2742,
-     "drift": 7.63,
-     "loop": 0.3777,
-     "loop_ratio": 1.66,
-     "travel": 4.66,
-     "pin": 0.794,
-     "pad": 0,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [
-      "drifts 7.6 px — eyeball it"
-     ],
-     "sub": "83228f49-8995-49c1-871f-f38fbc6fbf76",
-     "group": "87976fa0-4416-429a-a7ba-ba4767a10f9c",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:06+00:00"
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.2112,
-     "step_max": 0.2478,
-     "drift": 3.64,
-     "loop": 0.3743,
-     "loop_ratio": 1.77,
-     "travel": 3.08,
-     "pin": 0.772,
-     "pad": 0,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [],
-     "sub": "c2f24dc3-e693-4bc8-9a4b-852d2b585d56",
-     "group": "dd0b9f94-7765-4b85-89c3-02e16d53193e",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:07+00:00"
-    },
-    "north-east": {
-     "status": "warn",
-     "step_mean": 0.2167,
-     "step_max": 0.266,
-     "drift": 6.82,
-     "loop": 0.475,
-     "loop_ratio": 2.19,
-     "travel": 3.53,
-     "pin": 0.814,
-     "pad": 0,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [
-      "drifts 6.8 px — eyeball it",
-      "last→first hand-off 2.2× a step — eyeball the loop"
-     ],
-     "sub": "a5b8ffe6-fe46-42f8-9e11-a5ae0fc4614a",
-     "group": "3e8701d3-b2e1-4a07-9895-e7c30fce73be",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:08+00:00"
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.1873,
-     "step_max": 0.2893,
-     "drift": 5.43,
-     "loop": 0.4526,
-     "loop_ratio": 2.42,
-     "travel": 0.3,
-     "pin": 0.859,
-     "pad": 0,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [
-      "last→first hand-off 2.4× a step — eyeball the loop"
-     ],
-     "sub": "bd5833b6-d7db-410c-b30a-234f85486928",
-     "group": "4f3c4aee-b750-491a-8da3-1a715b8a312e",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:15:09+00:00"
-    },
-    "south-west": {
-     "status": "warn",
-     "step_mean": 0.2271,
-     "step_max": 0.2742,
-     "drift": 7.63,
-     "loop": 0.3777,
-     "loop_ratio": 1.66,
-     "travel": 4.66,
-     "pin": 0.794,
-     "pad": 0,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [
-      "drifts 7.6 px — eyeball it"
-     ],
-     "sub": "83228f49-8995-49c1-871f-f38fbc6fbf76",
-     "group": "87976fa0-4416-429a-a7ba-ba4767a10f9c",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:15:06+00:00",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.2112,
-     "step_max": 0.2478,
-     "drift": 3.64,
-     "loop": 0.3743,
-     "loop_ratio": 1.77,
-     "travel": 3.08,
-     "pin": 0.772,
-     "pad": 0,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [],
-     "sub": "c2f24dc3-e693-4bc8-9a4b-852d2b585d56",
-     "group": "dd0b9f94-7765-4b85-89c3-02e16d53193e",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:15:07+00:00",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "warn",
-     "step_mean": 0.2167,
-     "step_max": 0.266,
-     "drift": 6.82,
-     "loop": 0.475,
-     "loop_ratio": 2.19,
-     "travel": 3.53,
-     "pin": 0.814,
-     "pad": 0,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [
-      "drifts 6.8 px — eyeball it",
-      "last→first hand-off 2.2× a step — eyeball the loop"
-     ],
-     "sub": "a5b8ffe6-fe46-42f8-9e11-a5ae0fc4614a",
-     "group": "3e8701d3-b2e1-4a07-9895-e7c30fce73be",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:15:08+00:00",
-     "source": "north-east"
+  "sheet": "elder_treant/sheet.webp",
+  "review": "approved",
+  "pixellab_id": "8b10fb4b-a3a2-4510-9d56-2fabd851e20a",
+  "seed": 179077326,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:02:55+00:00",
+  "elapsed_s": 207.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.73,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.73,
+        "bbox": [
+          27,
+          8,
+          197,
+          215
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.764,
+        "bbox": [
+          47,
+          8,
+          186,
+          219
+        ],
+        "fill": 0.585,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.773,
+        "bbox": [
+          65,
+          7,
+          153,
+          218
+        ],
+        "fill": 0.37,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.741,
+        "bbox": [
+          52,
+          7,
+          184,
+          212
+        ],
+        "fill": 0.539,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.736,
+        "bbox": [
+          26,
+          6,
+          198,
+          209
+        ],
+        "fill": 0.696,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.737,
+        "bbox": [
+          34,
+          7,
+          172,
+          212
+        ],
+        "fill": 0.564,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.768,
+        "bbox": [
+          74,
+          7,
+          156,
+          218
+        ],
+        "fill": 0.345,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.748,
+        "bbox": [
+          37,
+          8,
+          173,
+          219
+        ],
+        "fill": 0.572,
+        "touches_edge": false
+      }
     }
-   },
-   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-   "frame_paths": {
-    "south": [
-     "elder_treant/animations/walk/south/00.webp",
-     "elder_treant/animations/walk/south/01.webp",
-     "elder_treant/animations/walk/south/02.webp",
-     "elder_treant/animations/walk/south/03.webp",
-     "elder_treant/animations/walk/south/04.webp",
-     "elder_treant/animations/walk/south/05.webp"
-    ],
-    "south-east": [
-     "elder_treant/animations/walk/south-east/00.webp",
-     "elder_treant/animations/walk/south-east/01.webp",
-     "elder_treant/animations/walk/south-east/02.webp",
-     "elder_treant/animations/walk/south-east/03.webp",
-     "elder_treant/animations/walk/south-east/04.webp",
-     "elder_treant/animations/walk/south-east/05.webp"
-    ],
-    "east": [
-     "elder_treant/animations/walk/east/00.webp",
-     "elder_treant/animations/walk/east/01.webp",
-     "elder_treant/animations/walk/east/02.webp",
-     "elder_treant/animations/walk/east/03.webp",
-     "elder_treant/animations/walk/east/04.webp",
-     "elder_treant/animations/walk/east/05.webp"
-    ],
-    "north-east": [
-     "elder_treant/animations/walk/north-east/00.webp",
-     "elder_treant/animations/walk/north-east/01.webp",
-     "elder_treant/animations/walk/north-east/02.webp",
-     "elder_treant/animations/walk/north-east/03.webp",
-     "elder_treant/animations/walk/north-east/04.webp",
-     "elder_treant/animations/walk/north-east/05.webp"
-    ],
-    "north": [
-     "elder_treant/animations/walk/north/00.webp",
-     "elder_treant/animations/walk/north/01.webp",
-     "elder_treant/animations/walk/north/02.webp",
-     "elder_treant/animations/walk/north/03.webp",
-     "elder_treant/animations/walk/north/04.webp",
-     "elder_treant/animations/walk/north/05.webp"
-    ],
-    "south-west": [
-     "elder_treant/animations/walk/south-west/00.webp",
-     "elder_treant/animations/walk/south-west/01.webp",
-     "elder_treant/animations/walk/south-west/02.webp",
-     "elder_treant/animations/walk/south-west/03.webp",
-     "elder_treant/animations/walk/south-west/04.webp",
-     "elder_treant/animations/walk/south-west/05.webp"
-    ],
-    "west": [
-     "elder_treant/animations/walk/west/00.webp",
-     "elder_treant/animations/walk/west/01.webp",
-     "elder_treant/animations/walk/west/02.webp",
-     "elder_treant/animations/walk/west/03.webp",
-     "elder_treant/animations/walk/west/04.webp",
-     "elder_treant/animations/walk/west/05.webp"
-    ],
-    "north-west": [
-     "elder_treant/animations/walk/north-west/00.webp",
-     "elder_treant/animations/walk/north-west/01.webp",
-     "elder_treant/animations/walk/north-west/02.webp",
-     "elder_treant/animations/walk/north-west/03.webp",
-     "elder_treant/animations/walk/north-west/04.webp",
-     "elder_treant/animations/walk/north-west/05.webp"
-    ]
-   },
-   "strips": {
-    "south": "elder_treant/animations/walk__south.webp",
-    "south-east": "elder_treant/animations/walk__south-east.webp",
-    "east": "elder_treant/animations/walk__east.webp",
-    "north-east": "elder_treant/animations/walk__north-east.webp",
-    "north": "elder_treant/animations/walk__north.webp",
-    "south-west": "elder_treant/animations/walk__south-west.webp",
-    "west": "elder_treant/animations/walk__west.webp",
-    "north-west": "elder_treant/animations/walk__north-west.webp"
-   }
   },
-  "attack": {
-   "directions": {
-    "south": {
-     "status": "fail",
-     "step_mean": 0.3517,
-     "step_max": 0.4804,
-     "drift": 6.98,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 1.34,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.063,
-     "peak": 0.5923,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [
-      "some bright effect pixels (0.06) — eyeball it",
-      "eyeballed: painted effect on the strike"
-     ],
-     "sub": "5b949888-01f6-44e3-8855-a8fc2e664fd2",
-     "group": "7e89052d-cd64-46cc-ae02-7cf14a56ed3f",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:49:34+00:00",
-     "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
-     "manual": true
+  "approved_at": "2026-09-09T19:59:20+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0836,
+          "step_max": 0.0911,
+          "drift": 2.7,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "d3f44ba3-539e-4253-9aa4-fdfce1fb8769",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:09:50+00:00",
+          "cut": 0
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0736,
+          "step_max": 0.0763,
+          "drift": 2.1,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "4de9885a-ee55-4b44-906b-a491d63584c8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:09:50+00:00",
+          "cut": 0
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.074,
+          "step_max": 0.0806,
+          "drift": 3.03,
+          "loop": 0.0009,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "72bb5520-0e4f-4b08-858f-6f962d8fc068",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:09:51+00:00",
+          "cut": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0607,
+          "step_max": 0.0696,
+          "drift": 1.28,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "c0c91f01-ca71-452c-ae4d-5b3f773afea4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:09:52+00:00",
+          "cut": 0
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0954,
+          "step_max": 0.1012,
+          "drift": 2.13,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "d4c1f34f-11e0-47b5-938e-a8d8d5f2c02e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:09:52+00:00",
+          "cut": 0
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0736,
+          "step_max": 0.0763,
+          "drift": 2.1,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "4de9885a-ee55-4b44-906b-a491d63584c8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:09:50+00:00",
+          "cut": 0,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.074,
+          "step_max": 0.0806,
+          "drift": 3.03,
+          "loop": 0.0009,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "72bb5520-0e4f-4b08-858f-6f962d8fc068",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:09:51+00:00",
+          "cut": 0,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0607,
+          "step_max": 0.0696,
+          "drift": 1.28,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "c0c91f01-ca71-452c-ae4d-5b3f773afea4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:09:52+00:00",
+          "cut": 0,
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "elder_treant/animations/idle/south/00.webp",
+          "elder_treant/animations/idle/south/01.webp",
+          "elder_treant/animations/idle/south/02.webp",
+          "elder_treant/animations/idle/south/03.webp",
+          "elder_treant/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "elder_treant/animations/idle/south-east/00.webp",
+          "elder_treant/animations/idle/south-east/01.webp",
+          "elder_treant/animations/idle/south-east/02.webp",
+          "elder_treant/animations/idle/south-east/03.webp",
+          "elder_treant/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "elder_treant/animations/idle/east/00.webp",
+          "elder_treant/animations/idle/east/01.webp",
+          "elder_treant/animations/idle/east/02.webp",
+          "elder_treant/animations/idle/east/03.webp",
+          "elder_treant/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "elder_treant/animations/idle/north-east/00.webp",
+          "elder_treant/animations/idle/north-east/01.webp",
+          "elder_treant/animations/idle/north-east/02.webp",
+          "elder_treant/animations/idle/north-east/03.webp",
+          "elder_treant/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "elder_treant/animations/idle/north/00.webp",
+          "elder_treant/animations/idle/north/01.webp",
+          "elder_treant/animations/idle/north/02.webp",
+          "elder_treant/animations/idle/north/03.webp",
+          "elder_treant/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "elder_treant/animations/idle/south-west/00.webp",
+          "elder_treant/animations/idle/south-west/01.webp",
+          "elder_treant/animations/idle/south-west/02.webp",
+          "elder_treant/animations/idle/south-west/03.webp",
+          "elder_treant/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "elder_treant/animations/idle/west/00.webp",
+          "elder_treant/animations/idle/west/01.webp",
+          "elder_treant/animations/idle/west/02.webp",
+          "elder_treant/animations/idle/west/03.webp",
+          "elder_treant/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "elder_treant/animations/idle/north-west/00.webp",
+          "elder_treant/animations/idle/north-west/01.webp",
+          "elder_treant/animations/idle/north-west/02.webp",
+          "elder_treant/animations/idle/north-west/03.webp",
+          "elder_treant/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "elder_treant/animations/idle__south.webp",
+        "south-east": "elder_treant/animations/idle__south-east.webp",
+        "east": "elder_treant/animations/idle__east.webp",
+        "north-east": "elder_treant/animations/idle__north-east.webp",
+        "north": "elder_treant/animations/idle__north.webp",
+        "south-west": "elder_treant/animations/idle__south-west.webp",
+        "west": "elder_treant/animations/idle__west.webp",
+        "north-west": "elder_treant/animations/idle__north-west.webp"
+      }
     },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.2815,
-     "step_max": 0.3895,
-     "drift": 5.48,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 5.48,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.001,
-     "peak": 0.3895,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [],
-     "sub": "2ad2ee58-541b-4875-a33d-5f559cce2892",
-     "group": "a09d691c-8c42-46ec-ad9b-647d9577cfc7",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:49:34+00:00",
-     "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.2245,
+          "step_max": 0.273,
+          "drift": 7.72,
+          "loop": 0.4908,
+          "loop_ratio": 2.19,
+          "travel": 1.08,
+          "pin": 0.839,
+          "pad": 0,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "drifts 7.7 px — eyeball it",
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "sub": "5327f991-de20-4927-ad7e-20d908b15c19",
+          "group": "8db1d56b-d901-4ec8-8a25-6a324193b1cf",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:05+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.2271,
+          "step_max": 0.2742,
+          "drift": 7.63,
+          "loop": 0.3777,
+          "loop_ratio": 1.66,
+          "travel": 4.66,
+          "pin": 0.794,
+          "pad": 0,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "drifts 7.6 px — eyeball it"
+          ],
+          "sub": "83228f49-8995-49c1-871f-f38fbc6fbf76",
+          "group": "87976fa0-4416-429a-a7ba-ba4767a10f9c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:06+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2112,
+          "step_max": 0.2478,
+          "drift": 3.64,
+          "loop": 0.3743,
+          "loop_ratio": 1.77,
+          "travel": 3.08,
+          "pin": 0.772,
+          "pad": 0,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "c2f24dc3-e693-4bc8-9a4b-852d2b585d56",
+          "group": "dd0b9f94-7765-4b85-89c3-02e16d53193e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:07+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.2167,
+          "step_max": 0.266,
+          "drift": 6.82,
+          "loop": 0.475,
+          "loop_ratio": 2.19,
+          "travel": 3.53,
+          "pin": 0.814,
+          "pad": 0,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "drifts 6.8 px — eyeball it",
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "sub": "a5b8ffe6-fe46-42f8-9e11-a5ae0fc4614a",
+          "group": "3e8701d3-b2e1-4a07-9895-e7c30fce73be",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:08+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1873,
+          "step_max": 0.2893,
+          "drift": 5.43,
+          "loop": 0.4526,
+          "loop_ratio": 2.42,
+          "travel": 0.3,
+          "pin": 0.859,
+          "pad": 0,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "last→first hand-off 2.4× a step — eyeball the loop"
+          ],
+          "sub": "bd5833b6-d7db-410c-b30a-234f85486928",
+          "group": "4f3c4aee-b750-491a-8da3-1a715b8a312e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:15:09+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.2271,
+          "step_max": 0.2742,
+          "drift": 7.63,
+          "loop": 0.3777,
+          "loop_ratio": 1.66,
+          "travel": 4.66,
+          "pin": 0.794,
+          "pad": 0,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "drifts 7.6 px — eyeball it"
+          ],
+          "sub": "83228f49-8995-49c1-871f-f38fbc6fbf76",
+          "group": "87976fa0-4416-429a-a7ba-ba4767a10f9c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:15:06+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2112,
+          "step_max": 0.2478,
+          "drift": 3.64,
+          "loop": 0.3743,
+          "loop_ratio": 1.77,
+          "travel": 3.08,
+          "pin": 0.772,
+          "pad": 0,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "c2f24dc3-e693-4bc8-9a4b-852d2b585d56",
+          "group": "dd0b9f94-7765-4b85-89c3-02e16d53193e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:15:07+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.2167,
+          "step_max": 0.266,
+          "drift": 6.82,
+          "loop": 0.475,
+          "loop_ratio": 2.19,
+          "travel": 3.53,
+          "pin": 0.814,
+          "pad": 0,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "drifts 6.8 px — eyeball it",
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "sub": "a5b8ffe6-fe46-42f8-9e11-a5ae0fc4614a",
+          "group": "3e8701d3-b2e1-4a07-9895-e7c30fce73be",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:15:08+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "elder_treant/animations/walk/south/00.webp",
+          "elder_treant/animations/walk/south/01.webp",
+          "elder_treant/animations/walk/south/02.webp",
+          "elder_treant/animations/walk/south/03.webp",
+          "elder_treant/animations/walk/south/04.webp",
+          "elder_treant/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "elder_treant/animations/walk/south-east/00.webp",
+          "elder_treant/animations/walk/south-east/01.webp",
+          "elder_treant/animations/walk/south-east/02.webp",
+          "elder_treant/animations/walk/south-east/03.webp",
+          "elder_treant/animations/walk/south-east/04.webp",
+          "elder_treant/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "elder_treant/animations/walk/east/00.webp",
+          "elder_treant/animations/walk/east/01.webp",
+          "elder_treant/animations/walk/east/02.webp",
+          "elder_treant/animations/walk/east/03.webp",
+          "elder_treant/animations/walk/east/04.webp",
+          "elder_treant/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "elder_treant/animations/walk/north-east/00.webp",
+          "elder_treant/animations/walk/north-east/01.webp",
+          "elder_treant/animations/walk/north-east/02.webp",
+          "elder_treant/animations/walk/north-east/03.webp",
+          "elder_treant/animations/walk/north-east/04.webp",
+          "elder_treant/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "elder_treant/animations/walk/north/00.webp",
+          "elder_treant/animations/walk/north/01.webp",
+          "elder_treant/animations/walk/north/02.webp",
+          "elder_treant/animations/walk/north/03.webp",
+          "elder_treant/animations/walk/north/04.webp",
+          "elder_treant/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "elder_treant/animations/walk/south-west/00.webp",
+          "elder_treant/animations/walk/south-west/01.webp",
+          "elder_treant/animations/walk/south-west/02.webp",
+          "elder_treant/animations/walk/south-west/03.webp",
+          "elder_treant/animations/walk/south-west/04.webp",
+          "elder_treant/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "elder_treant/animations/walk/west/00.webp",
+          "elder_treant/animations/walk/west/01.webp",
+          "elder_treant/animations/walk/west/02.webp",
+          "elder_treant/animations/walk/west/03.webp",
+          "elder_treant/animations/walk/west/04.webp",
+          "elder_treant/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "elder_treant/animations/walk/north-west/00.webp",
+          "elder_treant/animations/walk/north-west/01.webp",
+          "elder_treant/animations/walk/north-west/02.webp",
+          "elder_treant/animations/walk/north-west/03.webp",
+          "elder_treant/animations/walk/north-west/04.webp",
+          "elder_treant/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "elder_treant/animations/walk__south.webp",
+        "south-east": "elder_treant/animations/walk__south-east.webp",
+        "east": "elder_treant/animations/walk__east.webp",
+        "north-east": "elder_treant/animations/walk__north-east.webp",
+        "north": "elder_treant/animations/walk__north.webp",
+        "south-west": "elder_treant/animations/walk__south-west.webp",
+        "west": "elder_treant/animations/walk__west.webp",
+        "north-west": "elder_treant/animations/walk__north-west.webp"
+      }
     },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.2491,
-     "step_max": 0.3168,
-     "drift": 7.77,
-     "loop": 0.0005,
-     "loop_ratio": 0.0,
-     "travel": 7.77,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.3101,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [],
-     "sub": "59fc1cf6-47f1-4904-9991-95a70749851c",
-     "group": "a2bdb28b-ff28-4618-bd19-8c18389a98b3",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:49:35+00:00",
-     "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.2631,
-     "step_max": 0.3855,
-     "drift": 8.32,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 2.5,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.4496,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [],
-     "sub": "1180c597-baea-456a-b40e-106c8f712c10",
-     "group": "d4d302cc-4727-40d5-9598-c6ae2287ceec",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:49:36+00:00",
-     "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.2758,
-     "step_max": 0.4821,
-     "drift": 6.29,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.34,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.027,
-     "peak": 0.5106,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [],
-     "sub": "fbd73fb9-a544-4fec-b5ad-414cf94501a2",
-     "group": "0c469e4f-b2d5-4fd2-979a-1eb51970d0e0",
-     "takes": 1,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:49:36+00:00",
-     "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.2815,
-     "step_max": 0.3895,
-     "drift": 5.48,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 5.48,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.001,
-     "peak": 0.3895,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [],
-     "sub": "2ad2ee58-541b-4875-a33d-5f559cce2892",
-     "group": "a09d691c-8c42-46ec-ad9b-647d9577cfc7",
-     "takes": 1,
-     "version": 3,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:49:34+00:00",
-     "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.2491,
-     "step_max": 0.3168,
-     "drift": 7.77,
-     "loop": 0.0005,
-     "loop_ratio": 0.0,
-     "travel": 7.77,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.3101,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [],
-     "sub": "59fc1cf6-47f1-4904-9991-95a70749851c",
-     "group": "a2bdb28b-ff28-4618-bd19-8c18389a98b3",
-     "takes": 1,
-     "version": 3,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:49:35+00:00",
-     "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.2631,
-     "step_max": 0.3855,
-     "drift": 8.32,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 2.5,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.4496,
-     "canvas": [
-      224,
-      224
-     ],
-     "reasons": [],
-     "sub": "1180c597-baea-456a-b40e-106c8f712c10",
-     "group": "d4d302cc-4727-40d5-9598-c6ae2287ceec",
-     "takes": 1,
-     "version": 3,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:49:36+00:00",
-     "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
-     "source": "north-east"
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.3136,
+          "step_max": 0.4325,
+          "drift": 3.76,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 0.86,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.4652,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "0c7ad7d0-0809-44e9-8734-b3114da211a0",
+          "group": "6c2b9e51-0c89-49b9-98ab-3bc1db0e325c",
+          "takes": 1,
+          "version": 7,
+          "mirrored": false,
+          "generated_at": "2026-09-09T23:34:48+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
+          "tries": 2
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.2815,
+          "step_max": 0.3895,
+          "drift": 5.48,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 5.48,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.3895,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "2ad2ee58-541b-4875-a33d-5f559cce2892",
+          "group": "a09d691c-8c42-46ec-ad9b-647d9577cfc7",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:34+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2491,
+          "step_max": 0.3168,
+          "drift": 7.77,
+          "loop": 0.0005,
+          "loop_ratio": 0.0,
+          "travel": 7.77,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3101,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "59fc1cf6-47f1-4904-9991-95a70749851c",
+          "group": "a2bdb28b-ff28-4618-bd19-8c18389a98b3",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:35+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2631,
+          "step_max": 0.3855,
+          "drift": 8.32,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.5,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4496,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "1180c597-baea-456a-b40e-106c8f712c10",
+          "group": "d4d302cc-4727-40d5-9598-c6ae2287ceec",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:36+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.2758,
+          "step_max": 0.4821,
+          "drift": 6.29,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.34,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.027,
+          "peak": 0.5106,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "fbd73fb9-a544-4fec-b5ad-414cf94501a2",
+          "group": "0c469e4f-b2d5-4fd2-979a-1eb51970d0e0",
+          "takes": 1,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:49:36+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.2815,
+          "step_max": 0.3895,
+          "drift": 5.48,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 5.48,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.3895,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "2ad2ee58-541b-4875-a33d-5f559cce2892",
+          "group": "a09d691c-8c42-46ec-ad9b-647d9577cfc7",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:49:34+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2491,
+          "step_max": 0.3168,
+          "drift": 7.77,
+          "loop": 0.0005,
+          "loop_ratio": 0.0,
+          "travel": 7.77,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3101,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "59fc1cf6-47f1-4904-9991-95a70749851c",
+          "group": "a2bdb28b-ff28-4618-bd19-8c18389a98b3",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:49:35+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2631,
+          "step_max": 0.3855,
+          "drift": 8.32,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.5,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4496,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": "1180c597-baea-456a-b40e-106c8f712c10",
+          "group": "d4d302cc-4727-40d5-9598-c6ae2287ceec",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:49:36+00:00",
+          "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "elder_treant/animations/attack/south/00.webp",
+          "elder_treant/animations/attack/south/01.webp",
+          "elder_treant/animations/attack/south/02.webp",
+          "elder_treant/animations/attack/south/03.webp",
+          "elder_treant/animations/attack/south/04.webp"
+        ],
+        "south-east": [
+          "elder_treant/animations/attack/south-east/00.webp",
+          "elder_treant/animations/attack/south-east/01.webp",
+          "elder_treant/animations/attack/south-east/02.webp",
+          "elder_treant/animations/attack/south-east/03.webp",
+          "elder_treant/animations/attack/south-east/04.webp"
+        ],
+        "east": [
+          "elder_treant/animations/attack/east/00.webp",
+          "elder_treant/animations/attack/east/01.webp",
+          "elder_treant/animations/attack/east/02.webp",
+          "elder_treant/animations/attack/east/03.webp",
+          "elder_treant/animations/attack/east/04.webp"
+        ],
+        "north-east": [
+          "elder_treant/animations/attack/north-east/00.webp",
+          "elder_treant/animations/attack/north-east/01.webp",
+          "elder_treant/animations/attack/north-east/02.webp",
+          "elder_treant/animations/attack/north-east/03.webp",
+          "elder_treant/animations/attack/north-east/04.webp"
+        ],
+        "north": [
+          "elder_treant/animations/attack/north/00.webp",
+          "elder_treant/animations/attack/north/01.webp",
+          "elder_treant/animations/attack/north/02.webp",
+          "elder_treant/animations/attack/north/03.webp",
+          "elder_treant/animations/attack/north/04.webp"
+        ],
+        "south-west": [
+          "elder_treant/animations/attack/south-west/00.webp",
+          "elder_treant/animations/attack/south-west/01.webp",
+          "elder_treant/animations/attack/south-west/02.webp",
+          "elder_treant/animations/attack/south-west/03.webp",
+          "elder_treant/animations/attack/south-west/04.webp"
+        ],
+        "west": [
+          "elder_treant/animations/attack/west/00.webp",
+          "elder_treant/animations/attack/west/01.webp",
+          "elder_treant/animations/attack/west/02.webp",
+          "elder_treant/animations/attack/west/03.webp",
+          "elder_treant/animations/attack/west/04.webp"
+        ],
+        "north-west": [
+          "elder_treant/animations/attack/north-west/00.webp",
+          "elder_treant/animations/attack/north-west/01.webp",
+          "elder_treant/animations/attack/north-west/02.webp",
+          "elder_treant/animations/attack/north-west/03.webp",
+          "elder_treant/animations/attack/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "elder_treant/animations/attack__south.webp",
+        "south-east": "elder_treant/animations/attack__south-east.webp",
+        "east": "elder_treant/animations/attack__east.webp",
+        "north-east": "elder_treant/animations/attack__north-east.webp",
+        "north": "elder_treant/animations/attack__north.webp",
+        "south-west": "elder_treant/animations/attack__south-west.webp",
+        "west": "elder_treant/animations/attack__west.webp",
+        "north-west": "elder_treant/animations/attack__north-west.webp"
+      }
     }
-   },
-   "action": "Arm Swing - Raises one huge branch arm and swings it down once, then returns to idle stance",
-   "frame_paths": {
-    "south": [
-     "elder_treant/animations/attack/south/00.webp",
-     "elder_treant/animations/attack/south/01.webp",
-     "elder_treant/animations/attack/south/02.webp",
-     "elder_treant/animations/attack/south/03.webp",
-     "elder_treant/animations/attack/south/04.webp"
-    ],
-    "south-east": [
-     "elder_treant/animations/attack/south-east/00.webp",
-     "elder_treant/animations/attack/south-east/01.webp",
-     "elder_treant/animations/attack/south-east/02.webp",
-     "elder_treant/animations/attack/south-east/03.webp",
-     "elder_treant/animations/attack/south-east/04.webp"
-    ],
-    "east": [
-     "elder_treant/animations/attack/east/00.webp",
-     "elder_treant/animations/attack/east/01.webp",
-     "elder_treant/animations/attack/east/02.webp",
-     "elder_treant/animations/attack/east/03.webp",
-     "elder_treant/animations/attack/east/04.webp"
-    ],
-    "north-east": [
-     "elder_treant/animations/attack/north-east/00.webp",
-     "elder_treant/animations/attack/north-east/01.webp",
-     "elder_treant/animations/attack/north-east/02.webp",
-     "elder_treant/animations/attack/north-east/03.webp",
-     "elder_treant/animations/attack/north-east/04.webp"
-    ],
-    "north": [
-     "elder_treant/animations/attack/north/00.webp",
-     "elder_treant/animations/attack/north/01.webp",
-     "elder_treant/animations/attack/north/02.webp",
-     "elder_treant/animations/attack/north/03.webp",
-     "elder_treant/animations/attack/north/04.webp"
-    ],
-    "south-west": [
-     "elder_treant/animations/attack/south-west/00.webp",
-     "elder_treant/animations/attack/south-west/01.webp",
-     "elder_treant/animations/attack/south-west/02.webp",
-     "elder_treant/animations/attack/south-west/03.webp",
-     "elder_treant/animations/attack/south-west/04.webp"
-    ],
-    "west": [
-     "elder_treant/animations/attack/west/00.webp",
-     "elder_treant/animations/attack/west/01.webp",
-     "elder_treant/animations/attack/west/02.webp",
-     "elder_treant/animations/attack/west/03.webp",
-     "elder_treant/animations/attack/west/04.webp"
-    ],
-    "north-west": [
-     "elder_treant/animations/attack/north-west/00.webp",
-     "elder_treant/animations/attack/north-west/01.webp",
-     "elder_treant/animations/attack/north-west/02.webp",
-     "elder_treant/animations/attack/north-west/03.webp",
-     "elder_treant/animations/attack/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "elder_treant/animations/attack__south.webp",
-    "south-east": "elder_treant/animations/attack__south-east.webp",
-    "east": "elder_treant/animations/attack__east.webp",
-    "north-east": "elder_treant/animations/attack__north-east.webp",
-    "north": "elder_treant/animations/attack__north.webp",
-    "south-west": "elder_treant/animations/attack__south-west.webp",
-    "west": "elder_treant/animations/attack__west.webp",
-    "north-west": "elder_treant/animations/attack__north-west.webp"
-   }
   }
- }
 }

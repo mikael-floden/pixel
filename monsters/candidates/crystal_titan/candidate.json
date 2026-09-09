@@ -1,899 +1,905 @@
 {
-  "id": "crystal_titan",
-  "name": "Prismfather",
-  "tier": "boss",
-  "scale": "big",
-  "lore": "Light goes into it and comes out wrong. Miners follow the rainbows down and are found as rainbows themselves.",
-  "biome": [
-    "grey_stone",
-    "ice"
-  ],
-  "items": [],
-  "prompt": "Gigantic fantasy crystal titan shown full body from head to feet, a body of jagged translucent amethyst and quartz crystal over dark stone, light refracting inside it, a faceted head with two glowing white eyes, huge crystal-bladed arms, and pillar legs.",
-  "size": [
-    232,
-    232
-  ],
-  "template_id": "mannequin",
-  "directions": [
-    "south",
-    "south-east",
-    "east",
-    "north-east",
-    "north",
-    "north-west",
-    "west",
-    "south-west"
-  ],
-  "rotations": {
-    "south": "crystal_titan/rotations/south.webp",
-    "south-east": "crystal_titan/rotations/south-east.webp",
-    "east": "crystal_titan/rotations/east.webp",
-    "north-east": "crystal_titan/rotations/north-east.webp",
-    "north": "crystal_titan/rotations/north.webp",
-    "north-west": "crystal_titan/rotations/north-west.webp",
-    "west": "crystal_titan/rotations/west.webp",
-    "south-west": "crystal_titan/rotations/south-west.webp"
-  },
-  "sheet": "crystal_titan/sheet.webp",
-  "review": "approved",
-  "pixellab_id": "f6dad916-5b59-4639-a571-c2118f8dc6c6",
-  "seed": 430073138,
-  "version": 1,
-  "usage": null,
-  "generated_at": "2026-09-09T18:50:15+00:00",
-  "elapsed_s": 168.6,
-  "qa": {
-    "status": "pass",
-    "min_run1": 0.637,
-    "reasons": [],
-    "directions": {
-      "south": {
-        "run1": 0.643,
-        "bbox": [
-          24,
-          7,
-          208,
-          225
-        ],
-        "fill": 0.745,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.691,
-        "bbox": [
-          41,
-          3,
-          188,
-          228
-        ],
-        "fill": 0.615,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.7,
-        "bbox": [
-          76,
-          3,
-          150,
-          228
-        ],
-        "fill": 0.309,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.645,
-        "bbox": [
-          49,
-          3,
-          182,
-          226
-        ],
-        "fill": 0.551,
-        "touches_edge": false
-      },
-      "north": {
-        "run1": 0.637,
-        "bbox": [
-          31,
-          5,
-          201,
-          223
-        ],
-        "fill": 0.689,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.643,
-        "bbox": [
-          53,
-          3,
-          182,
-          226
-        ],
-        "fill": 0.534,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.696,
-        "bbox": [
-          82,
-          3,
-          152,
-          227
-        ],
-        "fill": 0.291,
-        "touches_edge": false
-      },
-      "south-west": {
-        "run1": 0.668,
-        "bbox": [
-          44,
-          3,
-          190,
-          228
-        ],
-        "fill": 0.61,
-        "touches_edge": false
-      }
-    }
-  },
-  "approved_at": "2026-09-09T19:59:24+00:00",
-  "animations": {
-    "idle": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.0506,
-          "step_max": 0.0662,
-          "drift": 2.15,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "edeaa336-1d77-4fbf-89e2-b4177d3020a0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:19:52+00:00",
-          "cut": 0
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.0393,
-          "step_max": 0.0631,
-          "drift": 1.63,
-          "loop": 0.0001,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "32adf0fc-4a5e-4712-a2b8-72d022ac559f",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:19:53+00:00",
-          "cut": 0
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.0312,
-          "step_max": 0.0605,
-          "drift": 1.34,
-          "loop": 0.0003,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "80d18c6f-d4dc-414b-9772-d1275b54de82",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:19:54+00:00",
-          "cut": 0
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.0402,
-          "step_max": 0.0597,
-          "drift": 1.17,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "c8c1eaa2-46e2-464a-a033-c2a30122ecfa",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:19:56+00:00",
-          "cut": 0
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.0823,
-          "step_max": 0.0926,
-          "drift": 2.81,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "348993e3-5e06-4212-a6f0-a69a85d196b2",
-          "takes": 2,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T20:31:53+00:00",
-          "cut": 0
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.0393,
-          "step_max": 0.0631,
-          "drift": 1.63,
-          "loop": 0.0001,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "32adf0fc-4a5e-4712-a2b8-72d022ac559f",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:19:53+00:00",
-          "cut": 0,
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.0312,
-          "step_max": 0.0605,
-          "drift": 1.34,
-          "loop": 0.0003,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "80d18c6f-d4dc-414b-9772-d1275b54de82",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:19:54+00:00",
-          "cut": 0,
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0402,
-          "step_max": 0.0597,
-          "drift": 1.17,
-          "loop": 0.0,
-          "pin": 1.0,
-          "reasons": [],
-          "sub": "c8c1eaa2-46e2-464a-a033-c2a30122ecfa",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T20:19:56+00:00",
-          "cut": 0,
-          "source": "north-east"
-        }
-      },
-      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-      "frame_paths": {
-        "south": [
-          "crystal_titan/animations/idle/south/00.webp",
-          "crystal_titan/animations/idle/south/01.webp",
-          "crystal_titan/animations/idle/south/02.webp",
-          "crystal_titan/animations/idle/south/03.webp",
-          "crystal_titan/animations/idle/south/04.webp"
-        ],
-        "south-east": [
-          "crystal_titan/animations/idle/south-east/00.webp",
-          "crystal_titan/animations/idle/south-east/01.webp",
-          "crystal_titan/animations/idle/south-east/02.webp",
-          "crystal_titan/animations/idle/south-east/03.webp",
-          "crystal_titan/animations/idle/south-east/04.webp"
-        ],
-        "east": [
-          "crystal_titan/animations/idle/east/00.webp",
-          "crystal_titan/animations/idle/east/01.webp",
-          "crystal_titan/animations/idle/east/02.webp",
-          "crystal_titan/animations/idle/east/03.webp",
-          "crystal_titan/animations/idle/east/04.webp"
-        ],
-        "north-east": [
-          "crystal_titan/animations/idle/north-east/00.webp",
-          "crystal_titan/animations/idle/north-east/01.webp",
-          "crystal_titan/animations/idle/north-east/02.webp",
-          "crystal_titan/animations/idle/north-east/03.webp",
-          "crystal_titan/animations/idle/north-east/04.webp"
-        ],
-        "north": [
-          "crystal_titan/animations/idle/north/00.webp",
-          "crystal_titan/animations/idle/north/01.webp",
-          "crystal_titan/animations/idle/north/02.webp",
-          "crystal_titan/animations/idle/north/03.webp",
-          "crystal_titan/animations/idle/north/04.webp"
-        ],
-        "south-west": [
-          "crystal_titan/animations/idle/south-west/00.webp",
-          "crystal_titan/animations/idle/south-west/01.webp",
-          "crystal_titan/animations/idle/south-west/02.webp",
-          "crystal_titan/animations/idle/south-west/03.webp",
-          "crystal_titan/animations/idle/south-west/04.webp"
-        ],
-        "west": [
-          "crystal_titan/animations/idle/west/00.webp",
-          "crystal_titan/animations/idle/west/01.webp",
-          "crystal_titan/animations/idle/west/02.webp",
-          "crystal_titan/animations/idle/west/03.webp",
-          "crystal_titan/animations/idle/west/04.webp"
-        ],
-        "north-west": [
-          "crystal_titan/animations/idle/north-west/00.webp",
-          "crystal_titan/animations/idle/north-west/01.webp",
-          "crystal_titan/animations/idle/north-west/02.webp",
-          "crystal_titan/animations/idle/north-west/03.webp",
-          "crystal_titan/animations/idle/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "crystal_titan/animations/idle__south.webp",
-        "south-east": "crystal_titan/animations/idle__south-east.webp",
-        "east": "crystal_titan/animations/idle__east.webp",
-        "north-east": "crystal_titan/animations/idle__north-east.webp",
-        "north": "crystal_titan/animations/idle__north.webp",
-        "south-west": "crystal_titan/animations/idle__south-west.webp",
-        "west": "crystal_titan/animations/idle__west.webp",
-        "north-west": "crystal_titan/animations/idle__north-west.webp"
-      }
-    },
-    "walk": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.1001,
-          "step_max": 0.1206,
-          "drift": 5.02,
-          "loop": 0.1877,
-          "loop_ratio": 1.88,
-          "travel": 0.52,
-          "pin": 0.932,
-          "pad": 0,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [],
-          "sub": "bc2b0d74-bef4-4cdd-92da-806ecac90c9c",
-          "group": "5fdea535-312d-465d-9fa1-0b4697d1b9a0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:39+00:00"
-        },
-        "south-east": {
-          "status": "warn",
-          "step_mean": 0.1507,
-          "step_max": 0.1911,
-          "drift": 11.79,
-          "loop": 0.4079,
-          "loop_ratio": 2.71,
-          "travel": 1.94,
-          "pin": 0.871,
-          "pad": 1,
-          "canvas": [
-            234,
-            234
-          ],
-          "reasons": [
-            "manual: best of six rolls (three free, two pinned froze, this free one) — hand-off 2.7×, drift 11.8 px; judge it on the page",
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "8dbdfa2f-5448-458f-8d47-937a3d213143",
-          "group": "11fbaadd-1dca-46f9-800f-4a48cc52e042",
-          "takes": 3,
-          "version": 6,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:56:36+00:00",
-          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-          "manual": true
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.2299,
-          "step_max": 0.3334,
-          "drift": 5.12,
-          "loop": 0.3782,
-          "loop_ratio": 1.64,
-          "travel": 2.92,
-          "pin": 0.724,
-          "pad": 0,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [],
-          "sub": "597523b3-29e3-4b37-a1ac-f56ed4b3cf86",
-          "group": "9ceffd7b-b027-4092-ad3a-d7652f39dcde",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:40+00:00"
-        },
-        "north-east": {
-          "status": "warn",
-          "step_mean": 0.1579,
-          "step_max": 0.206,
-          "drift": 3.61,
-          "loop": 0.3434,
-          "loop_ratio": 2.18,
-          "travel": 2.7,
-          "pin": 0.838,
-          "pad": 0,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [
-            "last→first hand-off 2.2× a step — eyeball the loop"
-          ],
-          "sub": "bb984589-2dc7-4af3-b0d3-5ed2fac9ddd7",
-          "group": "d635ca0a-251f-44ad-87f8-6ecb16e3c504",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:41+00:00"
-        },
-        "north": {
-          "status": "warn",
-          "step_mean": 0.1632,
-          "step_max": 0.2043,
-          "drift": 7.52,
-          "loop": 0.2479,
-          "loop_ratio": 1.52,
-          "travel": 0.63,
-          "pin": 0.891,
-          "pad": 0,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [
-            "drifts 7.5 px — eyeball it"
-          ],
-          "sub": "012bbaed-61ac-452d-a0f7-4d7888fafc50",
-          "group": "6451f08d-d0ca-454d-99fe-00501f2d11f0",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T21:16:42+00:00"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.2299,
-          "step_max": 0.3334,
-          "drift": 5.12,
-          "loop": 0.3782,
-          "loop_ratio": 1.64,
-          "travel": 2.92,
-          "pin": 0.724,
-          "pad": 0,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [],
-          "sub": "597523b3-29e3-4b37-a1ac-f56ed4b3cf86",
-          "group": "9ceffd7b-b027-4092-ad3a-d7652f39dcde",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:40+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "warn",
-          "step_mean": 0.1579,
-          "step_max": 0.206,
-          "drift": 3.61,
-          "loop": 0.3434,
-          "loop_ratio": 2.18,
-          "travel": 2.7,
-          "pin": 0.838,
-          "pad": 0,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [
-            "last→first hand-off 2.2× a step — eyeball the loop"
-          ],
-          "sub": "bb984589-2dc7-4af3-b0d3-5ed2fac9ddd7",
-          "group": "d635ca0a-251f-44ad-87f8-6ecb16e3c504",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:16:41+00:00",
-          "source": "north-east"
-        },
-        "south-west": {
-          "status": "warn",
-          "step_mean": 0.1507,
-          "step_max": 0.1911,
-          "drift": 11.79,
-          "loop": 0.4079,
-          "loop_ratio": 2.71,
-          "travel": 1.94,
-          "pin": 0.871,
-          "pad": 1,
-          "canvas": [
-            234,
-            234
-          ],
-          "reasons": [
-            "manual: best of six rolls (three free, two pinned froze, this free one) — hand-off 2.7×, drift 11.8 px; judge it on the page",
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "8dbdfa2f-5448-458f-8d47-937a3d213143",
-          "group": "11fbaadd-1dca-46f9-800f-4a48cc52e042",
-          "takes": 3,
-          "version": 6,
-          "mirrored": true,
-          "generated_at": "2026-09-09T21:56:36+00:00",
-          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-          "manual": true,
-          "source": "south-east"
-        }
-      },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-      "frame_paths": {
-        "south": [
-          "crystal_titan/animations/walk/south/00.webp",
-          "crystal_titan/animations/walk/south/01.webp",
-          "crystal_titan/animations/walk/south/02.webp",
-          "crystal_titan/animations/walk/south/03.webp",
-          "crystal_titan/animations/walk/south/04.webp",
-          "crystal_titan/animations/walk/south/05.webp"
-        ],
-        "south-east": [
-          "crystal_titan/animations/walk/south-east/00.webp",
-          "crystal_titan/animations/walk/south-east/01.webp",
-          "crystal_titan/animations/walk/south-east/02.webp",
-          "crystal_titan/animations/walk/south-east/03.webp",
-          "crystal_titan/animations/walk/south-east/04.webp",
-          "crystal_titan/animations/walk/south-east/05.webp"
-        ],
-        "east": [
-          "crystal_titan/animations/walk/east/00.webp",
-          "crystal_titan/animations/walk/east/01.webp",
-          "crystal_titan/animations/walk/east/02.webp",
-          "crystal_titan/animations/walk/east/03.webp",
-          "crystal_titan/animations/walk/east/04.webp",
-          "crystal_titan/animations/walk/east/05.webp"
-        ],
-        "north-east": [
-          "crystal_titan/animations/walk/north-east/00.webp",
-          "crystal_titan/animations/walk/north-east/01.webp",
-          "crystal_titan/animations/walk/north-east/02.webp",
-          "crystal_titan/animations/walk/north-east/03.webp",
-          "crystal_titan/animations/walk/north-east/04.webp",
-          "crystal_titan/animations/walk/north-east/05.webp"
-        ],
-        "north": [
-          "crystal_titan/animations/walk/north/00.webp",
-          "crystal_titan/animations/walk/north/01.webp",
-          "crystal_titan/animations/walk/north/02.webp",
-          "crystal_titan/animations/walk/north/03.webp",
-          "crystal_titan/animations/walk/north/04.webp",
-          "crystal_titan/animations/walk/north/05.webp"
-        ],
-        "west": [
-          "crystal_titan/animations/walk/west/00.webp",
-          "crystal_titan/animations/walk/west/01.webp",
-          "crystal_titan/animations/walk/west/02.webp",
-          "crystal_titan/animations/walk/west/03.webp",
-          "crystal_titan/animations/walk/west/04.webp",
-          "crystal_titan/animations/walk/west/05.webp"
-        ],
-        "north-west": [
-          "crystal_titan/animations/walk/north-west/00.webp",
-          "crystal_titan/animations/walk/north-west/01.webp",
-          "crystal_titan/animations/walk/north-west/02.webp",
-          "crystal_titan/animations/walk/north-west/03.webp",
-          "crystal_titan/animations/walk/north-west/04.webp",
-          "crystal_titan/animations/walk/north-west/05.webp"
-        ],
-        "south-west": [
-          "crystal_titan/animations/walk/south-west/00.webp",
-          "crystal_titan/animations/walk/south-west/01.webp",
-          "crystal_titan/animations/walk/south-west/02.webp",
-          "crystal_titan/animations/walk/south-west/03.webp",
-          "crystal_titan/animations/walk/south-west/04.webp",
-          "crystal_titan/animations/walk/south-west/05.webp"
-        ]
-      },
-      "strips": {
-        "south": "crystal_titan/animations/walk__south.webp",
-        "south-east": "crystal_titan/animations/walk__south-east.webp",
-        "east": "crystal_titan/animations/walk__east.webp",
-        "north-east": "crystal_titan/animations/walk__north-east.webp",
-        "north": "crystal_titan/animations/walk__north.webp",
-        "west": "crystal_titan/animations/walk__west.webp",
-        "north-west": "crystal_titan/animations/walk__north-west.webp",
-        "south-west": "crystal_titan/animations/walk__south-west.webp"
-      }
-    },
-    "attack": {
-      "directions": {
-        "south": {
-          "status": "pass",
-          "step_mean": 0.1856,
-          "step_max": 0.2668,
-          "drift": 2.04,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 1.65,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.004,
-          "peak": 0.3094,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [],
-          "sub": "6bb92a6e-aa6d-4179-826e-d3e7c30ae656",
-          "group": "612be321-171c-4a3b-9cb1-1a36830aac36",
-          "takes": 3,
-          "version": 4,
-          "mirrored": false,
-          "generated_at": "2026-09-09T23:02:59+00:00",
-          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance",
-          "tries": 2
-        },
-        "south-east": {
-          "status": "pass",
-          "step_mean": 0.1028,
-          "step_max": 0.1327,
-          "drift": 2.36,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 2.36,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1918,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [],
-          "sub": "c470845a-e5d8-4d45-9717-b8729bf950b8",
-          "group": "468ff0b0-8e56-4959-bb8a-e53b05f989f6",
-          "takes": 1,
-          "version": 5,
-          "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 3,
-          "generated_at": "2026-09-09T23:10:26+00:00"
-        },
-        "east": {
-          "status": "pass",
-          "step_mean": 0.1441,
-          "step_max": 0.2035,
-          "drift": 5.58,
-          "loop": 0.0001,
-          "loop_ratio": 0.0,
-          "travel": 5.58,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2036,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [],
-          "sub": "0e8ef76f-a181-4826-8fbf-3b69f18b2cfa",
-          "group": "a9b004a1-a8ad-4f52-8e9f-b8a905915601",
-          "takes": 1,
-          "version": 5,
-          "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 3,
-          "generated_at": "2026-09-09T23:10:27+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.1818,
-          "step_max": 0.2139,
-          "drift": 4.97,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 4.97,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.023,
-          "peak": 0.3122,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [],
-          "sub": "916aa3e2-f2d0-46d5-a423-e2ff21f0da9f",
-          "group": "fd3dc55e-da8c-438b-a12b-55c20aaa69ac",
-          "takes": 1,
-          "version": 5,
-          "mirrored": false,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 3,
-          "generated_at": "2026-09-09T23:10:29+00:00"
-        },
-        "north": {
-          "status": "pass",
-          "step_mean": 0.1068,
-          "step_max": 0.1233,
-          "drift": 1.81,
-          "loop": 0.0001,
-          "loop_ratio": 0.0,
-          "travel": 0.37,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.002,
-          "peak": 0.1886,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [],
-          "sub": "876bcfd4-fa47-456d-a9ff-34bcc488a12f",
-          "group": "501e9ca1-7f85-4d28-a8dc-c64264e153ef",
-          "takes": 1,
-          "version": 2,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:41:59+00:00",
-          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance"
-        },
-        "south-west": {
-          "status": "pass",
-          "step_mean": 0.1028,
-          "step_max": 0.1327,
-          "drift": 2.36,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 2.36,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.1918,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [],
-          "sub": "c470845a-e5d8-4d45-9717-b8729bf950b8",
-          "group": "468ff0b0-8e56-4959-bb8a-e53b05f989f6",
-          "takes": 1,
-          "version": 5,
-          "mirrored": true,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 3,
-          "generated_at": "2026-09-09T23:10:26+00:00",
-          "source": "south-east"
-        },
-        "west": {
-          "status": "pass",
-          "step_mean": 0.1441,
-          "step_max": 0.2035,
-          "drift": 5.58,
-          "loop": 0.0001,
-          "loop_ratio": 0.0,
-          "travel": 5.58,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.0,
-          "peak": 0.2036,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [],
-          "sub": "0e8ef76f-a181-4826-8fbf-3b69f18b2cfa",
-          "group": "a9b004a1-a8ad-4f52-8e9f-b8a905915601",
-          "takes": 1,
-          "version": 5,
-          "mirrored": true,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 3,
-          "generated_at": "2026-09-09T23:10:27+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1818,
-          "step_max": 0.2139,
-          "drift": 4.97,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 4.97,
-          "pin": 1.0,
-          "pad": 0,
-          "flash": 0.023,
-          "peak": 0.3122,
-          "canvas": [
-            232,
-            232
-          ],
-          "reasons": [],
-          "sub": "916aa3e2-f2d0-46d5-a423-e2ff21f0da9f",
-          "group": "fd3dc55e-da8c-438b-a12b-55c20aaa69ac",
-          "takes": 1,
-          "version": 5,
-          "mirrored": true,
-          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-          "tries": 3,
-          "generated_at": "2026-09-09T23:10:29+00:00",
-          "source": "north-east"
-        }
-      },
-      "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance",
-      "frame_paths": {
-        "south": [
-          "crystal_titan/animations/attack/south/00.webp",
-          "crystal_titan/animations/attack/south/01.webp",
-          "crystal_titan/animations/attack/south/02.webp",
-          "crystal_titan/animations/attack/south/03.webp",
-          "crystal_titan/animations/attack/south/04.webp"
-        ],
-        "south-east": [
-          "crystal_titan/animations/attack/south-east/00.webp",
-          "crystal_titan/animations/attack/south-east/01.webp",
-          "crystal_titan/animations/attack/south-east/02.webp",
-          "crystal_titan/animations/attack/south-east/03.webp",
-          "crystal_titan/animations/attack/south-east/04.webp"
-        ],
-        "east": [
-          "crystal_titan/animations/attack/east/00.webp",
-          "crystal_titan/animations/attack/east/01.webp",
-          "crystal_titan/animations/attack/east/02.webp",
-          "crystal_titan/animations/attack/east/03.webp",
-          "crystal_titan/animations/attack/east/04.webp"
-        ],
-        "north-east": [
-          "crystal_titan/animations/attack/north-east/00.webp",
-          "crystal_titan/animations/attack/north-east/01.webp",
-          "crystal_titan/animations/attack/north-east/02.webp",
-          "crystal_titan/animations/attack/north-east/03.webp",
-          "crystal_titan/animations/attack/north-east/04.webp"
-        ],
-        "north": [
-          "crystal_titan/animations/attack/north/00.webp",
-          "crystal_titan/animations/attack/north/01.webp",
-          "crystal_titan/animations/attack/north/02.webp",
-          "crystal_titan/animations/attack/north/03.webp",
-          "crystal_titan/animations/attack/north/04.webp"
-        ],
-        "south-west": [
-          "crystal_titan/animations/attack/south-west/00.webp",
-          "crystal_titan/animations/attack/south-west/01.webp",
-          "crystal_titan/animations/attack/south-west/02.webp",
-          "crystal_titan/animations/attack/south-west/03.webp",
-          "crystal_titan/animations/attack/south-west/04.webp"
-        ],
-        "west": [
-          "crystal_titan/animations/attack/west/00.webp",
-          "crystal_titan/animations/attack/west/01.webp",
-          "crystal_titan/animations/attack/west/02.webp",
-          "crystal_titan/animations/attack/west/03.webp",
-          "crystal_titan/animations/attack/west/04.webp"
-        ],
-        "north-west": [
-          "crystal_titan/animations/attack/north-west/00.webp",
-          "crystal_titan/animations/attack/north-west/01.webp",
-          "crystal_titan/animations/attack/north-west/02.webp",
-          "crystal_titan/animations/attack/north-west/03.webp",
-          "crystal_titan/animations/attack/north-west/04.webp"
-        ]
-      },
-      "strips": {
-        "south": "crystal_titan/animations/attack__south.webp",
-        "south-east": "crystal_titan/animations/attack__south-east.webp",
-        "east": "crystal_titan/animations/attack__east.webp",
-        "north-east": "crystal_titan/animations/attack__north-east.webp",
-        "north": "crystal_titan/animations/attack__north.webp",
-        "south-west": "crystal_titan/animations/attack__south-west.webp",
-        "west": "crystal_titan/animations/attack__west.webp",
-        "north-west": "crystal_titan/animations/attack__north-west.webp"
-      }
-    }
+ "id": "crystal_titan",
+ "name": "Prismfather",
+ "tier": "boss",
+ "scale": "big",
+ "lore": "Light goes into it and comes out wrong. Miners follow the rainbows down and are found as rainbows themselves.",
+ "biome": [
+  "grey_stone",
+  "ice"
+ ],
+ "items": [],
+ "prompt": "Gigantic fantasy crystal titan shown full body from head to feet, a body of jagged translucent amethyst and quartz crystal over dark stone, light refracting inside it, a faceted head with two glowing white eyes, huge crystal-bladed arms, and pillar legs.",
+ "size": [
+  232,
+  232
+ ],
+ "template_id": "mannequin",
+ "directions": [
+  "south",
+  "south-east",
+  "east",
+  "north-east",
+  "north",
+  "north-west",
+  "west",
+  "south-west"
+ ],
+ "rotations": {
+  "south": "crystal_titan/rotations/south.webp",
+  "south-east": "crystal_titan/rotations/south-east.webp",
+  "east": "crystal_titan/rotations/east.webp",
+  "north-east": "crystal_titan/rotations/north-east.webp",
+  "north": "crystal_titan/rotations/north.webp",
+  "north-west": "crystal_titan/rotations/north-west.webp",
+  "west": "crystal_titan/rotations/west.webp",
+  "south-west": "crystal_titan/rotations/south-west.webp"
+ },
+ "sheet": "crystal_titan/sheet.webp",
+ "review": "approved",
+ "pixellab_id": "f6dad916-5b59-4639-a571-c2118f8dc6c6",
+ "seed": 430073138,
+ "version": 1,
+ "usage": null,
+ "generated_at": "2026-09-09T18:50:15+00:00",
+ "elapsed_s": 168.6,
+ "qa": {
+  "status": "pass",
+  "min_run1": 0.637,
+  "reasons": [],
+  "directions": {
+   "south": {
+    "run1": 0.643,
+    "bbox": [
+     24,
+     7,
+     208,
+     225
+    ],
+    "fill": 0.745,
+    "touches_edge": false
+   },
+   "south-east": {
+    "run1": 0.691,
+    "bbox": [
+     41,
+     3,
+     188,
+     228
+    ],
+    "fill": 0.615,
+    "touches_edge": false
+   },
+   "east": {
+    "run1": 0.7,
+    "bbox": [
+     76,
+     3,
+     150,
+     228
+    ],
+    "fill": 0.309,
+    "touches_edge": false
+   },
+   "north-east": {
+    "run1": 0.645,
+    "bbox": [
+     49,
+     3,
+     182,
+     226
+    ],
+    "fill": 0.551,
+    "touches_edge": false
+   },
+   "north": {
+    "run1": 0.637,
+    "bbox": [
+     31,
+     5,
+     201,
+     223
+    ],
+    "fill": 0.689,
+    "touches_edge": false
+   },
+   "north-west": {
+    "run1": 0.643,
+    "bbox": [
+     53,
+     3,
+     182,
+     226
+    ],
+    "fill": 0.534,
+    "touches_edge": false
+   },
+   "west": {
+    "run1": 0.696,
+    "bbox": [
+     82,
+     3,
+     152,
+     227
+    ],
+    "fill": 0.291,
+    "touches_edge": false
+   },
+   "south-west": {
+    "run1": 0.668,
+    "bbox": [
+     44,
+     3,
+     190,
+     228
+    ],
+    "fill": 0.61,
+    "touches_edge": false
+   }
   }
+ },
+ "approved_at": "2026-09-09T19:59:24+00:00",
+ "animations": {
+  "idle": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.0506,
+     "step_max": 0.0662,
+     "drift": 2.15,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "edeaa336-1d77-4fbf-89e2-b4177d3020a0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:19:52+00:00",
+     "cut": 0
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.0393,
+     "step_max": 0.0631,
+     "drift": 1.63,
+     "loop": 0.0001,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "32adf0fc-4a5e-4712-a2b8-72d022ac559f",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:19:53+00:00",
+     "cut": 0
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.0312,
+     "step_max": 0.0605,
+     "drift": 1.34,
+     "loop": 0.0003,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "80d18c6f-d4dc-414b-9772-d1275b54de82",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:19:54+00:00",
+     "cut": 0
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.0402,
+     "step_max": 0.0597,
+     "drift": 1.17,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "c8c1eaa2-46e2-464a-a033-c2a30122ecfa",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:19:56+00:00",
+     "cut": 0
+    },
+    "north": {
+     "status": "pass",
+     "step_mean": 0.0823,
+     "step_max": 0.0926,
+     "drift": 2.81,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "348993e3-5e06-4212-a6f0-a69a85d196b2",
+     "takes": 2,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T20:31:53+00:00",
+     "cut": 0
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.0393,
+     "step_max": 0.0631,
+     "drift": 1.63,
+     "loop": 0.0001,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "32adf0fc-4a5e-4712-a2b8-72d022ac559f",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:19:53+00:00",
+     "cut": 0,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.0312,
+     "step_max": 0.0605,
+     "drift": 1.34,
+     "loop": 0.0003,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "80d18c6f-d4dc-414b-9772-d1275b54de82",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:19:54+00:00",
+     "cut": 0,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.0402,
+     "step_max": 0.0597,
+     "drift": 1.17,
+     "loop": 0.0,
+     "pin": 1.0,
+     "reasons": [],
+     "sub": "c8c1eaa2-46e2-464a-a033-c2a30122ecfa",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T20:19:56+00:00",
+     "cut": 0,
+     "source": "north-east"
+    }
+   },
+   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+   "frame_paths": {
+    "south": [
+     "crystal_titan/animations/idle/south/00.webp",
+     "crystal_titan/animations/idle/south/01.webp",
+     "crystal_titan/animations/idle/south/02.webp",
+     "crystal_titan/animations/idle/south/03.webp",
+     "crystal_titan/animations/idle/south/04.webp"
+    ],
+    "south-east": [
+     "crystal_titan/animations/idle/south-east/00.webp",
+     "crystal_titan/animations/idle/south-east/01.webp",
+     "crystal_titan/animations/idle/south-east/02.webp",
+     "crystal_titan/animations/idle/south-east/03.webp",
+     "crystal_titan/animations/idle/south-east/04.webp"
+    ],
+    "east": [
+     "crystal_titan/animations/idle/east/00.webp",
+     "crystal_titan/animations/idle/east/01.webp",
+     "crystal_titan/animations/idle/east/02.webp",
+     "crystal_titan/animations/idle/east/03.webp",
+     "crystal_titan/animations/idle/east/04.webp"
+    ],
+    "north-east": [
+     "crystal_titan/animations/idle/north-east/00.webp",
+     "crystal_titan/animations/idle/north-east/01.webp",
+     "crystal_titan/animations/idle/north-east/02.webp",
+     "crystal_titan/animations/idle/north-east/03.webp",
+     "crystal_titan/animations/idle/north-east/04.webp"
+    ],
+    "north": [
+     "crystal_titan/animations/idle/north/00.webp",
+     "crystal_titan/animations/idle/north/01.webp",
+     "crystal_titan/animations/idle/north/02.webp",
+     "crystal_titan/animations/idle/north/03.webp",
+     "crystal_titan/animations/idle/north/04.webp"
+    ],
+    "south-west": [
+     "crystal_titan/animations/idle/south-west/00.webp",
+     "crystal_titan/animations/idle/south-west/01.webp",
+     "crystal_titan/animations/idle/south-west/02.webp",
+     "crystal_titan/animations/idle/south-west/03.webp",
+     "crystal_titan/animations/idle/south-west/04.webp"
+    ],
+    "west": [
+     "crystal_titan/animations/idle/west/00.webp",
+     "crystal_titan/animations/idle/west/01.webp",
+     "crystal_titan/animations/idle/west/02.webp",
+     "crystal_titan/animations/idle/west/03.webp",
+     "crystal_titan/animations/idle/west/04.webp"
+    ],
+    "north-west": [
+     "crystal_titan/animations/idle/north-west/00.webp",
+     "crystal_titan/animations/idle/north-west/01.webp",
+     "crystal_titan/animations/idle/north-west/02.webp",
+     "crystal_titan/animations/idle/north-west/03.webp",
+     "crystal_titan/animations/idle/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "crystal_titan/animations/idle__south.webp",
+    "south-east": "crystal_titan/animations/idle__south-east.webp",
+    "east": "crystal_titan/animations/idle__east.webp",
+    "north-east": "crystal_titan/animations/idle__north-east.webp",
+    "north": "crystal_titan/animations/idle__north.webp",
+    "south-west": "crystal_titan/animations/idle__south-west.webp",
+    "west": "crystal_titan/animations/idle__west.webp",
+    "north-west": "crystal_titan/animations/idle__north-west.webp"
+   }
+  },
+  "walk": {
+   "directions": {
+    "south": {
+     "status": "pass",
+     "step_mean": 0.1001,
+     "step_max": 0.1206,
+     "drift": 5.02,
+     "loop": 0.1877,
+     "loop_ratio": 1.88,
+     "travel": 0.52,
+     "pin": 0.932,
+     "pad": 0,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [],
+     "sub": "bc2b0d74-bef4-4cdd-92da-806ecac90c9c",
+     "group": "5fdea535-312d-465d-9fa1-0b4697d1b9a0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:39+00:00"
+    },
+    "south-east": {
+     "status": "warn",
+     "step_mean": 0.1507,
+     "step_max": 0.1911,
+     "drift": 11.79,
+     "loop": 0.4079,
+     "loop_ratio": 2.71,
+     "travel": 1.94,
+     "pin": 0.871,
+     "pad": 1,
+     "canvas": [
+      234,
+      234
+     ],
+     "reasons": [
+      "manual: best of six rolls (three free, two pinned froze, this free one) — hand-off 2.7×, drift 11.8 px; judge it on the page",
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "8dbdfa2f-5448-458f-8d47-937a3d213143",
+     "group": "11fbaadd-1dca-46f9-800f-4a48cc52e042",
+     "takes": 3,
+     "version": 6,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:56:36+00:00",
+     "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+     "manual": true
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.2299,
+     "step_max": 0.3334,
+     "drift": 5.12,
+     "loop": 0.3782,
+     "loop_ratio": 1.64,
+     "travel": 2.92,
+     "pin": 0.724,
+     "pad": 0,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [],
+     "sub": "597523b3-29e3-4b37-a1ac-f56ed4b3cf86",
+     "group": "9ceffd7b-b027-4092-ad3a-d7652f39dcde",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:40+00:00"
+    },
+    "north-east": {
+     "status": "warn",
+     "step_mean": 0.1579,
+     "step_max": 0.206,
+     "drift": 3.61,
+     "loop": 0.3434,
+     "loop_ratio": 2.18,
+     "travel": 2.7,
+     "pin": 0.838,
+     "pad": 0,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [
+      "last→first hand-off 2.2× a step — eyeball the loop"
+     ],
+     "sub": "bb984589-2dc7-4af3-b0d3-5ed2fac9ddd7",
+     "group": "d635ca0a-251f-44ad-87f8-6ecb16e3c504",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:41+00:00"
+    },
+    "north": {
+     "status": "warn",
+     "step_mean": 0.1632,
+     "step_max": 0.2043,
+     "drift": 7.52,
+     "loop": 0.2479,
+     "loop_ratio": 1.52,
+     "travel": 0.63,
+     "pin": 0.891,
+     "pad": 0,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [
+      "drifts 7.5 px — eyeball it"
+     ],
+     "sub": "012bbaed-61ac-452d-a0f7-4d7888fafc50",
+     "group": "6451f08d-d0ca-454d-99fe-00501f2d11f0",
+     "takes": 1,
+     "version": 1,
+     "mirrored": false,
+     "generated_at": "2026-09-09T21:16:42+00:00"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.2299,
+     "step_max": 0.3334,
+     "drift": 5.12,
+     "loop": 0.3782,
+     "loop_ratio": 1.64,
+     "travel": 2.92,
+     "pin": 0.724,
+     "pad": 0,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [],
+     "sub": "597523b3-29e3-4b37-a1ac-f56ed4b3cf86",
+     "group": "9ceffd7b-b027-4092-ad3a-d7652f39dcde",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:40+00:00",
+     "source": "east"
+    },
+    "north-west": {
+     "status": "warn",
+     "step_mean": 0.1579,
+     "step_max": 0.206,
+     "drift": 3.61,
+     "loop": 0.3434,
+     "loop_ratio": 2.18,
+     "travel": 2.7,
+     "pin": 0.838,
+     "pad": 0,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [
+      "last→first hand-off 2.2× a step — eyeball the loop"
+     ],
+     "sub": "bb984589-2dc7-4af3-b0d3-5ed2fac9ddd7",
+     "group": "d635ca0a-251f-44ad-87f8-6ecb16e3c504",
+     "takes": 1,
+     "version": 1,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:16:41+00:00",
+     "source": "north-east"
+    },
+    "south-west": {
+     "status": "warn",
+     "step_mean": 0.1507,
+     "step_max": 0.1911,
+     "drift": 11.79,
+     "loop": 0.4079,
+     "loop_ratio": 2.71,
+     "travel": 1.94,
+     "pin": 0.871,
+     "pad": 1,
+     "canvas": [
+      234,
+      234
+     ],
+     "reasons": [
+      "manual: best of six rolls (three free, two pinned froze, this free one) — hand-off 2.7×, drift 11.8 px; judge it on the page",
+      "canvas grown by 1 px a side to hold the motion"
+     ],
+     "sub": "8dbdfa2f-5448-458f-8d47-937a3d213143",
+     "group": "11fbaadd-1dca-46f9-800f-4a48cc52e042",
+     "takes": 3,
+     "version": 6,
+     "mirrored": true,
+     "generated_at": "2026-09-09T21:56:36+00:00",
+     "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+     "manual": true,
+     "source": "south-east"
+    }
+   },
+   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+   "frame_paths": {
+    "south": [
+     "crystal_titan/animations/walk/south/00.webp",
+     "crystal_titan/animations/walk/south/01.webp",
+     "crystal_titan/animations/walk/south/02.webp",
+     "crystal_titan/animations/walk/south/03.webp",
+     "crystal_titan/animations/walk/south/04.webp",
+     "crystal_titan/animations/walk/south/05.webp"
+    ],
+    "south-east": [
+     "crystal_titan/animations/walk/south-east/00.webp",
+     "crystal_titan/animations/walk/south-east/01.webp",
+     "crystal_titan/animations/walk/south-east/02.webp",
+     "crystal_titan/animations/walk/south-east/03.webp",
+     "crystal_titan/animations/walk/south-east/04.webp",
+     "crystal_titan/animations/walk/south-east/05.webp"
+    ],
+    "east": [
+     "crystal_titan/animations/walk/east/00.webp",
+     "crystal_titan/animations/walk/east/01.webp",
+     "crystal_titan/animations/walk/east/02.webp",
+     "crystal_titan/animations/walk/east/03.webp",
+     "crystal_titan/animations/walk/east/04.webp",
+     "crystal_titan/animations/walk/east/05.webp"
+    ],
+    "north-east": [
+     "crystal_titan/animations/walk/north-east/00.webp",
+     "crystal_titan/animations/walk/north-east/01.webp",
+     "crystal_titan/animations/walk/north-east/02.webp",
+     "crystal_titan/animations/walk/north-east/03.webp",
+     "crystal_titan/animations/walk/north-east/04.webp",
+     "crystal_titan/animations/walk/north-east/05.webp"
+    ],
+    "north": [
+     "crystal_titan/animations/walk/north/00.webp",
+     "crystal_titan/animations/walk/north/01.webp",
+     "crystal_titan/animations/walk/north/02.webp",
+     "crystal_titan/animations/walk/north/03.webp",
+     "crystal_titan/animations/walk/north/04.webp",
+     "crystal_titan/animations/walk/north/05.webp"
+    ],
+    "west": [
+     "crystal_titan/animations/walk/west/00.webp",
+     "crystal_titan/animations/walk/west/01.webp",
+     "crystal_titan/animations/walk/west/02.webp",
+     "crystal_titan/animations/walk/west/03.webp",
+     "crystal_titan/animations/walk/west/04.webp",
+     "crystal_titan/animations/walk/west/05.webp"
+    ],
+    "north-west": [
+     "crystal_titan/animations/walk/north-west/00.webp",
+     "crystal_titan/animations/walk/north-west/01.webp",
+     "crystal_titan/animations/walk/north-west/02.webp",
+     "crystal_titan/animations/walk/north-west/03.webp",
+     "crystal_titan/animations/walk/north-west/04.webp",
+     "crystal_titan/animations/walk/north-west/05.webp"
+    ],
+    "south-west": [
+     "crystal_titan/animations/walk/south-west/00.webp",
+     "crystal_titan/animations/walk/south-west/01.webp",
+     "crystal_titan/animations/walk/south-west/02.webp",
+     "crystal_titan/animations/walk/south-west/03.webp",
+     "crystal_titan/animations/walk/south-west/04.webp",
+     "crystal_titan/animations/walk/south-west/05.webp"
+    ]
+   },
+   "strips": {
+    "south": "crystal_titan/animations/walk__south.webp",
+    "south-east": "crystal_titan/animations/walk__south-east.webp",
+    "east": "crystal_titan/animations/walk__east.webp",
+    "north-east": "crystal_titan/animations/walk__north-east.webp",
+    "north": "crystal_titan/animations/walk__north.webp",
+    "west": "crystal_titan/animations/walk__west.webp",
+    "north-west": "crystal_titan/animations/walk__north-west.webp",
+    "south-west": "crystal_titan/animations/walk__south-west.webp"
+   }
+  },
+  "attack": {
+   "directions": {
+    "south": {
+     "status": "fail",
+     "step_mean": 0.1856,
+     "step_max": 0.2668,
+     "drift": 2.04,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 1.65,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.004,
+     "peak": 0.3094,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [
+      "eyeballed: painted swoosh on the strike"
+     ],
+     "sub": "6bb92a6e-aa6d-4179-826e-d3e7c30ae656",
+     "group": "612be321-171c-4a3b-9cb1-1a36830aac36",
+     "takes": 3,
+     "version": 4,
+     "mirrored": false,
+     "generated_at": "2026-09-09T23:02:59+00:00",
+     "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance",
+     "tries": 2,
+     "manual": true
+    },
+    "south-east": {
+     "status": "pass",
+     "step_mean": 0.1028,
+     "step_max": 0.1327,
+     "drift": 2.36,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 2.36,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1918,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [],
+     "sub": "c470845a-e5d8-4d45-9717-b8729bf950b8",
+     "group": "468ff0b0-8e56-4959-bb8a-e53b05f989f6",
+     "takes": 1,
+     "version": 5,
+     "mirrored": false,
+     "generated_at": "2026-09-09T23:10:26+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+     "tries": 3
+    },
+    "east": {
+     "status": "pass",
+     "step_mean": 0.1441,
+     "step_max": 0.2035,
+     "drift": 5.58,
+     "loop": 0.0001,
+     "loop_ratio": 0.0,
+     "travel": 5.58,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2036,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [],
+     "sub": "0e8ef76f-a181-4826-8fbf-3b69f18b2cfa",
+     "group": "a9b004a1-a8ad-4f52-8e9f-b8a905915601",
+     "takes": 1,
+     "version": 5,
+     "mirrored": false,
+     "generated_at": "2026-09-09T23:10:27+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+     "tries": 3
+    },
+    "north-east": {
+     "status": "pass",
+     "step_mean": 0.1818,
+     "step_max": 0.2139,
+     "drift": 4.97,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 4.97,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.023,
+     "peak": 0.3122,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [],
+     "sub": "916aa3e2-f2d0-46d5-a423-e2ff21f0da9f",
+     "group": "fd3dc55e-da8c-438b-a12b-55c20aaa69ac",
+     "takes": 1,
+     "version": 5,
+     "mirrored": false,
+     "generated_at": "2026-09-09T23:10:29+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+     "tries": 3
+    },
+    "north": {
+     "status": "fail",
+     "step_mean": 0.1068,
+     "step_max": 0.1233,
+     "drift": 1.81,
+     "loop": 0.0001,
+     "loop_ratio": 0.0,
+     "travel": 0.37,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.002,
+     "peak": 0.1886,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [
+      "eyeballed: painted swoosh on the strike"
+     ],
+     "sub": "876bcfd4-fa47-456d-a9ff-34bcc488a12f",
+     "group": "501e9ca1-7f85-4d28-a8dc-c64264e153ef",
+     "takes": 1,
+     "version": 2,
+     "mirrored": false,
+     "generated_at": "2026-09-09T22:41:59+00:00",
+     "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance",
+     "manual": true
+    },
+    "south-west": {
+     "status": "pass",
+     "step_mean": 0.1028,
+     "step_max": 0.1327,
+     "drift": 2.36,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 2.36,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.1918,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [],
+     "sub": "c470845a-e5d8-4d45-9717-b8729bf950b8",
+     "group": "468ff0b0-8e56-4959-bb8a-e53b05f989f6",
+     "takes": 1,
+     "version": 5,
+     "mirrored": true,
+     "generated_at": "2026-09-09T23:10:26+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+     "tries": 3,
+     "source": "south-east"
+    },
+    "west": {
+     "status": "pass",
+     "step_mean": 0.1441,
+     "step_max": 0.2035,
+     "drift": 5.58,
+     "loop": 0.0001,
+     "loop_ratio": 0.0,
+     "travel": 5.58,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.0,
+     "peak": 0.2036,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [],
+     "sub": "0e8ef76f-a181-4826-8fbf-3b69f18b2cfa",
+     "group": "a9b004a1-a8ad-4f52-8e9f-b8a905915601",
+     "takes": 1,
+     "version": 5,
+     "mirrored": true,
+     "generated_at": "2026-09-09T23:10:27+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+     "tries": 3,
+     "source": "east"
+    },
+    "north-west": {
+     "status": "pass",
+     "step_mean": 0.1818,
+     "step_max": 0.2139,
+     "drift": 4.97,
+     "loop": 0.0,
+     "loop_ratio": 0.0,
+     "travel": 4.97,
+     "pin": 1.0,
+     "pad": 0,
+     "flash": 0.023,
+     "peak": 0.3122,
+     "canvas": [
+      232,
+      232
+     ],
+     "reasons": [],
+     "sub": "916aa3e2-f2d0-46d5-a423-e2ff21f0da9f",
+     "group": "fd3dc55e-da8c-438b-a12b-55c20aaa69ac",
+     "takes": 1,
+     "version": 5,
+     "mirrored": true,
+     "generated_at": "2026-09-09T23:10:29+00:00",
+     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+     "tries": 3,
+     "source": "north-east"
+    }
+   },
+   "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance",
+   "frame_paths": {
+    "south": [
+     "crystal_titan/animations/attack/south/00.webp",
+     "crystal_titan/animations/attack/south/01.webp",
+     "crystal_titan/animations/attack/south/02.webp",
+     "crystal_titan/animations/attack/south/03.webp",
+     "crystal_titan/animations/attack/south/04.webp"
+    ],
+    "south-east": [
+     "crystal_titan/animations/attack/south-east/00.webp",
+     "crystal_titan/animations/attack/south-east/01.webp",
+     "crystal_titan/animations/attack/south-east/02.webp",
+     "crystal_titan/animations/attack/south-east/03.webp",
+     "crystal_titan/animations/attack/south-east/04.webp"
+    ],
+    "east": [
+     "crystal_titan/animations/attack/east/00.webp",
+     "crystal_titan/animations/attack/east/01.webp",
+     "crystal_titan/animations/attack/east/02.webp",
+     "crystal_titan/animations/attack/east/03.webp",
+     "crystal_titan/animations/attack/east/04.webp"
+    ],
+    "north-east": [
+     "crystal_titan/animations/attack/north-east/00.webp",
+     "crystal_titan/animations/attack/north-east/01.webp",
+     "crystal_titan/animations/attack/north-east/02.webp",
+     "crystal_titan/animations/attack/north-east/03.webp",
+     "crystal_titan/animations/attack/north-east/04.webp"
+    ],
+    "north": [
+     "crystal_titan/animations/attack/north/00.webp",
+     "crystal_titan/animations/attack/north/01.webp",
+     "crystal_titan/animations/attack/north/02.webp",
+     "crystal_titan/animations/attack/north/03.webp",
+     "crystal_titan/animations/attack/north/04.webp"
+    ],
+    "south-west": [
+     "crystal_titan/animations/attack/south-west/00.webp",
+     "crystal_titan/animations/attack/south-west/01.webp",
+     "crystal_titan/animations/attack/south-west/02.webp",
+     "crystal_titan/animations/attack/south-west/03.webp",
+     "crystal_titan/animations/attack/south-west/04.webp"
+    ],
+    "west": [
+     "crystal_titan/animations/attack/west/00.webp",
+     "crystal_titan/animations/attack/west/01.webp",
+     "crystal_titan/animations/attack/west/02.webp",
+     "crystal_titan/animations/attack/west/03.webp",
+     "crystal_titan/animations/attack/west/04.webp"
+    ],
+    "north-west": [
+     "crystal_titan/animations/attack/north-west/00.webp",
+     "crystal_titan/animations/attack/north-west/01.webp",
+     "crystal_titan/animations/attack/north-west/02.webp",
+     "crystal_titan/animations/attack/north-west/03.webp",
+     "crystal_titan/animations/attack/north-west/04.webp"
+    ]
+   },
+   "strips": {
+    "south": "crystal_titan/animations/attack__south.webp",
+    "south-east": "crystal_titan/animations/attack__south-east.webp",
+    "east": "crystal_titan/animations/attack__east.webp",
+    "north-east": "crystal_titan/animations/attack__north-east.webp",
+    "north": "crystal_titan/animations/attack__north.webp",
+    "south-west": "crystal_titan/animations/attack__south-west.webp",
+    "west": "crystal_titan/animations/attack__west.webp",
+    "north-west": "crystal_titan/animations/attack__north-west.webp"
+   }
+  }
+ }
 }

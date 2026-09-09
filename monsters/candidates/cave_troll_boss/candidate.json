@@ -1,908 +1,902 @@
 {
- "id": "cave_troll_boss",
- "name": "Deepmaul",
- "tier": "boss",
- "scale": "big",
- "lore": "It has never seen the sun and hates it on principle. Anything with a torch gets the club first.",
- "biome": [
-  "black_rock",
-  "grey_stone"
- ],
- "items": [],
- "prompt": "Gigantic fantasy cave troll shown full body from head to feet, pale hairless grey skin, tiny blind white eyes, an enormous underbite with broken tusks, a hunched back covered in fungus, huge knuckle-dragging arms, and a stalactite club resting on one shoulder.",
- "size": [
-  240,
-  240
- ],
- "template_id": "mannequin",
- "directions": [
-  "south",
-  "south-east",
-  "east",
-  "north-east",
-  "north",
-  "north-west",
-  "west",
-  "south-west"
- ],
- "rotations": {
-  "south": "cave_troll_boss/rotations/south.webp",
-  "south-east": "cave_troll_boss/rotations/south-east.webp",
-  "east": "cave_troll_boss/rotations/east.webp",
-  "north-east": "cave_troll_boss/rotations/north-east.webp",
-  "north": "cave_troll_boss/rotations/north.webp",
-  "north-west": "cave_troll_boss/rotations/north-west.webp",
-  "west": "cave_troll_boss/rotations/west.webp",
-  "south-west": "cave_troll_boss/rotations/south-west.webp"
- },
- "sheet": "cave_troll_boss/sheet.webp",
- "review": "approved",
- "pixellab_id": "47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",
- "seed": 610508535,
- "version": 2,
- "usage": null,
- "generated_at": "2026-09-09T18:56:12+00:00",
- "elapsed_s": 194.6,
- "qa": {
-  "status": "pass",
-  "min_run1": 0.575,
-  "reasons": [],
-  "directions": {
-   "south": {
-    "run1": 0.575,
-    "bbox": [
-     19,
-     11,
-     213,
-     227
-    ],
-    "fill": 0.728,
-    "touches_edge": false
-   },
-   "south-east": {
-    "run1": 0.662,
-    "bbox": [
-     45,
-     11,
-     199,
-     230
-    ],
-    "fill": 0.586,
-    "touches_edge": false
-   },
-   "east": {
-    "run1": 0.659,
-    "bbox": [
-     79,
-     11,
-     170,
-     231
-    ],
-    "fill": 0.348,
-    "touches_edge": false
-   },
-   "north-east": {
-    "run1": 0.629,
-    "bbox": [
-     42,
-     11,
-     198,
-     227
-    ],
-    "fill": 0.585,
-    "touches_edge": false
-   },
-   "north": {
-    "run1": 0.611,
-    "bbox": [
-     28,
-     15,
-     220,
-     225
-    ],
-    "fill": 0.7,
-    "touches_edge": false
-   },
-   "north-west": {
-    "run1": 0.609,
-    "bbox": [
-     44,
-     19,
-     206,
-     227
-    ],
-    "fill": 0.585,
-    "touches_edge": false
-   },
-   "west": {
-    "run1": 0.649,
-    "bbox": [
-     70,
-     18,
-     165,
-     231
-    ],
-    "fill": 0.351,
-    "touches_edge": false
-   },
-   "south-west": {
-    "run1": 0.661,
-    "bbox": [
-     31,
-     15,
-     197,
-     231
-    ],
-    "fill": 0.623,
-    "touches_edge": false
-   }
-  }
- },
- "approved_at": "2026-09-09T19:59:24+00:00",
- "animations": {
-  "idle": {
-   "directions": {
-    "south": {
-     "status": "pass",
-     "step_mean": 0.0585,
-     "step_max": 0.0643,
-     "drift": 1.9,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "e013fa56-c443-45e0-97c8-eaf46a012018",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:21:33+00:00",
-     "cut": 0
-    },
-    "south-east": {
-     "status": "pass",
-     "step_mean": 0.0285,
-     "step_max": 0.0525,
-     "drift": 1.69,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "77810f9d-1daa-4c39-b14d-276d25537aa2",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:21:34+00:00",
-     "cut": 0
-    },
-    "east": {
-     "status": "pass",
-     "step_mean": 0.0217,
-     "step_max": 0.0337,
-     "drift": 0.25,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "b71d4958-2f3b-4f41-8a9b-24b6e75c7bbb",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:21:34+00:00",
-     "cut": 0
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.0475,
-     "step_max": 0.0671,
-     "drift": 1.44,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "62cd4aad-d84a-4a82-a1e6-7e75d492d9ab",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:21:35+00:00",
-     "cut": 0
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.0984,
-     "step_max": 0.1099,
-     "drift": 4.21,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [
-      "drifts 4.2 px — eyeball it"
-     ],
-     "sub": "48182371-5505-4f30-8c6f-b83c6389549e",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T20:21:36+00:00",
-     "cut": 0
-    },
-    "south-west": {
-     "status": "pass",
-     "step_mean": 0.0285,
-     "step_max": 0.0525,
-     "drift": 1.69,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "77810f9d-1daa-4c39-b14d-276d25537aa2",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:21:34+00:00",
-     "cut": 0,
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.0217,
-     "step_max": 0.0337,
-     "drift": 0.25,
-     "loop": 0.0001,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "b71d4958-2f3b-4f41-8a9b-24b6e75c7bbb",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:21:34+00:00",
-     "cut": 0,
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.0475,
-     "step_max": 0.0671,
-     "drift": 1.44,
-     "loop": 0.0,
-     "pin": 1.0,
-     "reasons": [],
-     "sub": "62cd4aad-d84a-4a82-a1e6-7e75d492d9ab",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T20:21:35+00:00",
-     "cut": 0,
-     "source": "north-east"
-    }
-   },
-   "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
-   "frame_paths": {
-    "south": [
-     "cave_troll_boss/animations/idle/south/00.webp",
-     "cave_troll_boss/animations/idle/south/01.webp",
-     "cave_troll_boss/animations/idle/south/02.webp",
-     "cave_troll_boss/animations/idle/south/03.webp",
-     "cave_troll_boss/animations/idle/south/04.webp"
-    ],
-    "south-east": [
-     "cave_troll_boss/animations/idle/south-east/00.webp",
-     "cave_troll_boss/animations/idle/south-east/01.webp",
-     "cave_troll_boss/animations/idle/south-east/02.webp",
-     "cave_troll_boss/animations/idle/south-east/03.webp",
-     "cave_troll_boss/animations/idle/south-east/04.webp"
-    ],
-    "east": [
-     "cave_troll_boss/animations/idle/east/00.webp",
-     "cave_troll_boss/animations/idle/east/01.webp",
-     "cave_troll_boss/animations/idle/east/02.webp",
-     "cave_troll_boss/animations/idle/east/03.webp",
-     "cave_troll_boss/animations/idle/east/04.webp"
-    ],
-    "north-east": [
-     "cave_troll_boss/animations/idle/north-east/00.webp",
-     "cave_troll_boss/animations/idle/north-east/01.webp",
-     "cave_troll_boss/animations/idle/north-east/02.webp",
-     "cave_troll_boss/animations/idle/north-east/03.webp",
-     "cave_troll_boss/animations/idle/north-east/04.webp"
-    ],
-    "north": [
-     "cave_troll_boss/animations/idle/north/00.webp",
-     "cave_troll_boss/animations/idle/north/01.webp",
-     "cave_troll_boss/animations/idle/north/02.webp",
-     "cave_troll_boss/animations/idle/north/03.webp",
-     "cave_troll_boss/animations/idle/north/04.webp"
-    ],
-    "south-west": [
-     "cave_troll_boss/animations/idle/south-west/00.webp",
-     "cave_troll_boss/animations/idle/south-west/01.webp",
-     "cave_troll_boss/animations/idle/south-west/02.webp",
-     "cave_troll_boss/animations/idle/south-west/03.webp",
-     "cave_troll_boss/animations/idle/south-west/04.webp"
-    ],
-    "west": [
-     "cave_troll_boss/animations/idle/west/00.webp",
-     "cave_troll_boss/animations/idle/west/01.webp",
-     "cave_troll_boss/animations/idle/west/02.webp",
-     "cave_troll_boss/animations/idle/west/03.webp",
-     "cave_troll_boss/animations/idle/west/04.webp"
-    ],
-    "north-west": [
-     "cave_troll_boss/animations/idle/north-west/00.webp",
-     "cave_troll_boss/animations/idle/north-west/01.webp",
-     "cave_troll_boss/animations/idle/north-west/02.webp",
-     "cave_troll_boss/animations/idle/north-west/03.webp",
-     "cave_troll_boss/animations/idle/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "cave_troll_boss/animations/idle__south.webp",
-    "south-east": "cave_troll_boss/animations/idle__south-east.webp",
-    "east": "cave_troll_boss/animations/idle__east.webp",
-    "north-east": "cave_troll_boss/animations/idle__north-east.webp",
-    "north": "cave_troll_boss/animations/idle__north.webp",
-    "south-west": "cave_troll_boss/animations/idle__south-west.webp",
-    "west": "cave_troll_boss/animations/idle__west.webp",
-    "north-west": "cave_troll_boss/animations/idle__north-west.webp"
-   }
+  "id": "cave_troll_boss",
+  "name": "Deepmaul",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It has never seen the sun and hates it on principle. Anything with a torch gets the club first.",
+  "biome": [
+    "black_rock",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy cave troll shown full body from head to feet, pale hairless grey skin, tiny blind white eyes, an enormous underbite with broken tusks, a hunched back covered in fungus, huge knuckle-dragging arms, and a stalactite club resting on one shoulder.",
+  "size": [
+    240,
+    240
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cave_troll_boss/rotations/south.webp",
+    "south-east": "cave_troll_boss/rotations/south-east.webp",
+    "east": "cave_troll_boss/rotations/east.webp",
+    "north-east": "cave_troll_boss/rotations/north-east.webp",
+    "north": "cave_troll_boss/rotations/north.webp",
+    "north-west": "cave_troll_boss/rotations/north-west.webp",
+    "west": "cave_troll_boss/rotations/west.webp",
+    "south-west": "cave_troll_boss/rotations/south-west.webp"
   },
-  "walk": {
-   "directions": {
-    "south": {
-     "status": "warn",
-     "step_mean": 0.1577,
-     "step_max": 0.1955,
-     "drift": 8.29,
-     "loop": 0.2657,
-     "loop_ratio": 1.69,
-     "travel": 3.45,
-     "pin": 0.923,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "drifts 8.3 px — eyeball it"
-     ],
-     "sub": "6a347fae-1fe2-43dc-b30e-8e7ff720bf88",
-     "group": "4c88cc74-f347-458d-8be3-db7251219b72",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:43+00:00"
-    },
-    "south-east": {
-     "status": "warn",
-     "step_mean": 0.1873,
-     "step_max": 0.2279,
-     "drift": 7.17,
-     "loop": 0.48,
-     "loop_ratio": 2.56,
-     "travel": 4.42,
-     "pin": 0.867,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "last→first hand-off 2.6× a step — eyeball the loop"
-     ],
-     "sub": "343d4511-9828-491b-91a8-fb187451cb54",
-     "group": "7889fe28-1178-4cb2-8f33-273e4728f284",
-     "takes": 3,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:45:53+00:00"
-    },
-    "east": {
-     "status": "warn",
-     "step_mean": 0.2107,
-     "step_max": 0.2715,
-     "drift": 6.99,
-     "loop": 0.4356,
-     "loop_ratio": 2.07,
-     "travel": 3.45,
-     "pin": 0.77,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "last→first hand-off 2.1× a step — eyeball the loop"
-     ],
-     "sub": "150137fa-ace7-47b4-8914-d86400cc1c6f",
-     "group": "9c2b0ef4-bcb3-42fb-a9a2-d55dcfe3d0fa",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:47+00:00"
-    },
-    "north-east": {
-     "status": "warn",
-     "step_mean": 0.1944,
-     "step_max": 0.2643,
-     "drift": 5.96,
-     "loop": 0.4266,
-     "loop_ratio": 2.19,
-     "travel": 4.41,
-     "pin": 0.829,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "last→first hand-off 2.2× a step — eyeball the loop"
-     ],
-     "sub": "ad3b4c56-c63d-47c4-b033-b280adb9875b",
-     "group": "15fcc1cc-8d2e-48eb-a839-be4a5730ff18",
-     "takes": 1,
-     "version": 1,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:16:47+00:00"
-    },
-    "north": {
-     "status": "pass",
-     "step_mean": 0.1178,
-     "step_max": 0.1848,
-     "drift": 5.72,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.84,
-     "pin": 1.0,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)"
-     ],
-     "pinned": true,
-     "sub": "c470fc06-47ce-426c-b6f6-76e6f4cf6745",
-     "group": "a22f5394-3b14-426b-a7ac-6d4a1a14d9af",
-     "takes": 3,
-     "version": 4,
-     "mirrored": false,
-     "generated_at": "2026-09-09T21:51:55+00:00"
-    },
-    "west": {
-     "status": "warn",
-     "step_mean": 0.2107,
-     "step_max": 0.2715,
-     "drift": 6.99,
-     "loop": 0.4356,
-     "loop_ratio": 2.07,
-     "travel": 3.45,
-     "pin": 0.77,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "last→first hand-off 2.1× a step — eyeball the loop"
-     ],
-     "sub": "150137fa-ace7-47b4-8914-d86400cc1c6f",
-     "group": "9c2b0ef4-bcb3-42fb-a9a2-d55dcfe3d0fa",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:16:47+00:00",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "warn",
-     "step_mean": 0.1944,
-     "step_max": 0.2643,
-     "drift": 5.96,
-     "loop": 0.4266,
-     "loop_ratio": 2.19,
-     "travel": 4.41,
-     "pin": 0.829,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "last→first hand-off 2.2× a step — eyeball the loop"
-     ],
-     "sub": "ad3b4c56-c63d-47c4-b033-b280adb9875b",
-     "group": "15fcc1cc-8d2e-48eb-a839-be4a5730ff18",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:16:47+00:00",
-     "source": "north-east"
-    },
-    "south-west": {
-     "status": "warn",
-     "step_mean": 0.1873,
-     "step_max": 0.2279,
-     "drift": 7.17,
-     "loop": 0.48,
-     "loop_ratio": 2.56,
-     "travel": 4.42,
-     "pin": 0.867,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "last→first hand-off 2.6× a step — eyeball the loop"
-     ],
-     "sub": "343d4511-9828-491b-91a8-fb187451cb54",
-     "group": "7889fe28-1178-4cb2-8f33-273e4728f284",
-     "takes": 3,
-     "version": 3,
-     "mirrored": true,
-     "generated_at": "2026-09-09T21:45:53+00:00",
-     "source": "south-east"
+  "sheet": "cave_troll_boss/sheet.webp",
+  "review": "approved",
+  "pixellab_id": "47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",
+  "seed": 610508535,
+  "version": 2,
+  "usage": null,
+  "generated_at": "2026-09-09T18:56:12+00:00",
+  "elapsed_s": 194.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.575,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.575,
+        "bbox": [
+          19,
+          11,
+          213,
+          227
+        ],
+        "fill": 0.728,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.662,
+        "bbox": [
+          45,
+          11,
+          199,
+          230
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.659,
+        "bbox": [
+          79,
+          11,
+          170,
+          231
+        ],
+        "fill": 0.348,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.629,
+        "bbox": [
+          42,
+          11,
+          198,
+          227
+        ],
+        "fill": 0.585,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.611,
+        "bbox": [
+          28,
+          15,
+          220,
+          225
+        ],
+        "fill": 0.7,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.609,
+        "bbox": [
+          44,
+          19,
+          206,
+          227
+        ],
+        "fill": 0.585,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.649,
+        "bbox": [
+          70,
+          18,
+          165,
+          231
+        ],
+        "fill": 0.351,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.661,
+        "bbox": [
+          31,
+          15,
+          197,
+          231
+        ],
+        "fill": 0.623,
+        "touches_edge": false
+      }
     }
-   },
-   "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
-   "frame_paths": {
-    "south": [
-     "cave_troll_boss/animations/walk/south/00.webp",
-     "cave_troll_boss/animations/walk/south/01.webp",
-     "cave_troll_boss/animations/walk/south/02.webp",
-     "cave_troll_boss/animations/walk/south/03.webp",
-     "cave_troll_boss/animations/walk/south/04.webp",
-     "cave_troll_boss/animations/walk/south/05.webp"
-    ],
-    "south-east": [
-     "cave_troll_boss/animations/walk/south-east/00.webp",
-     "cave_troll_boss/animations/walk/south-east/01.webp",
-     "cave_troll_boss/animations/walk/south-east/02.webp",
-     "cave_troll_boss/animations/walk/south-east/03.webp",
-     "cave_troll_boss/animations/walk/south-east/04.webp",
-     "cave_troll_boss/animations/walk/south-east/05.webp"
-    ],
-    "east": [
-     "cave_troll_boss/animations/walk/east/00.webp",
-     "cave_troll_boss/animations/walk/east/01.webp",
-     "cave_troll_boss/animations/walk/east/02.webp",
-     "cave_troll_boss/animations/walk/east/03.webp",
-     "cave_troll_boss/animations/walk/east/04.webp",
-     "cave_troll_boss/animations/walk/east/05.webp"
-    ],
-    "north-east": [
-     "cave_troll_boss/animations/walk/north-east/00.webp",
-     "cave_troll_boss/animations/walk/north-east/01.webp",
-     "cave_troll_boss/animations/walk/north-east/02.webp",
-     "cave_troll_boss/animations/walk/north-east/03.webp",
-     "cave_troll_boss/animations/walk/north-east/04.webp",
-     "cave_troll_boss/animations/walk/north-east/05.webp"
-    ],
-    "north": [
-     "cave_troll_boss/animations/walk/north/00.webp",
-     "cave_troll_boss/animations/walk/north/01.webp",
-     "cave_troll_boss/animations/walk/north/02.webp",
-     "cave_troll_boss/animations/walk/north/03.webp",
-     "cave_troll_boss/animations/walk/north/04.webp",
-     "cave_troll_boss/animations/walk/north/05.webp"
-    ],
-    "west": [
-     "cave_troll_boss/animations/walk/west/00.webp",
-     "cave_troll_boss/animations/walk/west/01.webp",
-     "cave_troll_boss/animations/walk/west/02.webp",
-     "cave_troll_boss/animations/walk/west/03.webp",
-     "cave_troll_boss/animations/walk/west/04.webp",
-     "cave_troll_boss/animations/walk/west/05.webp"
-    ],
-    "north-west": [
-     "cave_troll_boss/animations/walk/north-west/00.webp",
-     "cave_troll_boss/animations/walk/north-west/01.webp",
-     "cave_troll_boss/animations/walk/north-west/02.webp",
-     "cave_troll_boss/animations/walk/north-west/03.webp",
-     "cave_troll_boss/animations/walk/north-west/04.webp",
-     "cave_troll_boss/animations/walk/north-west/05.webp"
-    ],
-    "south-west": [
-     "cave_troll_boss/animations/walk/south-west/00.webp",
-     "cave_troll_boss/animations/walk/south-west/01.webp",
-     "cave_troll_boss/animations/walk/south-west/02.webp",
-     "cave_troll_boss/animations/walk/south-west/03.webp",
-     "cave_troll_boss/animations/walk/south-west/04.webp",
-     "cave_troll_boss/animations/walk/south-west/05.webp"
-    ]
-   },
-   "strips": {
-    "south": "cave_troll_boss/animations/walk__south.webp",
-    "south-east": "cave_troll_boss/animations/walk__south-east.webp",
-    "east": "cave_troll_boss/animations/walk__east.webp",
-    "north-east": "cave_troll_boss/animations/walk__north-east.webp",
-    "north": "cave_troll_boss/animations/walk__north.webp",
-    "west": "cave_troll_boss/animations/walk__west.webp",
-    "north-west": "cave_troll_boss/animations/walk__north-west.webp",
-    "south-west": "cave_troll_boss/animations/walk__south-west.webp"
-   }
   },
-  "attack": {
-   "directions": {
-    "south": {
-     "status": "fail",
-     "step_mean": 0.1463,
-     "step_max": 0.1862,
-     "drift": 5.62,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 5.62,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.065,
-     "peak": 0.2474,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "some bright effect pixels (0.07) — eyeball it",
-      "eyeballed: painted effect on the strike"
-     ],
-     "sub": "ff26bc5d-4637-4423-82ac-d391ecef2c51",
-     "group": "7f3bb264-3867-41b9-a523-49097710ba37",
-     "takes": 1,
-     "version": 5,
-     "mirrored": false,
-     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-     "tries": 3,
-     "generated_at": "2026-09-09T23:10:02+00:00",
-     "manual": true
+  "approved_at": "2026-09-09T19:59:24+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0585,
+          "step_max": 0.0643,
+          "drift": 1.9,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "e013fa56-c443-45e0-97c8-eaf46a012018",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:21:33+00:00",
+          "cut": 0
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0285,
+          "step_max": 0.0525,
+          "drift": 1.69,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "77810f9d-1daa-4c39-b14d-276d25537aa2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:21:34+00:00",
+          "cut": 0
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0217,
+          "step_max": 0.0337,
+          "drift": 0.25,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "b71d4958-2f3b-4f41-8a9b-24b6e75c7bbb",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:21:34+00:00",
+          "cut": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0475,
+          "step_max": 0.0671,
+          "drift": 1.44,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "62cd4aad-d84a-4a82-a1e6-7e75d492d9ab",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:21:35+00:00",
+          "cut": 0
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0984,
+          "step_max": 0.1099,
+          "drift": 4.21,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [
+            "drifts 4.2 px — eyeball it"
+          ],
+          "sub": "48182371-5505-4f30-8c6f-b83c6389549e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:21:36+00:00",
+          "cut": 0
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0285,
+          "step_max": 0.0525,
+          "drift": 1.69,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "77810f9d-1daa-4c39-b14d-276d25537aa2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:21:34+00:00",
+          "cut": 0,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0217,
+          "step_max": 0.0337,
+          "drift": 0.25,
+          "loop": 0.0001,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "b71d4958-2f3b-4f41-8a9b-24b6e75c7bbb",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:21:34+00:00",
+          "cut": 0,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0475,
+          "step_max": 0.0671,
+          "drift": 1.44,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "62cd4aad-d84a-4a82-a1e6-7e75d492d9ab",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:21:35+00:00",
+          "cut": 0,
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "cave_troll_boss/animations/idle/south/00.webp",
+          "cave_troll_boss/animations/idle/south/01.webp",
+          "cave_troll_boss/animations/idle/south/02.webp",
+          "cave_troll_boss/animations/idle/south/03.webp",
+          "cave_troll_boss/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "cave_troll_boss/animations/idle/south-east/00.webp",
+          "cave_troll_boss/animations/idle/south-east/01.webp",
+          "cave_troll_boss/animations/idle/south-east/02.webp",
+          "cave_troll_boss/animations/idle/south-east/03.webp",
+          "cave_troll_boss/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "cave_troll_boss/animations/idle/east/00.webp",
+          "cave_troll_boss/animations/idle/east/01.webp",
+          "cave_troll_boss/animations/idle/east/02.webp",
+          "cave_troll_boss/animations/idle/east/03.webp",
+          "cave_troll_boss/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "cave_troll_boss/animations/idle/north-east/00.webp",
+          "cave_troll_boss/animations/idle/north-east/01.webp",
+          "cave_troll_boss/animations/idle/north-east/02.webp",
+          "cave_troll_boss/animations/idle/north-east/03.webp",
+          "cave_troll_boss/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "cave_troll_boss/animations/idle/north/00.webp",
+          "cave_troll_boss/animations/idle/north/01.webp",
+          "cave_troll_boss/animations/idle/north/02.webp",
+          "cave_troll_boss/animations/idle/north/03.webp",
+          "cave_troll_boss/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "cave_troll_boss/animations/idle/south-west/00.webp",
+          "cave_troll_boss/animations/idle/south-west/01.webp",
+          "cave_troll_boss/animations/idle/south-west/02.webp",
+          "cave_troll_boss/animations/idle/south-west/03.webp",
+          "cave_troll_boss/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "cave_troll_boss/animations/idle/west/00.webp",
+          "cave_troll_boss/animations/idle/west/01.webp",
+          "cave_troll_boss/animations/idle/west/02.webp",
+          "cave_troll_boss/animations/idle/west/03.webp",
+          "cave_troll_boss/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "cave_troll_boss/animations/idle/north-west/00.webp",
+          "cave_troll_boss/animations/idle/north-west/01.webp",
+          "cave_troll_boss/animations/idle/north-west/02.webp",
+          "cave_troll_boss/animations/idle/north-west/03.webp",
+          "cave_troll_boss/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "cave_troll_boss/animations/idle__south.webp",
+        "south-east": "cave_troll_boss/animations/idle__south-east.webp",
+        "east": "cave_troll_boss/animations/idle__east.webp",
+        "north-east": "cave_troll_boss/animations/idle__north-east.webp",
+        "north": "cave_troll_boss/animations/idle__north.webp",
+        "south-west": "cave_troll_boss/animations/idle__south-west.webp",
+        "west": "cave_troll_boss/animations/idle__west.webp",
+        "north-west": "cave_troll_boss/animations/idle__north-west.webp"
+      }
     },
-    "south-east": {
-     "status": "fail",
-     "step_mean": 0.1432,
-     "step_max": 0.1925,
-     "drift": 6.88,
-     "loop": 0.0001,
-     "loop_ratio": 0.0,
-     "travel": 3.64,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.334,
-     "peak": 0.2401,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "painted effect: 0.33 of the body in new bright pixels (flare/slash arc)"
-     ],
-     "sub": "bf4f6ac2-91d4-4afc-9c24-e50b7100960f",
-     "group": "4d07e540-16dd-423a-800f-be31ce05e6c1",
-     "takes": 1,
-     "version": 5,
-     "mirrored": false,
-     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-     "tries": 3,
-     "generated_at": "2026-09-09T23:10:03+00:00"
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1577,
+          "step_max": 0.1955,
+          "drift": 8.29,
+          "loop": 0.2657,
+          "loop_ratio": 1.69,
+          "travel": 3.45,
+          "pin": 0.923,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "drifts 8.3 px — eyeball it"
+          ],
+          "sub": "6a347fae-1fe2-43dc-b30e-8e7ff720bf88",
+          "group": "4c88cc74-f347-458d-8be3-db7251219b72",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:43+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.1873,
+          "step_max": 0.2279,
+          "drift": 7.17,
+          "loop": 0.48,
+          "loop_ratio": 2.56,
+          "travel": 4.42,
+          "pin": 0.867,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "last→first hand-off 2.6× a step — eyeball the loop"
+          ],
+          "sub": "343d4511-9828-491b-91a8-fb187451cb54",
+          "group": "7889fe28-1178-4cb2-8f33-273e4728f284",
+          "takes": 3,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:45:53+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.2107,
+          "step_max": 0.2715,
+          "drift": 6.99,
+          "loop": 0.4356,
+          "loop_ratio": 2.07,
+          "travel": 3.45,
+          "pin": 0.77,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
+          "sub": "150137fa-ace7-47b4-8914-d86400cc1c6f",
+          "group": "9c2b0ef4-bcb3-42fb-a9a2-d55dcfe3d0fa",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:47+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.1944,
+          "step_max": 0.2643,
+          "drift": 5.96,
+          "loop": 0.4266,
+          "loop_ratio": 2.19,
+          "travel": 4.41,
+          "pin": 0.829,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "sub": "ad3b4c56-c63d-47c4-b033-b280adb9875b",
+          "group": "15fcc1cc-8d2e-48eb-a839-be4a5730ff18",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:16:47+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1178,
+          "step_max": 0.1848,
+          "drift": 5.72,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.84,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)"
+          ],
+          "pinned": true,
+          "sub": "c470fc06-47ce-426c-b6f6-76e6f4cf6745",
+          "group": "a22f5394-3b14-426b-a7ac-6d4a1a14d9af",
+          "takes": 3,
+          "version": 4,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:51:55+00:00"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.2107,
+          "step_max": 0.2715,
+          "drift": 6.99,
+          "loop": 0.4356,
+          "loop_ratio": 2.07,
+          "travel": 3.45,
+          "pin": 0.77,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
+          "sub": "150137fa-ace7-47b4-8914-d86400cc1c6f",
+          "group": "9c2b0ef4-bcb3-42fb-a9a2-d55dcfe3d0fa",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:47+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1944,
+          "step_max": 0.2643,
+          "drift": 5.96,
+          "loop": 0.4266,
+          "loop_ratio": 2.19,
+          "travel": 4.41,
+          "pin": 0.829,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "sub": "ad3b4c56-c63d-47c4-b033-b280adb9875b",
+          "group": "15fcc1cc-8d2e-48eb-a839-be4a5730ff18",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:16:47+00:00",
+          "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1873,
+          "step_max": 0.2279,
+          "drift": 7.17,
+          "loop": 0.48,
+          "loop_ratio": 2.56,
+          "travel": 4.42,
+          "pin": 0.867,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "last→first hand-off 2.6× a step — eyeball the loop"
+          ],
+          "sub": "343d4511-9828-491b-91a8-fb187451cb54",
+          "group": "7889fe28-1178-4cb2-8f33-273e4728f284",
+          "takes": 3,
+          "version": 3,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:45:53+00:00",
+          "source": "south-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "cave_troll_boss/animations/walk/south/00.webp",
+          "cave_troll_boss/animations/walk/south/01.webp",
+          "cave_troll_boss/animations/walk/south/02.webp",
+          "cave_troll_boss/animations/walk/south/03.webp",
+          "cave_troll_boss/animations/walk/south/04.webp",
+          "cave_troll_boss/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "cave_troll_boss/animations/walk/south-east/00.webp",
+          "cave_troll_boss/animations/walk/south-east/01.webp",
+          "cave_troll_boss/animations/walk/south-east/02.webp",
+          "cave_troll_boss/animations/walk/south-east/03.webp",
+          "cave_troll_boss/animations/walk/south-east/04.webp",
+          "cave_troll_boss/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "cave_troll_boss/animations/walk/east/00.webp",
+          "cave_troll_boss/animations/walk/east/01.webp",
+          "cave_troll_boss/animations/walk/east/02.webp",
+          "cave_troll_boss/animations/walk/east/03.webp",
+          "cave_troll_boss/animations/walk/east/04.webp",
+          "cave_troll_boss/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "cave_troll_boss/animations/walk/north-east/00.webp",
+          "cave_troll_boss/animations/walk/north-east/01.webp",
+          "cave_troll_boss/animations/walk/north-east/02.webp",
+          "cave_troll_boss/animations/walk/north-east/03.webp",
+          "cave_troll_boss/animations/walk/north-east/04.webp",
+          "cave_troll_boss/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "cave_troll_boss/animations/walk/north/00.webp",
+          "cave_troll_boss/animations/walk/north/01.webp",
+          "cave_troll_boss/animations/walk/north/02.webp",
+          "cave_troll_boss/animations/walk/north/03.webp",
+          "cave_troll_boss/animations/walk/north/04.webp",
+          "cave_troll_boss/animations/walk/north/05.webp"
+        ],
+        "west": [
+          "cave_troll_boss/animations/walk/west/00.webp",
+          "cave_troll_boss/animations/walk/west/01.webp",
+          "cave_troll_boss/animations/walk/west/02.webp",
+          "cave_troll_boss/animations/walk/west/03.webp",
+          "cave_troll_boss/animations/walk/west/04.webp",
+          "cave_troll_boss/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "cave_troll_boss/animations/walk/north-west/00.webp",
+          "cave_troll_boss/animations/walk/north-west/01.webp",
+          "cave_troll_boss/animations/walk/north-west/02.webp",
+          "cave_troll_boss/animations/walk/north-west/03.webp",
+          "cave_troll_boss/animations/walk/north-west/04.webp",
+          "cave_troll_boss/animations/walk/north-west/05.webp"
+        ],
+        "south-west": [
+          "cave_troll_boss/animations/walk/south-west/00.webp",
+          "cave_troll_boss/animations/walk/south-west/01.webp",
+          "cave_troll_boss/animations/walk/south-west/02.webp",
+          "cave_troll_boss/animations/walk/south-west/03.webp",
+          "cave_troll_boss/animations/walk/south-west/04.webp",
+          "cave_troll_boss/animations/walk/south-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "cave_troll_boss/animations/walk__south.webp",
+        "south-east": "cave_troll_boss/animations/walk__south-east.webp",
+        "east": "cave_troll_boss/animations/walk__east.webp",
+        "north-east": "cave_troll_boss/animations/walk__north-east.webp",
+        "north": "cave_troll_boss/animations/walk__north.webp",
+        "west": "cave_troll_boss/animations/walk__west.webp",
+        "north-west": "cave_troll_boss/animations/walk__north-west.webp",
+        "south-west": "cave_troll_boss/animations/walk__south-west.webp"
+      }
     },
-    "east": {
-     "status": "fail",
-     "step_mean": 0.2343,
-     "step_max": 0.392,
-     "drift": 6.9,
-     "loop": 0.0001,
-     "loop_ratio": 0.0,
-     "travel": 6.9,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.102,
-     "peak": 0.3636,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "painted effect: 0.10 of the body in new bright pixels (flare/slash arc)"
-     ],
-     "sub": "3d1ce976-f050-4647-8020-cb76b8d461f4",
-     "group": "7c6ecd4d-9a23-4b2f-8977-338d7cd6e696",
-     "takes": 1,
-     "version": 5,
-     "mirrored": false,
-     "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
-     "tries": 3,
-     "generated_at": "2026-09-09T23:10:04+00:00"
-    },
-    "north-east": {
-     "status": "pass",
-     "step_mean": 0.135,
-     "step_max": 0.1545,
-     "drift": 3.21,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 1.69,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.2571,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "2a7cdb5f-5e2f-4734-93a0-89aad24c1dad",
-     "group": "3a4da3b5-fa53-4f9a-a9ad-d0baf0ec65f1",
-     "takes": 1,
-     "version": 2,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:42:25+00:00",
-     "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
-    },
-    "north": {
-     "status": "warn",
-     "step_mean": 0.062,
-     "step_max": 0.0849,
-     "drift": 0.38,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 0.09,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.1113,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "weak strike: peak 0.111 — eyeball it"
-     ],
-     "sub": "d3b4992d-239f-4f66-9f40-12ae9b1bced6",
-     "group": "06c361a6-f161-4694-86dc-0bb5bb1238db",
-     "takes": 2,
-     "version": 3,
-     "mirrored": false,
-     "generated_at": "2026-09-09T22:52:52+00:00",
-     "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
-    },
-    "south-west": {
-     "status": "warn",
-     "step_mean": 0.2076,
-     "step_max": 0.2257,
-     "drift": 5.52,
-     "loop": 0.0002,
-     "loop_ratio": 0.0,
-     "travel": 4.41,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.091,
-     "peak": 0.2656,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [
-      "some bright effect pixels (0.09) — eyeball it"
-     ],
-     "sub": "e8045101-0fc9-4e62-8aac-71729dc38216",
-     "group": "04dd02b8-78a0-4101-bfa8-ca853f6109a3",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
-     "tries": 1,
-     "generated_at": "2026-09-09T22:42:24+00:00",
-     "source": "south-east"
-    },
-    "west": {
-     "status": "pass",
-     "step_mean": 0.272,
-     "step_max": 0.428,
-     "drift": 16.57,
-     "loop": 0.0001,
-     "loop_ratio": 0.0,
-     "travel": 19.29,
-     "pin": 1.0,
-     "pad": 0,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "427e18bc-e6cb-43de-836b-e57dd3c82d75",
-     "group": "de858711-693d-400f-90d7-40f9e34508b1",
-     "takes": 1,
-     "version": 1,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:08:36+00:00",
-     "source": "east"
-    },
-    "north-west": {
-     "status": "pass",
-     "step_mean": 0.135,
-     "step_max": 0.1545,
-     "drift": 3.21,
-     "loop": 0.0,
-     "loop_ratio": 0.0,
-     "travel": 1.69,
-     "pin": 1.0,
-     "pad": 0,
-     "flash": 0.0,
-     "peak": 0.2571,
-     "canvas": [
-      240,
-      240
-     ],
-     "reasons": [],
-     "sub": "2a7cdb5f-5e2f-4734-93a0-89aad24c1dad",
-     "group": "3a4da3b5-fa53-4f9a-a9ad-d0baf0ec65f1",
-     "takes": 1,
-     "version": 2,
-     "mirrored": true,
-     "generated_at": "2026-09-09T22:42:25+00:00",
-     "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
-     "source": "north-east"
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.2323,
+          "step_max": 0.2431,
+          "drift": 4.19,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 4.51,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": 0.321,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "e4a36e28-af78-4775-ba27-f0a777478c56",
+          "group": "a930a421-5201-4d13-8afa-97ed5163f153",
+          "takes": 1,
+          "version": 6,
+          "mirrored": false,
+          "generated_at": "2026-09-09T23:20:33+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
+          "tries": 1
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1506,
+          "step_max": 0.2154,
+          "drift": 4.51,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 4.51,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.023,
+          "peak": 0.2447,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "0f6a138a-651f-4683-a55b-ae40db28b231",
+          "group": "538dbba7-c2a1-4e40-9ea1-9b9b5c273194",
+          "takes": 1,
+          "version": 8,
+          "mirrored": false,
+          "generated_at": "2026-09-09T23:33:21+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+          "tries": 3
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1775,
+          "step_max": 0.2351,
+          "drift": 3.83,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 2.02,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.03,
+          "peak": 0.3024,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "7a4437c4-fd3e-4c4a-8c20-c70b4f38d6b4",
+          "group": "c0d4709d-b5fa-4be2-a19b-df8f0806f183",
+          "takes": 1,
+          "version": 8,
+          "mirrored": false,
+          "generated_at": "2026-09-09T23:33:21+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+          "tries": 3
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.135,
+          "step_max": 0.1545,
+          "drift": 3.21,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.69,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2571,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "2a7cdb5f-5e2f-4734-93a0-89aad24c1dad",
+          "group": "3a4da3b5-fa53-4f9a-a9ad-d0baf0ec65f1",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:42:25+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.062,
+          "step_max": 0.0849,
+          "drift": 0.38,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.09,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1113,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "weak strike: peak 0.111 — eyeball it"
+          ],
+          "sub": "d3b4992d-239f-4f66-9f40-12ae9b1bced6",
+          "group": "06c361a6-f161-4694-86dc-0bb5bb1238db",
+          "takes": 2,
+          "version": 3,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:52:52+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1506,
+          "step_max": 0.2154,
+          "drift": 4.51,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 4.51,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.023,
+          "peak": 0.2447,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "0f6a138a-651f-4683-a55b-ae40db28b231",
+          "group": "538dbba7-c2a1-4e40-9ea1-9b9b5c273194",
+          "takes": 1,
+          "version": 8,
+          "mirrored": true,
+          "generated_at": "2026-09-09T23:33:21+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+          "tries": 3,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1775,
+          "step_max": 0.2351,
+          "drift": 3.83,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 2.02,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.03,
+          "peak": 0.3024,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "7a4437c4-fd3e-4c4a-8c20-c70b4f38d6b4",
+          "group": "c0d4709d-b5fa-4be2-a19b-df8f0806f183",
+          "takes": 1,
+          "version": 8,
+          "mirrored": true,
+          "generated_at": "2026-09-09T23:33:21+00:00",
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+          "tries": 3,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.135,
+          "step_max": 0.1545,
+          "drift": 3.21,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.69,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2571,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "2a7cdb5f-5e2f-4734-93a0-89aad24c1dad",
+          "group": "3a4da3b5-fa53-4f9a-a9ad-d0baf0ec65f1",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:42:25+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
+          "source": "north-east"
+        }
+      },
+      "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
+      "frame_paths": {
+        "south": [
+          "cave_troll_boss/animations/attack/south/00.webp",
+          "cave_troll_boss/animations/attack/south/01.webp",
+          "cave_troll_boss/animations/attack/south/02.webp",
+          "cave_troll_boss/animations/attack/south/03.webp",
+          "cave_troll_boss/animations/attack/south/04.webp"
+        ],
+        "south-east": [
+          "cave_troll_boss/animations/attack/south-east/00.webp",
+          "cave_troll_boss/animations/attack/south-east/01.webp",
+          "cave_troll_boss/animations/attack/south-east/02.webp",
+          "cave_troll_boss/animations/attack/south-east/03.webp",
+          "cave_troll_boss/animations/attack/south-east/04.webp"
+        ],
+        "east": [
+          "cave_troll_boss/animations/attack/east/00.webp",
+          "cave_troll_boss/animations/attack/east/01.webp",
+          "cave_troll_boss/animations/attack/east/02.webp",
+          "cave_troll_boss/animations/attack/east/03.webp",
+          "cave_troll_boss/animations/attack/east/04.webp"
+        ],
+        "north-east": [
+          "cave_troll_boss/animations/attack/north-east/00.webp",
+          "cave_troll_boss/animations/attack/north-east/01.webp",
+          "cave_troll_boss/animations/attack/north-east/02.webp",
+          "cave_troll_boss/animations/attack/north-east/03.webp",
+          "cave_troll_boss/animations/attack/north-east/04.webp"
+        ],
+        "north": [
+          "cave_troll_boss/animations/attack/north/00.webp",
+          "cave_troll_boss/animations/attack/north/01.webp",
+          "cave_troll_boss/animations/attack/north/02.webp",
+          "cave_troll_boss/animations/attack/north/03.webp",
+          "cave_troll_boss/animations/attack/north/04.webp"
+        ],
+        "south-west": [
+          "cave_troll_boss/animations/attack/south-west/00.webp",
+          "cave_troll_boss/animations/attack/south-west/01.webp",
+          "cave_troll_boss/animations/attack/south-west/02.webp",
+          "cave_troll_boss/animations/attack/south-west/03.webp",
+          "cave_troll_boss/animations/attack/south-west/04.webp"
+        ],
+        "west": [
+          "cave_troll_boss/animations/attack/west/00.webp",
+          "cave_troll_boss/animations/attack/west/01.webp",
+          "cave_troll_boss/animations/attack/west/02.webp",
+          "cave_troll_boss/animations/attack/west/03.webp",
+          "cave_troll_boss/animations/attack/west/04.webp"
+        ],
+        "north-west": [
+          "cave_troll_boss/animations/attack/north-west/00.webp",
+          "cave_troll_boss/animations/attack/north-west/01.webp",
+          "cave_troll_boss/animations/attack/north-west/02.webp",
+          "cave_troll_boss/animations/attack/north-west/03.webp",
+          "cave_troll_boss/animations/attack/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "cave_troll_boss/animations/attack__south.webp",
+        "south-east": "cave_troll_boss/animations/attack__south-east.webp",
+        "east": "cave_troll_boss/animations/attack__east.webp",
+        "north-east": "cave_troll_boss/animations/attack__north-east.webp",
+        "north": "cave_troll_boss/animations/attack__north.webp",
+        "south-west": "cave_troll_boss/animations/attack__south-west.webp",
+        "west": "cave_troll_boss/animations/attack__west.webp",
+        "north-west": "cave_troll_boss/animations/attack__north-west.webp"
+      }
     }
-   },
-   "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
-   "frame_paths": {
-    "south": [
-     "cave_troll_boss/animations/attack/south/00.webp",
-     "cave_troll_boss/animations/attack/south/01.webp",
-     "cave_troll_boss/animations/attack/south/02.webp",
-     "cave_troll_boss/animations/attack/south/03.webp",
-     "cave_troll_boss/animations/attack/south/04.webp"
-    ],
-    "south-east": [
-     "cave_troll_boss/animations/attack/south-east/00.webp",
-     "cave_troll_boss/animations/attack/south-east/01.webp",
-     "cave_troll_boss/animations/attack/south-east/02.webp",
-     "cave_troll_boss/animations/attack/south-east/03.webp",
-     "cave_troll_boss/animations/attack/south-east/04.webp"
-    ],
-    "east": [
-     "cave_troll_boss/animations/attack/east/00.webp",
-     "cave_troll_boss/animations/attack/east/01.webp",
-     "cave_troll_boss/animations/attack/east/02.webp",
-     "cave_troll_boss/animations/attack/east/03.webp",
-     "cave_troll_boss/animations/attack/east/04.webp"
-    ],
-    "north-east": [
-     "cave_troll_boss/animations/attack/north-east/00.webp",
-     "cave_troll_boss/animations/attack/north-east/01.webp",
-     "cave_troll_boss/animations/attack/north-east/02.webp",
-     "cave_troll_boss/animations/attack/north-east/03.webp",
-     "cave_troll_boss/animations/attack/north-east/04.webp"
-    ],
-    "north": [
-     "cave_troll_boss/animations/attack/north/00.webp",
-     "cave_troll_boss/animations/attack/north/01.webp",
-     "cave_troll_boss/animations/attack/north/02.webp",
-     "cave_troll_boss/animations/attack/north/03.webp",
-     "cave_troll_boss/animations/attack/north/04.webp"
-    ],
-    "south-west": [
-     "cave_troll_boss/animations/attack/south-west/00.webp",
-     "cave_troll_boss/animations/attack/south-west/01.webp",
-     "cave_troll_boss/animations/attack/south-west/02.webp",
-     "cave_troll_boss/animations/attack/south-west/03.webp",
-     "cave_troll_boss/animations/attack/south-west/04.webp"
-    ],
-    "west": [
-     "cave_troll_boss/animations/attack/west/00.webp",
-     "cave_troll_boss/animations/attack/west/01.webp",
-     "cave_troll_boss/animations/attack/west/02.webp",
-     "cave_troll_boss/animations/attack/west/03.webp",
-     "cave_troll_boss/animations/attack/west/04.webp"
-    ],
-    "north-west": [
-     "cave_troll_boss/animations/attack/north-west/00.webp",
-     "cave_troll_boss/animations/attack/north-west/01.webp",
-     "cave_troll_boss/animations/attack/north-west/02.webp",
-     "cave_troll_boss/animations/attack/north-west/03.webp",
-     "cave_troll_boss/animations/attack/north-west/04.webp"
-    ]
-   },
-   "strips": {
-    "south": "cave_troll_boss/animations/attack__south.webp",
-    "south-east": "cave_troll_boss/animations/attack__south-east.webp",
-    "east": "cave_troll_boss/animations/attack__east.webp",
-    "north-east": "cave_troll_boss/animations/attack__north-east.webp",
-    "north": "cave_troll_boss/animations/attack__north.webp",
-    "south-west": "cave_troll_boss/animations/attack__south-west.webp",
-    "west": "cave_troll_boss/animations/attack__west.webp",
-    "north-west": "cave_troll_boss/animations/attack__north-west.webp"
-   }
   }
- }
 }
