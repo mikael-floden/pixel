@@ -1,0 +1,141 @@
+{
+  "id": "bridge_troll",
+  "name": "Tollkeeper",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The bridge is older than the town and the troll is older than the bridge. The toll has never once been coin.",
+  "biome": [
+    "grey_stone",
+    "water"
+  ],
+  "items": [],
+  "prompt": "River troll shown full body from head to feet, realistic proportions, mottled grey-green skin, a long hooked nose, small deep-set eyes, a hunched back, long arms with heavy knuckles, ragged trousers, and a rusted iron chain wrapped around one fist.",
+  "size": [
+    136,
+    136
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bridge_troll/rotations/south.webp",
+    "south-east": "bridge_troll/rotations/south-east.webp",
+    "east": "bridge_troll/rotations/east.webp",
+    "north-east": "bridge_troll/rotations/north-east.webp",
+    "north": "bridge_troll/rotations/north.webp",
+    "north-west": "bridge_troll/rotations/north-west.webp",
+    "west": "bridge_troll/rotations/west.webp",
+    "south-west": "bridge_troll/rotations/south-west.webp"
+  },
+  "sheet": "bridge_troll/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c7255fb1-fd21-44b5-8b3d-baf0e51fb913",
+  "seed": 1906854536,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:11:40+00:00",
+  "elapsed_s": 182.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.669,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.669,
+        "bbox": [
+          14,
+          8,
+          121,
+          129
+        ],
+        "fill": 0.7,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.765,
+        "bbox": [
+          29,
+          8,
+          97,
+          131
+        ],
+        "fill": 0.452,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.788,
+        "bbox": [
+          36,
+          8,
+          107,
+          131
+        ],
+        "fill": 0.472,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.728,
+        "bbox": [
+          18,
+          5,
+          120,
+          127
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.785,
+        "bbox": [
+          20,
+          8,
+          111,
+          131
+        ],
+        "fill": 0.605,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.725,
+        "bbox": [
+          27,
+          5,
+          106,
+          129
+        ],
+        "fill": 0.53,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.712,
+        "bbox": [
+          28,
+          5,
+          109,
+          129
+        ],
+        "fill": 0.543,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.779,
+        "bbox": [
+          25,
+          8,
+          116,
+          131
+        ],
+        "fill": 0.605,
+        "touches_edge": false
+      }
+    }
+  }
+}
