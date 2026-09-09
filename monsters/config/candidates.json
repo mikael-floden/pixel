@@ -81,22 +81,19 @@
       "scale": "standard"
     },
     {
-      "id": "reed_nymph",
-      "name": "Reedling",
+      "id": "bog_egg",
+      "name": "Spawnling",
       "tier": "cute",
-      "template_id": "bear",
-      "size": 80,
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 72,
       "biome": [
         "water",
-        "dark_mud",
-        "grass"
+        "dark_mud"
       ],
-      "items": [
-        "twig-bodied dragonfly"
-      ],
-      "prompt": "Chubby fantasy dragonfly nymph with a short segmented mossy-green body like a bundled reed, six short stubby legs, two large round glassy green eyes, small folded wing buds on its back, a hinged jaw mask over its face, and droplets of water beading on its shell.",
-      "lore": "Not yet the thing with wings. It waits in the reeds with its jaw folded, and unfolds it faster than anything that wades.",
-      "scale": "standard"
+      "items": [],
+      "prompt": "Small cute fantasy frogspawn creature, a round cluster of translucent jelly eggs stuck together into one wobbling body, each egg holding a tiny black dot, two larger eggs at the front with dark pupils as eyes, a small mouth, and two stubby jelly feet.",
+      "lore": "A hundred siblings in one body, all of them curious and none of them wise. It bounces after anything shiny."
     },
     {
       "id": "silk_spider",
@@ -1594,6 +1591,27 @@
       "retired": "a horned beetle's side profile outgrows a square canvas: v1 88px (legs), v2 96px legs tucked (curved horn), v3 104px short horn (E/W body) — three rolls, three edge clips. Replaced by shell_roller, a compact curled pill bug in the same armored-insect niche.",
       "retired_at": "2026-09-09T17:53:43+00:00",
       "versions_tried": 3
+    },
+    {
+      "id": "reed_nymph",
+      "name": "Reedling",
+      "tier": "cute",
+      "template_id": "bear",
+      "size": 80,
+      "biome": [
+        "water",
+        "dark_mud",
+        "grass"
+      ],
+      "items": [
+        "twig-bodied dragonfly"
+      ],
+      "prompt": "Chubby fantasy dragonfly nymph with a short segmented mossy-green body like a bundled reed, six short stubby legs, two large round glassy green eyes, small folded wing buds on its back, a hinged jaw mask over its face, and droplets of water beading on its shell.",
+      "lore": "Not yet the thing with wings. It waits in the reeds with its jaw folded, and unfolds it faster than anything that wades.",
+      "scale": "standard",
+      "retired": "the model gives a dragonfly nymph full dragonfly wings whatever the prompt says (v1 80px clipped E/SE) — same failure as twig_dragonfly. Replaced by bog_egg, a wingless frogspawn cluster.",
+      "retired_at": "2026-09-09T18:02:05+00:00",
+      "versions_tried": 1
     }
   ]
 }
