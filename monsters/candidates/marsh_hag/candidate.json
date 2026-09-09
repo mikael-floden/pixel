@@ -335,6 +335,236 @@
         "west": "marsh_hag/animations/idle__west.webp",
         "north-west": "marsh_hag/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1438,
+          "step_max": 0.167,
+          "drift": 1.85,
+          "loop": 0.2282,
+          "loop_ratio": 1.59,
+          "travel": 3.01,
+          "pin": 0.873,
+          "reasons": [],
+          "cut": 0,
+          "sub": "ee1368e3-2bf5-4378-987d-f648cdad0adf",
+          "group": "5bc67fd4-00c9-464a-8634-321ef1797375",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:59:26+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1774,
+          "step_max": 0.2038,
+          "drift": 3.04,
+          "loop": 0.3451,
+          "loop_ratio": 1.95,
+          "travel": 1.52,
+          "pin": 0.884,
+          "reasons": [],
+          "cut": 0,
+          "sub": "3b4c5937-1754-4e46-8c64-a44109573231",
+          "group": "0e7cbb41-9d01-436d-91a2-29354acb67b0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:59:26+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2038,
+          "step_max": 0.2646,
+          "drift": 2.81,
+          "loop": 0.2059,
+          "loop_ratio": 1.01,
+          "travel": 2.27,
+          "pin": 0.873,
+          "reasons": [],
+          "cut": 0,
+          "sub": "4fcc4be9-b1a2-4894-b17d-4d984edb9a84",
+          "group": "43f5a035-8da8-4ab8-a397-07fc70cf8eac",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:59:27+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1404,
+          "step_max": 0.1806,
+          "drift": 2.24,
+          "loop": 0.1733,
+          "loop_ratio": 1.23,
+          "travel": 0.98,
+          "pin": 0.885,
+          "reasons": [],
+          "cut": 0,
+          "sub": "52330a8f-a885-492f-aff5-ef8b4660eab7",
+          "group": "fcab38c6-3f08-4662-a6ad-3f38fff58785",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:59:28+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1493,
+          "step_max": 0.1748,
+          "drift": 2.41,
+          "loop": 0.3228,
+          "loop_ratio": 2.16,
+          "travel": 2.41,
+          "pin": 0.878,
+          "reasons": [
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "5d7e3364-7a43-4509-8368-2c19eedbd5c4",
+          "group": "886ec136-720f-4a42-a4ad-7e3e98fa6aae",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:59:28+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1774,
+          "step_max": 0.2038,
+          "drift": 3.04,
+          "loop": 0.3451,
+          "loop_ratio": 1.95,
+          "travel": 1.52,
+          "pin": 0.884,
+          "reasons": [],
+          "cut": 0,
+          "sub": "3b4c5937-1754-4e46-8c64-a44109573231",
+          "group": "0e7cbb41-9d01-436d-91a2-29354acb67b0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:59:26+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2038,
+          "step_max": 0.2646,
+          "drift": 2.81,
+          "loop": 0.2059,
+          "loop_ratio": 1.01,
+          "travel": 2.27,
+          "pin": 0.873,
+          "reasons": [],
+          "cut": 0,
+          "sub": "4fcc4be9-b1a2-4894-b17d-4d984edb9a84",
+          "group": "43f5a035-8da8-4ab8-a397-07fc70cf8eac",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:59:27+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1404,
+          "step_max": 0.1806,
+          "drift": 2.24,
+          "loop": 0.1733,
+          "loop_ratio": 1.23,
+          "travel": 0.98,
+          "pin": 0.885,
+          "reasons": [],
+          "cut": 0,
+          "sub": "52330a8f-a885-492f-aff5-ef8b4660eab7",
+          "group": "fcab38c6-3f08-4662-a6ad-3f38fff58785",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:59:28+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "marsh_hag/animations/walk/south/00.webp",
+          "marsh_hag/animations/walk/south/01.webp",
+          "marsh_hag/animations/walk/south/02.webp",
+          "marsh_hag/animations/walk/south/03.webp",
+          "marsh_hag/animations/walk/south/04.webp",
+          "marsh_hag/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "marsh_hag/animations/walk/south-east/00.webp",
+          "marsh_hag/animations/walk/south-east/01.webp",
+          "marsh_hag/animations/walk/south-east/02.webp",
+          "marsh_hag/animations/walk/south-east/03.webp",
+          "marsh_hag/animations/walk/south-east/04.webp",
+          "marsh_hag/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "marsh_hag/animations/walk/east/00.webp",
+          "marsh_hag/animations/walk/east/01.webp",
+          "marsh_hag/animations/walk/east/02.webp",
+          "marsh_hag/animations/walk/east/03.webp",
+          "marsh_hag/animations/walk/east/04.webp",
+          "marsh_hag/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "marsh_hag/animations/walk/north-east/00.webp",
+          "marsh_hag/animations/walk/north-east/01.webp",
+          "marsh_hag/animations/walk/north-east/02.webp",
+          "marsh_hag/animations/walk/north-east/03.webp",
+          "marsh_hag/animations/walk/north-east/04.webp",
+          "marsh_hag/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "marsh_hag/animations/walk/north/00.webp",
+          "marsh_hag/animations/walk/north/01.webp",
+          "marsh_hag/animations/walk/north/02.webp",
+          "marsh_hag/animations/walk/north/03.webp",
+          "marsh_hag/animations/walk/north/04.webp",
+          "marsh_hag/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "marsh_hag/animations/walk/south-west/00.webp",
+          "marsh_hag/animations/walk/south-west/01.webp",
+          "marsh_hag/animations/walk/south-west/02.webp",
+          "marsh_hag/animations/walk/south-west/03.webp",
+          "marsh_hag/animations/walk/south-west/04.webp",
+          "marsh_hag/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "marsh_hag/animations/walk/west/00.webp",
+          "marsh_hag/animations/walk/west/01.webp",
+          "marsh_hag/animations/walk/west/02.webp",
+          "marsh_hag/animations/walk/west/03.webp",
+          "marsh_hag/animations/walk/west/04.webp",
+          "marsh_hag/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "marsh_hag/animations/walk/north-west/00.webp",
+          "marsh_hag/animations/walk/north-west/01.webp",
+          "marsh_hag/animations/walk/north-west/02.webp",
+          "marsh_hag/animations/walk/north-west/03.webp",
+          "marsh_hag/animations/walk/north-west/04.webp",
+          "marsh_hag/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "marsh_hag/animations/walk__south.webp",
+        "south-east": "marsh_hag/animations/walk__south-east.webp",
+        "east": "marsh_hag/animations/walk__east.webp",
+        "north-east": "marsh_hag/animations/walk__north-east.webp",
+        "north": "marsh_hag/animations/walk__north.webp",
+        "south-west": "marsh_hag/animations/walk__south-west.webp",
+        "west": "marsh_hag/animations/walk__west.webp",
+        "north-west": "marsh_hag/animations/walk__north-west.webp"
+      }
     }
   }
 }
