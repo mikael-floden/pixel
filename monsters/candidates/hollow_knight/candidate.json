@@ -138,5 +138,181 @@
       }
     }
   },
-  "approved_at": "2026-09-09T19:59:19+00:00"
+  "approved_at": "2026-09-09T19:59:19+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0465,
+          "step_max": 0.0768,
+          "drift": 0.65,
+          "loop": 0.0015,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "a93e25d2-c894-40fe-9faf-fccf0851ff6d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:06:56+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0564,
+          "step_max": 0.0592,
+          "drift": 1.18,
+          "loop": 0.0011,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "8cb31070-34ee-476b-a35f-e8f06ea1e1fc",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:06:57+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0446,
+          "step_max": 0.081,
+          "drift": 0.98,
+          "loop": 0.0003,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "40b2b17a-48a2-4184-b15e-c74f0f471962",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:06:58+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0558,
+          "step_max": 0.0808,
+          "drift": 0.8,
+          "loop": 0.0021,
+          "pin": 1.0,
+          "reasons": [
+            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)"
+          ],
+          "cut": 0,
+          "sub": "937bf38d-3dc1-4de0-aac1-c279abe5a52b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:06:58+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0669,
+          "step_max": 0.0983,
+          "drift": 0.71,
+          "loop": 0.0029,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "39614bc7-fb49-422c-98bd-78cf093b455a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:06:59+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0564,
+          "step_max": 0.0592,
+          "drift": 1.18,
+          "loop": 0.0011,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "8cb31070-34ee-476b-a35f-e8f06ea1e1fc",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:06:57+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0446,
+          "step_max": 0.081,
+          "drift": 0.98,
+          "loop": 0.0003,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "40b2b17a-48a2-4184-b15e-c74f0f471962",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:06:58+00:00",
+          "source": "east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "hollow_knight/animations/idle/south/00.webp",
+          "hollow_knight/animations/idle/south/01.webp",
+          "hollow_knight/animations/idle/south/02.webp",
+          "hollow_knight/animations/idle/south/03.webp",
+          "hollow_knight/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "hollow_knight/animations/idle/south-east/00.webp",
+          "hollow_knight/animations/idle/south-east/01.webp",
+          "hollow_knight/animations/idle/south-east/02.webp",
+          "hollow_knight/animations/idle/south-east/03.webp",
+          "hollow_knight/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "hollow_knight/animations/idle/east/00.webp",
+          "hollow_knight/animations/idle/east/01.webp",
+          "hollow_knight/animations/idle/east/02.webp",
+          "hollow_knight/animations/idle/east/03.webp",
+          "hollow_knight/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "hollow_knight/animations/idle/north-east/00.webp",
+          "hollow_knight/animations/idle/north-east/01.webp",
+          "hollow_knight/animations/idle/north-east/02.webp",
+          "hollow_knight/animations/idle/north-east/03.webp",
+          "hollow_knight/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "hollow_knight/animations/idle/north/00.webp",
+          "hollow_knight/animations/idle/north/01.webp",
+          "hollow_knight/animations/idle/north/02.webp",
+          "hollow_knight/animations/idle/north/03.webp",
+          "hollow_knight/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "hollow_knight/animations/idle/south-west/00.webp",
+          "hollow_knight/animations/idle/south-west/01.webp",
+          "hollow_knight/animations/idle/south-west/02.webp",
+          "hollow_knight/animations/idle/south-west/03.webp",
+          "hollow_knight/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "hollow_knight/animations/idle/west/00.webp",
+          "hollow_knight/animations/idle/west/01.webp",
+          "hollow_knight/animations/idle/west/02.webp",
+          "hollow_knight/animations/idle/west/03.webp",
+          "hollow_knight/animations/idle/west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "hollow_knight/animations/idle__south.webp",
+        "south-east": "hollow_knight/animations/idle__south-east.webp",
+        "east": "hollow_knight/animations/idle__east.webp",
+        "north-east": "hollow_knight/animations/idle__north-east.webp",
+        "north": "hollow_knight/animations/idle__north.webp",
+        "south-west": "hollow_knight/animations/idle__south-west.webp",
+        "west": "hollow_knight/animations/idle__west.webp"
+      }
+    }
+  }
 }

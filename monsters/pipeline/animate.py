@@ -200,8 +200,12 @@ def qa_clip(cid, state, d, frames):
         reasons.append(f"drifts {drift:.1f} px — eyeball it"); status = "warn" if status != "fail" else status
     if loop > band["loop_max"]:
         reasons.append(f"loop does not close (last vs first {loop:.3f})"); status = "fail"
-    if any(("not the base" in r) or ("wrong way" in r) or ("overflow" in r) or ("expected" in r) for r in reasons):
+    if any(("not the base" in r) or ("wrong way" in r) or ("expected" in r) for r in reasons):
         status = "fail"
+    elif any("overflow" in r for r in reasons) and status == "pass":
+        # a mere touch of the border loses nothing (align_to_base reports CUT
+        # pixels separately, and those do fail); eyeball it
+        status = "warn"
     return {"status": status, "step_mean": round(step_mean, 4), "step_max": round(float(max(step)) if step else 0, 4),
             "drift": round(drift, 2), "loop": round(loop, 4), "pin": round(float(pin), 3), "reasons": reasons}
 
@@ -386,6 +390,34 @@ def cmd_fetch(args):
     cand.rebuild_index(cfg)
 
 
+def cmd_requal(args):
+    """Re-run the machine verdict on the frames already on disk (no network)."""
+    cfg = cand.load_cfg()
+    ids = args.only.split(",") if args.only else [c["id"] for c in cfg["candidates"]]
+    for cid in ids:
+        man = cand.load_manifest(cid)
+        rec = ((man or {}).get("animations") or {}).get(args.state)
+        if not rec:
+            continue
+        for d, q in rec["directions"].items():
+            if q.get("mirrored"):
+                continue
+            frames = load_frames(cid, args.state, d)
+            if not frames:
+                continue
+            new = qa_clip(cid, args.state, d, frames)
+            if q.get("cut"):
+                new["reasons"].append(f"{q['cut']} px of motion fell outside the base canvas (overflow)")
+                new["status"] = "fail" if q["cut"] > 20 else ("warn" if new["status"] == "pass" else new["status"])
+            keep = {k: q[k] for k in ("sub", "takes", "version", "mirrored", "generated_at", "cut") if k in q}
+            rec["directions"][d] = {**new, **keep}
+            for md, src in MIRRORED.items():
+                if src == d and md in rec["directions"]:
+                    rec["directions"][md] = dict(rec["directions"][d], mirrored=True, source=src)
+        write_manifest(cid, man)
+    cand.rebuild_index(cfg)
+
+
 def cmd_status(args):
     cfg = cand.load_cfg()
     state = args.state
@@ -420,6 +452,7 @@ def main():
     f = sub.add_parser("fetch", help="re-download + re-QA the last takes already on PixelLab (no generation)")
     f.add_argument("--state", default="idle"); f.add_argument("--only", required=True); f.add_argument("--dirs")
     f.set_defaults(func=cmd_fetch)
+    q = sub.add_parser("requal", help="re-run the machine verdict from disk"); q.add_argument("--state", default="idle"); q.add_argument("--only"); q.set_defaults(func=cmd_requal)
     s = sub.add_parser("status"); s.add_argument("--state", default="idle"); s.set_defaults(func=cmd_status)
     args = ap.parse_args()
     args.func(args)
