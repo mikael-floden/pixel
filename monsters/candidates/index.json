@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:25:08+00:00",
+  "generated_at": "2026-09-09T18:25:40+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 32,
+  "count": 33,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -4021,6 +4021,138 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:24:10+00:00"
+    },
+    {
+      "id": "lizard_warrior",
+      "name": "Scaleblade",
+      "tier": "mid",
+      "lore": "Its people ruled the marsh before the marsh drowned them. It still patrols the borders of a country that is gone.",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "a1697387-0b7c-4c2d-9387-330f95e4291a",
+      "version": 1,
+      "sheet": "lizard_warrior/sheet.webp",
+      "rotations": {
+        "south": "lizard_warrior/rotations/south.webp",
+        "south-east": "lizard_warrior/rotations/south-east.webp",
+        "east": "lizard_warrior/rotations/east.webp",
+        "north-east": "lizard_warrior/rotations/north-east.webp",
+        "north": "lizard_warrior/rotations/north.webp",
+        "north-west": "lizard_warrior/rotations/north-west.webp",
+        "west": "lizard_warrior/rotations/west.webp",
+        "south-west": "lizard_warrior/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.782,
+        "reasons": [
+          "west: content touches the canvas edge (clipped)",
+          "north-west: content touches the canvas edge (clipped)",
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.782,
+            "bbox": [
+              10,
+              3,
+              104,
+              109
+            ],
+            "fill": 0.794,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.825,
+            "bbox": [
+              30,
+              0,
+              89,
+              109
+            ],
+            "fill": 0.513,
+            "touches_edge": true
+          },
+          "east": {
+            "run1": 0.821,
+            "bbox": [
+              22,
+              3,
+              86,
+              109
+            ],
+            "fill": 0.541,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.807,
+            "bbox": [
+              9,
+              2,
+              102,
+              103
+            ],
+            "fill": 0.749,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.815,
+            "bbox": [
+              10,
+              5,
+              95,
+              109
+            ],
+            "fill": 0.705,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.79,
+            "bbox": [
+              11,
+              3,
+              95,
+              108
+            ],
+            "fill": 0.703,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.79,
+            "bbox": [
+              19,
+              0,
+              102,
+              106
+            ],
+            "fill": 0.701,
+            "touches_edge": true
+          },
+          "south-west": {
+            "run1": 0.817,
+            "bbox": [
+              19,
+              0,
+              101,
+              110
+            ],
+            "fill": 0.719,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:25:40+00:00"
     },
     {
       "id": "wererat",
