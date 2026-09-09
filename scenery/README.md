@@ -377,8 +377,12 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   when no state and no root animation names it. (Paid for 2026-09-10: a rule
   that checked the root's animations alone deleted 288 live strips and the map
   agent lit a brazier off a verdict on a clip the game could not find.)
+  The wiki resolves `directions.<dir>.strip`, then top-level `strip` for
+  south, then the on-disk name — a recorded strip wins, and a recorded strip
+  counts only if the file exists (hundreds carried the legacy `__strip.webp`
+  name after the file was gone; parseAnims takes any string and 404s it).
   `anim_review.py --check` refuses a playable verdict on a clip either
-  consumer cannot resolve.
+  consumer cannot resolve, or whose strip is missing.
 - Read contract: `states[<LIT state>]` wins for a placement drawn in that
   state, else the top-level piece default (`maps2/pipeline/world3.py
   light_meta`). Published whole in `viewer_data.json` as `light` so the wiki

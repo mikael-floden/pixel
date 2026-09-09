@@ -184,11 +184,14 @@ def check():
             if r not in STATES:
                 bad.append((f"{rel}#{state}#{name}", f"review={r!r}")); continue
             if r in ("ANIMATION_PROBABLY_GOOD", "ANIMATION_APPROVED"):
-                if not (a.get("frame_paths") or a.get("strip")):
-                    bad.append((f"{rel}#{state}#{name}", "playable verdict but no top-level frame_paths/strip — the game drops it"))
+                strip_ok = a.get("strip") and os.path.exists(os.path.join(factory.ROOT, a["strip"]))
+                if not (a.get("frame_paths") or strip_ok):
+                    bad.append((f"{rel}#{state}#{name}", "playable verdict but no top-level frame_paths and no EXISTING strip — the game drops or 404s it"))
+                if a.get("strip") and not strip_ok:
+                    bad.append((f"{rel}#{state}#{name}", f"strip points at a missing file: {a['strip']}"))
                 rel_dir = os.path.dirname(fps[0]).rsplit("/animations", 1)[0]
                 if not os.path.exists(os.path.join(factory.ROOT, f"{rel_dir}/animations/{name}__south.webp")) \
-                        and not a.get("strip"):
+                        and not strip_ok:
                     bad.append((f"{rel}#{state}#{name}", "playable verdict but no south strip — the wiki draws a still"))
     return bad
 

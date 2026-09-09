@@ -31,6 +31,14 @@ def _south(d):
     return d.get("south") or (next(iter(d.values())) if d else None)
 
 
+def _existing(p):
+    """A recorded strip counts only if the file is there. The legacy single
+    `__strip.webp` name lingered in `strip` on hundreds of clips after the file
+    was gone, and a path the game will 404 is worse than none — parseAnims
+    takes any string and the wiki draws a still (2026-09-10)."""
+    return p if p and os.path.exists(os.path.join(ROOT, p)) else None
+
+
 def _strip_for(rel_dir, name, key):
     """The on-disk strip the wiki resolves by name, as a domain-relative path,
     or None if it is not there — never a path to a file that does not exist."""
@@ -60,7 +68,8 @@ def normalize(man, rel):
             rel_dir = os.path.dirname(fps[0]).rsplit("/animations", 1)[0] if fps else None
             want = {
                 "frame_paths": fps,
-                "strip": s.get("strip") or a.get("strip") or (_strip_for(rel_dir, name, key) if rel_dir else None),
+                "strip": (_existing(s.get("strip")) or _existing(a.get("strip"))
+                          or (_strip_for(rel_dir, name, key) if rel_dir else None)),
                 "light_frames": s.get("light_frames"),
             }
             for k, v in want.items():
