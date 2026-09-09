@@ -49,6 +49,15 @@ music/**/*.wav
 !lore
 !wiki
 !live
+# ...but NOT the perf telemetry. The client beacon appends to
+# live/telemetry/perf.json every 30 s of play (99 commits in one day) and the
+# server WRITES it through the GitHub API and never reads it from disk; the
+# baked live/ copy exists only as the boot fallback for tuning/ and feedback/.
+# Yet it sat in the build context, so EVERY deploy found the curate stage's
+# inputs changed and re-ran shipset (49 s), re-copied the repo into /full
+# (19 s) and rebuilt the wiki registry (7 s) — 75 s of cache misses per deploy
+# for a file nothing in the image uses. Measured on run 3274, 2026-09-09.
+live/telemetry
 **/__pycache__
 **/.venv
 *.log
