@@ -1,0 +1,141 @@
+{
+  "id": "ant_lion",
+  "name": "Pitjaw",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It digs the pit and lies beneath the floor of it. The sand slides, and whatever stood on the slope goes down to the jaws.",
+  "biome": [
+    "light_soil",
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Giant antlion larva with realistic proportions, a broad flattened sand-brown armored body, a wide head with two enormous curved serrated jaws held close together, small black eyes, six short digging legs tucked beneath, and sand grains caught in its plates.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ant_lion/rotations/south.webp",
+    "south-east": "ant_lion/rotations/south-east.webp",
+    "east": "ant_lion/rotations/east.webp",
+    "north-east": "ant_lion/rotations/north-east.webp",
+    "north": "ant_lion/rotations/north.webp",
+    "north-west": "ant_lion/rotations/north-west.webp",
+    "west": "ant_lion/rotations/west.webp",
+    "south-west": "ant_lion/rotations/south-west.webp"
+  },
+  "sheet": "ant_lion/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "cadb92cf-6f75-4afd-abdb-bf958fc007a3",
+  "seed": 915085767,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:38:03+00:00",
+  "elapsed_s": 226.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.715,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.715,
+        "bbox": [
+          3,
+          5,
+          85,
+          83
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.774,
+        "bbox": [
+          4,
+          9,
+          84,
+          84
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.777,
+        "bbox": [
+          4,
+          9,
+          84,
+          84
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.741,
+        "bbox": [
+          8,
+          11,
+          80,
+          81
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.82,
+        "bbox": [
+          5,
+          6,
+          86,
+          83
+        ],
+        "fill": 0.805,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.737,
+        "bbox": [
+          7,
+          4,
+          83,
+          83
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.761,
+        "bbox": [
+          5,
+          4,
+          81,
+          83
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.822,
+        "bbox": [
+          2,
+          6,
+          83,
+          83
+        ],
+        "fill": 0.805,
+        "touches_edge": false
+      }
+    }
+  }
+}
