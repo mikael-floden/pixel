@@ -337,6 +337,240 @@
         "west": "tide_crab/animations/idle__west.webp",
         "north-west": "tide_crab/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.171,
+          "step_max": 0.2225,
+          "drift": 2.92,
+          "loop": 0.2711,
+          "loop_ratio": 1.58,
+          "travel": 0.48,
+          "pin": 0.864,
+          "reasons": [],
+          "cut": 0,
+          "sub": "47a12943-0c9c-4d67-a3df-de3f68937cb2",
+          "group": "e4e093dd-c866-43c1-bbb0-dd4832307931",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:51:18+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1292,
+          "step_max": 0.1577,
+          "drift": 0.66,
+          "loop": 0.0641,
+          "loop_ratio": 0.5,
+          "travel": 0.64,
+          "pin": 0.9,
+          "reasons": [],
+          "cut": 0,
+          "sub": "282ca0e0-7fa7-4cda-b5ef-9d745be29af6",
+          "group": "977a343c-98a3-43b1-aa9f-ae87017fdce7",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:51:18+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.2788,
+          "step_max": 0.3168,
+          "drift": 2.52,
+          "loop": 0.2269,
+          "loop_ratio": 0.81,
+          "travel": 0.62,
+          "pin": 0.81,
+          "reasons": [
+            "frame 3 touches a canvas edge the base does not (overflow / wrap risk)",
+            "3 px of motion fell outside the base canvas (overflow)"
+          ],
+          "cut": 3,
+          "sub": "1a422330-81da-42a6-9efc-ad829edd1a76",
+          "group": "12b444cc-8798-40cc-873a-9c4662adca2e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:51:19+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.214,
+          "step_max": 0.233,
+          "drift": 1.98,
+          "loop": 0.2481,
+          "loop_ratio": 1.16,
+          "travel": 1.41,
+          "pin": 0.864,
+          "reasons": [],
+          "cut": 0,
+          "sub": "72fcd7f5-2057-480c-8d5d-65542c9d5925",
+          "group": "9811e337-9ba0-496e-ae2a-0a1817187388",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:51:20+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1328,
+          "step_max": 0.184,
+          "drift": 2.77,
+          "loop": 0.1297,
+          "loop_ratio": 0.98,
+          "travel": 0.2,
+          "pin": 0.918,
+          "reasons": [],
+          "cut": 0,
+          "sub": "e744a571-af8d-4460-a0f2-a5095be05533",
+          "group": "6e5d5204-5b31-41e9-840b-4146969b5cc7",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:51:21+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1292,
+          "step_max": 0.1577,
+          "drift": 0.66,
+          "loop": 0.0641,
+          "loop_ratio": 0.5,
+          "travel": 0.64,
+          "pin": 0.9,
+          "reasons": [],
+          "cut": 0,
+          "sub": "282ca0e0-7fa7-4cda-b5ef-9d745be29af6",
+          "group": "977a343c-98a3-43b1-aa9f-ae87017fdce7",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:51:18+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.2788,
+          "step_max": 0.3168,
+          "drift": 2.52,
+          "loop": 0.2269,
+          "loop_ratio": 0.81,
+          "travel": 0.62,
+          "pin": 0.81,
+          "reasons": [
+            "frame 3 touches a canvas edge the base does not (overflow / wrap risk)",
+            "3 px of motion fell outside the base canvas (overflow)"
+          ],
+          "cut": 3,
+          "sub": "1a422330-81da-42a6-9efc-ad829edd1a76",
+          "group": "12b444cc-8798-40cc-873a-9c4662adca2e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:51:19+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.214,
+          "step_max": 0.233,
+          "drift": 1.98,
+          "loop": 0.2481,
+          "loop_ratio": 1.16,
+          "travel": 1.41,
+          "pin": 0.864,
+          "reasons": [],
+          "cut": 0,
+          "sub": "72fcd7f5-2057-480c-8d5d-65542c9d5925",
+          "group": "9811e337-9ba0-496e-ae2a-0a1817187388",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:51:20+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "tide_crab/animations/walk/south/00.webp",
+          "tide_crab/animations/walk/south/01.webp",
+          "tide_crab/animations/walk/south/02.webp",
+          "tide_crab/animations/walk/south/03.webp",
+          "tide_crab/animations/walk/south/04.webp",
+          "tide_crab/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "tide_crab/animations/walk/south-east/00.webp",
+          "tide_crab/animations/walk/south-east/01.webp",
+          "tide_crab/animations/walk/south-east/02.webp",
+          "tide_crab/animations/walk/south-east/03.webp",
+          "tide_crab/animations/walk/south-east/04.webp",
+          "tide_crab/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "tide_crab/animations/walk/east/00.webp",
+          "tide_crab/animations/walk/east/01.webp",
+          "tide_crab/animations/walk/east/02.webp",
+          "tide_crab/animations/walk/east/03.webp",
+          "tide_crab/animations/walk/east/04.webp",
+          "tide_crab/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "tide_crab/animations/walk/north-east/00.webp",
+          "tide_crab/animations/walk/north-east/01.webp",
+          "tide_crab/animations/walk/north-east/02.webp",
+          "tide_crab/animations/walk/north-east/03.webp",
+          "tide_crab/animations/walk/north-east/04.webp",
+          "tide_crab/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "tide_crab/animations/walk/north/00.webp",
+          "tide_crab/animations/walk/north/01.webp",
+          "tide_crab/animations/walk/north/02.webp",
+          "tide_crab/animations/walk/north/03.webp",
+          "tide_crab/animations/walk/north/04.webp",
+          "tide_crab/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "tide_crab/animations/walk/south-west/00.webp",
+          "tide_crab/animations/walk/south-west/01.webp",
+          "tide_crab/animations/walk/south-west/02.webp",
+          "tide_crab/animations/walk/south-west/03.webp",
+          "tide_crab/animations/walk/south-west/04.webp",
+          "tide_crab/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "tide_crab/animations/walk/west/00.webp",
+          "tide_crab/animations/walk/west/01.webp",
+          "tide_crab/animations/walk/west/02.webp",
+          "tide_crab/animations/walk/west/03.webp",
+          "tide_crab/animations/walk/west/04.webp",
+          "tide_crab/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "tide_crab/animations/walk/north-west/00.webp",
+          "tide_crab/animations/walk/north-west/01.webp",
+          "tide_crab/animations/walk/north-west/02.webp",
+          "tide_crab/animations/walk/north-west/03.webp",
+          "tide_crab/animations/walk/north-west/04.webp",
+          "tide_crab/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "tide_crab/animations/walk__south.webp",
+        "south-east": "tide_crab/animations/walk__south-east.webp",
+        "east": "tide_crab/animations/walk__east.webp",
+        "north-east": "tide_crab/animations/walk__north-east.webp",
+        "north": "tide_crab/animations/walk__north.webp",
+        "south-west": "tide_crab/animations/walk__south-west.webp",
+        "west": "tide_crab/animations/walk__west.webp",
+        "north-west": "tide_crab/animations/walk__north-west.webp"
+      }
     }
   }
 }

@@ -131,11 +131,14 @@ def save_frames(cid, state, d, frames):
 def align_to_base(frames, base, pinned=True):
     """v3 returns each direction's clip on ITS OWN padded canvas (measured
     2026-09-09 on a 112 px base: south 148×132, north 128×128, east 140×132)
-    at the same pixel scale, frame 0 being the base shifted by some offset.
-    Find that offset from frame 0, then crop/pad EVERY frame by it so frame 0
-    lands exactly on the base canvas and the clip shares the monster's
-    canvas. Returns (frames, cut) — cut = opaque pixels that fell outside the
-    base canvas over the whole clip (overflow; 0 for a calm idle)."""
+    at the same pixel scale — padded symmetrically around the base canvas
+    (every pinned frame-0 offset equalled ((W'-W)/2, (H'-H)/2)). Re-canvas
+    every frame so the base sits where it sat, on the SMALLEST canvas that
+    holds all the motion: the base canvas grown by an equal pad on all
+    sides. Nothing is ever cut — a stride or a bob that leaves the base
+    canvas is normal (sync's postprocess grows canvases the same way for the
+    shipped 57) and the game centres one canvas per monster.
+    Returns (frames, pad)."""
     W, H = base.size
     if pinned:
         b0 = base.getbbox(); f0 = frames[0].getbbox()
@@ -143,20 +146,34 @@ def align_to_base(frames, base, pinned=True):
             return frames, 0
         dx, dy = f0[0] - b0[0], f0[1] - b0[1]
     else:
-        # v3 pads symmetrically around the base canvas (measured on the idle
-        # probes: every pinned offset equalled ((W'-W)/2, (H'-H)/2)), so an
-        # unpinned clip is the centred base-size window
         dx, dy = (frames[0].width - W) // 2, (frames[0].height - H) // 2
-    out, cut = [], 0
+    # how far does any opaque pixel reach beyond the base window?
+    pad = 0
     for fr in frames:
-        canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        canvas.alpha_composite(fr, (-dx, -dy)) if (dx >= 0 and dy >= 0) else canvas.alpha_composite(fr, (max(0, -dx), max(0, -dy)))
-        # count what the crop dropped
-        total = int((np.asarray(fr)[..., 3] > 0).sum())
-        kept = int((np.asarray(canvas)[..., 3] > 0).sum())
-        cut += max(0, total - kept)
+        bb = fr.getbbox()
+        if not bb:
+            continue
+        pad = max(pad, dx - bb[0], dy - bb[1], bb[2] - (dx + W), bb[3] - (dy + H))
+    pad = max(0, int(pad))
+    out = []
+    for fr in frames:
+        canvas = Image.new("RGBA", (W + 2 * pad, H + 2 * pad), (0, 0, 0, 0))
+        canvas.alpha_composite(fr, (pad - dx, pad - dy)) if (pad - dx >= 0 and pad - dy >= 0) else None
+        if pad - dx < 0 or pad - dy < 0:
+            # source window starts inside the padded clip: crop first, then paste
+            crop = fr.crop((max(0, dx - pad), max(0, dy - pad), fr.width, fr.height))
+            canvas.alpha_composite(crop, (max(0, pad - dx), max(0, pad - dy)))
         out.append(canvas)
-    return out, cut
+    return out, pad
+
+
+def on_canvas(base, size):
+    """The base rotation centred on a (possibly padded) canvas of `size`."""
+    if base.size == size:
+        return base
+    c = Image.new("RGBA", size, (0, 0, 0, 0))
+    c.alpha_composite(base, ((size[0] - base.width) // 2, (size[1] - base.height) // 2))
+    return c
 
 
 # --- QA ----------------------------------------------------------------------
@@ -179,9 +196,8 @@ def qa_clip(cid, state, d, frames):
         reasons.append(f"{len(frames)} frames, expected {want}")
     if not frames:
         return {"status": "fail", "reasons": reasons}
-    base = rotation(cid, d)
-    if base.size != frames[0].size:
-        reasons.append(f"canvas {frames[0].size} != base {base.size}")
+    base = on_canvas(rotation(cid, d), frames[0].size)
+    pad = (frames[0].width - rotation(cid, d).width) // 2
     ops = [_sil(f) for f in frames]
     sil = max(o.sum() for o in ops)
     step = [(ops[i] ^ ops[i + 1]).sum() / sil for i in range(len(ops) - 1)]
@@ -197,19 +213,9 @@ def qa_clip(cid, state, d, frames):
     xs = [np.argwhere(o)[:, 1].mean() if o.any() else 0 for o in ops]
     travel = float(max(xs) - min(xs))
     loop_ratio = float(loop / step_mean) if step_mean > 1e-6 else 0.0
-    # overflow: a frame touching an edge the base does not
-    h, w = b0.shape
-    def edges(o):
-        return (o[0].any(), o[-1].any(), o[:, 0].any(), o[:, -1].any())
-    be = edges(b0)
-    for i, o in enumerate(ops):
-        e = edges(o)
-        if any(x and not y for x, y in zip(e, be)):
-            reasons.append(f"frame {i} touches a canvas edge the base does not (overflow / wrap risk)")
-            break
     # facing: mid frames must match own base better than the mirrored opposite base
     if d in OPPOSITE:
-        opp = ImageOps.mirror(rotation(cid, OPPOSITE[d]))
+        opp = ImageOps.mirror(on_canvas(rotation(cid, OPPOSITE[d]), frames[0].size))
         bo = _sil(opp)
         own = np.mean([_iou(b0, o) for o in ops[1:]])
         other = np.mean([_iou(bo, o) for o in ops[1:]])
@@ -226,9 +232,14 @@ def qa_clip(cid, state, d, frames):
         reasons.append(f"too much: silhouette moves {step_mean:.3f} per frame"); status = "fail"
     elif not (lo <= step_mean <= hi):
         reasons.append(f"motion {step_mean:.3f} outside the calm band {lo}–{hi} — eyeball it"); status = "warn"
-    if drift > band["drift_warn"]:
-        reasons.append(f"drifts {drift:.1f} px"); status = "fail"
-    elif drift > band["drift_pass"]:
+    # drift scales with the body: a 240 px giant bobbing 7 px is the same 3 %
+    # as a 112 px goblin bobbing 3 (the maintainer's 37 walks: median 2.2 px,
+    # max 13 on a 256 px canvas)
+    W0 = rotation(cid, d).width
+    d_pass, d_warn = max(band["drift_pass"], 0.03 * W0), max(band["drift_warn"], 0.05 * W0)
+    if drift > d_warn:
+        reasons.append(f"drifts {drift:.1f} px (> {d_warn:.0f})"); status = "fail"
+    elif drift > d_pass:
         reasons.append(f"drifts {drift:.1f} px — eyeball it"); status = "warn" if status != "fail" else status
     if "loop_max" in band and loop > band["loop_max"]:
         reasons.append(f"loop does not close (last vs first {loop:.3f})"); status = "fail"
@@ -238,19 +249,19 @@ def qa_clip(cid, state, d, frames):
         elif loop_ratio > band["loop_ratio_pass"]:
             reasons.append(f"last→first hand-off {loop_ratio:.1f}× a step — eyeball the loop"); status = "warn" if status != "fail" else status
     if "travel_pass" in band:
-        if travel > band["travel_warn"]:
+        t_pass, t_warn = max(band["travel_pass"], 0.03 * W0), max(band["travel_warn"], 0.05 * W0)
+        if travel > t_warn:
             reasons.append(f"walks across the canvas: {travel:.1f} px of x-travel (should be in place)"); status = "fail"
-        elif travel > band["travel_pass"]:
+        elif travel > t_pass:
             reasons.append(f"{travel:.1f} px of x-travel — eyeball it"); status = "warn" if status != "fail" else status
     if any(("not the base" in r) or ("wrong way" in r) or ("expected" in r) for r in reasons):
         status = "fail"
-    elif any("overflow" in r for r in reasons) and status == "pass":
-        # a mere touch of the border loses nothing (align_to_base reports CUT
-        # pixels separately, and those do fail); eyeball it
-        status = "warn"
+    if pad > 0:
+        reasons.append(f"canvas grown by {pad} px a side to hold the motion")
     return {"status": status, "step_mean": round(step_mean, 4), "step_max": round(float(max(step)) if step else 0, 4),
             "drift": round(drift, 2), "loop": round(loop, 4), "loop_ratio": round(loop_ratio, 2),
-            "travel": round(travel, 2), "pin": round(float(pin), 3), "reasons": reasons}
+            "travel": round(travel, 2), "pin": round(float(pin), 3), "pad": pad,
+            "canvas": list(frames[0].size), "reasons": reasons}
 
 
 # --- manifest ------------------------------------------------------------------
@@ -321,13 +332,9 @@ def collect_state(client, cid, state, dirs, version, verbose=True):
         if len(frames) != len(urls):
             out[d] = {"status": "fail", "reasons": [f"downloaded {len(frames)}/{len(urls)} frames"]}
             continue
-        frames, cut = align_to_base(frames, rotation(cid, d), pinned=spec.get("keep_first", True))
+        frames, pad = align_to_base(frames, rotation(cid, d), pinned=spec.get("keep_first", True))
         save_frames(cid, state, d, frames)
         qa = qa_clip(cid, state, d, frames)
-        if cut:
-            qa["reasons"].append(f"{cut} px of motion fell outside the base canvas (overflow)")
-            qa["status"] = "fail" if cut > 20 else ("warn" if qa["status"] == "pass" else qa["status"])
-        qa["cut"] = cut
         qa.update({"sub": client.sub_id(urls[0]), "group": group, "takes": len(cands), "version": version, "mirrored": False,
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         rec["directions"][d] = qa
@@ -454,10 +461,7 @@ def cmd_requal(args):
             if not frames:
                 continue
             new = qa_clip(cid, args.state, d, frames)
-            if q.get("cut"):
-                new["reasons"].append(f"{q['cut']} px of motion fell outside the base canvas (overflow)")
-                new["status"] = "fail" if q["cut"] > 20 else ("warn" if new["status"] == "pass" else new["status"])
-            keep = {k: q[k] for k in ("sub", "takes", "version", "mirrored", "generated_at", "cut") if k in q}
+            keep = {k: q[k] for k in ("sub", "group", "takes", "version", "mirrored", "generated_at") if k in q}
             rec["directions"][d] = {**new, **keep}
             for md, src in MIRRORED.items():
                 if src == d and rec["directions"][d]["status"] != "fail":

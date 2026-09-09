@@ -336,6 +336,196 @@
         "west": "ember_king/animations/idle__west.webp",
         "north-west": "ember_king/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.141,
+          "step_max": 0.1729,
+          "drift": 6.21,
+          "loop": 0.2272,
+          "loop_ratio": 1.61,
+          "travel": 2.43,
+          "pin": 0.879,
+          "reasons": [
+            "frame 0 touches a canvas edge the base does not (overflow / wrap risk)",
+            "drifts 6.2 px — eyeball it",
+            "2 px of motion fell outside the base canvas (overflow)"
+          ],
+          "cut": 2,
+          "sub": "fae5fb44-ce93-4230-9b48-d2485de07da4",
+          "group": "ee25a881-5812-4d9f-bfdd-82f22ec664c5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:51:12+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1995,
+          "step_max": 0.2924,
+          "drift": 3.65,
+          "loop": 0.5394,
+          "loop_ratio": 2.7,
+          "travel": 1.79,
+          "pin": 0.825,
+          "reasons": [
+            "frame 4 touches a canvas edge the base does not (overflow / wrap risk)",
+            "last→first hand-off is 2.7× a normal step — the loop hitches",
+            "84 px of motion fell outside the base canvas (overflow)"
+          ],
+          "cut": 84,
+          "sub": "e6208d2d-b8de-48ba-86f4-3cc516d3ec1f",
+          "group": "d24f78b3-4b51-4a0c-9593-a5b33f466e95",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:51:12+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.1912,
+          "step_max": 0.2651,
+          "drift": 5.28,
+          "loop": 0.2937,
+          "loop_ratio": 1.54,
+          "travel": 2.1,
+          "pin": 0.81,
+          "reasons": [
+            "drifts 5.3 px — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "21ed23de-f35a-4d1e-8d9b-c6220404e29f",
+          "group": "d7be1abf-dcc0-46dc-a83d-d8b670268428",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:51:13+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1994,
+          "step_max": 0.2513,
+          "drift": 6.84,
+          "loop": 0.3516,
+          "loop_ratio": 1.76,
+          "travel": 0.86,
+          "pin": 0.806,
+          "reasons": [
+            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)",
+            "drifts 6.8 px — eyeball it",
+            "37 px of motion fell outside the base canvas (overflow)"
+          ],
+          "cut": 37,
+          "sub": "afb6d48a-82ec-49bb-a843-b4cf09015c91",
+          "group": "db7d3f0c-8929-4de8-ab83-0ff5c7ab19a6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:51:14+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.1484,
+          "step_max": 0.1768,
+          "drift": 8.18,
+          "loop": 0.2468,
+          "loop_ratio": 1.66,
+          "travel": 0.69,
+          "pin": 0.899,
+          "reasons": [
+            "drifts 8.2 px"
+          ],
+          "cut": 0,
+          "sub": "d2a5b67e-ac82-4973-a037-cfbd3eb6435d",
+          "group": "ed59b216-076f-4cb8-aa20-751ac59f64e8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:51:14+00:00"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1912,
+          "step_max": 0.2651,
+          "drift": 5.28,
+          "loop": 0.2937,
+          "loop_ratio": 1.54,
+          "travel": 2.1,
+          "pin": 0.81,
+          "reasons": [
+            "drifts 5.3 px — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "21ed23de-f35a-4d1e-8d9b-c6220404e29f",
+          "group": "d7be1abf-dcc0-46dc-a83d-d8b670268428",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:51:13+00:00",
+          "source": "east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "ember_king/animations/walk/south/00.webp",
+          "ember_king/animations/walk/south/01.webp",
+          "ember_king/animations/walk/south/02.webp",
+          "ember_king/animations/walk/south/03.webp",
+          "ember_king/animations/walk/south/04.webp",
+          "ember_king/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "ember_king/animations/walk/south-east/00.webp",
+          "ember_king/animations/walk/south-east/01.webp",
+          "ember_king/animations/walk/south-east/02.webp",
+          "ember_king/animations/walk/south-east/03.webp",
+          "ember_king/animations/walk/south-east/04.webp",
+          "ember_king/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "ember_king/animations/walk/east/00.webp",
+          "ember_king/animations/walk/east/01.webp",
+          "ember_king/animations/walk/east/02.webp",
+          "ember_king/animations/walk/east/03.webp",
+          "ember_king/animations/walk/east/04.webp",
+          "ember_king/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "ember_king/animations/walk/north-east/00.webp",
+          "ember_king/animations/walk/north-east/01.webp",
+          "ember_king/animations/walk/north-east/02.webp",
+          "ember_king/animations/walk/north-east/03.webp",
+          "ember_king/animations/walk/north-east/04.webp",
+          "ember_king/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "ember_king/animations/walk/north/00.webp",
+          "ember_king/animations/walk/north/01.webp",
+          "ember_king/animations/walk/north/02.webp",
+          "ember_king/animations/walk/north/03.webp",
+          "ember_king/animations/walk/north/04.webp",
+          "ember_king/animations/walk/north/05.webp"
+        ],
+        "west": [
+          "ember_king/animations/walk/west/00.webp",
+          "ember_king/animations/walk/west/01.webp",
+          "ember_king/animations/walk/west/02.webp",
+          "ember_king/animations/walk/west/03.webp",
+          "ember_king/animations/walk/west/04.webp",
+          "ember_king/animations/walk/west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "ember_king/animations/walk__south.webp",
+        "south-east": "ember_king/animations/walk__south-east.webp",
+        "east": "ember_king/animations/walk__east.webp",
+        "north-east": "ember_king/animations/walk__north-east.webp",
+        "north": "ember_king/animations/walk__north.webp",
+        "west": "ember_king/animations/walk__west.webp"
+      }
     }
   }
 }
