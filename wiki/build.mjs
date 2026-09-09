@@ -1211,7 +1211,13 @@ function buildObjects() {
         }
         if (!Object.keys(dirs).length) continue;
         const key = sk.toLowerCase();
-        anims[key] = { description: a.description ?? "", anim: name, dirs: { ...(anims[key]?.dirs ?? {}), ...dirs } };
+        /* THE CLASSIFICATION RIDES THE STATE. Read from the animation first,
+         * then the state — whichever the scenery agent writes it on — so the
+         * review shows it the day they start, with no build change. */
+        const cls = a.animation_state ?? sv.animation_state ?? null;
+        anims[key] = { description: a.description ?? "", anim: name,
+          ...(typeof cls === "string" && cls ? { animState: cls } : {}),
+          dirs: { ...(anims[key]?.dirs ?? {}), ...dirs } };
       }
     }
     for (const [key, a] of Object.entries(oj.animations ?? {})) {
@@ -1368,6 +1374,13 @@ function buildObjects() {
        * flattened, because the two levels are the contract and the wiki
        * resolves them the same way the game must. */
       light: oj.light && typeof oj.light === "object" ? oj.light : null,
+      /* THE ANIMATION'S CLASSIFICATION, per state, passed through the moment
+       * the scenery agent starts writing it (maintainer 2026-09-09: they
+       * categorise every animation ANIMATION_PROBABLY_GOOD or _BAD; he marks
+       * _APPROVED or _REDO in the wiki). Read from the state's own record —
+       * `animation_state` on the state, or on its single animation — because
+       * that is where a per-animation fact belongs. Absent = unclassified, and
+       * the review says so rather than guessing. */
       description: oj.description ?? oj.prompt ?? "",
       path: `scenery/${rel}`,
       preview,
@@ -2767,6 +2780,7 @@ const artPrior = readJson(artBoundsPath);
  *  answer the old rule gave. */
 const BASE_RULE = "hull-4px+8pct";
 let artBases = artPrior?.bases ?? {};    // rect footprint cache, keyed by art hash @ rule
+let artAnims = artPrior?.anims ?? {};    // animation-drift cache, same keying
 const artClips = {}, artHashes = {};
 const artFailed = [];
 let artCachedN = 0, artMeasuredN = 0;
@@ -2957,6 +2971,80 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
     if (!L || !R || R[0] - L[0] < 6) return null;
     return [L[0], L[1], B[0], B[1], R[0], R[1]].map((v) => +v.toFixed(1));
   };
+  /* DOES THE ROOT MOVE? (maintainer 2026-09-09, to the scenery agent, copied to
+   * me: "The goal with the animations is to just animate some part of the
+   * object while the object itself stands still on the ground ... It's ok if
+   * the leaves move and it's even better if with the leaves and the branches
+   * move, but as soon as the root moves it looks wrong and the animation can't
+   * be used.")
+   *
+   * That is a measurement, not a matter of taste, so the build takes it and
+   * both the classifier and the review read the number instead of eyeballing
+   * 2,205 clips. Per animated clip, against frame 0:
+   *   base — how far the BOTTOM QUARTER's centroid travels, in px. This is the
+   *          root. beacon_001's flame moves its top 3.48px and its base 0.05;
+   *          barrel_007 moves its base 2.89px with a still top, which is the
+   *          fault he is describing.
+   *   top  — the same for the top quarter, so "nothing moves at all" (a dead
+   *          animation) is distinguishable from "the right part moves".
+   *   low  — the share of CHANGED pixels that fall in the bottom quarter.
+   *          barrel_007 is 0.92, the trees 0.00-0.17. A high share with a small
+   *          base drift is a wobble at the foot rather than a slide.
+   * Cached under the clip's own art hash + the rule, like the footprints. */
+  const ANIM_RULE = "quarters-v1";
+  {
+    const priorAnim = artPrior?.anims ?? {};
+    const anims = {};
+    let animMeasured = 0, animCached = 0, animClips = 0;
+    const measure = (relStrip, fw, fh, frames) => {
+      const { w, pix } = decodeWebP(readFileSync(join(ROOT, relStrip)));
+      if (frames < 2 || w < fw * frames) return null;
+      const on = (f, x, y) => (pix[y * w + f * fw + x] >>> 24) > 40;
+      let y0 = fh, y1 = -1;
+      for (let y = 0; y < fh; y++) for (let x = 0; x < fw; x++) if (on(0, x, y)) { if (y < y0) y0 = y; if (y > y1) y1 = y; }
+      if (y1 < y0) return null;
+      const h = y1 - y0 + 1;
+      const lo = Math.floor(y0 + 0.75 * h), hi = Math.ceil(y0 + 0.25 * h);
+      const cen = (f, a, b) => {
+        let sx = 0, sy = 0, n = 0;
+        for (let y = a; y <= b; y++) for (let x = 0; x < fw; x++) if (on(f, x, y)) { sx += x; sy += y; n++; }
+        return n ? [sx / n, sy / n, n] : null;
+      };
+      const b0 = cen(0, lo, y1), t0 = cen(0, y0, hi);
+      let base = 0, top = 0, low = 0;
+      for (let f = 1; f < frames; f++) {
+        const b = cen(f, lo, y1), tp = cen(f, y0, hi);
+        if (b0 && b) base = Math.max(base, Math.abs(b[0] - b0[0]) + Math.abs(b[1] - b0[1]));
+        if (t0 && tp) top = Math.max(top, Math.abs(tp[0] - t0[0]) + Math.abs(tp[1] - t0[1]));
+        let ch = 0, chLow = 0;
+        for (let y = y0; y <= y1; y++) for (let x = 0; x < fw; x++) {
+          if (on(0, x, y) === on(f, x, y)) continue;
+          ch++; if (y >= lo) chLow++;
+        }
+        if (ch) low = Math.max(low, chLow / ch);
+      }
+      return { base: +base.toFixed(2), top: +top.toFixed(2), low: +low.toFixed(3), frames };
+    };
+    for (const o of objects) {
+      if (!o.animations) continue;
+      for (const st of Object.keys(o.animations)) {
+        for (const [dname, c] of Object.entries(o.animations[st]?.dirs ?? {})) {
+          if (!c?.strip || !c.h || (c.frames ?? 1) < 2) continue;
+          const ck = `${c.h}@${ANIM_RULE}`;
+          if (priorAnim[ck] !== undefined) { anims[ck] = priorAnim[ck]; if (priorAnim[ck]) c.anim = priorAnim[ck]; animCached++; continue; }
+          let m = null;
+          try { m = measure(c.strip, c.fw, c.fh, c.frames); } catch { m = null; }
+          anims[ck] = m; animMeasured++;
+          if (m) c.anim = m;
+          void dname;
+        }
+      }
+      animClips++;
+    }
+    artAnims = anims;
+    console.log(`[wiki] animation drift: ${animMeasured} clips measured, ${animCached} from cache`);
+  }
+
   for (const o of objects) {
     if (o.hitboxShape !== "rect" || !o.animations) continue;
     let any = false;
@@ -2990,7 +3078,8 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
   const sorted = (o) => Object.fromEntries(Object.entries(o).sort(([a], [b]) => a.localeCompare(b)));
   const same = artPrior && JSON.stringify({ s: artPrior.scale, b: artPrior.boxes, c: artPrior.clips, h: artPrior.hashes })
     === JSON.stringify({ s: artScale, b: artBoxes, c: sorted(artClips), h: sorted(artHashes) })
-    && JSON.stringify(artPrior.bases ?? {}) === JSON.stringify(sorted(artBases));
+    && JSON.stringify(artPrior.bases ?? {}) === JSON.stringify(sorted(artBases))
+    && JSON.stringify(artPrior.anims ?? {}) === JSON.stringify(sorted(artAnims));
   if (!same) {
     try {
       writeFileSync(artBoundsPath, JSON.stringify({
@@ -2998,7 +3087,7 @@ const artBox = Object.keys(artBoxes).length ? artBoxes : null;
         generated_at: new Date().toISOString(),
         note: "content-hash cache of build.mjs's own measurements — safe to delete, the build remeasures",
         scale: artScale, boxes: artBoxes, clips: sorted(artClips), hashes: sorted(artHashes),
-        bases: sorted(artBases),
+        bases: sorted(artBases), anims: sorted(artAnims),
       }) + "\n");
     } catch { /* read-only fs (Docker image build) is fine — the numbers are already in data.json */ }
   }

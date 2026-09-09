@@ -131,6 +131,17 @@ const LIVE_FILES: Record<string, string> = {
   // entry. Distinct from scenery_lights, which answers whether the state is
   // lit at all. See live/README.md.
   "tuning/scenery_lighting.json": "tuning/scenery_lighting",
+  // WHICH SCENERY ANIMATIONS MAY PLAY. The scenery agent classifies every
+  // animation ANIMATION_PROBABLY_GOOD or ANIMATION_PROBABLY_BAD in its own
+  // manifest; this file is the maintainer's verdict on top —
+  // ANIMATION_APPROVED or ANIMATION_REDO, one entry per <piece path>#<state>
+  // (2026-09-09: "as soon as the root moves it looks wrong and the animation
+  // can't be used"). REDO means nothing animates for that state until the
+  // agent has redone it with less movement and re-classified it. His verdict
+  // outranks the classification; absent means the classification stands.
+  // Written by the wiki, read by the game and by the scenery agent.
+  // See live/README.md.
+  "tuning/scenery_animation.json": "tuning/scenery_animation",
   // WHICH TILES ARE A GROUND TYPE'S BASE TILES. A base tile is the one the
   // world agent paints first and repeats forever — "does everything but noone
   // notice" (maintainer 2026-08-21). Promoted and revoked from the wiki's

@@ -147,6 +147,31 @@ The laws around the flow:
     candidate key.
   - **Absent means the measured best**; stepping onto the measured best
     deletes the entry — the file only ever names his exceptions.
+- `live/tuning/scenery_animation.json` — `pixel-wiki-scenery-animation@1`.
+  **WHICH SCENERY ANIMATIONS MAY PLAY.** Four states, two hands (maintainer
+  2026-09-09): the scenery agent classifies every animation
+  `ANIMATION_PROBABLY_GOOD` or `ANIMATION_PROBABLY_BAD` in its own manifest
+  (`animation_state` on the state or on its animation, published by the wiki
+  build as `animState`), and this file carries HIS verdict on top —
+  `ANIMATION_APPROVED` or `ANIMATION_REDO`, one entry per
+  `<piece path>#<state>` as `{ verdict, was, state, updated_at }`. **His
+  verdict outranks the classification; absent means the classification
+  stands.** `ANIMATION_REDO` means nothing animates for that state until the
+  agent has redone it with less movement and re-classified it — the animation
+  is not shown in the meantime. Pressing the same verdict again withdraws it
+  and hands the state back to the agent. The rule behind all of it, in his
+  words: "the goal with the animations is to just animate some part of the
+  object while the object itself stands still on the ground ... as soon as the
+  root moves it looks wrong and the animation can't be used."
+
+  The wiki MEASURES that rule and publishes it per clip as `anim`
+  (`{ base, top, low, frames }`): how far the bottom quarter of the art travels
+  across the frames (the root), how far the top quarter travels, and what share
+  of the changed pixels fall at the foot. Measured on all 2,205 animated clips —
+  median root movement 0.10px, 226 states over 1px, worst 14.1px. Anyone
+  classifying animations should read it rather than eyeball them; the review
+  filters on it too ("root moves", "nothing moves").
+
 - `live/tuning/scenery_lighting.json` — `pixel-wiki-scenery-lighting@1`. **WHAT
   KIND OF LIGHT A LIT STATE GIVES OFF.** The scenery domain publishes a `light`
   block per piece — `kind` (`fire/open`, `fire/enclosed`, `fire/ember`,

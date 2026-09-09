@@ -960,6 +960,75 @@ await pub.close();
   }
 }
 
+/* WHICH ANIMATIONS MAY PLAY (maintainer 2026-09-09, to the scenery agent and
+ * copied here: "as soon as the root moves it looks wrong and the animation
+ * can't be used ... The wiki will make it possible to filter and review
+ * animations so I will mark the animation as ANIMATION_APPROVED or
+ * ANIMATION_REDO").
+ *
+ * The row carries the agent's classification, the MEASURED root movement — his
+ * rule, in pixels — and his two verdicts. The measurement is the part that can
+ * silently stop being true, so it is checked against the registry. */
+{
+  const DD5 = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
+  const worst = (DD5.domains.objects ?? []).flatMap((o) => Object.keys(o.animations ?? {})
+    .map((st) => {
+      let d = null;
+      for (const c of Object.values(o.animations[st].dirs ?? {})) if (c.anim && (!d || c.anim.base > d.base)) d = c.anim;
+      return d ? { o, st, d } : null;
+    }).filter(Boolean)).sort((a, b2) => b2.d.base - a.d.base)[0];
+  ok(!!worst, `the build measures how far each animation moves its root (worst ${worst?.o.id} ${worst?.st} at ${worst?.d.base}px)`);
+  if (worst) {
+    await p.goto(`${W}#/objects/${worst.o.id}`, { waitUntil: "load" });
+    await p.waitForTimeout(3200);
+    /* WALK THE CHIPS UNTIL THE MEASURED STATE IS ON SCREEN. The chips are
+     * labelled "💡2" and "3", not by state name, so selecting one by its title
+     * has quietly landed on the wrong state twice in this file. Land on it by
+     * what the row SAYS instead — the state whose root movement matches the one
+     * this assertion measured. */
+    const want = `root ${worst.d.base}px`;
+    let row = null;
+    const n = await p.evaluate(() => document.querySelectorAll(".seg-states button").length);
+    for (let i = 0; i < n; i++) {
+      await p.evaluate((k) => document.querySelectorAll(".seg-states button")[k]?.click(), i);
+      await p.waitForTimeout(700);
+      const r = await p.evaluate(() => {
+        const el = document.querySelector(".anim-mode");
+        return el ? { pills: [...el.querySelectorAll(".pill")].map((x) => x.textContent),
+                      buttons: [...el.querySelectorAll("button")].map((x) => x.textContent.trim()) } : null;
+      });
+      if (r?.pills?.includes(want)) { row = r; break; }
+      row = row ?? r;
+    }
+    console.log("animation row:", JSON.stringify(row));
+    ok(!!row, "an animated state carries an animation row");
+    ok(row?.pills?.includes(want),
+      `and it prints the root movement the build measured (${row?.pills?.join(" | ")})`);
+    ok(row?.buttons?.length === 2 && /approve/.test(row.buttons[0]) && /redo/.test(row.buttons[1]),
+      `with his two verdicts and no others (${row?.buttons?.join(" | ")})`);
+    // REDO, then withdrawn — the same toggle every verdict in the wiki has.
+    await p.evaluate(() => [...document.querySelectorAll(".anim-mode button")].find((x) => /redo/.test(x.textContent))?.click());
+    await p.waitForTimeout(600);
+    const rec = await p.evaluate((k) => window.__wiki.state.tuning.scenery_animation?.overrides?.[k] ?? null, `${worst.o.path}#${worst.st}`);
+    ok(rec?.verdict === "ANIMATION_REDO", `redo files against the STATE (${JSON.stringify(rec)})`);
+    await p.evaluate(() => [...document.querySelectorAll(".anim-mode button")].find((x) => /redo/.test(x.textContent))?.click());
+    await p.waitForTimeout(600);
+    const gone = await p.evaluate((k) => window.__wiki.state.tuning.scenery_animation?.overrides?.[k] ?? null, `${worst.o.path}#${worst.st}`);
+    ok(!gone, "and pressing it again hands the state back to the agent's classification");
+  }
+  // THE FILTER HE ASKED FOR, counted off the registry rather than trusted.
+  await p.goto(`${W}#/objects`, { waitUntil: "load" });
+  await p.waitForTimeout(2800);
+  const chips = await p.evaluate(() => [...document.querySelectorAll('[data-bar="wiki-object-anim"] button')].map((b2) => b2.textContent.trim()));
+  console.log("animation chips:", JSON.stringify(chips));
+  ok(chips.some((c) => /^to review/.test(c)) && chips.some((c) => /^redo/.test(c)),
+    `the overview can filter animations (${chips.join(" | ")})`);
+  const movers = (DD5.domains.objects ?? []).filter((o) => Object.keys(o.animations ?? {}).some((st) =>
+    Object.values(o.animations[st].dirs ?? {}).some((c) => (c.anim?.base ?? 0) > 1))).length;
+  ok(chips.some((c) => c === `root moves ${movers}`),
+    `and "root moves" counts what the build measured, not a guess (${movers} pieces)`);
+}
+
 /* ...AND THE SAME ON EVERY OTHER REVIEW PAGE, walked rather than assumed. */
 {
   const DD2 = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));

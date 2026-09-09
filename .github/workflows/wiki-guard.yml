@@ -1,0 +1,51 @@
+# THE WIKI STILL RUNS — checked on every push that touches its page.
+#
+# wiki/site/wiki.js is a 770 KB single-file classic script that several agents
+# edit in passing, and twice in three days one of them shipped it broken to
+# production: an `export` added by the audio restructure (2026-09-06) stopped
+# the file parsing and the wiki hung on its boot overlay for everyone, and the
+# tiles2 retirement (2026-09-09) deleted five declarations while leaving their
+# uses, which killed every Scenery page. Both were green in every existing
+# check, because nothing compiled the file the way a browser does or ran a
+# single route.
+#
+# So: parse it as a classic script, then walk the routes in a real browser, as
+# both a player and the Game Master. Path-filtered, so it costs nothing on the
+# pushes that do not touch the wiki's page.
+name: wiki guard
+
+on:
+  push:
+    paths:
+      - "wiki/site/**"
+      - "wiki/tools/check-routes.mjs"
+      - "wiki/tools/check-script.mjs"
+      - ".github/workflows/wiki-guard.yml"
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games2/package-lock.json
+      - name: wiki.js parses as a classic script
+        run: node wiki/tools/check-script.mjs
+      - run: npm ci
+        working-directory: games2
+      # playwright-core ships no browser of its own; this is the only download.
+      - name: Chromium
+        run: npx --yes playwright@1.61.1 install --with-deps chromium
+      - name: Serve the assets
+        run: |
+          node wiki/tools/serve-assets.mjs 8902 &
+          for i in $(seq 1 30); do
+            curl -sf -o /dev/null "http://127.0.0.1:8902/assets/wiki/site/index.html" && break
+            sleep 1
+          done
+      - name: Every route renders, as player and as Game Master
+        run: node wiki/tools/check-routes.mjs

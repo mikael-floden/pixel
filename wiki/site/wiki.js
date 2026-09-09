@@ -11025,6 +11025,10 @@ const OBJ_HITBOXES = {
  * of this file and these three went with them, while their uses stayed — so
  * every Scenery page threw ReferenceError and rendered nothing, in production,
  * until this came back. They have nothing to do with tiles2. */
+/* Also taken by the tiles2 retirement and also nothing to do with tiles2 —
+ * these two count what a scenery piece HAS, and every piece page calls them. */
+const stillStates = (o) => Object.keys(o?.animations ?? {});
+const stillDirs = (o) => Math.max(0, ...stillStates(o).map((s) => Object.keys(o.animations[s]?.dirs ?? {}).length));
 const OBJ_SORT_KEY = "wiki-obj-sort";
 const OBJ_FILTER_KEY = "wiki-obj-filter";
 const OBJ_TYPE_KEY = "wiki-obj-type";
