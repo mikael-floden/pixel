@@ -5323,10 +5323,28 @@ class Grow:
                 z = self.lvl[y][x]
                 e = self.lvl[y][x + 1] if self.g(x + 1, y) else 0
                 sth = self.lvl[y + 1][x] if self.g(x, y + 1) else 0
+                cave = getattr(self, "cave_floor", {})
                 if z <= min(e, sth):
+                    # NO EXPOSED FACE - but a cell of the cave's ring is still
+                    # a cave wall and is named so. A room's near and side
+                    # walls show no face to the camera (their floor lies
+                    # up-screen), so they fell out of every group and the
+                    # game, cutting them to one storey indoors, capped the
+                    # stump with the cell's own ground: the mountain's snow
+                    # and ice on the rim of a black-rock room (maintainer
+                    # 2026-09-09, five photographs). 282 of the_game's 792
+                    # cave ring cells were unnamed; the game caps a stump
+                    # with its named side (games2 tiles3 `cutCap`).
+                    if (x, y) not in cave and z >= self.ROCK_MIN:
+                        near = [m for m in ((x, y - 1), (x - 1, y), (x - 1, y - 1),
+                                            (x + 1, y - 1), (x - 1, y + 1))
+                                if m in cave]
+                        if near:
+                            side = self.cave_side[cave[near[0]]]
+                            groups[side].append({"x": x, "y": y})
+                            kinds[(top, side)] += 1
                     continue                 # no exposed face
                 fx, fy = (x + 1, y) if e <= sth else (x, y + 1)
-                cave = getattr(self, "cave_floor", {})
                 if (fx, fy) in cave:              # a wall inside a cave: the cave's rock
                     side = self.cave_side[cave[(fx, fy)]]
                     groups[side].append({"x": x, "y": y})
