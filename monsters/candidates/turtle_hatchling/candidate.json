@@ -335,6 +335,266 @@
         "west": "turtle_hatchling/animations/idle__west.webp",
         "north-west": "turtle_hatchling/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.09,
+          "step_max": 0.1107,
+          "drift": 2.05,
+          "loop": 0.0448,
+          "loop_ratio": 0.5,
+          "travel": 0.12,
+          "pin": 0.907,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "89051216-36e3-427e-85e8-e476c83c1094",
+          "group": "b839e57e-fb14-4f13-aa11-9faede9ab57d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:28:25+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1121,
+          "step_max": 0.124,
+          "drift": 1.03,
+          "loop": 0.1159,
+          "loop_ratio": 1.03,
+          "travel": 0.88,
+          "pin": 0.955,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "5272b402-3656-4060-9c8c-8efffcbe8a13",
+          "group": "fec927c4-1237-470e-8415-1a52c4c31bc8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:28:26+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0822,
+          "step_max": 0.0927,
+          "drift": 0.69,
+          "loop": 0.1527,
+          "loop_ratio": 1.86,
+          "travel": 0.36,
+          "pin": 0.928,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "a7955a82-7861-4070-aa3e-494bc63cf9c7",
+          "group": "c3e69754-120c-47e9-bf44-ae8fca6361f0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:28:26+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0781,
+          "step_max": 0.1067,
+          "drift": 0.89,
+          "loop": 0.0899,
+          "loop_ratio": 1.15,
+          "travel": 0.39,
+          "pin": 0.955,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "39aa88dc-cc57-47c1-8679-f67273fd6001",
+          "group": "f8ff455c-a52c-4dc5-9f91-56e1217abe44",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:28:27+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0761,
+          "step_max": 0.103,
+          "drift": 1.08,
+          "loop": 0.119,
+          "loop_ratio": 1.56,
+          "travel": 0.05,
+          "pin": 0.937,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "decea888-f2c9-4f37-b584-100e4119368d",
+          "group": "91671504-ff2e-45a3-bc04-cd1d308bf8a5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:28:27+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1121,
+          "step_max": 0.124,
+          "drift": 1.03,
+          "loop": 0.1159,
+          "loop_ratio": 1.03,
+          "travel": 0.88,
+          "pin": 0.955,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "5272b402-3656-4060-9c8c-8efffcbe8a13",
+          "group": "fec927c4-1237-470e-8415-1a52c4c31bc8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:28:26+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0822,
+          "step_max": 0.0927,
+          "drift": 0.69,
+          "loop": 0.1527,
+          "loop_ratio": 1.86,
+          "travel": 0.36,
+          "pin": 0.928,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "a7955a82-7861-4070-aa3e-494bc63cf9c7",
+          "group": "c3e69754-120c-47e9-bf44-ae8fca6361f0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:28:26+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0781,
+          "step_max": 0.1067,
+          "drift": 0.89,
+          "loop": 0.0899,
+          "loop_ratio": 1.15,
+          "travel": 0.39,
+          "pin": 0.955,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "39aa88dc-cc57-47c1-8679-f67273fd6001",
+          "group": "f8ff455c-a52c-4dc5-9f91-56e1217abe44",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:28:27+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning",
+      "frame_paths": {
+        "south": [
+          "turtle_hatchling/animations/walk/south/00.webp",
+          "turtle_hatchling/animations/walk/south/01.webp",
+          "turtle_hatchling/animations/walk/south/02.webp",
+          "turtle_hatchling/animations/walk/south/03.webp",
+          "turtle_hatchling/animations/walk/south/04.webp",
+          "turtle_hatchling/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "turtle_hatchling/animations/walk/south-east/00.webp",
+          "turtle_hatchling/animations/walk/south-east/01.webp",
+          "turtle_hatchling/animations/walk/south-east/02.webp",
+          "turtle_hatchling/animations/walk/south-east/03.webp",
+          "turtle_hatchling/animations/walk/south-east/04.webp",
+          "turtle_hatchling/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "turtle_hatchling/animations/walk/east/00.webp",
+          "turtle_hatchling/animations/walk/east/01.webp",
+          "turtle_hatchling/animations/walk/east/02.webp",
+          "turtle_hatchling/animations/walk/east/03.webp",
+          "turtle_hatchling/animations/walk/east/04.webp",
+          "turtle_hatchling/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "turtle_hatchling/animations/walk/north-east/00.webp",
+          "turtle_hatchling/animations/walk/north-east/01.webp",
+          "turtle_hatchling/animations/walk/north-east/02.webp",
+          "turtle_hatchling/animations/walk/north-east/03.webp",
+          "turtle_hatchling/animations/walk/north-east/04.webp",
+          "turtle_hatchling/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "turtle_hatchling/animations/walk/north/00.webp",
+          "turtle_hatchling/animations/walk/north/01.webp",
+          "turtle_hatchling/animations/walk/north/02.webp",
+          "turtle_hatchling/animations/walk/north/03.webp",
+          "turtle_hatchling/animations/walk/north/04.webp",
+          "turtle_hatchling/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "turtle_hatchling/animations/walk/south-west/00.webp",
+          "turtle_hatchling/animations/walk/south-west/01.webp",
+          "turtle_hatchling/animations/walk/south-west/02.webp",
+          "turtle_hatchling/animations/walk/south-west/03.webp",
+          "turtle_hatchling/animations/walk/south-west/04.webp",
+          "turtle_hatchling/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "turtle_hatchling/animations/walk/west/00.webp",
+          "turtle_hatchling/animations/walk/west/01.webp",
+          "turtle_hatchling/animations/walk/west/02.webp",
+          "turtle_hatchling/animations/walk/west/03.webp",
+          "turtle_hatchling/animations/walk/west/04.webp",
+          "turtle_hatchling/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "turtle_hatchling/animations/walk/north-west/00.webp",
+          "turtle_hatchling/animations/walk/north-west/01.webp",
+          "turtle_hatchling/animations/walk/north-west/02.webp",
+          "turtle_hatchling/animations/walk/north-west/03.webp",
+          "turtle_hatchling/animations/walk/north-west/04.webp",
+          "turtle_hatchling/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "turtle_hatchling/animations/walk__south.webp",
+        "south-east": "turtle_hatchling/animations/walk__south-east.webp",
+        "east": "turtle_hatchling/animations/walk__east.webp",
+        "north-east": "turtle_hatchling/animations/walk__north-east.webp",
+        "north": "turtle_hatchling/animations/walk__north.webp",
+        "south-west": "turtle_hatchling/animations/walk__south-west.webp",
+        "west": "turtle_hatchling/animations/walk__west.webp",
+        "north-west": "turtle_hatchling/animations/walk__north-west.webp"
+      }
     }
   }
 }

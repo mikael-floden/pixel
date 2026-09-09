@@ -342,7 +342,7 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "warn",
+          "status": "pass",
           "step_mean": 0.0947,
           "step_max": 0.1332,
           "drift": 1.19,
@@ -355,9 +355,7 @@
             40,
             40
           ],
-          "reasons": [
-            "motion 0.095 outside the calm band 0.1–0.4 — eyeball it"
-          ],
+          "reasons": [],
           "sub": "1c2ca49e-cecf-435e-990a-12423a37a325",
           "group": "ec24f6d6-0428-428c-89cc-21ea9855334c",
           "takes": 1,

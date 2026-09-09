@@ -366,28 +366,29 @@
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.201,
-          "step_max": 0.2924,
-          "drift": 3.65,
-          "loop": 0.5469,
-          "loop_ratio": 2.72,
-          "travel": 1.79,
-          "pin": 0.825,
-          "pad": 5,
+          "step_mean": 0.2274,
+          "step_max": 0.3217,
+          "drift": 8.9,
+          "loop": 0.5169,
+          "loop_ratio": 2.27,
+          "travel": 2.45,
+          "pin": 0.826,
+          "pad": 2,
           "canvas": [
-            186,
-            186
+            180,
+            180
           ],
           "reasons": [
-            "last→first hand-off is 2.7× a normal step — the loop hitches",
-            "canvas grown by 5 px a side to hold the motion"
+            "drifts 8.9 px (> 9)",
+            "last→first hand-off 2.3× a step — eyeball the loop",
+            "canvas grown by 2 px a side to hold the motion"
           ],
-          "sub": "e6208d2d-b8de-48ba-86f4-3cc516d3ec1f",
-          "group": "d24f78b3-4b51-4a0c-9593-a5b33f466e95",
-          "takes": 1,
-          "version": 1,
+          "sub": "6d8cac30-76e3-4728-b1d3-87409c028ceb",
+          "group": "e3e5ed56-5722-4f9e-8c4d-9062850a163c",
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:14:53+00:00"
+          "generated_at": "2026-09-09T21:19:30+00:00"
         },
         "east": {
           "status": "pass",

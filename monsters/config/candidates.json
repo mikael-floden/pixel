@@ -224,7 +224,8 @@
         "curved pincer"
       ],
       "prompt": "Tiny fantasy hermit crab living inside a round speckled grey pebble, two small orange pincers, four thin legs, two black eyes on short stalks, and a patch of wet green algae on the pebble.",
-      "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting."
+      "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting.",
+      "walk_slow": true
     },
     {
       "id": "moss_snail",
@@ -240,7 +241,8 @@
       "items": [],
       "prompt": "Tiny fantasy snail with a coiled brown shell capped in bright green moss and one small red mushroom, a plump olive-green body, two long eyestalks with shiny black eyes, and a glistening slime trail.",
       "lore": "Too slow to chase and too stubborn to yield. Its shell is a garden, and it defends the garden.",
-      "walk_action": "glides forward in place on its foot with a slow ripple, shell rocking very slightly, eyestalks steady, seamless loop, no turning"
+      "walk_action": "glides forward in place on its foot with a slow ripple, shell rocking very slightly, eyestalks steady, seamless loop, no turning",
+      "walk_slow": true
     },
     {
       "id": "elder_treant",
@@ -315,7 +317,8 @@
       ],
       "items": [],
       "prompt": "Fat fantasy slug with a body of dark cooled rock split by glowing orange magma seams, two short thick eyestalks with ember eyes held close to its body, a trail of molten drips beneath it, and small vents on its back puffing smoke.",
-      "lore": "It moves a hand's width a day and melts the road behind it. Patient things kill the most travellers."
+      "lore": "It moves a hand's width a day and melts the road behind it. Patient things kill the most travellers.",
+      "walk_slow": true
     },
     {
       "id": "bramble_boar",
@@ -646,7 +649,8 @@
       "items": [],
       "prompt": "Fantasy octopus with a bulbous dark red mantle, eight thick tentacles coiled tightly beneath it, two large golden eyes with rectangular pupils, and a cloud of black ink drifting from under it.",
       "lore": "It has three hearts and holds a grudge in each. The ink is how it says goodbye.",
-      "walk_action": "crawls forward on its tentacles in place, tentacles reaching and pulling in turn, mantle swaying slightly, seamless loop, no turning"
+      "walk_action": "crawls forward on its tentacles in place, tentacles reaching and pulling in turn, mantle swaying slightly, seamless loop, no turning",
+      "walk_slow": true
     },
     {
       "id": "angler_walker",
@@ -735,7 +739,8 @@
       "items": [],
       "prompt": "Fantasy giant cobra coiled tightly on the ground with its upper body raised, black and gold scales, a wide flared hood marked with a pale eye pattern, glowing green eyes, and long dripping fangs.",
       "lore": "It sways so you will watch the hood. The bite comes from where you were not watching.",
-      "walk_action": "slithers forward in place, body undulating in a smooth S-curve, hood and head held raised and steady, seamless loop, no turning"
+      "walk_action": "slithers forward in place, body undulating in a smooth S-curve, hood and head held raised and steady, seamless loop, no turning",
+      "walk_slow": true
     },
     {
       "id": "fox_spirit",
@@ -781,7 +786,8 @@
       "items": [],
       "prompt": "Tiny fantasy stone bug, a round pebble-shaped body of grey rock with six tiny legs, two glowing orange eyes, and a crack of light along its back.",
       "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night.",
-      "walk_action": "scuttles forward in place on its tiny legs, legs alternating quickly, body steady, seamless loop, no turning"
+      "walk_action": "scuttles forward in place on its tiny legs, legs alternating quickly, body steady, seamless loop, no turning",
+      "walk_slow": true
     },
     {
       "id": "frost_mite",
@@ -1022,7 +1028,8 @@
       "items": [],
       "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
       "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
-      "walk_action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning"
+      "walk_action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning",
+      "walk_slow": true
     },
     {
       "id": "sand_kit",
@@ -1052,7 +1059,8 @@
       "items": [],
       "prompt": "Small fantasy cave grub with a plump segmented pale body, soft blue bioluminescent spots along its sides, a small dark head with tiny mandibles, and short stubby legs.",
       "lore": "The only light in the deep galleries. Miners follow it, and it leads them where it feeds.",
-      "walk_action": "crawls forward in place, body segments rippling in a wave, stubby legs alternating, seamless loop, no turning"
+      "walk_action": "crawls forward in place, body segments rippling in a wave, stubby legs alternating, seamless loop, no turning",
+      "walk_slow": true
     },
     {
       "id": "ice_sprite",

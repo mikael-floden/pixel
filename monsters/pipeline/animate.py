@@ -226,6 +226,10 @@ def qa_clip(cid, state, d, frames):
     status = "pass"
     lo, hi = band["step_pass"]
     wlo, whi = band["step_warn"]
+    if design_flag(cid, f"{state}_slow"):
+        # a crawl or a ripple moves less silhouette than a stride (the
+        # maintainer's own tree_stump walk: 0.008 per frame, accepted)
+        lo, wlo = lo * 0.4, wlo * 0.4
     if step_mean < wlo:
         reasons.append(f"frozen: silhouette moves {step_mean:.3f} per frame"); status = "fail"
     elif step_mean > whi:
@@ -265,6 +269,13 @@ def qa_clip(cid, state, d, frames):
 
 
 # --- manifest ------------------------------------------------------------------
+
+def design_flag(cid, key):
+    for c in cand.load_cfg()["candidates"]:
+        if c["id"] == cid:
+            return c.get(key)
+    return None
+
 
 def state_action(cid, state):
     """The action text for this monster's state: the design's `<state>_action`

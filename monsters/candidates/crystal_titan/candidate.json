@@ -362,28 +362,29 @@
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.1761,
-          "step_max": 0.224,
-          "drift": 9.4,
-          "loop": 0.4794,
-          "loop_ratio": 2.72,
-          "travel": 2.39,
-          "pin": 0.879,
-          "pad": 0,
+          "step_mean": 0.1443,
+          "step_max": 0.1945,
+          "drift": 9.61,
+          "loop": 0.4506,
+          "loop_ratio": 3.12,
+          "travel": 1.0,
+          "pin": 0.892,
+          "pad": 1,
           "canvas": [
-            232,
-            232
+            234,
+            234
           ],
           "reasons": [
-            "drifts 9.4 px — eyeball it",
-            "last→first hand-off is 2.7× a normal step — the loop hitches"
+            "drifts 9.6 px — eyeball it",
+            "last→first hand-off is 3.1× a normal step — the loop hitches",
+            "canvas grown by 1 px a side to hold the motion"
           ],
-          "sub": "d2475410-3d39-400b-914b-5312681ff522",
-          "group": "5f9a545f-67ac-45b0-8636-7e217de862a0",
-          "takes": 1,
-          "version": 1,
+          "sub": "1f689267-ac93-431e-833a-4fb6cba5f7ee",
+          "group": "0fa0506c-1302-42b6-b625-5759b8e7df26",
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:16:40+00:00"
+          "generated_at": "2026-09-09T21:30:07+00:00"
         },
         "east": {
           "status": "pass",

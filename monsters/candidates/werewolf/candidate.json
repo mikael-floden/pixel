@@ -342,31 +342,26 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.2167,
-          "step_max": 0.2682,
-          "drift": 6.89,
-          "loop": 0.5931,
-          "loop_ratio": 2.74,
-          "travel": 6.89,
-          "pin": 0.799,
-          "pad": 1,
+          "status": "pass",
+          "step_mean": 0.2332,
+          "step_max": 0.2821,
+          "drift": 4.03,
+          "loop": 0.4456,
+          "loop_ratio": 1.91,
+          "travel": 2.61,
+          "pin": 0.821,
+          "pad": 0,
           "canvas": [
-            130,
-            130
+            128,
+            128
           ],
-          "reasons": [
-            "drifts 6.9 px — eyeball it",
-            "last→first hand-off is 2.7× a normal step — the loop hitches",
-            "6.9 px of x-travel — eyeball it",
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "826e9b6c-df27-4ba2-b20e-3568eb1d0249",
-          "group": "bed1a9d0-75cd-49ac-a0bf-0651f5a6e6bd",
-          "takes": 1,
-          "version": 1,
+          "reasons": [],
+          "sub": "ad0ea603-0b39-4dc2-bbcd-4f36d1890024",
+          "group": "7699b4a5-073a-4deb-8e9b-61dd692dc23f",
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:15:57+00:00"
+          "generated_at": "2026-09-09T21:26:07+00:00"
         },
         "south-east": {
           "status": "warn",

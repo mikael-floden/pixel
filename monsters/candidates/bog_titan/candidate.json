@@ -363,29 +363,29 @@
           "generated_at": "2026-09-09T21:16:34+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.1994,
-          "step_max": 0.2785,
-          "drift": 11.63,
-          "loop": 0.5398,
-          "loop_ratio": 2.71,
-          "travel": 1.15,
-          "pin": 0.896,
+          "status": "warn",
+          "step_mean": 0.2087,
+          "step_max": 0.2384,
+          "drift": 8.21,
+          "loop": 0.5452,
+          "loop_ratio": 2.61,
+          "travel": 2.2,
+          "pin": 0.861,
           "pad": 0,
           "canvas": [
             224,
             224
           ],
           "reasons": [
-            "drifts 11.6 px (> 11)",
-            "last→first hand-off is 2.7× a normal step — the loop hitches"
+            "drifts 8.2 px — eyeball it",
+            "last→first hand-off 2.6× a step — eyeball the loop"
           ],
-          "sub": "e6dadb61-f888-42df-bdcf-64d5f780853f",
-          "group": "43dfd2d8-4376-4fce-add4-4bdadd068c39",
-          "takes": 1,
-          "version": 1,
+          "sub": "3ec3f6dc-bea5-471a-9b84-0d4fb456e0c8",
+          "group": "ae8f6de5-197e-49eb-9a2a-45d9475e5933",
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:16:35+00:00"
+          "generated_at": "2026-09-09T21:28:37+00:00"
         },
         "east": {
           "status": "pass",
@@ -502,6 +502,32 @@
           "mirrored": true,
           "generated_at": "2026-09-09T21:16:36+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.2087,
+          "step_max": 0.2384,
+          "drift": 8.21,
+          "loop": 0.5452,
+          "loop_ratio": 2.61,
+          "travel": 2.2,
+          "pin": 0.861,
+          "pad": 0,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [
+            "drifts 8.2 px — eyeball it",
+            "last→first hand-off 2.6× a step — eyeball the loop"
+          ],
+          "sub": "3ec3f6dc-bea5-471a-9b84-0d4fb456e0c8",
+          "group": "ae8f6de5-197e-49eb-9a2a-45d9475e5933",
+          "takes": 2,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:28:37+00:00",
+          "source": "south-east"
         }
       },
       "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
@@ -561,6 +587,14 @@
           "bog_titan/animations/walk/north-west/03.webp",
           "bog_titan/animations/walk/north-west/04.webp",
           "bog_titan/animations/walk/north-west/05.webp"
+        ],
+        "south-west": [
+          "bog_titan/animations/walk/south-west/00.webp",
+          "bog_titan/animations/walk/south-west/01.webp",
+          "bog_titan/animations/walk/south-west/02.webp",
+          "bog_titan/animations/walk/south-west/03.webp",
+          "bog_titan/animations/walk/south-west/04.webp",
+          "bog_titan/animations/walk/south-west/05.webp"
         ]
       },
       "strips": {
@@ -570,7 +604,8 @@
         "north-east": "bog_titan/animations/walk__north-east.webp",
         "north": "bog_titan/animations/walk__north.webp",
         "west": "bog_titan/animations/walk__west.webp",
-        "north-west": "bog_titan/animations/walk__north-west.webp"
+        "north-west": "bog_titan/animations/walk__north-west.webp",
+        "south-west": "bog_titan/animations/walk__south-west.webp"
       }
     }
   }

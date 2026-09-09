@@ -340,169 +340,198 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.0479,
-          "step_max": 0.069,
-          "drift": 1.17,
-          "loop": 0.1089,
-          "loop_ratio": 2.27,
-          "travel": 0.67,
-          "pin": 0.946,
-          "reasons": [
-            "frozen: silhouette moves 0.048 per frame",
-            "last→first hand-off 2.3× a step — eyeball the loop"
+          "step_mean": 0.0723,
+          "step_max": 0.0825,
+          "drift": 1.56,
+          "loop": 0.2135,
+          "loop_ratio": 2.95,
+          "travel": 0.26,
+          "pin": 0.959,
+          "pad": 0,
+          "canvas": [
+            88,
+            88
           ],
-          "cut": 0,
-          "sub": "3f8f4a62-de5c-4846-bbc6-0a74ff96e0a5",
-          "group": "c86e7d09-2dd6-44bc-b579-e3ad11c1354a",
+          "reasons": [
+            "last→first hand-off is 3.0× a normal step — the loop hitches"
+          ],
+          "sub": "3af983f2-a364-475f-9050-11e12817d49a",
+          "group": "4601d3b6-362c-4546-bb81-211aef06d3b8",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:03:40+00:00"
+          "generated_at": "2026-09-09T21:23:28+00:00"
         },
         "south-east": {
           "status": "warn",
-          "step_mean": 0.0944,
-          "step_max": 0.1201,
-          "drift": 1.67,
-          "loop": 0.1398,
-          "loop_ratio": 1.48,
-          "travel": 0.7,
-          "pin": 0.948,
-          "reasons": [
-            "motion 0.094 outside the calm band 0.1–0.4 — eyeball it"
+          "step_mean": 0.0809,
+          "step_max": 0.1051,
+          "drift": 1.68,
+          "loop": 0.1999,
+          "loop_ratio": 2.47,
+          "travel": 1.16,
+          "pin": 0.938,
+          "pad": 0,
+          "canvas": [
+            88,
+            88
           ],
-          "cut": 0,
-          "sub": "4812eeba-933a-4d5e-ac33-2f0ac95050c8",
-          "group": "216bcd51-3c3a-4d01-bc66-625e1e2f8774",
+          "reasons": [
+            "last→first hand-off 2.5× a step — eyeball the loop"
+          ],
+          "sub": "9faea9c5-4ea4-4681-bc75-da7352c7f40c",
+          "group": "9255a4fe-6e9e-4355-ac73-e25e1c381ba5",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:03:41+00:00"
+          "generated_at": "2026-09-09T21:23:29+00:00"
         },
         "east": {
           "status": "pass",
-          "step_mean": 0.1104,
-          "step_max": 0.1162,
-          "drift": 2.8,
-          "loop": 0.1752,
-          "loop_ratio": 1.59,
-          "travel": 2.8,
-          "pin": 0.884,
+          "step_mean": 0.0881,
+          "step_max": 0.1037,
+          "drift": 1.61,
+          "loop": 0.1023,
+          "loop_ratio": 1.16,
+          "travel": 1.61,
+          "pin": 0.928,
+          "pad": 0,
+          "canvas": [
+            88,
+            88
+          ],
           "reasons": [],
-          "cut": 0,
-          "sub": "f6fea23c-c7d4-464d-930e-ba61b89b45b9",
-          "group": "3774984c-e6ca-4690-ac5a-4aa1a4764714",
+          "sub": "028f4f90-7a87-4a1a-88ef-097e43f4c2ea",
+          "group": "44c0083d-6d7c-4130-9e37-c345bb3d4976",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:03:41+00:00"
+          "generated_at": "2026-09-09T21:23:29+00:00"
         },
         "north-east": {
           "status": "warn",
-          "step_mean": 0.0879,
-          "step_max": 0.1079,
-          "drift": 2.33,
-          "loop": 0.2088,
-          "loop_ratio": 2.38,
-          "travel": 3.23,
-          "pin": 0.917,
-          "reasons": [
-            "motion 0.088 outside the calm band 0.1–0.4 — eyeball it",
-            "last→first hand-off 2.4× a step — eyeball the loop"
+          "step_mean": 0.054,
+          "step_max": 0.0667,
+          "drift": 1.19,
+          "loop": 0.1398,
+          "loop_ratio": 2.59,
+          "travel": 1.19,
+          "pin": 0.957,
+          "pad": 0,
+          "canvas": [
+            88,
+            88
           ],
-          "cut": 0,
-          "sub": "566c3fae-5ef5-4034-8587-f46d53b29cda",
-          "group": "013c0fc8-0d86-4708-8fbf-f545bcc6c6e0",
+          "reasons": [
+            "last→first hand-off 2.6× a step — eyeball the loop"
+          ],
+          "sub": "a5479356-8bc2-4b52-9496-edf3659be4fb",
+          "group": "058ff279-1c8c-403f-b6d4-b043ad7d2763",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:03:42+00:00"
+          "generated_at": "2026-09-09T21:23:30+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.0519,
-          "step_max": 0.0702,
-          "drift": 1.65,
-          "loop": 0.1409,
-          "loop_ratio": 2.71,
-          "travel": 0.42,
-          "pin": 0.938,
-          "reasons": [
-            "motion 0.052 outside the calm band 0.1–0.4 — eyeball it",
-            "last→first hand-off is 2.7× a normal step — the loop hitches"
+          "status": "warn",
+          "step_mean": 0.0325,
+          "step_max": 0.0434,
+          "drift": 1.07,
+          "loop": 0.0701,
+          "loop_ratio": 2.16,
+          "travel": 0.18,
+          "pin": 0.965,
+          "pad": 0,
+          "canvas": [
+            88,
+            88
           ],
-          "cut": 0,
-          "sub": "ea628acc-19c8-4924-8f0f-3290d8c19c35",
-          "group": "7d500395-3be2-4b4c-aae5-445a2b370ae1",
+          "reasons": [
+            "motion 0.033 outside the calm band 0.04000000000000001–0.4 — eyeball it",
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "sub": "1a706dda-0937-4abc-8e8d-23c4479582bd",
+          "group": "072e7048-69a6-44f5-ae44-d5f791c695b3",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:03:42+00:00"
+          "generated_at": "2026-09-09T21:23:30+00:00"
         },
         "south-west": {
           "status": "warn",
-          "step_mean": 0.0944,
-          "step_max": 0.1201,
-          "drift": 1.67,
-          "loop": 0.1398,
-          "loop_ratio": 1.48,
-          "travel": 0.7,
-          "pin": 0.948,
-          "reasons": [
-            "motion 0.094 outside the calm band 0.1–0.4 — eyeball it"
+          "step_mean": 0.0809,
+          "step_max": 0.1051,
+          "drift": 1.68,
+          "loop": 0.1999,
+          "loop_ratio": 2.47,
+          "travel": 1.16,
+          "pin": 0.938,
+          "pad": 0,
+          "canvas": [
+            88,
+            88
           ],
-          "cut": 0,
-          "sub": "4812eeba-933a-4d5e-ac33-2f0ac95050c8",
-          "group": "216bcd51-3c3a-4d01-bc66-625e1e2f8774",
+          "reasons": [
+            "last→first hand-off 2.5× a step — eyeball the loop"
+          ],
+          "sub": "9faea9c5-4ea4-4681-bc75-da7352c7f40c",
+          "group": "9255a4fe-6e9e-4355-ac73-e25e1c381ba5",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:03:41+00:00",
+          "generated_at": "2026-09-09T21:23:29+00:00",
           "source": "south-east"
         },
         "west": {
           "status": "pass",
-          "step_mean": 0.1104,
-          "step_max": 0.1162,
-          "drift": 2.8,
-          "loop": 0.1752,
-          "loop_ratio": 1.59,
-          "travel": 2.8,
-          "pin": 0.884,
+          "step_mean": 0.0881,
+          "step_max": 0.1037,
+          "drift": 1.61,
+          "loop": 0.1023,
+          "loop_ratio": 1.16,
+          "travel": 1.61,
+          "pin": 0.928,
+          "pad": 0,
+          "canvas": [
+            88,
+            88
+          ],
           "reasons": [],
-          "cut": 0,
-          "sub": "f6fea23c-c7d4-464d-930e-ba61b89b45b9",
-          "group": "3774984c-e6ca-4690-ac5a-4aa1a4764714",
+          "sub": "028f4f90-7a87-4a1a-88ef-097e43f4c2ea",
+          "group": "44c0083d-6d7c-4130-9e37-c345bb3d4976",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:03:41+00:00",
+          "generated_at": "2026-09-09T21:23:29+00:00",
           "source": "east"
         },
         "north-west": {
           "status": "warn",
-          "step_mean": 0.0879,
-          "step_max": 0.1079,
-          "drift": 2.33,
-          "loop": 0.2088,
-          "loop_ratio": 2.38,
-          "travel": 3.23,
-          "pin": 0.917,
-          "reasons": [
-            "motion 0.088 outside the calm band 0.1–0.4 — eyeball it",
-            "last→first hand-off 2.4× a step — eyeball the loop"
+          "step_mean": 0.054,
+          "step_max": 0.0667,
+          "drift": 1.19,
+          "loop": 0.1398,
+          "loop_ratio": 2.59,
+          "travel": 1.19,
+          "pin": 0.957,
+          "pad": 0,
+          "canvas": [
+            88,
+            88
           ],
-          "cut": 0,
-          "sub": "566c3fae-5ef5-4034-8587-f46d53b29cda",
-          "group": "013c0fc8-0d86-4708-8fbf-f545bcc6c6e0",
+          "reasons": [
+            "last→first hand-off 2.6× a step — eyeball the loop"
+          ],
+          "sub": "a5479356-8bc2-4b52-9496-edf3659be4fb",
+          "group": "058ff279-1c8c-403f-b6d4-b043ad7d2763",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:03:42+00:00",
+          "generated_at": "2026-09-09T21:23:30+00:00",
           "source": "north-east"
         }
       },
-      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "action": "slithers forward in place, body undulating in a smooth S-curve, hood and head held raised and steady, seamless loop, no turning",
       "frame_paths": {
         "south": [
           "cobra/animations/walk/south/00.webp",

@@ -366,28 +366,27 @@
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.1699,
-          "step_max": 0.2201,
-          "drift": 7.84,
-          "loop": 0.4751,
-          "loop_ratio": 2.8,
-          "travel": 1.81,
-          "pin": 0.911,
+          "step_mean": 0.1778,
+          "step_max": 0.2261,
+          "drift": 5.58,
+          "loop": 0.5263,
+          "loop_ratio": 2.96,
+          "travel": 2.6,
+          "pin": 0.872,
           "pad": 0,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "drifts 7.8 px — eyeball it",
-            "last→first hand-off is 2.8× a normal step — the loop hitches"
+            "last→first hand-off is 3.0× a normal step — the loop hitches"
           ],
-          "sub": "5ba3c119-9a94-44d3-943f-24bd47dcace6",
-          "group": "387796ac-479f-4a4e-b321-1e6dbe56ac99",
-          "takes": 1,
-          "version": 1,
+          "sub": "233a16f5-e049-4f4b-a9c1-f72aabc8fa23",
+          "group": "5473953d-71b5-420b-be87-c35f66614825",
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:16:45+00:00"
+          "generated_at": "2026-09-09T21:32:03+00:00"
         },
         "east": {
           "status": "warn",
@@ -439,27 +438,27 @@
         },
         "north": {
           "status": "fail",
-          "step_mean": 0.178,
-          "step_max": 0.2416,
-          "drift": 16.77,
-          "loop": 0.3535,
-          "loop_ratio": 1.99,
-          "travel": 3.74,
-          "pin": 0.914,
+          "step_mean": 0.162,
+          "step_max": 0.2141,
+          "drift": 12.77,
+          "loop": 0.3192,
+          "loop_ratio": 1.97,
+          "travel": 1.34,
+          "pin": 0.963,
           "pad": 0,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "drifts 16.8 px (> 12)"
+            "drifts 12.8 px (> 12)"
           ],
-          "sub": "2917498b-835b-4561-bf61-af2e42199c9c",
-          "group": "85e8c1bd-4412-46d6-aad3-24fc09db0ae0",
-          "takes": 1,
-          "version": 1,
+          "sub": "77c635e8-92b8-48db-bcce-7b4163ebed95",
+          "group": "923e6bd4-353c-4b5e-8a8a-5fa003eabbab",
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:16:49+00:00"
+          "generated_at": "2026-09-09T21:32:04+00:00"
         },
         "west": {
           "status": "warn",

@@ -368,28 +368,27 @@
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.0939,
-          "step_max": 0.1205,
-          "drift": 5.54,
-          "loop": 0.2915,
-          "loop_ratio": 3.1,
-          "travel": 4.33,
-          "pin": 0.917,
+          "step_mean": 0.1066,
+          "step_max": 0.124,
+          "drift": 3.87,
+          "loop": 0.3071,
+          "loop_ratio": 2.88,
+          "travel": 4.83,
+          "pin": 0.893,
           "pad": 0,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "motion 0.094 outside the calm band 0.1–0.4 — eyeball it",
-            "last→first hand-off is 3.1× a normal step — the loop hitches"
+            "last→first hand-off is 2.9× a normal step — the loop hitches"
           ],
-          "sub": "8fda38ac-9eca-41fe-aee3-c011c186b436",
-          "group": "aeac248f-424f-4974-bedb-6bd5d2d030dd",
-          "takes": 1,
-          "version": 1,
+          "sub": "1d3759b1-28c6-4812-aef8-ecf5e1a2ee15",
+          "group": "d973f5d2-7ca3-4358-a17e-02c2169d12f0",
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:15:12+00:00"
+          "generated_at": "2026-09-09T21:21:24+00:00"
         },
         "east": {
           "status": "warn",
