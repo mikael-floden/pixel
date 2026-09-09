@@ -43,6 +43,12 @@ export interface ScenerySpec {
   lit?: boolean;
   /** "south" | "south-east" | "south-west" — see facedSprite. */
   dir?: string;
+  /** ON A WALL: the placement's height up the wall, in STOREYS (maps2
+   *  WORLD3.md "windows and hangings"). Its feet stand on its anchor cell's
+   *  ground lifted `z` storeys — `screen_y = column_y(x, y, level + z)` — and
+   *  it takes NO ground: no footprint, no occluder record, drawn WITH the
+   *  wall behind it rather than y-sorted against bodies. Absent means 0. */
+  z?: number;
   /** The piece's own state key ("NOT_LIT_7") — the VARIATION maps2 placed.
    *  Resolved by `stateFor`, which falls through to the base still for a key
    *  the piece does not publish. */
@@ -653,6 +659,14 @@ export interface SceneryPlacement {
   cx: number;
   cy: number;
   level: number;
+  /** ON A WALL (`ScenerySpec.z`): storeys above the anchor cell's ground, and
+   *  the WALL CELL it hangs on — the higher cell behind its feet: `dir`
+   *  south-west is a south face, so the wall is up-screen in y; south-east an
+   *  east face, up-screen in x; otherwise whichever of the two is higher. The
+   *  scene draws the piece at that column's depth and fades it with that
+   *  column's cut (a window on a wall the cut-away truncates goes with it). */
+  z?: number;
+  wall?: { cx: number; cy: number };
   /** Feet, in the frame's pixel space. */
   ax: number;
   ay: number;
@@ -717,6 +731,16 @@ export function buildPlacements(
   return kept.map(({ p, i }, order) => {
     const [cx, cy] = anchorCell(p);
     const level = o.levelAt(cx, cy);
+    const z = typeof p.z === "number" && Number.isFinite(p.z) ? Math.max(0, p.z) : undefined;
+    let wall: { cx: number; cy: number } | undefined;
+    if (z !== undefined) {
+      const south = { cx, cy: cy - 1 }; // the wall a south face hangs on
+      const east = { cx: cx - 1, cy }; // ...and an east face
+      wall =
+        p.dir === "south-west" ? south
+        : p.dir === "south-east" ? east
+        : o.levelAt(east.cx, east.cy) > o.levelAt(south.cx, south.cy) ? east : south;
+    }
     return {
       i,
       piece: p.piece,
@@ -730,8 +754,10 @@ export function buildPlacements(
       cx,
       cy,
       level,
+      ...(z !== undefined && wall ? { z, wall } : {}),
       ax: anchorX(o.frame, p.x, p.y),
-      ay: anchorY(o.frame, p.x, p.y, level),
+      // Lifted `z` storeys up its wall — render3's column_y(x, y, level + z).
+      ay: anchorY(o.frame, p.x, p.y, level + (z ?? 0)),
       sort: p.x + p.y,
       order,
     };

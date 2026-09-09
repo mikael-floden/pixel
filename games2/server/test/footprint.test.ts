@@ -470,3 +470,21 @@ test("a footprint on the cave floor never touches a body on the deck above it", 
   const i = Math.floor(fp.cy[0]) * W + Math.floor(fp.cx[0]);
   assert.equal(grid.blocked[i], true);
 });
+
+/* A PIECE ON A WALL TAKES NO GROUND (maps2 `z`): a window or a hanging hangs on
+ * the wall behind its anchor cell, and the wall is what blocks. Stamping its
+ * hitbox put a footprint on the doorstep in front of every window. */
+test("a placement carrying `z` stamps no footprint", () => {
+  const rows = Array.from({ length: H }, () => Array.from({ length: W }, () => ({ t: "grass", l: 0 })));
+  const grid = buildTerrainGrid(W, H, rows, [], []);
+  const bbox: SceneryBboxDoc = {
+    pieces: { p: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" } },
+    boxes: { s: [0, 0, 100, 100, 100, 100] },
+  };
+  const hitbox: SceneryHitboxDoc = { "scenery/p": { boxes: [{ ax: 0, ay: -50, rx: 40, ry: 30 }] } };
+  const n = stampSceneryCollision(grid, [{ piece: "p", x: 10, y: 10, z: 1.0 }, { piece: "p", x: 20, y: 20 }], bbox, hitbox, GEOM);
+  assert.equal(grid.footprints!.n, 1, "only the grounded piece has a footprint");
+  assert.equal(grid.footprints!.place[0], 1, "and it is the second placement");
+  assert.ok(n > 0);
+  assert.equal(footprintBlocks(grid, 10 * CELL_WU, 10 * CELL_WU, 0), false, "nothing under the window");
+});

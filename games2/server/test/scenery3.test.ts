@@ -624,3 +624,33 @@ test("a landed manifest fires onLanded once per piece, after the verdict, tombst
   await store.ensure(["g/p", "g/dead"]);
   assert.equal(verdicts.length, 2, "a cached verdict never re-fires");
 });
+
+/* SCENERY ON A WALL (maps2 WORLD3.md "windows and hangings", 2026-09-09): a
+ * placement's `z` lifts its feet that many STOREYS up the wall behind its
+ * anchor cell — render3's column_y(x, y, level + z) — and names the wall cell
+ * it hangs on: a south face (`dir` south-west) is the cell up-screen in y, an
+ * east face (south-east) the cell up-screen in x. Without `z` nothing moves. */
+test("a placement with `z` is lifted in storeys and hangs on the wall its facing names", () => {
+  const pitch = 15;
+  const frame = isoFrame({ x0: 0, y0: 0, x1: 12, y1: 12 }, 8, pitch);
+  const levelAt = (x: number, y: number) => (x >= 2 && x <= 5 && y >= 2 && y <= 5 ? 6 : 0);
+  const [flat, south, east, guess] = buildPlacements(
+    [
+      { piece: "windows/w", x: 3.5, y: 6.001 },
+      { piece: "windows/w", x: 3.5, y: 6.001, dir: "south-west", z: 1.007 },
+      { piece: "windows/w", x: 6.001, y: 3.5, dir: "south-east", z: 0.9 },
+      { piece: "wall_hangings/h", x: 6.001, y: 3.5, z: 1.8 },
+    ],
+    { frame, levelAt },
+  );
+  assert.equal(flat.z, undefined);
+  assert.equal(flat.wall, undefined);
+  assert.equal(flat.ay, anchorY(frame, 3.5, 6.001, 0), "no z: feet on the ground");
+  assert.equal(south.z, 1.007);
+  assert.deepEqual(south.wall, { cx: 3, cy: 5 }, "a south face hangs on the cell up-screen in y");
+  assert.equal(south.ay, anchorY(frame, 3.5, 6.001, 1.007), "lifted z storeys in the anchor projection");
+  assert.ok(Math.abs(flat.ay - south.ay - 1.007 * pitch) < 1e-9, "one storey is the measured pitch");
+  assert.deepEqual(east.wall, { cx: 5, cy: 3 }, "an east face hangs on the cell up-screen in x");
+  assert.deepEqual(guess.wall, { cx: 5, cy: 3 }, "no facing: the higher of the two");
+  assert.equal(south.ax, flat.ax, "the lift is vertical only");
+});

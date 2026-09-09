@@ -792,6 +792,9 @@ export interface WorldProp {
  * hitbox field yet, so nothing here blocks a cell (see world3.ts). */
 export interface WorldScenery {
   piece: string;
+  /** ON A WALL: storeys up the wall behind the anchor cell (maps2 `z`). Such a
+   *  piece takes no ground — see stampSceneryCollision and scenery3.ts. */
+  z?: number;
   /** THE VARIATION maps2 placed — a key of the piece's own `states` map
    *  ("NOT_LIT_7"). 976 of the_game's 1,260 placements carry one and the trees
    *  use ten of them; dropping it drew every tree in the forest as the piece's
@@ -4388,6 +4391,9 @@ export function stampSceneryCollision(
     piece: string; x: number; y: number; hflip?: boolean; lit?: boolean; state?: string;
     /** The facing the map asked for — "south" (default) | "south-east" | ... */
     dir?: string;
+    /** ON A WALL (maps2 WORLD3.md): storeys up the wall. Such a piece takes NO
+     *  ground — the wall behind it is what blocks — so it stamps nothing. */
+    z?: number;
   }[],
   bbox: SceneryBboxDoc | null | undefined,
   hitbox: SceneryHitboxDoc | null | undefined,
@@ -4413,6 +4419,8 @@ export function stampSceneryCollision(
   const recCache = new Map<string, SceneryHitboxDoc[string] | null | undefined>();
   for (let pi = 0; pi < scenery.length; pi++) {
     const pl = scenery[pi];
+    // A window or a hanging hangs on the wall behind the cell; the wall blocks.
+    if (typeof pl.z === "number" && Number.isFinite(pl.z)) continue;
     const facts = bbox.pieces[pl.piece];
     // The DRAWN height, never the contract's raw px — see sceneryDrawnPx.
     const wph = sceneryDrawnPx(facts?.wph, facts?.cpx);

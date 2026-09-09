@@ -411,6 +411,13 @@ const MONSTER_TAP_MIN_H = 48; // minimum box height — sprigling-class bodies
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
 /** How often the "does my room light itself" test re-runs (ms). */
 const ROOM_LIT_MS = 400;
+/** A WINDOW'S GLOW (stepSceneryWalls / windowGlow): the room's own light,
+ *  summed at the cell inside the wall, is 0 at WINDOW_GLOW_LO and full at
+ *  WINDOW_GLOW_HI (peak channel x squared falloff; one hearth 1-2 cells in
+ *  reads ~1.0-1.5); re-read every WINDOW_GLOW_MS, like roomHasLight. */
+const WINDOW_GLOW_LO = 0.1;
+const WINDOW_GLOW_HI = 0.7;
+const WINDOW_GLOW_MS = 400;
 
 const CAMPFIRE_KEY = "campfire-burn";
 // The ONE art asset the game names directly instead of reading it from a
@@ -2768,6 +2775,33 @@ export class WorldScene extends Phaser.Scene {
    *  away. Held apart from `sceneryImgs` so the cut-away crossfade can fade
    *  them with it (see roofedFade); rebuilt with the scenery. */
   private sceneryRoofedImgs: Phaser.GameObjects.Image[] = [];
+  /** SCENERY ON A WALL (maps2 `z`: windows, hangings) — one record per drawn
+   *  placement, stepped every frame: the base image and the lit copy take the
+   *  wall column's cut fade, and a window's LIGHTS_ON art crossfades in over
+   *  its LIGHTS_OFF base by how lit the room behind it is (`windowGlow`). */
+  private sceneryWalls: {
+    place: number;
+    piece: string;
+    img: Phaser.GameObjects.Image;
+    lo: WorldScene["litOccluders"][number] | null;
+    /** The LIGHTS_ON overlay, above the darkness overlay, or null. */
+    on: Phaser.GameObjects.Image | null;
+    /** The wall column: its level + the piece's storeys, and its centre. */
+    z: number;
+    fx: number;
+    fy: number;
+    /** The room cell just inside the wall, for the glow. */
+    inner: { col: number; row: number };
+    glow: number;
+    glowAt: number;
+  }[] = [];
+  /** cell index -> published room index (world.rooms), built once per world. */
+  private roomOfCellMap: Map<number, number> | null = null;
+  /** room index -> the LIT placements standing in it (world.scenery, raw), for
+   *  a window's glow — read off the DOCUMENT, never the drawn set: a hearth
+   *  under a roof is not drawn from outside, and the drawn set's light
+   *  sources are exactly what a window seen from the street must not need. */
+  private roomLitMap: Map<number, { col: number; row: number; piece: string; state?: string }[]> | null = null;
   /** SCENERY ANIMATION — the clips the game plays (maintainer 2026-09-09: a
    *  GOOD or APPROVED clip plays ONCE, then the piece sleeps a random time from
    *  its class's range in Settings, then plays again; REDO plays nothing).
@@ -3072,6 +3106,10 @@ export class WorldScene extends Phaser.Scene {
     /** Scenery: the VOLUME the scenery-lit pipeline shades this copy with
      *  (scenerylit.ts) — the copy's `pipelineData`, by reference. */
     shape?: SceneryLitShape;
+    /** Scenery ON A WALL: the opacity its wall's cut gives it this frame
+     *  (`stepSceneryWalls`) — multiplied into the copy and its fog like the
+     *  roofed factor, or the copy would stay solid over a truncated wall. */
+    fade?: number;
   }[] = [];
   /* SCENERY LIGHT — per-pixel lighting of scenery lit copies (scenerylit.ts +
    * scenerylight.ts). Default ON; `__ml.sceneryLight(false)` returns every
@@ -3368,6 +3406,8 @@ export class WorldScene extends Phaser.Scene {
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
+    this.roomOfCellMap = null; // world.rooms — rebuilt lazily by roomOf
+    this.roomLitMap = null;
     this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
     this.maps3 = !!this.world && isMaps3World(this.world);
     this.geom = geometryFor(this.world);
@@ -6385,6 +6425,36 @@ export class WorldScene extends Phaser.Scene {
           // Geometry through a swap: the box must not move between still and frame.
           boxes: this.sceneryAnimLive.slice(0, 6).map((l) => ({ place: l.place, tex: l.img.texture.key.slice(-28), frame: this.sceneryAnimRuns.get(l.place)?.frame ?? -1, w: +l.img.displayWidth.toFixed(1), h: +l.img.displayHeight.toFixed(1), x: Math.round(l.img.x), y: Math.round(l.img.y) })),
         };
+      },
+      /** SCENERY ON A WALL — every drawn window/hanging with its wall column,
+       *  its cut fade and, for a window, its room glow and ON-overlay alpha. */
+      sceneryWalls: () =>
+        this.sceneryWalls.map((w) => ({
+          place: w.place, piece: w.piece, z: +w.z.toFixed(2),
+          wall: [Math.floor(w.fx / CELL_WU), Math.floor(w.fy / CELL_WU)], inner: [w.inner.col, w.inner.row],
+          room: this.roomOf(w.inner.col, w.inner.row),
+          alpha: +w.img.alpha.toFixed(3), glow: +w.glow.toFixed(3), on: w.on ? +w.on.alpha.toFixed(3) : null,
+          depth: +w.img.depth.toFixed(2),
+          ...(w.on
+            ? { onKey: w.on.texture.key, onFrame: w.on.frame.name, onDepth: +w.on.depth.toFixed(2), onVisible: w.on.visible,
+                onBox: [Math.round(w.on.x), Math.round(w.on.y), Math.round(w.on.displayWidth), Math.round(w.on.displayHeight)],
+                box: [Math.round(w.img.x), Math.round(w.img.y), Math.round(w.img.displayWidth), Math.round(w.img.displayHeight)],
+                onTint: w.on.tintTopLeft, onPipeline: w.on.pipeline?.name ?? null }
+            : {}),
+        })),
+      /** Why a window glows what it glows: its room, the room's own sources
+       *  as the glow sums them, and the night factor. */
+      windowGlowDebug: (place: number) => {
+        const w = this.sceneryWalls.find((x) => x.place === place);
+        if (!w) return null;
+        const room = this.roomOf(w.inner.col, w.inner.row);
+        const srcs = this.roomLit(room).map((s) => {
+          const pc = this.sceneryPieces?.get(s.piece);
+          const lb = pc ? sceneryLightBlockFor(pc, s.state ?? "") : null;
+          return { piece: s.piece, col: +s.col.toFixed(1), row: +s.row.toFixed(1), loaded: !!pc, radius: lb?.radius ?? null, strength: lb?.strength ?? null,
+            d: +Math.hypot(s.col - (w.inner.col + 0.5), s.row - (w.inner.row + 0.5)).toFixed(2) };
+        });
+        return { room, inner: w.inner, torchF: +this.curTorchF.toFixed(3), inRoom: srcs, glow: +this.windowGlow(w.inner).toFixed(3) };
       },
       sceneryIndoor: () => {
         const ps = this.scenery?.placements ?? [];
@@ -11814,7 +11884,7 @@ export class WorldScene extends Phaser.Scene {
        * fog take the same opacity the base sprite does, or the copy — which
        * draws ABOVE the darkness overlay — would stay solid over a roof that
        * has already faded back in. */
-      const rf = lo.roofed ? this.roofedFade() : 1;
+      const rf = (lo.roofed ? this.roofedFade() : 1) * (lo.fade ?? 1);
       lo.img.setAlpha(rf);
       if (fa > 0.002) {
         if (!lo.fog) this.makeFogSilhouette(lo);
@@ -14273,6 +14343,148 @@ export class WorldScene extends Phaser.Scene {
    *  into outdoor... until the very last millisecond where they pop out of
    *  existence"). The draw gate is unchanged; only the opacity is now shared
    *  with the crossfade, so nothing appears a beat before its roof leaves. */
+  /** ONE WALL PIECE, registered by rebuildScenery: its cut fade every frame,
+   *  and for a window its LIGHTS_ON overlay. The overlay is the ON still in
+   *  the same facing, fitted like the base, at the copy's depth in the LIT
+   *  band (above the darkness overlay — a lit window is self-lit) and created
+   *  AFTER the copy so the stable sort draws it over it. Its alpha is the
+   *  room's glow x the wall's fade x the outside-my-room factor. */
+  private registerSceneryWall(
+    p: SceneryPlacement,
+    piece: SceneryPiece,
+    st: SceneryState,
+    img: Phaser.GameObjects.Image,
+    lo: WorldScene["litOccluders"][number] | null,
+    baseH: number | undefined,
+    rect: { x: number; y: number; w: number; h: number },
+  ): void {
+    if (!p.wall || p.z === undefined) return;
+    /* THE CENTRE DECIDES, NOT THE FEET. The cut truncates a wall to one storey
+     * above the floor; a window's sill can sit exactly there (measured at the
+     * hearth house: feet at 2.94 storeys, cut at 3) with the whole pane rising
+     * above the stub, so a feet test kept it floating over nothing. The art's
+     * vertical centre — half its drawn height, in storeys — is what the wall
+     * must still reach for the piece to stay. */
+    const z = p.level + p.z + (img.displayHeight / this.geom.lh) * 0.5;
+    const fx = (p.wall.cx + 0.5) * CELL_WU;
+    const fy = (p.wall.cy + 0.5) * CELL_WU;
+    // The room cell just inside the wall: one more step in the wall's direction.
+    const inner = { col: p.wall.cx + (p.wall.cx - p.cx), row: p.wall.cy + (p.wall.cy - p.cy) };
+    let on: Phaser.GameObjects.Image | null = null;
+    const onState = piece.states["LIGHTS_ON"];
+    if (onState && st.key !== "LIGHTS_ON") {
+      const spriteOn = facedSprite(onState, p.dir);
+      if (this.needScenery(spriteOn)) {
+        const art = this.sceneryArtFit(this.sKey(spriteOn));
+        if (art) {
+          const fit = fitSprite(art.bbox, art.canvas, sceneryDrawnPx(piece.worldPxHeight, piece.contractCharacterPx), p.ax, p.ay, p.hflip, baseH);
+          if (!(fit.x + fit.w < rect.x || fit.x > rect.x + rect.w || fit.y + fit.h < rect.y || fit.y > rect.y + rect.h)) {
+            const key = this.sKey(spriteOn);
+            const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
+            const tex = this.textures.get(key);
+            if (!tex.has(name)) tex.add(name, 0, fit.sx, fit.sy, fit.sw, fit.sh);
+            /* NOT POOLED: a pooled image keeps its old place in the display
+             * list, and at the copy's depth the list order is the draw order —
+             * a recycled overlay drew UNDER the copy created a moment before
+             * it, and only the copy's holes let the lit panes through
+             * (measured: a few yellow texels in the sill's gap). Created here,
+             * after the copy and its fog, it draws over both; destroyed with
+             * the wall records at the next rebuild. */
+            on = this.add.image(fit.x, fit.y, key, name).setOrigin(0, 0).setDisplaySize(fit.w, fit.h).setFlipX(fit.flipX)
+              .setDepth(litDepth(lo ? lo.pd : img.depth)).setAlpha(0);
+          }
+        }
+      }
+    }
+    const a = this.cutFade(z, fx, fy);
+    img.setAlpha(a);
+    if (lo) lo.fade = a;
+    this.sceneryWalls.push({ place: p.i, piece: p.piece, img, lo, on, z, fx, fy, inner, glow: 0, glowAt: -Infinity });
+  }
+
+  /** Per frame: every wall piece takes its wall column's cut fade, and a
+   *  window's ON overlay its glow. Cheap — the_game hangs 61 pieces. */
+  private stepSceneryWalls(): void {
+    if (!this.sceneryWalls.length) return;
+    const now = this.time.now;
+    for (const w of this.sceneryWalls) {
+      const a = this.cutFade(w.z, w.fx, w.fy);
+      w.img.setAlpha(a);
+      if (w.lo) w.lo.fade = a;
+      if (w.on) {
+        if (now - w.glowAt > WINDOW_GLOW_MS) {
+          w.glow = this.windowGlow(w.inner);
+          w.glowAt = now;
+        }
+        const outK = this.indoorOutside(w.fx, w.fy, w.z) ? 1 - this.indoorGrade() : 1;
+        w.on.setAlpha(a * w.glow * outK);
+      }
+    }
+  }
+
+  /** HOW LIT THE ROOM BEHIND A WINDOW IS, 0..1 (maintainer 2026-09-09: "fade
+   *  between them based on how LIT it is inside the house at that location").
+   *  The room's OWN lights, summed at the cell just inside the wall — a sealed
+   *  room's fire is indoor-only to the light field from outside, so the field
+   *  itself cannot say; the published rooms (world.rooms) say which sources are
+   *  its. Each source counts its peak channel over a squared falloff to its
+   *  radius; the sum is squashed between WINDOW_GLOW_LO and _HI and scaled by
+   *  the night factor (curTorchF: 0 at full day, 1 otherwise), so windows glow
+   *  at dusk and go dark by day. A room with no light of its own reads 0. */
+  private windowGlow(inner: { col: number; row: number }): number {
+    const room = this.roomOf(inner.col, inner.row);
+    if (room < 0) return 0;
+    let sum = 0;
+    for (const s of this.roomLit(room)) {
+      const pc = this.sceneryPieces?.get(s.piece);
+      if (pc === undefined) void this.sceneryPieces?.request(s.piece); // lands → a later read sees its block
+      const lb = pc ? sceneryLightBlockFor(pc, s.state ?? "") : null;
+      // A manifest block: strength x the campfire's peak (pushSceneryLight's
+      // rule), radius as given. No block yet, or a piece without one: a lamp.
+      const peak = lb ? lb.strength * 1.9 : 1;
+      const r = Math.max(0.5, lb ? lb.radius : 4);
+      const d = Math.hypot(s.col - (inner.col + 0.5), s.row - (inner.row + 0.5));
+      if (d >= r) continue;
+      const k = 1 - d / r;
+      sum += peak * k * k;
+    }
+    const t = Math.max(0, Math.min(1, (sum - WINDOW_GLOW_LO) / (WINDOW_GLOW_HI - WINDOW_GLOW_LO)));
+    return t * t * (3 - 2 * t) * this.curTorchF;
+  }
+
+  /** The lit placements of a published room — see roomLitMap. */
+  private roomLit(room: number): { col: number; row: number; piece: string; state?: string }[] {
+    if (!this.roomLitMap) {
+      const m = new Map<number, { col: number; row: number; piece: string; state?: string }[]>();
+      for (const s of this.world?.scenery ?? []) {
+        if (!s.lit) continue;
+        const r = this.roomOf(Math.floor(s.x), Math.floor(s.y));
+        if (r < 0) continue;
+        const l = m.get(r);
+        const st = (s as { state?: string }).state;
+        const rec = { col: s.x, row: s.y, piece: s.piece, ...(st ? { state: st } : {}) };
+        if (l) l.push(rec);
+        else m.set(r, [rec]);
+      }
+      this.roomLitMap = m;
+    }
+    return this.roomLitMap.get(room) ?? [];
+  }
+
+  /** The published room a cell lies in (index into world.rooms), or -1. */
+  private roomOf(col: number, row: number): number {
+    const w = this.world;
+    if (!w) return -1;
+    if (!this.roomOfCellMap) {
+      const m = new Map<number, number>();
+      (w.rooms ?? []).forEach((r, i) => {
+        for (const c of r.cells) m.set(c.row * w.width + c.col, i);
+      });
+      this.roomOfCellMap = m;
+    }
+    return this.roomOfCellMap.get(row * w.width + col) ?? -1;
+  }
+
   private roofedFade(): number {
     const f = 1 - this.debrisAlpha();
     return f < 0 ? 0 : f > 1 ? 1 : f;
@@ -14678,6 +14890,7 @@ export class WorldScene extends Phaser.Scene {
       const rf = this.roofedFade();
       for (const img of this.sceneryRoofedImgs) img.setAlpha(rf);
     }
+    this.stepSceneryWalls();
     // The room's LIGHT rules outlive the geometry by exactly one GRADE. The
     // grade landing on 0 means the outside has finished fading up from black
     // and the lights outside have finished fading in — everything keyed on
@@ -18070,6 +18283,8 @@ export class WorldScene extends Phaser.Scene {
     this.scnCreated = 0;
     this.sceneryImgs = [];
     this.sceneryRoofedImgs = [];
+    for (const w of this.sceneryWalls) w.on?.destroy(); // the ON overlays are not pooled — see registerSceneryWall
+    this.sceneryWalls = [];
     this.sceneryAnimLive = [];
     this.sceneryLightSources = [];
     this.sceneryStamps = [];
@@ -18229,6 +18444,17 @@ export class WorldScene extends Phaser.Scene {
        * LEVELS, so a rug claimed to cover the player standing on it — the
        * "wall hack border in open ground" this file already warns about). */
       const flat = !piece.collision;
+      /* ON A WALL (`p.wall`, from maps2's `z`): drawn WITH the wall — at that
+       * column's own occluder depth, one epsilon above its face sprites (this
+       * rebuild creates scenery after the terrain occluders, so the sequence
+       * puts it over them) — never y-sorted against bodies, never a footprint,
+       * never an occluder record. A body in front of the wall sorts over both;
+       * a body behind the wall is behind the window too. Fades with the wall's
+       * cut in stepSceneryWalls (maintainer 2026-09-09: "the wall the window
+       * was placed on will not be visible so the window has to fade in/out
+       * together with the wall"). */
+      const onWall = p.wall !== undefined && p.z !== undefined;
+      const wallDepth = onWall ? this.iso.oy + (p.wall!.cx + p.wall!.cy + 1) * this.geom.dy : 0;
       const key = this.sKey(sprite);
       // Resolved in a SECOND PASS below, once every piece has registered — a
       // piece must sort against its neighbours, not only against terrain.
@@ -18247,9 +18473,11 @@ export class WorldScene extends Phaser.Scene {
            * 2026-08-29: "I'm standing under the scenery, but the scenery is
            * still rendered on top of me"). */
           .setDepth(
-            flat
-              ? SCENERY_FLAT_DEPTH + hbDepth * 1e-3 + this.occSeq++ * OCC_DEPTH_EPS
-              : hbDepth + this.occSeq++ * OCC_DEPTH_EPS,
+            onWall
+              ? wallDepth + this.occSeq++ * OCC_DEPTH_EPS
+              : flat
+                ? SCENERY_FLAT_DEPTH + hbDepth * 1e-3 + this.occSeq++ * OCC_DEPTH_EPS
+                : hbDepth + this.occSeq++ * OCC_DEPTH_EPS,
           ),
       );
       // INDOOR FURNITURE FADES WITH THE ROOF IT STANDS UNDER (see roofedFade):
@@ -18291,17 +18519,18 @@ export class WorldScene extends Phaser.Scene {
             .setOrigin(0, 0)
             .setDisplaySize(fit.w, fit.h)
             .setFlipX(fit.flipX)
-            .setDepth(litDepth(hbDepth)), // NO epsilon here — see OCC_DEPTH_EPS: this is the lit band
+            .setDepth(litDepth(onWall ? wallDepth : hbDepth)), // NO epsilon here — see OCC_DEPTH_EPS: this is the lit band
           col: p.x,
           row: p.y,
           z: (world.rows[srow]?.[scol]?.l ?? 0) + 0.5,
           phase: ((((scol * 73856093) ^ (srow * 19349663)) >>> 0) % 628) / 100,
           bx: p.ax,
           by: p.ay,
-          pd: hbDepth,
+          pd: onWall ? wallDepth : hbDepth,
           place: p.i,
           roofed: p.roofed,
         });
+        if (onWall) this.litOccluders[this.litOccluders.length - 1].cover = Infinity; // the wall is BEHIND it
         const lo = this.litOccluders[this.litOccluders.length - 1];
         // THE VOLUME (scenery-lit): attached BEFORE the silhouette so the
         // silhouette can take the same pipeline — see makeFogSilhouette.
@@ -18310,7 +18539,7 @@ export class WorldScene extends Phaser.Scene {
       }
       this.registerSceneryAnim(p.i, piece, st, key, name, [fit.sx, fit.sy, fit.sw, fit.sh], img, this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null);
       if (p.lit && st.key.startsWith("LIT")) this.pushSceneryLight(p, piece, st, key, fit, scol, srow);
-      const meta = flat ? null : {
+      const meta = flat || onWall ? null : {
         col: scol,
         row: srow,
         /* ITS OWN HEIGHT, from the piece's published `world_px_height`. A
@@ -18342,7 +18571,8 @@ export class WorldScene extends Phaser.Scene {
         y1: box0 ? hbY + box0.ry * fit.ky : fit.y + fit.h,
       };
       if (meta) this.occluderMeta.push(meta);
-      if (!flat)
+      if (onWall) this.registerSceneryWall(p, piece, st, img, this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null, baseH, rect);
+      if (!flat && !onWall)
         resolve.push({
           img,
           meta,

@@ -160,6 +160,12 @@ export function parseWorld3(json: any): ParsedWorld | null {
       // authority on which keys exist, and it is read at draw time — an unknown
       // key falls through to the base still rather than drawing nothing.
       ...(typeof p?.state === "string" && p.state ? { state: p.state } : {}),
+      /* ON A WALL — maps2's `z`, storeys up the wall behind the anchor cell
+       * (WORLD3.md "windows and hangings"). This copy is field by field, so
+       * a new field the map publishes reaches nothing until it is named here:
+       * the 61 windows and hangings of 2026-09-09 drew with their sills on the
+       * ground and stamped footprints on the doorstep until it was. */
+      ...(typeof p?.z === "number" && Number.isFinite(p.z) ? { z: p.z } : {}),
     }))
     .filter((p: WorldScenery) => !!p.piece && Number.isFinite(p.x) && Number.isFinite(p.y));
 

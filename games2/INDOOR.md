@@ -190,6 +190,10 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
   - `roomAt()` FAILS LIT (`uRoomOn`, same guard as uGlowOn): an unbound
     sampler2D reads unit 0 — the heightmap — so the failure mode is a BLACK
     ROOM on a real phone while headless SwiftShader looks fine.
+  - **A window or hanging hangs on its wall and goes with it** (`stepSceneryWalls`,
+    `cutFade` of the wall column at the piece's centre): a wall the cut
+    truncates takes its windows down with it, at the debris' own alpha, and
+    brings them back on the way out; a back wall keeps its hangings.
   - **Nothing stands on ground the cut removed** (`aboveCut`): above the cut
     nothing is painted, so monsters/NPCs/remote players/drops whose surface
     level exceeds `indoorTop` are hidden. The threshold is the CUT, not the

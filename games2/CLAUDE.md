@@ -384,6 +384,14 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   pass and the occluder's `capDecks` both wear it; `deckArtPaths` names its
   plates for the loader and the ship closure; a budget-deferred one is owed
   in `t3deckOwed` and repaired by `t3retryBoundaries` on the cells' rule.
+  AND THE BASE SIDE OF THE SEAM: a base cell's quad corner standing on a
+  cell that carries a deck within a storey of the base cell's plane votes
+  the DECK's ground, not the base under it — the rock beside the cave lid
+  read the cave floor sixteen levels down, folded it away and kept a hard
+  edge on its half while the lid composed its own (maintainer 2026-09-09,
+  270,180: "the ground transition at the mountain top over the cave still
+  looks broken"). Measured there: column 270 now composes black_rock|
+  grey_stone along the whole lid edge.
   Measured on the_game: 8,688 -> 11,862 cell boundaries (3,706 at wall
   feet), 179 slab transitions on 1,414 deck cells; at 238,221 the dark_mud
   face composes into the grass along the whole foot. KNOWN: movement's
@@ -407,6 +415,45 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   silhouette swap frames together under the still's own crop (frames are the
   still's canvas), and the lit copy keeps the still's shape map. Strip-only
   clips do not play. Probe: `__ml.sceneryAnims()`.
+- **SCENERY ON A WALL — WINDOWS AND HANGINGS** (maps2 `z`, WORLD3.md
+  "windows and hangings"; `scenery3.ts` `SceneryPlacement.z/wall`,
+  `WorldScene.registerSceneryWall` / `stepSceneryWalls` / `windowGlow`;
+  probes `__ml.sceneryWalls()`, `__ml.windowGlowDebug(place)`). A placement
+  carrying `z` stands `z` STOREYS up the wall behind its anchor cell
+  (`ay = anchorY(level + z)`; render3's column_y) and names the wall cell it
+  hangs on — a south face (`dir` south-west) is the cell up-screen in y, an
+  east face (south-east) up-screen in x, otherwise the higher of the two.
+  THE FIELD MUST BE NAMED IN `parseWorld3`: the copy is field by field, and
+  the first 61 windows drew with their sills on the ground until it was. Such
+  a piece TAKES NO GROUND (`stampSceneryCollision` skips it — the wall
+  blocks), registers no occluder record, skips the shared depth resolve, and
+  draws WITH the wall: at the wall column's own occluder depth one sequence
+  epsilon above its faces, its lit copy at that depth in the lit band with
+  no cover line. IT FADES WITH ITS WALL (maintainer 2026-09-09: "the wall
+  the window was placed on will not be visible so the window has to fade
+  in/out together with the wall"): every frame the base image, the copy and
+  its fog take `cutFade` of the wall column at the piece's CENTRE — the cut
+  truncates a wall to one storey and a window's sill can sit exactly on that
+  line (the hearth house: feet 2.94, cut 3) with the whole pane above it, so
+  the feet test left it floating; measured entering the row-237 house the
+  windows go 1 -> 0.86 -> 0.73 -> ... -> 0 with the debris and back up
+  leaving. Back walls are not truncated, so a hanging on one stays. WINDOWS
+  GLOW BY THE ROOM BEHIND THEM ("fade between them based on how LIT it is
+  inside the house at that location"): the LIGHTS_ON still in the same
+  facing is fitted like the base and drawn as its own image ABOVE the
+  darkness overlay (a lit window is self-lit), created AFTER the copy and
+  NEVER POOLED — a recycled image keeps its old display-list slot and drew
+  under the copy, only the sill's hole letting the panes through (the yellow
+  specks, 2026-09-09). Its alpha = glow x the wall's fade x the
+  outside-my-room factor. The glow is the room's OWN lit placements read off
+  the WORLD DOCUMENT (`roomLit`, by `world.rooms`), never the drawn light
+  set — a hearth under a roof is not drawn from the street, and the street
+  is where a window is looked at; each counts strength x the campfire's peak
+  over a squared falloff to its published radius, squashed between
+  WINDOW_GLOW_LO/HI and scaled by `curTorchF` (0 at full day). Measured: the
+  hearth house's four windows glow 1.0 at night, the unlit house's 0. Gates:
+  the `z` test in `server/test/scenery3.test.ts`, the no-footprint test in
+  `footprint.test.ts`.
 - **A RAISED CAP'S SPRITE WEARS EVERYTHING THE GROUND PASS PAINTED ON IT —
   the set SURFACE, transition, fade AND foot band** (`tiles3Occluders`, via
   `dressKey` and `overlayOps`). The occluder pass re-issues every raised
