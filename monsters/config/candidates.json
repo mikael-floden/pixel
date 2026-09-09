@@ -49,7 +49,8 @@
       ],
       "prompt": "Large fantasy shore crab with a barnacle-crusted orange-red shell, one enormous curved pincer with a pale bone-white edge and a smaller pincer, six jointed legs with dark tips, stalked black eyes, and clumps of green seaweed and small sea shells stuck to its back.",
       "lore": "The tide brings it up and forgets to take it back. It holds the beach with one great claw and never learned to let go.",
-      "scale": "standard"
+      "scale": "standard",
+      "walk_action": "scuttles forward in place on its legs, legs alternating, claws held ready, shell steady, seamless loop, no turning"
     },
     {
       "id": "shell_roller",
@@ -187,7 +188,8 @@
       ],
       "prompt": "Tall floating fantasy wraith with a gaunt pale face, hollow black eyes weeping dark tears, a long tattered veil and dress of gray-white cloth fading into mist at the bottom, long thin arms with elongated fingers, and a faint cold blue glow around its body.",
       "lore": "She searches every cradle in the valley and finds none of them hers. The cold that follows her is the closest she gets to company.",
-      "scale": "standard"
+      "scale": "standard",
+      "walk_action": "floats forward in place, drifting slowly up and down, veil and dress swaying, arms still, seamless loop, no turning"
     },
     {
       "id": "storm_roc",
@@ -223,7 +225,8 @@
         "curved pincer"
       ],
       "prompt": "Tiny fantasy hermit crab living inside a round speckled grey pebble, two small orange pincers, four thin legs, two black eyes on short stalks, and a patch of wet green algae on the pebble.",
-      "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting."
+      "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting.",
+      "walk_action": "scuttles forward in place on its legs, legs alternating quickly, pebble shell steady, seamless loop, no turning"
     },
     {
       "id": "moss_snail",
@@ -238,7 +241,8 @@
       ],
       "items": [],
       "prompt": "Tiny fantasy snail with a coiled brown shell capped in bright green moss and one small red mushroom, a plump olive-green body, two long eyestalks with shiny black eyes, and a glistening slime trail.",
-      "lore": "Too slow to chase and too stubborn to yield. Its shell is a garden, and it defends the garden."
+      "lore": "Too slow to chase and too stubborn to yield. Its shell is a garden, and it defends the garden.",
+      "walk_action": "glides forward in place on its foot with a slow ripple, shell rocking very slightly, eyestalks steady, seamless loop, no turning"
     },
     {
       "id": "elder_treant",
@@ -313,7 +317,8 @@
       ],
       "items": [],
       "prompt": "Fat fantasy slug with a body of dark cooled rock split by glowing orange magma seams, two short thick eyestalks with ember eyes held close to its body, a trail of molten drips beneath it, and small vents on its back puffing smoke.",
-      "lore": "It moves a hand's width a day and melts the road behind it. Patient things kill the most travellers."
+      "lore": "It moves a hand's width a day and melts the road behind it. Patient things kill the most travellers.",
+      "walk_action": "slides forward in place on its foot with a slow rippling wave along its body, eyestalks steady, seamless loop, no turning"
     },
     {
       "id": "bramble_boar",
@@ -448,7 +453,8 @@
       ],
       "items": [],
       "prompt": "Fantasy fire elemental shown full body from head to feet, a humanoid figure of living orange and yellow flame with a dark ember core, two blazing white eyes, arms tapering into licks of fire, and sparks drifting off its shoulders.",
-      "lore": "It burns because it is, not because it must. It follows travellers for the company and leaves them as ash."
+      "lore": "It burns because it is, not because it must. It follows travellers for the company and leaves them as ash.",
+      "walk_action": "strides forward in place, legs of flame alternating, body of fire flickering gently, seamless loop, no turning"
     },
     {
       "id": "water_elemental",
@@ -463,7 +469,8 @@
       ],
       "items": [],
       "prompt": "Fantasy water elemental shown full body from head to feet, a humanoid figure of clear blue rushing water with white foam edges, a glowing pearl-like core in its chest, two bright cyan eyes, and small fish visible swimming inside it.",
-      "lore": "A river that stood up to see what it had been carrying. It is not angry, but it has never learned to be gentle."
+      "lore": "A river that stood up to see what it had been carrying. It is not angry, but it has never learned to be gentle.",
+      "walk_action": "strides forward in place, legs of water alternating, body flowing gently, seamless loop, no turning"
     },
     {
       "id": "lich",
@@ -583,7 +590,8 @@
       ],
       "items": [],
       "prompt": "Fantasy basilisk with a stocky six-legged lizard body of dull green scales, a heavy head with a crest of spines, glowing pale green eyes, a wide fanged mouth, and a short thick tail tucked close against its body.",
-      "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way."
+      "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way.",
+      "walk_action": "walks forward in place on its six legs, legs alternating in a steady rhythm, head level, seamless loop, no turning"
     },
     {
       "id": "flytrap",
@@ -643,7 +651,8 @@
       ],
       "items": [],
       "prompt": "Fantasy octopus with a bulbous dark red mantle, eight thick tentacles coiled tightly beneath it, two large golden eyes with rectangular pupils, and a cloud of black ink drifting from under it.",
-      "lore": "It has three hearts and holds a grudge in each. The ink is how it says goodbye."
+      "lore": "It has three hearts and holds a grudge in each. The ink is how it says goodbye.",
+      "walk_action": "crawls forward on its tentacles in place, tentacles reaching and pulling in turn, mantle swaying slightly, seamless loop, no turning"
     },
     {
       "id": "angler_walker",
@@ -731,7 +740,8 @@
       ],
       "items": [],
       "prompt": "Fantasy giant cobra coiled tightly on the ground with its upper body raised, black and gold scales, a wide flared hood marked with a pale eye pattern, glowing green eyes, and long dripping fangs.",
-      "lore": "It sways so you will watch the hood. The bite comes from where you were not watching."
+      "lore": "It sways so you will watch the hood. The bite comes from where you were not watching.",
+      "walk_action": "slithers forward in place, body undulating in a smooth S-curve, hood and head held raised and steady, seamless loop, no turning"
     },
     {
       "id": "fox_spirit",
@@ -761,7 +771,8 @@
       ],
       "items": [],
       "prompt": "Fantasy floating eyeball monster, a single large bloodshot eyeball with a green iris, two small leathery bat wings folded at its sides, thin trailing nerve tendrils beneath it, and a tiny fanged mouth.",
-      "lore": "It watches for something bigger. What it sees, the something bigger sees too."
+      "lore": "It watches for something bigger. What it sees, the something bigger sees too.",
+      "walk_action": "flies forward in place, wings flapping in a slow steady rhythm, body bobbing slightly, seamless loop, no turning"
     },
     {
       "id": "rock_mite",
@@ -776,7 +787,8 @@
       ],
       "items": [],
       "prompt": "Tiny fantasy stone bug, a round pebble-shaped body of grey rock with six tiny legs, two glowing orange eyes, and a crack of light along its back.",
-      "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night."
+      "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night.",
+      "walk_action": "scuttles forward in place on its tiny legs, legs alternating quickly, body steady, seamless loop, no turning"
     },
     {
       "id": "frost_mite",
@@ -791,7 +803,8 @@
       ],
       "items": [],
       "prompt": "Tiny fantasy ice tick, a round body of frosted blue crystal with six small legs, two pale glowing eyes, and a few snowflakes clinging to its back.",
-      "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason."
+      "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
+      "walk_action": "scuttles forward in place on its legs, legs alternating quickly, body steady, seamless loop, no turning"
     },
     {
       "id": "hill_giant",
@@ -821,7 +834,8 @@
       ],
       "items": [],
       "prompt": "Gigantic fantasy spider queen with a bloated black abdomen covered in pale egg sacs, eight short thick armored legs folded tightly beneath her body, a crown of bone spikes, eight glowing violet eyes, and huge dripping fangs.",
-      "lore": "Every spider in the dark is hers and every dark is a nursery. She does not hunt; she waits, and the dark brings supper."
+      "lore": "Every spider in the dark is hers and every dark is a nursery. She does not hunt; she waits, and the dark brings supper.",
+      "walk_action": "crawls forward in place on eight legs, legs alternating in pairs, abdomen steady, seamless loop, no turning"
     },
     {
       "id": "rat_king",
@@ -881,7 +895,8 @@
       ],
       "items": [],
       "prompt": "Gigantic fantasy wingless fire drake with a heavy four-legged body of dark red scales, glowing orange plates down its back, a broad horned head with a mouth leaking flame, thick clawed legs, and a short thick tail curled around its feet.",
-      "lore": "A drake that never grew wings and never needed them. It walks the lava fields and the lava parts for it."
+      "lore": "A drake that never grew wings and never needed them. It walks the lava fields and the lava parts for it.",
+      "walk_action": "walks forward in place on four legs, legs alternating in a heavy steady stride, wings folded, tail swaying slightly, seamless loop, no turning"
     },
     {
       "id": "abyss_knight",
@@ -1016,7 +1031,8 @@
       ],
       "items": [],
       "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
-      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since."
+      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
+      "walk_action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning"
     },
     {
       "id": "sand_kit",
@@ -1045,7 +1061,8 @@
       ],
       "items": [],
       "prompt": "Small fantasy cave grub with a plump segmented pale body, soft blue bioluminescent spots along its sides, a small dark head with tiny mandibles, and short stubby legs.",
-      "lore": "The only light in the deep galleries. Miners follow it, and it leads them where it feeds."
+      "lore": "The only light in the deep galleries. Miners follow it, and it leads them where it feeds.",
+      "walk_action": "crawls forward in place, body segments rippling in a wave, stubby legs alternating, seamless loop, no turning"
     },
     {
       "id": "ice_sprite",
@@ -1060,7 +1077,8 @@
       ],
       "items": [],
       "prompt": "Small fantasy ice spirit with a slender body of pale translucent ice, a faceted crystal head with two glowing white eyes, thin arms, and a faint haze of frost around it, nothing dark behind it, no shadow of any kind.",
-      "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early."
+      "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early.",
+      "walk_action": "walks forward in place with small steady steps, legs alternating, seamless loop, no turning"
     },
     {
       "id": "briar_hare",
@@ -1165,7 +1183,8 @@
       ],
       "items": [],
       "prompt": "Large vulture standing upright shown full body from head to feet, realistic proportions, ragged dark brown feathers, wings folded tightly against its body, a bald wrinkled pink head and neck, a hooked pale beak and grey talons.",
-      "lore": "It circles the road for days and lands only when it is certain. It has never once been wrong."
+      "lore": "It circles the road for days and lands only when it is certain. It has never once been wrong.",
+      "walk_action": "walks forward in place on its talons with a slow hopping stride, wings folded, head bobbing, seamless loop, no turning"
     },
     {
       "id": "wolverine",
@@ -1434,7 +1453,8 @@
       ],
       "items": [],
       "prompt": "Small seed-pod creature with a hard ridged brown husk for a body split open at the front, two pale green eyes glowing inside the split, a single dark green shoot rising from its top, and short knotted root legs.",
-      "lore": "It fell from a tree nobody has found. Where it roots, the ground goes hard and the crops go quiet."
+      "lore": "It fell from a tree nobody has found. Where it roots, the ground goes hard and the crops go quiet.",
+      "walk_action": "waddles forward in place on its root legs, legs alternating, husk rocking side to side slightly, seamless loop, no turning"
     },
     {
       "id": "black_ooze",
@@ -1539,7 +1559,8 @@
       ],
       "items": [],
       "prompt": "Spectral hound with realistic proportions, a gaunt greyhound-like body of translucent pale blue-white mist over faint bones, hollow glowing white eyes, a long muzzle with bared teeth, thin legs, and cold vapor trailing from its flanks.",
-      "lore": "It runs the old road at the hour its master died. Travellers who hear it do not see it; the ones who see it do not travel again."
+      "lore": "It runs the old road at the hour its master died. Travellers who hear it do not see it; the ones who see it do not travel again.",
+      "walk_action": "trots forward in place, legs alternating in a steady diagonal rhythm, head level, seamless loop, no turning"
     }
   ],
   "retired": [

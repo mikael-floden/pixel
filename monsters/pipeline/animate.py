@@ -266,8 +266,21 @@ def qa_clip(cid, state, d, frames):
 
 # --- manifest ------------------------------------------------------------------
 
+def state_action(cid, state):
+    """The action text for this monster's state: the design's `<state>_action`
+    override if it has one (a cobra slithers, a crab scuttles, a wraith
+    glides — the maintainer words per creature, "jumps like a frog"), else
+    the state's default."""
+    for c in cand.load_cfg()["candidates"]:
+        if c["id"] == cid and c.get(f"{state}_action"):
+            return c[f"{state}_action"]
+    return STATES[state]["action"]
+
+
 def _anim_record(man, state):
-    return man.setdefault("animations", {}).setdefault(state, {"directions": {}, "action": STATES[state]["action"]})
+    rec = man.setdefault("animations", {}).setdefault(state, {"directions": {}})
+    rec["action"] = state_action(man["id"], state)
+    return rec
 
 
 def write_manifest(cid, man):
@@ -299,7 +312,7 @@ def generate_state(client, cid, state, dirs, version, verbose=True):
     for d in dirs:
         seed = seed_for(cid, state, d, version)
         end = rotation(cid, d) if spec["pin_end"] else None
-        job = client.animate_v3(man["pixellab_id"], state, spec["action"], d,
+        job = client.animate_v3(man["pixellab_id"], state, rec["action"], d,
                                 frame_count=spec["frames"], end_frame=end, seed=seed,
                                 keep_first=spec.get("keep_first", True))
         jobs[d] = job
@@ -320,7 +333,7 @@ def collect_state(client, cid, state, dirs, version, verbose=True):
     man = cand.load_manifest(cid)
     rec = _anim_record(man, state)
     spec = STATES[state]
-    takes = client.animation_takes(man["pixellab_id"], spec["action"])
+    takes = client.animation_takes(man["pixellab_id"], rec["action"])
     out = {}
     for d in dirs:
         cands = takes.get(d) or []
