@@ -1,0 +1,141 @@
+{
+  "id": "chest_mimic",
+  "name": "Hoardmaw",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It has waited in the vault longer than the vault has had a door. It does not lure; it is simply there, and patient.",
+  "biome": [
+    "parquet_floor",
+    "grey_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Ancient treasure chest mimic, a heavy iron-bound oak chest with a dark weathered lid raised just enough to show a black maw lined with long thin needle teeth, two narrow glowing amber eyes deep under the lid, gold coins fused into the wood, and four thick clawed legs of dark wood.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "chest_mimic/rotations/south.webp",
+    "south-east": "chest_mimic/rotations/south-east.webp",
+    "east": "chest_mimic/rotations/east.webp",
+    "north-east": "chest_mimic/rotations/north-east.webp",
+    "north": "chest_mimic/rotations/north.webp",
+    "north-west": "chest_mimic/rotations/north-west.webp",
+    "west": "chest_mimic/rotations/west.webp",
+    "south-west": "chest_mimic/rotations/south-west.webp"
+  },
+  "sheet": "chest_mimic/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "6f6d8426-a80b-4539-99e6-963ed53350f5",
+  "seed": 768806316,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:17:49+00:00",
+  "elapsed_s": 168.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.733,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.733,
+        "bbox": [
+          8,
+          3,
+          89,
+          93
+        ],
+        "fill": 0.791,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.793,
+        "bbox": [
+          15,
+          4,
+          79,
+          93
+        ],
+        "fill": 0.618,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.808,
+        "bbox": [
+          13,
+          3,
+          88,
+          94
+        ],
+        "fill": 0.741,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.775,
+        "bbox": [
+          9,
+          8,
+          88,
+          89
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.8,
+        "bbox": [
+          11,
+          8,
+          86,
+          91
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.788,
+        "bbox": [
+          9,
+          5,
+          85,
+          95
+        ],
+        "fill": 0.742,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.769,
+        "bbox": [
+          7,
+          6,
+          88,
+          94
+        ],
+        "fill": 0.773,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.816,
+        "bbox": [
+          11,
+          3,
+          83,
+          93
+        ],
+        "fill": 0.703,
+        "touches_edge": false
+      }
+    }
+  }
+}
