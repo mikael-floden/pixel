@@ -338,6 +338,220 @@
         "west": "octopus/animations/idle__west.webp",
         "north-west": "octopus/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.0952,
+          "step_max": 0.1136,
+          "drift": 3.49,
+          "loop": 0.088,
+          "loop_ratio": 0.92,
+          "travel": 0.32,
+          "pin": 0.937,
+          "reasons": [
+            "motion 0.095 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "5b43960d-bacf-4ba7-be05-8dbb96e8331b",
+          "group": "78a5db9d-3f5f-4f36-b313-922d8abcf91a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:01:48+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.0683,
+          "step_max": 0.08,
+          "drift": 2.38,
+          "loop": 0.0838,
+          "loop_ratio": 1.23,
+          "travel": 1.91,
+          "pin": 0.922,
+          "reasons": [
+            "motion 0.068 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "3f77c806-f2c6-45d6-9d1d-f84dc8728c8d",
+          "group": "39467bf0-0982-45a5-9679-9b3b96c8984b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:01:49+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.0529,
+          "step_max": 0.0741,
+          "drift": 1.84,
+          "loop": 0.0692,
+          "loop_ratio": 1.31,
+          "travel": 1.84,
+          "pin": 0.946,
+          "reasons": [
+            "motion 0.053 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "53fdb989-c5c5-4d54-9acf-723e3097e9be",
+          "group": "e55ba4ef-cc79-4a66-a20a-b094b95d0dd3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:01:49+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0381,
+          "step_max": 0.0559,
+          "drift": 1.18,
+          "loop": 0.0668,
+          "loop_ratio": 1.75,
+          "travel": 1.09,
+          "pin": 0.978,
+          "reasons": [
+            "frozen: silhouette moves 0.038 per frame"
+          ],
+          "cut": 0,
+          "sub": "94216454-6b1d-4dd3-9ba9-8ad606b69485",
+          "group": "e98d70f2-8802-49ed-ae9d-165544baef49",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:01:50+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.07,
+          "step_max": 0.0808,
+          "drift": 1.31,
+          "loop": 0.0934,
+          "loop_ratio": 1.33,
+          "travel": 0.74,
+          "pin": 0.931,
+          "reasons": [
+            "motion 0.070 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "9af70f80-6426-4dd7-b3fe-228c4104204e",
+          "group": "8c06bfa2-2397-43ac-b9c7-db74e9d65c15",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:01:50+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.0683,
+          "step_max": 0.08,
+          "drift": 2.38,
+          "loop": 0.0838,
+          "loop_ratio": 1.23,
+          "travel": 1.91,
+          "pin": 0.922,
+          "reasons": [
+            "motion 0.068 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "3f77c806-f2c6-45d6-9d1d-f84dc8728c8d",
+          "group": "39467bf0-0982-45a5-9679-9b3b96c8984b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:01:49+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.0529,
+          "step_max": 0.0741,
+          "drift": 1.84,
+          "loop": 0.0692,
+          "loop_ratio": 1.31,
+          "travel": 1.84,
+          "pin": 0.946,
+          "reasons": [
+            "motion 0.053 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "53fdb989-c5c5-4d54-9acf-723e3097e9be",
+          "group": "e55ba4ef-cc79-4a66-a20a-b094b95d0dd3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:01:49+00:00",
+          "source": "east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "octopus/animations/walk/south/00.webp",
+          "octopus/animations/walk/south/01.webp",
+          "octopus/animations/walk/south/02.webp",
+          "octopus/animations/walk/south/03.webp",
+          "octopus/animations/walk/south/04.webp",
+          "octopus/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "octopus/animations/walk/south-east/00.webp",
+          "octopus/animations/walk/south-east/01.webp",
+          "octopus/animations/walk/south-east/02.webp",
+          "octopus/animations/walk/south-east/03.webp",
+          "octopus/animations/walk/south-east/04.webp",
+          "octopus/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "octopus/animations/walk/east/00.webp",
+          "octopus/animations/walk/east/01.webp",
+          "octopus/animations/walk/east/02.webp",
+          "octopus/animations/walk/east/03.webp",
+          "octopus/animations/walk/east/04.webp",
+          "octopus/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "octopus/animations/walk/north-east/00.webp",
+          "octopus/animations/walk/north-east/01.webp",
+          "octopus/animations/walk/north-east/02.webp",
+          "octopus/animations/walk/north-east/03.webp",
+          "octopus/animations/walk/north-east/04.webp",
+          "octopus/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "octopus/animations/walk/north/00.webp",
+          "octopus/animations/walk/north/01.webp",
+          "octopus/animations/walk/north/02.webp",
+          "octopus/animations/walk/north/03.webp",
+          "octopus/animations/walk/north/04.webp",
+          "octopus/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "octopus/animations/walk/south-west/00.webp",
+          "octopus/animations/walk/south-west/01.webp",
+          "octopus/animations/walk/south-west/02.webp",
+          "octopus/animations/walk/south-west/03.webp",
+          "octopus/animations/walk/south-west/04.webp",
+          "octopus/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "octopus/animations/walk/west/00.webp",
+          "octopus/animations/walk/west/01.webp",
+          "octopus/animations/walk/west/02.webp",
+          "octopus/animations/walk/west/03.webp",
+          "octopus/animations/walk/west/04.webp",
+          "octopus/animations/walk/west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "octopus/animations/walk__south.webp",
+        "south-east": "octopus/animations/walk__south-east.webp",
+        "east": "octopus/animations/walk__east.webp",
+        "north-east": "octopus/animations/walk__north-east.webp",
+        "north": "octopus/animations/walk__north.webp",
+        "south-west": "octopus/animations/walk__south-west.webp",
+        "west": "octopus/animations/walk__west.webp"
+      }
     }
   }
 }
