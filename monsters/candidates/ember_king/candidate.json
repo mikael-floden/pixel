@@ -617,32 +617,30 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1398,
-          "step_max": 0.1634,
-          "drift": 3.98,
+          "status": "pass",
+          "step_mean": 0.1725,
+          "step_max": 0.2249,
+          "drift": 2.5,
           "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 1.02,
+          "travel": 2.5,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.557,
-          "peak": 0.2686,
+          "flash": 0.054,
+          "peak": 0.2841,
           "canvas": [
             176,
             176
           ],
-          "reasons": [
-            "painted effect: 0.56 of the body in new bright pixels (flare/slash arc)"
-          ],
-          "sub": "9bbc1cbe-68f3-481a-9436-28422177c8ea",
-          "group": "5e02e141-e37f-4f2f-acee-22ebceb04fd1",
-          "takes": 2,
-          "version": 5,
+          "reasons": [],
+          "sub": "6b083609-cec9-4c63-a450-f79959efaa14",
+          "group": "74b25012-547e-4380-b111-e0a321354491",
+          "takes": 1,
+          "version": 6,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:59:03+00:00",
-          "action": "Claw Slam - Raises one massive clawed hand and slams it down once, then returns to idle stance",
-          "tries": 2
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+          "tries": 3,
+          "generated_at": "2026-09-09T23:08:31+00:00"
         },
         "south-east": {
           "status": "pass",

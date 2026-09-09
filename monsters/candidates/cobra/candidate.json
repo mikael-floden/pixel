@@ -712,32 +712,30 @@
           "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.163,
-          "step_max": 0.2358,
-          "drift": 0.81,
+          "status": "pass",
+          "step_mean": 0.1312,
+          "step_max": 0.2143,
+          "drift": 1.25,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.19,
+          "travel": 0.38,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.304,
-          "peak": 0.3129,
+          "flash": 0.002,
+          "peak": 0.246,
           "canvas": [
             88,
             88
           ],
-          "reasons": [
-            "painted effect: 0.30 of the body in new bright pixels (flare/slash arc)"
-          ],
-          "sub": "1a321854-efd9-4e62-b902-991582fc86dc",
-          "group": "311d29dc-0d19-467f-ad75-5c99018c323c",
-          "takes": 2,
-          "version": 4,
+          "reasons": [],
+          "sub": "347dde92-81f4-4edb-8dc9-6bbd802a462c",
+          "group": "09bda525-f0f8-43ab-b303-0af1cd132aff",
+          "takes": 1,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-09T23:04:30+00:00",
           "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance",
-          "tries": 2
+          "tries": 3,
+          "generated_at": "2026-09-09T23:11:05+00:00"
         },
         "south-west": {
           "status": "pass",

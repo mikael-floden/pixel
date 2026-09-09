@@ -709,32 +709,32 @@
         },
         "north": {
           "status": "fail",
-          "step_mean": 0.1698,
-          "step_max": 0.2475,
-          "drift": 9.6,
-          "loop": 0.0,
+          "step_mean": 0.1671,
+          "step_max": 0.2966,
+          "drift": 11.42,
+          "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 0.34,
+          "travel": 0.51,
           "pin": 1.0,
-          "pad": 1,
-          "flash": 0.322,
-          "peak": 0.2475,
+          "pad": 15,
+          "flash": 0.282,
+          "peak": 0.2835,
           "canvas": [
-            138,
-            138
+            166,
+            166
           ],
           "reasons": [
-            "painted effect: 0.32 of the body in new bright pixels (flare/slash arc)",
-            "canvas grown by 1 px a side to hold the motion"
+            "painted effect: 0.28 of the body in new bright pixels (flare/slash arc)",
+            "canvas grown by 15 px a side to hold the motion"
           ],
-          "sub": "50fd7935-2f70-43a7-a500-a60f0217bf45",
-          "group": "bfa79b78-21f8-4a6c-baf6-9f5f4caaa422",
-          "takes": 3,
-          "version": 4,
+          "sub": "65e3ab88-9efe-47ee-a0f1-44d1b3f9a002",
+          "group": "8af771ea-eb55-4f8b-a351-fcd0f7502e1b",
+          "takes": 1,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:59:10+00:00",
-          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
-          "tries": 2
+          "action": "Claw Swipe - Raises one front paw and performs one quick swipe forward, then returns to idle stance",
+          "tries": 3,
+          "generated_at": "2026-09-09T23:09:48+00:00"
         },
         "south-west": {
           "status": "pass",
