@@ -944,7 +944,13 @@ def _light_audit(scen, extra=()):
 
 
 def build():
-    src = json.load(open(os.path.join(MAPS2, "worlds", "the_island2", "world.json")))
+    # THE AUTHORED BASE IS A BUILD SOURCE, NOT A WORLD (maps2/source/). The
+    # game ships ONE world, the_game (maintainer 2026-09-09), and the
+    # retirement that enforced that deleted maps2/worlds/the_island2 - which
+    # was this pipeline's INPUT, so the_game could no longer be rebuilt at
+    # all. The three files it reads are restored under maps2/source/, out of
+    # the deploy image and out of every world listing.
+    src = json.load(open(os.path.join(MAPS2, "source", "the_island2.world.json")))
     W, H, mat, lvl = _grid(src)
     _deep_water(W, H, mat)
     fen = _fen(W, H, mat, lvl)

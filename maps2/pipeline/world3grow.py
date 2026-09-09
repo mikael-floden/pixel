@@ -2786,7 +2786,7 @@ class Grow:
 
         # 1) the island's own cast, moved with the island
         src = json.load(open(os.path.join(
-            MAPS2, "worlds", "the_island2", "npcs.json")))["npcs"]
+            MAPS2, "source", "the_island2.npcs.json")))["npcs"]
         moved = 0
         for n in src:
             x, y = n["x"] + ox, n["y"] + oy
@@ -2958,7 +2958,7 @@ class Grow:
         massif the mountain cast, the fens the bog cast, the new cave the
         cave cast. The town, like water, is a sanctuary: no zones near it."""
         src = json.load(open(os.path.join(
-            MAPS2, "worlds", "the_island2", "spawns.json")))
+            MAPS2, "source", "the_island2.spawns.json")))
         ox, oy = OFF
         zones = []
         for z in src["zones"]:
@@ -4646,6 +4646,70 @@ class Grow:
                     n += 1
         self.placed += [("ramp cells paved", n)]
 
+    # A CUT STAIR WEARS THE ROCK IT IS CUT INTO (maintainer 2026-09-09, at a
+    # soil staircase in a grey_stone cliff: "I don't like all stairs you make
+    # are light soil ... why don't you take the ground type from the walls
+    # around the stair? ... I mostly complain on you doing the same
+    # everywhere. I don't ask for stricter rules I ask for more variation and
+    # a better default"). The DEFAULT is the wall it is cut into, then the
+    # ground it lands on; a minority is something else on purpose, and that
+    # minority is not always light_soil either. A ROAD ramp is untouched: it
+    # is the road, and the road is light_soil.
+    STAIR_WALL = 0.60   # ...of cut stairs take the wall's material
+    STAIR_GROUND = 0.85 # ...up to here, the ground at their ends; the rest:
+    STAIR_ELSE = ("light_soil", "grey_paving_stone", "dark_mud", "brown_paving_stone")
+    STAIR_OVER = ("light_soil", "grass", "snow", "dark_mud", "grey_stone",
+                  "black_rock", "light_beach", "ice")   # never paving or floors
+
+    def way_ground(self):
+        """Give every CUT stair its material, after cliff_faces so the wall
+        beside it is already dressed."""
+        side = {}
+        for w in self.doc["walls"]:
+            for c in w["cells"]:
+                side[(c["x"], c["y"])] = w["side"]
+        kinds = collections.Counter()
+        for r in self.doc.get("ramps", []):
+            if r.get("kind") != "stair":
+                continue
+            cells = [(c["x"], c["y"]) for c in r["cells"]]
+            cellset = set(cells)
+            rr = _rng32((cells[0][0] * 2654435761 ^ cells[0][1] * 40503 ^ 0x57A12) & 0xffffffff)
+            walls = collections.Counter()
+            grounds = collections.Counter()
+            for (x, y) in cells:
+                for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                    if m in side:
+                        walls[side[m]] += 1
+                    g = self.g(*m)
+                    # the NEIGHBOUR has to be off the run - testing the cell
+                    # itself is always true, which left this branch dead and
+                    # sent every one of its stairs to the "something else" pool
+                    if (g in self.NATURAL and m not in cellset
+                            and not self.liquid(*m)):
+                        grounds[g] += 1
+            u = rr()
+            mat = None
+            if u < self.STAIR_WALL and walls:
+                mat, why = walls.most_common(1)[0][0], "the wall it is cut into"
+            elif u < self.STAIR_GROUND and grounds:
+                mat, why = grounds.most_common(1)[0][0], "the ground at its ends"
+            if mat is None:
+                mat = self.STAIR_ELSE[int(rr() * len(self.STAIR_ELSE)) % len(self.STAIR_ELSE)]
+                why = "something else"
+            n = 0
+            for (x, y) in cells:
+                if self.g(x, y) in self.STAIR_OVER and self.g(x, y) != mat:
+                    self.grd[y][x] = self.gi[mat]
+                    n += 1
+            r["ground"] = mat
+            kinds[f"{why}: {mat}"] += 1
+        # a two-cell stair painted into open grass is a speck by the ground
+        # audit's own rule; the dissolver decides, as it does after the apron
+        left = self._dissolve_specks()
+        self.placed += [(f"stair ground - {k}", v) for k, v in kinds.most_common()]
+        self.placed += [("stair ground: specks dissolved after it", left)]
+
     def deepen(self):
         """world3's deep-water rule re-run over the WHOLE grown sea: open
         water further than DEEP_R from any land goes deep, shores stay
@@ -5142,6 +5206,7 @@ class Grow:
                             self.grd[cy][cx] = soil
                         run = [foot] + lane
                         self.doc["ramps"].append({"from": L, "to": H, "ground": "light_soil",
+                                                  "kind": "stair",
                                                   "cells": [{"x": c[0], "y": c[1]} for c in run]})
                     # the flare: plateau beside each step drops to two above it
                     for foot, lane in lanes:
@@ -5580,7 +5645,8 @@ class Grow:
                 runs.append({
                     "from": lvl[seg[0][1]][seg[0][0]],
                     "to": lvl[seg[-1][1]][seg[-1][0]],
-                    "ground": "light_soil",
+                    "ground": "light_soil",     # a road ramp IS the road
+                    "kind": "road",
                     "cells": [{"x": c[0], "y": c[1]} for c in seg],
                 })
         self.doc["ramps"] = runs
@@ -5622,7 +5688,8 @@ class Grow:
                      self.ramp_paths, self.regroom, self.reach_audit,
                      self.snap_hitboxes, self.police_footprints,
                      self.lights, self.npcs,
-                     self.rooms, self.cliff_faces, self.cliff_apron, self.audit_ground,
+                     self.rooms, self.cliff_faces, self.cliff_apron, self.way_ground,
+                     self.audit_ground,
                      self.spawns, self.recentre):
             t = time.time()
             step()

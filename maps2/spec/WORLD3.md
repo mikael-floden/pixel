@@ -148,8 +148,9 @@ rim:
 
 Roads, floors, paving, beach and existing fens are never repainted — each is
 already a contrast and already means something — and only a terrace's dominant
-cells change. Ramps are `light_soil`, the road's own material, because a ramp
-is where you walk. **Build-asserted:** zero touching pairs share a ground with
+cells change. A ROAD ramp is `light_soil` because it IS the road; a CUT STAIR
+takes its material from `way_ground` (below). **Build-asserted:** zero touching
+pairs share a ground with
 a colour free (the_game: 0 pairs, 0 forced).
 
 Measured on the_game: grass 29,303 → 19,275 cells; dark_mud +9,089;
@@ -768,6 +769,36 @@ it keep their ground on purpose: a thicket and a tussock meadow ARE the grass.
 the_game: 12 of 64 places, 423 cells. Most places are already on the ground
 their kind implies — a reed bed in a fen is mud already — and those are
 skipped rather than repainted.
+
+### a cut stair wears the rock it is cut into
+
+(maintainer 2026-09-09, at a soil staircase in a grey_stone cliff: *"I don't
+like all stairs you make are light soil ... why don't you take the ground type
+from the walls around the stair? ... I mostly complain on you doing the same
+everywhere. I don't ask for stricter rules I ask for more variation and a
+better default."*)
+
+Every ramp run carries a `kind`: `road` (published by `ramps()`, the road
+climbing a hill) or `stair` (cut by `_stair()` to fix a trap). A road ramp is
+left alone — it is the road, and the road is `light_soil`. A cut stair gets
+its material from `way_ground()`, which runs after `cliff_faces` so the wall
+beside it is already dressed:
+
+| | share | what it takes |
+| --- | --- | --- |
+| `STAIR_WALL` | 60% | the dominant wall material along the run — the rock it is cut into |
+| `STAIR_GROUND` | to 85% | the dominant natural ground at its ends |
+| the rest | 15% | `STAIR_ELSE`: light_soil, grey_paving_stone, dark_mud, brown_paving_stone |
+
+Never over paving or floors (`STAIR_OVER` lists what may be repainted), and
+the dissolver runs after it — a two-cell stair painted into open grass is a
+speck by the ground audit's own rule.
+
+the_game, 151 cut stairs: 87 take the wall (grey_stone 42, light_soil 20,
+black_rock 12, dark_mud 10, ice 2, light_beach 1), 39 the ground at their ends
+(dark_mud 15, grey_stone 9, snow 8, grass 3, black_rock 3, ice 1), 25
+something else. light_soil is now a minority rather than every stair on the
+map.
 
 ### the cliff apron — a wall never ends on a hard line
 

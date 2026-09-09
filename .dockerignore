@@ -16,7 +16,12 @@ games2/.data
 !scenery
 !characters2
 !maps2
-# ...but NOT the QA render. render3 writes TWO pictures of the_game: the map
+# ...but NOT the authored BASE the_game is built from (maps2/source/): the
+# pipeline's input, 850 KB, read by no consumer at runtime and listed as no
+# world. It lives here because the world@1/@2 retirement deleted it and took
+# the ability to rebuild the_game with it.
+maps2/source
+# ...nor the QA render. render3 writes TWO pictures of the_game: the map
 # the game shows (minimap.webp / overview.webp, 1200 px, 164 KB) and
 # overview_full.webp, the 16300x7576 / 15 MB render this domain reviews the
 # world in. The HUD's map tab used to fetch the big one and scale it into a
