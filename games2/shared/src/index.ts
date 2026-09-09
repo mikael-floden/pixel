@@ -1260,8 +1260,47 @@ function cellIndex(grid: TerrainGrid, x: number, y: number): number {
   return row * grid.width + col;
 }
 
-export function surfaceAtWorld(grid: TerrainGrid, x: number, y: number): Surface {
+/** THE GROUND UNDER A POINT IS THE GROUND OF ITS NEAREST CORNER, NOT OF ITS
+ * CELL. The renderer draws a cell's tile from the grounds at its FOUR CORNERS
+ * (tiles3 `boundaryAt`: g(x,y), g(x+1,y), g(x,y+1), g(x+1,y+1) — the Wang
+ * quad), so a cell whose corners disagree is a composed transition and the
+ * picture inside it changes ground along the mask, roughly at the quadrant
+ * lines: the quarter of the diamond nearest the (x+1, y) corner is drawn in
+ * THAT neighbour's ground. Reading `type[cell]` for the whole cell put a
+ * player "standing on the water" in a beach cell's water quadrant and
+ * "swimming on the sand" in a water cell's beach quadrant (maintainer
+ * 2026-09-09, both photographed: "the transition tile is not 100% water or
+ * 100% beach ... The player must use this boundary to know where it has to
+ * swim and where it can stand").
+ *
+ * So the ground under (x, y) is the type at the nearest GRID POINT — the cell
+ * whose north-west corner that point is — with the renderer's own two limits:
+ * a corner more than one storey off this cell's level is not on this cell's
+ * tile (the quad folds it to the cell's own ground; `BOUNDARY_STEP` in
+ * tiles3.ts is 1), and a point exactly at the cell centre stays the cell's
+ * own (strict `>`, so every `(c + 0.5) * CELL_WU` per-cell query in this file
+ * reads the cell it names). A pure cell — all four corners one ground — is
+ * unchanged, byte for byte. Level and deck stay per cell: the face of a cliff
+ * is drawn at the cell, not the corner. */
+const CORNER_FOLD_STEP = 1; // twin of tiles3.ts BOUNDARY_STEP
+function typeIndexAtWorld(grid: TerrainGrid, x: number, y: number): number {
   const i = cellIndex(grid, x, y);
+  if (i < 0) return -1;
+  const fx = x / CELL_WU;
+  const fy = y / CELL_WU;
+  const col = Math.floor(fx);
+  const row = Math.floor(fy);
+  const cc = fx - col > 0.5 ? col + 1 : col;
+  const cr = fy - row > 0.5 ? row + 1 : row;
+  if (cc === col && cr === row) return i;
+  if (cc >= grid.width || cr >= grid.height) return i;
+  const j = cr * grid.width + cc;
+  if (!grid.type[j] || Math.abs(grid.level[j] - grid.level[i]) > CORNER_FOLD_STEP) return i;
+  return j;
+}
+
+export function surfaceAtWorld(grid: TerrainGrid, x: number, y: number): Surface {
+  const i = typeIndexAtWorld(grid, x, y);
   if (i < 0) return VOID_SURFACE;
   const t = grid.type[i];
   return t ? surfaceFor(t) : VOID_SURFACE;
@@ -1285,7 +1324,7 @@ export function surfaceAtWorldElev(grid: TerrainGrid, x: number, y: number, elev
   if (i < 0) return VOID_SURFACE;
   const d = grid.deck[i];
   if (d >= 0 && Math.abs(elev - d) <= DECK_SURFACE_EPS && grid.deckType[i]) return surfaceFor(grid.deckType[i]);
-  const t = grid.type[i];
+  const t = grid.type[typeIndexAtWorld(grid, x, y)]; // the base ground: the nearest corner's, see surfaceAtWorld
   return t ? surfaceFor(t) : VOID_SURFACE;
 }
 

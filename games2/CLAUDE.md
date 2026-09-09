@@ -1625,6 +1625,24 @@ Water is free, sustainable locomotion (NOT a hazard): `findPath` treats it as
 mirrors `player.swimming` — no stamina, no drown. (Water is also the player's
 combat sanctuary — see Combat.)
 
+**THE GROUND UNDER A POINT IS ITS NEAREST CORNER'S, NOT ITS CELL'S**
+(`shared/src/index.ts` `typeIndexAtWorld`, behind `surfaceAtWorld` and
+`surfaceAtWorldElev` — the server's swim flag, speed, the client's footsteps,
+`canEnter`, the side probes and the fall test all read it). The renderer
+composes a cell's tile from the grounds at its FOUR CORNERS (tiles3
+`boundaryAt`), so inside a shore tile the water/sand line runs near the
+quadrant lines and the quarter nearest the (x+1, y) corner is drawn in that
+neighbour's ground. Reading the cell's own type for the whole cell put him
+standing on drawn water and swimming on drawn sand (2026-09-09, both
+photographed: "the transition tile is not 100% water or 100% beach ... The
+player must use this boundary to know where it has to swim and where it can
+stand"). The lookup rounds to the nearest grid point with the renderer's own
+limits — a corner more than one storey off this cell's level folds back to
+the cell (`BOUNDARY_STEP`), and an exact cell centre stays the cell (strict
+`>`), so every `(c + 0.5) * CELL_WU` per-cell query is unchanged. A pure cell
+is unchanged byte for byte; level and deck stay per cell. Full server suite:
+the same 24 pre-existing fixture failures before and after, nothing added.
+
 The swim LOOK: the character FLOATS with a per-direction SHOULDER WATERLINE at
 the surface — head + shoulders above, below clipped, no shadow, head bob, idle
 clip, no tint.
