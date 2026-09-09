@@ -909,6 +909,13 @@ export interface Tiles3Cell {
   /** The surface is painted at all. False only where the maintainer set
    *  `own_top` on the cap's review key: keep the x-over-y tile's own top. */
   dressed?: boolean;
+  /** A WALL'S FACE ENDS ON THIS CELL: `ul` when the (x-1, y) neighbour is
+   *  higher, `ur` when (x, y-1) is, `uu` when (x-1, y-1) is — each the SIDE
+   *  material that wall is drawn in (the same rule the wall cell itself uses to
+   *  pick it), so the draw layer can paint the wall's foot easing onto this
+   *  ground (`footBand`). Only walls whose lowest front is at this cell's own
+   *  level: those are the faces that actually end on this plane. */
+  foot?: { ul?: string; ur?: string; uu?: string };
 }
 
 export interface Tiles3Boundary {
@@ -1878,6 +1885,9 @@ export class Tiles3 {
       kind: "field",
     };
 
+    const foot = this.wallFoot(view, g, L, gr, x, y, zl);
+    if (foot) cell.foot = foot;
+
     if (view.isLiquid(gr)) {
       /* A LIQUID IS A GROUND WITH A SET TOO (water: 16 tiles, clean weight 0 —
        * he chose every one of them), and it was drawing a flat colour diamond
@@ -1955,6 +1965,57 @@ export class Tiles3 {
     this.dress(cell, this.wangSurface(view, frame, g, L, gr, x, y, zl), true);
     cell.dressed = dressed;
     return cell;
+  }
+
+  /** THE WALL FOOT — which of this cell's two up-screen edges has a higher
+   *  neighbour standing on it, and in what material that neighbour's wall is
+   *  drawn. The maintainer (2026-09-08, his screenshot of a cliff meeting the
+   *  water): "when a wall intersects the ground I often feel the line/edge is
+   *  kinda instant … make the tile on the ground be a transition tile". The
+   *  top of a wall already eases into its face (the overhang); the foot had
+   *  nothing, and the shader's seam AO (0.75 over ~5 px) is a lighting cue,
+   *  not a material one, so the material contrast stayed a hard line.
+   *
+   *  The side material is derived EXACTLY as the wall cell derives its own
+   *  (`resolveCell`, the raised branch): the override, else the ground of its
+   *  LOWEST front neighbour, else its top ground; an indoor or liquid side falls
+   *  back to the top ground. Anything else and the foot band would be a
+   *  different colour from the face it sits under. A liquid is never a wall, so
+   *  a higher liquid neighbour casts no foot. */
+  private wallFoot(
+    view: World3View,
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    gr: string,
+    x: number,
+    y: number,
+    zl: number,
+  ): { ul?: string; ur?: string; uu?: string } | null {
+    let out: { ul?: string; ur?: string; uu?: string } | null = null;
+    const edges: ["ul" | "ur" | "uu", number, number][] = [
+      ["ul", x - 1, y],
+      ["ur", x, y - 1],
+      ["uu", x - 1, y - 1],
+    ];
+    for (const [dir, hx, hy] of edges) {
+      const hg = g(hx, hy);
+      if (!hg || view.isLiquid(hg)) continue;
+      if (L(hx, hy) <= zl) continue;
+      /* ITS FACE MUST END ON THIS CELL'S PLANE: the stack is drawn down to the
+       * wall's LOWEST front neighbour, so a wall whose other front is lower
+       * than this cell ends its face down there, behind this cell's own plate,
+       * and one whose fronts are both higher never shows a face over this cell
+       * at all (the fronts' own faces do, and they carry their own foot). */
+      const frontLow = Math.min(L(hx + 1, hy), L(hx, hy + 1));
+      if (frontLow !== zl) continue;
+      const down: [number, number] = L(hx + 1, hy) <= L(hx, hy + 1) ? [hx + 1, hy] : [hx, hy + 1];
+      const override = view.wallSideAt(hx, hy);
+      let side = override ?? g(down[0], down[1]) ?? hg;
+      if (!override && (INDOOR_GROUNDS.includes(side) || view.isLiquid(side))) side = hg;
+      (out ??= {})[dir] = side;
+    }
+    void gr;
+    return out;
   }
 
   /** Record a resolved surface on the cell and work out where its box goes. A

@@ -3099,11 +3099,13 @@ height reads per thing per frame.
   bytes against 199; p90 31.4 -> 18.7 ms, p99 53.6 -> 28.0, long-frame ms
   938 -> 260, fps 48 -> 59. The pool keys one NON-resizing RenderTarget per
   WxH and swaps it into `renderer.renderTarget` before `bind` (`endCapture`
-  reads that field; nothing else in Phaser 3.90 does). Settings "capture pool"
-  (`ml-capture-pool`, default ON) is the A/B; the beacon's `capPool`,
-  `capSwitch` (size switches = stock re-allocations) and `capSizes` name the
-  arm. RULE: no bracket may ever resize the capture target — a new
-  DynamicTexture size costs one pooled texture, never a per-frame realloc.
+  reads that field; nothing else in Phaser 3.90 does). ALWAYS ON, no switch
+  (maintainer 2026-09-09: "Why would I ever turn 'capture pool' off? That
+  feels like the technical detail that will make the game lag");
+  `uninstallCapturePool` stays for a harness. The beacon's `capSwitch` (size
+  switches = what stock Phaser would re-allocate) and `capSizes` still report.
+  RULE: no bracket may ever resize the capture target — a new DynamicTexture
+  size costs one pooled texture, never a per-frame realloc.
   WHY EVERY EARLIER MEASUREMENT MISSED IT: `createTextureFromSource(null, w,
   h)` returns in ~0.1 ms because the driver only QUEUES the allocation (the
   upload probe saw 1,389 in one window at 150 ms total); the cost lands in the
@@ -3129,6 +3131,30 @@ height reads per thing per frame.
   and the ground's total went 62.9 -> 94.5 ms per second of wall clock. It is
   kept for what it does by accident, not for what it was written to do.
   `__ml.groundDrain(false)` turns it off for an A/B.
+- **A WALL'S FOOT CONTINUES INTO THE GROUND IT STANDS ON** (`Tiles3Cell.foot`,
+  resolver `wallFoot`; `footBand` + the `foot` op role in tiles3draw). The
+  overhang eases a cliff's TOP into its face; the foot had nothing, and the
+  shader's seam AO (0.75 over ~5 px) is a lighting cue, not a material one, so
+  face-meets-water was a hard staircase (maintainer 2026-09-08, photographed:
+  "when a wall intersects the ground I often feel the line/edge is kinda
+  instant"). Every lower cell whose up-left, up-right or straight-up
+  neighbour is a higher wall WHOSE LOWEST FRONT IS THIS CELL'S LEVEL wears one
+  band op, drawn last in its slot: the face's own palette-wall colour (x0.82),
+  solid for 6 texels below where the face ends, fading over 6 more, clipped to
+  the cell's diamond. WHERE THE FACE ENDS is the load-bearing number: the
+  occluder pass draws the lowest exposed course one storey up (`stackFrom`:
+  frontLow + 1) at `geom.lh` px per storey as 64x64 review art whose band
+  hangs WALL (17) rows under its diamond, so the face's last row is
+  `WALL - pitch` = 2 rows below the shared edge — everything above that is
+  under the face sprite and a band drawn there is invisible (the first
+  version was, for exactly this reason; it also used the review tile's TOP_Y
+  in a PLATE frame, which has none). One texture per (walls, side material),
+  keyed by material name because `cellOps` is pure and has no palette. He
+  ASKED for a transition tile at the foot (a boundary tile, not a new
+  mechanism); this is the games-side stand-in and the look he approved off
+  the test image ("it kinda looks like the wall is extended down into the
+  water ... please continue"). A liquid never casts a foot; a wall whose other
+  front is lower ends its face down there and casts none here.
 - **THE SLICE-SIZE RATCHET WAS DEAD CODE.** It grew `groundSlicePx` only when a
   slice cost under `GROUND_SLICE_MS`/2 = 1 ms, and a slice costs ~20 ms on his
   phone (the capture re-allocation above, since removed) — so the condition was

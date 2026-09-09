@@ -29,8 +29,11 @@
  *  967 texture deletes + 967 framebuffer creates and deletes per 30 s window
  *  against 0; frame p90 31.4 -> 18.7 ms, p99 53.6 -> 28.0; long-frame ms
  *  938 -> 260; 48 -> 59 fps. His words: "I felt 0 lag when capture pool was
- *  on." This is the fix for the running-into-a-new-area lag; the switch stays
- *  as the A/B and the default is ON.
+ *  on." This is the fix for the running-into-a-new-area lag. ALWAYS ON: the
+ *  Settings A/B went the day after (maintainer: "Why would I ever turn
+ *  'capture pool' off? That feels like the technical detail that will make
+ *  the game lag") — `uninstallCapturePool` stays for a harness that wants the
+ *  stock path measured again.
  *
  *  THE FIX: a pool keyed by `${w}x${h}`, each entry a RenderTarget with
  *  autoResize = false, so a bracket only ever binds a texture that already

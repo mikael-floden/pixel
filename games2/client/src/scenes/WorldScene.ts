@@ -95,7 +95,7 @@ import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../
 import { withV, assetIndexInfo } from "../assetver";
 import { netPerfStart, netPerfTake } from "../netperf";
 import { installTexUploadProbe, texUploadTake } from "../texupload";
-import { installCaptureProbe, installCapturePool, uninstallCapturePool, captureTake } from "../capturepool";
+import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
 import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, type GlFrame } from "../glframe";
 import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
 import { ChessDialog, ChessMatchView } from "../chessui";
@@ -2054,7 +2054,6 @@ export class WorldScene extends Phaser.Scene {
          * comparing two reports. Numbers, because `counts` is flattened. */
         monstersOn: this.monstersMock ? 2 : this.monstersOn ? 1 : 0, // 2 = pink mock
         sceneryOn: this.sceneryMock ? 2 : this.sceneryOn ? 1 : 0,
-        capPool: this.capturePool ? 1 : 0,
         // Capture-target size switches this window = re-allocations stock Phaser
         // would do (does, with the pool off), and the distinct sizes seen.
         capSwitch: cap.switches,
@@ -2994,8 +2993,7 @@ export class WorldScene extends Phaser.Scene {
   private groundBandMs = GROUND_BAND_MS;
   /** THE GROUND RT DRAWS THROUGH THE MULTI PIPELINE, NOT PHASER'S SINGLE ONE.
    *  See the "ground multi" switch and makeGroundRT. Default ON; "0" is off. */
-  /** One capture target per size instead of Phaser's re-allocating one — see capturepool.ts. Default ON. */
-  private capturePool = localStorage.getItem("ml-capture-pool") !== "0";
+
   /** The last anchor shift — the direction the world is travelling, which is
    *  the only direction worth prefetching (t3armRing). */
   private groundLastShift = { x: 0, y: 0 };
@@ -3551,7 +3549,7 @@ export class WorldScene extends Phaser.Scene {
     if (gameAudio.pureEnabled) gameAudio.togglePure();
     /* Before the first DynamicTexture bracket (cover surfaces, ground RT):
      * one capture texture per size — see capturepool.ts. */
-    if (this.capturePool && this.game.renderer.type === Phaser.WEBGL) installCapturePool(this.renderer);
+    if (this.game.renderer.type === Phaser.WEBGL) installCapturePool(this.renderer);
     /* A BEACON ARMED AT BOOT (`?perf=1`, or remembered) gets the same
      * instruments the settings toggle installs. Without this the two arming
      * paths measure different things, and the boot path is the one he uses. */
@@ -3937,22 +3935,6 @@ export class WorldScene extends Phaser.Scene {
          * isolates ONE pass at a time for debugging and is not remembered: this
          * is a persisted two-state switch for looking at the world. The light
          * pass stays on, so the scene is still lit and still shadowed. */
-        /* CAPTURE POOL — one GPU capture texture per DynamicTexture size, so a
-         * ground bracket followed by a cover-surface bracket no longer frees and
-         * re-allocates ~12 MB of VRAM (capturepool.ts has the mechanism). Live
-         * toggle; the beacon carries capPool / capSwitch / capSizes. */
-        {
-          label: "capture pool",
-          act: () => {
-            this.capturePool = !this.capturePool;
-            localStorage.setItem("ml-capture-pool", this.capturePool ? "1" : "0");
-            if (this.capturePool) installCapturePool(this.renderer);
-            else uninstallCapturePool();
-            this.chat.addLog("—", `capture pool: ${this.capturePool ? "ON — one capture texture per size" : "off — Phaser's one re-allocating texture"}`);
-          },
-          get: () => this.capturePool,
-          state: () => (this.capturePool ? "on" : "off"),
-        },
         {
           label: "fog",
           act: () => {
@@ -15375,6 +15357,8 @@ export class WorldScene extends Phaser.Scene {
     this.t3tex = new Tiles3Textures({
       textures: this.t3tm,
       sheets: this.t3sheets,
+      pitch: this.geom.lh, // the occluder pass's storey pitch: where a face ends, for the wall-foot band
+
       /* THE SEAM IS BACK ON, AND TURNING IT OFF WAS A MISTAKE OF MINE
        * (2026-09-04). A composed transition is `out.rgb = mask ? plateB :
        * plateA` — a HARD per-pixel select between two flat plates. The seam,

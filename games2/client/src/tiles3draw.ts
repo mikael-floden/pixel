@@ -54,7 +54,7 @@ import {
   type Tiles3DeckCell,
   type Tiles3Window,
   type TileArt,
-} from "./tiles3";
+ WALL, } from "./tiles3";
 
 /* -- pixels ----------------------------------------------------------------- */
 
@@ -633,6 +633,75 @@ export function liquidDiamond(rgb: readonly [number, number, number], sheets: Pa
   return out;
 }
 
+/** HOW FAR THE WALL'S FOOT REACHES ONTO THE GROUND, in texels measured down
+ *  the screen from where the face ends, and how hard it lands. The maintainer
+ *  chose this look off a test image (2026-09-09): "it kinda looks like the wall
+ *  is extended down into the water! ... whatever you are doing I like it" — so
+ *  the first rows are the face's own colour at full strength (the wall
+ *  continues into the ground) and only the tail fades, in flat steps: the art
+ *  is pixel art at 2-3 screen px per texel and a smooth ramp dithers to mush.
+ *  The colour is the wall's palette wall, darkened a little — the band is the
+ *  face's base standing in the ground, not a shadow of it (the shader's seam
+ *  AO already is one). What he ASKED for was a transition tile at the foot,
+ *  the way the overhang eases the top; this is the games-side stand-in until
+ *  the tiles library has a wall-foot family, and it is the look he approved. */
+export const FOOT_ROWS = 12;
+const FOOT_ALPHA = [1, 1, 1, 1, 1, 1, 0.8, 0.65, 0.5, 0.35, 0.2, 0.1];
+const FOOT_DARKEN = 0.82;
+
+/** WHERE A NEIGHBOUR'S FACE ENDS, in this plate's own frame. The plate is
+ *  64x46 with its diamond's top vertex at (DX, 0), centre row DY, side vertices
+ *  on row DY and bottom vertex on row 2*DY; a higher neighbour's diamond centre
+ *  sits at (-DX, 0) for the up-left cell, (DX, 0) up-right, (0, -DY) straight
+ *  up. The occluder pass draws that neighbour's LOWEST exposed course one
+ *  storey up (`stackFrom`: frontLow + 1) at `pitch` px per storey, as 64x64
+ *  review art whose wall band hangs WALL rows under its diamond's lower edges —
+ *  so the face's last drawn row is `WALL - pitch` rows below the edge this
+ *  cell shares with it (1 row at the shipped pitch of 16). Everything above
+ *  that is under the face sprite and invisible; the band starts there. */
+export function footBand(walls: string, wall: readonly [number, number, number], pitch: number): Pixels {
+  const out = newPixels(TILE, PLATE_H);
+  const centres: [number, number][] = [];
+  for (const w of walls.split("+")) {
+    if (w === "ul") centres.push([-DX, 0]);
+    else if (w === "ur") centres.push([DX, 0]);
+    else if (w === "uu") centres.push([0, -DY]);
+  }
+  const r = Math.round(wall[0] * FOOT_DARKEN);
+  const g = Math.round(wall[1] * FOOT_DARKEN);
+  const b = Math.round(wall[2] * FOOT_DARKEN);
+  const hang = WALL - pitch; // rows the face reaches below the shared edge
+  for (let px = 0; px < TILE; px++) {
+    const u = px + 0.5 - DX; // -32..32, 0 at the top vertex
+    const upper = (DY * Math.abs(u)) / DX; // this cell's upper edge at this column
+    const lower = 2 * DY - upper; // ...and its lower edge
+    for (let py = 0; py < PLATE_H; py++) {
+      const y = py + 0.5;
+      if (y < upper || y > lower) continue; // outside the diamond
+      let d = Infinity;
+      let covered = false;
+      for (const [cx, cy] of centres) {
+        const uw = Math.abs(u - cx);
+        if (uw > DX) continue; // this column is not under that wall
+        const bottom = cy + DY * (1 - uw / DX) + hang; // the face's last row here
+        const dd = y - bottom;
+        if (dd < 0) {
+          covered = true; // still under the face sprite
+          break;
+        }
+        if (dd < d) d = dd;
+      }
+      if (covered || d >= FOOT_ROWS) continue;
+      const i = (py * TILE + px) * 4;
+      out.data[i] = r;
+      out.data[i + 1] = g;
+      out.data[i + 2] = b;
+      out.data[i + 3] = Math.round(255 * FOOT_ALPHA[Math.floor(d)]);
+    }
+  }
+  return out;
+}
+
 /* -- keys ------------------------------------------------------------------- */
 
 /** Texture key for a repo-relative art file. THE SAME `t2:<path>` NAMESPACE the
@@ -721,6 +790,14 @@ export function boundaryKey(
 /** A painted liquid diamond, keyed by the colour that IS its content. */
 export function liquidKey(rgb: readonly [number, number, number]): string {
   return `t3l:${rgb[0]},${rgb[1]},${rgb[2]}`;
+}
+
+/** The wall-foot band for the walls standing on this cell (`ul`, `ur`, `uu` —
+ *  any subset, joined with `+`) in one side material. Keyed on the MATERIAL
+ *  NAME, not its colour: the op is built by the pure `cellOps` which has no
+ *  palette, and the colour is looked up when the texture is painted. */
+export function footKey(walls: string, side: string): string {
+  return `t3fb:${walls}|${side}`;
 }
 
 /** The boundary key for a resolved boundary, or null when the pattern library
@@ -817,8 +894,9 @@ export interface Tiles3Blit {
   sy: number;
   sw: number;
   sh: number;
-  /** What produced this op — for the depth sort, the occluder pass and QA. */
-  role: "surface" | "wall" | "boundary" | "deck" | "fade";
+  /** What produced this op — for the depth sort, the occluder pass and QA.
+   *  `foot` is the wall-foot band on a lower cell (see `footBand`). */
+  role: "surface" | "wall" | "boundary" | "deck" | "fade" | "foot";
 }
 
 /** The ops for one resolved cell, in render3's own order: a field cell is ONE
@@ -862,6 +940,20 @@ export function cellOps(cell: Tiles3Cell): Tiles3Blit[] {
   return hit;
 }
 
+/** The wall-foot band(s) a cell wears, drawn last in its slot — over its
+ *  surface, its fade and (on a wall cell) its cap — so the higher neighbour's
+ *  face reads as standing IN this ground rather than cut off by it. */
+function pushFoot(cell: Tiles3Cell, ops: Tiles3Blit[]): void {
+  const f = cell.foot;
+  if (!f) return;
+  const walls = (["ul", "ur", "uu"] as const).filter((d) => f[d]);
+  if (!walls.length) return;
+  // One band, one material: the first wall's, in that order (a corner where the
+  // two walls differ in material is rare and reads fine in either).
+  const side = f[walls[0]]!;
+  ops.push({ key: footKey(walls.join("+"), side), x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "foot" });
+}
+
 function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
   if (cell.kind === "field") {
     const art = cell.art;
@@ -886,6 +978,7 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
         role: "fade",
       });
     }
+    pushFoot(cell, ops);
     return ops;
   }
   const w = cell.wall;
@@ -934,6 +1027,7 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
       });
     }
   }
+  pushFoot(cell, ops);
   return ops;
 }
 
@@ -1037,6 +1131,9 @@ export interface TextureManagerLike {
 }
 
 export interface Tiles3TexturesOpts {
+  /** The storey pitch the occluder pass stacks faces at (`geom.lh`) — the wall
+   *  foot band is placed from it. Defaults to the shipped 16. */
+  pitch?: number;
   textures: TextureManagerLike;
   sheets: PatternSheets;
   /** `tiles/ground_types.json .grounds` — the palette wall colour a conformed
@@ -1395,6 +1492,15 @@ export class Tiles3Textures {
         }
         continue;
       }
+      /* A FOOT OP PAINTS ITS BAND ON FIRST USE — one texture per (edge, side
+       * material) for the whole world, keyed the same as the op, so the op
+       * passes through unchanged. Never dropped: it needs no art file. */
+      if (op.role === "foot") {
+        const [walls, side] = op.key.slice("t3fb:".length).split("|");
+        this.ensure(op.key, () => footBand(walls, this.wallPaletteRGB(side), this.o.pitch ?? 16));
+        if (out) out.push(op);
+        continue;
+      }
       const art = op.role === "surface" ? cell.art : undefined;
       let key: string | null;
       /* A LIQUID NEVER SHOWS A WALL — enforced HERE, not trusted from a flag.
@@ -1750,6 +1856,12 @@ export class Tiles3Textures {
    *
    *  IF THE BAND EVER BECOMES VISIBLE — a renderer that draws a flat cell's wall
    *  — this must go back to `palette.wall` and the leak fixed properly. */
+  /** The ground's WALL palette colour — what its x-over-y face is drawn in. */
+  private wallPaletteRGB(ground: string): [number, number, number] {
+    const g = this.o.groundTypes[ground];
+    return hexRGB(g?.palette?.wall ?? g?.palette?.top ?? g?.base_color ?? "#808080");
+  }
+
   private wallRGB(ground: string): [number, number, number] {
     const g = this.o.groundTypes[ground];
     return hexRGB(g?.palette?.top ?? g?.palette?.wall ?? g?.base_color ?? "#808080");
