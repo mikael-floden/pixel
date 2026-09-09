@@ -3465,17 +3465,21 @@ class Grow:
     FACE_PX = 32         # one cell of a wall face is DX (32) screen px wide
     WIN_CENTRE = 0.50    # the window's centre, as a share of the wall's height
     HANG_CENTRE = 0.62   # a hanging sits higher - it is looked at, not through
-    ROOF_CLEAR = 4       # px of bare wall between a window's top and the roof
+    ROOF_CLEAR = 8       # px of bare wall between a window's top and the roof
                          # course - the top storey of a house wall IS the roof's
                          # edge (the x-over-y cap hangs one storey of side down
                          # the face), and a window centred at 0.55 of a
                          # six-storey wall ran into it (maintainer 2026-09-09:
                          # "You place them a bit too high so they touch the
-                         # roof overhang graphics"). SILL_CLEAR px keep the
-                         # sill off the ground. Both are as small as they are
-                         # because the wall is 90 px and the windows 40-95:
-                         # under a 15 px roof course only 8 of 58 fit at all
-    SILL_CLEAR = 2
+                         # roof overhang graphics"; at 4 px, again: "This is
+                         # again too high up! ... You need some space here!").
+                         # The roof tile's band is drawn 17 px tall over a 15 px
+                         # storey, so it reaches 2 px below the storey line and
+                         # the clearance counts from there. SILL_CLEAR px keep
+                         # the sill off the ground - 0, because the wall is 90
+                         # px and the windows 40-95: under the roof course only
+                         # 5 of 58 fit at all, and every px is a window type
+    SILL_CLEAR = 0
     # WHICH WINDOW FRAME BELONGS ON WHICH WALL (maintainer 2026-09-09: "Why
     # did you place a wooden window on a stone house?"). The frame material
     # is read off the piece's own `variety` text (`_window_material`).
