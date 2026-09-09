@@ -60,6 +60,12 @@ them; folder isolation beats DRY here).
   source — they sit above the darkness overlay — which is the wall-hack the
   cut-away exists to prevent. Everything that fills the air keeps the plain
   outdoor rule.
+- **The coast is in the artwork, not on the grid**, and `foam/` is the first
+  feature that reads it: `__ml.t3at(col,row)` names a boundary tile's Wang
+  index and mask frame, and the tiles domain's published mask sheet
+  (`tiles/patterns/masks.webp`, fetched by the feature itself) says which
+  pixels of the tile are water. Every earlier feature kept a measured
+  DISTANCE from the water cells because it could not see that seam.
 - **`lightsInView(pad)`** — the second seam added to `WorldScene`, for
   `moths/`: every `EmissiveSource` the camera can see (emissive tiles AND
   scenery lamps) as `{id, x, y, footY, z, r, color, flicker, sealed}`,
@@ -110,6 +116,26 @@ them; folder isolation beats DRY here).
   effects (birds, lightning) belong in the 1_499_xxx band, under the
   shooting stars. Ground-lit matter graded by time-of-day belongs UNDER
   900_000.
+- **A SURFACE effect is part of the ground: -999_999**, one above the ground
+  RenderTexture (-1_000_000) and under the first painter-sorted body. `foam/`
+  is the one that lives there: it animates a line the game paints INTO the
+  ground texture (the wall's crest, the coast seam), so it must take the night
+  and a cliff's cast shadow exactly as that line does, and go under a wall's
+  face, a pier, a swimmer. Nothing above the overlay could do that.
+  Two facts every surface effect needs, measured 2026-09-09:
+  - **What covers a water cell is the picker's to say** (`__ml.pickAt`). A
+    plateau drawn in front of a water cell hides it in the ground texture; a
+    sprite above that texture would paint on the plateau. Every pixel is
+    checked at bake time. **The picker's lattice sits 4 px BELOW the drawn
+    plate** (its diamond starts at iso.oy + dy, the plate at iso.oy + 10): on
+    the quay at 280,235 the crest rows 7-8 picked as face and row 9 as the
+    cell, so a query is shifted down by 4.
+  - **The ground can show the plain plate where the resolver names a composed
+    boundary.** After a teleport the coast at 335,255 was a hard diamond edge
+    for 16 s while `t3at` reported boundary tiles (composed later, under the
+    compose budget, and the drain did not repaint them); `__ml.groundRedraw()`
+    brought the seam. A surface effect follows the RESOLVER, never the screen
+    — the screen catches up. Reported to the games agent.
 - **Pixel art scales nearest-neighbour only, everywhere, always.**
   Procedural glow textures follow the game's own additive-circle idiom. No
   smoothing upscales, no vector gradients.
@@ -167,8 +193,8 @@ decision; an earlier version that jumped the world to each effect's
 
   `AUTO → NONE → <each feature in registry order> → AUTO`
 
-  (currently fireflies, pollen, water, deepwater, ants, spiders, moths, gnats,
-  crabs, bubbles, embers, bats, birds,
+  (currently fireflies, pollen, water, deepwater, foam, ants, spiders, moths,
+  gnats, crabs, bubbles, embers, bats, birds,
   thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
   folder joins it automatically.)
 
@@ -237,6 +263,7 @@ controller (AUTO / NONE / solo-each).
 | `crabs/` | field | THE SIDEWAYS SCUTTLE — red crabs strung out along the WHOLE beach (the shoreline is walked, so a curving bay comes out as a curve), still, then running hard along it; the ones at your feet bolt as you pass | Daylight-leaning (night 0.3), outdoors, dry ground with water within a few steps |
 | `bubbles/` | field | A STRING FROM THE DEEP — bubbles climbing out of one spot on the open sea, growing and sharpening as they rise, bursting into a ring at the top, leaning downstream on the real current | Open sea only (`deepCurrentAtScreen`); nothing at all over land |
 | `embers/` | field | SPARKS OFF A FIRE — they leave the flame, rise on its heat and slow, cool from the fire's own colour toward deep red, and wink out; a blue flame throws blue sparks | Outdoor, unsealed sources whose published `light.embers` is true (a lantern is a fire and throws none); night-leaning, never off by day |
+| `foam/` | field | SEA FOAM — the white line where moving water meets land, alive: a one-pixel band hugging the coast seam and the wall's crest, a train of crest lines sliding in from a few pixels out, the band swelling as each arrives (onto the sand over a beach; thick and bright against a wall), in a slow sweep along the coast. Solid contours only, Wind Waker not grain (maintainer's picks) | Any water/land edge in view — the composed boundary seam (mask sheet) and the wall foot's crest (`footBand` replicated, parity-tested); outdoors |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: water on screen (iso probe) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
@@ -326,6 +353,14 @@ HUD, and chat/clock overlap, so judging an effect there is misleading. Use
 — it opens the exact phone context from games2/CLAUDE.md and shoots the
 effect mid-flight. Always eyeball a new visual effect this way before
 shipping.
+
+Per-feature browser gates live in `games2/scripts/verify-<feature>.mjs`
+(embers, moths, foam, …). `verify-foam.mjs` judges the coast band and the wall
+crest by the OFF-envelope pixel technique, with open-water and dry-sand
+controls, a depth check, motion, and the idle cost. `server/test/foam.test.ts`
+composes the game's own `footBand` and asserts the foam's crest is the same
+pixels for every wall combination — if the games agent moves the line, that
+test says so first.
 
 Keep `npm test` + `npm run typecheck` green — ambient code is typechecked
 through the client's tsconfig via the import chain.
