@@ -103,6 +103,8 @@ STATES = {
                  "drift_pass": 12.0, "drift_warn": 24.0, "loop_max": 0.10},
     },
 }
+CLAW_SLASH = ("slashes forward with its claws in one quick swipe, a physical strike with no "
+              "glowing magic effect, then returns exactly to the starting pose")
 APPROVED_TAG = "APPROVED"
 MIN_USD = 5.0
 
@@ -345,12 +347,18 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
     man = cand.load_manifest(cid)
     rec = _anim_record(man, state)
     spec = STATES[state]
-    jobs = {}
+    jobs, actions = {}, {}
     for d in dirs:
         seed = seed_for(cid, state, d, version)
         pinned = spec["pin_end"] or pin
         end = rotation(cid, d) if pinned else None
-        job = client.animate_v3(man["pixellab_id"], state, rec["action"], d,
+        action = rec["action"]
+        if state == "attack" and version >= 3 and design_flag(cid, "claws"):
+            # maintainer 2026-09-09: "if the monster has claws, a claw slash
+            # usually works" — the worded strike failed twice, use that
+            action = CLAW_SLASH
+        actions[d] = action
+        job = client.animate_v3(man["pixellab_id"], state, action, d,
                                 frame_count=spec["frames"], end_frame=end, seed=seed,
                                 keep_first=spec.get("keep_first", True) or pin)
         jobs[d] = job
@@ -362,19 +370,24 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
                 client.wait_job(job, timeout=900)
             except PixelLabError as e:
                 print(f"  {cid} {d}: {e}")
-    return collect_state(client, cid, state, dirs, version, verbose, pin=pin)
+    return collect_state(client, cid, state, dirs, version, verbose, pin=pin, actions=actions)
 
 
-def collect_state(client, cid, state, dirs, version, verbose=True, pin=False):
+def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, actions=None):
     """Download the LAST take of each direction from PixelLab, align it to the
-    base canvas, QA, save, mirror. Used after generation and by `fetch`."""
+    base canvas, QA, save, mirror. Used after generation and by `fetch`.
+    `actions` = {direction: action text} when a direction was made from other
+    words than the state's (claw fallback); otherwise the recorded one."""
     man = cand.load_manifest(cid)
     rec = _anim_record(man, state)
     spec = STATES[state]
-    takes = client.animation_takes(man["pixellab_id"], rec["action"])
+    actions = dict(actions or {})
+    for d in dirs:
+        actions.setdefault(d, rec["directions"].get(d, {}).get("action") or rec["action"])
+    takes_by_action = {a: client.animation_takes(man["pixellab_id"], a) for a in set(actions.values())}
     out = {}
     for d in dirs:
-        cands = takes.get(d) or []
+        cands = takes_by_action[actions[d]].get(d) or []
         if not cands:
             out[d] = {"status": "fail", "reasons": ["no frames returned"]}
             continue
@@ -391,6 +404,7 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False):
             qa["pinned"] = True
             qa["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
         qa.update({"sub": client.sub_id(urls[0]), "group": group, "takes": len(cands), "version": version, "mirrored": False,
+                   "action": actions[d],
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         rec["directions"][d] = qa
         out[d] = qa
@@ -417,7 +431,7 @@ def needed_dirs(man, state, redo=None):
     # a changed action text means the clips on disk were made from other
     # words — regenerate the whole state (the takes are keyed by that text)
     if rec["directions"] and rec.get("action") and rec["action"] != state_action(man["id"], state):
-        return list(GEN_DIRS)
+        return [d for d in GEN_DIRS if rec["directions"].get(d, {}).get("action") in (None, rec["action"])] or list(GEN_DIRS)
     return [d for d in GEN_DIRS if rec["directions"].get(d, {}).get("status") in (None, "fail")]
 
 
@@ -523,7 +537,7 @@ def cmd_requal(args):
             if q.get("pinned"):
                 new["pinned"] = True
                 new["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
-            keep = {k: q[k] for k in ("sub", "group", "takes", "version", "mirrored", "generated_at") if k in q}
+            keep = {k: q[k] for k in ("sub", "group", "takes", "version", "mirrored", "generated_at", "action") if k in q}
             rec["directions"][d] = {**new, **keep}
             for md, src in MIRRORED.items():
                 if src == d and rec["directions"][d]["status"] != "fail":

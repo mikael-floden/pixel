@@ -601,6 +601,274 @@
         "west": "tide_crab/animations/walk__west.webp",
         "north-west": "tide_crab/animations/walk__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1949,
+          "step_max": 0.2863,
+          "drift": 1.5,
+          "loop": 0.0003,
+          "loop_ratio": 0.0,
+          "travel": 0.3,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "87437c76-7496-4d50-b2ec-b306ed47c98f",
+          "group": "c54ee02f-0115-4a23-996a-70108a9be82e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:52:23+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1829,
+          "step_max": 0.2721,
+          "drift": 5.06,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 3.97,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "50670d65-8c82-4994-b28f-9b652dc027bb",
+          "group": "d6d0892d-3e5c-4113-b1fa-01461b48d4d3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:52:24+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1451,
+          "step_max": 0.1773,
+          "drift": 3.08,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 0.68,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "4fbb39e3-599e-4f34-96f8-bfa098015a21",
+          "group": "c1ff9dac-e748-42a3-b958-8d044da1494b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:52:24+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1616,
+          "step_max": 0.1941,
+          "drift": 3.26,
+          "loop": 0.0004,
+          "loop_ratio": 0.0,
+          "travel": 1.79,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "623bb149-3783-4253-a72c-72e89e4edd7c",
+          "group": "0847fdc5-83d8-400d-be3b-bd198e35b56e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:52:25+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1236,
+          "step_max": 0.1653,
+          "drift": 1.19,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 0.25,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "513eb3eb-0d38-49d0-88c8-348d67820634",
+          "group": "7ef3d12f-137f-4696-9d74-b1a78b0d3d68",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:52:25+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1829,
+          "step_max": 0.2721,
+          "drift": 5.06,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 3.97,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "50670d65-8c82-4994-b28f-9b652dc027bb",
+          "group": "d6d0892d-3e5c-4113-b1fa-01461b48d4d3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:52:24+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1451,
+          "step_max": 0.1773,
+          "drift": 3.08,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 0.68,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "4fbb39e3-599e-4f34-96f8-bfa098015a21",
+          "group": "c1ff9dac-e748-42a3-b958-8d044da1494b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:52:24+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1616,
+          "step_max": 0.1941,
+          "drift": 3.26,
+          "loop": 0.0004,
+          "loop_ratio": 0.0,
+          "travel": 1.79,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "623bb149-3783-4253-a72c-72e89e4edd7c",
+          "group": "0847fdc5-83d8-400d-be3b-bd198e35b56e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:52:25+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "snaps forward with its big claw in one quick pinch, body lunging slightly, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "tide_crab/animations/attack/south/00.webp",
+          "tide_crab/animations/attack/south/01.webp",
+          "tide_crab/animations/attack/south/02.webp",
+          "tide_crab/animations/attack/south/03.webp",
+          "tide_crab/animations/attack/south/04.webp",
+          "tide_crab/animations/attack/south/05.webp",
+          "tide_crab/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "tide_crab/animations/attack/south-east/00.webp",
+          "tide_crab/animations/attack/south-east/01.webp",
+          "tide_crab/animations/attack/south-east/02.webp",
+          "tide_crab/animations/attack/south-east/03.webp",
+          "tide_crab/animations/attack/south-east/04.webp",
+          "tide_crab/animations/attack/south-east/05.webp",
+          "tide_crab/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "tide_crab/animations/attack/east/00.webp",
+          "tide_crab/animations/attack/east/01.webp",
+          "tide_crab/animations/attack/east/02.webp",
+          "tide_crab/animations/attack/east/03.webp",
+          "tide_crab/animations/attack/east/04.webp",
+          "tide_crab/animations/attack/east/05.webp",
+          "tide_crab/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "tide_crab/animations/attack/north-east/00.webp",
+          "tide_crab/animations/attack/north-east/01.webp",
+          "tide_crab/animations/attack/north-east/02.webp",
+          "tide_crab/animations/attack/north-east/03.webp",
+          "tide_crab/animations/attack/north-east/04.webp",
+          "tide_crab/animations/attack/north-east/05.webp",
+          "tide_crab/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "tide_crab/animations/attack/north/00.webp",
+          "tide_crab/animations/attack/north/01.webp",
+          "tide_crab/animations/attack/north/02.webp",
+          "tide_crab/animations/attack/north/03.webp",
+          "tide_crab/animations/attack/north/04.webp",
+          "tide_crab/animations/attack/north/05.webp",
+          "tide_crab/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "tide_crab/animations/attack/south-west/00.webp",
+          "tide_crab/animations/attack/south-west/01.webp",
+          "tide_crab/animations/attack/south-west/02.webp",
+          "tide_crab/animations/attack/south-west/03.webp",
+          "tide_crab/animations/attack/south-west/04.webp",
+          "tide_crab/animations/attack/south-west/05.webp",
+          "tide_crab/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "tide_crab/animations/attack/west/00.webp",
+          "tide_crab/animations/attack/west/01.webp",
+          "tide_crab/animations/attack/west/02.webp",
+          "tide_crab/animations/attack/west/03.webp",
+          "tide_crab/animations/attack/west/04.webp",
+          "tide_crab/animations/attack/west/05.webp",
+          "tide_crab/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "tide_crab/animations/attack/north-west/00.webp",
+          "tide_crab/animations/attack/north-west/01.webp",
+          "tide_crab/animations/attack/north-west/02.webp",
+          "tide_crab/animations/attack/north-west/03.webp",
+          "tide_crab/animations/attack/north-west/04.webp",
+          "tide_crab/animations/attack/north-west/05.webp",
+          "tide_crab/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "tide_crab/animations/attack__south.webp",
+        "south-east": "tide_crab/animations/attack__south-east.webp",
+        "east": "tide_crab/animations/attack__east.webp",
+        "north-east": "tide_crab/animations/attack__north-east.webp",
+        "north": "tide_crab/animations/attack__north.webp",
+        "south-west": "tide_crab/animations/attack__south-west.webp",
+        "west": "tide_crab/animations/attack__west.webp",
+        "north-west": "tide_crab/animations/attack__north-west.webp"
+      }
     }
   }
 }
