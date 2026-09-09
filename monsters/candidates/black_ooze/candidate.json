@@ -1,0 +1,141 @@
+{
+  "id": "black_ooze",
+  "name": "Pitchooze",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It spread from a crack in the lower vault and has not stopped. What it swallows it keeps, and what it keeps it wears.",
+  "biome": [
+    "slime",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Dark corrosive ooze, a heavy mound of glossy black slime with a rib cage and a rusted helm half-sunk inside it, sluggish drips smoking where they land, and two dim red points of light deep within.",
+  "size": [
+    80,
+    80
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "black_ooze/rotations/south.webp",
+    "south-east": "black_ooze/rotations/south-east.webp",
+    "east": "black_ooze/rotations/east.webp",
+    "north-east": "black_ooze/rotations/north-east.webp",
+    "north": "black_ooze/rotations/north.webp",
+    "north-west": "black_ooze/rotations/north-west.webp",
+    "west": "black_ooze/rotations/west.webp",
+    "south-west": "black_ooze/rotations/south-west.webp"
+  },
+  "sheet": "black_ooze/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c813daa6-e0c7-4edd-86d6-596868facd99",
+  "seed": 263766102,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:20:34+00:00",
+  "elapsed_s": 192.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.725,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.725,
+        "bbox": [
+          7,
+          3,
+          72,
+          76
+        ],
+        "fill": 0.741,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.773,
+        "bbox": [
+          20,
+          6,
+          58,
+          77
+        ],
+        "fill": 0.422,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.774,
+        "bbox": [
+          19,
+          4,
+          59,
+          77
+        ],
+        "fill": 0.456,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.757,
+        "bbox": [
+          9,
+          5,
+          71,
+          76
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.795,
+        "bbox": [
+          13,
+          3,
+          69,
+          77
+        ],
+        "fill": 0.647,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.754,
+        "bbox": [
+          14,
+          3,
+          63,
+          77
+        ],
+        "fill": 0.567,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.76,
+        "bbox": [
+          15,
+          5,
+          72,
+          77
+        ],
+        "fill": 0.641,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.78,
+        "bbox": [
+          12,
+          6,
+          65,
+          76
+        ],
+        "fill": 0.58,
+        "touches_edge": false
+      }
+    }
+  }
+}
