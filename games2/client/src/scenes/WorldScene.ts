@@ -188,6 +188,7 @@ import {
   TILES3_DOCS,
   cellArtPaths,
   cellBlits,
+  cutLidKey as t3CutLidKey,
   boundaryArtPaths,
   deckArtPaths,
   docUrl,
@@ -4507,6 +4508,11 @@ export class WorldScene extends Phaser.Scene {
             level: cell.level,
             region: cell.region,
             kind: cell.kind,
+            // The stump's lid (Tiles3Cell.cutCap): its rock, its file, and
+            // whether the plate is drawable yet (null while it streams).
+            side: cell.side ?? null,
+            cutCap: cell.cutCap ? (cell.cutCap as { path?: string }).path ?? null : null,
+            lidKey: tex ? t3CutLidKey(tex, cell) : null,
             // `path` is absent on a liquid's art (it is a colour, not a file).
             art: cell.art
               ? { kind: cell.art.kind, path: (cell.art as { path?: string }).path ?? null }
@@ -17834,7 +17840,19 @@ export class WorldScene extends Phaser.Scene {
         const capX = capSurface !== null ? cell.sx : bx;
         const capY = capSurface !== null ? capSurface : by - topL * lh;
         if (columnShows(capX, capY, by + tileSize)) {
-          this.occluders.push(this.occTint(this.occImage(topL === cell.level ? topKey : fk, capX, capY, oDepth, col, row), "cap"));
+          /* THE STUMP'S LID IS THE ROCK IT IS CUT THROUGH (Tiles3Cell.cutCap).
+           * A field stump (a cave room's near or side wall — no face toward the
+           * camera) drew its own plate here, the mountain's snow or ice slid
+           * down to the cut; a wall stump drew its top course, one flat colour.
+           * Both now wear the side material's textured set: the field at its
+           * plate anchor as before, the wall OVER its course at the surface
+           * anchor slid to the cut — the same op `cellBlits` paints into the
+           * ground texture, so the two passes agree. */
+          const lid = topL < cell.level ? t3CutLidKey(tex, cell) : null;
+          const capKey = topL === cell.level ? topKey : lid && capSurface !== null ? lid : fk;
+          this.occluders.push(this.occTint(this.occImage(capKey, capX, capY, oDepth, col, row), "cap"));
+          if (lid && capSurface === null)
+            this.occluders.push(this.occTint(this.occImage(lid, cell.sx, (cell.pasteY ?? cell.sy) + (cell.level - topL) * lh, oDepth, col, row), "cap"));
           /* AND THE SET SURFACE OVER A DRESSED WALL'S CAP — the second image
            * the ground pass paints on such a cell (`cellOps`: stack, then the
            * surface at its own anchor). A review course's top is one flat

@@ -262,6 +262,12 @@ export interface Regions {
  *  as many of his sets as he weighted (measured on the_game: the top set's share
  *  of grass 98.7% -> 75.1%, of snow 99.7% -> 41.3%, of grey_stone 80.5% ->
  *  41.9%). render3.py's `region_at`, to the character. */
+/** The 8-neighbourhood, up-screen first, in the fixed order a borrowed side is
+ *  searched in (deterministic: the same cell always borrows the same rock). */
+const NEIGHBOURS8: ReadonlyArray<readonly [number, number]> = [
+  [0, -1], [-1, 0], [-1, -1], [1, -1], [-1, 1], [1, 0], [0, 1], [1, 1],
+];
+
 export function regionAt(ground: string, x: number, y: number): string {
   return `${ground}@${Math.floor(x / REGION_CHUNK)},${Math.floor(y / REGION_CHUNK)}`;
 }
@@ -944,6 +950,18 @@ export interface Tiles3Cell {
   /** The surface is painted at all. False only where the maintainer set
    *  `own_top` on the cap's review key: keep the x-over-y tile's own top. */
   dressed?: boolean;
+  /** THE LID OF A TRUNCATED COLUMN. The indoor cut-away stops a column short
+   *  of its own top, and the stump it leaves wears the ROCK IT IS CUT THROUGH:
+   *  `side` is the wall material (the maintainer's `walls[]` group, else the
+   *  lowest front neighbour's ground — the same pick the face courses use) and
+   *  `cutCap` that ground's textured set plate, top face only. Set on every
+   *  raised cell, exposed or not: the near and side walls of a cave room show
+   *  no face to the camera, so they resolve as fields, and their stumps were
+   *  drawing the mountain's own snow and ice as their lid (maintainer
+   *  2026-09-09, five photographs: "Why is the tile under me clean snow/ice?
+   *  Looks weird"). The mountain top is untouched — it is still `ground`. */
+  side?: string;
+  cutCap?: FieldArt;
   /** A WALL'S FACE ENDS ON THIS CELL: `ul` when the (x-1, y) neighbour is
    *  higher, `ur` when (x, y-1) is, `uu` when (x-1, y-1) is — each the SIDE
    *  material that wall is drawn in (the same rule the wall cell itself uses to
@@ -2050,8 +2068,28 @@ export class Tiles3 {
     /* Stone over its own body; water is never a wall material either. Only when
      * the maintainer has NOT named the side himself. */
     if (!override && (INDOOR_GROUNDS.includes(side) || view.isLiquid(side))) side = gr;
-
+    /* The stump's lid, whatever the cell's kind turns out to be (see
+     * Tiles3Cell.cutCap): the side's own set, picked at this cell like any
+     * ground's plate, so a cut wall reads as the same rock as its courses. */
     const exposed = frontLow < zl;
+    /* A FACELESS CELL BORROWS A NAMED NEIGHBOUR'S ROCK for its lid. Its own
+     * pick is its top ground (no front neighbour is lower), which for a cave
+     * room's second ring is the mountain's snow; the ring beside it is named
+     * by maps2 (`walls[]`, the cave's one rock). The faces are untouched — a
+     * field draws none — so nothing outdoors changes. */
+    let lidSide = side;
+    if (!exposed && override === null)
+      for (const [nx, ny] of NEIGHBOURS8) {
+        const named = view.wallSideAt(x + nx, y + ny);
+        if (named !== null) {
+          lidSide = named;
+          break;
+        }
+      }
+    cell.side = lidSide;
+    const lid = this.plateAt(lidSide, regionAt(lidSide, x, y), x, y).art;
+    cell.cutCap = { kind: lid.kind, path: lid.path, w: lid.w, h: lid.h, topOnly: true };
+
     let dressed = true;
     if (exposed) {
       const cap = this.overTile(gr, side, x, y, zl);

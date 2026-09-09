@@ -480,7 +480,38 @@ export function cellBlits(
     if (!key || !tex.exists(key)) continue;
     out.push({ key, x: cell.sx, y: s.y, sx: 0, sy: 0, sw: tile.w, sh: tile.h, role: "wall" });
   }
+  /* THE STUMP WEARS THE ROCK IT IS CUT THROUGH. The course at the cut is a
+   * face whose top is one flat colour; the lid over it is the side material's
+   * textured set, at the surface anchor slid down to the cut storey (the
+   * stack's own y for that storey against the cap's). A cut through grey
+   * stone shows grey stone — never the snow the mountain wears on top. */
+  const lidKey = cutLidKey(t3, cell);
+  if (lidKey) {
+    const at = w.stack.find((s) => s.storey === hi);
+    const top = w.stack[w.stack.length - 1];
+    if (at && top && cell.cutCap)
+      out.push({
+        key: lidKey,
+        x: cell.sx,
+        y: (cell.pasteY ?? cell.sy) + (at.y - top.y),
+        sx: 0,
+        sy: 0,
+        sw: cell.cutCap.w,
+        sh: cell.cutCap.h,
+        role: "surface",
+      });
+  }
   return out;
+}
+
+/** The drawable key of a truncated column's lid — the SIDE rock's textured
+ *  plate (Tiles3Cell.cutCap), or null while it streams or the cell has none.
+ *  The occluder pass anchors it itself (a field stump keeps the plate anchor,
+ *  slid to the cut; a wall stump takes it over its top course). */
+export function cutLidKey(t3: Tiles3Textures, cell: Tiles3Cell): string | null {
+  const art = cell.cutCap;
+  if (!art || !cell.side || art.kind === "liquid") return null;
+  return t3.plate(art, cell.side);
 }
 
 /** Every repo-relative art file one resolved cell can draw — what the loader is
@@ -509,6 +540,8 @@ export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void): void {
    * loader and scripts/tiles3closure.ts, which decides what enters the image.
    * Miss it and every fade 404s in production and only in production. */
   if (cell.fade) out(cell.fade.file);
+  // ...and the stump's lid (Tiles3Cell.cutCap), for the same two consumers.
+  if (cell.cutCap && cell.cutCap.kind !== "liquid") out(cell.cutCap.path);
   if (cell.kind !== "field" && cell.wall)
     for (const s of cell.wall.stack) if (s.tile.path) out(s.tile.path);
 }

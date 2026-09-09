@@ -521,6 +521,18 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   up-screen — onto the cave floor behind it, as a plain white band under the
   maintainer's feet at 267.9,157.8. Underlay skipped with it; the occluder's
   stump cap for a field keeps the plate anchor. Rule + reason: `INDOOR.md`.
+- **A STUMP'S LID IS THE ROCK IT IS CUT THROUGH** (`Tiles3Cell.side`/`cutCap`,
+  `cutLidKey`, 2026-09-09). Every raised cell carries its wall material and
+  that material's textured set plate (top face only); a column the cut-away
+  truncates draws that plate at the cut storey — in the ground texture over
+  the top course (`cellBlits`) and as the occluder cap (a field stump keeps its
+  plate anchor, a wall stump takes it over its course). Before: a cave room's
+  near and side walls are fields (no face toward the camera) and their stumps
+  wore the mountain's own snow and ice; a wall stump wore its course's one
+  flat colour (maintainer 2026-09-09, five photographs in the cave at
+  261-286,153-171: "Why is the tile under me clean snow/ice? Looks weird",
+  "plain grey_stone"). The mountain top stays `ground` — outdoors nothing
+  changes. `cellArtPaths` names the lid so the loader and ship-tiles3 carry it.
 - **A BOUNDARY IS SKIPPED INDOORS ONLY WHERE ITS OWN COLUMN IS TRUNCATED,
   AND A CUT-SUPPRESSED CELL IS NEVER OWED** (`cutSuppressed`, 2026-09-05).
   The transition raster replaces the cell's plate at its own uncut level; if
