@@ -608,113 +608,139 @@
       "directions": {
         "south": {
           "status": "pass",
-          "step_mean": 0.2685,
-          "step_max": 0.3592,
-          "drift": 7.47,
-          "loop": 0.0,
+          "step_mean": 0.3119,
+          "step_max": 0.3242,
+          "drift": 4.6,
+          "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 1.88,
+          "travel": 0.46,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.4364,
           "canvas": [
             240,
             240
           ],
           "reasons": [],
-          "sub": "ffbe80e5-8f0e-4188-9822-de4b4ad19588",
-          "group": "0be52bf7-df88-4783-aaf7-e810572cc234",
+          "sub": "69245756-7125-43be-bcb7-2032648316cb",
+          "group": "c0bf1a08-0610-4b33-9c87-15f2504a3114",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:06:27+00:00"
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:15+00:00"
         },
         "south-east": {
-          "status": "pass",
-          "step_mean": 0.2592,
-          "step_max": 0.3995,
-          "drift": 4.64,
-          "loop": 0.0,
+          "status": "fail",
+          "step_mean": 0.3271,
+          "step_max": 0.4176,
+          "drift": 4.2,
+          "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 5.49,
+          "travel": 1.43,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.165,
+          "peak": 0.4951,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
-          "sub": "20c9c689-255f-4dc0-9582-0bea1294cfdf",
-          "group": "33569407-13e4-4c0a-aeb6-20488bb58a7c",
+          "reasons": [
+            "painted effect: 0.16 of the body in new bright pixels (flare/slash arc)"
+          ],
+          "sub": "1b6fa512-08c7-47d6-851c-2975b277a047",
+          "group": "0413d9db-e633-406d-ac94-99491d4bdec0",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:06:27+00:00"
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:16+00:00"
         },
         "east": {
           "status": "pass",
-          "step_mean": 0.2443,
-          "step_max": 0.2852,
-          "drift": 11.84,
-          "loop": 0.0,
+          "step_mean": 0.3182,
+          "step_max": 0.3689,
+          "drift": 5.77,
+          "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 2.22,
+          "travel": 1.05,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.5177,
           "canvas": [
             240,
             240
           ],
           "reasons": [],
-          "sub": "fe9b3723-ac71-4563-bc93-cf5112e9eb94",
-          "group": "acce0324-ccde-42bc-a6ba-ad41257ea387",
+          "sub": "ad23fbcc-e949-4735-bbb6-d6b02419719e",
+          "group": "322c8f0c-9c49-499f-8182-29493e66a673",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:06:28+00:00"
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:16+00:00"
         },
         "north-east": {
           "status": "pass",
-          "step_mean": 0.1876,
-          "step_max": 0.2445,
-          "drift": 6.73,
-          "loop": 0.0002,
+          "step_mean": 0.2313,
+          "step_max": 0.291,
+          "drift": 6.15,
+          "loop": 0.0003,
           "loop_ratio": 0.0,
-          "travel": 1.31,
+          "travel": 0.47,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3989,
           "canvas": [
             240,
             240
           ],
           "reasons": [],
-          "sub": "ed537033-f896-4739-9506-c991e2867213",
-          "group": "46cb4e94-10d4-4514-a5ac-8141e89591d8",
+          "sub": "e90f4cdc-b1a9-45ca-91b3-d64a72efd048",
+          "group": "469103aa-30d0-45f7-a640-d50ccebf6068",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:06:29+00:00"
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:17+00:00"
         },
         "north": {
-          "status": "pass",
-          "step_mean": 0.3418,
-          "step_max": 0.4557,
-          "drift": 9.49,
-          "loop": 0.0001,
+          "status": "fail",
+          "step_mean": 0.2708,
+          "step_max": 0.3932,
+          "drift": 20.41,
+          "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.26,
+          "travel": 0.77,
           "pin": 1.0,
-          "pad": 0,
+          "pad": 2,
+          "flash": 0.135,
+          "peak": 0.438,
           "canvas": [
-            240,
-            240
+            244,
+            244
           ],
-          "reasons": [],
-          "sub": "fa9c3fad-67d6-487a-8d42-7e058313a0f4",
-          "group": "06cfa163-3110-4257-aa3b-784c85fd26b9",
+          "reasons": [
+            "drifts 20.4 px — eyeball it",
+            "painted effect: 0.14 of the body in new bright pixels (flare/slash arc)",
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "e9d9bf67-bfb3-40cf-b24f-4bc5749ea126",
+          "group": "d7b1f5a0-be2a-4112-ae45-f03faa717f7d",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:06:29+00:00"
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:17+00:00"
         },
         "south-west": {
           "status": "pass",
@@ -741,124 +767,116 @@
         },
         "west": {
           "status": "pass",
-          "step_mean": 0.2443,
-          "step_max": 0.2852,
-          "drift": 11.84,
-          "loop": 0.0,
+          "step_mean": 0.3182,
+          "step_max": 0.3689,
+          "drift": 5.77,
+          "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 2.22,
+          "travel": 1.05,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.5177,
           "canvas": [
             240,
             240
           ],
           "reasons": [],
-          "sub": "fe9b3723-ac71-4563-bc93-cf5112e9eb94",
-          "group": "acce0324-ccde-42bc-a6ba-ad41257ea387",
+          "sub": "ad23fbcc-e949-4735-bbb6-d6b02419719e",
+          "group": "322c8f0c-9c49-499f-8182-29493e66a673",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:06:28+00:00",
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:16+00:00",
           "source": "east"
         },
         "north-west": {
           "status": "pass",
-          "step_mean": 0.1876,
-          "step_max": 0.2445,
-          "drift": 6.73,
-          "loop": 0.0002,
+          "step_mean": 0.2313,
+          "step_max": 0.291,
+          "drift": 6.15,
+          "loop": 0.0003,
           "loop_ratio": 0.0,
-          "travel": 1.31,
+          "travel": 0.47,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3989,
           "canvas": [
             240,
             240
           ],
           "reasons": [],
-          "sub": "ed537033-f896-4739-9506-c991e2867213",
-          "group": "46cb4e94-10d4-4514-a5ac-8141e89591d8",
+          "sub": "e90f4cdc-b1a9-45ca-91b3-d64a72efd048",
+          "group": "469103aa-30d0-45f7-a640-d50ccebf6068",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:06:29+00:00",
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:17+00:00",
           "source": "north-east"
         }
       },
-      "action": "rears up on her back legs and stabs down with both front legs and fangs, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
       "frame_paths": {
         "south": [
           "spider_queen/animations/attack/south/00.webp",
           "spider_queen/animations/attack/south/01.webp",
           "spider_queen/animations/attack/south/02.webp",
           "spider_queen/animations/attack/south/03.webp",
-          "spider_queen/animations/attack/south/04.webp",
-          "spider_queen/animations/attack/south/05.webp",
-          "spider_queen/animations/attack/south/06.webp"
+          "spider_queen/animations/attack/south/04.webp"
         ],
         "south-east": [
           "spider_queen/animations/attack/south-east/00.webp",
           "spider_queen/animations/attack/south-east/01.webp",
           "spider_queen/animations/attack/south-east/02.webp",
           "spider_queen/animations/attack/south-east/03.webp",
-          "spider_queen/animations/attack/south-east/04.webp",
-          "spider_queen/animations/attack/south-east/05.webp",
-          "spider_queen/animations/attack/south-east/06.webp"
+          "spider_queen/animations/attack/south-east/04.webp"
         ],
         "east": [
           "spider_queen/animations/attack/east/00.webp",
           "spider_queen/animations/attack/east/01.webp",
           "spider_queen/animations/attack/east/02.webp",
           "spider_queen/animations/attack/east/03.webp",
-          "spider_queen/animations/attack/east/04.webp",
-          "spider_queen/animations/attack/east/05.webp",
-          "spider_queen/animations/attack/east/06.webp"
+          "spider_queen/animations/attack/east/04.webp"
         ],
         "north-east": [
           "spider_queen/animations/attack/north-east/00.webp",
           "spider_queen/animations/attack/north-east/01.webp",
           "spider_queen/animations/attack/north-east/02.webp",
           "spider_queen/animations/attack/north-east/03.webp",
-          "spider_queen/animations/attack/north-east/04.webp",
-          "spider_queen/animations/attack/north-east/05.webp",
-          "spider_queen/animations/attack/north-east/06.webp"
+          "spider_queen/animations/attack/north-east/04.webp"
         ],
         "north": [
           "spider_queen/animations/attack/north/00.webp",
           "spider_queen/animations/attack/north/01.webp",
           "spider_queen/animations/attack/north/02.webp",
           "spider_queen/animations/attack/north/03.webp",
-          "spider_queen/animations/attack/north/04.webp",
-          "spider_queen/animations/attack/north/05.webp",
-          "spider_queen/animations/attack/north/06.webp"
+          "spider_queen/animations/attack/north/04.webp"
         ],
         "south-west": [
           "spider_queen/animations/attack/south-west/00.webp",
           "spider_queen/animations/attack/south-west/01.webp",
           "spider_queen/animations/attack/south-west/02.webp",
           "spider_queen/animations/attack/south-west/03.webp",
-          "spider_queen/animations/attack/south-west/04.webp",
-          "spider_queen/animations/attack/south-west/05.webp",
-          "spider_queen/animations/attack/south-west/06.webp"
+          "spider_queen/animations/attack/south-west/04.webp"
         ],
         "west": [
           "spider_queen/animations/attack/west/00.webp",
           "spider_queen/animations/attack/west/01.webp",
           "spider_queen/animations/attack/west/02.webp",
           "spider_queen/animations/attack/west/03.webp",
-          "spider_queen/animations/attack/west/04.webp",
-          "spider_queen/animations/attack/west/05.webp",
-          "spider_queen/animations/attack/west/06.webp"
+          "spider_queen/animations/attack/west/04.webp"
         ],
         "north-west": [
           "spider_queen/animations/attack/north-west/00.webp",
           "spider_queen/animations/attack/north-west/01.webp",
           "spider_queen/animations/attack/north-west/02.webp",
           "spider_queen/animations/attack/north-west/03.webp",
-          "spider_queen/animations/attack/north-west/04.webp",
-          "spider_queen/animations/attack/north-west/05.webp",
-          "spider_queen/animations/attack/north-west/06.webp"
+          "spider_queen/animations/attack/north-west/04.webp"
         ]
       },
       "strips": {

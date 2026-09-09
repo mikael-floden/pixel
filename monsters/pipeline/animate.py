@@ -214,11 +214,14 @@ def _flash(frames):
     """Painted-effect detector: the largest gain of near-white or bright-yellow
     opaque pixels in any frame over frame 0, as a share of the base silhouette.
     A body-only strike stays under 0.02; an impact flare or slash arc is
-    0.15–0.7 (measured on 179 free-prose attacks vs the maintainer's 57)."""
+    0.12–0.7 (measured on 179 free-prose attacks vs the maintainer's 57:
+    median 0.001, the 11 over 0.10 are his aura/flame monsters). Blind to
+    orange/yellow fire bursts by design — counting vivid pixels flagged a
+    third of his accepted set — so fx monsters are eyeballed on the page."""
     a = [np.asarray(f.convert("RGBA")) for f in frames]
     def bright(x):
         rgb = x[..., :3].astype(int); al = x[..., 3] > 0
-        white = (rgb.min(-1) >= 225) & al
+        white = (rgb.min(-1) >= 200) & al   # near-white AND the pale cream swoosh (245,240,210)
         yellow = (rgb[..., 0] >= 225) & (rgb[..., 1] >= 200) & (rgb[..., 2] <= 130) & al
         return (white | yellow).sum()
     area = max(1, int((a[0][..., 3] > 0).sum())); b0 = bright(a[0])
@@ -300,10 +303,13 @@ def qa_clip(cid, state, d, frames, pinned=None):
         # accepted attacks return only partly (loop up to 0.79) — eyeball it
         reasons.append(f"does not quite return (last vs first {loop:.3f}) — eyeball it"); status = "warn" if status != "fail" else status
     flash = _flash(frames) if "flash_max" in band else 0.0
-    if "flash_max" in band and not design_flag(cid, "fx"):
-        if flash > band["flash_max"]:
+    if "flash_max" in band:
+        fmax, fwarn = band["flash_max"], band["flash_warn"]
+        if design_flag(cid, "fx"):
+            fmax, fwarn = fmax * 5, fwarn * 6   # the effect IS the attack; only an explosion fails
+        if flash > fmax:
             reasons.append(f"painted effect: {flash:.2f} of the body in new bright pixels (flare/slash arc)"); status = "fail"
-        elif flash > band["flash_warn"]:
+        elif flash > fwarn:
             reasons.append(f"some bright effect pixels ({flash:.2f}) — eyeball it"); status = "warn" if status != "fail" else status
     if "loop_ratio_pass" in band and not pinned:
         if loop_ratio > band["loop_ratio_warn"]:

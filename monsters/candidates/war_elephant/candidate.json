@@ -616,121 +616,137 @@
       "directions": {
         "south": {
           "status": "warn",
-          "step_mean": 0.0508,
-          "step_max": 0.0608,
-          "drift": 2.11,
+          "step_mean": 0.0601,
+          "step_max": 0.0827,
+          "drift": 2.32,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.53,
+          "travel": 1.3,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.001,
+          "peak": 0.1039,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "motion 0.051 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.103 — eyeball it"
+            "weak strike: peak 0.104 — eyeball it"
           ],
-          "sub": "3e8b69e1-66bb-42b3-95bd-cc91233d2d05",
-          "group": "a3e6cd79-c002-4a78-89a8-b65bdd518b5f",
+          "sub": "3a3e9c54-733a-440e-981a-7aebac3c6f8c",
+          "group": "4f0ce940-cd64-4bee-a612-f1c00983b542",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:08:00+00:00"
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:05+00:00"
         },
         "south-east": {
-          "status": "pass",
-          "step_mean": 0.1064,
-          "step_max": 0.1641,
-          "drift": 13.32,
-          "loop": 0.0001,
+          "status": "fail",
+          "step_mean": 0.1213,
+          "step_max": 0.1648,
+          "drift": 9.56,
+          "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.62,
+          "travel": 0.61,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.125,
+          "peak": 0.2148,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
-          "sub": "523338db-1427-4ae9-9f31-c5e61885fc43",
-          "group": "926211c0-ed66-427c-a762-ae81ff536670",
+          "reasons": [
+            "painted effect: 0.13 of the body in new bright pixels (flare/slash arc)"
+          ],
+          "sub": "3ce20ab5-495b-4c19-80e3-bcf24b91448e",
+          "group": "a3102ce6-8a6e-4552-b9b3-4348eb3ee016",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:08:01+00:00"
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:06+00:00"
         },
         "east": {
           "status": "pass",
-          "step_mean": 0.1056,
-          "step_max": 0.1391,
-          "drift": 2.52,
+          "step_mean": 0.0928,
+          "step_max": 0.1096,
+          "drift": 3.82,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.71,
+          "travel": 1.39,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1589,
           "canvas": [
             240,
             240
           ],
           "reasons": [],
-          "sub": "d64374cd-66f3-434b-8617-b603c1d1b7d1",
-          "group": "cdc970f8-895e-4b3a-8cf2-1e4e74e2c34e",
+          "sub": "26236dee-85c4-4341-80bf-04ebdac02e21",
+          "group": "6c460341-4819-4e86-9a15-4503e362c937",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:08:01+00:00"
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:08+00:00"
         },
         "north-east": {
-          "status": "warn",
-          "step_mean": 0.0703,
-          "step_max": 0.1064,
-          "drift": 4.1,
-          "loop": 0.0001,
+          "status": "pass",
+          "step_mean": 0.0789,
+          "step_max": 0.1,
+          "drift": 2.72,
+          "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.06,
+          "travel": 0.74,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1328,
           "canvas": [
             240,
             240
           ],
-          "reasons": [
-            "motion 0.070 outside the calm band 0.08–0.9 — eyeball it"
-          ],
-          "sub": "62bb8db4-b42b-4159-a093-8ddc0cf1cf59",
-          "group": "5323c42b-14c4-4620-b9b0-c6f77ac04eca",
+          "reasons": [],
+          "sub": "a21099dc-55fe-4357-9a93-d8e9bf044dc9",
+          "group": "a7c3419a-f383-4b60-a745-84c8d177d241",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:08:02+00:00"
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:08+00:00"
         },
         "north": {
-          "status": "warn",
-          "step_mean": 0.0613,
-          "step_max": 0.1178,
-          "drift": 3.17,
+          "status": "pass",
+          "step_mean": 0.0753,
+          "step_max": 0.0813,
+          "drift": 5.23,
           "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 4.19,
+          "travel": 1.03,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.131,
           "canvas": [
             240,
             240
           ],
-          "reasons": [
-            "motion 0.061 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.139 — eyeball it"
-          ],
-          "sub": "4e3b18de-0351-4340-9f49-b46289699607",
-          "group": "82d6a42c-ea32-475c-9639-0e1cdd23ac8e",
+          "reasons": [],
+          "sub": "cefecfed-8e41-4b45-9467-461920c4c6a3",
+          "group": "857e9daf-97ed-4d58-86cd-4d33996dd7c8",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:08:14+00:00"
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:09+00:00"
         },
         "south-west": {
           "status": "pass",
@@ -757,126 +773,116 @@
         },
         "west": {
           "status": "pass",
-          "step_mean": 0.1056,
-          "step_max": 0.1391,
-          "drift": 2.52,
+          "step_mean": 0.0928,
+          "step_max": 0.1096,
+          "drift": 3.82,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.71,
+          "travel": 1.39,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1589,
           "canvas": [
             240,
             240
           ],
           "reasons": [],
-          "sub": "d64374cd-66f3-434b-8617-b603c1d1b7d1",
-          "group": "cdc970f8-895e-4b3a-8cf2-1e4e74e2c34e",
+          "sub": "26236dee-85c4-4341-80bf-04ebdac02e21",
+          "group": "6c460341-4819-4e86-9a15-4503e362c937",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:08:01+00:00",
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:08+00:00",
           "source": "east"
         },
         "north-west": {
-          "status": "warn",
-          "step_mean": 0.0703,
-          "step_max": 0.1064,
-          "drift": 4.1,
-          "loop": 0.0001,
+          "status": "pass",
+          "step_mean": 0.0789,
+          "step_max": 0.1,
+          "drift": 2.72,
+          "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.06,
+          "travel": 0.74,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1328,
           "canvas": [
             240,
             240
           ],
-          "reasons": [
-            "motion 0.070 outside the calm band 0.08–0.9 — eyeball it"
-          ],
-          "sub": "62bb8db4-b42b-4159-a093-8ddc0cf1cf59",
-          "group": "5323c42b-14c4-4620-b9b0-c6f77ac04eca",
+          "reasons": [],
+          "sub": "a21099dc-55fe-4357-9a93-d8e9bf044dc9",
+          "group": "a7c3419a-f383-4b60-a745-84c8d177d241",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:08:02+00:00",
+          "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:39:08+00:00",
           "source": "north-east"
         }
       },
-      "action": "lowers its head and gores forward with both iron-capped tusks in one heavy thrust, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "action": "Tusk Gore - Lowers head and thrusts forward once with both tusks, then returns to idle stance",
       "frame_paths": {
         "south": [
           "war_elephant/animations/attack/south/00.webp",
           "war_elephant/animations/attack/south/01.webp",
           "war_elephant/animations/attack/south/02.webp",
           "war_elephant/animations/attack/south/03.webp",
-          "war_elephant/animations/attack/south/04.webp",
-          "war_elephant/animations/attack/south/05.webp",
-          "war_elephant/animations/attack/south/06.webp"
+          "war_elephant/animations/attack/south/04.webp"
         ],
         "south-east": [
           "war_elephant/animations/attack/south-east/00.webp",
           "war_elephant/animations/attack/south-east/01.webp",
           "war_elephant/animations/attack/south-east/02.webp",
           "war_elephant/animations/attack/south-east/03.webp",
-          "war_elephant/animations/attack/south-east/04.webp",
-          "war_elephant/animations/attack/south-east/05.webp",
-          "war_elephant/animations/attack/south-east/06.webp"
+          "war_elephant/animations/attack/south-east/04.webp"
         ],
         "east": [
           "war_elephant/animations/attack/east/00.webp",
           "war_elephant/animations/attack/east/01.webp",
           "war_elephant/animations/attack/east/02.webp",
           "war_elephant/animations/attack/east/03.webp",
-          "war_elephant/animations/attack/east/04.webp",
-          "war_elephant/animations/attack/east/05.webp",
-          "war_elephant/animations/attack/east/06.webp"
+          "war_elephant/animations/attack/east/04.webp"
         ],
         "north-east": [
           "war_elephant/animations/attack/north-east/00.webp",
           "war_elephant/animations/attack/north-east/01.webp",
           "war_elephant/animations/attack/north-east/02.webp",
           "war_elephant/animations/attack/north-east/03.webp",
-          "war_elephant/animations/attack/north-east/04.webp",
-          "war_elephant/animations/attack/north-east/05.webp",
-          "war_elephant/animations/attack/north-east/06.webp"
+          "war_elephant/animations/attack/north-east/04.webp"
         ],
         "north": [
           "war_elephant/animations/attack/north/00.webp",
           "war_elephant/animations/attack/north/01.webp",
           "war_elephant/animations/attack/north/02.webp",
           "war_elephant/animations/attack/north/03.webp",
-          "war_elephant/animations/attack/north/04.webp",
-          "war_elephant/animations/attack/north/05.webp",
-          "war_elephant/animations/attack/north/06.webp"
+          "war_elephant/animations/attack/north/04.webp"
         ],
         "south-west": [
           "war_elephant/animations/attack/south-west/00.webp",
           "war_elephant/animations/attack/south-west/01.webp",
           "war_elephant/animations/attack/south-west/02.webp",
           "war_elephant/animations/attack/south-west/03.webp",
-          "war_elephant/animations/attack/south-west/04.webp",
-          "war_elephant/animations/attack/south-west/05.webp",
-          "war_elephant/animations/attack/south-west/06.webp"
+          "war_elephant/animations/attack/south-west/04.webp"
         ],
         "west": [
           "war_elephant/animations/attack/west/00.webp",
           "war_elephant/animations/attack/west/01.webp",
           "war_elephant/animations/attack/west/02.webp",
           "war_elephant/animations/attack/west/03.webp",
-          "war_elephant/animations/attack/west/04.webp",
-          "war_elephant/animations/attack/west/05.webp",
-          "war_elephant/animations/attack/west/06.webp"
+          "war_elephant/animations/attack/west/04.webp"
         ],
         "north-west": [
           "war_elephant/animations/attack/north-west/00.webp",
           "war_elephant/animations/attack/north-west/01.webp",
           "war_elephant/animations/attack/north-west/02.webp",
           "war_elephant/animations/attack/north-west/03.webp",
-          "war_elephant/animations/attack/north-west/04.webp",
-          "war_elephant/animations/attack/north-west/05.webp",
-          "war_elephant/animations/attack/north-west/06.webp"
+          "war_elephant/animations/attack/north-west/04.webp"
         ]
       },
       "strips": {
