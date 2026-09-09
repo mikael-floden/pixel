@@ -1377,21 +1377,6 @@
       "lore": "It has waited in the vault longer than the vault has had a door. It does not lure; it is simply there, and patient."
     },
     {
-      "id": "grimoire",
-      "name": "Gravetome",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 72,
-      "biome": [
-        "parquet_floor",
-        "grey_paving_stone"
-      ],
-      "items": [],
-      "prompt": "Floating cursed grimoire, a thick tome bound in dark cracked leather with iron corners and a chained clasp broken open, pages fanned like a jaw with faint red script glowing on them, and a single unblinking eye set in the cover.",
-      "lore": "Written by a hand that would not stop. Anyone who reads it adds a page, and the last page is always theirs."
-    },
-    {
       "id": "lantern_wraith",
       "name": "Palewick",
       "tier": "evil",
@@ -1540,6 +1525,21 @@
       "items": [],
       "prompt": "Warthog with realistic proportions, coarse grey-brown hide, a bristly dark mane along the spine, two curved yellow tusks, facial warts, small dark eyes, and a short tail held down.",
       "lore": "It roots up the fields at night and charges whatever comes to stop it. The tusks are why the fields stay rooted."
+    },
+    {
+      "id": "ghost_hound",
+      "name": "Palehound",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "dog",
+      "size": 104,
+      "biome": [
+        "grey_paving_stone",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Spectral hound with realistic proportions, a gaunt greyhound-like body of translucent pale blue-white mist over faint bones, hollow glowing white eyes, a long muzzle with bared teeth, thin legs, and cold vapor trailing from its flanks.",
+      "lore": "It runs the old road at the hour its master died. Travellers who hear it do not see it; the ones who see it do not travel again."
     }
   ],
   "retired": [
@@ -2444,6 +2444,24 @@
       "retired": "the model draws a long tail and a wide shell whatever the prompt says — 112 px clipped 5 facings, 136 px compact clipped 3. Replaced by warthog.",
       "retired_at": "2026-09-09T19:09:17+00:00",
       "versions_tried": 2
+    },
+    {
+      "id": "grimoire",
+      "name": "Gravetome",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 72,
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Floating cursed grimoire, a thick tome bound in dark cracked leather with iron corners and a chained clasp broken open, pages fanned like a jaw with faint red script glowing on them, and a single unblinking eye set in the cover.",
+      "lore": "Written by a hand that would not stop. Anyone who reads it adds a page, and the last page is always theirs.",
+      "retired": "the model gives a floating book boots and a cape, and it clipped SE/SW — a walking object is not the serious grimoire designed. Replaced by ghost_hound.",
+      "retired_at": "2026-09-09T19:17:32+00:00",
+      "versions_tried": 1
     }
   ]
 }

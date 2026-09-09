@@ -1,0 +1,141 @@
+{
+  "id": "lantern_wraith",
+  "name": "Palewick",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It was carried into the mine and came back alone. The light it gives leads only one way.",
+  "biome": [
+    "grey_paving_stone",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Floating spectral lantern of black iron with tall narrow panes, a cold pale blue flame inside shaped like a gaunt hooded face, a rusted chain hanging beneath it, and thin trails of freezing mist.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "lantern_wraith/rotations/south.webp",
+    "south-east": "lantern_wraith/rotations/south-east.webp",
+    "east": "lantern_wraith/rotations/east.webp",
+    "north-east": "lantern_wraith/rotations/north-east.webp",
+    "north": "lantern_wraith/rotations/north.webp",
+    "north-west": "lantern_wraith/rotations/north-west.webp",
+    "west": "lantern_wraith/rotations/west.webp",
+    "south-west": "lantern_wraith/rotations/south-west.webp"
+  },
+  "sheet": "lantern_wraith/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "9a588ecd-ece0-4391-be42-589de8c5c231",
+  "seed": 2125439804,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:17:21+00:00",
+  "elapsed_s": 187.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.773,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.773,
+        "bbox": [
+          7,
+          2,
+          83,
+          85
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.791,
+        "bbox": [
+          25,
+          2,
+          63,
+          86
+        ],
+        "fill": 0.412,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.819,
+        "bbox": [
+          25,
+          2,
+          63,
+          86
+        ],
+        "fill": 0.412,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.793,
+        "bbox": [
+          7,
+          2,
+          82,
+          84
+        ],
+        "fill": 0.794,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.836,
+        "bbox": [
+          13,
+          3,
+          75,
+          87
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.796,
+        "bbox": [
+          17,
+          2,
+          73,
+          85
+        ],
+        "fill": 0.6,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.798,
+        "bbox": [
+          15,
+          2,
+          71,
+          85
+        ],
+        "fill": 0.6,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.83,
+        "bbox": [
+          13,
+          3,
+          76,
+          87
+        ],
+        "fill": 0.683,
+        "touches_edge": false
+      }
+    }
+  }
+}
