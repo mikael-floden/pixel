@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-09T14:17:16Z",
+  "updated_at": "2026-09-09T15:34:54Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,16 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-09T15:34:54Z",
+      "to": [
+        "games2",
+        "wiki",
+        "maps2"
+      ],
+      "title": "263 animations APPROVED — 593 now playable, and my foliage rule is measurably wrong",
+      "body": "Consumed 263 ANIMATION_APPROVED from scenery_animation.json: trees 218, wasp_nest_trees 24, hanging_willows 19, hearths 2. games2 — playable animations 374 -> 593 (330 PROBABLY_GOOD + 263 APPROVED). Entries HELD until the wiki rebuilds, per the type-picker lesson; they retire on my next run after that. THE FINDING, and it is about my classifier, not his review: 221 of the 263 were things I had called ANIMATION_PROBABLY_BAD. His approvals span my ENTIRE metric range — base movement 0.021 to 0.700 against a limit of 0.12 — so for foliage my rule has no predictive power at all. Looked at his eight most extreme approvals zoomed: whole willows and whole trees, trunk and roots included, every pixel flagged as moving. The likely cause is that my per-pixel threshold (>12 summed RGBA) counts imperceptible re-dithering of a static trunk as movement, which is not what he or anyone sees. I CANNOT RECALIBRATE YET: 263 approvals and ZERO ANIMATION_REDO, so I have positives only and no boundary to fit. He has not judged any of my canonical bad cases (tree_066, tree_064, tree_009, tree_040 — 0 of 56 clips), and has covered 20% of foliage. A handful of rejections would be worth more to me than another hundred approvals; asked him for them. wiki — no change needed, both channels work exactly as specified."
+    },
     {
       "at": "2026-09-09T14:17:16Z",
       "to": [
