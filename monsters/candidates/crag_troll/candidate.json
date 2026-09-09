@@ -336,6 +336,230 @@
         "west": "crag_troll/animations/idle__west.webp",
         "north-west": "crag_troll/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.082,
+          "step_max": 0.0999,
+          "drift": 8.46,
+          "loop": 0.2161,
+          "loop_ratio": 2.63,
+          "travel": 8.46,
+          "pin": 0.931,
+          "reasons": [
+            "motion 0.082 outside the calm band 0.1–0.4 — eyeball it",
+            "drifts 8.5 px",
+            "last→first hand-off 2.6× a step — eyeball the loop",
+            "walks across the canvas: 8.5 px of x-travel (should be in place)"
+          ],
+          "cut": 0,
+          "sub": "54ed9c4e-9569-432d-9b40-0935650fd373",
+          "group": "63049a6b-30ca-4b36-a5de-7851e57330a0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:54:21+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0939,
+          "step_max": 0.1205,
+          "drift": 5.54,
+          "loop": 0.2915,
+          "loop_ratio": 3.1,
+          "travel": 4.33,
+          "pin": 0.917,
+          "reasons": [
+            "motion 0.094 outside the calm band 0.1–0.4 — eyeball it",
+            "drifts 5.5 px — eyeball it",
+            "last→first hand-off is 3.1× a normal step — the loop hitches",
+            "4.3 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "8fda38ac-9eca-41fe-aee3-c011c186b436",
+          "group": "aeac248f-424f-4974-bedb-6bd5d2d030dd",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:54:22+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.1752,
+          "step_max": 0.1926,
+          "drift": 7.89,
+          "loop": 0.3416,
+          "loop_ratio": 1.95,
+          "travel": 5.32,
+          "pin": 0.853,
+          "reasons": [
+            "drifts 7.9 px — eyeball it",
+            "5.3 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "34c8ab0e-1e57-47f4-b63b-da47163fa0ba",
+          "group": "ac1597df-180b-4a71-9bb1-f71ab1371af0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:54:22+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.1393,
+          "step_max": 0.183,
+          "drift": 7.19,
+          "loop": 0.174,
+          "loop_ratio": 1.25,
+          "travel": 4.27,
+          "pin": 0.89,
+          "reasons": [
+            "drifts 7.2 px — eyeball it",
+            "4.3 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "853da555-0944-4b22-b435-d504fef82cbe",
+          "group": "b6f1e1c9-0708-4a30-b87d-000d0c818e70",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:54:23+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0791,
+          "step_max": 0.1021,
+          "drift": 2.95,
+          "loop": 0.1117,
+          "loop_ratio": 1.41,
+          "travel": 2.95,
+          "pin": 0.936,
+          "reasons": [
+            "motion 0.079 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "b314a2b0-6683-4bc9-ba65-7a8841f558f9",
+          "group": "a259c851-00bb-4946-8f81-47ef678dee6f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:54:24+00:00"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1752,
+          "step_max": 0.1926,
+          "drift": 7.89,
+          "loop": 0.3416,
+          "loop_ratio": 1.95,
+          "travel": 5.32,
+          "pin": 0.853,
+          "reasons": [
+            "drifts 7.9 px — eyeball it",
+            "5.3 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "34c8ab0e-1e57-47f4-b63b-da47163fa0ba",
+          "group": "ac1597df-180b-4a71-9bb1-f71ab1371af0",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:54:22+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1393,
+          "step_max": 0.183,
+          "drift": 7.19,
+          "loop": 0.174,
+          "loop_ratio": 1.25,
+          "travel": 4.27,
+          "pin": 0.89,
+          "reasons": [
+            "drifts 7.2 px — eyeball it",
+            "4.3 px of x-travel — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "853da555-0944-4b22-b435-d504fef82cbe",
+          "group": "b6f1e1c9-0708-4a30-b87d-000d0c818e70",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:54:23+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "crag_troll/animations/walk/south/00.webp",
+          "crag_troll/animations/walk/south/01.webp",
+          "crag_troll/animations/walk/south/02.webp",
+          "crag_troll/animations/walk/south/03.webp",
+          "crag_troll/animations/walk/south/04.webp",
+          "crag_troll/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "crag_troll/animations/walk/south-east/00.webp",
+          "crag_troll/animations/walk/south-east/01.webp",
+          "crag_troll/animations/walk/south-east/02.webp",
+          "crag_troll/animations/walk/south-east/03.webp",
+          "crag_troll/animations/walk/south-east/04.webp",
+          "crag_troll/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "crag_troll/animations/walk/east/00.webp",
+          "crag_troll/animations/walk/east/01.webp",
+          "crag_troll/animations/walk/east/02.webp",
+          "crag_troll/animations/walk/east/03.webp",
+          "crag_troll/animations/walk/east/04.webp",
+          "crag_troll/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "crag_troll/animations/walk/north-east/00.webp",
+          "crag_troll/animations/walk/north-east/01.webp",
+          "crag_troll/animations/walk/north-east/02.webp",
+          "crag_troll/animations/walk/north-east/03.webp",
+          "crag_troll/animations/walk/north-east/04.webp",
+          "crag_troll/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "crag_troll/animations/walk/north/00.webp",
+          "crag_troll/animations/walk/north/01.webp",
+          "crag_troll/animations/walk/north/02.webp",
+          "crag_troll/animations/walk/north/03.webp",
+          "crag_troll/animations/walk/north/04.webp",
+          "crag_troll/animations/walk/north/05.webp"
+        ],
+        "west": [
+          "crag_troll/animations/walk/west/00.webp",
+          "crag_troll/animations/walk/west/01.webp",
+          "crag_troll/animations/walk/west/02.webp",
+          "crag_troll/animations/walk/west/03.webp",
+          "crag_troll/animations/walk/west/04.webp",
+          "crag_troll/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "crag_troll/animations/walk/north-west/00.webp",
+          "crag_troll/animations/walk/north-west/01.webp",
+          "crag_troll/animations/walk/north-west/02.webp",
+          "crag_troll/animations/walk/north-west/03.webp",
+          "crag_troll/animations/walk/north-west/04.webp",
+          "crag_troll/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "crag_troll/animations/walk__south.webp",
+        "south-east": "crag_troll/animations/walk__south-east.webp",
+        "east": "crag_troll/animations/walk__east.webp",
+        "north-east": "crag_troll/animations/walk__north-east.webp",
+        "north": "crag_troll/animations/walk__north.webp",
+        "west": "crag_troll/animations/walk__west.webp",
+        "north-west": "crag_troll/animations/walk__north-west.webp"
+      }
     }
   }
 }
