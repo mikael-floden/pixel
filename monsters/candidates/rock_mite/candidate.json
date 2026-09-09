@@ -138,5 +138,181 @@
       }
     }
   },
-  "approved_at": "2026-09-09T19:59:22+00:00"
+  "approved_at": "2026-09-09T19:59:22+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0585,
+          "step_max": 0.0927,
+          "drift": 0.75,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "ea4f7f78-ecd8-4a7a-b826-740a816129d2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:18:33+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0899,
+          "step_max": 0.1215,
+          "drift": 0.77,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "8cc094fe-9205-4077-bf78-b07a9f170f1c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:18:34+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0769,
+          "step_max": 0.1174,
+          "drift": 0.95,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [
+            "body turned the wrong way: matches mirrored west (0.92) better than east (0.92)"
+          ],
+          "cut": 0,
+          "sub": "fd5a25b8-caa5-4dff-b3b4-0be9a8315913",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:18:34+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0934,
+          "step_max": 0.1815,
+          "drift": 1.78,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "13d553f6-73ce-4249-91e0-cb1dd314bd2e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:18:35+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.101,
+          "step_max": 0.1313,
+          "drift": 1.14,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "bf19d798-933a-4d76-af82-6756038826cb",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:18:35+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0899,
+          "step_max": 0.1215,
+          "drift": 0.77,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "8cc094fe-9205-4077-bf78-b07a9f170f1c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:18:34+00:00",
+          "source": "south-east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0934,
+          "step_max": 0.1815,
+          "drift": 1.78,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "13d553f6-73ce-4249-91e0-cb1dd314bd2e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:18:35+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "rock_mite/animations/idle/south/00.webp",
+          "rock_mite/animations/idle/south/01.webp",
+          "rock_mite/animations/idle/south/02.webp",
+          "rock_mite/animations/idle/south/03.webp",
+          "rock_mite/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "rock_mite/animations/idle/south-east/00.webp",
+          "rock_mite/animations/idle/south-east/01.webp",
+          "rock_mite/animations/idle/south-east/02.webp",
+          "rock_mite/animations/idle/south-east/03.webp",
+          "rock_mite/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "rock_mite/animations/idle/east/00.webp",
+          "rock_mite/animations/idle/east/01.webp",
+          "rock_mite/animations/idle/east/02.webp",
+          "rock_mite/animations/idle/east/03.webp",
+          "rock_mite/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "rock_mite/animations/idle/north-east/00.webp",
+          "rock_mite/animations/idle/north-east/01.webp",
+          "rock_mite/animations/idle/north-east/02.webp",
+          "rock_mite/animations/idle/north-east/03.webp",
+          "rock_mite/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "rock_mite/animations/idle/north/00.webp",
+          "rock_mite/animations/idle/north/01.webp",
+          "rock_mite/animations/idle/north/02.webp",
+          "rock_mite/animations/idle/north/03.webp",
+          "rock_mite/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "rock_mite/animations/idle/south-west/00.webp",
+          "rock_mite/animations/idle/south-west/01.webp",
+          "rock_mite/animations/idle/south-west/02.webp",
+          "rock_mite/animations/idle/south-west/03.webp",
+          "rock_mite/animations/idle/south-west/04.webp"
+        ],
+        "north-west": [
+          "rock_mite/animations/idle/north-west/00.webp",
+          "rock_mite/animations/idle/north-west/01.webp",
+          "rock_mite/animations/idle/north-west/02.webp",
+          "rock_mite/animations/idle/north-west/03.webp",
+          "rock_mite/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "rock_mite/animations/idle__south.webp",
+        "south-east": "rock_mite/animations/idle__south-east.webp",
+        "east": "rock_mite/animations/idle__east.webp",
+        "north-east": "rock_mite/animations/idle__north-east.webp",
+        "north": "rock_mite/animations/idle__north.webp",
+        "south-west": "rock_mite/animations/idle__south-west.webp",
+        "north-west": "rock_mite/animations/idle__north-west.webp"
+      }
+    }
+  }
 }
