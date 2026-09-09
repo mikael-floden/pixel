@@ -1,0 +1,141 @@
+{
+  "id": "marsh_hag",
+  "name": "Hexcrone",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "She trades in wishes and collects in years. Every village has one story about her, and every story ends the same.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Hunched fantasy swamp hag shown full body from head to feet, green-grey warty skin, a long crooked nose, wild grey hair with bones tied in it, a ragged patchwork shawl, a twisted staff hung with dead frogs held upright, and bare clawed feet.",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "marsh_hag/rotations/south.webp",
+    "south-east": "marsh_hag/rotations/south-east.webp",
+    "east": "marsh_hag/rotations/east.webp",
+    "north-east": "marsh_hag/rotations/north-east.webp",
+    "north": "marsh_hag/rotations/north.webp",
+    "north-west": "marsh_hag/rotations/north-west.webp",
+    "west": "marsh_hag/rotations/west.webp",
+    "south-west": "marsh_hag/rotations/south-west.webp"
+  },
+  "sheet": "marsh_hag/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "2901a05b-9ba9-4fd2-9854-1c52f53192f4",
+  "seed": 1446037736,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:23:14+00:00",
+  "elapsed_s": 304.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.729,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.744,
+        "bbox": [
+          17,
+          3,
+          103,
+          108
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.784,
+        "bbox": [
+          28,
+          3,
+          79,
+          109
+        ],
+        "fill": 0.431,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.787,
+        "bbox": [
+          27,
+          5,
+          77,
+          108
+        ],
+        "fill": 0.411,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.729,
+        "bbox": [
+          9,
+          3,
+          90,
+          107
+        ],
+        "fill": 0.672,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.825,
+        "bbox": [
+          23,
+          5,
+          98,
+          109
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.743,
+        "bbox": [
+          24,
+          5,
+          85,
+          107
+        ],
+        "fill": 0.496,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.756,
+        "bbox": [
+          10,
+          4,
+          85,
+          107
+        ],
+        "fill": 0.616,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.814,
+        "bbox": [
+          24,
+          5,
+          87,
+          109
+        ],
+        "fill": 0.522,
+        "touches_edge": false
+      }
+    }
+  }
+}
