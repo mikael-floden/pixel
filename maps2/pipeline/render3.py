@@ -1080,11 +1080,127 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
     def col_y(x, y, f):
         return oy + (x - x0 + y - y0) * DY - f * LP
 
+    # 1b) DECKS — roofs, bridges and the cave lid: a slab whose top rides at
+    #     its own level with same-over-same wall bands down to its underside.
+    #     DRAWN IN PAINTER ORDER WITH THE CELLS, each deck cell right after its
+    #     own base cell, so the cells in front cover what hangs below it - the
+    #     way a terrain cell's own wall band is covered by the same-level cell
+    #     in front. Drawn after every cell (as the game's windowOps still
+    #     does), a lid whose field continues at its own level beyond its south
+    #     and east edge stood its skirt on the meadow: measured with a
+    #     thickness-2 cave lid at 12 in a level-12 field, a two-storey grey
+    #     wall along the edge, and a one-storey band at thickness 0.
+    deck_at = {}
+    for dk in doc.get("decks", []):
+        dg = dk.get("ground") or "grey_stone"
+        dl, th = int(dk["level"]), int(dk.get("thickness", 1))
+        cells = sorted(((c["x"], c["y"]) for c in dk["cells"]),
+                       key=lambda c: (c[0] + c[1], c[1]))
+        cellset = {(c[0], c[1]) for c in cells}
+        # THE SLAB'S OWN ANCHOR: its up-screen-most cell, deterministic in the
+        # deck's own cell list, so the whole surface asks one question.
+        danch = min(cells, key=lambda c: (c[0] + c[1], c[0])) if cells else (0, 0)
+        for (x, y) in cells:
+            if x0 <= x < x1 and y0 <= y < y1:
+                deck_at.setdefault((x, y), []).append((dk, dg, dl, th, cellset, danch))
+
+    def draw_deck(x, y):
+        for (dk, dg, dl, th, cellset, danch) in deck_at.get((x, y), ()):
+            front_covered = (x + 1, y) in cellset and (x, y + 1) in cellset
+            # THICKNESS 0 MEANS NO SKIRT, and the doorway is why. A roof deck
+            # covers the whole footprint including the door cell, whose front
+            # is open, so the old max(1, th) hung one storey of wall down into
+            # the doorway and the cap took a second: the door measured 4 tiles
+            # with 2 of wall above it instead of 5 with the roof on top
+            # (maintainer 2026-08-30). A 0-thickness deck now draws its cap
+            # course only - which is the x-over-y roof tile, one tile tall.
+            lo = dl if front_covered else max(0, dl - th)
+            bx = ox + (x - x0 - (y - y0)) * DX - DX
+            # A DECK IS X-OVER-Y TOO, and that is what makes a roof THIN
+            # (maintainer 2026-08-30, with two reference tiles: grass over
+            # black_rock reads as a thin skin of grass, grass over grass fills
+            # the whole cell and reads as a thick slab). A roof deck carrying
+            # a `side` draws roof-over-side, so the roof material is only its
+            # top face. Without a side it falls back to same-over-same, which
+            # is the thick look.
+            body = dk.get("side") or ("grey_stone" if (dk.get("kind") == "cave"
+                                      and dg not in ("black_rock", "grey_stone"))
+                                      else dg)
+            # NO FASCIA OVER A DOORWAY. The cap tile is x-over-y: a top face
+            # plus ONE STOREY of the side material. Over the wall ring that
+            # storey is the roof's edge and belongs there. Over the DOORWAY -
+            # a deck cell with no wall under it and an open front - there is
+            # nothing for it to be the edge of, and it hangs a storey of
+            # timber across the top of the opening: the door measures 5
+            # storeys of a 6-storey wall (maintainer 2026-08-30, "the house
+            # door is one cell not tall enough"). There the roof is its top
+            # face only, and the doorway runs the full height of the wall.
+            doorway = not front_covered and (x, y) not in wall_over \
+                and L(x, y) < dl
+            # AND THE ROOF CELL BEHIND A DOORWAY, whose underside is exactly
+            # what you see THROUGH the opening: uncropped it hangs its own
+            # band into the top of the door and costs another third of a
+            # level.
+            behind = any((nx, ny) in cellset and (nx, ny) not in wall_over
+                         and L(nx, ny) < dl
+                         for (nx, ny) in ((x, y + 1), (x + 1, y)))
+            cap = over_tile(dg, body) if (body != dg or not front_covered) \
+                else flat_tile(dg)
+            mid = storey_tile(body)
+            for f in range(lo, dl + 1):
+                # OVER A DOORWAY THE ROOF IS EXACTLY ONE STOREY. An x-over-y
+                # cap is a top face PLUS a wall band, and that band is taller
+                # than a storey - measured on the door column, the cap ate
+                # 1.87 levels and left the opening 4.13 ("your doorway is 4
+                # levels high so the player will hit his forhead", maintainer
+                # 2026-09-02). storey_tile is one course exactly, and the
+                # deck's own top face is composited below this loop, so the
+                # two together are one level of roof and the doorway stands
+                # the full 5. Dropping the course instead opened a sliver of
+                # grass through the top of every door - the band is what
+                # closes the roofline.
+                t = cap if f == dl else mid
+                if f == dl and (doorway or behind):
+                    # ONE LEVEL OF ROOF OVER A DOORWAY, NOT TWO. A cap tile is
+                    # a top-face diamond PLUS a storey band, 45 px of opaque
+                    # art. Over the wall ring the band is hidden by the course
+                    # below it and only the diamond reads; over a DOORWAY
+                    # there is no course below, so the whole 45 px hangs into
+                    # the opening and costs the player a level - measured, the
+                    # doorway stood 4.13 levels of a 6-level house
+                    # (maintainer 2026-09-02: "your doorway is 4 levels high
+                    # so the player will hit his forhead ... the roof over the
+                    # doorway is 2 levels and should only be 1"). Cropping the
+                    # band away leaves the diamond, which IS the one level of
+                    # roof he asked for, and still closes the roofline -
+                    # dropping the tile entirely opened a sliver of grass.
+                    # SWEPT AND MEASURED on the smithy door, in levels of
+                    # clear opening against a 6-level wall:
+                    #     uncropped            4.13
+                    #     TOP_Y + 2*DY (38px)  4.67
+                    #     TOP_Y + DY + 8 (32)  5.07   <- shipped
+                    # 32 is the largest crop that reaches 5, so it takes the
+                    # least off the diamond.
+                    t = t.crop((0, 0, t.width, TOP_Y + DY + 8))
+                img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
+            # a roof, a bridge and a cave lid are GROUND too: the slab top
+            # wears the maintainer's base tile set like any other surface -
+            # ONE set and ONE member for the WHOLE slab, anchored at the
+            # deck's own first cell. See plate_img: the room map must not
+            # reach a roof, and a 24-cell region border must not cut one
+            # either (a house 15 cells wide straddles one).
+            img.alpha_composite(
+                top_face_only(plate_img(dg, f"{dg}@{danch[0] // 24},{danch[1] // 24}",
+                                        x, y, anchor=danch)),
+                (bx, col_y(x, y, dl)))
+
+
     for s in range(x0 + y0, x1 + y1 - 1):
         for x in range(max(x0, s - y1 + 1), min(x1, s - y0 + 1)):
             y = s - x
             gr = g(x, y)
             if not gr:
+                draw_deck(x, y)      # a span over the void still draws
                 continue
             zl = L(x, y)
             bx = ox + (x - x0 - (y - y0)) * DX - DX
@@ -1288,6 +1404,7 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                     over_candidate(gr, side)["key"].strip("/")):
                 img.alpha_composite(top_face_only(wang_surface()),
                                     (bx, col_y(x, y, zl)))
+            draw_deck(x, y)
 
     # 2) transitions on the corner lattice, over the flats: a drawn tile at
     #    corner (x,y) blends cells (x,y),(x+1,y),(x,y+1),(x+1,y+1) when all
@@ -1323,110 +1440,6 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
     if fades:
         log("FADE fallback used (no committed set): " +
             ", ".join(f"{a}~{b} x{n}" for (a, b), n in fades.most_common()))
-
-    # 2b) DECKS — roofs, bridges and the cave lid: a slab whose top rides at
-    #     its own level with same-over-same wall bands down to its underside.
-    #     Drawn after terrain (higher, so painter order within a diagonal is
-    #     safe) and before scenery.
-    for dk in doc.get("decks", []):
-        dg = dk.get("ground") or "grey_stone"
-        dl, th = int(dk["level"]), int(dk.get("thickness", 1))
-        cells = sorted(((c["x"], c["y"]) for c in dk["cells"]),
-                       key=lambda c: (c[0] + c[1], c[1]))
-        cellset = {(c[0], c[1]) for c in cells}
-        # THE SLAB'S OWN ANCHOR: its up-screen-most cell, deterministic in the
-        # deck's own cell list, so the whole surface asks one question.
-        danch = min(cells, key=lambda c: (c[0] + c[1], c[0])) if cells else (0, 0)
-        for (x, y) in cells:
-            if not (x0 <= x < x1 and y0 <= y < y1):
-                continue
-            front_covered = (x + 1, y) in cellset and (x, y + 1) in cellset
-            # THICKNESS 0 MEANS NO SKIRT, and the doorway is why. A roof deck
-            # covers the whole footprint including the door cell, whose front
-            # is open, so the old max(1, th) hung one storey of wall down into
-            # the doorway and the cap took a second: the door measured 4 tiles
-            # with 2 of wall above it instead of 5 with the roof on top
-            # (maintainer 2026-08-30). A 0-thickness deck now draws its cap
-            # course only - which is the x-over-y roof tile, one tile tall.
-            lo = dl if front_covered else max(0, dl - th)
-            bx = ox + (x - x0 - (y - y0)) * DX - DX
-            # A DECK IS X-OVER-Y TOO, and that is what makes a roof THIN
-            # (maintainer 2026-08-30, with two reference tiles: grass over
-            # black_rock reads as a thin skin of grass, grass over grass fills
-            # the whole cell and reads as a thick slab). A roof deck carrying
-            # a `side` draws roof-over-side, so the roof material is only its
-            # top face. Without a side it falls back to same-over-same, which
-            # is the thick look.
-            body = dk.get("side") or ("grey_stone" if (dk.get("kind") == "cave"
-                                      and dg not in ("black_rock", "grey_stone"))
-                                      else dg)
-            # NO FASCIA OVER A DOORWAY. The cap tile is x-over-y: a top face
-            # plus ONE STOREY of the side material. Over the wall ring that
-            # storey is the roof's edge and belongs there. Over the DOORWAY -
-            # a deck cell with no wall under it and an open front - there is
-            # nothing for it to be the edge of, and it hangs a storey of
-            # timber across the top of the opening: the door measures 5
-            # storeys of a 6-storey wall (maintainer 2026-08-30, "the house
-            # door is one cell not tall enough"). There the roof is its top
-            # face only, and the doorway runs the full height of the wall.
-            doorway = not front_covered and (x, y) not in wall_over \
-                and L(x, y) < dl
-            # AND THE ROOF CELL BEHIND A DOORWAY, whose underside is exactly
-            # what you see THROUGH the opening: uncropped it hangs its own
-            # band into the top of the door and costs another third of a
-            # level.
-            behind = any((nx, ny) in cellset and (nx, ny) not in wall_over
-                         and L(nx, ny) < dl
-                         for (nx, ny) in ((x, y + 1), (x + 1, y)))
-            cap = over_tile(dg, body) if (body != dg or not front_covered) \
-                else flat_tile(dg)
-            mid = storey_tile(body)
-            for f in range(lo, dl + 1):
-                # OVER A DOORWAY THE ROOF IS EXACTLY ONE STOREY. An x-over-y
-                # cap is a top face PLUS a wall band, and that band is taller
-                # than a storey - measured on the door column, the cap ate
-                # 1.87 levels and left the opening 4.13 ("your doorway is 4
-                # levels high so the player will hit his forhead", maintainer
-                # 2026-09-02). storey_tile is one course exactly, and the
-                # deck's own top face is composited below this loop, so the
-                # two together are one level of roof and the doorway stands
-                # the full 5. Dropping the course instead opened a sliver of
-                # grass through the top of every door - the band is what
-                # closes the roofline.
-                t = cap if f == dl else mid
-                if f == dl and (doorway or behind):
-                    # ONE LEVEL OF ROOF OVER A DOORWAY, NOT TWO. A cap tile is
-                    # a top-face diamond PLUS a storey band, 45 px of opaque
-                    # art. Over the wall ring the band is hidden by the course
-                    # below it and only the diamond reads; over a DOORWAY
-                    # there is no course below, so the whole 45 px hangs into
-                    # the opening and costs the player a level - measured, the
-                    # doorway stood 4.13 levels of a 6-level house
-                    # (maintainer 2026-09-02: "your doorway is 4 levels high
-                    # so the player will hit his forhead ... the roof over the
-                    # doorway is 2 levels and should only be 1"). Cropping the
-                    # band away leaves the diamond, which IS the one level of
-                    # roof he asked for, and still closes the roofline -
-                    # dropping the tile entirely opened a sliver of grass.
-                    # SWEPT AND MEASURED on the smithy door, in levels of
-                    # clear opening against a 6-level wall:
-                    #     uncropped            4.13
-                    #     TOP_Y + 2*DY (38px)  4.67
-                    #     TOP_Y + DY + 8 (32)  5.07   <- shipped
-                    # 32 is the largest crop that reaches 5, so it takes the
-                    # least off the diamond.
-                    t = t.crop((0, 0, t.width, TOP_Y + DY + 8))
-                img.alpha_composite(t, (bx, col_y(x, y, f) - TOP_Y))
-            # a roof, a bridge and a cave lid are GROUND too: the slab top
-            # wears the maintainer's base tile set like any other surface -
-            # ONE set and ONE member for the WHOLE slab, anchored at the
-            # deck's own first cell. See plate_img: the room map must not
-            # reach a roof, and a 24-cell region border must not cut one
-            # either (a house 15 cells wide straddles one).
-            img.alpha_composite(
-                top_face_only(plate_img(dg, f"{dg}@{danch[0] // 24},{danch[1] // 24}",
-                                        x, y, anchor=danch)),
-                (bx, col_y(x, y, dl)))
 
     # 3) scenery, painter-ordered with terrain already flat-composited.
     #    A piece under a roof/cave deck is indoors — invisible from out here,
