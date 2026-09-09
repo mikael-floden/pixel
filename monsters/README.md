@@ -98,7 +98,12 @@ What makes a base sound, and how much of it is machine-checked:
   (storm_shellback, 256 px). Pass ≥ 0.50, warn ≥ 0.45, fail below. Density
   holds through 184 px and degrades from ~236, so `size` stays ≤ 176.
 - **All 8 present, one square canvas, no clipping, no speck-in-a-frame** —
-  machine-checked.
+  machine-checked. A base that touches the edge is CLIPPED, not wrapped
+  (measured: the overflow pixels are absent from every other direction's
+  opposite edge), so the only fix is a re-roll with a tighter silhouette or
+  a bigger canvas — there is nothing to stitch. Wrap-around is an ANIMATION
+  bug and `postprocess.py` repairs it inside sync, once a candidate is
+  approved and animated.
 - **Each facing IS its facing; no text baked into the art** — a human, or
   the agent reading `sheet.webp`. The machine cannot judge this.
 - **High-detail prompts** (maintainer: low detail confuses the model — it
