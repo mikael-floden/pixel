@@ -398,25 +398,25 @@
           "generated_at": "2026-09-09T20:45:53+00:00"
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.1298,
-          "step_max": 0.1659,
-          "drift": 0.88,
-          "loop": 0.2387,
-          "loop_ratio": 1.84,
-          "travel": 1.26,
-          "pin": 0.854,
+          "status": "warn",
+          "step_mean": 0.1345,
+          "step_max": 0.1571,
+          "drift": 1.4,
+          "loop": 0.2416,
+          "loop_ratio": 1.8,
+          "travel": 0.31,
+          "pin": 0.845,
           "reasons": [
-            "frame 1 touches a canvas edge the base does not (overflow / wrap risk)",
-            "38 px of motion fell outside the base canvas (overflow)"
+            "frame 2 touches a canvas edge the base does not (overflow / wrap risk)",
+            "11 px of motion fell outside the base canvas (overflow)"
           ],
-          "cut": 38,
-          "sub": "28a46641-e48a-4603-8f54-3ef75ab9c0c5",
-          "group": "b8c85a22-c014-4f0a-aa7a-0da030121d9e",
-          "takes": 1,
-          "version": 1,
+          "cut": 11,
+          "sub": "ecdd9046-1146-4e88-8f8a-23cf698e5e18",
+          "group": "445c9afa-692e-4909-883c-bd39f491c589",
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:45:53+00:00"
+          "generated_at": "2026-09-09T20:54:56+00:00"
         },
         "north": {
           "status": "pass",
@@ -476,6 +476,28 @@
           "mirrored": true,
           "generated_at": "2026-09-09T20:45:53+00:00",
           "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1345,
+          "step_max": 0.1571,
+          "drift": 1.4,
+          "loop": 0.2416,
+          "loop_ratio": 1.8,
+          "travel": 0.31,
+          "pin": 0.845,
+          "reasons": [
+            "frame 2 touches a canvas edge the base does not (overflow / wrap risk)",
+            "11 px of motion fell outside the base canvas (overflow)"
+          ],
+          "cut": 11,
+          "sub": "ecdd9046-1146-4e88-8f8a-23cf698e5e18",
+          "group": "445c9afa-692e-4909-883c-bd39f491c589",
+          "takes": 2,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:54:56+00:00",
+          "source": "north-east"
         }
       },
       "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
@@ -535,6 +557,14 @@
           "goblin_shaman/animations/walk/west/03.webp",
           "goblin_shaman/animations/walk/west/04.webp",
           "goblin_shaman/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "goblin_shaman/animations/walk/north-west/00.webp",
+          "goblin_shaman/animations/walk/north-west/01.webp",
+          "goblin_shaman/animations/walk/north-west/02.webp",
+          "goblin_shaman/animations/walk/north-west/03.webp",
+          "goblin_shaman/animations/walk/north-west/04.webp",
+          "goblin_shaman/animations/walk/north-west/05.webp"
         ]
       },
       "strips": {
@@ -544,7 +574,8 @@
         "north-east": "goblin_shaman/animations/walk__north-east.webp",
         "north": "goblin_shaman/animations/walk__north.webp",
         "south-west": "goblin_shaman/animations/walk__south-west.webp",
-        "west": "goblin_shaman/animations/walk__west.webp"
+        "west": "goblin_shaman/animations/walk__west.webp",
+        "north-west": "goblin_shaman/animations/walk__north-west.webp"
       }
     }
   }
