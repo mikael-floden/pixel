@@ -1,0 +1,143 @@
+{
+  "id": "basilisk",
+  "name": "Stonegaze",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way.",
+  "biome": [
+    "light_soil",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy basilisk with a stocky six-legged lizard body of dull green scales, a heavy head with a crest of spines, glowing pale green eyes, a wide fanged mouth, and a short thick tail held low.",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "basilisk/rotations/south.webp",
+    "south-east": "basilisk/rotations/south-east.webp",
+    "east": "basilisk/rotations/east.webp",
+    "north-east": "basilisk/rotations/north-east.webp",
+    "north": "basilisk/rotations/north.webp",
+    "north-west": "basilisk/rotations/north-west.webp",
+    "west": "basilisk/rotations/west.webp",
+    "south-west": "basilisk/rotations/south-west.webp"
+  },
+  "sheet": "basilisk/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "3d0f82b8-32f9-4437-8c1d-e07846720523",
+  "seed": 1802475977,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:28:29+00:00",
+  "elapsed_s": 168.4,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.685,
+    "reasons": [
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.685,
+        "bbox": [
+          7,
+          5,
+          118,
+          125
+        ],
+        "fill": 0.813,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.745,
+        "bbox": [
+          6,
+          4,
+          126,
+          125
+        ],
+        "fill": 0.886,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.747,
+        "bbox": [
+          10,
+          7,
+          122,
+          125
+        ],
+        "fill": 0.807,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.72,
+        "bbox": [
+          8,
+          2,
+          115,
+          124
+        ],
+        "fill": 0.797,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.787,
+        "bbox": [
+          3,
+          7,
+          124,
+          125
+        ],
+        "fill": 0.871,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.75,
+        "bbox": [
+          12,
+          4,
+          115,
+          127
+        ],
+        "fill": 0.773,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.757,
+        "bbox": [
+          7,
+          3,
+          122,
+          118
+        ],
+        "fill": 0.807,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.786,
+        "bbox": [
+          12,
+          7,
+          121,
+          128
+        ],
+        "fill": 0.805,
+        "touches_edge": true
+      }
+    }
+  }
+}

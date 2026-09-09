@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:27:54+00:00",
+  "generated_at": "2026-09-09T18:28:49+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 35,
+  "count": 37,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -4537,6 +4537,264 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:27:54+00:00"
+    },
+    {
+      "id": "basilisk",
+      "name": "Stonegaze",
+      "tier": "evil",
+      "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way.",
+      "biome": [
+        "light_soil",
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "3d0f82b8-32f9-4437-8c1d-e07846720523",
+      "version": 1,
+      "sheet": "basilisk/sheet.webp",
+      "rotations": {
+        "south": "basilisk/rotations/south.webp",
+        "south-east": "basilisk/rotations/south-east.webp",
+        "east": "basilisk/rotations/east.webp",
+        "north-east": "basilisk/rotations/north-east.webp",
+        "north": "basilisk/rotations/north.webp",
+        "north-west": "basilisk/rotations/north-west.webp",
+        "west": "basilisk/rotations/west.webp",
+        "south-west": "basilisk/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.685,
+        "reasons": [
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.685,
+            "bbox": [
+              7,
+              5,
+              118,
+              125
+            ],
+            "fill": 0.813,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.745,
+            "bbox": [
+              6,
+              4,
+              126,
+              125
+            ],
+            "fill": 0.886,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.747,
+            "bbox": [
+              10,
+              7,
+              122,
+              125
+            ],
+            "fill": 0.807,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.72,
+            "bbox": [
+              8,
+              2,
+              115,
+              124
+            ],
+            "fill": 0.797,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.787,
+            "bbox": [
+              3,
+              7,
+              124,
+              125
+            ],
+            "fill": 0.871,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.75,
+            "bbox": [
+              12,
+              4,
+              115,
+              127
+            ],
+            "fill": 0.773,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.757,
+            "bbox": [
+              7,
+              3,
+              122,
+              118
+            ],
+            "fill": 0.807,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.786,
+            "bbox": [
+              12,
+              7,
+              121,
+              128
+            ],
+            "fill": 0.805,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:28:29+00:00"
+    },
+    {
+      "id": "hornet_knight",
+      "name": "Stingvein",
+      "tier": "mid",
+      "lore": "The hive sends one to speak and the rest to collect. It speaks with the stinger.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        80,
+        80
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "d0557c94-911f-4268-baed-b3f0b5dade43",
+      "version": 1,
+      "sheet": "hornet_knight/sheet.webp",
+      "rotations": {
+        "south": "hornet_knight/rotations/south.webp",
+        "south-east": "hornet_knight/rotations/south-east.webp",
+        "east": "hornet_knight/rotations/east.webp",
+        "north-east": "hornet_knight/rotations/north-east.webp",
+        "north": "hornet_knight/rotations/north.webp",
+        "north-west": "hornet_knight/rotations/north-west.webp",
+        "west": "hornet_knight/rotations/west.webp",
+        "south-west": "hornet_knight/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.702,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.748,
+            "bbox": [
+              3,
+              3,
+              77,
+              77
+            ],
+            "fill": 0.856,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.798,
+            "bbox": [
+              4,
+              2,
+              76,
+              77
+            ],
+            "fill": 0.844,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.785,
+            "bbox": [
+              3,
+              2,
+              76,
+              77
+            ],
+            "fill": 0.855,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.702,
+            "bbox": [
+              3,
+              5,
+              76,
+              74
+            ],
+            "fill": 0.787,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.814,
+            "bbox": [
+              5,
+              3,
+              77,
+              79
+            ],
+            "fill": 0.855,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.78,
+            "bbox": [
+              3,
+              2,
+              75,
+              78
+            ],
+            "fill": 0.855,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.775,
+            "bbox": [
+              4,
+              2,
+              76,
+              78
+            ],
+            "fill": 0.855,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.839,
+            "bbox": [
+              3,
+              3,
+              75,
+              79
+            ],
+            "fill": 0.855,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:28:49+00:00"
     }
   ]
 }
