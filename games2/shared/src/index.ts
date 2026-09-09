@@ -29,6 +29,17 @@ export const RUN_SPEED = 175;
 
 // Authoritative simulation tick (updates per second).
 export const TICK_RATE = 20;
+/** INTEREST MANAGEMENT (spec/ZONES.md). A client receives only the entities
+ *  within INTEREST_WU of its own player (Chebyshev, world units; 32 cells —
+ *  a desktop window at zoom 1 spans ~60 cells across its diagonal), keeps
+ *  them until INTEREST_LEAVE_WU so a body on the rim does not flap, and the
+ *  set is recomputed every INTEREST_TICKS ticks from a bucket grid. */
+export const INTEREST_WU = 32 * 32;
+export const INTEREST_LEAVE_WU = 36 * 32;
+export const INTEREST_TICKS = 4;
+/** Bucket edge for the interest grid (16 cells): a query touches at most
+ *  (2 * ceil(INTEREST_LEAVE_WU / INTEREST_BUCKET_WU) + 1)^2 = 49 buckets. */
+export const INTEREST_BUCKET_WU = 16 * 32;
 
 // Keep players this far from the world edge.
 export const SPAWN_MARGIN = 40;

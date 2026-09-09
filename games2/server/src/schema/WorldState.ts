@@ -1,4 +1,4 @@
-import { Schema, MapSchema, ArraySchema, defineTypes } from "@colyseus/schema";
+import { Schema, MapSchema, ArraySchema, defineTypes, view } from "@colyseus/schema";
 import { DEFAULT_DIRECTION, DEFAULT_TIME_IDX, MAX_STAMINA } from "@nangijala/shared";
 import type { AutopilotTrip } from "@nangijala/shared";
 import type { AccountRecord } from "../account/store.js";
@@ -393,3 +393,11 @@ defineTypes(WorldState, {
   frozen: "boolean",
   timeSpeed: "number",
 });
+// players / monsters / drops are VIEW-FILTERED (spec/ZONES.md, interest):
+// a client receives only the entries its StateView holds, which WorldRoom
+// recomputes from distance. A client with no view would receive NONE of them,
+// so every client gets a view — "unlimited" is a view holding everything.
+// Applied as the decorator call itself: `defineTypes` ignores a `view: true`
+// on a field (only the `schema()` builder reads it; measured, hasFilters
+// stayed false and every client received the whole room).
+for (const field of ["players", "monsters", "drops"]) view()(WorldState.prototype, field);

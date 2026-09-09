@@ -79,7 +79,7 @@ test("disable aggro: a predator stops noticing you, and lets go of a hunt alread
   await gameServer.listen(port);
   try {
     const c1 = new Client(`ws://localhost:${port}`);
-    const r1: any = await c1.joinOrCreate(ROOM_NAME, {
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { interestRadius: 0, /* the whole roster: these tests pick monsters by kind across the map */
       name: "Walker", character: "default_boy", token: `noaggro-${Date.now()}`,
       world: "the_game", monsterSeed: 4242, monsterCount: 1,
     });

@@ -86,7 +86,7 @@ test("a kited monster gives up at the leash and returns to roam", async (t) => {
   await gameServer.listen(port);
   try {
     const c1 = new Client(`ws://localhost:${port}`);
-    const r1: any = await c1.joinOrCreate(ROOM_NAME, {
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { interestRadius: 0, /* the whole roster: these tests pick monsters by kind across the map */
       name: "Kiter",
       character: "default_boy",
       world: "the_game",
@@ -159,7 +159,7 @@ test("sword-marking provokes on approach; escaping lifts the flee slow", async (
   await gameServer.listen(port);
   try {
     const c1 = new Client(`ws://localhost:${port}`);
-    const r1: any = await c1.joinOrCreate(ROOM_NAME, {
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { interestRadius: 0, /* the whole roster: these tests pick monsters by kind across the map */
       name: "Marker",
       character: "default_boy",
       world: "the_game",
@@ -253,7 +253,7 @@ test("dropping a stack drops exactly the asked-for count (clamped to what is hel
     await accountStore().save(id, rec);
     const c1 = new Client(`ws://localhost:${port}`);
     const invs: any[] = [];
-    const r1: any = await c1.joinOrCreate(ROOM_NAME, {
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { interestRadius: 0, /* the whole roster: these tests pick monsters by kind across the map */
       name: "Hoarder",
       character: "default_girl",
       world: "the_game",
@@ -304,7 +304,7 @@ test("a PREDATOR that aggros on proximity also gives up once you outrun it", asy
   await gameServer.listen(port);
   try {
     const c1 = new Client(`ws://localhost:${port}`);
-    const r1: any = await c1.joinOrCreate(ROOM_NAME, {
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { interestRadius: 0, /* the whole roster: these tests pick monsters by kind across the map */
       name: "Sprinter",
       character: "default_boy",
       world: "the_game",
@@ -380,7 +380,7 @@ test("progression is world-agnostic and one account means one live session", asy
     const c1 = new Client(`ws://localhost:${port}`);
     const invs1: any[] = [];
     const opts = { name: "Nomad", character: "default_girl", world: "the_game", monsterCount: 0, account: { id, secret } };
-    const r1: any = await c1.joinOrCreate(ROOM_NAME, opts);
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { interestRadius: 0, ...opts });
     r1.onMessage("inv", (m: any) => invs1.push(m));
     for (const t of ["chat", "star", "live:update", "levelup"]) r1.onMessage(t, () => {});
     await waitFor(() => r1.state.players.size >= 1 && !!r1.state.players.get(r1.sessionId), 8000, "join");
@@ -399,7 +399,7 @@ test("progression is world-agnostic and one account means one live session", asy
       kicked = true;
     });
     const c2 = new Client(`ws://localhost:${port}`);
-    const r2: any = await c2.joinOrCreate(ROOM_NAME, opts);
+    const r2: any = await c2.joinOrCreate(ROOM_NAME, { interestRadius: 0, ...opts });
     for (const t of ["inv", "chat", "star", "live:update", "levelup"]) r2.onMessage(t, () => {});
     await waitFor(() => kicked, 8000, "old session kicked");
     await waitFor(() => {

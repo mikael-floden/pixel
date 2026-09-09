@@ -70,13 +70,16 @@ each redeploy. When durable player state is wanted, the scale-to-zero-cheap
 options are **Firestore** or a **GCS bucket** backing the store (~$0 at our
 volume) — not an always-on Cloud SQL instance.
 
-## Scaling later (still GCP, no migration)
-1. Raise `--max-instances` **only** after adding **Memorystore (Redis)** for
-   Colyseus presence/matchmaking — otherwise each instance is a separate
-   world.
-2. Split static client + assets to a bucket + Cloud CDN; Cloud Run handles
-   WS.
-3. GKE if orchestration / multi-region is ever wanted.
+## Scaling (still GCP, no migration) — `games2/spec/ZONES.md`
+The world is cut into zone rooms that talk over `server/src/bus.ts`; today
+every room runs in this one instance with the in-process bus. Raising
+`--max-instances` needs, in this order: a Memorystore (Redis) instance and
+`REDIS_URL` on the service (the bus switches backend by that variable alone);
+one Cloud Run service per zone group; an HTTPS load balancer whose URL map
+sends `/z/<n>` to the service owning zone n; the matching route lines in
+`games2/config/zones.json`. No Kubernetes; each step is a Cloud Shell
+one-liner. Static client + assets can move to a bucket + Cloud CDN at any
+point; Cloud Run keeps the WebSockets.
 
 ## Alternative: always-warm VM (no cold starts)
 A small Compute Engine VM is a drop-in swap (~$13/mo even idle):

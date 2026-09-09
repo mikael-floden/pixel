@@ -105,8 +105,8 @@ test("maps2 spawn zones drive the room: shared, per-zone, zone-confined, moving"
     const c2 = new Client(`ws://localhost:${port}`);
     // Both joinOrCreate the SAME the_game room; the first creates it with the
     // monster options, the second joins the already-created shared world.
-    const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "char_a", ...opts });
-    const r2 = await c2.joinOrCreate(ROOM_NAME, { name: "B", character: "char_b", ...opts });
+    const r1 = await c1.joinOrCreate(ROOM_NAME, { interestRadius: 0, /* the whole roster: these tests pick monsters by kind across the map */ name: "A", character: "char_a", ...opts });
+    const r2 = await c2.joinOrCreate(ROOM_NAME, { interestRadius: 0, /* the whole roster: these tests pick monsters by kind across the map */ name: "B", character: "char_b", ...opts });
 
     await waitFor(() => r1.state.players.size === 2 && r2.state.players.size === 2);
     // Both clients receive the full monster set.
@@ -199,7 +199,7 @@ test("soft separation: same-pad monsters relax to a comfortable distance", async
     // (54 of its 79 zones ask for two anyway), the cave zones on a few cells
     // of floor — the cluster case. With the separation nudge they must spread
     // out instead of stacking.
-    const r1 = await c1.joinOrCreate(ROOM_NAME, {
+    const r1 = await c1.joinOrCreate(ROOM_NAME, { interestRadius: 0, /* the whole roster: these tests pick monsters by kind across the map */
       name: "S",
       character: "char_s",
       world: "the_game",

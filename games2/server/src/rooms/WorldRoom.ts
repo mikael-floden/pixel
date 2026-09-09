@@ -1,4 +1,14 @@
 import { Room, Client, ClientState } from "@colyseus/core";
+import { Encoder, StateView } from "@colyseus/schema";
+
+// THE ENCODER BUFFER IS SIZED HERE, WHERE THE ROOM IS, not in index.ts: every
+// room's encoder is allocated at setState from this static, and a test that
+// builds its own Server never ran index.ts — so its rooms encoded into the 8 KB
+// default, and the first patch after a join, which now carries the whole view
+// (140 monsters for an unlimited test client), overflowed silently: fields
+// arrived undefined on the client (kind agrees across clients — 2026-09-09).
+// 64 KB clears every world with an order of magnitude of headroom.
+Encoder.BUFFER_SIZE = 64 * 1024;
 import {
   InputMessage,
   JoinOptions,
@@ -10,6 +20,10 @@ import {
   WORLD_HEIGHT,
   CELL_WU,
   TICK_RATE,
+  INTEREST_WU,
+  INTEREST_LEAVE_WU,
+  INTEREST_TICKS,
+  INTEREST_BUCKET_WU,
   MAX_INPUT_DT,
   INPUT_TIME_SLACK,
   stepMovement,
@@ -311,7 +325,13 @@ export class WorldRoom extends Room<WorldState> {
     lootChance?: number; // TEST override: force every loot entry to this chance (1 = always drop)
     chessBoards?: ChessBoardCfg[]; // TEST override: boards for this room
     chessClockMs?: number; // TEST override: per-player bank (default 10 min)
+    interestRadius?: number; // wu; 0 = the whole room (tests/QA only — never a client option)
   }) {
+    if (typeof options?.interestRadius === "number" && isFinite(options.interestRadius)) {
+      const r = Math.max(0, options.interestRadius);
+      this.interestR = r === 0 ? Infinity : r;
+      this.interestLeave = r === 0 ? Infinity : r * (INTEREST_LEAVE_WU / INTEREST_WU);
+    }
     if (typeof options?.auroraChance === "number") this.auroraChance = options.auroraChance;
     if (typeof options?.monsterCount === "number")
       this.monsterCount = Math.max(0, Math.floor(options.monsterCount));
@@ -775,6 +795,81 @@ export class WorldRoom extends Room<WorldState> {
    *  They leave for good; only a DROPPED link gets its seat held. */
   private kicked = new Set<string>();
 
+  /** INTEREST MANAGEMENT (spec/ZONES.md). Every client owns a StateView and
+   *  receives only the players, monsters and drops within `interestR` of its
+   *  own player; `interestLeave` is the hysteresis rim; `seen` is what each
+   *  view holds right now (the view's own sets are WeakSets, not iterable).
+   *  Infinity = the whole room (tests, QA). */
+  private interestR = INTEREST_WU;
+  private interestLeave = INTEREST_LEAVE_WU;
+  private interestTick = 0;
+  private seen = new Map<string, Set<object>>();
+
+  /** Give a joiner its view with its own player in it — BEFORE the join
+   *  snapshot is encoded (Colyseus sends the full state after onJoin resolves),
+   *  so "me" is in the first patch and the client never waits a pass for it. */
+  private attachView(client: Client, player: Player) {
+    const view = new StateView();
+    client.view = view;
+    view.add(player);
+    this.seen.set(client.sessionId, new Set([player]));
+  }
+
+  /** Recompute every client's view from distance. Entities are bucketed once
+   *  (O(E)), each client queries the buckets its rim can reach (49 at most),
+   *  so a room of 200 players and 300 monsters costs ~10k distance tests per
+   *  pass at INTEREST_TICKS — never E x C per tick. An entity that left the
+   *  state (death, pickup, leave) was already DELETEd to every view that held
+   *  it by the encoder; it is dropped from `seen` without a view call. */
+  private stepInterest() {
+    type Ent = { e: object; x: number; y: number };
+    const all: Ent[] = [];
+    this.state.players.forEach((p) => all.push({ e: p, x: p.x, y: p.y }));
+    this.state.monsters.forEach((m) => all.push({ e: m, x: m.x, y: m.y }));
+    this.state.drops.forEach((g) => all.push({ e: g, x: g.x, y: g.y }));
+    const live = new Set<object>(all.map((a) => a.e));
+    const R = this.interestR;
+    const L = this.interestLeave;
+    const unlimited = !isFinite(R);
+    const B = INTEREST_BUCKET_WU;
+    const buckets = new Map<number, Ent[]>();
+    const key = (bx: number, by: number) => bx * 1_000_003 + by;
+    if (!unlimited) {
+      for (const a of all) {
+        const k = key(Math.floor(a.x / B), Math.floor(a.y / B));
+        const b = buckets.get(k);
+        if (b) b.push(a);
+        else buckets.set(k, [a]);
+      }
+    }
+    const reach = Math.ceil(L / B);
+    for (const client of this.clients) {
+      const view = client.view;
+      const me = this.state.players.get(client.sessionId);
+      if (!view || !me) continue;
+      const had = this.seen.get(client.sessionId) ?? new Set<object>();
+      const keep = new Set<object>([me]);
+      const consider = (a: Ent) => {
+        if (a.e === me) return;
+        const d = Math.max(Math.abs(a.x - me.x), Math.abs(a.y - me.y));
+        if (had.has(a.e) ? d <= L : d <= R) keep.add(a.e);
+      };
+      if (unlimited) for (const a of all) consider(a);
+      else {
+        const bx0 = Math.floor(me.x / B);
+        const by0 = Math.floor(me.y / B);
+        for (let bx = bx0 - reach; bx <= bx0 + reach; bx++)
+          for (let by = by0 - reach; by <= by0 + reach; by++) {
+            const b = buckets.get(key(bx, by));
+            if (b) for (const a of b) consider(a);
+          }
+      }
+      for (const e of had) if (!keep.has(e) && live.has(e)) view.remove(e as any);
+      for (const e of keep) if (!had.has(e)) view.add(e as any);
+      this.seen.set(client.sessionId, keep);
+    }
+  }
+
   async onJoin(client: Client, options: JoinOptions = {}) {
     // Current live tuning straight to the joiner (updates arrive as broadcasts).
     client.send("live:update", liveTuning());
@@ -876,6 +971,7 @@ export class WorldRoom extends Room<WorldState> {
       return;
     }
     this.state.players.set(client.sessionId, player);
+    this.attachView(client, player);
     // The backpack is PRIVATE — targeted message, never schema-synced.
     client.send("inv", { items: player.inv });
     // Every arrival in Nangijala is announced by a shooting star crossing
@@ -913,6 +1009,7 @@ export class WorldRoom extends Room<WorldState> {
       }
     }
     this.state.players.delete(client.sessionId);
+    this.seen.delete(client.sessionId);
     // Session ids are not reused, so a stale entry would leak for the room's
     // lifetime and silently pacify whoever inherited the id.
     this.noAggro.delete(client.sessionId);
@@ -1122,6 +1219,10 @@ export class WorldRoom extends Room<WorldState> {
     // player movement.
     this.stepMonsters(dt, now);
     this.stepCombat(dt, now);
+    if (++this.interestTick >= INTEREST_TICKS) {
+      this.interestTick = 0;
+      this.stepInterest();
+    }
   }
 
   /** Advance every roaming monster one tick. Each monster belongs to a maps2

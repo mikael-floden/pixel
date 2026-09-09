@@ -55,7 +55,7 @@ test("combat end to end: engage, kill, loot, pickup, drop, slow, persistence", a
   try {
     const c1 = new Client(`ws://localhost:${port}`);
     const opts = { world: "the_game", monsterSeed: 4242, monsterCount: 1, lootChance: 1 };
-    const r1: any = await c1.joinOrCreate(ROOM_NAME, { name: "Duelist", character: "default_boy", account, ...opts });
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { interestRadius: 0, /* the whole roster: these tests pick monsters by kind across the map */ name: "Duelist", character: "default_boy", account, ...opts });
     r1.onMessage("account", (a: any) => { account = a; });
     r1.send("account:want");
     const invs: any[] = [];
@@ -169,7 +169,7 @@ test("combat end to end: engage, kill, loot, pickup, drop, slow, persistence", a
     const xpAtLeave = me().xp;
     await r1.leave();
     const c2 = new Client(`ws://localhost:${port}`);
-    const r2: any = await c2.joinOrCreate(ROOM_NAME, { name: "Duelist", character: "default_boy", account, ...opts });
+    const r2: any = await c2.joinOrCreate(ROOM_NAME, { interestRadius: 0, /* the whole roster: these tests pick monsters by kind across the map */ name: "Duelist", character: "default_boy", account, ...opts });
     r2.onMessage("inv", () => {});
     r2.onMessage("chat", () => {});
     r2.onMessage("star", () => {});
@@ -192,7 +192,7 @@ test("a monster kills a careless player; the player respawns", async (t) => {
   await gameServer.listen(port);
   try {
     const c1 = new Client(`ws://localhost:${port}`);
-    const r1: any = await c1.joinOrCreate(ROOM_NAME, {
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { interestRadius: 0, /* the whole roster: these tests pick monsters by kind across the map */
       name: "Reckless",
       character: "default_girl",
       world: "the_game",

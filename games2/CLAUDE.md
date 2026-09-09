@@ -37,6 +37,7 @@ typecheck`. Boards: `coordination/games.json`.
 | `docs/ui.md` | the wiki-themed HUD, chess, landscape and handedness, rotation, PWA, reconnect |
 | `docs/audio.md` | the composer binding |
 | `docs/testing.md` | where a test belongs, the browser gates, harness traps, device geometry |
+| `docs/backend.md`, `spec/ZONES.md` | one world for 10k players: interest management, the bus, zone rooms, ghosts, hand-off, routing |
 | `INDOOR.md` | the cut-away — READ IT before touching anything that draws, lights, picks or hides a cell indoors |
 | `SURFACES.md`, `spec/*.md`, `deploy/DEPLOY.md`, `loop/LOOP.md` | the surfaces runbook, contracts with other agents, the deploy, the scheduled loop |
 
@@ -139,6 +140,20 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   `MONSTER_DODGE_TIGHTEN` never reaches the hold; a waypoint someone stands on
   counts as arrived.
 - The ground under a point is its nearest CORNER's, not its cell's.
+
+**Backend for 10k** (`spec/ZONES.md`, `docs/backend.md`)
+- ONE world, never instances (maintainer). Zones are rooms; entities belong to
+  the zone containing them; the client sees across a border through ghosts.
+- A client receives only what is within `INTEREST_WU` of itself (a
+  `StateView` per client, recomputed every `INTEREST_TICKS`); "unlimited" is a
+  view holding everything, and only a room CREATE option grants it.
+- `view()` is applied as a decorator call after `defineTypes` (the `view:
+  true` flag is ignored there); `Encoder.BUFFER_SIZE` is set in the room
+  module, not index.ts.
+- Rooms talk ONLY over `server/src/bus.ts` (ioredis when `REDIS_URL`, else the
+  in-process fake with the same asynchronous contract). Writes are the
+  Firestore bill: a save happens on leave, death, level-up and the dirty
+  flush (a player who earned nothing is never written).
 
 **Monsters, combat** (`docs/monsters-combat.md`)
 - Spawn placement is maps2 data (`spawns.json`); no spawns → no monsters.
