@@ -4036,6 +4036,25 @@ export class WorldScene extends Phaser.Scene {
           get: () => fadeTune().onBoundary,
           state: () => (fadeTune().onBoundary ? "on" : "off"),
         },
+        /* SCENERY ANIMATION REPORT — a phone-side probe (maintainer 2026-09-09,
+         * a cave brazier whose clip plays headless and not on his phone: the
+         * only instrument he has is this list). Logs what `__ml.sceneryAnims()`
+         * knows: how many animated placements are in reach, how many are
+         * playing, how many have every frame resident, and the next sleeps. */
+        {
+          label: "scenery anim report",
+          act: () => {
+            const runs = this.sceneryAnimLive.map((l) => ({ l, run: this.sceneryAnimRuns.get(l.place)! }));
+            const resident = runs.filter((r) => r.run.keys.every((k) => this.textures.exists(k))).length;
+            const playing = runs.filter((r) => r.run.frame >= 0).length;
+            const missing = runs.flatMap((r) => r.run.keys.filter((k) => !this.textures.exists(k))).length;
+            const next = runs.filter((r) => r.run.frame < 0).map((r) => Math.round((r.run.next - this.time.now) / 100) / 10).sort((a, b) => a - b).slice(0, 5);
+            const near = runs.slice(0, 4).map((r) => `${r.run.clip.name}@${r.l.place}:${r.run.frame >= 0 ? `f${r.run.frame}` : "sleep"}`);
+            this.chat.addLog("—", `scenery anims: ${runs.length} live, ${playing} playing, ${resident} with all frames, ${missing} frames missing; next sleeps ${next.join("/")} s; ${near.join(" ")}`);
+          },
+          get: () => false,
+          state: () => `${this.sceneryAnimLive.filter((l) => (this.sceneryAnimRuns.get(l.place)?.frame ?? -1) >= 0).length} playing`,
+        },
         /* CLIFF-FOOT AND LID TRANSITIONS (transitions.ts): a nature wall's
          * foot and a deck slab compose boundary tiles like any two grounds.
          * Off is the resolver's parity picture. Re-resolves the world. */
@@ -6449,7 +6468,7 @@ export class WorldScene extends Phaser.Scene {
           }),
           tune: lightAnimTune(),
           // Geometry through a swap: the box must not move between still and frame.
-          boxes: this.sceneryAnimLive.slice(0, 6).map((l) => ({ place: l.place, tex: l.img.texture.key.slice(-28), frame: this.sceneryAnimRuns.get(l.place)?.frame ?? -1, w: +l.img.displayWidth.toFixed(1), h: +l.img.displayHeight.toFixed(1), x: Math.round(l.img.x), y: Math.round(l.img.y) })),
+          boxes: this.sceneryAnimLive.slice(0, 6).map((l) => ({ place: l.place, tex: l.img.texture.key.slice(-28), lit: l.lo ? l.lo.img.texture.key.slice(-28) : null, litFrame: l.lo ? l.lo.img.frame.name : null, litVisible: l.lo ? l.lo.img.visible : null, litAlpha: l.lo ? +l.lo.img.alpha.toFixed(2) : null, frame: this.sceneryAnimRuns.get(l.place)?.frame ?? -1, w: +l.img.displayWidth.toFixed(1), h: +l.img.displayHeight.toFixed(1), x: Math.round(l.img.x), y: Math.round(l.img.y) })),
         };
       },
       /** SCENERY ON A WALL — every drawn window/hanging with its wall column,
