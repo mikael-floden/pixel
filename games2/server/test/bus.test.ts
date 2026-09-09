@@ -50,6 +50,8 @@ async function contract(b: FakeBus | RedisBus) {
   await b.hset("t:h", "p1", "a");
   await b.hset("t:h", "p2", "b");
   assert.deepEqual(await b.hgetall("t:h"), { p1: "a", p2: "b" });
+  assert.equal(await b.hget("t:h", "p1"), "a");
+  assert.equal(await b.hget("t:h", "nope"), null);
   await b.hdel("t:h", "p1");
   assert.deepEqual(await b.hgetall("t:h"), { p2: "b" });
   await b.hdel("t:h", "p2");

@@ -26,6 +26,7 @@ export interface Bus {
   set(key: string, value: string, ttlSec?: number): Promise<void>;
   del(key: string): Promise<void>;
   hset(key: string, field: string, value: string): Promise<void>;
+  hget(key: string, field: string): Promise<string | null>;
   hdel(key: string, field: string): Promise<void>;
   hgetall(key: string): Promise<Record<string, string>>;
   close(): Promise<void>;
@@ -94,6 +95,9 @@ export class FakeBus implements Bus {
     if (!h) this.hashes.set(key, (h = new Map()));
     h.set(field, value);
   }
+  async hget(key: string, field: string): Promise<string | null> {
+    return this.hashes.get(key)?.get(field) ?? null;
+  }
   async hdel(key: string, field: string): Promise<void> {
     const h = this.hashes.get(key);
     h?.delete(field);
@@ -159,6 +163,9 @@ export class RedisBus implements Bus {
   }
   async hset(key: string, field: string, value: string): Promise<void> {
     await this.pub.hset(key, field, value);
+  }
+  hget(key: string, field: string) {
+    return this.pub.hget(key, field);
   }
   async hdel(key: string, field: string): Promise<void> {
     await this.pub.hdel(key, field);

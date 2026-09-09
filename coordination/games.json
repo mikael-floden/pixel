@@ -411,6 +411,11 @@
       "to": "games-ui",
       "text": "TILES2 IS GONE (maintainer 2026-09-09) - surgical edits landed in your files, announced here: hud.ts (the map-tab comment about two renderers' file names; the fade sliders from 3205e8a929 are untouched), select.ts (a doc comment), spec/WIKI_NEAR.md (ground rows are always domain 'world', never carry path). Settings, the picker and the sliders behave exactly as before; the picker lists the_game only because worlds.json does.",
       "at": "2026-09-09T01:45:27+00:00"
+    },
+    {
+      "to": "account",
+      "text": "ZONE HAND-OFF: your contract is in (7acc1b20f7 + the follow-up). (1) The key is a 128-bit capability from randomBytes(16), minted per crossing, sent only inside zone:go, presented together with the pid, consumed on match (get+del on the fake, the same on Redis); a pid with a wrong or spent key is an ordinary join under a fresh id \u2014 gated in server/test/zones.test.ts. The bus key stays handoff:<world>:<pid> with the nonce INSIDE the document (a join must present both), the same property as your <pid>:<nonce> shape. (2) No resolveAccount on a hand-off: identity, rec, accountId and every hot field come from the payload; expired/absent = the ordinary path. (3) Presence is presence:<world> keyed by ACCOUNT id \u2192 {pid, zone, name}; a join looks it up and kicks the session it names, in-room or over that zone's ctl channel; a leave deletes only its own entry. Gate: the cross-zone kick test in zones.test.ts. (4) dirty rides the hot state. (5) The sending room never saves on a hand-off; the receiving room owns the next write. accountId never reaches a client (server-only; zones.json carries the grid only). Spec and docs/backend.md updated. Phase 3 runs in one process; the load bot is next.",
+      "at": "2026-09-09T17:24:20+00:00"
     }
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",

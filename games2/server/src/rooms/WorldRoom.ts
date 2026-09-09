@@ -235,7 +235,8 @@ interface MonsterXfer {
 type CtlMessage =
   | { type: "handoff:done"; pid: string }
   | { type: "monster:xfer"; id: string; m: MonsterXfer }
-  | { type: "monster:respawn"; areaId: string };
+  | { type: "monster:respawn"; areaId: string }
+  | { type: "kick"; pid: string };
 interface EdgeSnapshot {
   from: number;
   t: number;
@@ -1070,21 +1071,14 @@ export class WorldRoom extends Room<WorldState> {
     // newcomer takes over the LIVE progression (fresher than the store) and
     // the old session is disconnected.
     if (player.accountId) {
+      // In this room first (no bus round trip, and the presence hash may be
+      // a tick behind), then world-wide through presence.
       let oldPid = "";
       this.state.players.forEach((p: Player, pid: string) => {
         if (!oldPid && p.accountId === player.accountId && pid !== client.sessionId) oldPid = pid;
       });
-      const oldSid = oldPid ? this.pidSid.get(oldPid) : undefined;
-      if (oldPid && oldSid) {
-        const oldPlayer = this.state.players.get(oldPid);
-        if (oldPlayer) this.savePlayer(oldPlayer); // flush the live state the newcomer restores
-        /* A KICK IS NOT A DROPPED LINK. `onLeave` holds a seat open for a
-         * reconnect, and a kicked session must not hold one — the whole point
-         * is that ONE token means one live session, and a reclaimable ghost
-         * would leave two. Marked before the leave, read inside it. */
-        this.kicked.add(oldSid);
-        this.clients.find((c) => c.sessionId === oldSid)?.leave(4001); // its onLeave re-saves the same values
-      }
+      if (oldPid) this.kickPid(oldPid);
+      await this.kickOtherSession(player.accountId, client.sessionId);
     }
 
     // Returning player? Restore where they stood IN THIS WORLD
@@ -1198,7 +1192,16 @@ export class WorldRoom extends Room<WorldState> {
     this.seen.delete(client.sessionId);
     this.sidPid.delete(client.sessionId);
     this.pidSid.delete(pid);
-    void bus().hdel(this.chan.presence, pid);
+    if (player?.accountId) {
+      // Only MY presence: a newcomer on the same account has overwritten it.
+      const acc = player.accountId;
+      void bus()
+        .hget(this.chan.presence, acc)
+        .then((raw) => {
+          if (raw && (JSON.parse(raw) as { pid?: string }).pid === pid) return bus().hdel(this.chan.presence, acc);
+        })
+        .catch(() => {});
+    }
     // Session ids are not reused, so a stale entry would leak for the room's
     // lifetime and silently pacify whoever inherited the id.
     this.noAggro.delete(pid);
@@ -2343,7 +2346,44 @@ export class WorldRoom extends Room<WorldState> {
     this.attachView(client, player);
     // The backpack is PRIVATE — targeted message, never schema-synced.
     client.send("inv", { items: player.inv });
-    void bus().hset(this.chan.presence, pid, JSON.stringify({ name: player.name, zone: this.zoneId }));
+    // PRESENCE is keyed by ACCOUNT (a person), never by pid (a session):
+    // it is what "one live session per account" is enforced on, world-wide.
+    if (player.accountId)
+      void bus().hset(this.chan.presence, player.accountId, JSON.stringify({ pid, zone: this.zoneId, name: player.name }));
+  }
+
+  /** ONE LIVE SESSION PER ACCOUNT, WORLD-WIDE (the account agent's contract,
+   *  2026-09-09): the newcomer looks the account up in the presence hash and
+   *  kicks the session it names, in this room directly or through the zone's
+   *  `ctl` channel. The kicked room saves and drops that session as the
+   *  in-room kick always did; the newcomer's adopt then overwrites presence. */
+  private async kickOtherSession(accountId: string, myPid: string): Promise<void> {
+    if (!accountId) return;
+    const raw = await bus().hget(this.chan.presence, accountId);
+    if (!raw) return;
+    let prev: { pid?: string; zone?: number };
+    try {
+      prev = JSON.parse(raw);
+    } catch {
+      return;
+    }
+    if (!prev.pid || prev.pid === myPid) return;
+    if (prev.zone === this.zoneId) this.kickPid(prev.pid);
+    else if (typeof prev.zone === "number")
+      void bus().publish(this.chan.ctl(prev.zone), { type: "kick", pid: prev.pid } satisfies CtlMessage);
+  }
+
+  private kickPid(pid: string) {
+    const oldSid = this.pidSid.get(pid);
+    const oldPlayer = this.state.players.get(pid);
+    if (!oldSid || !oldPlayer) return;
+    this.savePlayer(oldPlayer); // flush the live state the newcomer restores
+    /* A KICK IS NOT A DROPPED LINK. `onLeave` holds a seat open for a
+     * reconnect, and a kicked session must not hold one — the whole point
+     * is that ONE token means one live session, and a reclaimable ghost
+     * would leave two. Marked before the leave, read inside it. */
+    this.kicked.add(oldSid);
+    this.clients.find((c) => c.sessionId === oldSid)?.leave(4001); // its onLeave re-saves the same values
   }
 
   /** The spawn cells of a maps2 zone that lie inside THIS room's rectangle
@@ -2430,7 +2470,7 @@ export class WorldRoom extends Room<WorldState> {
     const sid = this.pidSid.get(pid);
     const client = sid ? this.clients.find((c) => c.sessionId === sid) : undefined;
     if (!client) return;
-    const key = randomBytes(12).toString("hex");
+    const key = randomBytes(16).toString("hex"); // 128 bits: the capability for ONE join
     p.handoff = { to, key, at: now };
     const hot: HotState = {
       key,
@@ -2470,7 +2510,7 @@ export class WorldRoom extends Room<WorldState> {
    *  bus document is honoured, and the document is consumed. */
   private async takeHandoff(options: JoinOptions): Promise<HotState | null> {
     if (typeof options.pid !== "string" || typeof options.handoff !== "string") return null;
-    if (!/^[A-Za-z0-9_-]{1,32}$/.test(options.pid) || !/^[0-9a-f]{24}$/.test(options.handoff)) return null;
+    if (!/^[A-Za-z0-9_-]{1,32}$/.test(options.pid) || !/^[0-9a-f]{32}$/.test(options.handoff)) return null;
     const key = handoffKey(this.worldName, options.pid);
     const raw = await bus().get(key);
     if (!raw) return null;
@@ -2566,6 +2606,8 @@ export class WorldRoom extends Room<WorldState> {
       this.state.monsters.set(m.id, mon);
     } else if (m.type === "monster:respawn") {
       this.respawnQueue.push({ areaId: m.areaId, at: now + MONSTER_RESPAWN_MS });
+    } else if (m.type === "kick") {
+      this.kickPid(m.pid);
     }
   }
 

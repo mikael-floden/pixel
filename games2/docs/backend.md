@@ -111,7 +111,14 @@ and the rejected approaches as each phase lands. Rewrite in place.
   agree; `resetWorldClocks()` deletes the documents. Wild stars are rolled by
   zone 0 (or the whole-world room) only.
 - **Chat, the arrival star and level-ups go over `world:<world>:events`** and
-  every room of the world broadcasts them; presence (`pid` → name, zone) is
-  the hash `presence:<world>`.
+  every room of the world broadcasts them.
+- **One live session per account, world-wide** (the account agent's contract,
+  2026-09-09): presence is the hash `presence:<world>` keyed by ACCOUNT id →
+  {pid, zone, name}; a join kicks the session it names (`kickPid` in-room,
+  else `kick` on that zone's `ctl` channel), and a leave deletes only its own
+  entry. The hand-off key is 128 bits from `randomBytes(16)`, sent only in
+  `zone:go`, consumed once; `dirty` rides the hot state; the sending room
+  never saves on a hand-off. Gate: the cross-zone kick test in
+  `zones.test.ts`.
 - NOT YET (spec phases 4-5): the load bot; cross-border combat (a ghost can
   be neither hit nor hit you); warm rooms.

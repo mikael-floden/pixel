@@ -91,7 +91,7 @@ test("ghosts across the border, then a hand-off that keeps the body", async (t) 
     const msg = await go;
     assert.equal(msg.zone, 1);
     assert.equal(msg.pid, pidA);
-    assert.match(msg.key, /^[0-9a-f]{24}$/);
+    assert.match(msg.key, /^[0-9a-f]{32}$/);
     const hpBefore = rA.state.players.get(pidA).hp;
     const cA2 = new Client(`ws://localhost:${port}`);
     const rA2: any = await cA2.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Left", character: "default_boy", pid: msg.pid, handoff: msg.key });
@@ -158,6 +158,35 @@ test("a monster pushed over the border is transferred with its brain; chat cross
     rA.send("chat", { text: "hello over the line" });
     await waitFor(() => heard.includes("hello over the line"), 3000, "chat crossed the zones");
     rA.leave(); rB.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+    useBus(null);
+  }
+});
+
+test("one live session per account, world-wide: a second tab in another zone kicks the first", async (t) => {
+  if (!HAVE_WORLD) return t.skip(SKIP);
+  const port = 2976;
+  useBus(new FakeBus());
+  resetWorldClocks();
+  const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
+  gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world", "zone"]);
+  await gameServer.listen(port);
+  const base = { world: "the_game", zonesCfg: CFG, monsterCount: 0, interestRadius: 0 };
+  try {
+    const c1 = new Client(`ws://localhost:${port}`);
+    const r1: any = await c1.joinOrCreate(ROOM_NAME, { ...base, zone: 0, name: "Tab1", character: "default_boy" });
+    const pair = await new Promise<{ id: string; secret: string }>((res) => { r1.onMessage("account", res); r1.send("account:want"); });
+    assert.ok(pair.id && pair.secret, "the first join minted an account");
+    await waitFor(() => r1.state.players.size === 1, 5000, "tab 1 in zone 0");
+    let left: number | null = null;
+    r1.onLeave((code: number) => { left = code; });
+    const c2 = new Client(`ws://localhost:${port}`);
+    const r2: any = await c2.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Tab2", character: "default_boy", account: pair });
+    await waitFor(() => r2.state.players.size === 1, 5000, "tab 2 in zone 1");
+    await waitFor(() => left !== null, 5000, "tab 1 was kicked from zone 0 by a join in zone 1");
+    assert.equal(left, 4001, "the kick code");
+    r2.leave();
   } finally {
     await gameServer.gracefullyShutdown(false);
     useBus(null);

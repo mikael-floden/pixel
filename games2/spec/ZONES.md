@@ -34,9 +34,14 @@ Kubernetes). Rules here are present tense; the measurements land in
   anything else, so a player near a border sees across it through ONE socket.
 - **Hand-off.** When a player's position enters another zone, the home room
   writes the player's hot state (`pos`, `elev`, `dir`, hp/ep/level/xp, `inv`,
-  the account id and record, the input `seq`, torch, no-aggro, engaged target)
-  to the bus key `handoff:<world>:<pid>` (10 s TTL), keeps stepping the player,
-  and sends the client `zone:go {zone, pid, key}`. The client joins the new
+  the account id and record, `dirty`, the input `seq`, torch, no-aggro) to
+  the bus key `handoff:<world>:<pid>` (10 s TTL) together with a 128-bit
+  one-shot KEY minted for this crossing, keeps stepping the player, and sends
+  the client `zone:go {zone, pid, key}`. The key, not the pid, is the
+  capability: pids are visible to every neighbour, the key reaches only the
+  crossing client, a join presents both, the receiving room consumes the
+  document on a match and a mismatch is an ordinary join under a fresh id
+  (the account agent's contract, 2026-09-09). The client joins the new
   zone room with that key WHILE the old socket stays open; the new room loads
   the hot state from the bus (no database read), places the player, publishes
   `handoff:done:<pid>`; the old room then deletes its entity (the neighbour's
