@@ -1,0 +1,141 @@
+{
+  "id": "werewolf",
+  "name": "Moonrend",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It runs the ridge under every full moon and comes back fed. The village no longer asks what it ate.",
+  "biome": [
+    "grass",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Fantasy werewolf shown full body from head to feet, a broad bipedal wolf with dark grey fur, a heavy muzzle of white fangs, glowing amber eyes, massive clawed hands, torn trousers, and a thick ruff of fur at the neck.",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "werewolf/rotations/south.webp",
+    "south-east": "werewolf/rotations/south-east.webp",
+    "east": "werewolf/rotations/east.webp",
+    "north-east": "werewolf/rotations/north-east.webp",
+    "north": "werewolf/rotations/north.webp",
+    "north-west": "werewolf/rotations/north-west.webp",
+    "west": "werewolf/rotations/west.webp",
+    "south-west": "werewolf/rotations/south-west.webp"
+  },
+  "sheet": "werewolf/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a0f58ca6-7f8f-4997-b98c-fbbd25de0e4a",
+  "seed": 1588306833,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:26:46+00:00",
+  "elapsed_s": 211.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.672,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.672,
+        "bbox": [
+          17,
+          4,
+          114,
+          125
+        ],
+        "fill": 0.716,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.724,
+        "bbox": [
+          25,
+          1,
+          124,
+          125
+        ],
+        "fill": 0.749,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.748,
+        "bbox": [
+          12,
+          2,
+          97,
+          126
+        ],
+        "fill": 0.643,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.681,
+        "bbox": [
+          20,
+          1,
+          103,
+          120
+        ],
+        "fill": 0.603,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.775,
+        "bbox": [
+          25,
+          3,
+          104,
+          126
+        ],
+        "fill": 0.593,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.711,
+        "bbox": [
+          4,
+          1,
+          97,
+          123
+        ],
+        "fill": 0.693,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.72,
+        "bbox": [
+          26,
+          1,
+          97,
+          121
+        ],
+        "fill": 0.52,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.772,
+        "bbox": [
+          27,
+          3,
+          122,
+          126
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      }
+    }
+  }
+}
