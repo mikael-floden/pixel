@@ -1,0 +1,141 @@
+{
+  "id": "seed_husk",
+  "name": "Huskling",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It fell from a tree nobody has found. Where it roots, the ground goes hard and the crops go quiet.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Small seed-pod creature with a hard ridged brown husk for a body split open at the front, two pale green eyes glowing inside the split, a single dark green shoot rising from its top, and short knotted root legs.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "seed_husk/rotations/south.webp",
+    "south-east": "seed_husk/rotations/south-east.webp",
+    "east": "seed_husk/rotations/east.webp",
+    "north-east": "seed_husk/rotations/north-east.webp",
+    "north": "seed_husk/rotations/north.webp",
+    "north-west": "seed_husk/rotations/north-west.webp",
+    "west": "seed_husk/rotations/west.webp",
+    "south-west": "seed_husk/rotations/south-west.webp"
+  },
+  "sheet": "seed_husk/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b195e0b5-746c-4b79-89a5-315da0bca909",
+  "seed": 56728326,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:20:15+00:00",
+  "elapsed_s": 223.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.762,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.769,
+        "bbox": [
+          4,
+          2,
+          43,
+          45
+        ],
+        "fill": 0.728,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.762,
+        "bbox": [
+          5,
+          3,
+          41,
+          45
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.762,
+        "bbox": [
+          7,
+          3,
+          42,
+          45
+        ],
+        "fill": 0.638,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.765,
+        "bbox": [
+          6,
+          6,
+          42,
+          44
+        ],
+        "fill": 0.594,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.799,
+        "bbox": [
+          5,
+          2,
+          41,
+          46
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.782,
+        "bbox": [
+          8,
+          4,
+          41,
+          45
+        ],
+        "fill": 0.587,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.789,
+        "bbox": [
+          7,
+          4,
+          40,
+          45
+        ],
+        "fill": 0.587,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.793,
+        "bbox": [
+          6,
+          2,
+          42,
+          46
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      }
+    }
+  }
+}

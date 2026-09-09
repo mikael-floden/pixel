@@ -1,0 +1,141 @@
+{
+  "id": "great_owl",
+  "name": "Greyhorn",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It watches the road from the dead oak and misses nothing. Small things that cross the moonlight do not cross back.",
+  "biome": [
+    "grass",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Great horned owl standing upright shown full body from ear tufts to talons, realistic proportions, mottled grey-brown feathers, wings folded, tall dark ear tufts, huge unblinking amber eyes, a hooked beak and heavy feathered talons.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "great_owl/rotations/south.webp",
+    "south-east": "great_owl/rotations/south-east.webp",
+    "east": "great_owl/rotations/east.webp",
+    "north-east": "great_owl/rotations/north-east.webp",
+    "north": "great_owl/rotations/north.webp",
+    "north-west": "great_owl/rotations/north-west.webp",
+    "west": "great_owl/rotations/west.webp",
+    "south-west": "great_owl/rotations/south-west.webp"
+  },
+  "sheet": "great_owl/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "cde485b8-78d9-425f-8766-1c537fcf5eb0",
+  "seed": 1122468826,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:20:13+00:00",
+  "elapsed_s": 143.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.715,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.715,
+        "bbox": [
+          16,
+          5,
+          76,
+          92
+        ],
+        "fill": 0.566,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.81,
+        "bbox": [
+          20,
+          5,
+          87,
+          93
+        ],
+        "fill": 0.64,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.825,
+        "bbox": [
+          9,
+          5,
+          75,
+          93
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.794,
+        "bbox": [
+          21,
+          6,
+          74,
+          88
+        ],
+        "fill": 0.472,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.831,
+        "bbox": [
+          13,
+          4,
+          75,
+          93
+        ],
+        "fill": 0.599,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.798,
+        "bbox": [
+          21,
+          4,
+          74,
+          89
+        ],
+        "fill": 0.489,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.797,
+        "bbox": [
+          22,
+          4,
+          79,
+          88
+        ],
+        "fill": 0.52,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.824,
+        "bbox": [
+          19,
+          4,
+          78,
+          93
+        ],
+        "fill": 0.57,
+        "touches_edge": false
+      }
+    }
+  }
+}
