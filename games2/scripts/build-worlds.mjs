@@ -63,8 +63,7 @@ function scan() {
   const out = [];
   const seen = new Set();
   for (const root of WORLD_ROOTS) scanRoot(root, out, seen);
-  // Stable order, with ring_test (the default) first.
-  out.sort((a, b) => (a.name === "ring_test" ? -1 : b.name === "ring_test" ? 1 : a.name.localeCompare(b.name)));
+  out.sort((a, b) => a.name.localeCompare(b.name));
   return out;
 }
 

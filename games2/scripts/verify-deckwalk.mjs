@@ -1,4 +1,4 @@
-// Deck-walk gate (runs inside `npm test`): world@2 "decks" (bridges, roofs) are a
+// Deck-walk gate (runs inside `npm test`): "decks" (bridges, roofs, cave lids) are a
 // SECOND walkable surface floating above unchanged base terrain. The movement rule
 // (shared canEnterElev/resolveElevAt) must keep a player who is ON a deck up at the
 // deck's level as they cross it — NOT drop them onto the base (water/chasm/floor)
@@ -10,18 +10,19 @@
 // edges) and its raised interior cells (base below the deck) are all read from the
 // parsed world. So the maps agent can freely re-shape or re-height a deck (e.g.
 // raise the house/bridge 4→7 for headroom) without touching this gate: it asserts
-// the ENGINE INVARIANT, not any specific geometry. Drives the real occlusion_test
-// world through the exact server code path (parseWorld → buildTerrainGrid →
-// canEnterElev/resolveElevAt/findPath), no browser.
+// the ENGINE INVARIANT, not any specific geometry. Drives the real the_game
+// world (maps2/worlds3, 28 decks) through the exact server code path
+// (parseWorld → buildTerrainGrid → canEnterElev/resolveElevAt/findPath), no
+// browser. (occlusion_test, the world@2 reference, was retired 2026-09-09.)
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { parseWorld, buildTerrainGrid, canEnterElev, resolveElevAt, findPath, CELL_WU, WALK_CLIMB } from "../shared/src/index.ts";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const worldPath = join(here, "..", "..", "maps2", "worlds", "occlusion_test", "world.json");
+const worldPath = join(here, "..", "..", "maps2", "worlds3", "the_game", "world.json");
 const w = parseWorld(JSON.parse(readFileSync(worldPath, "utf8")));
-if (!w) throw new Error("parseWorld returned null for occlusion_test");
+if (!w) throw new Error("parseWorld returned null for the_game");
 const grid = buildTerrainGrid(w.width, w.height, w.rows, w.props, w.decks);
 const W = grid.width;
 
@@ -47,10 +48,23 @@ for (const d of decks) {
   const interior = d.cells.filter((c) => deckLvl(c.col ?? c.x, c.row ?? c.y) >= 0)
     .map((c) => ({ c: c.col ?? c.x, r: c.row ?? c.y }));
   const foot = new Set(d.cells.map((c) => idx(c.col ?? c.x, c.row ?? c.y)));
+  // An entry is a footprint cell you can STEP onto the deck from: base at the
+  // deck level, or within one walking climb below it (a ramp's last step).
   const entries = d.cells.map((c) => ({ c: c.col ?? c.x, r: c.row ?? c.y }))
-    .filter(({ c, r }) => deckLvl(c, r) < 0 && Math.abs(baseLvl(c, r) - L) < 0.5);
-  ok(interior.length > 0, `${kind}: has raised interior deck cells (base < level ${L})`);
-  ok(entries.length > 0, `${kind}: has an entry cell (base == level ${L}) to step on from`);
+    .filter(({ c, r }) => deckLvl(c, r) < 0 && L - baseLvl(c, r) <= WALK_CLIMB + 1e-9 && baseLvl(c, r) <= L + 0.5);
+  // A deck whose whole footprint already sits at its own level (a bridge laid
+  // flush on a shelf) lifts nothing: there is no "on it vs under it" to test.
+  // That is world data, not the engine, so it is noted and skipped — the
+  // invariant below is asserted on every deck that does raise a surface.
+  if (!interior.length) {
+    console.log(`note  ${kind} at level ${L}: no raised interior cells (footprint already at deck level) — skipped`);
+    continue;
+  }
+  // A deck with no entry at all — a cave lid, a house roof — is not walked
+  // onto by design (the_game has 12 lids and 11 roofs); the ON/UNDER
+  // invariants still hold for it, only the tap-onto route is meaningless.
+  const reachable = entries.length > 0;
+  if (!reachable) console.log(`note  ${kind} at level ${L}: no entry cell — a lid or a roof, tap-onto route not asserted`);
 
   // (a) ON the deck: standing on ANY interior cell at the deck level stays at the
   // deck level (never drops to the base — the "you fall through the bridge" bug).
@@ -98,7 +112,10 @@ for (const d of decks) {
   // steps onto it — not a same-cell no-op that leaves you under it. You step onto
   // the deck from ground within WALK_CLIMB of the deck level, so "climbed" = the
   // route reaches base ≥ L − WALK_CLIMB (an entry ledge, or one step below it).
-  {
+  // BRIDGES ONLY: a bridge is the one deck kind a body walks onto over the top.
+  // A house roof also has "entry" cells (its wall ring stands at roof level)
+  // and no walkable route up them, which is what a house is.
+  if (reachable && kind === "bridge") {
     const mid = interior[Math.floor(interior.length / 2)];
     const [mx, my] = wc(mid.c, mid.r);
     const path = findPath(grid, mx, my, mx, my, { fromElev: baseLvl(mid.c, mid.r), goalLevel: L, canSwim: true });

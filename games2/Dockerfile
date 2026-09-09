@@ -34,13 +34,10 @@ COPY games2/config/publish.json games2/config/publish.json
 COPY games2/scripts/shipset.mjs games2/scripts/shipset.mjs
 COPY scenery/ scenery/
 COPY characters2/ characters2/
-COPY tiles2/ tiles2/
-# Tiles 3.0 review set — the 3rd-generation tile system, in development alongside
-# tiles2 (which is unaffected and still what the game renders). Only the reviewable
-# output is tracked (~200 KB of lossless WebP + manifest); tiles/matrix is
-# gitignored so the raw candidate sheets never enter the build context. Added by
-# the tiles agent 2026-08-17 with the maintainer's explicit go-ahead, so the wiki
-# can show each candidate before and after postprocess. — see coordination/tiles.json
+# Tiles 3.0 — THE tile system (tiles2 deleted 2026-09-09). Only the reviewable
+# output is tracked; tiles/matrix is gitignored so the raw candidate sheets
+# never enter the build context. The image ships the resolver's exact closure
+# of the published world (ship-tiles3.ts below), never the whole domain.
 COPY tiles/ tiles/
 COPY maps2/ maps2/
 COPY sounds/ sounds/
@@ -82,12 +79,6 @@ ENV ASSETS_ROOT=/assets
 
 COPY games2/ ./
 COPY --from=curate /src/games2/client/public/shipset.json client/public/shipset.json
-
-# Committed tile atlases are only ever VERIFIED at deploy, never rebuilt (that
-# is what stops the packing job repeating on every push). A stale one is
-# pruned so the client falls back to per-file tiles; --ship also drops atlases
-# for worlds this image does not publish.
-RUN ASSETS_ROOT=/assets node scripts/check-atlas.mjs --prune --strict --ship
 
 ARG GIT_SHA=dev
 ENV VITE_GIT_SHA=$GIT_SHA

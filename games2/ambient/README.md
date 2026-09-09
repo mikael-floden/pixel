@@ -335,7 +335,7 @@ through the client's tsconfig via the import chain.
 - Don't touch gameplay, netcode, `shared/`, `server/`, or any file owned by
   the games/games-ui agents (board round trip first — `UI_AGENT.md` lists
   the split).
-- Don't touch the art domains (`characters2/`, `tiles2/`, `maps2/`,
+- Don't touch the art domains (`characters2/`, `tiles/`, `maps2/`,
   `scenery/`, `sounds/`) — read-only, same as ever.
 - Don't write any `coordination/*.json` except `games-ambient.json`.
 - Don't push red — `npm test` + `npm run typecheck` first.

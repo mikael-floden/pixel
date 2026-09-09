@@ -25,9 +25,8 @@ is simultaneously the product and the communication channel.
 | Domain | What it makes | Docs |
 |---|---|---|
 | [`characters2/`](characters2/) | The two player heroes + every `NPC`-tagged PixelLab character, mirrored with full 8-direction animation sets | [`characters2/README.md`](characters2/README.md) |
-| [`tiles2/`](tiles2/) | Tiles 2.0 — the live, shipping tile/material library (iso terrain + transitions) | [`tiles2/README.md`](tiles2/README.md) |
-| [`tiles/`](tiles/) | Tiles 3.0 — next-gen isometric ground tiles, built alongside tiles2 until coverage is complete (name reused from the retired first generation) | [`tiles/README.md`](tiles/README.md) |
-| [`maps2/`](maps2/) | Worlds — `worlds/<name>/world.json` grids the game loads | [`maps2/README.md`](maps2/README.md) |
+| [`tiles/`](tiles/) | Tiles 3.0 — THE isometric ground tile library the game renders (name reused from the retired v1; tiles2 retired 2026-09-09) | [`tiles/README.md`](tiles/README.md) |
+| [`maps2/`](maps2/) | The world — `worlds3/the_game/world.json` (pixel-maps3, a ground name per cell; tiles3 resolves the art) | [`maps2/README.md`](maps2/README.md) |
 | [`scenery/`](scenery/) | Freely placeable, optionally animated set dressing (trees, graves, lamps) — off the tile grid, can animate | [`scenery/README.md`](scenery/README.md) |
 | [`sounds/`](sounds/) | Game sound effects (UI, items, tools, movement, combat) — ElevenLabs SFX, lossless 48 kHz, mastered | [`sounds/README.md`](sounds/README.md) |
 | [`music/`](music/) | Background score — ElevenLabs Music; every track ships beat-grid/section/key metadata so the game can sync SFX to it | [`music/README.md`](music/README.md) |

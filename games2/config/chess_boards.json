@@ -1,38 +1,7 @@
 {
   "format": "nangijala-chess-boards@1",
-  "_doc": "Chess boards per world, derived from maps2's placements. THE MAPS AGENT PLACES THE TABLE; THIS FILE IS WHAT MAKES IT PLAYABLE, and a table with no entry here is just furniture — the_game shipped two chess_tables and a Rannulf with anchor 'chess' for three days with no entry, so the default map had no chess at all (gate: 'every chess table a world places is a board you can sit at'). On a tiles2 world the tables are world PROPS (commit 5d7b39dfe3: 'one by the fire, one with Rannulf behind it'); on a maps3 world they are SCENERY pieces (chess_tables/*). col/row is the table's CELL — the offer fires within 1.75 cells of that cell's CENTRE, so it is the one field that must be right. seatA/seatB are documentation: nothing in the client reads them, and the server only stores them. `npc` names the resident opponent and makes it an NPC board; without it the board is player-vs-player. sprite 'world' = the world's own art renders the table, the game draws no decor. `bubble` = /assets path of the challenge speech-bubble art when it syncs (drawn fallback). Overridable per world via live/tuning/chess.json, same shape — a world absent there falls back to this file, so adding a world here needs no live edit.",
+  "_doc": "Chess boards per world, derived from maps2's placements. THE MAPS AGENT PLACES THE TABLE; THIS FILE IS WHAT MAKES IT PLAYABLE, and a table with no entry here is just furniture — the_game shipped two chess_tables and a Rannulf with anchor 'chess' for three days with no entry, so the default map had no chess at all (gate: 'every chess table a world places is a board you can sit at'). On a maps3 world the tables are SCENERY pieces (chess_tables/*). col/row is the table's CELL — the offer fires within 1.75 cells of that cell's CENTRE, so it is the one field that must be right. seatA/seatB are documentation: nothing in the client reads them, and the server only stores them. `npc` names the resident opponent and makes it an NPC board; without it the board is player-vs-player. sprite 'world' = the world's own art renders the table, the game draws no decor. `bubble` = /assets path of the challenge speech-bubble art when it syncs (drawn fallback). Overridable per world via live/tuning/chess.json, same shape — a world absent there falls back to this file, so adding a world here needs no live edit.",
   "worlds": {
-    "the_island2": [
-      {
-        "id": "fireside",
-        "col": 206,
-        "row": 120,
-        "seatA": [
-          205,
-          120
-        ],
-        "seatB": [
-          207,
-          120
-        ],
-        "sprite": "world"
-      },
-      {
-        "id": "rannulf",
-        "col": 197,
-        "row": 119,
-        "seatA": [
-          198,
-          120
-        ],
-        "seatB": [
-          196,
-          118
-        ],
-        "npc": "Rannulf",
-        "sprite": "world"
-      }
-    ],
     "the_game": [
       {
         "id": "rannulf",

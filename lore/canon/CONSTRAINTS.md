@@ -140,7 +140,7 @@ world, not the player's verbs.
   stone, black volcanic rock, clear water, light sand, crystal ice. There is
   **no wood, no brick, no paved road, no lava terrain, no swamp, no jungle, no
   farmland, no interior floor.** Buildings are made of ground materials. Lore
-  requiring new terrain is a tiles2 request first, prose second.
+  requiring new terrain is a tiles (3.0) request first, prose second.
 - **The mountain is north/up-screen; meadows and maze are south/near; beaches
   exist on the near shore only**; ocean rings everything.
 - The named features that exist in the map generator — the **Trollstigen**, the

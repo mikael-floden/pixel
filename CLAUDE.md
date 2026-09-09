@@ -35,11 +35,10 @@ Each domain's own `README.md` (games2: `CLAUDE.md`) is the authority on how it
 works. This map answers one question only — whose directory is that.
 
 - `characters2/` — the two locked heroes + the tag-driven `NPC` mirror.
-- `tiles2/` — Tiles 2.0, the live, shipping tile/material library.
-- `tiles/` — Tiles 3.0, built **alongside** tiles2; nothing migrates until it
-  covers everything the game needs.
-- `maps2/` — the worlds the game loads (`maps2/worlds/<name>/world.json`), and
-  **the maps2 agent is who places scenery** in them.
+- `tiles/` — Tiles 3.0, THE tile library the game renders.
+- `maps2/` — the world the game loads (`maps2/worlds3/the_game/world.json`,
+  pixel-maps3: a ground NAME per cell, tiles3 resolves the art), and **the
+  maps2 agent is who places scenery** in it.
 - `scenery/` — freely placeable, optionally animated set dressing: off the tile
   grid, and it can animate (tiles can't).
 - `sounds/` — every sound EFFECT: the catalog, the 422-set foley library
@@ -72,6 +71,11 @@ works. This map answers one question only — whose directory is that.
 - RETIRED 2026-07-14: the first generation (`characters/`, `maps/`, `games/`,
   the old tiles registry + #emission demo) — history in git. The `tiles/` name
   was reused for Tiles 3.0; `scenery/` was `objects/` until 2026-08-12.
+- RETIRED 2026-09-09: `tiles2/` (Tiles 2.0) and every world@1/@2 world under
+  `maps2/worlds/` (the_island2, the demos, the test beds) — history in git.
+  Maintainer: "We will commit 100% to the new tiles3 system and the new map
+  from here on. We will never go back to the tile2 system again." The game
+  has ONE world, `the_game`, and ONE tile system, `tiles/`.
 
 ## Shared laws (every agent)
 
@@ -148,9 +152,9 @@ invisible to the game image until added there, and a subtree can be excluded
 from the image while staying in the repo. If an asset 404s at `/assets/...`
 in the deployed game but exists on GitHub, **this file is the first place to
 look** — it is the only thing that produces that symptom. Currently excluded
-while staying in the repo: `tiles2/*/raw` (pre-postprocess sheets, 4,648
-files / 34 MB, served by nothing) and `music/**/*.wav` (~61 MB of analysis
-masters; the game streams ogg/m4a).
+while staying in the repo: `music/**/*.wav` (~61 MB of analysis masters; the
+game streams ogg/m4a) and `live/telemetry` (the perf beacon's log, written
+through the GitHub API and never read from the image).
 
 **OFF-GITHUB BACKUP** (`.github/workflows/backup-gcs.yml`): weekly (Mondays)
 `git archive HEAD` zip (~291 MB, tracked files only — a working-tree tar

@@ -466,10 +466,6 @@ function syncCounts(domain) {
   if (!state.data.counts) return;
   if (domain in state.data.counts) state.data.counts[domain] = list.length;
   if (domain === "world") state.data.counts.world_candidates = list.reduce((n, c) => n + (c.candidates?.length ?? 0), 0);
-  if (domain === "tiles") {
-    state.data.counts.tile_types = list.length;
-    state.data.counts.tiles = list.reduce((n, t) => n + (t.tileCount ?? 0), 0);
-  }
   if (domain === "characters") {
     state.data.counts.characters = list.filter((c) => c.kind !== "npc").length;
     state.data.counts.npcs = list.filter((c) => c.kind === "npc").length;
@@ -3424,21 +3420,11 @@ const SECTIONS = {
   // its way out; `world` is tiles/ (3.0). When tiles2 goes, this row goes with
   // it and nothing else has to move.
   //
-  // A PLAYER SEES ONE GROUND SECTION, still called World, and it is the one
-  // the game actually renders — tiles2, today. "Tiles OLD" is a migration
-  // word: it means something to the Game Master and nothing to a reader, and
-  // the encyclopedia must not degrade while the two systems overlap. So the
-  // label is admin-dependent, and 3.0 is admin-only until it ships — an
-  // unfinished ground system in the player's encyclopedia would be a promise
-  // the game cannot keep. When tiles2 goes, this row goes with it, `world`
-  // loses its adminOnly, and nothing else moves.
-  tiles:      { label: () => (state.admin ? "Tiles OLD" : "World"),
-                noun: "tiles",      icon: "world",      count: (d) => d.counts.tiles },
   // "Pairs" is how the factory counts this ground and how the Game Master
   // reviews it; a reader is looking at grounds. Same number either way — one
   // tile per pair is what a player is shown.
   world:      { label: "World",         noun: () => (state.admin ? "pairs" : "grounds"),
-                icon: "world",      count: (d) => d.counts.world, adminOnly: true },
+                icon: "world",      count: (d) => d.counts.world },
   objects:    { label: "Scenery",       noun: "props",      icon: "objects",    count: (d) => d.counts.objects },
   sounds:     { label: "Sound Effects", noun: "sounds",     icon: "sounds",     count: (d) => d.counts.sounds },
   music:      { label: "Music",         noun: "tracks",     icon: "music",      count: (d) => d.counts.music },
@@ -3456,9 +3442,9 @@ const SECTIONS = {
 // Races before Creatures: the people of Nangijala come before the things that
 // hunt them (maintainer 2026-08-14, "feels like humans must be sorted before
 // monsters").
-// World (3.0) sits where the ground system has always sat; Tiles OLD follows
-// it, because the thing being replaced should not be the one you reach first.
-const SECTION_ORDER = ["characters", "monsters", "world", "tiles", "objects", "sounds", "music", "items", "lore", "tuning"];
+// World (Tiles 3.0) sits where the ground system has always sat. (tiles2 — the
+// "Tiles OLD" row — was deleted 2026-09-09; history in git.)
+const SECTION_ORDER = ["characters", "monsters", "world", "objects", "sounds", "music", "items", "lore", "tuning"];
 // A section's label may depend on who is reading (see `tiles` above).
 const label = (slug) => { const l = SECTIONS[slug]?.label; return (typeof l === "function" ? l() : l) ?? slug; };
 /** What a section counts, in the voice of whoever is reading — the Game Master
@@ -5231,11 +5217,10 @@ function pagedPanel({ title, pages, aside = null, klass = "" }) {
 /* --- cross-references. ALWAYS resolved against the OWNING domain in data.json,
    never against lore.json: almost no item has a lore record, so a lore-sourced
    label would be blank for nearly all of them. --- */
-let _loreIx = null, _charIx = null, _objIx = null, _tileIx = null;
+let _loreIx = null, _charIx = null, _objIx = null;
 const loreById      = (id) => (_loreIx ??= new Map(loreList().map((e) => [e.id, e]))).get(id);
 const characterById = (id) => (_charIx ??= new Map((state.data.domains.characters ?? []).map((c) => [c.id, c]))).get(id);
 const objectById    = (id) => (_objIx  ??= new Map((state.data.domains.objects ?? []).map((o) => [o.id, o]))).get(id);
-const tileTypeById  = (id) => (_tileIx ??= new Map((state.data.domains.tiles ?? []).map((t) => [t.id, t]))).get(id);
 const refPic = (x) => (x?.preview
   ? h("img", { class: "item-icon mon-icon", src: assetUrl(x.preview), alt: "", width: "48", height: "48", loading: "lazy" })
   : h("span", { class: "item-icon item-noart" }));
@@ -5250,7 +5235,6 @@ function resolveRef(ref) {
   if (domain === "characters") { const c = characterById(id); return c  && { href: `#/characters/${c.id}`, name: c.name,        art: refPic(c),          where: c.species || label("characters") }; }
   if (domain === "items")      { const it = itemById(id);     return it && { href: `#/items/${it.id}`,     name: itemLabel(it), art: itemSprite(it, 48), where: label("items") }; }
   if (domain === "objects")    { const o = objectById(id);    return o  && { href: `#/objects/${o.id}`,    name: o.name,        art: refPic(o),          where: label("objects") }; }
-  if (domain === "tiles")      { const t = tileTypeById(id);  return t  && { href: `#/tiles/${t.id}`,      name: t.name,        art: h("span", { class: "item-icon item-noart" }), where: label("tiles") }; }
   return null;                                  // an unknown domain is dropped
 }
 /** A chapter's readable paragraphs. the_falling's body[0] repeats its summary
@@ -10629,117 +10613,6 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
  * The top review lives in the card's ONE review row, which targets `#top`
  * whenever the view is Textured — see worldCandidate. */
 
-function viewTiles() {
-  const list = state.data.domains.tiles.filter((t) => matches(state.query, t.id, t.name, t.description));
-  return h("div", {},
-    sectionHead("tiles"),
-    h("p", { class: "muted" }, state.admin
-      ? "The tiles2 ground library. Open a type to rate or remove individual tiles — rejected tiles tell the tiles agent (and the maps agent) to retire them."
-      : "The ground the world is built from — every tile of every terrain type."),
-    h("div", { class: "grid" }, ...list.map((t) => {
-      const first = t.groups[0];
-      return h("a", { class: "card", href: `#/tiles/${t.id}` },
-        h("div", { class: "thumb checker" }, first ? h("img", { src: assetUrl(`${first.dir}/${first.tiles[0]}`), alt: t.name, loading: "lazy" }) : null),
-        h("div", { class: "card-name" }, t.name),
-        // own sheets only — foreign (incoming-transition) groups are another
-        // type's art, listed on this page but never counted as this type's
-        h("div", { class: "card-sub" }, `${t.tileCount} tiles · ${t.groups.filter((g) => !g.foreign).length} sheets`),
-        h("div", { class: "card-badges" }, ...entityBadge("tiles", t.path)));
-    })));
-}
-// Is this tile one of the maps agent's "clean base" palette for its type?
-// (`solid` = the small set it paints regions + cliff walls with; `plain` =
-// the single canonical one — see wiki/tools/clean-base.py.)
-function cleanBaseRank(type, relPath) {
-  const cb = type.cleanBase;
-  if (!cb) return null;
-  if (cb.plain === relPath) return "plain";
-  if (cb.solid?.includes(relPath)) return "solid";
-  return null;
-}
-function tileCell(type, group, file) {
-  const rel = `${group.dir}/${file}`;
-  const id = stripExt(rel);
-  const cell = h("div", { class: "tile-cell" });
-  const sync = () => {
-    const e = fb("tiles", id);
-    cell.classList.toggle("rejected", e.status === "rejected");
-    cell.classList.toggle("approved", e.status === "approved");
-  };
-  const rank = cleanBaseRank(type, rel);
-  const uses = tileUses(rel);
-  if (!uses) cell.classList.add("unused-tile");
-  // Skip null children — raw DOM append(null) renders a literal "null" text
-  // node (players saw one under every tile, 2026-07-30).
-  for (const c of [
-    h("a", {
-      href: `#/tiles/${type.id}/${encodeURIComponent(rel)}`, class: "tile-link",
-      title: `${id}\n${uses ? `used ${uses.toLocaleString()}× in the world` : "unused"}`,
-    }, h("img", { src: assetUrl(rel), alt: file, loading: "lazy" })),
-    rank ? h("span", { class: "base-pill", title: "The maps agent paints clean ground and cliff walls with this tile" }, "clean base") : null,
-    uses ? h("span", { class: "use-pill", title: `Placed ${uses.toLocaleString()}× in the world` }, `×${uses > 999 ? `${Math.round(uses / 1000)}k` : uses}`) : null,
-    starsWidget("tiles", id),
-    state.admin ? h("button", {
-      class: "tile-x", title: "Reject this tile (toggles)",
-      // The grid's own ✕ is a remove button like any other, so it unstars too.
-      onclick: () => {
-        const on = fb("tiles", id).status === "rejected";
-        setFb("tiles", id, on ? { status: null } : { status: "rejected", rating: null });
-        for (const el of fbPeers("tiles", id, "stars")) el.__render?.();
-        sync();
-      },
-    }, "✕") : null,
-  ]) if (c) cell.append(c);
-  sync();
-  return cell;
-}
-function viewTileType(id) {
-  const t = state.data.domains.tiles.find((x) => x.id === id);
-  if (!t) return h("p", {}, "Unknown tile type.");
-  const kinds = [["base", "Base tiles"], ["elevation", "Elevation objects"], ["transition", "Transitions"]];
-  return h("div", {},
-    crumbRow("#/tiles", `← ${label("tiles")}`, "tiles", state.data.domains.tiles, t.id),
-    h("h1", {}, t.name),
-    h("p", { class: "muted" }, `${t.description} · ${t.tilePx}px iso · ${t.tileCount} tiles`),
-    // How much of this type the DEFAULT world actually uses.
-    (() => {
-      // The type's OWN tiles only — incoming (foreign) transitions belong to
-      // the source type and are excluded from tileCount too.
-      const all = t.groups.filter((g) => !g.foreign).flatMap((g) => g.tiles.map((f) => `${g.dir}/${f}`));
-      const used = all.filter((rel) => tileUses(rel) > 0);
-      const placements = used.reduce((n, rel) => n + tileUses(rel), 0);
-      return h("p", { class: "muted" },
-        h("span", { class: used.length ? "pill ok" : "pill warn" },
-          `${used.length} of ${all.length} tiles used`),
-        placements ? h("span", { class: "pill", style: "margin-left:6px" }, `${placements.toLocaleString()} placements`) : null);
-    })(),
-    h("div", { class: "fb-row" }, h("span", { class: "muted" }, "Whole type:"), starsWidget("tiles", t.path), verdictWidget("tiles", t.path)),
-    ...kinds.map(([kind, label]) => {
-      const groups = t.groups.filter((g) => g.kind === kind);
-      if (!groups.length) return null;
-      return h("div", {},
-        h("h2", {}, label, " ", h("span", { class: "pill" }, `${groups.reduce((n, g) => n + g.tiles.length, 0)} tiles`)),
-        ...groups.map((g, i) =>
-          h("details", { class: "tile-group", ...(kind === "base" && i < 2 ? { open: "" } : {}) },
-            h("summary", {}, `${g.label} · ${g.sheet} `, h("span", { class: "pill" }, String(g.tiles.length))),
-            h("div", { class: "tile-grid" }, ...g.tiles.map((f) => tileCell(t, g, f))))));
-    }));
-}
-
-/* --- tile instance (one tile, composed with the game's real iso geometry) --- */
-// Draw a list of cells {c, r, lvl, img, top} onto a canvas: the WORLD_FORMAT
-// projection (x=(c−r)·dx, y=(c+r)·dy − lvl·levelPx; a cell of elevation L
-// stacks its tile L times, 16px apart, then draws the top). Painter order:
-// back-to-front by (c+r), then by level.
-/** Compose cells with the GAME's own iso geometry, at the GAME's own scale.
- *  scale is 1 on purpose: `data.iso` carries the real numbers (tile 64,
- *  dx 32 = ISO_DX, dy 15 = ISO_DY), so one art pixel is one CSS pixel and a
- *  3×3 field here measures what a 3×3 patch measures in the world. Drawing
- *  at 2 made every scene twice the size the game shows (maintainer
- *  2026-07-31) — and pushed the wider scenes past the column, where
- *  `max-width:100%` then RESAMPLED the pixel art by a fraction. */
-/** [a, b] -> [a, divider, b]; a lone cell is left alone. */
-const withDivider = (cells) => (cells.length > 1 ? [cells[0], h("div", { class: "pair-div" }), cells[1]] : cells);
 function isoScene(cells, images, scale = 1, pad = 4, isoIn = null) {
   const iso = isoIn ?? state.data.iso ?? { tilePx: 64, dx: 32, dy: 15, levelPx: 16 };
   const draws = [];
@@ -10869,134 +10742,6 @@ function loadImages(paths, cb) {
     plain(p, p);
   }
 }
-function viewTileInstance(typeId, rel) {
-  const t = state.data.domains.tiles.find((x) => x.id === typeId);
-  if (!t) return h("p", {}, "Unknown tile type.");
-  const all = t.groups.flatMap((g) => g.tiles.map((f) => ({ id: encodeURIComponent(`${g.dir}/${f}`), name: f, rel: `${g.dir}/${f}`, group: g })));
-  const cur = all.find((x) => x.rel === rel);
-  if (!cur) return h("p", {}, "Unknown tile.");
-  const id = stripExt(rel);
-  const plain = t.cleanBase?.plain ?? rel; // no classification → self-surround
-  const rank = cleanBaseRank(t, rel);
-
-  // The five composition scenes (maintainer 2026-07-30): clean-ground
-  // surround, self surround, self stack (cliff), and the tile mid-wall with
-  // clean-base flanks — both wall faces.
-  const T = rel, B = plain;
-  const grid3 = (centre, ring) => [
-    ...[0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r, img: c === 1 && r === 1 ? centre : ring }))),
-  ];
-  // Cliff corner: the front stack plus one arm up-left (c−1) and one
-  // up-right (r−1) on screen — three 3-high stacks meeting in a V.
-  const vCliff = [{ c: 1, r: 1 }, { c: 0, r: 1 }, { c: 1, r: 0 }]
-    .map((p) => ({ ...p, lvl: 2, img: T, top: T }));
-  // Mid-wall: 3 cells along the run × 3 face levels, the tile dead centre so
-  // clean base sits above, below, both sides and on every diagonal.
-  const wallStack = (mid) => (mid ? [B, T, B] : [B, B, B]);
-  // Copy is short on purpose: two scenes share a row, so each caption gets
-  // half the column (maintainer 2026-07-31).
-  const scenes = [
-    ["On clean ground", "Surrounded by the clean base — open terrain.", grid3(T, B)],
-    ["Tiled with itself", "Only this tile — repetition and seams.", grid3(T, T)],
-    ["Stacked — a cliff of itself", "Three 3-high stacks meeting at a corner.", vCliff],
-    ["In a wall — face ↘", "Wall running down-right, the tile dead centre.", [0, 1, 2].map((c) => ({ c, r: 0, lvl: 3, img: B, stack: wallStack(c === 1), top: B }))],
-    ["In a wall — face ↙", "The same wall running down-left.", [0, 1, 2].map((r) => ({ c: 0, r, lvl: 3, img: B, stack: wallStack(r === 1), top: B }))],
-  ];
-  // TWO SCENES PER ROW, sharing one chessboard (maintainer 2026-07-31: "we
-  // can reuse the same chessbox to draw both examples ... this way we can
-  // click next next next and see more on the same screen"). Pairs are chosen
-  // so the two halves belong together — the two flat fields, then the two
-  // wall faces — with the cliff standing alone between them.
-  const PAIRS = [[0, 1], [2], [3, 4]];
-  const sceneBox = h("div", { class: "iso-scenes" }, ...PAIRS.map((pair) =>
-    h("div", { class: `iso-scene${pair.length > 1 ? " paired" : ""}` },
-      // The divider is its own 1px GRID COLUMN, not a border on one cell —
-      // a border would make the right half 1px + its padding narrower, and
-      // these halves have to hold a 192px canvas each with nothing to spare.
-      h("div", { class: "pair-row heads" }, ...withDivider(pair.map((i) => h("div", { class: "pair-cell" },
-        h("div", { class: "panel-title" }, scenes[i][0]),
-        h("p", { class: "muted iso-hint" }, scenes[i][1]))))),
-      h("div", { class: "pair-row iso-stage checker" }, ...withDivider(pair.map((i) =>
-        h("div", { class: "pair-cell stage-cell", "data-scene": String(i) },
-          h("span", { class: "muted" }, "rendering…"))))))));
-  loadImages([T, B], (imgs) => {
-    // pad 0 on a shared row: the built-in 4px margin each side is what would
-    // push two 3x3 fields (200px each) past a phone column, and trimming
-    // transparent padding is free — unlike scaling, which resamples the art.
-    for (const cell of sceneBox.querySelectorAll(".stage-cell")) {
-      const i = Number(cell.dataset.scene);
-      const paired = cell.parentElement.children.length > 1;
-      cell.replaceChildren(isoScene(scenes[i][2], imgs, 1, paired ? 0 : 4));
-    }
-  });
-
-  return h("div", {},
-    crumbRow(`#/tiles/${t.id}`, `← ${t.name}`, `tiles/${t.id}`, all, cur.id),
-    h("div", { class: "detail-head" },
-      h("div", { class: "portrait checker tile-portrait" }, h("img", { src: assetUrl(rel), alt: cur.name })),
-      h("div", { class: "meta" },
-        h("h1", {}, stripExt(cur.name)),
-        // ONE row of pills, not two stacked lines: a clean-base tile carries
-        // an extra pill, and stacking made its header taller than an
-        // ordinary tile's — so paging shifted the page (maintainer
-        // 2026-07-31). The type name is already in the back-link above and
-        // on the thumbnail; the group label is what the first pill says.
-        h("div", { class: "pill-row" },
-          rank ? h("span", { class: "pill ok", title: rank === "plain" ? `THE canonical clean tile of ${t.name}` : "In the maps agent's clean-base palette" }, cur.group.label) : null,
-          (() => {
-            const uses = tileUses(rel);
-            return uses
-              ? h("span", { class: "pill ok" }, `used ${uses.toLocaleString()}× ${uses === 1 ? "time" : "times"}`)
-              : h("span", { class: "pill warn", title: "No cell or prop in the world uses this tile" }, "unused");
-          })()),
-        // Sheet id and file path are pipeline facts — admin only.
-        state.admin ? h("p", { class: "muted" }, `${cur.group.label} · ${cur.group.sheet}`, " ", h("code", {}, id)) : null,
-        feedbackRow("tiles", id))),
-    sceneBox);
-}
-
-/* --- objects --- */
-// THE REVIEW QUEUE (maintainer 2026-08-13: "As an admin I should be able to
-// sort the Scenery on the latest generated content first or/and with a
-// approved/unapproved filter … If I put a filter at the overview that filter
-// should hold when clicking on a Scenery and press next next next").
-//
-// ONE function decides the order and the membership, and BOTH the overview
-// grid and the ‹ › pager on the entity page read it — that is the whole
-// mechanism behind "the filter holds". The choice lives in localStorage, so
-// it also survives a reload and the trip in and out of a piece. Public
-// visitors always get the full domain in its natural order.
-const OBJ_SORT_KEY = "wiki-obj-sort";
-const OBJ_FILTER_KEY = "wiki-obj-filter";
-const OBJ_TYPE_KEY = "wiki-obj-type";
-// WHAT KIND OF THING IT IS (maintainer 2026-08-14: "on scenery it's hard to
-// find the objects I'm looking for — can you make a filter on type"). The
-// taxonomy is NOT the wiki's: every group in scenery/config/factory.json
-// carries a `type`, and build.mjs copies it onto the piece. Adding a type
-// there makes it appear here on the next build with no change to this file —
-// which is the point, because the scenery agent owns what its pieces are.
-const OBJ_TYPES = {
-  TREE: "Trees", WINDOW: "Windows", MOUNTAIN_WALL: "Mountain wall", TOWN: "Town",
-  INDOOR: "Indoor", NATURE: "Nature", OTHER: "Other",
-};
-const objTypeLabel = (t) => OBJ_TYPES[t] ?? titleish(t ?? "other");
-// A VERDICT BELONGS TO THE ART IT WAS GIVEN ON. The scenery agent deletes
-// rejected pieces and regenerates them AT THE SAME PATH, and the feedback
-// store is keyed by path — so without this, brand-new art silently inherits
-// the judgement of the piece it replaced. That is why the maintainer found
-// only 3 unreviewed pieces after hours of new content (2026-08-13): 20 of them
-// were carrying his verdict on art he had never seen. `added` is the date the
-// CURRENT sprite arrived (build.mjs, by content hash), so an older verdict is
-// a verdict about something else.
-// The scenery domain began shipping a `rotations` map on 2026-08-14 — south,
-// south-east and south-west so far — and the builder turns each one into a
-// one-frame clip on the synthesised `still`. So "how many ways does this piece
-// face" is just how many directions that still has.
-// Since 2026-08-14 a piece can also carry STATES (LIGHTS_ON / LIGHTS_OFF), one
-// sprite set each, so "still" is no longer the only key a static piece has.
-const stillStates = (o) => Object.keys(o?.animations ?? {});
-const stillDirs = (o) => Math.max(0, ...stillStates(o).map((s) => Object.keys(o.animations[s]?.dirs ?? {}).length));
-/** "2 states × 3 directions", "3 directions", or "" when there is one of each. */
 function stillShape(o) {
   const st = stillStates(o).length, d = stillDirs(o);
   if (st > 1 && d > 1) return `${st} states × ${d} directions`;
@@ -12933,7 +12678,6 @@ function viewSearch() {
       hits.push(["characters", c.name, `#/characters/${c.id}`, c.preview]);
     }
   });
-  d.tiles.forEach((t) => matches(q, t.id, t.name, t.description) && hits.push(["tiles", t.name, `#/tiles/${t.id}`, t.groups[0] ? `${t.groups[0].dir}/${t.groups[0].tiles[0]}` : null]));
   d.objects.forEach((o) => matches(q, o.id, o.name, o.description) && hits.push(["objects", o.name, `#/objects/${o.id}`, o.preview]));
   d.sounds.forEach((s) => matches(q, s.id, s.name, s.description, s.usage) && hits.push(["sounds", s.name, "#/sounds", null]));
   d.music.forEach((t) => matches(q, t.id, t.name, t.use) && hits.push(["music", t.name, "#/music", null]));
@@ -12993,13 +12737,7 @@ function nearRow(it) {
   else if (dom === "characters") { const c = characterById(id); if (c) { name = c.name; art = c.preview; } }
   else if (dom === "objects")  { const o = objectById(id);    if (o) { name = o.name; art = o.preview; } }
   else if (dom === "items")    { const t = itemById(id);      if (t) { name = itemLabel(t); art = t.preview; } }
-  else if (dom === "tiles")    {
-    const t = tileTypeById(id);
-    // The instance the player is standing on, when the game names the file.
-    if (it.path) href = `#/tiles/${encodeURIComponent(id)}`;
-    if (t) { name = t.name; art = it.path ?? (t.groups?.[0] ? `${t.groups[0].dir}/${t.groups[0].tiles[0]}` : null); }
-    else if (it.path) art = it.path;
-  } else if (dom === "world")  {
+  else if (dom === "world")  {
     const g = (worldMeta().groundTypes ?? []).find((x) => x.id === id);
     if (g) { name = g.name ?? id; }
     where = "Ground";
@@ -13131,7 +12869,6 @@ function route() {
   // #/characters/<hero>/<event> lights that hero's own sound card — where the
   // 🔍 page's voice-scoped rows (player.jump@default_boy) land.
   else if (page === "characters") { view = id ? viewCharacter(id) : viewCharacters(); if (id && sub) spotlight(`[data-event="${CSS.escape(sub)}"]`); }
-  else if (page === "tiles") view = id ? (sub ? viewTileInstance(id, sub) : viewTileType(id)) : viewTiles();
   else if (page === "world") view = id === "transition" && sub ? viewWorldTransition(sub)
     : id ? (sub ? viewWorldPair(id, sub) : viewWorldType(id)) : viewWorld();
   else if (page === "objects") view = id ? viewObject(id) : viewObjects();

@@ -155,10 +155,10 @@ def live_descriptions() -> dict[str, list[str]]:
         if text:
             out["objects"].append(text)
 
-    tiles = read_json(ROOT / "tiles2" / "config" / "tiles2.json")
-    out["tiles"] = [
-        t["description"] for t in as_list(tiles, "ground_types") if t.get("description")
-    ]
+    # tiles3 (tiles/ground_types.json — tiles2 deleted 2026-09-09): grounds are
+    # keyed by id and carry no prose, so the tile layout budget has nothing to
+    # measure; the list stays so the schema does not change.
+    out["tiles"] = []
 
     return out
 
@@ -204,10 +204,8 @@ def live_ids() -> dict[str, dict[str, str]]:
         if pid:
             ids["objects"][pid] = meta.get("name", pid)
 
-    tiles = read_json(ROOT / "tiles2" / "config" / "tiles2.json")
-    ids["tiles"] = {
-        t["id"]: t.get("name", t["id"]) for t in as_list(tiles, "ground_types") if t.get("id")
-    }
+    grounds = (read_json(ROOT / "tiles" / "ground_types.json") or {}).get("grounds") or {}
+    ids["tiles"] = {gid: gid.replace("_", " ") for gid in grounds}
 
     return ids
 

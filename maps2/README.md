@@ -1,10 +1,11 @@
 # maps2 — worlds for the game (Map2 agent)
 
-World assembler. Consumes **`tiles2/`** (named ground types, first-class
-transitions) and produces **worlds** under `maps2/worlds/<name>/`: `world.json`
-plus the sidecars `spawns.json`, `npcs.json`, `places.json` and the map images
-`minimap.webp` + `map_base.webp`. The format contracts the game parses against
-live in `spec/`: `WORLD_FORMAT.md`, `SPAWNS.md`, `NPCS.md`, `PLACES.md`.
+World assembler. Names a **ground type per cell** from `tiles/ground_types.json`
+(Tiles 3.0 resolves the art at draw time) and produces **the world** under
+`maps2/worlds3/the_game/`: `world.json` plus the sidecars `spawns.json`,
+`npcs.json`, `places.json` and the map images. The format contracts the game
+parses against live in `spec/`: `WORLD3.md`, `SPAWNS.md`, `NPCS.md`, `PLACES.md`.
+(tiles2 and the world@1/@2 worlds were retired 2026-09-09 — history in git.)
 
 ## Releasing — deploy YOURSELF, always push to `main`
 
@@ -43,9 +44,10 @@ programmatically, and verify field-by-field against `origin/main` that only the
 fields you meant to touch differ. Never resolve a shared file by hand-picking
 hunks.
 
-Better still: when adopting a brand-new tiles2 material, ask tiles2 to classify
-it at creation (`python coordination/board.py post maps2 --to tiles2 --text
-"classify <cat> please"`) so the gate never goes red — but don't block on them.
+Better still: when adopting a brand-new ground type, ask the tiles agent to
+classify it at creation (`python coordination/board.py post maps2 --to tiles
+--text "classify <ground> please"`) so the gate never goes red — but don't
+block on them.
 
 If a **different** gate fails (navigation sim, `verify-deckwalk`, a unit test),
 that's a real defect in the map (walled-in spawn, deck with no entry, …): fix
@@ -325,197 +327,35 @@ Pillow's default WebP encode is LOSSY and silently resamples pixel art.
 Convert at the SOURCE and commit — never in the Dockerfile (that re-runs every
 deploy and busts the layer cache).
 
-The pipeline writes WebP everywhere and **reads tiles2 art in either format**:
-`tiles2lib._tiles()` globs `tile_*.png` AND `tile_*.webp`, sorted by STEM so a
-half-converted sheet can't reorder. `world.json` bakes LITERAL tiles2 paths;
-when tiles2 flips a sheet, run
-**`python maps2/pipeline/to_webp.py --paths --apply`** — it repoints every
-baked path whose `.webp` exists on disk. Only the `paths` table changes (grids,
-decks, props untouched), so terrain is bit-identical and no world regenerates.
+The pipeline writes WebP everywhere; a maps3 world bakes no art paths at all (a
+ground NAME per cell), so a tiles publish never repoints anything here.
 
-## Geometry (tiles2)
+## Geometry (tiles3)
 
-- top diamond **30px** tall × 64px wide (grid steps DX=32, DY=15)
-- one elevation level = **16px** of vertical face
-- terraced cliffs stack a type's `base` tile 16px per level (pixel-perfect per
-  `tiles2/docs/ELEVATION.md`)
+- top diamond **28px** tall × 64px wide (grid steps DX=32, DY=14)
+- one storey = **15px** of stacking pitch (`shared ISO_GEOMETRY_MAPS3`); the
+  art's own wall band is 17px (`tiles/docs/GEOMETRY.md`)
 
 ## Pipeline (`pipeline/`)
 
-- `tiles2lib.py` — loads tiles2; per-type target colour; analyses every
-  transition tile from pixels into **composition** (material mix) +
-  **orientation** (screen-space direction the split faces). Cached to
-  `config/tiles2_analysis.json`.
-- `worldio.py` — the world.json format (`save_world`/`load_world`; save
-  re-derives all sidecars).
-- `autotile.py` — the transition auto-tiler (one-sided feather: the
-  lower-priority material blends into the higher; per cell, pick the transition
-  tile whose measured composition and orientation match the geometry) +
-  `camera_monotone` / `occlusion_violations`.
-- `render2.py` — isometric renderer (window / overview / minimap).
-- `minimaps.py` / `cartomap.py` — the two map images (see above).
-- `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check`
-  gates.
-- `to_webp.py` — WebP converter + baked-path repointer.
-- `verify.py` — the drift catcher: "another domain changed its art — does maps2
-  need to re-export anything?" in one command.
-- `build.py` — `python maps2/pipeline/build.py <world>`; world builders:
-  `ringworld.py`, `islandworld.py`, `islandworld2.py`, `lostworld.py`,
-  `demoworld.py` (demo_isle), `propdemo.py`, `transdemo.py`, `glowdemo.py`,
-  `occlusionworld.py`, `housedemo.py`, `monsterdemo.py`.
+- `world3.py` / `world3grow.py` — the_game's builder (pixel-maps3: a ground
+  NAME per cell, decks, scenery placements; see `spec/WORLD3.md`).
+- `render3.py` — the tiles3 reference renderer (window / overview / minimap;
+  the game's `tiles3.ts` resolver is parity-gated against it).
+- `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check` gates.
+- `sceneryscale.py` — the size the GAME draws scenery at.
+
+RETIRED 2026-09-09: the world@1/@2 pipeline (`tiles2lib`, `render2`,
+`autotile`, `worldio`, `build`, `minimaps`, `cartomap`, `verify`, `to_webp` and
+the eleven world builders) with the tiles2 domain it painted — history in git.
 
 ## Worlds
 
-- `worlds/the_island2/` (`islandworld2.py`) — **the production island** (248²,
-  max level 40); design laws below.
-- `worlds/the_island/` (`islandworld.py`) — the previous production island:
-  organic warped coastline, camera-facing gated cliffs, multi-peak mountain
-  (max 30), gorge with stone bridges. Preserved unchanged.
-- `worlds/demo_lost/` — the older grass island; preserved unchanged, exempt
-  from the occlusion rule — not the pattern.
-- `worlds/demo_isle/` — small island demo.
-- `worlds/ring_test/` — the transition-evaluation donut: `clear_water` centre
-  (spawn), 5 pizza slices of the pure grounds, elevation rising outward. See
-  its `INSIGHTS.md` for what the transitions taught us.
-- `worlds/monster_demo/` — one 5×5 habitat pad per roster monster on a stone
-  courtyard.
-- Feature-test maps (one rendering feature each, no monsters/NPCs):
-  `prop_demo` (tile props), `trans_demo` (auto-tiler rows), `glow_test`
-  (emissive tiles), `occlusion_test` (world@2 decks reference),
-  `house_demo` (buildings with real floor plans; maintainer: rooms must be
-  bigger and "real house looking", not huts).
+- `worlds3/the_game/` (`world3.py`) — **the game**, the only world (maintainer
+  2026-09-09: "We will commit 100% to the new tiles3 system and the new map
+  from here on").
 
-### the_island2 design laws (all hard-asserted)
+RETIRED 2026-09-09: `worlds/` — the_island2, the_island, demo_lost, demo_isle,
+ring_test, monster_demo, prop_demo, trans_demo, glow_test, occlusion_test,
+house_demo — history in git.
 
-Pairs an antitone **mountain** (upper) with an *A Link to the Past*-style
-relief **maze** (lower). The maze can't be antitone (a strictly-antitone field
-makes one connected lowest sheet — it could never separate two equal-level
-floors laterally), so it uses genuine relief kept legible by the
-only-where-needed wall-material rule: `_lip_cover` recolours a same-material
-toward-camera up-step's higher rim to a wall material (stone/obsidian) ONLY
-when `_lip_needed` says it would otherwise be illegible; `_bad_lips` (the
-illegible subset) is the must-be-empty gate (Δ>10 is fog-exempt, so tier-12
-keeps its grass top).
-
-- **Mountain**: TERRACED onto flat benches `{16,20,24,28,32,36,40}` (Δ4
-  cliffs, `camera_monotone` masked to it) — ~10 sharp varied-height peaks with
-  deep saddles + camera-fanning grooves for a jagged skyline (max 40, not a
-  smooth pyramid), a carved valley/tarn so it undulates up *and* down; rock
-  with snowy/ice/obsidian peaks. Floor 16 sits a gated Δ4 above the maze cap
-  12.
-- **Maze** tiers `{0,4,12}` — deltas mostly Δ4, sometimes Δ8, rarely Δ12
-  (dramatic cliffs, no timid Δ2); winding cliff/water corridors.
-- **The TROLLSTIGEN** (`_foot_switchback`; the maintainer's own design after
-  every axis-aligned attempt failed — don't retry those): the descent down the
-  sheer toe is a wall-hugging stack of MIRRORED slope legs. His rules,
-  verbatim: legs run ALONG the cliff; at a turn you MIRROR the slope and
-  continue down in both Z and Y — the new leg's top aligns with the old leg's
-  bottom (Z) and draws IN FRONT of it (Y) — so the previous leg is the next
-  leg's inner wall and *you can only fall down outwards*; give up "perfect
-  straight line" (legs follow the wall contour); vary road width where needed;
-  hairpin corners are bigger ("two cars can meet").
-  THE GEOMETRY INSIGHT that made it work: a screen-horizontal wall is a
-  GRID-DIAGONAL line, so the structure lives on the skew lattice `p=x+y`
-  (screen depth), `q=x−y` (screen horizontal). A leg = a zip-band of `wleg`
-  consecutive p-layers; stacking outward = +p; the stand-off `o(q)` is the
-  1-Lipschitz envelope of the rim (bands shift ≤1 p-layer per column; the
-  innermost leg WIDENS back to the wall where it recedes). Levels are
-  scheduled on the diagonal `t = dir·q − p`: constant-t lines run along
-  `(p+1, q+dir)`, so every 1-level step edge FACES the camera — a
-  same-material occluded up-step is impossible by construction — and leg k's
-  minimum equals leg k+1's maximum, so the stack is monotone toward the
-  camera. HARD-ASSERTED **hug invariant**: no structure cell may drop ≥2 on an
-  up-screen side (hairpin noses exempt — they hang free like real switchback
-  noses). The PRIMARY sits at the maintainer's chosen window
-  (`TROLL_SITE_FRAC`, his blue marks — a design constant like the bridge
-  fracs); `_carve_connector` must never slice a Trollstigen (guard in code —
-  it once flattened carved legs via `_fill_traps` after slicing them apart).
-- **The Trollstigen IS the road, and the mountain road is STONE** (maintainer:
-  "should have been in stone and not dirt"): the trunk spawn→summit routes
-  through the primary's foot→entry via-points; on the structure the ribbon is
-  painted `stone_mountain` (linework-exempt, sand-guarded, band-column
-  completion for a solid ribbon), off it the lowland road stays dirt. The
-  SECONDARY toe stays a pure grass trail (maintainer: "you fucking nailed
-  it" — no paint, no foot spur).
-- **EVERY bench climb is a mini-Trollstigen** (maintainer: "why do you keep
-  drawing straight staircases when we have a better system"): `_climb_hugging`
-  carves a 2-leg mirrored mini (D=4, dP=2, same carver via `mini=True` —
-  apron = the next bench down, uniform-floor window, smaller
-  `TROLL_QMIN_MINI`) at the far lateral end of each bench; the straight
-  `_carve_connector` survives ONLY as last-resort fallback so the summit can
-  never disconnect (`_troll_fallbacks` counts uses — keep ~0-1). A HUG-REPAIR
-  sweep fills wall notches (groove cracks, jogged rims) to road level as grass
-  shoulder so the only-outward-falls law holds against any wall shape.
-- **Material policy — stairs KEEP the local ground; dirt = road surface**
-  (maintainer: "Don't always use stone. Use the ground type that is already
-  present at that location"): carved stairs/ramps (`self._ascent`) keep
-  whatever ground they cut through — their step faces point at the camera, so
-  they read in any material. Bridge DECKS follow the same law (maintainer:
-  "create it in the same ground type, not always switch"): a deck wears its
-  BANKS' ground, dirt only where the road runs onto the span; laying-time mats
-  are provisional and `_resolve_deck_mats`
-  re-reads every deck's final banks (majority ground among adjacent walkable
-  land within 1 level) just before `_paint`. Bridges are **1-LEVEL slabs**
-  (maintainer: "draw all bridges 1 level in height… remove the bottom tile so
-  it still lines up with the ground"): deck `thickness` 0 — the top tile's
-  baked cube face IS the one visible level; walk surface flush with the banks.
-  Enforced in the same finalize pass so it covers every bridge creator,
-  inherited ones included (the game's parser accepts thickness 0). The flat
-  road surface is `lightdark_dirt`; the road may repaint bench tops but never
-  an ascent cell — EXCEPT Trollstigen cells, which are grass and ARE the road.
-- **8-direction dirt ROADS** (`_dirt_roads`): organic meandering branching
-  network in all 8 SCREEN directions — the router (`_road_graph_bfs`) adds
-  grid-diagonal moves (rendering screen-vertical/-horizontal) on flat Δ0 land,
-  each gated by a same-level **elbow** cell so the painted road stays
-  4-connected-walkable; the √2 diagonal weight beats the 2.0 cardinal zigzag.
-  Held a margin off beach/water and the mountain foot, biased to corridor
-  centres via the cached `_road_cost_field`; trunk spawn→summit +
-  landmark/stair-foot spurs forking at Y-junctions.
-- **The MOUNTAIN GORGE** (`_mtn_gorge`/`_gorge_channel`): a water channel
-  carved to level 0 straight through the massif. A level-0 slot in a 40-tall
-  massif is invisible if it runs N–S (the tall east wall sits toward-camera of
-  it), so it runs along the grid **(1,1) diagonal** = straight down the screen
-  toward the camera, then keeps flowing through the low toe/maze (`level <
-  16`) to the lowland — every water cell's toward-camera neighbour is also
-  water, the near wall vanishes, and the level-0 surface reads the whole way.
-  Crossed by a deliberate HIGH (`≥16`) stone bridge (`_bridge_over_gorge`).
-- **ONE RIVER** (maintainer: "The small one should be removed"). `_maze_river`
-  (a second, raised-valley channel with five crossings) is **deleted**, with
-  its bridges — a crossing exists because there is something to cross. The
-  gorge is the island's river. Don't re-add.
-- **Multi-level water** (`_ponds`/`_tarn`/`_sunken_lagoon`): flush lakes at
-  maze tiers `{4,12}` and benches `{20,24}`, a flush alpine tarn, and a sunken
-  walk-in lagoon on the snow (`LAGOON_SITES`, water 2 levels down inside a Δ1
-  walkable rim) — all transactional so they never seal a region.
-- **THE HEADLAND RULE** (`_bridge_headlands`; maintainer: the hill you climb
-  to reach the big bridge "need some area to make sense"). A bridge landing is
-  a LANDFORM, not whatever ground survived beside the water. Each end of every
-  **lowland** crossing needs ≥ `HEADLAND_MIN` (160) cells of ground at deck
-  level within `HEADLAND_R` (12) of the landing, **≥ `HEADLAND_DIM` (9) across
-  BOTH axes** — the clause that bites: a long thin ledge passes any pure area
-  test (`_widen_hills` can't help — it only touches bbox min-dim ≤2 and stops
-  at 4). Grown nearest-cell-first (a rounded rise, never a tentacle along the
-  bank), raising only land BELOW the deck — never water, never the massif,
-  never a reserved cell — and `build()` asserts it. Mountain crossings exempt
-  (their banks are terraced rock; reshaping breaks the antitone/terrace
-  invariants).
-- **…AND YOU HAVE TO BE ABLE TO WALK UP IT** (maintainer: "more and wider
-  ways/paths to go get up on it"). Growing a landing without touching its rim
-  makes a MESA. A **way up** is a run of rim cells within one level of the
-  top; runs narrower than `HEADLAND_WAY_W` (4) are scrambles and count for
-  nothing; a landing needs `HEADLAND_ACCESS` (12) rim cells of real ways (that
-  single test lets a hill merging into the plain pass untouched while one
-  notch fails). What's missing is cut as `HEADLAND_RAMPS` (3) separate
-  staircases, `HEADLAND_RAMP_W` (5) wide, spread FARTHEST-APART-FIRST around
-  the rim, only ever **toward the camera** so every new slope shows its faces.
-  **Each lane starts at its OWN edge**: a hill boundary is ragged, and a ramp
-  laid on one straight lateral line leaves lanes whose edge sits further in
-  hanging a cell short — a staircase that starts nowhere (shipped once; the
-  access assert caught it at 11 of 12).
-- **Bigger beaches** + a wide **ocean margin** (`M=24`, `n=248`; island inset
-  via `_coastline`, `nd` stays 200). `build()` asserts no land on the border.
-  NOTE: a finite frame only pushes the edge out of view; never showing an
-  "end of world" is the **game client's** job (clamp the camera or fill
-  out-of-bounds with `clear_water`), not the generator's.
-
-Reachability is **prop-aware** (props set `collision=1`).

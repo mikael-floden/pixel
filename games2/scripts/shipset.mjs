@@ -14,10 +14,10 @@
 // DERIVED, so adding an NPC to a shipped world automatically ships that NPC's
 // character art and nobody has to remember to update a list.
 //
-//   published worlds ─┬─ world.json paths[]      → tiles2/**   (the tile art)
+//   published worlds ─┬─ world.json (pixel-maps3)  → tiles/**    (the tiles3 closure, ship-tiles3.ts)
 //                     ├─ npcs.json  .character   → characters2/npcs/<uid>/**
 //                     ├─ spawns.json .monster    → monsters/<id>/**
-//                     └─ the world's own files   → maps2/worlds/<w>/**
+//                     └─ the world's own files   → maps2/worlds3/<w>/**
 //   playable characters                          → characters2/humans/<uid>/**
 //   config scenery (the 3 game-referenced pieces)→ scenery/<name>/**
 //   always-ship domains (small, wholly in-game)  → items/ lore/ live/ …
@@ -134,20 +134,14 @@ for (const name of worldNames) {
     continue;
   }
   const [tree, dir] = found;
-  // The world's own files (world.json, npcs/spawns/places, minimap, map_base,
-  // and any per-world sheets like prop_demo's props_*.webp).
+  // The world's own files (world.json, npcs/spawns/places, minimap).
   const own = walk(dir);
   addAll(own);
 
   const w = readJson(join(dir, "world.json"), `world ${name}`);
+  // A maps3 world bakes no art paths (a ground NAME per cell; the tiles3
+  // closure is ship-tiles3.ts's, computed in the Dockerfile's build stage).
   const tiles = [];
-  if (w) {
-    for (const p of w.paths ?? []) {
-      if (typeof p !== "string") continue;
-      tiles.push(p);
-      add(p);
-    }
-  }
 
   // NPCs → their character art.
   const chars = [];
@@ -224,7 +218,7 @@ for (const name of policy.scenery ?? []) {
 // ------------------------------------------------- domain support files -----
 // A domain is not just its entities. Every contributing domain also carries
 // small root-level descriptors the BUILDERS read — monsters/config/roster.json,
-// characters2/animation_map.json, tiles2/emission.json — and missing one does
+// characters2/animation_map.json — and missing one does
 // not 404 a sprite, it silently empties a manifest.
 //
 // This was found the hard way: the first curated root produced
@@ -272,7 +266,7 @@ for (const p of [...ship]) {
 
 // ------------------------------------------------------------- reporting ----
 const DOMAINS = [
-  "characters2", "tiles2", "maps2", "scenery", "monsters",
+  "characters2", "maps2", "scenery", "monsters",
   "items", "sounds", "music", "lore", "wiki", "live",
 ];
 

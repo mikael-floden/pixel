@@ -29,7 +29,6 @@ on:
     paths:
       - "games2/**"
       - "characters2/**"
-      - "tiles2/**"
       # Tiles 3.0. Without this line the domain is in the image (Dockerfile COPYs it,
       # .dockerignore allows it) but nothing ever REBUILDS the image when it changes,
       # so the wiki's World section serves whatever tiles happened to be baked in by
@@ -145,10 +144,6 @@ jobs:
             /characters2/
             /maps2/worlds/
             /live/
-            # check-light-budget reads the emissive tiles' light params to
-            # count how many real light pools can reach one camera window.
-            # The FILE only (707 KB) — not the 34 MB of tiles2 art.
-            /tiles2/emission.json
             # ...and the wiki parse gate below reads its own script and the
             # file it checks. A step that reads a path this list does not
             # fetch fails MODULE_NOT_FOUND and takes every domain's deploy

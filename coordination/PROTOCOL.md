@@ -7,8 +7,7 @@ parallel. Each agent owns one domain and one board file
 | Agent | Owns | Notes |
 |-------|------|-------|
 | characters2 | `characters2/` | heroes + NPC mirror |
-| tiles2 | `tiles2/` | the live, shipping tile library |
-| tiles | `tiles/` | Tiles 3.0, built **alongside** tiles2 (nothing migrates until it covers the game's needs) |
+| tiles | `tiles/` | Tiles 3.0 — THE tile library (tiles2 retired 2026-09-09, history in git) |
 | maps2 | `maps2/` | worlds |
 | scenery | `scenery/` | formerly `objects/` (renamed 2026-08-12) |
 | sounds | `sounds/` | SFX producer |

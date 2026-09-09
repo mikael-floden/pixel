@@ -1,10 +1,10 @@
 # tiles — Tiles 3.0
 
-Third-generation isometric ground tiles. Built **alongside** `tiles2/` (which stays
-live and shipping); nothing migrates until this set covers everything the game needs.
+Third-generation isometric ground tiles — THE tile library the game renders.
+(`tiles2/`, Tiles 2.0, was deleted 2026-09-09 with every world it painted; history
+in git. Maintainer: "We will never go back to the tile2 system again.")
 
-> Naming: `tiles2/` = Tiles 2.0, `tiles/` = Tiles 3.0. `tiles2` was never renamed, so
-> 3.0 takes the plain name.
+> Naming: `tiles/` = Tiles 3.0; the plain name was reused from the retired v1.
 
 ## What is actually different
 

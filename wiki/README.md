@@ -207,7 +207,7 @@ cp -r /tmp/shipped/wiki /tmp/w && rm -rf /tmp/shipped/wiki && mv /tmp/w /tmp/shi
 node /tmp/shipped/wiki/build.mjs --root /tmp/shipped --games2 <repo>/games2
 
 # what the image now does: the full tree (hard-linked, seconds)
-mkdir /tmp/full && for d in scenery characters2 tiles2 tiles maps2 sounds music \
+mkdir /tmp/full && for d in scenery characters2 tiles maps2 sounds music \
   monsters items lore live; do cp -al <repo>/$d /tmp/full/$d; done
 cp -r <repo>/wiki /tmp/full/wiki
 VITE_GIT_SHA=<sha> node /tmp/full/wiki/build.mjs --root /tmp/full --games2 <repo>/games2
@@ -314,14 +314,12 @@ reach the running server via `.github/workflows/live-notify.yml` →
 triggers a game deploy. The wiki reads state from `GET /api/live/state`
 (static `/assets/live` files as offline fallback).
 
-## Two ground systems: World (Tiles 3.0) and Tiles OLD
+## The ground system: World (Tiles 3.0)
 
-The tiles agent is building **Tiles 3.0** in `tiles/`, to replace `tiles2/`
-(maintainer 2026-08-16: *"When the new tile system is complete the old /tiles2
-will be removed. This however is a big task and we will need the wiki in order
-to know if /tiles (3.0) works … Tiles OLD and World? World is the new Tiles 3.0
-system"*). The NEW system takes the good name; both live in the nav until the
-migration lands, and when `tiles2/` goes, one row of `SECTIONS` goes with it.
+`tiles/` is THE tile library (tiles2 — the "Tiles OLD" row — was deleted
+2026-09-09 with every world it painted; history in git). The section is plain
+`world`, no `adminOnly`, and its feedback domain key stays `tiles` (the ids the
+maintainer's verdicts already ride on).
 
 **Three levels**, the way he thinks about ground (maintainer 2026-08-17):
 `#/world` the ground types → `#/world/<top>` every wall that ground can stand
@@ -457,17 +455,6 @@ the ground, the cliff it makes, and a sentence in plain words.
 - The gate reads the rendered text of all three levels as a player and fails on
   a word from the factory — and asserts the Game Master still sees each of them,
   so the check cannot pass by deleting his instruments.
-
-**The player's encyclopedia is unchanged, deliberately.** "Tiles OLD" is a
-migration word that means nothing to a reader, and an unfinished ground system
-in the encyclopedia is a promise the game cannot keep. So a player still sees
-ONE ground section called World — `tiles2`, the tiles the game actually renders
-— and 3.0 is `adminOnly` until it ships. That is also why prod needs no deploy
-plumbing yet: the admin reads both the manifest and the art from the repo, so
-the section works the moment the site deploys. When 3.0 becomes what the game
-renders, `tiles/` needs the five-place checklist above **plus** an `alwaysShip`
-entry in `games2/config/publish.json` (the curate stage's include list, the
-games agent's file).
 
 Gate: `wiki/tools/check-world.mjs`.
 

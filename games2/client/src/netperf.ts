@@ -27,11 +27,9 @@
  * means the accumulators are per-window by construction.
  */
 
-/** URL prefix -> bucket. First match wins, so ORDER IS THE RULE: `/assets/tiles/`
- *  must not be tested before `/assets/tiles2/`. */
+/** URL prefix -> bucket. First match wins. */
 const FAMILIES: ReadonlyArray<readonly [string, string]> = [
   ["/assets/scenery/", "scenery"],
-  ["/assets/tiles2/", "tiles2"],
   ["/assets/tiles/", "tiles3"],
   ["/assets/monsters/", "monsters"],
   ["/assets/characters2/", "chars"],
