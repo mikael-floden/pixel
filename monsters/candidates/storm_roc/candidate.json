@@ -1,0 +1,146 @@
+{
+  "id": "storm_roc",
+  "name": "Stormroc",
+  "tier": "boss",
+  "lore": "It nests above the weather and hunts below it. Every thunderclap on the fells is a wingbeat somebody did not see.",
+  "biome": [
+    "grey_stone",
+    "snow"
+  ],
+  "items": [
+    "bundle of bright plumes",
+    "rainbow tail plume"
+  ],
+  "prompt": "Enormous fantasy storm bird with dark slate-blue feathers edged in white lightning, a hooked steel-gray beak, blazing white eyes, wide spread wings crackling with electric arcs, long sharp talons, and a crest of feathers standing up like jagged lightning bolts.",
+  "size": [
+    168,
+    168
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "storm_roc/rotations/south.webp",
+    "south-east": "storm_roc/rotations/south-east.webp",
+    "east": "storm_roc/rotations/east.webp",
+    "north-east": "storm_roc/rotations/north-east.webp",
+    "north": "storm_roc/rotations/north.webp",
+    "north-west": "storm_roc/rotations/north-west.webp",
+    "west": "storm_roc/rotations/west.webp",
+    "south-west": "storm_roc/rotations/south-west.webp"
+  },
+  "sheet": "storm_roc/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "5410ef17-9b53-41ff-b180-2364ec7a61ec",
+  "seed": 1936492087,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:48:14+00:00",
+  "elapsed_s": 223.8,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.666,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.666,
+        "bbox": [
+          5,
+          4,
+          163,
+          164
+        ],
+        "fill": 0.896,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.782,
+        "bbox": [
+          31,
+          7,
+          150,
+          164
+        ],
+        "fill": 0.662,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.783,
+        "bbox": [
+          18,
+          7,
+          136,
+          164
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.746,
+        "bbox": [
+          3,
+          4,
+          163,
+          153
+        ],
+        "fill": 0.845,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.784,
+        "bbox": [
+          17,
+          5,
+          153,
+          168
+        ],
+        "fill": 0.785,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.747,
+        "bbox": [
+          23,
+          9,
+          153,
+          158
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.744,
+        "bbox": [
+          15,
+          9,
+          142,
+          158
+        ],
+        "fill": 0.67,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.785,
+        "bbox": [
+          15,
+          5,
+          151,
+          168
+        ],
+        "fill": 0.785,
+        "touches_edge": true
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T17:47:01+00:00",
+  "generated_at": "2026-09-09T17:48:14+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 13,
+  "count": 15,
   "candidates": [
     {
       "id": "lantern_bat",
@@ -538,6 +538,139 @@
       },
       "review": "pending",
       "generated_at": "2026-09-09T17:44:26+00:00"
+    },
+    {
+      "id": "twig_dragonfly",
+      "name": "Twigwhirr",
+      "tier": "cute",
+      "lore": "A twig that learned to fly by watching the reeds. It hums over still water and bites whatever ripples it.",
+      "biome": [
+        "water",
+        "grass",
+        "dark_mud"
+      ],
+      "items": [
+        "twig-bodied dragonfly"
+      ],
+      "size": [
+        80,
+        80
+      ],
+      "template_id": "mannequin",
+      "pixellab_id": "d5b6ed40-c3e6-4ac0-8390-70fcaa255046",
+      "version": 1,
+      "sheet": "twig_dragonfly/sheet.webp",
+      "rotations": {
+        "south": "twig_dragonfly/rotations/south.webp",
+        "south-east": "twig_dragonfly/rotations/south-east.webp",
+        "east": "twig_dragonfly/rotations/east.webp",
+        "north-east": "twig_dragonfly/rotations/north-east.webp",
+        "north": "twig_dragonfly/rotations/north.webp",
+        "north-west": "twig_dragonfly/rotations/north-west.webp",
+        "west": "twig_dragonfly/rotations/west.webp",
+        "south-west": "twig_dragonfly/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.819,
+        "reasons": [
+          "north: content touches the canvas edge (clipped)",
+          "south-east: content touches the canvas edge (clipped)",
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.825,
+            "bbox": [
+              1,
+              2,
+              79,
+              74
+            ],
+            "fill": 0.877,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.819,
+            "bbox": [
+              8,
+              2,
+              77,
+              72
+            ],
+            "fill": 0.755,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.824,
+            "bbox": [
+              3,
+              2,
+              71,
+              73
+            ],
+            "fill": 0.754,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.826,
+            "bbox": [
+              0,
+              8,
+              79,
+              61
+            ],
+            "fill": 0.654,
+            "touches_edge": true
+          },
+          "south-east": {
+            "run1": 0.857,
+            "bbox": [
+              0,
+              2,
+              67,
+              77
+            ],
+            "fill": 0.785,
+            "touches_edge": true
+          },
+          "north-east": {
+            "run1": 0.831,
+            "bbox": [
+              8,
+              4,
+              69,
+              68
+            ],
+            "fill": 0.61,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.836,
+            "bbox": [
+              11,
+              4,
+              72,
+              65
+            ],
+            "fill": 0.581,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.834,
+            "bbox": [
+              10,
+              2,
+              80,
+              76
+            ],
+            "fill": 0.809,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "generated_at": "2026-09-09T17:48:05+00:00"
     },
     {
       "id": "root_forager",
@@ -1688,6 +1821,138 @@
       },
       "review": "pending",
       "generated_at": "2026-09-09T17:44:30+00:00"
+    },
+    {
+      "id": "storm_roc",
+      "name": "Stormroc",
+      "tier": "boss",
+      "lore": "It nests above the weather and hunts below it. Every thunderclap on the fells is a wingbeat somebody did not see.",
+      "biome": [
+        "grey_stone",
+        "snow"
+      ],
+      "items": [
+        "bundle of bright plumes",
+        "rainbow tail plume"
+      ],
+      "size": [
+        168,
+        168
+      ],
+      "template_id": "mannequin",
+      "pixellab_id": "5410ef17-9b53-41ff-b180-2364ec7a61ec",
+      "version": 1,
+      "sheet": "storm_roc/sheet.webp",
+      "rotations": {
+        "south": "storm_roc/rotations/south.webp",
+        "south-east": "storm_roc/rotations/south-east.webp",
+        "east": "storm_roc/rotations/east.webp",
+        "north-east": "storm_roc/rotations/north-east.webp",
+        "north": "storm_roc/rotations/north.webp",
+        "north-west": "storm_roc/rotations/north-west.webp",
+        "west": "storm_roc/rotations/west.webp",
+        "south-west": "storm_roc/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.666,
+        "reasons": [
+          "south-east: content touches the canvas edge (clipped)",
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.666,
+            "bbox": [
+              5,
+              4,
+              163,
+              164
+            ],
+            "fill": 0.896,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.782,
+            "bbox": [
+              31,
+              7,
+              150,
+              164
+            ],
+            "fill": 0.662,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.783,
+            "bbox": [
+              18,
+              7,
+              136,
+              164
+            ],
+            "fill": 0.656,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.746,
+            "bbox": [
+              3,
+              4,
+              163,
+              153
+            ],
+            "fill": 0.845,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.784,
+            "bbox": [
+              17,
+              5,
+              153,
+              168
+            ],
+            "fill": 0.785,
+            "touches_edge": true
+          },
+          "north-east": {
+            "run1": 0.747,
+            "bbox": [
+              23,
+              9,
+              153,
+              158
+            ],
+            "fill": 0.686,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.744,
+            "bbox": [
+              15,
+              9,
+              142,
+              158
+            ],
+            "fill": 0.67,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.785,
+            "bbox": [
+              15,
+              5,
+              151,
+              168
+            ],
+            "fill": 0.785,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "generated_at": "2026-09-09T17:48:14+00:00"
     }
   ]
 }

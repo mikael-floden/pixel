@@ -1,0 +1,147 @@
+{
+  "id": "twig_dragonfly",
+  "name": "Twigwhirr",
+  "tier": "cute",
+  "lore": "A twig that learned to fly by watching the reeds. It hums over still water and bites whatever ripples it.",
+  "biome": [
+    "water",
+    "grass",
+    "dark_mud"
+  ],
+  "items": [
+    "twig-bodied dragonfly"
+  ],
+  "prompt": "Fantasy dragonfly whose long body is a living twig with bark texture and tiny green leaves sprouting from it, four long translucent wings with visible veining and a rainbow sheen, big compound eyes like green glass beads, and small leaf-shaped legs.",
+  "size": [
+    80,
+    80
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "twig_dragonfly/rotations/south.webp",
+    "south-east": "twig_dragonfly/rotations/south-east.webp",
+    "east": "twig_dragonfly/rotations/east.webp",
+    "north-east": "twig_dragonfly/rotations/north-east.webp",
+    "north": "twig_dragonfly/rotations/north.webp",
+    "north-west": "twig_dragonfly/rotations/north-west.webp",
+    "west": "twig_dragonfly/rotations/west.webp",
+    "south-west": "twig_dragonfly/rotations/south-west.webp"
+  },
+  "sheet": "twig_dragonfly/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "d5b6ed40-c3e6-4ac0-8390-70fcaa255046",
+  "seed": 1124752276,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:48:05+00:00",
+  "elapsed_s": 217.9,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.819,
+    "reasons": [
+      "north: content touches the canvas edge (clipped)",
+      "south-east: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.825,
+        "bbox": [
+          1,
+          2,
+          79,
+          74
+        ],
+        "fill": 0.877,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.819,
+        "bbox": [
+          8,
+          2,
+          77,
+          72
+        ],
+        "fill": 0.755,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.824,
+        "bbox": [
+          3,
+          2,
+          71,
+          73
+        ],
+        "fill": 0.754,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.826,
+        "bbox": [
+          0,
+          8,
+          79,
+          61
+        ],
+        "fill": 0.654,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.857,
+        "bbox": [
+          0,
+          2,
+          67,
+          77
+        ],
+        "fill": 0.785,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.831,
+        "bbox": [
+          8,
+          4,
+          69,
+          68
+        ],
+        "fill": 0.61,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.836,
+        "bbox": [
+          11,
+          4,
+          72,
+          65
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.834,
+        "bbox": [
+          10,
+          2,
+          80,
+          76
+        ],
+        "fill": 0.809,
+        "touches_edge": true
+      }
+    }
+  }
+}
