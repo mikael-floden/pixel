@@ -614,6 +614,283 @@
         "north-west": "cave_troll_boss/animations/walk__north-west.webp",
         "south-west": "cave_troll_boss/animations/walk__south-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.146,
+          "step_max": 0.3014,
+          "drift": 4.02,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 4.24,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "6bd9af20-8f65-40f4-8440-b3c160b988e9",
+          "group": "703ef3ae-649b-4edc-99bc-afbfe59f040b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:08:35+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0899,
+          "step_max": 0.1357,
+          "drift": 5.44,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 2.05,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "7909f3f0-6384-41cd-b4f2-ed19f3255f3e",
+          "group": "93079230-a71b-46b9-b0a4-cca315ac7806",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:08:36+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.272,
+          "step_max": 0.428,
+          "drift": 16.57,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 19.29,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "427e18bc-e6cb-43de-836b-e57dd3c82d75",
+          "group": "de858711-693d-400f-90d7-40f9e34508b1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:08:36+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.0887,
+          "step_max": 0.1645,
+          "drift": 4.92,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 7.85,
+          "pin": 1.0,
+          "pad": 7,
+          "canvas": [
+            254,
+            254
+          ],
+          "reasons": [
+            "weak strike: peak 0.149 — eyeball it",
+            "canvas grown by 7 px a side to hold the motion"
+          ],
+          "sub": "f4c41049-e916-41a8-b655-aebd6819dc9f",
+          "group": "053a526e-e9dd-47a8-a118-b101f5574806",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:08:37+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0667,
+          "step_max": 0.0917,
+          "drift": 1.46,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.77,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "motion 0.067 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.123 — eyeball it"
+          ],
+          "sub": "3bc2aa06-8840-42b9-ae54-5196eebb4032",
+          "group": "07067233-edb4-4b75-83b7-4c0ebc475d69",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:08:38+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0899,
+          "step_max": 0.1357,
+          "drift": 5.44,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 2.05,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "7909f3f0-6384-41cd-b4f2-ed19f3255f3e",
+          "group": "93079230-a71b-46b9-b0a4-cca315ac7806",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:08:36+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.272,
+          "step_max": 0.428,
+          "drift": 16.57,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 19.29,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "427e18bc-e6cb-43de-836b-e57dd3c82d75",
+          "group": "de858711-693d-400f-90d7-40f9e34508b1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:08:36+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.0887,
+          "step_max": 0.1645,
+          "drift": 4.92,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 7.85,
+          "pin": 1.0,
+          "pad": 7,
+          "canvas": [
+            254,
+            254
+          ],
+          "reasons": [
+            "weak strike: peak 0.149 — eyeball it",
+            "canvas grown by 7 px a side to hold the motion"
+          ],
+          "sub": "f4c41049-e916-41a8-b655-aebd6819dc9f",
+          "group": "053a526e-e9dd-47a8-a118-b101f5574806",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:08:37+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "raises the stalactite club overhead and smashes it down, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "cave_troll_boss/animations/attack/south/00.webp",
+          "cave_troll_boss/animations/attack/south/01.webp",
+          "cave_troll_boss/animations/attack/south/02.webp",
+          "cave_troll_boss/animations/attack/south/03.webp",
+          "cave_troll_boss/animations/attack/south/04.webp",
+          "cave_troll_boss/animations/attack/south/05.webp",
+          "cave_troll_boss/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "cave_troll_boss/animations/attack/south-east/00.webp",
+          "cave_troll_boss/animations/attack/south-east/01.webp",
+          "cave_troll_boss/animations/attack/south-east/02.webp",
+          "cave_troll_boss/animations/attack/south-east/03.webp",
+          "cave_troll_boss/animations/attack/south-east/04.webp",
+          "cave_troll_boss/animations/attack/south-east/05.webp",
+          "cave_troll_boss/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "cave_troll_boss/animations/attack/east/00.webp",
+          "cave_troll_boss/animations/attack/east/01.webp",
+          "cave_troll_boss/animations/attack/east/02.webp",
+          "cave_troll_boss/animations/attack/east/03.webp",
+          "cave_troll_boss/animations/attack/east/04.webp",
+          "cave_troll_boss/animations/attack/east/05.webp",
+          "cave_troll_boss/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "cave_troll_boss/animations/attack/north-east/00.webp",
+          "cave_troll_boss/animations/attack/north-east/01.webp",
+          "cave_troll_boss/animations/attack/north-east/02.webp",
+          "cave_troll_boss/animations/attack/north-east/03.webp",
+          "cave_troll_boss/animations/attack/north-east/04.webp",
+          "cave_troll_boss/animations/attack/north-east/05.webp",
+          "cave_troll_boss/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "cave_troll_boss/animations/attack/north/00.webp",
+          "cave_troll_boss/animations/attack/north/01.webp",
+          "cave_troll_boss/animations/attack/north/02.webp",
+          "cave_troll_boss/animations/attack/north/03.webp",
+          "cave_troll_boss/animations/attack/north/04.webp",
+          "cave_troll_boss/animations/attack/north/05.webp",
+          "cave_troll_boss/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "cave_troll_boss/animations/attack/south-west/00.webp",
+          "cave_troll_boss/animations/attack/south-west/01.webp",
+          "cave_troll_boss/animations/attack/south-west/02.webp",
+          "cave_troll_boss/animations/attack/south-west/03.webp",
+          "cave_troll_boss/animations/attack/south-west/04.webp",
+          "cave_troll_boss/animations/attack/south-west/05.webp",
+          "cave_troll_boss/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "cave_troll_boss/animations/attack/west/00.webp",
+          "cave_troll_boss/animations/attack/west/01.webp",
+          "cave_troll_boss/animations/attack/west/02.webp",
+          "cave_troll_boss/animations/attack/west/03.webp",
+          "cave_troll_boss/animations/attack/west/04.webp",
+          "cave_troll_boss/animations/attack/west/05.webp",
+          "cave_troll_boss/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "cave_troll_boss/animations/attack/north-west/00.webp",
+          "cave_troll_boss/animations/attack/north-west/01.webp",
+          "cave_troll_boss/animations/attack/north-west/02.webp",
+          "cave_troll_boss/animations/attack/north-west/03.webp",
+          "cave_troll_boss/animations/attack/north-west/04.webp",
+          "cave_troll_boss/animations/attack/north-west/05.webp",
+          "cave_troll_boss/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "cave_troll_boss/animations/attack__south.webp",
+        "south-east": "cave_troll_boss/animations/attack__south-east.webp",
+        "east": "cave_troll_boss/animations/attack__east.webp",
+        "north-east": "cave_troll_boss/animations/attack__north-east.webp",
+        "north": "cave_troll_boss/animations/attack__north.webp",
+        "south-west": "cave_troll_boss/animations/attack__south-west.webp",
+        "west": "cave_troll_boss/animations/attack__west.webp",
+        "north-west": "cave_troll_boss/animations/attack__north-west.webp"
+      }
     }
   }
 }
