@@ -4055,6 +4055,36 @@ export class WorldScene extends Phaser.Scene {
           get: () => false,
           state: () => `${this.sceneryAnimLive.filter((l) => (this.sceneryAnimRuns.get(l.place)?.frame ?? -1) >= 0).length} playing`,
         },
+        /* INDOOR REPORT — the phone-side twin of __ml.indoor() + lightSlots()
+         * (maintainer 2026-09-09, a cave room "different lit up depending on
+         * where I stand" that no headless position reproduces): the verdict,
+         * its ease, the room key and mask size, the dials, and which world
+         * lights hold a slot right now, in one chat line. */
+        {
+          label: "indoor report",
+          act: () => {
+            const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+            const cell = me ? [Math.floor(me.fx / CELL_WU), Math.floor(me.fy / CELL_WU)] : null;
+            const grade = this.indoorGrade();
+            const lit = this.roomHasLight();
+            const slots = [...this.slotLit].map((id) => {
+              const src = this.sceneryLightSources.find((x) => x.id === id);
+              return src ? `${id}=${src.piece.split("/").pop()}@${Math.round(src.col)},${Math.round(src.row)}r${src.radius}${src.sealed ? "S" : ""}` : id;
+            });
+            const w = this.world;
+            const idx = cell && w ? cell[1] * w.width + cell[0] : -1;
+            const dep = idx >= 0 ? this.caveDepth?.get(idx) : undefined;
+            const rt = this.night?.roomDebug() as { bound?: boolean; lit?: number; roomOn?: number } | null;
+            const twin = cell ? this.night?.lightAt(cell[0] + 0.5, cell[1] + 0.5, 0.02, false, 0, undefined, true) : null;
+            const twinS = twin ? twin.map((v) => v.toFixed(2)).join("/") : "-";
+            this.chat.addLog(
+              "—",
+              `indoor: ${this.indoorInside ? "IN" : "out"} (verdict ${this.indoorPending ? "in" : "out"}) grade ${grade.toFixed(2)} mix ${this.indoorMix.toFixed(2)} at ${cell?.join(",") ?? "?"} elev ${me?.surfLevel ?? "?"} key ${this.indoorKey}; room ${this.indoorSpace ? `${this.indoorSpace.roof.size} cells, wall ${this.indoorSpace.wallRatio.toFixed(2)}, depth ${this.indoorSpace.depth}` : "none"}; mask ${this.roomMask ? `up ${this.roomMask.size}` : "down"} tex ${rt ? `${rt.bound ? "bound" : "UNBOUND"} lit ${rt.lit} on ${rt.roomOn}` : "none"}; my depth ${dep ?? "-"}; ambient ${lit ? "lit-room" : "dark-room"} dial; torch ${this.torchOn ? "on" : "off"} f ${this.curTorchF.toFixed(2)}; twin ${twinS}; slots [${slots.join(" ")}]`,
+            );
+          },
+          get: () => false,
+          state: () => (this.indoorInside ? `IN ${this.indoorGrade().toFixed(2)}` : "out"),
+        },
         /* CLIFF-FOOT AND LID TRANSITIONS (transitions.ts): a nature wall's
          * foot and a deck slab compose boundary tiles like any two grounds.
          * Off is the resolver's parity picture. Re-resolves the world. */
@@ -4239,6 +4269,14 @@ export class WorldScene extends Phaser.Scene {
           dialLit: indoorLightLit(),
           roomHasLight: lit,
           ambient: indoorAmbient(lit).map((x) => +x.toFixed(4)),
+          // Every DRAWN scenery light with the room test's own verdict on it —
+          // which of them is making the room count as lit.
+          lights: this.sceneryLightSources.map((s) => ({
+            id: s.id,
+            piece: s.piece,
+            at: [+s.col.toFixed(1), +s.row.toFixed(1), +s.z.toFixed(2)],
+            inRoom: !this.indoorOutside(s.col * CELL_WU, s.row * CELL_WU, s.z),
+          })),
         };
       },
       // The Settings "Indoor wall height" dial (indoorwall.ts). No arg reads it; a

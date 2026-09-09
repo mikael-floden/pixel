@@ -1677,7 +1677,16 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   the switch between the two rides the indoor grade's own ease so it never
   pops. Measured: the fireplace house resolves to [0.0995, 0.1041, 0.12], an
   unlit room to [0.342, 0.355, 0.400]. Probe `__ml.indoorLight(v?, "dark"|"lit")`
-  reports both dials and `roomHasLight`.
+  reports both dials, `roomHasLight` and every drawn light with the room
+  test's verdict on it. `roomHasLight` reads the DRAWN light set, so it can
+  differ by camera window, never by the room. THE PHONE'S OWN NUMBERS come
+  from the Settings button "indoor report" (one chat line: verdict, grade,
+  mix, cell, elev, room key and size, mask cells and whether the mask
+  texture is bound, cave depth at my cell, which ambient dial, torch and its
+  day fade, the CPU twin's light at my feet, the slotted world lights) — for
+  an indoor look the harness does not reproduce (2026-09-09, the cave at
+  255,188 "different lit up depending on where I stand": identical at his
+  geometry headless, both spots key 58573 / 884 cells / dark-room dial).
 - **THE GRAVE CROSS LOADS AT BOOT** (`GRAVE_CROSS_KEY`, queued in `preload()`
   beside the campfire). It used to fetch on the FIRST kill, so the first cross
   of every session waited on a round trip — and the dropped item's own texture
