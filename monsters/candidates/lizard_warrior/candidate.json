@@ -9,10 +9,10 @@
     "water"
   ],
   "items": [],
-  "prompt": "Fantasy lizardman warrior shown full body from head to feet, dark green scaled skin with a pale belly, a crested head with yellow slit eyes, a bone-and-hide shield, a jagged bronze spear held upright, and a thick tail curled around its feet.",
+  "prompt": "Fantasy lizardman warrior shown full body from head to feet, dark green scaled skin with a pale belly, a crested head with yellow slit eyes, a bone-and-hide shield, a jagged bronze spear held upright, and a short thick tail held close behind its legs.",
   "size": [
-    112,
-    112
+    128,
+    128
   ],
   "template_id": "mannequin",
   "directions": [
@@ -37,108 +37,104 @@
   },
   "sheet": "lizard_warrior/sheet.webp",
   "review": "pending",
-  "pixellab_id": "a1697387-0b7c-4c2d-9387-330f95e4291a",
-  "seed": 536086520,
-  "version": 1,
+  "pixellab_id": "24ca34a9-e80c-4e6c-9b5f-8e13e09dd3c1",
+  "seed": 117265986,
+  "version": 2,
   "usage": null,
-  "generated_at": "2026-09-09T18:25:40+00:00",
-  "elapsed_s": 194.0,
+  "generated_at": "2026-09-09T18:29:41+00:00",
+  "elapsed_s": 211.9,
   "qa": {
-    "status": "fail",
-    "min_run1": 0.782,
-    "reasons": [
-      "west: content touches the canvas edge (clipped)",
-      "north-west: content touches the canvas edge (clipped)",
-      "south-west: content touches the canvas edge (clipped)"
-    ],
+    "status": "pass",
+    "min_run1": 0.716,
+    "reasons": [],
     "directions": {
       "south": {
-        "run1": 0.782,
+        "run1": 0.716,
         "bbox": [
-          10,
-          3,
-          104,
-          109
+          13,
+          4,
+          111,
+          123
         ],
-        "fill": 0.794,
+        "fill": 0.712,
         "touches_edge": false
       },
       "west": {
-        "run1": 0.825,
+        "run1": 0.782,
         "bbox": [
-          30,
-          0,
-          89,
-          109
+          35,
+          3,
+          118,
+          125
         ],
-        "fill": 0.513,
-        "touches_edge": true
+        "fill": 0.618,
+        "touches_edge": false
       },
       "east": {
-        "run1": 0.821,
+        "run1": 0.761,
         "bbox": [
-          22,
-          3,
-          86,
-          109
+          10,
+          4,
+          96,
+          125
         ],
-        "fill": 0.541,
+        "fill": 0.635,
         "touches_edge": false
       },
       "north": {
-        "run1": 0.807,
+        "run1": 0.745,
         "bbox": [
-          9,
-          2,
-          102,
-          103
+          20,
+          3,
+          114,
+          125
         ],
-        "fill": 0.749,
+        "fill": 0.7,
         "touches_edge": false
       },
       "south-east": {
-        "run1": 0.815,
+        "run1": 0.791,
         "bbox": [
           10,
           5,
-          95,
-          109
+          105,
+          125
         ],
-        "fill": 0.705,
+        "fill": 0.696,
         "touches_edge": false
       },
       "north-east": {
-        "run1": 0.79,
+        "run1": 0.747,
         "bbox": [
-          11,
+          21,
           3,
-          95,
-          108
+          105,
+          124
         ],
-        "fill": 0.703,
+        "fill": 0.62,
         "touches_edge": false
       },
       "north-west": {
-        "run1": 0.79,
+        "run1": 0.741,
         "bbox": [
-          19,
-          0,
-          102,
-          106
+          24,
+          3,
+          110,
+          123
         ],
-        "fill": 0.701,
-        "touches_edge": true
+        "fill": 0.63,
+        "touches_edge": false
       },
       "south-west": {
-        "run1": 0.817,
+        "run1": 0.793,
         "bbox": [
-          19,
-          0,
-          101,
-          110
+          23,
+          3,
+          117,
+          125
         ],
-        "fill": 0.719,
-        "touches_edge": true
+        "fill": 0.7,
+        "touches_edge": false
       }
     }
   }
