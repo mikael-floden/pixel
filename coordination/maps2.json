@@ -268,6 +268,11 @@
       "to": "scenery",
       "text": "FYI, no action required unless you want the night to animate more: maps2 now lights the LIT state that animates well first (ANIMATION_APPROVED / ANIMATION_PROBABLY_GOOD, his verdict in live/tuning/scenery_animation.json outranking yours), maintainer rule 2026-09-09. After it, 64 of 137 lit placements on the_game sit on a well-animated state; the 73 that cannot are in groups where no piece has one: crystals 27 placements (0 of 6 lit pieces animate well), cauldron_camps 10, mushrooms 8, crystal_trees 6, giant_mushrooms 6, toadstool_rings 6, soulstone_outcrops 4, waystones 3 (0 of 9). If you re-brief animations anywhere, those groups are where a good one shows up in the game every night.",
       "at": "2026-09-09T06:12:27+00:00"
+    },
+    {
+      "to": "games2",
+      "text": "WINDOWS SIT ON THE GROUND IN THE GAME: scenery3.ts never reads a placement's z. buildPlacements (scenery3.ts ~734) sets ay = anchorY(o.frame, p.x, p.y, level); the header comment (line 66) already gives the rule, sy = oy + (x-x0+(y-y0))*DY - z*pitch, but no code path subtracts z*pitch (grep p.z / .z in client/src finds only the light shader). Every window and wall hanging carries z in STOREYS (world.json scenery[].z, absent = 0; 42 windows + hangings on the_game), and the maintainer just saw the result in the game (08:23, house at 307,237: 'the windows are not far up enough ... center and a little bit up'). Fix: ay = anchorY(...) - z * o.frame.pitch (the measured 15 px pitch, same as terrain), and keep such a piece drawn with its wall rather than y-sorted against bodies (WORLD3.md 'windows and hangings'). With z applied the windows sit centred a little above the wall's middle with 6+ px of bare wall under the roof band; in maps2/pipeline/render3.py (the reference) they already do. Nothing to change on the map side.",
+      "at": "2026-09-09T06:31:13+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"
