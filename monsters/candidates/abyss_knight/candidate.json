@@ -1,0 +1,144 @@
+{
+  "id": "abyss_knight",
+  "name": "Voidplate",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Sworn to a throne beneath the floor of the world. It is the only knight the pit ever knighted, and it is enough.",
+  "biome": [
+    "black_rock",
+    "grey_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy demon knight shown full body from head to feet, towering black spiked plate armor, a horned great helm with a burning violet glow inside, a massive two-handed greatsword held upright, a tattered dark cape, and violet fire licking from the joints.",
+  "size": [
+    232,
+    232
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "abyss_knight/rotations/south.webp",
+    "south-east": "abyss_knight/rotations/south-east.webp",
+    "east": "abyss_knight/rotations/east.webp",
+    "north-east": "abyss_knight/rotations/north-east.webp",
+    "north": "abyss_knight/rotations/north.webp",
+    "north-west": "abyss_knight/rotations/north-west.webp",
+    "west": "abyss_knight/rotations/west.webp",
+    "south-west": "abyss_knight/rotations/south-west.webp"
+  },
+  "sheet": "abyss_knight/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "49853960-617b-479e-a94c-8ada51391a2c",
+  "seed": 1545548888,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:49:30+00:00",
+  "elapsed_s": 192.8,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.664,
+    "reasons": [
+      "east: content touches the canvas edge (clipped)",
+      "south-east: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.694,
+        "bbox": [
+          31,
+          5,
+          195,
+          227
+        ],
+        "fill": 0.676,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.71,
+        "bbox": [
+          77,
+          3,
+          179,
+          229
+        ],
+        "fill": 0.428,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.726,
+        "bbox": [
+          47,
+          3,
+          160,
+          232
+        ],
+        "fill": 0.481,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.683,
+        "bbox": [
+          37,
+          5,
+          200,
+          227
+        ],
+        "fill": 0.672,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.741,
+        "bbox": [
+          53,
+          4,
+          187,
+          232
+        ],
+        "fill": 0.568,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.711,
+        "bbox": [
+          42,
+          3,
+          184,
+          229
+        ],
+        "fill": 0.596,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.664,
+        "bbox": [
+          47,
+          3,
+          180,
+          228
+        ],
+        "fill": 0.556,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.728,
+        "bbox": [
+          37,
+          4,
+          191,
+          231
+        ],
+        "fill": 0.649,
+        "touches_edge": false
+      }
+    }
+  }
+}
