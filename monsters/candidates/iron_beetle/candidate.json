@@ -1,0 +1,145 @@
+{
+  "id": "iron_beetle",
+  "name": "Ironclack",
+  "tier": "mid",
+  "lore": "Forged, or grown — the smiths cannot agree. Its plates ring like a bell when struck, and the sound calls the others.",
+  "biome": [
+    "light_soil",
+    "grey_stone",
+    "lava"
+  ],
+  "items": [
+    "plated beetle"
+  ],
+  "prompt": "Heavily armored fantasy beetle with overlapping dark iron-gray plates riveted with copper studs, a single thick curved horn on its head, six thick segmented legs, glowing orange slits for eyes, and cracks between the plates showing hot orange light underneath.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "iron_beetle/rotations/south.webp",
+    "south-east": "iron_beetle/rotations/south-east.webp",
+    "east": "iron_beetle/rotations/east.webp",
+    "north-east": "iron_beetle/rotations/north-east.webp",
+    "north": "iron_beetle/rotations/north.webp",
+    "north-west": "iron_beetle/rotations/north-west.webp",
+    "west": "iron_beetle/rotations/west.webp",
+    "south-west": "iron_beetle/rotations/south-west.webp"
+  },
+  "sheet": "iron_beetle/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "9b480878-3c60-4f4e-9a6b-ad7b0a51e0d0",
+  "seed": 1262312442,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:44:26+00:00",
+  "elapsed_s": 199.4,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.718,
+    "reasons": [
+      "west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.718,
+        "bbox": [
+          2,
+          3,
+          86,
+          85
+        ],
+        "fill": 0.889,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.76,
+        "bbox": [
+          0,
+          6,
+          84,
+          81
+        ],
+        "fill": 0.814,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.761,
+        "bbox": [
+          5,
+          5,
+          87,
+          82
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.76,
+        "bbox": [
+          7,
+          6,
+          80,
+          86
+        ],
+        "fill": 0.754,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.778,
+        "bbox": [
+          7,
+          2,
+          86,
+          86
+        ],
+        "fill": 0.857,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.759,
+        "bbox": [
+          7,
+          4,
+          83,
+          83
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.765,
+        "bbox": [
+          8,
+          5,
+          83,
+          83
+        ],
+        "fill": 0.755,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.773,
+        "bbox": [
+          5,
+          3,
+          83,
+          86
+        ],
+        "fill": 0.836,
+        "touches_edge": false
+      }
+    }
+  }
+}
