@@ -1,0 +1,141 @@
+{
+  "id": "water_elemental",
+  "name": "Tideheart",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "A river that stood up to see what it had been carrying. It is not angry, but it has never learned to be gentle.",
+  "biome": [
+    "water",
+    "deep_water"
+  ],
+  "items": [],
+  "prompt": "Fantasy water elemental shown full body from head to feet, a humanoid figure of clear blue rushing water with white foam edges, a glowing pearl-like core in its chest, two bright cyan eyes, and small fish visible swimming inside it.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "water_elemental/rotations/south.webp",
+    "south-east": "water_elemental/rotations/south-east.webp",
+    "east": "water_elemental/rotations/east.webp",
+    "north-east": "water_elemental/rotations/north-east.webp",
+    "north": "water_elemental/rotations/north.webp",
+    "north-west": "water_elemental/rotations/north-west.webp",
+    "west": "water_elemental/rotations/west.webp",
+    "south-west": "water_elemental/rotations/south-west.webp"
+  },
+  "sheet": "water_elemental/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "26d3d32e-b2ed-41bb-a7c2-77e597c0e895",
+  "seed": 318936236,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:22:26+00:00",
+  "elapsed_s": 267.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.817,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.817,
+        "bbox": [
+          20,
+          3,
+          76,
+          93
+        ],
+        "fill": 0.547,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.878,
+        "bbox": [
+          34,
+          4,
+          65,
+          94
+        ],
+        "fill": 0.303,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.883,
+        "bbox": [
+          31,
+          4,
+          62,
+          94
+        ],
+        "fill": 0.303,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.826,
+        "bbox": [
+          22,
+          3,
+          74,
+          91
+        ],
+        "fill": 0.497,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.884,
+        "bbox": [
+          22,
+          3,
+          71,
+          94
+        ],
+        "fill": 0.484,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.836,
+        "bbox": [
+          27,
+          2,
+          70,
+          92
+        ],
+        "fill": 0.42,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.827,
+        "bbox": [
+          27,
+          3,
+          68,
+          92
+        ],
+        "fill": 0.396,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.883,
+        "bbox": [
+          25,
+          4,
+          74,
+          94
+        ],
+        "fill": 0.479,
+        "touches_edge": false
+      }
+    }
+  }
+}

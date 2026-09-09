@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:21:42+00:00",
+  "generated_at": "2026-09-09T18:22:26+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 28,
+  "count": 29,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -3509,6 +3509,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:20:52+00:00"
+    },
+    {
+      "id": "water_elemental",
+      "name": "Tideheart",
+      "tier": "mid",
+      "lore": "A river that stood up to see what it had been carrying. It is not angry, but it has never learned to be gentle.",
+      "biome": [
+        "water",
+        "deep_water"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "26d3d32e-b2ed-41bb-a7c2-77e597c0e895",
+      "version": 1,
+      "sheet": "water_elemental/sheet.webp",
+      "rotations": {
+        "south": "water_elemental/rotations/south.webp",
+        "south-east": "water_elemental/rotations/south-east.webp",
+        "east": "water_elemental/rotations/east.webp",
+        "north-east": "water_elemental/rotations/north-east.webp",
+        "north": "water_elemental/rotations/north.webp",
+        "north-west": "water_elemental/rotations/north-west.webp",
+        "west": "water_elemental/rotations/west.webp",
+        "south-west": "water_elemental/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.817,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.817,
+            "bbox": [
+              20,
+              3,
+              76,
+              93
+            ],
+            "fill": 0.547,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.878,
+            "bbox": [
+              34,
+              4,
+              65,
+              94
+            ],
+            "fill": 0.303,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.883,
+            "bbox": [
+              31,
+              4,
+              62,
+              94
+            ],
+            "fill": 0.303,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.826,
+            "bbox": [
+              22,
+              3,
+              74,
+              91
+            ],
+            "fill": 0.497,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.884,
+            "bbox": [
+              22,
+              3,
+              71,
+              94
+            ],
+            "fill": 0.484,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.836,
+            "bbox": [
+              27,
+              2,
+              70,
+              92
+            ],
+            "fill": 0.42,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.827,
+            "bbox": [
+              27,
+              3,
+              68,
+              92
+            ],
+            "fill": 0.396,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.883,
+            "bbox": [
+              25,
+              4,
+              74,
+              94
+            ],
+            "fill": 0.479,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:22:26+00:00"
     },
     {
       "id": "lich",
