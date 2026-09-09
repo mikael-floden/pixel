@@ -1,0 +1,141 @@
+{
+  "id": "flytrap",
+  "name": "Snaptrap",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Planted to keep the pests from the garden. It has grown past pests, and past the garden.",
+  "biome": [
+    "grass",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Fantasy carnivorous plant monster shown full body from head to feet, a huge venus-flytrap head with red inner jaws and long interlocking teeth, a thick green stalk body, two leafy arms, and a bundle of writhing roots for legs.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "flytrap/rotations/south.webp",
+    "south-east": "flytrap/rotations/south-east.webp",
+    "east": "flytrap/rotations/east.webp",
+    "north-east": "flytrap/rotations/north-east.webp",
+    "north": "flytrap/rotations/north.webp",
+    "north-west": "flytrap/rotations/north-west.webp",
+    "west": "flytrap/rotations/west.webp",
+    "south-west": "flytrap/rotations/south-west.webp"
+  },
+  "sheet": "flytrap/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fe314476-f4f4-4467-b901-6fd25cca288e",
+  "seed": 652016853,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:30:06+00:00",
+  "elapsed_s": 199.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.76,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.8,
+        "bbox": [
+          13,
+          4,
+          83,
+          92
+        ],
+        "fill": 0.668,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.76,
+        "bbox": [
+          26,
+          4,
+          73,
+          93
+        ],
+        "fill": 0.454,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.792,
+        "bbox": [
+          23,
+          4,
+          71,
+          93
+        ],
+        "fill": 0.464,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.766,
+        "bbox": [
+          13,
+          4,
+          83,
+          93
+        ],
+        "fill": 0.676,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.817,
+        "bbox": [
+          22,
+          4,
+          77,
+          92
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.777,
+        "bbox": [
+          21,
+          4,
+          76,
+          92
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.783,
+        "bbox": [
+          20,
+          4,
+          76,
+          92
+        ],
+        "fill": 0.535,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.818,
+        "bbox": [
+          20,
+          4,
+          74,
+          92
+        ],
+        "fill": 0.516,
+        "touches_edge": false
+      }
+    }
+  }
+}

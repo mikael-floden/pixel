@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:29:42+00:00",
+  "generated_at": "2026-09-09T18:30:06+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 37,
+  "count": 38,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -4791,6 +4791,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:28:49+00:00"
+    },
+    {
+      "id": "flytrap",
+      "name": "Snaptrap",
+      "tier": "mid",
+      "lore": "Planted to keep the pests from the garden. It has grown past pests, and past the garden.",
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "fe314476-f4f4-4467-b901-6fd25cca288e",
+      "version": 1,
+      "sheet": "flytrap/sheet.webp",
+      "rotations": {
+        "south": "flytrap/rotations/south.webp",
+        "south-east": "flytrap/rotations/south-east.webp",
+        "east": "flytrap/rotations/east.webp",
+        "north-east": "flytrap/rotations/north-east.webp",
+        "north": "flytrap/rotations/north.webp",
+        "north-west": "flytrap/rotations/north-west.webp",
+        "west": "flytrap/rotations/west.webp",
+        "south-west": "flytrap/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.76,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.8,
+            "bbox": [
+              13,
+              4,
+              83,
+              92
+            ],
+            "fill": 0.668,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.76,
+            "bbox": [
+              26,
+              4,
+              73,
+              93
+            ],
+            "fill": 0.454,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.792,
+            "bbox": [
+              23,
+              4,
+              71,
+              93
+            ],
+            "fill": 0.464,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.766,
+            "bbox": [
+              13,
+              4,
+              83,
+              93
+            ],
+            "fill": 0.676,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.817,
+            "bbox": [
+              22,
+              4,
+              77,
+              92
+            ],
+            "fill": 0.525,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.777,
+            "bbox": [
+              21,
+              4,
+              76,
+              92
+            ],
+            "fill": 0.525,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.783,
+            "bbox": [
+              20,
+              4,
+              76,
+              92
+            ],
+            "fill": 0.535,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.818,
+            "bbox": [
+              20,
+              4,
+              74,
+              92
+            ],
+            "fill": 0.516,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:30:06+00:00"
     }
   ]
 }
