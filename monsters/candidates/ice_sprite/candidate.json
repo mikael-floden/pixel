@@ -9,10 +9,10 @@
     "snow"
   ],
   "items": [],
-  "prompt": "Small fantasy ice spirit with a slender body of pale translucent ice, a faceted crystal head with two glowing white eyes, thin arms, and a faint haze of frost around it.",
+  "prompt": "Small fantasy ice spirit with a slender body of pale translucent ice, a faceted crystal head with two glowing white eyes, thin arms, and a faint haze of frost around it, nothing dark behind it, no shadow of any kind.",
   "size": [
-    32,
-    32
+    40,
+    40
   ],
   "template_id": "mannequin",
   "directions": [
@@ -37,103 +37,103 @@
   },
   "sheet": "ice_sprite/sheet.webp",
   "review": "pending",
-  "pixellab_id": "f7af9ede-99c9-4f5c-8a8c-8f937ed5d91e",
-  "seed": 14532945,
-  "version": 1,
+  "pixellab_id": "4a3b1707-1c63-4a62-a0ae-53a2524a6f4a",
+  "seed": 433361131,
+  "version": 2,
   "usage": null,
-  "generated_at": "2026-09-09T18:58:21+00:00",
-  "elapsed_s": 149.4,
+  "generated_at": "2026-09-09T19:02:42+00:00",
+  "elapsed_s": 199.7,
   "qa": {
     "status": "pass",
-    "min_run1": 0.689,
+    "min_run1": 0.702,
     "reasons": [],
     "directions": {
       "south": {
-        "run1": 0.767,
+        "run1": 0.806,
         "bbox": [
-          6,
-          3,
-          26,
-          29
+          9,
+          4,
+          31,
+          37
         ],
-        "fill": 0.508,
+        "fill": 0.454,
         "touches_edge": false
       },
       "west": {
-        "run1": 0.752,
+        "run1": 0.776,
         "bbox": [
-          9,
+          13,
           3,
-          23,
-          29
+          27,
+          37
         ],
-        "fill": 0.355,
+        "fill": 0.297,
         "touches_edge": false
       },
       "east": {
-        "run1": 0.742,
+        "run1": 0.765,
         "bbox": [
-          7,
+          13,
           3,
-          23,
-          29
+          27,
+          37
         ],
-        "fill": 0.406,
+        "fill": 0.297,
         "touches_edge": false
       },
       "north": {
-        "run1": 0.709,
-        "bbox": [
-          6,
-          3,
-          26,
-          29
-        ],
-        "fill": 0.508,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.768,
-        "bbox": [
-          7,
-          3,
-          24,
-          29
-        ],
-        "fill": 0.432,
-        "touches_edge": false
-      },
-      "north-east": {
-        "run1": 0.689,
-        "bbox": [
-          7,
-          3,
-          23,
-          29
-        ],
-        "fill": 0.406,
-        "touches_edge": false
-      },
-      "north-west": {
-        "run1": 0.698,
+        "run1": 0.702,
         "bbox": [
           9,
           3,
-          25,
-          29
+          31,
+          37
         ],
-        "fill": 0.406,
+        "fill": 0.468,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.781,
+        "bbox": [
+          11,
+          3,
+          29,
+          37
+        ],
+        "fill": 0.383,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.729,
+        "bbox": [
+          12,
+          3,
+          29,
+          37
+        ],
+        "fill": 0.361,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.732,
+        "bbox": [
+          11,
+          3,
+          28,
+          37
+        ],
+        "fill": 0.361,
         "touches_edge": false
       },
       "south-west": {
-        "run1": 0.769,
+        "run1": 0.782,
         "bbox": [
-          8,
+          11,
           3,
-          25,
-          29
+          29,
+          37
         ],
-        "fill": 0.432,
+        "fill": 0.383,
         "touches_edge": false
       }
     }
