@@ -599,6 +599,277 @@
         "west": "ember_drake/animations/walk__west.webp",
         "north-west": "ember_drake/animations/walk__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0877,
+          "step_max": 0.1687,
+          "drift": 6.19,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 6.87,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "e3de3eae-21d2-4752-bea5-af6c2100bb3c",
+          "group": "3f831e4d-0b5f-4b72-9603-e79723897afb",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:05:45+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1308,
+          "step_max": 0.2418,
+          "drift": 11.7,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 11.85,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "7b0167d8-2c23-47c9-9838-527cceefcbab",
+          "group": "21009c15-e3f0-4a85-bedb-afd029914238",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:05:46+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0848,
+          "step_max": 0.1404,
+          "drift": 4.48,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 4.71,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "6c6f4cff-fb59-49bf-b353-7d3b325d793a",
+          "group": "84f45186-7740-4573-9133-af89fa6b169b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:05:46+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0926,
+          "step_max": 0.1319,
+          "drift": 4.25,
+          "loop": 0.0004,
+          "loop_ratio": 0.0,
+          "travel": 1.21,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "b9bd8832-c06e-4618-9b99-a78dde651ec8",
+          "group": "6a36a172-91b1-40c7-a917-081ceebd67f8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:05:47+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0572,
+          "step_max": 0.0943,
+          "drift": 3.93,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 3.93,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "motion 0.057 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.135 — eyeball it"
+          ],
+          "sub": "c78794b8-0b36-431c-8c6c-2956145a0b58",
+          "group": "cd5021d6-68b7-4c91-8df2-26d2b7cc0c16",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:05:48+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1308,
+          "step_max": 0.2418,
+          "drift": 11.7,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 11.85,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "7b0167d8-2c23-47c9-9838-527cceefcbab",
+          "group": "21009c15-e3f0-4a85-bedb-afd029914238",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:05:46+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0848,
+          "step_max": 0.1404,
+          "drift": 4.48,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 4.71,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "6c6f4cff-fb59-49bf-b353-7d3b325d793a",
+          "group": "84f45186-7740-4573-9133-af89fa6b169b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:05:46+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0926,
+          "step_max": 0.1319,
+          "drift": 4.25,
+          "loop": 0.0004,
+          "loop_ratio": 0.0,
+          "travel": 1.21,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [],
+          "sub": "b9bd8832-c06e-4618-9b99-a78dde651ec8",
+          "group": "6a36a172-91b1-40c7-a917-081ceebd67f8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:05:47+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "rears its head back and breathes a short jet of fire forward, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "ember_drake/animations/attack/south/00.webp",
+          "ember_drake/animations/attack/south/01.webp",
+          "ember_drake/animations/attack/south/02.webp",
+          "ember_drake/animations/attack/south/03.webp",
+          "ember_drake/animations/attack/south/04.webp",
+          "ember_drake/animations/attack/south/05.webp",
+          "ember_drake/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "ember_drake/animations/attack/south-east/00.webp",
+          "ember_drake/animations/attack/south-east/01.webp",
+          "ember_drake/animations/attack/south-east/02.webp",
+          "ember_drake/animations/attack/south-east/03.webp",
+          "ember_drake/animations/attack/south-east/04.webp",
+          "ember_drake/animations/attack/south-east/05.webp",
+          "ember_drake/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "ember_drake/animations/attack/east/00.webp",
+          "ember_drake/animations/attack/east/01.webp",
+          "ember_drake/animations/attack/east/02.webp",
+          "ember_drake/animations/attack/east/03.webp",
+          "ember_drake/animations/attack/east/04.webp",
+          "ember_drake/animations/attack/east/05.webp",
+          "ember_drake/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "ember_drake/animations/attack/north-east/00.webp",
+          "ember_drake/animations/attack/north-east/01.webp",
+          "ember_drake/animations/attack/north-east/02.webp",
+          "ember_drake/animations/attack/north-east/03.webp",
+          "ember_drake/animations/attack/north-east/04.webp",
+          "ember_drake/animations/attack/north-east/05.webp",
+          "ember_drake/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "ember_drake/animations/attack/north/00.webp",
+          "ember_drake/animations/attack/north/01.webp",
+          "ember_drake/animations/attack/north/02.webp",
+          "ember_drake/animations/attack/north/03.webp",
+          "ember_drake/animations/attack/north/04.webp",
+          "ember_drake/animations/attack/north/05.webp",
+          "ember_drake/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "ember_drake/animations/attack/south-west/00.webp",
+          "ember_drake/animations/attack/south-west/01.webp",
+          "ember_drake/animations/attack/south-west/02.webp",
+          "ember_drake/animations/attack/south-west/03.webp",
+          "ember_drake/animations/attack/south-west/04.webp",
+          "ember_drake/animations/attack/south-west/05.webp",
+          "ember_drake/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "ember_drake/animations/attack/west/00.webp",
+          "ember_drake/animations/attack/west/01.webp",
+          "ember_drake/animations/attack/west/02.webp",
+          "ember_drake/animations/attack/west/03.webp",
+          "ember_drake/animations/attack/west/04.webp",
+          "ember_drake/animations/attack/west/05.webp",
+          "ember_drake/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "ember_drake/animations/attack/north-west/00.webp",
+          "ember_drake/animations/attack/north-west/01.webp",
+          "ember_drake/animations/attack/north-west/02.webp",
+          "ember_drake/animations/attack/north-west/03.webp",
+          "ember_drake/animations/attack/north-west/04.webp",
+          "ember_drake/animations/attack/north-west/05.webp",
+          "ember_drake/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "ember_drake/animations/attack__south.webp",
+        "south-east": "ember_drake/animations/attack__south-east.webp",
+        "east": "ember_drake/animations/attack__east.webp",
+        "north-east": "ember_drake/animations/attack__north-east.webp",
+        "north": "ember_drake/animations/attack__north.webp",
+        "south-west": "ember_drake/animations/attack__south-west.webp",
+        "west": "ember_drake/animations/attack__west.webp",
+        "north-west": "ember_drake/animations/attack__north-west.webp"
+      }
     }
   }
 }
