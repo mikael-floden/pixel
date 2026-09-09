@@ -335,6 +335,251 @@
         "west": "water_elemental/animations/idle__west.webp",
         "north-west": "water_elemental/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1619,
+          "step_max": 0.1942,
+          "drift": 3.89,
+          "loop": 0.325,
+          "loop_ratio": 2.01,
+          "travel": 0.49,
+          "pin": 0.91,
+          "reasons": [
+            "last→first hand-off 2.0× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "fa37eebe-b098-4396-8f48-9470ee3dab28",
+          "group": "83bb9987-e008-4a28-97bd-917a5a2b9205",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:58:09+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.1896,
+          "step_max": 0.2777,
+          "drift": 3.59,
+          "loop": 0.4935,
+          "loop_ratio": 2.6,
+          "travel": 1.12,
+          "pin": 0.841,
+          "reasons": [
+            "frame 5 touches a canvas edge the base does not (overflow / wrap risk)",
+            "last→first hand-off 2.6× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "7300886e-fc7d-4ad0-bb91-ee43afa7c96c",
+          "group": "922d1ef9-3bf8-40fb-8cee-deaf5b808a8f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:58:09+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2864,
+          "step_max": 0.391,
+          "drift": 2.49,
+          "loop": 0.4294,
+          "loop_ratio": 1.5,
+          "travel": 0.99,
+          "pin": 0.74,
+          "reasons": [],
+          "cut": 0,
+          "sub": "ab737935-ea3e-40f7-a0b7-35558777724f",
+          "group": "36ed86aa-db49-40a5-90ee-2b9be1a1e90d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:58:10+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.1969,
+          "step_max": 0.2407,
+          "drift": 1.56,
+          "loop": 0.3977,
+          "loop_ratio": 2.02,
+          "travel": 0.76,
+          "pin": 0.791,
+          "reasons": [
+            "frame 3 touches a canvas edge the base does not (overflow / wrap risk)",
+            "last→first hand-off 2.0× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "43028664-7246-4142-95b7-6425b580c6a5",
+          "group": "84ee9fe6-fa44-4532-8342-857e69419d71",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:58:10+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.1207,
+          "step_max": 0.1433,
+          "drift": 2.74,
+          "loop": 0.2541,
+          "loop_ratio": 2.11,
+          "travel": 0.22,
+          "pin": 0.92,
+          "reasons": [
+            "frame 3 touches a canvas edge the base does not (overflow / wrap risk)",
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "a013751e-6e19-4a7e-ae7c-13b058cb2607",
+          "group": "253f4619-e4eb-4079-b1a1-32055ac217e3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:58:11+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1896,
+          "step_max": 0.2777,
+          "drift": 3.59,
+          "loop": 0.4935,
+          "loop_ratio": 2.6,
+          "travel": 1.12,
+          "pin": 0.841,
+          "reasons": [
+            "frame 5 touches a canvas edge the base does not (overflow / wrap risk)",
+            "last→first hand-off 2.6× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "7300886e-fc7d-4ad0-bb91-ee43afa7c96c",
+          "group": "922d1ef9-3bf8-40fb-8cee-deaf5b808a8f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:58:09+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2864,
+          "step_max": 0.391,
+          "drift": 2.49,
+          "loop": 0.4294,
+          "loop_ratio": 1.5,
+          "travel": 0.99,
+          "pin": 0.74,
+          "reasons": [],
+          "cut": 0,
+          "sub": "ab737935-ea3e-40f7-a0b7-35558777724f",
+          "group": "36ed86aa-db49-40a5-90ee-2b9be1a1e90d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:58:10+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1969,
+          "step_max": 0.2407,
+          "drift": 1.56,
+          "loop": 0.3977,
+          "loop_ratio": 2.02,
+          "travel": 0.76,
+          "pin": 0.791,
+          "reasons": [
+            "frame 3 touches a canvas edge the base does not (overflow / wrap risk)",
+            "last→first hand-off 2.0× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "43028664-7246-4142-95b7-6425b580c6a5",
+          "group": "84ee9fe6-fa44-4532-8342-857e69419d71",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:58:10+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "water_elemental/animations/walk/south/00.webp",
+          "water_elemental/animations/walk/south/01.webp",
+          "water_elemental/animations/walk/south/02.webp",
+          "water_elemental/animations/walk/south/03.webp",
+          "water_elemental/animations/walk/south/04.webp",
+          "water_elemental/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "water_elemental/animations/walk/south-east/00.webp",
+          "water_elemental/animations/walk/south-east/01.webp",
+          "water_elemental/animations/walk/south-east/02.webp",
+          "water_elemental/animations/walk/south-east/03.webp",
+          "water_elemental/animations/walk/south-east/04.webp",
+          "water_elemental/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "water_elemental/animations/walk/east/00.webp",
+          "water_elemental/animations/walk/east/01.webp",
+          "water_elemental/animations/walk/east/02.webp",
+          "water_elemental/animations/walk/east/03.webp",
+          "water_elemental/animations/walk/east/04.webp",
+          "water_elemental/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "water_elemental/animations/walk/north-east/00.webp",
+          "water_elemental/animations/walk/north-east/01.webp",
+          "water_elemental/animations/walk/north-east/02.webp",
+          "water_elemental/animations/walk/north-east/03.webp",
+          "water_elemental/animations/walk/north-east/04.webp",
+          "water_elemental/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "water_elemental/animations/walk/north/00.webp",
+          "water_elemental/animations/walk/north/01.webp",
+          "water_elemental/animations/walk/north/02.webp",
+          "water_elemental/animations/walk/north/03.webp",
+          "water_elemental/animations/walk/north/04.webp",
+          "water_elemental/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "water_elemental/animations/walk/south-west/00.webp",
+          "water_elemental/animations/walk/south-west/01.webp",
+          "water_elemental/animations/walk/south-west/02.webp",
+          "water_elemental/animations/walk/south-west/03.webp",
+          "water_elemental/animations/walk/south-west/04.webp",
+          "water_elemental/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "water_elemental/animations/walk/west/00.webp",
+          "water_elemental/animations/walk/west/01.webp",
+          "water_elemental/animations/walk/west/02.webp",
+          "water_elemental/animations/walk/west/03.webp",
+          "water_elemental/animations/walk/west/04.webp",
+          "water_elemental/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "water_elemental/animations/walk/north-west/00.webp",
+          "water_elemental/animations/walk/north-west/01.webp",
+          "water_elemental/animations/walk/north-west/02.webp",
+          "water_elemental/animations/walk/north-west/03.webp",
+          "water_elemental/animations/walk/north-west/04.webp",
+          "water_elemental/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "water_elemental/animations/walk__south.webp",
+        "south-east": "water_elemental/animations/walk__south-east.webp",
+        "east": "water_elemental/animations/walk__east.webp",
+        "north-east": "water_elemental/animations/walk__north-east.webp",
+        "north": "water_elemental/animations/walk__north.webp",
+        "south-west": "water_elemental/animations/walk__south-west.webp",
+        "west": "water_elemental/animations/walk__west.webp",
+        "north-west": "water_elemental/animations/walk__north-west.webp"
+      }
     }
   }
 }
