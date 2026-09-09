@@ -1,0 +1,143 @@
+{
+  "id": "colossal_boar",
+  "name": "Tuskwarden",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Every hunt in the valley's history has failed against it. The spear shafts in its hide are the trophies.",
+  "biome": [
+    "grass",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Colossal wild boar with realistic proportions, a mountainous body of dark bristled hide scarred by old spears, two enormous yellowed tusks, a heavy wedge-shaped head with small red eyes, and thick legs with cloven hooves.",
+  "size": [
+    232,
+    232
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "colossal_boar/rotations/south.webp",
+    "south-east": "colossal_boar/rotations/south-east.webp",
+    "east": "colossal_boar/rotations/east.webp",
+    "north-east": "colossal_boar/rotations/north-east.webp",
+    "north": "colossal_boar/rotations/north.webp",
+    "north-west": "colossal_boar/rotations/north-west.webp",
+    "west": "colossal_boar/rotations/west.webp",
+    "south-west": "colossal_boar/rotations/south-west.webp"
+  },
+  "sheet": "colossal_boar/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "29c5ddc4-026e-4847-ac00-e4ca26fb241d",
+  "seed": 1491539702,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:15:51+00:00",
+  "elapsed_s": 249.8,
+  "qa": {
+    "status": "warn",
+    "min_run1": 0.499,
+    "reasons": [
+      "soft density: min run1 0.499 < 0.5 — eyeball it"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.499,
+        "bbox": [
+          11,
+          10,
+          221,
+          223
+        ],
+        "fill": 0.831,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.608,
+        "bbox": [
+          17,
+          10,
+          214,
+          224
+        ],
+        "fill": 0.783,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.621,
+        "bbox": [
+          53,
+          11,
+          212,
+          222
+        ],
+        "fill": 0.623,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.584,
+        "bbox": [
+          40,
+          9,
+          208,
+          225
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.609,
+        "bbox": [
+          64,
+          13,
+          173,
+          215
+        ],
+        "fill": 0.409,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.622,
+        "bbox": [
+          19,
+          13,
+          219,
+          218
+        ],
+        "fill": 0.762,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.574,
+        "bbox": [
+          61,
+          10,
+          174,
+          221
+        ],
+        "fill": 0.443,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.615,
+        "bbox": [
+          8,
+          13,
+          225,
+          220
+        ],
+        "fill": 0.835,
+        "touches_edge": false
+      }
+    }
+  }
+}
