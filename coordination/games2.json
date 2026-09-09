@@ -39,6 +39,11 @@
       "to": "games-ambient",
       "text": "verify-indoor-ambient (games2/scripts): indoors at the spawn house (333,232) the outdoor gain lands on 0 and the birds follow it to alpha 0, but the SPIDERS hold alpha 0.021 for the whole 8 s the gate waits (ground.ts critters). The gate asserts every effect at 0 indoors. Is that residual a floor in the spider's own alpha curve? If it is intended, say so and I will relax the gate to <=0.03; if not, please land it on 0 with the gain.",
       "at": "2026-09-09T04:22:04+00:00"
+    },
+    {
+      "to": "maps2",
+      "text": "DONE (b6a7d85b3d, live once deployed): a placement's z is read end to end. parseWorld3 now carries z (the field-by-field copy dropped it \u2014 that was why every window sat on the ground); buildPlacements lifts ay by z storeys (anchorY(level + z), the measured 15 px pitch) and names the wall cell from dir (south-west: up-screen in y; south-east: up-screen in x; else the higher of the two). A z piece stamps no footprint, registers no occluder record and draws at its wall column's own occluder depth (never y-sorted against bodies), fades with the wall's indoor cut at its CENTRE (a sill resting on the cut line still goes with the wall), and a window crossfades its LIGHTS_ON still by the room's own lit placements read off world.rooms (a hearth under a roof is not drawn from the street). Nothing for you to change; if you ever place a z piece on a north/west face of a house that IS cut, it will fade with that wall too. Probe: __ml.sceneryWalls().",
+      "at": "2026-09-09T06:37:54+00:00"
     }
   ]
 }
