@@ -30,7 +30,27 @@ import { paintPixels } from "../runtime/ground";
  */
 
 const KEY = "amb-moth";
-const DEPTH_BASE = 900_000.06; // just over the darkness overlay, like the crawlers
+/* A MOTH DRAWS IN FRONT OF THE LAMP IT CIRCLES.
+ *
+ * It used to sit just over the darkness overlay at 900_000.06 with the other
+ * ambient marks, which is right for something on the GROUND and wrong for
+ * something attached to a drawn object: every scenery piece also draws an
+ * opaque LIT COPY at `litDepth` (~900_001+), so the lamp's own copy painted
+ * over the moths circling it (maintainer 2026-09-09: "you render the sparks and
+ * also the moths behind the Scenery object so it's hard to see").
+ *
+ * So a moth takes its LAMP's drawn depth plus a hair — `litDepth` from
+ * `__ml.lightsInView`, read off that piece's live sprite. A sort, not an
+ * override: the lit band compresses painter depth by 1e-5, so SRC_LIFT is a
+ * tenth of a painter pixel and a body standing in front of the lamp still draws
+ * over the moths. Half the orbit is behind the lamp head in world terms and this
+ * does not hide it there — a two-pixel mark winking in and out behind a lantern
+ * reads as a glitch, not as depth, and he asked to SEE them. */
+const SRC_LIFT = 1e-6;
+/* No copy to sort against (no night shader, art not landed): nothing to be in
+ * front OF, so clear the whole lit band — the_game's widest painter line is
+ * ~11.7k px = 900_001.12, and the target rings start at 900_001.44. */
+const ABOVE_LIT = 900_001.3;
 const DEPTH_BIAS = 1e-6;
 const GAIN_TAU = 1500;
 
@@ -82,6 +102,9 @@ interface Lamp {
   r: number;
   color: [number, number, number];
   sealed: boolean;
+  /** Where its own art is DRAWN (its lit copy's depth), or null if it has no
+   *  copy yet — what a moth sorts itself against. See SRC_LIFT. */
+  litDepth: number | null;
 }
 
 export function mothsFeature(): AmbientFeature {
@@ -199,7 +222,10 @@ export function mothsFeature(): AmbientFeature {
         const iy = Math.round(y);
         m.sprite
           .setPosition(Math.round(x), iy)
-          .setDepth(DEPTH_BASE + iy * DEPTH_BIAS)
+          /* Keyed on the LAMP, not on the moth's own screen y — an orbit that
+           * sorted itself by height would dive behind the lamp on every pass.
+           * The tiny per-moth bias only breaks ties between moths. */
+          .setDepth((lamp.litDepth === null ? ABOVE_LIT : lamp.litDepth + SRC_LIFT) + i * DEPTH_BIAS)
           .setTint(tint)
           .setAlpha(g * m.a * m.base)
           .setVisible(m.a > 0.01);
@@ -221,6 +247,8 @@ export function mothsFeature(): AmbientFeature {
           lampX: Math.round(lamps[Math.min(m.lamp, lamps.length - 1)]?.x ?? 0),
           lampY: Math.round(lamps[Math.min(m.lamp, lamps.length - 1)]?.y ?? 0),
           lampFootY: Math.round(lamps[Math.min(m.lamp, lamps.length - 1)]?.footY ?? 0),
+          lampDepth: lamps[Math.min(m.lamp, lamps.length - 1)]?.litDepth ?? null,
+          depth: m.sprite.depth,
           rx: +m.rx.toFixed(1),
           diving: m.diving > 0,
           a: +m.sprite.alpha.toFixed(3),

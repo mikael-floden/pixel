@@ -17,6 +17,7 @@
 import { chromium } from "playwright-core";
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { PNG } from "pngjs";
 
 function chromePath() {
   const root = "/opt/pw-browsers";
@@ -149,6 +150,115 @@ if (spot) {
   if (seen.most > 10) fail(`${seen.most} moths at once — the ceiling is 10`);
   if (seen.offLamp) fail(`${seen.offLamp} samples were more than 44px from their own lamp — they must ORBIT it`);
   if (!seen.dived) fail("no moth ever bumped the lamp — the dive is what makes it read as a moth");
+
+  /* ---- AND THEY ARE IN FRONT OF THE LAMP, NOT BEHIND IT ----
+   *
+   * Every scenery piece draws twice: once below the darkness overlay and again
+   * as an opaque LIT COPY at ~900_001. Moths sat at 900_000.06 with the ground
+   * marks, so a lamp painted over the moths circling it — right for something
+   * lying on the ground, wrong for something attached to a drawn object
+   * (maintainer 2026-09-09: "you render the sparks and also the moths behind
+   * the Scenery object so it's hard to see").
+   *
+   * Judged on the SCREEN, over the lamp's own art, because that is the surface
+   * the bug lives on: every position, depth and alpha counter was correct while
+   * it was happening. The lamp is animated and its light flickers, so the
+   * baseline is the PER-PIXEL MAXIMUM over several moth-free frames and the
+   * control is one further moth-free frame against that same envelope. */
+  const lampArt = await page.evaluate(async () => {
+    for (let i = 0; i < 60; i++) await new Promise((r) => requestAnimationFrame(r));
+    const ms = window.__mlAmbient.debug("moths").all || [];
+    if (!ms.length) return null;
+    const m = ms[0];
+    const v = window.__ml.camView();
+    const z = window.__ml.myScreen()?.zoom ?? 1;
+    /* THE LAMP'S OWN ART, IDENTIFIED BY ITS OWN DEPTH. Not "the first lit
+     * scenery near the head": objectsIn returns everything in the rect sorted
+     * by depth, so that picks whatever is furthest back — measured, it found an
+     * unrelated streetlight 27px wide and reported 0 of 1791 moth samples over
+     * it, which is a statement about the search, not about the moths. The seam
+     * publishes each light's own `litDepth`, and that IS the copy's depth, so
+     * the match is exact (objectsIn rounds to 3 decimals — hence the epsilon).
+     * The real piece here is a 185x247 maypole and every moth sample is inside
+     * it. */
+    let art = null;
+    for (const o of window.__ml.objectsIn(m.lampX - 200, m.lampY - 280, m.lampX + 200, m.lampFootY + 80))
+      if (m.lampDepth !== null && Math.abs(o.depth - m.lampDepth) < 6e-4) { art = o; break; }
+    return art ? {
+      x0: Math.round((art.x - v.x) * z), y0: Math.round((art.y - v.y) * z),
+      x1: Math.round((art.x + art.w - v.x) * z), y1: Math.round((art.y + art.h - v.y) * z),
+      artDepth: art.depth, mothDepth: m.depth, lampDepth: m.lampDepth,
+    } : null;
+  });
+  if (!lampArt) fail("could not find a lamp's own art on the display list — the covering arm did not run");
+  else {
+    if (!(lampArt.mothDepth > lampArt.artDepth))
+      fail(`moths draw at ${lampArt.mothDepth} and the lamp's art at ${lampArt.artDepth} — the lamp is in front of its own moths`);
+    const shot = async () => PNG.sync.read(await page.screenshot({ type: "png" }));
+    const setMoths = async (on, n) => page.evaluate(async ([o, k]) => {
+      window.__mlAmbient.setEnabled("moths", o);
+      for (let i = 0; i < k; i++) await new Promise((r) => requestAnimationFrame(r));
+    }, [on, n]);
+    await setMoths(false, 220);
+    const offs = [];
+    for (let i = 0; i < 8; i++) {
+      offs.push(await shot());
+      await page.evaluate(async () => { for (let k = 0; k < 14; k++) await new Promise((r) => requestAnimationFrame(r)); });
+    }
+    const noiseShot = await shot();
+    await setMoths(true, 200);
+    const ons = [];
+    for (let i = 0; i < 10; i++) {
+      ons.push(await shot());
+      await page.evaluate(async () => { for (let k = 0; k < 12; k++) await new Promise((r) => requestAnimationFrame(r)); });
+    }
+    const im0 = offs[0];
+    const x0 = Math.max(0, lampArt.x0), x1 = Math.min(im0.width, lampArt.x1);
+    const y0 = Math.max(0, lampArt.y0), y1 = Math.min(im0.height, lampArt.y1);
+    if (x1 - x0 < 12 || y1 - y0 < 12)
+      fail(`the lamp's art framed as ${x1 - x0}x${y1 - y0}px — too small to judge covering with`);
+    else {
+      const lum = (im, x, y) => {
+        const i = (y * im.width + x) * 4;
+        return 0.299 * im.data[i] + 0.587 * im.data[i + 1] + 0.114 * im.data[i + 2];
+      };
+      const w = x1 - x0;
+      const env = new Float32Array(w * (y1 - y0));
+      for (const im of offs)
+        for (let y = y0; y < y1; y++)
+          for (let x = x0; x < x1; x++) {
+            const i = (y - y0) * w + (x - x0);
+            const l = lum(im, x, y);
+            if (l > env[i]) env[i] = l;
+          }
+      const pk = (a) => {
+        let b = 0, at = null;
+        for (let y = y0; y < y1; y++)
+          for (let x = x0; x < x1; x++) {
+            const d = lum(a, x, y) - env[(y - y0) * w + (x - x0)];
+            if (d > b) { b = d; at = [x, y]; }
+          }
+        return { b, at };
+      };
+      let best = 0, at = null;
+      for (const a of ons) { const q = pk(a); if (q.b > best) { best = q.b; at = q.at; } }
+      const noise = pk(noiseShot).b;
+      console.log(
+        `covering: over ${w}x${y1 - y0}px OF THE LAMP'S OWN ART (depth ${lampArt.artDepth}, moths ` +
+          `${lampArt.mothDepth}), the moths brighten a pixel by ${best.toFixed(1)} luma at ` +
+          `${at ? at.join(",") : "?"} — against ${noise.toFixed(1)} with no moths`,
+      );
+      /* A SMALL ABSOLUTE NUMBER ON PURPOSE. A moth is a two-pixel cream mark at
+       * alpha <= 0.85 drawn NORMAL over a lit lamp — nothing like the additive
+       * white-hot spark the embers arm can demand 25 luma of. Measured here:
+       * 8.9 luma with the fix and 0.0 with the moths back under the lamp, so
+       * the ratio against the control is what discriminates, not the size. */
+      if (best < 5) fail(`the moths add ${best.toFixed(1)} luma over the lamp they circle — it is drawing on top of them`);
+      if (best < noise * 1.8)
+        fail(`over the lamp the moths add ${best.toFixed(1)} luma where its own art moves ${noise.toFixed(1)} — that is the art, not a moth`);
+    }
+    await setMoths(true, 60);
+  }
 
   // ---- DOES IT COST A FRAME? ----
   const cost = await page.evaluate(async () => {

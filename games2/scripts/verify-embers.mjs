@@ -339,7 +339,22 @@ const region = await page.evaluate(async (spot) => {
   const d = window.__mlAmbient.debug("embers");
   const fire = (d.fireList || [])[0];
   if (!fire) return null;
-  return { sx: Math.round((fire.x - v.x) * z), sy: Math.round((fire.y - v.y) * z), z };
+  /* THE PIECE'S OWN DRAWN ART, measured off the display list rather than
+   * guessed from the fire point: the second pixel arm below has to look exactly
+   * where the piece is, and a box picked by eye would drift with any art. The
+   * LIT COPY is the one that matters (depth over the darkness overlay) — it is
+   * the opaque thing that was covering the sparks. */
+  let art = null;
+  for (const o of window.__ml.objectsIn(fire.x - 200, fire.y - 260, fire.x + 200, fire.y + 120))
+    if (o.depth > 900_000 && fire.piece && o.key.includes(fire.piece)) { art = o; break; }
+  return {
+    sx: Math.round((fire.x - v.x) * z), sy: Math.round((fire.y - v.y) * z), z,
+    fireDepth: fire.depth, artDepth: art ? art.depth : null,
+    art: art ? {
+      x0: Math.round((art.x - v.x) * z), y0: Math.round((art.y - v.y) * z),
+      x1: Math.round((art.x + art.w - v.x) * z), y1: Math.round((art.y + art.h - v.y) * z),
+    } : null,
+  };
 }, { col: found.col, row: found.row });
 if (!region) fail("no fire on screen to judge the sparks against");
 else {
@@ -365,13 +380,46 @@ else {
     await page.evaluate(async () => { for (let k = 0; k < 14; k++) await new Promise((r) => requestAnimationFrame(r)); });
   }
   const off = offs[0];
+  // The control: one MORE off frame, judged against the envelope built from the
+  // others. Taken here so both boxes below share one set of frames.
+  const noiseShot = await shot();
   await page.evaluate(async () => {
     window.__mlAmbient.setEnabled("embers", true);
     for (let i = 0; i < 200; i++) await new Promise((r) => requestAnimationFrame(r));
   });
+  const ons = [];
+  for (let i = 0; i < 8; i++) {
+    ons.push(await shot());
+    await page.evaluate(async () => { for (let k = 0; k < 20; k++) await new Promise((r) => requestAnimationFrame(r)); });
+  }
   const lum = (im, x, y) => {
     const i = (y * im.width + x) * 4;
     return 0.299 * im.data[i] + 0.587 * im.data[i + 1] + 0.114 * im.data[i + 2];
+  };
+  /* ONE JUDGE, TWO BOXES. Per-pixel MAXIMUM over the off frames is the
+   * baseline; the control is a further off frame against that same envelope. */
+  const judge = (x0, x1, y0, y1) => {
+    const w = x1 - x0;
+    const env = new Float32Array(w * (y1 - y0));
+    for (const im of offs)
+      for (let y = y0; y < y1; y++)
+        for (let x = x0; x < x1; x++) {
+          const i = (y - y0) * w + (x - x0);
+          const l = lum(im, x, y);
+          if (l > env[i]) env[i] = l;
+        }
+    const pk = (a) => {
+      let b = 0, at = null;
+      for (let y = y0; y < y1; y++)
+        for (let x = x0; x < x1; x++) {
+          const d = lum(a, x, y) - env[(y - y0) * w + (x - x0)];
+          if (d > b) { b = d; at = [x, y]; }
+        }
+      return { b, at };
+    };
+    let best = 0, at = null;
+    for (const a of ons) { const q = pk(a); if (q.b > best) { best = q.b; at = q.at; } }
+    return { best, at, noise: pk(noiseShot).b };
   };
   /* THE AIR ABOVE THE FIRE, not the fire. The flame's own frames are the loudest
    * thing in this picture, so the box starts well clear of it — sparks rise, so
@@ -380,48 +428,55 @@ else {
   const y0 = Math.max(0, region.sy - 105), y1 = Math.max(0, region.sy - 12);
   if (y1 - y0 < 40 || x1 - x0 < 60)
     fail(`the air above the fire framed as ${x1 - x0}x${y1 - y0}px — the camera is not showing the sparks, so this proves nothing`);
-  // Per-pixel brightest the room ever gets with NO sparks in it.
-  const envelope = new Float32Array((x1 - x0) * (y1 - y0));
-  for (const im of offs)
-    for (let y = y0; y < y1; y++)
-      for (let x = x0; x < x1; x++) {
-        const i = (y - y0) * (x1 - x0) + (x - x0);
-        const l = lum(im, x, y);
-        if (l > envelope[i]) envelope[i] = l;
-      }
-  const peak = (a) => {
-    let best = 0, at = null;
-    for (let y = y0; y < y1; y++)
-      for (let x = x0; x < x1; x++) {
-        const d = lum(a, x, y) - envelope[(y - y0) * (x1 - x0) + (x - x0)];
-        if (d > best) { best = d; at = [x, y]; }
-      }
-    return { best, at };
-  };
-  // The control: one MORE off frame against the envelope built from the others.
-  await page.evaluate(async () => {
-    window.__mlAmbient.setEnabled("embers", false);
-    for (let i = 0; i < 200; i++) await new Promise((r) => requestAnimationFrame(r));
-  });
-  const noise = peak(await shot()).best;
-  await page.evaluate(async () => {
-    window.__mlAmbient.setEnabled("embers", true);
-    for (let i = 0; i < 200; i++) await new Promise((r) => requestAnimationFrame(r));
-  });
-  let best = 0, bestAt = null;
-  for (let f = 0; f < 8; f++) {
-    const p = peak(await shot());
-    if (p.best > best) { best = p.best; bestAt = p.at; }
-    await page.evaluate(async () => { for (let i = 0; i < 20; i++) await new Promise((r) => requestAnimationFrame(r)); });
-  }
+  const air = judge(x0, x1, y0, y1);
   console.log(
     `screen: over ${x1 - x0}x${y1 - y0}px of air above the fire, the sparks brighten a pixel by ` +
-      `${best.toFixed(1)} luma past the fire's own brightest at ${bestAt ? bestAt.join(",") : "?"} — ` +
-      `against ${noise.toFixed(1)} for a frame with no sparks in it`,
+      `${air.best.toFixed(1)} luma past the fire's own brightest at ${air.at ? air.at.join(",") : "?"} — ` +
+      `against ${air.noise.toFixed(1)} for a frame with no sparks in it`,
   );
-  if (best < 25) fail(`the brightest thing the sparks add to the screen is ${best.toFixed(1)} luma — too faint to find`);
-  if (best < noise * 1.8)
-    fail(`the sparks add ${best.toFixed(1)} luma where the flame's own animation moves ${noise.toFixed(1)} — that is not a spark, that is the fire`);
+  if (air.best < 25) fail(`the brightest thing the sparks add to the screen is ${air.best.toFixed(1)} luma — too faint to find`);
+  if (air.best < air.noise * 1.8)
+    fail(`the sparks add ${air.best.toFixed(1)} luma where the flame's own animation moves ${air.noise.toFixed(1)} — that is not a spark, that is the fire`);
+
+  /* ---- AND ON THE PIECE ITSELF, which is a DIFFERENT question ----
+   *
+   * The box above is AIR: it deliberately starts clear of the fire so the
+   * flame's own frames are not the subject. That is why it could not see the
+   * bug the maintainer found (2026-09-09: "you render the sparks ... behind the
+   * Scenery object so it's hard to see"). Every scenery piece draws an opaque
+   * LIT COPY at ~900_001 and the sparks sat at ~900_000.08, so the hearth
+   * painted over every spark still inside its own art — and the ones that
+   * escaped ABOVE it kept this arm green. Measured at his hearth, old depth vs
+   * new: the air box read 48.8 luma both ways, while the box ON the piece went
+   * 0.0 -> 163.6. A gate that looks only where the thing is not covered cannot
+   * see covering.
+   *
+   * So: the same envelope discipline, over the intersection of the piece's own
+   * DRAWN rect with the band above the flame. The rect is measured off the
+   * display list, never guessed, and the arm fails loudly if that measurement
+   * did not happen — a box it cannot place proves nothing. */
+  if (!region.art) fail("could not find the fire's own art on the display list — the covering arm did not run");
+  else {
+    const ax0 = Math.max(0, region.art.x0), ax1 = Math.min(off.width, region.art.x1);
+    // Above the flame (its animation is the loudest thing here) and inside the art.
+    const ay0 = Math.max(0, region.art.y0), ay1 = Math.min(off.height, region.sy - 8);
+    if (ax1 - ax0 < 20 || ay1 - ay0 < 20)
+      fail(`the fire's own art framed as ${ax1 - ax0}x${ay1 - ay0}px — too small to judge covering with`);
+    else {
+      const on = judge(ax0, ax1, ay0, ay1);
+      console.log(
+        `covering: over ${ax1 - ax0}x${ay1 - ay0}px OF THE PIECE'S OWN ART (depth ${region.artDepth}, ` +
+          `sparks ${region.fireDepth}), the sparks brighten a pixel by ${on.best.toFixed(1)} luma at ` +
+          `${on.at ? on.at.join(",") : "?"} — against ${on.noise.toFixed(1)} with no sparks`,
+      );
+      if (!(region.fireDepth > region.artDepth))
+        fail(`sparks draw at ${region.fireDepth} and their own fire's art at ${region.artDepth} — the piece is in front of its own sparks`);
+      if (on.best < 25)
+        fail(`the sparks add ${on.best.toFixed(1)} luma over the piece they come out of — it is drawing on top of them`);
+      if (on.best < on.noise * 1.8)
+        fail(`over the piece the sparks add ${on.best.toFixed(1)} luma where its own art moves ${on.noise.toFixed(1)} — that is the art, not a spark`);
+    }
+  }
 
   /* AND BIG ENOUGH TO SEE. One WORLD pixel is about one CSS pixel on the
    * maintainer's phone (camera zoom 3 against device ratio 2.75), and an

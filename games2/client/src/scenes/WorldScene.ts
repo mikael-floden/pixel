@@ -4835,7 +4835,24 @@ export class WorldScene extends Phaser.Scene {
           id: string; x: number; y: number; footY: number; z: number;
           piece: string; kind: string; embers: boolean;
           r: number; color: [number, number, number]; flicker: number; sealed: boolean;
+          litDepth: number | null;
         }[] = [];
+        /* WHERE THE SOURCE'S OWN ART IS DRAWN, so a mark attached to a light can
+         * sort against the thing it comes out of. A scenery piece draws BELOW
+         * the darkness overlay and again as a LIT COPY at litDepth (~900_001+),
+         * while every ambient mark sat just over the overlay at ~900_000.0x —
+         * so the copy covered the sparks and the moths outright (maintainer
+         * 2026-09-09, at his hearth: "you render the sparks and also the moths
+         * behind the Scenery object so it's hard to see"; measured there, spark
+         * 900_000.084 under a hearth copy at 900_001.045).
+         * It is the RESOLVED depth read off the drawn sprite, not `hbDepth`:
+         * the shared depth rule lifts a piece over the flat tile in front of it
+         * and can clamp it under a wall, and only the second pass knows which.
+         * Null when there is no copy to sort against (no night shader, or the
+         * piece's art has not landed yet) — the caller then has nothing to be
+         * in front OF and should fall back to a fixed band. */
+        const litAt = new Map<number, number>();
+        for (const lo of this.litOccluders) if (lo.place !== undefined) litAt.set(lo.place, lo.img.depth);
         const take = (s: EmissiveSource) => {
           // `hx`/`hy` is where the glow is DRAWN — the middle of the lit pixels
           // — and is the whole point of this probe. Deriving it from `z`
@@ -4851,6 +4868,11 @@ export class WorldScene extends Phaser.Scene {
             // ask here instead of guessing from an id.
             r: s.radius, color: s.color, flicker: s.flicker,
             piece: s.piece, kind: s.kind, embers: s.embers, sealed: !!s.sealed,
+            // `s3:<placement index>` is the id a scenery light is pushed under.
+            // An emissive TILE has no lit copy of its own to name (and no
+            // shipped world has one: tile emission is a maps2/tiles2 path and
+            // tiles2 retired 2026-09-09), so it reports null.
+            litDepth: (s.id.startsWith("s3:") ? litAt.get(+s.id.slice(3)) : undefined) ?? null,
           });
         };
         for (const s of this.emissiveSources) take(s);

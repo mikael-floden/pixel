@@ -34,7 +34,33 @@ import { AmbientCtx, AmbientFeature } from "../runtime/types";
 
 const KEY = "amb-ember"; // 2x2 — see A SPARK HAS TO READ
 const KEY_DIM = "amb-ember-dim"; // 1x1, what it shrinks to as it dies
-const DEPTH = 900_000.08; // over the darkness overlay, like every other ambient mark
+/* A SPARK DRAWS IN FRONT OF THE FIRE IT CAME OUT OF.
+ *
+ * Ambient marks all sat just over the darkness overlay at ~900_000.0x, and that
+ * is right for something lying on the GROUND — it is under every body and every
+ * piece, which is what a footprint or a wavelet wants. A source-attached mark is
+ * the opposite case: it is emitted from the middle of a drawn object, so sorting
+ * it behind that object hides it by construction. Every scenery piece draws
+ * TWICE — once below the overlay and again as an opaque LIT COPY at
+ * `litDepth` — so the hearth's own copy painted straight over the sparks
+ * (maintainer 2026-09-09, at his fireplace: "you render the sparks and also the
+ * moths behind the Scenery object so it's hard to see"; measured there, spark
+ * 900_000.084 under a hearth copy at 900_001.045 that is tinted near-black
+ * indoors, so it was not dimming them, it was covering them).
+ *
+ * So a spark takes ITS OWN FIRE'S drawn depth plus a hair — `litDepth` from
+ * `__ml.lightsInView`, which reads the number off the piece's live sprite. That
+ * is a sort, not an override: the lit band compresses painter depth by 1e-5, so
+ * SRC_LIFT is a tenth of a painter pixel and anything genuinely standing in
+ * front of the fire — the player at his hearth measured one pixel nearer — still
+ * draws over the sparks. Being in front of the fire is what makes them visible;
+ * being in front of everything would make them wrong. */
+const SRC_LIFT = 1e-6;
+/* When there is no copy to sort against (no night shader, art not landed yet),
+ * there is nothing to be in front OF, so go above the whole lit band: the widest
+ * painter line the_game can produce is ~11.7k px = 900_001.12, and the target
+ * rings and HP bars start at 900_001.44. */
+const ABOVE_LIT = 900_001.3;
 const GAIN_TAU = 1400;
 
 const LIGHT_MS = 560; // how often the light list is re-read (NOT per frame)
@@ -90,6 +116,7 @@ interface Spark {
   ph: number;
   hz: number;
   base: number;
+  depth: number; // captured at birth: the fire list is rebuilt under a live spark
   tint: number; // the fire's own colour, cooled per frame
   live: boolean;
 }
@@ -102,6 +129,7 @@ interface Fire {
   piece: string;
   color: number;
   gap: number;
+  depth: number; // where its sparks draw — see SRC_LIFT
 }
 
 export function embersFeature(): AmbientFeature {
@@ -131,6 +159,7 @@ export function embersFeature(): AmbientFeature {
           id: string; x: number; y: number; r: number;
           piece: string; kind: string; embers: boolean;
           color: [number, number, number]; sealed: boolean;
+          litDepth: number | null;
         }[]);
     if (!f) return [];
     probes++;
@@ -150,6 +179,7 @@ export function embersFeature(): AmbientFeature {
             id: l.id, x: l.x, y: l.y, kind: l.kind, piece: l.piece,
             color: (ch(l.color[0]) << 16) | (ch(l.color[1]) << 8) | ch(l.color[2]),
             gap: range(BURST_GAP),
+            depth: l.litDepth === null ? ABOVE_LIT : l.litDepth + SRC_LIFT,
           };
         });
     } catch {
@@ -177,7 +207,7 @@ export function embersFeature(): AmbientFeature {
          * which is exactly why the gate now judges PIXELS. */
         sprite: ctx.scene.add.image(0, 0, KEY).setOrigin(0, 0).setScale(1).setVisible(false),
         fire: fi, x: 0, y: 0, age: 0, life: 0, up: 0, side: 0, ph: 0, hz: 1, base: 1,
-        tint: 0xffffff, live: false,
+        depth: ABOVE_LIT, tint: 0xffffff, live: false,
       };
       sparks.push(s);
     }
@@ -192,6 +222,7 @@ export function embersFeature(): AmbientFeature {
     s.ph = rnd() * Math.PI * 2;
     s.hz = range(WOBBLE_HZ);
     s.base = range(ALPHA);
+    s.depth = fire.depth;
     s.tint = fire.color;
     s.live = true;
     s.sprite.setVisible(true).setAlpha(0);
@@ -279,7 +310,9 @@ export function embersFeature(): AmbientFeature {
         s.sprite
           .setTexture(t < SHRINK ? KEY : KEY_DIM)
           .setPosition(Math.round(s.x), iy)
-          .setDepth(DEPTH + iy * 1e-6)
+          // NOT keyed on the spark's own screen y: a rising spark would sort
+          // itself BEHIND its fire as it climbed. It belongs to the fire.
+          .setDepth(s.depth)
           .setTint(tint)
           .setAlpha(g * s.base * rise * fade)
           .setBlendMode(Phaser.BlendModes.ADD);
@@ -297,7 +330,7 @@ export function embersFeature(): AmbientFeature {
         fires: fires.length, // ...and how many of those are fires
         fireList: fires.map((f) => ({
           id: f.id, x: Math.round(f.x), y: Math.round(f.y),
-          kind: f.kind, piece: f.piece, color: f.color,
+          kind: f.kind, piece: f.piece, color: f.color, depth: f.depth,
         })),
         sparks: live.length,
         /* WHAT THE SPRITE ITSELF SAYS. A mark can be positioned, tinted and
