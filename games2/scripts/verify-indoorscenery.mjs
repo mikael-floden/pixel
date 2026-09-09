@@ -82,6 +82,13 @@ await page.addInitScript(({ world }) => {
 await page.goto(origin + "/", { waitUntil: "commit" });
 await page.waitForFunction(() => { try { return !!window.__ml && window.__ml.players() >= 1; } catch { return false; } }, null, { timeout: 150_000, polling: 100 });
 await page.waitForFunction(() => { try { return window.__ml.tiles3().drew.blits > 0; } catch { return false; } }, null, { timeout: 120_000, polling: 250 }).catch(() => {});
+// NOTHING MAY KILL THE PROBE. The room this gate derives is whatever the world
+// doc makes the most-furnished one, and since 2026-09-09 a monster zone reaches
+// it: the probe teleported in, was dead within six seconds, and a dead player's
+// next teleport is refused by design — so the "outside" sample was the inside
+// one again and four sections failed on a picture nothing had changed. Same
+// switch verify-indoor and verify-indoorscope already throw.
+await page.evaluate(() => window.__ml.noAggro?.(true));
 
 // SETTLE ON THE PICTURE, NEVER ON A FIXED WAIT — and never on "the loaders
 // are quiet" alone. Teleporting lands in a neighbourhood whose scenery streams
@@ -122,6 +129,13 @@ const settle = async () => {
 };
 
 const at = async (col, row, label) => {
+  // A dead probe cannot teleport (the handler refuses it); revive it first.
+  const dead = await page.evaluate(() => !!window.__ml.me()?.dead);
+  if (dead) {
+    console.log(`  (the probe died before [${label}] — respawning)`);
+    await page.evaluate(() => window.__ml.roomSend?.("respawn", {}));
+    await page.waitForFunction(() => !window.__ml.me()?.dead, null, { timeout: 30_000, polling: 250 }).catch(() => {});
+  }
   await page.evaluate(([c, r]) => window.__ml.teleport(c, r), [col, row]);
   await settle();
   const s = await page.evaluate(() => ({ scenery: window.__ml.sceneryIndoor(), indoor: window.__ml.indoor(), t3: window.__ml.tiles3() }));
