@@ -1227,6 +1227,16 @@ ok(Array.isArray(Object.values(s.set)[0]?.boxes), "carrying the box list, empty 
   const piece = DATAOBJ.find((o) => o.id === "bed_002");
   await p.goto(`${W}#/objects/${piece.id}`, { waitUntil: "load" });
   await p.waitForTimeout(2400);
+  /* HIS TUNING OUT OF THE WAY FIRST: the bed's south facing has carried its
+   * own size since 2026-09-03 (`size_by_dir.south`, rx 35 against a shared
+   * 51.97), and measured against that record the "opting in seeds the size
+   * it already had" step read the record instead of the code. Same reset the
+   * dinghy section does — the gate measures the editor, not his verdicts. */
+  await p.evaluate((k) => {
+    const d = window.__wiki?.state?.tuning?.scenery_hitbox;
+    if (d?.overrides) for (const key of Object.keys(d.overrides)) if (key === k || key.startsWith(`${k}#`)) delete d.overrides[key];
+  }, piece.path);
+  await p.evaluate(() => { delete window.__wikiHitbox; });
   await p.evaluate(() => {
     if (!document.querySelector(".hit-bar:not(.hidden)")) {
       [...document.querySelectorAll("button")].find((x) => /Edit hitbox/.test(x.textContent))?.click();
