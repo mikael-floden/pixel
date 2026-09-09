@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:18:09+00:00",
+  "generated_at": "2026-09-09T18:18:47+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -2755,13 +2755,13 @@
       ],
       "items": [],
       "size": [
-        104,
-        104
+        112,
+        112
       ],
       "template_id": "mannequin",
       "scale": "standard",
-      "pixellab_id": "dfa02e58-3036-4296-a901-1aef255b6408",
-      "version": 1,
+      "pixellab_id": "ae34b467-22ea-4d08-9461-f5d78f767353",
+      "version": 2,
       "sheet": "skeleton_archer/sheet.webp",
       "rotations": {
         "south": "skeleton_archer/rotations/south.webp",
@@ -2774,106 +2774,103 @@
         "south-west": "skeleton_archer/rotations/south-west.webp"
       },
       "qa": {
-        "status": "fail",
-        "min_run1": 0.748,
-        "reasons": [
-          "south-east: content touches the canvas edge (clipped)",
-          "south-west: content touches the canvas edge (clipped)"
-        ],
+        "status": "pass",
+        "min_run1": 0.756,
+        "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.768,
+            "run1": 0.756,
             "bbox": [
               19,
-              3,
-              94,
-              102
+              6,
+              105,
+              108
             ],
-            "fill": 0.686,
+            "fill": 0.699,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.791,
+            "run1": 0.77,
             "bbox": [
-              19,
-              1,
-              83,
-              102
+              27,
+              6,
+              77,
+              107
             ],
-            "fill": 0.598,
+            "fill": 0.403,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.797,
+            "run1": 0.788,
             "bbox": [
               30,
-              3,
-              88,
-              103
+              8,
+              80,
+              109
             ],
-            "fill": 0.536,
+            "fill": 0.403,
             "touches_edge": false
           },
           "north": {
-            "run1": 0.748,
+            "run1": 0.773,
             "bbox": [
-              11,
-              2,
-              84,
-              97
+              5,
+              4,
+              99,
+              101
             ],
-            "fill": 0.641,
+            "fill": 0.727,
             "touches_edge": false
           },
           "south-east": {
-            "run1": 0.83,
+            "run1": 0.834,
             "bbox": [
-              19,
-              3,
-              93,
-              104
+              23,
+              6,
+              89,
+              105
             ],
-            "fill": 0.691,
-            "touches_edge": true
+            "fill": 0.521,
+            "touches_edge": false
           },
           "north-east": {
-            "run1": 0.788,
+            "run1": 0.798,
             "bbox": [
-              15,
-              2,
-              83,
-              101
+              21,
+              5,
+              105,
+              104
             ],
-            "fill": 0.622,
+            "fill": 0.663,
             "touches_edge": false
           },
           "north-west": {
-            "run1": 0.778,
+            "run1": 0.757,
             "bbox": [
-              15,
-              2,
-              84,
-              101
+              12,
+              4,
+              89,
+              103
             ],
-            "fill": 0.632,
+            "fill": 0.608,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.843,
+            "run1": 0.841,
             "bbox": [
-              11,
-              1,
-              93,
-              104
+              8,
+              4,
+              101,
+              109
             ],
-            "fill": 0.781,
-            "touches_edge": true
+            "fill": 0.778,
+            "touches_edge": false
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-09T18:12:26+00:00"
+      "generated_at": "2026-09-09T18:18:47+00:00"
     },
     {
       "id": "zombie_farmer",
