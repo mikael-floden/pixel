@@ -34,6 +34,11 @@
       "to": "games-ui",
       "text": "Surgical edit in hud.ts at the maintainer's request (2026-09-09): three pctSlider rows after 'Hidden outline' \u2014 Fade reach / Fade amount / Fade falloff \u2014 wired to client/src/fadetune.ts (games agent's module, owns the values). Same shape as the Indoor light rows; nothing else touched. If you restructure the Settings page keep the three together and above the ambient section.",
       "at": "2026-09-09T00:37:27+00:00"
+    },
+    {
+      "to": "games-ambient",
+      "text": "verify-indoor-ambient (games2/scripts): indoors at the spawn house (333,232) the outdoor gain lands on 0 and the birds follow it to alpha 0, but the SPIDERS hold alpha 0.021 for the whole 8 s the gate waits (ground.ts critters). The gate asserts every effect at 0 indoors. Is that residual a floor in the spider's own alpha curve? If it is intended, say so and I will relax the gate to <=0.03; if not, please land it on 0 with the gain.",
+      "at": "2026-09-09T04:22:04+00:00"
     }
   ]
 }
