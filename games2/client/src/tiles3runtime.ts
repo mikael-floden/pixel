@@ -456,6 +456,11 @@ export function cellBlits(
   if (!w) return [];
   const hi = Math.min(cell.level, cut);
   if (hi < 0) return [];
+  /* A column the cut does not shorten is drawn WHOLE — its set surface, its
+   * fade and its foot band included. Only a truncated column is the stack
+   * alone with `mid` as its lid; this arm used to strip every raised cap in
+   * the window of its surface the moment the indoor mask went up. */
+  if (hi === cell.level) return t3.opsForCell(cell);
   const out: Tiles3Blit[] = [];
   for (const s of w.stack) {
     if (s.storey > hi) continue;
@@ -526,7 +531,7 @@ export function surfaceKey(t3: Tiles3Textures, tex: TextureManagerLike, cell: Ti
    *
    * The ground pass draws BOTH on a dressed wall — the stack, then the surface
    * over its cap — so an occluder copy that wants parity needs two images, not
-   * one substituted for the other. It draws one, so it draws the cap. */
+   * one substituted for the other: this one, then `dressKey` over it. */
   if (cell.kind === "wall") {
     const cap = cell.wall?.stack[cell.wall.stack.length - 1]?.tile;
     if (!cap?.path) return null;
@@ -541,6 +546,37 @@ export function surfaceKey(t3: Tiles3Textures, tex: TextureManagerLike, cell: Ti
   if (art.kind === "conform" || art.topOnly) return t3.plate(art, cell.ground);
   const k = plateKey(art, cell.ground);
   return tex.exists(k) ? k : null;
+}
+
+/** THE MAINTAINER'S SET ON A WALL'S CAP — the second image the occluder copy
+ *  of a dressed wall needs, drawn OVER `surfaceKey`'s cap course at the surface
+ *  anchor (`pasteY`, the same point `cellOps` pastes it at on the ground).
+ *
+ *  A review course's top face is ONE FLAT COLOUR (measured: every `_after`
+ *  tile of black_rock, grey_stone and dark_mud over their walls carries one
+ *  distinct top colour against 16-17 on a `_textured` one), and `own_top` is
+ *  set on exactly one tile of the library, so the resolver dresses every other
+ *  wall cell with its set's textured surface and the ground pass paints it.
+ *  The occluder pass then re-issued the cap course alone, and that sprite
+ *  covered the surface one frame after the texture drew it — every plateau
+ *  rim, every terrace edge, every raised cell at all wore the flat colour
+ *  while the cells one step in wore the set (maintainer 2026-09-09, on the
+ *  grey-stone plateau at 227,221: "Why are they all the solid color top? Don't
+ *  we have lots of 'x over y/x' tiles with very very nice tops?"). Level 0
+ *  emits no occluder, which is why the flat top is a raised-ground defect.
+ *
+ *  Not a substitute for the cap: the cap course is also the top storey's FACE
+ *  (908751d2e1 — replacing it took the masonry off every wall ring). Null
+ *  while the surface's source art streams, exactly as the ground pass then
+ *  draws no surface either; an undressed wall (`own_top`) keeps its cap's own
+ *  top and answers null. Top-face only by the resolver's own flag, so it can
+ *  never paint a wall band over the cap's art. */
+export function dressKey(t3: Tiles3Textures, cell: Tiles3Cell): { key: string; x: number; y: number } | null {
+  if (cell.kind !== "wall" || !cell.dressed) return null;
+  const art = cell.art;
+  if (!art || art.kind === "liquid") return null;
+  const key = t3.plate(art, cell.ground);
+  return key ? { key, x: cell.sx, y: cell.pasteY ?? cell.sy } : null;
 }
 
 /** WHERE `surfaceKey`'S RASTER IS PASTED, and the reason this function exists.

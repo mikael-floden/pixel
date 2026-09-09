@@ -372,19 +372,29 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   still's canvas), and the lit copy keeps the still's shape map. Strip-only
   clips do not play. Probe: `__ml.sceneryAnims()`.
 - **A RAISED CAP'S SPRITE WEARS EVERYTHING THE GROUND PASS PAINTED ON IT —
-  transition, fade AND foot band** (`tiles3Occluders`, via `overlayOps`). The
-  occluder pass re-issues every raised cell's cap as a sprite ABOVE the ground
-  texture so bodies can interleave, and whatever the sprite omits is covered
-  one frame after the texture drew it. The boundary learned this first ("the
-  transition only works on level 0"); the fade had the identical defect until
-  2026-09-09 ("the fade tiles only work on level 0", two photographs):
-  measured at his plateau (257,236, level 4), 11 fades resolved and emitted in
-  a 99-cell window, 0 fade sprites among the occluders before, 12 after.
-  Level 0 emits no occluder, which is why level 0 is where every such bug
-  hides. RULE: anything `cellOps` draws after the surface must also be
-  re-issued here, at its own paste point, after the cap and the boundary,
-  only on a column drawn at full height. Probe: `__ml.occDump().occluders`
-  keys — `t3d:` are fades, `t3fb:` foot bands.
+  the set SURFACE, transition, fade AND foot band** (`tiles3Occluders`, via
+  `dressKey` and `overlayOps`). The occluder pass re-issues every raised
+  cell's cap as a sprite ABOVE the ground texture so bodies can interleave,
+  and whatever the sprite omits is covered one frame after the texture drew
+  it. The boundary learned this first ("the transition only works on level
+  0"); the fade had the identical defect until 2026-09-09 ("the fade tiles
+  only work on level 0", two photographs): measured at his plateau (257,236,
+  level 4), 11 fades resolved and emitted in a 99-cell window, 0 fade sprites
+  among the occluders before, 12 after. THE SURFACE ITSELF was the last one
+  (same day, the grey-stone plateau at 227,221: "Why are they all the solid
+  color top?"): a wall's cap course is a `_after` review tile whose top face
+  is ONE colour, the resolver dresses it with the set's textured tile
+  (`own_top` is set on one tile in the library), the ground pass paints that
+  over the course — and the sprite re-issued the course alone, so every rim
+  cell wore the flat colour while the cell one step in wore the set. The
+  course stays (it is the top storey's face — 908751d2e1); the surface is a
+  SECOND image over it, at `pasteY`. Level 0 emits no occluder, which is why
+  level 0 is where every such bug hides. RULE: anything `cellOps` draws after
+  the wall stack must also be re-issued here, at its own paste point, after
+  the cap course, in the same order, only on a column drawn at full height
+  (and `cellBlits` draws a full-height column WHOLE under the indoor cut, so
+  the two passes agree there too). Probe: `__ml.occDump().occluders` keys —
+  `t3f:` a set surface, `t3d:` fades, `t3fb:` foot bands.
   THE GROUND PASS HAS THE SAME DUTY ON A TRANSITION TILE: the boundary blit
   REPLACES the cell's own ops, so the fade and the foot band are drawn from
   `overlayOps` in the boundary branch itself — until 2026-09-09 that draw sat

@@ -192,6 +192,7 @@ import {
   docUrl,
   faceKey as t3FaceKey,
   faceKeyAt as t3FaceKeyAt,
+  dressKey as t3DressKey,
   sheetPaths,
   surfaceKey as t3SurfaceKey,
   surfaceY as t3SurfaceY,
@@ -17264,6 +17265,17 @@ export class WorldScene extends Phaser.Scene {
         const capY = capSurface !== null ? capSurface : by - topL * lh;
         if (columnShows(capX, capY, by + tileSize)) {
           this.occluders.push(this.occTint(this.occImage(topL === cell.level ? topKey : fk, capX, capY, oDepth, col, row), "cap"));
+          /* AND THE SET SURFACE OVER A DRESSED WALL'S CAP — the second image
+           * the ground pass paints on such a cell (`cellOps`: stack, then the
+           * surface at its own anchor). A review course's top is one flat
+           * colour; the surface is the maintainer's textured set; this copy
+           * used to stop at the course and cover the set on every raised rim
+           * (maintainer 2026-09-09: "Why are they all the solid color top?").
+           * See `dressKey`. Full-height columns only, like everything below. */
+          if (topL === cell.level) {
+            const dk = this.t3Try(`occ dress ${col},${row}`, () => t3DressKey(tex, cell), null);
+            if (dk) this.occluders.push(this.occTint(this.occImage(dk.key, dk.x, dk.y, oDepth, col, row), "cap"));
+          }
           /* THE CAP WEARS ITS TRANSITION HERE TOO — and not doing so is the
            * whole of "the transition only works on level 0" (maintainer, for
            * weeks, with photographs: "As soon as I go up on a hill or something
