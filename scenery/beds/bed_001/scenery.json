@@ -90,7 +90,13 @@
               "strip": "beds/bed_001/lit_1/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:08:39+00:00"
+          "generated_at": "2026-08-29T08:08:39+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.2243,
+            "still": 0.63
+          }
         },
         "motion": {
           "group_id": "a15526f9-64e0-49c9-9719-a53fa014f598",
@@ -115,7 +121,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T12:11:04+00:00",
-          "brief": "Q19"
+          "brief": "Q19",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0019,
+            "still": 0.639
+          }
         }
       },
       "rotations": {

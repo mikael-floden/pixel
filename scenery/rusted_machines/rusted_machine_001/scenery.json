@@ -72,7 +72,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T15:38:25+00:00",
-          "brief": "X41"
+          "brief": "X41",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.1383,
+            "still": 0.5
+          }
         }
       }
     },
@@ -126,7 +132,13 @@
               "strip": "rusted_machines/rusted_machine_001/lit_2/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:26:03+00:00"
+          "generated_at": "2026-08-29T08:26:03+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.6463,
+            "still": 0.346
+          }
         }
       },
       "rotations": {
@@ -164,7 +176,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T08:39:23+00:00",
-          "brief": "M2"
+          "brief": "M2",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.1304,
+            "still": 0.565
+          }
         }
       }
     },

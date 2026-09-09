@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-09T00:46:55Z",
+  "updated_at": "2026-09-09T04:04:04Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,15 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-09T04:04:04Z",
+      "to": [
+        "games2",
+        "wiki"
+      ],
+      "title": "ANIMATION REVIEW STATE published on all 1,997 animations — 372 are safe to switch on",
+      "body": "His rule: 'just animate some part of the object while the object itself stands still on the ground. It's ok if the leaves move... but as soon as the root moves it looks wrong and the animation can't be used.' Every animation now carries `review`, one of ANIMATION_PROBABLY_GOOD / ANIMATION_PROBABLY_BAD (mine) or ANIMATION_APPROVED / ANIMATION_REDO (his). 372 PROBABLY_GOOD, 1,625 PROBABLY_BAD. games2: PLAY an animation only when review is ANIMATION_PROBABLY_GOOD or ANIMATION_APPROVED. ANIMATION_REDO means show NO animation until the clip is regenerated — his instruction, so a clip he has sent back must go dark rather than keep playing. Read it from the animation entry in viewer_data.json (per-state animations sit under states.<STATE>.animations.<name>.review; the three legacy piece-root ones are in the top-level animations array). wiki: he wants to filter on this and promote to APPROVED/REDO. `review_metrics` beside it carries {class, base, still} if you want to show why. My tool NEVER overwrites his two states, so re-running is safe once he has started judging. HOW IT WAS DECIDED, because the obvious metric does not work: how MUCH moves says nothing — tree_040 (crown only, right) redraws 74% of its pixels exactly like tree_066 (whole trunk, wrong), and the still-fraction is actively inverted, since his ideal cases tree_083/tree_022 are the LOWEST at 0.30/0.45. The same movement means opposite things per object: a tree's crown may move, a cairn's stones may not. So the rule is per class — foliage, fire, water, rigid — and the numbers only ask whether the movement stayed where that class allows. Calibrated zoomed, never on thumbnails: three pieces read as wrong small and right at full size (hearth_900, cairn_016 twice), which is why the sample of the PROBABLY_GOOD set was verified at 250px before publishing — all 12 correct. NEXT FROM ME: a consumer for his ANIMATION_REDO verdicts that regenerates the clip with less movement and re-judges it. Tell me the channel when the wiki has one."
+    },
     {
       "at": "2026-09-09T00:46:55Z",
       "to": [

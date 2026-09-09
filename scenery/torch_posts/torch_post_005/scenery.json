@@ -90,7 +90,13 @@
               "strip": "torch_posts/torch_post_005/lit_1/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:29:45+00:00"
+          "generated_at": "2026-08-29T08:29:45+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.2903,
+            "still": 0.261
+          }
         }
       },
       "rotations": {
@@ -131,7 +137,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T16:05:53+00:00",
-          "brief": "X2"
+          "brief": "X2",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.764
+          }
         }
       }
     },

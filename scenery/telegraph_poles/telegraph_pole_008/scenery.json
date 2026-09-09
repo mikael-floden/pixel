@@ -70,7 +70,13 @@
           "strip": "telegraph_poles/telegraph_pole_008/lit_2/animations/motion__strip.webp",
           "directions": null,
           "generated_at": "2026-08-29T16:58:41+00:00",
-          "brief": "Z41"
+          "brief": "Z41",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.1202,
+            "still": 0.628
+          }
         }
       }
     },
@@ -115,7 +121,13 @@
           "strip": "telegraph_poles/telegraph_pole_008/not_lit_1/animations/motion__strip.webp",
           "directions": null,
           "generated_at": "2026-08-30T08:17:37+00:00",
-          "brief": "G18"
+          "brief": "G18",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.1523,
+            "still": 0.464
+          }
         }
       }
     },
@@ -144,7 +156,13 @@
           "strip": "telegraph_poles/telegraph_pole_008/not_lit_2/animations/motion__strip.webp",
           "directions": null,
           "generated_at": "2026-08-30T08:17:54+00:00",
-          "brief": "G19"
+          "brief": "G19",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.1899,
+            "still": 0.672
+          }
         }
       }
     }

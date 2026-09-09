@@ -66,7 +66,13 @@
           "strip": "beacons/beacon_011/lit_1/animations/motion__strip.webp",
           "directions": null,
           "generated_at": "2026-08-29T16:15:16+00:00",
-          "brief": "Y2"
+          "brief": "Y2",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.2827,
+            "still": 0.625
+          }
         }
       }
     },
@@ -94,7 +100,13 @@
           ],
           "strip": "beacons/beacon_011/lit_2/animations/flame__strip.webp",
           "directions": null,
-          "generated_at": "2026-08-29T06:55:01+00:00"
+          "generated_at": "2026-08-29T06:55:01+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0526,
+            "still": 0.78
+          }
         }
       }
     },

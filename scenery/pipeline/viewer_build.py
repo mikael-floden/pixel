@@ -78,6 +78,12 @@ def build():
                 "frames": south.get("frames"),
                 "preview_gif": south.get("gif"),
                 "directions": {d: v.get("gif") for d, v in dirs.items() if v.get("gif")},
+                # MAY THE GAME PLAY IT? Rebuilt by hand here, so anything the
+                # review adds has to be listed or it is silently dropped —
+                # `review` was, for the three piece-root animations, while every
+                # per-state one rode through on the states spread.
+                "review": a.get("review"),
+                "review_metrics": a.get("review_metrics"),
             })
         categories[cat] = categories.get(cat, 0) + 1
         pieces.append({

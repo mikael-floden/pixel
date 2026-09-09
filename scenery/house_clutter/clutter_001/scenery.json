@@ -90,7 +90,13 @@
               "strip": "house_clutter/clutter_001/lit_1/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:19:52+00:00"
+          "generated_at": "2026-08-29T08:19:52+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0252,
+            "still": 0.547
+          }
         }
       },
       "rotations": {
@@ -131,7 +137,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T15:35:36+00:00",
-          "brief": "X11"
+          "brief": "X11",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.6131,
+            "still": 0.188
+          }
         }
       }
     },

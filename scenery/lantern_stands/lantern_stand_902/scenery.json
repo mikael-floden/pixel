@@ -86,7 +86,13 @@
               ]
             }
           },
-          "generated_at": "2026-08-29T08:24:51+00:00"
+          "generated_at": "2026-08-29T08:24:51+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.677
+          }
         }
       },
       "rotations": {
@@ -145,7 +151,13 @@
               "strip": "lantern_stands/lantern_stand_902/lit_3/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:24:54+00:00"
+          "generated_at": "2026-08-29T08:24:54+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0842,
+            "still": 0.315
+          }
         }
       },
       "rotations": {
@@ -186,7 +198,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T16:57:04+00:00",
-          "brief": "Z24"
+          "brief": "Z24",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.01,
+            "still": 0.558
+          }
         }
       }
     }

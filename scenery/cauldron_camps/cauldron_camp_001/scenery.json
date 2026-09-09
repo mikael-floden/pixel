@@ -80,7 +80,13 @@
               "strip": "cauldron_camps/cauldron_camp_001/lit_1/animations/flame__south-east.webp"
             }
           },
-          "generated_at": "2026-08-29T08:14:30+00:00"
+          "generated_at": "2026-08-29T08:14:30+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.7567,
+            "still": 0.172
+          }
         },
         "motion": {
           "group_id": "2bb39e4f-779a-41c5-9494-9c2c0f18d4ed",
@@ -101,7 +107,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T08:39:46+00:00",
-          "brief": "S2"
+          "brief": "S2",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.1055,
+            "still": 0.308
+          }
         }
       },
       "rotations": {
@@ -160,7 +172,13 @@
               "strip": "cauldron_camps/cauldron_camp_001/lit_2/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:12:59+00:00"
+          "generated_at": "2026-08-29T08:12:59+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.1374,
+            "still": 0.377
+          }
         }
       },
       "rotations": {
@@ -211,7 +229,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T15:35:46+00:00",
-          "brief": "X14"
+          "brief": "X14",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0036,
+            "still": 0.911
+          }
         }
       }
     },
@@ -247,7 +271,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T19:17:33+00:00",
-          "brief": "D30"
+          "brief": "D30",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.1338,
+            "still": 0.661
+          }
         }
       }
     },

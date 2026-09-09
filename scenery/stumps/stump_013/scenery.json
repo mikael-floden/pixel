@@ -68,7 +68,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T19:05:20+00:00",
-          "brief": "C41"
+          "brief": "C41",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.1538,
+            "still": 0.515
+          }
         }
       }
     },
@@ -99,7 +105,13 @@
             "south"
           ],
           "generated_at": "2026-08-30T08:17:24+00:00",
-          "brief": "G28"
+          "brief": "G28",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.0294,
+            "still": 0.508
+          }
         }
       }
     },
@@ -130,7 +142,13 @@
             "south"
           ],
           "generated_at": "2026-08-30T08:17:51+00:00",
-          "brief": "G29"
+          "brief": "G29",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.016,
+            "still": 0.636
+          }
         }
       }
     },

@@ -61,7 +61,13 @@
           ],
           "strip": "beacons/beacon_010/animations/flame__strip.webp",
           "directions": null,
-          "generated_at": "2026-08-29T06:50:45+00:00"
+          "generated_at": "2026-08-29T06:50:45+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.1397,
+            "still": 0.696
+          }
         }
       }
     },
@@ -89,7 +95,13 @@
           ],
           "strip": "beacons/beacon_010/lit_3/animations/flame__strip.webp",
           "directions": null,
-          "generated_at": "2026-08-29T06:50:13+00:00"
+          "generated_at": "2026-08-29T06:50:13+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0504,
+            "still": 0.802
+          }
         }
       }
     },
@@ -117,7 +129,13 @@
           ],
           "strip": "beacons/beacon_010/lit_4/animations/flame__strip.webp",
           "directions": null,
-          "generated_at": "2026-08-29T06:50:05+00:00"
+          "generated_at": "2026-08-29T06:50:05+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.1864,
+            "still": 0.735
+          }
         }
       }
     },

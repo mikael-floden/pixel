@@ -68,7 +68,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T13:28:49+00:00",
-          "brief": "S15"
+          "brief": "S15",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0514,
+            "still": 0.51
+          }
         }
       }
     },
@@ -99,7 +105,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T16:17:33+00:00",
-          "brief": "Y30"
+          "brief": "Y30",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.8981,
+            "still": 0.697
+          }
         }
       }
     },

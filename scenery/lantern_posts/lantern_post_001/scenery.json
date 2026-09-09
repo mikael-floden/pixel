@@ -90,7 +90,13 @@
               "strip": "lantern_posts/lantern_post_001/lit_1/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:22:01+00:00"
+          "generated_at": "2026-08-29T08:22:01+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.9219,
+            "still": 0.166
+          }
         },
         "motion": {
           "group_id": "c8af6322-3ee0-49c8-a119-9d8942faf3bc",
@@ -111,7 +117,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T12:42:23+00:00",
-          "brief": "R24"
+          "brief": "R24",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.8333,
+            "still": 0.454
+          }
         }
       },
       "rotations": {
@@ -152,7 +164,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T13:28:46+00:00",
-          "brief": "S8"
+          "brief": "S8",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.835
+          }
         }
       }
     },

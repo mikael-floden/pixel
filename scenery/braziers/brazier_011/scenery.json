@@ -91,7 +91,13 @@
               "strip": "braziers/brazier_011/lit_1/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:11:34+00:00"
+          "generated_at": "2026-08-29T08:11:34+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.1842,
+            "still": 0.719
+          }
         }
       },
       "rotations": {

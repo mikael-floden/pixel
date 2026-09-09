@@ -72,7 +72,13 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T06:58:16+00:00"
+          "generated_at": "2026-08-29T06:58:16+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.4362,
+            "still": 0.559
+          }
         }
       }
     },
@@ -103,7 +109,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T18:33:59+00:00",
-          "brief": "B35"
+          "brief": "B35",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.1773,
+            "still": 0.598
+          }
         }
       }
     },
@@ -134,7 +146,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T19:02:18+00:00",
-          "brief": "C3"
+          "brief": "C3",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.4658,
+            "still": 0.43
+          }
         }
       }
     },

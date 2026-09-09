@@ -74,7 +74,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T16:30:09+00:00",
-          "brief": "Y38"
+          "brief": "Y38",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.6812,
+            "still": 0.056
+          }
         }
       }
     },
@@ -128,7 +134,13 @@
               "strip": "scarecrows/scarecrow_901/lit_2/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:26:17+00:00"
+          "generated_at": "2026-08-29T08:26:17+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 1.0,
+            "still": 0.032
+          }
         }
       },
       "rotations": {

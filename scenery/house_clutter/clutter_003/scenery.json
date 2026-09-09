@@ -90,7 +90,13 @@
               "strip": "house_clutter/clutter_003/lit_2/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:21:03+00:00"
+          "generated_at": "2026-08-29T08:21:03+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.5455,
+            "still": 0.686
+          }
         }
       },
       "rotations": {

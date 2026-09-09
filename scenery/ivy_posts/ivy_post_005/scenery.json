@@ -90,7 +90,13 @@
               "strip": "ivy_posts/ivy_post_005/lit_2/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:22:27+00:00"
+          "generated_at": "2026-08-29T08:22:27+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.133,
+            "still": 0.522
+          }
         }
       },
       "rotations": {
@@ -128,7 +134,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T08:37:13+00:00",
-          "brief": "G10"
+          "brief": "G10",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "foliage",
+            "base": 0.0966,
+            "still": 0.751
+          }
         }
       }
     },

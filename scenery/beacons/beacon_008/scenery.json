@@ -70,7 +70,13 @@
           "strip": "beacons/beacon_008/lit_2/animations/motion__strip.webp",
           "directions": null,
           "generated_at": "2026-08-29T16:15:41+00:00",
-          "brief": "Y10"
+          "brief": "Y10",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0545,
+            "still": 0.825
+          }
         }
       }
     },
@@ -99,7 +105,13 @@
           "strip": "beacons/beacon_008/lit_3/animations/motion__strip.webp",
           "directions": null,
           "generated_at": "2026-08-29T16:55:08+00:00",
-          "brief": "Z4"
+          "brief": "Z4",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.1115,
+            "still": 0.719
+          }
         }
       }
     },
@@ -128,7 +140,13 @@
           "strip": "beacons/beacon_008/lit_4/animations/motion__strip.webp",
           "directions": null,
           "generated_at": "2026-08-30T08:16:16+00:00",
-          "brief": "G1"
+          "brief": "G1",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0427,
+            "still": 0.706
+          }
         }
       }
     },

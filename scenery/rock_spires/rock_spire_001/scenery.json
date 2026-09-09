@@ -65,7 +65,13 @@
           "strip": "rock_spires/rock_spire_001/lit_1/animations/motion__strip.webp",
           "directions": null,
           "generated_at": "2026-08-29T11:51:49+00:00",
-          "brief": "Q13"
+          "brief": "Q13",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.0449,
+            "still": 0.66
+          }
         }
       }
     },
@@ -94,7 +100,13 @@
           "strip": "rock_spires/rock_spire_001/lit_2/animations/motion__strip.webp",
           "directions": null,
           "generated_at": "2026-08-29T13:49:16+00:00",
-          "brief": "T18"
+          "brief": "T18",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.3136,
+            "still": 0.603
+          }
         }
       }
     },

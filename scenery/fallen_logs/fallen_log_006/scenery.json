@@ -65,7 +65,13 @@
           "directions": [
             "south"
           ],
-          "generated_at": "2026-08-29T06:57:44+00:00"
+          "generated_at": "2026-08-29T06:57:44+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.1536,
+            "still": 0.77
+          }
         },
         "motion": {
           "group_id": "b2f419da-b517-4ed6-a85a-d68b442cc881",
@@ -86,7 +92,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T11:49:43+00:00",
-          "brief": "Q10"
+          "brief": "Q10",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.4074,
+            "still": 0.663
+          }
         }
       }
     },
@@ -117,7 +129,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T17:57:01+00:00",
-          "brief": "A37"
+          "brief": "A37",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.3341,
+            "still": 0.459
+          }
         }
       }
     },
@@ -148,7 +166,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T18:31:28+00:00",
-          "brief": "B7"
+          "brief": "B7",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "rigid",
+            "base": 0.0309,
+            "still": 0.735
+          }
         }
       }
     },

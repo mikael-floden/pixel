@@ -65,7 +65,13 @@
           ],
           "strip": "beacons/beacon_015/lit_1/animations/flame__strip.webp",
           "directions": null,
-          "generated_at": "2026-08-29T06:54:29+00:00"
+          "generated_at": "2026-08-29T06:54:29+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0893,
+            "still": 0.542
+          }
         }
       }
     },
@@ -95,7 +101,13 @@
           "strip": "beacons/beacon_015/lit_3/animations/motion__strip.webp",
           "directions": null,
           "generated_at": "2026-08-29T16:55:16+00:00",
-          "brief": "Z8"
+          "brief": "Z8",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.1413,
+            "still": 0.75
+          }
         }
       }
     },

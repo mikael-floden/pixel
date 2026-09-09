@@ -90,7 +90,13 @@
               "strip": "flame_niches/flame_niche_005/lit_1/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:13:16+00:00"
+          "generated_at": "2026-08-29T08:13:16+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0941,
+            "still": 0.817
+          }
         }
       },
       "rotations": {
@@ -149,7 +155,13 @@
               "strip": "flame_niches/flame_niche_005/lit_2/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:13:55+00:00"
+          "generated_at": "2026-08-29T08:13:55+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.1216,
+            "still": 0.659
+          }
         }
       },
       "rotations": {
@@ -202,7 +214,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T15:35:27+00:00",
-          "brief": "X4"
+          "brief": "X4",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0152,
+            "still": 0.978
+          }
         }
       }
     },
@@ -239,7 +257,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T17:52:59+00:00",
-          "brief": "A4"
+          "brief": "A4",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.032,
+            "still": 0.929
+          }
         }
       }
     },

@@ -90,7 +90,13 @@
               "strip": "streetlights/streetlight_007/lit_1/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:27:23+00:00"
+          "generated_at": "2026-08-29T08:27:23+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.7152,
+            "still": 0.146
+          }
         }
       },
       "rotations": {
@@ -131,7 +137,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T13:29:53+00:00",
-          "brief": "S3"
+          "brief": "S3",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0408,
+            "still": 0.679
+          }
         }
       }
     },

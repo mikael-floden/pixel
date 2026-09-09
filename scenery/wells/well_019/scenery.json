@@ -73,7 +73,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T15:36:54+00:00",
-          "brief": "X30"
+          "brief": "X30",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.0563,
+            "still": 0.52
+          }
         }
       }
     },
@@ -109,7 +115,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T18:48:59+00:00",
-          "brief": "B1"
+          "brief": "B1",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.1738,
+            "still": 0.86
+          }
         }
       }
     },
@@ -181,7 +193,13 @@
             "south"
           ],
           "generated_at": "2026-08-30T11:17:04+00:00",
-          "brief": "M11"
+          "brief": "M11",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "water",
+            "base": 0.0367,
+            "still": 0.887
+          }
         }
       }
     }

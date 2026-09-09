@@ -79,7 +79,13 @@
               "strip": "beds/bed_005/lit_2/animations/flame__south-east.webp"
             }
           },
-          "generated_at": "2026-08-29T08:10:07+00:00"
+          "generated_at": "2026-08-29T08:10:07+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.7003,
+            "still": 0.144
+          }
         },
         "motion": {
           "group_id": "f70660ea-47c9-4d45-9589-55ed1229297c",
@@ -100,7 +106,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T12:42:13+00:00",
-          "brief": "R25"
+          "brief": "R25",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0,
+            "still": 0.447
+          }
         }
       },
       "rotations": {

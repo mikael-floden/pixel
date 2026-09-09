@@ -86,7 +86,13 @@
               ]
             }
           },
-          "generated_at": "2026-08-29T08:19:28+00:00"
+          "generated_at": "2026-08-29T08:19:28+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.4267,
+            "still": 0.478
+          }
         }
       },
       "rotations": {
@@ -145,7 +151,13 @@
               "strip": "hearths/hearth_900/lit_2/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:19:49+00:00"
+          "generated_at": "2026-08-29T08:19:49+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.14,
+            "still": 0.797
+          }
         }
       },
       "rotations": {
@@ -193,7 +205,13 @@
               "strip": "hearths/hearth_900/lit_4/animations/flame__south-east.webp"
             }
           },
-          "generated_at": "2026-08-29T08:22:03+00:00"
+          "generated_at": "2026-08-29T08:22:03+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.3906,
+            "still": 0.699
+          }
         }
       },
       "rotations": {
@@ -234,7 +252,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T19:03:12+00:00",
-          "brief": "C21"
+          "brief": "C21",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0454,
+            "still": 0.836
+          }
         }
       }
     },

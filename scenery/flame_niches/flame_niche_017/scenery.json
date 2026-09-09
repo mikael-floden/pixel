@@ -73,7 +73,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T16:15:09+00:00",
-          "brief": "Y11"
+          "brief": "Y11",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.2301,
+            "still": 0.6
+          }
         }
       }
     },
@@ -116,7 +122,13 @@
               "strip": "flame_niches/flame_niche_017/lit_2/animations/flame__south-east.webp"
             }
           },
-          "generated_at": "2026-08-29T08:17:09+00:00"
+          "generated_at": "2026-08-29T08:17:09+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.1448,
+            "still": 0.53
+          }
         }
       },
       "rotations": {

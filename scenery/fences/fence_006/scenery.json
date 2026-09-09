@@ -82,7 +82,13 @@
             "south"
           ],
           "generated_at": "2026-08-30T10:20:52+00:00",
-          "brief": "H10"
+          "brief": "H10",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.118,
+            "still": 0.926
+          }
         }
       }
     },
@@ -118,7 +124,13 @@
             "south"
           ],
           "generated_at": "2026-08-30T09:57:22+00:00",
-          "brief": "H11"
+          "brief": "H11",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0737,
+            "still": 0.92
+          }
         }
       }
     }

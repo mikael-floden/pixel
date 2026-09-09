@@ -90,7 +90,13 @@
               "strip": "fish_drying_racks/fish_drying_rack_003/lit_1/animations/flame__south-west.webp"
             }
           },
-          "generated_at": "2026-08-29T08:13:24+00:00"
+          "generated_at": "2026-08-29T08:13:24+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.1475,
+            "still": 0.615
+          }
         },
         "motion": {
           "group_id": "2f217c8b-32ee-40aa-8352-04122eaba311",
@@ -111,7 +117,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T13:46:12+00:00",
-          "brief": "T3"
+          "brief": "T3",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0639,
+            "still": 0.617
+          }
         }
       },
       "rotations": {
@@ -162,7 +174,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T16:16:33+00:00",
-          "brief": "Y19"
+          "brief": "Y19",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0764,
+            "still": 0.478
+          }
         }
       }
     },
@@ -198,7 +216,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T16:56:23+00:00",
-          "brief": "Z20"
+          "brief": "Z20",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.1506,
+            "still": 0.471
+          }
         }
       }
     },
@@ -234,7 +258,13 @@
             "south"
           ],
           "generated_at": "2026-08-29T17:54:55+00:00",
-          "brief": "A17"
+          "brief": "A17",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "class": "fire",
+            "base": 0.0607,
+            "still": 0.745
+          }
         }
       }
     }
