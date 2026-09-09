@@ -4795,6 +4795,156 @@ function wallRow(o, onChange) {
   draw();
   return box;
 }
+/* WHAT KIND OF LIGHT THIS IS (maintainer 2026-09-09: "The Scenery have added
+ * light metadata that explains what kind of light this is when LIT. I want to
+ * be able to see this and edit/change this when doing a review").
+ *
+ * The scenery domain publishes a `light` block per piece — kind, colour,
+ * strength, radius, plus flame/embers — with per-STATE values under `states`
+ * and the piece's own as the fallback. 500 of 706 pieces carry one. Both levels
+ * are the contract, so the wiki resolves them rather than flattening: the state
+ * he is looking at answers first, the piece answers for a state that says
+ * nothing.
+ *
+ * His corrections ride live/tuning/scenery_lighting.json, one entry per
+ * <piece path>#<state> holding ONLY the fields he moved — same
+ * corrections-only contract as scenery_lights, scenery_walls and
+ * scenery_types: setting a value back to what was generated deletes it, and
+ * the scenery agent applies the entry and clears it. NOT merged into
+ * scenery_lights: that file answers "is this state lit at all", the agent
+ * consumes and deletes its entries, and a light he tuned would go with them. */
+const LIGHTING_KEY = "tuning/scenery_lighting";
+const sceneryLighting = () => state.tuning.scenery_lighting
+  ?? (state.tuning.scenery_lighting = { format: "pixel-wiki-scenery-lighting@1", updated_at: "", overrides: {} });
+const LIGHT_FIELDS = ["kind", "color", "strength", "radius", "flame", "embers"];
+/** What the DOMAIN says for this state: its own values over the piece's. */
+function lightPublished(o, st) {
+  const L = o?.light;
+  if (!L || typeof L !== "object") return null;
+  /* THE STATE KEYS ARE UPPERCASE THERE, lowercase here — scenery writes
+   * `states.LIT_4`, the wiki names the same state `lit_4`. Matched
+   * case-insensitively rather than by renaming either side: both spellings are
+   * already in published data and in his verdict keys. */
+  const states = L.states ?? {};
+  const own = states[st] ?? states[String(st).toUpperCase()] ?? states[String(st).toLowerCase()] ?? {};
+  const out = {};
+  for (const k of LIGHT_FIELDS) out[k] = own[k] ?? L[k] ?? null;
+  out.reference = L.reference ?? null;
+  out.fromState = Object.keys(own).length > 0;
+  return out;
+}
+/** ...and what it IS, his correction on top. */
+function lightOf(o, st) {
+  const base = lightPublished(o, st);
+  if (!base) return null;
+  const ov = sceneryLighting().overrides?.[`${o.path}#${st}`] ?? {};
+  const out = { ...base };
+  for (const k of LIGHT_FIELDS) if (ov[k] !== undefined && ov[k] !== null) out[k] = ov[k];
+  out.edited = LIGHT_FIELDS.some((k) => ov[k] !== undefined && ov[k] !== null);
+  return out;
+}
+function setLight(o, st, field, value) {
+  const doc = sceneryLighting();
+  const key = `${o.path}#${st}`;
+  const base = lightPublished(o, st) ?? {};
+  const entry = { ...(doc.overrides?.[key] ?? {}) };
+  // AGREEING WITH THE DOMAIN DELETES THE FIELD, and an entry with no fields
+  // left deletes itself — this file is a list of corrections, and one that
+  // stores "I set it to what it already was" would grow to every state he ever
+  // opened while saying nothing about any of them.
+  if (value === null || value === base[field]) delete entry[field];
+  else entry[field] = value;
+  const live = LIGHT_FIELDS.filter((k) => entry[k] !== undefined);
+  (doc.overrides ??= {});
+  if (!live.length) delete doc.overrides[key];
+  else doc.overrides[key] = { ...Object.fromEntries(live.map((k) => [k, entry[k]])),
+    was: Object.fromEntries(live.map((k) => [k, base[k] ?? null])), state: st, updated_at: new Date().toISOString() };
+  doc.updated_at = new Date().toISOString();
+  touch(LIGHTING_KEY, key);
+  markDirty(LIGHTING_KEY);
+}
+/** Every kind the domain uses, so the picker follows the data and not a list
+ *  written here (the same rule the type picker and the ground chips follow). */
+function lightKinds(cur) {
+  const seen = new Set();
+  for (const o of state.data.domains.objects ?? []) {
+    const L = o.light;
+    if (!L) continue;
+    if (L.kind) seen.add(L.kind);
+    for (const s of Object.values(L.states ?? {})) if (s?.kind) seen.add(s.kind);
+  }
+  if (cur) seen.add(cur);
+  return [...seen].sort();
+}
+/** The light editor for the state on screen: what it is, and every part of it
+ *  changeable in place. Shown only where there IS a light — an unlit state has
+ *  nothing to describe, and a row of dead sliders on 206 pieces would be noise
+ *  on the page he reviews from. */
+function lightRow(o, st, onChange) {
+  const box = h("div", { class: "card-sub light-mode" });
+  const draw = () => {
+    const L = lightOf(o, st);
+    if (!L) { box.replaceChildren(); return; }
+    const lit = litOf(o.path, st);
+    if (!lit) {
+      // Its own light still exists in the data; it just does not shine here.
+      box.replaceChildren(h("span", { class: "muted lit-label" }, "Light"),
+        h("span", { class: "muted", style: "font-size:12.5px" }, "this state is unlit — nothing shines"));
+      return;
+    }
+    const num = (field, min, max, step, unit, label, hint) => {
+      const val = Number(L[field] ?? 0);
+      const out = h("code", { class: "sfx-val" }, `${stFmt(val)}${unit}`);
+      const inp = h("input", { type: "range", min: String(min), max: String(max), step: String(step), value: String(val), title: hint });
+      inp.addEventListener("input", () => { out.textContent = `${stFmt(Number(inp.value))}${unit}`; });
+      // WRITTEN ON RELEASE, not on every pixel of the drag: a change per input
+      // event would file one correction per intermediate value and count them
+      // all as pending changes.
+      const commit = () => { setLight(o, st, field, Number(inp.value)); onChange?.(); };
+      inp.addEventListener("change", commit);
+      return h("label", { class: "picker-ctl" }, h("span", {}, label), inp, out);
+    };
+    const kindSel = h("select", { class: "type-pick", "aria-label": "what kind of light" },
+      ...lightKinds(L.kind).map((k) => {
+        const opt = h("option", { value: k }, k);
+        if (k === L.kind) opt.selected = true;
+        return opt;
+      }));
+    kindSel.addEventListener("change", () => { setLight(o, st, "kind", kindSel.value); draw(); onChange?.(); });
+    const col = h("input", { type: "color", class: "light-color", value: /^#[0-9a-f]{6}$/i.test(L.color ?? "") ? L.color : "#ffffff",
+      "aria-label": "the colour this light casts" });
+    col.addEventListener("change", () => { setLight(o, st, "color", col.value); draw(); onChange?.(); });
+    const flag = (field, label, hint) => {
+      const b = h("button", { class: `ghost-btn light-flag${L[field] ? " on" : ""}`, title: hint },
+        `${L[field] ? "✓" : "✕"} ${label}`);
+      b.addEventListener("click", () => { setLight(o, st, field, !L[field]); draw(); onChange?.(); });
+      return b;
+    };
+    box.replaceChildren(...[
+      h("span", { class: "muted lit-label" }, "Light"),
+      kindSel,
+      col,
+      h("code", { class: "sfx-val" }, L.color ?? "—"),
+      flag("flame", "flame", "There is an open flame in this art"),
+      flag("embers", "embers", "There are embers in this art"),
+      num("strength", 0, 1, 0.05, "", "strength", L.reference ?? "0 is no light"),
+      num("radius", 0, 16, 1, " cells", "radius", "How far the light reaches, in cells"),
+      L.reference ? h("span", { class: "muted", style: "font-size:12px;flex-basis:100%" }, L.reference) : null,
+      L.edited
+        ? h("span", { class: "pill warn", title: "Your correction. The scenery agent applies it to the piece and clears it." }, "edited")
+        : (L.fromState ? h("span", { class: "pill", title: "This state carries its own light values; the piece's are the fallback." }, "per state") : null),
+      L.edited
+        ? (() => {
+          const b = h("button", { class: "ghost-btn" }, "↩ as generated");
+          b.addEventListener("click", () => { for (const k of LIGHT_FIELDS) setLight(o, st, k, null); draw(); onChange?.(); });
+          return b;
+        })()
+        : null,
+    ].filter(Boolean));
+  };
+  draw();
+  return box;
+}
 function litRow(path, st, onChange) {
   // NOT `.wall-mode`: that class exists to SHRINK a strip into a dense tiles
   // card (3px padding, 12px type), and reusing it made this the smallest thing
@@ -11305,7 +11455,9 @@ function viewObject(id) {
       // question below only makes sense once the kind is right.
       state.admin ? typeRow(o, () => { player?.refreshMarks?.(); route(); }) : null,
       state.admin ? wallRow(o, () => { player?.refreshMarks?.(); route(); }) : null,
-      state.admin ? litRow(o.path, st, () => player.refreshMarks()) : null,
+      state.admin ? litRow(o.path, st, () => { player.refreshMarks(); renderFacet(); }) : null,
+      // ...and, where it shines, WHAT it shines: the light this state gives off.
+      state.admin ? lightRow(o, st, () => player.refreshMarks()) : null,
       // WHICH WAY THIS FACING FACES — per direction, because that is where the
       // fault is: one of the two three-quarter views is the other one again.
       state.admin ? flipRow(o, st, dir, () => player.redraw?.()) : null,

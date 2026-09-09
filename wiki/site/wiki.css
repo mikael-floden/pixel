@@ -1876,3 +1876,16 @@ input[type="range"] { accent-color: var(--accent); }
   border-radius: 8px; padding: 7px 10px; font-size: 14px; min-height: 40px;
   max-width: 60vw;
 }
+
+/* The light editor on a scenery state (maintainer 2026-09-09: "I want to be
+   able to see this and edit/change this when doing a review"). Wraps, because
+   it carries a kind, a colour, two flags and two rails and a phone is 393px. */
+.light-mode { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.light-mode .picker-ctl { display: flex; align-items: center; gap: 6px; }
+.light-mode .picker-ctl input[type="range"] { width: 116px; }
+.light-mode .light-color {
+  width: 44px; height: 32px; padding: 0; border: 1px solid var(--border);
+  border-radius: 8px; background: none;
+}
+.light-mode .light-flag { padding: 6px 10px; min-height: 34px; font-size: 13px; }
+.light-mode .light-flag.on { border-color: var(--accent); color: var(--fg); }

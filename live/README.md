@@ -147,6 +147,23 @@ The laws around the flow:
     candidate key.
   - **Absent means the measured best**; stepping onto the measured best
     deletes the entry — the file only ever names his exceptions.
+- `live/tuning/scenery_lighting.json` — `pixel-wiki-scenery-lighting@1`. **WHAT
+  KIND OF LIGHT A LIT STATE GIVES OFF.** The scenery domain publishes a `light`
+  block per piece — `kind` (`fire/open`, `fire/enclosed`, `fire/ember`,
+  `glow/bio`, `glow/magic`, `glow/mineral`, `glow/water`, `none`), `color`,
+  `strength` (0–1, "the spawn bonfire is 1.0"), `radius` in cells, and the
+  `flame` / `embers` flags — with per-STATE values under `states` and the
+  piece's own as the fallback; 500 of 706 pieces carry one. The maintainer
+  reviews and corrects it from the scenery review (2026-09-09: "I want to be
+  able to see this and edit/change this when doing a review"). One entry per
+  `<piece path>#<state>` holding ONLY the fields he moved, each with the
+  generated value beside it in `was`. Setting a field back to what was
+  generated drops the field, and an entry with no fields left deletes itself —
+  corrections only, like every other channel here. The scenery agent applies
+  the entry and deletes it. Kept separate from `scenery_lights`, which answers
+  the different question of whether the state is lit at all and whose entries
+  the agent consumes and clears.
+
 - `live/tuning/scenery_types.json` — `pixel-wiki-scenery-types@1`. **WHAT KIND
   OF THING A PIECE IS.** The scenery agent tags every piece `TOWN`, `TREE`,
   `NATURE`, `MOUNTAIN_WALL`, `INDOOR`, `WINDOW` or `OTHER`; the wiki groups its

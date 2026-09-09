@@ -1360,6 +1360,14 @@ function buildObjects() {
       category: group ?? oj.category ?? "misc",
       type: typeOf(oj, group),
       lights: oj.lights ?? null,
+      /* WHAT KIND OF LIGHT A LIT STATE GIVES OFF (scenery, 2026-09-09): kind,
+       * colour, strength and radius, with per-STATE values under `states` and
+       * the piece's own as the fallback. The maintainer reviews and corrects it
+       * ("I want to be able to see this and edit/change this when doing a
+       * review"), so it has to reach the page — published verbatim rather than
+       * flattened, because the two levels are the contract and the wiki
+       * resolves them the same way the game must. */
+      light: oj.light && typeof oj.light === "object" ? oj.light : null,
       description: oj.description ?? oj.prompt ?? "",
       path: `scenery/${rel}`,
       preview,

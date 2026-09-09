@@ -121,6 +121,16 @@ const LIVE_FILES: Record<string, string> = {
   // be. Written by the wiki; the scenery agent re-files the piece and deletes
   // the entry. See live/README.md.
   "tuning/scenery_types.json": "tuning/scenery_types",
+  // WHAT KIND OF LIGHT A LIT SCENERY STATE GIVES OFF. The scenery domain
+  // publishes a `light` block per piece — kind, colour, strength, radius,
+  // flame/embers — with per-state values over the piece's own; the maintainer
+  // reviews and corrects it from the wiki (2026-09-09: "I want to be able to
+  // see this and edit/change this when doing a review"). One entry per
+  // <piece path>#<state> holding only the fields he moved, with `was` beside
+  // them. Written by the wiki; the scenery agent applies it and deletes the
+  // entry. Distinct from scenery_lights, which answers whether the state is
+  // lit at all. See live/README.md.
+  "tuning/scenery_lighting.json": "tuning/scenery_lighting",
   // WHICH TILES ARE A GROUND TYPE'S BASE TILES. A base tile is the one the
   // world agent paints first and repeats forever — "does everything but noone
   // notice" (maintainer 2026-08-21). Promoted and revoked from the wiki's

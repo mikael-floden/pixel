@@ -887,6 +887,79 @@ await pub.close();
   ok(!back, `agreeing with the agent deletes the correction rather than storing it (${JSON.stringify(back)})`);
 }
 
+/* WHAT KIND OF LIGHT THIS IS (maintainer 2026-09-09: "The Scenery have added
+ * light metadata that explains what kind of light this is when LIT. I want to
+ * be able to see this and edit/change this when doing a review").
+ *
+ * Read per STATE — the domain writes per-state values over the piece's own —
+ * and every field changeable in place, filed as a correction that carries what
+ * was generated beside what he chose. */
+{
+  const DD4 = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
+  const piece = (DD4.domains.objects ?? []).find((o) => o.light && Object.keys(o.light.states ?? {}).some((s) => /^LIT/i.test(s))
+    && Object.keys(o.animations ?? {}).some((s) => /^lit/i.test(s)));
+  ok(!!piece, `the domain publishes light metadata to review (${piece?.id ?? "none found"})`);
+  if (piece) {
+    const stKey = Object.keys(piece.animations).find((s) => /^lit/i.test(s));
+    const pub = piece.light.states[stKey] ?? piece.light.states[stKey.toUpperCase()] ?? {};
+    await p.goto(`${W}#/objects/${piece.id}`, { waitUntil: "load" });
+    await p.waitForTimeout(3200);
+    await p.evaluate((s) => [...document.querySelectorAll(".seg-states button")].find((x) => x.title?.startsWith(s) || /💡/.test(x.textContent))?.click(), stKey);
+    await p.waitForTimeout(1200);
+    const row = await p.evaluate(() => {
+      const r = document.querySelector(".light-mode");
+      return r ? {
+        kind: r.querySelector("select")?.value ?? null,
+        kinds: [...(r.querySelector("select")?.options ?? [])].map((o) => o.value),
+        color: r.querySelector('input[type="color"]')?.value ?? null,
+        rails: [...r.querySelectorAll('input[type="range"]')].map((x) => +x.value),
+        flags: [...r.querySelectorAll(".light-flag")].map((x) => x.textContent.trim()),
+        text: r.textContent.replace(/\s+/g, " "),
+      } : null;
+    });
+    console.log("light row:", JSON.stringify(row && { ...row, text: row.text.slice(0, 60) }));
+    ok(!!row, "a lit state shows the light it gives off");
+    ok(row?.kinds?.length >= 4 && row.kinds.includes("fire/open"),
+      `the kinds come from the domain, not from a list in the page (${row?.kinds?.join(",")})`);
+    ok(row?.color?.toLowerCase() === String(pub.color ?? "").toLowerCase(),
+      `and the values are THIS STATE's, not the piece's fallback (colour ${row?.color} vs published ${pub.color})`);
+    ok(row?.rails?.some((v) => Math.abs(v - Number(pub.strength ?? -1)) < 1e-6),
+      `strength reads what was published (${row?.rails?.join(", ")} vs ${pub.strength})`);
+    ok(/the spawn bonfire is 1\.0/.test(row?.text ?? ""), "and the scale it is judged against is on the row");
+
+    // EDIT: a correction carries what he chose AND what was generated.
+    await p.evaluate(() => { const s = document.querySelector(".light-mode select"); s.value = "fire/open"; s.dispatchEvent(new Event("change")); });
+    await p.waitForTimeout(500);
+    const rec = await p.evaluate((k) => window.__wiki.state.tuning.scenery_lighting?.overrides?.[k] ?? null, `${piece.path}#${stKey}`);
+    console.log("correction:", JSON.stringify(rec));
+    ok(rec?.kind === "fire/open" && rec?.was?.kind === (pub.kind ?? piece.light.kind ?? null),
+      `changing the kind files a correction with the generated value beside it (${JSON.stringify(rec?.was)})`);
+    ok(await p.evaluate(() => !!document.querySelector(".light-mode .pill")), "and the row says it has been edited");
+
+    // ...AND AGREEING WITH THE DOMAIN AGAIN CLEARS IT, field by field.
+    await p.evaluate((k) => {
+      const s = document.querySelector(".light-mode select"); s.value = k; s.dispatchEvent(new Event("change"));
+    }, pub.kind ?? piece.light.kind);
+    await p.waitForTimeout(500);
+    const gone = await p.evaluate((k) => window.__wiki.state.tuning.scenery_lighting?.overrides?.[k] ?? null, `${piece.path}#${stKey}`);
+    ok(!gone, `setting it back to what was generated deletes the correction (${JSON.stringify(gone)})`);
+
+    // AN UNLIT STATE HAS NOTHING TO SHINE.
+    const unlit = Object.keys(piece.animations).find((s) => /^not_lit/i.test(s));
+    if (unlit) {
+      // The chips read "💡2" for a lit state and a bare number for an unlit one
+      // — that lamp IS the state's label, so it is what picks the chip.
+      await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((x) => !/💡/.test(x.textContent))?.click());
+      await p.waitForTimeout(1000);
+      const off = await p.evaluate(() => {
+        const r = document.querySelector(".light-mode");
+        return { rails: r ? r.querySelectorAll('input[type="range"]').length : -1, text: r?.textContent.replace(/\s+/g, " ") ?? "" };
+      });
+      ok(off.rails === 0 && /unlit/.test(off.text), `an unlit state offers no light to tune ("${off.text.slice(0, 48)}")`);
+    }
+  }
+}
+
 /* ...AND THE SAME ON EVERY OTHER REVIEW PAGE, walked rather than assumed. */
 {
   const DD2 = JSON.parse((await import("node:fs")).readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
