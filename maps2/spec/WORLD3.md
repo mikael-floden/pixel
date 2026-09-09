@@ -693,8 +693,22 @@ than 8 lights ... go all the way up to 8 at some locations and down to 1 or
 even 0 at other locations ... streetlights next to the road ... lots of
 small lights and some bigger ones"*.)
 
-A light is a placement with `lit: true` and an explicit `state` (the
-best-rated `LIT_*` state of the piece: the game draws that still and, from
+A light is a placement with `lit: true` and an explicit `state` — **the
+`LIT_*` state that ANIMATES WELL first, then the best-rated one**
+(`_best_lit_state`; maintainer 2026-09-09: *"prioritize the variation that
+has an animation in state ANIMATION_PROBABLY_GOOD or ANIMATION_APPROVED
+before you use a LIT state without an animation / rejected animation or
+probably bad animation"*). His verdict in `live/tuning/scenery_animation.json`
+(`<piece>#<state>`: APPROVED or REDO) outranks the manifest's own
+classification (`ANIMATION_PROBABLY_GOOD` / `_BAD`, scenery's
+`anim_review.py`); a state with no animation ranks with a bad one. The same
+order picks the PIECE within a group (`_lit_pool`). Rating alone put 34 of 143
+lit placements on a well-animated state, 65 on a probably-bad one and 44 on
+none; with the rule, 58 / 51 / 25. A group with `LIT_ANIM_MIN = 3` or more
+well-animated pieces lights ONLY those (callers cycle a pool for variety, so a
+merely sorted pool still spent every third lamp on a still one); below that
+the whole group stays in, good first — one hearth in every room is worse.
+(The game draws that still and, from
 games2's side, spends a shader slot with the state's `light` from
 `scenery/<piece>/scenery.json` — strength, colour, radius; schema in
 `scenery/README.md`, written by maps2, owned by scenery from here). The game

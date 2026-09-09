@@ -2160,28 +2160,64 @@ class Grow:
     LAMP_ON = ("grass", "dark_mud", "grey_stone", "black_rock", "snow", "light_beach",
                "grey_paving_stone", "light_soil")   # a lamp stands on any dry ground
 
+    ANIM_GOOD = ("ANIMATION_APPROVED", "ANIMATION_PROBABLY_GOOD")
+    LIT_ANIM_MIN = 3     # well-animated pieces a group needs to drop the rest
+
+    def _anim_good(self, piece, state, meta):
+        """Does this state animate, and well? His verdict
+        (live/tuning/scenery_animation.json, `<piece>#<state>`: APPROVED or
+        REDO) outranks the scenery agent's classification on the manifest
+        (ANIMATION_PROBABLY_GOOD / _BAD, anim_review.py); absent means the
+        classification stands, and a state with no animation is not good."""
+        if not hasattr(self, "_anim_v"):
+            self._anim_v = json.load(open(os.path.join(
+                REPO, "live", "tuning", "scenery_animation.json"))).get("overrides", {})
+        key = f"scenery/{piece}#{state}"
+        his = self._anim_v.get(key) or self._anim_v.get(key.lower())
+        if his and his.get("verdict"):
+            return his["verdict"] == "ANIMATION_APPROVED"
+        anims = (meta.get("states") or {}).get(state, {}).get("animations") or {}
+        return any(a.get("review") in self.ANIM_GOOD for a in anims.values())
+
     def _best_lit_state(self, piece):
-        """The LIT state with the best verdict; ties to the first."""
+        """The LIT state to light: ONE THAT ANIMATES WELL FIRST, then the best
+        verdict (maintainer 2026-09-09: "prioritize the variation that has an
+        animation in state ANIMATION_PROBABLY_GOOD or ANIMATION_APPROVED
+        before you use a LIT state without an animation / rejected animation
+        or probably bad animation"). Before this the pick was rating alone:
+        34 of 143 lit placements animated well, 65 sat on a state judged
+        probably bad and 44 on one with no animation at all."""
         d = json.load(open(os.path.join(REPO, "scenery", piece, "scenery.json")))
         keys = sorted(k for k in (d.get("states") or {}) if k.startswith("LIT"))
-        best, bk = -1, None
+        best, bk = None, None
         for k in keys:
             ok, rating = self._rated(piece, k)
-            if ok and rating > best:
-                best, bk = rating, k
+            if not ok:
+                continue
+            score = (self._anim_good(piece, k, d), rating)
+            if best is None or score > best:
+                best, bk = score, k
         return bk
 
     def _lit_pool(self, group):
-        """Pieces of a group that ship an approved LIT state, best-rated
-        first."""
+        """Pieces of a group that ship an approved LIT state: the ones whose
+        state animates well first, then by rating."""
         out = []
         for pc in self.pool(group):
             st = self._best_lit_state(pc)
             if st:
                 ok, rating = self._rated(pc, st)
-                out.append((-rating, pc, st))
+                d = json.load(open(os.path.join(REPO, "scenery", pc, "scenery.json")))
+                out.append((0 if self._anim_good(pc, st, d) else 1, -rating, pc, st))
         out.sort()
-        return [(pc, st) for _, pc, st in out]
+        # A GROUP THAT CAN ANIMATE WELL DOES ONLY THAT - callers cycle through
+        # the pool for variety, so a sorted pool still spent every third lamp
+        # on a still one. Below LIT_ANIM_MIN well-animated pieces the whole
+        # group stays in, good first: one hearth in every room is worse.
+        good = [t for t in out if t[0] == 0]
+        if len(good) >= self.LIT_ANIM_MIN:
+            out = good
+        return [(pc, st) for _, _, pc, st in out]
 
     def _dark_noise(self, x, y):
         """Two octaves of value noise (hash lattice, smoothstep), tracts
