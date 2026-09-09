@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:56:13+00:00",
+  "generated_at": "2026-09-09T18:57:23+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -8131,13 +8131,13 @@
       ],
       "items": [],
       "size": [
-        96,
-        96
+        104,
+        104
       ],
       "template_id": "bear",
       "scale": "standard",
-      "pixellab_id": "e23440db-cdb4-459d-b0e0-dd8d322196c8",
-      "version": 1,
+      "pixellab_id": "6becc74c-57a0-481e-8463-7d537af397eb",
+      "version": 2,
       "sheet": "river_otter/sheet.webp",
       "rotations": {
         "south": "river_otter/rotations/south.webp",
@@ -8151,104 +8151,104 @@
       },
       "qa": {
         "status": "fail",
-        "min_run1": 0.553,
+        "min_run1": 0.62,
         "reasons": [
           "south-west: content touches the canvas edge (clipped)"
         ],
         "directions": {
           "south": {
-            "run1": 0.576,
+            "run1": 0.62,
             "bbox": [
-              6,
               8,
-              92,
-              90
+              9,
+              99,
+              96
             ],
-            "fill": 0.765,
+            "fill": 0.732,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.587,
+            "run1": 0.663,
             "bbox": [
-              4,
+              1,
               5,
-              91,
-              88
+              96,
+              97
             ],
-            "fill": 0.784,
+            "fill": 0.808,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.618,
+            "run1": 0.677,
             "bbox": [
-              7,
-              7,
-              95,
-              88
+              9,
+              12,
+              99,
+              98
             ],
-            "fill": 0.773,
+            "fill": 0.716,
             "touches_edge": false
           },
           "north": {
-            "run1": 0.553,
+            "run1": 0.644,
             "bbox": [
               6,
               5,
-              75,
-              82
+              84,
+              94
             ],
-            "fill": 0.576,
+            "fill": 0.642,
             "touches_edge": false
           },
           "south-east": {
-            "run1": 0.683,
+            "run1": 0.714,
             "bbox": [
-              15,
-              9,
-              80,
-              91
+              19,
+              13,
+              92,
+              95
             ],
-            "fill": 0.578,
+            "fill": 0.553,
             "touches_edge": false
           },
           "north-east": {
-            "run1": 0.588,
+            "run1": 0.67,
             "bbox": [
-              3,
-              6,
-              93,
-              83
+              5,
+              7,
+              103,
+              93
             ],
-            "fill": 0.752,
+            "fill": 0.779,
             "touches_edge": false
           },
           "north-west": {
-            "run1": 0.577,
+            "run1": 0.662,
             "bbox": [
-              14,
-              6,
-              80,
-              88
+              11,
+              5,
+              83,
+              97
             ],
-            "fill": 0.587,
+            "fill": 0.612,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.647,
+            "run1": 0.697,
             "bbox": [
               0,
-              8,
-              93,
-              85
+              10,
+              98,
+              95
             ],
-            "fill": 0.777,
+            "fill": 0.77,
             "touches_edge": true
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-09T18:52:52+00:00"
+      "generated_at": "2026-09-09T18:57:23+00:00"
     },
     {
       "id": "marsh_heron",
