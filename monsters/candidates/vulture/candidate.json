@@ -1,0 +1,141 @@
+{
+  "id": "vulture",
+  "name": "Carrionwing",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It circles the road for days and lands only when it is certain. It has never once been wrong.",
+  "biome": [
+    "light_soil",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Large vulture standing upright shown full body from head to feet, realistic proportions, ragged dark brown feathers, wings folded tightly against its body, a bald wrinkled pink head and neck, a hooked pale beak and grey talons.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "vulture/rotations/south.webp",
+    "south-east": "vulture/rotations/south-east.webp",
+    "east": "vulture/rotations/east.webp",
+    "north-east": "vulture/rotations/north-east.webp",
+    "north": "vulture/rotations/north.webp",
+    "north-west": "vulture/rotations/north-west.webp",
+    "west": "vulture/rotations/west.webp",
+    "south-west": "vulture/rotations/south-west.webp"
+  },
+  "sheet": "vulture/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "199502f4-62c5-4618-90e5-502328a3f524",
+  "seed": 1757989919,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:04:35+00:00",
+  "elapsed_s": 205.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.685,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.685,
+        "bbox": [
+          16,
+          4,
+          80,
+          92
+        ],
+        "fill": 0.611,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.791,
+        "bbox": [
+          10,
+          5,
+          81,
+          93
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.779,
+        "bbox": [
+          14,
+          5,
+          85,
+          93
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.769,
+        "bbox": [
+          19,
+          3,
+          77,
+          91
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.77,
+        "bbox": [
+          18,
+          5,
+          76,
+          92
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.8,
+        "bbox": [
+          19,
+          4,
+          77,
+          89
+        ],
+        "fill": 0.535,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.799,
+        "bbox": [
+          18,
+          4,
+          77,
+          89
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.765,
+        "bbox": [
+          20,
+          5,
+          78,
+          92
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      }
+    }
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "id": "snapping_turtle",
+  "name": "Mossjaw",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It has lain in the same mud for a century and lets the river feed it. Whatever wades close is fed to it too.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Large alligator snapping turtle with realistic proportions, a rugged dark green shell ridged with three rows of spikes and grown over with moss, a huge hooked beak, small cold eyes, thick clawed legs and a short armored tail tucked close.",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "snapping_turtle/rotations/south.webp",
+    "south-east": "snapping_turtle/rotations/south-east.webp",
+    "east": "snapping_turtle/rotations/east.webp",
+    "north-east": "snapping_turtle/rotations/north-east.webp",
+    "north": "snapping_turtle/rotations/north.webp",
+    "north-west": "snapping_turtle/rotations/north-west.webp",
+    "west": "snapping_turtle/rotations/west.webp",
+    "south-west": "snapping_turtle/rotations/south-west.webp"
+  },
+  "sheet": "snapping_turtle/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "6abcfa38-acd1-4215-a4fe-19b2e9a84b2e",
+  "seed": 119393623,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:04:43+00:00",
+  "elapsed_s": 168.7,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.745,
+    "reasons": [
+      "west: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "south-east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.745,
+        "bbox": [
+          3,
+          3,
+          109,
+          108
+        ],
+        "fill": 0.887,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.814,
+        "bbox": [
+          0,
+          10,
+          112,
+          102
+        ],
+        "fill": 0.821,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.824,
+        "bbox": [
+          0,
+          11,
+          112,
+          102
+        ],
+        "fill": 0.812,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.821,
+        "bbox": [
+          11,
+          3,
+          100,
+          110
+        ],
+        "fill": 0.759,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.84,
+        "bbox": [
+          0,
+          10,
+          109,
+          109
+        ],
+        "fill": 0.86,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.829,
+        "bbox": [
+          0,
+          12,
+          105,
+          106
+        ],
+        "fill": 0.787,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.82,
+        "bbox": [
+          7,
+          12,
+          112,
+          106
+        ],
+        "fill": 0.787,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.832,
+        "bbox": [
+          3,
+          1,
+          106,
+          109
+        ],
+        "fill": 0.887,
+        "touches_edge": false
+      }
+    }
+  }
+}

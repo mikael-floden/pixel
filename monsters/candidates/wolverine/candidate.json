@@ -1,0 +1,141 @@
+{
+  "id": "wolverine",
+  "name": "Gulo",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Small enough to be mistaken for prey and strong enough to drive a bear off a kill. It has done both.",
+  "biome": [
+    "snow",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Adult wolverine with realistic proportions, thick dark brown fur with a pale band along the flanks, a broad head with small ears, a snarling muzzle of sharp teeth, heavy claws and a bushy tail held low.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "wolverine/rotations/south.webp",
+    "south-east": "wolverine/rotations/south-east.webp",
+    "east": "wolverine/rotations/east.webp",
+    "north-east": "wolverine/rotations/north-east.webp",
+    "north": "wolverine/rotations/north.webp",
+    "north-west": "wolverine/rotations/north-west.webp",
+    "west": "wolverine/rotations/west.webp",
+    "south-west": "wolverine/rotations/south-west.webp"
+  },
+  "sheet": "wolverine/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0c5d2f9e-70b9-4dfe-a7e5-cfb327b31c45",
+  "seed": 1207161621,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:04:45+00:00",
+  "elapsed_s": 155.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.636,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.642,
+        "bbox": [
+          9,
+          7,
+          93,
+          91
+        ],
+        "fill": 0.766,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.666,
+        "bbox": [
+          1,
+          6,
+          89,
+          87
+        ],
+        "fill": 0.773,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.711,
+        "bbox": [
+          5,
+          8,
+          88,
+          90
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.636,
+        "bbox": [
+          10,
+          5,
+          77,
+          88
+        ],
+        "fill": 0.603,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.763,
+        "bbox": [
+          18,
+          8,
+          73,
+          90
+        ],
+        "fill": 0.489,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.692,
+        "bbox": [
+          2,
+          6,
+          90,
+          89
+        ],
+        "fill": 0.793,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.654,
+        "bbox": [
+          18,
+          5,
+          77,
+          88
+        ],
+        "fill": 0.531,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.726,
+        "bbox": [
+          6,
+          7,
+          94,
+          88
+        ],
+        "fill": 0.773,
+        "touches_edge": false
+      }
+    }
+  }
+}
