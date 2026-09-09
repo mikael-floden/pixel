@@ -188,20 +188,18 @@
           "cut": 0
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.0003,
-          "step_max": 0.0005,
-          "drift": 0.01,
+          "status": "pass",
+          "step_mean": 0.0714,
+          "step_max": 0.0955,
+          "drift": 1.23,
           "loop": 0.0,
           "pin": 1.0,
-          "reasons": [
-            "frozen: silhouette moves 0.000 per frame"
-          ],
-          "sub": "d48a7295-773a-44b6-a8d1-e562dceeb96f",
-          "takes": 1,
-          "version": 1,
+          "reasons": [],
+          "sub": "f38099f8-04d1-44f9-8952-42a233a3fdf1",
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:13:22+00:00",
+          "generated_at": "2026-09-09T20:30:18+00:00",
           "cut": 0
         },
         "north": {
@@ -250,6 +248,22 @@
           "generated_at": "2026-09-09T20:13:21+00:00",
           "cut": 0,
           "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0714,
+          "step_max": 0.0955,
+          "drift": 1.23,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "f38099f8-04d1-44f9-8952-42a233a3fdf1",
+          "takes": 2,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:30:18+00:00",
+          "cut": 0,
+          "source": "north-east"
         }
       },
       "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
@@ -302,6 +316,13 @@
           "lizard_warrior/animations/idle/west/02.webp",
           "lizard_warrior/animations/idle/west/03.webp",
           "lizard_warrior/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "lizard_warrior/animations/idle/north-west/00.webp",
+          "lizard_warrior/animations/idle/north-west/01.webp",
+          "lizard_warrior/animations/idle/north-west/02.webp",
+          "lizard_warrior/animations/idle/north-west/03.webp",
+          "lizard_warrior/animations/idle/north-west/04.webp"
         ]
       },
       "strips": {
@@ -311,7 +332,8 @@
         "north-east": "lizard_warrior/animations/idle__north-east.webp",
         "north": "lizard_warrior/animations/idle__north.webp",
         "south-west": "lizard_warrior/animations/idle__south-west.webp",
-        "west": "lizard_warrior/animations/idle__west.webp"
+        "west": "lizard_warrior/animations/idle__west.webp",
+        "north-west": "lizard_warrior/animations/idle__north-west.webp"
       }
     }
   }

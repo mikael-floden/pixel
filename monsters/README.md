@@ -143,6 +143,59 @@ a redo is reproducible and never re-rolls a kept one. Run workers with
 `setsid nohup … & disown` in disjoint `--only` batches; `drop` cleans the
 stray a killed worker leaves behind.
 
+## Animating approved candidates — one state at a time, idle first
+
+`pipeline/animate.py` gives an APPROVED candidate its states, one state for
+all monsters before the next (maintainer 2026-09-09: "get good at one
+animation at a time"). Idle is done for the 39 picked; walk, angry, attack,
+die follow the same path.
+
+```bash
+python monsters/pipeline/animate.py approve --ids a,b,c        # review=approved + APPROVED tag
+python monsters/pipeline/animate.py idle [--only a,b] [--dry-run] # resumable: only missing/failed dirs
+python monsters/pipeline/animate.py redo --state idle --only a --dirs north,east
+python monsters/pipeline/animate.py requal --state idle        # re-verdict from disk, no network
+python monsters/pipeline/animate.py fetch --state idle --only a # re-download the last takes
+python monsters/pipeline/animate.py status --state idle
+```
+
+What an idle is (maintainer): "very, very calm and still breathing" —
+PixelLab tends to give far too much or nothing at all. The rules that get
+there:
+- **v3 custom clip with `end_frame` = the base rotation image**: the clip is
+  pinned neutral → breathing → neutral, 5 stored frames (base + 4). Same
+  shape as the maintainer's own accepted idles. PixelLab ignores
+  `animation_name` and stores a v3 clip as `custom-` + the first ~30 chars of
+  the action text, ONE entry per direction when a single direction is
+  pinned (measured) — the client matches takes by that prefix.
+- **Only S, SE, E, NE, N are generated; SW, W, NW are mirrors** of SE, E, NE.
+  No E/W confusion is possible and it is 5/8 of the jobs (maintainer: "a good
+  SE is also a good SW"; handedness flips for weapon-holders, accepted).
+- **v3 returns each direction on its own padded canvas** at the same pixel
+  scale (112 px base → south 148×132, north 128×128, east 140×132), frame 0
+  being the base shifted; `align_to_base` crops every frame by that offset
+  so the clip shares the monster's canvas and reports pixels that fell
+  outside (overflow).
+- **Machine bands, calibrated on the maintainer's 33 five-frame idles**
+  (silhouette XOR between consecutive frames / silhouette area 0.008–0.239,
+  median 0.091; centroid drift ≤ 3.8 px but two): pass 0.010–0.200 and drift
+  ≤ 4 px; warn to 0.300 / 6 px; fail below 0.005 (frozen — the model's usual
+  failure, 3 of 193 clips), above 0.300, drift > 6, a loop that does not
+  close, frame 0 not the base, more than 20 px cut by the canvas, or
+  mid-frames matching the MIRRORED opposite base better than their own by
+  > 0.05 (a symmetric body scores both ways equally — without the margin
+  Pebblemite and Shellet were false alarms). A mere border touch is a warn.
+- **`idle` is resumable and is the redo sweep**: it regenerates every
+  direction whose verdict is missing or fail; a `redo` deletes the old take
+  on PixelLab first so the record does not accumulate.
+- Review is a published artifact page with the clips PLAYING (maintainer:
+  "send the page as an artifact so I can see the real animation") — canvases
+  looping at idle pace, a redo toggle per direction that collects
+  `id:direction` pairs to paste back.
+
+Cost: 193 v3 idle clips moved the USD balance $67.33 → $64.87 — about
+$0.013 per direction, billed with a lag (the first five showed $0.00).
+
 ## Review gallery (chat artifact, NOT in git)
 
 The review gallery is a **claude.ai artifact** the maintainer views in chat —

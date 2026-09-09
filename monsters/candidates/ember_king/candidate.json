@@ -189,20 +189,18 @@
           "cut": 0
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.0034,
-          "step_max": 0.0051,
-          "drift": 0.22,
+          "status": "pass",
+          "step_mean": 0.0611,
+          "step_max": 0.0989,
+          "drift": 2.37,
           "loop": 0.0,
           "pin": 1.0,
-          "reasons": [
-            "frozen: silhouette moves 0.003 per frame"
-          ],
-          "sub": "b6ee75c6-2d8a-4d22-8d13-ee89c128aa8f",
-          "takes": 1,
-          "version": 1,
+          "reasons": [],
+          "sub": "7af9a872-b8b4-4eea-8032-241929d4338d",
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:06:34+00:00",
+          "generated_at": "2026-09-09T20:29:01+00:00",
           "cut": 0
         },
         "north": {
@@ -251,6 +249,22 @@
           "generated_at": "2026-09-09T20:06:33+00:00",
           "cut": 0,
           "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0611,
+          "step_max": 0.0989,
+          "drift": 2.37,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "7af9a872-b8b4-4eea-8032-241929d4338d",
+          "takes": 2,
+          "version": 2,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:29:01+00:00",
+          "cut": 0,
+          "source": "north-east"
         }
       },
       "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
@@ -303,6 +317,13 @@
           "ember_king/animations/idle/west/02.webp",
           "ember_king/animations/idle/west/03.webp",
           "ember_king/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "ember_king/animations/idle/north-west/00.webp",
+          "ember_king/animations/idle/north-west/01.webp",
+          "ember_king/animations/idle/north-west/02.webp",
+          "ember_king/animations/idle/north-west/03.webp",
+          "ember_king/animations/idle/north-west/04.webp"
         ]
       },
       "strips": {
@@ -312,7 +333,8 @@
         "north-east": "ember_king/animations/idle__north-east.webp",
         "north": "ember_king/animations/idle__north.webp",
         "south-west": "ember_king/animations/idle__south-west.webp",
-        "west": "ember_king/animations/idle__west.webp"
+        "west": "ember_king/animations/idle__west.webp",
+        "north-west": "ember_king/animations/idle__north-west.webp"
       }
     }
   }

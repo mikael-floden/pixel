@@ -203,20 +203,18 @@
           "cut": 0
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.0003,
-          "step_max": 0.0005,
-          "drift": 0.03,
-          "loop": 0.0001,
+          "status": "pass",
+          "step_mean": 0.0823,
+          "step_max": 0.0926,
+          "drift": 2.81,
+          "loop": 0.0,
           "pin": 1.0,
-          "reasons": [
-            "frozen: silhouette moves 0.000 per frame"
-          ],
-          "sub": "225bf158-ee20-43ca-892a-dc38adc2f9d4",
-          "takes": 1,
-          "version": 1,
+          "reasons": [],
+          "sub": "348993e3-5e06-4212-a6f0-a69a85d196b2",
+          "takes": 2,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:19:57+00:00",
+          "generated_at": "2026-09-09T20:31:53+00:00",
           "cut": 0
         },
         "south-west": {
