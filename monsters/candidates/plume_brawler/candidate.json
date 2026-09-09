@@ -1,0 +1,145 @@
+{
+  "id": "plume_brawler",
+  "name": "Plumefist",
+  "tier": "mid",
+  "lore": "Too heavy to fly and too proud to care. It settles every argument with its legs, and it starts most of them.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [
+    "barred feather",
+    "rainbow tail plume",
+    "teal quill",
+    "bundle of bright plumes"
+  ],
+  "prompt": "Stocky flightless fantasy bird with a barrel chest, thick scaly yellow legs ending in hooked black talons, a heavy hooked beak, a tall crest of stiff feathers in teal, crimson and gold, barred brown-and-cream wing feathers, and a long fan of iridescent rainbow tail plumes.",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "plume_brawler/rotations/south.webp",
+    "south-east": "plume_brawler/rotations/south-east.webp",
+    "east": "plume_brawler/rotations/east.webp",
+    "north-east": "plume_brawler/rotations/north-east.webp",
+    "north": "plume_brawler/rotations/north.webp",
+    "north-west": "plume_brawler/rotations/north-west.webp",
+    "west": "plume_brawler/rotations/west.webp",
+    "south-west": "plume_brawler/rotations/south-west.webp"
+  },
+  "sheet": "plume_brawler/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "502b3605-3b7f-46ad-8ca8-8c87d35f1f2a",
+  "seed": 418304288,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:38:33+00:00",
+  "elapsed_s": 201.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.712,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.712,
+        "bbox": [
+          5,
+          2,
+          99,
+          102
+        ],
+        "fill": 0.869,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.747,
+        "bbox": [
+          15,
+          4,
+          99,
+          94
+        ],
+        "fill": 0.699,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.781,
+        "bbox": [
+          15,
+          4,
+          84,
+          103
+        ],
+        "fill": 0.632,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.753,
+        "bbox": [
+          5,
+          3,
+          91,
+          94
+        ],
+        "fill": 0.724,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.793,
+        "bbox": [
+          22,
+          3,
+          71,
+          102
+        ],
+        "fill": 0.449,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.767,
+        "bbox": [
+          1,
+          7,
+          95,
+          102
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.762,
+        "bbox": [
+          27,
+          3,
+          78,
+          87
+        ],
+        "fill": 0.396,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.778,
+        "bbox": [
+          3,
+          7,
+          102,
+          102
+        ],
+        "fill": 0.87,
+        "touches_edge": false
+      }
+    }
+  }
+}

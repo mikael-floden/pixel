@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T17:37:23+00:00",
+  "generated_at": "2026-09-09T17:38:33+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 5,
+  "count": 6,
   "candidates": [
     {
       "id": "lantern_bat",
@@ -147,6 +147,137 @@
       },
       "review": "pending",
       "generated_at": "2026-09-09T17:35:11+00:00"
+    },
+    {
+      "id": "plume_brawler",
+      "name": "Plumefist",
+      "tier": "mid",
+      "lore": "Too heavy to fly and too proud to care. It settles every argument with its legs, and it starts most of them.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [
+        "barred feather",
+        "rainbow tail plume",
+        "teal quill",
+        "bundle of bright plumes"
+      ],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "mannequin",
+      "pixellab_id": "502b3605-3b7f-46ad-8ca8-8c87d35f1f2a",
+      "version": 1,
+      "sheet": "plume_brawler/sheet.webp",
+      "rotations": {
+        "south": "plume_brawler/rotations/south.webp",
+        "south-east": "plume_brawler/rotations/south-east.webp",
+        "east": "plume_brawler/rotations/east.webp",
+        "north-east": "plume_brawler/rotations/north-east.webp",
+        "north": "plume_brawler/rotations/north.webp",
+        "north-west": "plume_brawler/rotations/north-west.webp",
+        "west": "plume_brawler/rotations/west.webp",
+        "south-west": "plume_brawler/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.712,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.712,
+            "bbox": [
+              5,
+              2,
+              99,
+              102
+            ],
+            "fill": 0.869,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.747,
+            "bbox": [
+              15,
+              4,
+              99,
+              94
+            ],
+            "fill": 0.699,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.781,
+            "bbox": [
+              15,
+              4,
+              84,
+              103
+            ],
+            "fill": 0.632,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.753,
+            "bbox": [
+              5,
+              3,
+              91,
+              94
+            ],
+            "fill": 0.724,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.793,
+            "bbox": [
+              22,
+              3,
+              71,
+              102
+            ],
+            "fill": 0.449,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.767,
+            "bbox": [
+              1,
+              7,
+              95,
+              102
+            ],
+            "fill": 0.826,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.762,
+            "bbox": [
+              27,
+              3,
+              78,
+              87
+            ],
+            "fill": 0.396,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.778,
+            "bbox": [
+              3,
+              7,
+              102,
+              102
+            ],
+            "fill": 0.87,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "generated_at": "2026-09-09T17:38:33+00:00"
     },
     {
       "id": "root_forager",
@@ -416,12 +547,12 @@
       ],
       "items": [],
       "size": [
-        112,
-        112
+        128,
+        128
       ],
       "template_id": "bear",
-      "pixellab_id": "908c06d0-92d4-42b1-91f4-6c36c7beb1fb",
-      "version": 1,
+      "pixellab_id": "c89c1da1-c0a9-459c-a936-a3a47b0b7312",
+      "version": 2,
       "sheet": "bog_lurker/sheet.webp",
       "rotations": {
         "south": "bog_lurker/rotations/south.webp",
@@ -435,108 +566,104 @@
       },
       "qa": {
         "status": "fail",
-        "min_run1": 0.674,
+        "min_run1": 0.682,
         "reasons": [
-          "west: content touches the canvas edge (clipped)",
-          "east: content touches the canvas edge (clipped)",
-          "north: content touches the canvas edge (clipped)",
           "north-east: content touches the canvas edge (clipped)",
-          "north-west: content touches the canvas edge (clipped)",
           "south-west: content touches the canvas edge (clipped)"
         ],
         "directions": {
           "south": {
-            "run1": 0.686,
+            "run1": 0.682,
             "bbox": [
-              4,
-              3,
-              107,
-              107
+              5,
+              8,
+              123,
+              119
             ],
-            "fill": 0.854,
+            "fill": 0.799,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.696,
+            "run1": 0.729,
             "bbox": [
-              5,
-              4,
-              112,
-              106
+              14,
+              6,
+              123,
+              119
             ],
-            "fill": 0.87,
-            "touches_edge": true
+            "fill": 0.752,
+            "touches_edge": false
           },
           "east": {
-            "run1": 0.712,
+            "run1": 0.742,
             "bbox": [
-              0,
-              4,
-              107,
-              106
+              8,
+              6,
+              110,
+              122
             ],
-            "fill": 0.87,
-            "touches_edge": true
+            "fill": 0.722,
+            "touches_edge": false
           },
           "north": {
-            "run1": 0.674,
+            "run1": 0.699,
             "bbox": [
-              0,
-              10,
-              104,
-              98
+              9,
+              9,
+              116,
+              119
             ],
-            "fill": 0.73,
-            "touches_edge": true
+            "fill": 0.718,
+            "touches_edge": false
           },
           "south-east": {
-            "run1": 0.758,
+            "run1": 0.788,
             "bbox": [
-              16,
-              4,
-              103,
-              110
+              18,
+              6,
+              107,
+              121
             ],
-            "fill": 0.735,
+            "fill": 0.625,
             "touches_edge": false
           },
           "north-east": {
-            "run1": 0.679,
+            "run1": 0.749,
             "bbox": [
               0,
-              4,
-              101,
-              107
+              6,
+              107,
+              120
             ],
-            "fill": 0.829,
+            "fill": 0.745,
             "touches_edge": true
           },
           "north-west": {
-            "run1": 0.696,
+            "run1": 0.721,
             "bbox": [
-              10,
-              4,
-              112,
-              107
+              17,
+              6,
+              102,
+              116
             ],
-            "fill": 0.838,
-            "touches_edge": true
+            "fill": 0.571,
+            "touches_edge": false
           },
           "south-west": {
-            "run1": 0.76,
+            "run1": 0.78,
             "bbox": [
-              8,
-              9,
-              112,
-              110
+              16,
+              5,
+              128,
+              122
             ],
-            "fill": 0.837,
+            "fill": 0.8,
             "touches_edge": true
           }
         }
       },
       "review": "pending",
-      "generated_at": "2026-09-09T17:34:22+00:00"
+      "generated_at": "2026-09-09T17:38:32+00:00"
     },
     {
       "id": "hollow_knight",
