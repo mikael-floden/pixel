@@ -1,0 +1,140 @@
+{
+  "id": "cinder_imp",
+  "name": "Cinderimp",
+  "tier": "cute",
+  "lore": "The smallest thing the volcano ever coughed up, and the loudest. It steals boots and sets them on fire out of principle.",
+  "biome": [
+    "lava",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Small mischievous fantasy imp with dark red skin, two small curved black horns, a wide grin of sharp white teeth, glowing orange eyes, small bat-like wings, a pointed tail with a flame at the tip, and a tiny rusty pitchfork held in both hands.",
+  "size": [
+    64,
+    64
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cinder_imp/rotations/south.webp",
+    "south-east": "cinder_imp/rotations/south-east.webp",
+    "east": "cinder_imp/rotations/east.webp",
+    "north-east": "cinder_imp/rotations/north-east.webp",
+    "north": "cinder_imp/rotations/north.webp",
+    "north-west": "cinder_imp/rotations/north-west.webp",
+    "west": "cinder_imp/rotations/west.webp",
+    "south-west": "cinder_imp/rotations/south-west.webp"
+  },
+  "sheet": "cinder_imp/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b73255c2-1401-4d8b-b2e9-55cd4771247c",
+  "seed": 1512408857,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:51:00+00:00",
+  "elapsed_s": 165.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.76,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.825,
+        "bbox": [
+          3,
+          5,
+          60,
+          59
+        ],
+        "fill": 0.751,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.788,
+        "bbox": [
+          16,
+          3,
+          52,
+          57
+        ],
+        "fill": 0.475,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.802,
+        "bbox": [
+          13,
+          3,
+          47,
+          60
+        ],
+        "fill": 0.473,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.76,
+        "bbox": [
+          3,
+          3,
+          60,
+          55
+        ],
+        "fill": 0.724,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.826,
+        "bbox": [
+          8,
+          4,
+          52,
+          61
+        ],
+        "fill": 0.612,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.797,
+        "bbox": [
+          10,
+          2,
+          57,
+          59
+        ],
+        "fill": 0.654,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.784,
+        "bbox": [
+          8,
+          2,
+          57,
+          56
+        ],
+        "fill": 0.646,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.833,
+        "bbox": [
+          6,
+          3,
+          62,
+          57
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      }
+    }
+  }
+}

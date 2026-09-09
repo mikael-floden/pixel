@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T17:50:14+00:00",
+  "generated_at": "2026-09-09T17:51:00+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 16,
+  "count": 18,
   "candidates": [
     {
       "id": "lantern_bat",
@@ -672,6 +672,134 @@
       },
       "review": "pending",
       "generated_at": "2026-09-09T17:48:05+00:00"
+    },
+    {
+      "id": "silk_spider",
+      "name": "Silkmaw",
+      "tier": "evil",
+      "lore": "It spins in the dark and waits for the dark to be crossed. The skull on its back is the last thing many travellers read.",
+      "biome": [
+        "dark_mud",
+        "black_rock"
+      ],
+      "items": [
+        "silk skein"
+      ],
+      "size": [
+        136,
+        136
+      ],
+      "template_id": "bear",
+      "pixellab_id": "6846ce14-bfbd-40a8-873a-4cf62136c7a2",
+      "version": 1,
+      "sheet": "silk_spider/sheet.webp",
+      "rotations": {
+        "south": "silk_spider/rotations/south.webp",
+        "south-east": "silk_spider/rotations/south-east.webp",
+        "east": "silk_spider/rotations/east.webp",
+        "north-east": "silk_spider/rotations/north-east.webp",
+        "north": "silk_spider/rotations/north.webp",
+        "north-west": "silk_spider/rotations/north-west.webp",
+        "west": "silk_spider/rotations/west.webp",
+        "south-west": "silk_spider/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.642,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.642,
+            "bbox": [
+              6,
+              4,
+              130,
+              130
+            ],
+            "fill": 0.845,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.725,
+            "bbox": [
+              4,
+              19,
+              129,
+              130
+            ],
+            "fill": 0.75,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.745,
+            "bbox": [
+              7,
+              17,
+              131,
+              128
+            ],
+            "fill": 0.744,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.724,
+            "bbox": [
+              8,
+              27,
+              129,
+              130
+            ],
+            "fill": 0.674,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.768,
+            "bbox": [
+              12,
+              6,
+              131,
+              134
+            ],
+            "fill": 0.824,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.724,
+            "bbox": [
+              14,
+              23,
+              123,
+              127
+            ],
+            "fill": 0.613,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.7,
+            "bbox": [
+              8,
+              22,
+              118,
+              130
+            ],
+            "fill": 0.642,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.766,
+            "bbox": [
+              5,
+              7,
+              123,
+              134
+            ],
+            "fill": 0.81,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "generated_at": "2026-09-09T17:50:48+00:00"
     },
     {
       "id": "root_forager",
@@ -2083,6 +2211,132 @@
       },
       "review": "pending",
       "generated_at": "2026-09-09T17:48:14+00:00"
+    },
+    {
+      "id": "cinder_imp",
+      "name": "Cinderimp",
+      "tier": "cute",
+      "lore": "The smallest thing the volcano ever coughed up, and the loudest. It steals boots and sets them on fire out of principle.",
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        64,
+        64
+      ],
+      "template_id": "mannequin",
+      "pixellab_id": "b73255c2-1401-4d8b-b2e9-55cd4771247c",
+      "version": 1,
+      "sheet": "cinder_imp/sheet.webp",
+      "rotations": {
+        "south": "cinder_imp/rotations/south.webp",
+        "south-east": "cinder_imp/rotations/south-east.webp",
+        "east": "cinder_imp/rotations/east.webp",
+        "north-east": "cinder_imp/rotations/north-east.webp",
+        "north": "cinder_imp/rotations/north.webp",
+        "north-west": "cinder_imp/rotations/north-west.webp",
+        "west": "cinder_imp/rotations/west.webp",
+        "south-west": "cinder_imp/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.76,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.825,
+            "bbox": [
+              3,
+              5,
+              60,
+              59
+            ],
+            "fill": 0.751,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.788,
+            "bbox": [
+              16,
+              3,
+              52,
+              57
+            ],
+            "fill": 0.475,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.802,
+            "bbox": [
+              13,
+              3,
+              47,
+              60
+            ],
+            "fill": 0.473,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.76,
+            "bbox": [
+              3,
+              3,
+              60,
+              55
+            ],
+            "fill": 0.724,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.826,
+            "bbox": [
+              8,
+              4,
+              52,
+              61
+            ],
+            "fill": 0.612,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.797,
+            "bbox": [
+              10,
+              2,
+              57,
+              59
+            ],
+            "fill": 0.654,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.784,
+            "bbox": [
+              8,
+              2,
+              57,
+              56
+            ],
+            "fill": 0.646,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.833,
+            "bbox": [
+              6,
+              3,
+              62,
+              57
+            ],
+            "fill": 0.738,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "generated_at": "2026-09-09T17:51:00+00:00"
     }
   ]
 }

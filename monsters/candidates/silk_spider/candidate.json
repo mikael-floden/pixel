@@ -1,0 +1,142 @@
+{
+  "id": "silk_spider",
+  "name": "Silkmaw",
+  "tier": "evil",
+  "lore": "It spins in the dark and waits for the dark to be crossed. The skull on its back is the last thing many travellers read.",
+  "biome": [
+    "dark_mud",
+    "black_rock"
+  ],
+  "items": [
+    "silk skein"
+  ],
+  "prompt": "Huge fantasy cave spider with a hairy black abdomen marked with a pale bone-white skull pattern, eight long jointed legs with dark red joints, a cluster of eight glowing red eyes, large dripping fangs, and thick strands of white silk trailing from its spinnerets.",
+  "size": [
+    136,
+    136
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "silk_spider/rotations/south.webp",
+    "south-east": "silk_spider/rotations/south-east.webp",
+    "east": "silk_spider/rotations/east.webp",
+    "north-east": "silk_spider/rotations/north-east.webp",
+    "north": "silk_spider/rotations/north.webp",
+    "north-west": "silk_spider/rotations/north-west.webp",
+    "west": "silk_spider/rotations/west.webp",
+    "south-west": "silk_spider/rotations/south-west.webp"
+  },
+  "sheet": "silk_spider/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "6846ce14-bfbd-40a8-873a-4cf62136c7a2",
+  "seed": 569890307,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:50:48+00:00",
+  "elapsed_s": 163.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.642,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.642,
+        "bbox": [
+          6,
+          4,
+          130,
+          130
+        ],
+        "fill": 0.845,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.725,
+        "bbox": [
+          4,
+          19,
+          129,
+          130
+        ],
+        "fill": 0.75,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.745,
+        "bbox": [
+          7,
+          17,
+          131,
+          128
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.724,
+        "bbox": [
+          8,
+          27,
+          129,
+          130
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.768,
+        "bbox": [
+          12,
+          6,
+          131,
+          134
+        ],
+        "fill": 0.824,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.724,
+        "bbox": [
+          14,
+          23,
+          123,
+          127
+        ],
+        "fill": 0.613,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.7,
+        "bbox": [
+          8,
+          22,
+          118,
+          130
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.766,
+        "bbox": [
+          5,
+          7,
+          123,
+          134
+        ],
+        "fill": 0.81,
+        "touches_edge": false
+      }
+    }
+  }
+}
