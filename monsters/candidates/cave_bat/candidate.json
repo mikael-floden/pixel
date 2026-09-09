@@ -1,0 +1,141 @@
+{
+  "id": "cave_bat",
+  "name": "Duskwing",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The old galleries are theirs and they hunt in silence. The first warning is the wind of the wings.",
+  "biome": [
+    "black_rock",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Large cave bat with realistic proportions, coarse dark grey fur, a wrinkled leaf-nosed face with small black eyes and long fangs, tall ribbed ears, and leathery wings folded tightly against its body.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cave_bat/rotations/south.webp",
+    "south-east": "cave_bat/rotations/south-east.webp",
+    "east": "cave_bat/rotations/east.webp",
+    "north-east": "cave_bat/rotations/north-east.webp",
+    "north": "cave_bat/rotations/north.webp",
+    "north-west": "cave_bat/rotations/north-west.webp",
+    "west": "cave_bat/rotations/west.webp",
+    "south-west": "cave_bat/rotations/south-west.webp"
+  },
+  "sheet": "cave_bat/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "dcec694b-6180-4601-b581-3fcaa47a6c81",
+  "seed": 1456462382,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:18:58+00:00",
+  "elapsed_s": 187.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.732,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.732,
+        "bbox": [
+          7,
+          4,
+          81,
+          84
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.786,
+        "bbox": [
+          22,
+          3,
+          72,
+          85
+        ],
+        "fill": 0.529,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.798,
+        "bbox": [
+          16,
+          3,
+          66,
+          85
+        ],
+        "fill": 0.529,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.779,
+        "bbox": [
+          7,
+          7,
+          81,
+          81
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.802,
+        "bbox": [
+          12,
+          2,
+          79,
+          85
+        ],
+        "fill": 0.718,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.775,
+        "bbox": [
+          11,
+          3,
+          76,
+          83
+        ],
+        "fill": 0.671,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.759,
+        "bbox": [
+          12,
+          3,
+          77,
+          83
+        ],
+        "fill": 0.671,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.802,
+        "bbox": [
+          10,
+          2,
+          76,
+          85
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      }
+    }
+  }
+}
