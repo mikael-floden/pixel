@@ -42,7 +42,7 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   the same speed and sharing the sky at dawn and dusk, so it needs no
   hand-off animation and the server needs no time freeze. Driven only by
   `setClockTime(timeIdx + phaseT)` + `clockStar()`. See the CLOCK PILL
-  section of `games2/CLAUDE.md` before changing the art, the motion, or
+  section of `games2/docs/lighting.md` before changing the art, the motion, or
   TIME_PHASE_SECONDS (day and night must stay equal).
 - `client/src/controls.ts` — handedness (right/left, default right): which
   side the analog stick lives on, and in landscape which side the whole menu

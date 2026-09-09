@@ -51,7 +51,7 @@ radius-R pool reaches ≤46·R px horizontally, ≤22·R px vertically):
   at radius-4 lights is roughly "keep 5+ cells between lamps and don't cluster
   more than a handful per screen".
 - A scenery light is tuned in its piece's `scenery.json` `light` block (the
-  maintainer edits it from the wiki; see games2/CLAUDE.md "A `lit` SCENERY
+  maintainer edits it from the wiki; see games2/docs/lighting.md "A `lit` SCENERY
   PLACEMENT IS A LIGHT"). `strength` 0 = no light, no slot.
 - RETIRED 2026-09-09 with tiles2: emissive TILES (`tiles2/emission.json`
   `lights`), `check-light-budget.mjs` and its baseline ratchet. A budget gate

@@ -98,7 +98,7 @@ loads ships WebP (zero PNGs). VP8L is mathematically lossless: same pixels at
   (`games2/scripts/imagelib.mjs` reads both formats, so a stale `.png` path
   keeps working during a conversion).
 - Deliberate PNG exceptions: PWA icons, hand-drawn build-source art, the WebP
-  gate's test fixtures, docs images — see `games2/CLAUDE.md`.
+  gate's test fixtures, docs images — see `games2/docs/shipping.md`.
 
 **CACHE SAFETY IS ABSOLUTE (maintainer law, 2026-08-27).** "You must NEVER EVER EVER
 introduce a cache bug again. The next time I see a cache bug I delete the entire
@@ -197,6 +197,14 @@ Docs in this repo are rewritten **in place** when behaviour changes — never
 append a new round under the old ones, never narrate the journey. A doc
 states the present-tense rule, then the reason in parentheses:
 `Z. (W measured. Not X — Y.)`
+
+**A `CLAUDE.md` is loaded into EVERY turn of its agent, so it holds the rule
+and the pointer only; the measurement, the trap's story and the rejected
+approaches live in a topic doc that is opened on demand** (maintainer
+2026-09-09: `games2/CLAUDE.md` had grown to 300 KB, ~75k tokens paid before
+every message was read — split into `games2/docs/<topic>.md`, the law file
+under 20 KB). A domain README is read when its agent works, so the same
+budget applies: the long measurements go under `<domain>/docs/`.
 
 Always keep: invariants and prohibitions; measured constants with their
 meaning; paid-for traps as one line (what breaks + why); rejected approaches

@@ -42,7 +42,7 @@ runs on **push to `main`** touching `games2/**` OR any art domain the image
 bakes (art pushes auto-deploy — maintainer decision 2026-07-17; the
 concurrency group collapses rapid pushes into the newest run), plus
 **manual dispatch**. A parallel `test` job (typecheck + `npm test`) gates the
-deploy — see `games2/CLAUDE.md` (Deploy) and `games2/SURFACES.md` for the
+deploy — see `games2/docs/shipping.md` (Deploy) and `games2/SURFACES.md` for the
 one gate an art push can trip.
 
 Deploy by hand:
