@@ -1009,6 +1009,15 @@ void main() {
     float dist = sqrt(dot(d2, d2) + pow((lp.z - z) * 0.6, 2.0));
     float att = clamp(1.0 - dist / radius, 0.0, 1.0);
     att *= att;
+    // INDOORS, A PIXEL OUTSIDE MY ROOM THAT SITS ABOVE THE LIGHT TAKES NONE OF
+    // IT. Surfaces above a light skip the LOS march below (the billboard
+    // rule), so the neighbour's roof at level 8 took the radius-16 hearth
+    // straight through my ceiling, distance-faded only — the one lit thing in
+    // a black street (maintainer 2026-09-09: "I still see the house next to
+    // me lit up"). Nothing above a light inside my room has a line to it.
+    // Eased on the same mix as the ambient; inside my room, or below the
+    // light (the street through the doorway), untouched.
+    att *= 1.0 - uIndoorMix * (1.0 - r) * step(lp.z - 0.05, z);
     if (att <= 0.001) continue;
 
     // Line of sight: march the heightmap toward the light. Occlusion scales
@@ -3358,6 +3367,8 @@ export class NightLights {
       const dist = Math.sqrt(dx * dx + dy * dy + Math.pow((L.z - z) * 0.6, 2));
       let att = Math.max(0, 1 - dist / radius);
       att *= att;
+      // Twin of the shader's above-the-light rule outside my room (see FRAG).
+      att *= 1 - this.indoorMix * (1 - hit) * (z >= L.z - 0.05 ? 1 : 0);
       // A lit copy's crown reaches nearer the light than its axis: its
       // occlusion is marched whenever the light is within reach of the volume.
       const wantOcc = parts !== undefined && dist < radius + SCN_CROWN_REACH;
