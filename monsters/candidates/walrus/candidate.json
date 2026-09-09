@@ -1,0 +1,141 @@
+{
+  "id": "walrus",
+  "name": "Tuskbelly",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Master of the ice shelf. The tusks settle every dispute over it, and there has never been a second one.",
+  "biome": [
+    "ice",
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Fat fantasy walrus with wrinkled brown-grey hide, two long icicle-white tusks, a bristly whiskered muzzle, small dark eyes, thick flippers, and frost crusted on its back.",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "walrus/rotations/south.webp",
+    "south-east": "walrus/rotations/south-east.webp",
+    "east": "walrus/rotations/east.webp",
+    "north-east": "walrus/rotations/north-east.webp",
+    "north": "walrus/rotations/north.webp",
+    "north-west": "walrus/rotations/north-west.webp",
+    "west": "walrus/rotations/west.webp",
+    "south-west": "walrus/rotations/south-west.webp"
+  },
+  "sheet": "walrus/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0f7116bf-05bb-4584-afe2-0858b14178af",
+  "seed": 763973133,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:31:07+00:00",
+  "elapsed_s": 193.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.679,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.695,
+        "bbox": [
+          5,
+          5,
+          123,
+          123
+        ],
+        "fill": 0.85,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.711,
+        "bbox": [
+          5,
+          5,
+          124,
+          122
+        ],
+        "fill": 0.85,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.757,
+        "bbox": [
+          5,
+          5,
+          123,
+          124
+        ],
+        "fill": 0.857,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.679,
+        "bbox": [
+          14,
+          4,
+          114,
+          124
+        ],
+        "fill": 0.732,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.812,
+        "bbox": [
+          17,
+          5,
+          117,
+          123
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.737,
+        "bbox": [
+          4,
+          4,
+          123,
+          118
+        ],
+        "fill": 0.828,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.712,
+        "bbox": [
+          10,
+          4,
+          115,
+          122
+        ],
+        "fill": 0.756,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.783,
+        "bbox": [
+          4,
+          5,
+          123,
+          124
+        ],
+        "fill": 0.864,
+        "touches_edge": false
+      }
+    }
+  }
+}
