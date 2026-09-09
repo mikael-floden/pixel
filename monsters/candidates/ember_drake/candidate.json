@@ -1,0 +1,141 @@
+{
+  "id": "ember_drake",
+  "name": "Emberdrake",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "A drake that never grew wings and never needed them. It walks the lava fields and the lava parts for it.",
+  "biome": [
+    "lava",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy wingless fire drake with a heavy four-legged body of dark red scales, glowing orange plates down its back, a broad horned head with a mouth leaking flame, thick clawed legs, and a short thick tail curled around its feet.",
+  "size": [
+    240,
+    240
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ember_drake/rotations/south.webp",
+    "south-east": "ember_drake/rotations/south-east.webp",
+    "east": "ember_drake/rotations/east.webp",
+    "north-east": "ember_drake/rotations/north-east.webp",
+    "north": "ember_drake/rotations/north.webp",
+    "north-west": "ember_drake/rotations/north-west.webp",
+    "west": "ember_drake/rotations/west.webp",
+    "south-west": "ember_drake/rotations/south-west.webp"
+  },
+  "sheet": "ember_drake/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7b08da5f-5c75-4c27-b8ec-1c4f40511de9",
+  "seed": 621051281,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:47:26+00:00",
+  "elapsed_s": 261.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.573,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.573,
+        "bbox": [
+          13,
+          7,
+          228,
+          234
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.639,
+        "bbox": [
+          17,
+          7,
+          194,
+          230
+        ],
+        "fill": 0.685,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.651,
+        "bbox": [
+          11,
+          7,
+          202,
+          233
+        ],
+        "fill": 0.749,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.663,
+        "bbox": [
+          25,
+          7,
+          225,
+          230
+        ],
+        "fill": 0.774,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.647,
+        "bbox": [
+          11,
+          6,
+          225,
+          229
+        ],
+        "fill": 0.829,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.616,
+        "bbox": [
+          34,
+          3,
+          229,
+          229
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.638,
+        "bbox": [
+          38,
+          7,
+          224,
+          233
+        ],
+        "fill": 0.73,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.643,
+        "bbox": [
+          14,
+          7,
+          219,
+          231
+        ],
+        "fill": 0.797,
+        "touches_edge": false
+      }
+    }
+  }
+}

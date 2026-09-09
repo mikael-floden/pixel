@@ -59,15 +59,15 @@
         "fill": 0.703,
         "touches_edge": false
       },
-      "west": {
+      "south-east": {
         "run1": 0.718,
         "bbox": [
-          37,
-          13,
-          205,
-          209
+          52,
+          15,
+          184,
+          213
         ],
-        "fill": 0.656,
+        "fill": 0.521,
         "touches_edge": false
       },
       "east": {
@@ -81,28 +81,6 @@
         "fill": 0.656,
         "touches_edge": false
       },
-      "north": {
-        "run1": 0.718,
-        "bbox": [
-          49,
-          11,
-          187,
-          198
-        ],
-        "fill": 0.514,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.718,
-        "bbox": [
-          52,
-          15,
-          184,
-          213
-        ],
-        "fill": 0.521,
-        "touches_edge": false
-      },
       "north-east": {
         "run1": 0.723,
         "bbox": [
@@ -114,6 +92,17 @@
         "fill": 0.631,
         "touches_edge": false
       },
+      "north": {
+        "run1": 0.718,
+        "bbox": [
+          49,
+          11,
+          187,
+          198
+        ],
+        "fill": 0.514,
+        "touches_edge": false
+      },
       "north-west": {
         "run1": 0.708,
         "bbox": [
@@ -123,6 +112,17 @@
           202
         ],
         "fill": 0.586,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.718,
+        "bbox": [
+          37,
+          13,
+          205,
+          209
+        ],
+        "fill": 0.656,
         "touches_edge": false
       },
       "south-west": {
@@ -137,5 +137,8 @@
         "touches_edge": false
       }
     }
-  }
+  },
+  "notes": [
+    "agent eyeball: the concept is grotesque but the render leans cartoon — bright crown, wide grin. Passes the machine; your call whether the execution is serious enough."
+  ]
 }
