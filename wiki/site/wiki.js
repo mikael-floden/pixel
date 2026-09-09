@@ -4931,6 +4931,106 @@ function lightRow(o, st, onChange) {
   draw();
   return box;
 }
+/* WHICH ANIMATIONS CAN BE TURNED ON (maintainer 2026-09-09, to the scenery
+ * agent and copied to me):
+ *
+ *   "The goal with the animations is to just animate some part of the object
+ *    while the object itself stands still on the ground ... It's ok if the
+ *    leaves move and it's even better if with the leaves and the branches move,
+ *    but as soon as the root moves it looks wrong and the animation can't be
+ *    used. So we need a state here: ANIMATION_PROBABLY_BAD,
+ *    ANIMATION_PROBABLY_GOOD, ANIMATION_APPROVED, ANIMATION_REDO. Your job is
+ *    to categorise all animations into PROBABLY_BAD and PROBABLY_GOOD. The game
+ *    will then turn on animations for everything you mark PROBABLY_GOOD. The
+ *    wiki will make it possible to filter and review animations so I will mark
+ *    the animation as APPROVED or REDO."
+ *
+ * Two hands on one flag, so the wiki keeps them apart and resolves them in his
+ * order: HIS verdict decides when he has given one, the agent's classification
+ * decides until then, and a state nobody has said anything about is
+ * unclassified. REDO means the animation is not shown at all until the agent
+ * has redone it and re-classified — his rule, and the game reads the same
+ * resolution through this contract. */
+const ANIM_STATES = {
+  ANIMATION_APPROVED: { label: "approved", cls: "ok", title: "You watched this and it is right — the game plays it" },
+  ANIMATION_REDO: { label: "redo", cls: "err", title: "Too much movement. The scenery agent redoes it with less; nothing is animated for this state until it does" },
+  ANIMATION_PROBABLY_GOOD: { label: "probably good", cls: "", title: "The scenery agent's call: the movement looks confined to the right parts. The game plays it until you say otherwise" },
+  ANIMATION_PROBABLY_BAD: { label: "probably bad", cls: "warn", title: "The scenery agent's call: too much of the object moves. Not played" },
+};
+const ANIM_KEY = "tuning/scenery_animation";
+const sceneryAnim = () => state.tuning.scenery_animation
+  ?? (state.tuning.scenery_animation = { format: "pixel-wiki-scenery-animation@1", updated_at: "", overrides: {} });
+/** What the scenery agent classified this state's animation as, if anything. */
+const animTagged = (o, st) => {
+  const v = o?.animations?.[st]?.animState ?? null;
+  return typeof v === "string" && ANIM_STATES[v] ? v : null;
+};
+/** What it IS: his verdict first, the agent's classification under it. */
+function animStateOf(o, st) {
+  const mine = sceneryAnim().overrides?.[`${o.path}#${st}`]?.verdict;
+  if (typeof mine === "string" && ANIM_STATES[mine]) return mine;
+  return animTagged(o, st);
+}
+function setAnimState(o, st, verdict) {
+  const doc = sceneryAnim();
+  const key = `${o.path}#${st}`;
+  doc.overrides ??= {};
+  // Pressing the verdict it already carries withdraws it — the same toggle
+  // every other verdict in the wiki has, and it hands the state back to the
+  // agent's classification rather than freezing his old call.
+  if (!verdict || doc.overrides[key]?.verdict === verdict) delete doc.overrides[key];
+  else doc.overrides[key] = { verdict, was: animTagged(o, st), state: st, updated_at: new Date().toISOString() };
+  doc.updated_at = new Date().toISOString();
+  touch(ANIM_KEY, key);
+  markDirty(ANIM_KEY);
+}
+/** The worst root movement across this state's facings, measured at build time
+ *  — the number his rule is actually about. */
+function animDrift(o, st) {
+  let worst = null;
+  for (const c of Object.values(o?.animations?.[st]?.dirs ?? {})) {
+    if (!c?.anim) continue;
+    if (!worst || c.anim.base > worst.base) worst = c.anim;
+  }
+  return worst;
+}
+/** The row: what it is, what moves, and the two verdicts he asked for. */
+function animRow(o, st, onChange) {
+  const box = h("div", { class: "card-sub lit-mode anim-mode" });
+  const draw = () => {
+    const d = animDrift(o, st);
+    if (!d) { box.replaceChildren(); return; }          // nothing animated here
+    const now = animStateOf(o, st), tag = animTagged(o, st), mine = now && now !== tag;
+    const verdict = (id) => {
+      const on = now === id;
+      const b = h("button", { class: `${id === "ANIMATION_REDO" ? "reject-btn" : ""}${on ? " approved" : ""}`, title: ANIM_STATES[id].title },
+        `${id === "ANIMATION_REDO" ? "↻ redo" : "✓ approve"}`);
+      b.addEventListener("click", () => { setAnimState(o, st, id); draw(); onChange?.(); });
+      return b;
+    };
+    box.replaceChildren(...[
+      h("span", { class: "muted lit-label" }, "Animation"),
+      now
+        ? h("span", { class: `pill ${ANIM_STATES[now].cls}`, title: ANIM_STATES[now].title },
+          `${ANIM_STATES[now].label}${mine ? "" : " · agent"}`)
+        : h("span", { class: "pill muted", title: "The scenery agent has not classified this animation yet" }, "unclassified"),
+      /* THE ROOT'S OWN NUMBER, because that is the rule: "as soon as the root
+       * moves it looks wrong". Green under half a pixel, amber to two, red
+       * beyond — measured across every facing of this state, worst first. */
+      h("span", { class: `pill ${d.base > 2 ? "err" : d.base > 0.5 ? "warn" : "ok"}`,
+        title: `The bottom quarter of the art travels ${d.base}px across the ${d.frames} frames; the top quarter travels ${d.top}px, and ${Math.round(d.low * 100)}% of what changes is down at the foot. His rule: the leaves may move, the root may not.` },
+        `root ${d.base}px`),
+      d.base === 0 && d.top === 0
+        ? h("span", { class: "pill warn", title: "Not one pixel differs between the frames — there is nothing to watch" }, "nothing moves")
+        : null,
+      h("span", { class: "spacer" }),
+      verdict("ANIMATION_APPROVED"),
+      verdict("ANIMATION_REDO"),
+    ].filter(Boolean));
+  };
+  draw();
+  return box;
+}
 function litRow(path, st, onChange) {
   // NOT `.wall-mode`: that class exists to SHRINK a strip into a dense tiles
   // card (3px padding, 12px type), and reusing it made this the smallest thing
@@ -10914,6 +11014,62 @@ const OBJ_HITBOXES = {
     hit: (o) => hitboxPieceState(o) === "wall",
   },
 };
+/* WHAT KIND OF THING IT IS (maintainer 2026-08-14: "on scenery it's hard to
+ * find the objects I'm looking for — can you make a filter on type"). The
+ * taxonomy is NOT the wiki's: every group in scenery/config/factory.json
+ * carries a `type`, and build.mjs copies it onto the piece. Adding a type
+ * there makes it appear here on the next build with no change to this file —
+ * which is the point, because the scenery agent owns what its pieces are.
+ *
+ * RESTORED 2026-09-09: the tiles2 retirement (dc23b51893) took 270 lines out
+ * of this file and these three went with them, while their uses stayed — so
+ * every Scenery page threw ReferenceError and rendered nothing, in production,
+ * until this came back. They have nothing to do with tiles2. */
+const OBJ_SORT_KEY = "wiki-obj-sort";
+const OBJ_FILTER_KEY = "wiki-obj-filter";
+const OBJ_TYPE_KEY = "wiki-obj-type";
+const OBJ_TYPES = {
+  TREE: "Trees", WINDOW: "Windows", MOUNTAIN_WALL: "Mountain wall", TOWN: "Town",
+  INDOOR: "Indoor", NATURE: "Nature", OTHER: "Other",
+};
+const objTypeLabel = (t) => OBJ_TYPES[t] ?? titleish(t ?? "other");
+/* WALKING THE ANIMATIONS (maintainer 2026-09-09: "The wiki will make it
+ * possible to filter and review animations so I will when I have time mark the
+ * animation as ANIMATION_APPROVED or ANIMATION_REDO"). A piece matches when ANY
+ * of its animated states does — the review happens per state inside the piece,
+ * and a filter that demanded every state agree would hide the piece that has
+ * one bad animation among five good ones, which is the piece he most needs. */
+const OBJ_ANIM_KEY = "wiki-object-anim";
+const animStatesOf = (o) => Object.keys(o.animations ?? {}).filter((st) => animDrift(o, st));
+const OBJ_ANIMS = {
+  all: { label: "all", title: "Every piece, animated or not", hit: () => true },
+  todo: {
+    label: "to review",
+    title: "Animated states the scenery agent has classified and you have not judged — the queue he asked for",
+    hit: (o) => animStatesOf(o).some((st) => animTagged(o, st) && !sceneryAnim().overrides?.[`${o.path}#${st}`]),
+  },
+  good: { label: "probably good", title: "The agent's call: the movement is confined to the right parts. The game plays these",
+    hit: (o) => animStatesOf(o).some((st) => animStateOf(o, st) === "ANIMATION_PROBABLY_GOOD") },
+  bad: { label: "probably bad", title: "The agent's call: too much of the object moves",
+    hit: (o) => animStatesOf(o).some((st) => animStateOf(o, st) === "ANIMATION_PROBABLY_BAD") },
+  approved: { label: "approved", title: "You watched these and they are right",
+    hit: (o) => animStatesOf(o).some((st) => animStateOf(o, st) === "ANIMATION_APPROVED") },
+  redo: { label: "redo", title: "You sent these back for less movement — nothing animates until the agent redoes them",
+    hit: (o) => animStatesOf(o).some((st) => animStateOf(o, st) === "ANIMATION_REDO") },
+  /* THE MEASUREMENT AS A FILTER, because it is the rule itself: "as soon as the
+   * root moves it looks wrong". 226 of 1,945 animated states move their base
+   * more than a pixel; these are where the fault lives whatever anyone has
+   * classified them as. */
+  moving: { label: "root moves", title: "The bottom quarter of the art travels more than a pixel — the fault he described, measured",
+    hit: (o) => animStatesOf(o).some((st) => (animDrift(o, st)?.base ?? 0) > 1) },
+  dead: { label: "nothing moves", title: "Frames that do not differ by a single pixel — an animation with nothing to watch",
+    hit: (o) => animStatesOf(o).some((st) => { const d = animDrift(o, st); return d && d.base === 0 && d.top === 0; }) },
+};
+const animFilter = () => {
+  if (!state.admin) return "all";
+  try { return OBJ_ANIMS[localStorage.getItem(OBJ_ANIM_KEY)] ? localStorage.getItem(OBJ_ANIM_KEY) : "all"; }
+  catch { return "all"; }
+};
 const hitboxFilter = () => {
   if (!state.admin) return "all";
   try { return OBJ_HITBOXES[localStorage.getItem(OBJ_HITBOX_KEY)] ? localStorage.getItem(OBJ_HITBOX_KEY) : "all"; }
@@ -10941,10 +11097,16 @@ function objectQueue() {
   // navigate is the dead end he hit on tiles".
   const hb = hitboxFilter();
   if (hb !== "all") list = list.filter((o) => OBJ_HITBOXES[hb].hit(o));
+  // The ANIMATION filter rides the same queue, for the same reason: he asked to
+  // "filter and review animations", and a filter he cannot walk with ‹ › is a
+  // list he has to leave and re-enter for every piece.
+  const an = animFilter();
+  if (an !== "all") list = list.filter((o) => OBJ_ANIMS[an].hit(o));
   // `added` is the commit that introduced the piece (build.mjs). Undated art
   // sorts last rather than first — a missing date is not a claim of newness.
   if (sort === "newest") list = [...list].sort((a, b) => String(b.added ?? "").localeCompare(String(a.added ?? "")));
-  return { list, sort, filter, type, hitbox: hb, active: filter !== "all" || sort !== "group" || type !== "all" || hb !== "all", total: all.length };
+  return { list, sort, filter, type, hitbox: hb, anim: an,
+    active: filter !== "all" || sort !== "group" || type !== "all" || hb !== "all" || an !== "all", total: all.length };
 }
 function viewObjects() {
   const q = objectQueue();
@@ -11025,6 +11187,11 @@ function viewObjects() {
       // the first cut and it made "all 739" sit above a page of 83.
       [id, `${f.label} ${state.data.domains.objects.filter((o) => (q.type === "all" || typeOf(o) === q.type) && f.hit(o)).length}`,
         q.type === "all" ? f.title : `${f.title} — within ${objTypeLabel(q.type)}`]), q.hitbox, () => route()) : null,
+    /* THE ANIMATION BAR — counted within the chosen type like the bars above
+     * it, so "to review 41" means forty-one of what is on screen. */
+    state.admin ? sortBar(OBJ_ANIM_KEY, Object.entries(OBJ_ANIMS).map(([id, f]) =>
+      [id, `${f.label} ${state.data.domains.objects.filter((o) => (q.type === "all" || typeOf(o) === q.type) && f.hit(o)).length}`,
+        q.type === "all" ? f.title : `${f.title} — within ${objTypeLabel(q.type)}`]), q.anim, () => route()) : null,
     state.admin ? sortBar(OBJ_SORT_KEY, Object.entries(OBJ_SORTS).map(([id, s]) => [id, s.label, s.title]), q.sort, () => route()) : null,
     // COUNT ON EVERY CHIP. The filter is sticky, and a sticky filter can
     // legitimately empty the page: the maintainer reviewed the whole domain,
@@ -11206,6 +11373,8 @@ function viewObject(id) {
       // WHICH WAY THIS FACING FACES — per direction, because that is where the
       // fault is: one of the two three-quarter views is the other one again.
       state.admin ? flipRow(o, st, dir, () => player.redraw?.()) : null,
+      // ...and whether this state's ANIMATION may play at all.
+      state.admin ? animRow(o, st, () => player.refreshMarks()) : null,
       feedbackRow("objects", `${o.path}#${st}#${dir}`, {
         // The chip the verdict belongs to turns green or red the moment it lands.
         onchange: () => player.refreshMarks(),
@@ -11274,6 +11443,7 @@ function viewObject(id) {
       [q.type === "all" ? null : `${objTypeLabel(q.type)} only`,
         q.filter === "all" ? null : `${OBJ_FILTERS[q.filter].label} only`,
         !q.hitbox || q.hitbox === "all" ? null : `${OBJ_HITBOXES[q.hitbox].label} only`,
+        !q.anim || q.anim === "all" ? null : `${OBJ_ANIMS[q.anim].label} only`,
         q.sort === "group" ? null : OBJ_SORTS[q.sort].label,
         `${q.list.length} of ${q.total}`].filter(Boolean).join(" · "),
       inQueue ? null : h("span", { class: "pill err" }, "this one is outside the filter")) : null,
