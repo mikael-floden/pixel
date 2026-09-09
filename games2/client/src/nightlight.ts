@@ -1068,6 +1068,15 @@ void main() {
       // Bounce floor: firelight scatters — shadowed ground near a light keeps
       // a faint glow instead of dropping to pitch ambient. Faces still gate
       // to dark below (the Lambert gate multiplies AFTER this floor).
+      // ROOM-GATED (maintainer 2026-09-09, "why doesn't 'make outdoor dark'
+      // work in this house"): the floor is scatter off the room's OWN
+      // surfaces, so outside MY room it is 0 — eased on the same mix as the
+      // ambient. Ungated it poured 22% of a radius-16 hearth straight through
+      // the walls onto the street, the meadow and the neighbour's roof (0.03
+      // luma at 11 cells — invisible headless, plainly lit on a phone), which
+      // is exactly the light "the outside is black" has to lose. The doorway
+      // keeps its spill: light with a clear line through the opening never
+      // touched the floor. Outdoors inRoom is 1 and nothing changes.
       // THE OWN TRUNK'S CORE, DIRECTIONALLY — the far-side half of the skirt
       // rule above: a pixel in its piece's share cell is shaded where the ray
       // to the light passes through the core between them (the ground at a
@@ -1086,7 +1095,7 @@ void main() {
             occ *= mix(1.0, mix(0.8, 0.22, clamp((top - hRayC) * 1.5, 0.0, 1.0)), smoothstep(${SCN_CORE}, ${SCN_CORE} * 0.55, dq));
         }
       }
-      occ = max(occ, 0.22);
+      occ = max(occ, 0.22 * inRoom);
     }
 
     // Side-face pixels (below their column's top): a column shows TWO faces —
@@ -3404,7 +3413,7 @@ export class NightLights {
             }
           }
         }
-        occ = Math.max(occ, 0.22); // bounce floor — same as the shader
+        occ = Math.max(occ, 0.22 * inRoom); // bounce floor — same as the shader, room-gated
       }
       if (parts && i < parts.occ.length) parts.occ[i] = occ;
       if (att <= 0.001) continue;

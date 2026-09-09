@@ -8951,15 +8951,16 @@ export class WorldScene extends Phaser.Scene {
             Math.floor(rec.wy / CELL_WU) * this.terrain.width + Math.floor(rec.wx / CELL_WU)
           ] ?? 0
         : 0;
-      const out = rec.img.texture.key === "__MISSING" || this.aboveCut(dropLvl, rec.wx, rec.wy);
-      rec.img.setVisible(!out);
-      rec.shadow.setVisible(!out);
+      const cutA = this.cutFade(dropLvl, rec.wx, rec.wy);
+      const out = rec.img.texture.key === "__MISSING" || cutA <= 0.004;
+      rec.img.setVisible(!out).setAlpha(cutA);
+      rec.shadow.setVisible(!out).setAlpha(0.55 * cutA);
       const left = DROP_TTL_MS - (now - rec.bornAt);
       if (left <= DROP_FLASH_MS) {
         const t = Math.max(0, 1 - left / DROP_FLASH_MS); // 0 → 1 over the final stretch
         const hz = 2 + t * 8; // 2Hz ramping to 10Hz
         const s = 0.5 + 0.5 * Math.sin((now / 1000) * hz * Math.PI * 2);
-        const a = 0.15 + 0.85 * s;
+        const a = (0.15 + 0.85 * s) * cutA;
         rec.img.setAlpha(a);
         rec.shadow.setAlpha(0.55 * a);
       }
@@ -8977,14 +8978,16 @@ export class WorldScene extends Phaser.Scene {
    * (900_002): day, night and shadow never touch it. Shown while the monster
    * is wounded, in combat, or MY engaged target. */
   private updateMonsterHpBar(mv: MonsterAvatar, m: any, id: string) {
+    // The bar, the name and the Lv/HP text sit at 900_001.5-1.7, above the
+    // darkness overlay: indoors they would be the only readable thing on a
+    // monster that is otherwise a black silhouette out on the grass. They
+    // FADE on the light grade with the body under them, never switch.
+    const outK = this.indoorOutside(mv.fx, mv.fy, mv.surfLevel) ? 1 - this.indoorGrade() : 1;
     const inFight =
       m.hpMax > 0 &&
       m.mstate !== "die" &&
       (m.hp < m.hpMax || m.mstate === "combat" || this.engagedId === id) &&
-      // The bar, the name and the Lv/HP text sit at 900_001.5-1.7, above the
-      // darkness overlay: indoors they would be the only readable thing on a
-      // monster that is otherwise a black silhouette out on the grass.
-      !this.indoorOutside(mv.fx, mv.fy, mv.surfLevel);
+      outK > 0.01;
     if (!inFight) {
       mv.hpBg?.setVisible(false);
       mv.hpFill?.setVisible(false);
@@ -9028,6 +9031,7 @@ export class WorldScene extends Phaser.Scene {
     mv.nameText!.setPosition(mv.lx - W / 2, topY - 5).setVisible(true);
     mv.lvText!.setPosition(mv.lx - W / 2, topY + 5).setVisible(true);
     mv.hpText!.setPosition(mv.lx + W / 2, topY + 5).setVisible(true);
+    for (const o of [mv.hpBg, mv.hpFill!, mv.nameText!, mv.lvText!, mv.hpText!]) o.setAlpha(outK);
   }
 
   /** A small rising damage number (world-space, above the night overlay). */
@@ -9628,16 +9632,18 @@ export class WorldScene extends Phaser.Scene {
     for (const npc of this.npcs.values()) {
       const sp = npc.sprite;
       const halfW = Math.max(sp.displayWidth, 40) * 0.5;
+      const cutA = this.cutFade(npc.surfLevel ?? 0, npc.fx, npc.fy);
       const on =
         npc.lx + halfW >= cam.x - MONSTER_CULL_SLACK &&
         npc.lx - halfW <= cam.right + MONSTER_CULL_SLACK &&
         npc.ly + 20 >= cam.y - MONSTER_CULL_SLACK &&
         npc.ly - sp.displayHeight <= cam.bottom + MONSTER_CULL_SLACK &&
-        !this.aboveCut(npc.surfLevel ?? 0, npc.fx, npc.fy);
+        cutA > 0.004;
       // The indoor test is ONLY about height (see aboveCut). A villager on the
       // street outside my room is drawn and lit like the street is — black,
       // until my torch finds them. One standing on a rooftop is not drawn at
-      // all, because the rooftop is not drawn either.
+      // all, because the rooftop is not drawn either — and fades out with the
+      // rooftop's debris rather than popping (cutFade).
       if (!on) {
         if (!npc.culled) {
           npc.culled = true;
@@ -9685,6 +9691,8 @@ export class WorldScene extends Phaser.Scene {
       }
       this.resolveBodyDepth(npc, npc.surfLevel ?? 0);
       this.placeBodyShadow(npc, npc.elev, 0, 34, 14);
+      sp.setAlpha(cutA);
+      if (cutA < 1) npc.shadow.setAlpha(npc.shadow.alpha * cutA);
     }
   }
 
@@ -10768,14 +10776,19 @@ export class WorldScene extends Phaser.Scene {
       // floating in the black is the one thing that would give away a body you
       // are meant to barely see, so the label and the chat bubble follow the
       // room while the body follows the light. I am never outside my own room.
-      const away = id !== myId && this.indoorOutside(av.fx, av.fy, av.surfLevel);
+      // The tag FADES on the light grade, as the body under it darkens — a
+      // name that blinks off a frame after you cross the sill is its own pop.
+      const outK = id !== myId && this.indoorOutside(av.fx, av.fy, av.surfLevel) ? 1 - this.indoorGrade() : 1;
       // ABOVE THE CUT the body goes too, not just its name tag: it would be
-      // standing on terrain that is not drawn. I am never above my own cut —
-      // the room is resolved from where I stand.
-      const overhead = id !== myId && this.aboveCut(av.surfLevel ?? 0, av.fx, av.fy);
-      av.sprite.setVisible(!overhead);
-      av.label.setVisible(!away && !overhead);
+      // standing on terrain that is not drawn — it fades with that terrain's
+      // debris (cutFade). I am never above my own cut — the room is resolved
+      // from where I stand.
+      const cutA = id === myId ? 1 : this.cutFade(av.surfLevel ?? 0, av.fx, av.fy);
+      const overhead = cutA <= 0.004;
+      av.sprite.setVisible(!overhead).setAlpha(cutA);
+      av.label.setVisible(outK > 0.01 && !overhead).setAlpha(outK * cutA);
       av.shadow.setVisible(!av.swimming && !overhead);
+      if (cutA < 1) av.shadow.setAlpha(av.shadow.alpha * cutA);
       // Head top (measured from the art), not the frame top — labels hug the
       // character instead of floating over transparent padding.
       const topFrac = (av.sprite.getData("topFrac") as number) ?? 0;
@@ -10800,7 +10813,7 @@ export class WorldScene extends Phaser.Scene {
           .setText(`${(av.fx / CELL_WU).toFixed(1)}, ${(av.fy / CELL_WU).toFixed(1)}\n${this.worldName}`);
       }
       if (av.bubble) {
-        av.bubble.setPosition(av.lx, topY - 18).setVisible(!away && !overhead); // goes with the body
+        av.bubble.setPosition(av.lx, topY - 18).setVisible(outK > 0.01 && !overhead).setAlpha(outK * cutA); // goes with the body
         if (this.time.now > (av.bubbleUntil ?? 0)) {
           av.bubble.destroy();
           av.bubble = undefined;
@@ -10893,18 +10906,21 @@ export class WorldScene extends Phaser.Scene {
         const down = mv.tuned
           ? Math.max(mv.shadowH, sp.displayHeight * (1 - sp.originY))
           : mv.shadowH;
+        const cutA = this.cutFade(m.elev ?? g.lvl, m.x, m.y);
         const onScreen =
           !mv.artPending && // parked until its strips land — see addMonster
           g.x + halfW >= vL &&
           g.x - halfW <= vR &&
           ay + down >= vT &&
           ay - up <= vB &&
-          !this.aboveCut(m.elev ?? g.lvl, m.x, m.y);
+          cutA > 0.004;
         // The indoor test is ONLY about height. A monster outside my room but
         // at my level is drawn and lit like the ground under it — that is the
         // whole zero-ambient design. One ABOVE the cut is different: the
-        // terrain it stands on is not drawn, so it would hang in the void.
-        // Its ABOVE-OVERLAY chrome is a third case — see indoorOutside.
+        // terrain it stands on is not drawn, so it would hang in the void —
+        // it wears the transition debris' own opacity (cutFade) and parks
+        // once that has dissolved. Its ABOVE-OVERLAY chrome is a third case —
+        // see indoorOutside.
         if (!onScreen) {
           // PARKED: no anim, no depth ray, no shadow, no lit copy, no draw.
           // The position still tracks the server exactly (snapped, not eased —
@@ -10943,6 +10959,7 @@ export class WorldScene extends Phaser.Scene {
           mv.shadow.setVisible(true);
           sp.anims.resume();
         }
+        sp.setAlpha(cutA); // the lit copy and fog silhouette follow it (syncLitCopy)
         active++;
         if (Math.abs(g.x - mv.lx) > CELL_WU * 2 || Math.abs(g.y - mv.lyFlat) > CELL_WU * 2) {
           // A respawn/reslot teleport — snap, don't ease across the map.
@@ -11088,6 +11105,7 @@ export class WorldScene extends Phaser.Scene {
           const gw = mv.shadowW * MONSTER_SHADOW_SPREAD;
           const gh = mv.shadowH * MONSTER_SHADOW_SPREAD;
           this.placeBodyShadow(mv, targetElev, mv.hoverPx + airPx, gw, gh);
+          if (cutA < 1) mv.shadow.setAlpha(mv.shadow.alpha * cutA);
           // The anchor is the CONTACT CENTROID (between the foot undersides);
           // the front toes plant `sink` px below it. Lift the ellipse so its
           // south rim kisses the toe line — but NEVER above the contact band
@@ -13043,7 +13061,7 @@ export class WorldScene extends Phaser.Scene {
       .setFlipX(slot ? false : sp.flipX)
       .setScale(sp.scaleX, sp.scaleY)
       .setDepth(litDepth(sp.depth))
-      .setAlpha(1)
+      .setAlpha(sp.alpha) // a body fading with the cut takes its copy with it
       .setTint((r << 16) | (g << 8) | bl);
     if (slot) {
       if (b.lit.isCropped) b.lit.setCrop();
@@ -13070,7 +13088,7 @@ export class WorldScene extends Phaser.Scene {
         .setFlipX(b.lit.flipX)
         .setScale(b.lit.scaleX, b.lit.scaleY)
         .setDepth(b.lit.depth)
-        .setAlpha(fa)
+        .setAlpha(fa * sp.alpha)
         .setTintFill((c(fog.r) << 16) | (c(fog.g) << 8) | c(fog.b));
       if (b.lit.isCropped) {
         const cc = (b.lit as unknown as { _crop: { width: number; height: number } })._crop;
@@ -14615,6 +14633,21 @@ export class WorldScene extends Phaser.Scene {
     // every body caller passes its fx/fy.
     if (fx === undefined || fy === undefined) return z > this.indoorTop;
     return z > this.cutAt(fx / CELL_WU, fy / CELL_WU);
+  }
+
+  /** HOW VISIBLE IS A BODY (or a drop) STANDING ABOVE THE CUT — 1 on drawn
+   *  ground, else exactly the opacity of the terrain under it: the transition
+   *  debris' alpha while the crossfade runs, 0 once it has dissolved. Entering,
+   *  the mountain top and the monster on it dissolve together by mix ⅓;
+   *  leaving, both fade back in ahead of the swap. Before this the body was a
+   *  binary `aboveCut` test — it popped the flip frame, a beat before the
+   *  ground it stood on had even started to fade (maintainer 2026-09-09: "that
+   *  fade effect doesn't seem to fade in/out monsters. Monsters still pop").
+   *  Callers park a body at ≤0.004 exactly as they culled it before, so the
+   *  settled state — and verify-indoor section 7 — is unchanged. */
+  private cutFade(z: number, fx: number, fy: number): number {
+    if (!this.aboveCut(z, fx, fy)) return 1;
+    return this.indoorDebris ? this.debrisAlpha() : 0;
   }
 
   /** IS THE ROOF OVER THIS CELL CUT AWAY RIGHT NOW? — the one question a piece

@@ -155,6 +155,15 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
   tuning: culling asks "whose inward face does the camera see", and a room's
   own CORNER has no inward face — no wall set can hold it; same at every
   T-junction. Truncation has nothing to classify.
+- **THE LOS MARCH'S BOUNCE FLOOR IS ROOM-GATED** (`occ = max(occ, 0.22 ·
+  inRoom)`, shader AND CPU twin): outside my room a shadowed pixel gets NO
+  scatter floor while indoors (eased on the same mix as the ambient).
+  Ungated, a radius-16 hearth poured 22% of itself through the walls onto the
+  street, the meadow and the neighbour's roof — ~0.03 luma at 11 cells,
+  invisible headless and plainly lit on a phone, which read as "the outside
+  is not dark" and "I can see the house next door" (maintainer 2026-09-09).
+  The doorway spill is untouched: light with a clear line through the
+  opening never met the floor. Outdoors `inRoom` is 1.
 - **The outside is DRAWN AT ZERO AMBIENT — never skipped** (the maintainer's
   original idea: the torch reveals the outdoors through the doorway before
   you step out; point lights from outside are off). Skipping cost three bugs
@@ -183,6 +192,17 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     door is outside the room at my level → drawn, torch-lightable). Gate:
     section 7 (cave only — needs a populated mountain overhead; turns
     "disable aggro" ON, else the gate gets killed mid-measurement).
+    - **They FADE WITH THE DEBRIS, never pop** (`cutFade`): a body above the
+      cut wears exactly the opacity of the terrain under it — the debris
+      alpha while the crossfade runs (sprite, shadow, lit copy, fog
+      silhouette, drop), parked at ≤0.004 as before. A binary `aboveCut`
+      hid the monster on the flip frame, before the mountain top had begun
+      to dissolve (maintainer 2026-09-09: "monsters still pop").
+    - **The chrome fades on the GRADE**: a body outside my room keeps its hp
+      bar/name/Lv and a remote player their name tag and bubble at alpha
+      `1 − indoorGrade()` — darkening with the body under them, gone when
+      the grade lands. A tag that blinks off a frame after the sill is its
+      own pop.
   - **Anything drawn ABOVE the darkness overlay must gate itself** — zero
     ambient can't touch depth 900_001+. `indoorOutside(fx,fy,z)` is the
     predicate (NOT a visibility test; bodies are always drawn): name labels

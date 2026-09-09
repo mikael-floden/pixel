@@ -3375,7 +3375,9 @@ height reads per thing per frame.
   - **A SEALED-ROOM fire is INDOOR-ONLY** — lit to the degree I am in its room
     (`indoorMix`), never from outside: the LOS march's 0.22 bounce floor
     otherwise pours 22% through house walls at night and its halo stamped an
-    orange blob on the roof. `sealed` is probed per source at the 4-NEIGHBOURS
+    orange blob on the roof. The same floor is ROOM-GATED from inside (× the
+    shader's `inRoom`; CPU twin alike) — or the hearth lit the street and the
+    neighbour's roof through the walls while you stood at it (INDOOR.md). `sealed` is probed per source at the 4-NEIGHBOURS
     via `roomVerdictAt` (the prop's own cell is blocked and never in the roof
     set); a fire under a BRIDGE stays unsealed; stamps take the same gate
     (`sealedEmissiveCells`). The indoor ROOM FILTER applies to emissive lights
