@@ -1,0 +1,141 @@
+{
+  "id": "eye_bat",
+  "name": "Glareling",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It watches for something bigger. What it sees, the something bigger sees too.",
+  "biome": [
+    "black_rock",
+    "grey_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy floating eyeball monster, a single large bloodshot eyeball with a green iris, two small leathery bat wings folded at its sides, thin trailing nerve tendrils beneath it, and a tiny fanged mouth.",
+  "size": [
+    64,
+    64
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "eye_bat/rotations/south.webp",
+    "south-east": "eye_bat/rotations/south-east.webp",
+    "east": "eye_bat/rotations/east.webp",
+    "north-east": "eye_bat/rotations/north-east.webp",
+    "north": "eye_bat/rotations/north.webp",
+    "north-west": "eye_bat/rotations/north-west.webp",
+    "west": "eye_bat/rotations/west.webp",
+    "south-west": "eye_bat/rotations/south-west.webp"
+  },
+  "sheet": "eye_bat/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "1c245303-0d67-44ac-a7c6-ae619fdf9401",
+  "seed": 1101437990,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:41:50+00:00",
+  "elapsed_s": 206.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.728,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.79,
+        "bbox": [
+          3,
+          6,
+          61,
+          58
+        ],
+        "fill": 0.736,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.753,
+        "bbox": [
+          14,
+          4,
+          49,
+          59
+        ],
+        "fill": 0.47,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.743,
+        "bbox": [
+          15,
+          4,
+          50,
+          59
+        ],
+        "fill": 0.47,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.728,
+        "bbox": [
+          3,
+          6,
+          61,
+          56
+        ],
+        "fill": 0.708,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.793,
+        "bbox": [
+          8,
+          4,
+          56,
+          56
+        ],
+        "fill": 0.609,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.764,
+        "bbox": [
+          8,
+          4,
+          52,
+          58
+        ],
+        "fill": 0.58,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.747,
+        "bbox": [
+          12,
+          4,
+          56,
+          58
+        ],
+        "fill": 0.58,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.795,
+        "bbox": [
+          9,
+          4,
+          56,
+          57
+        ],
+        "fill": 0.608,
+        "touches_edge": false
+      }
+    }
+  }
+}
