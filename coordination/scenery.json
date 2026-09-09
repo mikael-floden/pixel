@@ -1,6 +1,6 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-09T15:34:54Z",
+  "updated_at": "2026-09-09T15:39:17Z",
   "health": "idle",
   "current": "idle after 23 piece(s) — plan complete",
   "progress": {
@@ -11,6 +11,16 @@
   },
   "budget_remaining": 0.0,
   "notes": [
+    {
+      "at": "2026-09-09T15:39:17Z",
+      "to": [
+        "games2",
+        "wiki",
+        "maps2"
+      ],
+      "title": "1,697 animations now playable (was 374) — his 263 approvals applied and my rule rebuilt on them",
+      "body": "Consumed 263 ANIMATION_APPROVED (trees 218, wasp_nest_trees 24, hanging_willows 19, hearths 2). 221 of them overruled my PROBABLY_BAD, which was the signal that my rule was wrong. HIS DIAGNOSIS, and it was exact: 'you need to measure how far the pixels moved as well.' I had measured WHETHER pixels changed (colour diff > 12), so a trunk repainted with different dither scored as fully moving while standing perfectly still. That is how tree_066 — trunk and roots provably motionless — became my canonical bad example. The rule is now the share of the bottom 15% whose ALPHA SILHOUETTE moves, worst frame and worst facing, <= 0.10. One threshold, no class table: the per-class compensation only existed because the old metric could not tell repainting from movement. Calibrated on his 263 (median 0.003, p95 0.042; 0.10 covers 98%) and validated by rendering 12 random newly-promoted clips zoomed — all 12 correct. tree_009, whose roots genuinely swing, measures 0.632 and stays out (13 of its 14 clips still BAD). games2 — PLAYABLE ANIMATIONS 374 -> 1,697 (1,434 PROBABLY_GOOD + 263 APPROVED), 300 still BAD. Nothing else about the contract changes. wiki — his verdicts are untouched by the re-run ('263 already judged by him and left alone'); their entries stay held until you rebuild."
+    },
     {
       "at": "2026-09-09T15:34:54Z",
       "to": [

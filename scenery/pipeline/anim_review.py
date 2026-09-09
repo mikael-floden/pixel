@@ -10,33 +10,30 @@ promotes to ANIMATION_APPROVED or ANIMATION_REDO in the wiki. The game switches
 animation on for PROBABLY_GOOD and APPROVED; REDO shows no animation until the
 clip is regenerated with less movement, and then it comes back here.
 
-WHY THIS IS NOT ONE THRESHOLD. Measured over all 2,327 clips: how MUCH moves
-says nothing. tree_040 (crown only, right) redraws 74% of its pixels, exactly
-like tree_066 (whole trunk, wrong). The fraction that stays still is worse than
-useless — his ideal cases, tree_083 and tree_022, are the LOWEST at 0.30 and
-0.45, below cairn_026 which is wrong. The same amount of movement means opposite
-things depending on what the object IS: a tree's crown may move, a stack of
-stones may not.
+MEASURE HOW FAR THE OUTLINE MOVES, NOT WHETHER PIXELS CHANGED. His correction
+(2026-09-10): "you need to measure how far the pixels moved as well." A trunk
+repainted with different dither changes every pixel and moves nothing; that is
+invisible to the eye and must be invisible to the test.
 
-So the test is per CLASS, and the numbers only ask whether the movement stayed
-where that class allows:
+So `base` is the share of the object's bottom 15% whose SILHOUETTE changes —
+alpha, not colour. One threshold, every class: base <= 0.10.
 
-  foliage  the crown IS the animation; only the footing must hold  base<=0.12
-  fire     the flame may move, the body may not                    base<=0.08, still>=0.55
-  water    the water may move, the stonework may not               base<=0.08, still>=0.50
-  rigid    nothing may move but a small emitter (a glowing seam)   base<=0.03, still>=0.85
+CALIBRATED ON HIS 263 APPROVALS, which is the only ground truth there is. They
+sit at median 0.003, p90 0.028, p95 0.042; 0.10 covers 98% of them. tree_009,
+whose roots genuinely swing, is at 0.632 and stays out. A colour-based version
+of this rejected 221 of the 263 he then approved — it scored a still trunk as
+fully moving, which is how tree_066 (trunk and roots perfectly still under the
+overlay) came to be my canonical bad example.
 
-`base` is the share of the object's bottom 15% that CHANGES COLOUR between
-frames — not alpha, which cannot see a trunk repainted in place and scored
-tree_040 and tree_066 identically at ~0.0. `still` is the share of the object
-never touched. Both taken at the worst frame and worst direction, because the
-game may draw any facing.
+The earlier per-class table is gone with it. It existed to compensate for a
+metric that could not tell repainting from movement; measuring the outline
+needs no such compensation, and a rigid piece whose stones are merely repainted
+now scores ~0 by itself, which is correct.
 
-Thresholds calibrated by eye on zoomed frame-difference renders, not chosen:
-tree_083/tree_022 (right) sit at 0.098/0.089, cairn_026 (wrong) at 0.067 rigid,
-torch_post_018 (right) at 0.000/0.72 fire. A thumbnail is not enough — three
-pieces read as wrong at thumbnail size and right at full size (hearth_900,
-cairn_016 twice), so every calibration here was made zoomed.
+Verified before shipping, since the numbers had misled me twice: 12 randomly
+sampled newly-promoted clips rendered zoomed with a silhouette-only overlay,
+all 12 right — canopy over a still trunk, a lantern on a still stand, runes on
+a still stone.
 
     python3 scenery/pipeline/anim_review.py            # report
     python3 scenery/pipeline/anim_review.py --write    # stamp the manifests
@@ -55,26 +52,7 @@ MINE = ("ANIMATION_PROBABLY_GOOD", "ANIMATION_PROBABLY_BAD")
 HIS = ("ANIMATION_APPROVED", "ANIMATION_REDO")
 STATES = MINE + HIS
 
-FOLIAGE = set("""ancient_trees briar_thickets bushes cattail_clumps cliff_mosses cliff_roots
- cliff_shrubs cliff_vines cup_fungi ferns flower_stands flower_trellises frost_flowers
- giant_mushrooms grass_tufts hanging_baskets hanging_willows haystacks honey_trees hop_poles
- ivy_posts maypoles moss_clumps mushrooms overgrown_archways puffballs reed_beds sheaf_poles
- toadstool_rings trailing_planters trees wasp_nest_trees water_lily_clumps wisteria_snags""".split())
-FIRE = set("""anvils beacons beached_rowboats beds bell_posts braziers campfire carts
- cauldron_camps chairs_and_benches charcoal_kilns cupboards_and_shelves fences fish_drying_racks
- flame_niches graves hearths house_clutter lantern_posts lantern_stands market_stalls
- offering_tables scarecrows signposts story_posts streetlights tables torch_posts wall_hangings
- washing_lines wayside_shrines windmills""".split())
-WATER = set("""wells spring_basins stone_fountains hot_springs moon_pools frozen_springs
- water_pumps waterwheels""".split())
-RULES = {"foliage": (0.12, 0.00), "fire": (0.08, 0.55),
-         "water": (0.08, 0.50), "rigid": (0.03, 0.85)}
-
-
-def class_of(rel):
-    g = rel.split("/", 1)[0]
-    return ("foliage" if g in FOLIAGE else "fire" if g in FIRE
-            else "water" if g in WATER else "rigid")
+BASE_MAX = 0.10        # share of the footing's OUTLINE that may move
 
 
 def clips(man):
@@ -102,44 +80,45 @@ def clips(man):
 
 
 def measure(fps):
-    """(base, still) at the worst frame — base is COLOUR change in the bottom
-    15%, not alpha; alpha cannot see a trunk repainted in place."""
-    ims = [np.asarray(Image.open(os.path.join(factory.ROOT, p)).convert("RGBA"),
-                      dtype=np.int16) for p in fps]
-    if len({im.shape for im in ims}) != 1:
-        return None
-    a0 = ims[0][..., 3] > 8
-    union = a0.copy()
-    moved = np.zeros(a0.shape, bool)
-    for im in ims[1:]:
-        union |= im[..., 3] > 8
-        moved |= np.abs(im - ims[0]).sum(axis=2) > 12
+    """Worst-frame share of the footing whose SILHOUETTE moves.
+
+    Alpha, deliberately: colour change cannot tell a swaying trunk from a still
+    one that was re-dithered, and scoring the second as movement is what
+    rejected 221 clips he then approved."""
+    masks = []
+    shape = None
+    for p in fps:
+        with Image.open(os.path.join(factory.ROOT, p)) as im:
+            a = np.asarray(im.convert("RGBA"))[..., 3] > 8
+        if shape is None:
+            shape = a.shape
+        elif a.shape != shape:
+            return None
+        masks.append(a)
+    union = masks[0].copy()
+    for m in masks[1:]:
+        union |= m
     ys = np.where(union.any(axis=1))[0]
     if not len(ys):
         return None
     y0, y1 = int(ys.min()), int(ys.max())
     b = y1 - max(3, int(round((y1 - y0 + 1) * 0.15))) + 1
-    band = a0[b:y1 + 1]
-    base = float((moved[b:y1 + 1] & band).sum() / max(int(band.sum()), 1))
-    still = float(((~moved) & a0).sum() / max(int(a0.sum()), 1))
-    return base, still
+    m0 = masks[0][b:y1 + 1]
+    denom = max(int(m0.sum()), 1)
+    return max(float(np.logical_xor(m0, m[b:y1 + 1]).sum() / denom) for m in masks[1:])
 
 
 def judge(rel, man):
-    """{(state, name): (verdict, cls, base, still)} — worst direction wins,
-    because the game may draw any facing."""
-    worst = collections.defaultdict(lambda: (0.0, 1.0))
+    """{(state, name): (verdict, base)} — worst direction wins, because the game
+    may draw any facing."""
+    worst = collections.defaultdict(float)
     for state, name, _d, fps in clips(man):
-        m = measure(fps)
-        if m is None:
+        b = measure(fps)
+        if b is None:
             continue
-        b, s = m
-        pb, ps = worst[(state, name)]
-        worst[(state, name)] = (max(pb, b), min(ps, s))
-    cls = class_of(rel)
-    mb, ms = RULES[cls]
-    return {k: (MINE[0] if (b <= mb and s >= ms) else MINE[1], cls, round(b, 4), round(s, 3))
-            for k, (b, s) in worst.items()}
+        worst[(state, name)] = max(worst[(state, name)], b)
+    return {k: (MINE[0] if b <= BASE_MAX else MINE[1], round(b, 4))
+            for k, b in worst.items()}
 
 
 def stamp(write=False):
@@ -150,7 +129,7 @@ def stamp(write=False):
         if not v:
             continue
         dirty = False
-        for (state, name), (verdict, cls, b, s) in v.items():
+        for (state, name), (verdict, b) in v.items():
             c = man if state is None else man["states"][state]
             a = (c.get("animations") or {}).get(name)
             if not isinstance(a, dict):
@@ -161,7 +140,7 @@ def stamp(write=False):
                 tally[a["review"]] += 1; kept += 1; continue
             if a.get("review") != verdict:
                 a["review"] = verdict
-                a["review_metrics"] = {"class": cls, "base": b, "still": s}
+                a["review_metrics"] = {"base_outline": b}
                 dirty = True
             tally[verdict] += 1
         if dirty and write:

@@ -357,6 +357,17 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   override in the manifest's `light.kind`; `light.py --kinds` stamps the block
   and `--check` fails if any is missing. One `kind` per piece, read from its
   first LIT state — if a piece ever needs one per state, that is the extension.
+- **Animation review** — `review` on every animation, one of
+  ANIMATION_PROBABLY_GOOD / _BAD (this domain's) or ANIMATION_APPROVED /
+  ANIMATION_REDO (his, from `live/tuning/scenery_animation.json`, never
+  overwritten). The game plays GOOD and APPROVED and shows nothing for REDO.
+  The test is **how far the outline moves**, not whether pixels changed: the
+  share of the piece's bottom 15% whose ALPHA silhouette shifts, worst frame
+  and worst facing, `<= 0.10`. A trunk repainted with different dither changes
+  every pixel and moves nothing. (Calibrated on his 263 approvals — median
+  0.003, p95 0.042, 0.10 covers 98% — and tree_009, whose roots genuinely
+  swing, sits at 0.632 and stays out. A colour-based version rejected 221 of
+  the 263 he then approved; the per-class table it needed is gone with it.)
 - **Per-frame light on LIT animations** — `light_frames` beside each
   direction's `frame_paths` (windows excluded), one `{intensity, dx, dy}` per
   frame in frame order. `intensity` is relative to the clip's own mean, so
