@@ -186,12 +186,14 @@ def _iou(a, b):
     return (a & b).sum() / max(1, (a | b).sum())
 
 
-def qa_clip(cid, state, d, frames):
+def qa_clip(cid, state, d, frames, pinned=None):
     """Machine verdict for one direction's clip. See module docstring."""
     band = STATES[state]["band"]
     reasons = []
     spec = STATES[state]
-    want = spec["frames"] + (1 if spec.get("keep_first", True) else 0)
+    if pinned is None:
+        pinned = spec.get("keep_first", True)
+    want = spec["frames"] + (1 if pinned else 0)
     if len(frames) != want:
         reasons.append(f"{len(frames)} frames, expected {want}")
     if not frames:
@@ -207,7 +209,7 @@ def qa_clip(cid, state, d, frames):
     loop = float((ops[0] ^ ops[-1]).sum() / sil)
     b0 = _sil(base)
     pin = _iou(b0, ops[0])
-    if spec.get("keep_first", True) and pin < 0.98:
+    if pinned and pin < 0.98:
         # frame 0 must be the pinned base
         reasons.append(f"frame 0 is not the base rotation (IoU {pin:.2f})")
     xs = [np.argwhere(o)[:, 1].mean() if o.any() else 0 for o in ops]
@@ -247,7 +249,7 @@ def qa_clip(cid, state, d, frames):
         reasons.append(f"drifts {drift:.1f} px — eyeball it"); status = "warn" if status != "fail" else status
     if "loop_max" in band and loop > band["loop_max"]:
         reasons.append(f"loop does not close (last vs first {loop:.3f})"); status = "fail"
-    if "loop_ratio_pass" in band:
+    if "loop_ratio_pass" in band and not pinned:
         if loop_ratio > band["loop_ratio_warn"]:
             reasons.append(f"last→first hand-off is {loop_ratio:.1f}× a normal step — the loop hitches"); status = "fail"
         elif loop_ratio > band["loop_ratio_pass"]:
@@ -312,7 +314,7 @@ def mirror_direction(cid, state, d):
     return flipped
 
 
-def generate_state(client, cid, state, dirs, version, verbose=True):
+def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
     """Start one job per direction, wait, download the LAST take of each,
     QA, save, then mirror the three western directions from their eastern
     twins. Returns {direction: qa}."""
@@ -322,10 +324,11 @@ def generate_state(client, cid, state, dirs, version, verbose=True):
     jobs = {}
     for d in dirs:
         seed = seed_for(cid, state, d, version)
-        end = rotation(cid, d) if spec["pin_end"] else None
+        pinned = spec["pin_end"] or pin
+        end = rotation(cid, d) if pinned else None
         job = client.animate_v3(man["pixellab_id"], state, rec["action"], d,
                                 frame_count=spec["frames"], end_frame=end, seed=seed,
-                                keep_first=spec.get("keep_first", True))
+                                keep_first=spec.get("keep_first", True) or pin)
         jobs[d] = job
         if verbose:
             print(f"  {cid:16s} {state} {d:11s} job {job} seed {seed}", flush=True)
@@ -335,10 +338,10 @@ def generate_state(client, cid, state, dirs, version, verbose=True):
                 client.wait_job(job, timeout=900)
             except PixelLabError as e:
                 print(f"  {cid} {d}: {e}")
-    return collect_state(client, cid, state, dirs, version, verbose)
+    return collect_state(client, cid, state, dirs, version, verbose, pin=pin)
 
 
-def collect_state(client, cid, state, dirs, version, verbose=True):
+def collect_state(client, cid, state, dirs, version, verbose=True, pin=False):
     """Download the LAST take of each direction from PixelLab, align it to the
     base canvas, QA, save, mirror. Used after generation and by `fetch`."""
     man = cand.load_manifest(cid)
@@ -356,9 +359,13 @@ def collect_state(client, cid, state, dirs, version, verbose=True):
         if len(frames) != len(urls):
             out[d] = {"status": "fail", "reasons": [f"downloaded {len(frames)}/{len(urls)} frames"]}
             continue
-        frames, pad = align_to_base(frames, rotation(cid, d), pinned=spec.get("keep_first", True))
+        pinned = spec.get("keep_first", True) or pin
+        frames, pad = align_to_base(frames, rotation(cid, d), pinned=pinned)
         save_frames(cid, state, d, frames)
-        qa = qa_clip(cid, state, d, frames)
+        qa = qa_clip(cid, state, d, frames, pinned=pinned)
+        if pin:
+            qa["pinned"] = True
+            qa["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
         qa.update({"sub": client.sub_id(urls[0]), "group": group, "takes": len(cands), "version": version, "mirrored": False,
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         rec["directions"][d] = qa
@@ -424,7 +431,7 @@ def cmd_state(args, state):
                 except PixelLabError as e:
                     print(f"  {cid} {d}: old take not deleted ({e})")
         try:
-            generate_state(client, cid, state, dirs, version)
+            generate_state(client, cid, state, dirs, version, pin=bool(getattr(args, "pin", False)))
         except PixelLabError as e:
             print(f"  {cid}: FAILED — {e}", flush=True)
         cand.rebuild_index(cfg)
@@ -484,7 +491,10 @@ def cmd_requal(args):
             frames = load_frames(cid, args.state, d)
             if not frames:
                 continue
-            new = qa_clip(cid, args.state, d, frames)
+            new = qa_clip(cid, args.state, d, frames, pinned=(True if q.get("pinned") else None))
+            if q.get("pinned"):
+                new["pinned"] = True
+                new["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
             keep = {k: q[k] for k in ("sub", "group", "takes", "version", "mirrored", "generated_at") if k in q}
             rec["directions"][d] = {**new, **keep}
             for md, src in MIRRORED.items():
@@ -529,6 +539,7 @@ def main():
         g.set_defaults(func=lambda a, st=st: cmd_state(a, st))
     r = sub.add_parser("redo"); r.add_argument("--state", default="idle"); r.add_argument("--only", required=True)
     r.add_argument("--dirs", required=True); r.add_argument("--min-usd", type=float, default=MIN_USD)
+    r.add_argument("--pin", action="store_true", help="pin start+end to the base (the maintainer's fallback for a clip that never loops)")
     r.set_defaults(func=lambda a: cmd_state(a, a.state), dry_run=False)
     f = sub.add_parser("fetch", help="re-download + re-QA the last takes already on PixelLab (no generation)")
     f.add_argument("--state", default="idle"); f.add_argument("--only", required=True); f.add_argument("--dirs")
