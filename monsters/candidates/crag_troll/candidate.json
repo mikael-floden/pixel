@@ -1,0 +1,142 @@
+{
+  "id": "crag_troll",
+  "name": "Cragtroll",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It sleeps as a hillside and wakes as a landslide. Travellers who camp on it are the reason it wakes.",
+  "biome": [
+    "grey_stone",
+    "snow",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Hulking fantasy mountain troll shown full body from head to feet, thick warty grey-green skin, a heavy brow and underbite with two lower tusks, a broad hunched back with lichen and small boulders growing on it, huge hands dragging a rough stone club, and wide flat feet.",
+  "size": [
+    232,
+    232
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "crag_troll/rotations/south.webp",
+    "south-east": "crag_troll/rotations/south-east.webp",
+    "east": "crag_troll/rotations/east.webp",
+    "north-east": "crag_troll/rotations/north-east.webp",
+    "north": "crag_troll/rotations/north.webp",
+    "north-west": "crag_troll/rotations/north-west.webp",
+    "west": "crag_troll/rotations/west.webp",
+    "south-west": "crag_troll/rotations/south-west.webp"
+  },
+  "sheet": "crag_troll/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "63fa36e3-414f-4476-91b8-9527ddd1a011",
+  "seed": 2106374195,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:05:45+00:00",
+  "elapsed_s": 169.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.621,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.621,
+        "bbox": [
+          30,
+          17,
+          220,
+          216
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.675,
+        "bbox": [
+          56,
+          12,
+          161,
+          223
+        ],
+        "fill": 0.412,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.673,
+        "bbox": [
+          69,
+          12,
+          175,
+          223
+        ],
+        "fill": 0.416,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.625,
+        "bbox": [
+          13,
+          13,
+          200,
+          215
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.682,
+        "bbox": [
+          46,
+          12,
+          218,
+          220
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.631,
+        "bbox": [
+          46,
+          14,
+          178,
+          220
+        ],
+        "fill": 0.505,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.633,
+        "bbox": [
+          12,
+          14,
+          185,
+          220
+        ],
+        "fill": 0.662,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.678,
+        "bbox": [
+          37,
+          11,
+          179,
+          220
+        ],
+        "fill": 0.551,
+        "touches_edge": false
+      }
+    }
+  }
+}

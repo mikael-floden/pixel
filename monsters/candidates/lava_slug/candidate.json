@@ -1,0 +1,143 @@
+{
+  "id": "lava_slug",
+  "name": "Magmaslug",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It moves a hand's width a day and melts the road behind it. Patient things kill the most travellers.",
+  "biome": [
+    "lava",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Fat fantasy slug with a body of dark cooled rock split by glowing orange magma seams, two thick eyestalks with ember eyes, a trail of molten drips beneath it, and small vents on its back puffing smoke.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "lava_slug/rotations/south.webp",
+    "south-east": "lava_slug/rotations/south-east.webp",
+    "east": "lava_slug/rotations/east.webp",
+    "north-east": "lava_slug/rotations/north-east.webp",
+    "north": "lava_slug/rotations/north.webp",
+    "north-west": "lava_slug/rotations/north-west.webp",
+    "west": "lava_slug/rotations/west.webp",
+    "south-west": "lava_slug/rotations/south-west.webp"
+  },
+  "sheet": "lava_slug/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f19a102b-de21-4da3-9e69-f2b61431b4fb",
+  "seed": 1336685778,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:05:56+00:00",
+  "elapsed_s": 279.7,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.747,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.747,
+        "bbox": [
+          5,
+          2,
+          83,
+          83
+        ],
+        "fill": 0.816,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.785,
+        "bbox": [
+          10,
+          8,
+          82,
+          84
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.804,
+        "bbox": [
+          5,
+          3,
+          82,
+          85
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.798,
+        "bbox": [
+          9,
+          4,
+          80,
+          83
+        ],
+        "fill": 0.724,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.821,
+        "bbox": [
+          9,
+          0,
+          75,
+          82
+        ],
+        "fill": 0.699,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.807,
+        "bbox": [
+          4,
+          10,
+          78,
+          83
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.81,
+        "bbox": [
+          9,
+          3,
+          81,
+          84
+        ],
+        "fill": 0.753,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.813,
+        "bbox": [
+          4,
+          4,
+          83,
+          82
+        ],
+        "fill": 0.796,
+        "touches_edge": false
+      }
+    }
+  }
+}
