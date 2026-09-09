@@ -601,6 +601,280 @@
         "west": "moss_snail/animations/walk__west.webp",
         "north-west": "moss_snail/animations/walk__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.0742,
+          "step_max": 0.1055,
+          "drift": 1.11,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.11,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.074 outside the calm band 0.08–0.9 — eyeball it"
+          ],
+          "sub": "1a0e3dd3-a836-4777-bcb3-d254fd25effb",
+          "group": "5582c61b-61e0-424f-96b9-10b575c68dcb",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:54:28+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.0705,
+          "step_max": 0.0984,
+          "drift": 0.92,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.1,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.070 outside the calm band 0.08–0.9 — eyeball it"
+          ],
+          "sub": "b6c5cee8-7499-4c47-9235-5499175835e7",
+          "group": "3dc1e798-1161-45c5-bb71-a596fd700681",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:54:28+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.089,
+          "step_max": 0.1165,
+          "drift": 0.6,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.3,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "dafb2859-9088-4f9f-aeec-537339426be1",
+          "group": "11cf494b-60db-436d-8c3f-7b3d19148097",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:54:29+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.125,
+          "step_max": 0.158,
+          "drift": 2.0,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.39,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "75176a4e-df50-408c-81a1-23dccae44bed",
+          "group": "7d3f2251-7af6-4bec-9a11-869cfac0d085",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:54:29+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0909,
+          "step_max": 0.124,
+          "drift": 1.29,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.3,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "cc2ad202-9b80-4bb9-8077-0438ae4cab29",
+          "group": "32465967-adab-4736-9df4-1cdd6189010d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:54:30+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.0705,
+          "step_max": 0.0984,
+          "drift": 0.92,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.1,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [
+            "motion 0.070 outside the calm band 0.08–0.9 — eyeball it"
+          ],
+          "sub": "b6c5cee8-7499-4c47-9235-5499175835e7",
+          "group": "3dc1e798-1161-45c5-bb71-a596fd700681",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:54:28+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.089,
+          "step_max": 0.1165,
+          "drift": 0.6,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.3,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "dafb2859-9088-4f9f-aeec-537339426be1",
+          "group": "11cf494b-60db-436d-8c3f-7b3d19148097",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:54:29+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.125,
+          "step_max": 0.158,
+          "drift": 2.0,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.39,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            40,
+            40
+          ],
+          "reasons": [],
+          "sub": "75176a4e-df50-408c-81a1-23dccae44bed",
+          "group": "7d3f2251-7af6-4bec-9a11-869cfac0d085",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:54:29+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "rears its head up and butts forward with its shell in one quick shove, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "moss_snail/animations/attack/south/00.webp",
+          "moss_snail/animations/attack/south/01.webp",
+          "moss_snail/animations/attack/south/02.webp",
+          "moss_snail/animations/attack/south/03.webp",
+          "moss_snail/animations/attack/south/04.webp",
+          "moss_snail/animations/attack/south/05.webp",
+          "moss_snail/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "moss_snail/animations/attack/south-east/00.webp",
+          "moss_snail/animations/attack/south-east/01.webp",
+          "moss_snail/animations/attack/south-east/02.webp",
+          "moss_snail/animations/attack/south-east/03.webp",
+          "moss_snail/animations/attack/south-east/04.webp",
+          "moss_snail/animations/attack/south-east/05.webp",
+          "moss_snail/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "moss_snail/animations/attack/east/00.webp",
+          "moss_snail/animations/attack/east/01.webp",
+          "moss_snail/animations/attack/east/02.webp",
+          "moss_snail/animations/attack/east/03.webp",
+          "moss_snail/animations/attack/east/04.webp",
+          "moss_snail/animations/attack/east/05.webp",
+          "moss_snail/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "moss_snail/animations/attack/north-east/00.webp",
+          "moss_snail/animations/attack/north-east/01.webp",
+          "moss_snail/animations/attack/north-east/02.webp",
+          "moss_snail/animations/attack/north-east/03.webp",
+          "moss_snail/animations/attack/north-east/04.webp",
+          "moss_snail/animations/attack/north-east/05.webp",
+          "moss_snail/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "moss_snail/animations/attack/north/00.webp",
+          "moss_snail/animations/attack/north/01.webp",
+          "moss_snail/animations/attack/north/02.webp",
+          "moss_snail/animations/attack/north/03.webp",
+          "moss_snail/animations/attack/north/04.webp",
+          "moss_snail/animations/attack/north/05.webp",
+          "moss_snail/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "moss_snail/animations/attack/south-west/00.webp",
+          "moss_snail/animations/attack/south-west/01.webp",
+          "moss_snail/animations/attack/south-west/02.webp",
+          "moss_snail/animations/attack/south-west/03.webp",
+          "moss_snail/animations/attack/south-west/04.webp",
+          "moss_snail/animations/attack/south-west/05.webp",
+          "moss_snail/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "moss_snail/animations/attack/west/00.webp",
+          "moss_snail/animations/attack/west/01.webp",
+          "moss_snail/animations/attack/west/02.webp",
+          "moss_snail/animations/attack/west/03.webp",
+          "moss_snail/animations/attack/west/04.webp",
+          "moss_snail/animations/attack/west/05.webp",
+          "moss_snail/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "moss_snail/animations/attack/north-west/00.webp",
+          "moss_snail/animations/attack/north-west/01.webp",
+          "moss_snail/animations/attack/north-west/02.webp",
+          "moss_snail/animations/attack/north-west/03.webp",
+          "moss_snail/animations/attack/north-west/04.webp",
+          "moss_snail/animations/attack/north-west/05.webp",
+          "moss_snail/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "moss_snail/animations/attack__south.webp",
+        "south-east": "moss_snail/animations/attack__south-east.webp",
+        "east": "moss_snail/animations/attack__east.webp",
+        "north-east": "moss_snail/animations/attack__north-east.webp",
+        "north": "moss_snail/animations/attack__north.webp",
+        "south-west": "moss_snail/animations/attack__south-west.webp",
+        "west": "moss_snail/animations/attack__west.webp",
+        "north-west": "moss_snail/animations/attack__north-west.webp"
+      }
     }
   }
 }

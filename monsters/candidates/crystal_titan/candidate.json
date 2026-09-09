@@ -362,12 +362,12 @@
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.0441,
-          "step_max": 0.0541,
-          "drift": 2.86,
+          "step_mean": 0.0331,
+          "step_max": 0.0516,
+          "drift": 1.69,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.27,
+          "travel": 0.31,
           "pin": 1.0,
           "pad": 0,
           "canvas": [
@@ -375,16 +375,16 @@
             232
           ],
           "reasons": [
-            "frozen: silhouette moves 0.044 per frame",
+            "frozen: silhouette moves 0.033 per frame",
             "PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)"
           ],
           "pinned": true,
-          "sub": "6c98c5f3-32fc-4af8-838f-93b918e432ce",
-          "group": "17de5659-2411-49ec-9656-2803c4fbca02",
+          "sub": "aa736786-0216-4bca-965a-0317a05c9169",
+          "group": "2eb63817-1002-4d8c-bc66-5c67d2238fd3",
           "takes": 3,
-          "version": 4,
+          "version": 5,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:49:52+00:00"
+          "generated_at": "2026-09-09T21:54:15+00:00"
         },
         "east": {
           "status": "pass",
