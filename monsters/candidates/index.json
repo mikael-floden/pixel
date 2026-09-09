@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T17:43:57+00:00",
+  "generated_at": "2026-09-09T17:44:30+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 10,
+  "count": 12,
   "candidates": [
     {
       "id": "lantern_bat",
@@ -407,6 +407,137 @@
       },
       "review": "pending",
       "generated_at": "2026-09-09T17:41:07+00:00"
+    },
+    {
+      "id": "iron_beetle",
+      "name": "Ironclack",
+      "tier": "mid",
+      "lore": "Forged, or grown — the smiths cannot agree. Its plates ring like a bell when struck, and the sound calls the others.",
+      "biome": [
+        "light_soil",
+        "grey_stone",
+        "lava"
+      ],
+      "items": [
+        "plated beetle"
+      ],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "pixellab_id": "9b480878-3c60-4f4e-9a6b-ad7b0a51e0d0",
+      "version": 1,
+      "sheet": "iron_beetle/sheet.webp",
+      "rotations": {
+        "south": "iron_beetle/rotations/south.webp",
+        "south-east": "iron_beetle/rotations/south-east.webp",
+        "east": "iron_beetle/rotations/east.webp",
+        "north-east": "iron_beetle/rotations/north-east.webp",
+        "north": "iron_beetle/rotations/north.webp",
+        "north-west": "iron_beetle/rotations/north-west.webp",
+        "west": "iron_beetle/rotations/west.webp",
+        "south-west": "iron_beetle/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.718,
+        "reasons": [
+          "west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.718,
+            "bbox": [
+              2,
+              3,
+              86,
+              85
+            ],
+            "fill": 0.889,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.76,
+            "bbox": [
+              0,
+              6,
+              84,
+              81
+            ],
+            "fill": 0.814,
+            "touches_edge": true
+          },
+          "east": {
+            "run1": 0.761,
+            "bbox": [
+              5,
+              5,
+              87,
+              82
+            ],
+            "fill": 0.815,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.76,
+            "bbox": [
+              7,
+              6,
+              80,
+              86
+            ],
+            "fill": 0.754,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.778,
+            "bbox": [
+              7,
+              2,
+              86,
+              86
+            ],
+            "fill": 0.857,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.759,
+            "bbox": [
+              7,
+              4,
+              83,
+              83
+            ],
+            "fill": 0.775,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.765,
+            "bbox": [
+              8,
+              5,
+              83,
+              83
+            ],
+            "fill": 0.755,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.773,
+            "bbox": [
+              5,
+              3,
+              83,
+              86
+            ],
+            "fill": 0.836,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "generated_at": "2026-09-09T17:44:26+00:00"
     },
     {
       "id": "root_forager",
@@ -1303,6 +1434,132 @@
       },
       "review": "pending",
       "generated_at": "2026-09-09T17:40:26+00:00"
+    },
+    {
+      "id": "gloom_cap",
+      "name": "Gloomcap",
+      "tier": "mid",
+      "lore": "It walks when the woods are dark and stands very still when they are not. The spores smell sweet, which is how it wins.",
+      "biome": [
+        "dark_mud",
+        "grass"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "mannequin",
+      "pixellab_id": "be5ad828-7953-431b-ba68-86be3c0c744a",
+      "version": 1,
+      "sheet": "gloom_cap/sheet.webp",
+      "rotations": {
+        "south": "gloom_cap/rotations/south.webp",
+        "south-east": "gloom_cap/rotations/south-east.webp",
+        "east": "gloom_cap/rotations/east.webp",
+        "north-east": "gloom_cap/rotations/north-east.webp",
+        "north": "gloom_cap/rotations/north.webp",
+        "north-west": "gloom_cap/rotations/north-west.webp",
+        "west": "gloom_cap/rotations/west.webp",
+        "south-west": "gloom_cap/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.675,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.732,
+            "bbox": [
+              6,
+              4,
+              82,
+              84
+            ],
+            "fill": 0.785,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.745,
+            "bbox": [
+              11,
+              5,
+              73,
+              85
+            ],
+            "fill": 0.64,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.755,
+            "bbox": [
+              15,
+              5,
+              76,
+              85
+            ],
+            "fill": 0.63,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.675,
+            "bbox": [
+              9,
+              4,
+              79,
+              83
+            ],
+            "fill": 0.714,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.786,
+            "bbox": [
+              10,
+              4,
+              81,
+              85
+            ],
+            "fill": 0.743,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.69,
+            "bbox": [
+              10,
+              4,
+              77,
+              84
+            ],
+            "fill": 0.692,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.695,
+            "bbox": [
+              11,
+              4,
+              78,
+              84
+            ],
+            "fill": 0.692,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.788,
+            "bbox": [
+              7,
+              4,
+              78,
+              85
+            ],
+            "fill": 0.743,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "generated_at": "2026-09-09T17:44:30+00:00"
     }
   ]
 }
