@@ -17,8 +17,8 @@
   "license": "CC0-1.0",
   "status": "complete",
   "quality": "aaa",
-  "file": "combat/magic_cast/magic_cast__take01.wav",
-  "format": "wav",
+  "file": "combat/magic_cast/magic_cast__take01.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 33906,
     "duration_seconds": 0.706,
@@ -30,8 +30,8 @@
     "delivered": "mp3"
   },
   "takes": [
-    "combat/magic_cast/magic_cast__take01.wav",
-    "combat/magic_cast/magic_cast__take02.wav"
+    "combat/magic_cast/magic_cast__take01.ogg",
+    "combat/magic_cast/magic_cast__take02.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",
@@ -94,17 +94,6 @@
   ],
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "combat/magic_cast/magic_cast__take01.wav",
-        "bytes": 67856,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "combat/magic_cast/magic_cast__take01.m4a",
-        "bytes": 12102,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "combat/magic_cast/magic_cast__take01.ogg",
         "bytes": 13235,
@@ -112,7 +101,6 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   }

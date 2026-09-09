@@ -152,9 +152,27 @@ invisible to the game image until added there, and a subtree can be excluded
 from the image while staying in the repo. If an asset 404s at `/assets/...`
 in the deployed game but exists on GitHub, **this file is the first place to
 look** — it is the only thing that produces that symptom. Currently excluded
-while staying in the repo: `music/**/*.wav` (~61 MB of analysis masters; the
-game streams ogg/m4a) and `live/telemetry` (the perf beacon's log, written
-through the GitHub API and never read from the image).
+while staying in the repo: `tiles2/*/raw` (pre-postprocess sheets, 4,648 files
+/ 34 MB, served by nothing), `live/telemetry` (the perf beacon's log, written
+through the GitHub API and never read from the image), and `music/**/*.wav` —
+which since 2026-09-09 guards against a regression rather than filtering
+anything, because no master is left to exclude.
+
+**AUDIO SHIPS AS OGG/OPUS: ONE FORMAT, NO MASTER.** Measured 2026-09-09: the two
+audio domains were 405 MB of a 799 MB HEAD, and 244 MB of that was duplication —
+177 MB of `.m4a` twins and 67 MB of `.wav` masters that already had a compressed
+sibling. The m4a existed for Safari, which has played the Ogg container (Opus
+and Vorbis) since 18.4 — macOS 15.4 / iOS 18.4, March 2025 — while the foley
+library had been ogg-only for 580 of its 585 takes, so the twins protected the
+music on devices that already had no sound effects. Both are gone; git history
+holds every deleted master. Manifests name the file that SHIPS (the catalog
+named its wav master and the game streamed 13.58 MB of PCM where 2.55 MB of ogg
+does), and the engine plays what they name rather than choosing a format at
+runtime — `canPlayType` is advisory, and WebKit 238546 shipped versions
+answering `""` for a container `decodeAudioData` decoded fine.
+NOT `sounds/**/*.wav`: five foley takes are wav-ONLY (their audible level did
+not survive opus) and one of them is assigned to an event, so a blanket glob
+there would 404 game content.
 
 **OFF-GITHUB BACKUP** (`.github/workflows/backup-gcs.yml`): weekly (Mondays)
 `git archive HEAD` zip (~291 MB, tracked files only — a working-tree tar

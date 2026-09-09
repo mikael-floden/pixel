@@ -3,8 +3,17 @@
 The WAV stays the **master** (lossless, what analysis ran on); every track also
 ships two web/mobile streaming copies (~2 MB for a 2-minute bed):
 
-    <id>.ogg   Opus  96 kbps  — Chrome / Firefox / Android / modern Safari
-    <id>.m4a   AAC  128 kbps  — universal fallback (iOS / older Safari)
+    <id>.ogg   Opus  96 kbps  — every browser
+
+ONE SHIPPING FORMAT: OGG/OPUS. The m4a/AAC twin was dropped 2026-09-09.
+
+It existed because Safari could not play the Ogg container. WebKit added Ogg
+support for both Opus and Vorbis in Safari 18.4 — macOS 15.4, iOS 18.4,
+iPadOS 18.4, visionOS 2.4, March 2025. Keeping the second encoding cost 177 MB
+across music/ and sounds/, 26% of the repo's HEAD, to serve iOS 18.3 and older
+— which already got NO sound effects, because the foley library has been
+ogg-only for 580 of its 585 takes. A codec that protects the music on a device
+with no footsteps is not a fallback, it is dead weight.
 
 ffmpeg is resolved from PATH (CI installs it via apt) or from the pip package
 `imageio-ffmpeg` (a static build, used in environments without apt). If neither
@@ -21,9 +30,6 @@ VARIANTS = [
     {"ext": "ogg", "format": "ogg", "codec": "opus", "bitrate_kbps": 96,
      "args": ["-c:a", "libopus", "-b:a", "96k"],
      "mime": "audio/ogg; codecs=opus"},
-    {"ext": "m4a", "format": "m4a", "codec": "aac", "bitrate_kbps": 128,
-     "args": ["-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart"],
-     "mime": "audio/mp4"},
 ]
 
 
@@ -39,7 +45,7 @@ def find_ffmpeg() -> str | None:
 
 
 def encode_variants(wav_path: str) -> list[dict]:
-    """Encode `<dir>/<stem>.wav` -> `<dir>/<stem>.{ogg,m4a}`. Returns metadata
+    """Encode `<dir>/<stem>.wav` -> `<dir>/<stem>.ogg`. Returns metadata
     entries [{file(basename), format, codec, bitrate_kbps, size_bytes, mime}]
     for every variant that encoded successfully (empty list if no ffmpeg)."""
     ffmpeg = find_ffmpeg()

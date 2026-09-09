@@ -127,20 +127,16 @@ export function musicTracks(): Record<string, TrackEntry> {
   return TRACKS;
 }
 
-/** The playable URL for a bed: first listed format this browser can decode
- * (opus everywhere, AAC on Safari/iOS). Served from /assets/music, so it is
- * stamped with its content hash and frozen for a year. Null when the bed has
- * not been generated yet. */
+/** The playable URL for a bed: the first file the manifest lists, which since
+ * 2026-09-09 is the only one — ogg/opus, playable everywhere including Safari
+ * 18.4+. No `canPlayType` gate: with one format there is nothing to choose,
+ * and the probe is the thing that can lie (WebKit 238546 answered "" for a
+ * container decodeAudioData handled). tracks.json lists only files that exist,
+ * so the first entry is always playable. Null when the bed is not generated. */
 export function bedTrack(name: string): { url: string; entry: TrackEntry } | null {
   const entry = TRACKS[name];
-  if (!entry) return null;
-  const probe = typeof document !== "undefined" ? document.createElement("audio") : null;
-  for (const f of entry.files ?? []) {
-    if (!f?.file) continue;
-    if (probe && f.mime && !probe.canPlayType(f.mime)) continue;
-    return { url: withAudioV(bedBase + f.file), entry };
-  }
-  return null;
+  const f = (entry?.files ?? []).find((x) => x?.file);
+  return f ? { url: withAudioV(bedBase + f.file), entry } : null;
 }
 
 export function hasBed(name: string): boolean {

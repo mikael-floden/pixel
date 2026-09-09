@@ -24,11 +24,16 @@ games2/.data
 maps2/worlds3/*/overview_full.webp
 !sounds
 !music
-# The music WAV masters (~61 MB) are the music domain's analysis source-of-truth,
-# never fetched by the game: the engine streams ogg/m4a (musicStreamUrl) and the
-# /#music viewer streams too. Keep them OUT of the deploy image so every roll is
-# ~61 MB lighter. Sounds stay wav (SFX are wav-only in the catalog). Revert this
-# line if a music consumer ever needs the master at runtime. — games-audio 2026-07-25
+# AUDIO IS OGG/OPUS ONLY (2026-09-09) — no second format, and no master left
+# to exclude. Kept as a standing guard: if the music pipeline ever writes a wav
+# beside its ogg again, it must not reach players.
+#
+# sounds/ IS DELIBERATELY NOT LISTED. Five foley takes are wav-ONLY — their
+# audible level did not survive the opus encode, so to-opus.py kept the master
+# as the only copy — and one of them, mon_water_poring_attack, is ASSIGNED to
+# player.water_enter. A blanket sounds/**/*.wav rule would 404 a sound the
+# maintainer picked. 0.24 MB; the rule this file needs cannot be written as a
+# glob, so the correct rule is none.
 music/**/*.wav
 !monsters
 !items

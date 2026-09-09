@@ -17,8 +17,8 @@
   "license": "CC0-1.0",
   "status": "complete",
   "quality": "aaa",
-  "file": "item/chest_close/chest_close__take01.wav",
-  "format": "wav",
+  "file": "item/chest_close/chest_close__take01.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 23816,
     "duration_seconds": 0.496,
@@ -30,8 +30,8 @@
     "delivered": "mp3"
   },
   "takes": [
-    "item/chest_close/chest_close__take01.wav",
-    "item/chest_close/chest_close__take02.wav"
+    "item/chest_close/chest_close__take01.ogg",
+    "item/chest_close/chest_close__take02.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",
@@ -94,17 +94,6 @@
   ],
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "item/chest_close/chest_close__take01.wav",
-        "bytes": 47676,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "item/chest_close/chest_close__take01.m4a",
-        "bytes": 8739,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "item/chest_close/chest_close__take01.ogg",
         "bytes": 9456,
@@ -112,7 +101,6 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   }

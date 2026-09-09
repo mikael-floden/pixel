@@ -17,8 +17,8 @@
   "license": "CC0-1.0",
   "status": "complete",
   "quality": "aaa",
-  "file": "tool/sword_hit/sword_hit__take01.wav",
-  "format": "wav",
+  "file": "tool/sword_hit/sword_hit__take01.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 23875,
     "duration_seconds": 0.497,
@@ -30,8 +30,8 @@
     "delivered": "mp3"
   },
   "takes": [
-    "tool/sword_hit/sword_hit__take01.wav",
-    "tool/sword_hit/sword_hit__take02.wav"
+    "tool/sword_hit/sword_hit__take01.ogg",
+    "tool/sword_hit/sword_hit__take02.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",
@@ -95,17 +95,6 @@
   ],
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "tool/sword_hit/sword_hit__take01.wav",
-        "bytes": 47794,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "tool/sword_hit/sword_hit__take01.m4a",
-        "bytes": 8796,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "tool/sword_hit/sword_hit__take01.ogg",
         "bytes": 10201,
@@ -113,7 +102,6 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   }

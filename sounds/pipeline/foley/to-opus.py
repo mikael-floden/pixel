@@ -15,10 +15,12 @@ beside it are already opus. (Contrast the ART rule in CLAUDE.md, which demands
 LOSSLESS webp: there, lossy would move foot anchors and contact points. A one
 shot's waveform has no such geometry to corrupt.)
 
-THE WAV STAYS IN THE REPO as the master, and is kept OUT OF THE IMAGE by
-.dockerignore — exactly how music/**/*.wav is already handled. Re-mastering from
-a lossy source is how quality dies quietly, and these takes cost API credits and
-his listening time to choose.
+THE WAV DOES NOT STAY. This header used to say it did, while the code below has
+always unlinked it — a doc that contradicted its own function for a month. The
+maintainer settled the question for the whole repo on 2026-09-09: one shipping
+format, no masters beside it. Git keeps every deleted master in history, which
+is where a re-master would come from; carrying 67 MB of PCM in every checkout to
+avoid a hypothetical re-encode was not the trade it looked like.
 
 VERIFY, DON'T TRUST. Every file is decoded back and checked for sample rate,
 channel count, duration and peak level before the .ogg is accepted; anything

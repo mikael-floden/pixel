@@ -67,8 +67,8 @@
     }
   },
   "audio": {
-    "file": "nangijala_cherry_valley/nangijala_cherry_valley.wav",
-    "format": "wav",
+    "file": "nangijala_cherry_valley/nangijala_cherry_valley.ogg",
+    "format": "ogg",
     "sample_rate": 44100,
     "channels": 2,
     "duration_s": 120.001,
@@ -82,14 +82,6 @@
         "bitrate_kbps": 96,
         "size_bytes": 1716363,
         "mime": "audio/ogg; codecs=opus"
-      },
-      {
-        "file": "nangijala_cherry_valley/nangijala_cherry_valley.m4a",
-        "format": "m4a",
-        "codec": "aac",
-        "bitrate_kbps": 128,
-        "size_bytes": 1956732,
-        "mime": "audio/mp4"
       }
     ],
     "note": "audio.file is the lossless master (analysis ground truth); stream a `compressed` copy on web/mobile."
@@ -3491,7 +3483,7 @@
       "name": "Combat \u2014 Drums of the Valley",
       "description": "The same Cherry Valley theme at battle intensity: driving war drums and taiko join, a low brass ostinato runs under the melody, strings turn to urgent tremolo. Crossfade in when combat starts \u2014 the melody stays recognizably the same, so the world never 'changes song'.",
       "intensity": 1.0,
-      "file": "nangijala_cherry_valley/layers/combat.wav",
+      "file": "nangijala_cherry_valley/layers/combat.ogg",
       "compressed": [
         {
           "file": "nangijala_cherry_valley/layers/combat.ogg",
@@ -3500,14 +3492,6 @@
           "bitrate_kbps": 96,
           "size_bytes": 1824098,
           "mime": "audio/ogg; codecs=opus"
-        },
-        {
-          "file": "nangijala_cherry_valley/layers/combat.m4a",
-          "format": "m4a",
-          "codec": "aac",
-          "bitrate_kbps": 128,
-          "size_bytes": 1954892,
-          "mime": "audio/mp4"
         }
       ],
       "metadata": "nangijala_cherry_valley/layers/combat.metadata.json",

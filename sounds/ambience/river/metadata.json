@@ -34,8 +34,8 @@
     ]
   },
   "quality": "aaa",
-  "file": "ambience/river/river.wav",
-  "format": "wav",
+  "file": "ambience/river/river.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 576835,
     "duration_seconds": 12.017,
@@ -47,7 +47,7 @@
     "delivered": "mp3"
   },
   "takes": [
-    "ambience/river/river.wav"
+    "ambience/river/river.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",
@@ -92,17 +92,6 @@
   ],
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "ambience/river/river.wav",
-        "bytes": 1153714,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "ambience/river/river.m4a",
-        "bytes": 196151,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "ambience/river/river.ogg",
         "bytes": 150626,
@@ -110,7 +99,6 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   }

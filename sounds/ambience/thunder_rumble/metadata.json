@@ -35,8 +35,8 @@
     ]
   },
   "quality": "aaa",
-  "file": "ambience/thunder_rumble/thunder_rumble__take01.wav",
-  "format": "wav",
+  "file": "ambience/thunder_rumble/thunder_rumble__take01.ogg",
+  "format": "ogg",
   "audio": {
     "samples": 193149,
     "duration_seconds": 4.024,
@@ -49,17 +49,6 @@
   },
   "delivery": {
     "formats": {
-      "wav": {
-        "file": "ambience/thunder_rumble/thunder_rumble__take01.wav",
-        "bytes": 386342,
-        "codec": "pcm_s16le",
-        "role": "master"
-      },
-      "m4a": {
-        "file": "ambience/thunder_rumble/thunder_rumble__take01.m4a",
-        "bytes": 66908,
-        "codec": "aac"
-      },
       "ogg": {
         "file": "ambience/thunder_rumble/thunder_rumble__take01.ogg",
         "bytes": 45039,
@@ -67,13 +56,12 @@
       }
     },
     "web_source_order": [
-      "m4a",
       "ogg"
     ]
   },
   "takes": [
-    "ambience/thunder_rumble/thunder_rumble__take01.wav",
-    "ambience/thunder_rumble/thunder_rumble__take02.wav"
+    "ambience/thunder_rumble/thunder_rumble__take01.ogg",
+    "ambience/thunder_rumble/thunder_rumble__take02.ogg"
   ],
   "ai": {
     "provider": "elevenlabs",

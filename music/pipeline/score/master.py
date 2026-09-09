@@ -619,13 +619,11 @@ def write_wav(path: str, y: np.ndarray, sr: int) -> None:
 VARIANTS = [
     {"ext": "ogg", "args": ["-c:a", "libopus", "-b:a", "96k", "-vbr", "on"],
      "mime": 'audio/ogg; codecs="opus"'},
-    {"ext": "m4a", "args": ["-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart"],
-     "mime": "audio/mp4"},
 ]
 
 
 def encode_variants(wav_path: str) -> list[dict]:
-    """WAV master → the two delivery copies the engine picks between."""
+    """WAV master → the ONE delivery copy. See encode.py for why m4a went."""
     ff = find_ffmpeg()
     if not ff:
         raise RuntimeError("no ffmpeg (PATH or imageio-ffmpeg) — cannot encode delivery copies")
