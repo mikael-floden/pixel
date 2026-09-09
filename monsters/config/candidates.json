@@ -60,11 +60,11 @@
       "lore": "The tide brings it up and forgets to take it back. It holds the beach with one great claw and never learned to let go."
     },
     {
-      "id": "iron_beetle",
-      "name": "Ironclack",
+      "id": "shell_roller",
+      "name": "Clankball",
       "tier": "mid",
       "template_id": "bear",
-      "size": 104,
+      "size": 88,
       "biome": [
         "light_soil",
         "grey_stone",
@@ -73,8 +73,8 @@
       "items": [
         "plated beetle"
       ],
-      "prompt": "Heavily armored fantasy beetle with overlapping dark iron-gray plates riveted with copper studs, a single short thick horn on its head, six thick segmented legs tucked close under its body, glowing orange slits for eyes, and cracks between the plates showing hot orange light underneath.",
-      "lore": "Forged, or grown — the smiths cannot agree. Its plates ring like a bell when struck, and the sound calls the others."
+      "prompt": "Round fantasy armored pill bug with a compact ball-shaped body of overlapping dark iron-gray plates riveted with copper studs, short stubby legs tucked beneath it, two glowing orange slit eyes at the front, small antennae, and hot orange light glowing between the plates.",
+      "lore": "It rolls downhill at anything that moves and uphill at anything that doesn't. The smiths say the plates ring in a key they can't forge."
     },
     {
       "id": "reed_nymph",
@@ -355,6 +355,26 @@
       "retired": "a dragonfly's wingspan fights a square canvas: v1 (80px, long wings) clipped 3 facings, v2 (96px, short wings) clipped 7 — the model draws the span to the canvas whatever the prompt says. Replaced by reed_nymph, the compact larval form.",
       "retired_at": "2026-09-09T17:52:50+00:00",
       "versions_tried": 2
+    },
+    {
+      "id": "iron_beetle",
+      "name": "Ironclack",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 104,
+      "biome": [
+        "light_soil",
+        "grey_stone",
+        "lava"
+      ],
+      "items": [
+        "plated beetle"
+      ],
+      "prompt": "Heavily armored fantasy beetle with overlapping dark iron-gray plates riveted with copper studs, a single short thick horn on its head, six thick segmented legs tucked close under its body, glowing orange slits for eyes, and cracks between the plates showing hot orange light underneath.",
+      "lore": "Forged, or grown — the smiths cannot agree. Its plates ring like a bell when struck, and the sound calls the others.",
+      "retired": "a horned beetle's side profile outgrows a square canvas: v1 88px (legs), v2 96px legs tucked (curved horn), v3 104px short horn (E/W body) — three rolls, three edge clips. Replaced by shell_roller, a compact curled pill bug in the same armored-insect niche.",
+      "retired_at": "2026-09-09T17:53:43+00:00",
+      "versions_tried": 3
     }
   ]
 }

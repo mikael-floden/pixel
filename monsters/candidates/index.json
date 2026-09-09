@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T17:53:03+00:00",
+  "generated_at": "2026-09-09T17:53:43+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -146,6 +146,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:35:11+00:00"
     },
     {
@@ -277,6 +278,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:38:33+00:00"
     },
     {
@@ -406,139 +408,8 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:41:07+00:00"
-    },
-    {
-      "id": "iron_beetle",
-      "name": "Ironclack",
-      "tier": "mid",
-      "lore": "Forged, or grown — the smiths cannot agree. Its plates ring like a bell when struck, and the sound calls the others.",
-      "biome": [
-        "light_soil",
-        "grey_stone",
-        "lava"
-      ],
-      "items": [
-        "plated beetle"
-      ],
-      "size": [
-        104,
-        104
-      ],
-      "template_id": "bear",
-      "pixellab_id": "893d4b96-631f-4945-8051-7e78348a58d6",
-      "version": 3,
-      "sheet": "iron_beetle/sheet.webp",
-      "rotations": {
-        "south": "iron_beetle/rotations/south.webp",
-        "south-east": "iron_beetle/rotations/south-east.webp",
-        "east": "iron_beetle/rotations/east.webp",
-        "north-east": "iron_beetle/rotations/north-east.webp",
-        "north": "iron_beetle/rotations/north.webp",
-        "north-west": "iron_beetle/rotations/north-west.webp",
-        "west": "iron_beetle/rotations/west.webp",
-        "south-west": "iron_beetle/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "fail",
-        "min_run1": 0.694,
-        "reasons": [
-          "west: content touches the canvas edge (clipped)",
-          "east: content touches the canvas edge (clipped)"
-        ],
-        "directions": {
-          "south": {
-            "run1": 0.694,
-            "bbox": [
-              3,
-              5,
-              101,
-              98
-            ],
-            "fill": 0.843,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.771,
-            "bbox": [
-              3,
-              5,
-              104,
-              97
-            ],
-            "fill": 0.859,
-            "touches_edge": true
-          },
-          "east": {
-            "run1": 0.773,
-            "bbox": [
-              0,
-              5,
-              101,
-              97
-            ],
-            "fill": 0.859,
-            "touches_edge": true
-          },
-          "north": {
-            "run1": 0.753,
-            "bbox": [
-              5,
-              4,
-              97,
-              94
-            ],
-            "fill": 0.766,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.809,
-            "bbox": [
-              4,
-              8,
-              99,
-              101
-            ],
-            "fill": 0.817,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.779,
-            "bbox": [
-              9,
-              6,
-              98,
-              97
-            ],
-            "fill": 0.749,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.78,
-            "bbox": [
-              7,
-              6,
-              96,
-              98
-            ],
-            "fill": 0.757,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.807,
-            "bbox": [
-              5,
-              8,
-              100,
-              101
-            ],
-            "fill": 0.817,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "pending",
-      "generated_at": "2026-09-09T17:52:59+00:00"
     },
     {
       "id": "silk_spider",
@@ -666,7 +537,140 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:50:48+00:00"
+    },
+    {
+      "id": "pearl_clam",
+      "name": "Nacrebite",
+      "tier": "mid",
+      "lore": "It grows one pearl a century and guards it with the whole of its shell. Divers who reach for it come up in pieces.",
+      "biome": [
+        "light_beach",
+        "water",
+        "deep_water"
+      ],
+      "items": [
+        "great pearl",
+        "nacre shard",
+        "sea shells"
+      ],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "bear",
+      "pixellab_id": "84cf1324-5154-44a1-b6eb-5e4845041786",
+      "version": 1,
+      "sheet": "pearl_clam/sheet.webp",
+      "rotations": {
+        "south": "pearl_clam/rotations/south.webp",
+        "south-east": "pearl_clam/rotations/south-east.webp",
+        "east": "pearl_clam/rotations/east.webp",
+        "north-east": "pearl_clam/rotations/north-east.webp",
+        "north": "pearl_clam/rotations/north.webp",
+        "north-west": "pearl_clam/rotations/north-west.webp",
+        "west": "pearl_clam/rotations/west.webp",
+        "south-west": "pearl_clam/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.714,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.734,
+            "bbox": [
+              10,
+              7,
+              86,
+              88
+            ],
+            "fill": 0.668,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.779,
+            "bbox": [
+              13,
+              9,
+              83,
+              87
+            ],
+            "fill": 0.592,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.783,
+            "bbox": [
+              13,
+              9,
+              83,
+              87
+            ],
+            "fill": 0.592,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.714,
+            "bbox": [
+              11,
+              8,
+              85,
+              86
+            ],
+            "fill": 0.626,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.782,
+            "bbox": [
+              12,
+              8,
+              82,
+              87
+            ],
+            "fill": 0.6,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.744,
+            "bbox": [
+              12,
+              8,
+              84,
+              87
+            ],
+            "fill": 0.617,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.733,
+            "bbox": [
+              12,
+              8,
+              84,
+              87
+            ],
+            "fill": 0.617,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.783,
+            "bbox": [
+              15,
+              8,
+              85,
+              87
+            ],
+            "fill": 0.6,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T17:53:43+00:00"
     },
     {
       "id": "root_forager",
@@ -797,6 +801,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:36:10+00:00"
     },
     {
@@ -925,6 +930,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:43:57+00:00"
     },
     {
@@ -1054,6 +1060,9 @@
         }
       },
       "review": "pending",
+      "notes": [
+        "agent eyeball: south-east frame carries a baked-in ground shadow the other seven lack — the game draws its own shadow, so this facing would double up in play. Everything else clean; re-roll only if you reject."
+      ],
       "generated_at": "2026-09-09T17:43:02+00:00"
     },
     {
@@ -1182,6 +1191,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:47:01+00:00"
     },
     {
@@ -1311,6 +1321,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:50:14+00:00"
     },
     {
@@ -1437,6 +1448,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:31:12+00:00"
     },
     {
@@ -1565,6 +1577,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:53:03+00:00"
     },
     {
@@ -1691,6 +1704,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:42:51+00:00"
     },
     {
@@ -1818,6 +1832,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:37:23+00:00"
     },
     {
@@ -1947,6 +1962,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:40:26+00:00"
     },
     {
@@ -2073,6 +2089,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:44:30+00:00"
     },
     {
@@ -2202,6 +2219,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:52:18+00:00"
     },
     {
@@ -2328,6 +2346,7 @@
         }
       },
       "review": "pending",
+      "notes": null,
       "generated_at": "2026-09-09T17:51:00+00:00"
     }
   ]

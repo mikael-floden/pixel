@@ -1,0 +1,145 @@
+{
+  "id": "pearl_clam",
+  "name": "Nacrebite",
+  "tier": "mid",
+  "lore": "It grows one pearl a century and guards it with the whole of its shell. Divers who reach for it come up in pieces.",
+  "biome": [
+    "light_beach",
+    "water",
+    "deep_water"
+  ],
+  "items": [
+    "great pearl",
+    "nacre shard",
+    "sea shells"
+  ],
+  "prompt": "Fantasy giant clam monster with a ridged blue-gray shell edged in shimmering mother-of-pearl, the shell gaping open to show a soft pink fleshy mouth with rows of small teeth and one large glowing pearl inside, walking on six pale hermit-crab legs with a fringe of short blue tentacles.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "pearl_clam/rotations/south.webp",
+    "south-east": "pearl_clam/rotations/south-east.webp",
+    "east": "pearl_clam/rotations/east.webp",
+    "north-east": "pearl_clam/rotations/north-east.webp",
+    "north": "pearl_clam/rotations/north.webp",
+    "north-west": "pearl_clam/rotations/north-west.webp",
+    "west": "pearl_clam/rotations/west.webp",
+    "south-west": "pearl_clam/rotations/south-west.webp"
+  },
+  "sheet": "pearl_clam/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "84cf1324-5154-44a1-b6eb-5e4845041786",
+  "seed": 2046294255,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:53:43+00:00",
+  "elapsed_s": 174.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.714,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.734,
+        "bbox": [
+          10,
+          7,
+          86,
+          88
+        ],
+        "fill": 0.668,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.779,
+        "bbox": [
+          13,
+          9,
+          83,
+          87
+        ],
+        "fill": 0.592,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.783,
+        "bbox": [
+          13,
+          9,
+          83,
+          87
+        ],
+        "fill": 0.592,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.714,
+        "bbox": [
+          11,
+          8,
+          85,
+          86
+        ],
+        "fill": 0.626,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.782,
+        "bbox": [
+          12,
+          8,
+          82,
+          87
+        ],
+        "fill": 0.6,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.744,
+        "bbox": [
+          12,
+          8,
+          84,
+          87
+        ],
+        "fill": 0.617,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.733,
+        "bbox": [
+          12,
+          8,
+          84,
+          87
+        ],
+        "fill": 0.617,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.783,
+        "bbox": [
+          15,
+          8,
+          85,
+          87
+        ],
+        "fill": 0.6,
+        "touches_edge": false
+      }
+    }
+  }
+}
