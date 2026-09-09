@@ -384,8 +384,9 @@ like half a room). **Slime** lies on the floor somewhere: one pool per
 the biggest hall, a blob of 3–5 interior cells ringed by floor
 (`_pool_blob`), walkable (the game classes slime as plain ground). `cliff_faces` gives a face whose foot
 is a cave floor that side and no other; the mountain top and its outer walls
-are untouched (the_game: one complex, black rock throughout, the level-40
-chamber in ice). The cap tile of an inner wall (`<top>__over__<side>`) still
+are untouched (the_game: two complexes — the mountain's, black rock
+throughout with the level-40 chamber in ice, and the dungeon under the field,
+see below). The cap tile of an inner wall (`<top>__over__<side>`) still
 carries the mountain's top ground — that band is the tiles/game contract, not
 a world channel. **Corridors are one cell wider**: every passage grows one
 cell on its east/south side, into rock at the lid's level that is interior
@@ -426,6 +427,90 @@ should not use the scenery type 'Mountain wall', we will use that scenery
 later, but that scenery will need training to use right."* (Windows were held
 back under the same ruling until 2026-09-09, when he asked for them — see
 "windows and hangings".) the_game: 29 pieces of 9 kinds, plus 19 braziers.
+
+### the dungeon under the field — down, not in
+
+Maintainer 2026-09-09: *"What I want is a cave where the player walks down
+into the ground. Not walking into a mountain this time. The dungeon is under
+the normal world ... What we will show here is that we can have elevation
+inside a dungeon (a cave doesn't have to be flat). And we can have worlds
+under level 0."* and *"Think pokemon. A cave usually has some places you can
+jump down but not up to."* the_game is the practice map for this: the way it
+is solved here is the reference for the real game.
+
+`dungeon()` (right after `i2_cave`, so `caves()` digs and dresses it like the
+mountain's): a **pit stair cut into open meadow, a doorway at its foot, and
+under the field ONE cave lid at the field's own level S** over three chambers
+at three depths. The plan, door at (0,0), north up:
+
+```
+x:   -2..2      3..6       7..12       8..13       level
+hall  H                                            S-6   six storeys: a house
+east         --E--> |v3    A                       S-6 | S-9    a ledge into A
+west  H <--W-- s1          A                       S-6 .. S-9   stair 1, the way back
+south                      A  |v3 (x 11)           S-9 | S-12   a ledge into B
+s2                         s2 (x 8,9)   B          S-9 .. S-12  stair 2, the way back
+door  x -1..1, y 0                                 S-6
+pit   y 1..5, three lanes; banks two above a step  S-5 .. S-1
+```
+
+* **Ledges are the shortcuts, stairs are the way back.** A ledge drops
+  `DUNGEON_LEDGE = 3` because the game jumps 2 (`JUMP_CLIMB`): you drop into
+  the next chamber and cannot climb back, and the long way round is a cut
+  stair of one-level steps (two lanes, published as `stair` ramp runs, foot
+  first). So every chamber is reachable by reversible moves and the reach
+  audit's trap rule (R − Rev) holds with no special case.
+* **The lid is one deck of thickness 0.** Its underside is then the field
+  itself (the game's `deckBot = S`) and nothing hangs below it. A thicker lid
+  draws its skirt over the field along its south and east edge, because both
+  renderers paint decks after every cell (measured with thickness 2: a
+  two-storey grey wall standing on the meadow). The doorway draws as a house
+  door: the lid's cap band reaches S−1, the floor is S−6, 5.7 levels open.
+  The lid wears the field (`dungeon_field`, after `terrace_grounds`, which
+  recolours the meadow after the dig and leaves anything under
+  `TERRACE_MIN` cells — the lid's recorded top, the banks, the jambs — in
+  the old ground).
+* **The floors never go below 0.** The game clamps an avatar's rendered
+  elevation and a deck's underside at 0 (`games2/shared buildTerrainGrid`,
+  `WorldScene Math.max(0, elev)`), so the field stands
+  `DUNGEON_MIN_FIELD = 12` above the sea and the deepest chamber is at 0.
+  Under level 0 is a constant once games2 lifts the clamps (posted).
+* **The site** is the nearest meadow to the spawn whose 21×19 box is one
+  level of natural ground, the plan's own rect never road, deck, house or
+  floor; the margin ring may carry the road (a road past the pit is how it
+  is found). The plan is 17×15 because the_game's meadows are cut by roads
+  and ponds: its widest clean flat at 12 is 11×30, and a 24×18 plan fitted
+  nowhere (measured). the_game: 322 sites fit, the nearest is the level-12
+  dark-mud field south of the massif, door cells (209–211, 281), pit rim
+  torch, the lid 142 cells over floors at 6, 3 and 0 (115 dug, the rest
+  widened), black rock, three braziers, 10 pieces inside.
+* **The rock a cave is dug into is anything at its lid's level or above**
+  (`cave_rock_min = min(ROCK_MIN, lid)`: 24 for the mountain, whose lids
+  stand at 24–40 over floors at 0; the field's 12 for the dungeon). A
+  widened passage cell takes the level of the cell it widens (a cave floor
+  is not one level any more), and a cut stair is never widened (a third lane
+  at one step's level would be a step nobody cut). Braziers go three per
+  CHAMBER (`_chambers`: the connected patches of a lid's rooms), not per lid.
+* **Nothing carves it** (`_carvable`): a cave floor never wants a stair to
+  the surface — its lid is the surface — and the pit and the margin ring are
+  cut once, by `dungeon()`. The slope-top rule read the inner stair as a
+  slope ending under a cliff and cut a breach from its head up through the
+  field, and a breach up the shelf took the ring's corner (both measured).
+* **The pit stays clear** (`mouth_clear`, a `put()` refusal): nothing stands
+  in the doorway, on the stair, on the banks or on the jambs. The cave-mouth
+  torches stand one pair per cave — the mountain's in its mouth, the
+  dungeon's on the rim of its pit beside the top step (`mouth_torches`).
+* **Build-asserted** (`dungeon_audit`, before `spawns`): every dug cell keeps
+  its level, the two ledges are still 3, the one lid is at S with thickness
+  0 and covers every floor and never the door, every lid cell is cave floor
+  or a stair, the margin ring is untouched field at S, the lid is the field,
+  every floor is reachable from the spawn, nothing stands in the pit, a
+  brazier burns inside, only cave dressing is inside, a torch marks the rim.
+  `ramps()` rebuilds the ROAD's runs and keeps every cut stair: rebuilding
+  from the road alone dropped the dungeon's seven runs, and the pit's lanes
+  then kept the meadow's grass and the way down was never a ramp (measured).
+  The dungeon also gets a cave-cast monster zone over all its floor levels
+  (`spawns`, `elev [fl, max(fl+2, fh)]`).
 
 ### windows and hangings — scenery ON a wall, not in front of it
 
@@ -952,7 +1037,10 @@ beside it is already dressed:
 | `STAIR_GROUND` | to 85% | the dominant natural ground at its ends |
 | the rest | 15% | `STAIR_ELSE`: light_soil, grey_paving_stone, dark_mud, brown_paving_stone |
 
-Never over paving or floors (`STAIR_OVER` lists what may be repainted), and
+**A stair is its lanes together**: a breach is up to three runs side by
+side and the dungeon's pit is three, and runs that touch roll ONCE and wear
+one material (rolling per run striped the pit light_soil | dark_mud |
+grey_paving_stone, measured; build-asserted). Never over paving or floors (`STAIR_OVER` lists what may be repainted), and
 the dissolver runs after it — a two-cell stair painted into open grass is a
 speck by the ground audit's own rule.
 
@@ -1111,6 +1199,7 @@ a crop would move the dot off the player.
 | iso | `tiles/review/manifest.json` iso block | 64px tile, dx 32, **dy 14** (GEOMETRY.md: the pitch where the v3 lattice closes; 15 leaks a 1px wall grid), storey pitch **measured** per tile (`tiles/pipeline/render.py wall_height` — assuming 17 leaks a stripe of the floor below at every storey, the tiles agent's own paid-for bug) |
 | fields | `live/tuning/base_tile_sets.json` | **his base tile sets, on every cell — land, liquid, deck and raised alike.** A SET per region (a 24-cell chunk of one ground), a MEMBER per cell, his weights throughout, clean as a member. A member draws **its own art**: the review candidate's published `textured` pass, or the file itself for a `tops`/`base_candidates` path, conformed into plate geometry. **Never `tiles/plates/<g>/<key8>.webp`** — that is the same tile flattened to the clean colour, and reading it painted 236 of his 340 members flat. A member he later **rejected** is dropped, his rejection outranking his set. (`live/tuning/base_tiles.json` is the superseded one-tile-per-ground channel and is empty.) |
 | walls | `tiles/review` x-over-y matrix | **the only tiles that ever show a wall.** A column stacks whole tiles (the tiles agent's `plateau` model): same-over-same for every storey below, capped by `top__over__side` where `side` = the ground at the face's FOOT (down-screen lower neighbour) — never an indoor floor, never a liquid — overridable per pair via `live/tuning/tile_walls.json`. Candidate per cell = the wiki's own rule: maintainer-approved, else rank 0. |
+| decks | `decks` (roof, bridge, cave lid) | a slab whose top rides at its own level, drawn **in painter order with the cells** — each deck cell right after its own base cell — so the ground in front covers whatever hangs below it, the way a cell's own wall band is covered by the same-level cell in front. Drawn after every cell (the game's `windowOps` order, and this renderer's until 2026-09-09), a lid whose field continues at its own level beyond its south/east edge stood its skirt on the meadow: measured with a thickness-2 cave lid at 12 in a level-12 field, a two-storey grey wall along the edge, a one-storey band at thickness 0. The cap band still hangs where the front is open — that is the lintel over a doorway. Raised on the games2 board. |
 | boundaries | `tiles/patterns` x `tiles/plates` | patterns publishes the **material-independent** Wang boundary and nothing else; the two grounds it divides come from their own set members. So **every pair is covered**, including roads (`light_soil` beside `grass`, the 2nd most common boundary on the_game) — no per-pair set is required. Corner lattice, index `8*NW+4*NE+2*SW+1*SE`; each half asks for **its own ground's** region. Only where the quad shares one level. |
 | fades | `tiles/fades` (`tiles3/fade-tiles@1`) | top-only mix tiles that warm the player up for a ground change **before** the switch. Placed by `edge_ground`, never by area majority ("big rocks ON an ice sheet"). **APPROVED ONLY** — he rates this layer actively (480 approved, 345 rejected of 3,575), so an unjudged tile is not a candidate; survivors are weighted by his rating. A **scattered event** over a real Chebyshev distance band, never a coat of one tile. |
 | details | `live/feedback/tiles.json` `<key>#top` approvals | **478 approvals.** The wiki's roof glyph is "rating the TOP as a once-in-a-while ground detail", and a tile **rejected as a pair** (bad wall) can still be a top-approved detail — the two reviews are independent by design. Drawn from the `textured` pass and conformed, so a detail's foreign lava/ice/sand wall never leaks into a field. |

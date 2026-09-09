@@ -37,6 +37,7 @@ from __future__ import annotations
 
 import collections
 import json
+import numpy as np
 import math
 import os
 import sys
@@ -516,6 +517,13 @@ class Grow:
                 self.refused["no_place"] = self.refused.get("no_place", 0) + 1
                 self.fail += 1
                 return False
+        # THE PIT STAYS CLEAR: nothing stands in the dungeon's doorway, on its
+        # stair, on the banks beside it or on the jambs - a tree on the rim
+        # hangs its crown over the way down.
+        if (int(x), int(y)) in getattr(self, "mouth_clear", ()):
+            self.refused["mouth"] = self.refused.get("mouth", 0) + 1
+            self.fail += 1
+            return False
         # ONLY CAVE DRESSING ON A CAVE FLOOR. (A first cut of this gate sat
         # between the indoor test and its else - so the roof-shadow rule
         # ran on every indoor placement and every house shipped empty,
@@ -808,7 +816,12 @@ class Grow:
         cx, _ = self.plaza
         x0t, y0t, TW, TH = self.town
         x, y, n = cx, y0t + TH, 0
-        seen = set()
+        # NOT THROUGH THE DUNGEON'S BOX: the walk took the pit's rim (its
+        # banks at the field's level cost nothing) and the road relaxation
+        # then pulled the rim down toward the stair (measured: 8 rim cells)
+        d = getattr(self, "dungeon_site", None)
+        avoid = (set(d["margin"]) | set(d["cells"])) if d else set()
+        seen = set(avoid)
         while abs(x - fx) + abs(y - fy) > 2 and n < 700:
             n += 1
             seen.add((x, y))
@@ -1009,6 +1022,284 @@ class Grow:
         self.doc["decks"].append(self.new_cave)
         self.placed += [("island2 cave floor", len(floor) + 2)]
 
+    # -- THE DUNGEON UNDER THE FIELD ------------------------------------------
+    # (maintainer 2026-09-09: "What I want is a cave where the player walks
+    # down into the ground. Not walking into a mountain this time. The
+    # dungeon is under the normal world and the player walks down
+    # 'underground' to get to the cave/dungeon. What we will show here is
+    # that we can have elevation inside a dungeon (a cave doesn't have to be
+    # flat). And we can have worlds under level 0." - and: "Think pokemon. A
+    # cave usually has some places you can jump down but not up to.")
+    #
+    # A pit stair cut into open ground, a doorway at its foot, and under the
+    # field ONE cave lid at the field's own level S over three chambers at
+    # three depths. In door coordinates (door at 0,0; north is -y):
+    #
+    #   x:   -2..2      3..6       7..12       8..13       level
+    #   hall  H                                            S-6  (six storeys: a house)
+    #   east         --E--> |v3    A                       S-6 | S-9   a ledge into A
+    #   west  H <--W-- s1          A                       S-6 .. S-9  stair 1, back up
+    #   south                      A  |v3 (x 11)           S-9 | S-12  a ledge into B
+    #   s2                         s2 (x 8,9)  B           S-9 .. S-12 stair 2, back up
+    #   door  x -1..1, y 0                                 S-6
+    #   pit   y 1..5, three lanes, banks two above a step  S-5 .. S-1
+    #
+    # LEDGES ARE THE SHORTCUTS, STAIRS ARE THE WAY BACK. A ledge drops
+    # DUNGEON_LEDGE = 3 because the game jumps 2 (JUMP_CLIMB): you drop into
+    # the next chamber and cannot climb back, and the long way round is a cut
+    # stair of one-level steps - so every chamber is reachable by reversible
+    # moves and the reach audit's trap rule holds with no special case.
+    # THE LID IS ONE DECK OF THICKNESS 0: its underside is then the field
+    # itself (the game's deckBot = S) and nothing hangs below it. A thicker
+    # lid draws its skirt over the field along its south and east edge,
+    # because both renderers paint decks after every cell (measured, thickness
+    # 2: a two-storey grey wall standing on the meadow). The doorway draws as
+    # a house door: the lid's cap band reaches S-1, the floor is S-6.
+    # THE FLOORS NEVER GO BELOW 0: the game clamps an avatar's elevation and a
+    # deck's underside at 0 (games2 buildTerrainGrid, WorldScene), so the
+    # field stands DUNGEON_MIN_FIELD above the sea and the deepest chamber is
+    # at 0. Under level 0 is a constant once games2 lifts the clamps (posted).
+    # THE PLAN IS 17 x 15 CELLS (a 21 x 19 box with its margin): the_game's
+    # meadows are cut by roads and ponds, and its widest clean flat at 12 is
+    # 11 x 30 - a 24 x 18 plan fitted nowhere (measured).
+    DUNGEON_DEPTH = 6
+    DUNGEON_LEDGE = 3
+    DUNGEON_MARGIN = 2       # untouched field around every dungeon cell
+    DUNGEON_PIT = 5          # steps down the pit: S-5 .. S-1, then the door at S-6
+    DUNGEON_MIN_FIELD = DUNGEON_DEPTH + 2 * DUNGEON_LEDGE
+    DUNGEON_FIELD = ("grass", "dark_mud")   # a meadow, not the mountain's rock
+    DUNGEON_ROOMS = (        # (x0, y0, x1, y1) inclusive, depth below the hall
+        ((-2, -5, 2, -1), 0),      # the hall
+        ((3, -4, 6, -4), 0),       # east passage: ends on the ledge over A
+        ((3, -1, 4, -1), 0),       # west passage: the hall to stair 1
+        ((7, -6, 12, -1), 3),      # chamber A
+        ((11, 0, 11, 1), 3),       # south passage: ends on the ledge over B
+        ((8, 2, 13, 7), 6),        # chamber B, the deepest
+    )
+    DUNGEON_STAIRS = (       # runs, FOOT FIRST, (x, y, depth below the hall); two lanes each
+        (((7, -1, 3), (6, -1, 2), (5, -1, 1), (4, -1, 0)),
+         ((7, 0, 3), (6, 0, 2), (5, 0, 1), (4, 0, 0))),
+        (((8, 2, 6), (8, 1, 5), (8, 0, 4), (8, -1, 3)),
+         ((9, 2, 6), (9, 1, 5), (9, 0, 4), (9, -1, 3))),
+    )
+    DUNGEON_LEDGES = (((6, -4), (7, -4)), ((11, 1), (11, 2)))   # (top, foot)
+    DUNGEON_DOOR = ((-1, 0), (0, 0), (1, 0))
+
+    def dungeon(self):
+        """Dig the dungeon under the nearest field to the spawn that is high
+        enough and flat enough: the plan above, the pit stair published as
+        three ramp runs, the two inner stairs as two lanes each."""
+        D, P, M = self.DUNGEON_DEPTH, self.DUNGEON_PIT, self.DUNGEON_MARGIN
+        # the plan's cells in door coordinates: local -> depth below S
+        plan = {}
+        for (x0, y0, x1, y1), d in self.DUNGEON_ROOMS:
+            for y in range(y0, y1 + 1):
+                for x in range(x0, x1 + 1):
+                    plan[(x, y)] = D + d
+        for lanes in self.DUNGEON_STAIRS:
+            for lane in lanes:
+                for (x, y, d) in lane:
+                    plan[(x, y)] = D + d
+        for c in self.DUNGEON_DOOR:
+            plan[c] = D
+        for x in (-1, 0, 1):
+            for k in range(1, P + 1):
+                plan[(x, k)] = D - k
+            plan[(x, P + 1)] = 0                      # the head: the field
+        for x in (-2, 2):
+            plan[(x, 0)] = 0                          # the jambs
+            for k in range(1, P + 1):
+                plan[(x, k)] = max(0, D - k - 2)      # banks two above each step
+        xs = [c[0] for c in plan]
+        ys = [c[1] for c in plan]
+        bx0, bx1 = min(xs) - M, max(xs) + M
+        by0, by1 = min(ys) - M, max(ys) + M
+        # the fit: every cell of the box is one level of meadow, no deck, no
+        # house, no floor - prefix sums make the whole grid one pass
+        N = NEW
+        lv = np.array(self.lvl, dtype=np.int32)
+        grd = np.array(self.grd, dtype=np.int32)
+        # the plan's own rect is natural ground at one level (a grey speck
+        # in a meadow becomes floor like the rest); the margin ring around it
+        # may also carry the road - a road past the pit is how it is found
+        ok = np.isin(grd, [self.gi[g] for g in self.NATURAL if g in self.gi])
+        ok &= lv >= self.DUNGEON_MIN_FIELD
+        for dk in self.doc["decks"]:
+            for c in dk["cells"]:
+                ok[c["y"], c["x"]] = False
+        for w in self.doc["walls"]:
+            if w.get("kind") == "house":
+                for c in w["cells"]:
+                    ok[c["y"], c["x"]] = False
+        for (x, y) in list(getattr(self, "floor_cells", {})) + list(getattr(self, "door_cells", ())):
+            ok[y, x] = False
+        ok_ring = ok | ((grd == self.gi["light_soil"]) & (lv >= self.DUNGEON_MIN_FIELD))
+        eqx = np.zeros((N, N), dtype=np.int32)
+        eqx[:, 1:] = lv[:, 1:] == lv[:, :-1]
+        eqy = np.zeros((N, N), dtype=np.int32)
+        eqy[1:, :] = lv[1:, :] == lv[:-1, :]
+
+        def psum(a):
+            out = np.zeros((N + 1, N + 1), dtype=np.int64)
+            out[1:, 1:] = a.cumsum(0).cumsum(1)
+            return out
+
+        W, H = bx1 - bx0 + 1, by1 - by0 + 1
+        K, L = N - H + 1, N - W + 1          # box origins: rows, columns
+
+        def rect(ps, x0, y0, x1, y1):
+            """sum over the box's inclusive sub-rect, for every origin at once"""
+            return (ps[y1 + 1:y1 + 1 + K, x1 + 1:x1 + 1 + L] - ps[y0:y0 + K, x1 + 1:x1 + 1 + L]
+                    - ps[y1 + 1:y1 + 1 + K, x0:x0 + L] + ps[y0:y0 + K, x0:x0 + L])
+        n_ring = rect(psum(ok_ring.astype(np.int32)), 0, 0, W - 1, H - 1)
+        n_ok = rect(psum(ok.astype(np.int32)), M, M, W - 1 - M, H - 1 - M)
+        n_eqx = rect(psum(eqx), 1, 0, W - 1, H - 1)
+        n_eqy = rect(psum(eqy), 0, 1, W - 1, H - 1)
+        fits = np.argwhere((n_ring == W * H) & (n_ok == (W - 2 * M) * (H - 2 * M))
+                           & (n_eqx == (W - 1) * H) & (n_eqy == W * (H - 1)))
+        assert len(fits), "no field is high and flat enough for the dungeon"
+        sx, sy = self.doc["spawn"]
+
+        def meadow(o):
+            oy, ox = o
+            return collections.Counter(
+                self.g(ox + x, oy + y) for x in range(bx0, bx1 + 1) for y in range(by0, by1 + 1)
+                if self.g(ox + x, oy + y) in self.NATURAL).most_common(1)[0][0]
+        # the nearest meadow fit to the spawn (the snowfields fit too: rock)
+        sites = sorted(((int(cy) - by0, int(cx) - bx0) for cy, cx in fits),
+                       key=lambda o: (o[1] - sx) ** 2 + (o[0] - sy) ** 2)
+        best = next((o for o in sites if meadow(o) in self.DUNGEON_FIELD), None)
+        assert best, ("no meadow is high and flat enough for the dungeon", len(sites))
+        oy, ox = best
+        S = int(lv[oy, ox])
+        field = meadow(best)
+        # dig
+        gi, mud = self.gi, self.gi["dark_mud"]
+        cells, floor = {}, set()
+        for (x, y), d in plan.items():
+            c = (ox + x, oy + y)
+            cells[c] = S - d
+            self.lvl[c[1]][c[0]] = S - d
+        for (x0, y0, x1, y1), d in self.DUNGEON_ROOMS:
+            for y in range(y0, y1 + 1):
+                for x in range(x0, x1 + 1):
+                    floor.add((ox + x, oy + y))
+        runs = []
+        for lanes in self.DUNGEON_STAIRS:
+            for lane in lanes:
+                run = [(ox + x, oy + y) for (x, y, _d) in lane]
+                floor.update(run)
+                runs.append(run)
+        door = [(ox + x, oy + y) for (x, y) in self.DUNGEON_DOOR]
+        for c in floor | set(door):
+            self.grd[c[1]][c[0]] = mud
+        for x in (-1, 0, 1):
+            runs.append([(ox + x, oy + k) for k in range(0, P + 2)])
+        clear = set(door) | {(ox + x, oy + k) for x in (-2, -1, 0, 1, 2) for k in range(0, P + 1)} \
+            | {(ox + x, oy + P + 1) for x in (-1, 0, 1)}
+        torch = [(ox - 2, oy + P), (ox + 2, oy + P)]
+        clear -= set(torch)
+        for run in runs:
+            self.doc.setdefault("ramps", []).append({
+                "from": self.lvl[run[0][1]][run[0][0]], "to": self.lvl[run[-1][1]][run[-1][0]],
+                "ground": field, "kind": "stair",
+                "cells": [{"x": c[0], "y": c[1]} for c in run]})
+        self.dungeon_deck = {"kind": "cave", "level": S, "thickness": 0, "ground": field,
+                             "cells": [{"x": c[0], "y": c[1]} for c in sorted(floor)]}
+        self.doc["decks"].append(self.dungeon_deck)
+        margin = {(ox + x, oy + y) for x in range(bx0, bx1 + 1) for y in range(by0, by1 + 1)
+                  if (x, y) not in plan}
+        gone = len(self.doc["scenery"])
+        self.doc["scenery"] = [p for p in self.doc["scenery"]
+                               if (int(p["x"]), int(p["y"])) not in cells]
+        self._reindex()
+        self.mouth_clear = clear
+        self.mouth_torches = torch
+        self.dungeon_margin = margin      # the field around it is not cut either:
+                                          # a breach up the shelf took its corner
+        self.dungeon_site = {
+            "origin": (ox, oy), "S": S, "cells": cells, "floor": floor, "door": door,
+            "stairs": runs, "clear": clear, "margin": margin,
+            "ledges": [((ox + a, oy + b), (ox + c, oy + d)) for (a, b), (c, d) in self.DUNGEON_LEDGES]}
+        self.placed += [("dungeon under the field at", f"door ({ox},{oy}), field level {S}"),
+                        ("dungeon floor cells dug", len(floor)),
+                        ("dungeon stairs published", len(runs)),
+                        ("dungeon: scenery evicted", gone - len(self.doc["scenery"])),
+                        ("dungeon sites that fit", len(fits))]
+
+    def dungeon_field(self):
+        """THE LID WEARS THE FIELD. terrace_grounds recolours the meadow
+        after the dig (grass at 12 becomes dark mud), and it recolours only
+        terraces of TERRACE_MIN cells or more: the lid's recorded top and the
+        pit's banks and jambs would keep the old grass. They take what the
+        field around them mostly is."""
+        d = getattr(self, "dungeon_site", None)
+        if not d:
+            return
+        votes = collections.Counter(self.g(*c) for c in d["margin"] if self.g(*c) in self.NATURAL)
+        field = votes.most_common(1)[0][0]
+        self.dungeon_deck["ground"] = field
+        stair = {c for run in d["stairs"] for c in run}
+        n = 0
+        for c in d["clear"] | set(d.get("torches", ())):
+            if c not in stair and c not in d["floor"] and self.g(*c) != field:
+                self.grd[c[1]][c[0]] = self.gi[field]
+                n += 1
+        for r in self.doc["ramps"]:
+            if r.get("kind") == "stair" and (r["cells"][0]["x"], r["cells"][0]["y"]) in d["cells"]:
+                r["ground"] = field
+        self.placed += [("dungeon lid and banks wear the field", f"{field}, {n} cells")]
+
+    def dungeon_audit(self):
+        """BUILD ASSERT: the dungeon survived every later pass exactly as dug -
+        levels, ledges, the one lid, the untouched field around it, a clear
+        pit, and the player can walk to every floor of it."""
+        d = getattr(self, "dungeon_site", None)
+        if not d:
+            return
+        S, cells, floor = d["S"], d["cells"], d["floor"]
+        moved = [(c, l, self.lvl[c[1]][c[0]]) for c, l in cells.items() if self.lvl[c[1]][c[0]] != l]
+        assert not moved, ("dungeon cells changed level", moved[:8])
+        dk = self.dungeon_deck
+        assert any(x is dk for x in self.doc["decks"]), "the dungeon lid is gone"
+        assert int(dk["level"]) == S and int(dk.get("thickness", 1)) == 0, ("dungeon lid", dk["level"], dk.get("thickness"))
+        lid = {(c["x"], c["y"]) for c in dk["cells"]}
+        assert floor <= lid and not (lid & set(d["door"])), "the lid does not cover the floor, or covers the door"
+        stair = {c for run in d["stairs"] for c in run}
+        odd = [(c, self.g(*c)) for c in lid
+               if self.lvl[c[1]][c[0]] >= S or self.lvl[c[1]][c[0]] < S - self.DUNGEON_MIN_FIELD
+               or (self.g(*c) not in ("dark_mud", "slime", "ice") and c not in stair)]
+        assert not odd, ("lid cells that are not cave floor", odd[:8])
+        for top, foot in d["ledges"]:
+            assert self.lvl[top[1]][top[0]] - self.lvl[foot[1]][foot[0]] == self.DUNGEON_LEDGE, ("ledge", top, foot)
+        decked = {(c["x"], c["y"]) for x in self.doc["decks"] if x is not dk for c in x["cells"]}
+        # the widened passages are lid cells inside the ring: caves() dug them
+        widened = {c for c in d["margin"] if c in lid and c not in cells}
+        hurt = [c for c in d["margin"] - widened
+                if self.lvl[c[1]][c[0]] != S or c in lid or c in decked
+                or self.g(*c) not in self.NATURAL + ("light_soil",)]
+        assert not hurt, ("the field around the dungeon was touched", hurt[:8])
+        assert dk["ground"] == collections.Counter(
+            self.g(*c) for c in d["margin"] if self.g(*c) in self.NATURAL).most_common(1)[0][0], "the lid is not the field"
+        R = self.reach_cells
+        lost = [c for c in floor | set(d["door"]) if c not in R]
+        assert not lost, ("dungeon floor the player cannot reach", len(lost), lost[:8])
+        on = [(p["piece"], p["x"], p["y"]) for p in self.doc["scenery"]
+              if (int(p["x"]), int(p["y"])) in d["clear"]]
+        assert not on, ("something stands in the pit", on[:6])
+        inside = [p for p in self.doc["scenery"] if (int(p["x"]), int(p["y"])) in lid]
+        assert any(p["piece"].startswith("braziers/") for p in inside), "no brazier in the dungeon"
+        assert all(p["piece"].startswith(self.CAVE_OK) for p in inside), \
+            ("outdoor scenery in the dungeon", [p["piece"] for p in inside if not p["piece"].startswith(self.CAVE_OK)][:6])
+        lit = sum(1 for p in inside if (p.get("state") or "").startswith("LIT"))
+        torches = sum(1 for p in self.doc["scenery"] if p["piece"].startswith("torch_posts/")
+                      and (int(p["x"]), int(p["y"])) in set(self.mouth_torches))
+        assert torches, "no torch on the pit's rim"
+        levels = collections.Counter(self.lvl[c[1]][c[0]] for c in lid)
+        self.placed += [("dungeon audit", f"ok: lid {len(lid)} cells over floors at "
+                         + ", ".join(f"{l} x{n}" for l, n in sorted(levels.items()))
+                         + f"; {len(inside)} pieces, {lit} lit, {torches} rim torches")]
+
     # THE CAVE IS DUG, NOT INHERITED (maintainer 2026-09-06: "the cave floor
     # should be dark_mud and the inside wall should feel less random ... the
     # floor and walls inside the cave is a consequence of the top of the
@@ -1102,35 +1393,45 @@ class Grow:
         decks = [(i, dk) for i, dk in enumerate(self.doc["decks"]) if dk.get("kind") == "cave"]
         cave_all = {(c["x"], c["y"]) for _, dk in decks for c in dk["cells"]}
 
-        def rock(c):
+        # THE ROCK A CAVE IS DUG INTO is anything at its lid's level or
+        # above: ROCK_MIN for the mountain (lids at 24-40 over floors at 0),
+        # the field's own level for the dungeon under it.
+        self.cave_rock_min = {i: min(self.ROCK_MIN, int(dk["level"])) for i, dk in decks}
+        ramp = {(c["x"], c["y"]) for r in self.doc.get("ramps", []) for c in r["cells"]}
+
+        def rock(c, rm):
             x, y = c
             return (self.g(x, y) and not self.liquid(x, y) and c not in cave_all
-                    and self.lvl[y][x] >= self.ROCK_MIN)
+                    and self.lvl[y][x] >= rm)
 
-        def interior(c):
-            return all(rock((c[0] + dx, c[1] + dy)) or (c[0] + dx, c[1] + dy) in cave_all
+        def interior(c, rm):
+            return all(rock((c[0] + dx, c[1] + dy), rm) or (c[0] + dx, c[1] + dy) in cave_all
                        for dx in (-1, 0, 1) for dy in (-1, 0, 1))
         widened = 0
         for i, dk in decks:
             floor = {(c["x"], c["y"]) for c in dk["cells"]}
             lid = int(dk["level"])
-            fl = min(self.lvl[y][x] for x, y in floor)
-            new = set()
+            rm = self.cave_rock_min[i]
+            new = {}
             # a one-cell wall between two passages goes too: "as soon as you
             # enter the cave you have two small corridors going top right
             # instead of one bigger corridor" (maintainer 2026-09-06)
             for (x, y) in sorted(floor):
+                if (x, y) in ramp:
+                    continue      # a cut stair keeps its lanes: a third at one
+                                  # step's level would be a step nobody cut
                 for n in ((x + 1, y), (x, y + 1)):
-                    if n in cave_all or n in new or not rock(n):
+                    if n in cave_all or n in new or not rock(n, rm):
                         continue
-                    if self.lvl[n[1]][n[0]] != lid or not interior(n):
+                    if self.lvl[n[1]][n[0]] != lid or not interior(n, rm):
                         continue
-                    new.add(n)
-            for (x, y) in new:
-                self.lvl[y][x] = fl
+                    new[n] = self.lvl[y][x]   # the passage's own level: a cave
+                                              # floor is not one level any more
+            for (x, y), l in new.items():
+                self.lvl[y][x] = l
                 dk["cells"].append({"x": x, "y": y})
-            cave_all |= new
-            floor |= new
+            cave_all |= set(new)
+            floor |= set(new)
             widened += len(new)
             for (x, y) in floor:
                 self.grd[y][x] = gi["dark_mud"]
@@ -1306,6 +1607,23 @@ class Grow:
             return n
         return {c for c in cs if run(c, 1, 0) >= self.ROOM_MIN and run(c, 0, 1) >= self.ROOM_MIN}
 
+    @staticmethod
+    def _chambers(cells):
+        """4-connected patches of a cell set: the chambers of one lid."""
+        left, out = set(cells), []
+        while left:
+            seed = left.pop()
+            comp, st = {seed}, [seed]
+            while st:
+                x, y = st.pop()
+                for m in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                    if m in left:
+                        left.discard(m)
+                        comp.add(m)
+                        st.append(m)
+            out.append(comp)
+        return sorted(out, key=lambda c: min(c))
+
     def _put_flush(self, piece, cell, side, on):
         """Put a piece on a floor cell FLUSH against the wall on `side`
         (n/w/s/e): the footprint's back edge on the wall line, like furniture
@@ -1345,9 +1663,10 @@ class Grow:
             if biggest is None or len(cells) > len(biggest[1]):
                 biggest = (i, cells)
             side = self.cave_side.get(i, "grey_stone")
+            rm = self.cave_rock_min.get(i, self.ROCK_MIN)
 
             def wall(c):
-                return c not in cave and (not self.g(*c) or self.lvl[c[1]][c[0]] >= self.ROCK_MIN)
+                return c not in cave and (not self.g(*c) or self.lvl[c[1]][c[0]] >= rm)
 
             def nfloor(c):
                 return sum(1 for dx in (-1, 0, 1) for dy in (-1, 0, 1)
@@ -2530,22 +2849,36 @@ class Grow:
         # 3. torches at the cave mouth, then the braziers hall by hall (one
         #    per hall, then a second, ...) so no hall hogs the cave's window
         cave = getattr(self, "cave_floor", {})
-        mouth = sorted(c for c in cave if any(
-            m not in cave and self.g(*m) and not self.liquid(*m) and self.lvl[m[1]][m[0]] < self.ROCK_MIN
-            for m in ((c[0] + 1, c[1]), (c[0] - 1, c[1]), (c[0], c[1] + 1), (c[0], c[1] - 1))))
+        rmin = getattr(self, "cave_rock_min", {})
+        clear = getattr(self, "mouth_clear", set())
+
+        def n4(c):
+            return ((c[0] + 1, c[1]), (c[0] - 1, c[1]), (c[0], c[1] + 1), (c[0], c[1] - 1))
+
+        def grade(m, i):     # land at the cave's grade beyond its floor: the way in
+            return (m not in cave and self.g(*m) and not self.liquid(*m)
+                    and self.lvl[m[1]][m[0]] < rmin.get(i, self.ROCK_MIN))
+        mouth = sorted(c for c, i in cave.items() if any(grade(m, i) for m in n4(c)))
         torches = self._lit_pool("torch_posts")
         tally["cave mouth cells"] = len(mouth)
         tally["house doors"] = len(getattr(self, "house_doors", []))
-        if mouth and torches:
-            outs = []
-            for c in mouth:
-                for m in ((c[0] + 1, c[1]), (c[0] - 1, c[1]), (c[0], c[1] + 1), (c[0], c[1] - 1)):
-                    if m not in cave and self.g(*m) in self.NATURAL and self.lvl[m[1]][m[0]] < self.ROCK_MIN:
-                        outs.append(m)
-            outs = sorted(set(outs))
-            for k, m in enumerate((outs[0], outs[-1]) if len(outs) > 1 else outs):
-                pc, st = torches[k % len(torches)]
-                tally["cave mouth torches"] += place(pc, st, m[0] + 0.5, m[1] + 0.5, why="cave mouth torches", on=tuple(self.NATURAL))
+        # ONE PAIR OF TORCHES PER CAVE: the mountain's stand in its mouth, the
+        # dungeon's on the rim of its pit (the doorway and the stair stay clear)
+        outs = collections.defaultdict(set)
+        for c in mouth:
+            for m in n4(c):
+                if grade(m, cave[c]) and self.g(*m) in self.NATURAL and m not in clear:
+                    outs[cave[c]].add(m)
+        dg = getattr(self, "dungeon_deck", None)
+        if dg is not None and any(dk is dg for dk in self.doc["decks"]):
+            di = next(i for i, dk in enumerate(self.doc["decks"]) if dk is dg)
+            outs[di] |= set(getattr(self, "mouth_torches", ()))
+        if torches:
+            for i, spots in sorted(outs.items()):
+                spots = sorted(spots)
+                for k, m in enumerate((spots[0], spots[-1]) if len(spots) > 1 else spots):
+                    pc, st = torches[k % len(torches)]
+                    tally["cave mouth torches"] += place(pc, st, m[0] + 0.5, m[1] + 0.5, why="cave mouth torches", on=tuple(self.NATURAL))
         braz = sorted((p for p in self.doc["scenery"] if p["piece"].startswith("braziers/")), key=near)
         halls = []          # clusters of braziers within 6 cells
         for p in braz:
@@ -3167,7 +3500,10 @@ class Grow:
                 elif g in ("snow", "grey_stone") and z >= 16:
                     spots["mountain"].append((x, y, [16, 40]))
                 elif g == "dark_mud":
-                    spots["mud"].append((x, y, [0, 4]))
+                    # the riverbank strip is level 0-4; a mud FLAT above it
+                    # (the shelf under the massif) bands to its own level
+                    # (games2 re-banded n-mud-2 by hand to 9-11, 2026-09-09)
+                    spots["mud"].append((x, y, [0, 4] if z <= 4 else [z - 1, z + 1]))
         new, ni = [], 0
         for kind, lim in (("grass", 6), ("mountain", 4), ("mud", 2)):
             cast = casts[kind] or casts["grass"]
@@ -3183,16 +3519,18 @@ class Grow:
                             "area": rect(x - 7, y - 5, 14, 10),
                             "elev": el, "num": 2})
             ni += len(picked)
-        caves2 = [dk for dk in [getattr(self, "new_cave", None)] if dk]
+        caves2 = [dk for dk in (getattr(self, "new_cave", None),
+                                getattr(self, "dungeon_deck", None)) if dk]
         for j, dk in enumerate(caves2):
             xs = [c["x"] for c in dk["cells"]]
             ys = [c["y"] for c in dk["cells"]]
             fl = min(self.lvl[c["y"]][c["x"]] for c in dk["cells"])
+            fh = max(self.lvl[c["y"]][c["x"]] for c in dk["cells"])
             cast = casts["cave"] or ["masked_shadow_creature"]
             new.append({"id": f"n-cave-{j + 1}", "monster": cast[j % len(cast)],
                         "area": rect(min(xs) - 1, min(ys) - 1,
                                      max(xs) - min(xs) + 2, max(ys) - min(ys) + 2),
-                        "elev": [fl, fl + 2], "num": 2})
+                        "elev": [fl, max(fl + 2, fh)], "num": 2})
         out = {"schema": "pixel-maps3/spawns@1", "world": "the_game",
                "zones": zones + new}
         json.dump(out, open(os.path.join(OUT, "spawns.json"), "w"),
@@ -4114,19 +4452,21 @@ class Grow:
                 continue              # tunnel segments stay dark
             # on a room's wall side, never in a corridor: a brazier in the
             # passage blocked it (maintainer 2026-09-06)
-            room = self._cave_rooms(cells)
-            edge = []
-            for c in sorted(room):
-                for sd, m in (("n", (c[0], c[1] - 1)), ("w", (c[0] - 1, c[1])),
-                              ("s", (c[0], c[1] + 1)), ("e", (c[0] + 1, c[1]))):
-                    if m not in cave_floor:
-                        edge.append((c, sd))
-                        break
-            if not edge:
-                continue
-            step = max(1, len(edge) // 3)
-            for i, (c, sd) in enumerate(edge[::step][:3]):
-                n += self._put_flush(bz[i % len(bz)], c, sd, ("dark_mud", "ice", "slime"))
+            # three per CHAMBER: a lid holds several once its rooms step
+            # (the dungeon under the field is one lid over three)
+            for chamber in self._chambers(self._cave_rooms(cells)):
+                edge = []
+                for c in sorted(chamber):
+                    for sd, m in (("n", (c[0], c[1] - 1)), ("w", (c[0] - 1, c[1])),
+                                  ("s", (c[0], c[1] + 1)), ("e", (c[0] + 1, c[1]))):
+                        if m not in cave_floor:
+                            edge.append((c, sd))
+                            break
+                if not edge:
+                    continue
+                step = max(1, len(edge) // 3)
+                for i, (c, sd) in enumerate(edge[::step][:3]):
+                    n += self._put_flush(bz[i % len(bz)], c, sd, ("dark_mud", "ice", "slime"))
         self.placed += [("cave braziers", n)]
 
     # -- village + roads ------------------------------------------------------
@@ -4655,11 +4995,17 @@ class Grow:
         # lower ground behind it. So two terraces constrain each other only
         # where the LOWER one lies north or west of the higher.
         contact = collections.Counter()
+        # A CAVE FLOOR TOUCHES NOTHING: the lid hides the seam, and counting
+        # it recoloured the field over the dungeon grey (its dark-mud
+        # chambers took the meadow's own colour, measured)
+        cave = getattr(self, "cave_floor", {})
         for i, (lv, cells, dom) in enumerate(ts):
             for (x, y) in cells:
+                if (x, y) in cave:
+                    continue
                 for dx, dy in ((-1, 0), (0, -1)):        # north, west of me
                     j = idx.get((x + dx, y + dy))
-                    if j is not None and j != i \
+                    if j is not None and j != i and (x + dx, y + dy) not in cave \
                             and lv - ts[j][0] >= self.STEP:  # I am higher
                         contact[(i, j)] += 1
         adj = [set() for _ in ts]
@@ -5164,12 +5510,35 @@ class Grow:
             for c in w["cells"]:
                 side[(c["x"], c["y"])] = w["side"]
         kinds = collections.Counter()
-        for r in self.doc.get("ramps", []):
-            if r.get("kind") != "stair":
-                continue
-            cells = [(c["x"], c["y"]) for c in r["cells"]]
+        # A STAIR IS ITS LANES TOGETHER: a breach is up to three runs side by
+        # side and the dungeon's pit is three, and rolling per run striped
+        # the pit light_soil | dark_mud | grey_paving_stone (measured). Runs
+        # that touch are one stair, one roll, one material.
+        stairs = [r for r in self.doc.get("ramps", []) if r.get("kind") == "stair"]
+        owner = {}
+        parent = list(range(len(stairs)))
+
+        def find(i):
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]
+                i = parent[i]
+            return i
+        for i, r in enumerate(stairs):
+            for c in r["cells"]:
+                x, y = c["x"], c["y"]
+                for m in ((x, y), (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                    j = owner.get(m)
+                    if j is not None and find(i) != find(j):
+                        parent[find(i)] = find(j)
+                owner[(x, y)] = i
+        groups = collections.defaultdict(list)
+        for i, r in enumerate(stairs):
+            groups[find(i)].append(r)
+        for group in groups.values():
+            cells = [(c["x"], c["y"]) for r in group for c in r["cells"]]
             cellset = set(cells)
-            rr = _rng32((cells[0][0] * 2654435761 ^ cells[0][1] * 40503 ^ 0x57A12) & 0xffffffff)
+            seed = min(cellset)
+            rr = _rng32((seed[0] * 2654435761 ^ seed[1] * 40503 ^ 0x57A12) & 0xffffffff)
             walls = collections.Counter()
             grounds = collections.Counter()
             for (x, y) in cells:
@@ -5192,13 +5561,18 @@ class Grow:
             if mat is None:
                 mat = self.STAIR_ELSE[int(rr() * len(self.STAIR_ELSE)) % len(self.STAIR_ELSE)]
                 why = "something else"
-            n = 0
             for (x, y) in cells:
                 if self.g(x, y) in self.STAIR_OVER and self.g(x, y) != mat:
                     self.grd[y][x] = self.gi[mat]
-                    n += 1
-            r["ground"] = mat
+            for r in group:
+                r["ground"] = mat
             kinds[f"{why}: {mat}"] += 1
+        # BUILD ASSERT: touching stair runs wear one material
+        for r in stairs:
+            for c in r["cells"]:
+                for m in ((c["x"] + 1, c["y"]), (c["x"], c["y"] + 1)):
+                    j = owner.get(m)
+                    assert j is None or stairs[j]["ground"] == r["ground"], ("striped stair", c, m)
         # a two-cell stair painted into open grass is a speck by the ground
         # audit's own rule; the dissolver decides, as it does after the apron
         left = self._dissolve_specks()
@@ -5637,10 +6011,18 @@ class Grow:
 
     def _carvable(self, x, y):
         g = self.g(x, y)
+        # A CAVE FLOOR NEVER WANTS A STAIR TO THE SURFACE - its lid is the
+        # surface. The slope-top rule read the dungeon's inner stair as a
+        # slope ending under a cliff and cut a breach from its head up
+        # through the field (measured: a 5-step light_soil stair beside the
+        # pit). The pit itself is cut once, by dungeon().
         return (g and g not in self.INDOOR_GROUNDS and g != "light_soil"
                 and (x, y) not in self.floor_cells
                 and (x, y) not in getattr(self, "door_cells", set())
-                and (x, y) not in getattr(self, "wild_cells", set()))
+                and (x, y) not in getattr(self, "wild_cells", set())
+                and (x, y) not in getattr(self, "cave_floor", {})
+                and (x, y) not in getattr(self, "mouth_clear", set())
+                and (x, y) not in getattr(self, "dungeon_margin", set()))
 
     def _stair(self, t, b, T, B):
         """A BREACH: the way up is cut DOWN into the terrace above, never
@@ -6144,7 +6526,11 @@ class Grow:
                     "kind": "road",
                     "cells": [{"x": c[0], "y": c[1]} for c in seg],
                 })
-        self.doc["ramps"] = runs
+        # the road's runs are rebuilt from the road; a CUT stair stays (the
+        # dungeon's pit and inner stairs are published before this pass, and
+        # rebuilding from the road alone dropped all seven: the lanes then
+        # kept the meadow's grass and the way down was never a ramp)
+        self.doc["ramps"] = [r for r in self.doc.get("ramps", []) if r.get("kind") == "stair"] + runs
         # THE CONTRACT IS BUILD-ASSERTED, because the game implements
         # walkability from it: every run is 4-connected, monotone, and every
         # step is exactly one level.
@@ -6210,10 +6596,10 @@ class Grow:
                      # (both measured). A buried tunnel needs an underground
                      # LAYER in the format — flagged; the isthmus road is
                      # the crossing, each massif keeps its own dungeon.
-                     self.town_ground, self.i2_cave, self.caves,
+                     self.town_ground, self.i2_cave, self.dungeon, self.caves,
                      self.i2_road, self.i2_systems, self.groom, self._reindex,
                      self.archipelago, self.pier, self.houses, self.town,
-                     self.mountain_back, self.wild, self.terrace_grounds, self.lava,
+                     self.mountain_back, self.wild, self.terrace_grounds, self.dungeon_field, self.lava,
                      self.build_no_place, self.interiors, self.village, self.windows,
                      self.roads, self.nature, self.cave_dress, self.dress_islets,
                      self.retype, self.widen_roads, self.ramps,
@@ -6222,7 +6608,7 @@ class Grow:
                      self.lights, self.npcs,
                      self.rooms, self.cliff_faces, self.cliff_apron, self.way_ground,
                      self.audit_ground,
-                     self.spawns, self.recentre, self.settle_states):
+                     self.dungeon_audit, self.spawns, self.recentre, self.settle_states):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)
