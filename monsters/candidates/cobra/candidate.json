@@ -339,28 +339,26 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.0723,
-          "step_max": 0.0825,
-          "drift": 1.56,
-          "loop": 0.2135,
-          "loop_ratio": 2.95,
-          "travel": 0.26,
-          "pin": 0.959,
+          "status": "pass",
+          "step_mean": 0.0579,
+          "step_max": 0.0975,
+          "drift": 1.71,
+          "loop": 0.1073,
+          "loop_ratio": 1.85,
+          "travel": 0.12,
+          "pin": 0.951,
           "pad": 0,
           "canvas": [
             88,
             88
           ],
-          "reasons": [
-            "last→first hand-off is 3.0× a normal step — the loop hitches"
-          ],
-          "sub": "3af983f2-a364-475f-9050-11e12817d49a",
-          "group": "4601d3b6-362c-4546-bb81-211aef06d3b8",
-          "takes": 1,
-          "version": 2,
+          "reasons": [],
+          "sub": "0e9785c2-5015-4803-9c5e-cd8aa36a8714",
+          "group": "ab532b24-79d3-433d-acd6-ed91fba53811",
+          "takes": 2,
+          "version": 3,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:23:28+00:00"
+          "generated_at": "2026-09-09T21:42:20+00:00"
         },
         "south-east": {
           "status": "warn",
