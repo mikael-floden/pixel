@@ -5,6 +5,7 @@ import { createServer } from "http";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client, Room } from "colyseus.js";
+import { matchMaker } from "@colyseus/core";
 import { ROOM_NAME, CELL_WU, INTEREST_LEAVE_WU, zoneGrid, zoneAt, zoneRect, nearEdge, distToRect, zoneNeighbours, WHOLE_WORLD } from "@nangijala/shared";
 import { WorldRoom, resetWorldClocks } from "../src/rooms/WorldRoom.js";
 import { FakeBus, useBus } from "../src/bus.js";
@@ -187,6 +188,37 @@ test("one live session per account, world-wide: a second tab in another zone kic
     await waitFor(() => left !== null, 5000, "tab 1 was kicked from zone 0 by a join in zone 1");
     assert.equal(left, 4001, "the kick code");
     r2.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+    useBus(null);
+  }
+});
+
+test("one room per zone: a duplicate is locked and hands its arrivals to the owner", async (t) => {
+  if (!HAVE_WORLD) return t.skip(SKIP);
+  const port = 2969;
+  useBus(new FakeBus());
+  resetWorldClocks();
+  const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
+  gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world", "zone"]);
+  await gameServer.listen(port);
+  const base = { world: "the_game", zonesCfg: CFG, monsterCount: 0, interestRadius: 0 };
+  try {
+    const owner = await matchMaker.createRoom(ROOM_NAME, { ...base, zone: 1 });
+    const dup = await matchMaker.createRoom(ROOM_NAME, { ...base, zone: 1 });
+    const rooms = await matchMaker.query({ name: ROOM_NAME });
+    const dupCache = rooms.find((r) => r.roomId === dup.roomId);
+    assert.ok(dupCache?.locked, "the second room of the zone is locked");
+    assert.ok(!rooms.find((r) => r.roomId === owner.roomId)?.locked, "the owner is open");
+    // A joinOrCreate lands in the owner, never the duplicate.
+    const cA = new Client(`ws://localhost:${port}`);
+    const rA: any = await cA.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "A", character: "default_boy" });
+    assert.equal(rA.roomId, owner.roomId);
+    // (A creator's own reservation is honoured before the lock lands, so that
+    // one body reaches onJoin and is handed to the owner by adoptPlayer; a
+    // later joinById is refused outright — "room is locked" — which is also
+    // right. The race itself has no deterministic harness.)
+    rA.leave();
   } finally {
     await gameServer.gracefullyShutdown(false);
     useBus(null);

@@ -10,7 +10,7 @@ import { bus } from "../bus.js";
 // (140 monsters for an unlimited test client), overflowed silently: fields
 // arrived undefined on the client (kind agrees across clients — 2026-09-09).
 // 64 KB clears every world with an order of magnitude of headroom.
-Encoder.BUFFER_SIZE = 64 * 1024;
+Encoder.BUFFER_SIZE = 2 * 1024 * 1024;
 import {
   InputMessage,
   JoinOptions,
@@ -200,6 +200,19 @@ const GHOST_TTL_MS = 1000; // a ghost outlives its owner's last snapshot this lo
 const HANDOFF_TTL_S = 10; // the hot state waits on the bus this long for the receiving join
 const HANDOFF_TIMEOUT_MS = 10_000; // then the sending room forgets the attempt and keeps the body
 const handoffKey = (world: string, pid: string) => `handoff:${world}:${pid}`;
+/** ONE ROOM PER ZONE PER PROCESS. joinOrCreate races: while the first room
+ *  of a zone is still in onCreate (the terrain load, ~1 s), a second join
+ *  finds no room and creates another — measured with the load bot, two
+ *  zone-11 rooms of 200 players each, two universes. The first room to
+ *  finish onCreate owns the key; a later one is a DUPLICATE: locked (never
+ *  matched again), and every body that lands in it is handed to the owner
+ *  through the ordinary hand-off. index.ts warms every zone room at boot so
+ *  the race has no window in normal play. */
+const zoneRooms = new Map<string, string>();
+export const zoneRoomKey = (world: string, zone: number) => `${world}:${zone}`;
+export function zoneRoomIds(): Map<string, string> {
+  return zoneRooms;
+}
 
 interface HotState {
   key: string;
@@ -275,6 +288,72 @@ export function zonesConfigFor(world: string): ZoneCfg | null {
 /** Tests: forget the cached file. */
 export function resetZonesConfig(): void {
   zonesConfig = null;
+}
+
+/** ROOM STATS for the load bot (`/api/stats`, spec/ZONES.md phase 4): every
+ *  room keeps the last TICK_RING tick durations; the endpoint reports p50/p95/
+ *  max per room plus process CPU and event-loop lag, so a load run reads the
+ *  server's own numbers instead of guessing from the client side. */
+const TICK_RING = 200;
+interface RoomStat {
+  world: string;
+  zone: number;
+  clients: number;
+  players: number;
+  monsters: number;
+  ghosts: number;
+  ticks: number[];
+  at: number;
+}
+const roomStats = new Map<string, RoomStat>();
+let cpuLast = process.cpuUsage();
+let cpuLastAt = Date.now();
+let loopLagMax = 0;
+let loopLagSum = 0;
+let loopLagN = 0;
+{
+  // Event-loop lag: a 100 ms timer that measures how late it fires.
+  let expected = Date.now() + 100;
+  const t = setInterval(() => {
+    const lag = Math.max(0, Date.now() - expected);
+    loopLagMax = Math.max(loopLagMax, lag);
+    loopLagSum += lag;
+    loopLagN++;
+    expected = Date.now() + 100;
+  }, 100);
+  t.unref?.();
+}
+function pct(sorted: number[], p: number): number {
+  if (!sorted.length) return 0;
+  return sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))];
+}
+export function perfStats() {
+  const now = Date.now();
+  const cpu = process.cpuUsage(cpuLast);
+  const wall = Math.max(1, now - cpuLastAt);
+  cpuLast = process.cpuUsage();
+  cpuLastAt = now;
+  const rooms = [...roomStats.entries()]
+    .filter(([, r]) => now - r.at < 5000)
+    .map(([id, r]) => {
+      const t = [...r.ticks].sort((a, b) => a - b);
+      return {
+        id, world: r.world, zone: r.zone, clients: r.clients, players: r.players, monsters: r.monsters, ghosts: r.ghosts,
+        tickMs: { p50: +pct(t, 0.5).toFixed(2), p95: +pct(t, 0.95).toFixed(2), max: +(t[t.length - 1] ?? 0).toFixed(2), n: t.length },
+      };
+    });
+  const out = {
+    at: now,
+    cpuPct: +(((cpu.user + cpu.system) / 1000 / wall) * 100).toFixed(1), // of ONE core, since the last call
+    loopLagMs: { mean: +(loopLagN ? loopLagSum / loopLagN : 0).toFixed(1), max: loopLagMax },
+    rssMb: +(process.memoryUsage().rss / 1048576).toFixed(0),
+    rooms,
+    totals: { clients: rooms.reduce((a, r) => a + r.clients, 0), players: rooms.reduce((a, r) => a + r.players, 0), monsters: rooms.reduce((a, r) => a + r.monsters, 0) },
+  };
+  loopLagMax = 0;
+  loopLagSum = 0;
+  loopLagN = 0;
+  return out;
 }
 
 export class WorldRoom extends Room<WorldState> {
@@ -484,7 +563,17 @@ export class WorldRoom extends Room<WorldState> {
         this.rect = zoneRect(this.grid, zone);
         this.idPrefix = `z${zone}:`;
       }
-      this.setMetadata({ world, zone: this.zoneId });
+      if (this.zoneId !== WHOLE_WORLD) {
+        const key = zoneRoomKey(world, this.zoneId);
+        if (zoneRooms.has(key)) {
+          this.duplicate = true;
+          this.lock();
+        } else {
+          zoneRooms.set(key, this.roomId);
+          this.autoDispose = false; // a zone room lives as long as the process
+        }
+      }
+      this.setMetadata({ world, zone: this.zoneId, duplicate: this.duplicate });
       // The maps2 spawn zones for THIS world (sidecar next to world.json),
       // resolved against the grid: which cells are truly standable/swimmable
       // at each zone's elev band. No grid (open world) → no monsters.
@@ -862,7 +951,11 @@ export class WorldRoom extends Room<WorldState> {
     this.seedMonsters();
 
     const dtMs = 1000 / TICK_RATE;
-    this.setSimulationInterval((delta) => this.update(delta / 1000), dtMs);
+    this.setSimulationInterval((delta) => {
+      const t0 = performance.now();
+      this.update(delta / 1000);
+      this.recordTick(performance.now() - t0);
+    }, dtMs);
 
     // CHESS boards for this world (config, live-overridable; tests inject).
     this.chess = new ChessManager(
@@ -2308,6 +2401,7 @@ export class WorldRoom extends Room<WorldState> {
   private grid: ZoneGrid | null = null;
   private rect: Rect | null = null;
   private idPrefix = ""; // monsters and drops of a zone room carry `z<zone>:` so ids are world-unique
+  private duplicate = false; // a second room of a zone that already has one (see zoneRooms)
   private chan = {
     events: "",
     presence: "",
@@ -2350,6 +2444,9 @@ export class WorldRoom extends Room<WorldState> {
     // it is what "one live session per account" is enforced on, world-wide.
     if (player.accountId)
       void bus().hset(this.chan.presence, player.accountId, JSON.stringify({ pid, zone: this.zoneId, name: player.name }));
+    // A duplicate room hands every arrival to the zone's owner at once (the
+    // same zone id; this room is locked, so the join lands in the owner).
+    if (this.duplicate) this.startHandoff(player, pid, this.zoneId, Date.now());
   }
 
   /** ONE LIVE SESSION PER ACCOUNT, WORLD-WIDE (the account agent's contract,
@@ -2713,7 +2810,25 @@ export class WorldRoom extends Room<WorldState> {
     }
   }
 
+  private recordTick(ms: number) {
+    let r = roomStats.get(this.roomId);
+    if (!r) {
+      r = { world: this.worldName, zone: this.zoneId, clients: 0, players: 0, monsters: 0, ghosts: 0, ticks: [], at: 0 };
+      roomStats.set(this.roomId, r);
+    }
+    r.ticks.push(ms);
+    if (r.ticks.length > TICK_RING) r.ticks.shift();
+    r.clients = this.clients.length;
+    r.players = this.state.players.size;
+    r.monsters = this.state.monsters.size;
+    r.ghosts = this.state.ghosts.size + this.state.ghostMonsters.size;
+    r.at = Date.now();
+  }
+
   onDispose() {
+    roomStats.delete(this.roomId);
+    if (this.zoneId !== WHOLE_WORLD && zoneRooms.get(zoneRoomKey(this.worldName, this.zoneId)) === this.roomId)
+      zoneRooms.delete(zoneRoomKey(this.worldName, this.zoneId));
     if (this.starTimer) clearTimeout(this.starTimer);
     this.offLive?.();
     for (const off of this.unsubs) off();

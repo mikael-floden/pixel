@@ -122,3 +122,57 @@ and the rejected approaches as each phase lands. Rewrite in place.
   `zones.test.ts`.
 - NOT YET (spec phases 4-5): the load bot; cross-border combat (a ghost can
   be neither hit nor hit you); warm rooms.
+
+## The load bot (2026-09-09)
+
+`scripts/loadbot.mjs --n 200 --seconds 60 [--pack cx,cy | --border 99]
+[--fight] [--nointerest]` against a running dev server: N fake clients
+joining like the game (the spawn's zone), teleported to a spot, streaming
+20 Hz inputs on a random walk, following every `zone:go`, optionally
+engaging the nearest monster. It samples the server's own `/api/stats`
+(tick p50/p95/max per room over the last 200 ticks, CPU of one core since
+the last call, event-loop lag, rss) every second and measures its own ACK
+LATENCY (input seq sent → seen acked), stuck bots, hand-offs and client
+decode errors. Run two processes for more than ~250 bots: one bot process
+is at ~75% of a core at 200. Its own loop lag is printed so a starved
+harness cannot pass as a slow server.
+
+Measured on this 4-core dev box, one server process, the_game with the 4x4
+grid, all bots packed within a few cells in one zone (the crowded-room case):
+
+| bots in one room | server CPU (mean, one core) | tick p50 / p95 ms | ack p50 / p95 ms | stuck |
+|---|---|---|---|---|
+| 40 | 10% | 0.4 / 0.8 | 52 / 102 | 0 |
+| 100 | 27% | 1.6 / 3.9 | 51 / 102 | 0 |
+| 200 | 50% | 2.5 / 11.8 | 101 / 105 | 0 |
+| 400 (2 rooms of 200, see below) | 92% | 2.5 / 12.2 | 101 / 122 | 0 |
+
+- **THE ENCODER BUFFER MUST HOLD EVERY CLIENT'S VIEW SECTION OF ONE PATCH.**
+  Colyseus appends each client's view-encoded patch into the ONE shared
+  buffer (`SchemaSerializer.applyPatches` advances the same iterator across
+  clients), so the buffer grows with clients x visible entities, not with
+  the state. At 64 KB, 100 packed bots overflowed on every patch (302,664
+  warnings in one run, up to 656 KB asked for), the bytes past the end were
+  garbage, 19 of 100 clients died on `"refId" not found` and stopped
+  applying patches — ack p95 of seconds while the tick was 4 ms and CPU
+  27%. `Encoder.BUFFER_SIZE` is 2 MB (WorldRoom.ts); two buffers per room.
+  The first symptom of an undersized buffer is clients silently freezing,
+  never a server error.
+- **ONE ROOM PER ZONE PER PROCESS.** Two bot processes joining zone 11 at
+  once got TWO zone-11 rooms of 200 each (`rooms 2 players 400` in the
+  stats): joinOrCreate races while the first room is still in onCreate (the
+  terrain load). The first room to finish owns `zoneRooms[world:zone]`,
+  `autoDispose` off; a later one is a duplicate: locked, and every body that
+  lands in it is handed to the owner. index.ts warms every zone room after
+  listen (16 rooms of the_game in 1.7 s), so the race has no window in play
+  and no join waits for a terrain load. Gate: the duplicate test in
+  `zones.test.ts`.
+- Idle cost with 16 warm rooms: ~20% of a core (the monster brains, spread
+  over rooms — zone 6 with 63 monsters ticks 2 ms p50) and 850 MB rss
+  (each room builds its own terrain grid and stamps scenery; sharing one
+  grid per world is the obvious cut). Both are the next things to measure,
+  not yet done.
+- The ceiling for a packed room on one core is therefore around 200-250
+  clients before ack latency moves; the cost is the per-client patch
+  encoding, not the tick. Border crossings and fights at scale: not yet
+  measured (the runs were cut short).

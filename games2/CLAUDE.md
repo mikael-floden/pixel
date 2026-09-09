@@ -150,6 +150,11 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   room lets go on `handoff:done`).
 - A player's map key is its FIRST session id and never changes across
   hand-offs; the client finds itself by the synced `sid`, never by key.
+- ONE room per zone per process (`zoneRooms`, warmed at boot, autoDispose
+  off; a duplicate locks and hands its arrivals to the owner).
+- `Encoder.BUFFER_SIZE` holds EVERY client's view section of one patch (2 MB;
+  an overflow freezes clients silently, never errors). `scripts/loadbot.mjs`
+  + `/api/stats` are the load instrument; numbers in `docs/backend.md`.
 - A client receives only what is within `INTEREST_WU` of itself (a
   `StateView` per client, recomputed every `INTEREST_TICKS`); "unlimited" is a
   view holding everything, and only a room CREATE option grants it.
