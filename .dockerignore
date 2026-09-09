@@ -28,12 +28,14 @@ maps2/worlds3/*/overview_full.webp
 # to exclude. Kept as a standing guard: if the music pipeline ever writes a wav
 # beside its ogg again, it must not reach players.
 #
-# sounds/ IS DELIBERATELY NOT LISTED. Five foley takes are wav-ONLY — their
-# audible level did not survive the opus encode, so to-opus.py kept the master
-# as the only copy — and one of them, mon_water_poring_attack, is ASSIGNED to
-# player.water_enter. A blanket sounds/**/*.wav rule would 404 a sound the
-# maintainer picked. 0.24 MB; the rule this file needs cannot be written as a
-# glob, so the correct rule is none.
+# sounds/ IS STILL DELIBERATELY NOT LISTED, for a better reason than before.
+# The five takes that used to be wav-only are ogg now: they were not damaged,
+# they carried a DC OFFSET (hit_taken_melon rode at +0.5018) and the gate had
+# no lower band edge, so it read opus stripping inaudible DC as a 13 dB loss.
+# With the band floored at 20 Hz all five encode transparently. The library is
+# 100% ogg — so a wav appearing here again means a conversion genuinely FAILED
+# and the master is the only copy, which is exactly the case that must still
+# reach players. Excluding it would turn a failure into silence.
 music/**/*.wav
 !monsters
 !items

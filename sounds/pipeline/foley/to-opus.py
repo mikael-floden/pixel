@@ -54,6 +54,16 @@ MAX_DUR_DRIFT_S = 0.030
 # with nothing at all between 4 and 16 kHz. A perceptual codec throwing that
 # away is the codec doing its job. Measure what a person can hear.
 AUDIBLE_HZ = 16000
+# ...AND A FLOOR, for the same reason at the other end of the spectrum. The gate
+# had no lower bound, so DC and infrasound counted as "audible level" — and five
+# takes came out of the generator with a DC OFFSET (hit_taken_melon sat at
+# +0.5018, half of full scale as a constant bias; 98.7% of its "energy" was
+# below 20 Hz). Opus high-passes DC away, which is CORRECT, and the gate read
+# that as the take being destroyed by 13.3 dB and kept the wav as the only copy.
+# Measured with the floor in place, opus preserves all five: +0.1, +1.6, -0.1,
+# -0.0, +0.1 dB. Same class of bug as AUDIBLE_HZ itself, found the same way —
+# measure what a person can hear, at BOTH ends.
+AUDIBLE_LO_HZ = 20
 MAX_RMS_DRIFT_DB = 2.5
 # Takes whose energy is mostly above the audible band are damaged AT SOURCE and
 # worth reporting — the compression did not do it.
@@ -67,11 +77,17 @@ def audible_rms_db(x: np.ndarray, sr: int) -> tuple[float, float]:
         return -120.0, 0.0
     X = np.abs(np.fft.rfft(m)) ** 2
     fr = np.fft.rfftfreq(len(m), 1 / sr)
-    lo = float(X[fr < AUDIBLE_HZ].sum())
+    lo = float(X[(fr >= AUDIBLE_LO_HZ) & (fr < AUDIBLE_HZ)].sum())
+    # ULTRASONIC MEANS ABOVE THE BAND, NOT MERELY OUTSIDE IT. Adding the 20 Hz
+    # floor turned "1 - lo/tot" into "everything I did not measure", so a take
+    # with real sub-20 Hz content read as 90% ultrasonic, tripped the
+    # damaged-at-source warning and returned BEFORE the master was unlinked —
+    # reporting success while keeping the wav. Measure the top explicitly.
+    hi = float(X[fr >= AUDIBLE_HZ].sum())
     tot = float(X.sum()) + 1e-20
     # Parseval: band energy back to an RMS, so the number reads like a level.
     rms = np.sqrt(lo / (len(m) ** 2 / 2 + 1e-20))
-    return float(20 * np.log10(rms + 1e-12)), 1.0 - lo / tot
+    return float(20 * np.log10(rms + 1e-12)), hi / tot
 
 
 # --- the manifest must name the file that EXISTS -------------------------
@@ -175,6 +191,12 @@ def write_index(write: bool) -> int:
 
 def convert(src: Path, write: bool) -> tuple[bool, str]:
     x, sr = sf.read(src, always_2d=False)
+    # A DC OFFSET IS A DEFECT, NOT AUDIO. It is inaudible by definition and it
+    # spends headroom: hit_taken_melon rode at +0.5018 and got 5.0 dB of its
+    # range back when the bias came off, dirt/punch/ui_click 1.0 dB each. Opus
+    # would strip it anyway; doing it here means the WAV master and the shipped
+    # ogg agree, and the level comparison below is like for like.
+    x = x - x.mean(axis=0)
     dst = src.with_suffix(".ogg")
     try:
         sf.write(dst, x, sr, format="OGG", subtype="OPUS")
@@ -223,10 +245,15 @@ def main() -> int:
     before = after = 0
     failures: list[str] = []
     for w in wavs:
+        # Size FIRST: on a successful write convert() unlinks the master, so
+        # statting it afterwards is a FileNotFoundError. It never fired while
+        # every remaining wav was one the gate rejected — the accounting ran
+        # only down the failure path. Fixing the gate is what exposed it.
+        src_bytes = w.stat().st_size
         good, msg = convert(w, write=not check)
         if good:
             ok += 1
-            before += w.stat().st_size
+            before += src_bytes
             o = w.with_suffix(".ogg")
             after += o.stat().st_size if o.exists() else 0
         else:
