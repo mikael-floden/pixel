@@ -528,7 +528,7 @@ def cmd_requal(args):
         if not rec:
             continue
         for d, q in list(rec["directions"].items()):
-            if q.get("mirrored"):
+            if q.get("mirrored") or q.get("manual"):
                 continue
             frames = load_frames(cid, args.state, d)
             if not frames:

@@ -601,6 +601,274 @@
         "north-west": "ghoul/animations/walk__north-west.webp",
         "south-west": "ghoul/animations/walk__south-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1378,
+          "step_max": 0.2317,
+          "drift": 2.76,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.2,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "93ff5a9e-9417-412f-92f8-0d367ad5fdfa",
+          "group": "ec4a0582-71dd-4fd2-836e-a3d20a50598f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:57:41+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.136,
+          "step_max": 0.197,
+          "drift": 7.0,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.87,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "b76b04d5-d3e2-4af9-8d50-9d85fa8cacd5",
+          "group": "88175c40-b453-4066-9e89-c1f7dec9d11f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:57:41+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2096,
+          "step_max": 0.2652,
+          "drift": 6.43,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.55,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "58ebd88a-0bd5-4403-af09-e1b781aa7257",
+          "group": "df49a6b0-1aae-4d89-a982-d68edd4f8e02",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:57:42+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1922,
+          "step_max": 0.3357,
+          "drift": 1.6,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.24,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "10e5cc95-c6c9-4da4-a736-3e6d993ce117",
+          "group": "ded22f45-1334-4428-8db8-c0ce5fe47d56",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:57:42+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.2036,
+          "step_max": 0.287,
+          "drift": 1.14,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.31,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "02e8f0fc-5d1e-478f-b428-bda7fd866545",
+          "group": "a9f17ede-0be4-48e1-a322-e80d6aea6bb1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:57:43+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.136,
+          "step_max": 0.197,
+          "drift": 7.0,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.87,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "b76b04d5-d3e2-4af9-8d50-9d85fa8cacd5",
+          "group": "88175c40-b453-4066-9e89-c1f7dec9d11f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:57:41+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2096,
+          "step_max": 0.2652,
+          "drift": 6.43,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.55,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "58ebd88a-0bd5-4403-af09-e1b781aa7257",
+          "group": "df49a6b0-1aae-4d89-a982-d68edd4f8e02",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:57:42+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1922,
+          "step_max": 0.3357,
+          "drift": 1.6,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.24,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [],
+          "sub": "10e5cc95-c6c9-4da4-a736-3e6d993ce117",
+          "group": "ded22f45-1334-4428-8db8-c0ce5fe47d56",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:57:42+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "lunges forward and rakes with both long claws in a frenzied double swipe, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "ghoul/animations/attack/south/00.webp",
+          "ghoul/animations/attack/south/01.webp",
+          "ghoul/animations/attack/south/02.webp",
+          "ghoul/animations/attack/south/03.webp",
+          "ghoul/animations/attack/south/04.webp",
+          "ghoul/animations/attack/south/05.webp",
+          "ghoul/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "ghoul/animations/attack/south-east/00.webp",
+          "ghoul/animations/attack/south-east/01.webp",
+          "ghoul/animations/attack/south-east/02.webp",
+          "ghoul/animations/attack/south-east/03.webp",
+          "ghoul/animations/attack/south-east/04.webp",
+          "ghoul/animations/attack/south-east/05.webp",
+          "ghoul/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "ghoul/animations/attack/east/00.webp",
+          "ghoul/animations/attack/east/01.webp",
+          "ghoul/animations/attack/east/02.webp",
+          "ghoul/animations/attack/east/03.webp",
+          "ghoul/animations/attack/east/04.webp",
+          "ghoul/animations/attack/east/05.webp",
+          "ghoul/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "ghoul/animations/attack/north-east/00.webp",
+          "ghoul/animations/attack/north-east/01.webp",
+          "ghoul/animations/attack/north-east/02.webp",
+          "ghoul/animations/attack/north-east/03.webp",
+          "ghoul/animations/attack/north-east/04.webp",
+          "ghoul/animations/attack/north-east/05.webp",
+          "ghoul/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "ghoul/animations/attack/north/00.webp",
+          "ghoul/animations/attack/north/01.webp",
+          "ghoul/animations/attack/north/02.webp",
+          "ghoul/animations/attack/north/03.webp",
+          "ghoul/animations/attack/north/04.webp",
+          "ghoul/animations/attack/north/05.webp",
+          "ghoul/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "ghoul/animations/attack/south-west/00.webp",
+          "ghoul/animations/attack/south-west/01.webp",
+          "ghoul/animations/attack/south-west/02.webp",
+          "ghoul/animations/attack/south-west/03.webp",
+          "ghoul/animations/attack/south-west/04.webp",
+          "ghoul/animations/attack/south-west/05.webp",
+          "ghoul/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "ghoul/animations/attack/west/00.webp",
+          "ghoul/animations/attack/west/01.webp",
+          "ghoul/animations/attack/west/02.webp",
+          "ghoul/animations/attack/west/03.webp",
+          "ghoul/animations/attack/west/04.webp",
+          "ghoul/animations/attack/west/05.webp",
+          "ghoul/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "ghoul/animations/attack/north-west/00.webp",
+          "ghoul/animations/attack/north-west/01.webp",
+          "ghoul/animations/attack/north-west/02.webp",
+          "ghoul/animations/attack/north-west/03.webp",
+          "ghoul/animations/attack/north-west/04.webp",
+          "ghoul/animations/attack/north-west/05.webp",
+          "ghoul/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "ghoul/animations/attack__south.webp",
+        "south-east": "ghoul/animations/attack__south-east.webp",
+        "east": "ghoul/animations/attack__east.webp",
+        "north-east": "ghoul/animations/attack__north-east.webp",
+        "north": "ghoul/animations/attack__north.webp",
+        "south-west": "ghoul/animations/attack__south-west.webp",
+        "west": "ghoul/animations/attack__west.webp",
+        "north-west": "ghoul/animations/attack__north-west.webp"
+      }
     }
   }
 }

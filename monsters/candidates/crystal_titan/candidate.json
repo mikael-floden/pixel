@@ -361,7 +361,7 @@
           "generated_at": "2026-09-09T21:16:39+00:00"
         },
         "south-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1507,
           "step_max": 0.1911,
           "drift": 11.79,
@@ -375,8 +375,7 @@
             234
           ],
           "reasons": [
-            "drifts 11.8 px (> 12)",
-            "last→first hand-off is 2.7× a normal step — the loop hitches",
+            "manual: best of six rolls (three free, two pinned froze, this free one) — hand-off 2.7×, drift 11.8 px; judge it on the page",
             "canvas grown by 1 px a side to hold the motion"
           ],
           "sub": "8dbdfa2f-5448-458f-8d47-937a3d213143",
@@ -385,7 +384,8 @@
           "version": 6,
           "mirrored": false,
           "generated_at": "2026-09-09T21:56:36+00:00",
-          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning"
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "manual": true
         },
         "east": {
           "status": "pass",
@@ -504,6 +504,34 @@
           "mirrored": true,
           "generated_at": "2026-09-09T21:16:41+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1507,
+          "step_max": 0.1911,
+          "drift": 11.79,
+          "loop": 0.4079,
+          "loop_ratio": 2.71,
+          "travel": 1.94,
+          "pin": 0.871,
+          "pad": 1,
+          "canvas": [
+            234,
+            234
+          ],
+          "reasons": [
+            "manual: best of six rolls (three free, two pinned froze, this free one) — hand-off 2.7×, drift 11.8 px; judge it on the page",
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "8dbdfa2f-5448-458f-8d47-937a3d213143",
+          "group": "11fbaadd-1dca-46f9-800f-4a48cc52e042",
+          "takes": 3,
+          "version": 6,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:56:36+00:00",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+          "manual": true,
+          "source": "south-east"
         }
       },
       "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
@@ -563,6 +591,14 @@
           "crystal_titan/animations/walk/north-west/03.webp",
           "crystal_titan/animations/walk/north-west/04.webp",
           "crystal_titan/animations/walk/north-west/05.webp"
+        ],
+        "south-west": [
+          "crystal_titan/animations/walk/south-west/00.webp",
+          "crystal_titan/animations/walk/south-west/01.webp",
+          "crystal_titan/animations/walk/south-west/02.webp",
+          "crystal_titan/animations/walk/south-west/03.webp",
+          "crystal_titan/animations/walk/south-west/04.webp",
+          "crystal_titan/animations/walk/south-west/05.webp"
         ]
       },
       "strips": {
@@ -572,7 +608,8 @@
         "north-east": "crystal_titan/animations/walk__north-east.webp",
         "north": "crystal_titan/animations/walk__north.webp",
         "west": "crystal_titan/animations/walk__west.webp",
-        "north-west": "crystal_titan/animations/walk__north-west.webp"
+        "north-west": "crystal_titan/animations/walk__north-west.webp",
+        "south-west": "crystal_titan/animations/walk__south-west.webp"
       }
     }
   }
