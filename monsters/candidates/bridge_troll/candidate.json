@@ -335,6 +335,251 @@
         "west": "bridge_troll/animations/idle__west.webp",
         "north-west": "bridge_troll/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.1295,
+          "step_max": 0.1807,
+          "drift": 6.14,
+          "loop": 0.4169,
+          "loop_ratio": 3.22,
+          "travel": 0.46,
+          "pin": 0.949,
+          "reasons": [
+            "drifts 6.1 px — eyeball it",
+            "last→first hand-off is 3.2× a normal step — the loop hitches"
+          ],
+          "cut": 0,
+          "sub": "d7797796-690c-4191-b774-940c3d0b0caa",
+          "group": "7125f6ff-e3e1-420f-898e-a414ce0908f8",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:13:15+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.1873,
+          "step_max": 0.2506,
+          "drift": 6.76,
+          "loop": 0.4957,
+          "loop_ratio": 2.65,
+          "travel": 1.1,
+          "pin": 0.83,
+          "reasons": [
+            "frame 5 touches a canvas edge the base does not (overflow / wrap risk)",
+            "drifts 6.8 px — eyeball it",
+            "last→first hand-off 2.6× a step — eyeball the loop",
+            "8 px of motion fell outside the base canvas (overflow)"
+          ],
+          "cut": 8,
+          "sub": "7755563f-d1f8-46fd-b701-bb460c3f4b8b",
+          "group": "b64abaf4-8ecb-404c-9631-0dd1d5a9a2e9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:13:16+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.238,
+          "step_max": 0.2614,
+          "drift": 2.49,
+          "loop": 0.3262,
+          "loop_ratio": 1.37,
+          "travel": 2.14,
+          "pin": 0.799,
+          "reasons": [],
+          "cut": 0,
+          "sub": "9ea99894-7703-498e-9c95-8e2469477e9a",
+          "group": "e3230d10-a8c5-4f6e-880b-94c2abe7852f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:13:17+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.2041,
+          "step_max": 0.2505,
+          "drift": 3.26,
+          "loop": 0.4519,
+          "loop_ratio": 2.21,
+          "travel": 1.9,
+          "pin": 0.823,
+          "reasons": [
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "d0f62a0d-1727-4711-b4f5-4ada095c9f6d",
+          "group": "f3163380-8ab7-44c7-9ef9-c26541196347",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:13:17+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1553,
+          "step_max": 0.1921,
+          "drift": 4.44,
+          "loop": 0.2885,
+          "loop_ratio": 1.86,
+          "travel": 0.5,
+          "pin": 0.846,
+          "reasons": [],
+          "cut": 0,
+          "sub": "42e3d8b2-e21a-48f7-bf30-a964e41d4450",
+          "group": "9154c97e-cb52-4866-8233-b789f1e47741",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:13:18+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1873,
+          "step_max": 0.2506,
+          "drift": 6.76,
+          "loop": 0.4957,
+          "loop_ratio": 2.65,
+          "travel": 1.1,
+          "pin": 0.83,
+          "reasons": [
+            "frame 5 touches a canvas edge the base does not (overflow / wrap risk)",
+            "drifts 6.8 px — eyeball it",
+            "last→first hand-off 2.6× a step — eyeball the loop",
+            "8 px of motion fell outside the base canvas (overflow)"
+          ],
+          "cut": 8,
+          "sub": "7755563f-d1f8-46fd-b701-bb460c3f4b8b",
+          "group": "b64abaf4-8ecb-404c-9631-0dd1d5a9a2e9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:13:16+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.238,
+          "step_max": 0.2614,
+          "drift": 2.49,
+          "loop": 0.3262,
+          "loop_ratio": 1.37,
+          "travel": 2.14,
+          "pin": 0.799,
+          "reasons": [],
+          "cut": 0,
+          "sub": "9ea99894-7703-498e-9c95-8e2469477e9a",
+          "group": "e3230d10-a8c5-4f6e-880b-94c2abe7852f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:13:17+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.2041,
+          "step_max": 0.2505,
+          "drift": 3.26,
+          "loop": 0.4519,
+          "loop_ratio": 2.21,
+          "travel": 1.9,
+          "pin": 0.823,
+          "reasons": [
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "d0f62a0d-1727-4711-b4f5-4ada095c9f6d",
+          "group": "f3163380-8ab7-44c7-9ef9-c26541196347",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:13:17+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "bridge_troll/animations/walk/south/00.webp",
+          "bridge_troll/animations/walk/south/01.webp",
+          "bridge_troll/animations/walk/south/02.webp",
+          "bridge_troll/animations/walk/south/03.webp",
+          "bridge_troll/animations/walk/south/04.webp",
+          "bridge_troll/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "bridge_troll/animations/walk/south-east/00.webp",
+          "bridge_troll/animations/walk/south-east/01.webp",
+          "bridge_troll/animations/walk/south-east/02.webp",
+          "bridge_troll/animations/walk/south-east/03.webp",
+          "bridge_troll/animations/walk/south-east/04.webp",
+          "bridge_troll/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "bridge_troll/animations/walk/east/00.webp",
+          "bridge_troll/animations/walk/east/01.webp",
+          "bridge_troll/animations/walk/east/02.webp",
+          "bridge_troll/animations/walk/east/03.webp",
+          "bridge_troll/animations/walk/east/04.webp",
+          "bridge_troll/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "bridge_troll/animations/walk/north-east/00.webp",
+          "bridge_troll/animations/walk/north-east/01.webp",
+          "bridge_troll/animations/walk/north-east/02.webp",
+          "bridge_troll/animations/walk/north-east/03.webp",
+          "bridge_troll/animations/walk/north-east/04.webp",
+          "bridge_troll/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "bridge_troll/animations/walk/north/00.webp",
+          "bridge_troll/animations/walk/north/01.webp",
+          "bridge_troll/animations/walk/north/02.webp",
+          "bridge_troll/animations/walk/north/03.webp",
+          "bridge_troll/animations/walk/north/04.webp",
+          "bridge_troll/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "bridge_troll/animations/walk/south-west/00.webp",
+          "bridge_troll/animations/walk/south-west/01.webp",
+          "bridge_troll/animations/walk/south-west/02.webp",
+          "bridge_troll/animations/walk/south-west/03.webp",
+          "bridge_troll/animations/walk/south-west/04.webp",
+          "bridge_troll/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "bridge_troll/animations/walk/west/00.webp",
+          "bridge_troll/animations/walk/west/01.webp",
+          "bridge_troll/animations/walk/west/02.webp",
+          "bridge_troll/animations/walk/west/03.webp",
+          "bridge_troll/animations/walk/west/04.webp",
+          "bridge_troll/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "bridge_troll/animations/walk/north-west/00.webp",
+          "bridge_troll/animations/walk/north-west/01.webp",
+          "bridge_troll/animations/walk/north-west/02.webp",
+          "bridge_troll/animations/walk/north-west/03.webp",
+          "bridge_troll/animations/walk/north-west/04.webp",
+          "bridge_troll/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "bridge_troll/animations/walk__south.webp",
+        "south-east": "bridge_troll/animations/walk__south-east.webp",
+        "east": "bridge_troll/animations/walk__east.webp",
+        "north-east": "bridge_troll/animations/walk__north-east.webp",
+        "north": "bridge_troll/animations/walk__north.webp",
+        "south-west": "bridge_troll/animations/walk__south-west.webp",
+        "west": "bridge_troll/animations/walk__west.webp",
+        "north-west": "bridge_troll/animations/walk__north-west.webp"
+      }
     }
   }
 }
