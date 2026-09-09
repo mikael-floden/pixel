@@ -338,6 +338,240 @@
         "west": "pebble_crab/animations/idle__west.webp",
         "north-west": "pebble_crab/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.0947,
+          "step_max": 0.1332,
+          "drift": 1.19,
+          "loop": 0.1247,
+          "loop_ratio": 1.32,
+          "travel": 0.17,
+          "pin": 0.898,
+          "reasons": [
+            "motion 0.095 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "1c2ca49e-cecf-435e-990a-12423a37a325",
+          "group": "ec24f6d6-0428-428c-89cc-21ea9855334c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:53:23+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.132,
+          "step_max": 0.1506,
+          "drift": 0.86,
+          "loop": 0.1506,
+          "loop_ratio": 1.14,
+          "travel": 0.42,
+          "pin": 0.86,
+          "reasons": [],
+          "cut": 0,
+          "sub": "b3a2ca8a-f14e-447c-a548-4619a0fcc295",
+          "group": "7cc96d63-f69a-480c-bf20-1d1c05ff1ffc",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:53:23+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.1036,
+          "step_max": 0.1421,
+          "drift": 0.5,
+          "loop": 0.1248,
+          "loop_ratio": 1.21,
+          "travel": 0.28,
+          "pin": 0.949,
+          "reasons": [
+            "frame 3 touches a canvas edge the base does not (overflow / wrap risk)"
+          ],
+          "cut": 0,
+          "sub": "e5622a7f-cb0d-4c57-a3aa-97e3bb0ad1bc",
+          "group": "36c2307c-d368-443e-aeb1-8f61942e552b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:53:24+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1482,
+          "step_max": 0.1541,
+          "drift": 1.63,
+          "loop": 0.178,
+          "loop_ratio": 1.2,
+          "travel": 0.77,
+          "pin": 0.851,
+          "reasons": [],
+          "cut": 0,
+          "sub": "71080d7c-97cd-4359-8af4-b5f337699ec3",
+          "group": "67219fae-9b3f-468c-bb16-de5f703b96d4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:53:24+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1324,
+          "step_max": 0.1565,
+          "drift": 1.05,
+          "loop": 0.123,
+          "loop_ratio": 0.93,
+          "travel": 0.1,
+          "pin": 0.868,
+          "reasons": [],
+          "cut": 0,
+          "sub": "34a897af-7609-44c6-ae6a-5c7d29538876",
+          "group": "7b9d7df0-227f-486a-8832-530d3f2c8732",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:53:25+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.132,
+          "step_max": 0.1506,
+          "drift": 0.86,
+          "loop": 0.1506,
+          "loop_ratio": 1.14,
+          "travel": 0.42,
+          "pin": 0.86,
+          "reasons": [],
+          "cut": 0,
+          "sub": "b3a2ca8a-f14e-447c-a548-4619a0fcc295",
+          "group": "7cc96d63-f69a-480c-bf20-1d1c05ff1ffc",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:53:23+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.1036,
+          "step_max": 0.1421,
+          "drift": 0.5,
+          "loop": 0.1248,
+          "loop_ratio": 1.21,
+          "travel": 0.28,
+          "pin": 0.949,
+          "reasons": [
+            "frame 3 touches a canvas edge the base does not (overflow / wrap risk)"
+          ],
+          "cut": 0,
+          "sub": "e5622a7f-cb0d-4c57-a3aa-97e3bb0ad1bc",
+          "group": "36c2307c-d368-443e-aeb1-8f61942e552b",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:53:24+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1482,
+          "step_max": 0.1541,
+          "drift": 1.63,
+          "loop": 0.178,
+          "loop_ratio": 1.2,
+          "travel": 0.77,
+          "pin": 0.851,
+          "reasons": [],
+          "cut": 0,
+          "sub": "71080d7c-97cd-4359-8af4-b5f337699ec3",
+          "group": "67219fae-9b3f-468c-bb16-de5f703b96d4",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:53:24+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "pebble_crab/animations/walk/south/00.webp",
+          "pebble_crab/animations/walk/south/01.webp",
+          "pebble_crab/animations/walk/south/02.webp",
+          "pebble_crab/animations/walk/south/03.webp",
+          "pebble_crab/animations/walk/south/04.webp",
+          "pebble_crab/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "pebble_crab/animations/walk/south-east/00.webp",
+          "pebble_crab/animations/walk/south-east/01.webp",
+          "pebble_crab/animations/walk/south-east/02.webp",
+          "pebble_crab/animations/walk/south-east/03.webp",
+          "pebble_crab/animations/walk/south-east/04.webp",
+          "pebble_crab/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "pebble_crab/animations/walk/east/00.webp",
+          "pebble_crab/animations/walk/east/01.webp",
+          "pebble_crab/animations/walk/east/02.webp",
+          "pebble_crab/animations/walk/east/03.webp",
+          "pebble_crab/animations/walk/east/04.webp",
+          "pebble_crab/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "pebble_crab/animations/walk/north-east/00.webp",
+          "pebble_crab/animations/walk/north-east/01.webp",
+          "pebble_crab/animations/walk/north-east/02.webp",
+          "pebble_crab/animations/walk/north-east/03.webp",
+          "pebble_crab/animations/walk/north-east/04.webp",
+          "pebble_crab/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "pebble_crab/animations/walk/north/00.webp",
+          "pebble_crab/animations/walk/north/01.webp",
+          "pebble_crab/animations/walk/north/02.webp",
+          "pebble_crab/animations/walk/north/03.webp",
+          "pebble_crab/animations/walk/north/04.webp",
+          "pebble_crab/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "pebble_crab/animations/walk/south-west/00.webp",
+          "pebble_crab/animations/walk/south-west/01.webp",
+          "pebble_crab/animations/walk/south-west/02.webp",
+          "pebble_crab/animations/walk/south-west/03.webp",
+          "pebble_crab/animations/walk/south-west/04.webp",
+          "pebble_crab/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "pebble_crab/animations/walk/west/00.webp",
+          "pebble_crab/animations/walk/west/01.webp",
+          "pebble_crab/animations/walk/west/02.webp",
+          "pebble_crab/animations/walk/west/03.webp",
+          "pebble_crab/animations/walk/west/04.webp",
+          "pebble_crab/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "pebble_crab/animations/walk/north-west/00.webp",
+          "pebble_crab/animations/walk/north-west/01.webp",
+          "pebble_crab/animations/walk/north-west/02.webp",
+          "pebble_crab/animations/walk/north-west/03.webp",
+          "pebble_crab/animations/walk/north-west/04.webp",
+          "pebble_crab/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "pebble_crab/animations/walk__south.webp",
+        "south-east": "pebble_crab/animations/walk__south-east.webp",
+        "east": "pebble_crab/animations/walk__east.webp",
+        "north-east": "pebble_crab/animations/walk__north-east.webp",
+        "north": "pebble_crab/animations/walk__north.webp",
+        "south-west": "pebble_crab/animations/walk__south-west.webp",
+        "west": "pebble_crab/animations/walk__west.webp",
+        "north-west": "pebble_crab/animations/walk__north-west.webp"
+      }
     }
   }
 }
