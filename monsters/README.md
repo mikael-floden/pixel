@@ -143,12 +143,14 @@ a redo is reproducible and never re-rolls a kept one. Run workers with
 `setsid nohup … & disown` in disjoint `--only` batches; `drop` cleans the
 stray a killed worker leaves behind.
 
-## Animating approved candidates — one state at a time, idle first
+## Animating approved candidates — one state at a time
 
 `pipeline/animate.py` gives an APPROVED candidate its states, one state for
 all monsters before the next (maintainer 2026-09-09: "get good at one
-animation at a time"). Idle is done for the 39 picked; walk, angry, attack,
-die follow the same path.
+animation at a time"). Idle, walk and attack are done for the 39 picked;
+angry and die follow the same path. Every state: generate S, SE, E, NE, N;
+mirror SW, W, NW; machine bands from the maintainer's own accepted clips;
+review on a published artifact page with the clips PLAYING.
 
 ```bash
 python monsters/pipeline/animate.py approve --ids a,b,c        # review=approved + APPROVED tag
@@ -195,6 +197,82 @@ there:
 
 Cost: 193 v3 idle clips moved the USD balance $67.33 → $64.87 — about
 $0.013 per direction, billed with a lag (the first five showed $0.00).
+
+### Walk — a full cycle that repeats, nothing pinned
+
+Maintainer: "a walk animation that can be repeated without looking weird. A
+full cycle. The monster should walk completely normal." Rules:
+- **Six free frames, no `end_frame`, no `keep_first`** — the loop is the
+  model's to close. Pinning the base gives neutral → walk → neutral, which is
+  a hitch every cycle; that is the maintainer's LAST-RESORT fallback ("if you
+  can't get anything sane at all") and is what `redo --pin` does. Used twice
+  (Cragtroll SE, Deepmaul N) after free rolls never looped; the verdict
+  carries `pinned: true` and the play pace hides it acceptably.
+- **Walk IN PLACE; the game moves the sprite.** Bands from the maintainer's
+  37 accepted 6-frame walks (east): step 0.13–0.39 (median 0.22), last→first
+  hand-off 0.5–2.7× a normal step (median 1.47), centroid drift median 2.2 px,
+  x-travel median 1.3 px. Pass: step 0.10–0.40, loop ratio ≤ 2.0, drift
+  ≤ 5 px, travel ≤ 4 px; warn to 0.55 / 2.7 / 8 / 7; fail beyond. Drift and
+  travel scale with the canvas (max(band, 3 % / 5 % of width)), so a 200 px
+  titan is judged like a 64 px mite.
+- **Non-walkers get their own wording** (`walk_action` in the design):
+  a wraith glides, a snail and slug crawl, an octopus crawls on its arms, a
+  cobra slithers, a mite scuttles — the generic "legs alternate" prompt
+  froze them (frame step < 0.05). `walk_slow` (snail, slug, cobra, octopus,
+  turtle, mite, grub, crab) lowers the step floor to 0.4× because a crawl
+  is a small silhouette change even when it reads correctly.
+- **Big bodies, wings and tails grow the canvas** rather than get cut:
+  `align_to_base` pads symmetrically to the clip's canvas and records the
+  pad; the review page plays the grown canvas. (First version cropped to the
+  base canvas and shipped headless drakes — never crop a clip.)
+- **A verdict may be set by hand** (`manual: true` + the reason) when the
+  metrics never settle but the eye is satisfied: Crystal Titan SE after six
+  rolls. `requal` leaves manual verdicts alone and recreates their mirrors.
+
+### Attack — once through, BOTH ends pinned, preset-style wording
+
+Maintainer: "This one is hardest! Same tricks as before! Forcing the
+first/last frame can give you control!" Rules:
+- **`keep_first` + `end_frame` = base: base → wind-up → strike → base**, four
+  generated frames, five stored. The game paces an attack to ~700 ms
+  whatever the count and cuts back to idle, so the clip should land on the
+  base pose; the pin does that most of the time (at 4 frames the model
+  sometimes stops short — loop 0.15–0.40 is a warn, not a fail: the
+  maintainer's own accepted attacks return only partly, loop up to 0.79).
+- **Every strike is worded as a PRESET-STYLE move**: `"Move Name -
+  mechanical body description, then returns to idle stance"` ("Claw Swipe -
+  Raises one front paw and performs one quick swipe forward, then returns
+  to idle stance"), the exact shape of the maintainer's 57 accepted attacks
+  (`attack_action` in each design). Free prose ("swings its stone club in
+  one heavy sideways smash…", 6 frames) made PixelLab paint an impact
+  effect — yellow club flare, slash arcs, sparks, a blue explosion — on
+  most physical strikes: flash 0.044 median, 40 of 179 directions over
+  0.15, against 0.001 median on the maintainer's. No negative wording
+  ("plain pixel art, no glow, no sparks, no motion lines") suppressed it;
+  the preset format did in 15 of 16 probes. Changing a state's wording
+  regenerates that state and deletes the old takes on PixelLab.
+- **Flash gate**: `_flash` = the largest gain of near-white or bright-yellow
+  opaque pixels in any frame over frame 0, as a share of the body. Fail
+  > 0.10, warn > 0.04, skipped for designs flagged `fx: true` (elementals,
+  sprites, breath and spell casters — 14 of 39 — whose effect IS the
+  attack). A design's own glow (Hollow Knight's green sword flame) reads as
+  an effect; flag it `fx` rather than fight the model.
+- **Claws → claw swipe on the third roll** (maintainer: "if it looks like
+  the monster has claws, a claw slash attack usually works"). Designs
+  flagged `claws: true` (20 of 39) fall back to `CLAW_SLASH` once a
+  direction has failed twice under its own wording (`tries` in the verdict
+  counts rolls under the current text).
+- **Bands from the maintainer's 42 accepted 4-frame attacks** (east): strike
+  peak (max silhouette XOR vs frame 0) 0.15–0.83 (median 0.50), step median
+  0.38, drift median 5.6 px, a lunge reaching 24. Pass: peak ≥ 0.12, step
+  0.06–0.90, drift ≤ max(12 px, 8 % of width); warn: peak ≥ 0.06, step to
+  1.2, drift ≤ max(24 px, 15 %); fail below — a frozen "attack" is the
+  model's usual failure and a warn is a small strike, not a broken one.
+
+Cost: walk (6 frames) and attack (5) bill the same ≈ $0.013 per direction
+as idle; the full 39-set is ≈ 195 directions ≈ $2.5 per state, and a full
+re-roll after a wording change costs the same again (the free-prose attack
+round was thrown away: $2.5 of tuition).
 
 ## Review gallery (chat artifact, NOT in git)
 

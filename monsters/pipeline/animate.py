@@ -87,24 +87,29 @@ STATES = {
     },
     # An attack is ONCE-THROUGH (the game paces it to ~700 ms whatever the
     # count) and must land back on the base pose — so BOTH ends are pinned:
-    # base → wind-up → strike → base. Every monster words its own strike
-    # (`attack_action` in the design). The maintainer's 42 accepted 4-frame
-    # attacks (measured, east): strike peak 0.15–0.83 of the silhouette away
-    # from frame 0 (median 0.50), step median 0.38, drift median 5.6 px (a
-    # lunge reaches 24); most of his do NOT return on their own (loop up to
-    # 0.79) — the pin does that here.
+    # base → wind-up → strike → base. Every monster words its own strike as a
+    # PRESET-STYLE move: "Move Name - mechanical body description, then returns
+    # to idle stance", 4 frames — the exact shape of the maintainer's 57
+    # accepted attacks (measured: their flash metric is 0.001 median, 51 of 57
+    # under 0.15). Free prose ("swings its club in one heavy blow…", 6 frames)
+    # got a painted impact effect — yellow club flare, slash arcs, sparks — on
+    # most physical strikes (flash median 0.044, 40 of 179 over 0.15) and no
+    # negative wording ("plain pixel art, no glow, no sparks…") suppressed it;
+    # the preset format did in 15 of 16 probes.
     "attack": {
-        "action": "attacks once with a quick strike, then returns to the starting pose",
-        "frames": 6,
+        "action": "Strike - Quickly lunges forward, strikes once, then returns to idle stance",
+        "frames": 4,
         "pin_end": True,
         "keep_first": True,
-        "band": {"step_pass": (0.080, 0.900), "step_warn": (0.040, 1.200),
-                 "peak_pass": 0.15, "peak_warn": 0.08,
-                 "drift_pass": 12.0, "drift_warn": 24.0, "loop_max": 0.10},
+        "band": {"step_pass": (0.060, 0.900), "step_warn": (0.030, 1.200),
+                 "peak_pass": 0.12, "peak_warn": 0.06,
+                 "drift_pass": 12.0, "drift_warn": 24.0,
+                 "loop_warn": 0.15, "loop_max": 0.40,
+                 "flash_warn": 0.04, "flash_max": 0.10},
     },
 }
-CLAW_SLASH = ("slashes forward with its claws in one quick swipe, a physical strike with no "
-              "glowing magic effect, then returns exactly to the starting pose")
+CLAW_SLASH = ("Claw Swipe - Raises one front paw and performs one quick swipe forward, "
+              "then returns to idle stance")
 APPROVED_TAG = "APPROVED"
 MIN_USD = 5.0
 
@@ -205,6 +210,21 @@ def _iou(a, b):
     return (a & b).sum() / max(1, (a | b).sum())
 
 
+def _flash(frames):
+    """Painted-effect detector: the largest gain of near-white or bright-yellow
+    opaque pixels in any frame over frame 0, as a share of the base silhouette.
+    A body-only strike stays under 0.02; an impact flare or slash arc is
+    0.15–0.7 (measured on 179 free-prose attacks vs the maintainer's 57)."""
+    a = [np.asarray(f.convert("RGBA")) for f in frames]
+    def bright(x):
+        rgb = x[..., :3].astype(int); al = x[..., 3] > 0
+        white = (rgb.min(-1) >= 225) & al
+        yellow = (rgb[..., 0] >= 225) & (rgb[..., 1] >= 200) & (rgb[..., 2] <= 130) & al
+        return (white | yellow).sum()
+    area = max(1, int((a[0][..., 3] > 0).sum())); b0 = bright(a[0])
+    return float(max((bright(x) - b0) / area for x in a[1:])) if len(a) > 1 else 0.0
+
+
 def qa_clip(cid, state, d, frames, pinned=None):
     """Machine verdict for one direction's clip. See module docstring."""
     band = STATES[state]["band"]
@@ -275,6 +295,16 @@ def qa_clip(cid, state, d, frames, pinned=None):
             reasons.append(f"weak strike: peak {peak:.3f} — eyeball it"); status = "warn" if status != "fail" else status
     if "loop_max" in band and loop > band["loop_max"]:
         reasons.append(f"loop does not close (last vs first {loop:.3f})"); status = "fail"
+    elif "loop_warn" in band and loop > band["loop_warn"]:
+        # the game cuts back to idle after an attack; the maintainer's own
+        # accepted attacks return only partly (loop up to 0.79) — eyeball it
+        reasons.append(f"does not quite return (last vs first {loop:.3f}) — eyeball it"); status = "warn" if status != "fail" else status
+    flash = _flash(frames) if "flash_max" in band else 0.0
+    if "flash_max" in band and not design_flag(cid, "fx"):
+        if flash > band["flash_max"]:
+            reasons.append(f"painted effect: {flash:.2f} of the body in new bright pixels (flare/slash arc)"); status = "fail"
+        elif flash > band["flash_warn"]:
+            reasons.append(f"some bright effect pixels ({flash:.2f}) — eyeball it"); status = "warn" if status != "fail" else status
     if "loop_ratio_pass" in band and not pinned:
         if loop_ratio > band["loop_ratio_warn"]:
             reasons.append(f"last→first hand-off is {loop_ratio:.1f}× a normal step — the loop hitches"); status = "fail"
@@ -292,7 +322,8 @@ def qa_clip(cid, state, d, frames, pinned=None):
         reasons.append(f"canvas grown by {pad} px a side to hold the motion")
     return {"status": status, "step_mean": round(step_mean, 4), "step_max": round(float(max(step)) if step else 0, 4),
             "drift": round(drift, 2), "loop": round(loop, 4), "loop_ratio": round(loop_ratio, 2),
-            "travel": round(travel, 2), "pin": round(float(pin), 3), "pad": pad,
+            "travel": round(travel, 2), "pin": round(float(pin), 3), "pad": pad, "flash": round(flash, 3),
+            "peak": (round(peak, 4) if "peak_pass" in band else None),
             "canvas": list(frames[0].size), "reasons": reasons}
 
 
@@ -347,13 +378,15 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
     man = cand.load_manifest(cid)
     rec = _anim_record(man, state)
     spec = STATES[state]
-    jobs, actions = {}, {}
+    jobs, actions, tries = {}, {}, {}
     for d in dirs:
         seed = seed_for(cid, state, d, version)
         pinned = spec["pin_end"] or pin
         end = rotation(cid, d) if pinned else None
         action = rec["action"]
-        if state == "attack" and version >= 3 and design_flag(cid, "claws"):
+        old = rec["directions"].get(d, {})
+        tries[d] = (old.get("tries", 1) + 1) if (old.get("action") == action and old.get("status") == "fail") else 1
+        if state == "attack" and tries[d] >= 3 and design_flag(cid, "claws"):
             # maintainer 2026-09-09: "if the monster has claws, a claw slash
             # usually works" — the worded strike failed twice, use that
             action = CLAW_SLASH
@@ -370,10 +403,10 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
                 client.wait_job(job, timeout=900)
             except PixelLabError as e:
                 print(f"  {cid} {d}: {e}")
-    return collect_state(client, cid, state, dirs, version, verbose, pin=pin, actions=actions)
+    return collect_state(client, cid, state, dirs, version, verbose, pin=pin, actions=actions, tries=tries)
 
 
-def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, actions=None):
+def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, actions=None, tries=None):
     """Download the LAST take of each direction from PixelLab, align it to the
     base canvas, QA, save, mirror. Used after generation and by `fetch`.
     `actions` = {direction: action text} when a direction was made from other
@@ -404,7 +437,7 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
             qa["pinned"] = True
             qa["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
         qa.update({"sub": client.sub_id(urls[0]), "group": group, "takes": len(cands), "version": version, "mirrored": False,
-                   "action": actions[d],
+                   "action": actions[d], "tries": (tries or {}).get(d, rec["directions"].get(d, {}).get("tries", 1)),
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         rec["directions"][d] = qa
         out[d] = qa
@@ -462,7 +495,9 @@ def cmd_state(args, state):
         man = cand.load_manifest(cid)
         rec = _anim_record(man, state)
         version = max([v.get("version", 0) for v in rec["directions"].values()] + [0]) + 1
-        if redo:
+        # a reworded state: the old takes are keyed by the old text — delete them
+        reworded = any(rec["directions"].get(d, {}).get("action") not in (None, rec["action"], CLAW_SLASH) for d in dirs)
+        if redo or reworded:
             # a redo replaces the take: delete the old direction on PixelLab first
             for d in dirs:
                 old_group = rec["directions"].get(d, {}).get("group")
