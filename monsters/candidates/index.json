@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:52:52+00:00",
+  "generated_at": "2026-09-09T18:53:22+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 62,
+  "count": 63,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -7235,13 +7235,13 @@
       ],
       "items": [],
       "size": [
-        232,
-        232
+        240,
+        240
       ],
       "template_id": "mannequin",
       "scale": "big",
-      "pixellab_id": "49853960-617b-479e-a94c-8ada51391a2c",
-      "version": 1,
+      "pixellab_id": "6e6837b1-9ff9-4e19-a029-8f4e1c10f1a9",
+      "version": 2,
       "sheet": "abyss_knight/sheet.webp",
       "rotations": {
         "south": "abyss_knight/rotations/south.webp",
@@ -7254,106 +7254,103 @@
         "south-west": "abyss_knight/rotations/south-west.webp"
       },
       "qa": {
-        "status": "fail",
-        "min_run1": 0.664,
-        "reasons": [
-          "east: content touches the canvas edge (clipped)",
-          "south-east: content touches the canvas edge (clipped)"
-        ],
+        "status": "pass",
+        "min_run1": 0.63,
+        "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.694,
+            "run1": 0.63,
             "bbox": [
-              31,
-              5,
-              195,
-              227
+              28,
+              6,
+              202,
+              234
             ],
-            "fill": 0.676,
+            "fill": 0.689,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.71,
+            "run1": 0.667,
             "bbox": [
-              77,
-              3,
-              179,
-              229
+              78,
+              4,
+              193,
+              233
             ],
-            "fill": 0.428,
+            "fill": 0.457,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.726,
+            "run1": 0.723,
             "bbox": [
-              47,
-              3,
-              160,
-              232
+              42,
+              4,
+              162,
+              237
             ],
-            "fill": 0.481,
-            "touches_edge": true
+            "fill": 0.485,
+            "touches_edge": false
           },
           "north": {
-            "run1": 0.683,
+            "run1": 0.676,
             "bbox": [
-              37,
+              35,
               5,
-              200,
-              227
+              209,
+              228
             ],
-            "fill": 0.672,
+            "fill": 0.674,
             "touches_edge": false
           },
           "south-east": {
-            "run1": 0.741,
+            "run1": 0.712,
             "bbox": [
-              53,
-              4,
-              187,
-              232
+              41,
+              5,
+              190,
+              236
             ],
-            "fill": 0.568,
-            "touches_edge": true
+            "fill": 0.598,
+            "touches_edge": false
           },
           "north-east": {
-            "run1": 0.711,
+            "run1": 0.693,
             "bbox": [
               42,
-              3,
-              184,
-              229
+              4,
+              200,
+              232
             ],
-            "fill": 0.596,
+            "fill": 0.625,
             "touches_edge": false
           },
           "north-west": {
-            "run1": 0.664,
+            "run1": 0.669,
             "bbox": [
-              47,
-              3,
-              180,
-              228
+              50,
+              6,
+              194,
+              222
             ],
-            "fill": 0.556,
+            "fill": 0.54,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.728,
+            "run1": 0.698,
             "bbox": [
-              37,
-              4,
-              191,
-              231
+              38,
+              5,
+              196,
+              236
             ],
-            "fill": 0.649,
+            "fill": 0.634,
             "touches_edge": false
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-09T18:49:30+00:00"
+      "generated_at": "2026-09-09T18:53:21+00:00"
     },
     {
       "id": "war_elephant",
@@ -7870,6 +7867,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:52:27+00:00"
+    },
+    {
+      "id": "fawn_spirit",
+      "name": "Dapplekin",
+      "tier": "cute",
+      "lore": "Born where the old stag fell. The forest watches over it, and takes offence on its behalf.",
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "horse",
+      "scale": "standard",
+      "pixellab_id": "c48e5a26-3704-41a3-99ec-1fe330918aa6",
+      "version": 1,
+      "sheet": "fawn_spirit/sheet.webp",
+      "rotations": {
+        "south": "fawn_spirit/rotations/south.webp",
+        "south-east": "fawn_spirit/rotations/south-east.webp",
+        "east": "fawn_spirit/rotations/east.webp",
+        "north-east": "fawn_spirit/rotations/north-east.webp",
+        "north": "fawn_spirit/rotations/north.webp",
+        "north-west": "fawn_spirit/rotations/north-west.webp",
+        "west": "fawn_spirit/rotations/west.webp",
+        "south-west": "fawn_spirit/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.752,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.752,
+            "bbox": [
+              16,
+              3,
+              74,
+              85
+            ],
+            "fill": 0.614,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.769,
+            "bbox": [
+              10,
+              2,
+              76,
+              84
+            ],
+            "fill": 0.699,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.767,
+            "bbox": [
+              11,
+              2,
+              78,
+              85
+            ],
+            "fill": 0.718,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.755,
+            "bbox": [
+              17,
+              2,
+              64,
+              85
+            ],
+            "fill": 0.504,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.777,
+            "bbox": [
+              10,
+              2,
+              77,
+              84
+            ],
+            "fill": 0.709,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.764,
+            "bbox": [
+              24,
+              2,
+              66,
+              85
+            ],
+            "fill": 0.45,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.762,
+            "bbox": [
+              10,
+              2,
+              74,
+              85
+            ],
+            "fill": 0.686,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.822,
+            "bbox": [
+              16,
+              3,
+              62,
+              85
+            ],
+            "fill": 0.487,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:53:22+00:00"
     },
     {
       "id": "river_otter",

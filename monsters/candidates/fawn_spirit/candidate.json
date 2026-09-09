@@ -1,0 +1,141 @@
+{
+  "id": "fawn_spirit",
+  "name": "Dapplekin",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "Born where the old stag fell. The forest watches over it, and takes offence on its behalf.",
+  "biome": [
+    "grass",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Young fantasy forest deer spirit with soft dappled fawn-brown fur, pale spots that glow faintly green, two small antler buds wrapped in moss, large dark gentle eyes, slender legs, and small white flowers growing along its back.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "horse",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "fawn_spirit/rotations/south.webp",
+    "south-east": "fawn_spirit/rotations/south-east.webp",
+    "east": "fawn_spirit/rotations/east.webp",
+    "north-east": "fawn_spirit/rotations/north-east.webp",
+    "north": "fawn_spirit/rotations/north.webp",
+    "north-west": "fawn_spirit/rotations/north-west.webp",
+    "west": "fawn_spirit/rotations/west.webp",
+    "south-west": "fawn_spirit/rotations/south-west.webp"
+  },
+  "sheet": "fawn_spirit/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c48e5a26-3704-41a3-99ec-1fe330918aa6",
+  "seed": 539812228,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:53:22+00:00",
+  "elapsed_s": 249.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.752,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.752,
+        "bbox": [
+          16,
+          3,
+          74,
+          85
+        ],
+        "fill": 0.614,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.769,
+        "bbox": [
+          10,
+          2,
+          76,
+          84
+        ],
+        "fill": 0.699,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.767,
+        "bbox": [
+          11,
+          2,
+          78,
+          85
+        ],
+        "fill": 0.718,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.755,
+        "bbox": [
+          17,
+          2,
+          64,
+          85
+        ],
+        "fill": 0.504,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.777,
+        "bbox": [
+          10,
+          2,
+          77,
+          84
+        ],
+        "fill": 0.709,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.764,
+        "bbox": [
+          24,
+          2,
+          66,
+          85
+        ],
+        "fill": 0.45,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.762,
+        "bbox": [
+          10,
+          2,
+          74,
+          85
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.822,
+        "bbox": [
+          16,
+          3,
+          62,
+          85
+        ],
+        "fill": 0.487,
+        "touches_edge": false
+      }
+    }
+  }
+}
