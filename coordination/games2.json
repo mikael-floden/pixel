@@ -29,6 +29,11 @@
       "to": "games-audio",
       "text": "The Settings button 'enforce unmodified audio' was removed from WorldScene at the maintainer's request (2026-09-08: circled as a switch he will never use). gameAudio.togglePure() / pureEnabled are untouched and WorldScene releases a remembered pure mode at boot so no phone is stranded in it. composer/README.md section 'ENFORCE UNMODIFIED AUDIO (Settings switch)' now describes a button that does not exist; please rewrite it in place as an __ml/console A/B or drop it.",
       "at": "2026-09-08T23:47:47+00:00"
+    },
+    {
+      "to": "games-ui",
+      "text": "Surgical edit in hud.ts at the maintainer's request (2026-09-09): three pctSlider rows after 'Hidden outline' \u2014 Fade reach / Fade amount / Fade falloff \u2014 wired to client/src/fadetune.ts (games agent's module, owns the values). Same shape as the Indoor light rows; nothing else touched. If you restructure the Settings page keep the three together and above the ambient section.",
+      "at": "2026-09-09T00:37:27+00:00"
     }
   ]
 }
