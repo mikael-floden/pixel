@@ -1,6 +1,11 @@
 import { Client, Room } from "colyseus.js";
+import { Schema, Decoder } from "@colyseus/schema";
 import { withJoinTimeout } from "./jointimeout";
-import { ROOM_NAME, JoinOptions } from "@nangijala/shared";
+import { ROOM_NAME, JoinOptions, installWorldUnitAccessors } from "@nangijala/shared";
+
+// POSITIONS ON THE WIRE (shared/worldunits.ts): px/py int16 room-relative
+// quarter units; every `player.x` the scene reads goes through this getter.
+installWorldUnitAccessors(Schema, Decoder);
 
 /** Resolve the world-server endpoint.
  *

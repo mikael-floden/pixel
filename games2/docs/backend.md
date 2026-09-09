@@ -219,3 +219,43 @@ grid, all bots packed within a few cells in one zone (the crowded-room case):
 - Not carried across the line: the flee slow (`hunted` is built from the
   room's own monsters). A dead body's respawn and the water sanctuary are the
   home room's as before.
+
+## Positions on the wire (2026-09-09)
+
+`shared/src/worldunits.ts`. Every body's position is synced as `px`/`py`:
+int16, quarter world units, relative to the room's origin (`state.ox/oy`,
+`state.pq` units per wu — 4 in a zone room, 2 in the whole-world room so
+394 cells still fit). The server keeps float `x`/`y` and writes the wire
+fields before every patch (`broadcastPatch` override — a position set in a
+message handler must never reach a client a patch later than the flag set
+beside it; the respawn test caught exactly that) and at every creation
+point (the join snapshot is taken outside the patch loop). The client reads
+`x`/`y` through getters on the schema base class; a decoded object carries
+no link to its state, so the client `Decoder` is hooked and every reference
+its tracker adds is remembered with its state (WeakMap). One installer
+serves the browser (`client/src/net.ts`), the tests (installed by
+WorldState.ts, the same library copy colyseus.js decodes with) and the load
+bot (inlined). Any map size fits: a zone is 99 cells and ghosts reach 36
+past its edge.
+
+**Owner-only fields**: `seq` (the input ack), `slow` and `stamina` change
+every tick for every body and mean nothing to anyone but the body's own
+client. They carry `OWNER_VIEW_TAG` and reach only the view that added the
+player with that tag (`attachView`). This was the larger share.
+
+Measured, 200 bots packed in one room, KB/s per client (means over the run):
+
+| encoding | KB/s per client | server CPU |
+|---|---|---|
+| float positions, seq to everyone | 38.4 | 75% |
+| int16 quarter-unit positions | 32.4 | 69% |
+| + owner-only seq/slow/stamina | 17.4 | 66% |
+
+What is left per moving body per patch is framing (the ref id, a field index
+per axis) plus 4 bytes of position, so the next lever is the PATCH RATE (a
+10 Hz patch would halve it again for 50 ms of ack latency; not taken —
+remote motion is eased at rate 12 and the maintainer is sensitive to it) and,
+for the many bodies that walk routes (monsters, tap-to-move players), path
+replay: send the route once and let clients replay it with periodic
+corrections. Not built; a week-class subsystem with its own drift and
+correction rules.

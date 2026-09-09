@@ -15,6 +15,18 @@
 // LATENCY (input seq sent → seen acked in state) and hand-off count. The
 // summary at the end is the measurement; paste it into docs/backend.md.
 import { Client } from "colyseus.js";
+import { Schema, Decoder } from "@colyseus/schema";
+// POSITIONS ON THE WIRE (shared/src/worldunits.ts): the same x/y getters the
+// game client installs — px/py are int16 room-relative quarter units, and the
+// decoder hook remembers which state each decoded object belongs to.
+{
+  const rootOf = new WeakMap();
+  const origSetState = Decoder.prototype.setState;
+  Decoder.prototype.setState = function (root) { origSetState.call(this, root); const t = this.root; const add = t.addRef.bind(t); t.addRef = (id, ref, inc) => { add(id, ref, inc); if (ref && typeof ref === "object") rootOf.set(ref, root); }; };
+  for (const [name, q, o] of [["x", "px", "ox"], ["y", "py", "oy"]])
+    if (!Object.getOwnPropertyDescriptor(Schema.prototype, name))
+      Object.defineProperty(Schema.prototype, name, { configurable: true, get() { const v = this[q]; if (typeof v !== "number") return undefined; const r = rootOf.get(this); return (r?.[o] ?? 0) + v / (r?.pq > 0 ? r.pq : 4); }, set(v) { Object.defineProperty(this, name, { value: v, writable: true, enumerable: true, configurable: true }); } });
+}
 
 const arg = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i >= 0 ? process.argv[i + 1] : d; };
 const N = Number(arg("n", 50));
@@ -141,7 +153,7 @@ while (Date.now() < tEnd) {
     samples.push(st);
       const busiest = [...st.rooms].sort((a, b) => b.tickMs.p95 - a.tickMs.p95)[0];
     const lat = ackLat.slice(-2000);
-    process.stdout.write(`\r${((tEnd - Date.now()) / 1000).toFixed(0).padStart(3)}s cpu ${String(st.cpuPct).padStart(5)}% lag ${String(st.loopLagMs.max).padStart(3)}ms rooms ${st.rooms.length} players ${st.totals.players} | busiest z${busiest?.zone} clients ${busiest?.clients} tick p50 ${busiest?.tickMs.p50} p95 ${busiest?.tickMs.p95} max ${busiest?.tickMs.max} | ack p50 ${pct(lat, 0.5)} p95 ${pct(lat, 0.95)} | hops ${handoffs} kicks ${kicks} fails ${joinFails} | botlag ${botLagMax}ms | stuck ${[...lastAckAt.values()].filter((t) => Date.now() - t > 5000).length} decodeErr ${decodeErrs}   `);
+    process.stdout.write(`\r${((tEnd - Date.now()) / 1000).toFixed(0).padStart(3)}s cpu ${String(st.cpuPct).padStart(5)}% lag ${String(st.loopLagMs.max).padStart(3)}ms rooms ${st.rooms.length} players ${st.totals.players} | busiest z${busiest?.zone} clients ${busiest?.clients} tick p50 ${busiest?.tickMs.p50} p95 ${busiest?.tickMs.p95} max ${busiest?.tickMs.max} | out ${busiest?.outKBpsPerClient} KB/s/client | ack p50 ${pct(lat, 0.5)} p95 ${pct(lat, 0.95)} | hops ${handoffs} kicks ${kicks} fails ${joinFails} | botlag ${botLagMax}ms | stuck ${[...lastAckAt.values()].filter((t) => Date.now() - t > 5000).length} decodeErr ${decodeErrs}   `);
     botLagMax = 0;
   } catch (e) { process.stdout.write(`\rstats fetch failed: ${e.message}   `); }
 }
@@ -156,8 +168,8 @@ const lag = last.map((s) => s.loopLagMs.max);
 const perRoom = new Map();
 for (const s of last) for (const r of s.rooms) {
   const k = `z${r.zone}/${r.id.slice(0, 4)}`;
-  const e = perRoom.get(k) ?? { clients: [], p50: [], p95: [], max: [], monsters: [], ghosts: [] };
-  e.clients.push(r.clients); e.p50.push(r.tickMs.p50); e.p95.push(r.tickMs.p95); e.max.push(r.tickMs.max); e.monsters.push(r.monsters); e.ghosts.push(r.ghosts);
+  const e = perRoom.get(k) ?? { clients: [], p50: [], p95: [], max: [], monsters: [], ghosts: [], kb: [] };
+  e.clients.push(r.clients); e.p50.push(r.tickMs.p50); e.p95.push(r.tickMs.p95); e.max.push(r.tickMs.max); e.monsters.push(r.monsters); e.ghosts.push(r.ghosts); e.kb.push(r.outKBpsPerClient ?? 0);
   perRoom.set(k, e);
 }
 const mean = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0);
@@ -166,7 +178,7 @@ console.log(`process: cpu mean ${mean(cpu).toFixed(0)}% max ${Math.max(...cpu)}%
 console.log(`bot process: cpu ${(process.cpuUsage().user / 1000 / (SECONDS * 1000) * 100).toFixed(0)}% of one core over the run`);
 console.log(`bots stuck (no ack for 5 s at the end): ${[...lastAckAt.values()].filter((t) => Date.now() - t > 5000).length} of ${lastAckAt.size} | client decode errors ("refId" not found): ${decodeErrs}`);
 console.log(`bots: ack latency p50 ${pct(ackLat, 0.5)} p95 ${pct(ackLat, 0.95)} p99 ${pct(ackLat, 0.99)} ms (${ackLat.length} acks) | hand-offs ${handoffs} | kicks ${kicks} | join failures ${joinFails}`);
-console.log("room     clients  monsters ghosts  tick p50  tick p95  tick max (ms, means over the window)");
+console.log("room     clients  monsters ghosts  tick p50  tick p95  tick max  KB/s/client (means over the window)");
 for (const [k, e] of [...perRoom.entries()].sort((a, b) => mean(b[1].clients) - mean(a[1].clients)))
-  console.log(`${k.padEnd(8)} ${mean(e.clients).toFixed(0).padStart(7)}  ${mean(e.monsters).toFixed(0).padStart(8)} ${mean(e.ghosts).toFixed(0).padStart(6)}  ${mean(e.p50).toFixed(2).padStart(8)}  ${mean(e.p95).toFixed(2).padStart(8)}  ${Math.max(...e.max).toFixed(1).padStart(8)}`);
+  console.log(`${k.padEnd(8)} ${mean(e.clients).toFixed(0).padStart(7)}  ${mean(e.monsters).toFixed(0).padStart(8)} ${mean(e.ghosts).toFixed(0).padStart(6)}  ${mean(e.p50).toFixed(2).padStart(8)}  ${mean(e.p95).toFixed(2).padStart(8)}  ${Math.max(...e.max).toFixed(1).padStart(8)}  ${mean(e.kb).toFixed(2).padStart(11)}`);
 process.exit(0);

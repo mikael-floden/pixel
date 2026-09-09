@@ -70,6 +70,10 @@ Kubernetes). Rules here are present tense; the measurements land in
 - **World-wide events go over the bus** (`world:<world>:events`: chat, the
   arrival star, level-ups) and every room broadcasts them to its clients;
   presence (`pid` → name, zone) lives in a bus hash.
+- **Positions on the wire** are int16 quarter world units relative to the
+  room's origin (`shared/src/worldunits.ts`): two bytes an axis at any map
+  size, since everything a room holds lies within ~5,500 wu of its origin.
+  A field only the owner needs (the input ack) is tagged owner-only.
 - **The bus** is `server/src/bus.ts`: `publish/subscribe/get/set(ttl)/hset`
   on ioredis when `REDIS_URL` is set (a local `redis-server` or Docker in dev,
   Memorystore in prod), else an in-process fake with the same contract, so

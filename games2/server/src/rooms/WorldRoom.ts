@@ -33,6 +33,9 @@ import {
   zoneNeighbours,
   distToRect,
   nearEdge,
+  quantizePos,
+  POS_Q_ZONE,
+  POS_Q_WHOLE,
   MAX_INPUT_DT,
   INPUT_TIME_SLACK,
   stepMovement,
@@ -120,7 +123,7 @@ import {
   INV_MAX_STACK,
   INV_MAX_SLOTS,
 } from "@nangijala/shared";
-import { WorldState, Player, Monster, MonsterArea, GroundItem } from "../schema/WorldState.js";
+import { WorldState, Player, Monster, MonsterArea, GroundItem, OWNER_VIEW_TAG } from "../schema/WorldState.js";
 import { ChessManager, chessBoardsFor, ChessBoardCfg } from "../chess.js";
 import { monsterStatsFor, monsterRadiusFor, MonsterStats } from "../tuning.js";
 import { onLiveChange, liveTuning, sceneryHitboxOverrides } from "../live.js";
@@ -314,6 +317,8 @@ interface RoomStat {
   ghosts: number;
   ticks: number[];
   at: number;
+  bytesOut: number; // patch + message bytes sent to this room's clients since the last stats call
+  bytesAt: number;
 }
 const roomStats = new Map<string, RoomStat>();
 let cpuLast = process.cpuUsage();
@@ -347,10 +352,17 @@ export function perfStats() {
     .filter(([, r]) => now - r.at < 5000)
     .map(([id, r]) => {
       const t = [...r.ticks].sort((a, b) => a - b);
-      return {
+      const secs = Math.max(0.001, (now - r.bytesAt) / 1000);
+      const kbps = r.bytesOut / 1024 / secs; // KB/s to ALL clients of the room
+      const out = {
         id, world: r.world, zone: r.zone, clients: r.clients, players: r.players, monsters: r.monsters, ghosts: r.ghosts,
         tickMs: { p50: +pct(t, 0.5).toFixed(2), p95: +pct(t, 0.95).toFixed(2), max: +(t[t.length - 1] ?? 0).toFixed(2), n: t.length },
+        outKBps: +kbps.toFixed(1),
+        outKBpsPerClient: +(r.clients ? kbps / r.clients : 0).toFixed(2),
       };
+      r.bytesOut = 0;
+      r.bytesAt = now;
+      return out;
     });
   const out = {
     at: now,
@@ -584,6 +596,9 @@ export class WorldRoom extends Room<WorldState> {
         }
       }
       this.setMetadata({ world, zone: this.zoneId, duplicate: this.duplicate });
+      this.posOx = this.rect?.x0 ?? 0;
+      this.posOy = this.rect?.y0 ?? 0;
+      this.posQ = this.rect ? POS_Q_ZONE : POS_Q_WHOLE;
       // The maps2 spawn zones for THIS world (sidecar next to world.json),
       // resolved against the grid: which cells are truly standable/swimmable
       // at each zone's elev band. No grid (open world) → no monsters.
@@ -594,6 +609,9 @@ export class WorldRoom extends Room<WorldState> {
         console.log(`[staging] world "${world}": terrain=${!!this.terrain} zones=${this.zones.length}`);
     }
     this.setState(new WorldState());
+    this.state.ox = this.posOx;
+    this.state.oy = this.posOy;
+    this.state.pq = this.posQ;
     this.chan = {
       events: `world:${this.worldName}:events`,
       presence: `presence:${this.worldName}`,
@@ -1065,6 +1083,7 @@ export class WorldRoom extends Room<WorldState> {
         const mid = `${this.idPrefix}${z.zone.id}#${n}`;
         m.home = this.zoneId;
         m.orbitSign = idSalt(mid) & 1 ? 1 : -1; // circling handedness varies per monster
+        this.syncPos(m);
         this.state.monsters.set(mid, m);
       }
     }
@@ -1107,7 +1126,18 @@ export class WorldRoom extends Room<WorldState> {
   private attachView(client: Client, player: Player) {
     const view = new StateView();
     client.view = view;
+    // Count every byte this room sends the client (patches and messages) for
+    // /api/stats — the per-client bandwidth is what a phone on mobile data
+    // pays, and what the position encoding is measured on.
+    const raw = client.raw.bind(client);
+    const roomId = this.roomId;
+    client.raw = (data: any, ...rest: any[]) => {
+      const r = roomStats.get(roomId);
+      if (r) r.bytesOut += data?.length ?? data?.byteLength ?? 0;
+      return raw(data, ...rest);
+    };
     view.add(player);
+    view.add(player, OWNER_VIEW_TAG); // the ack and the prediction fields: mine alone
     this.seen.set(client.sessionId, new Set([player]));
   }
 
@@ -2189,6 +2219,7 @@ export class WorldRoom extends Room<WorldState> {
     g.y = gy;
     g.elev = terr ? resolveElevAt(terr, srcElev, gx, gy, ctx) : 0;
     g.bornAt = Date.now();
+    this.syncPos(g);
     this.state.drops.set(`${this.idPrefix}d${this.dropCounter++}`, g);
   }
 
@@ -2215,6 +2246,7 @@ export class WorldRoom extends Room<WorldState> {
     m.aggro = stats.aggro_radius_wu;
     const id = `${this.idPrefix}${areaId}#r${this.respawnCounter++}`;
     m.orbitSign = idSalt(id) & 1 ? 1 : -1;
+    this.syncPos(m);
     this.state.monsters.set(id, m);
   }
 
@@ -2496,6 +2528,32 @@ export class WorldRoom extends Room<WorldState> {
   private grid: ZoneGrid | null = null;
   private rect: Rect | null = null;
   private idPrefix = ""; // monsters and drops of a zone room carry `z<zone>:` so ids are world-unique
+  /** POSITIONS ON THE WIRE (shared/worldunits.ts): the room's origin and
+   *  quantum; `syncPos` writes an entity's px/py from its float x/y. */
+  private posOx = 0;
+  private posOy = 0;
+  private posQ = POS_Q_WHOLE;
+  private syncPos(e: { x: number; y: number; px: number; py: number }) {
+    const px = quantizePos(e.x, this.posOx, this.posQ);
+    const py = quantizePos(e.y, this.posOy, this.posQ);
+    if (e.px !== px) e.px = px;
+    if (e.py !== py) e.py = py;
+  }
+  /** Positions are written to the wire fields right before EVERY patch, so a
+   *  position set outside the tick (a respawn, a teleport, a message handler)
+   *  can never reach a client a patch later than the flag set beside it. */
+  broadcastPatch(): boolean {
+    this.syncAllPositions();
+    return super.broadcastPatch();
+  }
+  private syncAllPositions() {
+    this.state.players.forEach((p) => this.syncPos(p));
+    this.state.monsters.forEach((m) => this.syncPos(m));
+    this.state.drops.forEach((g) => this.syncPos(g));
+    this.state.ghosts.forEach((p) => this.syncPos(p));
+    this.state.ghostMonsters.forEach((m) => this.syncPos(m));
+    this.state.ghostDrops.forEach((g) => this.syncPos(g));
+  }
   private duplicate = false; // a second room of a zone that already has one (see zoneRooms)
   private chan = {
     events: "",
@@ -2531,6 +2589,7 @@ export class WorldRoom extends Room<WorldState> {
     this.sidPid.set(client.sessionId, pid);
     this.pidSid.set(pid, client.sessionId);
     this.state.ghosts.delete(pid); // it may have been a neighbour's ghost a moment ago
+    this.syncPos(player);
     this.state.players.set(pid, player);
     this.attachView(client, player);
     // The backpack is PRIVATE — targeted message, never schema-synced.
@@ -2795,6 +2854,7 @@ export class WorldRoom extends Room<WorldState> {
       mon.nextMoveAt = now + 200;
       this.state.ghostMonsters.delete(m.id);
       this.ghostOwner.delete(m.id);
+      this.syncPos(mon);
       this.state.monsters.set(m.id, mon);
     } else if (m.type === "monster:respawn") {
       this.respawnQueue.push({ areaId: m.areaId, at: now + MONSTER_RESPAWN_MS });
@@ -2911,6 +2971,7 @@ export class WorldRoom extends Room<WorldState> {
       g.level = p.level; g.hp = p.hp; g.hpMax = p.hpMax; g.dead = p.dead; g.slow = p.slow; g.action = p.action;
       g.actionSeq = p.actionSeq; g.hitSeq = p.hitSeq; g.sid = ""; g.pid = p.id; g.lastSeen = now;
       g.ghostNoAggro = !!p.noAggro;
+      this.syncPos(g);
       if (fresh) this.state.ghosts.set(p.id, g);
       this.ghostOwner.set(p.id, m.from);
     }
@@ -2923,6 +2984,7 @@ export class WorldRoom extends Room<WorldState> {
       g.kind = d.kind; g.x = d.x; g.y = d.y; g.dir = d.dir; g.moving = d.moving; g.elev = d.elev; g.hp = d.hp;
       g.hpMax = d.hpMax; g.mstate = d.mstate; g.actionSeq = d.actionSeq; g.level = d.level; g.aggro = d.aggro;
       g.tsid = d.tsid; g.lastSeen = now;
+      this.syncPos(g);
       if (fresh) this.state.ghostMonsters.set(d.id, g);
       this.ghostOwner.set(d.id, m.from);
     }
@@ -2933,6 +2995,7 @@ export class WorldRoom extends Room<WorldState> {
       const fresh = !g;
       if (!g) g = new GroundItem();
       g.item = d.item; g.x = d.x; g.y = d.y; g.elev = d.elev; g.lastSeen = now;
+      this.syncPos(g);
       if (fresh) this.state.ghostDrops.set(d.id, g);
       this.ghostOwner.set(d.id, m.from);
     }
@@ -2950,7 +3013,7 @@ export class WorldRoom extends Room<WorldState> {
   private recordTick(ms: number) {
     let r = roomStats.get(this.roomId);
     if (!r) {
-      r = { world: this.worldName, zone: this.zoneId, clients: 0, players: 0, monsters: 0, ghosts: 0, ticks: [], at: 0 };
+      r = { world: this.worldName, zone: this.zoneId, clients: 0, players: 0, monsters: 0, ghosts: 0, ticks: [], at: 0, bytesOut: 0, bytesAt: Date.now() };
       roomStats.set(this.roomId, r);
     }
     r.ticks.push(ms);

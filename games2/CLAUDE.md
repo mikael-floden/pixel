@@ -155,6 +155,10 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - `Encoder.BUFFER_SIZE` holds EVERY client's view section of one patch (2 MB;
   an overflow freezes clients silently, never errors). `scripts/loadbot.mjs`
   + `/api/stats` are the load instrument; numbers in `docs/backend.md`.
+- Positions are int16 quarter units relative to the room (`px/py`,
+  `shared/worldunits.ts`); the server keeps float `x/y` and syncs before
+  every patch; the client reads `x/y` through installed getters. A field only
+  its owner needs (`seq`, `slow`) carries `OWNER_VIEW_TAG`.
 - A client receives only what is within `INTEREST_WU` of itself (a
   `StateView` per client, recomputed every `INTEREST_TICKS`); "unlimited" is a
   view holding everything, and only a room CREATE option grants it.
