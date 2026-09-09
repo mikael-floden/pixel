@@ -986,7 +986,7 @@ await pub.close();
      * has quietly landed on the wrong state twice in this file. Land on it by
      * what the row SAYS instead — the state whose root movement matches the one
      * this assertion measured. */
-    const want = `root ${worst.d.base}px`;
+    const want = `outline slides ${worst.d.base}px`;
     let row = null;
     const n = await p.evaluate(() => document.querySelectorAll(".seg-states button").length);
     for (let i = 0; i < n; i++) {
@@ -1025,7 +1025,7 @@ await pub.close();
     `the overview can filter animations (${chips.join(" | ")})`);
   const movers = (DD5.domains.objects ?? []).filter((o) => Object.keys(o.animations ?? {}).some((st) =>
     Object.values(o.animations[st].dirs ?? {}).some((c) => (c.anim?.base ?? 0) > 1))).length;
-  ok(chips.some((c) => c === `root moves ${movers}`),
+  ok(chips.some((c) => c === `outline slides ${movers}`),
     `and "root moves" counts what the build measured, not a guess (${movers} pieces)`);
 }
 

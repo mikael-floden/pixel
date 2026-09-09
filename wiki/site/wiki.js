@@ -5011,15 +5011,27 @@ function animRow(o, st, onChange) {
     box.replaceChildren(...[
       h("span", { class: "muted lit-label" }, "Animation"),
       now
-        ? h("span", { class: `pill ${ANIM_STATES[now].cls}`, title: ANIM_STATES[now].title },
+        ? h("span", { class: `pill ${ANIM_STATES[now].cls}`, title: `${ANIM_STATES[now].title}${
+          Object.keys(o.animations?.[st]?.animStates ?? {}).length > 1
+            ? ` — this state has ${Object.entries(o.animations[st].animStates).map(([n2, v2]) => `${n2}: ${ANIM_STATES[v2]?.label ?? v2}`).join(", ")}, and the row shows the worse of them`
+            : ""}` },
           `${ANIM_STATES[now].label}${mine ? "" : " · agent"}`)
         : h("span", { class: "pill muted", title: "The scenery agent has not classified this animation yet" }, "unclassified"),
       /* THE ROOT'S OWN NUMBER, because that is the rule: "as soon as the root
        * moves it looks wrong". Green under half a pixel, amber to two, red
        * beyond — measured across every facing of this state, worst first. */
+      /* THE SILHOUETTE'S OWN MOVEMENT — a corroboration, not the verdict. It
+       * catches an object that SLIDES (tree_045's trunk travels 14.1px) and is
+       * blind to one repainted in place, which the scenery agent measured
+       * before building their per-class test: "alpha-based movement cannot see
+       * a trunk repainted in place — it scored tree_040 and tree_066
+       * identically at ~0.0". Against their 1,942 judgements it separates but
+       * does not decide: their PROBABLY_GOOD sits at a median 0.00px and 3%
+       * over a pixel, their PROBABLY_BAD at 0.15px and 14%. So it is shown as
+       * what it is, beside their call rather than instead of it. */
       h("span", { class: `pill ${d.base > 2 ? "err" : d.base > 0.5 ? "warn" : "ok"}`,
-        title: `The bottom quarter of the art travels ${d.base}px across the ${d.frames} frames; the top quarter travels ${d.top}px, and ${Math.round(d.low * 100)}% of what changes is down at the foot. His rule: the leaves may move, the root may not.` },
-        `root ${d.base}px`),
+        title: `The SILHOUETTE's bottom quarter travels ${d.base}px across the ${d.frames} frames; its top quarter travels ${d.top}px, and ${Math.round(d.low * 100)}% of what changes is down at the foot. A hint, not the answer: it catches an object that slides and cannot see one repainted in place.` },
+        `outline slides ${d.base}px`),
       d.base === 0 && d.top === 0
         ? h("span", { class: "pill warn", title: "Not one pixel differs between the frames — there is nothing to watch" }, "nothing moves")
         : null,
@@ -11064,7 +11076,7 @@ const OBJ_ANIMS = {
    * root moves it looks wrong". 226 of 1,945 animated states move their base
    * more than a pixel; these are where the fault lives whatever anyone has
    * classified them as. */
-  moving: { label: "root moves", title: "The bottom quarter of the art travels more than a pixel — the fault he described, measured",
+  moving: { label: "outline slides", title: "The silhouette's bottom quarter travels more than a pixel across the frames — an object that SLIDES. A hint beside the agent's classification, not a replacement: it cannot see a trunk repainted in place",
     hit: (o) => animStatesOf(o).some((st) => (animDrift(o, st)?.base ?? 0) > 1) },
   dead: { label: "nothing moves", title: "Frames that do not differ by a single pixel — an animation with nothing to watch",
     hit: (o) => animStatesOf(o).some((st) => { const d = animDrift(o, st); return d && d.base === 0 && d.top === 0; }) },

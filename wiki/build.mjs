@@ -1214,9 +1214,27 @@ function buildObjects() {
         /* THE CLASSIFICATION RIDES THE STATE. Read from the animation first,
          * then the state — whichever the scenery agent writes it on — so the
          * review shows it the day they start, with no build change. */
-        const cls = a.animation_state ?? sv.animation_state ?? null;
+        /* THE FIELD IS `review`, THEIRS, NOT A NAME I INVENTED. I proposed
+         * `animation_state` on the board; the scenery agent had already
+         * shipped `review` on every animation an hour earlier (6d5f0b2412,
+         * 372 PROBABLY_GOOD / 1,622 PROBABLY_BAD), and the manifest is theirs
+         * — so the wiki reads what is written rather than what it asked for.
+         * The old name stays as a fallback and costs nothing. */
+        const cls = a.review ?? a.animation_state ?? sv.review ?? sv.animation_state ?? null;
+        /* A STATE CAN CARRY TWO ANIMATIONS, JUDGED DIFFERENTLY — 15 states do,
+         * and 4 of those disagree (meteor_stone_002's LIT_2 has a good flame
+         * and a bad motion). The wiki reviews per state, so the state takes the
+         * WORSE of them: an animation the agent called bad must not be hidden
+         * behind a sibling it called good, and he can still see which is which
+         * on the piece. Keyed per animation as well, so the row can name it. */
+        const RANK = { ANIMATION_REDO: 0, ANIMATION_PROBABLY_BAD: 1, ANIMATION_PROBABLY_GOOD: 2, ANIMATION_APPROVED: 3 };
+        const had = anims[key]?.animState;
+        const keep = typeof cls === "string" && cls
+          ? (had && RANK[had] <= (RANK[cls] ?? 9) ? had : cls)
+          : had;
         anims[key] = { description: a.description ?? "", anim: name,
-          ...(typeof cls === "string" && cls ? { animState: cls } : {}),
+          ...(keep ? { animState: keep } : {}),
+          ...(typeof cls === "string" && cls ? { animStates: { ...(anims[key]?.animStates ?? {}), [name]: cls } } : {}),
           dirs: { ...(anims[key]?.dirs ?? {}), ...dirs } };
       }
     }
