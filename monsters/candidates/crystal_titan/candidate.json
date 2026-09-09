@@ -362,29 +362,30 @@
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.0331,
-          "step_max": 0.0516,
-          "drift": 1.69,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 0.31,
-          "pin": 1.0,
-          "pad": 0,
+          "step_mean": 0.1507,
+          "step_max": 0.1911,
+          "drift": 11.79,
+          "loop": 0.4079,
+          "loop_ratio": 2.71,
+          "travel": 1.94,
+          "pin": 0.871,
+          "pad": 1,
           "canvas": [
-            232,
-            232
+            234,
+            234
           ],
           "reasons": [
-            "frozen: silhouette moves 0.033 per frame",
-            "PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)"
+            "drifts 11.8 px (> 12)",
+            "last→first hand-off is 2.7× a normal step — the loop hitches",
+            "canvas grown by 1 px a side to hold the motion"
           ],
-          "pinned": true,
-          "sub": "aa736786-0216-4bca-965a-0317a05c9169",
-          "group": "2eb63817-1002-4d8c-bc66-5c67d2238fd3",
+          "sub": "8dbdfa2f-5448-458f-8d47-937a3d213143",
+          "group": "11fbaadd-1dca-46f9-800f-4a48cc52e042",
           "takes": 3,
-          "version": 5,
+          "version": 6,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:54:15+00:00"
+          "generated_at": "2026-09-09T21:56:36+00:00",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning"
         },
         "east": {
           "status": "pass",
