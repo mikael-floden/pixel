@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:23:14+00:00",
+  "generated_at": "2026-09-09T18:24:10+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 30,
+  "count": 31,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -3893,6 +3893,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:23:14+00:00"
+    },
+    {
+      "id": "bandit_brute",
+      "name": "Cudgel",
+      "tier": "mid",
+      "lore": "Toll is whatever you carry. Refuse, and the club decides what you leave with.",
+      "biome": [
+        "grass",
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "56f0f796-93fd-41c9-a42d-6bcc21858c1d",
+      "version": 1,
+      "sheet": "bandit_brute/sheet.webp",
+      "rotations": {
+        "south": "bandit_brute/rotations/south.webp",
+        "south-east": "bandit_brute/rotations/south-east.webp",
+        "east": "bandit_brute/rotations/east.webp",
+        "north-east": "bandit_brute/rotations/north-east.webp",
+        "north": "bandit_brute/rotations/north.webp",
+        "north-west": "bandit_brute/rotations/north-west.webp",
+        "west": "bandit_brute/rotations/west.webp",
+        "south-west": "bandit_brute/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.76,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.76,
+            "bbox": [
+              5,
+              4,
+              92,
+              107
+            ],
+            "fill": 0.714,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.802,
+            "bbox": [
+              38,
+              6,
+              79,
+              108
+            ],
+            "fill": 0.333,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.803,
+            "bbox": [
+              35,
+              4,
+              73,
+              108
+            ],
+            "fill": 0.315,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.787,
+            "bbox": [
+              14,
+              5,
+              107,
+              105
+            ],
+            "fill": 0.741,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.808,
+            "bbox": [
+              17,
+              3,
+              83,
+              109
+            ],
+            "fill": 0.558,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.79,
+            "bbox": [
+              18,
+              5,
+              94,
+              107
+            ],
+            "fill": 0.618,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.767,
+            "bbox": [
+              25,
+              5,
+              97,
+              107
+            ],
+            "fill": 0.585,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.808,
+            "bbox": [
+              12,
+              7,
+              97,
+              109
+            ],
+            "fill": 0.691,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:24:10+00:00"
     }
   ]
 }
