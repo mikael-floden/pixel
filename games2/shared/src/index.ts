@@ -2988,6 +2988,9 @@ export interface JoinOptions {
    *  anything else is an ordinary join under a fresh id. */
   pid?: string;
   handoff?: string;
+  /** Debug: when the client received zone:go (Date.now()), so the server can
+   *  log the hop's latency at onJoin entry. */
+  t0?: number;
 }
 
 // --- Chat --------------------------------------------------------------------

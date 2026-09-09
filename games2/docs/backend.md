@@ -93,9 +93,30 @@ and the rejected approaches as each phase lands. Rewrite in place.
   session `handed` so its leave holds no seat. A key that does not match, or
   was consumed, is an ordinary join under the session id. A hop nobody
   completes is forgotten after `HANDOFF_TIMEOUT_MS` and the body stays.
-  MEASURED headless on the_game: spawn (zone 11) → teleport to zone 4 → walk
-  over cell 99 into zone 5: two hops, hp and position carried, the neighbour's
-  monsters visible as ghosts on the line, the ground drawn after each swap.
+  THE HOP MUST NOT FREEZE THE BODY (maintainer 2026-09-09, playing with a
+  friend: "the transition between zones is a bit laggy or buggy", and a
+  teleport into a house): the first cut buffered the client's inputs while
+  it joined the new room, so the body stood at the border for the whole
+  hop, the client walked on alone, and the replay was throttled to the 0.25 s
+  input budget — the body snapped back. Now inputs keep flowing to the OLD
+  room (its body keeps walking, and the neighbours' ghost of it with it),
+  `zone:go` carries the `seq` the hot state was taken at, the client keeps a
+  log of what it sent and replays everything after that seq into the new
+  room on bind, and the new room grants `HANDOFF_INPUT_CREDIT_S` (2 s) of
+  integration credit for the burst. The new room is bound only after its
+  FIRST STATE has landed (the join resolves before it; binding earlier left
+  `state.players` undefined for a few frames and every per-frame read
+  threw). A hand-off join does NOT resend `live:update` (91 KB the same
+  client already holds). My own sprite is never removed mid-hop (the old room
+  drops my body ~100 ms before its ghost of me arrives). The receiving room
+  SAVES the body on adoption: a link dropped mid-hop that fails its seat
+  reclaim rejoins from the last saved spot, which was minutes old — the
+  house the maintainer was teleported into.
+  MEASURED headless on the_game: the server's onJoin runs +230 ms after
+  zone:go (matchmake + socket); a walked crossing samples at 100 ms show no
+  step over 0.5 cells and `me` continuous across the hop. (The harness's own
+  `joinMs` of 1-3 s is renderer starvation — two pages and art streaming on
+  four cores — not the server.) Probe: `__ml.zone().lastHop`.
   A hop into a zone whose room does not exist yet waits for that room's
   create (the terrain load, ~1-2 s on the_game); warming every zone room at
   server start is the obvious next step and is not built.

@@ -1499,7 +1499,11 @@ export class WorldScene extends Phaser.Scene {
   private zone = WHOLE_WORLD;
   private zonesCfg: ZoneCfg | null = null;
   private zoneSwapping = false;
-  private swapQueue: InputMessage[] = [];
+  /** The last inputs SENT, newest last (spec/ZONES.md hand-off): the new zone
+   *  room starts from the hot state's `seq`, and every input after it is
+   *  replayed there on bind, so the body never freezes at the border and the
+   *  two rooms integrate the same stream. */
+  private sentLog: InputMessage[] = [];
   private avatars = new Map<string, Avatar>();
   // Roaming monsters (server-authoritative, all clients see the same ones).
   private monsters = new Map<string, MonsterAvatar>();
@@ -5183,7 +5187,7 @@ export class WorldScene extends Phaser.Scene {
         const av = id ? this.avatars.get(id) : undefined;
         return av ? { falling: av.falling, elev: av.elev, fallV: av.fallV } : null;
       },
-      me: () => this.room?.state.players.get(this.myId),
+      me: () => (this.room?.state as any)?.players?.get(this.myId),
       // Composer probes: engine state, the musical clock (beat/scale — what
       // beat-reactive visuals read), and a manual event trigger for QA.
       audio: () => gameAudio.debug(),
@@ -6870,7 +6874,7 @@ export class WorldScene extends Phaser.Scene {
       // Settings "disable aggro" — read with no argument, set with one.
       noAggro: (on?: boolean) => (on === undefined ? this.noAggroOn : this.toggleNoAggro(on)),
       mySid: () => this.myId,
-      zone: () => ({ zone: this.zone, hops: this.zoneHops, swapping: this.zoneSwapping, room: this.room?.roomId ?? null, ghosts: (this.room?.state as any)?.ghosts?.size ?? 0, ghostMonsters: (this.room?.state as any)?.ghostMonsters?.size ?? 0 }),
+      zone: () => ({ zone: this.zone, hops: this.zoneHops, swapping: this.zoneSwapping, room: this.room?.roomId ?? null, ghosts: (this.room?.state as any)?.ghosts?.size ?? 0, ghostMonsters: (this.room?.state as any)?.ghostMonsters?.size ?? 0, lastHop: this.zoneLastHop }),
       bloodFx: () => this.bloodSeen,
       graveCrosses: () =>
         this.graveCrosses.map((gc) => ({
@@ -7206,6 +7210,11 @@ export class WorldScene extends Phaser.Scene {
     $(room.state).players.onRemove((_player: any, id: string) => {
       // The same id may live on as a neighbour zone's GHOST (spec/ZONES.md):
       // a body that crossed the border is still drawn, from the other map.
+      // MY OWN body leaves the old room the moment the new one adopts it,
+      // ~100 ms before the ghost of me arrives there and before this client
+      // is bound to the new room: never drop my sprite mid-hop (measured: a
+      // 300 ms hole where the avatar and camera target vanished).
+      if (id === this.myId && this.zoneSwapping) return;
       if (!room.state.ghosts?.has(id)) this.removeAvatar(id);
       this.refreshRoster();
     });
@@ -10104,19 +10113,37 @@ export class WorldScene extends Phaser.Scene {
    *  the inputs made meanwhile, then leave the old room. A failed hop keeps
    *  the old room — it forgets the attempt after ten seconds and keeps the
    *  body. */
-  private async zoneGo(from: Room, msg: { zone?: number; pid?: string; key?: string }) {
+  private async zoneGo(from: Room, msg: { zone?: number; pid?: string; key?: string; seq?: number }) {
     if (this.room !== from || this.zoneSwapping) return;
     if (typeof msg?.zone !== "number" || typeof msg.pid !== "string" || typeof msg.key !== "string") return;
+    const fromSeq = typeof msg.seq === "number" ? msg.seq : Infinity;
     this.zoneSwapping = true;
+    const t0 = performance.now();
+    const hop = { goAt: Date.now(), joinMs: 0, stateMs: 0, boundMs: 0, zone: msg.zone };
+    this.zoneLastHop = hop;
     try {
       const next = await joinWorld(
-        { name: this.myName, character: this.myCharacter.uid, world: this.worldName, zone: msg.zone, pid: msg.pid, handoff: msg.key },
+        { name: this.myName, character: this.myCharacter.uid, world: this.worldName, zone: msg.zone, pid: msg.pid, handoff: msg.key, t0: hop.goAt },
         undefined,
         undefined,
         { route: zoneRoute(this.zonesCfg, msg.zone), fresh: true },
       );
+      hop.joinMs = Math.round(performance.now() - t0);
+      // THE FIRST STATE ARRIVES AFTER THE JOIN RESOLVES. Binding before it
+      // lands leaves `room.state.players` undefined for a few frames and every
+      // per-frame read throws (measured on the production bundle: the scene
+      // stalled mid-crossing). Wait for it — with a bound, so a room that
+      // never sends one cannot hang the swap.
+      if (!(next.state as any)?.players) {
+        await new Promise<void>((res) => {
+          const t = setTimeout(res, 5000);
+          next.onStateChange.once(() => { clearTimeout(t); res(); });
+        });
+      }
+      hop.stateMs = Math.round(performance.now() - t0);
       this.zone = msg.zone;
       this.bindRoom(next, true);
+      hop.boundMs = Math.round(performance.now() - t0);
       const reconcile = () => {
         const st: any = next.state;
         for (const id of [...this.avatars.keys()])
@@ -10128,19 +10155,20 @@ export class WorldScene extends Phaser.Scene {
       };
       if ((next.state as any)?.players?.has(msg.pid)) reconcile();
       else next.onStateChange.once(reconcile);
-      for (const m of this.swapQueue) next.send("input", m);
-      this.swapQueue = [];
+      // Inputs kept flowing to the old room while we swapped (its body kept
+      // walking, and the neighbours' ghost of it with it); the new room holds
+      // the snapshot taken at `fromSeq` and now receives everything after it.
+      for (const m of this.sentLog) if (typeof m.seq === "number" && m.seq > fromSeq) next.send("input", m);
       this.zoneSwapping = false;
       from.leave(true);
       this.zoneHops++;
     } catch (e) {
       console.warn("[zones] hand-off join failed, staying:", e);
       this.zoneSwapping = false;
-      for (const m of this.swapQueue) from.send("input", m);
-      this.swapQueue = [];
     }
   }
   private zoneHops = 0;
+  private zoneLastHop: { goAt: number; joinMs: number; stateMs: number; boundMs: number; zone: number } | null = null;
 
   /** The connection died: freeze input, rejoin in place (immediately when
    * visible, else the moment the tab is shown again), retry with backoff,
@@ -13064,8 +13092,9 @@ export class WorldScene extends Phaser.Scene {
       msg.jump = true;
       this.jumpQueued = false;
     }
-    if (this.zoneSwapping) this.swapQueue.push(msg);
-    else this.room!.send("input", msg);
+    this.room!.send("input", msg);
+    this.sentLog.push(msg);
+    if (this.sentLog.length > 240) this.sentLog.splice(0, this.sentLog.length - 240); // ~12 s at 20 Hz
     this.sendAccum = 0;
   }
 

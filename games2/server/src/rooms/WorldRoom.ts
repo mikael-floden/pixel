@@ -202,6 +202,7 @@ const EDGE_TICKS = 2; // edge snapshots at 10 Hz
 const GHOST_TTL_MS = 1000; // a ghost outlives its owner's last snapshot this long
 const HANDOFF_TTL_S = 10; // the hot state waits on the bus this long for the receiving join
 const HANDOFF_TIMEOUT_MS = 10_000; // then the sending room forgets the attempt and keeps the body
+const HANDOFF_INPUT_CREDIT_S = 2; // integration credit granted to a handed-over body for the inputs it buffered
 const handoffKey = (world: string, pid: string) => `handoff:${world}:${pid}`;
 /** ONE ROOM PER ZONE PER PROCESS. joinOrCreate races: while the first room
  *  of a zone is still in onCreate (the terrain load, ~1 s), a second join
@@ -1210,12 +1211,18 @@ export class WorldRoom extends Room<WorldState> {
   }
 
   async onJoin(client: Client, options: JoinOptions = {}) {
+    // A HAND-OFF from another zone room (spec/ZONES.md): the hot state comes
+    // off the bus, not the database, and the body keeps its stable id. It is
+    // the SAME client, which already holds the live tuning: the 85 KB
+    // `live:update` is not resent (measured: it was most of what the hop
+    // waited for behind a busy phone frame).
+    const hot = await this.takeHandoff(options);
+    if (hot) {
+      if (typeof options.t0 === "number") console.log(`[zones] hand-off onJoin for ${hot.pid} into zone ${this.zoneId}: +${Date.now() - options.t0} ms after zone:go`);
+      return this.joinHandedOff(client, hot);
+    }
     // Current live tuning straight to the joiner (updates arrive as broadcasts).
     client.send("live:update", liveTuning());
-    // A HAND-OFF from another zone room (spec/ZONES.md): the hot state comes
-    // off the bus, not the database, and the body keeps its stable id.
-    const hot = await this.takeHandoff(options);
-    if (hot) return this.joinHandedOff(client, hot);
     const player = new Player();
     player.name = (options.name || `wanderer-${client.sessionId.slice(0, 4)}`).slice(0, 24);
     player.character = options.character || "";
@@ -2772,7 +2779,7 @@ export class WorldRoom extends Room<WorldState> {
     };
     void bus()
       .set(handoffKey(this.worldName, pid), JSON.stringify(hot), HANDOFF_TTL_S)
-      .then(() => client.send("zone:go", { zone: to, pid, key }))
+      .then(() => client.send("zone:go", { zone: to, pid, key, seq: hot.seq }))
       .catch((e) => {
         console.error("[zones] hand-off write failed:", e);
         p.handoff = null;
@@ -2817,6 +2824,12 @@ export class WorldRoom extends Room<WorldState> {
     player.ep = Math.min(player.epMax, Math.max(0, hot.ep));
     player.inv = hot.inv.map((s) => ({ item: s.item, n: s.n }));
     player.seq = hot.seq;
+    // The client buffered its inputs while it swapped rooms (a matchmake and
+    // a socket on a phone: hundreds of ms) and replays them the moment it is
+    // bound. Without credit for that gap the burst is throttled to
+    // INPUT_TIME_SLACK (0.25 s) and the body snaps back to the border, then
+    // catches up — the "laggy" crossing. Grant the gap up front.
+    player.timeCredit = HANDOFF_INPUT_CREDIT_S;
     player.torch = hot.torch;
     player.lastHitAt = hot.lastHitAt;
     player.lastCombatAt = hot.lastCombatAt;
@@ -2827,6 +2840,11 @@ export class WorldRoom extends Room<WorldState> {
       return;
     }
     this.adoptPlayer(client, hot.pid, player);
+    // The old room saved nothing for this body and this room would not
+    // until its flush or the leave: a link dropped mid-hop that fails its
+    // seat reclaim then rejoins from the LAST SAVED spot — minutes old, in a
+    // house it left long ago. One write per crossing keeps the spot current.
+    this.savePlayer(player);
     void bus().publish(this.chan.ctl(hot.from), { type: "handoff:done", pid: hot.pid } satisfies CtlMessage);
   }
 
