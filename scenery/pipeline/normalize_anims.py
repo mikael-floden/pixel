@@ -46,16 +46,21 @@ def normalize(man, rel):
             if not isinstance(a, dict):
                 continue
             d = a.get("directions")
-            if not isinstance(d, dict) or not d:
-                continue
-            key = "south" if "south" in d else next(iter(d))
-            s = d[key] or {}
-            fps = s.get("frame_paths") or []
+            if isinstance(d, dict) and d:
+                key = "south" if "south" in d else next(iter(d))
+                s = d[key] or {}
+                fps = s.get("frame_paths") or []
+            else:
+                # frames already at the top (list-of-names or no directions):
+                # only the on-disk strip is missing from the record, and an
+                # unrecorded strip is exactly what a cleanup mistook for dead.
+                key, s = "south", {}
+                fps = a.get("frame_paths") or []
             # the state folder, or the piece root for the anchor state
             rel_dir = os.path.dirname(fps[0]).rsplit("/animations", 1)[0] if fps else None
             want = {
                 "frame_paths": fps,
-                "strip": s.get("strip") or (_strip_for(rel_dir, name, key) if rel_dir else None),
+                "strip": s.get("strip") or a.get("strip") or (_strip_for(rel_dir, name, key) if rel_dir else None),
                 "light_frames": s.get("light_frames"),
             }
             for k, v in want.items():
