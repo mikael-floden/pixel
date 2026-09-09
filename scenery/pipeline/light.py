@@ -103,9 +103,20 @@ def _emissive(path):
     return share, "#%02x%02x%02x" % tuple(int(round(x * 255)) for x in c)
 
 
-def kind_of(rel, man):
-    """The piece's own `light.kind` if it overrides, else its group's from config.
+def kind_of(rel, man, state=None):
+    """What KIND of light this is, most specific first: the STATE's own kind,
+    then the piece's, then the group's from config.
+
+    State-level exists because a piece can change what it is between states — a
+    brazier's LIT_1 may be flames and its LIT_3 spent coals — and the maintainer
+    judges one state at a time in the wiki. Absent at a level means "inherit",
+    never "unknown", so the common case stores one kind per piece.
     Returns (kind, None) or (None, reason)."""
+    if state:
+        st = ((man.get("light") or {}).get("states") or {}).get(state) or {}
+        k = st.get("kind")
+        if k:
+            return (k, None) if k in KINDS else (None, f"unknown state kind {k!r}")
     own = (man.get("light") or {}).get("kind")
     if own:
         return (own, None) if own in KINDS else (None, f"unknown kind {own!r}")
@@ -377,6 +388,16 @@ def apply_kinds(write=False):
             bad.append((rel, why)); continue
         L["kind"] = kind
         L.update(flags_for(kind))
+        # A state that names its own kind carries its own flags, so a consumer
+        # reading one state never has to look up at the piece to be right.
+        for skey, sb in (L.get("states") or {}).items():
+            sk, swhy = kind_of(rel, man, skey)
+            if not sk:
+                bad.append((f"{rel}#{skey}", swhy)); continue
+            if sb.get("kind"):
+                sb.update(flags_for(sk))
+            else:
+                sb.pop("flame", None); sb.pop("embers", None)
         n += 1
         if write:
             factory.write_manifest(rel, man)
