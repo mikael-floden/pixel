@@ -571,11 +571,30 @@ class Grow:
             p["hflip"] = True
         if lit:
             p["lit"] = True
+        # EVERY PLACEMENT CARRIES ITS STATE (maintainer 2026-09-09, at a cave
+        # hall of braziers: "Why did you pick a LIT scenery object that is not
+        # animated here? When the scenery has two animation variants with
+        # 'probably good'? Also make use of the different scenery
+        # variations."). A stateless placement draws the piece's BASE still,
+        # and for 229 pieces that still IS a LIT state - so an unlit brazier
+        # showed a fire that neither animated (the game animates a STATE) nor
+        # spent a slot: 70 such fakes on the_game, 232 stateless placements in
+        # all. Lit: one of the well-animated LIT variants, rotated by
+        # position. Unlit: one of the NOT_LIT variations, rotated the same
+        # way. Only a piece with no NOT_LIT variation at all stays stateless.
+        if lit:
+            state = self._lit_variant(piece, x, y, state)
+        elif not state or state not in (self._variations(piece) or ()):
+            state = self._variant(piece, self._pos_rng(piece, x, y))
+            # A PIECE WITH NO NOT_LIT VARIATION ONLY HAS LIT LOOKS (crystal
+            # trees, glowing bushes, cattails: 37 placements). Unlit, it still
+            # wears one - the base still is one - so it takes the one that
+            # ANIMATES rather than the one that does not; it spends no slot.
+            if state is None and self._best_lit_state(piece):
+                state = self._lit_variant(piece, x, y)
         if state and (state in (self._variations(piece) or ())
-                      or (lit and state.startswith("LIT"))):
-            p["state"] = state          # the variation axis (or, lit, the LIT
-                                        # look chosen); unknown states fall
-                                        # through to the base still
+                      or state.startswith("LIT")):
+            p["state"] = state
         if dir and os.path.isfile(os.path.join(REPO, "scenery", piece,
                                                 "rotations", dir + ".webp")):
             p["dir"] = dir      # not every piece ships rotations; the base
@@ -2199,6 +2218,26 @@ class Grow:
                 best, bk = score, k
         return bk
 
+    def _pos_rng(self, piece, x, y):
+        """A stream that is the placement's own: same piece, same spot, same
+        answers - and the next spot gets fresh ones."""
+        h = hash((piece, round(float(x) * 64), round(float(y) * 64))) & 0xffffffff
+        return _rng32(h ^ 0x5CE1)
+
+    def _lit_variant(self, piece, x, y, given=None):
+        """The LIT state THIS placement burns: one of the piece's
+        well-animated LIT states, rotated by position so a hall of one
+        brazier shows every flame it has; a piece with none keeps the
+        caller's choice, else the best-rated state."""
+        d = json.load(open(os.path.join(REPO, "scenery", piece, "scenery.json")))
+        keys = sorted(k for k in (d.get("states") or {})
+                      if k.startswith("LIT") and self._rated(piece, k)[0])
+        good = [k for k in keys if self._anim_good(piece, k, d)]
+        if good:
+            r = self._pos_rng(piece, x, y)
+            return good[int(r() * len(good)) % len(good)]
+        return given or self._best_lit_state(piece)
+
     def _lit_pool(self, group):
         """Pieces of a group that ship an approved LIT state: the ones whose
         state animates well first, then by rating."""
@@ -2311,7 +2350,7 @@ class Grow:
             nonlocal lit_n
             if world3.is_lit(p):
                 return False
-            st = self._best_lit_state(p["piece"])
+            st = self._lit_variant(p["piece"], p["x"], p["y"], self._best_lit_state(p["piece"]))
             if not st:
                 tally[f"{why} refused (no LIT state)"] += 1
                 return False
@@ -2340,6 +2379,7 @@ class Grow:
         def place(piece, st, x, y, why="", **kw):
             """Put a new piece lit, if the budget allows; else not at all."""
             nonlocal lit_n
+            st = self._lit_variant(piece, x, y, st)
             if crowded(x, y, world3.light_meta(piece, st)[0]):
                 tally[f"{why} refused (inside another light's core)"] += 1
                 return 0
@@ -6072,6 +6112,20 @@ class Grow:
             self.doc["scenery"], [(sx + 0.5, sy + 0.5, self.BONFIRE_R)])
         json.dump(self.doc, open(os.path.join(OUT, "world.json"), "w"),
                   separators=(",", ":"))
+        # NOTHING UNLIT WEARS A LIT LOOK, and nothing lit is still: a lit
+        # placement names a LIT state; an unlit one names a NOT_LIT variation
+        # or is a piece whose base still is not a LIT state.
+        fakes = []
+        for p in self.doc["scenery"]:
+            meta = json.load(open(os.path.join(REPO, "scenery", p["piece"], "scenery.json")))
+            st = meta.get("states") or {}
+            base = next((k for k, v in st.items() if v.get("sprite") == meta.get("sprite")), "")
+            look = p.get("state") or base
+            can_unlit = any(k.startswith("NOT_LIT") for k in st)
+            if bool(p.get("lit")) != look.startswith("LIT") and (p.get("lit") or can_unlit):
+                fakes.append((p["piece"], p["x"], p["y"], p.get("state"), base))
+        assert not fakes, ("placements whose look disagrees with lit", len(fakes), fakes[:5])
+
         print(f"the_game grown: {NEW}x{NEW}, {len(self.doc['scenery'])} scenery "
               f"({nlit} lit, worst window {worst}/8), "
               f"{len(self.doc['decks'])} decks, {self.fail} placements dropped")

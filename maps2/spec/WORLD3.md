@@ -725,9 +725,26 @@ than 8 lights ... go all the way up to 8 at some locations and down to 1 or
 even 0 at other locations ... streetlights next to the road ... lots of
 small lights and some bigger ones"*.)
 
-A light is a placement with `lit: true` and an explicit `state` — **the
-`LIT_*` state that ANIMATES WELL first, then the best-rated one**
-(`_best_lit_state`; maintainer 2026-09-09: *"prioritize the variation that
+**Every placement carries its state** (`put`): lit, one of the piece's
+well-animated `LIT_*` states **rotated by position** (`_lit_variant`, so a hall
+of one brazier shows every flame it has); unlit, one of its `NOT_LIT_*`
+variations rotated the same way (`_variant`); only a piece with no `NOT_LIT`
+variation stays stateless. A stateless placement draws the piece's BASE still,
+and for 229 pieces that still IS a `LIT` state — so an unlit brazier showed a
+fire that neither animated (the game animates a STATE, `<piece>#<state>`) nor
+spent a slot: 70 such fakes on the_game and 232 stateless placements before
+this (maintainer 2026-09-09, in that cave hall: *"Why did you pick a LIT
+scenery object that is not animated here? When the scenery has two animation
+variants with 'probably good'? Also make use of the different scenery
+variations."*). A piece with NO `NOT_LIT` variation only has lit looks
+(crystal trees, glowing bushes, cattails — 37 placements): unlit, it wears
+the LIT state that animates rather than the base still that does not, and
+spends no slot. Build-asserted: a placement's look (its state, else its base
+still) is `LIT` exactly when `lit` is set, except for those.
+
+A light is a placement with `lit: true` and an explicit `state` — **a
+`LIT_*` state that ANIMATES WELL, else the best-rated one**
+(`_lit_variant` / `_best_lit_state`; maintainer 2026-09-09: *"prioritize the variation that
 has an animation in state ANIMATION_PROBABLY_GOOD or ANIMATION_APPROVED
 before you use a LIT state without an animation / rejected animation or
 probably bad animation"*). His verdict in `live/tuning/scenery_animation.json`
