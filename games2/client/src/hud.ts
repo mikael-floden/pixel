@@ -34,6 +34,13 @@ import {
   sliderFromFalloff,
 } from "./fadetune";
 import {
+  SCENERY_ANIM_CLASSES,
+  SCENERY_ANIM_LABEL,
+  SCENERY_SLEEP_MAX,
+  sceneryAnimTune,
+  setSceneryAnimTune,
+} from "./sceneryanim";
+import {
   lightScale,
   setLightScale,
   lightScaleLabel,
@@ -876,6 +883,25 @@ export class HudBar {
       ),
     );
 
+    /* SCENERY ANIMATION SLEEP (maintainer 2026-09-09): a piece with a GOOD or
+     * APPROVED clip plays it once, then rests a random time drawn from this
+     * range before playing again — one range per animation class, because a
+     * fire on repeat is fine and a tree on repeat is not. sceneryanim.ts owns
+     * the values; the scene reads the range at each sleep it schedules. */
+    for (const cls of SCENERY_ANIM_CLASSES) {
+      wrap.appendChild(
+        rangeSlider(
+          `${SCENERY_ANIM_LABEL[cls]} sleep`,
+          () => {
+            const [lo, hi] = sceneryAnimTune()[cls];
+            return [lo / SCENERY_SLEEP_MAX, hi / SCENERY_SLEEP_MAX];
+          },
+          ([lo, hi]) => setSceneryAnimTune(cls, [Math.round(lo * SCENERY_SLEEP_MAX), Math.round(hi * SCENERY_SLEEP_MAX)]),
+          { format: ([lo, hi]) => `${Math.round(lo * SCENERY_SLEEP_MAX)}–${Math.round(hi * SCENERY_SLEEP_MAX)} s` },
+        ),
+      );
+    }
+
     /* LIGHT RESOLUTION: the fraction of the canvas the three full-screen
      * passes (light, mist, depth fog) render at before a LINEAR upsample.
      * A DEV MEASUREMENT, not a player setting — it is the decisive experiment
@@ -1457,6 +1483,96 @@ function pctSlider(
   return wrap;
 }
 
+/** A MIN-MAX RANGE SLIDER: the percent slider's track with TWO knobs and the
+ *  fill between them. A touch takes the nearer knob and drags it; the knobs
+ *  can meet but never cross. `get` returns [lo, hi] in 0..1, `set` receives the
+ *  same, and `format` writes the readout in the setting's own units. */
+function rangeSlider(
+  labelText: string,
+  get: () => [number, number],
+  set: (v: [number, number]) => void,
+  opts: { format?: (v: [number, number]) => string } = {},
+): HTMLElement {
+  const clamp01 = (p: number) => Math.max(0, Math.min(1, p));
+  const format = opts.format ?? (([lo, hi]: [number, number]) => `${Math.round(lo * 100)}–${Math.round(hi * 100)}%`);
+  const wrap = mk("div", "ml-amb-slider");
+  const head = mk("div", "ml-amb-slider-head");
+  const label = mk("span", "ml-amb-slider-label");
+  label.textContent = labelText;
+  const valEl = mk("span", "ml-amb-slider-val");
+  head.append(label, valEl);
+  const track = mk("div", "ml-slider ml-range");
+  const fill = mk("div", "ml-slider-fill");
+  const knobLo = mk("div", "ml-slider-knob lo");
+  const knobHi = mk("div", "ml-slider-knob hi");
+  track.append(fill, knobLo, knobHi);
+  wrap.append(head, track);
+
+  let cur: [number, number] = get().map(clamp01) as [number, number];
+  if (cur[0] > cur[1]) cur = [cur[1], cur[0]];
+  const place = (knob: HTMLElement, p: number) => {
+    const trackW = track.clientWidth;
+    const kw = knob.offsetWidth || 22;
+    knob.style.left = `${Math.round(Math.max(0, Math.min(trackW - kw, p * trackW - kw / 2)))}px`;
+  };
+  const render = (v: [number, number]) => {
+    cur = v;
+    fill.style.left = `${(v[0] * 100).toFixed(2)}%`;
+    fill.style.width = `${((v[1] - v[0]) * 100).toFixed(2)}%`;
+    place(knobLo, v[0]);
+    place(knobHi, v[1]);
+    valEl.textContent = format(v);
+  };
+  new ResizeObserver(() => render(cur)).observe(track);
+
+  const clientToP = (clientX: number) => {
+    const rect = track.getBoundingClientRect();
+    return rect.width > 0 ? clamp01((clientX - rect.left) / rect.width) : cur[0];
+  };
+  let dragging: 0 | 1 | null = null;
+  const applyP = (raw: number) => {
+    if (dragging === null) return;
+    const v: [number, number] = [...cur] as [number, number];
+    v[dragging] = dragging === 0 ? Math.min(raw, cur[1]) : Math.max(raw, cur[0]);
+    render(v);
+    set(v);
+  };
+  track.addEventListener("pointerdown", (e) => {
+    const p = clientToP(e.clientX);
+    // The nearer knob takes the drag; a tie (both knobs together) goes to the
+    // side the finger is on, so a collapsed range can be pulled open either way.
+    const dLo = Math.abs(p - cur[0]);
+    const dHi = Math.abs(p - cur[1]);
+    dragging = dLo < dHi ? 0 : dHi < dLo ? 1 : p < cur[0] ? 0 : 1;
+    (dragging === 0 ? knobLo : knobHi).classList.add("grabbing");
+    try {
+      track.setPointerCapture(e.pointerId);
+    } catch {
+      /* capture unsupported — moves still work via the track listener */
+    }
+    applyP(p);
+    e.preventDefault();
+  });
+  track.addEventListener("pointermove", (e) => {
+    if (dragging !== null) applyP(clientToP(e.clientX));
+  });
+  for (const ev of ["pointerup", "pointercancel"] as const)
+    track.addEventListener(ev, (e) => {
+      if (dragging === null) return;
+      dragging = null;
+      knobLo.classList.remove("grabbing");
+      knobHi.classList.remove("grabbing");
+      try {
+        track.releasePointerCapture(e.pointerId);
+      } catch {
+        /* nothing captured */
+      }
+    });
+
+  render(cur);
+  return wrap;
+}
+
 /** Momentary pressed-plate feedback via pointer events: CSS :active is
  * hover-only (mobile Chrome keeps it sticky on the last tap), so touch needs
  * its own press state — added on finger-down, gone the instant the finger
@@ -1965,6 +2081,7 @@ function injectStyles() {
     border-radius:50%;background:var(--surface);border:1px solid var(--border-strong);
     box-shadow:var(--shadow);pointer-events:none}
   .ml-slider-knob.grabbing{background:var(--accent-soft);border-color:var(--accent)}
+  .ml-range .ml-slider-knob.hi{z-index:1}
   /* ── chat page: log panel + input ── */
   .ml-chat{flex:1 1 auto;min-height:0;width:100%;max-width:640px;
     display:flex;flex-direction:column;gap:10px}

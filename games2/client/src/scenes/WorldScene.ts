@@ -219,7 +219,12 @@ import {
   anchorY,
   lightBlockFor as sceneryLightBlockFor,
   type SceneryLight,
+  type SceneryPiece,
+  type SceneryState,
+  type SceneryAnim,
 } from "../scenery3";
+import { sceneryAnimClass, scenerySleepMs, SCENERY_ANIM_FPS, type SceneryAnimClass } from "../sceneryanim";
+import { sceneryAnimVerdict } from "../live";
 
 // Fallback loop rates when a state has no measured gaitFps. The jump clip is
 // NOT here: it plays once and its rate is derived per character in
@@ -1379,6 +1384,30 @@ interface NpcAvatar {
  * battle-tested code path as players (maintainer 2026-07-29: monsters drew
  * behind terrace tiles with detached shadows and took no lighting — their
  * first cut had a naive painter depth and no lit copy). */
+/** One placement's animation clock (see `sceneryAnimRuns`). */
+interface SceneryAnimRun {
+  clip: SceneryAnim;
+  cls: SceneryAnimClass;
+  /** Texture keys of the frames, in order — frame 0 is the still. */
+  keys: string[];
+  /** −1 while sleeping, else the frame currently shown. */
+  frame: number;
+  /** time.now the current play started. */
+  t0: number;
+  /** time.now the sleep ends. */
+  next: number;
+}
+
+/** This rebuild's images of one animated placement (see `sceneryAnimLive`). */
+interface SceneryAnimLive {
+  place: number;
+  img: Phaser.GameObjects.Image;
+  lo: { img: Phaser.GameObjects.Image; fog?: Phaser.GameObjects.Image } | null;
+  stillKey: string;
+  frameName: string;
+  crop: [number, number, number, number];
+}
+
 interface BodyVisual {
   sprite: Phaser.GameObjects.Sprite;
   shadow: Phaser.GameObjects.Image;
@@ -2731,6 +2760,19 @@ export class WorldScene extends Phaser.Scene {
    *  away. Held apart from `sceneryImgs` so the cut-away crossfade can fade
    *  them with it (see roofedFade); rebuilt with the scenery. */
   private sceneryRoofedImgs: Phaser.GameObjects.Image[] = [];
+  /** SCENERY ANIMATION — the clips the game plays (maintainer 2026-09-09: a
+   *  GOOD or APPROVED clip plays ONCE, then the piece sleeps a random time from
+   *  its class's range in Settings, then plays again; REDO plays nothing).
+   *  `sceneryAnimRuns` is the SCHEDULE, per placement index, and outlives the
+   *  scroll rebuilds — a tree keeps its clock while the images around it are
+   *  torn down and re-pooled every band. `sceneryAnimLive` is this rebuild's
+   *  set of animated images, re-bound each time: the base image, its lit copy
+   *  and fog silhouette all swap frames together, so the copy above the
+   *  darkness overlay never shows a different pose than the piece under it.
+   *  Frames are the state still's own canvas, so the still's crop rectangle
+   *  is registered on every frame texture and the geometry never moves. */
+  private sceneryAnimRuns = new Map<number, SceneryAnimRun>();
+  private sceneryAnimLive: SceneryAnimLive[] = [];
   private sceneryManifestTimer: Phaser.Time.TimerEvent | null = null; // a manifest-landed rebuild is pending
   /** games2/config/scenery-bbox.json, or null until it lands. */
   private sceneryBboxDoc: SceneryBboxDoc | null = null;
@@ -6305,6 +6347,21 @@ export class WorldScene extends Phaser.Scene {
       },
       /** INDOOR SCENERY: what the index holds under roofs, and how much of it
        *  the cut is letting through right now. */
+      // The animation scheduler: how many placed pieces carry a playable clip
+      // right now, how many are mid-play, and the next few starts.
+      sceneryAnims: () => {
+        const now = this.time.now;
+        const runs = this.sceneryAnimLive.map((l) => ({ place: l.place, run: this.sceneryAnimRuns.get(l.place)! }));
+        return {
+          live: runs.length,
+          playing: runs.filter((r) => r.run.frame >= 0).length,
+          byClass: runs.reduce<Record<string, number>>((acc, r) => ((acc[r.run.cls] = (acc[r.run.cls] ?? 0) + 1), acc), {}),
+          nextMs: runs.filter((r) => r.run.frame < 0).map((r) => Math.round(r.run.next - now)).sort((a, b) => a - b).slice(0, 8),
+          resident: runs.filter((r) => r.run.keys.every((k) => this.textures.exists(k))).length,
+          // Geometry through a swap: the box must not move between still and frame.
+          boxes: this.sceneryAnimLive.slice(0, 6).map((l) => ({ place: l.place, tex: l.img.texture.key.slice(-28), frame: this.sceneryAnimRuns.get(l.place)?.frame ?? -1, w: +l.img.displayWidth.toFixed(1), h: +l.img.displayHeight.toFixed(1), x: Math.round(l.img.x), y: Math.round(l.img.y) })),
+        };
+      },
       sceneryIndoor: () => {
         const ps = this.scenery?.placements ?? [];
         const roofed = ps.filter((p) => p.roofed);
@@ -11169,6 +11226,7 @@ export class WorldScene extends Phaser.Scene {
     this.ps();
     this.stepNpcs();
     this.pe("stepNpcs");
+    this.stepSceneryAnims();
     // Sword marker + target frame + aggro-radius debug rings (all read the
     // freshly-updated monster sprites above).
     this.ps();
@@ -15788,6 +15846,100 @@ export class WorldScene extends Phaser.Scene {
    *  scale, flip) at the copy's depth, made RIGHT AFTER it so the two keep the
    *  creation order the epsilon-free lit band sorts ties by (litA, fogA, litB,
    *  fogB — never fogA over litB). Hidden until its fog is non-zero. */
+  /** WHICH CLIP A PLACEMENT PLAYS, if any. The maintainer's verdict on the
+   *  state outranks the scenery agent's review: REDO → nothing, APPROVED → the
+   *  state's first clip with frames, otherwise the first clip the agent judged
+   *  PROBABLY_GOOD. Strip-only clips (no per-frame files) are skipped: the
+   *  frame size would have to be read off the sheet, and every judged clip
+   *  ships frames. */
+  private sceneryClipFor(piece: SceneryPiece, st: SceneryState): SceneryAnim | null {
+    const verdict = sceneryAnimVerdict(piece.id, st.key);
+    if (verdict === "ANIMATION_REDO") return null;
+    for (const a of Object.values(st.anims)) {
+      if (!a.frames.length) continue;
+      if (verdict === "ANIMATION_APPROVED" || a.review === "ANIMATION_PROBABLY_GOOD") return a;
+    }
+    return null;
+  }
+
+  /** Bind this rebuild's image (and lit copy) of a placement to its clip's
+   *  schedule, queue the frames, and — if the clip is mid-play — put the
+   *  current frame on the fresh image at once, so a scroll rebuild never snaps
+   *  a swaying tree back to its still. */
+  private registerSceneryAnim(
+    place: number,
+    piece: SceneryPiece,
+    st: SceneryState,
+    stillKey: string,
+    frameName: string,
+    crop: [number, number, number, number],
+    img: Phaser.GameObjects.Image,
+    lo: (typeof this.litOccluders)[number] | null,
+  ): void {
+    const clip = this.sceneryClipFor(piece, st);
+    if (!clip) return;
+    let run = this.sceneryAnimRuns.get(place);
+    if (!run || run.clip !== clip) {
+      const cls = sceneryAnimClass(clip.cls);
+      // A fresh clock starts at a random point of its sleep, so a field of
+      // one piece does not sway in unison after a load.
+      run = { clip, cls, keys: clip.frames.map((f) => this.sKey(f)), frame: -1, t0: 0, next: this.time.now + Math.random() * scenerySleepMs(cls) };
+      this.sceneryAnimRuns.set(place, run);
+    }
+    for (const f of clip.frames) this.needScenery(f);
+    const live: SceneryAnimLive = { place, img, lo, stillKey, frameName, crop };
+    this.sceneryAnimLive.push(live);
+    if (run.frame >= 0) this.setSceneryFrame(live, run.keys[run.frame] ?? stillKey);
+  }
+
+  /** Swap one placement's images to a frame texture. The still's crop rect is
+   *  registered on the frame texture under the same name, so the image keeps
+   *  its box, scale and flip and only its pixels change. */
+  private setSceneryFrame(live: SceneryAnimLive, key: string): void {
+    if (!this.textures.exists(key)) return;
+    const tex = this.textures.get(key);
+    if (!tex.has(live.frameName)) tex.add(live.frameName, 0, live.crop[0], live.crop[1], live.crop[2], live.crop[3]);
+    live.img.setTexture(key, live.frameName);
+    live.lo?.img.setTexture(key, live.frameName);
+    live.lo?.fog?.setTexture(key, live.frameName);
+  }
+
+  /** THE SCHEDULER, once per frame: a sleeping clip whose sleep has run out
+   *  starts when every frame is resident (else it waits a second and asks
+   *  again); a playing one advances at SCENERY_ANIM_FPS and, at its last frame,
+   *  returns to the still and draws the next sleep from its class's range —
+   *  read fresh each time, which is how the Settings range sliders take
+   *  effect without a rebuild. Only this rebuild's images are touched. */
+  private stepSceneryAnims(): void {
+    if (!this.sceneryAnimLive.length) return;
+    const now = this.time.now;
+    for (const live of this.sceneryAnimLive) {
+      const run = this.sceneryAnimRuns.get(live.place);
+      if (!run) continue;
+      if (run.frame < 0) {
+        if (now < run.next) continue;
+        if (!run.keys.every((k) => this.textures.exists(k))) {
+          run.next = now + 1000;
+          continue;
+        }
+        run.frame = 0;
+        run.t0 = now;
+        continue; // frame 0 is the still (keep_first_frame): nothing to swap yet
+      }
+      const f = Math.floor(((now - run.t0) * SCENERY_ANIM_FPS) / 1000);
+      if (f >= run.keys.length) {
+        run.frame = -1;
+        run.next = now + scenerySleepMs(run.cls);
+        this.setSceneryFrame(live, live.stillKey);
+        continue;
+      }
+      if (f !== run.frame) {
+        run.frame = f;
+        this.setSceneryFrame(live, run.keys[f]);
+      }
+    }
+  }
+
   private makeFogSilhouette(lo: (typeof this.litOccluders)[number]): void {
     const im = lo.img;
     lo.fog = this.add
@@ -17834,6 +17986,7 @@ export class WorldScene extends Phaser.Scene {
     this.scnCreated = 0;
     this.sceneryImgs = [];
     this.sceneryRoofedImgs = [];
+    this.sceneryAnimLive = [];
     this.sceneryLightSources = [];
     this.sceneryStamps = [];
     /* COUNTED BEFORE THE GUARD: the boot hold waits for this pass to have RUN,
@@ -18071,6 +18224,7 @@ export class WorldScene extends Phaser.Scene {
         this.attachSceneryShape(lo, key, art, fit, box0, hbX, hbY, p, world.rows[srow]?.[scol]?.l ?? 0, tileSize);
         this.makeFogSilhouette(lo);
       }
+      this.registerSceneryAnim(p.i, piece, st, key, name, [fit.sx, fit.sy, fit.sw, fit.sh], img, this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null);
       if (p.lit && st.key.startsWith("LIT")) this.pushSceneryLight(p, piece, st, key, fit, scol, srow);
       const meta = flat ? null : {
         col: scol,

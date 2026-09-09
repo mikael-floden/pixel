@@ -15,6 +15,9 @@ type MonsterStats = {
 type LiveTuning = {
   monsters?: { defaults?: MonsterStats; monsters?: Record<string, MonsterStats> };
   constants?: { overrides?: Record<string, number> };
+  /** live/tuning/scenery_animation.json — the wiki files the maintainer's
+   *  verdict per `<piece>#<state>` (ANIMATION_APPROVED / ANIMATION_REDO). */
+  scenery_animation?: { overrides?: Record<string, { verdict?: string }> };
 };
 
 import { readMonsterShadow, MonsterShadow as MonsterShadowRec } from "@nangijala/shared";
@@ -51,6 +54,13 @@ export function monsterStats(kind: string): MonsterStats {
 }
 
 /** A gameplay constant override by exported name, or the fallback. */
+/** The maintainer's verdict on one scenery state's animation, or null when he
+ *  has not judged it (the scenery agent's `review` then stands). */
+export function sceneryAnimVerdict(piece: string, state: string): string | null {
+  const v = tuning.scenery_animation?.overrides?.[`${piece}#${state}`]?.verdict;
+  return typeof v === "string" ? v : null;
+}
+
 export function liveConstant(name: string, fallback: number): number {
   const v = tuning.constants?.overrides?.[name];
   return typeof v === "number" && Number.isFinite(v) ? v : fallback;

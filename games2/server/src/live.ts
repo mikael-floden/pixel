@@ -181,6 +181,7 @@ const emptyDoc = (key: string): Doc => {
   if (key === "tuning/tile_walls") return { format: "pixel-wiki-tile-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/tile_tops") return { format: "pixel-wiki-tile-tops@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_hitbox") return { format: "pixel-wiki-scenery-hitbox@1", updated_at: "", overrides: {} };
+  if (key === "tuning/scenery_animation") return { format: "pixel-wiki-scenery-animation@1", updated_at: "", overrides: {} };
   if (key === "tuning/top_walls") return { format: "pixel-wiki-top-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_walls") return { format: "pixel-wiki-scenery-walls@1", updated_at: "", overrides: {} };
   if (key === "tuning/scenery_lights") return { format: "pixel-wiki-scenery-lights@1", updated_at: "", overrides: {} };
@@ -198,10 +199,13 @@ let fetchedAt = "";
 let ready = false;
 const listeners = new Set<(tuning: LiveTuning) => void>();
 
-export type LiveTuning = { monsters: Doc; constants: Doc };
+export type LiveTuning = { monsters: Doc; constants: Doc; scenery_animation: Doc };
 export const liveTuning = (): LiveTuning => ({
   monsters: docs.get("tuning/monsters") ?? emptyDoc("tuning/monsters"),
   constants: docs.get("tuning/constants") ?? emptyDoc("tuning/constants"),
+  // The maintainer's animation verdicts — small (one record per judged
+  // state), and the client's scheduler needs them the moment he taps one.
+  scenery_animation: docs.get("tuning/scenery_animation") ?? emptyDoc("tuning/scenery_animation"),
 });
 
 /** live/tuning/scenery_hitbox.json `.overrides` — the ground each scenery piece

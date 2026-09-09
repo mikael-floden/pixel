@@ -356,6 +356,21 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   How much of the other ground a fade tile actually paints is `pct` on every
   pool tile (from tiles/fades/index.json); exposing that per placement is
   not built.
+- **SCENERY ANIMATES ONCE, THEN SLEEPS** (`registerSceneryAnim` /
+  `stepSceneryAnims`; `client/src/sceneryanim.ts` owns the ranges; Settings
+  range sliders "<class> sleep"). A placed piece plays its state's clip when
+  the scenery agent judged it ANIMATION_PROBABLY_GOOD or the maintainer filed
+  ANIMATION_APPROVED (live/tuning/scenery_animation.json, `<piece>#<state>`,
+  carried in the `live:update` payload; REDO plays nothing there), plays it
+  ONCE at 8 fps, then sleeps a random time from its CLASS's min-max range
+  (foliage / fire / water / rigid — the review's own taxonomy; [0,0] is back
+  to back). Maintainer 2026-09-09: repeat "might look good for something like
+  a fire, but it will definitely not look good for a tree"; he tunes the
+  ranges and names the defaults. The schedule lives per placement index and
+  survives the scroll rebuilds; the base image, its lit copy and its fog
+  silhouette swap frames together under the still's own crop (frames are the
+  still's canvas), and the lit copy keeps the still's shape map. Strip-only
+  clips do not play. Probe: `__ml.sceneryAnims()`.
 - **A RAISED CAP'S SPRITE WEARS EVERYTHING THE GROUND PASS PAINTED ON IT —
   transition, fade AND foot band** (`tiles3Occluders`, via `overlayOps`). The
   occluder pass re-issues every raised cell's cap as a sprite ABOVE the ground

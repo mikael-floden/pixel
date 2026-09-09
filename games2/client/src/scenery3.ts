@@ -173,6 +173,14 @@ export interface SceneryAnim {
   /** Frame 0 IS the state's still (`keep_first_frame`), so a clip that starts
    *  on frame 0 starts from the pose the static draw already shows. */
   keepFirstFrame: boolean;
+  /** The scenery agent's judgement (`review`: ANIMATION_PROBABLY_GOOD / _BAD),
+   *  or null. The game plays a GOOD clip; the maintainer's own verdict in
+   *  live/tuning/scenery_animation.json outranks it either way. */
+  review: string | null;
+  /** `review_metrics.class` — foliage / fire / water / rigid — the taxonomy
+   *  the review judged the clip by and the one the game draws its sleep from
+   *  (sceneryanim.ts). Null when the library names none. */
+  cls: string | null;
 }
 
 export interface SceneryState {
@@ -253,6 +261,8 @@ function parseAnims(raw: unknown, where: string, warn: (m: string) => void): Rec
       strip,
       frameCount: Number.isFinite(a.frame_count) ? a.frame_count : frames.length,
       keepFirstFrame: a.keep_first_frame !== false,
+      review: str(a.review) || null,
+      cls: str(a.review_metrics?.class) || null,
     };
   }
   return out;
