@@ -767,17 +767,19 @@ mud and disagrees with his verdict. What decides is the MATERIAL, not the hue.
 - **`PLACE_PATCH = 0.55` of eligible places**, by the site's own hash. Every
   one of them is the sameness he is warning about; this is a taste knob, not
   a rule.
-- **Painted BEFORE the pieces**, so the cluster settles on its own ground —
-  the site's `on=` filter then accepts both the patch and the old ground, and
-  the existing boundary art blends the rim with no new tiles.
-- **`_pool_blob` with `ring=1`**, so the patch keeps a ring of the old ground
-  inside the cluster's radius: it has an edge to blend against instead of
-  ending where the pieces do.
+- **Painted AFTER the pieces, around each one** — a disc of 1.5–2.5 cells per
+  placement, jittered, so the outline is ragged and EVERY piece stands on it.
+  (Painting a blob first and laying the cluster over it put stones outside
+  their own patch: *"why don't you encircle all stones in dark_mud? It looks
+  dumb when some stones are outside your encirclement"*. The ground follows
+  the pieces; the pieces never chase the ground.)
+- The rim needs no new tiles: patch against grass is a pair the boundary art
+  already covers.
 - **Natural ground only** (`PATCH_ON`: grass, dark_mud, snow, light_beach) at
   one level. Roads, paving, floors, decks, ramps, doors, cave floors, the
   wild band and every liquid are held back.
 
-the_game: 8 of 64 places, 282 cells. Most places are already on the ground
+the_game: 9 of 64 places, 363 cells. Most places are already on the ground
 their kind implies — a reed bed in a fen is mud already — and those are
 skipped rather than repainted. The build log prints the places by kind
 (boulder field 19, lily pool 17, reed bed 13, cairn ridge 5 …), which is what

@@ -3845,13 +3845,9 @@ class Grow:
     SCATTER = 0.006       # a few loose pieces outside every place, so the map
                           # is not sterile between them
 
-    def _place_patch(self, sx, sy, name, rad, r, piece):
-        """Paint the ground under one place, or leave it alone. Returns the
-        material painted, or None. Only natural ground is touched - roads,
-        paving, floors, decks, ramps, doors, cave floors, the wild band and
-        every liquid are held back, and the blob keeps a ring of the old
-        ground inside the cluster's radius so the patch has an edge to blend
-        against instead of ending at the pieces."""
+    def _patch_choice(self, name, piece, r):
+        """The material this place's ground becomes, or None. Never the
+        pieces' own (`FAMILY_GROUND`)."""
         opts = self.PLACE_GROUND.get(name)
         if not opts or r() > self.PATCH_RATE.get(name, self.PLACE_PATCH):
             return None
@@ -3859,35 +3855,42 @@ class Grow:
         opts = tuple(o for o in opts if o not in own)
         if not opts:
             return None
-        here = self.g(sx, sy)
-        if here not in self.PATCH_ON:
-            return None
+        return opts[int(r() * len(opts)) % len(opts)]
+
+    def _paint_patch(self, feet, mat, r):
+        """EVERY PIECE STANDS ON IT (maintainer 2026-09-09, at a boulder field
+        half on mud: "why don't you encircle all stones in dark_mud? It looks
+        dumb when some stones are outside your encirclement"). The patch is a
+        disc around each placement, jittered per piece so the outline is
+        ragged rather than a blob the cluster is laid over - the first cut
+        painted the ground BEFORE the pieces and the two disagreed by
+        construction."""
         keep = set(self.floor_cells) | set(getattr(self, "door_cells", ()))
         keep |= {(c["x"], c["y"]) for dk in self.doc["decks"] for c in dk["cells"]}
         keep |= {(c["x"], c["y"]) for rm in self.doc.get("ramps", []) for c in rm["cells"]}
         keep |= set(getattr(self, "cave_floor", {})) | set(getattr(self, "wild_cells", ()))
-        lv = self.lvl[sy][sx]
-        R = int(rad) + 1
-        ok = {(x, y) for y in range(sy - R, sy + R + 1)
-              for x in range(sx - R, sx + R + 1)
-              if (0 <= x < NEW and 0 <= y < NEW and (x, y) not in keep
-                  and self.g(x, y) == here and self.lvl[y][x] == lv
-                  and not self.liquid(x, y))}
-        if len(ok) < 12:
-            return None
-        mat = opts[int(r() * len(opts)) % len(opts)]
-        if mat == here:
-            return None
-        size = max(5, int(len(ok) * (0.35 + 0.25 * r())))
-        blob = self._pool_blob(ok, r, size, ring=1)
-        if not blob or len(blob) < 5:
-            return None
-        gi = self.gi[mat]
-        for (x, y) in blob:
+        gi, cells = self.gi[mat], set()
+        for p in feet:
+            fx, fy = p["x"], p["y"]
+            lv = self.lvl[int(fy)][int(fx)]
+            rad = 1.5 + r()          # 1.5..2.5 cells around this piece
+            R = int(rad) + 1
+            for dy in range(-R, R + 1):
+                for dx in range(-R, R + 1):
+                    x, y = int(fx) + dx, int(fy) + dy
+                    if math.hypot(x + 0.5 - fx, y + 0.5 - fy) > rad:
+                        continue
+                    if not (0 <= x < NEW and 0 <= y < NEW) or (x, y) in keep:
+                        continue
+                    if (self.g(x, y) in self.PATCH_ON and self.g(x, y) != mat
+                            and self.lvl[y][x] == lv and not self.liquid(x, y)):
+                        cells.add((x, y))
+        if len(cells) < 5:
+            return
+        for (x, y) in cells:
             self.grd[y][x] = gi
-        self.patched = getattr(self, "patched", 0) + len(blob)
+        self.patched = getattr(self, "patched", 0) + len(cells)
         self.patch_places = getattr(self, "patch_places", 0) + 1
-        return mat
 
     def _kind_for(self, x, y, wet, shore, wooded, high):
         """A place is what its ground makes it."""
@@ -3994,10 +3997,10 @@ class Grow:
             want = n0 + int(r() * (n1 - n0 + 1))
             ground = (self.g(sx, sy),)
             # the ground the place stands on, before anything is placed on it
-            patch = self._place_patch(sx, sy, name, rad, r, piece)
-            if patch:
-                ground = (patch, ground[0])
-            got = 0
+            # WHAT it will stand on is decided now; WHERE is painted after
+            # the pieces land, so the ground follows them
+            patch = self._patch_choice(name, piece, r)
+            got, feet = 0, []
             if hero:
                 hp = pool(hero)
                 if hp:
@@ -4005,6 +4008,7 @@ class Grow:
                     if h and self.put(h, sx + 0.5, sy + 0.5, on=ground,
                                       hflip=r() < 0.5, state=hs):
                         got += 1
+                        feet.append(self.doc["scenery"][-1])
             for _ in range(want * 3):
                 if got >= want:
                     break
@@ -4024,6 +4028,9 @@ class Grow:
                 if self.put(piece, px, py, on=ground, hflip=r() < 0.5,
                             state=self._variant(piece, r)):
                     got += 1
+                    feet.append(self.doc["scenery"][-1])
+            if got and patch:
+                self._paint_patch(feet, patch, r)
             if got:
                 placed += 1
                 tally[name] = tally.get(name, 0) + 1
