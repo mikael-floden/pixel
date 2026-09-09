@@ -955,7 +955,8 @@ export interface Tiles3Cell {
    *  `side` is the wall material (the maintainer's `walls[]` group, else the
    *  lowest front neighbour's ground — the same pick the face courses use) and
    *  `cutCap` that ground's textured set plate, top face only. Set on every
-   *  raised cell, exposed or not: the near and side walls of a cave room show
+   *  raised cell with a NAMED rock (or a named neighbour's), exposed or not —
+   *  which is every cell the cut-away can truncate; the near and side walls of a cave room show
    *  no face to the camera, so they resolve as fields, and their stumps were
    *  drawing the mountain's own snow and ice as their lid (maintainer
    *  2026-09-09, five photographs: "Why is the tile under me clean snow/ice?
@@ -2072,13 +2073,18 @@ export class Tiles3 {
      * Tiles3Cell.cutCap): the side's own set, picked at this cell like any
      * ground's plate, so a cut wall reads as the same rock as its courses. */
     const exposed = frontLow < zl;
-    /* A FACELESS CELL BORROWS A NAMED NEIGHBOUR'S ROCK for its lid. Its own
-     * pick is its top ground (no front neighbour is lower), which for a cave
-     * room's second ring is the mountain's snow; the ring beside it is named
-     * by maps2 (`walls[]`, the cave's one rock). The faces are untouched — a
-     * field draws none — so nothing outdoors changes. */
-    let lidSide = side;
-    if (!exposed && override === null)
+    /* ONLY A NAMED ROCK GETS A LID. The cut-away truncates the walls of a
+     * building — a house's ring, a cave's ring — and maps2 names every one of
+     * those in `walls[]`; a faceless cell one step further in borrows the
+     * named neighbour's rock (a cave room's second ring is the mountain's
+     * snow by its own pick). Every other raised cell — the plateau, the
+     * terrace, the mountain outdoors — is never cut and gets none: the lid
+     * is one more file for the loader and the ship closure per cell, for a
+     * plate nothing ever draws. (The resolver itself does not care: 60x60 of
+     * the town resolves in 36-37 ms with the lid on every raised cell, on
+     * named cells only, or not at all — measured 2026-09-09, ten runs each.) */
+    let lidSide: string | null = override;
+    if (lidSide === null && !exposed)
       for (const [nx, ny] of NEIGHBOURS8) {
         const named = view.wallSideAt(x + nx, y + ny);
         if (named !== null) {
@@ -2086,9 +2092,11 @@ export class Tiles3 {
           break;
         }
       }
-    cell.side = lidSide;
-    const lid = this.plateAt(lidSide, regionAt(lidSide, x, y), x, y).art;
-    cell.cutCap = { kind: lid.kind, path: lid.path, w: lid.w, h: lid.h, topOnly: true };
+    if (lidSide !== null) {
+      cell.side = lidSide;
+      const lid = this.plateAt(lidSide, regionAt(lidSide, x, y), x, y).art;
+      cell.cutCap = { kind: lid.kind, path: lid.path, w: lid.w, h: lid.h, topOnly: true };
+    }
 
     let dressed = true;
     if (exposed) {

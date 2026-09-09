@@ -17048,7 +17048,7 @@ export class WorldScene extends Phaser.Scene {
       const [col, row] = this.t3ringQueue[i];
       const cell = this.t3cellOf(t3, col, row);
       if (!cell) continue;
-      cellArtPaths(cell, need);
+      cellArtPaths(cell, need, !!this.indoorMask); // the lid only while the cut is up
       const b = this.t3boundaryOf(t3, col, row);
       if (b) boundaryArtPaths(b, need);
       for (const d of this.t3decksOf(t3, col, row)) deckArtPaths(d, need);
@@ -17369,7 +17369,7 @@ export class WorldScene extends Phaser.Scene {
       if (!cell) continue;
       stats.cells++;
       needIdx = row * world.width + col;
-      cellArtPaths(cell, need);
+      cellArtPaths(cell, need, !!mask); // the lid only while the cut is up
       // THE COMPOSED BOUNDARY — `mask ? plateB : plateA` under the published
       // silhouette with a mandatory 1px darkened seam, which is why 18 shapes x
       // 16 Wang masks over per-ground plates cover all 105 pairs.

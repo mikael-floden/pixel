@@ -516,7 +516,7 @@ export function cutLidKey(t3: Tiles3Textures, cell: Tiles3Cell): string | null {
 
 /** Every repo-relative art file one resolved cell can draw — what the loader is
  *  asked for BEFORE the blits are taken, so the next redraw has it. */
-export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void): void {
+export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void, lid = true): void {
   /* THE SURFACE IS NAMED WHATEVER THE CELL'S KIND IS. A WALL cell wears the
    * maintainer's set on its cap — `resolveCell` dresses it and `cellOps` blits
    * it over the courses — so its file has to be named HERE or nothing ever asks
@@ -540,8 +540,14 @@ export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void): void {
    * loader and scripts/tiles3closure.ts, which decides what enters the image.
    * Miss it and every fade 404s in production and only in production. */
   if (cell.fade) out(cell.fade.file);
-  // ...and the stump's lid (Tiles3Cell.cutCap), for the same two consumers.
-  if (cell.cutCap && cell.cutCap.kind !== "liquid") out(cell.cutCap.path);
+  /* ...AND THE STUMP'S LID (Tiles3Cell.cutCap) — for the ship closure always,
+   * for the LOADER only while the cut is up (`lid`). A landed terrain file
+   * rebuilds the occluders and unlocks a drain repaint (onTerrainBatch), so
+   * naming a plate nothing draws is not free: every raised cell's lid landing
+   * outdoors was 66 long occluder rebuilds and twice the full paints in one
+   * 30 s beacon window on the maintainer's phone (2026-09-09, "the lag we
+   * fixed is back"). Indoors the lids stream in like any other art. */
+  if (lid && cell.cutCap && cell.cutCap.kind !== "liquid") out(cell.cutCap.path);
   if (cell.kind !== "field" && cell.wall)
     for (const s of cell.wall.stack) if (s.tile.path) out(s.tile.path);
 }

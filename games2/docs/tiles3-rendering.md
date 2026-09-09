@@ -532,7 +532,13 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   flat colour (maintainer 2026-09-09, five photographs in the cave at
   261-286,153-171: "Why is the tile under me clean snow/ice? Looks weird",
   "plain grey_stone"). The mountain top stays `ground` — outdoors nothing
-  changes. `cellArtPaths` names the lid so the loader and ship-tiles3 carry it.
+  changes. Only a cell with a NAMED rock (maps2's `walls[]`, or a faceless
+  cell beside one) carries a lid — that is every cell the cut can truncate —
+  and `cellArtPaths` names its file to ship-tiles3 always but to the LOADER
+  only while the cut is up: a landed terrain file rebuilds the occluders and
+  unlocks a drain repaint, and one lid per raised cell landing outdoors was
+  66 long occluder rebuilds and twice the full paints in a 30 s beacon
+  window (2026-09-09, "the lag we fixed is back").
 - **A BOUNDARY IS SKIPPED INDOORS ONLY WHERE ITS OWN COLUMN IS TRUNCATED,
   AND A CUT-SUPPRESSED CELL IS NEVER OWED** (`cutSuppressed`, 2026-09-05).
   The transition raster replaces the cell's plate at its own uncut level; if
