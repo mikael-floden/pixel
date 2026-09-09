@@ -1,0 +1,142 @@
+{
+  "id": "puff_owl",
+  "name": "Puffowl",
+  "tier": "cute",
+  "lore": "All eyes and no patience. It falls out of every nest it is put in and pecks whoever picks it up.",
+  "biome": [
+    "grass",
+    "snow"
+  ],
+  "items": [
+    "barred feather"
+  ],
+  "prompt": "Small cute round fantasy owl chick covered in extremely fluffy cream and brown feathers, enormous golden eyes, a tiny orange beak, short stubby wings with barred brown feather tips, and small clawed orange feet.",
+  "size": [
+    64,
+    64
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "puff_owl/rotations/south.webp",
+    "south-east": "puff_owl/rotations/south-east.webp",
+    "east": "puff_owl/rotations/east.webp",
+    "north-east": "puff_owl/rotations/north-east.webp",
+    "north": "puff_owl/rotations/north.webp",
+    "north-west": "puff_owl/rotations/north-west.webp",
+    "west": "puff_owl/rotations/west.webp",
+    "south-west": "puff_owl/rotations/south-west.webp"
+  },
+  "sheet": "puff_owl/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "73e2f290-7d00-4089-b156-e84458ac05a1",
+  "seed": 725750376,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:53:03+00:00",
+  "elapsed_s": 168.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.601,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.707,
+        "bbox": [
+          7,
+          4,
+          57,
+          60
+        ],
+        "fill": 0.684,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.735,
+        "bbox": [
+          10,
+          3,
+          55,
+          61
+        ],
+        "fill": 0.637,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.727,
+        "bbox": [
+          8,
+          3,
+          53,
+          61
+        ],
+        "fill": 0.637,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.601,
+        "bbox": [
+          9,
+          5,
+          55,
+          58
+        ],
+        "fill": 0.595,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.76,
+        "bbox": [
+          9,
+          3,
+          54,
+          61
+        ],
+        "fill": 0.637,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.698,
+        "bbox": [
+          10,
+          4,
+          52,
+          60
+        ],
+        "fill": 0.574,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.704,
+        "bbox": [
+          12,
+          4,
+          54,
+          60
+        ],
+        "fill": 0.574,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.744,
+        "bbox": [
+          10,
+          3,
+          55,
+          61
+        ],
+        "fill": 0.637,
+        "touches_edge": false
+      }
+    }
+  }
+}

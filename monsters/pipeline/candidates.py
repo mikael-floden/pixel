@@ -309,6 +309,37 @@ def cmd_generate(args):
     print(f"credits left: ${client.usd_credits():.2f}")
 
 
+def cmd_drop(args):
+    """Retire candidates for good: delete the PixelLab record and the folder,
+    move the design under config `retired` with the reason (so nobody
+    re-attempts it), rebuild the index."""
+    cfg = load_cfg()
+    ids = set(args.only.split(","))
+    client = PixelLabClient()
+    keep, retired = [], cfg.setdefault("retired", [])
+    for design in cfg["candidates"]:
+        if design["id"] not in ids:
+            keep.append(design)
+            continue
+        man = load_manifest(design["id"])
+        if man and man.get("pixellab_id"):
+            try:
+                client.delete_character(man["pixellab_id"])
+                print(f"  {design['id']}: deleted PixelLab {man['pixellab_id']}")
+            except PixelLabError as e:
+                print(f"  {design['id']}: could not delete PixelLab record: {e}")
+        if os.path.isdir(cdir(design["id"])):
+            shutil.rmtree(cdir(design["id"]))
+        design = dict(design, retired=args.reason,
+                      retired_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                      versions_tried=(man or {}).get("version"))
+        retired.append(design)
+        print(f"  {design['id']}: retired — {args.reason}")
+    cfg["candidates"] = keep
+    save_cfg(cfg)
+    rebuild_index(cfg)
+
+
 def cmd_status(args):
     cfg = load_cfg()
     rows = []
@@ -356,6 +387,10 @@ def main():
     r.add_argument("--only", required=True)
     r.add_argument("--min-usd", type=float, default=MIN_USD)
     r.set_defaults(func=cmd_generate, redo=True, dry_run=False)
+    d = sub.add_parser("drop", help="retire candidates: delete PixelLab record + folder, keep the design under config.retired with the reason")
+    d.add_argument("--only", required=True)
+    d.add_argument("--reason", required=True)
+    d.set_defaults(func=cmd_drop)
     sub.add_parser("status").set_defaults(func=cmd_status)
     sub.add_parser("qa", help="re-run the machine checks from disk").set_defaults(func=cmd_qa)
     args = ap.parse_args()

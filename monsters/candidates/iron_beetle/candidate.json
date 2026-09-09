@@ -11,10 +11,10 @@
   "items": [
     "plated beetle"
   ],
-  "prompt": "Heavily armored fantasy beetle with overlapping dark iron-gray plates riveted with copper studs, a single thick curved horn on its head, six thick segmented legs tucked close under its body, glowing orange slits for eyes, and cracks between the plates showing hot orange light underneath.",
+  "prompt": "Heavily armored fantasy beetle with overlapping dark iron-gray plates riveted with copper studs, a single short thick horn on its head, six thick segmented legs tucked close under its body, glowing orange slits for eyes, and cracks between the plates showing hot orange light underneath.",
   "size": [
-    96,
-    96
+    104,
+    104
   ],
   "template_id": "bear",
   "directions": [
@@ -39,106 +39,106 @@
   },
   "sheet": "iron_beetle/sheet.webp",
   "review": "pending",
-  "pixellab_id": "857bc7c6-deb3-4180-a157-6ae5a4697a96",
-  "seed": 1379142208,
-  "version": 2,
+  "pixellab_id": "893d4b96-631f-4945-8051-7e78348a58d6",
+  "seed": 624114390,
+  "version": 3,
   "usage": null,
-  "generated_at": "2026-09-09T17:49:09+00:00",
-  "elapsed_s": 230.8,
+  "generated_at": "2026-09-09T17:52:59+00:00",
+  "elapsed_s": 193.8,
   "qa": {
     "status": "fail",
-    "min_run1": 0.69,
+    "min_run1": 0.694,
     "reasons": [
       "west: content touches the canvas edge (clipped)",
-      "north-east: content touches the canvas edge (clipped)"
+      "east: content touches the canvas edge (clipped)"
     ],
     "directions": {
       "south": {
-        "run1": 0.69,
+        "run1": 0.694,
         "bbox": [
-          4,
-          15,
-          95,
-          91
+          3,
+          5,
+          101,
+          98
         ],
-        "fill": 0.75,
+        "fill": 0.843,
         "touches_edge": false
       },
       "west": {
-        "run1": 0.732,
+        "run1": 0.771,
         "bbox": [
+          3,
           5,
-          7,
-          96,
-          90
+          104,
+          97
         ],
-        "fill": 0.82,
+        "fill": 0.859,
         "touches_edge": true
       },
       "east": {
-        "run1": 0.747,
+        "run1": 0.773,
         "bbox": [
-          3,
-          18,
-          88,
-          92
+          0,
+          5,
+          101,
+          97
         ],
-        "fill": 0.683,
-        "touches_edge": false
+        "fill": 0.859,
+        "touches_edge": true
       },
       "north": {
-        "run1": 0.715,
+        "run1": 0.753,
         "bbox": [
-          2,
           5,
-          81,
-          92
+          4,
+          97,
+          94
         ],
-        "fill": 0.746,
+        "fill": 0.766,
         "touches_edge": false
       },
       "south-east": {
-        "run1": 0.785,
+        "run1": 0.809,
         "bbox": [
           4,
-          18,
-          88,
-          89
+          8,
+          99,
+          101
         ],
-        "fill": 0.647,
+        "fill": 0.817,
         "touches_edge": false
       },
       "north-east": {
-        "run1": 0.743,
+        "run1": 0.779,
         "bbox": [
-          0,
-          12,
-          91,
-          91
+          9,
+          6,
+          98,
+          97
         ],
-        "fill": 0.78,
-        "touches_edge": true
+        "fill": 0.749,
+        "touches_edge": false
       },
       "north-west": {
-        "run1": 0.756,
+        "run1": 0.78,
         "bbox": [
-          8,
-          5,
-          89,
-          92
+          7,
+          6,
+          96,
+          98
         ],
-        "fill": 0.765,
+        "fill": 0.757,
         "touches_edge": false
       },
       "south-west": {
-        "run1": 0.757,
+        "run1": 0.807,
         "bbox": [
-          3,
-          11,
-          93,
-          87
+          5,
+          8,
+          100,
+          101
         ],
-        "fill": 0.742,
+        "fill": 0.817,
         "touches_edge": false
       }
     }

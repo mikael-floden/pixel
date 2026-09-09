@@ -77,21 +77,21 @@
       "lore": "Forged, or grown — the smiths cannot agree. Its plates ring like a bell when struck, and the sound calls the others."
     },
     {
-      "id": "twig_dragonfly",
-      "name": "Twigwhirr",
+      "id": "reed_nymph",
+      "name": "Reedling",
       "tier": "cute",
-      "template_id": "mannequin",
-      "size": 96,
+      "template_id": "bear",
+      "size": 80,
       "biome": [
         "water",
-        "grass",
-        "dark_mud"
+        "dark_mud",
+        "grass"
       ],
       "items": [
         "twig-bodied dragonfly"
       ],
-      "prompt": "Fantasy dragonfly whose long body is a living twig with bark texture and tiny green leaves sprouting from it, four short rounded translucent wings held close to its body with visible veining and a rainbow sheen, big compound eyes like green glass beads, and small leaf-shaped legs.",
-      "lore": "A twig that learned to fly by watching the reeds. It hums over still water and bites whatever ripples it."
+      "prompt": "Chubby fantasy dragonfly nymph with a short segmented mossy-green body like a bundled reed, six short stubby legs, two large round glassy green eyes, small folded wing buds on its back, a hinged jaw mask over its face, and droplets of water beading on its shell.",
+      "lore": "Not yet the thing with wings. It waits in the reeds with its jaw folded, and unfolds it faster than anything that wades."
     },
     {
       "id": "silk_spider",
@@ -333,6 +333,28 @@
       "items": [],
       "prompt": "Small mischievous fantasy imp with dark red skin, two small curved black horns, a wide grin of sharp white teeth, glowing orange eyes, small bat-like wings, a pointed tail with a flame at the tip, and a tiny rusty pitchfork held in both hands.",
       "lore": "The smallest thing the volcano ever coughed up, and the loudest. It steals boots and sets them on fire out of principle."
+    }
+  ],
+  "retired": [
+    {
+      "id": "twig_dragonfly",
+      "name": "Twigwhirr",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "water",
+        "grass",
+        "dark_mud"
+      ],
+      "items": [
+        "twig-bodied dragonfly"
+      ],
+      "prompt": "Fantasy dragonfly whose long body is a living twig with bark texture and tiny green leaves sprouting from it, four short rounded translucent wings held close to its body with visible veining and a rainbow sheen, big compound eyes like green glass beads, and small leaf-shaped legs.",
+      "lore": "A twig that learned to fly by watching the reeds. It hums over still water and bites whatever ripples it.",
+      "retired": "a dragonfly's wingspan fights a square canvas: v1 (80px, long wings) clipped 3 facings, v2 (96px, short wings) clipped 7 — the model draws the span to the canvas whatever the prompt says. Replaced by reed_nymph, the compact larval form.",
+      "retired_at": "2026-09-09T17:52:50+00:00",
+      "versions_tried": 2
     }
   ]
 }
