@@ -602,6 +602,260 @@
         "west": "octopus/animations/walk__west.webp",
         "north-west": "octopus/animations/walk__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.0711,
+          "step_max": 0.1216,
+          "drift": 0.48,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.24,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.071 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.123 — eyeball it"
+          ],
+          "sub": "64758c8d-0b4c-4a44-bb2d-6700a1410f4e",
+          "group": "f5572a6e-acf5-43ad-a186-df57b444d117",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:02:48+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.0651,
+          "step_max": 0.0923,
+          "drift": 1.35,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 1.31,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.065 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.116 — eyeball it"
+          ],
+          "sub": "30acb913-c6b1-4d87-8f88-a25003265af8",
+          "group": "c27338e6-f559-4e66-b935-beabd549fe19",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:02:48+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.0867,
+          "step_max": 0.1121,
+          "drift": 2.05,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 3.3,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.117 — eyeball it"
+          ],
+          "sub": "fafda5a9-ac33-4d7b-a4a8-de7eb9c9616e",
+          "group": "5b15fec5-a479-47d8-ad52-72a46651cf01",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:02:49+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0441,
+          "step_max": 0.0509,
+          "drift": 1.11,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 0.6,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.044 outside the calm band 0.08–0.9 — eyeball it",
+            "no strike: peak 0.075 of the silhouette away from the base"
+          ],
+          "sub": "1453f365-3fa1-40e8-b657-62d3efaf683d",
+          "group": "05793510-3b71-4359-ba03-2898308addb9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:02:50+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0583,
+          "step_max": 0.0769,
+          "drift": 2.02,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.23,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.058 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.102 — eyeball it"
+          ],
+          "sub": "9031df5d-e5ff-49d5-b45c-a24beb665ee7",
+          "group": "d463f817-c907-48cb-9d6e-c88977560f4e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T22:02:50+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.0651,
+          "step_max": 0.0923,
+          "drift": 1.35,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 1.31,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.065 outside the calm band 0.08–0.9 — eyeball it",
+            "weak strike: peak 0.116 — eyeball it"
+          ],
+          "sub": "30acb913-c6b1-4d87-8f88-a25003265af8",
+          "group": "c27338e6-f559-4e66-b935-beabd549fe19",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:02:48+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.0867,
+          "step_max": 0.1121,
+          "drift": 2.05,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 3.3,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "weak strike: peak 0.117 — eyeball it"
+          ],
+          "sub": "fafda5a9-ac33-4d7b-a4a8-de7eb9c9616e",
+          "group": "5b15fec5-a479-47d8-ad52-72a46651cf01",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T22:02:49+00:00",
+          "source": "east"
+        }
+      },
+      "action": "whips two tentacles forward in a fast double lash, mantle flaring, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "octopus/animations/attack/south/00.webp",
+          "octopus/animations/attack/south/01.webp",
+          "octopus/animations/attack/south/02.webp",
+          "octopus/animations/attack/south/03.webp",
+          "octopus/animations/attack/south/04.webp",
+          "octopus/animations/attack/south/05.webp",
+          "octopus/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "octopus/animations/attack/south-east/00.webp",
+          "octopus/animations/attack/south-east/01.webp",
+          "octopus/animations/attack/south-east/02.webp",
+          "octopus/animations/attack/south-east/03.webp",
+          "octopus/animations/attack/south-east/04.webp",
+          "octopus/animations/attack/south-east/05.webp",
+          "octopus/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "octopus/animations/attack/east/00.webp",
+          "octopus/animations/attack/east/01.webp",
+          "octopus/animations/attack/east/02.webp",
+          "octopus/animations/attack/east/03.webp",
+          "octopus/animations/attack/east/04.webp",
+          "octopus/animations/attack/east/05.webp",
+          "octopus/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "octopus/animations/attack/north-east/00.webp",
+          "octopus/animations/attack/north-east/01.webp",
+          "octopus/animations/attack/north-east/02.webp",
+          "octopus/animations/attack/north-east/03.webp",
+          "octopus/animations/attack/north-east/04.webp",
+          "octopus/animations/attack/north-east/05.webp",
+          "octopus/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "octopus/animations/attack/north/00.webp",
+          "octopus/animations/attack/north/01.webp",
+          "octopus/animations/attack/north/02.webp",
+          "octopus/animations/attack/north/03.webp",
+          "octopus/animations/attack/north/04.webp",
+          "octopus/animations/attack/north/05.webp",
+          "octopus/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "octopus/animations/attack/south-west/00.webp",
+          "octopus/animations/attack/south-west/01.webp",
+          "octopus/animations/attack/south-west/02.webp",
+          "octopus/animations/attack/south-west/03.webp",
+          "octopus/animations/attack/south-west/04.webp",
+          "octopus/animations/attack/south-west/05.webp",
+          "octopus/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "octopus/animations/attack/west/00.webp",
+          "octopus/animations/attack/west/01.webp",
+          "octopus/animations/attack/west/02.webp",
+          "octopus/animations/attack/west/03.webp",
+          "octopus/animations/attack/west/04.webp",
+          "octopus/animations/attack/west/05.webp",
+          "octopus/animations/attack/west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "octopus/animations/attack__south.webp",
+        "south-east": "octopus/animations/attack__south-east.webp",
+        "east": "octopus/animations/attack__east.webp",
+        "north-east": "octopus/animations/attack__north-east.webp",
+        "north": "octopus/animations/attack__north.webp",
+        "south-west": "octopus/animations/attack__south-west.webp",
+        "west": "octopus/animations/attack__west.webp"
+      }
     }
   }
 }
