@@ -72,24 +72,42 @@ file go through `_art_path`.
 New monsters are **designed by this agent** (`config/candidates.json`) and
 born on PixelLab as an 8-direction base only — `create-character-v3` from
 scratch, zero animations — tagged **`MONSTER_CANDIDATE`**, never `MONSTER`
-(sync would import a base with no animations as a broken monster). The
-maintainer reviews the 8 directions in the wiki; only an **approved** base
-earns its five states, because a bad direction cannot be fixed later
-(maintainer 2026-09-09: "if the initial 8 directions is not perfect — don't
-even think about continuing with that monster").
+(sync would import a base with no animations as a broken monster). The set
+is **100 candidates**; the maintainer picks the **25 best in the wiki**, and
+only an approved base earns its five states, because a bad direction cannot
+be fixed later (maintainer 2026-09-09: "if the initial 8 directions is not
+perfect — don't even think about continuing with that monster").
 
 ```bash
 python monsters/pipeline/candidates.py status
 python monsters/pipeline/candidates.py generate [--only id,id] [--dry-run]
-python monsters/pipeline/candidates.py redo --only <id>   # next seed; old record deleted
-python monsters/pipeline/candidates.py qa                 # re-verdict from disk
+python monsters/pipeline/candidates.py redo --only <id>       # next seed; old record deleted
+python monsters/pipeline/candidates.py drop --only <id> --reason "..."  # retire for good
+python monsters/pipeline/candidates.py qa                     # re-verdict from disk
 ```
 
 Layout: `candidates/<id>/rotations/<dir>.webp`, `sheet.webp` (8-up, compass
 order) and `candidate.json`; `candidates/index.json` is the wiki's contract
 (`format: monster-candidates@1`, one entry per generated candidate with
-`sheet`, `rotations`, `qa`, `review`). Verdicts land in
-`live/feedback/monsters.json` under `monsters/candidates/<id>`.
+`scale`, `sheet`, `rotations`, `qa`, `notes`, `review`). Verdicts land in
+`live/feedback/monsters.json` under `monsters/candidates/<id>`. A retired
+design moves to `config.retired` with its reason — read that list before
+designing, it is the record of what the model cannot draw and what the
+maintainer will not take.
+
+**The bar is SERIOUS EXECUTION** (maintainer 2026-09-09, with five rejected
+examples). Cute is welcome when it is designed — a fawn, a fox kit, a seal
+pup; object-monsters and big heads are fine too. What never gets near the
+game is a gag: derpy faces, mascot grins, a chest with a lolling tongue, a
+cartoon skeleton. Every prompt therefore ends with the tier's clause from
+`defaults.style_suffix` (cute → "calm serious expression, no cartoon grin";
+mid/evil/boss → "grim menacing expression") plus "no drop shadow on the
+ground", and every landed sheet gets an eyeball pass before it stays. Lore
+lines are straight, never punchlines — the wiki shows them beside the art.
+
+`scale` is `small` (32–48 px, the hedgehog end of the roster), `standard`
+(64–176) or `big` (224–240): most enemies standard, then small, then big
+(maintainer order).
 
 What makes a base sound, and how much of it is machine-checked:
 - **1 px/px density, never a zoomed render.** `run1` = share of same-colour
@@ -97,28 +115,33 @@ What makes a base sound, and how much of it is machine-checked:
   monsters, 0.32 on the maintainer's reference "zoomed" case
   (storm_shellback, 256 px). Pass ≥ 0.50, warn ≥ 0.45, fail below. Density
   holds through 184 px and is a coin flip from ~236 (Cragback 236 and
-  Magmane 252 crisp, Voltshell 256 and Voidmaw 236 zoomed), so standard
-  designs stay ≤ 176 and `big` ones (224–240) live or die by this check.
+  Magmane 252 crisp, Voltshell 256 and Voidmaw 236 zoomed) — every big
+  candidate so far passed, and the check, not a size cap, decides.
 - **All 8 present, one square canvas, no clipping, no speck-in-a-frame** —
   machine-checked. A base that touches the edge is CLIPPED, not wrapped
   (measured: the overflow pixels are absent from every other direction's
-  opposite edge), so the only fix is a re-roll with a tighter silhouette or
-  a bigger canvas — there is nothing to stitch. Wrap-around is an ANIMATION
-  bug and `postprocess.py` repairs it inside sync, once a candidate is
-  approved and animated.
+  opposite edge), so the only fix is a re-roll — there is nothing to stitch.
+  Wrap-around is an ANIMATION bug and `postprocess.py` repairs it inside
+  sync, once a candidate is approved and animated. Silhouettes that fight a
+  square canvas and were retired after paid rolls: dragonfly wings (twice),
+  a horned beetle's side profile (three rolls), a hornet. Prompt bipeds
+  "shown full body from head to feet" and curl tails, fold wings, shoulder
+  weapons — a re-roll with the same silhouette clips the same way.
 - **Each facing IS its facing; no text and no ground shadow baked into the
   art** — a human, or the agent reading `sheet.webp`. The machine cannot
-  judge this (baked shadows are fully opaque, measured — no alpha to key on),
-  so every prompt ends with the tier's expression clause and 'no drop shadow
-  on the ground' (config `defaults.style_suffix`).
+  judge this (baked shadows are fully opaque, measured — no alpha to key on).
 - **High-detail prompts** (maintainer: low detail confuses the model — it
-  cannot tell what is what). Prompts never name a facing or a background: v3
-  rotates a south sprite and always renders transparent.
+  cannot tell what is what) with "realistic proportions". Prompts never name
+  a facing or a background: v3 rotates a south sprite and always renders
+  transparent.
 
 Cost: 1 + ceil(size²·8/65536) generations (64 px → 2, 128 px → 3,
-176 px → 5), billed at $0.02/generation once the subscription pool is empty
-(measured 2026-09-09). The loop stops below `--min-usd` (default $5). Seeds
-are `crc32(id:vN)`, so a redo is reproducible and never re-rolls a kept one.
+176 px → 5, 240 px → 9), billed at $0.02/generation once the subscription
+pool is empty (measured 2026-09-09; the 100-set with re-rolls ran ≈ $10).
+The loop stops below `--min-usd` (default $5). Seeds are `crc32(id:vN)`, so
+a redo is reproducible and never re-rolls a kept one. Run workers with
+`setsid nohup … & disown` in disjoint `--only` batches; `drop` cleans the
+stray a killed worker leaves behind.
 
 ## Review gallery (chat artifact, NOT in git)
 

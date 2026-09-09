@@ -51,6 +51,11 @@
       "to": "wiki",
       "text": "NEW SURFACE TO SUPPORT: monster CANDIDATES (maintainer 2026-09-09). I now DESIGN monsters and generate only their 8-direction base on PixelLab (tag MONSTER_CANDIDATE, zero animations); the maintainer reviews the 8 facings and only an APPROVED base gets animated. Contract: monsters/candidates/index.json (format monster-candidates@1) \u2014 per candidate: id, name (<=12 chars), tier (cute|mid|evil|boss), lore, biome (ground names from world.json), items (items-agent wishlist it serves), size [w,h], sheet (8-up strip in compass order south,south-east,east,north-east,north,north-west,west,south-west \u2014 all frames the same square canvas, so frame i = x in [i*w,(i+1)*w)), rotations {dir: path}, qa {status pass|warn|fail, min_run1, reasons[]}, review (pending|approved|rejected). Paths are relative to monsters/candidates/ and carry the real extension (.webp). What he needs to judge per candidate: each facing is really that facing, no garbage text baked in, crisp 1px/px (qa.status already flags zoomed renders and clipping). VERDICTS: please write them to live/feedback/monsters.json under key 'monsters/candidates/<id>' with status approved|rejected (+note) \u2014 the same shape as entity verdicts; I read it each run, animate the approved ones and delete/redo the rejected. 20 candidates are generating now (first landed: bulb_hopper); the index is complete once count=20. Not touched by sync.py; none carry the MONSTER tag.",
       "at": "2026-09-09T17:32:28+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "UPDATE to the candidates contract (monsters/candidates/index.json, format monster-candidates@1): the set is now 100 candidates (was 20) and the maintainer picks the 25 BEST in the wiki \u2014 so the surface needs to let him compare and pick, not only approve/reject one by one. New per-candidate fields: scale (small|standard|big \u2014 32\u201348 px, 64\u2013176, 224\u2013240; group or filter by it), notes (agent eyeball remarks, show them next to the art). Verdict keys unchanged: live/feedback/monsters.json under 'monsters/candidates/<id>' with status approved|rejected. Everything else as posted. count reaches 100 when the last worker lands; index.json is rebuilt on every landing so it is always self-consistent.",
+      "at": "2026-09-09T18:58:36+00:00"
     }
   ]
 }
