@@ -446,14 +446,38 @@ inside, the door the rim cell at floor level. A house shows two faces, **south
 them: feet on the ground cell in FRONT of the wall, on the wall's foot line
 (`y = row + 0.001` for a south face, `x = col + 0.001` for an east one, so the
 anchor cell is the outdoor one at the floor's level), lifted so the window's
-centre sits at `WIN_CENTRE = 0.55` of the wall — a little above the middle
-(`_lift`, clamped 4 px off the ground and 4 px under the roof course). **The
-south face wants the `south-west` rotation and the east face `south-east`**,
-the same rule as furniture with its back to a wall. **One window type per
-house**, drawn from the approved pool weighted by his rating (5 → ×3, 4 → ×2),
-and only pieces that fit a face: drawn height ≤ `WIN_MAX_H = 0.80` of the wall
-(a taller window is a door — window_004 at 106 px, 017, 063, 099 are out) and
-width ≤ `WIN_MAX_W = 64` px (two face cells). **Spacing** (`_slots`): a face is
+centre sits at `WIN_CENTRE = 0.50` of the wall (`_lift`, clamped `SILL_CLEAR =
+2` px off the ground and **`ROOF_CLEAR = 4` px under the roof course** — the top storey of a
+house wall IS the roof's edge, the x-over-y cap hanging one storey of side down
+the face, and a window centred at 0.55 ran into it; maintainer 2026-09-09:
+*"You place them a bit too high so they touch the roof overhang graphics"*).
+Every type gets its own `z` from its own rotation's alpha bbox, so a sill or a
+window box hangs lower and the glass stays where it is. **The south face wants
+the `south-west` rotation and the east face `south-east`**, the same rule as
+furniture with its back to a wall. **The frame belongs on the wall**
+(`WINDOW_OF`, material read off the piece's own `variety` line by
+`_window_material`: stone / masonry / slate / clay / lintel / porthole → stone,
+plaster → plaster, else wood): timber and longhouse walls (`parquet_floor`) take
+wood or plaster, stone and highland walls (`grey_paving_stone`) take stone only,
+brick (`brown_paving_stone`) takes any (maintainer 2026-09-09: *"Why did you
+place a wooden window on a stone house?"*). **One window type per house, a
+different one on the next**: the least-used type of the right material, best
+rating first, then luck — no type repeats on a second house while an unused one
+of that material remains (build-asserted; maintainer 2026-09-09: *"Did you only
+place a single window type? We have many windows! Yes on the same house it
+should be the same window type, but not on different houses."* — before this the
+rating-weighted draw put `window_102` on 10 of 40 windows and `window_086` on
+three houses, one of them stone). Only pieces that fit a face: drawn height
+≤ the wall under the roof course less the clearances (69 px on a six-storey
+wall; a taller window is a door) and width ≤ `WIN_MAX_W = 64` px (two face
+cells). **THE WALL IS THE LIMIT, NOT THE LIBRARY**: a house wall is 6 × 15 = 90
+px, its top storey the roof, and the windows are drawn 1:1 at 40–95 px tall —
+so only 8 of the 58 fit under the roof at all (stone: 005, 012, 047, 088; wood:
+086, 102, 111; and none of plaster), and that is the whole variety a
+six-storey house can wear. The old 0.80-of-the-wall rule let 66–72 px windows
+through and they are the ones that touched the roof. More types need taller
+houses or shorter windows, not scaling (one scenery pixel is one player pixel).
+**Spacing** (`_slots`): a face is
 `FACE_PX = 32` screen px per cell; at least `WIN_EDGE = 20` px (or 0.35 of the
 window) of bare wall at each end, so the corner is never wrapped; at least
 `WIN_GAP = 40` px (or 0.8 of the window) between two; the door cuts the face
@@ -464,8 +488,8 @@ second face always delivers, and **every house gets at least one window**
 (build-asserted, as is that every window's anchor cell is outdoor ground at the
 floor's own level). The first gap rule (24 px, half a window) put five windows
 on the hall's twelve-cell east face against the three of his sketch; 40 px and
-0.8 gives four and three. the_game: 11 houses, 40 windows of 8 types, 3 faces
-left bare. Windows are placed unlit (`LIGHTS_OFF` is the base state; the
+0.8 gives four and three. the_game: 11 houses, 8 window types (every one that
+fits), 3 faces left bare. Windows are placed unlit (`LIGHTS_OFF` is the base state; the
 night-time `LIGHTS_ON` is the game's to switch, and it spends no light slot).
 
 **Hangings** (`_hang`, from `interiors`; *"you can also make the indoor scenery

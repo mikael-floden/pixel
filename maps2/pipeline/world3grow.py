@@ -3463,9 +3463,27 @@ class Grow:
     # "a little above the middle of a six-storey wall" must be so in both.
     PITCH_GAME = 15      # the game's storey pitch (scenery3.ts Frame.pitch)
     FACE_PX = 32         # one cell of a wall face is DX (32) screen px wide
-    WIN_CENTRE = 0.55    # the window's centre, as a share of the wall's height
+    WIN_CENTRE = 0.50    # the window's centre, as a share of the wall's height
     HANG_CENTRE = 0.62   # a hanging sits higher - it is looked at, not through
-    WIN_MAX_H = 0.80     # a window taller than this share of the wall is a door
+    ROOF_CLEAR = 4       # px of bare wall between a window's top and the roof
+                         # course - the top storey of a house wall IS the roof's
+                         # edge (the x-over-y cap hangs one storey of side down
+                         # the face), and a window centred at 0.55 of a
+                         # six-storey wall ran into it (maintainer 2026-09-09:
+                         # "You place them a bit too high so they touch the
+                         # roof overhang graphics"). SILL_CLEAR px keep the
+                         # sill off the ground. Both are as small as they are
+                         # because the wall is 90 px and the windows 40-95:
+                         # under a 15 px roof course only 8 of 58 fit at all
+    SILL_CLEAR = 2
+    # WHICH WINDOW FRAME BELONGS ON WHICH WALL (maintainer 2026-09-09: "Why
+    # did you place a wooden window on a stone house?"). The frame material
+    # is read off the piece's own `variety` text (`_window_material`).
+    WINDOW_OF = {
+        "parquet_floor":      ("wood", "plaster"),           # timber, longhouse
+        "grey_paving_stone":  ("stone",),                    # stone, highland
+        "brown_paving_stone": ("wood", "plaster", "stone"),  # brick takes any
+    }
     WIN_MAX_W = 64       # ...and wider than two face cells is a shopfront
     WIN_EDGE = 20        # px of bare wall at each end of a face, at least
     WIN_GAP = 40         # px of bare wall between two windows, at least
@@ -3509,8 +3527,19 @@ class Grow:
         nor breaks the roof line."""
         wall = rise * self.PITCH_GAME
         z_px = centre * wall - h / 2
-        z_px = max(4.0, min(z_px, wall - 4.0 - h))
+        top = (rise - 1) * self.PITCH_GAME - self.ROOF_CLEAR   # under the roof course
+        z_px = max(float(self.SILL_CLEAR), min(z_px, top - h))
         return z_px / self.PITCH_GAME
+
+    def _window_material(self, piece):
+        """wood / stone / plaster, from the piece's own `variety` line."""
+        d = json.load(open(os.path.join(REPO, "scenery", piece, "scenery.json")))
+        v = (d.get("variety") or d.get("name") or "").lower()
+        if "plaster" in v:
+            return "plaster"
+        if any(k in v for k in ("stone", "masonry", "slate", "clay", "lintel", "porthole")):
+            return "stone"
+        return "wood"
 
     def _slots(self, span, w, r):
         """Where along a face of `span` px pieces `w` px wide go: spaced
@@ -3546,7 +3575,12 @@ class Grow:
         where a window is. The south face wants the south-west rotation and
         the east face the south-east one - the same rule as furniture with
         its back to a wall. The door and the corner keep bare wall around
-        them. ONE window type per house, chosen by the maintainer's rating."""
+        them. ONE window type per house - and a DIFFERENT one on the next
+        house, dealt from the types whose frame belongs on that wall
+        (WINDOW_OF): no type is used on a second house while an unused one of
+        the right material remains (maintainer 2026-09-09: "Did you only place
+        a single window type? We have many windows! Yes on the same house it
+        should be the same window type, but not on different houses.")."""
         # EVERY ROOF IS A HOUSE, including the two the base build ports from
         # v2 that never pass through house(): the ring is the deck's rim, the
         # floor its inside, the door the rim cell at floor level.
@@ -3566,25 +3600,37 @@ class Grow:
             doors = [c for c in ring if self.lvl[c[1]][c[0]] == base]
             houses.append({"x0": x0, "y0": y0, "w": x1 - x0 + 1, "h": y1 - y0 + 1,
                            "base": base, "rise": int(dk["level"]) - base,
-                           "door": doors[0] if doors else None})
-        pool = []
+                           "door": doors[0] if doors else None,
+                           "side": dk.get("side")})
+        pool = {}
+        fit = (self.HOUSE_RISE - 1) * self.PITCH_GAME - self.ROOF_CLEAR - self.SILL_CLEAR
         for q in self.pool("windows"):
             ok, rating = self._rated(q)
             if not ok:
                 continue
             w, h = self._wall_art(q, "south-west")
             w2, h2 = self._wall_art(q, "south-east")
-            if max(h, h2) > self.WIN_MAX_H * self.HOUSE_RISE * self.PITCH_GAME \
-                    or max(w, w2) > self.WIN_MAX_W:
-                continue
-            pool += [q] * {5: 3, 4: 2}.get(rating, 1)
-        assert pool, "no window piece fits a six-storey wall"
+            if max(h, h2) > fit or max(w, w2) > self.WIN_MAX_W:
+                continue      # taller than the wall under the roof: a door
+            pool[q] = rating
+        assert pool, "no window piece fits under the roof of a six-storey wall"
+        wall_of = {(c["x"], c["y"]): wl["side"] for wl in self.doc["walls"]
+                   if wl.get("kind") == "house" for c in wl["cells"]}
+        used = collections.Counter()
         placed, bare = 0, 0
         for hs in houses:
             x0, y0, w, h = hs["x0"], hs["y0"], hs["w"], hs["h"]
             base, door, rise = hs["base"], hs["door"], hs["rise"]
             r = _rng32((x0 * 2654435761 ^ y0 * 40503 ^ 0x51DE) & 0xffffffff)
-            piece = pool[int(r() * len(pool)) % len(pool)]
+            # the wall ring's own material; the two v2-ported houses carry
+            # none and their deck's side is the wall
+            side = wall_of.get((x0, y0)) or hs["side"] or "parquet_floor"
+            fits = [q for q in pool if self._window_material(q) in self.WINDOW_OF.get(side, ("wood",))]
+            assert fits, f"no window frame belongs on a {side} wall"
+            # the least-used type of the right material, best rating, then luck
+            piece = min(fits, key=lambda q: (used[q], -pool[q], r()))
+            used[piece] += 1
+            hs["piece"] = piece
             faces = []
             # south face: cells (x, y0+h-1), foot line y = y0+h, left to right
             # is +x; east face: cells (x0+w-1, y), foot line x = x0+w, and +y
@@ -3624,8 +3670,15 @@ class Grow:
                         placed += 1
                         got += 1
             assert got > 0, f"the house at {(x0, y0)} got no window"
+        # no two houses share a type while the material still has spares
+        for mat, names in ((m, [q for q in pool if self._window_material(q) == m])
+                           for m in ("wood", "stone", "plaster")):
+            n = sum(1 for hs in houses if self._window_material(hs["piece"]) == mat)
+            assert len({hs["piece"] for hs in houses if self._window_material(hs["piece"]) == mat}) \
+                == min(n, len(names)), (mat, "houses repeat a window type with spares left")
         self._reindex()
         self.placed += [("houses with windows", len(houses)),
+                        ("window types dealt", len(used)),
                         ("windows hung", placed),
                         ("house faces left bare", bare)]
 
