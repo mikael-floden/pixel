@@ -1,0 +1,141 @@
+{
+  "id": "warthog",
+  "name": "Tuskrooter",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It roots up the fields at night and charges whatever comes to stop it. The tusks are why the fields stay rooted.",
+  "biome": [
+    "light_soil",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Warthog with realistic proportions, coarse grey-brown hide, a bristly dark mane along the spine, two curved yellow tusks, facial warts, small dark eyes, and a short tail held down.",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "warthog/rotations/south.webp",
+    "south-east": "warthog/rotations/south-east.webp",
+    "east": "warthog/rotations/east.webp",
+    "north-east": "warthog/rotations/north-east.webp",
+    "north": "warthog/rotations/north.webp",
+    "north-west": "warthog/rotations/north-west.webp",
+    "west": "warthog/rotations/west.webp",
+    "south-west": "warthog/rotations/south-west.webp"
+  },
+  "sheet": "warthog/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "2244a19a-9bde-4468-8086-f435c05ab4f0",
+  "seed": 304487864,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:12:16+00:00",
+  "elapsed_s": 176.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.679,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.679,
+        "bbox": [
+          10,
+          4,
+          96,
+          101
+        ],
+        "fill": 0.771,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.742,
+        "bbox": [
+          6,
+          3,
+          94,
+          101
+        ],
+        "fill": 0.797,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.745,
+        "bbox": [
+          13,
+          5,
+          98,
+          100
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.748,
+        "bbox": [
+          18,
+          4,
+          91,
+          102
+        ],
+        "fill": 0.661,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.804,
+        "bbox": [
+          27,
+          5,
+          85,
+          101
+        ],
+        "fill": 0.515,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.761,
+        "bbox": [
+          3,
+          3,
+          101,
+          99
+        ],
+        "fill": 0.87,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.77,
+        "bbox": [
+          17,
+          4,
+          79,
+          101
+        ],
+        "fill": 0.556,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.79,
+        "bbox": [
+          2,
+          4,
+          100,
+          100
+        ],
+        "fill": 0.87,
+        "touches_edge": false
+      }
+    }
+  }
+}

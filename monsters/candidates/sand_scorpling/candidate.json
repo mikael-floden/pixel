@@ -1,0 +1,140 @@
+{
+  "id": "sand_scorpling",
+  "name": "Sandsting",
+  "tier": "mid",
+  "scale": "small",
+  "lore": "It hides in boots and bedrolls. The sting is small; the fever it brings is not.",
+  "biome": [
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Small desert scorpion with realistic proportions, a pale sand-yellow armored body, two pincers held close, a segmented tail curled over its back ending in a dark stinger, and eight short legs.",
+  "size": [
+    32,
+    32
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "sand_scorpling/rotations/south.webp",
+    "south-east": "sand_scorpling/rotations/south-east.webp",
+    "east": "sand_scorpling/rotations/east.webp",
+    "north-east": "sand_scorpling/rotations/north-east.webp",
+    "north": "sand_scorpling/rotations/north.webp",
+    "north-west": "sand_scorpling/rotations/north-west.webp",
+    "west": "sand_scorpling/rotations/west.webp",
+    "south-west": "sand_scorpling/rotations/south-west.webp"
+  },
+  "sheet": "sand_scorpling/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "62a5f426-0eb2-458e-ad5a-9348395e3757",
+  "seed": 1467777318,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:12:14+00:00",
+  "elapsed_s": 149.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.846,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.875,
+        "bbox": [
+          5,
+          1,
+          27,
+          30
+        ],
+        "fill": 0.623,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.851,
+        "bbox": [
+          2,
+          5,
+          30,
+          27
+        ],
+        "fill": 0.602,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.864,
+        "bbox": [
+          2,
+          5,
+          30,
+          27
+        ],
+        "fill": 0.602,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.852,
+        "bbox": [
+          5,
+          9,
+          26,
+          29
+        ],
+        "fill": 0.41,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.846,
+        "bbox": [
+          5,
+          2,
+          30,
+          30
+        ],
+        "fill": 0.684,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.883,
+        "bbox": [
+          3,
+          8,
+          30,
+          28
+        ],
+        "fill": 0.527,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.864,
+        "bbox": [
+          2,
+          9,
+          29,
+          28
+        ],
+        "fill": 0.501,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.862,
+        "bbox": [
+          3,
+          2,
+          27,
+          30
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      }
+    }
+  }
+}
