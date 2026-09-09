@@ -610,262 +610,281 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "pass",
-          "step_mean": 0.0899,
-          "step_max": 0.1891,
-          "drift": 1.73,
+          "status": "warn",
+          "step_mean": 0.0523,
+          "step_max": 0.0701,
+          "drift": 0.99,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.3,
+          "travel": 0.12,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.025,
+          "peak": 0.1026,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
-          "sub": "0c2a1555-b4dc-44f1-88cd-4040f9e6eb0c",
-          "group": "9a2a705c-4627-4f07-80ab-ccdd8257d67a",
+          "reasons": [
+            "motion 0.052 outside the calm band 0.06–0.9 — eyeball it",
+            "weak strike: peak 0.103 — eyeball it"
+          ],
+          "sub": "14c61fad-3dfc-47a7-87c0-5205f0d57673",
+          "group": "dfbada73-70d5-489e-8de9-735c3fb8132f",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:03:02+00:00"
+          "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:36:46+00:00"
         },
         "south-east": {
           "status": "pass",
-          "step_mean": 0.0904,
-          "step_max": 0.1468,
-          "drift": 1.48,
+          "step_mean": 0.1325,
+          "step_max": 0.1631,
+          "drift": 2.61,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.02,
+          "travel": 2.61,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.004,
+          "peak": 0.2389,
           "canvas": [
             88,
             88
           ],
           "reasons": [],
-          "sub": "b540fd56-f73e-4623-a4fd-65d7209ab94f",
-          "group": "9f64a8ed-93f1-4f05-a9f7-935a6e758f8a",
+          "sub": "83c042d6-e4db-4260-9913-729c8f3d4e4f",
+          "group": "0ac0d09b-6636-4e51-88b8-f8e863cba488",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:03:03+00:00"
+          "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:36:47+00:00"
         },
         "east": {
           "status": "pass",
-          "step_mean": 0.146,
-          "step_max": 0.1831,
-          "drift": 2.95,
+          "step_mean": 0.1803,
+          "step_max": 0.2353,
+          "drift": 0.99,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.95,
-          "pin": 1.0,
-          "pad": 4,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "canvas grown by 4 px a side to hold the motion"
-          ],
-          "sub": "7ec5f1f6-7aac-41dc-ab32-21fc4e06ecb0",
-          "group": "391e395b-d381-4932-a338-4af8d10a5897",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:03:03+00:00"
-        },
-        "north-east": {
-          "status": "pass",
-          "step_mean": 0.0868,
-          "step_max": 0.1356,
-          "drift": 3.49,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 3.49,
+          "travel": 1.06,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3303,
           "canvas": [
             88,
             88
           ],
           "reasons": [],
-          "sub": "58260f9f-7827-4d71-b5cf-a618437cdde1",
-          "group": "52df311c-77cd-46b8-9994-63a00c95fcd0",
+          "sub": "2b2ea556-b628-42b7-9473-2c24b332bdc7",
+          "group": "030313ed-73e5-4da6-8ce2-5cd7bf6e56a0",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:03:09+00:00"
+          "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:36:47+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.1748,
+          "step_max": 0.2556,
+          "drift": 3.82,
+          "loop": 0.0003,
+          "loop_ratio": 0.0,
+          "travel": 3.82,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.051,
+          "peak": 0.274,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [
+            "some bright effect pixels (0.05) — eyeball it"
+          ],
+          "sub": "40079277-733a-4768-b2fa-179ffbbece11",
+          "group": "4b844542-0daf-498d-84c6-932777505fe6",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:36:48+00:00"
         },
         "north": {
           "status": "pass",
-          "step_mean": 0.0909,
-          "step_max": 0.1583,
-          "drift": 2.21,
+          "step_mean": 0.1122,
+          "step_max": 0.1427,
+          "drift": 0.74,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.3,
+          "travel": 0.36,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.005,
+          "peak": 0.2121,
           "canvas": [
             88,
             88
           ],
           "reasons": [],
-          "sub": "caeb4640-7dd3-47b5-83e3-a9066fb23dce",
-          "group": "c9e6e94d-eccb-41e7-8c70-4ab8bd73012b",
+          "sub": "56c0627e-bab3-484e-9505-e7f3322fe349",
+          "group": "3c908d94-2f2a-4a36-b3b3-f7745be9c0cf",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:03:10+00:00"
+          "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:36:48+00:00"
         },
         "south-west": {
           "status": "pass",
-          "step_mean": 0.0904,
-          "step_max": 0.1468,
-          "drift": 1.48,
+          "step_mean": 0.1325,
+          "step_max": 0.1631,
+          "drift": 2.61,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 1.02,
+          "travel": 2.61,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.004,
+          "peak": 0.2389,
           "canvas": [
             88,
             88
           ],
           "reasons": [],
-          "sub": "b540fd56-f73e-4623-a4fd-65d7209ab94f",
-          "group": "9f64a8ed-93f1-4f05-a9f7-935a6e758f8a",
+          "sub": "83c042d6-e4db-4260-9913-729c8f3d4e4f",
+          "group": "0ac0d09b-6636-4e51-88b8-f8e863cba488",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:03:03+00:00",
+          "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:36:47+00:00",
           "source": "south-east"
         },
         "west": {
           "status": "pass",
-          "step_mean": 0.146,
-          "step_max": 0.1831,
-          "drift": 2.95,
+          "step_mean": 0.1803,
+          "step_max": 0.2353,
+          "drift": 0.99,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.95,
-          "pin": 1.0,
-          "pad": 4,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "canvas grown by 4 px a side to hold the motion"
-          ],
-          "sub": "7ec5f1f6-7aac-41dc-ab32-21fc4e06ecb0",
-          "group": "391e395b-d381-4932-a338-4af8d10a5897",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:03:03+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.0868,
-          "step_max": 0.1356,
-          "drift": 3.49,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 3.49,
+          "travel": 1.06,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3303,
           "canvas": [
             88,
             88
           ],
           "reasons": [],
-          "sub": "58260f9f-7827-4d71-b5cf-a618437cdde1",
-          "group": "52df311c-77cd-46b8-9994-63a00c95fcd0",
+          "sub": "2b2ea556-b628-42b7-9473-2c24b332bdc7",
+          "group": "030313ed-73e5-4da6-8ce2-5cd7bf6e56a0",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:03:09+00:00",
+          "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:36:47+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.1748,
+          "step_max": 0.2556,
+          "drift": 3.82,
+          "loop": 0.0003,
+          "loop_ratio": 0.0,
+          "travel": 3.82,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.051,
+          "peak": 0.274,
+          "canvas": [
+            88,
+            88
+          ],
+          "reasons": [
+            "some bright effect pixels (0.05) — eyeball it"
+          ],
+          "sub": "40079277-733a-4768-b2fa-179ffbbece11",
+          "group": "4b844542-0daf-498d-84c6-932777505fe6",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:36:48+00:00",
           "source": "north-east"
         }
       },
-      "action": "strikes forward lightning-fast with fangs bared, hood flared wide, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance",
       "frame_paths": {
         "south": [
           "cobra/animations/attack/south/00.webp",
           "cobra/animations/attack/south/01.webp",
           "cobra/animations/attack/south/02.webp",
           "cobra/animations/attack/south/03.webp",
-          "cobra/animations/attack/south/04.webp",
-          "cobra/animations/attack/south/05.webp",
-          "cobra/animations/attack/south/06.webp"
+          "cobra/animations/attack/south/04.webp"
         ],
         "south-east": [
           "cobra/animations/attack/south-east/00.webp",
           "cobra/animations/attack/south-east/01.webp",
           "cobra/animations/attack/south-east/02.webp",
           "cobra/animations/attack/south-east/03.webp",
-          "cobra/animations/attack/south-east/04.webp",
-          "cobra/animations/attack/south-east/05.webp",
-          "cobra/animations/attack/south-east/06.webp"
+          "cobra/animations/attack/south-east/04.webp"
         ],
         "east": [
           "cobra/animations/attack/east/00.webp",
           "cobra/animations/attack/east/01.webp",
           "cobra/animations/attack/east/02.webp",
           "cobra/animations/attack/east/03.webp",
-          "cobra/animations/attack/east/04.webp",
-          "cobra/animations/attack/east/05.webp",
-          "cobra/animations/attack/east/06.webp"
+          "cobra/animations/attack/east/04.webp"
         ],
         "north-east": [
           "cobra/animations/attack/north-east/00.webp",
           "cobra/animations/attack/north-east/01.webp",
           "cobra/animations/attack/north-east/02.webp",
           "cobra/animations/attack/north-east/03.webp",
-          "cobra/animations/attack/north-east/04.webp",
-          "cobra/animations/attack/north-east/05.webp",
-          "cobra/animations/attack/north-east/06.webp"
+          "cobra/animations/attack/north-east/04.webp"
         ],
         "north": [
           "cobra/animations/attack/north/00.webp",
           "cobra/animations/attack/north/01.webp",
           "cobra/animations/attack/north/02.webp",
           "cobra/animations/attack/north/03.webp",
-          "cobra/animations/attack/north/04.webp",
-          "cobra/animations/attack/north/05.webp",
-          "cobra/animations/attack/north/06.webp"
+          "cobra/animations/attack/north/04.webp"
         ],
         "south-west": [
           "cobra/animations/attack/south-west/00.webp",
           "cobra/animations/attack/south-west/01.webp",
           "cobra/animations/attack/south-west/02.webp",
           "cobra/animations/attack/south-west/03.webp",
-          "cobra/animations/attack/south-west/04.webp",
-          "cobra/animations/attack/south-west/05.webp",
-          "cobra/animations/attack/south-west/06.webp"
+          "cobra/animations/attack/south-west/04.webp"
         ],
         "west": [
           "cobra/animations/attack/west/00.webp",
           "cobra/animations/attack/west/01.webp",
           "cobra/animations/attack/west/02.webp",
           "cobra/animations/attack/west/03.webp",
-          "cobra/animations/attack/west/04.webp",
-          "cobra/animations/attack/west/05.webp",
-          "cobra/animations/attack/west/06.webp"
+          "cobra/animations/attack/west/04.webp"
         ],
         "north-west": [
           "cobra/animations/attack/north-west/00.webp",
           "cobra/animations/attack/north-west/01.webp",
           "cobra/animations/attack/north-west/02.webp",
           "cobra/animations/attack/north-west/03.webp",
-          "cobra/animations/attack/north-west/04.webp",
-          "cobra/animations/attack/north-west/05.webp",
-          "cobra/animations/attack/north-west/06.webp"
+          "cobra/animations/attack/north-west/04.webp"
         ]
       },
       "strips": {

@@ -608,257 +608,283 @@
       "directions": {
         "south": {
           "status": "pass",
-          "step_mean": 0.2012,
-          "step_max": 0.324,
-          "drift": 6.89,
+          "step_mean": 0.156,
+          "step_max": 0.1978,
+          "drift": 1.25,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 7.16,
+          "travel": 1.25,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.2702,
           "canvas": [
             88,
             88
           ],
           "reasons": [],
-          "sub": "241a9fcf-ba05-43ba-a68a-6a70c9614b18",
-          "group": "01ac8ed6-4bdf-4106-903f-27fc5c1ba7e7",
+          "sub": "bcd4d5bd-946b-4617-9254-e7bfb52d78c7",
+          "group": "b3e898ef-cc47-425c-9628-d6f9f45b0f3a",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:56:25+00:00"
+          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:31:04+00:00"
         },
         "south-east": {
           "status": "pass",
-          "step_mean": 0.136,
-          "step_max": 0.19,
-          "drift": 3.86,
+          "step_mean": 0.1197,
+          "step_max": 0.131,
+          "drift": 0.73,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.63,
+          "travel": 0.93,
           "pin": 1.0,
-          "pad": 0,
+          "pad": 1,
+          "flash": 0.088,
+          "peak": 0.2082,
           "canvas": [
-            88,
-            88
+            90,
+            90
           ],
-          "reasons": [],
-          "sub": "bc1752b6-e029-4182-844f-f95c0ed0168d",
-          "group": "a6205820-6ef8-4755-b82d-48e5728cc4c0",
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "73806076-cfdd-4977-9279-484420cdf6b1",
+          "group": "67c2dd29-cce2-4008-b076-2f8f5784569b",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:56:26+00:00"
+          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:31:05+00:00"
         },
         "east": {
           "status": "pass",
-          "step_mean": 0.1411,
-          "step_max": 0.2152,
-          "drift": 2.19,
+          "step_mean": 0.2105,
+          "step_max": 0.2829,
+          "drift": 3.41,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.19,
+          "travel": 3.41,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3234,
           "canvas": [
             88,
             88
           ],
           "reasons": [],
-          "sub": "a6c3a139-fbeb-4ba7-bd08-39bcf094d5f0",
-          "group": "6d6f1117-0c6f-4915-b029-43c3fa1fca55",
+          "sub": "034b98d7-1ee6-4721-8d44-f090dfa04e3f",
+          "group": "ef671a29-4c34-40e4-93bb-ae503f6b7198",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:56:26+00:00"
+          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:31:06+00:00"
         },
         "north-east": {
-          "status": "pass",
-          "step_mean": 0.141,
-          "step_max": 0.244,
-          "drift": 4.57,
+          "status": "warn",
+          "step_mean": 0.099,
+          "step_max": 0.1285,
+          "drift": 0.94,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 4.57,
+          "travel": 1.1,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.106,
+          "peak": 0.1148,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
-          "sub": "ee0452d0-1000-4fe8-9b48-3705f4b17c9e",
-          "group": "20575910-c35e-421b-a250-4e832c992ee7",
+          "reasons": [
+            "weak strike: peak 0.115 — eyeball it"
+          ],
+          "sub": "1a29a267-540c-4a71-bc26-ac390254305c",
+          "group": "8c16ea6e-160f-402e-b681-8c16eb123f7e",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:56:27+00:00"
+          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:31:06+00:00"
         },
         "north": {
           "status": "pass",
-          "step_mean": 0.1837,
-          "step_max": 0.254,
-          "drift": 10.54,
+          "step_mean": 0.1959,
+          "step_max": 0.2581,
+          "drift": 1.59,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 10.54,
+          "travel": 1.59,
           "pin": 1.0,
-          "pad": 0,
+          "pad": 4,
+          "flash": 0.013,
+          "peak": 0.3193,
           "canvas": [
-            88,
-            88
+            96,
+            96
           ],
-          "reasons": [],
-          "sub": "79859239-a1e3-4aab-b493-1d21005131df",
-          "group": "bcbce43a-7d09-43f2-9841-0b996efeac34",
+          "reasons": [
+            "canvas grown by 4 px a side to hold the motion"
+          ],
+          "sub": "cc0405e6-8619-42da-bea4-db79b790a1ca",
+          "group": "3c856959-1fae-41f0-9dd9-5e8d1012aa59",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:56:27+00:00"
+          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:31:07+00:00"
         },
         "south-west": {
           "status": "pass",
-          "step_mean": 0.136,
-          "step_max": 0.19,
-          "drift": 3.86,
+          "step_mean": 0.1197,
+          "step_max": 0.131,
+          "drift": 0.73,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.63,
+          "travel": 0.93,
           "pin": 1.0,
-          "pad": 0,
+          "pad": 1,
+          "flash": 0.088,
+          "peak": 0.2082,
           "canvas": [
-            88,
-            88
+            90,
+            90
           ],
-          "reasons": [],
-          "sub": "bc1752b6-e029-4182-844f-f95c0ed0168d",
-          "group": "a6205820-6ef8-4755-b82d-48e5728cc4c0",
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "73806076-cfdd-4977-9279-484420cdf6b1",
+          "group": "67c2dd29-cce2-4008-b076-2f8f5784569b",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:56:26+00:00",
+          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:31:05+00:00",
           "source": "south-east"
         },
         "west": {
           "status": "pass",
-          "step_mean": 0.1411,
-          "step_max": 0.2152,
-          "drift": 2.19,
+          "step_mean": 0.2105,
+          "step_max": 0.2829,
+          "drift": 3.41,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.19,
+          "travel": 3.41,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3234,
           "canvas": [
             88,
             88
           ],
           "reasons": [],
-          "sub": "a6c3a139-fbeb-4ba7-bd08-39bcf094d5f0",
-          "group": "6d6f1117-0c6f-4915-b029-43c3fa1fca55",
+          "sub": "034b98d7-1ee6-4721-8d44-f090dfa04e3f",
+          "group": "ef671a29-4c34-40e4-93bb-ae503f6b7198",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:56:26+00:00",
+          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:31:06+00:00",
           "source": "east"
         },
         "north-west": {
-          "status": "pass",
-          "step_mean": 0.141,
-          "step_max": 0.244,
-          "drift": 4.57,
+          "status": "warn",
+          "step_mean": 0.099,
+          "step_max": 0.1285,
+          "drift": 0.94,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 4.57,
+          "travel": 1.1,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.106,
+          "peak": 0.1148,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
-          "sub": "ee0452d0-1000-4fe8-9b48-3705f4b17c9e",
-          "group": "20575910-c35e-421b-a250-4e832c992ee7",
+          "reasons": [
+            "weak strike: peak 0.115 — eyeball it"
+          ],
+          "sub": "1a29a267-540c-4a71-bc26-ac390254305c",
+          "group": "8c16ea6e-160f-402e-b681-8c16eb123f7e",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T21:56:27+00:00",
+          "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:31:06+00:00",
           "source": "north-east"
         }
       },
-      "action": "thrusts the skull staff forward and the skull flares with green fire in a quick curse, then returns exactly to the starting pose",
+      "action": "Skull Curse - Thrusts the skull staff forward once, the skull flaring green, then returns to idle stance",
       "frame_paths": {
         "south": [
           "goblin_shaman/animations/attack/south/00.webp",
           "goblin_shaman/animations/attack/south/01.webp",
           "goblin_shaman/animations/attack/south/02.webp",
           "goblin_shaman/animations/attack/south/03.webp",
-          "goblin_shaman/animations/attack/south/04.webp",
-          "goblin_shaman/animations/attack/south/05.webp",
-          "goblin_shaman/animations/attack/south/06.webp"
+          "goblin_shaman/animations/attack/south/04.webp"
         ],
         "south-east": [
           "goblin_shaman/animations/attack/south-east/00.webp",
           "goblin_shaman/animations/attack/south-east/01.webp",
           "goblin_shaman/animations/attack/south-east/02.webp",
           "goblin_shaman/animations/attack/south-east/03.webp",
-          "goblin_shaman/animations/attack/south-east/04.webp",
-          "goblin_shaman/animations/attack/south-east/05.webp",
-          "goblin_shaman/animations/attack/south-east/06.webp"
+          "goblin_shaman/animations/attack/south-east/04.webp"
         ],
         "east": [
           "goblin_shaman/animations/attack/east/00.webp",
           "goblin_shaman/animations/attack/east/01.webp",
           "goblin_shaman/animations/attack/east/02.webp",
           "goblin_shaman/animations/attack/east/03.webp",
-          "goblin_shaman/animations/attack/east/04.webp",
-          "goblin_shaman/animations/attack/east/05.webp",
-          "goblin_shaman/animations/attack/east/06.webp"
+          "goblin_shaman/animations/attack/east/04.webp"
         ],
         "north-east": [
           "goblin_shaman/animations/attack/north-east/00.webp",
           "goblin_shaman/animations/attack/north-east/01.webp",
           "goblin_shaman/animations/attack/north-east/02.webp",
           "goblin_shaman/animations/attack/north-east/03.webp",
-          "goblin_shaman/animations/attack/north-east/04.webp",
-          "goblin_shaman/animations/attack/north-east/05.webp",
-          "goblin_shaman/animations/attack/north-east/06.webp"
+          "goblin_shaman/animations/attack/north-east/04.webp"
         ],
         "north": [
           "goblin_shaman/animations/attack/north/00.webp",
           "goblin_shaman/animations/attack/north/01.webp",
           "goblin_shaman/animations/attack/north/02.webp",
           "goblin_shaman/animations/attack/north/03.webp",
-          "goblin_shaman/animations/attack/north/04.webp",
-          "goblin_shaman/animations/attack/north/05.webp",
-          "goblin_shaman/animations/attack/north/06.webp"
+          "goblin_shaman/animations/attack/north/04.webp"
         ],
         "south-west": [
           "goblin_shaman/animations/attack/south-west/00.webp",
           "goblin_shaman/animations/attack/south-west/01.webp",
           "goblin_shaman/animations/attack/south-west/02.webp",
           "goblin_shaman/animations/attack/south-west/03.webp",
-          "goblin_shaman/animations/attack/south-west/04.webp",
-          "goblin_shaman/animations/attack/south-west/05.webp",
-          "goblin_shaman/animations/attack/south-west/06.webp"
+          "goblin_shaman/animations/attack/south-west/04.webp"
         ],
         "west": [
           "goblin_shaman/animations/attack/west/00.webp",
           "goblin_shaman/animations/attack/west/01.webp",
           "goblin_shaman/animations/attack/west/02.webp",
           "goblin_shaman/animations/attack/west/03.webp",
-          "goblin_shaman/animations/attack/west/04.webp",
-          "goblin_shaman/animations/attack/west/05.webp",
-          "goblin_shaman/animations/attack/west/06.webp"
+          "goblin_shaman/animations/attack/west/04.webp"
         ],
         "north-west": [
           "goblin_shaman/animations/attack/north-west/00.webp",
           "goblin_shaman/animations/attack/north-west/01.webp",
           "goblin_shaman/animations/attack/north-west/02.webp",
           "goblin_shaman/animations/attack/north-west/03.webp",
-          "goblin_shaman/animations/attack/north-west/04.webp",
-          "goblin_shaman/animations/attack/north-west/05.webp",
-          "goblin_shaman/animations/attack/north-west/06.webp"
+          "goblin_shaman/animations/attack/north-west/04.webp"
         ]
       },
       "strips": {

@@ -606,245 +606,294 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "warn",
-          "step_mean": 0.0711,
-          "step_max": 0.1216,
-          "drift": 0.48,
+          "status": "fail",
+          "step_mean": 0.0463,
+          "step_max": 0.0744,
+          "drift": 1.57,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.24,
+          "travel": 0.18,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.109,
+          "peak": 0.0868,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "motion 0.071 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.123 — eyeball it"
+            "motion 0.046 outside the calm band 0.06–0.9 — eyeball it",
+            "weak strike: peak 0.087 — eyeball it",
+            "painted effect: 0.11 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "64758c8d-0b4c-4a44-bb2d-6700a1410f4e",
-          "group": "f5572a6e-acf5-43ad-a186-df57b444d117",
+          "sub": "78c4d14a-0608-41f8-b55c-a7e2cabd2d72",
+          "group": "fdd92c4a-1ef8-4604-ad2e-a1578ccd47b6",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:02:48+00:00"
+          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:05+00:00"
         },
         "south-east": {
           "status": "warn",
-          "step_mean": 0.0651,
-          "step_max": 0.0923,
-          "drift": 1.35,
+          "step_mean": 0.0625,
+          "step_max": 0.0772,
+          "drift": 1.31,
           "loop": 0.0002,
           "loop_ratio": 0.0,
-          "travel": 1.31,
+          "travel": 0.45,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1007,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "motion 0.065 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.116 — eyeball it"
+            "weak strike: peak 0.101 — eyeball it"
           ],
-          "sub": "30acb913-c6b1-4d87-8f88-a25003265af8",
-          "group": "c27338e6-f559-4e66-b935-beabd549fe19",
+          "sub": "8e98ca2b-3cf2-4cd2-bb08-aef7083b4f92",
+          "group": "77d7efde-cb7d-4ea4-941e-94bfa6592fae",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:02:48+00:00"
+          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:05+00:00"
         },
         "east": {
           "status": "warn",
-          "step_mean": 0.0867,
-          "step_max": 0.1121,
-          "drift": 2.05,
+          "step_mean": 0.0557,
+          "step_max": 0.0766,
+          "drift": 1.54,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.3,
+          "travel": 1.1,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.096,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "weak strike: peak 0.117 — eyeball it"
+            "motion 0.056 outside the calm band 0.06–0.9 — eyeball it",
+            "weak strike: peak 0.096 — eyeball it"
           ],
-          "sub": "fafda5a9-ac33-4d7b-a4a8-de7eb9c9616e",
-          "group": "5b15fec5-a479-47d8-ad52-72a46651cf01",
+          "sub": "380baedd-efbf-4c39-944c-e25d3f70fcb4",
+          "group": "4775beb4-9dd0-4a43-a0a7-4e82313b9ad0",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:02:49+00:00"
+          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:06+00:00"
         },
         "north-east": {
-          "status": "fail",
-          "step_mean": 0.0441,
-          "step_max": 0.0509,
-          "drift": 1.11,
-          "loop": 0.0002,
-          "loop_ratio": 0.0,
-          "travel": 0.6,
-          "pin": 1.0,
-          "pad": 0,
-          "canvas": [
-            96,
-            96
-          ],
-          "reasons": [
-            "motion 0.044 outside the calm band 0.08–0.9 — eyeball it",
-            "no strike: peak 0.075 of the silhouette away from the base"
-          ],
-          "sub": "1453f365-3fa1-40e8-b657-62d3efaf683d",
-          "group": "05793510-3b71-4359-ba03-2898308addb9",
-          "takes": 1,
-          "version": 1,
-          "mirrored": false,
-          "generated_at": "2026-09-09T22:02:50+00:00"
-        },
-        "north": {
           "status": "warn",
-          "step_mean": 0.0583,
-          "step_max": 0.0769,
-          "drift": 2.02,
+          "step_mean": 0.039,
+          "step_max": 0.0479,
+          "drift": 1.55,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.23,
+          "travel": 0.08,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.0731,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "motion 0.058 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.102 — eyeball it"
+            "motion 0.039 outside the calm band 0.06–0.9 — eyeball it",
+            "weak strike: peak 0.073 — eyeball it"
           ],
-          "sub": "9031df5d-e5ff-49d5-b45c-a24beb665ee7",
-          "group": "d463f817-c907-48cb-9d6e-c88977560f4e",
+          "sub": "882f18c9-ecbb-4144-b60f-86d630fcb429",
+          "group": "844ca886-cc99-455f-947d-d16eff09ab49",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:02:50+00:00"
+          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:06+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0867,
+          "step_max": 0.1083,
+          "drift": 1.26,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.19,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.009,
+          "peak": 0.153,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "12d96769-2200-4bbc-83cb-971268e2390a",
+          "group": "13c0480c-251f-4005-8487-de8473f43f52",
+          "takes": 1,
+          "version": 2,
+          "mirrored": false,
+          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:07+00:00"
         },
         "south-west": {
           "status": "warn",
-          "step_mean": 0.0651,
-          "step_max": 0.0923,
-          "drift": 1.35,
+          "step_mean": 0.0625,
+          "step_max": 0.0772,
+          "drift": 1.31,
           "loop": 0.0002,
           "loop_ratio": 0.0,
-          "travel": 1.31,
+          "travel": 0.45,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1007,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "motion 0.065 outside the calm band 0.08–0.9 — eyeball it",
-            "weak strike: peak 0.116 — eyeball it"
+            "weak strike: peak 0.101 — eyeball it"
           ],
-          "sub": "30acb913-c6b1-4d87-8f88-a25003265af8",
-          "group": "c27338e6-f559-4e66-b935-beabd549fe19",
+          "sub": "8e98ca2b-3cf2-4cd2-bb08-aef7083b4f92",
+          "group": "77d7efde-cb7d-4ea4-941e-94bfa6592fae",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:02:48+00:00",
+          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:05+00:00",
           "source": "south-east"
         },
         "west": {
           "status": "warn",
-          "step_mean": 0.0867,
-          "step_max": 0.1121,
-          "drift": 2.05,
+          "step_mean": 0.0557,
+          "step_max": 0.0766,
+          "drift": 1.54,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.3,
+          "travel": 1.1,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.096,
           "canvas": [
             96,
             96
           ],
           "reasons": [
-            "weak strike: peak 0.117 — eyeball it"
+            "motion 0.056 outside the calm band 0.06–0.9 — eyeball it",
+            "weak strike: peak 0.096 — eyeball it"
           ],
-          "sub": "fafda5a9-ac33-4d7b-a4a8-de7eb9c9616e",
-          "group": "5b15fec5-a479-47d8-ad52-72a46651cf01",
+          "sub": "380baedd-efbf-4c39-944c-e25d3f70fcb4",
+          "group": "4775beb4-9dd0-4a43-a0a7-4e82313b9ad0",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:02:49+00:00",
+          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:06+00:00",
           "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.039,
+          "step_max": 0.0479,
+          "drift": 1.55,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.08,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.0731,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.039 outside the calm band 0.06–0.9 — eyeball it",
+            "weak strike: peak 0.073 — eyeball it"
+          ],
+          "sub": "882f18c9-ecbb-4144-b60f-86d630fcb429",
+          "group": "844ca886-cc99-455f-947d-d16eff09ab49",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:06+00:00",
+          "source": "north-east"
         }
       },
-      "action": "whips two tentacles forward in a fast double lash, mantle flaring, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "action": "Tentacle Lash - Rears up and lashes forward once with two tentacles, then returns to idle stance",
       "frame_paths": {
         "south": [
           "octopus/animations/attack/south/00.webp",
           "octopus/animations/attack/south/01.webp",
           "octopus/animations/attack/south/02.webp",
           "octopus/animations/attack/south/03.webp",
-          "octopus/animations/attack/south/04.webp",
-          "octopus/animations/attack/south/05.webp",
-          "octopus/animations/attack/south/06.webp"
+          "octopus/animations/attack/south/04.webp"
         ],
         "south-east": [
           "octopus/animations/attack/south-east/00.webp",
           "octopus/animations/attack/south-east/01.webp",
           "octopus/animations/attack/south-east/02.webp",
           "octopus/animations/attack/south-east/03.webp",
-          "octopus/animations/attack/south-east/04.webp",
-          "octopus/animations/attack/south-east/05.webp",
-          "octopus/animations/attack/south-east/06.webp"
+          "octopus/animations/attack/south-east/04.webp"
         ],
         "east": [
           "octopus/animations/attack/east/00.webp",
           "octopus/animations/attack/east/01.webp",
           "octopus/animations/attack/east/02.webp",
           "octopus/animations/attack/east/03.webp",
-          "octopus/animations/attack/east/04.webp",
-          "octopus/animations/attack/east/05.webp",
-          "octopus/animations/attack/east/06.webp"
+          "octopus/animations/attack/east/04.webp"
         ],
         "north-east": [
           "octopus/animations/attack/north-east/00.webp",
           "octopus/animations/attack/north-east/01.webp",
           "octopus/animations/attack/north-east/02.webp",
           "octopus/animations/attack/north-east/03.webp",
-          "octopus/animations/attack/north-east/04.webp",
-          "octopus/animations/attack/north-east/05.webp",
-          "octopus/animations/attack/north-east/06.webp"
+          "octopus/animations/attack/north-east/04.webp"
         ],
         "north": [
           "octopus/animations/attack/north/00.webp",
           "octopus/animations/attack/north/01.webp",
           "octopus/animations/attack/north/02.webp",
           "octopus/animations/attack/north/03.webp",
-          "octopus/animations/attack/north/04.webp",
-          "octopus/animations/attack/north/05.webp",
-          "octopus/animations/attack/north/06.webp"
+          "octopus/animations/attack/north/04.webp"
         ],
         "south-west": [
           "octopus/animations/attack/south-west/00.webp",
           "octopus/animations/attack/south-west/01.webp",
           "octopus/animations/attack/south-west/02.webp",
           "octopus/animations/attack/south-west/03.webp",
-          "octopus/animations/attack/south-west/04.webp",
-          "octopus/animations/attack/south-west/05.webp",
-          "octopus/animations/attack/south-west/06.webp"
+          "octopus/animations/attack/south-west/04.webp"
         ],
         "west": [
           "octopus/animations/attack/west/00.webp",
           "octopus/animations/attack/west/01.webp",
           "octopus/animations/attack/west/02.webp",
           "octopus/animations/attack/west/03.webp",
-          "octopus/animations/attack/west/04.webp",
-          "octopus/animations/attack/west/05.webp",
-          "octopus/animations/attack/west/06.webp"
+          "octopus/animations/attack/west/04.webp"
+        ],
+        "north-west": [
+          "octopus/animations/attack/north-west/00.webp",
+          "octopus/animations/attack/north-west/01.webp",
+          "octopus/animations/attack/north-west/02.webp",
+          "octopus/animations/attack/north-west/03.webp",
+          "octopus/animations/attack/north-west/04.webp"
         ]
       },
       "strips": {
@@ -854,7 +903,8 @@
         "north-east": "octopus/animations/attack__north-east.webp",
         "north": "octopus/animations/attack__north.webp",
         "south-west": "octopus/animations/attack__south-west.webp",
-        "west": "octopus/animations/attack__west.webp"
+        "west": "octopus/animations/attack__west.webp",
+        "north-west": "octopus/animations/attack__north-west.webp"
       }
     }
   }

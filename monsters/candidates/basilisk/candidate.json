@@ -609,261 +609,276 @@
       "directions": {
         "south": {
           "status": "pass",
-          "step_mean": 0.1159,
-          "step_max": 0.168,
-          "drift": 6.55,
-          "loop": 0.0001,
+          "step_mean": 0.1793,
+          "step_max": 0.2126,
+          "drift": 1.16,
+          "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 6.55,
+          "travel": 1.16,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3008,
           "canvas": [
             136,
             136
           ],
           "reasons": [],
-          "sub": "770df3e3-4ef8-4564-8079-4bf147cac64f",
-          "group": "137c672c-1fb5-419b-91d1-f44feea93a4b",
+          "sub": "1bd8dc1d-0c5e-4c04-8e52-68b792484c2b",
+          "group": "b3831d83-ac3e-4fc8-a943-77577b3ef656",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:00:32+00:00"
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:07+00:00"
         },
         "south-east": {
           "status": "pass",
-          "step_mean": 0.1013,
-          "step_max": 0.1276,
-          "drift": 3.83,
+          "step_mean": 0.2109,
+          "step_max": 0.2673,
+          "drift": 8.0,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.83,
+          "travel": 8.0,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3723,
           "canvas": [
             136,
             136
           ],
           "reasons": [],
-          "sub": "cb3289da-99da-408b-90c5-b5006e800b2e",
-          "group": "1bec785b-c994-432e-8da4-916a4513c51e",
+          "sub": "89028177-6a10-41b0-90c4-1d9c94381814",
+          "group": "3d83f489-9043-4e59-8896-cdd9b37e9685",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:00:32+00:00"
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:07+00:00"
         },
         "east": {
           "status": "pass",
-          "step_mean": 0.1166,
-          "step_max": 0.1517,
-          "drift": 2.51,
+          "step_mean": 0.0998,
+          "step_max": 0.1226,
+          "drift": 2.07,
           "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 2.56,
+          "travel": 0.56,
           "pin": 1.0,
-          "pad": 1,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1737,
           "canvas": [
-            138,
-            138
+            136,
+            136
           ],
-          "reasons": [
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "66ea3fbd-47ce-4d53-884c-e99c54bf76b1",
-          "group": "c8ab076f-7535-45bb-8bc7-c993d1a3001b",
+          "reasons": [],
+          "sub": "9abf4c6a-8258-49da-8d6c-15a28e40eff4",
+          "group": "b9245a93-c9b5-4b21-b875-93a4271cf358",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:00:33+00:00"
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:08+00:00"
         },
         "north-east": {
           "status": "pass",
-          "step_mean": 0.1029,
-          "step_max": 0.1589,
-          "drift": 2.84,
+          "step_mean": 0.1057,
+          "step_max": 0.1595,
+          "drift": 2.97,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.84,
+          "travel": 2.97,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1952,
           "canvas": [
             136,
             136
           ],
           "reasons": [],
-          "sub": "c6279ced-80d1-4147-8ba3-167089bea212",
-          "group": "70999d81-5bc7-4902-8935-8dc563819a8f",
+          "sub": "36f3a59d-d99a-4f7a-872b-3791a30ae016",
+          "group": "334bcde9-f6c3-4817-adcd-b6b906b0cace",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:00:42+00:00"
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:08+00:00"
         },
         "north": {
-          "status": "pass",
-          "step_mean": 0.2008,
-          "step_max": 0.2961,
-          "drift": 5.05,
-          "loop": 0.0002,
+          "status": "fail",
+          "step_mean": 0.1674,
+          "step_max": 0.201,
+          "drift": 9.5,
+          "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.11,
+          "travel": 0.82,
           "pin": 1.0,
-          "pad": 0,
+          "pad": 3,
+          "flash": 0.285,
+          "peak": 0.2502,
           "canvas": [
-            136,
-            136
+            142,
+            142
           ],
-          "reasons": [],
-          "sub": "8c8064d1-eabd-48f6-9601-69d9a0401f00",
-          "group": "371290f0-4641-4fe9-92f3-09e604ddb823",
+          "reasons": [
+            "painted effect: 0.29 of the body in new bright pixels (flare/slash arc)",
+            "canvas grown by 3 px a side to hold the motion"
+          ],
+          "sub": "a66da00e-6ce5-4853-85c9-c6bef7a8e665",
+          "group": "e31b5495-eb78-4b8d-b67c-aa1f0e49d645",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:00:42+00:00"
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:09+00:00"
         },
         "south-west": {
           "status": "pass",
-          "step_mean": 0.1013,
-          "step_max": 0.1276,
-          "drift": 3.83,
+          "step_mean": 0.2109,
+          "step_max": 0.2673,
+          "drift": 8.0,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.83,
+          "travel": 8.0,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.3723,
           "canvas": [
             136,
             136
           ],
           "reasons": [],
-          "sub": "cb3289da-99da-408b-90c5-b5006e800b2e",
-          "group": "1bec785b-c994-432e-8da4-916a4513c51e",
+          "sub": "89028177-6a10-41b0-90c4-1d9c94381814",
+          "group": "3d83f489-9043-4e59-8896-cdd9b37e9685",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:00:32+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:07+00:00",
           "source": "south-east"
         },
         "west": {
           "status": "pass",
-          "step_mean": 0.1166,
-          "step_max": 0.1517,
-          "drift": 2.51,
+          "step_mean": 0.0998,
+          "step_max": 0.1226,
+          "drift": 2.07,
           "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 2.56,
-          "pin": 1.0,
-          "pad": 1,
-          "canvas": [
-            138,
-            138
-          ],
-          "reasons": [
-            "canvas grown by 1 px a side to hold the motion"
-          ],
-          "sub": "66ea3fbd-47ce-4d53-884c-e99c54bf76b1",
-          "group": "c8ab076f-7535-45bb-8bc7-c993d1a3001b",
-          "takes": 1,
-          "version": 1,
-          "mirrored": true,
-          "generated_at": "2026-09-09T22:00:33+00:00",
-          "source": "east"
-        },
-        "north-west": {
-          "status": "pass",
-          "step_mean": 0.1029,
-          "step_max": 0.1589,
-          "drift": 2.84,
-          "loop": 0.0,
-          "loop_ratio": 0.0,
-          "travel": 2.84,
+          "travel": 0.56,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1737,
           "canvas": [
             136,
             136
           ],
           "reasons": [],
-          "sub": "c6279ced-80d1-4147-8ba3-167089bea212",
-          "group": "70999d81-5bc7-4902-8935-8dc563819a8f",
+          "sub": "9abf4c6a-8258-49da-8d6c-15a28e40eff4",
+          "group": "b9245a93-c9b5-4b21-b875-93a4271cf358",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:00:42+00:00",
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:08+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1057,
+          "step_max": 0.1595,
+          "drift": 2.97,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 2.97,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": 0.1952,
+          "canvas": [
+            136,
+            136
+          ],
+          "reasons": [],
+          "sub": "36f3a59d-d99a-4f7a-872b-3791a30ae016",
+          "group": "334bcde9-f6c3-4817-adcd-b6b906b0cace",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
+          "tries": 1,
+          "generated_at": "2026-09-09T22:35:08+00:00",
           "source": "north-east"
         }
       },
-      "action": "rears its head back and bites forward with jaws wide, crest flaring, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "action": "Bite - Quickly lunges forward, bites once, then returns to idle stance",
       "frame_paths": {
         "south": [
           "basilisk/animations/attack/south/00.webp",
           "basilisk/animations/attack/south/01.webp",
           "basilisk/animations/attack/south/02.webp",
           "basilisk/animations/attack/south/03.webp",
-          "basilisk/animations/attack/south/04.webp",
-          "basilisk/animations/attack/south/05.webp",
-          "basilisk/animations/attack/south/06.webp"
+          "basilisk/animations/attack/south/04.webp"
         ],
         "south-east": [
           "basilisk/animations/attack/south-east/00.webp",
           "basilisk/animations/attack/south-east/01.webp",
           "basilisk/animations/attack/south-east/02.webp",
           "basilisk/animations/attack/south-east/03.webp",
-          "basilisk/animations/attack/south-east/04.webp",
-          "basilisk/animations/attack/south-east/05.webp",
-          "basilisk/animations/attack/south-east/06.webp"
+          "basilisk/animations/attack/south-east/04.webp"
         ],
         "east": [
           "basilisk/animations/attack/east/00.webp",
           "basilisk/animations/attack/east/01.webp",
           "basilisk/animations/attack/east/02.webp",
           "basilisk/animations/attack/east/03.webp",
-          "basilisk/animations/attack/east/04.webp",
-          "basilisk/animations/attack/east/05.webp",
-          "basilisk/animations/attack/east/06.webp"
+          "basilisk/animations/attack/east/04.webp"
         ],
         "north-east": [
           "basilisk/animations/attack/north-east/00.webp",
           "basilisk/animations/attack/north-east/01.webp",
           "basilisk/animations/attack/north-east/02.webp",
           "basilisk/animations/attack/north-east/03.webp",
-          "basilisk/animations/attack/north-east/04.webp",
-          "basilisk/animations/attack/north-east/05.webp",
-          "basilisk/animations/attack/north-east/06.webp"
+          "basilisk/animations/attack/north-east/04.webp"
         ],
         "north": [
           "basilisk/animations/attack/north/00.webp",
           "basilisk/animations/attack/north/01.webp",
           "basilisk/animations/attack/north/02.webp",
           "basilisk/animations/attack/north/03.webp",
-          "basilisk/animations/attack/north/04.webp",
-          "basilisk/animations/attack/north/05.webp",
-          "basilisk/animations/attack/north/06.webp"
+          "basilisk/animations/attack/north/04.webp"
         ],
         "south-west": [
           "basilisk/animations/attack/south-west/00.webp",
           "basilisk/animations/attack/south-west/01.webp",
           "basilisk/animations/attack/south-west/02.webp",
           "basilisk/animations/attack/south-west/03.webp",
-          "basilisk/animations/attack/south-west/04.webp",
-          "basilisk/animations/attack/south-west/05.webp",
-          "basilisk/animations/attack/south-west/06.webp"
+          "basilisk/animations/attack/south-west/04.webp"
         ],
         "west": [
           "basilisk/animations/attack/west/00.webp",
           "basilisk/animations/attack/west/01.webp",
           "basilisk/animations/attack/west/02.webp",
           "basilisk/animations/attack/west/03.webp",
-          "basilisk/animations/attack/west/04.webp",
-          "basilisk/animations/attack/west/05.webp",
-          "basilisk/animations/attack/west/06.webp"
+          "basilisk/animations/attack/west/04.webp"
         ],
         "north-west": [
           "basilisk/animations/attack/north-west/00.webp",
           "basilisk/animations/attack/north-west/01.webp",
           "basilisk/animations/attack/north-west/02.webp",
           "basilisk/animations/attack/north-west/03.webp",
-          "basilisk/animations/attack/north-west/04.webp",
-          "basilisk/animations/attack/north-west/05.webp",
-          "basilisk/animations/attack/north-west/06.webp"
+          "basilisk/animations/attack/north-west/04.webp"
         ]
       },
       "strips": {
