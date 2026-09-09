@@ -1,0 +1,151 @@
+{
+  "id": "ember_king",
+  "name": "Pyrelord",
+  "tier": "boss",
+  "lore": "The mountain's first king, and its only one. Every eruption since has been him clearing his throat.",
+  "biome": [
+    "lava",
+    "black_rock"
+  ],
+  "items": [
+    "fire soulstone"
+  ],
+  "prompt": "Towering fantasy fire demon lord with a body of black volcanic rock split by glowing orange magma cracks, a crown of jagged obsidian horns wreathed in flames, burning white-hot eyes, massive clawed hands, a molten glowing chain draped across its chest, and flames rising from its shoulders.",
+  "size": [
+    176,
+    176
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ember_king/rotations/south.webp",
+    "south-east": "ember_king/rotations/south-east.webp",
+    "east": "ember_king/rotations/east.webp",
+    "north-east": "ember_king/rotations/north-east.webp",
+    "north": "ember_king/rotations/north.webp",
+    "north-west": "ember_king/rotations/north-west.webp",
+    "west": "ember_king/rotations/west.webp",
+    "south-west": "ember_king/rotations/south-west.webp"
+  },
+  "sheet": "ember_king/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "24ec4916-61df-4daf-b9cc-50c5e8d0b649",
+  "seed": 1619941066,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:40:15+00:00",
+  "elapsed_s": 244.5,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.676,
+    "reasons": [
+      "south: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)",
+      "south-east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.676,
+        "bbox": [
+          14,
+          2,
+          165,
+          176
+        ],
+        "fill": 0.848,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.777,
+        "bbox": [
+          58,
+          0,
+          122,
+          176
+        ],
+        "fill": 0.364,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.779,
+        "bbox": [
+          52,
+          0,
+          130,
+          176
+        ],
+        "fill": 0.443,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.753,
+        "bbox": [
+          17,
+          0,
+          159,
+          176
+        ],
+        "fill": 0.807,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.779,
+        "bbox": [
+          21,
+          0,
+          159,
+          176
+        ],
+        "fill": 0.784,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.756,
+        "bbox": [
+          30,
+          0,
+          148,
+          176
+        ],
+        "fill": 0.67,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.757,
+        "bbox": [
+          24,
+          0,
+          150,
+          176
+        ],
+        "fill": 0.716,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.771,
+        "bbox": [
+          22,
+          0,
+          153,
+          176
+        ],
+        "fill": 0.744,
+        "touches_edge": true
+      }
+    }
+  }
+}

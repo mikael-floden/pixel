@@ -1,0 +1,143 @@
+{
+  "id": "tide_crab",
+  "name": "Snapshell",
+  "tier": "mid",
+  "lore": "The tide brings it up and forgets to take it back. It holds the beach with one great claw and never learned to let go.",
+  "biome": [
+    "light_beach",
+    "water"
+  ],
+  "items": [
+    "curved pincer",
+    "sea shells"
+  ],
+  "prompt": "Large fantasy shore crab with a barnacle-crusted orange-red shell, one enormous curved pincer with a pale bone-white edge and a smaller pincer, six jointed legs with dark tips, stalked black eyes, and clumps of green seaweed and small sea shells stuck to its back.",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "tide_crab/rotations/south.webp",
+    "south-east": "tide_crab/rotations/south-east.webp",
+    "east": "tide_crab/rotations/east.webp",
+    "north-east": "tide_crab/rotations/north-east.webp",
+    "north": "tide_crab/rotations/north.webp",
+    "north-west": "tide_crab/rotations/north-west.webp",
+    "west": "tide_crab/rotations/west.webp",
+    "south-west": "tide_crab/rotations/south-west.webp"
+  },
+  "sheet": "tide_crab/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "2d53ec75-f35d-4226-b081-2c392864c29c",
+  "seed": 2104520729,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:41:07+00:00",
+  "elapsed_s": 153.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.708,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.708,
+        "bbox": [
+          4,
+          9,
+          108,
+          101
+        ],
+        "fill": 0.763,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.746,
+        "bbox": [
+          8,
+          13,
+          99,
+          102
+        ],
+        "fill": 0.646,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.758,
+        "bbox": [
+          13,
+          13,
+          104,
+          102
+        ],
+        "fill": 0.646,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.743,
+        "bbox": [
+          12,
+          15,
+          101,
+          101
+        ],
+        "fill": 0.61,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.769,
+        "bbox": [
+          7,
+          7,
+          105,
+          101
+        ],
+        "fill": 0.734,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.761,
+        "bbox": [
+          8,
+          15,
+          103,
+          104
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.759,
+        "bbox": [
+          9,
+          15,
+          104,
+          104
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.764,
+        "bbox": [
+          7,
+          7,
+          105,
+          101
+        ],
+        "fill": 0.734,
+        "touches_edge": false
+      }
+    }
+  }
+}

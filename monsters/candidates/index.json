@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T17:38:33+00:00",
+  "generated_at": "2026-09-09T17:41:07+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 6,
+  "count": 9,
   "candidates": [
     {
       "id": "lantern_bat",
@@ -280,6 +280,135 @@
       "generated_at": "2026-09-09T17:38:33+00:00"
     },
     {
+      "id": "tide_crab",
+      "name": "Snapshell",
+      "tier": "mid",
+      "lore": "The tide brings it up and forgets to take it back. It holds the beach with one great claw and never learned to let go.",
+      "biome": [
+        "light_beach",
+        "water"
+      ],
+      "items": [
+        "curved pincer",
+        "sea shells"
+      ],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "bear",
+      "pixellab_id": "2d53ec75-f35d-4226-b081-2c392864c29c",
+      "version": 1,
+      "sheet": "tide_crab/sheet.webp",
+      "rotations": {
+        "south": "tide_crab/rotations/south.webp",
+        "south-east": "tide_crab/rotations/south-east.webp",
+        "east": "tide_crab/rotations/east.webp",
+        "north-east": "tide_crab/rotations/north-east.webp",
+        "north": "tide_crab/rotations/north.webp",
+        "north-west": "tide_crab/rotations/north-west.webp",
+        "west": "tide_crab/rotations/west.webp",
+        "south-west": "tide_crab/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.708,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.708,
+            "bbox": [
+              4,
+              9,
+              108,
+              101
+            ],
+            "fill": 0.763,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.746,
+            "bbox": [
+              8,
+              13,
+              99,
+              102
+            ],
+            "fill": 0.646,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.758,
+            "bbox": [
+              13,
+              13,
+              104,
+              102
+            ],
+            "fill": 0.646,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.743,
+            "bbox": [
+              12,
+              15,
+              101,
+              101
+            ],
+            "fill": 0.61,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.769,
+            "bbox": [
+              7,
+              7,
+              105,
+              101
+            ],
+            "fill": 0.734,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.761,
+            "bbox": [
+              8,
+              15,
+              103,
+              104
+            ],
+            "fill": 0.674,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.759,
+            "bbox": [
+              9,
+              15,
+              104,
+              104
+            ],
+            "fill": 0.674,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.764,
+            "bbox": [
+              7,
+              7,
+              105,
+              101
+            ],
+            "fill": 0.734,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "generated_at": "2026-09-09T17:41:07+00:00"
+    },
+    {
       "id": "root_forager",
       "name": "Twineback",
       "tier": "mid",
@@ -409,6 +538,143 @@
       },
       "review": "pending",
       "generated_at": "2026-09-09T17:36:10+00:00"
+    },
+    {
+      "id": "ember_king",
+      "name": "Pyrelord",
+      "tier": "boss",
+      "lore": "The mountain's first king, and its only one. Every eruption since has been him clearing his throat.",
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [
+        "fire soulstone"
+      ],
+      "size": [
+        176,
+        176
+      ],
+      "template_id": "mannequin",
+      "pixellab_id": "24ec4916-61df-4daf-b9cc-50c5e8d0b649",
+      "version": 1,
+      "sheet": "ember_king/sheet.webp",
+      "rotations": {
+        "south": "ember_king/rotations/south.webp",
+        "south-east": "ember_king/rotations/south-east.webp",
+        "east": "ember_king/rotations/east.webp",
+        "north-east": "ember_king/rotations/north-east.webp",
+        "north": "ember_king/rotations/north.webp",
+        "north-west": "ember_king/rotations/north-west.webp",
+        "west": "ember_king/rotations/west.webp",
+        "south-west": "ember_king/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.676,
+        "reasons": [
+          "south: content touches the canvas edge (clipped)",
+          "west: content touches the canvas edge (clipped)",
+          "east: content touches the canvas edge (clipped)",
+          "north: content touches the canvas edge (clipped)",
+          "south-east: content touches the canvas edge (clipped)",
+          "north-east: content touches the canvas edge (clipped)",
+          "north-west: content touches the canvas edge (clipped)",
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.676,
+            "bbox": [
+              14,
+              2,
+              165,
+              176
+            ],
+            "fill": 0.848,
+            "touches_edge": true
+          },
+          "west": {
+            "run1": 0.777,
+            "bbox": [
+              58,
+              0,
+              122,
+              176
+            ],
+            "fill": 0.364,
+            "touches_edge": true
+          },
+          "east": {
+            "run1": 0.779,
+            "bbox": [
+              52,
+              0,
+              130,
+              176
+            ],
+            "fill": 0.443,
+            "touches_edge": true
+          },
+          "north": {
+            "run1": 0.753,
+            "bbox": [
+              17,
+              0,
+              159,
+              176
+            ],
+            "fill": 0.807,
+            "touches_edge": true
+          },
+          "south-east": {
+            "run1": 0.779,
+            "bbox": [
+              21,
+              0,
+              159,
+              176
+            ],
+            "fill": 0.784,
+            "touches_edge": true
+          },
+          "north-east": {
+            "run1": 0.756,
+            "bbox": [
+              30,
+              0,
+              148,
+              176
+            ],
+            "fill": 0.67,
+            "touches_edge": true
+          },
+          "north-west": {
+            "run1": 0.757,
+            "bbox": [
+              24,
+              0,
+              150,
+              176
+            ],
+            "fill": 0.716,
+            "touches_edge": true
+          },
+          "south-west": {
+            "run1": 0.771,
+            "bbox": [
+              22,
+              0,
+              153,
+              176
+            ],
+            "fill": 0.744,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "generated_at": "2026-09-09T17:40:15+00:00"
     },
     {
       "id": "bulb_hopper",
@@ -791,6 +1057,135 @@
       },
       "review": "pending",
       "generated_at": "2026-09-09T17:37:23+00:00"
+    },
+    {
+      "id": "veil_wraith",
+      "name": "Veilmother",
+      "tier": "evil",
+      "lore": "She searches every cradle in the valley and finds none of them hers. The cold that follows her is the closest she gets to company.",
+      "biome": [
+        "snow",
+        "grey_stone",
+        "grey_paving_stone"
+      ],
+      "items": [
+        "mist soulstone"
+      ],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "mannequin",
+      "pixellab_id": "8a296245-c8b0-4c17-8701-918116bd828e",
+      "version": 1,
+      "sheet": "veil_wraith/sheet.webp",
+      "rotations": {
+        "south": "veil_wraith/rotations/south.webp",
+        "south-east": "veil_wraith/rotations/south-east.webp",
+        "east": "veil_wraith/rotations/east.webp",
+        "north-east": "veil_wraith/rotations/north-east.webp",
+        "north": "veil_wraith/rotations/north.webp",
+        "north-west": "veil_wraith/rotations/north-west.webp",
+        "west": "veil_wraith/rotations/west.webp",
+        "south-west": "veil_wraith/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.694,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.712,
+            "bbox": [
+              26,
+              3,
+              101,
+              125
+            ],
+            "fill": 0.558,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.768,
+            "bbox": [
+              50,
+              4,
+              85,
+              125
+            ],
+            "fill": 0.258,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.779,
+            "bbox": [
+              42,
+              4,
+              83,
+              125
+            ],
+            "fill": 0.303,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.694,
+            "bbox": [
+              29,
+              3,
+              99,
+              123
+            ],
+            "fill": 0.513,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.794,
+            "bbox": [
+              35,
+              4,
+              98,
+              125
+            ],
+            "fill": 0.465,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.758,
+            "bbox": [
+              37,
+              4,
+              95,
+              124
+            ],
+            "fill": 0.425,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.749,
+            "bbox": [
+              32,
+              4,
+              90,
+              124
+            ],
+            "fill": 0.425,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.801,
+            "bbox": [
+              33,
+              4,
+              92,
+              125
+            ],
+            "fill": 0.436,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "generated_at": "2026-09-09T17:40:26+00:00"
     }
   ]
 }

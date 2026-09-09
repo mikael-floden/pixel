@@ -1,0 +1,143 @@
+{
+  "id": "veil_wraith",
+  "name": "Veilmother",
+  "tier": "evil",
+  "lore": "She searches every cradle in the valley and finds none of them hers. The cold that follows her is the closest she gets to company.",
+  "biome": [
+    "snow",
+    "grey_stone",
+    "grey_paving_stone"
+  ],
+  "items": [
+    "mist soulstone"
+  ],
+  "prompt": "Tall floating fantasy wraith with a gaunt pale face, hollow black eyes weeping dark tears, a long tattered veil and dress of gray-white cloth fading into mist at the bottom, long thin arms with elongated fingers, and a faint cold blue glow around its body.",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "veil_wraith/rotations/south.webp",
+    "south-east": "veil_wraith/rotations/south-east.webp",
+    "east": "veil_wraith/rotations/east.webp",
+    "north-east": "veil_wraith/rotations/north-east.webp",
+    "north": "veil_wraith/rotations/north.webp",
+    "north-west": "veil_wraith/rotations/north-west.webp",
+    "west": "veil_wraith/rotations/west.webp",
+    "south-west": "veil_wraith/rotations/south-west.webp"
+  },
+  "sheet": "veil_wraith/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8a296245-c8b0-4c17-8701-918116bd828e",
+  "seed": 2095735047,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:40:26+00:00",
+  "elapsed_s": 182.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.694,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.712,
+        "bbox": [
+          26,
+          3,
+          101,
+          125
+        ],
+        "fill": 0.558,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.768,
+        "bbox": [
+          50,
+          4,
+          85,
+          125
+        ],
+        "fill": 0.258,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.779,
+        "bbox": [
+          42,
+          4,
+          83,
+          125
+        ],
+        "fill": 0.303,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.694,
+        "bbox": [
+          29,
+          3,
+          99,
+          123
+        ],
+        "fill": 0.513,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.794,
+        "bbox": [
+          35,
+          4,
+          98,
+          125
+        ],
+        "fill": 0.465,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.758,
+        "bbox": [
+          37,
+          4,
+          95,
+          124
+        ],
+        "fill": 0.425,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.749,
+        "bbox": [
+          32,
+          4,
+          90,
+          124
+        ],
+        "fill": 0.425,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.801,
+        "bbox": [
+          33,
+          4,
+          92,
+          125
+        ],
+        "fill": 0.436,
+        "touches_edge": false
+      }
+    }
+  }
+}
