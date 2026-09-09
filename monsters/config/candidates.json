@@ -586,21 +586,6 @@
       "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way."
     },
     {
-      "id": "hornet_knight",
-      "name": "Stingvein",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 88,
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "items": [],
-      "prompt": "Fantasy giant hornet standing upright shown full body from head to feet, a black-and-amber striped armored body, four translucent wings folded flat against its back, large compound eyes, sharp mandibles, and a curved stinger held under its abdomen, no drop shadow on the ground.",
-      "lore": "The hive sends one to speak and the rest to collect. It speaks with the stinger."
-    },
-    {
       "id": "flytrap",
       "name": "Snaptrap",
       "tier": "mid",
@@ -1540,6 +1525,21 @@
       "items": [],
       "prompt": "Small gargoyle-like imp shown full body from horns to feet, realistic proportions, dark grey stone-like hide, two curved black horns, narrow burning orange eyes, a mouth of small sharp teeth set in a hard line, bat-like wings folded tight, clawed hands and feet.",
       "lore": "The gargoyles' lesser kin, cut from the same stone. It sits in the eaves and drops on whatever passes beneath."
+    },
+    {
+      "id": "ant_lion",
+      "name": "Pitjaw",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 88,
+      "biome": [
+        "light_soil",
+        "light_beach"
+      ],
+      "items": [],
+      "prompt": "Giant antlion larva with realistic proportions, a broad flattened sand-brown armored body, a wide head with two enormous curved serrated jaws held close together, small black eyes, six short digging legs tucked beneath, and sand grains caught in its plates.",
+      "lore": "It digs the pit and lies beneath the floor of it. The sand slides, and whatever stood on the slope goes down to the jaws."
     }
   ],
   "retired": [
@@ -2372,6 +2372,24 @@
       "prompt": "Stoat in winter coat with realistic proportions, sleek white fur, a black-tipped tail, small rounded ears, dark bright eyes and a long low body.",
       "lore": "Small, quick and entirely without fear. It kills hares three times its size and drags them home.",
       "retired": "swapped out 2026-09-09 for serious object/creature concepts the maintainer re-allowed (dull vermin slot)"
+    },
+    {
+      "id": "hornet_knight",
+      "name": "Stingvein",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 88,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Fantasy giant hornet standing upright shown full body from head to feet, a black-and-amber striped armored body, four translucent wings folded flat against its back, large compound eyes, sharp mandibles, and a curved stinger held under its abdomen, no drop shadow on the ground.",
+      "lore": "The hive sends one to speak and the rest to collect. It speaks with the stinger.",
+      "retired": "winged insect fights the canvas: v1 80px baked ground shadows, v2 88px legs clipped SE/SW. Replaced by ant_lion, a compact ground insect.",
+      "retired_at": "2026-09-09T18:34:16+00:00",
+      "versions_tried": 2
     }
   ]
 }

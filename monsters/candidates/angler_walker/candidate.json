@@ -1,0 +1,141 @@
+{
+  "id": "angler_walker",
+  "name": "Lurelight",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It crawled out of the deep for a brighter lure and found lanterns. It follows every light on the shore now.",
+  "biome": [
+    "deep_water",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fantasy anglerfish monster walking on four stubby finned legs, a huge black head with a gaping mouth of long needle teeth, tiny pale eyes, and a glowing yellow lure dangling on a stalk from its forehead.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "angler_walker/rotations/south.webp",
+    "south-east": "angler_walker/rotations/south-east.webp",
+    "east": "angler_walker/rotations/east.webp",
+    "north-east": "angler_walker/rotations/north-east.webp",
+    "north": "angler_walker/rotations/north.webp",
+    "north-west": "angler_walker/rotations/north-west.webp",
+    "west": "angler_walker/rotations/west.webp",
+    "south-west": "angler_walker/rotations/south-west.webp"
+  },
+  "sheet": "angler_walker/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8d59ffc9-ad2e-4a52-b37b-5252d424177f",
+  "seed": 1076074593,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:34:05+00:00",
+  "elapsed_s": 238.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.709,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.709,
+        "bbox": [
+          9,
+          5,
+          92,
+          91
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.748,
+        "bbox": [
+          12,
+          4,
+          91,
+          91
+        ],
+        "fill": 0.746,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.783,
+        "bbox": [
+          12,
+          5,
+          81,
+          92
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.733,
+        "bbox": [
+          5,
+          3,
+          82,
+          91
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.803,
+        "bbox": [
+          25,
+          5,
+          76,
+          90
+        ],
+        "fill": 0.47,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.765,
+        "bbox": [
+          4,
+          5,
+          85,
+          90
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.754,
+        "bbox": [
+          20,
+          3,
+          72,
+          89
+        ],
+        "fill": 0.485,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.784,
+        "bbox": [
+          6,
+          5,
+          93,
+          91
+        ],
+        "fill": 0.812,
+        "touches_edge": false
+      }
+    }
+  }
+}
