@@ -2195,25 +2195,38 @@ class Grow:
         his = self._anim_v.get(key) or self._anim_v.get(key.lower())
         if his and his.get("verdict"):
             return his["verdict"] == "ANIMATION_APPROVED"
-        anims = (meta.get("states") or {}).get(state, {}).get("animations") or {}
-        return any(a.get("review") in self.ANIM_GOOD and self._anim_plays(a)
-                   for a in anims.values())
+        st = (meta.get("states") or {}).get(state, {})
+        return any(a.get("review") in self.ANIM_GOOD and self._anim_plays(piece, st, n, a)
+                   for n, a in (st.get("animations") or {}).items())
 
     @staticmethod
-    def _anim_plays(a):
-        """A judged-good animation the consumers can actually PLAY: the game
-        wants `frame_paths` or `strip` on the animation itself (scenery3.ts
-        parseAnims ignores one without: "names no frames"), the wiki reads
-        `directions.south.strip`. brazier_008#LIT_1 carried a PROBABLY_GOOD
-        verdict on a clip neither could find and was lit as "animates well"
-        (maintainer 2026-09-09: "Why did you place 'Antlered iron brazier
-        008' lit state 1? It has no animation."). 38 of the 194 good LIT
-        clips are like it; reported to scenery."""
+    def _anim_plays(piece, st, name, a):
+        """A judged-good animation BOTH consumers can play. The game
+        (scenery3.ts parseAnims) wants `frame_paths` or `strip` on the
+        animation itself and ignores one without ("names no frames"). The
+        wiki (build.mjs dirClip) wants a south STRIP FILE - `directions.
+        south.strip`, else `strip`, else `<state dir>/animations/<name>__
+        south.webp` on disk, else the piece root's - and more than one
+        frame. brazier_008#LIT_1 carried a PROBABLY_GOOD verdict on a clip
+        that has only per-frame files under `directions`: neither could
+        play it and it was lit as "animates well" (maintainer 2026-09-09:
+        "Why did you place 'Antlered iron brazier 008' lit state 1? It has
+        no animation."). Reported to scenery with the list."""
         if not (a.get("frame_paths") or a.get("strip")):
             return False
         d = a.get("directions")
         south = d.get("south") if isinstance(d, dict) else None
-        return bool(south) and (bool(south.get("strip")) or len(south.get("frame_paths") or []) > 1)
+        state_rel = os.path.dirname(st.get("sprite") or "") or piece
+        cands = [c for c in ((south or {}).get("strip"), a.get("strip"),
+                             f"{state_rel}/animations/{name}__south.webp",
+                             f"{piece}/animations/{name}__south.webp") if c]
+        if not any(os.path.exists(os.path.join(REPO, "scenery", c)) for c in cands):
+            return False
+        fc = a.get("frame_count")
+        frames = ((south or {}).get("frames") or (south or {}).get("frame_count")
+                  or (fc.get("south") if isinstance(fc, dict) else fc)
+                  or len(a.get("frame_paths") or []))
+        return (frames or 0) > 1
 
     def _best_lit_state(self, piece):
         """The LIT state to light: ONE THAT ANIMATES WELL FIRST, then the best

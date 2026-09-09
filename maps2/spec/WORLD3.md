@@ -752,9 +752,11 @@ probably bad animation"*). His verdict in `live/tuning/scenery_animation.json`
 classification (`ANIMATION_PROBABLY_GOOD` / `_BAD`, scenery's
 `anim_review.py`); a state with no animation ranks with a bad one, and so does
 a judged-good animation the consumers cannot play (`_anim_plays`: the game
-needs `frame_paths` or `strip` on the animation itself, the wiki
-`directions.south.strip` — brazier_008#LIT_1 carried a good verdict on a clip
-neither could find; 38 of 194 good LIT clips do, reported to scenery). The same
+needs `frame_paths` or `strip` on the animation itself, the wiki a south strip
+FILE — `directions.south.strip`, `strip`, or `<state dir>/animations/<name>__
+south.webp` on disk — and more than one frame; brazier_008#LIT_1 carried a good
+verdict on a clip with only per-frame files under `directions`, which neither
+can play; reported to scenery with the list). The same
 order picks the PIECE within a group (`_lit_pool`). Rating alone put 34 of 143
 lit placements on a well-animated state, 65 on a probably-bad one and 44 on
 none; with the rule, 58 / 51 / 25. A group with `LIT_ANIM_MIN = 3` or more
