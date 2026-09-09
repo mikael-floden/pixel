@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:55:22+00:00",
+  "generated_at": "2026-09-09T18:55:51+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 65,
+  "count": 66,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -8253,6 +8253,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:52:52+00:00"
+    },
+    {
+      "id": "marsh_heron",
+      "name": "Stiltwing",
+      "tier": "mid",
+      "lore": "It stands in the reeds for hours without a breath. Whatever moves beneath the water is already chosen.",
+      "biome": [
+        "water",
+        "dark_mud"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "4bdec62e-c595-417b-92dc-894771ea2c9b",
+      "version": 1,
+      "sheet": "marsh_heron/sheet.webp",
+      "rotations": {
+        "south": "marsh_heron/rotations/south.webp",
+        "south-east": "marsh_heron/rotations/south-east.webp",
+        "east": "marsh_heron/rotations/east.webp",
+        "north-east": "marsh_heron/rotations/north-east.webp",
+        "north": "marsh_heron/rotations/north.webp",
+        "north-west": "marsh_heron/rotations/north-west.webp",
+        "west": "marsh_heron/rotations/west.webp",
+        "south-west": "marsh_heron/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.719,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.719,
+            "bbox": [
+              19,
+              6,
+              90,
+              100
+            ],
+            "fill": 0.617,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.748,
+            "bbox": [
+              20,
+              7,
+              84,
+              100
+            ],
+            "fill": 0.55,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.741,
+            "bbox": [
+              19,
+              4,
+              83,
+              100
+            ],
+            "fill": 0.568,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.737,
+            "bbox": [
+              13,
+              5,
+              83,
+              100
+            ],
+            "fill": 0.615,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.777,
+            "bbox": [
+              17,
+              6,
+              92,
+              100
+            ],
+            "fill": 0.652,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.726,
+            "bbox": [
+              19,
+              4,
+              83,
+              100
+            ],
+            "fill": 0.568,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.771,
+            "bbox": [
+              13,
+              7,
+              87,
+              100
+            ],
+            "fill": 0.636,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.769,
+            "bbox": [
+              19,
+              7,
+              83,
+              100
+            ],
+            "fill": 0.55,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:55:51+00:00"
     },
     {
       "id": "glow_grub",
