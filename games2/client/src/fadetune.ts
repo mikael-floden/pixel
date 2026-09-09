@@ -6,9 +6,15 @@
  *  REACH   how far from the other ground the warm-up starts, in cells (0..4).
  *  AMOUNT  how many fade tiles are placed, LINEAR: twice the value is twice
  *          the tiles (0..3x of the shipped density).
- *  FALLOFF the exponent on distance: how much denser the band is right at the
- *          edge than at its far end (1 = the shipped straight line; higher =
- *          hugs the edge; lower = even).
+ *  FALLOFF how fast the COVERAGE drops with distance: the tiles with the most
+ *          of the other ground on them sit at the transition, the ones with
+ *          least at the far end of the band, and this exponent bends the
+ *          curve between (1 = straight; higher = only the edge gets the dense
+ *          tiles; lower = dense tiles reach further). Maintainer 2026-09-09:
+ *          "tiles that has very much light_soil on top of grass should be
+ *          used at the tile that does the actual transition and tiles that
+ *          has very little ... further away. The 'Fade falloff' slider
+ *          controls this behavior." (It used to bend the DENSITY instead.)
  *
  *  ...and a fourth switch he asked for in the same breath: whether a fade may
  *  sit ON a transition tile itself (a 50/50 sand-grass tile carrying a grassy

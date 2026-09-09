@@ -340,16 +340,22 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   shipped FADE_BAND is 2 and stays the default). AMOUNT multiplies the
   placement probability linearly (0-3x; "twice the value means twice as much
   grass fade") — up to the ceiling of the lonely rule, which still forbids two
-  fades edge-on. FALLOFF is the exponent on the distance term (0.25-4, log
-  dial; >1 hugs the edge). ON TRANSITION lets `wangSurface` give a composed
+  fades edge-on; density is linear in distance. FALLOFF is the COVERAGE curve
+  (0.25-4, log dial): the pool's densest tile (most of the other ground on it)
+  is the target at the nearest ring and its sparsest at the far end, target =
+  pctMin + span·pos^falloff, so >1 keeps the dense tiles to the transition
+  (maintainer 2026-09-09: "fade tiles that has very much light_soil on top of
+  grass should be used at the tile that does the actual transition ... very
+  little ... further away"). The pool keeps every approved tile from 1% up —
+  the grass/light_soil pair tops out at 16%, and the old 8% floor threw away
+  its far-band tiles. ON TRANSITION lets `wangSurface` give a composed
   boundary cell a fade too ("a transition tile that is 50% sand and 50% grass
   can end up 75% grass") — drawn over the boundary by `overlayOps`, since the
   ground pass draws the boundary INSTEAD of the cell's own ops. Every default
   is the shipped picture byte for byte, so the render3 parity fixtures hold.
   How much of the other ground a fade tile actually paints is `pct` on every
-  pool tile (from tiles/fades/index.json) and already weights the pick toward
-  the mix that matches the distance; exposing that per placement is the next
-  thing he asked for and is not built.
+  pool tile (from tiles/fades/index.json); exposing that per placement is
+  not built.
 - **A RAISED CAP'S SPRITE WEARS EVERYTHING THE GROUND PASS PAINTED ON IT —
   transition, fade AND foot band** (`tiles3Occluders`, via `overlayOps`). The
   occluder pass re-issues every raised cell's cap as a sprite ABOVE the ground

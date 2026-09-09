@@ -1797,10 +1797,14 @@ export class Tiles3 {
   }
 
   /** ONE TIER of `fadePool`, built from the same two index keys and the same
-   *  edge_ground rule. `pct` is how much of `other` shows; 8..55 is the honest-
-   *  mix window (a ~0% tile is the source set's own idea of a pure field, a
-   *  >60% one reads as the other ground with a rim, and 50/50 is his never
-   *  rule). Sorted by pct, which is the order the distance weighting expects. */
+   *  edge_ground rule. `pct` is how much of `other` shows; 1..55 is the window
+   *  (a 0% tile is the source set's own idea of a pure field, a >60% one reads
+   *  as the other ground with a rim, and 50/50 is his never rule). THE LOW END
+   *  IS IN ON PURPOSE: a 1-2% tile is the far end of the band (maintainer
+   *  2026-09-09, the grass/light_soil pool: "tiles that has very little
+   *  light_soil over grass can be used further away" — the pair tops out at
+   *  16%, so an 8% floor threw away most of it). Sorted by pct, which is the
+   *  order the distance weighting expects. */
   private fadeTier(field: string, other: string, tier: 1 | 2 | 3): FadePoolTile[] {
     const out: FadePoolTile[] = [];
     const pairs = this.data.fades?.pairs ?? {};
@@ -1813,7 +1817,7 @@ export class Tiles3 {
         if (e?.status === "rejected") continue;
         if (tier === 3 ? e?.status === "approved" : e?.status !== "approved") continue;
         const pct = t.pct?.[other] ?? 0;
-        if (tier !== 2 && !(pct >= 8 && pct <= 55)) continue;
+        if (tier !== 2 && !(pct >= 1 && pct <= 55)) continue;
         if (tier === 2 && pct > 55) continue;
         if (this.data.fadeGuard && !this.data.fadeGuard(t.file, field, other)) continue;
         out.push({ file: t.file, key: t.key ?? "", pct, rating: Number(e?.rating) || 0, tier });
@@ -2380,11 +2384,11 @@ export class Tiles3 {
         /* A FADE IS A SCATTERED EVENT, NOT A COAT OF PAINT. Stamping the band
          * solid put ONE tile on up to 1,357 cells — the repetition he ruled out.
          * The probability falls off with distance from the switch. */
-        /* `bandPos` is 1 at the edge and falls to 1/(reach+1) at the far end;
-         * the dials shape it: `falloff` bends the line (>1 hugs the edge), and
-         * `amount` scales the whole probability linearly — twice the value is
-         * twice the tiles, up to the lonely rule's ceiling. */
-        const bandPos = Math.pow((reach + 1 - near[1]) / (reach + 1), falloff);
+        /* DENSITY is linear in distance: `bandPos` is 1 at the edge and falls
+         * to 1/(reach+1) at the far end, and `amount` scales it — twice the
+         * value is twice the tiles, up to the lonely rule's ceiling.
+         * COVERAGE is what `falloff` shapes — see the pick below. */
+        const bandPos = (reach + 1 - near[1]) / (reach + 1);
         const u = rr();
         /* NO TWO FADES TOUCH EDGE-ON — his own rule, and the lattice he keeps
          * photographing.
@@ -2412,9 +2416,26 @@ export class Tiles3 {
         const lonely =
           u < drawAt(x + 1, y) && u < drawAt(x - 1, y) && u < drawAt(x, y + 1) && u < drawAt(x, y - 1);
         if (lonely && u <= 0.45 * amount * bandPos) {
-          /* Sample the WHOLE pool, weighted by his ratings, with the mix strength
-           * tracking the distance. */
-          const wts = pool.map((t) => (1.0 + 1.6 * t.rating) * (1.0 - Math.abs(t.pct / 60.0 - bandPos)));
+          /* WHICH TILE: THE COVERAGE FOLLOWS THE DISTANCE, AND `falloff` IS ITS
+           * CURVE (maintainer 2026-09-09: "fade tiles that has very much
+           * light_soil on top of grass should be used at the tile that does
+           * the actual transition and tiles that has very little light_soil
+           * over grass can be used further away. The 'Fade falloff' slider
+           * controls this behavior"). The pool's own range is the scale — the
+           * grass/light_soil pair runs 1-16%, so the old `pct/60` target never
+           * reached a tile and the pick was as good as random. `pos` is 1 at
+           * the nearest ring (the transition tile itself when the switch lets
+           * it wear one, ring 1 otherwise) and 1/reach at the far end; the
+           * target coverage is pctMin + span·pos^falloff — falloff > 1 keeps the
+           * dense tiles to the edge, < 1 spreads them. Weighted by his ratings
+           * and by closeness to the target over half the span, so the nearest
+           * tiles dominate and the far ones drop out. */
+          const pos = (reach + 1 - near[1]) / Math.max(1, reach);
+          const pctMin = pool[0].pct;
+          const pctMax = pool[pool.length - 1].pct;
+          const span = Math.max(1, pctMax - pctMin);
+          const target = pctMin + span * Math.pow(Math.min(1, pos), falloff);
+          const wts = pool.map((t) => (1.0 + 1.6 * t.rating) * Math.max(0, 1.0 - Math.abs(t.pct - target) / (span / 2)));
           let tot = 0;
           for (const w of wts) if (w > 0) tot += w;
           if (!tot) tot = 1.0;

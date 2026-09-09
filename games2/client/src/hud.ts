@@ -843,7 +843,8 @@ export class HudBar {
     /* THE THREE FADE DIALS (games agent, at the maintainer's request 2026-09-09
      * — "I kinda feel I need 3 sliders in order to nail this"): how far from
      * the other ground the warm-up starts, how many fade tiles are placed
-     * (linear), and how much denser it is at the edge than at the far end.
+     * (linear), and how fast the tiles' coverage drops with distance from
+     * the transition (falloff).
      * fadetune.ts owns the values; the scene re-resolves the world on
      * "ml-fade-tune" once the thumb rests. The fourth control, whether a fade
      * may sit on a transition tile, is a button in the scene's Settings list. */
