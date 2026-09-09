@@ -1,0 +1,141 @@
+{
+  "id": "frost_yak",
+  "name": "Frostyak",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It crosses the high passes in weather that kills men. The herds are gone; this one still walks the route alone.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Massive shaggy yak with realistic proportions, long matted black-brown wool crusted with frost, two wide sweeping horns sheathed in ice, a heavy head with steaming nostrils, and thick short legs.",
+  "size": [
+    152,
+    152
+  ],
+  "template_id": "horse",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "frost_yak/rotations/south.webp",
+    "south-east": "frost_yak/rotations/south-east.webp",
+    "east": "frost_yak/rotations/east.webp",
+    "north-east": "frost_yak/rotations/north-east.webp",
+    "north": "frost_yak/rotations/north.webp",
+    "north-west": "frost_yak/rotations/north-west.webp",
+    "west": "frost_yak/rotations/west.webp",
+    "south-west": "frost_yak/rotations/south-west.webp"
+  },
+  "sheet": "frost_yak/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "1a83bb75-112d-4493-ac02-f497fed30aad",
+  "seed": 1806601878,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T19:09:07+00:00",
+  "elapsed_s": 263.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.579,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.579,
+        "bbox": [
+          20,
+          5,
+          131,
+          146
+        ],
+        "fill": 0.677,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.676,
+        "bbox": [
+          6,
+          6,
+          149,
+          144
+        ],
+        "fill": 0.854,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.677,
+        "bbox": [
+          2,
+          6,
+          143,
+          144
+        ],
+        "fill": 0.842,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.702,
+        "bbox": [
+          28,
+          6,
+          120,
+          144
+        ],
+        "fill": 0.55,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.722,
+        "bbox": [
+          9,
+          7,
+          144,
+          147
+        ],
+        "fill": 0.818,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.667,
+        "bbox": [
+          10,
+          6,
+          139,
+          145
+        ],
+        "fill": 0.776,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.667,
+        "bbox": [
+          13,
+          6,
+          141,
+          145
+        ],
+        "fill": 0.77,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.722,
+        "bbox": [
+          6,
+          7,
+          143,
+          147
+        ],
+        "fill": 0.83,
+        "touches_edge": false
+      }
+    }
+  }
+}

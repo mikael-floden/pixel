@@ -1138,21 +1138,6 @@
       "lore": "The pack's old leader, scarred from every winter it has outlived. It does not chase; it waits where the trail narrows."
     },
     {
-      "id": "snapping_turtle",
-      "name": "Mossjaw",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 136,
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "items": [],
-      "prompt": "Large alligator snapping turtle with realistic proportions, a rugged dark green shell ridged with three rows of spikes and grown over with moss, a huge hooked beak, small cold eyes, thick clawed legs and a short armored tail tucked under the shell, compact body.",
-      "lore": "It has lain in the same mud for a century and lets the river feed it. Whatever wades close is fed to it too."
-    },
-    {
       "id": "hyena",
       "name": "Boneback",
       "tier": "mid",
@@ -1540,6 +1525,21 @@
       "items": [],
       "prompt": "Mountain ram with realistic proportions, thick shaggy grey-white wool, huge curled horns of ridged brown bone, dark hooves, a proud bearded face with pale eyes, and small stones caught in its coat.",
       "lore": "It holds the high ledge against anything that climbs. The horns have broken shields, and the mountain has never won."
+    },
+    {
+      "id": "warthog",
+      "name": "Tuskrooter",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 104,
+      "biome": [
+        "light_soil",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Warthog with realistic proportions, coarse grey-brown hide, a bristly dark mane along the spine, two curved yellow tusks, facial warts, small dark eyes, and a short tail held down.",
+      "lore": "It roots up the fields at night and charges whatever comes to stop it. The tusks are why the fields stay rooted."
     }
   ],
   "retired": [
@@ -2426,6 +2426,24 @@
       "retired": "the rotation model offsets the otter to the canvas edge in SW at 96, 104 and 120 — three rolls, three clips. Replaced by mountain_ram.",
       "retired_at": "2026-09-09T19:01:25+00:00",
       "versions_tried": 3
+    },
+    {
+      "id": "snapping_turtle",
+      "name": "Mossjaw",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 136,
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Large alligator snapping turtle with realistic proportions, a rugged dark green shell ridged with three rows of spikes and grown over with moss, a huge hooked beak, small cold eyes, thick clawed legs and a short armored tail tucked under the shell, compact body.",
+      "lore": "It has lain in the same mud for a century and lets the river feed it. Whatever wades close is fed to it too.",
+      "retired": "the model draws a long tail and a wide shell whatever the prompt says — 112 px clipped 5 facings, 136 px compact clipped 3. Replaced by warthog.",
+      "retired_at": "2026-09-09T19:09:17+00:00",
+      "versions_tried": 2
     }
   ]
 }
