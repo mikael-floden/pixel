@@ -679,23 +679,31 @@ const mix = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
  *  storey up (`stackFrom`: frontLow + 1) at `pitch` px per storey, as 64x64
  *  review art whose wall band hangs WALL rows under its diamond's lower edges —
  *  so the face's last drawn row is about `WALL - pitch` rows below the edge
- *  this cell shares with it. `water` is the liquid's top colour. */
+ *  this cell shares with it. `water` is the liquid's top colour.
+ *
+ *  EACH WALL BRINGS ITS OWN MATERIAL and a pixel takes the colour of the face
+ *  directly above it (the nearest start line): where two faces of different
+ *  material meet at a corner, the colour changes on the VERTICAL through the
+ *  corner — the wall's own edge continued straight down into the water
+ *  (maintainer 2026-09-09, his blue lines). One material for the whole cell
+ *  put that change on the cell's diagonal edge instead. */
 export function footBand(
-  walls: string,
-  wall: readonly [number, number, number],
+  walls: readonly { dir: "ul" | "ur" | "uu"; wall: readonly [number, number, number] }[],
   pitch: number,
   water: readonly [number, number, number],
 ): Pixels {
   const out = newPixels(TILE, PLATE_H);
-  const centres: [number, number][] = [];
-  for (const w of walls.split("+")) {
-    if (w === "ul") centres.push([-DX, 0]);
-    else if (w === "ur") centres.push([DX, 0]);
-    else if (w === "uu") centres.push([0, -DY]);
+  const centres: [number, number, number, number, number][] = [];
+  for (const w of walls) {
+    const c: [number, number] = w.dir === "ul" ? [-DX, 0] : w.dir === "ur" ? [DX, 0] : [0, -DY];
+    centres.push([
+      c[0],
+      c[1],
+      Math.round(w.wall[0] * FOOT_DARKEN),
+      Math.round(w.wall[1] * FOOT_DARKEN),
+      Math.round(w.wall[2] * FOOT_DARKEN),
+    ]);
   }
-  const wr = Math.round(wall[0] * FOOT_DARKEN);
-  const wg = Math.round(wall[1] * FOOT_DARKEN);
-  const wb = Math.round(wall[2] * FOOT_DARKEN);
   const hang = WALL - pitch - FOOT_UNDER; // where the band starts, below the shared edge
   const put = (px: number, py: number, r: number, g: number, b: number, a: number) => {
     const i = (py * TILE + px) * 4;
@@ -712,19 +720,24 @@ export function footBand(
       const y = py + 0.5;
       if (y < upper || y > lower) continue; // outside the diamond
       let d = Infinity;
+      let own = centres[0];
       let covered = false;
-      for (const [cx, cy] of centres) {
-        const uw = Math.abs(u - cx);
+      for (const c of centres) {
+        const uw = Math.abs(u - c[0]);
         if (uw > DX) continue; // this column is not under that wall
-        const bottom = cy + DY * (1 - uw / DX) + hang; // where the band starts here
+        const bottom = c[1] + DY * (1 - uw / DX) + hang; // where the band starts here
         const dd = y - bottom;
         if (dd < 0) {
           covered = true; // still under the face sprite
           break;
         }
-        if (dd < d) d = dd;
+        if (dd < d) {
+          d = dd;
+          own = c;
+        }
       }
       if (covered || d >= FOOT_ROWS) continue;
+      const [, , wr, wg, wb] = own;
       const row = Math.floor(d);
       // The overlap under the face (crest-coloured), the crest, then the sunk wall.
       if (row < FOOT_UNDER) {
@@ -831,12 +844,15 @@ export function liquidKey(rgb: readonly [number, number, number]): string {
   return `t3l:${rgb[0]},${rgb[1]},${rgb[2]}`;
 }
 
-/** The wall-foot band for the walls standing on this cell (`ul`, `ur`, `uu` —
- *  any subset, joined with `+`) in one side material. Keyed on the MATERIAL
- *  NAME, not its colour: the op is built by the pure `cellOps` which has no
- *  palette, and the colour is looked up when the texture is painted. */
-export function footKey(walls: string, side: string, ground: string): string {
-  return `t3fb:${walls}|${side}|${ground}`;
+/** The wall-foot band for the walls standing on this cell — `dir:material`
+ *  pairs joined with `+` (`ul:dark_mud+uu:light_soil`) — in the liquid
+ *  `water`, optionally masked to one side of the cell's boundary frame
+ *  (`m<frame>a` / `m<frame>b`: keep the pixels the mask assigns to that side).
+ *  Keyed on MATERIAL NAMES, not colours: the op is built by the pure
+ *  `cellOps` which has no palette, and the colours are looked up when the
+ *  texture is painted. */
+export function footKey(walls: string, water: string, mask = ""): string {
+  return `t3fb:${walls}|${water}|${mask}`;
 }
 
 /** The boundary key for a resolved boundary, or null when the pattern library
@@ -985,13 +1001,27 @@ export function cellOps(cell: Tiles3Cell): Tiles3Blit[] {
  *  `footBand`). */
 function pushFoot(cell: Tiles3Cell, ops: Tiles3Blit[]): void {
   const f = cell.foot;
-  if (!f || !LIQUID_SET.has(cell.ground)) return;
-  const walls = (["ul", "ur", "uu"] as const).filter((d) => f[d]);
-  if (!walls.length) return;
-  // One band, one material: the first wall's, in that order (a corner where the
-  // two walls differ in material is rare and reads fine in either).
-  const side = f[walls[0]]!;
-  ops.push({ key: footKey(walls.join("+"), side, cell.ground), x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "foot" });
+  if (!f) return;
+  const dirs = (["ul", "ur", "uu"] as const).filter((d) => f[d]);
+  if (!dirs.length) return;
+  // WHICH WATER, AND WHERE. A liquid cell wears the band whole. A TRANSITION
+  // TILE with water on one side wears it masked to that side, in that
+  // water's colour — "part of the tile is water, but not the entire tile"
+  // (maintainer 2026-09-09, his green circles, twice). Land wears none.
+  let water: string | null = LIQUID_SET.has(cell.ground) ? cell.ground : null;
+  let mask = "";
+  const b = cell.boundary;
+  if (b && b.maskFrame !== null) {
+    const aL = LIQUID_SET.has(b.a);
+    const bL = LIQUID_SET.has(b.b);
+    if (aL !== bL) {
+      water = aL ? b.a : b.b;
+      mask = `m${b.maskFrame}${bL ? "b" : "a"}`;
+    }
+  }
+  if (!water) return;
+  const walls = dirs.map((d) => `${d}:${f[d]}`).join("+");
+  ops.push({ key: footKey(walls, water, mask), x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "foot" });
 }
 
 function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
@@ -1917,11 +1947,29 @@ export class Tiles3Textures {
    *
    *  IF THE BAND EVER BECOMES VISIBLE — a renderer that draws a flat cell's wall
    *  — this must go back to `palette.wall` and the leak fixed properly. */
-  /** Paint a wall-foot band on first use — see `footBand`. The key carries the
-   *  walls, the wall's side material and this cell's own (liquid) ground. */
+  /** Paint a wall-foot band on first use — see `footBand` / `footKey`: the
+   *  walls with their materials, the water, and the boundary-side mask. */
   private ensureFoot(key: string): void {
-    const [walls, side, ground] = key.slice("t3fb:".length).split("|");
-    this.ensure(key, () => footBand(walls, this.wallPaletteRGB(side), this.o.pitch ?? 16, this.topRGB(ground)));
+    const [walls, water, mask] = key.slice("t3fb:".length).split("|");
+    this.ensure(key, () => {
+      const specs = walls.split("+").map((w) => {
+        const [dir, side] = w.split(":");
+        return { dir: dir as "ul" | "ur" | "uu", wall: this.wallPaletteRGB(side) };
+      });
+      const px = footBand(specs, this.o.pitch ?? 16, this.topRGB(water));
+      const m = /^m(\d+)([ab])$/.exec(mask);
+      if (m) {
+        // Keep only the water side of the transition tile: the mask frame
+        // assigns each texel to side a or b, exactly as composeBoundary does.
+        const frame = +m[1];
+        const keepB = m[2] === "b";
+        const sheets = this.o.sheets;
+        for (let y = 0; y < PLATE_H; y++)
+          for (let x = 0; x < TILE; x++)
+            if (sheets.maskBit(frame, x, y) !== keepB) px.data[(y * TILE + x) * 4 + 3] = 0;
+      }
+      return px;
+    });
   }
 
   /** The ground's WALL palette colour — what its x-over-y face is drawn in. */

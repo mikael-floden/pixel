@@ -124,7 +124,10 @@ if (!spot || spot.error) {
   // rather than counting frames, then assert the landed state.
   const inside = await page.evaluate(async () => {
     const t0 = performance.now();
-    while (window.__mlAmbient.outdoor().gain !== 0 && performance.now() - t0 < 6000)
+    const maxAlpha = () => Math.max(0, ...window.__mlAmbient.list().map((n) => Math.max(0, ...((window.__mlAmbient.debug(n)?.all ?? []).map((x) => x.a ?? 0)))));
+    // ...and for every effect's own sprites to follow it down (each fades on
+    // its own clock behind the gain).
+    while ((window.__mlAmbient.outdoor().gain !== 0 || maxAlpha() > 0) && performance.now() - t0 < 8000)
       await new Promise((r) => requestAnimationFrame(r));
     for (let i = 0; i < 4; i++) await new Promise((r) => requestAnimationFrame(r));
     const o = window.__mlAmbient.outdoor();

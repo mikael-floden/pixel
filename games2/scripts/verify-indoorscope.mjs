@@ -212,8 +212,12 @@ try {
   // Safe box: inside the game view, clear of the Wiki chip + clock pill that
   // hug the right edge from ~y200 down (DOM, composited into screenshots).
   const gvH = Math.round(480 * 0.618);
+  // ...and of the two HUD panels in the top corners (HP/EP left, level/XP
+  // right, DOM over the canvas): with the camera pinned between the houses
+  // house_b's nearest cells land under the HP panel, which reads ~166.
   const safe = (pt) =>
-    pt.x > 40 && pt.x < 700 && pt.y > 40 && pt.y < gvH - 6 && !(pt.x > 625 && pt.y > 205);
+    pt.x > 40 && pt.x < 700 && pt.y > 40 && pt.y < gvH - 6 && !(pt.x > 625 && pt.y > 205) &&
+    !(pt.x < 170 && pt.y < 100) && !(pt.x > 550 && pt.y < 90);
   let bp = null, bCell = null;
   const candLog = [];
   for (const [bc, br] of B.cells.slice().sort((p, q) => p[0] - q[0] || p[1] - q[1])) {
