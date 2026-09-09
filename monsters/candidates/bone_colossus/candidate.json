@@ -1,0 +1,142 @@
+{
+  "id": "bone_colossus",
+  "name": "Ossuar",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "Every barrow in the valley gave a bone to it. It walks when the frost cracks the graves, counting what is missing.",
+  "biome": [
+    "grey_paving_stone",
+    "grey_stone",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy giant built from stacked bones and grave dirt, shown full body from skull to feet, a huge cracked skull with a crown of smaller skulls, a torso of interlocking ribcages, arms of bundled femurs ending in claw-like finger bones, thick pillar legs of packed bone, and pale green grave-light glowing from every socket.",
+  "size": [
+    240,
+    240
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bone_colossus/rotations/south.webp",
+    "south-east": "bone_colossus/rotations/south-east.webp",
+    "east": "bone_colossus/rotations/east.webp",
+    "north-east": "bone_colossus/rotations/north-east.webp",
+    "north": "bone_colossus/rotations/north.webp",
+    "north-west": "bone_colossus/rotations/north-west.webp",
+    "west": "bone_colossus/rotations/west.webp",
+    "south-west": "bone_colossus/rotations/south-west.webp"
+  },
+  "sheet": "bone_colossus/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "63a437d6-e07a-466b-a336-9f0221f1af8b",
+  "seed": 487986989,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:59:28+00:00",
+  "elapsed_s": 253.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.738,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.74,
+        "bbox": [
+          50,
+          10,
+          187,
+          229
+        ],
+        "fill": 0.521,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.778,
+        "bbox": [
+          93,
+          10,
+          148,
+          234
+        ],
+        "fill": 0.214,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.764,
+        "bbox": [
+          91,
+          10,
+          151,
+          234
+        ],
+        "fill": 0.233,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.738,
+        "bbox": [
+          53,
+          10,
+          185,
+          228
+        ],
+        "fill": 0.5,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.771,
+        "bbox": [
+          63,
+          10,
+          180,
+          233
+        ],
+        "fill": 0.453,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.752,
+        "bbox": [
+          69,
+          10,
+          179,
+          230
+        ],
+        "fill": 0.42,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.747,
+        "bbox": [
+          64,
+          10,
+          171,
+          230
+        ],
+        "fill": 0.409,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.764,
+        "bbox": [
+          59,
+          10,
+          179,
+          233
+        ],
+        "fill": 0.465,
+        "touches_edge": false
+      }
+    }
+  }
+}

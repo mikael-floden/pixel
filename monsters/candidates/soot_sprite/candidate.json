@@ -1,0 +1,141 @@
+{
+  "id": "soot_sprite",
+  "name": "Sootling",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It falls out of chimneys and never finds its way back. Step on one and the whole flue comes calling.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Tiny round fantasy soot sprite, a fuzzy black ball of soot with two huge round white eyes, a small orange ember glowing in its middle, two stubby arms and two stubby feet, and a few loose soot flakes drifting off it.",
+  "size": [
+    32,
+    32
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "soot_sprite/rotations/south.webp",
+    "south-east": "soot_sprite/rotations/south-east.webp",
+    "east": "soot_sprite/rotations/east.webp",
+    "north-east": "soot_sprite/rotations/north-east.webp",
+    "north": "soot_sprite/rotations/north.webp",
+    "north-west": "soot_sprite/rotations/north-west.webp",
+    "west": "soot_sprite/rotations/west.webp",
+    "south-west": "soot_sprite/rotations/south-west.webp"
+  },
+  "sheet": "soot_sprite/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b40b82e7-bc99-4e03-90c6-49aa620fef8c",
+  "seed": 42721757,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:59:01+00:00",
+  "elapsed_s": 226.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.558,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.627,
+        "bbox": [
+          2,
+          2,
+          30,
+          28
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.558,
+        "bbox": [
+          5,
+          3,
+          26,
+          30
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.571,
+        "bbox": [
+          6,
+          3,
+          27,
+          30
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.579,
+        "bbox": [
+          2,
+          3,
+          30,
+          28
+        ],
+        "fill": 0.684,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.637,
+        "bbox": [
+          5,
+          2,
+          28,
+          29
+        ],
+        "fill": 0.606,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.568,
+        "bbox": [
+          4,
+          3,
+          28,
+          29
+        ],
+        "fill": 0.609,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.558,
+        "bbox": [
+          4,
+          3,
+          28,
+          29
+        ],
+        "fill": 0.609,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.59,
+        "bbox": [
+          4,
+          2,
+          28,
+          29
+        ],
+        "fill": 0.633,
+        "touches_edge": false
+      }
+    }
+  }
+}

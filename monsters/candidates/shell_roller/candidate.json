@@ -1,0 +1,143 @@
+{
+  "id": "shell_roller",
+  "name": "Clankball",
+  "tier": "mid",
+  "lore": "It rolls downhill at anything that moves and uphill at anything that doesn't. The smiths say the plates ring in a key they can't forge.",
+  "biome": [
+    "light_soil",
+    "grey_stone",
+    "lava"
+  ],
+  "items": [
+    "plated beetle"
+  ],
+  "prompt": "Round fantasy armored pill bug with a compact ball-shaped body of overlapping dark iron-gray plates riveted with copper studs, short stubby legs tucked beneath it, two glowing orange slit eyes at the front, small antennae, and hot orange light glowing between the plates.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "shell_roller/rotations/south.webp",
+    "south-east": "shell_roller/rotations/south-east.webp",
+    "east": "shell_roller/rotations/east.webp",
+    "north-east": "shell_roller/rotations/north-east.webp",
+    "north": "shell_roller/rotations/north.webp",
+    "north-west": "shell_roller/rotations/north-west.webp",
+    "west": "shell_roller/rotations/west.webp",
+    "south-west": "shell_roller/rotations/south-west.webp"
+  },
+  "sheet": "shell_roller/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "22ac39f2-9724-4508-b1a5-697245f76ff6",
+  "seed": 641608961,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:58:13+00:00",
+  "elapsed_s": 268.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.756,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.756,
+        "bbox": [
+          7,
+          6,
+          81,
+          81
+        ],
+        "fill": 0.717,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.771,
+        "bbox": [
+          5,
+          11,
+          81,
+          81
+        ],
+        "fill": 0.687,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.776,
+        "bbox": [
+          7,
+          11,
+          83,
+          80
+        ],
+        "fill": 0.677,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.77,
+        "bbox": [
+          8,
+          7,
+          80,
+          74
+        ],
+        "fill": 0.623,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.802,
+        "bbox": [
+          8,
+          8,
+          80,
+          84
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.778,
+        "bbox": [
+          8,
+          11,
+          81,
+          79
+        ],
+        "fill": 0.641,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.768,
+        "bbox": [
+          6,
+          11,
+          80,
+          79
+        ],
+        "fill": 0.65,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.806,
+        "bbox": [
+          9,
+          8,
+          80,
+          84
+        ],
+        "fill": 0.697,
+        "touches_edge": false
+      }
+    }
+  }
+}

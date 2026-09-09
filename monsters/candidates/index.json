@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T17:53:43+00:00",
+  "generated_at": "2026-09-09T17:59:28+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 18,
+  "count": 22,
   "candidates": [
     {
       "id": "lantern_bat",
@@ -37,6 +37,7 @@
         80
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "51214460-d912-4ac3-a812-332f78203656",
       "version": 1,
       "sheet": "lantern_bat/sheet.webp",
@@ -169,6 +170,7 @@
         104
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "502b3605-3b7f-46ad-8ca8-8c87d35f1f2a",
       "version": 1,
       "sheet": "plume_brawler/sheet.webp",
@@ -299,6 +301,7 @@
         112
       ],
       "template_id": "bear",
+      "scale": null,
       "pixellab_id": "2d53ec75-f35d-4226-b081-2c392864c29c",
       "version": 1,
       "sheet": "tide_crab/sheet.webp",
@@ -412,6 +415,271 @@
       "generated_at": "2026-09-09T17:41:07+00:00"
     },
     {
+      "id": "shell_roller",
+      "name": "Clankball",
+      "tier": "mid",
+      "lore": "It rolls downhill at anything that moves and uphill at anything that doesn't. The smiths say the plates ring in a key they can't forge.",
+      "biome": [
+        "light_soil",
+        "grey_stone",
+        "lava"
+      ],
+      "items": [
+        "plated beetle"
+      ],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": null,
+      "pixellab_id": "22ac39f2-9724-4508-b1a5-697245f76ff6",
+      "version": 1,
+      "sheet": "shell_roller/sheet.webp",
+      "rotations": {
+        "south": "shell_roller/rotations/south.webp",
+        "south-east": "shell_roller/rotations/south-east.webp",
+        "east": "shell_roller/rotations/east.webp",
+        "north-east": "shell_roller/rotations/north-east.webp",
+        "north": "shell_roller/rotations/north.webp",
+        "north-west": "shell_roller/rotations/north-west.webp",
+        "west": "shell_roller/rotations/west.webp",
+        "south-west": "shell_roller/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.756,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.756,
+            "bbox": [
+              7,
+              6,
+              81,
+              81
+            ],
+            "fill": 0.717,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.771,
+            "bbox": [
+              5,
+              11,
+              81,
+              81
+            ],
+            "fill": 0.687,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.776,
+            "bbox": [
+              7,
+              11,
+              83,
+              80
+            ],
+            "fill": 0.677,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.77,
+            "bbox": [
+              8,
+              7,
+              80,
+              74
+            ],
+            "fill": 0.623,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.802,
+            "bbox": [
+              8,
+              8,
+              80,
+              84
+            ],
+            "fill": 0.707,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.778,
+            "bbox": [
+              8,
+              11,
+              81,
+              79
+            ],
+            "fill": 0.641,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.768,
+            "bbox": [
+              6,
+              11,
+              80,
+              79
+            ],
+            "fill": 0.65,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.806,
+            "bbox": [
+              9,
+              8,
+              80,
+              84
+            ],
+            "fill": 0.697,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T17:58:13+00:00"
+    },
+    {
+      "id": "reed_nymph",
+      "name": "Reedling",
+      "tier": "cute",
+      "lore": "Not yet the thing with wings. It waits in the reeds with its jaw folded, and unfolds it faster than anything that wades.",
+      "biome": [
+        "water",
+        "dark_mud",
+        "grass"
+      ],
+      "items": [
+        "twig-bodied dragonfly"
+      ],
+      "size": [
+        80,
+        80
+      ],
+      "template_id": "bear",
+      "scale": null,
+      "pixellab_id": "c7c45d88-3e7f-41d8-9163-2ed8cbc388e3",
+      "version": 1,
+      "sheet": "reed_nymph/sheet.webp",
+      "rotations": {
+        "south": "reed_nymph/rotations/south.webp",
+        "south-east": "reed_nymph/rotations/south-east.webp",
+        "east": "reed_nymph/rotations/east.webp",
+        "north-east": "reed_nymph/rotations/north-east.webp",
+        "north": "reed_nymph/rotations/north.webp",
+        "north-west": "reed_nymph/rotations/north-west.webp",
+        "west": "reed_nymph/rotations/west.webp",
+        "south-west": "reed_nymph/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.758,
+        "reasons": [
+          "east: content touches the canvas edge (clipped)",
+          "south-east: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.783,
+            "bbox": [
+              3,
+              1,
+              77,
+              78
+            ],
+            "fill": 0.89,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.758,
+            "bbox": [
+              2,
+              4,
+              77,
+              79
+            ],
+            "fill": 0.879,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.816,
+            "bbox": [
+              4,
+              0,
+              77,
+              78
+            ],
+            "fill": 0.89,
+            "touches_edge": true
+          },
+          "north": {
+            "run1": 0.769,
+            "bbox": [
+              2,
+              5,
+              74,
+              76
+            ],
+            "fill": 0.799,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.839,
+            "bbox": [
+              8,
+              0,
+              69,
+              78
+            ],
+            "fill": 0.743,
+            "touches_edge": true
+          },
+          "north-east": {
+            "run1": 0.816,
+            "bbox": [
+              5,
+              2,
+              78,
+              76
+            ],
+            "fill": 0.844,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.772,
+            "bbox": [
+              9,
+              8,
+              76,
+              72
+            ],
+            "fill": 0.67,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.823,
+            "bbox": [
+              1,
+              3,
+              76,
+              76
+            ],
+            "fill": 0.855,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T17:56:07+00:00"
+    },
+    {
       "id": "silk_spider",
       "name": "Silkmaw",
       "tier": "evil",
@@ -428,6 +696,7 @@
         136
       ],
       "template_id": "bear",
+      "scale": null,
       "pixellab_id": "6846ce14-bfbd-40a8-873a-4cf62136c7a2",
       "version": 1,
       "sheet": "silk_spider/sheet.webp",
@@ -560,6 +829,7 @@
         96
       ],
       "template_id": "bear",
+      "scale": null,
       "pixellab_id": "84cf1324-5154-44a1-b6eb-5e4845041786",
       "version": 1,
       "sheet": "pearl_clam/sheet.webp",
@@ -692,6 +962,7 @@
         96
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "c6d0cee3-2047-46b4-9e49-1851081f1579",
       "version": 1,
       "sheet": "root_forager/sheet.webp",
@@ -821,6 +1092,7 @@
         176
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "e31ae5b5-a1eb-4692-afe3-aa6c4fae398f",
       "version": 2,
       "sheet": "ember_king/sheet.webp",
@@ -951,6 +1223,7 @@
         72
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "97c8adb9-bfbb-4537-861d-400e071f011f",
       "version": 1,
       "sheet": "mist_wisp/sheet.webp",
@@ -1082,6 +1355,7 @@
         160
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "66284ee9-3c6e-4fa4-bbb1-3ed92df7c749",
       "version": 1,
       "sheet": "rime_yeti/sheet.webp",
@@ -1212,6 +1486,7 @@
         96
       ],
       "template_id": "bear",
+      "scale": null,
       "pixellab_id": "463326bb-123b-424b-a405-81b9ec3effa7",
       "version": 1,
       "sheet": "gold_mimic/sheet.webp",
@@ -1339,6 +1614,7 @@
         64
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "ce5d8364-7477-4bd7-a84a-47c12512ee0c",
       "version": 1,
       "sheet": "bulb_hopper/sheet.webp",
@@ -1468,6 +1744,7 @@
         64
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "73e2f290-7d00-4089-b156-e84458ac05a1",
       "version": 1,
       "sheet": "puff_owl/sheet.webp",
@@ -1595,6 +1872,7 @@
         136
       ],
       "template_id": "bear",
+      "scale": null,
       "pixellab_id": "e0dca645-7838-4945-8fd7-5fac5bb51e17",
       "version": 3,
       "sheet": "bog_lurker/sheet.webp",
@@ -1723,6 +2001,7 @@
         112
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "2f3aecad-cef3-4701-89a7-457b7eaf9007",
       "version": 1,
       "sheet": "hollow_knight/sheet.webp",
@@ -1853,6 +2132,7 @@
         128
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "8a296245-c8b0-4c17-8701-918116bd828e",
       "version": 1,
       "sheet": "veil_wraith/sheet.webp",
@@ -1980,6 +2260,7 @@
         88
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "be5ad828-7953-431b-ba68-86be3c0c744a",
       "version": 1,
       "sheet": "gloom_cap/sheet.webp",
@@ -2110,6 +2391,7 @@
         176
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "813cbec7-cff5-4d7b-a305-740133836350",
       "version": 2,
       "sheet": "storm_roc/sheet.webp",
@@ -2237,6 +2519,7 @@
         64
       ],
       "template_id": "mannequin",
+      "scale": null,
       "pixellab_id": "b73255c2-1401-4d8b-b2e9-55cd4771247c",
       "version": 1,
       "sheet": "cinder_imp/sheet.webp",
@@ -2348,6 +2631,263 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T17:51:00+00:00"
+    },
+    {
+      "id": "soot_sprite",
+      "name": "Sootling",
+      "tier": "cute",
+      "lore": "It falls out of chimneys and never finds its way back. Step on one and the whole flue comes calling.",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "items": [],
+      "size": [
+        32,
+        32
+      ],
+      "template_id": "mannequin",
+      "scale": "small",
+      "pixellab_id": "b40b82e7-bc99-4e03-90c6-49aa620fef8c",
+      "version": 1,
+      "sheet": "soot_sprite/sheet.webp",
+      "rotations": {
+        "south": "soot_sprite/rotations/south.webp",
+        "south-east": "soot_sprite/rotations/south-east.webp",
+        "east": "soot_sprite/rotations/east.webp",
+        "north-east": "soot_sprite/rotations/north-east.webp",
+        "north": "soot_sprite/rotations/north.webp",
+        "north-west": "soot_sprite/rotations/north-west.webp",
+        "west": "soot_sprite/rotations/west.webp",
+        "south-west": "soot_sprite/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.558,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.627,
+            "bbox": [
+              2,
+              2,
+              30,
+              28
+            ],
+            "fill": 0.711,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.558,
+            "bbox": [
+              5,
+              3,
+              26,
+              30
+            ],
+            "fill": 0.554,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.571,
+            "bbox": [
+              6,
+              3,
+              27,
+              30
+            ],
+            "fill": 0.554,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.579,
+            "bbox": [
+              2,
+              3,
+              30,
+              28
+            ],
+            "fill": 0.684,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.637,
+            "bbox": [
+              5,
+              2,
+              28,
+              29
+            ],
+            "fill": 0.606,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.568,
+            "bbox": [
+              4,
+              3,
+              28,
+              29
+            ],
+            "fill": 0.609,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.558,
+            "bbox": [
+              4,
+              3,
+              28,
+              29
+            ],
+            "fill": 0.609,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.59,
+            "bbox": [
+              4,
+              2,
+              28,
+              29
+            ],
+            "fill": 0.633,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T17:59:01+00:00"
+    },
+    {
+      "id": "bone_colossus",
+      "name": "Ossuar",
+      "tier": "boss",
+      "lore": "Every barrow in the valley gave a bone to it. It walks when the frost cracks the graves, counting what is missing.",
+      "biome": [
+        "grey_paving_stone",
+        "grey_stone",
+        "snow"
+      ],
+      "items": [],
+      "size": [
+        240,
+        240
+      ],
+      "template_id": "mannequin",
+      "scale": "big",
+      "pixellab_id": "63a437d6-e07a-466b-a336-9f0221f1af8b",
+      "version": 1,
+      "sheet": "bone_colossus/sheet.webp",
+      "rotations": {
+        "south": "bone_colossus/rotations/south.webp",
+        "south-east": "bone_colossus/rotations/south-east.webp",
+        "east": "bone_colossus/rotations/east.webp",
+        "north-east": "bone_colossus/rotations/north-east.webp",
+        "north": "bone_colossus/rotations/north.webp",
+        "north-west": "bone_colossus/rotations/north-west.webp",
+        "west": "bone_colossus/rotations/west.webp",
+        "south-west": "bone_colossus/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.738,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.74,
+            "bbox": [
+              50,
+              10,
+              187,
+              229
+            ],
+            "fill": 0.521,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.778,
+            "bbox": [
+              93,
+              10,
+              148,
+              234
+            ],
+            "fill": 0.214,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.764,
+            "bbox": [
+              91,
+              10,
+              151,
+              234
+            ],
+            "fill": 0.233,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.738,
+            "bbox": [
+              53,
+              10,
+              185,
+              228
+            ],
+            "fill": 0.5,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.771,
+            "bbox": [
+              63,
+              10,
+              180,
+              233
+            ],
+            "fill": 0.453,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.752,
+            "bbox": [
+              69,
+              10,
+              179,
+              230
+            ],
+            "fill": 0.42,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.747,
+            "bbox": [
+              64,
+              10,
+              171,
+              230
+            ],
+            "fill": 0.409,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.764,
+            "bbox": [
+              59,
+              10,
+              179,
+              233
+            ],
+            "fill": 0.465,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T17:59:28+00:00"
     }
   ]
 }
