@@ -748,10 +748,21 @@ the installation to make it look even better! This is not a hard rule! I will
 never give you hard rules because that will make the game look the same
 everywhere. This is just something I think should happen more often."*)
 
-A place that earns it takes a soft patch of the ground its own kind implies —
-scree under boulders and cairns, mud under ferns, fungi, deadfall and reeds,
-sand under driftwood. `PLACE_GROUND` holds that mapping and the kinds NOT in
-it keep their ground on purpose: a thicket and a tussock meadow ARE the grass.
+A place that earns it takes a soft patch of ground, and **never of the pieces'
+own material**: rock under rock stops the boulders reading as objects at all
+(maintainer 2026-09-09, at exactly that: *"I kinda feel grass was a better
+ground here and the scenery feel more out of place and pop more when you
+placed them on grey_stone ... You must know the scenery will pop less if you
+change ground type"*). So boulders and cairns take EARTH, at a quarter rate,
+and most of them still stand on plain grass; ferns and fungi take mud or a
+rocky ledge; deadfall and reeds mud; driftwood sand. `FAMILY_GROUND` names
+each group's own material and filters it out of the options, so a future kind
+cannot repeat the mistake, and the kinds absent from `PLACE_GROUND` keep their
+ground on purpose: a thicket and a tussock meadow ARE the grass.
+
+**Not a colour-distance rule.** Measured: those mossy stones are rgb(54,51,47),
+so dark_mud scores 50 against them and grass 82 — a contrast metric picks the
+mud and disagrees with his verdict. What decides is the MATERIAL, not the hue.
 
 - **`PLACE_PATCH = 0.55` of eligible places**, by the site's own hash. Every
   one of them is the sameness he is warning about; this is a taste knob, not
@@ -766,9 +777,11 @@ it keep their ground on purpose: a thicket and a tussock meadow ARE the grass.
   one level. Roads, paving, floors, decks, ramps, doors, cave floors, the
   wild band and every liquid are held back.
 
-the_game: 12 of 64 places, 423 cells. Most places are already on the ground
+the_game: 8 of 64 places, 282 cells. Most places are already on the ground
 their kind implies — a reed bed in a fen is mud already — and those are
-skipped rather than repainted.
+skipped rather than repainted. The build log prints the places by kind
+(boulder field 19, lily pool 17, reed bed 13, cairn ridge 5 …), which is what
+shows whether a rate change can reach anything at all.
 
 ### a cut stair wears the rock it is cut into
 

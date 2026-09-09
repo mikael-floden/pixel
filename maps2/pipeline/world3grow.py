@@ -3802,23 +3802,50 @@ class Grow:
     # the cluster settles on its own ground and the existing boundary art
     # blends the rim. PLACE_PATCH of eligible places, by the site's own hash:
     # every one of them would be the sameness he is warning about.
+    # A PIECE HAS TO STAY AN OBJECT. Ground of the pieces' OWN material makes
+    # them read as terrain instead: grey_stone under mossy boulders and they
+    # stop popping (maintainer 2026-09-09, at a boulder field on a stone
+    # patch: "I kinda feel grass was a better ground here and the scenery
+    # feel more out of place and pop more when you placed them on grey_stone
+    # ... You must know the scenery will pop less if you change ground
+    # type"). So ROCK CLUSTERS GET NO PATCH AT ALL - grass was his answer and
+    # every alternative is a rock or a mud within 60 of their own colour -
+    # and `FAMILY_GROUND` keeps any future kind from repeating it.
+    # NOT a colour-distance rule: measured, those stones are rgb(54,51,47),
+    # so dark_mud scores 50 and grass 82 - a contrast metric picks the mud
+    # and is wrong. What reads is the MATERIAL, not the hue.
     PLACE_GROUND = {
-        "boulder field": ("grey_stone", "black_rock", "dark_mud"),
-        "cairn ridge": ("grey_stone", "dark_mud"),
-        "fern hollow": ("dark_mud",),
-        "mushroom ring": ("dark_mud",),
+        # EARTH under rock, never rock: the boulders keep their material and
+        # stay objects, and most of them still stand on plain grass because
+        # the rate below is a quarter, not a half
+        "boulder field": ("dark_mud",),
+        "cairn ridge": ("dark_mud",),
+        "fern hollow": ("dark_mud", "grey_stone"),
+        "mushroom ring": ("dark_mud", "grey_stone"),
         "deadfall": ("dark_mud",),
         "reed bed": ("dark_mud",),
         "driftwood spit": ("light_beach",),
     }                       # the kinds NOT here keep their ground on purpose:
-                            # a thicket and a tussock meadow ARE the grass
+                            # a thicket and a tussock meadow ARE the grass, and
+                            # boulders and cairns ARE the rock
+    FAMILY_GROUND = {       # a group's own material: never patched under it
+        "stones": ("grey_stone", "black_rock"),
+        "cairns": ("grey_stone", "black_rock"),
+        "rock_spires": ("grey_stone", "black_rock"),
+        "geodes": ("grey_stone", "black_rock"),
+        "gravel_piles": ("grey_stone", "black_rock"),
+        "driftwood_logs": ("parquet_floor",),
+        "fallen_logs": ("parquet_floor",),
+        "stumps": ("parquet_floor",),
+    }
     PLACE_PATCH = 0.55      # ...of the eligible places get one
+    PATCH_RATE = {"boulder field": 0.25, "cairn ridge": 0.25}   # rock: rarer
     PATCH_ON = ("grass", "dark_mud", "snow", "light_beach")   # never made ground
     PLACE_GAP = 30
     SCATTER = 0.006       # a few loose pieces outside every place, so the map
                           # is not sterile between them
 
-    def _place_patch(self, sx, sy, name, rad, r):
+    def _place_patch(self, sx, sy, name, rad, r, piece):
         """Paint the ground under one place, or leave it alone. Returns the
         material painted, or None. Only natural ground is touched - roads,
         paving, floors, decks, ramps, doors, cave floors, the wild band and
@@ -3826,7 +3853,11 @@ class Grow:
         ground inside the cluster's radius so the patch has an edge to blend
         against instead of ending at the pieces."""
         opts = self.PLACE_GROUND.get(name)
-        if not opts or r() > self.PLACE_PATCH:
+        if not opts or r() > self.PATCH_RATE.get(name, self.PLACE_PATCH):
+            return None
+        own = self.FAMILY_GROUND.get(piece.split("/")[0], ())
+        opts = tuple(o for o in opts if o not in own)
+        if not opts:
             return None
         here = self.g(sx, sy)
         if here not in self.PATCH_ON:
@@ -3963,7 +3994,7 @@ class Grow:
             want = n0 + int(r() * (n1 - n0 + 1))
             ground = (self.g(sx, sy),)
             # the ground the place stands on, before anything is placed on it
-            patch = self._place_patch(sx, sy, name, rad, r)
+            patch = self._place_patch(sx, sy, name, rad, r, piece)
             if patch:
                 ground = (patch, ground[0])
             got = 0
@@ -4014,6 +4045,7 @@ class Grow:
                         and self.put(piece, jx + 0.5, jy + 0.5, on=(g,),
                                      hflip=r() < 0.5, state=state):
                     loose += 1
+        self.placed += [(f"place kind: {k}", v) for k, v in sorted(tally.items())]
         self.placed += [("places composed", placed), ("loose scatter", loose),
                         ("places given their own ground", getattr(self, "patch_places", 0)),
                         ("ground patch cells", getattr(self, "patched", 0))]
