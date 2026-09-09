@@ -85,6 +85,23 @@ STATES = {
                  "loop_ratio_pass": 2.0, "loop_ratio_warn": 2.7,
                  "travel_pass": 4.0, "travel_warn": 7.0},
     },
+    # An attack is ONCE-THROUGH (the game paces it to ~700 ms whatever the
+    # count) and must land back on the base pose — so BOTH ends are pinned:
+    # base → wind-up → strike → base. Every monster words its own strike
+    # (`attack_action` in the design). The maintainer's 42 accepted 4-frame
+    # attacks (measured, east): strike peak 0.15–0.83 of the silhouette away
+    # from frame 0 (median 0.50), step median 0.38, drift median 5.6 px (a
+    # lunge reaches 24); most of his do NOT return on their own (loop up to
+    # 0.79) — the pin does that here.
+    "attack": {
+        "action": "attacks once with a quick strike, then returns to the starting pose",
+        "frames": 6,
+        "pin_end": True,
+        "keep_first": True,
+        "band": {"step_pass": (0.080, 0.900), "step_warn": (0.040, 1.200),
+                 "peak_pass": 0.15, "peak_warn": 0.08,
+                 "drift_pass": 12.0, "drift_warn": 24.0, "loop_max": 0.06},
+    },
 }
 APPROVED_TAG = "APPROVED"
 MIN_USD = 5.0
@@ -242,11 +259,18 @@ def qa_clip(cid, state, d, frames, pinned=None):
     # as a 112 px goblin bobbing 3 (the maintainer's 37 walks: median 2.2 px,
     # max 13 on a 256 px canvas)
     W0 = rotation(cid, d).width
-    d_pass, d_warn = max(band["drift_pass"], 0.03 * W0), max(band["drift_warn"], 0.05 * W0)
+    rel = (0.08, 0.15) if "peak_pass" in band else (0.03, 0.05)
+    d_pass, d_warn = max(band["drift_pass"], rel[0] * W0), max(band["drift_warn"], rel[1] * W0)
     if drift > d_warn:
         reasons.append(f"drifts {drift:.1f} px (> {d_warn:.0f})"); status = "fail"
     elif drift > d_pass:
         reasons.append(f"drifts {drift:.1f} px — eyeball it"); status = "warn" if status != "fail" else status
+    if "peak_pass" in band:
+        peak = float(max((ops[0] ^ o).sum() / sil for o in ops[1:])) if len(ops) > 1 else 0.0
+        if peak < band["peak_warn"]:
+            reasons.append(f"no strike: peak {peak:.3f} of the silhouette away from the base"); status = "fail"
+        elif peak < band["peak_pass"]:
+            reasons.append(f"weak strike: peak {peak:.3f} — eyeball it"); status = "warn" if status != "fail" else status
     if "loop_max" in band and loop > band["loop_max"]:
         reasons.append(f"loop does not close (last vs first {loop:.3f})"); status = "fail"
     if "loop_ratio_pass" in band and not pinned:
