@@ -36,8 +36,11 @@ export const SCENERY_SLEEP_MAX = 60;
 /** Frames per second every clip plays at (the library carries no rate). */
 export const SCENERY_ANIM_FPS = 8;
 
+/** THE MAINTAINER'S DEFAULTS (2026-09-09, from the sliders in play: "This is
+ *  better default animation sleeps"): foliage 1-8 s, fire 0-1 s, water 1-4 s,
+ *  rigid 10-30 s. */
 export const SCENERY_ANIM_DEFAULT: SceneryAnimTune = {
-  foliage: [6, 18],
+  foliage: [1, 8],
   fire: [0, 1],
   water: [1, 4],
   rigid: [10, 30],

@@ -369,8 +369,10 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   ONCE at 8 fps, then sleeps a random time from its CLASS's min-max range
   (foliage / fire / water / rigid — the review's own taxonomy; [0,0] is back
   to back). Maintainer 2026-09-09: repeat "might look good for something like
-  a fire, but it will definitely not look good for a tree"; he tunes the
-  ranges and names the defaults. The schedule lives per placement index and
+  a fire, but it will definitely not look good for a tree". THE DEFAULTS ARE
+  HIS (same day, from the sliders: "This is better default animation
+  sleeps"): foliage 1-8 s, fire 0-1 s, water 1-4 s, rigid 10-30 s
+  (`SCENERY_ANIM_DEFAULT`). The schedule lives per placement index and
   survives the scroll rebuilds; the base image, its lit copy and its fog
   silhouette swap frames together under the still's own crop (frames are the
   still's canvas), and the lit copy keeps the still's shape map. Strip-only
