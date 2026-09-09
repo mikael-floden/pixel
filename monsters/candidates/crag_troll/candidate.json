@@ -617,6 +617,274 @@
         "north-west": "crag_troll/animations/walk__north-west.webp",
         "south-west": "crag_troll/animations/walk__south-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0907,
+          "step_max": 0.1458,
+          "drift": 7.34,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 8.65,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "9507d52a-6f64-4b5f-b9bc-11935b92d6d9",
+          "group": "943c8424-3319-4a26-9ae2-931f89e5373c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:54:58+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1544,
+          "step_max": 0.2622,
+          "drift": 16.61,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 17.81,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "1dafb029-4934-4c9b-9d20-56a5ac05d7a1",
+          "group": "c3ab5396-cadc-41b3-8b68-f037b10b4968",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:54:59+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2111,
+          "step_max": 0.3766,
+          "drift": 14.72,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 10.75,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "ab727860-b126-433b-b379-26b1f10d0cf6",
+          "group": "4c32706d-c549-4f81-871a-69d270bb71c3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:55:00+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.09,
+          "step_max": 0.1653,
+          "drift": 2.11,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 2.26,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "9553d369-5246-4b6a-a1f8-930fd17233d2",
+          "group": "5e5da1a0-a011-489c-b1b8-aa676c265977",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:55:01+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1353,
+          "step_max": 0.237,
+          "drift": 15.91,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 16.64,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "ab6057f9-ddaf-4c32-a9c7-34e821f5165f",
+          "group": "480a2a06-f1b5-4a37-b1c9-53b6177cecae",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:55:01+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1544,
+          "step_max": 0.2622,
+          "drift": 16.61,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 17.81,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "1dafb029-4934-4c9b-9d20-56a5ac05d7a1",
+          "group": "c3ab5396-cadc-41b3-8b68-f037b10b4968",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:54:59+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2111,
+          "step_max": 0.3766,
+          "drift": 14.72,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 10.75,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "ab727860-b126-433b-b379-26b1f10d0cf6",
+          "group": "4c32706d-c549-4f81-871a-69d270bb71c3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:55:00+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.09,
+          "step_max": 0.1653,
+          "drift": 2.11,
+          "loop": 0.0001,
+          "loop_ratio": 0.0,
+          "travel": 2.26,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            232,
+            232
+          ],
+          "reasons": [],
+          "sub": "9553d369-5246-4b6a-a1f8-930fd17233d2",
+          "group": "5e5da1a0-a011-489c-b1b8-aa676c265977",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:55:01+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "swings the stone club in one heavy sideways smash, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "crag_troll/animations/attack/south/00.webp",
+          "crag_troll/animations/attack/south/01.webp",
+          "crag_troll/animations/attack/south/02.webp",
+          "crag_troll/animations/attack/south/03.webp",
+          "crag_troll/animations/attack/south/04.webp",
+          "crag_troll/animations/attack/south/05.webp",
+          "crag_troll/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "crag_troll/animations/attack/south-east/00.webp",
+          "crag_troll/animations/attack/south-east/01.webp",
+          "crag_troll/animations/attack/south-east/02.webp",
+          "crag_troll/animations/attack/south-east/03.webp",
+          "crag_troll/animations/attack/south-east/04.webp",
+          "crag_troll/animations/attack/south-east/05.webp",
+          "crag_troll/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "crag_troll/animations/attack/east/00.webp",
+          "crag_troll/animations/attack/east/01.webp",
+          "crag_troll/animations/attack/east/02.webp",
+          "crag_troll/animations/attack/east/03.webp",
+          "crag_troll/animations/attack/east/04.webp",
+          "crag_troll/animations/attack/east/05.webp",
+          "crag_troll/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "crag_troll/animations/attack/north-east/00.webp",
+          "crag_troll/animations/attack/north-east/01.webp",
+          "crag_troll/animations/attack/north-east/02.webp",
+          "crag_troll/animations/attack/north-east/03.webp",
+          "crag_troll/animations/attack/north-east/04.webp",
+          "crag_troll/animations/attack/north-east/05.webp",
+          "crag_troll/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "crag_troll/animations/attack/north/00.webp",
+          "crag_troll/animations/attack/north/01.webp",
+          "crag_troll/animations/attack/north/02.webp",
+          "crag_troll/animations/attack/north/03.webp",
+          "crag_troll/animations/attack/north/04.webp",
+          "crag_troll/animations/attack/north/05.webp",
+          "crag_troll/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "crag_troll/animations/attack/south-west/00.webp",
+          "crag_troll/animations/attack/south-west/01.webp",
+          "crag_troll/animations/attack/south-west/02.webp",
+          "crag_troll/animations/attack/south-west/03.webp",
+          "crag_troll/animations/attack/south-west/04.webp",
+          "crag_troll/animations/attack/south-west/05.webp",
+          "crag_troll/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "crag_troll/animations/attack/west/00.webp",
+          "crag_troll/animations/attack/west/01.webp",
+          "crag_troll/animations/attack/west/02.webp",
+          "crag_troll/animations/attack/west/03.webp",
+          "crag_troll/animations/attack/west/04.webp",
+          "crag_troll/animations/attack/west/05.webp",
+          "crag_troll/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "crag_troll/animations/attack/north-west/00.webp",
+          "crag_troll/animations/attack/north-west/01.webp",
+          "crag_troll/animations/attack/north-west/02.webp",
+          "crag_troll/animations/attack/north-west/03.webp",
+          "crag_troll/animations/attack/north-west/04.webp",
+          "crag_troll/animations/attack/north-west/05.webp",
+          "crag_troll/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "crag_troll/animations/attack__south.webp",
+        "south-east": "crag_troll/animations/attack__south-east.webp",
+        "east": "crag_troll/animations/attack__east.webp",
+        "north-east": "crag_troll/animations/attack__north-east.webp",
+        "north": "crag_troll/animations/attack__north.webp",
+        "south-west": "crag_troll/animations/attack__south-west.webp",
+        "west": "crag_troll/animations/attack__west.webp",
+        "north-west": "crag_troll/animations/attack__north-west.webp"
+      }
     }
   }
 }
