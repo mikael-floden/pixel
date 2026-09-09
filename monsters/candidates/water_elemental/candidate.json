@@ -607,6 +607,274 @@
         "west": "water_elemental/animations/walk__west.webp",
         "north-west": "water_elemental/animations/walk__north-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1373,
+          "step_max": 0.2253,
+          "drift": 1.78,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.61,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "07139a1e-2c3b-416d-ba86-73179f9ba18b",
+          "group": "39f32edc-e49a-4e94-9e76-4e5b7085addd",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:58:53+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1934,
+          "step_max": 0.2637,
+          "drift": 3.87,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.85,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "a4018cdd-28d8-4265-8bb1-b5eff906d0e5",
+          "group": "8dcd45e8-c62c-4087-a504-e359b907f6f5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:58:53+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.2409,
+          "step_max": 0.4479,
+          "drift": 4.48,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 3.98,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "abd11b93-8bf9-4705-9f52-2a4284571e28",
+          "group": "cf4f1f6c-dc85-4afb-a1d0-1dee988020fa",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:58:54+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2784,
+          "step_max": 0.4545,
+          "drift": 4.42,
+          "loop": 0.0003,
+          "loop_ratio": 0.0,
+          "travel": 8.63,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "4d475201-d633-49d9-8f4c-530dfd97a136",
+          "group": "fc153d2a-eeab-4481-868c-9576a37f6100",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:58:54+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.202,
+          "step_max": 0.2814,
+          "drift": 2.25,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.2,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "5d80423e-282d-4427-a971-4cdd0867396e",
+          "group": "ae169afa-b28a-4a9a-9ed0-607480b678b2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:58:55+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1934,
+          "step_max": 0.2637,
+          "drift": 3.87,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 1.85,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "a4018cdd-28d8-4265-8bb1-b5eff906d0e5",
+          "group": "8dcd45e8-c62c-4087-a504-e359b907f6f5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:58:53+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.2409,
+          "step_max": 0.4479,
+          "drift": 4.48,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 3.98,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "abd11b93-8bf9-4705-9f52-2a4284571e28",
+          "group": "cf4f1f6c-dc85-4afb-a1d0-1dee988020fa",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:58:54+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2784,
+          "step_max": 0.4545,
+          "drift": 4.42,
+          "loop": 0.0003,
+          "loop_ratio": 0.0,
+          "travel": 8.63,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [],
+          "sub": "4d475201-d633-49d9-8f4c-530dfd97a136",
+          "group": "fc153d2a-eeab-4481-868c-9576a37f6100",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:58:54+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "surges forward and lashes with a whip of water from one arm, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "water_elemental/animations/attack/south/00.webp",
+          "water_elemental/animations/attack/south/01.webp",
+          "water_elemental/animations/attack/south/02.webp",
+          "water_elemental/animations/attack/south/03.webp",
+          "water_elemental/animations/attack/south/04.webp",
+          "water_elemental/animations/attack/south/05.webp",
+          "water_elemental/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "water_elemental/animations/attack/south-east/00.webp",
+          "water_elemental/animations/attack/south-east/01.webp",
+          "water_elemental/animations/attack/south-east/02.webp",
+          "water_elemental/animations/attack/south-east/03.webp",
+          "water_elemental/animations/attack/south-east/04.webp",
+          "water_elemental/animations/attack/south-east/05.webp",
+          "water_elemental/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "water_elemental/animations/attack/east/00.webp",
+          "water_elemental/animations/attack/east/01.webp",
+          "water_elemental/animations/attack/east/02.webp",
+          "water_elemental/animations/attack/east/03.webp",
+          "water_elemental/animations/attack/east/04.webp",
+          "water_elemental/animations/attack/east/05.webp",
+          "water_elemental/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "water_elemental/animations/attack/north-east/00.webp",
+          "water_elemental/animations/attack/north-east/01.webp",
+          "water_elemental/animations/attack/north-east/02.webp",
+          "water_elemental/animations/attack/north-east/03.webp",
+          "water_elemental/animations/attack/north-east/04.webp",
+          "water_elemental/animations/attack/north-east/05.webp",
+          "water_elemental/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "water_elemental/animations/attack/north/00.webp",
+          "water_elemental/animations/attack/north/01.webp",
+          "water_elemental/animations/attack/north/02.webp",
+          "water_elemental/animations/attack/north/03.webp",
+          "water_elemental/animations/attack/north/04.webp",
+          "water_elemental/animations/attack/north/05.webp",
+          "water_elemental/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "water_elemental/animations/attack/south-west/00.webp",
+          "water_elemental/animations/attack/south-west/01.webp",
+          "water_elemental/animations/attack/south-west/02.webp",
+          "water_elemental/animations/attack/south-west/03.webp",
+          "water_elemental/animations/attack/south-west/04.webp",
+          "water_elemental/animations/attack/south-west/05.webp",
+          "water_elemental/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "water_elemental/animations/attack/west/00.webp",
+          "water_elemental/animations/attack/west/01.webp",
+          "water_elemental/animations/attack/west/02.webp",
+          "water_elemental/animations/attack/west/03.webp",
+          "water_elemental/animations/attack/west/04.webp",
+          "water_elemental/animations/attack/west/05.webp",
+          "water_elemental/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "water_elemental/animations/attack/north-west/00.webp",
+          "water_elemental/animations/attack/north-west/01.webp",
+          "water_elemental/animations/attack/north-west/02.webp",
+          "water_elemental/animations/attack/north-west/03.webp",
+          "water_elemental/animations/attack/north-west/04.webp",
+          "water_elemental/animations/attack/north-west/05.webp",
+          "water_elemental/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "water_elemental/animations/attack__south.webp",
+        "south-east": "water_elemental/animations/attack__south-east.webp",
+        "east": "water_elemental/animations/attack__east.webp",
+        "north-east": "water_elemental/animations/attack__north-east.webp",
+        "north": "water_elemental/animations/attack__north.webp",
+        "south-west": "water_elemental/animations/attack__south-west.webp",
+        "west": "water_elemental/animations/attack__west.webp",
+        "north-west": "water_elemental/animations/attack__north-west.webp"
+      }
     }
   }
 }
