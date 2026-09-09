@@ -69,7 +69,9 @@ decoration, it breaks every interior in the running game — measured
   x-over-y pair (grass over black_rock is a skin of grass; grass over grass
   fills the cell and reads as a slab — the maintainer's own two reference
   tiles, 2026-08-30). House roofs are `brown_paving_stone` over `parquet_floor` (maintainer, 2026-08-30). With
-  no `side` a deck draws same-over-same, which is the thick look.
+  no `side` a deck draws same-over-same, which is the thick look. The game
+  reads it (`Deck.side`, tiles3 `deckCell`) and draws the same body and cap as
+  render3; the two are held equal by the game's parity fixture.
 * Changing decks changes gameplay. Tell the games agent before it lands.
 
 ### `rooms` — where a room ends, stated rather than guessed
@@ -439,11 +441,12 @@ does not judge it — it hangs on the wall behind the cell, and the wall is what
 blocks. (`_wall_put`.) The game is asked to read `z` the same way and to draw
 such a piece with the wall rather than y-sorting it against bodies; until it
 does, a window draws with its sill on the ground, still on its wall. **render3
-does not lift a `z` piece onto the ground plane**: a bush is drawn `TOP_Y` px
-above the bare anchor (the tile's top face sits there), a window's feet are on
-the wall's foot line, which IS the bare anchor and where the game anchors
-everything — lifting it too drew windows 10 px higher than the game and put a
-cleared top back into the roof band (measured; the maintainer marked it).
+lifts NOTHING onto a ground plane**: a bush's feet and a window's feet are both
+on the bare anchor `column_y(x, y, level + z)`, which is the tile-top centre
+and where the game anchors everything (measured in the game 2026-09-09: paste
+row, anchor and sprite bottom coincide; the old `TOP_Y` lift on ground pieces
+drew them 10 px higher than the game, and lifting windows too put a cleared
+top back into the roof band — the maintainer marked it).
 
 **Windows** (`windows()`, after `village`; maintainer 2026-09-09: *"It's now
 time for you to add windows to the houses. Make sure enough space exist to the
@@ -1137,7 +1140,8 @@ beach→rowboats/bushes; the chess tables are their own scenery pieces.
 - `grass__to__light_soil` — the ROAD edge — is **queued but never generated**
   (`tiles/transitions/jobs.json`, 15 jobs, generation is maintainer-side).
   Until then the road edge is a fade.
-- All liquid boundaries (`water~deep_water`, `light_beach~water`) are fades —
-  no sets exist for liquid pairs.
+- Liquid pairs (`water~deep_water`, `light_beach~water`) compose like any
+  other pair through the material-independent Wang boundary; the liquid cell
+  draws it top-face-only with no wall (the game's rule, held by render3).
 - No base tiles promoted, no `#top` details approved → every field is flat and
   detail-less by law, and upgrades itself the moment verdicts land.

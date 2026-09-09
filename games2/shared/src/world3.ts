@@ -60,8 +60,9 @@ export function parseWorld3(json: any): ParsedWorld | null {
       // ground index -1 = VOID: no ground at all, draw nothing. `t: ""` is how
       // the engine already spells that — surfaceAt/surfaceAtWorldElev return
       // VOID_SURFACE for an empty type (not standable, not swimmable), which is
-      // precisely a hole. the_game has zero voids, so this path is unexercised
-      // by data and comes from the format's own definition.
+      // precisely a hole. the_game carries 735 voids, every one enclosed
+      // inside a mountain massif under no deck (invisible, unreachable), so
+      // nothing in play stands on or looks at one.
       const gi = gr?.[c] ?? -1;
       row[c] = { t: gi >= 0 ? grounds[gi] ?? "" : "", v: 0, l: lr?.[c] ?? 0 };
     }
@@ -86,6 +87,9 @@ export function parseWorld3(json: any): ParsedWorld | null {
   const decks: Deck[] = (Array.isArray(json.decks) ? json.decks : []).map((d: any) => ({
     kind: String(d.kind ?? "deck"),
     mat: String(d.ground ?? ""),
+    // `side` is carried when named (see Deck.side) — dropping it drew every
+    // roof as a thick same-over-same slab where render3 draws a thin skin.
+    ...(d.side ? { side: String(d.side) } : {}),
     level: d.level ?? 0,
     // render3.py: `int(dk.get("thickness", 1))` — an absent thickness is 1.
     thickness: Math.max(0, d.thickness ?? 1),

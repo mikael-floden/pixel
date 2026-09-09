@@ -64,33 +64,41 @@ WORLD_REL = "maps2/worlds3/the_game/world.json"
 # THE REGIONS. Flat grass proves nothing, so each window is chosen for what it
 # forces the renderer to decide, not for its area.
 WINDOWS = [
+    # Derived on the 394x394 canvas (maps2 b062b85874) with the client resolver
+    # over every cell (scripts/_tmp-scan style: grounds, lattice indices, wall
+    # storeys, fades, decks per window); the previous windows were placed on the
+    # 512-cell canvas and now lie off the grid (render3's g() indexes the
+    # ground rows unguarded, so a window past the edge raises, it does not
+    # clip). Re-derive here, never nudge: each window is chosen for what it
+    # forces the renderer to decide.
     dict(
         name="the_bay",
-        x0=380, y0=344, x1=436, y1=400,
-        why="The south-east bay: a deep_water/water/light_beach coastline, the "
-            "grass~light_soil road running inland, cliffs up to 7 exposed "
-            "storeys, and a parquet_floor/grey_paving_stone house under a roof "
-            "deck with a bridge deck beside it. 10 of the world's 13 grounds, "
-            "13 of the 14 drawn corner-lattice indices.",
+        x0=284, y0=192, x1=340, y1=248,
+        why="The south-east bay: a deep_water/water/light_beach coastline, "
+            "cliffs up to 7 exposed storeys, a parquet_floor and paving-stone "
+            "house under a 258-cell roof deck with a bridge deck beside it, "
+            "and 170 fades. 10 of the world's 15 grounds, 13 of the 14 drawn "
+            "corner-lattice indices, three of them the NW+SE diagonal (9).",
     ),
     dict(
         name="his_beach",
-        x0=430, y0=352, x1=478, y1=400,
-        why="Where the maintainer stood when he marked stripes along every "
-            "grass~light_beach~water transition (2026-08-29, 453/375). The "
-            "coastline here is the fade band's densest run in the world.",
+        x0=268, y0=224, x1=316, y1=272,
+        why="The coast the maintainer marked stripes along every "
+            "grass~light_beach~water transition of (2026-08-29): the densest "
+            "fade band on the map (120 fades in 48x48) and the ONLY 48x48 "
+            "window carrying ALL 14 drawn lattice indices, both diagonals "
+            "included (6 at 278,243; 9 at 273,270 and 272,271). Walls to 9 "
+            "storeys, a roof and a 28-cell bridge deck.",
     ),
     dict(
         name="diag_corner",
-        x0=328, y0=324, x1=344, y1=340,
-        why="The ONLY place in the 262,144-cell world that carries a DIAGONAL "
-            "lattice index: 9 (NW+SE) at the snow/grey_stone shoulder (336,332). "
-            "Index 6 (NE+SW) does not occur anywhere in the_game at all, so 13 "
-            "of the 14 drawn indices is the ceiling; without this patch it would "
-            "be 12. Also 16x16 of the massif at level 20 — raised cells that "
-            "wear the maintainer's set with NO exposed face, which is 41,988 of "
-            "the world's 45,658 raised cells and the case a top-face dressing "
-            "exists for.",
+        x0=270, y0=136, x1=286, y1=152,
+        why="The snow/grey_stone summit at level 40: a five-cell run of the "
+            "NE+SW diagonal index 6 (280,142 down to 276,147 - 13 such cells "
+            "exist in the world, 29 of index 9), a 39-storey wall, and 229 "
+            "raised cells with NO exposed face wearing the maintainer's set on "
+            "their cap - the case a top-face dressing exists for (40,386 of the "
+            "world's 44,936 raised cells).",
     ),
 ]
 
@@ -348,6 +356,14 @@ def ident(im):
         if k is None:
             _reindex()
             k = _IDENT.get(id(im))
+    if k is not None and k[0] == "shadow":
+        # render3.shadowed(): an INTERIOR face (its down-screen neighbour is
+        # an indoor cell) is the SAME tile at INTERIOR_SHADE - a look of the
+        # overview render, not a resolution. Its cache key wraps (top, side,
+        # is_cap); the identity is the cap or course it shades. The game
+        # lights interior faces itself (the night shader, the cut-away).
+        top, side, is_cap = k[1]
+        k = ("over", top, side) if is_cap else ("storey", side)
     return None if k is None else "|".join(str(p) for p in k)
 
 
@@ -367,6 +383,22 @@ R3.composed_boundary = _tagging_cb
 
 _DRAWS: list[tuple] = []
 _real_ac = PIL.Image.Image.alpha_composite
+_real_crop = PIL.Image.Image.crop
+
+
+def _tagging_crop(self, box=None):
+    """render3 crops a deck's CAP over a doorway (and the cell behind one) to
+    TOP_Y + DY + 8 rows - one level of roof, the band gone. The crop is a fresh
+    image with no cache key, so the identity is carried over here: the tile it
+    was cut from, plus the rows kept."""
+    out = _real_crop(self, box)
+    k = ident(self)
+    if k is not None and box is not None:
+        out.info["k"] = ("crop", k, int(box[3]) - int(box[1]))
+    return out
+
+
+PIL.Image.Image.crop = _tagging_crop
 
 
 def _watch_ac(self, im, dest=(0, 0), source=(0, 0)):
@@ -451,14 +483,19 @@ def build_window(doc, w):
 
     fade_pools: dict[str, list] = {}
     pred: list[tuple] = []                    # predicted draw stream
+    pred_note: list[tuple] = []               # (x, y, srf...) per predicted draw, for the divergence report
     cells: list[dict] = []
     bnds: list[dict] = []
 
     def plate_rec(gg, x, y, rec, prefix=""):
-        """plate_img at the ground's OWN region, recorded."""
-        _rix, rid = region_ix(gg, x, y)
+        """plate_img at the ground's OWN region, recorded - at the ROOM'S
+        ANCHOR when this cell is in a published room whose floor is gg (one
+        floor per room; plate_img applies the same anchor itself)."""
+        ra = R3.ROOM_ANCHOR.get((x, y))
+        ax, ay = ra[0] if ra and ra[1] == gg else (x, y)
+        _rix, rid = region_ix(gg, ax, ay)
         chosen = pick_set(gg, rid)
-        mi, _m = pick_member_ix(chosen, x, y)
+        mi, _m = pick_member_ix(chosen, ax, ay)
         pix, im = plate_ident(gg, rid, x, y)
         rec[prefix + "set"] = chosen["id"]
         rec[prefix + "mi"] = mi
@@ -488,23 +525,27 @@ def build_window(doc, w):
                 rec["srf"] = "slope"
                 rec["sl"] = {"i": sidx, "dir": sl.info["k"][1].rsplit("/post/", 1)[0],
                              "t": path_ix(sl.info["k"][1])}
-        # FADE — a real Chebyshev band from ring 1, scattered, his ratings
-        # weighting the pool.
-        near = None
-        for r in range(1, R3.FADE_BAND + 1):
-            for dy2 in range(-r, r + 1):
-                for dx2 in range(-r, r + 1):
-                    if max(abs(dx2), abs(dy2)) != r:
-                        continue
-                    og = g(x + dx2, y + dy2)
-                    if og and og != gr and og not in liq \
-                            and L(x + dx2, y + dy2) == zl:
-                        near = (og, r)
-                        break
-                if near:
-                    break
-            if near:
-                break
+        # FADE — MIRROR of render3's band (the game's rule, 2026-09-09): the
+        # nearest differing solid ground with a pool, distance = max(ring,
+        # level difference); lonely roll under 0.45 x band position; pick
+        # weighted around the falloff target. Constants: reach FADE_BAND,
+        # amount 1, falloff 1.
+        reach, amount, falloff = R3.FADE_BAND, 1.0, 1.0
+        near, best_d = None, reach + 1
+        for dy2 in range(-reach, reach + 1):
+            for dx2 in range(-reach, reach + 1):
+                r = max(abs(dx2), abs(dy2))
+                if r == 0 or r >= best_d:
+                    continue
+                og = g(x + dx2, y + dy2)
+                if not og or og == gr or og in liq:
+                    continue
+                d = max(r, abs(L(x + dx2, y + dy2) - zl))
+                if d >= best_d:
+                    continue
+                if not R3.fade_pool(gr, og):
+                    continue
+                best_d, near = d, (og, d)
         if near:
             pool = R3.fade_pool(gr, near[0])
             if pool:
@@ -512,10 +553,19 @@ def build_window(doc, w):
                 if pk not in fade_pools:
                     fade_pools[pk] = [[path_ix(f), pct, rt] for f, pct, rt in pool]
                 rr = R3._rng((x * 73856093) ^ (y * 19349663))
-                band_pos = (R3.FADE_BAND + 1 - near[1]) / (R3.FADE_BAND + 1)
+                band_pos = (reach + 1 - near[1]) / (reach + 1)
                 u = rr()
-                if u <= 0.45 * band_pos:
-                    wts = [(1.0 + 1.6 * rt) * (1.0 - abs((pc / 60.0) - band_pos))
+
+                def draw_at(cx, cy):
+                    return R3._rng((cx * 73856093) ^ (cy * 19349663))()
+                lonely = (u < draw_at(x + 1, y) and u < draw_at(x - 1, y)
+                          and u < draw_at(x, y + 1) and u < draw_at(x, y - 1))
+                if lonely and u <= 0.45 * amount * band_pos:
+                    pos = (reach + 1 - near[1]) / max(1, reach)
+                    pct_min, pct_max = pool[0][1], pool[-1][1]
+                    span = max(1, pct_max - pct_min)
+                    target = pct_min + span * (min(1.0, pos) ** falloff)
+                    wts = [(1.0 + 1.6 * rt) * max(0.0, 1.0 - abs(pc - target) / (span / 2))
                            for (_f, pc, rt) in pool]
                     tot = sum(wt for wt in wts if wt > 0) or 1.0
                     v = rr()
@@ -531,6 +581,9 @@ def build_window(doc, w):
                                 "u": round(u, 12), "v": round(v, 12),
                                 "t": path_ix(pool[idx][0])}
                     return R3.conformed_plate(pool[idx][0], gr)
+        # NO DETAIL ON THE ROOM FLOOR (the game's rule).
+        if gr == "parquet_floor":
+            return t
         # DETAILS — his 478 '#top' approvals, once in a while.
         dp = R3.detail_pool(gr)
         if dp:
@@ -547,6 +600,9 @@ def build_window(doc, w):
         """MIRROR of render3.wang_surface(): THE TILE IS THE BOUNDARY."""
         quad = [(x, y), (x + 1, y), (x, y + 1), (x + 1, y + 1)]
         gs = [g(*c) for c in quad]
+        # a corner within one storey votes; a farther one folds to the cell's
+        if None not in gs and "" not in gs:
+            gs = [gv if abs(L(*c) - zl) <= 1 else gs[0] for gv, c in zip(gs, quad)]
         folded = False
         if gs.count(None) == 0 and "" not in gs and len(set(gs)) == 3:
             cnt = Counter(gs)
@@ -554,9 +610,7 @@ def build_window(doc, w):
             odd = next(t for t in cnt if t not in keep)
             gs = [keep[0] if t == odd else t for t in gs]
             folded = True
-        if None not in gs and "" not in gs and len(set(gs)) == 2 \
-                and len({L(*c) for c in quad}) == 1 \
-                and not any(q in liq for q in gs):
+        if None not in gs and "" not in gs and len(set(gs)) == 2:
             a, b = sorted(set(gs))
             sa, sb = R3.side_roles(a, b)
             idx = (8 * (gs[0] == sb) + 4 * (gs[1] == sb)
@@ -604,15 +658,17 @@ def build_window(doc, w):
 
             if gr in liq:
                 # A LIQUID IS A GROUND WITH A SET TOO, top face only: a liquid
-                # never shows a wall. surface(), never wang_surface().
-                t = R3.top_face_only(surface_rec(gr, x, y, zl, rec))
+                # never shows a wall - and its shore composes (wang_rec).
+                t = R3.top_face_only(wang_rec(gr, x, y, zl, rec))
                 rec["top_only"] = True
                 rec["py"], rec["ph"] = col_y(x, y, zl), t.height
+                pred_note.append((x, y, rec.get('srf'), rec.get('set'), rec.get('mi')))
                 pred.append((t.width, t.height, bx_of(x, y), rec["py"], ident(t)))
                 continue
             if zl == 0:
                 t = wang_rec(gr, x, y, zl, rec)
                 rec["py"], rec["ph"] = col_y(x, y, zl), t.height
+                pred_note.append((x, y, rec.get('srf'), rec.get('set'), rec.get('mi')))
                 pred.append((t.width, t.height, bx_of(x, y), rec["py"], ident(t)))
                 continue
 
@@ -636,6 +692,7 @@ def build_window(doc, w):
                     ti = cap_ix if f == zl else mid_ix
                     yy = col_y(x, y, f) - TOP_Y
                     st.append([f, ti, yy])
+                    pred_note.append((x, y, 'wall'))
                     pred.append((t.width, t.height, bx_of(x, y), yy, ident(t)))
                 rec["w"] = {"side": side, "fl": front_low, "fx": fx, "fy": fy,
                             "over": (x, y) in wall_over, "capped": True,
@@ -650,9 +707,19 @@ def build_window(doc, w):
             rec["dressed"] = dressed
             rec["py"], rec["ph"] = col_y(x, y, zl), t.height
             if dressed:
+                pred_note.append((x, y, rec.get('srf'), rec.get('set'), rec.get('mi')))
                 pred.append((t.width, t.height, bx_of(x, y), rec["py"], ident(t)))
 
-    # 2) decks.
+    # 2) decks. MIRROR of render3's 2b): the slab's own anchor picks ONE set
+    # and ONE member for the whole slab; `lo = dl - thickness` (0 = the cap
+    # only); the body is the deck's `side` when it names one (roof-over-side
+    # is the THIN look), else a cave lid's rock, else same-over-same; the cap
+    # is x-over-y whenever the body differs from the top OR the front is open,
+    # and the plain flat tile only for a same-material covered cell; and OVER A
+    # DOORWAY - a cell with an open front, no wall under it, base below the
+    # slab - or on the cell BEHIND one, the cap is cropped to TOP_Y + DY + 8
+    # rows (one level of roof, no band into the opening).
+    CAP_CROP = R3.TOP_Y + R3.DY + 8
     deck_recs = []
     for di, dk in enumerate(doc.get("decks", [])):
         dg = dk.get("ground") or "grey_stone"
@@ -660,38 +727,68 @@ def build_window(doc, w):
         dcells = sorted(((c["x"], c["y"]) for c in dk["cells"]),
                         key=lambda c: (c[0] + c[1], c[1]))
         cellset = set(dcells)
+        danch = min(dcells, key=lambda c: (c[0] + c[1], c[0])) if dcells else (0, 0)
         for (x, y) in dcells:
             if not (x0 <= x < x1 and y0 <= y < y1):
                 continue
             fc = (x + 1, y) in cellset and (x, y + 1) in cellset
-            lo = dl if fc else max(0, dl - max(1, th))
-            body = "grey_stone" if (dk.get("kind") == "cave"
-                                    and dg not in ("black_rock", "grey_stone")) else dg
-            cap_t = R3.flat_tile(dg) if fc else R3.over_tile(dg, body)
-            cap_ix = flat_ident(dg) if fc else over_ident(dg, body)
+            lo = dl if fc else max(0, dl - th)
+            body = dk.get("side") or ("grey_stone" if (dk.get("kind") == "cave"
+                                      and dg not in ("black_rock", "grey_stone")) else dg)
+            doorway = (not fc) and (x, y) not in wall_over and L(x, y) < dl
+            behind = any((nx, ny) in cellset and (nx, ny) not in wall_over
+                         and L(nx, ny) < dl
+                         for (nx, ny) in ((x, y + 1), (x + 1, y)))
+            over = body != dg or not fc
+            cap_t = R3.over_tile(dg, body) if over else R3.flat_tile(dg)
+            cap_ix = over_ident(dg, body) if over else flat_ident(dg)
             mid_t, mid_ix = R3.storey_tile(body), storey_ident(body)
+            crop = doorway or behind
             st = []
             for f in range(lo, dl + 1):
                 t = cap_t if f == dl else mid_t
                 ti = cap_ix if f == dl else mid_ix
-                yy = col_y(x, y, f) - TOP_Y
+                if f == dl and crop:
+                    t = t.crop((0, 0, t.width, CAP_CROP))
+                yy = col_y(x, y, f) - R3.TOP_Y
                 st.append([f, ti, yy])
+                pred_note.append((x, y, 'deck-course', f))
                 pred.append((t.width, t.height, bx_of(x, y), yy, ident(t)))
-            drec = {"d": di, "kind": dk.get("kind"), "ground": dg,
+            drec = {"d": di, "kind": dk.get("kind"), "ground": dg, "side": dk.get("side"),
                     "lvl": dl, "th": th, "x": x, "y": y,
                     "front_covered": fc, "lo": lo, "body": body,
+                    "doorway": doorway, "behind": behind,
+                    "cap_h": CAP_CROP if crop else cap_t.height,
                     "cap": cap_ix, "mid": mid_ix, "sx": bx_of(x, y), "st": st}
             # A roof, a bridge and a cave lid are GROUND too: the slab top wears
-            # the maintainer's base tile set, top face only.
-            sim = plate_rec(dg, x, y, drec, "srf_")
+            # the maintainer's base tile set, top face only, ONE set and ONE
+            # member for the whole slab at the deck's own anchor.
+            rid = f"{dg}@{danch[0] // 24},{danch[1] // 24}"
+            if rid not in rid_ix:
+                rid_ix[rid] = len(rids)
+                rids.append(rid)
+            chosen = pick_set(dg, rid)
+            mi, _m = pick_member_ix(chosen, danch[0], danch[1])
+            sim = R3.plate_img(dg, rid, x, y, anchor=danch)
+            ck = next(k for k, v in R3._tile_cache.items() if v is sim)
+            pix, _im = plate_ident(dg, rid, danch[0], danch[1])
+            drec["srf_set"], drec["srf_mi"], drec["srf_p"] = chosen["id"], mi, pix
+            drec["srf_anchor"] = list(danch)
             t = R3.top_face_only(sim)
             drec["srf_y"] = col_y(x, y, dl)
+            pred_note.append((x, y, 'deck-surface'))
             pred.append((t.width, t.height, bx_of(x, y), drec["srf_y"], ident(t)))
             deck_recs.append(drec)
 
-    # 3) scenery — sprite scaled to placement.world_px_height, feet on the
-    #    cell's front vertex. round() here is Python's banker's rounding; a
-    #    port that uses round-half-up drifts a pixel on exact .5 scales.
+    # 3) scenery - MIRROR of render3's 3): a piece under a roof/cave deck is
+    #    indoors and not drawn; `dir` picks a rotation sprite when the piece
+    #    ships it, `state` a variation, `lit` the first LIT_* state; the SCALE
+    #    is the piece's (k = the game's drawn height over the BASE sprite's
+    #    bbox height) applied to the drawn sprite cropped to its own bbox;
+    #    `hflip` mirrors; `z` storeys lift the feet up the wall behind the cell
+    #    and a wall-hung piece is NOT lifted onto the ground plane (TOP_Y).
+    #    round() here is Python's banker's rounding; a port that rounds
+    #    half-up drifts a pixel on exact .5 scales.
     roofed = {(c["x"], c["y"]) for dk in doc.get("decks", [])
               if dk.get("kind") in ("roof", "cave") for c in dk["cells"]}
     scen = []
@@ -703,24 +800,40 @@ def build_window(doc, w):
             continue
         meta = json.load(open(os.path.join(REPO, "scenery", p["piece"], "scenery.json")))
         spath = meta["sprite"]
-        if p.get("lit"):
+        if p.get("dir"):
+            cand = os.path.join(p["piece"], "rotations", p["dir"] + ".webp")
+            if os.path.isfile(os.path.join(REPO, "scenery", cand)):
+                spath = cand
+        if p.get("state") and (meta.get("states") or {}).get(p["state"]):
+            spath = meta["states"][p["state"]]["sprite"]      # an explicit state wins
+        elif p.get("lit"):
             litk = sorted(k for k in (meta.get("states") or {}) if k.startswith("LIT"))
             if litk:
                 spath = meta["states"][litk[0]]["sprite"]
         sp = R3.Image.open(os.path.join(REPO, "scenery", spath)).convert("RGBA")
-        want = meta.get("placement", {}).get("world_px_height") or sp.height
-        bb = sp.getbbox()
+        base = R3.Image.open(os.path.join(REPO, "scenery", meta["sprite"])).convert("RGBA")
+        bb0 = base.getbbox() or (0, 0, base.width, base.height)
+        place = meta.get("placement", {})
+        want = R3.drawn_px(place.get("world_px_height"),
+                           place.get("character_height_px")) or base.height
+        k = want / max(1, bb0[3] - bb0[1])
+        bb = sp.getbbox() or (0, 0, sp.width, sp.height)
         art = sp.crop(bb)
-        k = want / art.height
         aw, ah = max(1, round(art.width * k)), max(1, round(art.height * k))
+        z = L(int(px), int(py)) + float(p.get("z") or 0.0)
         sx = ox + (px - x0 - (py - y0)) * DX
-        sy = oy + (px - x0 + py - y0) * DY - L(int(px), int(py)) * LP
+        lift = 0                       # the bare projection IS the ground plane (render3)
+        sy = oy + (px - x0 + py - y0) * DY - z * LP - lift
         dest = (int(sx - aw / 2), int(sy - ah))
         scen.append({"piece": p["piece"], "x": px, "y": py,
+                     "dir": p.get("dir"), "state": p.get("state"),
+                     "z": p.get("z"), "lift": lift,
                      "sprite": path_ix(os.path.join("scenery", spath)),
+                     "base_bbox": list(bb0), "k": k,
                      "want_h": want, "bbox": list(bb), "w": aw, "h": ah,
                      "hflip": bool(p.get("hflip")), "lit": bool(p.get("lit")),
                      "sx": dest[0], "sy": dest[1]})
+        pred_note.append(('scenery', p["piece"]))
         pred.append((aw, ah, dest[0], dest[1], None))
 
     # THE PROOF. Everything mirrored out of render()'s loops above is checked
@@ -738,7 +851,8 @@ def build_window(doc, w):
         raise AssertionError(
             f"{w['name']}: draw #{i} diverges.\n  render3 " +
             "\n          ".join(str(d) for d in got[lo:hi]) +
-            "\n  fixture " + "\n          ".join(str(d) for d in pred[lo:hi]))
+            "\n  fixture " + "\n          ".join(str(d) for d in pred[lo:hi]) +
+            "\n  cells   " + " ".join(str(n) for n in pred_note[lo:hi]))
     assert len(got) == len(pred), \
         f"{w['name']}: render3 drew {len(got)} tiles, fixture predicts {len(pred)} " \
         f"(the streams agree up to #{min(len(got), len(pred))})"

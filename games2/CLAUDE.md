@@ -548,11 +548,11 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   which carries no fade, no slope, no boundary), and he reports the artefact
   100% absent on raised ground and 100% absent on water. Fill from the nearest
   painted row in the same column; the fix can only write a texel no rule wrote.
-  The python reference has the SAME gap — `transition_patterns.plate()` repairs
-  only the EMPTY-column case and claims "every silhouette pixel has a real
-  colour" on the strength of it — so until the tiles agent lands the same rule,
-  render3 and the client disagree on exactly these texels (raised on
-  `coordination/tiles.json`).
+  `tiles/pipeline/transition_patterns.py plate()` carries the same rule
+  (nearest painted row of the column, tie to the row above), so render3 and
+  the client agree texel for texel; `tiles3draw-parity.json` holds the 42
+  conform cases equal (it used to repair only the EMPTY-column case and
+  claim "every silhouette pixel has a real colour" on the strength of it).
 - **A NOT-YET-LOADED PLATE IS NEVER CACHED AS NULL** (`tiles3draw` platePixels /
   sourcePixels). Null means "not resident yet"; caching it makes every plate
   that missed its first frame miss forever.
@@ -593,15 +593,45 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   with the art still unrequested, which is the pop-in the hold was built to
   stop. verify-tiles3 still walks to its scenery window instead of `lookAt`;
   that is belt and braces now, not a requirement.)
-- **THE RESOLVER'S REGION RULE IS STALE AGAINST render3, and it is visible.**
-  `tiles3.computeRegions` uses 4-connected COMPONENTS (proven against the parity
-  fixture); render3 now keys a region on a 24-cell CHUNK, having found that
-  components make a whole island one region. Measured on the_game: 332
-  components against 851 chunks, and ONE component paints 54.6% of all grass and
-  99.5% of all snow — so most of the map draws a single set per ground and the
-  maintainer's other tuned sets never appear. Fixing it is a RESOLUTION change
-  (tiles3.ts + its fixture), not a wiring one, which is why this run did not
-  make it.
+- **THE RESOLVER AND render3 HOLD ONE RULE SET, AND THE GAME'S VERDICTS ARE
+  THE RULES** (2026-09-09; `maps2/pipeline/render3.py` was brought to the
+  game, not the game to it, because every rule below is a maintainer verdict
+  taken in the game). What is held equal, and where each lives in `tiles3.ts`:
+  a region is the 24-cell chunk (`regionAt`); a fade pool keeps every approved
+  tile from 1% up (`fadePool`; the old 8% floor threw away the far-band tiles);
+  the fade band is the nearest differing solid ground within reach at distance
+  max(ring, |level diff|), only grounds with a pool, the lonely rule (no fade
+  where a fade already draws on an edge neighbour), the target-coverage pick
+  `(1+1.6·rating)·max(0, 1−|pct−target|/(span/2))` with target = pctMin +
+  span·pos^falloff — at the resolver's own constants FADE_BAND 2 / amount 1 /
+  falloff 1 (the fixtures pin those; the game's dials are the maintainer's and
+  differ); a detail rolls wherever no fade landed, never on parquet_floor;
+  MADE_GROUND = brown_paving_stone, grey_paving_stone, parquet_floor; a
+  boundary corner within `BOUNDARY_STEP` votes and a farther one folds to its
+  own ground, liquid pairs compose and the liquid cell draws top-face-only
+  with no wall; a room anchors its member ONLY for the room's own floor ground
+  (`roomFloorAt`; a foreign ground inside a room keeps its cell); a deck's
+  `side`, cap tile, doorway/behind crop (the deck bullet under Decks); scenery
+  takes an explicit `state` over `lit`, its `dir` rotation, drawn-px scale
+  over the BASE sprite's bbox height, `z` storeys, and NO lift — its feet sit
+  on the tile-top centre, which is the bare projection (measured live: paste
+  row, anchor and sprite bottom coincide; render3's old TOP_Y lift drew every
+  ground piece 10 px high).
+  THE PROOF is `scripts/tiles3-fixture.py` → `server/test/fixtures/
+  tiles3-parity.json` and `scripts/tiles3draw-fixture.py` →
+  `tiles3draw-parity.json`: the generator imports render3, TRACES its `render()`
+  (region_at, the frame, the composite and crop calls), predicts the draw
+  stream from the rules above and refuses to write a fixture whose prediction
+  differs from render3's own stream — a divergence names its cells. Three
+  windows on the 394x394 canvas (maps2 b062b85874), each derived by a
+  resolver scan and recorded with its derivation in the script: the_bay
+  284,192–340,248 (10 grounds, 7-storey cliffs, a 258-cell roof and a bridge,
+  the parquet/paving house), his_beach 268,224–316,272 (all 14 lattice
+  indices, 120 fades), diag_corner 270,136–286,152 (a level-40 index-6 run, a
+  39-storey wall, 229 faceless raised cells); 5,696 cells, 43 scenery
+  placements, 42 conform + 30 boundary draw cases. A RESOLUTION change lands
+  in tiles3.ts AND render3.py, then regenerates both fixtures (python3 from
+  the repo root; render3 needs Pillow and the tiles tree).
 - **SCENERY IS SIZED AGAINST THE PERSON THIS GAME DRAWS, NOT THE ONE THE
   CONTRACT ASSUMES** (`shared/CHARACTER_BODY_PX` = 88, `sceneryDrawnPx`). A
   piece's `placement` gives its height in metres and a derived
@@ -760,12 +790,10 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
 - KNOWN GAPS, stated: no FADE GUARD in the game (it is a pixel test over art the
   pool has not fetched yet — measured, 2 of 10 pools keep a tile render3 drops,
   which is a wrong tile inside a 1-cell band, never a hole;
-  `Tiles3.stats.unguardedFadePools` counts it); scenery draws STILLS only (no
-  idle animation) and registers no occluderMeta, so a body sorts against a tree
-  by painter depth alone; the resolver is proven against the
-  parity fixture, and render3 has since grown slopes, set-dressed wall caps and
-  a Chebyshev fade band, all of which are RESOLUTION decisions and belong in
-  tiles3.ts and its fixture.
+  `Tiles3.stats.unguardedFadePools` counts it); `scripts/verify-tiles3.mjs`'s
+  fixture cells are off the 394 canvas (its own bullet). Every RESOLUTION rule
+  is held equal with render3 by the parity fixtures (THE RESOLVER AND render3
+  HOLD ONE RULE SET, above).
 - Both staging bases are INJECTABLE (`ml-staging-base`, `STAGING_WORLD_BASE`)
   — the sandbox denies headless-browser egress, so a gate can point at a local
   fixture origin. (`verify-stagingworld.mjs`, which joined a fixture-only
@@ -1429,6 +1457,21 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
   expression drew courses [5,6] where the data says [6]. render3.py fixed the
   same line on 2026-08-30. the_game ships 15 roof decks at thickness 0, so this
   was every doorway on the map.
+  **AND A DECK'S `side` IS ITS BODY** (`Deck.side` in shared, copied by
+  `world3.ts`; WORLD3.md "a deck may carry a side"): the courses below the
+  slab draw `side`, else grey_stone under a cave whose top is not rock, else
+  the top itself; the top course is `over_tile(top, body)` when body differs
+  from top or the front is open, else the flat tile — which is what makes a
+  roof THIN (brown_paving_stone over parquet_floor on the_game's 11 roof
+  decks; same-over-same is the thick slab). A DOORWAY cell (front open, no
+  `wall_over`, base level below the deck) and a BEHIND cell (an open-front,
+  wall-less deck neighbour down-screen whose base is lower) crop that course
+  to `DECK_CAP_CROP` = TOP_Y + DY + 8 = 32 rows, so the skin ends at the
+  lintel instead of hanging into the opening (131 doorway and 1,105 behind
+  cells on the_game). `Tiles3DeckCell` carries `side`/`doorway`/`behind`/
+  `capH`, the stack's top step carries `h` for the cropped course and
+  `tileBlit` honours it. render3's deck block is the same rule, held by the
+  parity fixture.
 - `stairs` tiles are ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower,
   cactus, lava) are impassable — `SURFACES`/`surfaceFor` (`road_*` by prefix).

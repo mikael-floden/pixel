@@ -13,7 +13,7 @@
 // So the port is checked, cell for cell, against a fixture GENERATED OUT OF
 // render3.py by games2/scripts/tiles3-fixture.py: region, set, member, art path,
 // fade, boundary index and plate pair, wall stack and every paste y. Two windows
-// of the real 512x512 world, chosen for what they force the renderer to decide
+// of the real 394x394 world, chosen for what they force the renderer to decide
 // (the bay: 10 of 13 grounds, 7-storey cliffs, a house under a roof deck; the
 // diagonal patch: the only place carrying lattice indices 6 and 9).
 //
@@ -259,7 +259,7 @@ test("the fixture matches the world on disk", { skip: !!MISSING.length }, () => 
   const sha = createHash("sha256").update(readFileSync(rel(F.world.path))).digest("hex");
   assert.equal(sha, F.world.sha256, "the fixture was generated from a different world.json");
   assert.equal(doc.schema, "pixel-maps3/world@1");
-  assert.equal(doc.size.w, 512);
+  assert.equal(doc.size.w, 394);
 });
 
 /* -- the measured storey pitch ---------------------------------------------- */
@@ -400,7 +400,14 @@ test("every cell of every window resolves to render3's art", { skip: !!MISSING.l
       if (view.isLiquid(c.g)) {
         seen.liquid++;
         assert.ok(c.top_only, `${at} a liquid never shows a wall`);
-        assert.equal(mine.boundary, undefined, `${at} no quad touching a liquid composes`);
+        /* THE SHORE IS A TRANSITION TILE (maintainer 2026-09-09): a quad
+         * touching a liquid composes like any other pair, and a liquid cell
+         * wears it TOP FACE ONLY with no wall band — render3's liquid branch
+         * draws `top_face_only(wang_surface())` since the same day. */
+        if (mine.boundary) {
+          assert.ok(mine.boundary.topOnly, `${at} a liquid's shore is top face only`);
+          assert.ok(mine.boundary.noWall, `${at} a liquid's shore has no wall`);
+        }
       }
 
       // set / member / plate — the maintainer's pick, on EVERY cell now.
@@ -452,8 +459,16 @@ test("every cell of every window resolves to render3's art", { skip: !!MISSING.l
         assert.ok(Math.abs(mine.fade.u - c.f.u) < 1e-12, `${at} fade roll`);
         assert.ok(Math.abs(mine.fade.v - c.f.v) < 1e-12, `${at} fade pick`);
         assert.equal(mine.fade.file, paths(c.f.t), `${at} fade tile`);
-        assert.equal((mine.art as any).path, paths(c.f.t), `${at} draws the fade`);
-        assert.equal(mine.art.kind, "conform", `${at} a fade is conformed, never cropped`);
+        /* A FADE IS AN OVERLAY in the port (cellOps draws `fadeKey(file,
+         * ground)` — the conformed fade — over the cell's own plate), where
+         * render3 composites the conformed fade INSTEAD of the plate. Same
+         * pixels: a fade's top face is opaque over the whole diamond. So the
+         * cell's art stays its plate here, and the fade file is the overlay. */
+        assert.equal(
+          (mine.art as any).path,
+          mine.slope ? mine.slope.file : mine.plate.path,
+          `${at} a fade is an overlay: the art stays the plate (or the slope under it)`,
+        );
       } else {
         assert.equal(mine.fade, undefined, `${at} no fade here`);
       }
@@ -489,7 +504,10 @@ test("every cell of every window resolves to render3's art", { skip: !!MISSING.l
         assertPlate(F.plates[fb.pb], mb.plateB.kind, mb.plateB.path, `${at} plate b`);
         assert.equal(mb.sx, fb.sx, `${at} boundary sx`);
         assert.equal(mb.sy, fb.sy, `${at} boundary sy`);
-        assert.equal(mb.pattern, F.invariants.masks.pattern, `${at} mask pattern`);
+        // The mask is picked PER BOUNDARY (`mask_for`: the index's pool, the
+        // natural filter, his hash) — one pattern for the whole map was the
+        // repeated squiggle along every road.
+        assert.equal(mb.pattern, fb.m, `${at} mask pattern`);
         assert.equal(mb.maskFrame! % 16, fb.i, `${at} mask frame`);
         assert.ok(F.invariants.masks.per_index[fb.i].true_px > 0, `${at} empty mask`);
         assert.notEqual(mb.index, 0, `${at} index 0 is not drawn`);
@@ -513,8 +531,13 @@ test("every cell of every window resolves to render3's art", { skip: !!MISSING.l
       assert.equal(md.y, fd.y, `${at} y`);
       assert.equal(md.deck, fd.d, `${at} deck index`);
       assert.equal(md.ground, fd.ground, `${at} ground`);
+      assert.equal(md.side ?? null, fd.side ?? null, `${at} side`);
       assert.equal(md.body, fd.body, `${at} body`);
       assert.equal(md.frontCovered, fd.front_covered, `${at} front covered`);
+      assert.equal(md.doorway, fd.doorway, `${at} doorway`);
+      assert.equal(md.behind, fd.behind, `${at} behind a doorway`);
+      assert.equal(md.capH, fd.cap_h, `${at} cap rows (the doorway crop)`);
+      assert.equal(md.stack[md.stack.length - 1].h ?? md.cap.h, fd.cap_h, `${at} the cap step carries the crop`);
       assert.equal(md.lo, fd.lo, `${at} stack bottom`);
       assert.equal(md.sx, fd.sx, `${at} sx`);
       assertTile(F.tiles[fd.cap], md.cap, `${at} cap`);
@@ -761,7 +784,7 @@ test("the iso frame and the plate/tile offsets are render3's", { skip: !!MISSING
 
 /* -- the whole world, not just the sampled windows -------------------------- */
 
-test("the entire 512x512 world resolves with no fallback and no missing art", { skip: !!MISSING.length }, () => {
+test("the entire 394x394 world resolves with no fallback and no missing art", { skip: !!MISSING.length }, () => {
   const { t } = build();
   const started = Date.now();
   const out = t.resolveWindow(viewFromDoc(doc));

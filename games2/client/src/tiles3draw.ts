@@ -1103,7 +1103,9 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
 
 /** A deck's slab: same-over-same courses down to its underside, cap on top. */
 export function deckOps(d: Tiles3DeckCell): Tiles3Blit[] {
-  return d.stack.map((s) => tileBlit(s.tile, d.sx, s.y, "deck"));
+  // `s.h` is the doorway crop of the cap (Tiles3DeckCell.capH): fewer rows,
+  // same source top — one level of roof over the opening.
+  return d.stack.map((s) => tileBlit(s.tile, d.sx, s.y, "deck", s.h));
 }
 
 /** The composed boundary, on the corner lattice over the flats. Null when the
@@ -1114,13 +1116,13 @@ export function boundaryOp(b: Tiles3Boundary, seam = true): Tiles3Blit | null {
   return { key, x: b.sx, y: b.sy, sx: 0, sy: 0, sw: b.w, sh: b.h, role: "boundary" };
 }
 
-function tileBlit(t: TileArt, x: number, y: number, role: Tiles3Blit["role"]): Tiles3Blit {
+function tileBlit(t: TileArt, x: number, y: number, role: Tiles3Blit["role"], h?: number): Tiles3Blit {
   /* A wall or deck course that names no file is a painted liquid diamond — the
    * resolver's `flat_tile` for a liquid ground, which always carries `topRGB`.
    * The grey is render3's own fallback for a ground with neither a palette top
    * nor a base colour, and reaching it means ground_types is incomplete. */
   const key = t.path ? artKey(t.path) : liquidKey(t.topRGB ?? [128, 128, 128]);
-  return { key, x, y, sx: 0, sy: 0, sw: t.w, sh: t.h, role };
+  return { key, x, y, sx: 0, sy: 0, sw: t.w, sh: h ?? t.h, role };
 }
 
 /** THE WHOLE WINDOW in render3's pass order: every cell (already painter-sorted

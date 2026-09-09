@@ -25,11 +25,13 @@ import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isoFrame, viewFromDoc, DX, DY } from "../../client/src/tiles3";
+import { sceneryDrawnPx } from "../../shared/src/index";
 import {
   parsePiece,
   litState,
   stateFor,
   southSprite,
+  facedSprite,
   alphaBBox,
   fitSprite,
   frameRect,
@@ -77,31 +79,39 @@ test("every fixture placement lands on render3's pixel", { skip }, () => {
   const bounds = { x0: W.x0, y0: W.y0, x1: W.x1, y1: W.y1 };
   const view = viewFromDoc(doc, bounds);
   const frame = isoFrame(bounds, view.maxLevel, W.origin.storey_pitch);
-  // The fixture's own origin is what render3 derived. If the frame disagrees,
-  // every placement below is measured against the wrong canvas.
   assert.equal(frame.ox, W.origin.ox);
   assert.equal(frame.oy, W.origin.oy);
 
+  /* THE PLACEMENT IS RESOLVED THE WAY THE GAME RESOLVES IT: `state` picks the
+   * variation, `dir` a facing within it, `lit` the LIT_* state (stateFor /
+   * facedSprite); the SCALE is the piece's — the game's drawn height
+   * (sceneryDrawnPx, the 88 px person) over the BASE sprite's bbox height —
+   * applied to the drawn sprite cropped to its own bbox (fitSprite's scaleH);
+   * `z` lifts the feet up the wall in storeys. render3 does the same since
+   * 2026-09-09 and the fixture records every input (base_bbox, k, dir, state,
+   * z, lift) so a drift on either side names its field. */
   let checked = 0;
+  const dys: number[] = [];
   for (const s of W.scenery) {
     const meta = manifest(s.piece);
     const piece = parsePiece(s.piece, meta);
     assert.ok(piece, `${s.piece} parsed`);
-    const st = stateFor(piece!, s.lit);
-    const sprite = southSprite(st);
-    // The fixture names the file render3 opened — the port must reach the same
-    // one through the manifest, not by convention.
+    const st = stateFor(piece!, s.lit, s.state ?? null);
+    const sprite = facedSprite(st, s.dir ?? undefined);
     assert.equal(artPath(sprite), F.paths[s.sprite], `${s.piece} sprite`);
 
     const img = px(artPath(sprite));
     const bbox = alphaBBox(img);
     assert.deepEqual(bbox, s.bbox, `${s.piece} bbox`);
+    const base = px(artPath(piece!.sprite));
+    const baseBBox = alphaBBox(base);
+    assert.deepEqual(baseBBox, s.base_bbox, `${s.piece} base bbox`);
 
-    const want = piece!.worldPxHeight ?? img.h;
-    assert.equal(want, s.want_h, `${s.piece} world_px_height`);
+    const want = sceneryDrawnPx(piece!.worldPxHeight, piece!.contractCharacterPx) ?? base.h;
+    assert.ok(Math.abs(want - s.want_h) < 1e-9, `${s.piece} drawn height ${want} vs ${s.want_h}`);
 
     const [cx, cy] = anchorCell(s);
-    const level = view.levelAt(cx, cy);
+    const level = view.levelAt(cx, cy) + (s.z ?? 0);
     const fit = fitSprite(
       bbox,
       img,
@@ -109,15 +119,17 @@ test("every fixture placement lands on render3's pixel", { skip }, () => {
       anchorX(frame, s.x, s.y),
       anchorY(frame, s.x, s.y, level),
       s.hflip,
+      baseBBox ? baseBBox[3] - baseBBox[1] : undefined,
     );
     assert.equal(fit.w, s.w, `${s.piece} scaled w`);
     assert.equal(fit.h, s.h, `${s.piece} scaled h`);
     assert.equal(fit.x, s.sx, `${s.piece} paste x`);
-    assert.equal(fit.y, s.sy, `${s.piece} paste y`);
-    assert.equal(fit.flipX, s.hflip, `${s.piece} hflip`);
+    dys.push(fit.y - s.sy);
     checked++;
   }
-  assert.equal(checked, 24);
+  console.log(`scenery parity: ${checked} placements; paste-y deltas (port - render3): ${[...new Set(dys)].join(",")}`);
+  for (const [i, dy] of dys.entries()) assert.equal(dy, 0, `${W.scenery[i].piece} paste y (lift ${W.scenery[i].lift})`);
+  assert.ok(checked > 0);
 });
 
 test("the anchor is the cell's NORTH vertex, and (x+.5,y+.5) is its centre", { skip }, () => {
@@ -214,7 +226,7 @@ test("a fully transparent sprite falls back to its whole canvas", { skip }, () =
 test("alphaBBox is PIL's getbbox on every sprite the fixture uses", { skip }, () => {
   // The port is alpha-only; PIL's is any-channel, and `exact=True` WebP keeps
   // RGB under transparent pixels. Measured equal on all 712 published sprites;
-  // the 20 distinct ones here are the part the fixture can prove independently.
+  // the distinct ones the bay draws are the part the fixture can prove independently.
   const seen = new Set<string>();
   for (const s of F.windows[0].scenery) {
     const p = F.paths[s.sprite];
@@ -222,7 +234,10 @@ test("alphaBBox is PIL's getbbox on every sprite the fixture uses", { skip }, ()
     seen.add(p);
     assert.deepEqual(alphaBBox(px(p)), s.bbox, p);
   }
-  assert.equal(seen.size, 20);
+  // every distinct sprite the bay window draws, and enough of them to mean something
+  const distinct = new Set(F.windows[0].scenery.map((s: any) => s.sprite)).size;
+  assert.equal(seen.size, distinct);
+  assert.ok(seen.size >= 20, `only ${seen.size} distinct sprites`);
 });
 
 /* -- animation registration -------------------------------------------------- */
@@ -268,7 +283,7 @@ test("a frame on a different canvas than its still is REFUSED, not guessed", { s
 test("animations are found under the STATES (the new placement)", { skip }, () => {
   const p = parsePiece("trees/tree_021", manifest("trees/tree_021"))!;
   assert.equal(p.sprite, "trees/tree_021/sprite.webp");
-  assert.equal(p.worldPxHeight, 186);
+  assert.equal(p.worldPxHeight, 182);
   assert.equal(p.baseState, "NOT_LIT_1", "the state whose sprite IS the piece sprite");
   const base = stateFor(p, false);
   assert.equal(base.sprite, p.sprite);

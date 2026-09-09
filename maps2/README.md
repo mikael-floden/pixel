@@ -337,8 +337,13 @@ ground NAME per cell), so a tiles publish never repoints anything here.
 
 - `world3.py` / `world3grow.py` — the_game's builder (pixel-maps3: a ground
   NAME per cell, decks, scenery placements; see `spec/WORLD3.md`).
-- `render3.py` — the tiles3 reference renderer (window / overview / minimap;
-  the game's `tiles3.ts` resolver is parity-gated against it).
+- `render3.py` — the tiles3 reference renderer (window / overview / minimap).
+  Its resolution rules ARE the game's (`games2/client/src/tiles3.ts`: fade
+  pool and band, MADE_GROUND, boundary fold, room anchor, deck `side` and
+  doorway crop, scenery scale with no lift — the maintainer's verdicts, taken
+  in the game) and `games2/scripts/tiles3-fixture.py` holds the two equal by
+  tracing this file's draw stream; a rule changes in both or the fixture
+  names the cells.
 - `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check` gates.
 - `sceneryscale.py` — the size the GAME draws scenery at.
 

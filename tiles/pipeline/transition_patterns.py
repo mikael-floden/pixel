@@ -1130,7 +1130,8 @@ def plate(img, root=None):
     the alpha. F9 IS FIXED HERE: transition_render._extend_base() skips a column with no
     opaque pixel but sets alpha=255 unconditionally, so a ragged base tile ships an
     opaque black stripe; here an empty column is filled from the nearest column that has
-    art, so every silhouette pixel has a real colour.
+    art, and a hole INSIDE a column from the nearest painted row of that column, so
+    every silhouette pixel has a real colour.
     """
     _, _, sil = load_library(root)
     a = np.array(TP._crop_to_art(img.convert("RGBA")), int)
@@ -1164,6 +1165,31 @@ def plate(img, root=None):
         deeper = lt[lt > ts.max()] if len(lt) else lt
         if len(deeper):
             out[deeper, x, :3] = a[ts.max(), x, :3]
+        # AND THE HOLES INSIDE THE COLUMN. The three fills above extend a column
+        # OUTWARD - above its top face, below its art, into the library's deeper
+        # top row - and none reaches a texel that is transparent BETWEEN opaque
+        # ones; the alpha pass below then forces every silhouette texel opaque
+        # and ships the RGB the source stored under its own transparency (kept
+        # byte for byte by the repo's exact=True WebP law) as a solid pixel of
+        # a colour nobody chose. A base tile's columns are solid; a FADE tile is
+        # a scatter full of holes by construction, and that was the game's
+        # zigzag on fade tiles only (games2, 2026-09-04: 18 of 66 fade arts in
+        # one window, 153 texels, every one dark on its own ground). Fill from
+        # the nearest row in this same column the source did paint - the row
+        # above on a tie. Writes only texels no rule painted. The game's
+        # conformPlate does exactly this; tiles3draw-parity holds the two equal.
+        lib_wall = sil & ~lib_top
+        lo, hi = int(ts.min()), int(col.max())
+        for y in range(lo, hi + 1):
+            if not sil[y, x] or lib_wall[y, x] or alpha[y, x]:
+                continue
+            if y > ts.max() and lib_top[y, x]:
+                continue                      # already taken from the top row
+            up = next((k for k in range(y - 1, lo - 1, -1) if alpha[k, x]), -1)
+            dn = next((k for k in range(y + 1, hi + 1) if alpha[k, x]), -1)
+            src = dn if up < 0 else up if dn < 0 else (up if y - up <= dn - y else dn)
+            if src >= 0:
+                out[y, x, :3] = a[src, x, :3]
     for x in empty:
         src = min((c for c in range(TILE_W) if c not in empty),
                   key=lambda c: abs(c - x), default=None)

@@ -139,8 +139,12 @@ def _lab_hash(r, cc, k, salt=1):
 # STRAIGHT line, which is exactly right for a kerb and reads as a ruled facet
 # on a sand/grass edge. So the pools are used verbatim where the pair is a
 # made surface, and the straight cuts are dropped where it is natural.
-MADE_GROUND = {"light_soil", "brown_paving_stone", "grey_paving_stone",
-               "parquet_floor"}
+# LIGHT_SOIL IS NOT MADE (maintainer 2026-09-04): it is dirt, and grass met it
+# on a dead-straight edge ("WE HAVE NO TRANSITION HERE!") - a straight mask
+# is indistinguishable from no transition. The game dropped it first
+# (tiles3.ts MADE_GROUND); this list and that one are held equal by the
+# parity fixture.
+MADE_GROUND = {"brown_paving_stone", "grey_paving_stone", "parquet_floor"}
 
 
 def _amp(pid):
@@ -384,7 +388,10 @@ def plate_img(ground, region, x, y, anchor=None):
     # included. A caller that owns a whole surface passes its `anchor` and
     # gets ONE set and ONE member for all of it; the deck pass does, so a roof
     # is one tiling from eave to eave whatever is under it.
-    ax, ay = anchor or ROOM_ANCHOR.get((x, y), (x, y))
+    if anchor is None:
+        ra = ROOM_ANCHOR.get((x, y))
+        anchor = ra[0] if ra and ra[1] == ground else None
+    ax, ay = anchor or (x, y)
     if (ax, ay) != (x, y):
         region = f"{ground}@{ax // 24},{ay // 24}"
     chosen = pick_set(ground, region)
@@ -931,10 +938,16 @@ def fade_pool(field_ground, other):
                 continue
             rating = float(fbe.get("rating") or 0)
             pct = t.get("pct", {}).get(other, 0)
-            # honest mixes only: a ~0% tile is the source set's own idea of a
+            # honest mixes only: a 0% tile is the source set's own idea of a
             # pure field (a lime square on our grass), a >60% one reads as the
-            # other ground with a rim — the maintainer's never-50/50 rule
-            if not (8 <= pct <= 55):
+            # other ground with a rim — the maintainer's never-50/50 rule.
+            # THE FLOOR IS 1%, NOT 8 (the game's rule, maintainer 2026-09-09):
+            # his falloff dial keeps the DENSE tiles to the transition and
+            # wants the sparsest ones far out, and the 8% floor threw away
+            # exactly the far-band tiles — the grass/light_soil pair tops out
+            # at 16%, so the old floor left it three tiles. tiles3.ts
+            # fadeTier and this pool are gated equal by the parity fixture.
+            if not (1 <= pct <= 55):
                 continue
             # palette sanity: the tile's own mean must sit near the pct-blend
             # of the two grounds' palette tops — one mis-corrected set ships a
@@ -1028,6 +1041,11 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
     # this and the game - lays one floor per room and agrees on where a room
     # ends. Deriving it here would also be window-dependent: a room clipped by
     # the render window would take a different anchor and a different tile.
+    # ONE FLOOR PER ROOM: every cell of a published room picks its floor's
+    # member at the room's anchor (min cell, x then y). THE ROOM'S OWN FLOOR
+    # GROUND ONLY - the sand half of a shore boundary drawn on a room cell
+    # keeps its own per-cell member (the game's rule, tiles3.ts plateFor;
+    # the parity fixture holds the two equal).
     ROOM_ANCHOR.clear()
     for room in doc.get("rooms", []):
         cells = [(c["x"], c["y"]) for c in room["cells"]]
@@ -1035,7 +1053,7 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
             continue
         anchor = min(cells)
         for c in cells:
-            ROOM_ANCHOR[c] = anchor
+            ROOM_ANCHOR[c] = (anchor, room.get("ground"))
 
     def region_at(x, y, gg):
         return f"{gg}@{x // RGN},{y // RGN}"
@@ -1087,6 +1105,18 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                 INSTEAD of the plate, never over it."""
                 quad = [(x, y), (x + 1, y), (x, y + 1), (x + 1, y + 1)]
                 gs = [g(*c) for c in quad]
+                # A CORNER WITHIN ONE STOREY OF THIS CELL VOTES ITS OWN GROUND
+                # and a farther one folds to the cell's - the game's
+                # BOUNDARY_STEP rule (tiles3.ts boundaryAt): the sand beside a
+                # cliff foot still blends with the sand, where "all four
+                # levels equal" left a hard diamond along every shore step.
+                # AND A LIQUID SIDE COMPOSES: the shore IS a transition tile
+                # (maintainer 2026-09-09, "the transition tile is not 100%
+                # water or 100% beach"); a liquid cell draws it top-face-only
+                # below. Both held equal to the game by the parity fixture.
+                if None not in gs and "" not in gs:
+                    gs = [gv if abs(L(*c) - zl) <= 1 else gs[0]
+                          for gv, c in zip(gs, quad)]
                 # A THREE-GROUND JUNCTION STILL GETS A BOUNDARY. Falling back
                 # to the pure plate there drew the cell's raw diamond edge -
                 # a hard straight segment sitting in the middle of an
@@ -1098,9 +1128,7 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                     keep = [t for t, _n in cnt.most_common(2)]
                     odd = next(t for t in cnt if t not in keep)
                     gs = [keep[0] if t == odd else t for t in gs]
-                if None not in gs and "" not in gs and len(set(gs)) == 2 \
-                        and len({L(*c) for c in quad}) == 1 \
-                        and not any(q in liq for q in gs):
+                if None not in gs and "" not in gs and len(set(gs)) == 2:
                     a, b = sorted(set(gs))
                     sa, sb = side_roles(a, b)
                     idx = (8 * (gs[0] == sb) + 4 * (gs[1] == sb)
@@ -1143,64 +1171,69 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                     sl = slope_tile(gr, sidx, x, y)
                     if sl is not None:
                         t = sl
-                # FADE BAND: within FADE_BAND cells of a different SOLID
-                # ground at the same level, ease the change with the fades
-                # product (top-only, placed by edge_ground). Deterministic.
-                # A REAL DISTANCE BAND: the nearest differing solid ground at
-                # this level anywhere in the neighbourhood (Chebyshev), ring 1
-                # included. Four axis cells at one ring was not a band, and
-                # skipping ring 1 dropped the fade exactly where the drift is
-                # strongest — the boundary tile rides the corner lattice ON
-                # TOP of this cell, so ring 1 is still ours to dress.
-                near = None
-                for r in range(1, FADE_BAND + 1):
-                    for dy2 in range(-r, r + 1):
-                        for dx2 in range(-r, r + 1):
-                            if max(abs(dx2), abs(dy2)) != r:
-                                continue
-                            og = g(x + dx2, y + dy2)
-                            if og and og != gr and og not in liq \
-                                    and L(x + dx2, y + dy2) == zl:
-                                near = (og, r)
-                                break
-                        if near:
-                            break
-                    if near:
-                        break
+                # FADE BAND - THE GAME'S RULE (tiles3.ts fadeFor, maintainer
+                # 2026-09-09; the parity fixture holds this equal at the
+                # resolver's constants: reach FADE_BAND, amount 1, falloff 1).
+                # The nearest differing SOLID ground within reach, distance =
+                # max(Chebyshev ring, level difference) and only a ground this
+                # one has a fade pool for; a fade lands only where its roll is
+                # LOWER than all four edge neighbours' (never two fades
+                # edge-on) and under 0.45 x amount x band position; the pick is
+                # rating-weighted around a target coverage running from the
+                # pool's densest tile at the transition to its sparsest at the
+                # far ring (pct_min + span x pos^falloff). Deterministic.
+                reach, amount, falloff = FADE_BAND, 1.0, 1.0
+                near, best_d = None, reach + 1
+                for dy2 in range(-reach, reach + 1):
+                    for dx2 in range(-reach, reach + 1):
+                        r = max(abs(dx2), abs(dy2))
+                        if r == 0 or r >= best_d:
+                            continue
+                        og = g(x + dx2, y + dy2)
+                        if not og or og == gr or og in liq:
+                            continue
+                        d = max(r, abs(L(x + dx2, y + dy2) - zl))
+                        if d >= best_d:
+                            continue
+                        if not fade_pool(gr, og):
+                            continue
+                        best_d, near = d, (og, d)
                 if near:
                     pool = fade_pool(gr, near[0])
                     if pool:
                         rr = _rng((x * 73856093) ^ (y * 19349663))
-                        # A FADE IS A SCATTERED EVENT, NOT A COAT OF PAINT.
-                        # Stamping the band solid put ONE tile on up to 1,357
-                        # cells — the repetition he ruled out. Probability
-                        # falls off with distance from the switch.
-                        band_pos = (FADE_BAND + 1 - near[1]) / (FADE_BAND + 1)
-                        if rr() > 0.45 * band_pos:
-                            return t
-                        # sample the WHOLE pool, weighted by his ratings, with
-                        # the mix strength tracking the distance
-                        wts = [(1.0 + 1.6 * rt) *
-                               (1.0 - abs((pc / 60.0) - band_pos))
-                               for (_f, pc, rt) in pool]
-                        tot = sum(w for w in wts if w > 0) or 1.0
-                        pick, acc = len(pool) - 1, rr() * tot
-                        for i2, w in enumerate(wts):
-                            acc -= max(0.0, w)
-                            if acc <= 0:
-                                pick = i2
-                                break
-                        idx = pick
-                        hi = len(pool) - 1
-                        # a fade is TOP-ONLY art (its wall is meaningless by
-                        # the producer's own index), so it conforms exactly
-                        # like any other surface: top face kept, wall filled
-                        # from the ground's palette, alpha = the published
-                        # silhouette. Hand-cropping it to 40 rows produced a
-                        # 30-row surface that the top-face mask could not
-                        # index — and shipped a garbage wall besides.
-                        return conformed_plate(pool[max(0, idx)][0], gr)
-                # DETAILS: once in a while, one of his top-approved tops
+                        band_pos = (reach + 1 - near[1]) / (reach + 1)
+                        u = rr()
+
+                        def draw_at(cx, cy):
+                            return _rng((cx * 73856093) ^ (cy * 19349663))()
+                        lonely = (u < draw_at(x + 1, y) and u < draw_at(x - 1, y)
+                                  and u < draw_at(x, y + 1) and u < draw_at(x, y - 1))
+                        if lonely and u <= 0.45 * amount * band_pos:
+                            pos = (reach + 1 - near[1]) / max(1, reach)
+                            pct_min, pct_max = pool[0][1], pool[-1][1]
+                            span = max(1, pct_max - pct_min)
+                            target = pct_min + span * (min(1.0, pos) ** falloff)
+                            wts = [(1.0 + 1.6 * rt)
+                                   * max(0.0, 1.0 - abs(pc - target) / (span / 2))
+                                   for (_f, pc, rt) in pool]
+                            tot = sum(w for w in wts if w > 0) or 1.0
+                            pick, acc = len(pool) - 1, rr() * tot
+                            for i2, w in enumerate(wts):
+                                acc -= max(0.0, w)
+                                if acc <= 0:
+                                    pick = i2
+                                    break
+                            # a fade is TOP-ONLY art (its wall is meaningless
+                            # by the producer's own index), so it conforms
+                            # exactly like any other surface.
+                            return conformed_plate(pool[max(0, pick)][0], gr)
+                # DETAILS: once in a while, one of his top-approved tops -
+                # wherever no fade landed (a band cell whose roll failed
+                # included), never on the room floor (the game's rule: a
+                # parquet room is one floor, not a floor with pebbles).
+                if gr == "parquet_floor":
+                    return t
                 dp = detail_pool(gr)
                 if dp:
                     rate = float(_DETAIL_RATE.get(gr, DETAIL_FREQ))
@@ -1213,8 +1246,9 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                 # A LIQUID IS A GROUND WITH A SET TOO (water: 16 tiles, clean
                 # weight 0 — he chose every one of them). It was drawing a
                 # flat diamond, and water is the largest surface on the map.
-                # Top face only: a liquid never shows a wall.
-                img.alpha_composite(top_face_only(surface()),
+                # Top face only: a liquid never shows a wall - and its shore
+                # is a composed transition like any other edge.
+                img.alpha_composite(top_face_only(wang_surface()),
                                     (bx, col_y(x, y, zl)))
                 continue
             if zl == 0:
@@ -1423,9 +1457,12 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
         # variations and hflip", 2026-08-30), and until now nothing could ask
         # for one: the world had no field for it and every consumer drew the
         # base still. An unknown state falls through to the base.
+        # AN EXPLICIT STATE WINS OVER `lit` (the game's rule, scenery3.ts
+        # stateFor): a placement naming LIT_2 is that variation, and `lit`
+        # only picks the first LIT_* state for a placement naming none.
         if p.get("state") and (meta.get("states") or {}).get(p["state"]):
             spath = meta["states"][p["state"]]["sprite"]
-        if p.get("lit"):              # {"lit": true} selects the LIT_* state
+        elif p.get("lit"):            # {"lit": true} selects the LIT_* state
             litk = sorted(k for k in (meta.get("states") or {})
                           if k.startswith("LIT"))
             if litk:
@@ -1461,31 +1498,28 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
         art = art.resize((max(1, round(art.width * k)), max(1, round(art.height * k))), Image.NEAREST)
         if p.get("hflip"):
             art = art.transpose(Image.FLIP_LEFT_RIGHT)
-        # ONE GROUND PLANE FOR TERRAIN AND SCENERY. A tile's top face is
-        # composited at col_y - TOP_Y, so the drawn ground sits TOP_Y px above
-        # the bare projection - and scenery anchored at the bare projection
-        # therefore stood 10 px below the tile it is on. Measured with both
-        # markers drawn: tile-top centre at y 820, hitbox centre at 830. The
-        # maintainer sees the same disagreement in the game, the other way up
-        # ("I feel like you place the objects a bit to far up"). The placement
-        # data is exact - the hitbox centre is ON the cell centre to 0.0000
-        # cells - so this is the renderer's to fix, and a renderer fixes it by
-        # putting both on the same plane, not by moving the data.
+        # ONE GROUND PLANE FOR TERRAIN AND SCENERY, AND IT IS THE BARE
+        # PROJECTION. The SURFACE is a 46-row plate whose diamond apex is ON
+        # its paste row (plates/*/clean.webp: opaque rows 0..45, the 2-px apex
+        # at row 0; top_face_only keeps rows 0..28), pasted at col_y - so the
+        # tile-top centre sits at col_y + DY, which is exactly where a
+        # placement at (x+.5, y+.5) projects. The game anchors there too
+        # (scenery3.ts anchorY; measured live 2026-09-09 on the lily at
+        # 205.5,34.5: plate paste row 4054, anchor 4068 = row + 14, sprite
+        # bottom 4068). A TOP_Y lift belonged to the 64-box COURSE anchor
+        # (col_y - TOP_Y puts a course's apex row on col_y) and lifted every
+        # bush 10 px above the tile centre it stands on - the fixture
+        # measured the game 10 px below render3 on every ground piece. The
+        # placement data is exact (the hitbox centre is on the cell centre to
+        # 0.0000 cells) and stays so; HITBOX_DROP stays 0.
         # `z` (storeys) lifts the feet up the wall behind the cell: a window
         # on a house, a hanging on a room's back wall. Storeys, so the game's
-        # 15px pitch and this renderer's 17 agree on where on the wall it is.
+        # 15px pitch and this renderer's 17 agree on where on the wall it is
+        # (maintainer 2026-09-09 at 305.5,237: "This is too far up. Don't
+        # touch the roof overhang!" - the feet sit on the wall's foot line).
         z = L(int(px), int(py)) + float(p.get("z") or 0.0)
         sx = ox + (px - x0 - (py - y0)) * DX
-        # A WALL-HUNG PIECE IS NOT LIFTED ONTO THE GROUND PLANE. Its feet are
-        # on the wall's FOOT LINE - the anchor cell's apex, the bare
-        # projection - and the game anchors there (scenery3.ts anchorY).
-        # Lifting it TOP_Y like a bush drew every window 10 px higher than the
-        # game will (measured on the_game at (305.5, 237): art bottom 12.5 px
-        # above the anchor for z = 1.3 px, top 2.5 px INTO the roof band the
-        # placement pass had cleared by 8; maintainer 2026-09-09, at that
-        # picture: "This is too far up. Don't touch the roof overhang!").
-        lift = 0 if "z" in p else TOP_Y
-        sy = oy + (px - x0 + py - y0) * DY - z * LP - lift
+        sy = oy + (px - x0 + py - y0) * DY - z * LP
         img.alpha_composite(art, (int(sx - art.width / 2), int(sy - art.height)))
 
     if scale != 1:

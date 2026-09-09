@@ -841,7 +841,9 @@ test("the_game's boundaries share compositions — the ratio, measured", { skip 
    * the cell itself, no quad touching a liquid composes at all (a coast is a
    * hard edge), and the middle of a 196,368-cell ocean now holds 72. The four
    * grounds that actually meet are here. */
-  const win = t.resolveWindow(viewFromDoc(doc, { x0: 368, y0: 328, x1: 432, y1: 392 }));
+  // The south-east bay on the 394x394 canvas (the parity fixture's own window
+  // and a 64-cell margin down-screen): coast, road, cliffs, the house.
+  const win = t.resolveWindow(viewFromDoc(doc, { x0: 284, y0: 192, x1: 348, y1: 256 }));
   const keys = win.boundaries.map((b) => boundaryKeyFor(b)).filter((k): k is string => !!k);
   const distinct = new Set(keys);
   assert.ok(win.boundaries.length > 100, `${win.boundaries.length} boundaries in a 64x64-cell window`);

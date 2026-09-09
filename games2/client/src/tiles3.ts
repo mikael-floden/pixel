@@ -57,6 +57,9 @@ export const TILE = 64;
 export const TOP_Y = 10;
 /** A plate is the top face plus its wall: 64x46, byte-exact silhouette alpha. */
 export const PLATE_H = 46;
+/** A deck cap over a doorway keeps this many rows: the top diamond, no band
+ *  (render3 `TOP_Y + DY + 8`; see `deckCell`). */
+export const DECK_CAP_CROP = TOP_Y + DY + 8;
 /** Cells of fade band each side of a hard edge. The band is a real CHEBYSHEV
  *  distance band from ring 1: the boundary tile rides the corner lattice ON TOP
  *  of the cell, so ring 1 is still the surface's to dress. */
@@ -693,6 +696,8 @@ export interface Tiles3Stats {
 export interface Deck3 {
   kind?: string;
   ground?: string;
+  /** The course material when it is not the top (see shared Deck.side). */
+  side?: string;
   level: number;
   thickness?: number;
   cells: { x: number; y: number }[];
@@ -870,6 +875,9 @@ export interface WallStackStep {
   tile: TileArt;
   /** Paste y of the whole 64-box. */
   y: number;
+  /** Rows of the tile pasted, from its top; absent = the whole tile. A deck's
+   *  cap over a doorway is cropped to `DECK_CAP_CROP` (see `deckCell`). */
+  h?: number;
 }
 
 export interface WallColumn {
@@ -994,7 +1002,16 @@ export interface Tiles3DeckCell {
   y: number;
   frontCovered: boolean;
   lo: number;
+  /** The deck's published `side`, null when it names none. */
+  side: string | null;
   body: string;
+  /** A deck cell with an open front, no wall under it and its base below the
+   *  slab — a DOORWAY — and the cell BEHIND one (an open-front deck neighbour
+   *  down-screen): the cap is cropped to one level of roof (`capH`). */
+  doorway: boolean;
+  behind: boolean;
+  /** Rows of the cap pasted: DECK_CAP_CROP over a doorway, else the cap's own height. */
+  capH: number;
   cap: TileArt;
   mid: TileArt;
   sx: number;
@@ -1058,6 +1075,23 @@ export class Tiles3 {
   private fadeCache = new Map<string, FadePoolTile[]>();
   /** cell index -> its room's anchor index. Built once per world. */
   private roomAnchors: Map<number, number> | null = null;
+  /** Published rooms only: each room cell's floor ground — the anchor binds that ground alone. */
+  private roomGround: Map<number, string> | null = null;
+
+  /** Does `ground` pick its member at the room's anchor on this cell? ONE FLOOR
+   *  PER ROOM (maintainer 2026-08-30, twice) binds THE ROOM'S OWN FLOOR — a
+   *  paving room as much as a parquet one, and the cave chambers maps2 publishes
+   *  as dark_mud rooms — and nothing else drawn on a room cell: the sand half of
+   *  a shore boundary keeps its per-cell member. render3.plate_img applies the
+   *  same rule; the parity fixture holds the two equal. A world publishing no
+   *  rooms keeps the parquet fill, which knows only ROOM_FLOOR. */
+  private roomFloorAt(x: number, y: number, ground: string): boolean {
+    const view = this.curView;
+    if (!view) return false;
+    if (!view.rooms?.length) return ground === ROOM_FLOOR;
+    if (!this.roomGround) this.roomAnchor(x, y); // builds both maps
+    return this.roomGround?.get(y * view.width + x) === ground;
+  }
   /** The view the current resolve is running against — the room fill reads it. */
   private curView: World3View | null = null;
   /** The view whose rooms `roomAnchors` was built from. A world swap must drop
@@ -1288,7 +1322,7 @@ export class Tiles3 {
      * `pick_member(chosen, ax, ay)`). Without it a floor is a patchwork that
      * changes underfoot (maintainer 2026-08-30, restated 08-29: "I said one
      * Parquet Floor per room!!!"). */
-    const [ax, ay] = ground === ROOM_FLOOR ? this.roomAnchor(x, y) : [x, y];
+    const [ax, ay] = this.roomFloorAt(x, y, ground) ? this.roomAnchor(x, y) : [x, y];
     /* THE REGION COMES FROM THE ANCHOR TOO for an indoor floor. render3 takes
      * the SET from the cell's own 24-cell chunk and only the MEMBER from the
      * anchor, which lays two different boards in one room the moment it crosses
@@ -1303,6 +1337,7 @@ export class Tiles3 {
     this.curView = view;
     if (this.roomView !== view) {
       this.roomAnchors = null;
+      this.roomGround = null;
       this.roomView = view;
       this.stats.rooms = 0;
     }
@@ -1391,6 +1426,7 @@ export class Tiles3 {
        * The fill stays for a world that publishes no rooms. */
       const pub = view.rooms;
       if (pub?.length) {
+        this.roomGround = new Map();
         for (const room of pub) {
           let ax = Infinity;
           let ay = Infinity;
@@ -1402,7 +1438,10 @@ export class Tiles3 {
           }
           if (!Number.isFinite(ax)) continue;
           const a = ay * W + ax;
-          for (const c of room.cells) m.set(c.y * W + c.x, a);
+          for (const c of room.cells) {
+            m.set(c.y * W + c.x, a);
+            this.roomGround.set(c.y * W + c.x, room.ground);
+          }
         }
         this.roomAnchors = m;
         this.stats.rooms = new Set(m.values()).size;
@@ -2729,8 +2768,8 @@ export class Tiles3 {
    *  while every natural pair beside it (water|light_beach, light_beach|grass,
    *  dark_mud|grass, grey_stone|grass) drew 0.12-0.30 and reads as a blend.
    *
-   *  DIVERGES FROM render3, whose MADE_GROUND (render3.py:140) still lists it —
-   *  raised with maps2 on their board. */
+   *  render3.py's MADE_GROUND carries the same three (it listed light_soil
+   *  until 2026-09-09); the parity fixture holds the two lists equal. */
   private static readonly MADE_GROUND = ["brown_paving_stone", "grey_paving_stone", "parquet_floor"];
 
   /** Is this pair NATURAL — neither side a made surface? */
@@ -2832,15 +2871,47 @@ export class Tiles3 {
      * smithy door at 430,372 under a level-6 roof; render3.py fixed the same
      * line on 2026-08-30 and measures 5.07 levels of clear opening). */
     const lo = frontCovered ? dl : Math.max(0, dl - th);
-    /* A cave lid is rock from underneath whatever its top is made of. */
-    const body = dk.kind === "cave" && dg !== "black_rock" && dg !== "grey_stone" ? "grey_stone" : dg;
-    const cap = frontCovered ? this.flatTile(dg) : this.overTile(dg, body, x, y, dl);
+    /* THE BODY IS THE DECK'S `side` WHEN IT NAMES ONE — roof-over-side is the
+     * THIN look (render3.py "A DECK IS X-OVER-Y TOO": grass over black_rock
+     * reads as a skin of grass, grass over grass as a thick slab; maintainer
+     * 2026-08-30 with two reference tiles). Without one a cave lid is rock from
+     * underneath whatever its top is, and anything else is same-over-same. */
+    const side = dk.side || null;
+    const body = side ?? (dk.kind === "cave" && dg !== "black_rock" && dg !== "grey_stone" ? "grey_stone" : dg);
+    /* THE CAP IS X-OVER-Y WHENEVER THE BODY DIFFERS FROM THE TOP OR THE FRONT
+     * IS OPEN; only a covered same-material cell wears the plain flat tile
+     * (render3: `over_tile(dg, body) if (body != dg or not front_covered) else
+     * flat_tile(dg)`). */
+    const over = body !== dg || !frontCovered;
+    const cap = over ? this.overTile(dg, body, x, y, dl) : this.flatTile(dg);
+    /* ONE LEVEL OF ROOF OVER A DOORWAY, NOT TWO (render3, maintainer
+     * 2026-09-02: "your doorway is 4 levels high so the player will hit his
+     * forehead ... the roof over the doorway is 2 levels and should only be
+     * 1"). A cap tile is a top-face diamond PLUS a storey band, ~45 px of
+     * opaque art; over the wall ring the band hides behind the course below,
+     * over a DOORWAY — an open-front deck cell with no wall under it and its
+     * base below the slab — nothing is below it and the whole band hung into
+     * the opening. Cropped to DECK_CAP_CROP rows the diamond alone is the one
+     * level of roof and still closes the roofline (dropping the tile opened a
+     * sliver of grass through every door). The cell BEHIND a doorway — an
+     * open-front, wall-less deck neighbour down-screen — is what you see
+     * THROUGH the opening and is cropped the same. Measured on the smithy
+     * door against a 6-level wall: uncropped 4.13 levels clear, 38 px 4.67,
+     * 32 px 5.07 (shipped). render3 draws the same crop. */
+    const L = (cx: number, cy: number) => view.levelAt(cx, cy);
+    const openWall = (cx: number, cy: number) => view.wallSideAt(cx, cy) === null && L(cx, cy) < dl;
+    const doorway = !frontCovered && openWall(x, y);
+    const behind =
+      (set.has((y + 1) * view.width + x) && openWall(x, y + 1)) ||
+      (set.has(y * view.width + x + 1) && openWall(x + 1, y));
+    const capH = doorway || behind ? DECK_CAP_CROP : cap.h;
     const stack: WallStackStep[] = [];
     for (let f = lo; f <= dl; f++)
       stack.push({
         storey: f,
         tile: f === dl ? cap : this.storeyTile(body, x, y, f),
         y: columnY(frame, x, y, f) - TOP_Y,
+        ...(f === dl && capH !== cap.h ? { h: capH } : {}),
       });
     const mid = this.storeyTile(body, x, y, lo < dl ? lo : dl);
     /* A SLAB IS ONE SURFACE — ONE SET AND ONE MEMBER FOR THE WHOLE DECK,
@@ -2906,7 +2977,11 @@ export class Tiles3 {
       y,
       frontCovered,
       lo,
+      side,
       body,
+      doorway,
+      behind,
+      capH,
       cap,
       mid,
       sx: columnX(frame, x, y),

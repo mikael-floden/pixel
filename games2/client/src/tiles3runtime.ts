@@ -81,7 +81,7 @@ export interface ParsedLike {
   rows: { t: string; l: number }[][];
   liquids?: string[];
   wallSides?: Record<number, string>;
-  decks?: { kind?: string; mat?: string; level: number; thickness: number; cells: { col: number; row: number }[] }[];
+  decks?: { kind?: string; mat?: string; side?: string; level: number; thickness: number; cells: { col: number; row: number }[] }[];
   rooms?: { ground: string; cells: { col: number; row: number }[] }[];
 }
 
@@ -97,6 +97,7 @@ export function viewFromParsed(w: ParsedLike, bounds?: Partial<Bounds>): World3V
   const decks: Deck3[] = (w.decks ?? []).map((d) => ({
     kind: d.kind,
     ground: d.mat,
+    side: d.side,
     level: d.level,
     thickness: d.thickness,
     cells: d.cells.map((c) => ({ x: c.col, y: c.row })),

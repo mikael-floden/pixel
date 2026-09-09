@@ -836,6 +836,12 @@ export interface Deck {
   thickness: number; // EXTRA face tiles below the top (render only; 0 = the top
   // tile alone — its baked face is a 1-level slab, how bridges ship since 2026-07-22)
   cells: DeckCell[];
+  /** maps3 `side`: the material the slab's courses are built FROM when it is
+   *  not the top (a roof deck over a parquet house draws roof-over-parquet —
+   *  the THIN look, render3.py "A DECK IS X-OVER-Y TOO"). Absent = the top's
+   *  own material (same-over-same, the thick slab); a cave lid without one is
+   *  rock (`deckCell`). Eleven of the_game's roof decks carry one. */
+  side?: string;
 }
 
 /**

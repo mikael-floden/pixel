@@ -102,9 +102,9 @@ test("ground names come from grounds[] via ground[y][x]", () => {
   // Every sample is a cell where ground[y][x] !== ground[x][y], so each one of
   // them also fails if the grid is read transposed. One per declared ground.
   const samples: [number, number, string][] = [
-    [226, 71, "black_rock"],
+    [273, 86, "black_rock"],
     [109, 151, "brown_paving_stone"],
-    [225, 71, "dark_mud"],
+    [226, 71, "dark_mud"],
     [200, 20, "deep_water"],
     [211, 33, "grass"],
     [244, 82, "grey_stone"],
@@ -116,7 +116,7 @@ test("ground names come from grounds[] via ground[y][x]", () => {
     [207, 29, "water"],
     [104, 166, "grey_paving_stone"],
     [234, 184, "lava"],
-    [275, 155, "slime"],
+    [273, 178, "slime"],
   ];
   assert.deepEqual(new Set(samples.map((s) => s[2])), new Set(doc.grounds), "one sample per ground the doc declares");
   for (const [x, y, name] of samples) {
@@ -172,7 +172,7 @@ test("every cell's ground and level round-trip the whole grid, voids included", 
 
 test("decks carry ground→mat, kind verbatim, and lose no cell", () => {
   if (!world) return test.skip("maps2/worlds3/the_game missing");
-  assert.equal(doc.decks.length, 28, "decks (measured)");
+  assert.equal(doc.decks.length, 21, "decks (measured)");
   assert.equal(world.decks?.length, doc.decks.length);
   const kinds: Record<string, number> = {};
   let cells = 0;
@@ -180,7 +180,7 @@ test("decks carry ground→mat, kind verbatim, and lose no cell", () => {
     kinds[d.kind] = (kinds[d.kind] ?? 0) + 1;
     cells += d.cells.length;
   }
-  assert.deepEqual(kinds, { cave: 12, roof: 11, bridge: 5 }, "deck kinds (measured)");
+  assert.deepEqual(kinds, { cave: 5, roof: 11, bridge: 5 }, "deck kinds (measured)");
   assert.equal(cells, 1414, "deck cells (measured)");
   assert.equal(world.decks!.reduce((n, d) => n + d.cells.length, 0), cells, "no deck cell may be dropped");
   for (let i = 0; i < doc.decks.length; i++) {
@@ -188,6 +188,7 @@ test("decks carry ground→mat, kind verbatim, and lose no cell", () => {
     const out: Deck = world.decks![i];
     assert.equal(out.kind, src.kind); // roof/cave = INDOORS in v3; carried through
     assert.equal(out.mat, src.ground); // mat:int became ground:string
+    assert.equal(out.side, src.side); // the course material when named (Deck.side); absent stays absent
     assert.equal(out.level, src.level);
     assert.equal(out.thickness, src.thickness);
     assert.deepEqual(out.cells[0], { col: src.cells[0].x, row: src.cells[0].y, flip: false });
@@ -244,11 +245,11 @@ test("walls override the face material per cell, and LATER WINS", () => {
 test("scenery is carried off-grid, and buildTerrainGrid alone blocks nothing", () => {
   if (!world) return test.skip("maps2/worlds3/the_game missing");
   assert.equal(world.scenery?.length, doc.scenery.length);
-  assert.equal(world.scenery!.length, 1294, "placements (measured)");
-  assert.equal(world.scenery!.filter((p) => p.hflip).length, 252, "mirrored placements (measured)");
-  assert.equal(world.scenery!.filter((p) => p.lit).length, 143, "lit placements (measured)");
-  assert.equal(world.scenery!.filter((p) => p.state).length, 1099, "placements naming a variation (measured)");
-  assert.equal(world.scenery!.filter((p) => p.dir).length, 52, "placements naming a facing (measured)");
+  assert.equal(world.scenery!.length, 1335, "placements (measured)");
+  assert.equal(world.scenery!.filter((p) => p.hflip).length, 248, "mirrored placements (measured)");
+  assert.equal(world.scenery!.filter((p) => p.lit).length, 136, "lit placements (measured)");
+  assert.equal(world.scenery!.filter((p) => p.state).length, 1293, "placements naming a variation (measured)");
+  assert.equal(world.scenery!.filter((p) => p.dir).length, 94, "placements naming a facing (measured)");
   assert.equal(world.scenery!.filter((p) => p.hflip).length, doc.scenery.filter((p: any) => p.hflip).length);
   assert.equal(world.scenery!.filter((p) => p.state).length, doc.scenery.filter((p: any) => p.state).length);
   assert.equal(world.scenery!.filter((p) => p.dir).length, doc.scenery.filter((p: any) => p.dir).length);
