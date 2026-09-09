@@ -3790,9 +3790,73 @@ class Grow:
     #     gap 36, 48 places         R = 0.455  (barer for little gain)
     # Land is only 13% of this map, so the gap is a LAND packing limit: past
     # ~36 the island runs out of room and goes bare rather than clustered.
+    # THE GROUND UNDER A PLACE, SOMETIMES (maintainer 2026-09-09, at a
+    # boulder field sitting on flat green: "When you place a cluster of
+    # Scenery like this please also change ground type around the
+    # installation to make it look even better! This is not a hard rule! I
+    # will never give you hard rules because that will make the game look
+    # the same everywhere. This is just something I think should happen more
+    # often"). A place that earns it takes a soft patch of the ground its
+    # own kind implies - scree under boulders, mud under ferns and fungi,
+    # sand under driftwood - and the patch is painted BEFORE the pieces, so
+    # the cluster settles on its own ground and the existing boundary art
+    # blends the rim. PLACE_PATCH of eligible places, by the site's own hash:
+    # every one of them would be the sameness he is warning about.
+    PLACE_GROUND = {
+        "boulder field": ("grey_stone", "black_rock", "dark_mud"),
+        "cairn ridge": ("grey_stone", "dark_mud"),
+        "fern hollow": ("dark_mud",),
+        "mushroom ring": ("dark_mud",),
+        "deadfall": ("dark_mud",),
+        "reed bed": ("dark_mud",),
+        "driftwood spit": ("light_beach",),
+    }                       # the kinds NOT here keep their ground on purpose:
+                            # a thicket and a tussock meadow ARE the grass
+    PLACE_PATCH = 0.55      # ...of the eligible places get one
+    PATCH_ON = ("grass", "dark_mud", "snow", "light_beach")   # never made ground
     PLACE_GAP = 30
     SCATTER = 0.006       # a few loose pieces outside every place, so the map
                           # is not sterile between them
+
+    def _place_patch(self, sx, sy, name, rad, r):
+        """Paint the ground under one place, or leave it alone. Returns the
+        material painted, or None. Only natural ground is touched - roads,
+        paving, floors, decks, ramps, doors, cave floors, the wild band and
+        every liquid are held back, and the blob keeps a ring of the old
+        ground inside the cluster's radius so the patch has an edge to blend
+        against instead of ending at the pieces."""
+        opts = self.PLACE_GROUND.get(name)
+        if not opts or r() > self.PLACE_PATCH:
+            return None
+        here = self.g(sx, sy)
+        if here not in self.PATCH_ON:
+            return None
+        keep = set(self.floor_cells) | set(getattr(self, "door_cells", ()))
+        keep |= {(c["x"], c["y"]) for dk in self.doc["decks"] for c in dk["cells"]}
+        keep |= {(c["x"], c["y"]) for rm in self.doc.get("ramps", []) for c in rm["cells"]}
+        keep |= set(getattr(self, "cave_floor", {})) | set(getattr(self, "wild_cells", ()))
+        lv = self.lvl[sy][sx]
+        R = int(rad) + 1
+        ok = {(x, y) for y in range(sy - R, sy + R + 1)
+              for x in range(sx - R, sx + R + 1)
+              if (0 <= x < NEW and 0 <= y < NEW and (x, y) not in keep
+                  and self.g(x, y) == here and self.lvl[y][x] == lv
+                  and not self.liquid(x, y))}
+        if len(ok) < 12:
+            return None
+        mat = opts[int(r() * len(opts)) % len(opts)]
+        if mat == here:
+            return None
+        size = max(5, int(len(ok) * (0.35 + 0.25 * r())))
+        blob = self._pool_blob(ok, r, size, ring=1)
+        if not blob or len(blob) < 5:
+            return None
+        gi = self.gi[mat]
+        for (x, y) in blob:
+            self.grd[y][x] = gi
+        self.patched = getattr(self, "patched", 0) + len(blob)
+        self.patch_places = getattr(self, "patch_places", 0) + 1
+        return mat
 
     def _kind_for(self, x, y, wet, shore, wooded, high):
         """A place is what its ground makes it."""
@@ -3898,6 +3962,10 @@ class Grow:
             rad = r0 + r() * (r1 - r0)
             want = n0 + int(r() * (n1 - n0 + 1))
             ground = (self.g(sx, sy),)
+            # the ground the place stands on, before anything is placed on it
+            patch = self._place_patch(sx, sy, name, rad, r)
+            if patch:
+                ground = (patch, ground[0])
             got = 0
             if hero:
                 hp = pool(hero)
@@ -3946,7 +4014,9 @@ class Grow:
                         and self.put(piece, jx + 0.5, jy + 0.5, on=(g,),
                                      hflip=r() < 0.5, state=state):
                     loose += 1
-        self.placed += [("places composed", placed), ("loose scatter", loose)]
+        self.placed += [("places composed", placed), ("loose scatter", loose),
+                        ("places given their own ground", getattr(self, "patch_places", 0)),
+                        ("ground patch cells", getattr(self, "patched", 0))]
         self.placed += sorted(tally.items())
 
     # -- islet dressing -------------------------------------------------------

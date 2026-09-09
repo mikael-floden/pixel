@@ -739,6 +739,36 @@ and was a third of the cave's fires). Flicker is deferred (maintainer: "not
 now"); `hearths`/`braziers` keep their slot even under a roof — indoor mode
 (games2) decides what an under-roof light does.
 
+### a place brings its own ground, sometimes
+
+(maintainer 2026-09-09, at a boulder field sitting on flat green: *"When you
+place a cluster of Scenery like this please also change ground type around
+the installation to make it look even better! This is not a hard rule! I will
+never give you hard rules because that will make the game look the same
+everywhere. This is just something I think should happen more often."*)
+
+A place that earns it takes a soft patch of the ground its own kind implies —
+scree under boulders and cairns, mud under ferns, fungi, deadfall and reeds,
+sand under driftwood. `PLACE_GROUND` holds that mapping and the kinds NOT in
+it keep their ground on purpose: a thicket and a tussock meadow ARE the grass.
+
+- **`PLACE_PATCH = 0.55` of eligible places**, by the site's own hash. Every
+  one of them is the sameness he is warning about; this is a taste knob, not
+  a rule.
+- **Painted BEFORE the pieces**, so the cluster settles on its own ground —
+  the site's `on=` filter then accepts both the patch and the old ground, and
+  the existing boundary art blends the rim with no new tiles.
+- **`_pool_blob` with `ring=1`**, so the patch keeps a ring of the old ground
+  inside the cluster's radius: it has an edge to blend against instead of
+  ending where the pieces do.
+- **Natural ground only** (`PATCH_ON`: grass, dark_mud, snow, light_beach) at
+  one level. Roads, paving, floors, decks, ramps, doors, cave floors, the
+  wild band and every liquid are held back.
+
+the_game: 12 of 64 places, 423 cells. Most places are already on the ground
+their kind implies — a reed bed in a fen is mud already — and those are
+skipped rather than repainted.
+
 ### the cliff apron — a wall never ends on a hard line
 
 (maintainer 2026-09-07, two photographs: *"when a wall ends we often get a
