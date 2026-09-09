@@ -138,5 +138,203 @@
       }
     }
   },
-  "approved_at": "2026-09-09T19:59:20+00:00"
+  "approved_at": "2026-09-09T19:59:20+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0844,
+          "step_max": 0.1288,
+          "drift": 1.15,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "b750f2a5-d238-48c8-96fb-cc58cf6feee9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:08:44+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.163,
+          "step_max": 0.2208,
+          "drift": 3.25,
+          "loop": 0.0003,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "7dd8224f-f06b-4a15-91ed-139dd0b66ca2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:08:45+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0662,
+          "step_max": 0.1024,
+          "drift": 1.15,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "de8f9abb-8858-43b6-ad11-82f71fbef96d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:08:45+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.1241,
+          "step_max": 0.166,
+          "drift": 1.8,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "7cf8d92a-22ec-44c9-9445-4c569dd5ec08",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:08:46+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0703,
+          "step_max": 0.0837,
+          "drift": 0.27,
+          "loop": 0.0003,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "8fe03892-40d7-4224-9d52-04fa0ac5c0a7",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:08:47+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.163,
+          "step_max": 0.2208,
+          "drift": 3.25,
+          "loop": 0.0003,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "7dd8224f-f06b-4a15-91ed-139dd0b66ca2",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:08:45+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0662,
+          "step_max": 0.1024,
+          "drift": 1.15,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "de8f9abb-8858-43b6-ad11-82f71fbef96d",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:08:45+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.1241,
+          "step_max": 0.166,
+          "drift": 1.8,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "7cf8d92a-22ec-44c9-9445-4c569dd5ec08",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:08:46+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "lava_slug/animations/idle/south/00.webp",
+          "lava_slug/animations/idle/south/01.webp",
+          "lava_slug/animations/idle/south/02.webp",
+          "lava_slug/animations/idle/south/03.webp",
+          "lava_slug/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "lava_slug/animations/idle/south-east/00.webp",
+          "lava_slug/animations/idle/south-east/01.webp",
+          "lava_slug/animations/idle/south-east/02.webp",
+          "lava_slug/animations/idle/south-east/03.webp",
+          "lava_slug/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "lava_slug/animations/idle/east/00.webp",
+          "lava_slug/animations/idle/east/01.webp",
+          "lava_slug/animations/idle/east/02.webp",
+          "lava_slug/animations/idle/east/03.webp",
+          "lava_slug/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "lava_slug/animations/idle/north-east/00.webp",
+          "lava_slug/animations/idle/north-east/01.webp",
+          "lava_slug/animations/idle/north-east/02.webp",
+          "lava_slug/animations/idle/north-east/03.webp",
+          "lava_slug/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "lava_slug/animations/idle/north/00.webp",
+          "lava_slug/animations/idle/north/01.webp",
+          "lava_slug/animations/idle/north/02.webp",
+          "lava_slug/animations/idle/north/03.webp",
+          "lava_slug/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "lava_slug/animations/idle/south-west/00.webp",
+          "lava_slug/animations/idle/south-west/01.webp",
+          "lava_slug/animations/idle/south-west/02.webp",
+          "lava_slug/animations/idle/south-west/03.webp",
+          "lava_slug/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "lava_slug/animations/idle/west/00.webp",
+          "lava_slug/animations/idle/west/01.webp",
+          "lava_slug/animations/idle/west/02.webp",
+          "lava_slug/animations/idle/west/03.webp",
+          "lava_slug/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "lava_slug/animations/idle/north-west/00.webp",
+          "lava_slug/animations/idle/north-west/01.webp",
+          "lava_slug/animations/idle/north-west/02.webp",
+          "lava_slug/animations/idle/north-west/03.webp",
+          "lava_slug/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "lava_slug/animations/idle__south.webp",
+        "south-east": "lava_slug/animations/idle__south-east.webp",
+        "east": "lava_slug/animations/idle__east.webp",
+        "north-east": "lava_slug/animations/idle__north-east.webp",
+        "north": "lava_slug/animations/idle__north.webp",
+        "south-west": "lava_slug/animations/idle__south-west.webp",
+        "west": "lava_slug/animations/idle__west.webp",
+        "north-west": "lava_slug/animations/idle__north-west.webp"
+      }
+    }
+  }
 }
