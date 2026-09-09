@@ -418,7 +418,15 @@ const ROOM_LIT_MS = 400;
  *  reads ~1.0-1.5); re-read every WINDOW_GLOW_MS, like roomHasLight. */
 const WINDOW_GLOW_LO = 0.1;
 const WINDOW_GLOW_HI = 0.7;
-const WINDOW_GLOW_MS = 400;
+/** Re-read every 150 ms: a torch walking up to a window must show through it
+ *  as it moves (maintainer 2026-09-09), and 61 pieces x a few bodies is free. */
+const WINDOW_GLOW_MS = 150;
+/** A BODY INDOORS CARRIES A TORCH (the torch rule: on indoors and at night),
+ *  and its light reaches the window like a lamp's would: the torch's 6-cell
+ *  radius, a lamp's peak. Every body counts — remote players own no light slot
+ *  (only MY torch does), but a window is not the light field, it is a sum. */
+const WINDOW_TORCH_R = 6;
+const WINDOW_TORCH_PEAK = 1;
 
 const CAMPFIRE_KEY = "campfire-burn";
 // The ONE art asset the game names directly instead of reading it from a
@@ -6535,6 +6543,14 @@ export class WorldScene extends Phaser.Scene {
       },
       /** SCENERY ON A WALL — every drawn window/hanging with its wall column,
        *  its cut fade and, for a window, its room glow and ON-overlay alpha. */
+      /** The placements within `r` cells of a cell, with what decides whether
+       *  they draw: their wall record, roofed flag and manifest state. */
+      sceneryNear: (col: number, row: number, r = 6) =>
+        (this.scenery?.placements ?? [])
+          .filter((p) => Math.abs(p.x - col) <= r && Math.abs(p.y - row) <= r)
+          .map((p) => ({ i: p.i, piece: p.piece, x: +p.x.toFixed(2), y: +p.y.toFixed(2), cell: [p.cx, p.cy], level: p.level, z: p.z ?? null,
+            wall: p.wall ? [p.wall.cx, p.wall.cy] : null, dir: p.dir ?? null, roofed: !!p.roofed,
+            manifest: this.sceneryPieces?.get(p.piece) === undefined ? "pending" : this.sceneryPieces?.get(p.piece) === null ? "tombstoned" : "loaded" })),
       sceneryWalls: () =>
         this.sceneryWalls.map((w) => ({
           place: w.place, piece: w.piece, z: +w.z.toFixed(2),
@@ -6561,7 +6577,10 @@ export class WorldScene extends Phaser.Scene {
           return { piece: s.piece, col: +s.col.toFixed(1), row: +s.row.toFixed(1), loaded: !!pc, radius: lb?.radius ?? null, strength: lb?.strength ?? null,
             d: +Math.hypot(s.col - (w.inner.col + 0.5), s.row - (w.inner.row + 0.5)).toFixed(2) };
         });
-        return { room, inner: w.inner, torchF: +this.curTorchF.toFixed(3), inRoom: srcs, glow: +this.windowGlow(w.inner).toFixed(3) };
+        const bodies = [...this.avatars.entries()]
+          .filter(([, av]) => this.roomOf(Math.floor(av.fx / CELL_WU), Math.floor(av.fy / CELL_WU)) === room)
+          .map(([id, av]) => ({ id, d: +Math.hypot(av.fx / CELL_WU - (w.inner.col + 0.5), av.fy / CELL_WU - (w.inner.row + 0.5)).toFixed(2) }));
+        return { room, inner: w.inner, torchF: +this.curTorchF.toFixed(3), inRoom: srcs, bodies, floor: srcs.length ? indoorLightLit() : indoorLight(), glow: +this.windowGlow(w.inner).toFixed(3) };
       },
       sceneryIndoor: () => {
         const ps = this.scenery?.placements ?? [];
@@ -14641,11 +14660,24 @@ export class WorldScene extends Phaser.Scene {
    *  radius; the sum is squashed between WINDOW_GLOW_LO and _HI and scaled by
    *  the night factor (curTorchF: 0 at full day, 1 otherwise), so windows glow
    *  at dusk and go dark by day. A room with no light of its own reads 0. */
+  /** NOT BINARY (maintainer 2026-09-09: "The plan was not to go binary dark
+   *  window / lit window ... fade between them based on the brightness inside.
+   *  Some houses might not have a scenery light ... This is why we give houses
+   *  without a light source more ambient light. So the window color should
+   *  probably be a fade somewhere in between."): the glow's FLOOR is the room's
+   *  indoor ambient — the dark-room dial (40%) for a room with no light of its
+   *  own, the lit-room dial (12%) for one that lights itself — and the sources
+   *  fade the rest of the way up. AND A TORCH AT THE WINDOW ("Lets say I run up
+   *  to a window with my TORCH. It would be so cool if a player outside can
+   *  see that brightness being reflected in the window"): every body standing
+   *  in the room is a torch source, so the pane brightens as anyone inside
+   *  walks up to it and dims as they leave. */
   private windowGlow(inner: { col: number; row: number }): number {
     const room = this.roomOf(inner.col, inner.row);
     if (room < 0) return 0;
     let sum = 0;
-    for (const s of this.roomLit(room)) {
+    const own = this.roomLit(room);
+    for (const s of own) {
       const pc = this.sceneryPieces?.get(s.piece);
       if (pc === undefined) void this.sceneryPieces?.request(s.piece); // lands → a later read sees its block
       const lb = pc ? sceneryLightBlockFor(pc, s.state ?? "") : null;
@@ -14658,8 +14690,18 @@ export class WorldScene extends Phaser.Scene {
       const k = 1 - d / r;
       sum += peak * k * k;
     }
+    for (const av of this.avatars.values()) {
+      const ac = av.fx / CELL_WU;
+      const ar = av.fy / CELL_WU;
+      if (this.roomOf(Math.floor(ac), Math.floor(ar)) !== room) continue;
+      const d = Math.hypot(ac - (inner.col + 0.5), ar - (inner.row + 0.5));
+      if (d >= WINDOW_TORCH_R) continue;
+      const k = 1 - d / WINDOW_TORCH_R;
+      sum += WINDOW_TORCH_PEAK * k * k;
+    }
     const t = Math.max(0, Math.min(1, (sum - WINDOW_GLOW_LO) / (WINDOW_GLOW_HI - WINDOW_GLOW_LO)));
-    return t * t * (3 - 2 * t) * this.curTorchF;
+    const floor = own.length ? indoorLightLit() : indoorLight();
+    return (floor + (1 - floor) * t * t * (3 - 2 * t)) * this.curTorchF;
   }
 
   /** The lit placements of a published room — see roomLitMap. */

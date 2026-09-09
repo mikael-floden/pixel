@@ -677,3 +677,22 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   radius)`; `__ml.lookAt(col,row)`. Numeric probes: verify-solidband,
   verify-penumbra, verify-wallspread, verify-timecycle, verify-lit-order.
   Run them against a dev stack before touching the shader.
+
+## Windows
+
+- **A WINDOW GLOWS BY THE ROOM'S BRIGHTNESS, NEVER ON/OFF** (`windowGlow`,
+  WorldScene). The LIGHTS_ON overlay's alpha is a floor plus a fade: the floor
+  is the room's indoor ambient — the dark-room dial (40%) for a room with no
+  light of its own, the lit-room dial (12%) for one that lights itself — and
+  the room's lit scenery fades the rest of the way up (peak x squared falloff,
+  summed at the cell inside the wall, squashed between `WINDOW_GLOW_LO` 0.1
+  and `_HI` 0.7), all scaled by the night factor (0 by day). **Every body in
+  the room is a torch** (`WINDOW_TORCH_R` 6 cells, peak 1, re-read every 150
+  ms): a player walking up to a window from inside brightens it for whoever is
+  outside. (Maintainer 2026-09-09: "The plan was not to go binary dark
+  window/lit window ... fade between them based on the brightness inside ...
+  houses without a light source [get] more ambient light ... I run up to a
+  window with my TORCH. It would be so cool if a player outside can see that
+  brightness being reflected in the window.") Remote torches own no light
+  slot; the window is a sum, not the light field. Probe:
+  `__ml.windowGlowDebug(place)` → floor, sources, bodies with distance, glow.
