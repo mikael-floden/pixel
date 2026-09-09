@@ -1,0 +1,141 @@
+{
+  "id": "briar_hare",
+  "name": "Briarhare",
+  "tier": "mid",
+  "scale": "small",
+  "lore": "It bolts through the hedges where nothing else can follow. The thorns are its own, and they draw blood.",
+  "biome": [
+    "grass",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Small fantasy hare whose brown fur is grown through with thorny bramble stems, long ears, dark wary eyes, powerful hind legs, and a few small red berries caught in the thorns.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "briar_hare/rotations/south.webp",
+    "south-east": "briar_hare/rotations/south-east.webp",
+    "east": "briar_hare/rotations/east.webp",
+    "north-east": "briar_hare/rotations/north-east.webp",
+    "north": "briar_hare/rotations/north.webp",
+    "north-west": "briar_hare/rotations/north-west.webp",
+    "west": "briar_hare/rotations/west.webp",
+    "south-west": "briar_hare/rotations/south-west.webp"
+  },
+  "sheet": "briar_hare/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8e433994-6e7a-4ac3-9e67-b2327ecf47ed",
+  "seed": 454635481,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:58:53+00:00",
+  "elapsed_s": 162.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.746,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.84,
+        "bbox": [
+          8,
+          2,
+          32,
+          38
+        ],
+        "fill": 0.54,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.787,
+        "bbox": [
+          5,
+          1,
+          37,
+          38
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.791,
+        "bbox": [
+          3,
+          1,
+          35,
+          38
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.754,
+        "bbox": [
+          9,
+          2,
+          31,
+          38
+        ],
+        "fill": 0.495,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.818,
+        "bbox": [
+          6,
+          1,
+          32,
+          38
+        ],
+        "fill": 0.601,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.752,
+        "bbox": [
+          6,
+          1,
+          32,
+          38
+        ],
+        "fill": 0.601,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.746,
+        "bbox": [
+          8,
+          1,
+          34,
+          38
+        ],
+        "fill": 0.601,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.793,
+        "bbox": [
+          8,
+          1,
+          34,
+          38
+        ],
+        "fill": 0.601,
+        "touches_edge": false
+      }
+    }
+  }
+}

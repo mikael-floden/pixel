@@ -1,0 +1,140 @@
+{
+  "id": "sand_kit",
+  "name": "Dunekit",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Grown cats of the dunes wear the sun as armour. This one has not yet, and hides from it in the noon shade.",
+  "biome": [
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Small fantasy desert cat kit with pale sand-coloured fur, oversized ears, large green eyes, faint dark stripes on its legs, and a tufted tail wrapped around its paws.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "cat",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "sand_kit/rotations/south.webp",
+    "south-east": "sand_kit/rotations/south-east.webp",
+    "east": "sand_kit/rotations/east.webp",
+    "north-east": "sand_kit/rotations/north-east.webp",
+    "north": "sand_kit/rotations/north.webp",
+    "north-west": "sand_kit/rotations/north-west.webp",
+    "west": "sand_kit/rotations/west.webp",
+    "south-west": "sand_kit/rotations/south-west.webp"
+  },
+  "sheet": "sand_kit/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "471466d1-0520-47dd-8626-cfe21517d2f5",
+  "seed": 888464411,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:58:00+00:00",
+  "elapsed_s": 201.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.662,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.776,
+        "bbox": [
+          5,
+          2,
+          34,
+          38
+        ],
+        "fill": 0.652,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.71,
+        "bbox": [
+          3,
+          2,
+          34,
+          37
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.739,
+        "bbox": [
+          8,
+          2,
+          37,
+          38
+        ],
+        "fill": 0.652,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.662,
+        "bbox": [
+          7,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.783,
+        "bbox": [
+          5,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.738,
+        "bbox": [
+          10,
+          2,
+          33,
+          38
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.717,
+        "bbox": [
+          5,
+          2,
+          35,
+          37
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.787,
+        "bbox": [
+          4,
+          2,
+          31,
+          38
+        ],
+        "fill": 0.608,
+        "touches_edge": false
+      }
+    }
+  }
+}

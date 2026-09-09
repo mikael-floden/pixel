@@ -1,0 +1,141 @@
+{
+  "id": "ice_sprite",
+  "name": "Rimeling",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early.",
+  "biome": [
+    "ice",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Small fantasy ice spirit with a slender body of pale translucent ice, a faceted crystal head with two glowing white eyes, thin arms, and a faint haze of frost around it.",
+  "size": [
+    32,
+    32
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ice_sprite/rotations/south.webp",
+    "south-east": "ice_sprite/rotations/south-east.webp",
+    "east": "ice_sprite/rotations/east.webp",
+    "north-east": "ice_sprite/rotations/north-east.webp",
+    "north": "ice_sprite/rotations/north.webp",
+    "north-west": "ice_sprite/rotations/north-west.webp",
+    "west": "ice_sprite/rotations/west.webp",
+    "south-west": "ice_sprite/rotations/south-west.webp"
+  },
+  "sheet": "ice_sprite/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f7af9ede-99c9-4f5c-8a8c-8f937ed5d91e",
+  "seed": 14532945,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:58:21+00:00",
+  "elapsed_s": 149.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.689,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.767,
+        "bbox": [
+          6,
+          3,
+          26,
+          29
+        ],
+        "fill": 0.508,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.752,
+        "bbox": [
+          9,
+          3,
+          23,
+          29
+        ],
+        "fill": 0.355,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.742,
+        "bbox": [
+          7,
+          3,
+          23,
+          29
+        ],
+        "fill": 0.406,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.709,
+        "bbox": [
+          6,
+          3,
+          26,
+          29
+        ],
+        "fill": 0.508,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.768,
+        "bbox": [
+          7,
+          3,
+          24,
+          29
+        ],
+        "fill": 0.432,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.689,
+        "bbox": [
+          7,
+          3,
+          23,
+          29
+        ],
+        "fill": 0.406,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.698,
+        "bbox": [
+          9,
+          3,
+          25,
+          29
+        ],
+        "fill": 0.406,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.769,
+        "bbox": [
+          8,
+          3,
+          25,
+          29
+        ],
+        "fill": 0.432,
+        "touches_edge": false
+      }
+    }
+  }
+}

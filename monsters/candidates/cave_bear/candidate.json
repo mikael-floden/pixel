@@ -1,0 +1,141 @@
+{
+  "id": "cave_bear",
+  "name": "Deepclaw",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It has never seen the sun and hunts without needing to. In the deep galleries it smells a torch before the torch is lit.",
+  "biome": [
+    "black_rock",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy cave bear with pale hairless grey skin over heavy muscle, no eyes only smooth skin where eyes would be, a wide nose and long yellow fangs, enormous black claws, and pale fungus growing along its spine.",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cave_bear/rotations/south.webp",
+    "south-east": "cave_bear/rotations/south-east.webp",
+    "east": "cave_bear/rotations/east.webp",
+    "north-east": "cave_bear/rotations/north-east.webp",
+    "north": "cave_bear/rotations/north.webp",
+    "north-west": "cave_bear/rotations/north-west.webp",
+    "west": "cave_bear/rotations/west.webp",
+    "south-west": "cave_bear/rotations/south-west.webp"
+  },
+  "sheet": "cave_bear/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b995f202-aa88-4dee-8476-183dcbb27293",
+  "seed": 1960159986,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:58:23+00:00",
+  "elapsed_s": 180.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.555,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.555,
+        "bbox": [
+          12,
+          7,
+          119,
+          123
+        ],
+        "fill": 0.758,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.606,
+        "bbox": [
+          8,
+          10,
+          118,
+          117
+        ],
+        "fill": 0.718,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.637,
+        "bbox": [
+          10,
+          6,
+          113,
+          122
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.588,
+        "bbox": [
+          10,
+          7,
+          113,
+          121
+        ],
+        "fill": 0.717,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.712,
+        "bbox": [
+          24,
+          5,
+          108,
+          123
+        ],
+        "fill": 0.605,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.635,
+        "bbox": [
+          9,
+          13,
+          120,
+          119
+        ],
+        "fill": 0.718,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.614,
+        "bbox": [
+          19,
+          7,
+          108,
+          122
+        ],
+        "fill": 0.625,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.686,
+        "bbox": [
+          9,
+          12,
+          120,
+          122
+        ],
+        "fill": 0.745,
+        "touches_edge": false
+      }
+    }
+  }
+}
