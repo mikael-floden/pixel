@@ -59,15 +59,15 @@
         "fill": 0.671,
         "touches_edge": false
       },
-      "west": {
-        "run1": 0.731,
+      "south-east": {
+        "run1": 0.796,
         "bbox": [
-          4,
-          8,
-          114,
-          112
+          14,
+          7,
+          105,
+          116
         ],
-        "fill": 0.794,
+        "fill": 0.689,
         "touches_edge": false
       },
       "east": {
@@ -81,28 +81,6 @@
         "fill": 0.817,
         "touches_edge": false
       },
-      "north": {
-        "run1": 0.703,
-        "bbox": [
-          26,
-          6,
-          95,
-          113
-        ],
-        "fill": 0.513,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.796,
-        "bbox": [
-          14,
-          7,
-          105,
-          116
-        ],
-        "fill": 0.689,
-        "touches_edge": false
-      },
       "north-east": {
         "run1": 0.719,
         "bbox": [
@@ -114,6 +92,17 @@
         "fill": 0.749,
         "touches_edge": false
       },
+      "north": {
+        "run1": 0.703,
+        "bbox": [
+          26,
+          6,
+          95,
+          113
+        ],
+        "fill": 0.513,
+        "touches_edge": false
+      },
       "north-west": {
         "run1": 0.735,
         "bbox": [
@@ -123,6 +112,17 @@
           115
         ],
         "fill": 0.634,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.731,
+        "bbox": [
+          4,
+          8,
+          114,
+          112
+        ],
+        "fill": 0.794,
         "touches_edge": false
       },
       "south-west": {

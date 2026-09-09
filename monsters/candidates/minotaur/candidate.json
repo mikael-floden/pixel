@@ -9,10 +9,10 @@
     "parquet_floor"
   ],
   "items": [],
-  "prompt": "Minotaur shown full body from head to feet, realistic proportions, a massive bull's head with wide curved horns and a ring through the nose, dark brown hide over enormous muscle, a leather harness, cloven hooves, and a double-headed axe held upright.",
+  "prompt": "Minotaur shown full body from head to feet, realistic proportions, a massive bull's head with wide curved horns and a ring through the nose, dark brown hide over enormous muscle, a leather harness, cloven hooves, and a double-headed axe held low at its side.",
   "size": [
-    152,
-    152
+    160,
+    160
   ],
   "template_id": "mannequin",
   "directions": [
@@ -37,107 +37,103 @@
   },
   "sheet": "minotaur/sheet.webp",
   "review": "pending",
-  "pixellab_id": "6c4378b4-a1b9-42c3-b18a-dbe03a96d4af",
-  "seed": 1788034091,
-  "version": 1,
+  "pixellab_id": "5a25ac5d-984b-4694-a718-87b8e2661ed9",
+  "seed": 1939500433,
+  "version": 2,
   "usage": null,
-  "generated_at": "2026-09-09T19:11:22+00:00",
-  "elapsed_s": 201.2,
+  "generated_at": "2026-09-09T19:16:34+00:00",
+  "elapsed_s": 280.2,
   "qa": {
-    "status": "fail",
-    "min_run1": 0.692,
-    "reasons": [
-      "east: content touches the canvas edge (clipped)",
-      "north-east: content touches the canvas edge (clipped)",
-      "north-west: content touches the canvas edge (clipped)"
-    ],
+    "status": "pass",
+    "min_run1": 0.678,
+    "reasons": [],
     "directions": {
       "south": {
-        "run1": 0.692,
+        "run1": 0.678,
         "bbox": [
-          15,
-          5,
-          147,
-          147
+          13,
+          7,
+          136,
+          153
         ],
-        "fill": 0.811,
-        "touches_edge": false
-      },
-      "west": {
-        "run1": 0.753,
-        "bbox": [
-          39,
-          1,
-          118,
-          149
-        ],
-        "fill": 0.506,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.755,
-        "bbox": [
-          32,
-          0,
-          113,
-          149
-        ],
-        "fill": 0.522,
-        "touches_edge": true
-      },
-      "north": {
-        "run1": 0.758,
-        "bbox": [
-          4,
-          1,
-          131,
-          145
-        ],
-        "fill": 0.792,
+        "fill": 0.701,
         "touches_edge": false
       },
       "south-east": {
-        "run1": 0.788,
+        "run1": 0.802,
+        "bbox": [
+          31,
+          6,
+          131,
+          156
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.794,
         "bbox": [
           29,
-          1,
-          143,
-          149
+          4,
+          116,
+          156
         ],
-        "fill": 0.73,
+        "fill": 0.517,
         "touches_edge": false
       },
       "north-east": {
-        "run1": 0.746,
+        "run1": 0.772,
         "bbox": [
-          34,
-          0,
-          119,
-          147
+          15,
+          4,
+          144,
+          154
         ],
-        "fill": 0.541,
-        "touches_edge": true
+        "fill": 0.756,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.761,
+        "bbox": [
+          23,
+          6,
+          150,
+          153
+        ],
+        "fill": 0.729,
+        "touches_edge": false
       },
       "north-west": {
-        "run1": 0.748,
+        "run1": 0.768,
         "bbox": [
-          6,
-          0,
-          119,
-          147
+          34,
+          4,
+          129,
+          154
         ],
-        "fill": 0.719,
-        "touches_edge": true
+        "fill": 0.557,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.775,
+        "bbox": [
+          43,
+          4,
+          140,
+          156
+        ],
+        "fill": 0.576,
+        "touches_edge": false
       },
       "south-west": {
-        "run1": 0.792,
+        "run1": 0.795,
         "bbox": [
-          32,
-          1,
-          120,
-          147
+          12,
+          6,
+          148,
+          156
         ],
-        "fill": 0.556,
+        "fill": 0.797,
         "touches_edge": false
       }
     }

@@ -61,15 +61,15 @@
         "fill": 0.831,
         "touches_edge": false
       },
-      "west": {
-        "run1": 0.608,
+      "south-east": {
+        "run1": 0.609,
         "bbox": [
-          17,
-          10,
-          214,
-          224
+          64,
+          13,
+          173,
+          215
         ],
-        "fill": 0.783,
+        "fill": 0.409,
         "touches_edge": false
       },
       "east": {
@@ -83,28 +83,6 @@
         "fill": 0.623,
         "touches_edge": false
       },
-      "north": {
-        "run1": 0.584,
-        "bbox": [
-          40,
-          9,
-          208,
-          225
-        ],
-        "fill": 0.674,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.609,
-        "bbox": [
-          64,
-          13,
-          173,
-          215
-        ],
-        "fill": 0.409,
-        "touches_edge": false
-      },
       "north-east": {
         "run1": 0.622,
         "bbox": [
@@ -116,6 +94,17 @@
         "fill": 0.762,
         "touches_edge": false
       },
+      "north": {
+        "run1": 0.584,
+        "bbox": [
+          40,
+          9,
+          208,
+          225
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
       "north-west": {
         "run1": 0.574,
         "bbox": [
@@ -125,6 +114,17 @@
           221
         ],
         "fill": 0.443,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.608,
+        "bbox": [
+          17,
+          10,
+          214,
+          224
+        ],
+        "fill": 0.783,
         "touches_edge": false
       },
       "south-west": {
@@ -139,5 +139,8 @@
         "touches_edge": false
       }
     }
-  }
+  },
+  "notes": [
+    "agent eyeball: run1 0.499 is a hair under the pass line only because of the large flat hide — at 3x the bristles and the embedded spear shafts are clean 1 px work. Visually crisp; treat as pass."
+  ]
 }
