@@ -10,9 +10,9 @@
       "id": "title",
       "files": [
         {
-          "file": "title.mp3",
-          "mime": "audio/mpeg",
-          "size_bytes": 1520162
+          "file": "title.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1865941
         }
       ],
       "duration_s": 95.01,
@@ -71,15 +71,15 @@
       "faults": [],
       "candidates_tried": [],
       "sections": [],
-      "source_format": "mp3"
+      "source_format": "ogg"
     },
     "night": {
       "id": "night",
       "files": [
         {
-          "file": "night.mp3",
-          "mime": "audio/mpeg",
-          "size_bytes": 1520162
+          "file": "night.ogg",
+          "mime": "audio/ogg; codecs=\"opus\"",
+          "size_bytes": 1881998
         }
       ],
       "duration_s": 95.01,
@@ -138,7 +138,7 @@
       "faults": [],
       "candidates_tried": [],
       "sections": [],
-      "source_format": "mp3"
+      "source_format": "ogg"
     },
     "town": {
       "id": "town",

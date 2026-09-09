@@ -1,10 +1,21 @@
 /**
  * The composer's own MUSIC tracks, which live in music/ — one directory a
  * dedicated music agent owns outright — and are served from /assets/music.
- * mp3 on purpose — decodeAudioData handles it in every browser incl.
- * Safari/iOS (ogg/opus does not). Not generated yet → the callers no-op.
+ * Not generated yet → the callers no-op.
  *
- *  title.mp3  the character-select login theme (startTitleTheme)
+ *  title.ogg  the character-select login theme (startTitleTheme)
+ *
+ * THESE WERE mp3 "on purpose", and the purpose expired: the reason on record
+ * was "decodeAudioData handles it in every browser incl. Safari/iOS (ogg/opus
+ * does not)". Safari has played the Ogg container — Opus and Vorbis — since
+ * 18.4 (macOS 15.4 / iOS 18.4, March 2025), so the exception outlived its
+ * reason and left two files as the only non-ogg audio in the repo. Transcoded
+ * 2026-09-09 at 128k rather than the beds' 96k: no lossless master of these
+ * two ever existed, so it is a SECOND lossy generation on the two tracks
+ * players hear most, and the extra 0.33 MB each keeps the encoder from being
+ * the bottleneck. Measured against the mp3: identical duration to the
+ * millisecond, zero lag (so the loop points, which are in seconds, still
+ * land), and no change at all across 20 Hz - 16 kHz.
  *
  * The WORLD beds (night/town/cave/home/battle/adventure) moved to
  * contextMusic.ts, which selects them by situation and reads their measured
