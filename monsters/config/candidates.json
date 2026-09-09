@@ -8,23 +8,6 @@
   },
   "candidates": [
     {
-      "id": "lantern_bat",
-      "name": "Lanternwing",
-      "tier": "cute",
-      "template_id": "mannequin",
-      "size": 80,
-      "biome": [
-        "black_rock",
-        "grey_stone"
-      ],
-      "items": [
-        "bat wings"
-      ],
-      "prompt": "Plump fantasy cave bat with soft charcoal-gray fur, oversized rounded ears with glowing amber inner membranes, large dark shiny eyes, two tiny white fangs, wide leathery wings with visible finger bones and slightly torn edges, and a small glowing amber lantern-like tuft on each wingtip.",
-      "lore": "It roosts where the miners' lamps went out. The twin glows on its wings are the only light left down there, and it knows it.",
-      "scale": "standard"
-    },
-    {
       "id": "plume_brawler",
       "name": "Plumefist",
       "tier": "mid",
@@ -98,26 +81,6 @@
       "scale": "standard"
     },
     {
-      "id": "pearl_clam",
-      "name": "Nacrebite",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 96,
-      "biome": [
-        "light_beach",
-        "water",
-        "deep_water"
-      ],
-      "items": [
-        "great pearl",
-        "nacre shard",
-        "sea shells"
-      ],
-      "prompt": "Fantasy giant clam monster with a ridged blue-gray shell edged in shimmering mother-of-pearl, the shell gaping open to show a soft pink fleshy mouth with rows of small teeth and one large glowing pearl inside, walking on six pale hermit-crab legs with a fringe of short blue tentacles.",
-      "lore": "It grows one pearl a century and guards it with the whole of its shell. Divers who reach for it come up in pieces.",
-      "scale": "standard"
-    },
-    {
       "id": "root_forager",
       "name": "Twineback",
       "tier": "mid",
@@ -155,24 +118,6 @@
       "scale": "standard"
     },
     {
-      "id": "mist_wisp",
-      "name": "Mistling",
-      "tier": "cute",
-      "template_id": "mannequin",
-      "size": 72,
-      "biome": [
-        "water",
-        "snow",
-        "grass"
-      ],
-      "items": [
-        "mist soulstone"
-      ],
-      "prompt": "Small cute fantasy mist spirit shaped like a floating puff of pale blue-white fog with a round soft body, wide sleepy glowing white eyes, two tiny wispy arms, faint curling swirls trailing off its edges, and a small glowing blue droplet floating just above its head.",
-      "lore": "Morning fog that forgot to lift. It drifts after travellers, dampening lanterns and whispering half a word.",
-      "scale": "standard"
-    },
-    {
       "id": "rime_yeti",
       "name": "Rimehulk",
       "tier": "boss",
@@ -187,56 +132,6 @@
       ],
       "prompt": "Hulking fantasy yeti with thick shaggy white fur crusted with ice, long powerful arms ending in blue-black claws, a broad ape-like face with a wide mouth of jagged icicle teeth, glowing pale blue eyes, icicles hanging from its chin and elbows, and a frost-blue underbelly.",
       "lore": "The blizzard walks on two legs up there. Climbers hear it breathing through the snow long before the snow turns red.",
-      "scale": "standard"
-    },
-    {
-      "id": "gold_mimic",
-      "name": "Gildmaw",
-      "tier": "evil",
-      "template_id": "bear",
-      "size": 96,
-      "biome": [
-        "parquet_floor",
-        "brown_paving_stone",
-        "grey_paving_stone"
-      ],
-      "items": [
-        "treasure soulstone"
-      ],
-      "prompt": "Fantasy treasure chest mimic with a dark oak wooden body bound in tarnished brass bands, the lid gaping open as a huge mouth with gold coins for teeth and a long purple tongue, two glowing greedy yellow eyes on the lid, gold coins and gems spilling out, standing on four short clawed wooden legs.",
-      "lore": "It ate a king's ransom and then the king. Everything it has ever swallowed still glitters between its teeth.",
-      "scale": "standard"
-    },
-    {
-      "id": "bulb_hopper",
-      "name": "Bulbling",
-      "tier": "cute",
-      "template_id": "mannequin",
-      "size": 64,
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "items": [],
-      "prompt": "Small cute round fantasy seed creature with a smooth tan bulb body, a single green sprout with two soft leaves growing from the top of its head, large friendly black eyes, rosy pink cheeks, two tiny stubby legs and a short curling root tail.",
-      "lore": "Planted by no one and growing anyway. It follows warmth, and it is fragile.",
-      "scale": "standard"
-    },
-    {
-      "id": "puff_owl",
-      "name": "Puffowl",
-      "tier": "cute",
-      "template_id": "mannequin",
-      "size": 64,
-      "biome": [
-        "grass",
-        "snow"
-      ],
-      "items": [
-        "barred feather"
-      ],
-      "prompt": "Small cute round fantasy owl chick covered in extremely fluffy cream and brown feathers, enormous golden eyes, a tiny orange beak, short stubby wings with barred brown feather tips, and small clawed orange feet.",
-      "lore": "All eyes and no patience. It falls from every nest and fights whatever finds it on the ground.",
       "scale": "standard"
     },
     {
@@ -289,21 +184,6 @@
       "scale": "standard"
     },
     {
-      "id": "gloom_cap",
-      "name": "Gloomcap",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 88,
-      "biome": [
-        "dark_mud",
-        "grass"
-      ],
-      "items": [],
-      "prompt": "Fantasy walking mushroom creature with a wide dark purple cap spotted with pale glowing dots, a pale stubby stalk body, two small glowing lavender eyes, stubby arms and legs, and puffs of purple spores venting from the gills under the cap.",
-      "lore": "It walks when the woods are dark and stands very still when they are not. The spores smell sweet, which is how it wins.",
-      "scale": "standard"
-    },
-    {
       "id": "storm_roc",
       "name": "Stormroc",
       "tier": "boss",
@@ -320,36 +200,6 @@
       "prompt": "Enormous fantasy storm bird with dark slate-blue feathers edged in white lightning, a hooked steel-gray beak, blazing white eyes, wings raised high above its back crackling with electric arcs, no feathers hanging below its talons, long sharp talons, and a crest of feathers standing up like jagged lightning bolts.",
       "lore": "It nests above the weather and hunts below it. Every thunderclap on the fells is a wingbeat somebody did not see.",
       "scale": "standard"
-    },
-    {
-      "id": "cinder_imp",
-      "name": "Cinderimp",
-      "tier": "cute",
-      "template_id": "mannequin",
-      "size": 64,
-      "biome": [
-        "lava",
-        "black_rock"
-      ],
-      "items": [],
-      "prompt": "Small mischievous fantasy imp with dark red skin, two small curved black horns, a wide grin of sharp white teeth, glowing orange eyes, small bat-like wings, a pointed tail with a flame at the tip, and a tiny rusty pitchfork held in both hands.",
-      "lore": "The smallest thing the volcano ever spat out. It steals fire from camps and leaves the camps burning.",
-      "scale": "standard"
-    },
-    {
-      "id": "soot_sprite",
-      "name": "Sootling",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "mannequin",
-      "size": 32,
-      "biome": [
-        "black_rock",
-        "lava"
-      ],
-      "items": [],
-      "prompt": "Tiny round fantasy soot sprite, a fuzzy black ball of soot with two huge round white eyes, a small orange ember glowing in its middle, two stubby arms and two stubby feet, and a few loose soot flakes drifting off it.",
-      "lore": "It falls from the chimneys and never finds the way back. Where one gathers, the whole flue is close behind."
     },
     {
       "id": "pebble_crab",
@@ -383,22 +233,6 @@
       "items": [],
       "prompt": "Tiny fantasy snail with a coiled brown shell capped in bright green moss and one small red mushroom, a plump olive-green body, two long eyestalks with shiny black eyes, and a glistening slime trail.",
       "lore": "Too slow to chase and too stubborn to yield. Its shell is a garden, and it defends the garden."
-    },
-    {
-      "id": "bone_colossus",
-      "name": "Ossuar",
-      "tier": "boss",
-      "scale": "big",
-      "template_id": "mannequin",
-      "size": 240,
-      "biome": [
-        "grey_paving_stone",
-        "grey_stone",
-        "snow"
-      ],
-      "items": [],
-      "prompt": "Gigantic fantasy giant built from stacked bones and grave dirt, shown full body from skull to feet, a huge cracked skull with a crown of smaller skulls, a torso of interlocking ribcages, arms of bundled femurs ending in claw-like finger bones, thick pillar legs of packed bone, and pale green grave-light glowing from every socket.",
-      "lore": "Every barrow in the valley gave a bone to it. It walks when the frost cracks the graves, counting what is missing."
     },
     {
       "id": "elder_treant",
@@ -491,21 +325,6 @@
       "lore": "The hedge got up and charged. Its back is a bramble patch and the berries are the only thing that has ever calmed it."
     },
     {
-      "id": "ghost_lantern",
-      "name": "Wickwisp",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 80,
-      "biome": [
-        "grey_paving_stone",
-        "parquet_floor"
-      ],
-      "items": [],
-      "prompt": "Floating fantasy haunted lantern of rusted iron with cracked glass, a pale blue ghostly flame inside forming a screaming face, a short chain dangling beneath it, and wisps of cold vapor around the glass.",
-      "lore": "Someone carried it down and never came up. It still lights the way for whoever follows, in the wrong direction."
-    },
-    {
       "id": "goblin_scout",
       "name": "Snaggle",
       "tier": "mid",
@@ -581,21 +400,6 @@
       "lore": "It eats what the graves give up and waits for more. Its patience is only hunger, drawn out."
     },
     {
-      "id": "ice_slime",
-      "name": "Glacigel",
-      "tier": "cute",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 64,
-      "biome": [
-        "ice",
-        "snow"
-      ],
-      "items": [],
-      "prompt": "Small cute fantasy ice slime, a translucent pale blue blob with frozen bubbles and snowflakes suspended inside, two round dark eyes, a tiny frosty mouth, and a rim of frost crystals along its base.",
-      "lore": "A slime that froze in the long winter and never thawed. Its touch leaves frost that lasts for days."
-    },
-    {
       "id": "owlbear",
       "name": "Hootclaw",
       "tier": "evil",
@@ -611,21 +415,6 @@
       "lore": "Half of it hunts by night and half by day, and they never agreed to sleep. It is always awake, and always hungry."
     },
     {
-      "id": "shadow_hand",
-      "name": "Grasper",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 96,
-      "biome": [
-        "black_rock",
-        "grey_paving_stone"
-      ],
-      "items": [],
-      "prompt": "Floating fantasy shadow hand, a huge disembodied hand of living black smoke with long clawed fingers, a single lidless yellow eye set in the palm, and dark vapor trailing from the severed wrist.",
-      "lore": "The rest of it is somewhere else, and it wants a rest of you to match. It points before it grabs."
-    },
-    {
       "id": "clockwork_knight",
       "name": "Gearwarden",
       "tier": "evil",
@@ -639,21 +428,6 @@
       "items": [],
       "prompt": "Fantasy clockwork automaton knight shown full body from head to feet, a body of tarnished brass plates and exposed spinning gears, a glowing amber lens for a single eye, a keyed windup crank on its back, a short sword held upright, and a round shield.",
       "lore": "Wound once by a hand long dead, it has not run down. It guards a door that no longer has a room behind it."
-    },
-    {
-      "id": "cursed_scarecrow",
-      "name": "Strawgrin",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 112,
-      "biome": [
-        "light_soil",
-        "grass"
-      ],
-      "items": [],
-      "prompt": "Fantasy cursed scarecrow shown full body from head to feet, a carved grinning pumpkin head lit from within by orange flame, a body of straw stuffed into a torn coat, a wooden cross-pole through its shoulders, and crows' feathers stuck in its sleeves.",
-      "lore": "It was meant to keep the crows off. Now it keeps the farmers off, and the crows sit on it and watch."
     },
     {
       "id": "fire_elemental",
@@ -684,20 +458,6 @@
       "items": [],
       "prompt": "Fantasy water elemental shown full body from head to feet, a humanoid figure of clear blue rushing water with white foam edges, a glowing pearl-like core in its chest, two bright cyan eyes, and small fish visible swimming inside it.",
       "lore": "A river that stood up to see what it had been carrying. It is not angry, but it has never learned to be gentle."
-    },
-    {
-      "id": "haunted_book",
-      "name": "Tomefang",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 72,
-      "biome": [
-        "parquet_floor"
-      ],
-      "items": [],
-      "prompt": "Fantasy haunted spellbook, a thick leather-bound tome hovering upright with its covers open as jaws, pages forming rows of paper teeth, a single glowing purple eye on the spine, and a red ribbon bookmark like a tongue.",
-      "lore": "It bites readers and reads the bitten. Every scream is written down in a hand nobody has been able to translate."
     },
     {
       "id": "lich",
@@ -850,21 +610,6 @@
       "lore": "Planted to keep the pests from the garden. It has grown past pests, and past the garden."
     },
     {
-      "id": "treant_sapling",
-      "name": "Twiglet",
-      "tier": "cute",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 64,
-      "biome": [
-        "grass",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Small cute fantasy treant sapling with a thin bark-covered body, a round head with a tuft of green leaves, two wide amber eyes and a shy smile, stubby branch arms, and root feet.",
-      "lore": "It follows woodcutters home to see what they do with the pieces. It has not forgiven anyone yet, but it is small."
-    },
-    {
       "id": "walrus",
       "name": "Tuskbelly",
       "tier": "mid",
@@ -925,36 +670,6 @@
       "lore": "It crawled out of the deep for a brighter lure and found lanterns. It follows every light on the shore now."
     },
     {
-      "id": "turtle_knight",
-      "name": "Shellguard",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 96,
-      "biome": [
-        "water",
-        "light_beach"
-      ],
-      "items": [],
-      "prompt": "Fantasy turtle knight with a domed green shell riveted with iron plates, a small steel helmet on its beaked head, wise dark eyes, and four scaly legs with iron-shod claws.",
-      "lore": "Slow, armored and entirely unbothered. It has outlasted every siege by being the wall."
-    },
-    {
-      "id": "skeleton_pirate",
-      "name": "Bonesail",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 104,
-      "biome": [
-        "light_beach",
-        "water"
-      ],
-      "items": [],
-      "prompt": "Fantasy skeleton pirate shown full body from head to feet, bleached bones, a tattered captain's coat and tricorn hat, a red sash, a rusted cutlass held upright, one glowing green eye socket, and a barnacled peg leg.",
-      "lore": "It sank with the treasure and refused the terms. Every full moon it comes ashore to collect interest."
-    },
-    {
       "id": "magma_golem",
       "name": "Slagfist",
       "tier": "boss",
@@ -982,21 +697,6 @@
       "items": [],
       "prompt": "Fat fantasy toad of cooled black rock with glowing orange cracks, bulging ember eyes, a wide mouth breathing a wisp of smoke, and a hot glowing throat sac.",
       "lore": "It basks in the lava as other toads bask on stone. Its croak carries sulphur and its bite carries fire."
-    },
-    {
-      "id": "crystal_slime",
-      "name": "Gemgel",
-      "tier": "cute",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 64,
-      "biome": [
-        "grey_stone",
-        "black_rock"
-      ],
-      "items": [],
-      "prompt": "Small cute fantasy crystal slime, a translucent violet blob with sharp amethyst crystals growing out of its top, two round dark eyes, and a soft glow inside.",
-      "lore": "It eats gems and grows them back through its skin. Miners keep them like hens and lose fingers like farmers."
     },
     {
       "id": "jackal_warrior",
@@ -1073,21 +773,6 @@
       "lore": "It watches for something bigger. What it sees, the something bigger sees too."
     },
     {
-      "id": "acid_slime",
-      "name": "Corrodegel",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 72,
-      "biome": [
-        "slime",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Fantasy acid slime, a bubbling translucent yellow-green blob with a rusted sword and half-dissolved bones inside, two dark eyes, and drips sizzling on the ground beneath it.",
-      "lore": "It dissolved a knight and kept what would not dissolve. The rest of him is the reek that follows it."
-    },
-    {
       "id": "dread_gazer",
       "name": "Gazer",
       "tier": "boss",
@@ -1118,21 +803,6 @@
       "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night."
     },
     {
-      "id": "mini_slime",
-      "name": "Dropling",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "mannequin",
-      "size": 32,
-      "biome": [
-        "slime",
-        "grass"
-      ],
-      "items": [],
-      "prompt": "Tiny cute fantasy slime, a small round green blob with two big dark eyes, a tiny smile, and a single bubble inside.",
-      "lore": "The smallest thing in the dungeon, and the first thing every blade meets. There are always more."
-    },
-    {
       "id": "frost_mite",
       "name": "Rimemite",
       "tier": "cute",
@@ -1146,21 +816,6 @@
       "items": [],
       "prompt": "Tiny fantasy ice tick, a round body of frosted blue crystal with six small legs, two pale glowing eyes, and a few snowflakes clinging to its back.",
       "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason."
-    },
-    {
-      "id": "ember_wisp",
-      "name": "Emberling",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "mannequin",
-      "size": 32,
-      "biome": [
-        "lava",
-        "black_rock"
-      ],
-      "items": [],
-      "prompt": "Tiny fantasy fire spirit, a small teardrop-shaped flame with a dark ember body, two bright white eyes, and tiny sparks drifting off its tip.",
-      "lore": "It wants to be a fire and only knows how to be a spark. It keeps trying, on everything."
     },
     {
       "id": "hill_giant",
@@ -1191,21 +846,6 @@
       "items": [],
       "prompt": "Gigantic fantasy spider queen with a bloated black abdomen covered in pale egg sacs, eight thick armored legs tucked close beneath her body, a crown of bone spikes, eight glowing violet eyes, and huge dripping fangs.",
       "lore": "Every spider in the dark is hers and every dark is a nursery. She does not hunt; she waits, and the dark brings supper."
-    },
-    {
-      "id": "slime_king",
-      "name": "Gelemperor",
-      "tier": "boss",
-      "scale": "big",
-      "template_id": "mannequin",
-      "size": 224,
-      "biome": [
-        "slime",
-        "parquet_floor"
-      ],
-      "items": [],
-      "prompt": "Gigantic fantasy slime king, a towering translucent green blob with a golden crown sunk into its top, a dozen skeletons and treasure chests suspended inside, and two enormous dark eyes above a wide gooey grin.",
-      "lore": "It swallowed a kingdom one adventurer at a time and took the crown with the last of them. Its subjects are all inside it."
     },
     {
       "id": "rat_king",
@@ -1388,21 +1028,6 @@
       "lore": "Quick in the water and quicker out of it. It guards the ford and takes a toll in fingers."
     },
     {
-      "id": "stone_pup",
-      "name": "Cairnpup",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "dog",
-      "size": 40,
-      "biome": [
-        "grey_stone",
-        "grass"
-      ],
-      "items": [],
-      "prompt": "Small fantasy stone golem puppy with a body of rounded grey river stones held together by pale green moss, two glowing white eyes, small stone ears, and stubby stone legs.",
-      "lore": "A cairn that learned to follow. Leave it a stone and it will keep it forever."
-    },
-    {
       "id": "marsh_heron",
       "name": "Stiltwing",
       "tier": "mid",
@@ -1431,21 +1056,6 @@
       "items": [],
       "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
       "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since."
-    },
-    {
-      "id": "moss_golem",
-      "name": "Mossling",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "mannequin",
-      "size": 40,
-      "biome": [
-        "grass",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Small fantasy moss golem with a stout body of packed earth and thick green moss, two small glowing amber eyes, stubby arms and legs, and a single fern frond growing from its head.",
-      "lore": "Old earth-magic in a small measure. It tends the clearing it woke in and lets nothing be picked there."
     },
     {
       "id": "sand_kit",
@@ -1550,6 +1160,380 @@
       "items": [],
       "prompt": "Small fantasy bog viper coiled tightly on the mud with its head raised, dark olive scales with black diamond markings, a pale belly, yellow slit eyes, and a forked tongue.",
       "lore": "It lies in the shallows with only its eyes above the water. The bite is small, and the swelling is not."
+    },
+    {
+      "id": "dire_wolf",
+      "name": "Greyfang",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "dog",
+      "size": 120,
+      "biome": [
+        "grass",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Large adult dire wolf with realistic proportions, thick coarse grey fur darker along the spine, a heavy muzzle with bared yellow fangs, pale watchful eyes, scarred ears, powerful shoulders and large paws.",
+      "lore": "The pack's old leader, scarred from every winter it has outlived. It does not chase; it waits where the trail narrows."
+    },
+    {
+      "id": "snapping_turtle",
+      "name": "Mossjaw",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 112,
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Large alligator snapping turtle with realistic proportions, a rugged dark green shell ridged with three rows of spikes and grown over with moss, a huge hooked beak, small cold eyes, thick clawed legs and a short armored tail tucked close.",
+      "lore": "It has lain in the same mud for a century and lets the river feed it. Whatever wades close is fed to it too."
+    },
+    {
+      "id": "hyena",
+      "name": "Boneback",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "dog",
+      "size": 104,
+      "biome": [
+        "light_soil",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Adult spotted hyena with realistic proportions, mottled tan fur with dark spots, a bristling black mane along the spine, a heavy skull and massive jaws, rounded ears and small amber eyes.",
+      "lore": "It follows the caravans a day behind and eats what they leave. When they leave nothing, it eats what they are."
+    },
+    {
+      "id": "vulture",
+      "name": "Carrionwing",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "light_soil",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Large vulture standing upright shown full body from head to feet, realistic proportions, ragged dark brown feathers, wings folded tightly against its body, a bald wrinkled pink head and neck, a hooked pale beak and grey talons.",
+      "lore": "It circles the road for days and lands only when it is certain. It has never once been wrong."
+    },
+    {
+      "id": "raven",
+      "name": "Nightcaw",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "grass",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Large raven standing upright shown full body from head to feet, realistic proportions, glossy black feathers with a faint violet sheen, wings folded neatly, a heavy black beak, one pale eye, and a small tarnished ring on one leg.",
+      "lore": "It carried a king's letters and kept the ones it liked. It knows every secret in the valley and sells none."
+    },
+    {
+      "id": "badger",
+      "name": "Brockfang",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 88,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Adult badger with realistic proportions, a stocky grey body, a black-and-white striped face, small dark eyes, long digging claws and a muddy snout with bared teeth.",
+      "lore": "It digs under walls and does not go around. Nothing has ever moved it that it did not choose to let."
+    },
+    {
+      "id": "wolverine",
+      "name": "Gulo",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 96,
+      "biome": [
+        "snow",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Adult wolverine with realistic proportions, thick dark brown fur with a pale band along the flanks, a broad head with small ears, a snarling muzzle of sharp teeth, heavy claws and a bushy tail held low.",
+      "lore": "Small enough to be mistaken for prey and strong enough to drive a bear off a kill. It has done both."
+    },
+    {
+      "id": "frost_yak",
+      "name": "Frostyak",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "horse",
+      "size": 152,
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [],
+      "prompt": "Massive shaggy yak with realistic proportions, long matted black-brown wool crusted with frost, two wide sweeping horns sheathed in ice, a heavy head with steaming nostrils, and thick short legs.",
+      "lore": "It crosses the high passes in weather that kills men. The herds are gone; this one still walks the route alone."
+    },
+    {
+      "id": "orc_warrior",
+      "name": "Warmaul",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 120,
+      "biome": [
+        "grass",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Orc warrior shown full body from head to feet, realistic proportions, grey-green skin over heavy muscle, a jutting jaw with lower tusks, small red eyes under a heavy brow, crude iron shoulder plates and a hide kilt, and a notched battle axe held upright.",
+      "lore": "It fights for whoever pays in iron and eats whoever does not. The axe has a name; it will not say it."
+    },
+    {
+      "id": "cultist",
+      "name": "Hexbrother",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "grey_paving_stone",
+        "parquet_floor"
+      ],
+      "items": [],
+      "prompt": "Hooded cultist shown full body from head to feet, realistic proportions, a long dark crimson robe with black sigils, the face hidden in the hood's shadow except a pale chin, a curved sacrificial dagger held low, and a bone amulet on a cord.",
+      "lore": "One of many, and all of them the same. What they worship is under the floor, and it is listening."
+    },
+    {
+      "id": "black_knight",
+      "name": "Duskplate",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 128,
+      "biome": [
+        "grey_paving_stone",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Fallen knight shown full body from head to feet, realistic proportions, black steel plate armor scored with old cuts, a closed great helm with a narrow slit, a tattered black surcoat with a defaced crest, a longsword held upright and a kite shield.",
+      "lore": "He kept his oath after his lord broke it, and now the oath is all that is left of him."
+    },
+    {
+      "id": "plague_doctor",
+      "name": "Beakmask",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 104,
+      "biome": [
+        "grey_paving_stone",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Plague doctor shown full body from head to feet, realistic proportions, a long black waxed coat, a wide-brimmed black hat, a pale leather beaked mask with round glass eyes, gloved hands, and a wooden cane held upright.",
+      "lore": "It came to cure the lower town and stayed after the last patient. Nobody has seen what is under the mask."
+    },
+    {
+      "id": "naga",
+      "name": "Coilblade",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 128,
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Naga warrior with realistic proportions, a scaled serpent lower body coiled tightly beneath a humanoid torso, dark green scales with a pale belly, a hooded cobra-like head with yellow slit eyes, and a curved bronze blade held close.",
+      "lore": "The temple in the swamp is hers and the swamp is the temple. Every stone step is guarded, and she is the steps."
+    },
+    {
+      "id": "minotaur",
+      "name": "Hornmaul",
+      "tier": "boss",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 152,
+      "biome": [
+        "grey_paving_stone",
+        "parquet_floor"
+      ],
+      "items": [],
+      "prompt": "Minotaur shown full body from head to feet, realistic proportions, a massive bull's head with wide curved horns and a ring through the nose, dark brown hide over enormous muscle, a leather harness, cloven hooves, and a double-headed axe held upright.",
+      "lore": "The maze was built around it, not for it. It knows every turn, and it is always one turn behind you."
+    },
+    {
+      "id": "bridge_troll",
+      "name": "Tollkeeper",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 136,
+      "biome": [
+        "grey_stone",
+        "water"
+      ],
+      "items": [],
+      "prompt": "River troll shown full body from head to feet, realistic proportions, mottled grey-green skin, a long hooked nose, small deep-set eyes, a hunched back, long arms with heavy knuckles, ragged trousers, and a rusted iron chain wrapped around one fist.",
+      "lore": "The bridge is older than the town and the troll is older than the bridge. The toll has never once been coin."
+    },
+    {
+      "id": "wild_bull",
+      "name": "Blackhorn",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "horse",
+      "size": 136,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Aurochs bull with realistic proportions, a huge black-brown body, a heavy neck hump, long forward-curving horns with pale tips, a broad head with small dark eyes, and thick legs with dark hooves.",
+      "lore": "The last of the wild herd, and it knows it. It charges anything that crosses the meadow, and the meadow is wide."
+    },
+    {
+      "id": "grey_rat",
+      "name": "Greyrat",
+      "tier": "mid",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "grey_paving_stone",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Large sewer rat with realistic proportions, greasy grey-brown fur, a long scaly tail curled beside it, yellow chisel teeth, small black eyes and torn ears.",
+      "lore": "Where one is seen, a hundred are not. It carries the sickness that emptied the lower town."
+    },
+    {
+      "id": "sand_scorpling",
+      "name": "Sandsting",
+      "tier": "mid",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 32,
+      "biome": [
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Small desert scorpion with realistic proportions, a pale sand-yellow armored body, two pincers held close, a segmented tail curled over its back ending in a dark stinger, and eight short legs.",
+      "lore": "It hides in boots and bedrolls. The sting is small; the fever it brings is not."
+    },
+    {
+      "id": "carrion_crow",
+      "name": "Grimcrow",
+      "tier": "mid",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 40,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Carrion crow standing upright shown full body from head to feet, realistic proportions, dull black feathers, wings folded, a thick black beak, and small bright black eyes.",
+      "lore": "It sits on the gibbet and waits. It has learned that everything on the road ends up beneath it."
+    },
+    {
+      "id": "field_vole",
+      "name": "Burrowkin",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 32,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Field vole with realistic proportions, soft brown fur, a blunt rounded snout, small ears, dark beady eyes and a short tail.",
+      "lore": "It undermines the granary one tunnel at a time. Farmers lose more to it than to any wolf."
+    },
+    {
+      "id": "rock_skink",
+      "name": "Rockskink",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 32,
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Small rock skink with realistic proportions, smooth dark grey scales banded with pale stripes, a blunt head with small dark eyes, short legs and a thick tail held close.",
+      "lore": "It basks on the warm stones and vanishes into the cracks. Its bite is nothing; its poison is slow."
+    },
+    {
+      "id": "marsh_frog",
+      "name": "Marshfrog",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 32,
+      "biome": [
+        "water",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Marsh frog with realistic proportions, mottled green-brown skin, a pale throat, large golden eyes, and long folded hind legs.",
+      "lore": "The chorus at dusk is a thousand of them. When the chorus stops, something is in the water."
+    },
+    {
+      "id": "stoat",
+      "name": "Whitestoat",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "snow",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Stoat in winter coat with realistic proportions, sleek white fur, a black-tipped tail, small rounded ears, dark bright eyes and a long low body.",
+      "lore": "Small, quick and entirely without fear. It kills hares three times its size and drags them home."
+    },
+    {
+      "id": "iron_rhino",
+      "name": "Ironhorn",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "bear",
+      "size": 240,
+      "biome": [
+        "light_soil",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Colossal armored rhinoceros beast with realistic proportions, thick grey hide plated like riveted iron, a single massive curved horn of dark iron, a smaller horn behind it, small deep-set eyes, heavy pillar legs and three-toed feet.",
+      "lore": "Siege engines were built to imitate it and none have matched it. When it charges, the wall is the softer thing."
+    },
+    {
+      "id": "colossal_boar",
+      "name": "Tuskwarden",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "bear",
+      "size": 232,
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Colossal wild boar with realistic proportions, a mountainous body of dark bristled hide scarred by old spears, two enormous yellowed tusks, a heavy wedge-shaped head with small red eyes, and thick legs with cloven hooves.",
+      "lore": "Every hunt in the valley's history has failed against it. The spear shafts in its hide are the trophies."
     }
   ],
   "retired": [
@@ -1839,6 +1823,421 @@
       "retired": "maintainer 2026-09-09: no silly monsters — rendered as a cube-shaped man in a helmet / a goggle-eyed blob; replaced by cave_bear and bog_viper",
       "retired_at": "2026-09-09T18:10:26+00:00",
       "versions_tried": 1
+    },
+    {
+      "id": "lantern_bat",
+      "name": "Lanternwing",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 80,
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "items": [
+        "bat wings"
+      ],
+      "prompt": "Plump fantasy cave bat with soft charcoal-gray fur, oversized rounded ears with glowing amber inner membranes, large dark shiny eyes, two tiny white fangs, wide leathery wings with visible finger bones and slightly torn edges, and a small glowing amber lantern-like tuft on each wingtip.",
+      "lore": "It roosts where the miners' lamps went out. The twin glows on its wings are the only light left down there, and it knows it.",
+      "scale": "standard",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "pearl_clam",
+      "name": "Nacrebite",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 96,
+      "biome": [
+        "light_beach",
+        "water",
+        "deep_water"
+      ],
+      "items": [
+        "great pearl",
+        "nacre shard",
+        "sea shells"
+      ],
+      "prompt": "Fantasy giant clam monster with a ridged blue-gray shell edged in shimmering mother-of-pearl, the shell gaping open to show a soft pink fleshy mouth with rows of small teeth and one large glowing pearl inside, walking on six pale hermit-crab legs with a fringe of short blue tentacles.",
+      "lore": "It grows one pearl a century and guards it with the whole of its shell. Divers who reach for it come up in pieces.",
+      "scale": "standard",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "mist_wisp",
+      "name": "Mistling",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 72,
+      "biome": [
+        "water",
+        "snow",
+        "grass"
+      ],
+      "items": [
+        "mist soulstone"
+      ],
+      "prompt": "Small cute fantasy mist spirit shaped like a floating puff of pale blue-white fog with a round soft body, wide sleepy glowing white eyes, two tiny wispy arms, faint curling swirls trailing off its edges, and a small glowing blue droplet floating just above its head.",
+      "lore": "Morning fog that forgot to lift. It drifts after travellers, dampening lanterns and whispering half a word.",
+      "scale": "standard",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "gold_mimic",
+      "name": "Gildmaw",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 96,
+      "biome": [
+        "parquet_floor",
+        "brown_paving_stone",
+        "grey_paving_stone"
+      ],
+      "items": [
+        "treasure soulstone"
+      ],
+      "prompt": "Fantasy treasure chest mimic with a dark oak wooden body bound in tarnished brass bands, the lid gaping open as a huge mouth with gold coins for teeth and a long purple tongue, two glowing greedy yellow eyes on the lid, gold coins and gems spilling out, standing on four short clawed wooden legs.",
+      "lore": "It ate a king's ransom and then the king. Everything it has ever swallowed still glitters between its teeth.",
+      "scale": "standard",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "bulb_hopper",
+      "name": "Bulbling",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Small cute round fantasy seed creature with a smooth tan bulb body, a single green sprout with two soft leaves growing from the top of its head, large friendly black eyes, rosy pink cheeks, two tiny stubby legs and a short curling root tail.",
+      "lore": "Planted by no one and growing anyway. It follows warmth, and it is fragile.",
+      "scale": "standard",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "puff_owl",
+      "name": "Puffowl",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "grass",
+        "snow"
+      ],
+      "items": [
+        "barred feather"
+      ],
+      "prompt": "Small cute round fantasy owl chick covered in extremely fluffy cream and brown feathers, enormous golden eyes, a tiny orange beak, short stubby wings with barred brown feather tips, and small clawed orange feet.",
+      "lore": "All eyes and no patience. It falls from every nest and fights whatever finds it on the ground.",
+      "scale": "standard",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "gloom_cap",
+      "name": "Gloomcap",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 88,
+      "biome": [
+        "dark_mud",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Fantasy walking mushroom creature with a wide dark purple cap spotted with pale glowing dots, a pale stubby stalk body, two small glowing lavender eyes, stubby arms and legs, and puffs of purple spores venting from the gills under the cap.",
+      "lore": "It walks when the woods are dark and stands very still when they are not. The spores smell sweet, which is how it wins.",
+      "scale": "standard",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "cinder_imp",
+      "name": "Cinderimp",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Small mischievous fantasy imp with dark red skin, two small curved black horns, a wide grin of sharp white teeth, glowing orange eyes, small bat-like wings, a pointed tail with a flame at the tip, and a tiny rusty pitchfork held in both hands.",
+      "lore": "The smallest thing the volcano ever spat out. It steals fire from camps and leaves the camps burning.",
+      "scale": "standard",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "soot_sprite",
+      "name": "Sootling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 32,
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "items": [],
+      "prompt": "Tiny round fantasy soot sprite, a fuzzy black ball of soot with two huge round white eyes, a small orange ember glowing in its middle, two stubby arms and two stubby feet, and a few loose soot flakes drifting off it.",
+      "lore": "It falls from the chimneys and never finds the way back. Where one gathers, the whole flue is close behind.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "bone_colossus",
+      "name": "Ossuar",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "mannequin",
+      "size": 240,
+      "biome": [
+        "grey_paving_stone",
+        "grey_stone",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Gigantic fantasy giant built from stacked bones and grave dirt, shown full body from skull to feet, a huge cracked skull with a crown of smaller skulls, a torso of interlocking ribcages, arms of bundled femurs ending in claw-like finger bones, thick pillar legs of packed bone, and pale green grave-light glowing from every socket.",
+      "lore": "Every barrow in the valley gave a bone to it. It walks when the frost cracks the graves, counting what is missing.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "ghost_lantern",
+      "name": "Wickwisp",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 80,
+      "biome": [
+        "grey_paving_stone",
+        "parquet_floor"
+      ],
+      "items": [],
+      "prompt": "Floating fantasy haunted lantern of rusted iron with cracked glass, a pale blue ghostly flame inside forming a screaming face, a short chain dangling beneath it, and wisps of cold vapor around the glass.",
+      "lore": "Someone carried it down and never came up. It still lights the way for whoever follows, in the wrong direction.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "ice_slime",
+      "name": "Glacigel",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Small cute fantasy ice slime, a translucent pale blue blob with frozen bubbles and snowflakes suspended inside, two round dark eyes, a tiny frosty mouth, and a rim of frost crystals along its base.",
+      "lore": "A slime that froze in the long winter and never thawed. Its touch leaves frost that lasts for days.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "shadow_hand",
+      "name": "Grasper",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "black_rock",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Floating fantasy shadow hand, a huge disembodied hand of living black smoke with long clawed fingers, a single lidless yellow eye set in the palm, and dark vapor trailing from the severed wrist.",
+      "lore": "The rest of it is somewhere else, and it wants a rest of you to match. It points before it grabs.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "cursed_scarecrow",
+      "name": "Strawgrin",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 112,
+      "biome": [
+        "light_soil",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Fantasy cursed scarecrow shown full body from head to feet, a carved grinning pumpkin head lit from within by orange flame, a body of straw stuffed into a torn coat, a wooden cross-pole through its shoulders, and crows' feathers stuck in its sleeves.",
+      "lore": "It was meant to keep the crows off. Now it keeps the farmers off, and the crows sit on it and watch.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "haunted_book",
+      "name": "Tomefang",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 72,
+      "biome": [
+        "parquet_floor"
+      ],
+      "items": [],
+      "prompt": "Fantasy haunted spellbook, a thick leather-bound tome hovering upright with its covers open as jaws, pages forming rows of paper teeth, a single glowing purple eye on the spine, and a red ribbon bookmark like a tongue.",
+      "lore": "It bites readers and reads the bitten. Every scream is written down in a hand nobody has been able to translate.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "treant_sapling",
+      "name": "Twiglet",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Small cute fantasy treant sapling with a thin bark-covered body, a round head with a tuft of green leaves, two wide amber eyes and a shy smile, stubby branch arms, and root feet.",
+      "lore": "It follows woodcutters home to see what they do with the pieces. It has not forgiven anyone yet, but it is small.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "turtle_knight",
+      "name": "Shellguard",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 96,
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "items": [],
+      "prompt": "Fantasy turtle knight with a domed green shell riveted with iron plates, a small steel helmet on its beaked head, wise dark eyes, and four scaly legs with iron-shod claws.",
+      "lore": "Slow, armored and entirely unbothered. It has outlasted every siege by being the wall.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "skeleton_pirate",
+      "name": "Bonesail",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 104,
+      "biome": [
+        "light_beach",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Fantasy skeleton pirate shown full body from head to feet, bleached bones, a tattered captain's coat and tricorn hat, a red sash, a rusted cutlass held upright, one glowing green eye socket, and a barnacled peg leg.",
+      "lore": "It sank with the treasure and refused the terms. Every full moon it comes ashore to collect interest.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "crystal_slime",
+      "name": "Gemgel",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Small cute fantasy crystal slime, a translucent violet blob with sharp amethyst crystals growing out of its top, two round dark eyes, and a soft glow inside.",
+      "lore": "It eats gems and grows them back through its skin. Miners keep them like hens and lose fingers like farmers.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "acid_slime",
+      "name": "Corrodegel",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 72,
+      "biome": [
+        "slime",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Fantasy acid slime, a bubbling translucent yellow-green blob with a rusted sword and half-dissolved bones inside, two dark eyes, and drips sizzling on the ground beneath it.",
+      "lore": "It dissolved a knight and kept what would not dissolve. The rest of him is the reek that follows it.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "mini_slime",
+      "name": "Dropling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 32,
+      "biome": [
+        "slime",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Tiny cute fantasy slime, a small round green blob with two big dark eyes, a tiny smile, and a single bubble inside.",
+      "lore": "The smallest thing in the dungeon, and the first thing every blade meets. There are always more.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "ember_wisp",
+      "name": "Emberling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 32,
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Tiny fantasy fire spirit, a small teardrop-shaped flame with a dark ember body, two bright white eyes, and tiny sparks drifting off its tip.",
+      "lore": "It wants to be a fire and only knows how to be a spark. It keeps trying, on everything.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "slime_king",
+      "name": "Gelemperor",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "mannequin",
+      "size": 224,
+      "biome": [
+        "slime",
+        "parquet_floor"
+      ],
+      "items": [],
+      "prompt": "Gigantic fantasy slime king, a towering translucent green blob with a golden crown sunk into its top, a dozen skeletons and treasure chests suspended inside, and two enormous dark eyes above a wide gooey grin.",
+      "lore": "It swallowed a kingdom one adventurer at a time and took the crown with the last of them. Its subjects are all inside it.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "stone_pup",
+      "name": "Cairnpup",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "dog",
+      "size": 40,
+      "biome": [
+        "grey_stone",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Small fantasy stone golem puppy with a body of rounded grey river stones held together by pale green moss, two glowing white eyes, small stone ears, and stubby stone legs.",
+      "lore": "A cairn that learned to follow. Leave it a stone and it will keep it forever.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
+    },
+    {
+      "id": "moss_golem",
+      "name": "Mossling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 40,
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Small fantasy moss golem with a stout body of packed earth and thick green moss, two small glowing amber eyes, stubby arms and legs, and a single fern frond growing from its head.",
+      "lore": "Old earth-magic in a small measure. It tends the clearing it woke in and lets nothing be picked there.",
+      "retired": "maintainer 2026-09-09 (with five rejected examples): mascot proportions, object-monsters, blobs and cartoon undead never get near the game — real anatomy, menace over charm"
     }
   ]
 }

@@ -1,0 +1,144 @@
+{
+  "id": "skeleton_archer",
+  "name": "Marrowbolt",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It cannot see and does not miss. The arrows are older than the bow, and the bow is older than the wall.",
+  "biome": [
+    "grey_stone",
+    "grey_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy skeleton archer shown full body from head to feet, yellowed bones, a cracked skull with glowing blue eye sockets, a tattered leather jerkin, a short bow held close against its chest, and a quiver of black arrows on its back.",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "skeleton_archer/rotations/south.webp",
+    "south-east": "skeleton_archer/rotations/south-east.webp",
+    "east": "skeleton_archer/rotations/east.webp",
+    "north-east": "skeleton_archer/rotations/north-east.webp",
+    "north": "skeleton_archer/rotations/north.webp",
+    "north-west": "skeleton_archer/rotations/north-west.webp",
+    "west": "skeleton_archer/rotations/west.webp",
+    "south-west": "skeleton_archer/rotations/south-west.webp"
+  },
+  "sheet": "skeleton_archer/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "dfa02e58-3036-4296-a901-1aef255b6408",
+  "seed": 1312222034,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:12:26+00:00",
+  "elapsed_s": 194.0,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.748,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.768,
+        "bbox": [
+          19,
+          3,
+          94,
+          102
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.791,
+        "bbox": [
+          19,
+          1,
+          83,
+          102
+        ],
+        "fill": 0.598,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.797,
+        "bbox": [
+          30,
+          3,
+          88,
+          103
+        ],
+        "fill": 0.536,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.748,
+        "bbox": [
+          11,
+          2,
+          84,
+          97
+        ],
+        "fill": 0.641,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.83,
+        "bbox": [
+          19,
+          3,
+          93,
+          104
+        ],
+        "fill": 0.691,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.788,
+        "bbox": [
+          15,
+          2,
+          83,
+          101
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.778,
+        "bbox": [
+          15,
+          2,
+          84,
+          101
+        ],
+        "fill": 0.632,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.843,
+        "bbox": [
+          11,
+          1,
+          93,
+          104
+        ],
+        "fill": 0.781,
+        "touches_edge": true
+      }
+    }
+  }
+}

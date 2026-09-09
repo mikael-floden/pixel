@@ -1,0 +1,141 @@
+{
+  "id": "zombie_farmer",
+  "name": "Rotwalker",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The field was his, then the plague was. He still turns the soil each morning; it is the only thing he remembers.",
+  "biome": [
+    "light_soil",
+    "grass"
+  ],
+  "items": [],
+  "prompt": "Fantasy zombie farmer shown full body from head to feet, grey rotting skin, one milky eye, a torn straw hat, muddy overalls, a rusty pitchfork held upright, and a crow perched on its shoulder.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "zombie_farmer/rotations/south.webp",
+    "south-east": "zombie_farmer/rotations/south-east.webp",
+    "east": "zombie_farmer/rotations/east.webp",
+    "north-east": "zombie_farmer/rotations/north-east.webp",
+    "north": "zombie_farmer/rotations/north.webp",
+    "north-west": "zombie_farmer/rotations/north-west.webp",
+    "west": "zombie_farmer/rotations/west.webp",
+    "south-west": "zombie_farmer/rotations/south-west.webp"
+  },
+  "sheet": "zombie_farmer/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f1c6ab10-c7e4-4840-adf3-989f69ba51bd",
+  "seed": 892423924,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:12:22+00:00",
+  "elapsed_s": 189.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.748,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.748,
+        "bbox": [
+          13,
+          3,
+          74,
+          93
+        ],
+        "fill": 0.596,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.788,
+        "bbox": [
+          30,
+          3,
+          64,
+          93
+        ],
+        "fill": 0.332,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.799,
+        "bbox": [
+          33,
+          3,
+          66,
+          94
+        ],
+        "fill": 0.326,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.765,
+        "bbox": [
+          23,
+          4,
+          83,
+          93
+        ],
+        "fill": 0.579,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.821,
+        "bbox": [
+          26,
+          3,
+          71,
+          93
+        ],
+        "fill": 0.439,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.78,
+        "bbox": [
+          26,
+          3,
+          77,
+          93
+        ],
+        "fill": 0.498,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.774,
+        "bbox": [
+          28,
+          3,
+          71,
+          92
+        ],
+        "fill": 0.415,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.816,
+        "bbox": [
+          20,
+          3,
+          72,
+          94
+        ],
+        "fill": 0.513,
+        "touches_edge": false
+      }
+    }
+  }
+}
