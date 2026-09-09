@@ -1,0 +1,141 @@
+{
+  "id": "gargoyle",
+  "name": "Stonewing",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It kept watch from the chapel eaves for centuries. When the last bell fell silent, it came down.",
+  "biome": [
+    "grey_paving_stone",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy gargoyle shown full body from head to feet, grey weathered stone skin, a horned bestial face with a fanged snarl, glowing red eyes, bat-like wings folded tightly against its back, clawed hands, and crouching legs.",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "gargoyle/rotations/south.webp",
+    "south-east": "gargoyle/rotations/south-east.webp",
+    "east": "gargoyle/rotations/east.webp",
+    "north-east": "gargoyle/rotations/north-east.webp",
+    "north": "gargoyle/rotations/north.webp",
+    "north-west": "gargoyle/rotations/north-west.webp",
+    "west": "gargoyle/rotations/west.webp",
+    "south-west": "gargoyle/rotations/south-west.webp"
+  },
+  "sheet": "gargoyle/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8e4c2611-a483-4818-a65a-50da111a6083",
+  "seed": 681073820,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:27:54+00:00",
+  "elapsed_s": 224.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.676,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.676,
+        "bbox": [
+          3,
+          3,
+          109,
+          108
+        ],
+        "fill": 0.887,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.811,
+        "bbox": [
+          22,
+          3,
+          103,
+          111
+        ],
+        "fill": 0.697,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.821,
+        "bbox": [
+          18,
+          3,
+          89,
+          110
+        ],
+        "fill": 0.606,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.751,
+        "bbox": [
+          6,
+          2,
+          106,
+          107
+        ],
+        "fill": 0.837,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.819,
+        "bbox": [
+          6,
+          3,
+          99,
+          110
+        ],
+        "fill": 0.793,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.785,
+        "bbox": [
+          8,
+          2,
+          94,
+          106
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.77,
+        "bbox": [
+          18,
+          2,
+          104,
+          110
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.818,
+        "bbox": [
+          14,
+          3,
+          105,
+          110
+        ],
+        "fill": 0.776,
+        "touches_edge": false
+      }
+    }
+  }
+}
