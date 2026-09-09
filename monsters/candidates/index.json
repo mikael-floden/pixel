@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T17:41:07+00:00",
+  "generated_at": "2026-09-09T17:43:02+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 9,
+  "count": 10,
   "candidates": [
     {
       "id": "lantern_bat",
@@ -677,6 +677,135 @@
       "generated_at": "2026-09-09T17:40:15+00:00"
     },
     {
+      "id": "mist_wisp",
+      "name": "Mistling",
+      "tier": "cute",
+      "lore": "Morning fog that forgot to lift. It drifts after travellers, dampening lanterns and whispering half a word.",
+      "biome": [
+        "water",
+        "snow",
+        "grass"
+      ],
+      "items": [
+        "mist soulstone"
+      ],
+      "size": [
+        72,
+        72
+      ],
+      "template_id": "mannequin",
+      "pixellab_id": "97c8adb9-bfbb-4537-861d-400e071f011f",
+      "version": 1,
+      "sheet": "mist_wisp/sheet.webp",
+      "rotations": {
+        "south": "mist_wisp/rotations/south.webp",
+        "south-east": "mist_wisp/rotations/south-east.webp",
+        "east": "mist_wisp/rotations/east.webp",
+        "north-east": "mist_wisp/rotations/north-east.webp",
+        "north": "mist_wisp/rotations/north.webp",
+        "north-west": "mist_wisp/rotations/north-west.webp",
+        "west": "mist_wisp/rotations/west.webp",
+        "south-west": "mist_wisp/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.616,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.653,
+            "bbox": [
+              4,
+              3,
+              66,
+              63
+            ],
+            "fill": 0.718,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.654,
+            "bbox": [
+              8,
+              7,
+              64,
+              65
+            ],
+            "fill": 0.627,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.671,
+            "bbox": [
+              7,
+              6,
+              63,
+              65
+            ],
+            "fill": 0.637,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.616,
+            "bbox": [
+              4,
+              3,
+              68,
+              64
+            ],
+            "fill": 0.753,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.699,
+            "bbox": [
+              8,
+              4,
+              67,
+              66
+            ],
+            "fill": 0.706,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.632,
+            "bbox": [
+              8,
+              4,
+              65,
+              63
+            ],
+            "fill": 0.649,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.624,
+            "bbox": [
+              6,
+              7,
+              64,
+              63
+            ],
+            "fill": 0.627,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.714,
+            "bbox": [
+              5,
+              4,
+              64,
+              64
+            ],
+            "fill": 0.683,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "generated_at": "2026-09-09T17:43:02+00:00"
+    },
+    {
       "id": "bulb_hopper",
       "name": "Bulbling",
       "tier": "cute",
@@ -813,12 +942,12 @@
       ],
       "items": [],
       "size": [
-        128,
-        128
+        136,
+        136
       ],
       "template_id": "bear",
-      "pixellab_id": "c89c1da1-c0a9-459c-a936-a3a47b0b7312",
-      "version": 2,
+      "pixellab_id": "e0dca645-7838-4945-8fd7-5fac5bb51e17",
+      "version": 3,
       "sheet": "bog_lurker/sheet.webp",
       "rotations": {
         "south": "bog_lurker/rotations/south.webp",
@@ -831,105 +960,102 @@
         "south-west": "bog_lurker/rotations/south-west.webp"
       },
       "qa": {
-        "status": "fail",
-        "min_run1": 0.682,
-        "reasons": [
-          "north-east: content touches the canvas edge (clipped)",
-          "south-west: content touches the canvas edge (clipped)"
-        ],
+        "status": "pass",
+        "min_run1": 0.646,
+        "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.682,
+            "run1": 0.646,
             "bbox": [
-              5,
+              10,
               8,
-              123,
-              119
+              129,
+              125
             ],
-            "fill": 0.799,
+            "fill": 0.753,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.729,
+            "run1": 0.742,
             "bbox": [
-              14,
-              6,
-              123,
-              119
+              20,
+              8,
+              129,
+              128
             ],
-            "fill": 0.752,
+            "fill": 0.707,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.742,
+            "run1": 0.75,
             "bbox": [
+              7,
               8,
-              6,
-              110,
-              122
+              113,
+              128
             ],
-            "fill": 0.722,
+            "fill": 0.688,
             "touches_edge": false
           },
           "north": {
-            "run1": 0.699,
+            "run1": 0.695,
             "bbox": [
-              9,
-              9,
-              116,
-              119
+              18,
+              10,
+              118,
+              123
             ],
-            "fill": 0.718,
+            "fill": 0.611,
             "touches_edge": false
           },
           "south-east": {
-            "run1": 0.788,
+            "run1": 0.774,
             "bbox": [
-              18,
+              22,
               6,
-              107,
-              121
+              117,
+              128
             ],
-            "fill": 0.625,
+            "fill": 0.627,
             "touches_edge": false
           },
           "north-east": {
-            "run1": 0.749,
+            "run1": 0.718,
             "bbox": [
-              0,
+              9,
               6,
-              107,
-              120
+              111,
+              126
             ],
-            "fill": 0.745,
-            "touches_edge": true
+            "fill": 0.662,
+            "touches_edge": false
           },
           "north-west": {
-            "run1": 0.721,
+            "run1": 0.701,
             "bbox": [
-              17,
+              26,
               6,
-              102,
-              116
+              111,
+              123
             ],
-            "fill": 0.571,
+            "fill": 0.538,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.78,
+            "run1": 0.769,
             "bbox": [
-              16,
-              5,
-              128,
-              122
+              17,
+              6,
+              129,
+              128
             ],
-            "fill": 0.8,
-            "touches_edge": true
+            "fill": 0.739,
+            "touches_edge": false
           }
         }
       },
       "review": "pending",
-      "generated_at": "2026-09-09T17:38:32+00:00"
+      "generated_at": "2026-09-09T17:42:51+00:00"
     },
     {
       "id": "hollow_knight",

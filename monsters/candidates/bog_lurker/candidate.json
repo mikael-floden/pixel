@@ -8,10 +8,10 @@
     "water"
   ],
   "items": [],
-  "prompt": "Fantasy amphibian monster like a giant axolotl with slimy dark olive skin, feathery crimson external gills fanning from its head, a wide flat toothy grin, bulging yellow eyes, four webbed clawed limbs, a short stubby paddle tail, and strands of slime and pond weed hanging from its body.",
+  "prompt": "Fantasy amphibian monster like a giant axolotl with slimy dark olive skin, feathery crimson external gills fanning from its head, a wide flat toothy grin, bulging yellow eyes, four webbed clawed limbs, a short tail curled tightly under its round body, and strands of slime and pond weed hanging from its body.",
   "size": [
-    128,
-    128
+    136,
+    136
   ],
   "template_id": "bear",
   "directions": [
@@ -36,107 +36,104 @@
   },
   "sheet": "bog_lurker/sheet.webp",
   "review": "pending",
-  "pixellab_id": "c89c1da1-c0a9-459c-a936-a3a47b0b7312",
-  "seed": 1164191955,
-  "version": 2,
+  "pixellab_id": "e0dca645-7838-4945-8fd7-5fac5bb51e17",
+  "seed": 845355077,
+  "version": 3,
   "usage": null,
-  "generated_at": "2026-09-09T17:38:32+00:00",
-  "elapsed_s": 221.3,
+  "generated_at": "2026-09-09T17:42:51+00:00",
+  "elapsed_s": 212.7,
   "qa": {
-    "status": "fail",
-    "min_run1": 0.682,
-    "reasons": [
-      "north-east: content touches the canvas edge (clipped)",
-      "south-west: content touches the canvas edge (clipped)"
-    ],
+    "status": "pass",
+    "min_run1": 0.646,
+    "reasons": [],
     "directions": {
       "south": {
-        "run1": 0.682,
+        "run1": 0.646,
         "bbox": [
-          5,
+          10,
           8,
-          123,
-          119
+          129,
+          125
         ],
-        "fill": 0.799,
+        "fill": 0.753,
         "touches_edge": false
       },
       "west": {
-        "run1": 0.729,
+        "run1": 0.742,
         "bbox": [
-          14,
-          6,
-          123,
-          119
+          20,
+          8,
+          129,
+          128
         ],
-        "fill": 0.752,
+        "fill": 0.707,
         "touches_edge": false
       },
       "east": {
-        "run1": 0.742,
+        "run1": 0.75,
         "bbox": [
+          7,
           8,
-          6,
-          110,
-          122
+          113,
+          128
         ],
-        "fill": 0.722,
+        "fill": 0.688,
         "touches_edge": false
       },
       "north": {
-        "run1": 0.699,
+        "run1": 0.695,
         "bbox": [
-          9,
-          9,
-          116,
-          119
+          18,
+          10,
+          118,
+          123
         ],
-        "fill": 0.718,
+        "fill": 0.611,
         "touches_edge": false
       },
       "south-east": {
-        "run1": 0.788,
+        "run1": 0.774,
         "bbox": [
-          18,
+          22,
           6,
-          107,
-          121
+          117,
+          128
         ],
-        "fill": 0.625,
+        "fill": 0.627,
         "touches_edge": false
       },
       "north-east": {
-        "run1": 0.749,
+        "run1": 0.718,
         "bbox": [
-          0,
+          9,
           6,
-          107,
-          120
+          111,
+          126
         ],
-        "fill": 0.745,
-        "touches_edge": true
+        "fill": 0.662,
+        "touches_edge": false
       },
       "north-west": {
-        "run1": 0.721,
+        "run1": 0.701,
         "bbox": [
-          17,
+          26,
           6,
-          102,
-          116
+          111,
+          123
         ],
-        "fill": 0.571,
+        "fill": 0.538,
         "touches_edge": false
       },
       "south-west": {
-        "run1": 0.78,
+        "run1": 0.769,
         "bbox": [
-          16,
-          5,
-          128,
-          122
+          17,
+          6,
+          129,
+          128
         ],
-        "fill": 0.8,
-        "touches_edge": true
+        "fill": 0.739,
+        "touches_edge": false
       }
     }
   }
