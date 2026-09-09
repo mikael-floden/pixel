@@ -1476,7 +1476,16 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
         # 15px pitch and this renderer's 17 agree on where on the wall it is.
         z = L(int(px), int(py)) + float(p.get("z") or 0.0)
         sx = ox + (px - x0 - (py - y0)) * DX
-        sy = oy + (px - x0 + py - y0) * DY - z * LP - TOP_Y
+        # A WALL-HUNG PIECE IS NOT LIFTED ONTO THE GROUND PLANE. Its feet are
+        # on the wall's FOOT LINE - the anchor cell's apex, the bare
+        # projection - and the game anchors there (scenery3.ts anchorY).
+        # Lifting it TOP_Y like a bush drew every window 10 px higher than the
+        # game will (measured on the_game at (305.5, 237): art bottom 12.5 px
+        # above the anchor for z = 1.3 px, top 2.5 px INTO the roof band the
+        # placement pass had cleared by 8; maintainer 2026-09-09, at that
+        # picture: "This is too far up. Don't touch the roof overhang!").
+        lift = 0 if "z" in p else TOP_Y
+        sy = oy + (px - x0 + py - y0) * DY - z * LP - lift
         img.alpha_composite(art, (int(sx - art.width / 2), int(sy - art.height)))
 
     if scale != 1:

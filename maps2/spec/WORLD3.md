@@ -431,7 +431,12 @@ index, `snap_hitboxes` and `police_footprints` skip it, and the footprint audit
 does not judge it — it hangs on the wall behind the cell, and the wall is what
 blocks. (`_wall_put`.) The game is asked to read `z` the same way and to draw
 such a piece with the wall rather than y-sorting it against bodies; until it
-does, a window draws with its sill on the ground, still on its wall.
+does, a window draws with its sill on the ground, still on its wall. **render3
+does not lift a `z` piece onto the ground plane**: a bush is drawn `TOP_Y` px
+above the bare anchor (the tile's top face sits there), a window's feet are on
+the wall's foot line, which IS the bare anchor and where the game anchors
+everything — lifting it too drew windows 10 px higher than the game and put a
+cleared top back into the roof band (measured; the maintainer marked it).
 
 **Windows** (`windows()`, after `village`; maintainer 2026-09-09: *"It's now
 time for you to add windows to the houses. Make sure enough space exist to the
