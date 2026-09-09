@@ -308,6 +308,13 @@ export function resetZonesConfig(): void {
  *  max per room plus process CPU and event-loop lag, so a load run reads the
  *  server's own numbers instead of guessing from the client side. */
 const TICK_RING = 200;
+/** AN EMPTY ROOM TICKS ITS BRAINS SLOWER: with nobody connected, the sim
+ *  (monster brains, combat, zones, interest) runs every IDLE_DIVISOR-th tick
+ *  with the accumulated dt — 5 Hz at the 20 Hz tick. The clock still advances
+ *  every tick (it is cheap and shared), edge snapshots keep flowing at the
+ *  slower rate (a neighbour's client eases ghosts at rate 12 anyway).
+ *  Measured: 16 warm rooms of the_game idled at ~20% of a core. */
+const IDLE_DIVISOR = 4;
 interface RoomStat {
   world: string;
   zone: number;
@@ -317,6 +324,7 @@ interface RoomStat {
   ghosts: number;
   ticks: number[];
   at: number;
+  simTicks: number; // sim steps run (an idle room runs fewer than it ticks)
   bytesOut: number; // patch + message bytes sent to this room's clients since the last stats call
   bytesAt: number;
 }
@@ -357,10 +365,12 @@ export function perfStats() {
       const out = {
         id, world: r.world, zone: r.zone, clients: r.clients, players: r.players, monsters: r.monsters, ghosts: r.ghosts,
         tickMs: { p50: +pct(t, 0.5).toFixed(2), p95: +pct(t, 0.95).toFixed(2), max: +(t[t.length - 1] ?? 0).toFixed(2), n: t.length },
+        simHz: +(r.simTicks / secs).toFixed(1),
         outKBps: +kbps.toFixed(1),
         outKBpsPerClient: +(r.clients ? kbps / r.clients : 0).toFixed(2),
       };
       r.bytesOut = 0;
+      r.simTicks = 0;
       r.bytesAt = now;
       return out;
     });
@@ -1405,6 +1415,18 @@ export class WorldRoom extends Room<WorldState> {
       if (now >= this.nextPhaseAt) this.advanceTime();
       else this.state.phaseT = Math.min(1, Math.max(0, 1 - (this.nextPhaseAt - now) / this.effPhaseMs()));
     }
+
+    // AN EMPTY ROOM runs the sim every IDLE_DIVISOR-th tick with the dt it
+    // skipped (the clock above still moved every tick).
+    if (this.clients.length === 0) {
+      this.idleDt += dt;
+      if (++this.idleTick < IDLE_DIVISOR) return;
+      dt = this.idleDt;
+    }
+    this.idleTick = 0;
+    this.idleDt = 0;
+    const rs = roomStats.get(this.roomId);
+    if (rs) rs.simTicks++;
 
     const now = Date.now();
     // Who is being HUNTED by a monster they provoked? Those players carry the
@@ -3010,10 +3032,12 @@ export class WorldRoom extends Room<WorldState> {
     }
   }
 
+  private idleTick = 0;
+  private idleDt = 0;
   private recordTick(ms: number) {
     let r = roomStats.get(this.roomId);
     if (!r) {
-      r = { world: this.worldName, zone: this.zoneId, clients: 0, players: 0, monsters: 0, ghosts: 0, ticks: [], at: 0, bytesOut: 0, bytesAt: Date.now() };
+      r = { world: this.worldName, zone: this.zoneId, clients: 0, players: 0, monsters: 0, ghosts: 0, ticks: [], at: 0, simTicks: 0, bytesOut: 0, bytesAt: Date.now() };
       roomStats.set(this.roomId, r);
     }
     r.ticks.push(ms);

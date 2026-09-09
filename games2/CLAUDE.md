@@ -151,7 +151,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - A player's map key is its FIRST session id and never changes across
   hand-offs; the client finds itself by the synced `sid`, never by key.
 - ONE room per zone per process (`zoneRooms`, warmed at boot, autoDispose
-  off; a duplicate locks and hands its arrivals to the owner).
+  off; a duplicate locks and hands its arrivals to the owner). An empty room
+  runs its sim at a quarter rate (`IDLE_DIVISOR`).
 - `Encoder.BUFFER_SIZE` holds EVERY client's view section of one patch (2 MB;
   an overflow freezes clients silently, never errors). `scripts/loadbot.mjs`
   + `/api/stats` are the load instrument; numbers in `docs/backend.md`.

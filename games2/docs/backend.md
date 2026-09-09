@@ -173,9 +173,13 @@ grid, all bots packed within a few cells in one zone (the crowded-room case):
   stamping 1,335 scenery pieces was 850 MB rss for 16 rooms — over the 512
   MiB Cloud Run instance; shared, 400 MB (dev, tsx) and the 16 rooms warm in
   0.9 s. The instance is 1 GiB now (deploy workflow) for headroom.
-- Idle cost with 16 warm rooms: ~20% of a core, the monster brains spread
-  over rooms (zone 6 with 63 monsters ticks 2 ms p50). A room with no
-  clients could tick its brains slower; not built.
+- **An empty room runs its sim every `IDLE_DIVISOR` (4) ticks** with the
+  accumulated dt (the clock still moves every tick; edge snapshots keep
+  flowing at the slower rate and a neighbour's client eases ghosts at rate
+  12). Idle with 16 warm rooms was ~20% of a core (the monster brains; zone 6
+  with 63 monsters ticks 2 ms p50); with the divisor it is 10%, 386 MB. A client
+  brings the full rate back on its first tick (`/api/stats` reports `simHz`
+  per room; gate `server/test/idle.test.ts`).
 - **A JOIN BURST IS A LIMIT OF ITS OWN**: 400 bots joining one zone within
   10 s from two processes on a box already at 100% CPU expired 65 seat
   reservations ("seat reservation expired"), 100 joins failed, and every
