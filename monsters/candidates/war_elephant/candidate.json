@@ -339,6 +339,248 @@
         "west": "war_elephant/animations/idle__west.webp",
         "north-west": "war_elephant/animations/idle__north-west.webp"
       }
+    },
+    "walk": {
+      "directions": {
+        "south": {
+          "status": "warn",
+          "step_mean": 0.1013,
+          "step_max": 0.1156,
+          "drift": 5.04,
+          "loop": 0.1806,
+          "loop_ratio": 1.78,
+          "travel": 3.08,
+          "pin": 0.9,
+          "reasons": [
+            "drifts 5.0 px — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "e78fbfa1-ee28-45f4-a700-95384ba420aa",
+          "group": "07ebd7e1-444b-42bf-afec-535e7449128c",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:06:28+00:00"
+        },
+        "south-east": {
+          "status": "warn",
+          "step_mean": 0.0788,
+          "step_max": 0.11,
+          "drift": 1.68,
+          "loop": 0.1331,
+          "loop_ratio": 1.69,
+          "travel": 1.77,
+          "pin": 0.942,
+          "reasons": [
+            "motion 0.079 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "6ab1348c-68a4-44fb-9cdc-aa847fa89eb6",
+          "group": "eb29a57c-3df7-43f0-a64e-23ea65e0a445",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:06:29+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1082,
+          "step_max": 0.1472,
+          "drift": 2.21,
+          "loop": 0.1958,
+          "loop_ratio": 1.81,
+          "travel": 2.01,
+          "pin": 0.933,
+          "reasons": [],
+          "cut": 0,
+          "sub": "9ea39eb8-f314-466f-b879-c1094a9697be",
+          "group": "49ffbbcf-2e38-42f2-ae4b-f7bbc185aa73",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:06:30+00:00"
+        },
+        "north-east": {
+          "status": "warn",
+          "step_mean": 0.0798,
+          "step_max": 0.0985,
+          "drift": 2.77,
+          "loop": 0.1488,
+          "loop_ratio": 1.86,
+          "travel": 2.49,
+          "pin": 0.92,
+          "reasons": [
+            "motion 0.080 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "55aaa63b-0cc0-4db3-a920-4416af77127c",
+          "group": "61f7e356-7209-40f7-84a7-b81d64f9573e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:06:30+00:00"
+        },
+        "north": {
+          "status": "warn",
+          "step_mean": 0.0839,
+          "step_max": 0.1116,
+          "drift": 7.81,
+          "loop": 0.1907,
+          "loop_ratio": 2.27,
+          "travel": 1.42,
+          "pin": 0.924,
+          "reasons": [
+            "motion 0.084 outside the calm band 0.1–0.4 — eyeball it",
+            "drifts 7.8 px — eyeball it",
+            "last→first hand-off 2.3× a step — eyeball the loop"
+          ],
+          "cut": 0,
+          "sub": "e287219e-7b17-47d8-ad8e-413abe3ee232",
+          "group": "33b9e9f7-ffe6-4046-9e15-fed4f2440228",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:06:31+00:00"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.0788,
+          "step_max": 0.11,
+          "drift": 1.68,
+          "loop": 0.1331,
+          "loop_ratio": 1.69,
+          "travel": 1.77,
+          "pin": 0.942,
+          "reasons": [
+            "motion 0.079 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "6ab1348c-68a4-44fb-9cdc-aa847fa89eb6",
+          "group": "eb29a57c-3df7-43f0-a64e-23ea65e0a445",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:06:29+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1082,
+          "step_max": 0.1472,
+          "drift": 2.21,
+          "loop": 0.1958,
+          "loop_ratio": 1.81,
+          "travel": 2.01,
+          "pin": 0.933,
+          "reasons": [],
+          "cut": 0,
+          "sub": "9ea39eb8-f314-466f-b879-c1094a9697be",
+          "group": "49ffbbcf-2e38-42f2-ae4b-f7bbc185aa73",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:06:30+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "warn",
+          "step_mean": 0.0798,
+          "step_max": 0.0985,
+          "drift": 2.77,
+          "loop": 0.1488,
+          "loop_ratio": 1.86,
+          "travel": 2.49,
+          "pin": 0.92,
+          "reasons": [
+            "motion 0.080 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "cut": 0,
+          "sub": "55aaa63b-0cc0-4db3-a920-4416af77127c",
+          "group": "61f7e356-7209-40f7-84a7-b81d64f9573e",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:06:30+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "war_elephant/animations/walk/south/00.webp",
+          "war_elephant/animations/walk/south/01.webp",
+          "war_elephant/animations/walk/south/02.webp",
+          "war_elephant/animations/walk/south/03.webp",
+          "war_elephant/animations/walk/south/04.webp",
+          "war_elephant/animations/walk/south/05.webp"
+        ],
+        "south-east": [
+          "war_elephant/animations/walk/south-east/00.webp",
+          "war_elephant/animations/walk/south-east/01.webp",
+          "war_elephant/animations/walk/south-east/02.webp",
+          "war_elephant/animations/walk/south-east/03.webp",
+          "war_elephant/animations/walk/south-east/04.webp",
+          "war_elephant/animations/walk/south-east/05.webp"
+        ],
+        "east": [
+          "war_elephant/animations/walk/east/00.webp",
+          "war_elephant/animations/walk/east/01.webp",
+          "war_elephant/animations/walk/east/02.webp",
+          "war_elephant/animations/walk/east/03.webp",
+          "war_elephant/animations/walk/east/04.webp",
+          "war_elephant/animations/walk/east/05.webp"
+        ],
+        "north-east": [
+          "war_elephant/animations/walk/north-east/00.webp",
+          "war_elephant/animations/walk/north-east/01.webp",
+          "war_elephant/animations/walk/north-east/02.webp",
+          "war_elephant/animations/walk/north-east/03.webp",
+          "war_elephant/animations/walk/north-east/04.webp",
+          "war_elephant/animations/walk/north-east/05.webp"
+        ],
+        "north": [
+          "war_elephant/animations/walk/north/00.webp",
+          "war_elephant/animations/walk/north/01.webp",
+          "war_elephant/animations/walk/north/02.webp",
+          "war_elephant/animations/walk/north/03.webp",
+          "war_elephant/animations/walk/north/04.webp",
+          "war_elephant/animations/walk/north/05.webp"
+        ],
+        "south-west": [
+          "war_elephant/animations/walk/south-west/00.webp",
+          "war_elephant/animations/walk/south-west/01.webp",
+          "war_elephant/animations/walk/south-west/02.webp",
+          "war_elephant/animations/walk/south-west/03.webp",
+          "war_elephant/animations/walk/south-west/04.webp",
+          "war_elephant/animations/walk/south-west/05.webp"
+        ],
+        "west": [
+          "war_elephant/animations/walk/west/00.webp",
+          "war_elephant/animations/walk/west/01.webp",
+          "war_elephant/animations/walk/west/02.webp",
+          "war_elephant/animations/walk/west/03.webp",
+          "war_elephant/animations/walk/west/04.webp",
+          "war_elephant/animations/walk/west/05.webp"
+        ],
+        "north-west": [
+          "war_elephant/animations/walk/north-west/00.webp",
+          "war_elephant/animations/walk/north-west/01.webp",
+          "war_elephant/animations/walk/north-west/02.webp",
+          "war_elephant/animations/walk/north-west/03.webp",
+          "war_elephant/animations/walk/north-west/04.webp",
+          "war_elephant/animations/walk/north-west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "war_elephant/animations/walk__south.webp",
+        "south-east": "war_elephant/animations/walk__south-east.webp",
+        "east": "war_elephant/animations/walk__east.webp",
+        "north-east": "war_elephant/animations/walk__north-east.webp",
+        "north": "war_elephant/animations/walk__north.webp",
+        "south-west": "war_elephant/animations/walk__south-west.webp",
+        "west": "war_elephant/animations/walk__west.webp",
+        "north-west": "war_elephant/animations/walk__north-west.webp"
+      }
     }
   }
 }
