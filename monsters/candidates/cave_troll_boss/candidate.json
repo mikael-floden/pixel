@@ -437,28 +437,29 @@
           "generated_at": "2026-09-09T21:16:47+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.1718,
-          "step_max": 0.2167,
-          "drift": 16.63,
-          "loop": 0.2835,
-          "loop_ratio": 1.65,
-          "travel": 2.11,
-          "pin": 0.896,
+          "status": "pass",
+          "step_mean": 0.1178,
+          "step_max": 0.1848,
+          "drift": 5.72,
+          "loop": 0.0,
+          "loop_ratio": 0.0,
+          "travel": 0.84,
+          "pin": 1.0,
           "pad": 0,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "drifts 16.6 px (> 12)"
+            "PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)"
           ],
-          "sub": "a41cafd3-9506-48ad-a792-684fd4e69858",
-          "group": "1bc292ee-7a9a-4bf7-bbf0-9f53131e3270",
+          "pinned": true,
+          "sub": "c470fc06-47ce-426c-b6f6-76e6f4cf6745",
+          "group": "a22f5394-3b14-426b-a7ac-6d4a1a14d9af",
           "takes": 3,
-          "version": 3,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:45:53+00:00"
+          "generated_at": "2026-09-09T21:51:55+00:00"
         },
         "west": {
           "status": "warn",

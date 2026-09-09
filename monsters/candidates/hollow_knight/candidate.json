@@ -609,6 +609,278 @@
         "north-west": "hollow_knight/animations/walk__north-west.webp",
         "south-west": "hollow_knight/animations/walk__south-west.webp"
       }
+    },
+    "attack": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.2509,
+          "step_max": 0.3434,
+          "drift": 8.85,
+          "loop": 0.0023,
+          "loop_ratio": 0.01,
+          "travel": 9.23,
+          "pin": 1.0,
+          "pad": 2,
+          "canvas": [
+            116,
+            116
+          ],
+          "reasons": [
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "8b40c20a-c77e-4cdc-931d-782bc300b5a3",
+          "group": "3f40e5e4-52ac-49a8-a222-ac13313901cf",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:52:11+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.1316,
+          "step_max": 0.179,
+          "drift": 2.94,
+          "loop": 0.0017,
+          "loop_ratio": 0.01,
+          "travel": 2.49,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "c5cf02d5-fca0-48ea-8ce4-72922118254b",
+          "group": "46e75016-4de5-4abd-8487-9f08069b2db9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:52:12+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.1458,
+          "step_max": 0.2468,
+          "drift": 4.4,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 5.13,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "d23d3981-c1d2-4df0-b977-5d7fa8adb2b3",
+          "group": "52607a12-7f01-4b85-b5dd-4d6d84f55042",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:52:12+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.2104,
+          "step_max": 0.2871,
+          "drift": 6.44,
+          "loop": 0.0017,
+          "loop_ratio": 0.01,
+          "travel": 3.85,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "f03ff086-dae2-488f-a025-a3d5df88fa94",
+          "group": "0e8ab189-d11b-422b-a748-3231916c1da6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:52:13+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.1432,
+          "step_max": 0.2195,
+          "drift": 6.83,
+          "loop": 0.0021,
+          "loop_ratio": 0.02,
+          "travel": 7.52,
+          "pin": 1.0,
+          "pad": 1,
+          "canvas": [
+            114,
+            114
+          ],
+          "reasons": [
+            "canvas grown by 1 px a side to hold the motion"
+          ],
+          "sub": "fc355dd4-3179-4071-b646-9512a7389d70",
+          "group": "78366a4b-10fe-4e65-8e85-cc8bcb8ea88a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T21:52:14+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.1316,
+          "step_max": 0.179,
+          "drift": 2.94,
+          "loop": 0.0017,
+          "loop_ratio": 0.01,
+          "travel": 2.49,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "c5cf02d5-fca0-48ea-8ce4-72922118254b",
+          "group": "46e75016-4de5-4abd-8487-9f08069b2db9",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:52:12+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.1458,
+          "step_max": 0.2468,
+          "drift": 4.4,
+          "loop": 0.0002,
+          "loop_ratio": 0.0,
+          "travel": 5.13,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "d23d3981-c1d2-4df0-b977-5d7fa8adb2b3",
+          "group": "52607a12-7f01-4b85-b5dd-4d6d84f55042",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:52:12+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.2104,
+          "step_max": 0.2871,
+          "drift": 6.44,
+          "loop": 0.0017,
+          "loop_ratio": 0.01,
+          "travel": 3.85,
+          "pin": 1.0,
+          "pad": 0,
+          "canvas": [
+            112,
+            112
+          ],
+          "reasons": [],
+          "sub": "f03ff086-dae2-488f-a025-a3d5df88fa94",
+          "group": "0e8ab189-d11b-422b-a748-3231916c1da6",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T21:52:13+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "swings the greatsword in one heavy overhead chop, green fire trailing the blade, a physical strike with no glowing magic effect, then returns exactly to the starting pose",
+      "frame_paths": {
+        "south": [
+          "hollow_knight/animations/attack/south/00.webp",
+          "hollow_knight/animations/attack/south/01.webp",
+          "hollow_knight/animations/attack/south/02.webp",
+          "hollow_knight/animations/attack/south/03.webp",
+          "hollow_knight/animations/attack/south/04.webp",
+          "hollow_knight/animations/attack/south/05.webp",
+          "hollow_knight/animations/attack/south/06.webp"
+        ],
+        "south-east": [
+          "hollow_knight/animations/attack/south-east/00.webp",
+          "hollow_knight/animations/attack/south-east/01.webp",
+          "hollow_knight/animations/attack/south-east/02.webp",
+          "hollow_knight/animations/attack/south-east/03.webp",
+          "hollow_knight/animations/attack/south-east/04.webp",
+          "hollow_knight/animations/attack/south-east/05.webp",
+          "hollow_knight/animations/attack/south-east/06.webp"
+        ],
+        "east": [
+          "hollow_knight/animations/attack/east/00.webp",
+          "hollow_knight/animations/attack/east/01.webp",
+          "hollow_knight/animations/attack/east/02.webp",
+          "hollow_knight/animations/attack/east/03.webp",
+          "hollow_knight/animations/attack/east/04.webp",
+          "hollow_knight/animations/attack/east/05.webp",
+          "hollow_knight/animations/attack/east/06.webp"
+        ],
+        "north-east": [
+          "hollow_knight/animations/attack/north-east/00.webp",
+          "hollow_knight/animations/attack/north-east/01.webp",
+          "hollow_knight/animations/attack/north-east/02.webp",
+          "hollow_knight/animations/attack/north-east/03.webp",
+          "hollow_knight/animations/attack/north-east/04.webp",
+          "hollow_knight/animations/attack/north-east/05.webp",
+          "hollow_knight/animations/attack/north-east/06.webp"
+        ],
+        "north": [
+          "hollow_knight/animations/attack/north/00.webp",
+          "hollow_knight/animations/attack/north/01.webp",
+          "hollow_knight/animations/attack/north/02.webp",
+          "hollow_knight/animations/attack/north/03.webp",
+          "hollow_knight/animations/attack/north/04.webp",
+          "hollow_knight/animations/attack/north/05.webp",
+          "hollow_knight/animations/attack/north/06.webp"
+        ],
+        "south-west": [
+          "hollow_knight/animations/attack/south-west/00.webp",
+          "hollow_knight/animations/attack/south-west/01.webp",
+          "hollow_knight/animations/attack/south-west/02.webp",
+          "hollow_knight/animations/attack/south-west/03.webp",
+          "hollow_knight/animations/attack/south-west/04.webp",
+          "hollow_knight/animations/attack/south-west/05.webp",
+          "hollow_knight/animations/attack/south-west/06.webp"
+        ],
+        "west": [
+          "hollow_knight/animations/attack/west/00.webp",
+          "hollow_knight/animations/attack/west/01.webp",
+          "hollow_knight/animations/attack/west/02.webp",
+          "hollow_knight/animations/attack/west/03.webp",
+          "hollow_knight/animations/attack/west/04.webp",
+          "hollow_knight/animations/attack/west/05.webp",
+          "hollow_knight/animations/attack/west/06.webp"
+        ],
+        "north-west": [
+          "hollow_knight/animations/attack/north-west/00.webp",
+          "hollow_knight/animations/attack/north-west/01.webp",
+          "hollow_knight/animations/attack/north-west/02.webp",
+          "hollow_knight/animations/attack/north-west/03.webp",
+          "hollow_knight/animations/attack/north-west/04.webp",
+          "hollow_knight/animations/attack/north-west/05.webp",
+          "hollow_knight/animations/attack/north-west/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "hollow_knight/animations/attack__south.webp",
+        "south-east": "hollow_knight/animations/attack__south-east.webp",
+        "east": "hollow_knight/animations/attack__east.webp",
+        "north-east": "hollow_knight/animations/attack__north-east.webp",
+        "north": "hollow_knight/animations/attack__north.webp",
+        "south-west": "hollow_knight/animations/attack__south-west.webp",
+        "west": "hollow_knight/animations/attack__west.webp",
+        "north-west": "hollow_knight/animations/attack__north-west.webp"
+      }
     }
   }
 }
