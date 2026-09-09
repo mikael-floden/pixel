@@ -141,5 +141,203 @@
   "notes": [
     "agent eyeball: the ink cloud under the body is baked into every facing and reads like a ground shadow in play — the game draws its own. Re-roll without the ink if you want it."
   ],
-  "approved_at": "2026-09-09T19:59:22+00:00"
+  "approved_at": "2026-09-09T19:59:22+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.0441,
+          "step_max": 0.0511,
+          "drift": 1.08,
+          "loop": 0.0009,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "6a8128af-f51d-4564-bb56-44686b44a4fe",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:16:20+00:00"
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.0435,
+          "step_max": 0.0469,
+          "drift": 0.9,
+          "loop": 0.0002,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "9114b7b9-77f9-4898-b447-9f85a9967a07",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:16:21+00:00"
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0213,
+          "step_max": 0.0301,
+          "drift": 0.74,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "d9b5a0bd-b5d4-48fb-9aba-e7806804acde",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:16:22+00:00"
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.0255,
+          "step_max": 0.033,
+          "drift": 1.29,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "95da925e-4a44-4fd4-8473-a7a74ff44476",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:16:22+00:00"
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0541,
+          "step_max": 0.078,
+          "drift": 2.38,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "5651b41a-9a20-4949-8e74-21ec3c9e7b22",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:16:23+00:00"
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.0435,
+          "step_max": 0.0469,
+          "drift": 0.9,
+          "loop": 0.0002,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "9114b7b9-77f9-4898-b447-9f85a9967a07",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:16:21+00:00",
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0213,
+          "step_max": 0.0301,
+          "drift": 0.74,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "d9b5a0bd-b5d4-48fb-9aba-e7806804acde",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:16:22+00:00",
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.0255,
+          "step_max": 0.033,
+          "drift": 1.29,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "cut": 0,
+          "sub": "95da925e-4a44-4fd4-8473-a7a74ff44476",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:16:22+00:00",
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "octopus/animations/idle/south/00.webp",
+          "octopus/animations/idle/south/01.webp",
+          "octopus/animations/idle/south/02.webp",
+          "octopus/animations/idle/south/03.webp",
+          "octopus/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "octopus/animations/idle/south-east/00.webp",
+          "octopus/animations/idle/south-east/01.webp",
+          "octopus/animations/idle/south-east/02.webp",
+          "octopus/animations/idle/south-east/03.webp",
+          "octopus/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "octopus/animations/idle/east/00.webp",
+          "octopus/animations/idle/east/01.webp",
+          "octopus/animations/idle/east/02.webp",
+          "octopus/animations/idle/east/03.webp",
+          "octopus/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "octopus/animations/idle/north-east/00.webp",
+          "octopus/animations/idle/north-east/01.webp",
+          "octopus/animations/idle/north-east/02.webp",
+          "octopus/animations/idle/north-east/03.webp",
+          "octopus/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "octopus/animations/idle/north/00.webp",
+          "octopus/animations/idle/north/01.webp",
+          "octopus/animations/idle/north/02.webp",
+          "octopus/animations/idle/north/03.webp",
+          "octopus/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "octopus/animations/idle/south-west/00.webp",
+          "octopus/animations/idle/south-west/01.webp",
+          "octopus/animations/idle/south-west/02.webp",
+          "octopus/animations/idle/south-west/03.webp",
+          "octopus/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "octopus/animations/idle/west/00.webp",
+          "octopus/animations/idle/west/01.webp",
+          "octopus/animations/idle/west/02.webp",
+          "octopus/animations/idle/west/03.webp",
+          "octopus/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "octopus/animations/idle/north-west/00.webp",
+          "octopus/animations/idle/north-west/01.webp",
+          "octopus/animations/idle/north-west/02.webp",
+          "octopus/animations/idle/north-west/03.webp",
+          "octopus/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "octopus/animations/idle__south.webp",
+        "south-east": "octopus/animations/idle__south-east.webp",
+        "east": "octopus/animations/idle__east.webp",
+        "north-east": "octopus/animations/idle__north-east.webp",
+        "north": "octopus/animations/idle__north.webp",
+        "south-west": "octopus/animations/idle__south-west.webp",
+        "west": "octopus/animations/idle__west.webp",
+        "north-west": "octopus/animations/idle__north-west.webp"
+      }
+    }
+  }
 }
