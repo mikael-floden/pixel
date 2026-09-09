@@ -615,112 +615,114 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1523,
-          "step_max": 0.2115,
-          "drift": 3.89,
+          "status": "pass",
+          "step_mean": 0.1856,
+          "step_max": 0.2668,
+          "drift": 2.04,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.26,
+          "travel": 1.65,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.406,
-          "peak": 0.2115,
+          "flash": 0.004,
+          "peak": 0.3094,
           "canvas": [
             232,
             232
           ],
-          "reasons": [
-            "painted effect: 0.41 of the body in new bright pixels (flare/slash arc)"
-          ],
-          "sub": "3d014a51-d723-4612-8755-421b212ce3ac",
-          "group": "9234f4ba-e099-481b-9fc1-76730f86b4fd",
-          "takes": 2,
-          "version": 3,
+          "reasons": [],
+          "sub": "6bb92a6e-aa6d-4179-826e-d3e7c30ae656",
+          "group": "612be321-171c-4a3b-9cb1-1a36830aac36",
+          "takes": 3,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:50:26+00:00",
-          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance"
+          "generated_at": "2026-09-09T23:02:59+00:00",
+          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance",
+          "tries": 2
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.1514,
-          "step_max": 0.1754,
-          "drift": 5.57,
+          "step_mean": 0.1125,
+          "step_max": 0.1445,
+          "drift": 5.94,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 3.54,
+          "travel": 2.96,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.247,
-          "peak": 0.2522,
+          "flash": 0.312,
+          "peak": 0.1697,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "painted effect: 0.25 of the body in new bright pixels (flare/slash arc)"
+            "painted effect: 0.31 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "2a994c34-77d8-4d02-b2a5-60f133370a9b",
-          "group": "116b04f7-7bd3-4da2-bfe7-ab9e256ccd1c",
-          "takes": 2,
-          "version": 3,
+          "sub": "b52c8335-5988-4787-bf53-42ff14b9ba0d",
+          "group": "6f564612-fbee-43fb-99cf-81278797303d",
+          "takes": 3,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:50:27+00:00",
-          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance"
+          "generated_at": "2026-09-09T23:03:00+00:00",
+          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance",
+          "tries": 2
         },
         "east": {
           "status": "fail",
-          "step_mean": 0.2266,
-          "step_max": 0.3646,
-          "drift": 10.9,
+          "step_mean": 0.2883,
+          "step_max": 0.5233,
+          "drift": 9.15,
           "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 10.9,
+          "travel": 8.36,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.124,
-          "peak": 0.3646,
+          "flash": 1.275,
+          "peak": 0.5233,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "painted effect: 0.12 of the body in new bright pixels (flare/slash arc)"
+            "painted effect: 1.28 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "3d990c57-da52-4b81-bc59-0f99dd2b6778",
-          "group": "65ca403a-16f2-4e5d-aab5-b881e159a720",
-          "takes": 1,
-          "version": 2,
+          "sub": "71780b08-758d-4d18-8232-9a0390f5ebcf",
+          "group": "9a8dc734-3b05-43ee-849a-d1249742c7e7",
+          "takes": 2,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:41:58+00:00",
-          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance"
+          "generated_at": "2026-09-09T23:03:00+00:00",
+          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance",
+          "tries": 2
         },
         "north-east": {
           "status": "fail",
-          "step_mean": 0.2684,
-          "step_max": 0.4,
-          "drift": 8.64,
+          "step_mean": 0.2311,
+          "step_max": 0.3245,
+          "drift": 8.69,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 6.16,
+          "travel": 11.66,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.436,
-          "peak": 0.4061,
+          "flash": 0.745,
+          "peak": 0.3245,
           "canvas": [
             232,
             232
           ],
           "reasons": [
-            "painted effect: 0.44 of the body in new bright pixels (flare/slash arc)"
+            "painted effect: 0.75 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "95d87553-0cc4-4338-8842-f5e5cbbca653",
-          "group": "77608ebe-05dc-41e6-9898-86828101e3bc",
-          "takes": 1,
-          "version": 3,
+          "sub": "51310853-ec11-4cf9-b729-4bd8d7c1a7e0",
+          "group": "09175265-0d33-457a-82f9-c96f2f48c5ae",
+          "takes": 2,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:50:27+00:00",
-          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance"
+          "generated_at": "2026-09-09T23:03:01+00:00",
+          "action": "Arm Sweep - Swings one crystal-bladed arm in one wide sweeping slash, then returns to idle stance",
+          "tries": 2
         },
         "north": {
           "status": "pass",

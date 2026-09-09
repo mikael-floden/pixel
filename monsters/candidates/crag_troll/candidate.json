@@ -621,31 +621,30 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1168,
-          "step_max": 0.1334,
-          "drift": 6.47,
-          "loop": 0.0,
+          "status": "pass",
+          "step_mean": 0.119,
+          "step_max": 0.159,
+          "drift": 6.51,
+          "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 6.89,
+          "travel": 6.52,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.201,
-          "peak": 0.1585,
+          "flash": 0.0,
+          "peak": 0.2116,
           "canvas": [
             232,
             232
           ],
-          "reasons": [
-            "painted effect: 0.20 of the body in new bright pixels (flare/slash arc)"
-          ],
-          "sub": "893fb3a1-fae1-47c3-a3b3-9b8ffafafe10",
-          "group": "04365344-1047-4d55-94b9-ca7d0ea595fa",
-          "takes": 2,
-          "version": 3,
+          "reasons": [],
+          "sub": "76a7d357-326b-4285-af29-4a20f48fb167",
+          "group": "95dda4a9-2384-486a-a8b1-d410ebb1f17f",
+          "takes": 3,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:51:15+00:00",
-          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance"
+          "generated_at": "2026-09-09T23:00:51+00:00",
+          "action": "Club Smash - Raises the stone club and swings it down in one heavy blow, then returns to idle stance",
+          "tries": 2
         },
         "south-east": {
           "status": "pass",

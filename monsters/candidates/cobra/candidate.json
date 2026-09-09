@@ -712,31 +712,32 @@
           "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance"
         },
         "north": {
-          "status": "warn",
-          "step_mean": 0.1122,
-          "step_max": 0.1427,
-          "drift": 0.74,
+          "status": "fail",
+          "step_mean": 0.163,
+          "step_max": 0.2358,
+          "drift": 0.81,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.36,
+          "travel": 0.19,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.077,
-          "peak": 0.2121,
+          "flash": 0.304,
+          "peak": 0.3129,
           "canvas": [
             88,
             88
           ],
           "reasons": [
-            "some bright effect pixels (0.08) — eyeball it"
+            "painted effect: 0.30 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "56c0627e-bab3-484e-9505-e7f3322fe349",
-          "group": "3c908d94-2f2a-4a36-b3b3-f7745be9c0cf",
-          "takes": 1,
-          "version": 2,
+          "sub": "1a321854-efd9-4e62-b902-991582fc86dc",
+          "group": "311d29dc-0d19-467f-ad75-5c99018c323c",
+          "takes": 2,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:36:48+00:00",
-          "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance"
+          "generated_at": "2026-09-09T23:04:30+00:00",
+          "action": "Strike - Pulls its head back, then strikes forward once with fangs bared, then returns to idle stance",
+          "tries": 2
         },
         "south-west": {
           "status": "pass",

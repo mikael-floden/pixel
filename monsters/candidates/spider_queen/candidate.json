@@ -632,31 +632,32 @@
           "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.3271,
-          "step_max": 0.4176,
-          "drift": 4.2,
-          "loop": 0.0001,
+          "status": "warn",
+          "step_mean": 0.3141,
+          "step_max": 0.4105,
+          "drift": 10.38,
+          "loop": 0.0002,
           "loop_ratio": 0.0,
-          "travel": 1.43,
+          "travel": 8.5,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.167,
-          "peak": 0.4951,
+          "flash": 0.082,
+          "peak": 0.4948,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "painted effect: 0.17 of the body in new bright pixels (flare/slash arc)"
+            "some bright effect pixels (0.08) — eyeball it"
           ],
-          "sub": "1b6fa512-08c7-47d6-851c-2975b277a047",
-          "group": "0413d9db-e633-406d-ac94-99491d4bdec0",
-          "takes": 2,
-          "version": 3,
+          "sub": "d05d1336-e4be-4ede-adc4-63621db51a15",
+          "group": "b5da9dac-e5b7-4b6a-827e-9f93c03f335b",
+          "takes": 3,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:55:50+00:00",
-          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance"
+          "generated_at": "2026-09-09T23:01:09+00:00",
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 2
         },
         "east": {
           "status": "pass",
@@ -710,52 +711,59 @@
         },
         "north": {
           "status": "fail",
-          "step_mean": 0.3236,
-          "step_max": 0.3749,
-          "drift": 18.68,
+          "step_mean": 0.2973,
+          "step_max": 0.3898,
+          "drift": 15.09,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.54,
+          "travel": 0.62,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.403,
-          "peak": 0.4838,
+          "flash": 0.356,
+          "peak": 0.398,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "painted effect: 0.40 of the body in new bright pixels (flare/slash arc)"
+            "painted effect: 0.36 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "4772fdab-f208-407e-97f8-c6e6ae0ec34a",
-          "group": "ca16e876-a81e-4ed3-9058-022b3064be11",
-          "takes": 2,
-          "version": 3,
+          "sub": "249d55e3-f87d-4552-b9ac-dd1ee680e6ba",
+          "group": "e0249c22-ff23-4672-b9c1-81ba54e01262",
+          "takes": 3,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:55:51+00:00",
-          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance"
+          "generated_at": "2026-09-09T23:01:09+00:00",
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 2
         },
         "south-west": {
-          "status": "pass",
-          "step_mean": 0.2592,
-          "step_max": 0.3995,
-          "drift": 4.64,
-          "loop": 0.0,
+          "status": "warn",
+          "step_mean": 0.3141,
+          "step_max": 0.4105,
+          "drift": 10.38,
+          "loop": 0.0002,
           "loop_ratio": 0.0,
-          "travel": 5.49,
+          "travel": 8.5,
           "pin": 1.0,
           "pad": 0,
+          "flash": 0.082,
+          "peak": 0.4948,
           "canvas": [
             240,
             240
           ],
-          "reasons": [],
-          "sub": "20c9c689-255f-4dc0-9582-0bea1294cfdf",
-          "group": "33569407-13e4-4c0a-aeb6-20488bb58a7c",
-          "takes": 1,
-          "version": 1,
+          "reasons": [
+            "some bright effect pixels (0.08) — eyeball it"
+          ],
+          "sub": "d05d1336-e4be-4ede-adc4-63621db51a15",
+          "group": "b5da9dac-e5b7-4b6a-827e-9f93c03f335b",
+          "takes": 3,
+          "version": 4,
           "mirrored": true,
-          "generated_at": "2026-09-09T22:06:27+00:00",
+          "generated_at": "2026-09-09T23:01:09+00:00",
+          "action": "Fang Stab - Rears up on her back legs and stabs down once with both front legs and fangs, then returns to idle stance",
+          "tries": 2,
           "source": "south-east"
         },
         "west": {

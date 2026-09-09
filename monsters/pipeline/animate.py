@@ -223,7 +223,8 @@ def _flash(frames):
         rgb = x[..., :3].astype(int); al = x[..., 3] > 0
         white = (rgb.min(-1) >= 200) & al   # near-white AND the pale cream swoosh (245,240,210)
         yellow = (rgb[..., 0] >= 225) & (rgb[..., 1] >= 200) & (rgb[..., 2] <= 130) & al
-        return (white | yellow).sum()
+        cyan = (rgb[..., 2] >= 225) & (rgb[..., 1] >= 200) & (rgb[..., 0] <= 150) & al   # the cyan slash arc
+        return (white | yellow | cyan).sum()
     area = max(1, int((a[0][..., 3] > 0).sum())); b0 = bright(a[0])
     return float(max((bright(x) - b0) / area for x in a[1:])) if len(a) > 1 else 0.0
 
@@ -403,20 +404,27 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
         jobs[d] = job
         if verbose:
             print(f"  {cid:16s} {state} {d:11s} job {job} seed {seed}", flush=True)
+    groups = {}
     for d, job in jobs.items():
         if job:
             try:
-                client.wait_job(job, timeout=900)
+                j = client.wait_job(job, timeout=900)
+                groups[d] = (j.get("last_response") or {}).get("animation_group_id")
             except PixelLabError as e:
                 print(f"  {cid} {d}: {e}")
-    return collect_state(client, cid, state, dirs, version, verbose, pin=pin, actions=actions, tries=tries)
+    return collect_state(client, cid, state, dirs, version, verbose, pin=pin, actions=actions, tries=tries, groups=groups)
 
 
-def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, actions=None, tries=None):
+def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, actions=None, tries=None, groups=None):
     """Download the LAST take of each direction from PixelLab, align it to the
     base canvas, QA, save, mirror. Used after generation and by `fetch`.
     `actions` = {direction: action text} when a direction was made from other
-    words than the state's (claw fallback); otherwise the recorded one."""
+    words than the state's (claw fallback); otherwise the recorded one.
+    `groups` = {direction: animation_group_id} of the jobs just run — the take
+    is picked by that id. PixelLab's animation list is NOT in creation order
+    (measured 2026-09-09: a re-roll's `[-1]` re-downloaded the previous take
+    three monsters in a row, verdict unchanged to four decimals, $0.25 of
+    clips never looked at); `[-1]` is only the fallback for `fetch`."""
     man = cand.load_manifest(cid)
     rec = _anim_record(man, state)
     spec = STATES[state]
@@ -427,8 +435,11 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
     out = {}
     for d in dirs:
         cands = takes_by_action[actions[d]].get(d) or []
+        want = (groups or {}).get(d)
+        if want:
+            cands = [t for t in cands if t["group"] == want] or []
         if not cands:
-            out[d] = {"status": "fail", "reasons": ["no frames returned"]}
+            out[d] = {"status": "fail", "reasons": ["no frames returned" + (f" for job group {want[:8]}" if want else "")]}
             continue
         urls, group = cands[-1]["urls"], cands[-1]["group"]
         frames = [f for f in client.download_many(urls) if f is not None]
@@ -501,18 +512,23 @@ def cmd_state(args, state):
         man = cand.load_manifest(cid)
         rec = _anim_record(man, state)
         version = max([v.get("version", 0) for v in rec["directions"].values()] + [0]) + 1
-        # a reworded state: the old takes are keyed by the old text — delete them
-        reworded = any(rec["directions"].get(d, {}).get("action") not in (None, rec["action"], CLAW_SLASH) for d in dirs)
-        if redo or reworded:
-            # a redo replaces the take: delete the old direction on PixelLab first
+        # every regeneration clears the direction's old takes on PixelLab first —
+        # a direction is only regenerated when missing, failed or reworded, so
+        # nothing kept is lost and the record never accumulates rejected rolls
+        old_actions = {rec["directions"].get(d, {}).get("action") for d in dirs} | {rec["action"], CLAW_SLASH}
+        for a in old_actions:
+            if not a:
+                continue
+            try:
+                takes = client.animation_takes(man["pixellab_id"], a)
+            except PixelLabError as e:
+                print(f"  {cid}: takes not listed ({e})"); continue
             for d in dirs:
-                old_group = rec["directions"].get(d, {}).get("group")
-                if not old_group:
-                    continue
-                try:
-                    client.delete_animation(man["pixellab_id"], group_id=old_group, direction=d)
-                except PixelLabError as e:
-                    print(f"  {cid} {d}: old take not deleted ({e})")
+                for t in takes.get(d) or []:
+                    try:
+                        client.delete_animation(man["pixellab_id"], group_id=t["group"], direction=d)
+                    except PixelLabError as e:
+                        print(f"  {cid} {d}: old take not deleted ({e})")
         try:
             generate_state(client, cid, state, dirs, version, pin=bool(getattr(args, "pin", False)))
         except PixelLabError as e:
@@ -578,7 +594,7 @@ def cmd_requal(args):
             if q.get("pinned"):
                 new["pinned"] = True
                 new["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
-            keep = {k: q[k] for k in ("sub", "group", "takes", "version", "mirrored", "generated_at", "action") if k in q}
+            keep = {k: q[k] for k in ("sub", "group", "takes", "version", "mirrored", "generated_at", "action", "tries") if k in q}
             rec["directions"][d] = {**new, **keep}
             for md, src in MIRRORED.items():
                 if src == d and rec["directions"][d]["status"] != "fail":

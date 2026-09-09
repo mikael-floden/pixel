@@ -618,85 +618,88 @@
     "attack": {
       "directions": {
         "south": {
-          "status": "warn",
-          "step_mean": 0.2157,
-          "step_max": 0.2887,
-          "drift": 9.72,
+          "status": "fail",
+          "step_mean": 0.1961,
+          "step_max": 0.2082,
+          "drift": 7.87,
           "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 3.43,
+          "travel": 0.84,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.09,
-          "peak": 0.3428,
+          "flash": 0.114,
+          "peak": 0.2747,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "some bright effect pixels (0.09) — eyeball it"
+            "painted effect: 0.11 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "9e5d0c3f-1c37-452d-8522-bf421c64a72f",
-          "group": "066d59ee-ca29-479b-ba40-c7d31866fa81",
-          "takes": 1,
-          "version": 2,
+          "sub": "a8b52d71-8070-4fac-86c6-abbc57707088",
+          "group": "4b001895-5383-4299-8c35-5a7800f0110c",
+          "takes": 2,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:42:23+00:00",
-          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
+          "generated_at": "2026-09-09T22:59:26+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
+          "tries": 2
         },
         "south-east": {
           "status": "fail",
-          "step_mean": 0.0912,
-          "step_max": 0.0983,
-          "drift": 2.03,
-          "loop": 0.0001,
+          "step_mean": 0.1498,
+          "step_max": 0.1831,
+          "drift": 10.49,
+          "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 2.05,
+          "travel": 7.13,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.233,
-          "peak": 0.146,
+          "flash": 0.252,
+          "peak": 0.2447,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "painted effect: 0.23 of the body in new bright pixels (flare/slash arc)"
+            "painted effect: 0.25 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "adfb934c-0180-4fc0-8bc8-ce1b1c47e536",
-          "group": "68149712-4396-42ad-a436-58222061e8f6",
-          "takes": 2,
-          "version": 3,
+          "sub": "96b9156d-f61c-4769-9350-e4e0a456825a",
+          "group": "5f71d73d-b175-47fd-b66c-8e581b17f395",
+          "takes": 3,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:52:50+00:00",
-          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
+          "generated_at": "2026-09-09T22:59:27+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
+          "tries": 2
         },
         "east": {
           "status": "fail",
-          "step_mean": 0.2308,
-          "step_max": 0.3313,
-          "drift": 7.85,
+          "step_mean": 0.1267,
+          "step_max": 0.2254,
+          "drift": 10.81,
           "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 7.9,
+          "travel": 7.16,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.22,
-          "peak": 0.3797,
+          "flash": 0.256,
+          "peak": 0.2019,
           "canvas": [
             240,
             240
           ],
           "reasons": [
-            "painted effect: 0.22 of the body in new bright pixels (flare/slash arc)"
+            "painted effect: 0.26 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "04e0bb6d-e123-4ce7-859d-6a2c4c141995",
-          "group": "bf337745-9091-423d-b3c8-c191c5a72dc3",
-          "takes": 2,
-          "version": 3,
+          "sub": "76fc8aac-9d7b-4e5b-a986-69bf61fab879",
+          "group": "38288c76-b253-49ab-9f46-e45e1bc3e1bd",
+          "takes": 3,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:52:51+00:00",
-          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance"
+          "generated_at": "2026-09-09T22:59:27+00:00",
+          "action": "Club Smash - Raises the stalactite club overhead and smashes it down once, then returns to idle stance",
+          "tries": 2
         },
         "north-east": {
           "status": "pass",

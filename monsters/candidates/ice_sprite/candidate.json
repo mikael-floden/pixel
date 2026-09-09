@@ -652,31 +652,31 @@
         },
         "east": {
           "status": "fail",
-          "step_mean": 0.3488,
-          "step_max": 0.474,
-          "drift": 4.06,
+          "step_mean": 0.3473,
+          "step_max": 0.454,
+          "drift": 3.19,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.27,
+          "travel": 0.33,
           "pin": 1.0,
-          "pad": 2,
-          "flash": 0.513,
-          "peak": 0.5214,
+          "pad": 0,
+          "flash": 0.719,
+          "peak": 0.5063,
           "canvas": [
-            44,
-            44
+            40,
+            40
           ],
           "reasons": [
-            "painted effect: 0.51 of the body in new bright pixels (flare/slash arc)",
-            "canvas grown by 2 px a side to hold the motion"
+            "painted effect: 0.72 of the body in new bright pixels (flare/slash arc)"
           ],
-          "sub": "ba97cc9f-7def-4506-802f-9f0b21d38be8",
-          "group": "acd09280-f356-47e9-b21a-e53567934587",
-          "takes": 2,
-          "version": 3,
+          "sub": "a1f1829f-cc53-4ff3-85e7-f62e9547019b",
+          "group": "0304a485-b5e6-485c-949a-aa59f5f756f0",
+          "takes": 3,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T22:54:15+00:00",
-          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance"
+          "generated_at": "2026-09-09T23:00:56+00:00",
+          "action": "Frost Burst - Thrusts both hands forward and releases one burst of frost crystals, then returns to idle stance",
+          "tries": 2
         },
         "north-east": {
           "status": "pass",
