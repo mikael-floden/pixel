@@ -1,0 +1,145 @@
+{
+  "id": "root_forager",
+  "name": "Twineback",
+  "tier": "mid",
+  "lore": "Not a monster, exactly. A man who took to the hedgerows and now takes from everyone who walks them.",
+  "biome": [
+    "grass",
+    "dark_mud",
+    "light_soil"
+  ],
+  "items": [
+    "twine-tied herbs",
+    "twine-tied roots",
+    "twine-tied dried grass"
+  ],
+  "prompt": "Hunched fantasy forager bandit wearing a ragged moss-green hooded cloak over patched brown leather, face hidden in shadow except a crooked nose and two glinting eyes, a rusty sickle in one hand, twine-tied bundles of herbs, roots and dried grass strapped across the back, and muddy bare feet.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "root_forager/rotations/south.webp",
+    "south-east": "root_forager/rotations/south-east.webp",
+    "east": "root_forager/rotations/east.webp",
+    "north-east": "root_forager/rotations/north-east.webp",
+    "north": "root_forager/rotations/north.webp",
+    "north-west": "root_forager/rotations/north-west.webp",
+    "west": "root_forager/rotations/west.webp",
+    "south-west": "root_forager/rotations/south-west.webp"
+  },
+  "sheet": "root_forager/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c6d0cee3-2047-46b4-9e49-1851081f1579",
+  "seed": 1577858365,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T17:36:10+00:00",
+  "elapsed_s": 264.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.735,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.735,
+        "bbox": [
+          9,
+          3,
+          79,
+          91
+        ],
+        "fill": 0.668,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.738,
+        "bbox": [
+          29,
+          3,
+          73,
+          92
+        ],
+        "fill": 0.425,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.763,
+        "bbox": [
+          20,
+          2,
+          68,
+          93
+        ],
+        "fill": 0.474,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.747,
+        "bbox": [
+          16,
+          4,
+          86,
+          90
+        ],
+        "fill": 0.653,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.798,
+        "bbox": [
+          15,
+          3,
+          74,
+          93
+        ],
+        "fill": 0.576,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.767,
+        "bbox": [
+          15,
+          3,
+          86,
+          91
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.749,
+        "bbox": [
+          23,
+          3,
+          80,
+          90
+        ],
+        "fill": 0.538,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.774,
+        "bbox": [
+          9,
+          2,
+          82,
+          93
+        ],
+        "fill": 0.721,
+        "touches_edge": false
+      }
+    }
+  }
+}
