@@ -393,15 +393,19 @@ class PixelLabClient:
         jobs = resp.get("background_job_ids") or []
         return jobs[0] if jobs else None
 
-    def animation_takes(self, character_id, name):
+    def animation_takes(self, character_id, action):
         """{direction: [[urls], ...]} — EVERY take of every direction of the
-        animation whose type ends with `name` (v3 stores it as custom-<name>).
-        Callers pick; the last take is what the UI shows."""
+        v3 animations made from `action`. PixelLab ignores animation_name and
+        stores a v3 clip as animation_type "custom-" + the first ~30 chars of
+        the action text (measured 2026-09-09: 'custom-Calm still idle,
+        breathing ver'), ONE entry per direction when end_frame pins a single
+        direction — so several entries share one type. Callers pick; the last
+        take is what the UI shows."""
         detail = self.get_character(character_id)
         out = {}
         for a in detail.get("animations") or []:
             t = a.get("animation_type") or ""
-            if t == name or t.endswith("-" + name) or t.endswith(name):
+            if t.startswith("custom-") and (("custom-" + action).startswith(t) or t == ("custom-" + action)[:len(t)]):
                 for x in a.get("directions") or []:
                     urls = [u for u in (x.get("frames") or []) if u]
                     if x.get("direction") and urls:

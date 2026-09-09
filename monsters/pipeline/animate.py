@@ -106,6 +106,33 @@ def save_frames(cid, state, d, frames):
     mirror._save_png(strip, os.path.join(cand.cdir(cid), "animations", f"{state}__{d}.png"))
 
 
+# --- canvas ---------------------------------------------------------------------
+
+def align_to_base(frames, base):
+    """v3 returns each direction's clip on ITS OWN padded canvas (measured
+    2026-09-09 on a 112 px base: south 148×132, north 128×128, east 140×132)
+    at the same pixel scale, frame 0 being the base shifted by some offset.
+    Find that offset from frame 0, then crop/pad EVERY frame by it so frame 0
+    lands exactly on the base canvas and the clip shares the monster's
+    canvas. Returns (frames, cut) — cut = opaque pixels that fell outside the
+    base canvas over the whole clip (overflow; 0 for a calm idle)."""
+    b0 = base.getbbox(); f0 = frames[0].getbbox()
+    if not b0 or not f0:
+        return frames, 0
+    dx, dy = f0[0] - b0[0], f0[1] - b0[1]
+    W, H = base.size
+    out, cut = [], 0
+    for fr in frames:
+        canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        canvas.alpha_composite(fr, (-dx, -dy)) if (dx >= 0 and dy >= 0) else canvas.alpha_composite(fr, (max(0, -dx), max(0, -dy)))
+        # count what the crop dropped
+        total = int((np.asarray(fr)[..., 3] > 0).sum())
+        kept = int((np.asarray(canvas)[..., 3] > 0).sum())
+        cut += max(0, total - kept)
+        out.append(canvas)
+    return out, cut
+
+
 # --- QA ----------------------------------------------------------------------
 
 def _sil(im):
@@ -225,7 +252,16 @@ def generate_state(client, cid, state, dirs, version, verbose=True):
                 client.wait_job(job, timeout=900)
             except PixelLabError as e:
                 print(f"  {cid} {d}: {e}")
-    takes = client.animation_takes(man["pixellab_id"], state)
+    return collect_state(client, cid, state, dirs, version, verbose)
+
+
+def collect_state(client, cid, state, dirs, version, verbose=True):
+    """Download the LAST take of each direction from PixelLab, align it to the
+    base canvas, QA, save, mirror. Used after generation and by `fetch`."""
+    man = cand.load_manifest(cid)
+    rec = _anim_record(man, state)
+    spec = STATES[state]
+    takes = client.animation_takes(man["pixellab_id"], spec["action"])
     out = {}
     for d in dirs:
         cands = takes.get(d) or []
@@ -237,8 +273,13 @@ def generate_state(client, cid, state, dirs, version, verbose=True):
         if len(frames) != len(urls):
             out[d] = {"status": "fail", "reasons": [f"downloaded {len(frames)}/{len(urls)} frames"]}
             continue
+        frames, cut = align_to_base(frames, rotation(cid, d))
         save_frames(cid, state, d, frames)
         qa = qa_clip(cid, state, d, frames)
+        if cut:
+            qa["reasons"].append(f"{cut} px of motion fell outside the base canvas (overflow)")
+            qa["status"] = "fail" if cut > 20 else ("warn" if qa["status"] == "pass" else qa["status"])
+        qa["cut"] = cut
         qa.update({"sub": client.sub_id(urls[0]), "takes": len(cands), "version": version, "mirrored": False,
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         rec["directions"][d] = qa
@@ -333,6 +374,18 @@ def cmd_approve(args):
     print(f"approved {len(ids - missing)}")
 
 
+def cmd_fetch(args):
+    cfg = cand.load_cfg()
+    client = PixelLabClient()
+    dirs = args.dirs.split(",") if args.dirs else GEN_DIRS
+    for cid in args.only.split(","):
+        man = cand.load_manifest(cid)
+        rec = _anim_record(man, args.state)
+        version = max([v.get("version", 0) for v in rec["directions"].values()] + [0]) or 1
+        collect_state(client, cid, args.state, dirs, version)
+    cand.rebuild_index(cfg)
+
+
 def cmd_status(args):
     cfg = cand.load_cfg()
     state = args.state
@@ -364,6 +417,9 @@ def main():
     r = sub.add_parser("redo"); r.add_argument("--state", default="idle"); r.add_argument("--only", required=True)
     r.add_argument("--dirs", required=True); r.add_argument("--min-usd", type=float, default=MIN_USD)
     r.set_defaults(func=lambda a: cmd_state(a, a.state), dry_run=False)
+    f = sub.add_parser("fetch", help="re-download + re-QA the last takes already on PixelLab (no generation)")
+    f.add_argument("--state", default="idle"); f.add_argument("--only", required=True); f.add_argument("--dirs")
+    f.set_defaults(func=cmd_fetch)
     s = sub.add_parser("status"); s.add_argument("--state", default="idle"); s.set_defaults(func=cmd_status)
     args = ap.parse_args()
     args.func(args)
