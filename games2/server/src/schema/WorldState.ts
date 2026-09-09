@@ -81,6 +81,8 @@ export class Player extends Schema {
   pid = ""; // the stable id (the map key); the first session id of this login
   handoff: { to: number; key: string; at: number } | null = null; // a crossing in flight
   lastSeen = 0; // ghosts only: when the owner's last edge snapshot carried it
+  ghostNoAggro = false; // ghosts only: the body's "disable aggro" switch at home
+  ghostSwings = 0; // ghosts only: this room's own swing counter for the damage roll
 
   constructor() {
     super();
@@ -194,6 +196,7 @@ export class Monster extends Schema {
   diedAt = 0; // when the death started (drops + removal at diedAt + MONSTER_DIE_MS)
   // ZONES (spec/ZONES.md), server-only.
   home = -1; // the zone room that seeded it (its respawn goes back there)
+  pinned = false; // debug: dbgmonster {pin} holds it in place while roaming
   lastSeen = 0; // ghosts only
 
   constructor() {

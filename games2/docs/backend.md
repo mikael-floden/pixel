@@ -196,3 +196,26 @@ grid, all bots packed within a few cells in one zone (the crowded-room case):
   clients before ack latency moves; the cost is the per-client patch
   encoding, not the tick. Border crossings and fights at scale: not yet
   measured (the runs were cut short).
+
+## Cross-border combat (2026-09-09)
+
+- The fight runs in the MONSTER's room against the ghost player it mirrors
+  (`swingLoop(…, ghost = true)`, the aggro scan and the hunt read
+  `bodyOf(pid)` = player or ghost, `hurtBody` sends a ghost's hit home). What
+  the home room must show or keep is a `ctl` message: `engage` (target set on
+  the ghost; "" clears), `swing` (action/actionSeq/lastCombatAt/dir on the
+  real body), `hurt` (the real `hurtPlayer`), `reward` (`grantXp`, split out
+  of `killMonster`), `pickup`/`give` (a ghost drop is validated against the
+  ghost's mirrored position in the owner room, deleted there, stacked at
+  home; a full backpack drops it at the feet). The edge snapshot carries a
+  player's no-aggro switch so a neighbour's monsters honour it.
+- **A dead ghost may not swing** (its home room knows it died; the mirror
+  lags a tick): the first cut let a dead body keep killing across the line.
+- Gate: the combat test in `zones.test.ts` — a level-1 body at 12 wu from the
+  line engages the weakest monster of a zone-1 area that reaches the border
+  (pinned there with `dbgmonster {pin}`; a monster hauled out of its leash
+  gives up, and one moved out of its polygon snaps back), is hit back, kills
+  it, gets the xp at home and picks the loot from across the line.
+- Not carried across the line: the flee slow (`hunted` is built from the
+  room's own monsters). A dead body's respawn and the water sanctuary are the
+  home room's as before.

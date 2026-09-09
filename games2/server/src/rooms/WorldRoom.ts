@@ -249,7 +249,16 @@ type CtlMessage =
   | { type: "handoff:done"; pid: string }
   | { type: "monster:xfer"; id: string; m: MonsterXfer }
   | { type: "monster:respawn"; areaId: string }
-  | { type: "kick"; pid: string };
+  | { type: "kick"; pid: string }
+  // CROSS-BORDER COMBAT (spec/ZONES.md phase 5): the fight runs in the
+  // MONSTER's room against the ghost player it already mirrors; what the
+  // player's own room must show or keep travels home.
+  | { type: "engage"; pid: string; id: string } // a ghost player (pid) targets my monster (id); "" clears
+  | { type: "swing"; pid: string; dir: string } // the ghost swung: bump the real body's clip
+  | { type: "hurt"; pid: string; dmg: number } // my monster hit the ghost: hurt the real body
+  | { type: "reward"; pid: string; xp: number } // the ghost killed my monster
+  | { type: "pickup"; pid: string; id: string } // a ghost player picks my drop (id)
+  | { type: "give"; pid: string; item: string }; // the pickup went through: stack it at home
 interface EdgeSnapshot {
   from: number;
   t: number;
@@ -257,6 +266,7 @@ interface EdgeSnapshot {
     id: string; name: string; character: string; x: number; y: number; dir: string; moving: boolean;
     running: boolean; elev: number; jumping: boolean; swimming: boolean; torch: boolean; level: number;
     hp: number; hpMax: number; dead: boolean; slow: number; action: string; actionSeq: number; hitSeq: number;
+    noAggro: boolean;
   }>;
   monsters: Array<{
     id: string; kind: string; x: number; y: number; dir: string; moving: boolean; elev: number; hp: number;
@@ -750,12 +760,26 @@ export class WorldRoom extends Room<WorldState> {
       const player = this.playerOf(client);
       if (!player || player.dead) return;
       const id = typeof message?.id === "string" ? message.id : "";
+      const pid = this.pidOf(client);
       if (!id) {
+        const old = player.target;
         player.target = "";
+        const owner = old ? this.ghostOwner.get(old) : undefined;
+        if (owner !== undefined) void bus().publish(this.chan.ctl(owner), { type: "engage", pid, id: "" } satisfies CtlMessage);
         return;
       }
       const m = this.state.monsters.get(id);
-      if (!m || m.mstate === "die") return;
+      if (!m) {
+        // A GHOST monster: the fight runs in its owner's room against the
+        // ghost of this player that room already mirrors (spec/ZONES.md).
+        const owner = this.ghostOwner.get(id);
+        const gm = this.state.ghostMonsters.get(id);
+        if (owner === undefined || !gm || gm.mstate === "die") return;
+        player.target = id;
+        void bus().publish(this.chan.ctl(owner), { type: "engage", pid, id } satisfies CtlMessage);
+        return;
+      }
+      if (m.mstate === "die") return;
       player.target = id;
     });
 
@@ -765,6 +789,12 @@ export class WorldRoom extends Room<WorldState> {
       const player = this.playerOf(client);
       const id = typeof message?.id === "string" ? message.id : "";
       const drop = this.state.drops.get(id);
+      if (!drop && this.state.ghostDrops.has(id)) {
+        const owner = this.ghostOwner.get(id);
+        if (owner !== undefined)
+          void bus().publish(this.chan.ctl(owner), { type: "pickup", pid: this.pidOf(client), id } satisfies CtlMessage);
+        return;
+      }
       if (!player || player.dead || !drop) return;
       const now = Date.now();
       if (now < player.nextItemMsgAt) return; // pickup/drop share a light cadence cap
@@ -833,11 +863,13 @@ export class WorldRoom extends Room<WorldState> {
     // movement + jump so they hold the mark; client snaps via its jump threshold.
     // DEBUG: move a monster (same standing as "teleport"; the zone gates use
     // it to walk a monster over a border without waiting for its roam).
-    this.onMessage("dbgmonster", (client, message: { id?: string; x?: number; y?: number }) => {
+    this.onMessage("dbgmonster", (client, message: { id?: string; x?: number; y?: number; pin?: boolean }) => {
       const m = typeof message?.id === "string" ? this.state.monsters.get(message.id) : undefined;
       if (!m || m.mstate === "die") return;
       if (typeof message.x === "number" && isFinite(message.x)) m.x = message.x;
       if (typeof message.y === "number" && isFinite(message.y)) m.y = message.y;
+      if (this.terrain) m.elev = levelAtWorld(this.terrain, m.x, m.y);
+      m.pinned = !!message.pin;
       m.trip = null;
       m.tripActive = false;
       m.nextMoveAt = Date.now() + 500;
@@ -1580,6 +1612,12 @@ export class WorldRoom extends Room<WorldState> {
         m.moving = false;
         return;
       }
+      // A debug-pinned monster (dbgmonster {pin}) stands where it was put
+      // while roaming — no trip, no snap-back — but fights like any other.
+      if (m.pinned && !m.targetSid) {
+        m.moving = false;
+        return;
+      }
       const ctx = { maxClimb: WALK_CLIMB, canSwim: zone.canSwim };
       const rm = bodies[i].r;
       // Movement containment depends on the state: roaming stays ON the zone
@@ -1608,11 +1646,11 @@ export class WorldRoom extends Room<WorldState> {
 
       // --- COMBAT STATES (chase / in-fight) --------------------------------
       if (m.targetSid) {
-        const tp = this.state.players.get(m.targetSid);
+        const tp = this.bodyOf(m.targetSid);
         if (!tp || tp.dead) this.disengageMonster(m, zone, now);
       }
       if (m.mstate === "chase" || m.mstate === "combat") {
-        const tp = this.state.players.get(m.targetSid);
+        const tp = this.bodyOf(m.targetSid);
         if (!tp) {
           this.disengageMonster(m, zone, now);
           return;
@@ -1707,7 +1745,7 @@ export class WorldRoom extends Room<WorldState> {
           if (now >= m.nextAttackAt) {
             m.nextAttackAt = now + stats.attack_cooldown_ms;
             m.actionSeq++;
-            this.hurtPlayer(tp, damageRoll(stats.damage, idSalt(m.areaId), m.actionSeq), now);
+            this.hurtBody(tp, damageRoll(stats.damage, idSalt(m.areaId), m.actionSeq), now);
           }
         } else {
           // OUT OF REACH — the hunt. Direct drive through the same collision
@@ -1782,13 +1820,13 @@ export class WorldRoom extends Room<WorldState> {
         let bestSid = "";
         let bestD = Infinity;
         let bestProvoked = false;
-        this.state.players.forEach((p, sid) => {
+        const consider = (p: Player, sid: string, ghost: boolean) => {
           if (p.dead || p.swimming || Math.abs(p.elev - m.elev) > 2) return; // water = sanctuary
           const marked = p.target === id;
           // "Disable aggro" (Settings): this player is invisible to UNPROVOKED
           // aggro. Marking a monster with the sword still provokes it — the
           // switch removes the ambush, not the fight.
-          if (!marked && this.noAggro.has(sid)) return;
+          if (!marked && (ghost ? p.ghostNoAggro : this.noAggro.has(sid))) return;
           const radius = marked
             ? Math.max(stats.aggro_radius_wu, PROVOKE_RADIUS_WU)
             : stats.aggro_radius_wu;
@@ -1799,7 +1837,11 @@ export class WorldRoom extends Room<WorldState> {
             bestSid = sid;
             bestProvoked = marked;
           }
-        });
+        };
+        this.state.players.forEach((p, sid) => consider(p, sid, false));
+        // A neighbour zone's player standing in the band is prey too; hits
+        // and the hunt travel to its home room (spec/ZONES.md phase 5).
+        this.state.ghosts.forEach((p, pid) => consider(p, pid, true));
         if (bestSid) {
           m.targetSid = bestSid;
           m.provoked = bestProvoked;
@@ -2062,26 +2104,16 @@ export class WorldRoom extends Room<WorldState> {
     m.diedAt = now;
     killer.target = "";
     const stats = monsterStatsFor(m.kind);
-    // At the cap xp has nowhere to go (RO shows a frozen bar) — don't let it
-    // accumulate into a meaningless ever-growing number in the save file.
-    if (killer.level < LEVEL_CAP) killer.xp += stats.xp;
-    killer.dirty = true; // xp is EARNED — hp/ep are not, they regenerate
-    let leveled = false;
-    while (killer.level < LEVEL_CAP && killer.xp >= xpToNext(killer.level)) {
-      killer.xp -= xpToNext(killer.level);
-      killer.level++;
-      leveled = true;
-      // Level-up burst: full pools at the new maxima (the RO ding feel).
-      killer.hpMax = hpMaxFor(killer.level);
-      killer.epMax = epMaxFor(killer.level);
-      killer.hp = killer.hpMax;
-      killer.ep = killer.epMax;
+    // A GHOST killer earns at home (spec/ZONES.md phase 5); at the cap xp has
+    // nowhere to go (RO shows a frozen bar) — grantXp keeps the bar frozen
+    // rather than a meaningless ever-growing number in the save file.
+    if (this.state.ghosts.get(killer.pid) === killer) {
+      const home = this.ghostOwner.get(killer.pid);
+      if (home !== undefined)
+        void bus().publish(this.chan.ctl(home), { type: "reward", pid: killer.pid, xp: stats.xp } satisfies CtlMessage);
+      return;
     }
-    if (killer.level >= LEVEL_CAP) killer.xp = Math.min(killer.xp, xpToNext(LEVEL_CAP) - 1);
-    if (leveled) {
-      this.publishEvent("levelup", { name: killer.name, level: killer.level });
-      this.savePlayer(killer); // the worst thing a crash could eat is a ding
-    }
+    this.grantXp(killer, stats.xp);
   }
 
   /** Put one item on the ground near (x,y): a pseudo-random scatter that
@@ -2274,9 +2306,25 @@ export class WorldRoom extends Room<WorldState> {
           }
         }
       }
+      this.swingLoop(player, sid, now, dt, radii, false);
+    });
+    // A neighbour's player fighting one of MY monsters from across the line:
+    // the ghost mirrored here swings, and what its own room must show or
+    // keep (the clip, the hits, the xp) travels home over the bus.
+    this.state.ghosts.forEach((g, pid) => {
+      if (g.target && !g.dead) this.swingLoop(g, pid, now, dt, radii, true);
+    });
+  }
+
+  private swingLoop(player: Player, sid: string, now: number, dt: number, radii: Map<string, number>, ghost: boolean) {
+    {
       if (!player.target) return;
       const m = this.state.monsters.get(player.target);
       if (!m || m.mstate === "die") {
+        // A GHOST monster is fought in its owner's room: keep the mark until
+        // that room reports it dead (the ghost mirrors mstate) or it leaves.
+        const gm = !ghost ? this.state.ghostMonsters.get(player.target) : undefined;
+        if (gm && gm.mstate !== "die") return;
         player.target = "";
         return;
       }
@@ -2305,7 +2353,7 @@ export class WorldRoom extends Room<WorldState> {
       // client needs no prediction: with no input pending, its predicted
       // position IS the synced one, and the render ease glides the 20Hz
       // steps.
-      if (this.terrain) {
+      if (this.terrain && !ghost) {
         const pin = 1 / (pdist || 1);
         const pux = pdx * pin; // player -> monster
         const puy = pdy * pin;
@@ -2322,12 +2370,22 @@ export class WorldRoom extends Room<WorldState> {
       }
       if (now < player.nextSwingAt) return;
       player.nextSwingAt = now + PLAYER_ATTACK_MS;
-      player.action = "attack";
-      player.actionSeq++;
-      player.lastCombatAt = now;
       const face = faceDirWorld(player.x, player.y, m.x, m.y);
-      if (face) player.dir = face;
-      const dmg = damageRoll(playerAtk(player.level), idSalt(sid), player.actionSeq);
+      let swingSeq: number;
+      if (ghost) {
+        // The real body's clip, facing and combat clock live at home.
+        swingSeq = ++player.ghostSwings;
+        const home = this.ghostOwner.get(sid);
+        if (home !== undefined)
+          void bus().publish(this.chan.ctl(home), { type: "swing", pid: sid, dir: face ?? "" } satisfies CtlMessage);
+      } else {
+        player.action = "attack";
+        player.actionSeq++;
+        player.lastCombatAt = now;
+        if (face) player.dir = face;
+        swingSeq = player.actionSeq;
+      }
+      const dmg = damageRoll(playerAtk(player.level), idSalt(sid), swingSeq);
       m.hp = Math.max(0, m.hp - dmg);
       // Retaliation: hitting anything wakes it (passive kinds included) —
       // and a fight the PLAYER started is PROVOKED: the hunter paces its
@@ -2343,7 +2401,44 @@ export class WorldRoom extends Room<WorldState> {
         m.returning = false;
       }
       if (m.hp <= 0) this.killMonster(player, m, now);
-    });
+    }
+  }
+
+  /** A body by stable id: a player of this room, else a neighbour's ghost. */
+  private bodyOf(pid: string): Player | undefined {
+    return this.state.players.get(pid) ?? this.state.ghosts.get(pid);
+  }
+
+  /** Hurt a body: a real player here, or a ghost whose home room takes the
+   *  hit (the flinch, the slow, the death all happen there; the ghost mirrors
+   *  hp and hitSeq back on the next snapshot). */
+  private hurtBody(p: Player, dmg: number, now: number) {
+    if (this.state.players.get(p.pid) === p) return this.hurtPlayer(p, dmg, now);
+    const home = this.ghostOwner.get(p.pid);
+    if (home !== undefined) void bus().publish(this.chan.ctl(home), { type: "hurt", pid: p.pid, dmg } satisfies CtlMessage);
+  }
+
+  /** XP earned by a kill, with the level-up burst; the reason a ding is
+   *  saved at once. */
+  private grantXp(killer: Player, xp: number) {
+    if (killer.level < LEVEL_CAP) killer.xp += xp;
+    killer.dirty = true; // xp is EARNED — hp/ep are not, they regenerate
+    let leveled = false;
+    while (killer.level < LEVEL_CAP && killer.xp >= xpToNext(killer.level)) {
+      killer.xp -= xpToNext(killer.level);
+      killer.level++;
+      leveled = true;
+      // Level-up burst: full pools at the new maxima (the RO ding feel).
+      killer.hpMax = hpMaxFor(killer.level);
+      killer.epMax = epMaxFor(killer.level);
+      killer.hp = killer.hpMax;
+      killer.ep = killer.epMax;
+    }
+    if (killer.level >= LEVEL_CAP) killer.xp = Math.min(killer.xp, xpToNext(LEVEL_CAP) - 1);
+    if (leveled) {
+      this.publishEvent("levelup", { name: killer.name, level: killer.level });
+      this.savePlayer(killer); // the worst thing a crash could eat is a ding
+    }
   }
 
   /** Pick a random roam target from the zone's PRE-VALIDATED cells, preferring
@@ -2705,6 +2800,47 @@ export class WorldRoom extends Room<WorldState> {
       this.respawnQueue.push({ areaId: m.areaId, at: now + MONSTER_RESPAWN_MS });
     } else if (m.type === "kick") {
       this.kickPid(m.pid);
+    } else if (m.type === "engage") {
+      const g = this.state.ghosts.get(m.pid);
+      if (g) g.target = m.id && this.state.monsters.get(m.id)?.mstate !== "die" ? m.id : "";
+    } else if (m.type === "swing") {
+      const p = this.state.players.get(m.pid);
+      if (!p || p.dead) return;
+      p.action = "attack";
+      p.actionSeq++;
+      p.lastCombatAt = now;
+      if (m.dir) p.dir = m.dir;
+    } else if (m.type === "hurt") {
+      const p = this.state.players.get(m.pid);
+      if (p && !p.dead && Number.isFinite(m.dmg) && m.dmg > 0) this.hurtPlayer(p, Math.floor(m.dmg), now);
+    } else if (m.type === "reward") {
+      const p = this.state.players.get(m.pid);
+      if (p && Number.isFinite(m.xp) && m.xp > 0) {
+        p.target = "";
+        this.grantXp(p, Math.floor(m.xp));
+      }
+    } else if (m.type === "pickup") {
+      // A ghost player picks one of MY drops: validate against the ghost's
+      // mirrored position, take the item off the ground, send it home.
+      const g = this.state.ghosts.get(m.pid);
+      const drop = this.state.drops.get(m.id);
+      if (!g || !drop || g.dead) return;
+      if (Math.hypot(drop.x - g.x, drop.y - g.y) > PICKUP_RADIUS_WU) return;
+      if (Math.abs(g.elev - drop.elev) > 2) return;
+      const home = this.ghostOwner.get(m.pid);
+      if (home === undefined) return;
+      this.state.drops.delete(m.id);
+      void bus().publish(this.chan.ctl(home), { type: "give", pid: m.pid, item: drop.item } satisfies CtlMessage);
+    } else if (m.type === "give") {
+      const p = this.state.players.get(m.pid);
+      if (!p || typeof m.item !== "string") return;
+      if (!this.addInvItem(p, m.item)) this.spawnDrop(m.item, p.x, p.y, p.elev); // a full backpack: it lands at the feet
+      const sid = this.pidSid.get(m.pid);
+      const client = sid ? this.clients.find((c) => c.sessionId === sid) : undefined;
+      if (client) {
+        client.send("inv", { items: p.inv });
+        if (p.inv.length >= INV_MAX_SLOTS) client.send("chat", { name: "—", text: "Your backpack is full." });
+      }
     }
   }
 
@@ -2737,7 +2873,7 @@ export class WorldRoom extends Room<WorldState> {
         id: pid, name: p.name, character: p.character, x: p.x, y: p.y, dir: p.dir, moving: p.moving,
         running: p.running, elev: p.elev, jumping: p.jumping, swimming: p.swimming, torch: p.torch,
         level: p.level, hp: p.hp, hpMax: p.hpMax, dead: p.dead, slow: p.slow, action: p.action,
-        actionSeq: p.actionSeq, hitSeq: p.hitSeq,
+        actionSeq: p.actionSeq, hitSeq: p.hitSeq, noAggro: this.noAggro.has(pid),
       });
     });
     this.state.monsters.forEach((m, id) => {
@@ -2774,6 +2910,7 @@ export class WorldRoom extends Room<WorldState> {
       g.running = p.running; g.elev = p.elev; g.jumping = p.jumping; g.swimming = p.swimming; g.torch = p.torch;
       g.level = p.level; g.hp = p.hp; g.hpMax = p.hpMax; g.dead = p.dead; g.slow = p.slow; g.action = p.action;
       g.actionSeq = p.actionSeq; g.hitSeq = p.hitSeq; g.sid = ""; g.pid = p.id; g.lastSeen = now;
+      g.ghostNoAggro = !!p.noAggro;
       if (fresh) this.state.ghosts.set(p.id, g);
       this.ghostOwner.set(p.id, m.from);
     }

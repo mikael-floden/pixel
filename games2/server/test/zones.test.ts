@@ -6,7 +6,7 @@ import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client, Room } from "colyseus.js";
 import { matchMaker } from "@colyseus/core";
-import { ROOM_NAME, CELL_WU, INTEREST_LEAVE_WU, zoneGrid, zoneAt, zoneRect, nearEdge, distToRect, zoneNeighbours, WHOLE_WORLD } from "@nangijala/shared";
+import { ROOM_NAME, CELL_WU, INTEREST_LEAVE_WU, MAX_CHASE_WU, zoneGrid, zoneAt, zoneRect, nearEdge, distToRect, zoneNeighbours, WHOLE_WORLD } from "@nangijala/shared";
 import { WorldRoom, resetWorldClocks } from "../src/rooms/WorldRoom.js";
 import { FakeBus, useBus } from "../src/bus.js";
 import { dirname, join } from "path";
@@ -219,6 +219,80 @@ test("one room per zone: a duplicate is locked and hands its arrivals to the own
     // later joinById is refused outright — "room is locked" — which is also
     // right. The race itself has no deterministic harness.)
     rA.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+    useBus(null);
+  }
+});
+
+test("cross-border combat: a player fights, is hit by, kills and loots a monster of the next zone", async (t) => {
+  if (!HAVE_WORLD) return t.skip(SKIP);
+  const port = 2968;
+  useBus(new FakeBus());
+  resetWorldClocks();
+  const gameServer = new Server({ transport: new WebSocketTransport({ server: createServer() }) });
+  gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world", "zone"]);
+  await gameServer.listen(port);
+  const base = { world: "the_game", zonesCfg: CFG, interestRadius: 0, monsterSeed: 5, lootChance: 1 };
+  try {
+    const cA = new Client(`ws://localhost:${port}`);
+    const cB = new Client(`ws://localhost:${port}`);
+    const rA: any = await cA.joinOrCreate(ROOM_NAME, { ...base, zone: 0, name: "Left", character: "default_boy" });
+    const rB: any = await cB.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Far", character: "default_girl" });
+    const inv: any[] = [];
+    rA.onMessage("inv", (m: any) => inv.push(m.items));
+    await waitFor(() => rA.state.players.size === 1 && rB.state.monsters.size > 0, 8000, "joined, zone 1 seeded");
+    const pidA = rA.sessionId;
+    rB.send("teleport", { x: BORDER_X + 60 * CELL_WU, y: 60 * CELL_WU }); // Far stays out of it
+    // A zone-1 monster whose spawn area reaches the border, so the fight spot
+    // is inside its leash (a monster hauled out of its leash gives up).
+    // ...and the WEAKEST such monster, so a level-1 body survives the fight.
+    let best: { id: string; y: number; d: number; mid: string; hp: number } | null = null;
+    const r1 = zoneRect(GRID, 1);
+    rB.state.spawnAreas.forEach((a: any) => {
+      // The spot must lie in zone 1's rows, or the pinned monster and the
+      // player both belong to the rooms below (which this test never opens).
+      const cy = Math.min(r1.y1 - 2 * CELL_WU, Math.max(r1.y0 + 2 * CELL_WU, (a.y0 + a.y1) / 2));
+      const px = BORDER_X + 12;
+      const d = Math.hypot(px - Math.min(Math.max(px, a.x0), a.x1), cy - Math.min(Math.max(cy, a.y0), a.y1));
+      if (d >= MAX_CHASE_WU / 2) return;
+      rB.state.monsters.forEach((m: any, id: string) => {
+        if (id.startsWith(`z1:${a.id}#`) && m.mstate !== "die" && (!best || m.hpMax < best.hp)) best = { id: a.id, y: cy, d, mid: id, hp: m.hpMax };
+      });
+    });
+    const pick = best as { id: string; y: number; d: number; mid: string; hp: number } | null;
+    assert.ok(pick, "a zone-1 area reaches the border");
+    const y = pick!.y;
+    const mid = pick!.mid, hp = pick!.hp;
+    rA.send("teleport", { x: BORDER_X - 12, y });
+    await settle(300);
+    rB.send("dbgmonster", { id: mid, x: BORDER_X + 12, y, pin: true });
+    await waitFor(() => rA.state.ghostMonsters?.has(mid), 5000, "the monster is a ghost in zone 0");
+    const me = () => rA.state.players.get(pidA);
+    const monster = () => rB.state.monsters.get(mid) ?? rA.state.monsters.get(mid);
+    rA.send("engage", { id: mid });
+    await waitFor(() => (monster()?.hp ?? hp) < hp, 8000, "the ghost monster loses hp");
+    await waitFor(() => me().actionSeq >= 1, 4000, "the real body swings at home");
+    await waitFor(() => me().hitSeq >= 1, 12000, "the monster hits back across the line");
+    const xp0 = me().xp, lvl0 = me().level;
+    await waitFor(() => !monster() || monster()?.mstate === "die", 40000, "the monster dies");
+    await waitFor(() => me().xp > xp0 || me().level > lvl0, 5000, "xp reached home");
+    assert.ok(!me().dead, "the body survived the fight (a dead ghost may not swing)");
+    // Its loot lies where it died; pick it up from across the line.
+    let did = "";
+    await waitFor(() => {
+      const st: any = rA.state;
+      st.ghostDrops?.forEach((d: any, id: string) => { if (!did && Math.hypot(d.x - me().x, d.y - me().y) < 6 * CELL_WU) did = id; });
+      st.drops?.forEach((d: any, id: string) => { if (!did && Math.hypot(d.x - me().x, d.y - me().y) < 6 * CELL_WU) did = id; });
+      return !!did;
+    }, 8000, "the loot is visible");
+    const drop = rA.state.ghostDrops?.get(did) ?? rA.state.drops.get(did);
+    rA.send("teleport", { x: drop.x - 8, y: drop.y });
+    await settle(300);
+    const nInv = inv.length;
+    rA.send("pickup", { id: did });
+    await waitFor(() => inv.length > nInv && inv[inv.length - 1].some((s: any) => s.item === drop.item), 6000, "the item is in the backpack");
+    rA.leave(); rB.leave();
   } finally {
     await gameServer.gracefullyShutdown(false);
     useBus(null);

@@ -53,10 +53,16 @@ Kubernetes). Rules here are present tense; the measurements land in
   transferred with its full brain state (`monster:xfer`); every room holds the
   whole spawn-zone list but seeds only the cells inside its own rect (`num`
   split by cell share), so a transferred monster's zone rules still resolve.
-- **Cross-border combat is forwarded** (phase 2b): an `engage` on a ghost is
-  relayed to the owner room, which fights the ghost PLAYER it already holds;
-  damage, xp and kills travel back over the bus to the player's home room.
-  Until 2b lands, a ghost cannot be hit and does not hit.
+- **Cross-border combat runs in the MONSTER's room.** An `engage` on a ghost
+  monster is relayed to its owner (`engage` on that zone's `ctl` channel),
+  which fights the ghost PLAYER it already mirrors: the ghost swings there,
+  the monster hunts and hits the ghost there, and what the player's own room
+  must show or keep travels home — `swing` (the clip, the facing, the combat
+  clock), `hurt` (the flinch, the slow, the death), `reward` (the xp and the
+  ding). Loot lies where the monster died; a `pickup` on a ghost drop is
+  relayed the same way and the item comes home as `give`. A monster that
+  chases across the line is transferred and the fight continues natively.
+  Not carried: the flee slow of a hunt that lives in the other room.
 - **The world clock is a bus document** (`clock:<world>`: timeIdx, the phase
   deadline as an epoch, timeSpeed, frozen, weather, aurora). Every room
   derives `phaseT` from the deadline and wall clock, so zones agree to the
@@ -85,7 +91,7 @@ Kubernetes). Rules here are present tense; the measurements land in
    position, hp and inventory, and the neighbour saw the ghost first).
 4. The load bot (`scripts/loadbot.mjs`): hundreds of fake clients walking,
    fighting and crossing borders — the players-per-room-per-CPU number.
-5. Cross-border combat forwarding.
+5. Cross-border combat (done: the combat test in `zones.test.ts`).
 6. Infrastructure, when the load bot says a room is at its ceiling:
    Memorystore, the load balancer, a second service. The code does not
    change for it; the table does.
