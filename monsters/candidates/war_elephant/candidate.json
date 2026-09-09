@@ -150,12 +150,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "efecc54b-395a-427f-9c67-be00762956ea",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:21:06+00:00"
+          "generated_at": "2026-09-09T20:21:06+00:00",
+          "cut": 0
         },
         "south-east": {
           "status": "warn",
@@ -167,12 +167,12 @@
           "reasons": [
             "drifts 5.3 px — eyeball it"
           ],
-          "cut": 0,
           "sub": "967f36cc-fd5d-4b09-89ac-26172b8e2f3c",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:21:07+00:00"
+          "generated_at": "2026-09-09T20:21:07+00:00",
+          "cut": 0
         },
         "east": {
           "status": "pass",
@@ -182,12 +182,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "91b412b1-3dfa-4c13-90a6-b9046a290fcb",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:21:08+00:00"
+          "generated_at": "2026-09-09T20:21:08+00:00",
+          "cut": 0
         },
         "north-east": {
           "status": "pass",
@@ -197,12 +197,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "ff845bf4-17f0-4c57-9df0-764ad8a4994f",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:21:09+00:00"
+          "generated_at": "2026-09-09T20:21:09+00:00",
+          "cut": 0
         },
         "north": {
           "status": "pass",
@@ -212,12 +212,12 @@
           "loop": 0.0001,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "e0d9e25e-e538-418d-adf3-8beeabdfb680",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:21:10+00:00"
+          "generated_at": "2026-09-09T20:21:10+00:00",
+          "cut": 0
         },
         "south-west": {
           "status": "warn",
@@ -229,12 +229,12 @@
           "reasons": [
             "drifts 5.3 px — eyeball it"
           ],
-          "cut": 0,
           "sub": "967f36cc-fd5d-4b09-89ac-26172b8e2f3c",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:21:07+00:00",
+          "cut": 0,
           "source": "south-east"
         },
         "west": {
@@ -245,12 +245,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "91b412b1-3dfa-4c13-90a6-b9046a290fcb",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:21:08+00:00",
+          "cut": 0,
           "source": "east"
         },
         "north-west": {
@@ -261,12 +261,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "ff845bf4-17f0-4c57-9df0-764ad8a4994f",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:21:09+00:00",
+          "cut": 0,
           "source": "north-east"
         }
       },

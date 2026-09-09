@@ -150,12 +150,12 @@
           "loop": 0.0018,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "ea5f8d04-d027-4af1-9d35-b66a011075f2",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:16:37+00:00"
+          "generated_at": "2026-09-09T20:16:37+00:00",
+          "cut": 0
         },
         "south-east": {
           "status": "pass",
@@ -165,12 +165,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "fc47cfc2-ca23-49e8-a58c-709301390046",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:16:37+00:00"
+          "generated_at": "2026-09-09T20:16:37+00:00",
+          "cut": 0
         },
         "east": {
           "status": "pass",
@@ -180,12 +180,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "6b0f8b5e-0fba-4ec8-9186-c4dde24eae15",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:16:38+00:00"
+          "generated_at": "2026-09-09T20:16:38+00:00",
+          "cut": 0
         },
         "north-east": {
           "status": "warn",
@@ -197,12 +197,12 @@
           "reasons": [
             "motion 0.251 outside the calm band 0.01–0.2 — eyeball it"
           ],
-          "cut": 0,
           "sub": "9660981d-551a-4252-8be5-bb8ae98f0b68",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:16:39+00:00"
+          "generated_at": "2026-09-09T20:16:39+00:00",
+          "cut": 0
         },
         "north": {
           "status": "pass",
@@ -212,12 +212,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "6be9bb5f-05a4-452c-8b80-246527eb39ad",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:16:39+00:00"
+          "generated_at": "2026-09-09T20:16:39+00:00",
+          "cut": 0
         },
         "south-west": {
           "status": "pass",
@@ -227,12 +227,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "fc47cfc2-ca23-49e8-a58c-709301390046",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:16:37+00:00",
+          "cut": 0,
           "source": "south-east"
         },
         "west": {
@@ -243,12 +243,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "6b0f8b5e-0fba-4ec8-9186-c4dde24eae15",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:16:38+00:00",
+          "cut": 0,
           "source": "east"
         },
         "north-west": {
@@ -261,12 +261,12 @@
           "reasons": [
             "motion 0.251 outside the calm band 0.01–0.2 — eyeball it"
           ],
-          "cut": 0,
           "sub": "9660981d-551a-4252-8be5-bb8ae98f0b68",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:16:39+00:00",
+          "cut": 0,
           "source": "north-east"
         }
       },

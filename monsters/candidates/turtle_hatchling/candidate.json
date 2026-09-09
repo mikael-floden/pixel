@@ -150,12 +150,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "c615e38d-0f28-43c8-bf00-c3bfb856e1f9",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:23:02+00:00"
+          "generated_at": "2026-09-09T20:23:02+00:00",
+          "cut": 0
         },
         "south-east": {
           "status": "pass",
@@ -165,12 +165,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "c9e33179-7299-4e87-8033-7aa2b6cc393f",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:23:02+00:00"
+          "generated_at": "2026-09-09T20:23:02+00:00",
+          "cut": 0
         },
         "east": {
           "status": "pass",
@@ -180,29 +180,27 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "0e14a90c-146d-475d-a0c8-6a75a2c75339",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:23:03+00:00"
+          "generated_at": "2026-09-09T20:23:03+00:00",
+          "cut": 0
         },
         "north-east": {
-          "status": "fail",
+          "status": "pass",
           "step_mean": 0.1061,
           "step_max": 0.1146,
           "drift": 1.12,
           "loop": 0.0,
           "pin": 1.0,
-          "reasons": [
-            "body turned the wrong way: matches mirrored north-west (0.92) better than north-east (0.92)"
-          ],
-          "cut": 0,
+          "reasons": [],
           "sub": "e5344c20-203b-4696-8622-c1fa27095aef",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:23:03+00:00"
+          "generated_at": "2026-09-09T20:23:03+00:00",
+          "cut": 0
         },
         "north": {
           "status": "pass",
@@ -212,12 +210,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "3a09892e-6510-4932-a4bf-d14f0e777768",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:23:04+00:00"
+          "generated_at": "2026-09-09T20:23:04+00:00",
+          "cut": 0
         },
         "south-west": {
           "status": "pass",
@@ -227,12 +225,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "c9e33179-7299-4e87-8033-7aa2b6cc393f",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:23:02+00:00",
+          "cut": 0,
           "source": "south-east"
         },
         "west": {
@@ -243,12 +241,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "0e14a90c-146d-475d-a0c8-6a75a2c75339",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:23:03+00:00",
+          "cut": 0,
           "source": "east"
         }
       },

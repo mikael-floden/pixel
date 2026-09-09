@@ -138,5 +138,203 @@
       }
     }
   },
-  "approved_at": "2026-09-09T19:59:27+00:00"
+  "approved_at": "2026-09-09T19:59:27+00:00",
+  "animations": {
+    "idle": {
+      "directions": {
+        "south": {
+          "status": "pass",
+          "step_mean": 0.1233,
+          "step_max": 0.1408,
+          "drift": 1.75,
+          "loop": 0.0025,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "e3c1f5c9-4b4c-4070-bedf-bb53e9e59cf1",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:27:08+00:00",
+          "cut": 0
+        },
+        "south-east": {
+          "status": "pass",
+          "step_mean": 0.061,
+          "step_max": 0.1154,
+          "drift": 2.24,
+          "loop": 0.0015,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "40beb64d-b049-4912-bfd9-fbb287ed2962",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:27:08+00:00",
+          "cut": 0
+        },
+        "east": {
+          "status": "pass",
+          "step_mean": 0.0464,
+          "step_max": 0.0867,
+          "drift": 0.39,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "f5e496cb-f242-4e1c-be5b-fc5c71137e4a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:27:09+00:00",
+          "cut": 0
+        },
+        "north-east": {
+          "status": "pass",
+          "step_mean": 0.143,
+          "step_max": 0.1935,
+          "drift": 2.0,
+          "loop": 0.002,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "66aa849e-e93b-41f5-8da0-be8f274ee2da",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:27:10+00:00",
+          "cut": 0
+        },
+        "north": {
+          "status": "pass",
+          "step_mean": 0.0779,
+          "step_max": 0.1369,
+          "drift": 1.21,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "8c11f963-edab-474b-b284-5748c1e6e691",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "generated_at": "2026-09-09T20:27:10+00:00",
+          "cut": 0
+        },
+        "south-west": {
+          "status": "pass",
+          "step_mean": 0.061,
+          "step_max": 0.1154,
+          "drift": 2.24,
+          "loop": 0.0015,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "40beb64d-b049-4912-bfd9-fbb287ed2962",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:27:08+00:00",
+          "cut": 0,
+          "source": "south-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0464,
+          "step_max": 0.0867,
+          "drift": 0.39,
+          "loop": 0.0,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "f5e496cb-f242-4e1c-be5b-fc5c71137e4a",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:27:09+00:00",
+          "cut": 0,
+          "source": "east"
+        },
+        "north-west": {
+          "status": "pass",
+          "step_mean": 0.143,
+          "step_max": 0.1935,
+          "drift": 2.0,
+          "loop": 0.002,
+          "pin": 1.0,
+          "reasons": [],
+          "sub": "66aa849e-e93b-41f5-8da0-be8f274ee2da",
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "generated_at": "2026-09-09T20:27:10+00:00",
+          "cut": 0,
+          "source": "north-east"
+        }
+      },
+      "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+      "frame_paths": {
+        "south": [
+          "ghost_hound/animations/idle/south/00.webp",
+          "ghost_hound/animations/idle/south/01.webp",
+          "ghost_hound/animations/idle/south/02.webp",
+          "ghost_hound/animations/idle/south/03.webp",
+          "ghost_hound/animations/idle/south/04.webp"
+        ],
+        "south-east": [
+          "ghost_hound/animations/idle/south-east/00.webp",
+          "ghost_hound/animations/idle/south-east/01.webp",
+          "ghost_hound/animations/idle/south-east/02.webp",
+          "ghost_hound/animations/idle/south-east/03.webp",
+          "ghost_hound/animations/idle/south-east/04.webp"
+        ],
+        "east": [
+          "ghost_hound/animations/idle/east/00.webp",
+          "ghost_hound/animations/idle/east/01.webp",
+          "ghost_hound/animations/idle/east/02.webp",
+          "ghost_hound/animations/idle/east/03.webp",
+          "ghost_hound/animations/idle/east/04.webp"
+        ],
+        "north-east": [
+          "ghost_hound/animations/idle/north-east/00.webp",
+          "ghost_hound/animations/idle/north-east/01.webp",
+          "ghost_hound/animations/idle/north-east/02.webp",
+          "ghost_hound/animations/idle/north-east/03.webp",
+          "ghost_hound/animations/idle/north-east/04.webp"
+        ],
+        "north": [
+          "ghost_hound/animations/idle/north/00.webp",
+          "ghost_hound/animations/idle/north/01.webp",
+          "ghost_hound/animations/idle/north/02.webp",
+          "ghost_hound/animations/idle/north/03.webp",
+          "ghost_hound/animations/idle/north/04.webp"
+        ],
+        "south-west": [
+          "ghost_hound/animations/idle/south-west/00.webp",
+          "ghost_hound/animations/idle/south-west/01.webp",
+          "ghost_hound/animations/idle/south-west/02.webp",
+          "ghost_hound/animations/idle/south-west/03.webp",
+          "ghost_hound/animations/idle/south-west/04.webp"
+        ],
+        "west": [
+          "ghost_hound/animations/idle/west/00.webp",
+          "ghost_hound/animations/idle/west/01.webp",
+          "ghost_hound/animations/idle/west/02.webp",
+          "ghost_hound/animations/idle/west/03.webp",
+          "ghost_hound/animations/idle/west/04.webp"
+        ],
+        "north-west": [
+          "ghost_hound/animations/idle/north-west/00.webp",
+          "ghost_hound/animations/idle/north-west/01.webp",
+          "ghost_hound/animations/idle/north-west/02.webp",
+          "ghost_hound/animations/idle/north-west/03.webp",
+          "ghost_hound/animations/idle/north-west/04.webp"
+        ]
+      },
+      "strips": {
+        "south": "ghost_hound/animations/idle__south.webp",
+        "south-east": "ghost_hound/animations/idle__south-east.webp",
+        "east": "ghost_hound/animations/idle__east.webp",
+        "north-east": "ghost_hound/animations/idle__north-east.webp",
+        "north": "ghost_hound/animations/idle__north.webp",
+        "south-west": "ghost_hound/animations/idle__south-west.webp",
+        "west": "ghost_hound/animations/idle__west.webp",
+        "north-west": "ghost_hound/animations/idle__north-west.webp"
+      }
+    }
+  }
 }

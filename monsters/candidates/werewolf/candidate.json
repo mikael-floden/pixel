@@ -150,12 +150,12 @@
           "loop": 0.0003,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "ef3222fb-9294-4617-b6d3-8fbffc66de8c",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:12:40+00:00"
+          "generated_at": "2026-09-09T20:12:40+00:00",
+          "cut": 0
         },
         "south-east": {
           "status": "pass",
@@ -165,12 +165,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "cf514bdf-5ad1-4e33-a263-347643c139ea",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:12:41+00:00"
+          "generated_at": "2026-09-09T20:12:41+00:00",
+          "cut": 0
         },
         "east": {
           "status": "pass",
@@ -180,12 +180,12 @@
           "loop": 0.0009,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "9d80071d-22d0-40af-9639-ae1d87b368fb",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:12:41+00:00"
+          "generated_at": "2026-09-09T20:12:41+00:00",
+          "cut": 0
         },
         "north-east": {
           "status": "pass",
@@ -195,15 +195,15 @@
           "loop": 0.0004,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "eb36ae6e-1c91-487a-97ec-11f27baffa19",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:12:42+00:00"
+          "generated_at": "2026-09-09T20:12:42+00:00",
+          "cut": 0
         },
         "north": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.049,
           "step_max": 0.0783,
           "drift": 0.98,
@@ -213,12 +213,12 @@
             "frame 1 touches a canvas edge the base does not (overflow / wrap risk)",
             "8 px of motion fell outside the base canvas (overflow)"
           ],
-          "cut": 8,
           "sub": "ce12229f-04c8-4be0-952a-9d84bb999bda",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:12:42+00:00"
+          "generated_at": "2026-09-09T20:12:42+00:00",
+          "cut": 8
         },
         "south-west": {
           "status": "pass",
@@ -228,12 +228,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "cf514bdf-5ad1-4e33-a263-347643c139ea",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:12:41+00:00",
+          "cut": 0,
           "source": "south-east"
         },
         "west": {
@@ -244,12 +244,12 @@
           "loop": 0.0009,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "9d80071d-22d0-40af-9639-ae1d87b368fb",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:12:41+00:00",
+          "cut": 0,
           "source": "east"
         },
         "north-west": {
@@ -260,12 +260,12 @@
           "loop": 0.0004,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "eb36ae6e-1c91-487a-97ec-11f27baffa19",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:12:42+00:00",
+          "cut": 0,
           "source": "north-east"
         }
       },

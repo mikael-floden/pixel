@@ -150,12 +150,12 @@
           "loop": 0.0001,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "837fb0fa-3692-417b-a355-f86294460f46",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:17:25+00:00"
+          "generated_at": "2026-09-09T20:17:25+00:00",
+          "cut": 0
         },
         "south-east": {
           "status": "pass",
@@ -165,12 +165,12 @@
           "loop": 0.0007,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "61a84bdf-f2a2-4c64-8af8-300417d7b9d6",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:17:26+00:00"
+          "generated_at": "2026-09-09T20:17:26+00:00",
+          "cut": 0
         },
         "east": {
           "status": "pass",
@@ -180,12 +180,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "238400b4-d669-4ab9-b344-a5ca34d0b453",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:17:26+00:00"
+          "generated_at": "2026-09-09T20:17:26+00:00",
+          "cut": 0
         },
         "north-east": {
           "status": "pass",
@@ -195,12 +195,12 @@
           "loop": 0.0002,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "aa267fb3-fd0c-4c2c-9df8-23c4dcdd2558",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:17:27+00:00"
+          "generated_at": "2026-09-09T20:17:27+00:00",
+          "cut": 0
         },
         "north": {
           "status": "warn",
@@ -212,12 +212,12 @@
           "reasons": [
             "drifts 4.9 px — eyeball it"
           ],
-          "cut": 0,
           "sub": "ef51836a-b9da-497f-8a06-8866e57576a1",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:17:28+00:00"
+          "generated_at": "2026-09-09T20:17:28+00:00",
+          "cut": 0
         },
         "south-west": {
           "status": "pass",
@@ -227,12 +227,12 @@
           "loop": 0.0007,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "61a84bdf-f2a2-4c64-8af8-300417d7b9d6",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:17:26+00:00",
+          "cut": 0,
           "source": "south-east"
         },
         "west": {
@@ -243,12 +243,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "238400b4-d669-4ab9-b344-a5ca34d0b453",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:17:26+00:00",
+          "cut": 0,
           "source": "east"
         },
         "north-west": {
@@ -259,12 +259,12 @@
           "loop": 0.0002,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "aa267fb3-fd0c-4c2c-9df8-23c4dcdd2558",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:17:27+00:00",
+          "cut": 0,
           "source": "north-east"
         }
       },

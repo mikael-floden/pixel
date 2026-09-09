@@ -150,12 +150,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "acf3e721-4520-42a8-a49d-1af873d95e4d",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:12:38+00:00"
+          "generated_at": "2026-09-09T20:12:38+00:00",
+          "cut": 0
         },
         "south-east": {
           "status": "pass",
@@ -165,12 +165,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "6e479a8b-dcbc-4b4e-a29d-abe0808debee",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:12:38+00:00"
+          "generated_at": "2026-09-09T20:12:38+00:00",
+          "cut": 0
         },
         "east": {
           "status": "pass",
@@ -180,12 +180,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "f64dec48-6394-47f4-8e7a-6029e2a66a44",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:12:39+00:00"
+          "generated_at": "2026-09-09T20:12:39+00:00",
+          "cut": 0
         },
         "north-east": {
           "status": "pass",
@@ -195,12 +195,12 @@
           "loop": 0.0004,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "bf5bbe7a-91e4-46ab-b913-346af132203c",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:12:39+00:00"
+          "generated_at": "2026-09-09T20:12:39+00:00",
+          "cut": 0
         },
         "north": {
           "status": "pass",
@@ -210,12 +210,12 @@
           "loop": 0.0004,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "496002eb-ef31-48f6-98fe-ce4138410d2c",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:12:41+00:00"
+          "generated_at": "2026-09-09T20:12:41+00:00",
+          "cut": 0
         },
         "south-west": {
           "status": "pass",
@@ -225,12 +225,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "6e479a8b-dcbc-4b4e-a29d-abe0808debee",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:12:38+00:00",
+          "cut": 0,
           "source": "south-east"
         },
         "west": {
@@ -241,12 +241,12 @@
           "loop": 0.0,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "f64dec48-6394-47f4-8e7a-6029e2a66a44",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:12:39+00:00",
+          "cut": 0,
           "source": "east"
         },
         "north-west": {
@@ -257,12 +257,12 @@
           "loop": 0.0004,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "bf5bbe7a-91e4-46ab-b913-346af132203c",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:12:39+00:00",
+          "cut": 0,
           "source": "north-east"
         }
       },

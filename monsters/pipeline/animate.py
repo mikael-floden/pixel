@@ -414,8 +414,12 @@ def cmd_requal(args):
             keep = {k: q[k] for k in ("sub", "takes", "version", "mirrored", "generated_at", "cut") if k in q}
             rec["directions"][d] = {**new, **keep}
             for md, src in MIRRORED.items():
-                if src == d and md in rec["directions"]:
-                    rec["directions"][md] = dict(rec["directions"][d], mirrored=True, source=src)
+                if src == d and rec["directions"][d]["status"] != "fail":
+                    # (re)create the mirror — it was skipped if the source failed at generation time
+                    if mirror_direction(cid, args.state, md):
+                        rec["directions"][md] = dict(rec["directions"][d], mirrored=True, source=src)
+                        rec.setdefault("frame_paths", {})[md] = [os.path.join(cid, "animations", args.state, md, f"{i:02d}{mirror.ART_EXT}") for i in range(STATES[args.state]["frames"] + 1)]
+                        rec.setdefault("strips", {})[md] = os.path.join(cid, "animations", f"{args.state}__{md}{mirror.ART_EXT}")
         write_manifest(cid, man)
     cand.rebuild_index(cfg)
 

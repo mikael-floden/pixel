@@ -150,12 +150,12 @@
           "loop": 0.0015,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "a93e25d2-c894-40fe-9faf-fccf0851ff6d",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:06:56+00:00"
+          "generated_at": "2026-09-09T20:06:56+00:00",
+          "cut": 0
         },
         "south-east": {
           "status": "pass",
@@ -165,12 +165,12 @@
           "loop": 0.0011,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "8cb31070-34ee-476b-a35f-e8f06ea1e1fc",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:06:57+00:00"
+          "generated_at": "2026-09-09T20:06:57+00:00",
+          "cut": 0
         },
         "east": {
           "status": "pass",
@@ -180,15 +180,15 @@
           "loop": 0.0003,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "40b2b17a-48a2-4184-b15e-c74f0f471962",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:06:58+00:00"
+          "generated_at": "2026-09-09T20:06:58+00:00",
+          "cut": 0
         },
         "north-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0558,
           "step_max": 0.0808,
           "drift": 0.8,
@@ -197,12 +197,12 @@
           "reasons": [
             "frame 1 touches a canvas edge the base does not (overflow / wrap risk)"
           ],
-          "cut": 0,
           "sub": "937bf38d-3dc1-4de0-aac1-c279abe5a52b",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:06:58+00:00"
+          "generated_at": "2026-09-09T20:06:58+00:00",
+          "cut": 0
         },
         "north": {
           "status": "pass",
@@ -212,12 +212,12 @@
           "loop": 0.0029,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "39614bc7-fb49-422c-98bd-78cf093b455a",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T20:06:59+00:00"
+          "generated_at": "2026-09-09T20:06:59+00:00",
+          "cut": 0
         },
         "south-west": {
           "status": "pass",
@@ -227,12 +227,12 @@
           "loop": 0.0011,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "8cb31070-34ee-476b-a35f-e8f06ea1e1fc",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:06:57+00:00",
+          "cut": 0,
           "source": "south-east"
         },
         "west": {
@@ -243,12 +243,12 @@
           "loop": 0.0003,
           "pin": 1.0,
           "reasons": [],
-          "cut": 0,
           "sub": "40b2b17a-48a2-4184-b15e-c74f0f471962",
           "takes": 1,
           "version": 1,
           "mirrored": true,
           "generated_at": "2026-09-09T20:06:58+00:00",
+          "cut": 0,
           "source": "east"
         }
       },
