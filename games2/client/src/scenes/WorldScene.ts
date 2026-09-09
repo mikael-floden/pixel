@@ -97,6 +97,7 @@ import { netPerfStart, netPerfTake } from "../netperf";
 import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
 import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, type GlFrame } from "../glframe";
+import { fadeTune, setFadeTune } from "../fadetune";
 import { queueTileLoads, TileAtlasLoad } from "../tileatlas";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -4014,6 +4015,21 @@ export class WorldScene extends Phaser.Scene {
           get: () => !this.noTransitions,
           state: () => (this.noTransitions ? "off" : "on"),
         },
+        /* FADE ON TRANSITION — the maintainer's fourth fade control (the three
+         * dials sit on the sliders below): may a fade tile land ON a composed
+         * transition tile? "A transition tile that is 50% sand and 50% grass
+         * can in fact end up being 75% grass and 25% sand if a fade tile with
+         * lots of grass happened to be placed there." Re-resolves the world. */
+        {
+          label: "fade on transition",
+          act: () => {
+            const on = !fadeTune().onBoundary;
+            setFadeTune({ onBoundary: on });
+            this.chat.addLog("—", `fade on transition: ${on ? "on — a transition tile may wear a fade" : "off"}`);
+          },
+          get: () => fadeTune().onBoundary,
+          state: () => (fadeTune().onBoundary ? "on" : "off"),
+        },
         /* THE PERF BEACON, as a BUTTON — because the maintainer plays from an
          * INSTALLED HOME-SCREEN APP, which has no address bar, so `?perf=1`
          * cannot be typed there at all (his question, 2026-09-03). Same law as
@@ -4101,6 +4117,21 @@ export class WorldScene extends Phaser.Scene {
       if (!this.indoorInside) return; // outdoors there is nothing cut to redraw
       this.indoorMaskSig = "";
       if (this.refreshIndoorMask()) this.repaintWorld();
+    });
+    /* THE FADE DIALS (fadetune.ts) change how the RESOLVER places fades, so
+     * the world is re-resolved and repainted — the whole picture, as the
+     * worker switch did. Debounced: a slider drag fires per pixel of travel
+     * and a re-resolve is ~40 ms plus a full paint, so the rebuild waits for
+     * the thumb to rest. */
+    let fadeTuneTimer: ReturnType<typeof setTimeout> | null = null;
+    window.addEventListener("ml-fade-tune", () => {
+      if (fadeTuneTimer) clearTimeout(fadeTuneTimer);
+      fadeTuneTimer = setTimeout(() => {
+        fadeTuneTimer = null;
+        if (!this.world || this.unloading) return;
+        this.initTiles3();
+        this.repaintWorld();
+      }, 400);
     });
 
     // Debug hooks for headless end-to-end verification.
@@ -15111,6 +15142,7 @@ export class WorldScene extends Phaser.Scene {
       console.warn("[nangijala] tiles3: no ground_types/patterns — this world cannot resolve any art");
       return;
     }
+    data.fadeTune = fadeTune(); // the Settings fade dials; "ml-fade-tune" rebuilds the resolver
     const tiles = new Tiles3(data);
     const view = viewFromParsed(world);
     // THE REGION FLOOD FILL RUNS HERE, ONCE, OVER THE WHOLE DOC — measured 38ms
@@ -16874,6 +16906,15 @@ export class WorldScene extends Phaser.Scene {
         if (bop) {
           this.t3Blit(rt, bop, ax, ay, tint);
           stats.boundaries++;
+          /* ...AND WHAT THE TRANSITION TILE WEARS: its fade (the maintainer's
+           * "fade on transition" switch) and its wall-foot band — the boundary
+           * replaced the cell's own ops, so these are asked for separately. */
+          if (useBoundary) {
+            for (const op of tex.overlayOps(cell)) {
+              this.t3Blit(rt, op, ax, ay, tint);
+              stats.blits++;
+            }
+          }
         }
       }
     }

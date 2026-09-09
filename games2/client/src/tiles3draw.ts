@@ -634,20 +634,37 @@ export function liquidDiamond(rgb: readonly [number, number, number], sheets: Pa
 }
 
 /** HOW FAR THE WALL'S FOOT REACHES ONTO THE GROUND, in texels measured down
- *  the screen from where the face ends, and how hard it lands. The maintainer
- *  chose this look off a test image (2026-09-09): "it kinda looks like the wall
- *  is extended down into the water! ... whatever you are doing I like it" — so
- *  the first rows are the face's own colour at full strength (the wall
- *  continues into the ground) and only the tail fades, in flat steps: the art
- *  is pixel art at 2-3 screen px per texel and a smooth ramp dithers to mush.
- *  The colour is the wall's palette wall, darkened a little — the band is the
- *  face's base standing in the ground, not a shadow of it (the shader's seam
- *  AO already is one). What he ASKED for was a transition tile at the foot,
- *  the way the overhang eases the top; this is the games-side stand-in until
- *  the tiles library has a wall-foot family, and it is the look he approved. */
-export const FOOT_ROWS = 12;
-const FOOT_ALPHA = [1, 1, 1, 1, 1, 1, 0.8, 0.65, 0.5, 0.35, 0.2, 0.1];
+ *  the screen from where the face ends, and how it lands. The maintainer chose
+ *  the look off test images (2026-09-09): "it kinda looks like the wall is
+ *  extended down into the water ... please continue", then "I want the edge to
+ *  be more water so you clearly see this is the line where the wall starts to
+ *  go down under the water". So:
+ *  - ON LAND the face's own colour continues at full strength for FOOT_SOLID
+ *    rows, then fades in flat steps (pixel art at 2-3 screen px per texel: a
+ *    smooth ramp dithers to mush).
+ *  - IN WATER a WATERLINE first — one bright crest texel and one lighter one,
+ *    the liquid's own top colour lifted toward white — and below it the wall
+ *    seen THROUGH the water: its colour pulled toward the water's, fading with
+ *    depth.
+ *  The band starts FOOT_UNDER rows ABOVE where the face is computed to end and
+ *  the face sprite covers that overlap: his zoom found a 1 px line of water
+ *  between face and band, i.e. the face ends a row earlier than WALL - pitch
+ *  says on his device, and overlapping under a sprite costs nothing while a
+ *  gap is what he sees. The colour is the wall's palette wall, darkened a
+ *  little. What he ASKED for was a transition tile at the foot, the way the
+ *  overhang eases the top; this is the games-side stand-in and the look he
+ *  approved. */
+export const FOOT_ROWS = 14;
+const FOOT_UNDER = 2;
+const FOOT_SOLID = 6;
+const FOOT_TAIL = [0.8, 0.65, 0.5, 0.35, 0.2, 0.1];
 const FOOT_DARKEN = 0.82;
+/** Under water: crest, second crest, then the submerged wall's alpha by depth. */
+const FOOT_CREST = [0.5, 0.22]; // how far each crest row is lifted toward white
+const FOOT_SUNK_MIX = 0.35; // how much of the water's colour the sunk wall takes
+const FOOT_SUNK = [0.95, 0.9, 0.8, 0.7, 0.58, 0.46, 0.34, 0.24, 0.15, 0.08];
+
+const mix = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
 
 /** WHERE A NEIGHBOUR'S FACE ENDS, in this plate's own frame. The plate is
  *  64x46 with its diamond's top vertex at (DX, 0), centre row DY, side vertices
@@ -656,10 +673,15 @@ const FOOT_DARKEN = 0.82;
  *  up. The occluder pass draws that neighbour's LOWEST exposed course one
  *  storey up (`stackFrom`: frontLow + 1) at `pitch` px per storey, as 64x64
  *  review art whose wall band hangs WALL rows under its diamond's lower edges —
- *  so the face's last drawn row is `WALL - pitch` rows below the edge this
- *  cell shares with it (1 row at the shipped pitch of 16). Everything above
- *  that is under the face sprite and invisible; the band starts there. */
-export function footBand(walls: string, wall: readonly [number, number, number], pitch: number): Pixels {
+ *  so the face's last drawn row is about `WALL - pitch` rows below the edge
+ *  this cell shares with it. `water` is the liquid's top colour when this cell
+ *  is a liquid, else null. */
+export function footBand(
+  walls: string,
+  wall: readonly [number, number, number],
+  pitch: number,
+  water: readonly [number, number, number] | null,
+): Pixels {
   const out = newPixels(TILE, PLATE_H);
   const centres: [number, number][] = [];
   for (const w of walls.split("+")) {
@@ -667,10 +689,17 @@ export function footBand(walls: string, wall: readonly [number, number, number],
     else if (w === "ur") centres.push([DX, 0]);
     else if (w === "uu") centres.push([0, -DY]);
   }
-  const r = Math.round(wall[0] * FOOT_DARKEN);
-  const g = Math.round(wall[1] * FOOT_DARKEN);
-  const b = Math.round(wall[2] * FOOT_DARKEN);
-  const hang = WALL - pitch; // rows the face reaches below the shared edge
+  const wr = Math.round(wall[0] * FOOT_DARKEN);
+  const wg = Math.round(wall[1] * FOOT_DARKEN);
+  const wb = Math.round(wall[2] * FOOT_DARKEN);
+  const hang = WALL - pitch - FOOT_UNDER; // where the band starts, below the shared edge
+  const put = (px: number, py: number, r: number, g: number, b: number, a: number) => {
+    const i = (py * TILE + px) * 4;
+    out.data[i] = r;
+    out.data[i + 1] = g;
+    out.data[i + 2] = b;
+    out.data[i + 3] = Math.round(255 * a);
+  };
   for (let px = 0; px < TILE; px++) {
     const u = px + 0.5 - DX; // -32..32, 0 at the top vertex
     const upper = (DY * Math.abs(u)) / DX; // this cell's upper edge at this column
@@ -683,7 +712,7 @@ export function footBand(walls: string, wall: readonly [number, number, number],
       for (const [cx, cy] of centres) {
         const uw = Math.abs(u - cx);
         if (uw > DX) continue; // this column is not under that wall
-        const bottom = cy + DY * (1 - uw / DX) + hang; // the face's last row here
+        const bottom = cy + DY * (1 - uw / DX) + hang; // where the band starts here
         const dd = y - bottom;
         if (dd < 0) {
           covered = true; // still under the face sprite
@@ -692,11 +721,24 @@ export function footBand(walls: string, wall: readonly [number, number, number],
         if (dd < d) d = dd;
       }
       if (covered || d >= FOOT_ROWS) continue;
-      const i = (py * TILE + px) * 4;
-      out.data[i] = r;
-      out.data[i + 1] = g;
-      out.data[i + 2] = b;
-      out.data[i + 3] = Math.round(255 * FOOT_ALPHA[Math.floor(d)]);
+      const row = Math.floor(d);
+      if (!water) {
+        // Land: the wall continues, then fades.
+        if (row < FOOT_UNDER + FOOT_SOLID) put(px, py, wr, wg, wb, 1);
+        else if (row - FOOT_UNDER - FOOT_SOLID < FOOT_TAIL.length) put(px, py, wr, wg, wb, FOOT_TAIL[row - FOOT_UNDER - FOOT_SOLID]);
+        continue;
+      }
+      // Water: the overlap under the face, the crest, then the sunk wall.
+      if (row < FOOT_UNDER) {
+        put(px, py, wr, wg, wb, 1);
+      } else if (row - FOOT_UNDER < FOOT_CREST.length) {
+        const k = FOOT_CREST[row - FOOT_UNDER];
+        put(px, py, mix(water[0], 255, k), mix(water[1], 255, k), mix(water[2], 255, k), 1);
+      } else {
+        const j = row - FOOT_UNDER - FOOT_CREST.length;
+        if (j >= FOOT_SUNK.length) continue;
+        put(px, py, mix(wr, water[0], FOOT_SUNK_MIX), mix(wg, water[1], FOOT_SUNK_MIX), mix(wb, water[2], FOOT_SUNK_MIX), FOOT_SUNK[j]);
+      }
     }
   }
   return out;
@@ -796,8 +838,8 @@ export function liquidKey(rgb: readonly [number, number, number]): string {
  *  any subset, joined with `+`) in one side material. Keyed on the MATERIAL
  *  NAME, not its colour: the op is built by the pure `cellOps` which has no
  *  palette, and the colour is looked up when the texture is painted. */
-export function footKey(walls: string, side: string): string {
-  return `t3fb:${walls}|${side}`;
+export function footKey(walls: string, side: string, ground: string): string {
+  return `t3fb:${walls}|${side}|${ground}`;
 }
 
 /** The boundary key for a resolved boundary, or null when the pattern library
@@ -951,7 +993,7 @@ function pushFoot(cell: Tiles3Cell, ops: Tiles3Blit[]): void {
   // One band, one material: the first wall's, in that order (a corner where the
   // two walls differ in material is rare and reads fine in either).
   const side = f[walls[0]]!;
-  ops.push({ key: footKey(walls.join("+"), side), x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "foot" });
+  ops.push({ key: footKey(walls.join("+"), side, cell.ground), x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "foot" });
 }
 
 function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
@@ -1496,8 +1538,7 @@ export class Tiles3Textures {
        * material) for the whole world, keyed the same as the op, so the op
        * passes through unchanged. Never dropped: it needs no art file. */
       if (op.role === "foot") {
-        const [walls, side] = op.key.slice("t3fb:".length).split("|");
-        this.ensure(op.key, () => footBand(walls, this.wallPaletteRGB(side), this.o.pitch ?? 16));
+        this.ensureFoot(op.key);
         if (out) out.push(op);
         continue;
       }
@@ -1641,6 +1682,28 @@ export class Tiles3Textures {
     if (!hex) return null;
     const key = this.flatPlate(hexRGB(hex));
     return { key, x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "surface" };
+  }
+
+  /** WHAT A CELL WEARS OVER A COMPOSED BOUNDARY: its fade (when the resolver
+   *  put one on a transition tile — the maintainer's `onBoundary` switch) and
+   *  its wall-foot band. The ground pass draws the boundary INSTEAD of the
+   *  cell's own ops, so these two have to be asked for separately or a
+   *  transition tile can never wear either. Same build/drop rules as
+   *  `opsForCell`; the surface op is deliberately not built here. */
+  overlayOps(cell: Tiles3Cell): Tiles3Blit[] {
+    const out: Tiles3Blit[] = [];
+    for (const op of cellOps(cell)) {
+      if (op.role === "fade") {
+        const f = cell.fade;
+        const built = f ? this.fade(f.file, cell.ground) : null;
+        if (built) out.push(built === op.key ? op : { ...op, key: built });
+        else this.droppedOps++;
+      } else if (op.role === "foot") {
+        this.ensureFoot(op.key);
+        out.push(op);
+      }
+    }
+    return out;
   }
 
   /** The composed boundary as a drawable blit, or null. */
@@ -1856,6 +1919,16 @@ export class Tiles3Textures {
    *
    *  IF THE BAND EVER BECOMES VISIBLE — a renderer that draws a flat cell's wall
    *  — this must go back to `palette.wall` and the leak fixed properly. */
+  /** Paint a wall-foot band on first use — see `footBand`. The key carries the
+   *  walls, the wall's side material and this cell's own ground (a liquid
+   *  ground gets the waterline). */
+  private ensureFoot(key: string): void {
+    const [walls, side, ground] = key.slice("t3fb:".length).split("|");
+    this.ensure(key, () =>
+      footBand(walls, this.wallPaletteRGB(side), this.o.pitch ?? 16, LIQUID_SET.has(ground) ? this.topRGB(ground) : null),
+    );
+  }
+
   /** The ground's WALL palette colour — what its x-over-y face is drawn in. */
   private wallPaletteRGB(ground: string): [number, number, number] {
     const g = this.o.groundTypes[ground];

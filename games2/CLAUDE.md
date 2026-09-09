@@ -361,6 +361,27 @@ by construction, so no existing branch changed.
   and 41 fades resolved. A settings switch (`seam`) flips it live, and
   `boundaryKey` carries `|noseam`, so seamed and unseamed are different
   pictures under different keys.
+- **THE FADE HAS THREE DIALS AND A SWITCH, AND HE TUNES THEM** (`client/src/
+  fadetune.ts` owns the values; Settings sliders "Fade reach" / "Fade amount"
+  / "Fade falloff" in hud.ts, the button "fade on transition" in the scene's
+  list; `Tiles3Data.fadeTune` carries them into the resolver, and
+  "ml-fade-tune" re-resolves and repaints the world 400 ms after the thumb
+  rests). Maintainer 2026-09-09, on the beach: the fades "look like random
+  dots and don't read 'a transition' at all ... I kinda feel I need 3 sliders
+  in order to nail this." REACH is the Chebyshev band in cells (0-4; the
+  shipped FADE_BAND is 2 and stays the default). AMOUNT multiplies the
+  placement probability linearly (0-3x; "twice the value means twice as much
+  grass fade") — up to the ceiling of the lonely rule, which still forbids two
+  fades edge-on. FALLOFF is the exponent on the distance term (0.25-4, log
+  dial; >1 hugs the edge). ON TRANSITION lets `wangSurface` give a composed
+  boundary cell a fade too ("a transition tile that is 50% sand and 50% grass
+  can end up 75% grass") — drawn over the boundary by `overlayOps`, since the
+  ground pass draws the boundary INSTEAD of the cell's own ops. Every default
+  is the shipped picture byte for byte, so the render3 parity fixtures hold.
+  How much of the other ground a fade tile actually paints is `pct` on every
+  pool tile (from tiles/fades/index.json) and already weights the pick toward
+  the mix that matches the distance; exposing that per placement is the next
+  thing he asked for and is not built.
 - **EVERY FIELD ART GOES THROUGH `plate()`, INCLUDING A PUBLISHED OR CLEAN
   ONE** (`tiles3draw` opsForCell). Its last branch drew `op.key` — the RAW FILE
   — for any field art that was not conform, not `topOnly` and not a liquid
@@ -3157,20 +3178,29 @@ height reads per thing per frame.
   "when a wall intersects the ground I often feel the line/edge is kinda
   instant"). Every lower cell whose up-left, up-right or straight-up
   neighbour is a higher wall WHOSE LOWEST FRONT IS THIS CELL'S LEVEL wears one
-  band op, drawn last in its slot: the face's own palette-wall colour (x0.82),
-  solid for 6 texels below where the face ends, fading over 6 more, clipped to
-  the cell's diamond. WHERE THE FACE ENDS is the load-bearing number: the
-  occluder pass draws the lowest exposed course one storey up (`stackFrom`:
-  frontLow + 1) at `geom.lh` px per storey as 64x64 review art whose band
-  hangs WALL (17) rows under its diamond, so the face's last row is
-  `WALL - pitch` = 2 rows below the shared edge — everything above that is
-  under the face sprite and a band drawn there is invisible (the first
-  version was, for exactly this reason; it also used the review tile's TOP_Y
-  in a PLATE frame, which has none). One texture per (walls, side material),
-  keyed by material name because `cellOps` is pure and has no palette. He
+  band op, drawn last in its slot (on a composed-boundary cell too, via
+  `overlayOps`), clipped to the cell's diamond. ON LAND: the face's own
+  palette-wall colour (x0.82) continues solid for 6 texels, then fades in 6
+  flat steps. IN WATER: a WATERLINE first — one crest texel lifted halfway to
+  white from the liquid's top colour, one lifted a quarter — then the wall
+  seen through the water, its colour pulled 35% toward the water's and fading
+  over 10 texels of depth (maintainer: "I want the edge to be more water so
+  you clearly see this is the line where the wall starts to go down under the
+  water"). WHERE THE FACE ENDS is the load-bearing number: the occluder pass
+  draws the lowest exposed course one storey up (`stackFrom`: frontLow + 1)
+  at `geom.lh` px per storey as 64x64 review art whose band hangs WALL (17)
+  rows under its diamond, so the face's last row is about `WALL - pitch` rows
+  below the shared edge. The band starts FOOT_UNDER (2) rows ABOVE that and
+  the face sprite covers the overlap — his zoom found a 1 px line of water
+  between face and band (the face ends a row earlier than the arithmetic says
+  on his device), and an overlap under a sprite is free while a gap is what
+  he sees. Everything above the face's end is invisible: the first version
+  painted there and showed nothing (it also used the review tile's TOP_Y in a
+  PLATE frame, which has none). One texture per (walls, side material, own
+  ground), keyed by name because `cellOps` is pure and has no palette. He
   ASKED for a transition tile at the foot (a boundary tile, not a new
   mechanism); this is the games-side stand-in and the look he approved off
-  the test image ("it kinda looks like the wall is extended down into the
+  the test images ("it kinda looks like the wall is extended down into the
   water ... please continue"). A liquid never casts a foot; a wall whose other
   front is lower ends its face down there and casts none here.
 - **THE SLICE-SIZE RATCHET WAS DEAD CODE.** It grew `groundSlicePx` only when a

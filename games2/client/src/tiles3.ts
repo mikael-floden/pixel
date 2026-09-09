@@ -627,6 +627,13 @@ export interface Tiles3Data {
    *  side of the beach — the surface he has just said looks right. So it is a
    *  switch, not a default. */
   provisionalFades?: boolean;
+  /** THE MAINTAINER'S THREE FADE DIALS AND HIS FOURTH SWITCH (client/src/fadetune.ts
+   *  owns the values): `reach` = cells of band each side of a ground change
+   *  (FADE_BAND when absent), `amount` = a linear multiplier on the placement
+   *  probability (1 = shipped), `falloff` = the exponent on the distance term
+   *  (1 = shipped), `onBoundary` = a fade may sit on a composed transition tile
+   *  (false = shipped). Absent, every one of these is the shipped picture. */
+  fadeTune?: { reach: number; amount: number; falloff: number; onBoundary: boolean };
   /** Where a stale index or an unresolvable member is reported. Defaults to
    *  console.warn; the counters in `stats` are always kept. */
   warn?: (message: string) => void;
@@ -2271,24 +2278,28 @@ export class Tiles3 {
        * it — and the composed tile's alpha is the full silhouette, so where it
        * does compose, nothing of the half shows. */
       const own = b.ownSide === "b" ? b.pb : b.pa;
-      return {
+      const srf: Surface3 = {
         art: { kind: own.art.kind, path: own.art.path, w: own.art.w, h: own.art.h },
         set: own.set.id,
         memberIndex: own.memberIndex,
         plate: own.art,
         boundary: b.boundary,
       };
+      // His fourth switch: the transition tile itself may wear a fade.
+      if (this.data.fadeTune?.onBoundary) {
+        const fade = this.fadeFor(view, g, L, gr, x, y, zl);
+        if (fade) srf.fade = fade;
+      }
+      return srf;
     }
     return this.surface(view, g, L, gr, x, y, zl);
   }
 
-  /** THE MAINTAINER'S SURFACE for this cell, AT ANY LEVEL: his base tile set,
-   *  graded where the ground rises to itself, eased by a fade near a ground
-   *  change, and once in a while one of his details. Until 2026-08-30 this ran
-   *  only for level 0 — every raised cell, the whole massif, every terrace, the
-   *  town shelf, drew the plain x-over-x review tile and ignored the sets he
-   *  tunes. "I kinda expected everything from using the base tile sets." */
-  private surface(
+  /** THE FADE THIS CELL WEARS, or undefined. Pulled out of `surface()` so a
+   *  composed transition tile can wear one too (`wangSurface`, when the
+   *  maintainer's `onBoundary` switch is on): a 50/50 sand-grass tile with a
+   *  grassy fade on it reads as 75/25, which is the easing he asked for. */
+  private fadeFor(
     view: World3View,
     g: (x: number, y: number) => string | null,
     L: (x: number, y: number) => number,
@@ -2296,24 +2307,7 @@ export class Tiles3 {
     x: number,
     y: number,
     zl: number,
-  ): Surface3 {
-    const p = this.plateFor(gr, x, y);
-    const out: Surface3 = {
-      art: { kind: p.art.kind, path: p.art.path, w: p.art.w, h: p.art.h },
-      set: p.set.id,
-      memberIndex: p.memberIndex,
-      plate: p.art,
-    };
-
-    const sidx = this.slopeIndexAt(g, L, gr, x, y, zl);
-    if (sidx) {
-      const sl = this.slopeTile(gr, sidx, x, y);
-      if (sl) {
-        out.slope = sl;
-        out.art = { kind: "plate", path: sl.file, w: TILE, h: PLATE_H };
-      }
-    }
-
+  ): FadePick | undefined {
     /* THE FADE BAND: a REAL CHEBYSHEV DISTANCE BAND, ring 1 included, AND
      * ELEVATION IS ITS THIRD AXIS. Four axis cells at one ring was not a band,
      * and skipping ring 1 dropped the fade exactly where the drift is
@@ -2350,10 +2344,14 @@ export class Tiles3 {
      * ground they fade toward — every one because a nearer cross-level
      * neighbour displaced a ring-2 same-level one, which is the rule doing its
      * job. 207 of the 2,126 are across a level change. */
+    const tune = this.data.fadeTune;
+    const reach = tune ? tune.reach : FADE_BAND;
+    const amount = tune ? tune.amount : 1;
+    const falloff = tune ? tune.falloff : 1;
     let near: [string, number] | null = null;
-    let bestD = FADE_BAND + 1;
-    for (let dy = -FADE_BAND; dy <= FADE_BAND; dy++)
-      for (let dx = -FADE_BAND; dx <= FADE_BAND; dx++) {
+    let bestD = reach + 1;
+    for (let dy = -reach; dy <= reach; dy++)
+      for (let dx = -reach; dx <= reach; dx++) {
         /* `r >= bestD` is the ascending-ring loop's early-out, kept: d is never
          * below r, and this runs on every cell of every window. */
         const r = Math.max(Math.abs(dx), Math.abs(dy));
@@ -2382,7 +2380,11 @@ export class Tiles3 {
         /* A FADE IS A SCATTERED EVENT, NOT A COAT OF PAINT. Stamping the band
          * solid put ONE tile on up to 1,357 cells — the repetition he ruled out.
          * The probability falls off with distance from the switch. */
-        const bandPos = (FADE_BAND + 1 - near[1]) / (FADE_BAND + 1);
+        /* `bandPos` is 1 at the edge and falls to 1/(reach+1) at the far end;
+         * the dials shape it: `falloff` bends the line (>1 hugs the edge), and
+         * `amount` scales the whole probability linearly — twice the value is
+         * twice the tiles, up to the lonely rule's ceiling. */
+        const bandPos = Math.pow((reach + 1 - near[1]) / (reach + 1), falloff);
         const u = rr();
         /* NO TWO FADES TOUCH EDGE-ON — his own rule, and the lattice he keeps
          * photographing.
@@ -2409,7 +2411,7 @@ export class Tiles3 {
         const drawAt = (cx: number, cy: number): number => lcg((cx * 73856093) ^ (cy * 19349663))();
         const lonely =
           u < drawAt(x + 1, y) && u < drawAt(x - 1, y) && u < drawAt(x, y + 1) && u < drawAt(x, y - 1);
-        if (lonely && u <= 0.45 * bandPos) {
+        if (lonely && u <= 0.45 * amount * bandPos) {
           /* Sample the WHOLE pool, weighted by his ratings, with the mix strength
            * tracking the distance. */
           const wts = pool.map((t) => (1.0 + 1.6 * t.rating) * (1.0 - Math.abs(t.pct / 60.0 - bandPos)));
@@ -2427,7 +2429,7 @@ export class Tiles3 {
             }
           }
           const t = pool[Math.max(0, pick)];
-          out.fade = { other: near[0], dist: near[1], poolKey: `${gr}|${near[0]}`, index: pick, u, v, file: t.file };
+          const fade: FadePick = { other: near[0], dist: near[1], poolKey: `${gr}|${near[0]}`, index: pick, u, v, file: t.file };
           /* THE FADE IS AN OVERLAY, NOT A REPLACEMENT — and this is the zigzag
            * he kept photographing after the art started shipping.
            *
@@ -2447,9 +2449,50 @@ export class Tiles3 {
            * exactly as the producer drew it. `cell.fade.file` already carries
            * the path; `cellArtPaths` names it so the loader and the shipped
            * closure both see it. */
-          return out;
+          return fade;
         }
       }
+    }
+
+    return undefined;
+  }
+
+  /** THE MAINTAINER'S SURFACE for this cell, AT ANY LEVEL: his base tile set,
+   *  graded where the ground rises to itself, eased by a fade near a ground
+   *  change, and once in a while one of his details. Until 2026-08-30 this ran
+   *  only for level 0 — every raised cell, the whole massif, every terrace, the
+   *  town shelf, drew the plain x-over-x review tile and ignored the sets he
+   *  tunes. "I kinda expected everything from using the base tile sets." */
+  private surface(
+    view: World3View,
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    gr: string,
+    x: number,
+    y: number,
+    zl: number,
+  ): Surface3 {
+    const p = this.plateFor(gr, x, y);
+    const out: Surface3 = {
+      art: { kind: p.art.kind, path: p.art.path, w: p.art.w, h: p.art.h },
+      set: p.set.id,
+      memberIndex: p.memberIndex,
+      plate: p.art,
+    };
+
+    const sidx = this.slopeIndexAt(g, L, gr, x, y, zl);
+    if (sidx) {
+      const sl = this.slopeTile(gr, sidx, x, y);
+      if (sl) {
+        out.slope = sl;
+        out.art = { kind: "plate", path: sl.file, w: TILE, h: PLATE_H };
+      }
+    }
+
+    const fade = this.fadeFor(view, g, L, gr, x, y, zl);
+    if (fade) {
+      out.fade = fade;
+      return out;
     }
 
     /* DETAILS: once in a while, one of his top-approved tops — but NEVER on an

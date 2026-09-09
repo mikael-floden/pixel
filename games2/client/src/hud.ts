@@ -24,6 +24,16 @@ import { getHand, toggleHand, handLabel } from "./controls";
 import { indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "./indoorlight";
 import { hiddenRing, setHiddenRing } from "./hiddenring";
 import {
+  fadeTune,
+  setFadeTune,
+  reachFromSlider,
+  sliderFromReach,
+  amountFromSlider,
+  sliderFromAmount,
+  falloffFromSlider,
+  sliderFromFalloff,
+} from "./fadetune";
+import {
   lightScale,
   setLightScale,
   lightScaleLabel,
@@ -829,6 +839,41 @@ export class HudBar {
      * hiddenring.ts owns the value and its persistence. */
     wrap.appendChild(
       pctSlider("Hidden outline", () => hiddenRing(), (v) => setHiddenRing(v)),
+    );
+
+    /* THE THREE FADE DIALS (games agent, at the maintainer's request 2026-09-09
+     * — "I kinda feel I need 3 sliders in order to nail this"): how far from
+     * the other ground the warm-up starts, how many fade tiles are placed
+     * (linear), and how much denser it is at the edge than at the far end.
+     * fadetune.ts owns the values; the scene re-resolves the world on
+     * "ml-fade-tune" once the thumb rests. The fourth control, whether a fade
+     * may sit on a transition tile, is a button in the scene's Settings list. */
+    wrap.appendChild(
+      pctSlider(
+        "Fade reach",
+        () => sliderFromReach(fadeTune().reach),
+        (p) => setFadeTune({ reach: reachFromSlider(p) }),
+        {
+          snap: (p) => sliderFromReach(reachFromSlider(p)),
+          format: (p) => `${reachFromSlider(p)} cells`,
+        },
+      ),
+    );
+    wrap.appendChild(
+      pctSlider(
+        "Fade amount",
+        () => sliderFromAmount(fadeTune().amount),
+        (p) => setFadeTune({ amount: amountFromSlider(p) }),
+        { format: (p) => `${amountFromSlider(p).toFixed(2)}x` },
+      ),
+    );
+    wrap.appendChild(
+      pctSlider(
+        "Fade falloff",
+        () => sliderFromFalloff(fadeTune().falloff),
+        (p) => setFadeTune({ falloff: falloffFromSlider(p) }),
+        { format: (p) => `exp ${falloffFromSlider(p).toFixed(2)}` },
+      ),
     );
 
     /* LIGHT RESOLUTION: the fraction of the canvas the three full-screen
