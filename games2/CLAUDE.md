@@ -360,6 +360,36 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   How much of the other ground a fade tile actually paints is `pct` on every
   pool tile (from tiles/fades/index.json); exposing that per placement is
   not built.
+- **A NATURE WALL'S FOOT IS A TRANSITION TILE, AND A DECK SLAB COMPOSES
+  TRANSITIONS TOO** (`Tiles3Data.footBoundary` / `deckBoundary`; ONE Settings
+  switch "cliff-foot & lid transitions", `client/src/transitions.ts`, on by
+  default; off is the resolver's parity picture and the render3 fixtures
+  hold). Maintainer 2026-09-09: "When a nature wall (not a house, etc)
+  intersect the ground we should make the ground a transition/boundary tile
+  to make the connection look better", and on the cave lid "the ground up
+  here also look very sharp and has no transition/boundary tiles". FOOT:
+  `boundaryAt` resolves each lattice CORNER through `footSide` — a higher
+  wall among the four cells around it whose face ends on this plane (its
+  lowest front is this cell's level, `wallFoot`'s rule) lends its SIDE
+  material to the corner, so the foot cell composes ground<->face with the
+  same masks, seam and three-ground fold as any two grounds, and two cells
+  sharing a corner always agree (a lattice, not a per-cell band). NOT A
+  HOUSE: a side that is an indoor floor, or a wall cell carrying a roof or
+  bridge deck (the_game's wall rings ARE deck cells), keeps the hard edge; a
+  cave lid's rock is nature. DECK: `deckCell` reads a lattice of the slab's
+  OWN level (another deck at that level votes its ground, base ground within
+  a storey its own, the rest the slab's), its own half is the slab's ONE
+  anchored member so the transition matches the roof around it, and the tile
+  goes top-face-only over the surface through `opsForDeck` — so the ground
+  pass and the occluder's `capDecks` both wear it; `deckArtPaths` names its
+  plates for the loader and the ship closure; a budget-deferred one is owed
+  in `t3deckOwed` and repaired by `t3retryBoundaries` on the cells' rule.
+  Measured on the_game: 8,688 -> 11,862 cell boundaries (3,706 at wall
+  feet), 179 slab transitions on 1,414 deck cells; at 238,221 the dark_mud
+  face composes into the grass along the whole foot. KNOWN: movement's
+  nearest-corner ground (`typeIndexAtWorld`) does not read the foot corner —
+  the side is never liquid, so only speed and footstep sound could differ.
+  Gates: the two transition tests in `server/test/tiles3runtime.test.ts`.
 - **SCENERY ANIMATES ONCE, THEN SLEEPS** (`registerSceneryAnim` /
   `stepSceneryAnims`; `client/src/sceneryanim.ts` owns the ranges; Settings
   range sliders "<class> sleep"). A placed piece plays its state's clip when
@@ -1268,7 +1298,8 @@ split is `UI_AGENT.md`). Self-iterating loop: `loop/LOOP.md`.
     cross, chess pieces) queues behind it, as before — FIFO — only later. Dev
     A/B: localStorage `ml-deferred-parallel` (0 = the loader's own);
     `__ml.perf()` reports texture adds by key family and the per-frame max.
-- **A SLAB WEARS ONE SURFACE, AND IT IS DRAWN.** A roof, a bridge and a cave
+- **A SLAB WEARS ONE SURFACE, AND IT IS DRAWN** (and, since 2026-09-09, its
+  transitions over it — see the nature-wall-foot bullet). A roof, a bridge and a cave
   lid take ONE set and ONE member for the whole deck, anchored at the deck's own
   first cell (min by `x + y`, tie on `x` — render3.py:1387 and its `danch`), and
   `opsForDeck` pastes that plate TOP FACE ONLY over the cap at `surfaceY` —

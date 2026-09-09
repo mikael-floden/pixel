@@ -514,6 +514,11 @@ export function deckArtPaths(d: Tiles3DeckCell, out: (p: string) => void): void 
    * base-set plate is neither requested in dev nor present in prod, and
    * `opsForDeck` drops the op as "still streaming" forever. */
   if (d.surface?.path) out(d.surface.path);
+  // ...and its transition's two plates (Tiles3DeckCell.boundary), same reason.
+  if (d.boundary) {
+    out(d.boundary.plateA.path);
+    out(d.boundary.plateB.path);
+  }
 }
 
 /** The drawable texture key for a cell's SURFACE — what an occluder copy of

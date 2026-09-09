@@ -634,6 +634,26 @@ export interface Tiles3Data {
    *  (1 = shipped), `onBoundary` = a fade may sit on a composed transition tile
    *  (false = shipped). Absent, every one of these is the shipped picture. */
   fadeTune?: { reach: number; amount: number; falloff: number; onBoundary: boolean };
+  /** A NATURE WALL'S FOOT IS A TRANSITION TILE (maintainer 2026-09-09: "When a
+   *  nature wall (not a house, etc) intersect the ground we should make the
+   *  ground a transition/boundary tile to make the connection look better").
+   *  The corner lattice a cell's quad reads takes the SIDE material of any
+   *  higher wall whose face ends on this cell's plane and stands at that
+   *  corner, so the cell composes ground<->side exactly as it composes two
+   *  grounds — a real boundary tile, wall band and all, not a painted band.
+   *  Not a house: a wall whose side is an indoor floor, or whose cell carries
+   *  a roof or bridge deck, keeps the hard edge. Off (the default, and the
+   *  render3 parity fixtures' picture) the lattice is the grounds alone. */
+  footBoundary?: boolean;
+  /** A DECK'S SLAB COMPOSES TRANSITIONS TOO (same day, the cave lid at
+   *  255,189: "The ground up here also look very sharp and has no
+   *  transition/boundary tiles"). A slab cell reads a corner lattice of its
+   *  OWN level — another deck at that level votes its ground, base ground
+   *  within a storey votes its own, everything else votes the slab's — and
+   *  wears the composed tile top-face-only over its surface; its own half
+   *  is the slab's one anchored member, so the transition matches the roof
+   *  it sits in. Off (default) a slab is the single surface render3 draws. */
+  deckBoundary?: boolean;
   /** Where a stale index or an unresolvable member is reported. Defaults to
    *  console.warn; the counters in `stats` are always kept. */
   warn?: (message: string) => void;
@@ -981,12 +1001,15 @@ export interface Tiles3DeckCell {
   stack: WallStackStep[];
   /** A roof, a bridge and a cave lid are GROUND too: the slab top wears the
    *  maintainer's base tile set like any other surface (top face only, so the
-   *  cap's own wall survives). No fade, no slope, no boundary — render3 dresses
-   *  a deck straight from `plate_img`. */
+   *  cap's own wall survives). No fade, no slope — render3 dresses a deck
+   *  straight from `plate_img`; the boundary below is the game's own. */
   surface: PlateArt;
   surfaceSet: number;
   surfaceMember: number;
   surfaceY: number;
+  /** The composed transition this slab cell wears OVER its surface, at its own
+   *  level and paste point (`Tiles3Data.deckBoundary`). */
+  boundary?: Tiles3Boundary;
 }
 
 export interface Tiles3Window {
@@ -1283,6 +1306,65 @@ export class Tiles3 {
       this.roomView = view;
       this.stats.rooms = 0;
     }
+  }
+
+  /** Cell index -> the decks standing on it, built once per view. Keyed on the
+   *  VIEW OBJECT, not on `setView` — `boundaryAt` is called straight from the
+   *  streaming runtime and never goes through it. */
+  private deckMap: Map<number, number[]> | null = null;
+  private deckMapView: World3View | null = null;
+  private decksOn(view: World3View, x: number, y: number): number[] | undefined {
+    if (!this.deckMap || this.deckMapView !== view) {
+      this.deckMapView = view;
+      const m = new Map<number, number[]>();
+      view.decks.forEach((dk, di) => {
+        for (const c of dk.cells) {
+          const i = c.y * view.width + c.x;
+          const l = m.get(i);
+          if (l) l.push(di);
+          else m.set(i, [di]);
+        }
+      });
+      this.deckMap = m;
+    }
+    return this.deckMap.get(y * view.width + x);
+  }
+
+  /** THE SIDE MATERIAL A NATURE WALL BRINGS TO A LATTICE CORNER, or null. The
+   *  corner (cx, cy) is shared by four cells; a higher one whose face ends on
+   *  the plane z0 (its lowest front is z0 — `wallFoot`'s rule) and that is not
+   *  a building lends its side to the corner. Same side derivation as the
+   *  wall itself (`resolveCell`): the maintainer's `walls[]` override, else
+   *  the ground at the wall's foot, never an indoor floor, never a liquid. */
+  private footSide(
+    view: World3View,
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    cx: number,
+    cy: number,
+    z0: number,
+  ): string | null {
+    for (let dy = -1; dy <= 0; dy++)
+      for (let dx = -1; dx <= 0; dx++) {
+        const wx = cx + dx;
+        const wy = cy + dy;
+        if (wx < 0 || wy < 0 || wx >= view.width || wy >= view.height) continue;
+        if (L(wx, wy) <= z0) continue;
+        const hg = g(wx, wy);
+        if (!hg || view.isLiquid(hg)) continue;
+        if (Math.min(L(wx + 1, wy), L(wx, wy + 1)) !== z0) continue;
+        /* A BUILDING KEEPS ITS HARD EDGE: a wall ring under a roof or bridge
+         * deck is a house (the_game's wall rings ARE deck cells), and a side
+         * that is an indoor floor is a house wall by definition. */
+        const dis = this.decksOn(view, wx, wy);
+        if (dis && dis.some((di) => view.decks[di].kind !== "cave")) continue;
+        const override = view.wallSideAt(wx, wy);
+        const down: [number, number] = L(wx + 1, wy) <= L(wx, wy + 1) ? [wx + 1, wy] : [wx, wy + 1];
+        const side = override ?? g(down[0], down[1]) ?? hg;
+        if (INDOOR_GROUNDS.includes(side) || view.isLiquid(side)) continue;
+        return side;
+      }
+    return null;
   }
 
   /** The anchor cell of the room this one belongs to, or itself.
@@ -2088,6 +2170,13 @@ export class Tiles3 {
     L: (x: number, y: number) => number,
     x: number,
     y: number,
+    opts?: {
+      /** The plate a ground's half takes instead of `plateFor` — a deck's one
+       *  anchored member for the deck's own ground. */
+      plateOf?: (ground: string) => { set: BaseSet; memberIndex: number; art: PlateArt } | undefined;
+      /** Apply the nature-wall foot rule to the lattice (see `footSide`). */
+      foot?: boolean;
+    },
   ): {
     boundary: Tiles3Boundary;
     pa: { set: BaseSet; memberIndex: number; art: PlateArt };
@@ -2104,8 +2193,25 @@ export class Tiles3 {
     const g2 = g(x, y + 1);
     const g3 = g(x + 1, y + 1);
     if (!g0 || !g1 || !g2 || !g3) return null;
-    if (g0 === g1 && g0 === g2 && g0 === g3) return null;
     const z0 = L(x, y);
+    /* THE NATURE-WALL FOOT (Tiles3Data.footBoundary): a corner standing at a
+     * higher natural wall whose face ends on this plane votes the wall's SIDE
+     * material, so the tile at the foot composes ground<->face like any two
+     * grounds. Resolved per CORNER from the four cells around it, so the two
+     * cells sharing a corner always agree on it — a lattice, not a per-cell
+     * band. Applied before the pure-field early-out: a pure field at a cliff
+     * foot is exactly the cell this exists for. */
+    let feet: (string | null)[] | null = null;
+    /* The data flag is the default so EVERY caller gets it — the streaming
+     * runtime asks `boundaryAt` directly, not through `wangSurface`. */
+    if (opts?.foot ?? this.data.footBoundary) {
+      const f0 = this.footSide(view, g, L, x, y, z0);
+      const f1 = this.footSide(view, g, L, x + 1, y, z0);
+      const f2 = this.footSide(view, g, L, x, y + 1, z0);
+      const f3 = this.footSide(view, g, L, x + 1, y + 1, z0);
+      if (f0 || f1 || f2 || f3) feet = [f0, f1, f2, f3];
+    }
+    if (!feet && g0 === g1 && g0 === g2 && g0 === g3) return null;
     /* THE LEVEL FOLD (see the doc comment): a corner that is not on this cell's
      * plane is not on this tile, so it votes with this cell's own ground. When
      * every corner shares the level this is the identity and nothing changes. */
@@ -2150,6 +2256,13 @@ export class Tiles3 {
     let gs: (string | null)[] = [g0, g1, g2, g3].map((gv, i) =>
       Math.abs(zs[i] - z0) <= BOUNDARY_STEP ? gv : g0,
     );
+    /* The foot overrides the fold: the face is ON this plane by construction. */
+    let ownRef: string | null = null; // the cell's own ground when its corner was lent away
+    if (feet) {
+      for (let i = 0; i < 4; i++) if (feet[i]) gs[i] = feet[i];
+      if (feet[0]) ownRef = g0;
+      if (gs[0] === gs[1] && gs[0] === gs[2] && gs[0] === gs[3]) return null;
+    }
     /* The THREE-GROUND fold below, and only it — the fixture asserts parity on
      * this flag, and the level fold above is not what it names. */
     let folded = false;
@@ -2206,12 +2319,12 @@ export class Tiles3 {
     if (index === 0 || index === 15) return null;
     /* EACH HALF ASKS FOR ITS OWN GROUND'S REGION. Asking with the other ground's
      * region drew the neighbour from the wrong set. */
-    const pa = this.plateFor(sa, x, y);
-    const pb = this.plateFor(sb, x, y);
+    const pa = opts?.plateOf?.(sa) ?? this.plateFor(sa, x, y);
+    const pb = opts?.plateOf?.(sb) ?? this.plateFor(sb, x, y);
     return {
       pa,
       pb,
-      ownSide: gs[0] === sb ? "b" : "a",
+      ownSide: (ownRef ?? gs[0]) === sb ? "b" : "a",
       boundary: {
         x,
         y,
@@ -2728,6 +2841,37 @@ export class Tiles3 {
      * case for rooms.) */
     const [dax, day] = this.deckAnchor(dk);
     const p = this.plateAt(dg, regionAt(dg, dax, day), x, y, dax, day);
+    /* THE SLAB'S TRANSITION (Tiles3Data.deckBoundary): a corner lattice of the
+     * slab's OWN level. A cell carrying a deck at this level votes that deck's
+     * ground, base ground within a storey votes its own (the lid meeting the
+     * rock it is cut into), anything else votes the slab's — the same
+     * `boundaryAt` the ground uses, so the masks, the seam, the three-ground
+     * fold and the nature-wall foot are all the ground's. The slab's own half
+     * is its ONE anchored member, never a per-cell pick, so the transition
+     * tile and the roof around it are the same picture. */
+    let boundary: Tiles3Boundary | undefined;
+    if (this.data.deckBoundary) {
+      const W = view.width;
+      const H = view.height;
+      const deckAt = (cx: number, cy: number): Deck3 | null => {
+        const dis = this.decksOn(view, cx, cy);
+        if (dis) for (const j of dis) if (Math.trunc(view.decks[j].level) === dl) return view.decks[j];
+        return null;
+      };
+      const gd = (cx: number, cy: number): string | null => {
+        if (cx < 0 || cy < 0 || cx >= W || cy >= H) return null;
+        const o = deckAt(cx, cy);
+        if (o) return o.ground || "grey_stone";
+        return Math.abs(view.levelAt(cx, cy) - dl) <= BOUNDARY_STEP ? (view.groundAt(cx, cy) ?? dg) : dg;
+      };
+      const Ld = (cx: number, cy: number): number =>
+        cx < 0 || cy < 0 || cx >= W || cy >= H ? 0 : deckAt(cx, cy) ? dl : view.levelAt(cx, cy);
+      const b = this.boundaryAt(view, frame, gd, Ld, x, y, {
+        plateOf: (gr) => (gr === dg ? p : undefined),
+        foot: !!this.data.footBoundary,
+      });
+      if (b) boundary = b.boundary;
+    }
     return {
       deck: di,
       kind: dk.kind ?? null,
@@ -2747,6 +2891,7 @@ export class Tiles3 {
       surfaceSet: p.set.id,
       surfaceMember: p.memberIndex,
       surfaceY: columnY(frame, x, y, dl),
+      ...(boundary ? { boundary } : {}),
     };
   }
 }

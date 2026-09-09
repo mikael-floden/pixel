@@ -99,6 +99,7 @@ import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
 import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, type GlFrame } from "../glframe";
 import { fadeTune, setFadeTune } from "../fadetune";
+import { extraTransitions, setExtraTransitions } from "../transitions";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
 import { MonsterManifest, MonsterDef, monsterWalkKey, resolveMonsterAnim } from "../monsterManifest";
@@ -1673,6 +1674,11 @@ export class WorldScene extends Phaser.Scene {
    *  ground pass and `t3retryBoundaries`. Bounded by the texture's own cell
    *  count; a cell leaves the moment it draws its boundary. */
   private t3boundaryOwed = new Set<number>();
+  /** Cells painted without one of their DECK transitions (`Tiles3DeckCell
+   *  .boundary`) — idx -> how many of them had composed at the last repaint,
+   *  so a cell is repainted only when another one lands and never loops on a
+   *  cached one while a sibling streams. Same retry as the cells' set. */
+  private t3deckOwed = new Map<number, number>();
   private t3cells = new Map<number, { cell?: Tiles3Cell | null; boundary?: Tiles3Boundary | null; decks?: Tiles3DeckCell[] }>();
   /** THE RESOLVER ON ANOTHER CORE — see resolveworker.ts. It fills `t3cells`
    *  ahead of the band that needs them; every answer is optional. */
@@ -3972,6 +3978,19 @@ export class WorldScene extends Phaser.Scene {
           get: () => fadeTune().onBoundary,
           state: () => (fadeTune().onBoundary ? "on" : "off"),
         },
+        /* CLIFF-FOOT AND LID TRANSITIONS (transitions.ts): a nature wall's
+         * foot and a deck slab compose boundary tiles like any two grounds.
+         * Off is the resolver's parity picture. Re-resolves the world. */
+        {
+          label: "cliff-foot & lid transitions",
+          act: () => {
+            const on = !extraTransitions();
+            setExtraTransitions(on);
+            this.chat.addLog("—", `cliff-foot & lid transitions: ${on ? "on" : "off"}`);
+          },
+          get: () => extraTransitions(),
+          state: () => (extraTransitions() ? "on" : "off"),
+        },
         /* THE PERF BEACON, as a BUTTON — because the maintainer plays from an
          * INSTALLED HOME-SCREEN APP, which has no address bar, so `?perf=1`
          * cannot be typed there at all (his question, 2026-09-03). Same law as
@@ -4066,7 +4085,7 @@ export class WorldScene extends Phaser.Scene {
      * and a re-resolve is ~40 ms plus a full paint, so the rebuild waits for
      * the thumb to rest. */
     let fadeTuneTimer: ReturnType<typeof setTimeout> | null = null;
-    window.addEventListener("ml-fade-tune", () => {
+    const reResolve = () => {
       if (fadeTuneTimer) clearTimeout(fadeTuneTimer);
       fadeTuneTimer = setTimeout(() => {
         fadeTuneTimer = null;
@@ -4074,7 +4093,9 @@ export class WorldScene extends Phaser.Scene {
         this.initTiles3();
         this.repaintWorld();
       }, 400);
-    });
+    };
+    window.addEventListener("ml-fade-tune", reResolve);
+    window.addEventListener("ml-extra-transitions", reResolve); // transitions.ts — same rebuild
 
     // Debug hooks for headless end-to-end verification.
     (window as any).__ml = {
@@ -4392,6 +4413,7 @@ export class WorldScene extends Phaser.Scene {
             member: d.surfaceMember,
             surface: d.surface?.path ?? null,
             ops: tex ? tex.opsForDeck(d).map((o) => ({ role: o.role, key: o.key })) : [],
+            boundary: d.boundary ? { a: d.boundary.a, b: d.boundary.b, index: d.boundary.index } : null,
           })),
         };
       },
@@ -15104,6 +15126,8 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     data.fadeTune = fadeTune(); // the Settings fade dials; "ml-fade-tune" rebuilds the resolver
+    data.footBoundary = extraTransitions(); // transitions.ts — the cliff-foot and lid transitions
+    data.deckBoundary = extraTransitions();
     const tiles = new Tiles3(data);
     const view = viewFromParsed(world);
     // THE REGION FLOOD FILL RUNS HERE, ONCE, OVER THE WHOLE DOC — measured 38ms
@@ -16289,7 +16313,7 @@ export class WorldScene extends Phaser.Scene {
    *  repaint the ones that can now draw it. Costs nothing while the set is
    *  empty, which is the steady state once the ring has caught up. */
   private t3retryBoundaries(): void {
-    if (!this.t3boundaryOwed.size || !this.worldUp) return;
+    if ((!this.t3boundaryOwed.size && !this.t3deckOwed.size) || !this.worldUp) return;
     const t3 = this.t3;
     const world = this.world;
     if (!t3 || !world) return;
@@ -16361,6 +16385,38 @@ export class WorldScene extends Phaser.Scene {
       }
       ready.push(idx);
       this.t3boundaryOwed.delete(idx);
+    }
+    /* AND THE DECK TRANSITIONS, on the same allowance and the same rule: the
+     * budget's refusal ends the slice, streaming art is skipped, and a cell is
+     * repainted only when MORE of its slab transitions compose than at its
+     * last repaint (a cached one answers every frame; counting it again would
+     * repaint the cell forever while a sibling's plate streams). */
+    for (const [idx, had] of this.t3deckOwed) {
+      if (looked++ >= T3_BOUNDARY_RETRY) break;
+      const col = idx % world.width;
+      const row = (idx - col) / world.width;
+      const dbs = this.t3decksOf(t3, col, row).map((d) => d.boundary).filter((x): x is NonNullable<typeof x> => !!x);
+      if (!dbs.length) {
+        this.t3deckOwed.delete(idx);
+        continue;
+      }
+      let composed = 0;
+      let refused = false;
+      for (const bb of dbs) {
+        const d0 = tex.stats.deferred;
+        if (tex.boundary(bb)) composed++;
+        else if (tex.stats.deferred !== d0) {
+          refused = true;
+          break;
+        }
+      }
+      if (refused) break;
+      if (composed > had) {
+        raisedRepair = true; // a slab is always raised — its occluder copy wears it
+        ready.push(idx);
+        if (composed === dbs.length) this.t3deckOwed.delete(idx);
+        else this.t3deckOwed.set(idx, composed);
+      }
     }
     if (!ready.length) return;
     this.repaintTiles3Cells(ready);
@@ -16981,15 +17037,22 @@ export class WorldScene extends Phaser.Scene {
       const idx = row * world.width + col;
       if (mask && (cuts ? cuts.get(idx) : top) !== undefined) continue; // my roof, or a lid over my floor
       needIdx = idx;
+      let deckMissing = false;
       for (const d of decksOf(col, row)) {
         deckArtPaths(d, need);
         if (!tex) continue;
         const tint = this.caveTint(idx, !!mask);
-        for (const op of tex.opsForDeck(d)) {
+        const dops = tex.opsForDeck(d);
+        for (const op of dops) {
           this.t3Blit(rt, op, ax, ay, tint);
           stats.decks++;
         }
+        // Its transition is the last op when it drew; owe the cell when not.
+        if (d.boundary && !dops.some((op) => op.key.startsWith("t3x:"))) deckMissing = true;
       }
+      if (deckMissing) {
+        if (!this.t3deckOwed.has(idx)) this.t3deckOwed.set(idx, 0);
+      } else this.t3deckOwed.delete(idx);
     }
     if (ownBracket) {
       this.t3countBatches(rt);

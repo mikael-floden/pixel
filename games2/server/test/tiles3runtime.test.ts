@@ -28,6 +28,7 @@ import {
   viewFromDoc,
   type Tiles3Data,
   type World3View,
+  type Deck3,
 } from "../../client/src/tiles3";
 import { Tiles3World, viewFromParsed } from "../../client/src/tiles3runtime";
 import { parseWorld } from "@nangijala/shared";
@@ -184,4 +185,102 @@ test("viewFromParsed answers exactly what viewFromDoc answers", { skip: !!MISSIN
     assert.equal(d.thickness, r.thickness, `deck ${i} thickness`);
     assert.deepEqual(d.cells, r.cells, `deck ${i} cells`);
   });
+});
+
+/* THE TWO TRANSITIONS THE GAME ADDS ON TOP OF render3's PICTURE (maintainer
+ * 2026-09-09): a NATURE WALL'S FOOT composes ground<->face like any two
+ * grounds ("When a nature wall (not a house, etc) intersect the ground we
+ * should make the ground a transition/boundary tile"), and a DECK SLAB
+ * composes transitions at its own level ("The ground up here also look very
+ * sharp and has no transition/boundary tiles", on the cave lid). Both are
+ * `Tiles3Data` flags, OFF by default so the parity fixtures above hold; the
+ * game turns them on. Synthetic world: the shape is the invariant, not any one
+ * cliff of the_game. */
+function synthView(o: {
+  size: number;
+  level: (x: number, y: number) => number;
+  ground: (x: number, y: number) => string;
+  side?: (x: number, y: number) => string | null;
+  decks?: Deck3[];
+}): World3View {
+  const n = o.size;
+  return {
+    x0: 0, y0: 0, x1: n, y1: n, width: n, height: n, maxLevel: 8,
+    groundAt: (x, y) => (x < 0 || y < 0 || x >= n || y >= n ? null : o.ground(x, y)),
+    levelAt: (x, y) => (x < 0 || y < 0 || x >= n || y >= n ? 0 : o.level(x, y)),
+    isLiquid: (g) => g === "water",
+    wallSideAt: (x, y) => o.side?.(x, y) ?? null,
+    decks: o.decks ?? [],
+  };
+}
+const inBlock = (x: number, y: number) => x >= 2 && x <= 7 && y >= 2 && y <= 7;
+
+test("a nature wall's foot composes a ground<->face transition; a house's does not", { skip: !!MISSING.length }, () => {
+  const pitch = 15;
+  const mk = (extra: Partial<Tiles3Data>) => new Tiles3({ ...data(pitch), ...extra });
+  const cliff = synthView({
+    size: 16,
+    level: (x, y) => (inBlock(x, y) ? 6 : 0),
+    ground: (x, y) => (inBlock(x, y) ? "grey_stone" : "grass"),
+    side: (x, y) => (inBlock(x, y) ? "dark_mud" : null),
+  });
+  const frame = isoFrame(cliff, cliff.maxLevel, pitch);
+  const g = (x: number, y: number) => cliff.groundAt(x, y);
+  const L = (x: number, y: number) => cliff.levelAt(x, y);
+  // OFF: the foot of a cliff on a pure field composes nothing (render3's picture).
+  assert.equal(mk({}).boundaryAt(cliff, frame, g, L, 8, 4), null, "flag off: no transition at the foot");
+  // ON: the cell under the cliff's left face wears dark_mud<->grass, the face's
+  // side on its up-screen corners (NW + SW: the edge it shares with the wall).
+  const t = mk({ footBoundary: true });
+  const b = t.boundaryAt(cliff, frame, g, L, 8, 4);
+  assert.ok(b, "flag on: the foot composes");
+  const pair = [b!.boundary.a, b!.boundary.b].sort();
+  assert.deepEqual(pair, ["dark_mud", "grass"], "the face's side against the cell's ground");
+  const mudBit = (i: number) => (b!.boundary.b === "dark_mud" ? (b!.boundary.index & i) !== 0 : (b!.boundary.index & i) === 0);
+  assert.ok(mudBit(8) && mudBit(2) && !mudBit(4) && !mudBit(1), `NW and SW are the face's (index ${b!.boundary.index})`);
+  assert.equal(b!.ownSide === "b" ? b!.boundary.b : b!.boundary.a, "grass", "the cell's own half is its own ground");
+  // The lattice is shared: the next foot cell down agrees on the corner between them.
+  const b2 = t.boundaryAt(cliff, frame, g, L, 8, 5);
+  assert.ok(b2, "the next foot cell composes too");
+  const bit = (bb: NonNullable<typeof b>, i: number) => (bb.boundary.index & i) !== 0;
+  assert.equal(bit(b2!, 8), bit(b!, 2), "corner (8,5) votes the same in both cells that share it");
+  // A cell two rows out from the wall is untouched.
+  assert.equal(t.boundaryAt(cliff, frame, g, L, 10, 4), null, "no foot two cells out");
+  // A HOUSE keeps its hard edge: a wall whose side is an indoor floor...
+  const house = synthView({ ...{ size: 16, level: cliff.levelAt, ground: cliff.groundAt as any }, side: (x, y) => (inBlock(x, y) ? "parquet_floor" : null) });
+  assert.equal(t.boundaryAt(house, frame, (x, y) => house.groundAt(x, y), (x, y) => house.levelAt(x, y), 8, 4), null, "an indoor-floor side is a house wall");
+  // ...or whose cell carries a roof deck.
+  const roofed = synthView({
+    size: 16, level: cliff.levelAt, ground: cliff.groundAt as any, side: (x, y) => (inBlock(x, y) ? "dark_mud" : null),
+    // The whole block is the house: every wall cell is a roof-deck cell, as
+    // the_game's wall rings are.
+    decks: [{ kind: "roof", level: 6, thickness: 0, ground: "brown_paving_stone",
+      cells: Array.from({ length: 36 }, (_, i) => ({ x: 2 + (i % 6), y: 2 + Math.floor(i / 6) })) }],
+  });
+  assert.equal(t.boundaryAt(roofed, frame, (x, y) => roofed.groundAt(x, y), (x, y) => roofed.levelAt(x, y), 8, 4), null, "a roofed wall is a house wall");
+});
+
+test("a deck slab composes transitions at its own level, with its own anchored member", { skip: !!MISSING.length }, () => {
+  const pitch = 15;
+  const A: Deck3 = { kind: "cave", level: 6, thickness: 2, ground: "black_rock", cells: [] };
+  const B: Deck3 = { kind: "cave", level: 6, thickness: 2, ground: "grey_stone", cells: [] };
+  for (let y = 2; y <= 5; y++) for (let x = 2; x <= 9; x++) (x <= 5 ? A : B).cells.push({ x, y });
+  const view = synthView({ size: 16, level: () => 0, ground: () => "grass", decks: [A, B] });
+  const frame = isoFrame(view, view.maxLevel, pitch);
+  const off = new Tiles3(data(pitch)).deckCell(view, frame, A, 0, 5, 3);
+  assert.equal(off.boundary, undefined, "flag off: a slab is its one surface");
+  const on = new Tiles3({ ...data(pitch), deckBoundary: true });
+  const edge = on.deckCell(view, frame, A, 0, 5, 3);
+  assert.ok(edge.boundary, "flag on: the slab cell at the seam composes");
+  assert.deepEqual([edge.boundary!.a, edge.boundary!.b].sort(), ["black_rock", "grey_stone"]);
+  assert.equal(edge.boundary!.topOnly, true, "top face only — the slab's own courses are its wall");
+  assert.equal(edge.boundary!.sy, edge.surfaceY, "pasted where the surface is");
+  assert.equal(edge.boundary!.sx, edge.sx);
+  // The slab's own half is the ONE member the whole slab wears.
+  const own = edge.boundary!.a === "black_rock" ? [edge.boundary!.setA, edge.boundary!.memberA] : [edge.boundary!.setB, edge.boundary!.memberB];
+  assert.deepEqual(own, [edge.surfaceSet, edge.surfaceMember], "the transition's slab half is the slab's member");
+  // A cell inside the slab, away from any seam, stays pure; the grass 6 levels
+  // down never reaches the lattice.
+  assert.equal(on.deckCell(view, frame, A, 0, 3, 3).boundary, undefined, "no seam inside the slab");
+  assert.equal(on.deckCell(view, frame, A, 0, 2, 2).boundary, undefined, "the rim over a 6-level drop is a hard edge");
 });

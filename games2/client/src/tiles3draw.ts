@@ -1770,6 +1770,15 @@ export class Tiles3Textures {
       const key = this.plate({ kind: d.surface.kind, path: d.surface.path, topOnly: true }, d.ground);
       if (key) ops.push({ key, x: d.sx, y: d.surfaceY, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "deck" });
     }
+    /* ...AND ITS TRANSITION OVER THAT, top-face-only at the slab's own level
+     * (`Tiles3DeckCell.boundary`). Null while its plates stream or the compose
+     * budget refuses it — the plain surface then shows, the pre-transition
+     * look, never a hole. Both passes draw a slab through this one function
+     * (the ground pass and the occluder's `capDecks`), so both wear it. */
+    if (d.boundary) {
+      const bop = this.opsForBoundary(d.boundary);
+      if (bop) ops.push({ ...bop, role: "deck" });
+    }
     return ops;
   }
 
