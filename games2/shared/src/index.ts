@@ -2981,6 +2981,13 @@ export interface JoinOptions {
    *  (a fresh account), never with someone else's character. */
   account?: { id?: string; secret?: string };
   world?: string; // maps2 world name to load/join (rooms are filtered by it)
+  /** The zone room to join (spec/ZONES.md); absent or -1 = the whole-world room. */
+  zone?: number;
+  /** A HAND-OFF: the stable player id and the one-shot key the previous zone
+   *  wrote to the bus. Honoured only together and only while the key lives;
+   *  anything else is an ordinary join under a fresh id. */
+  pid?: string;
+  handoff?: string;
 }
 
 // --- Chat --------------------------------------------------------------------
@@ -3796,6 +3803,7 @@ export function stepAutopilot(
 }
 
 export * from "./monsters";
+export * from "./zones";
 export * from "./combat";
 // indoor.ts — "am I under a roof, and is it a room?" (pure; reads TerrainGrid).
 export * from "./indoor";

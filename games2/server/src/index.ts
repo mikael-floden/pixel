@@ -8,7 +8,7 @@ import { constants as zlibConstants } from "zlib";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { ROOM_NAME } from "@nangijala/shared";
-import { WorldRoom, sceneryBbox } from "./rooms/WorldRoom.js";
+import { WorldRoom, sceneryBbox, zonesConfigFor } from "./rooms/WorldRoom.js";
 import { initLive, registerLiveRoutes, sceneryHitboxOverrides } from "./live.js";
 import { cacheControlFor } from "./cachepolicy.js";
 import { assetHash } from "./assethash.js";
@@ -103,6 +103,12 @@ app.get("/api/scenery-collision", (_req, res) =>
     hitbox: sceneryHitboxOverrides(),
   }),
 );
+// THE ZONE GRID of a world (games2/config/zones.json), for the client to pick
+// the room of the world's spawn and the path a zone is served on. `null` =
+// one room for the whole map.
+app.get("/api/zones/:world", (req, res) =>
+  res.setHeader("Cache-Control", "no-cache").json(zonesConfigFor(String(req.params.world).replace(/[^a-z0-9_-]/gi, ""))),
+);
 app.get("/version", (_req, res) =>
   res.setHeader("Cache-Control", "no-store").json({ sha: process.env.GIT_SHA || "dev" }),
 );
@@ -193,10 +199,10 @@ const gameServer = new Server({
   transport: new WebSocketTransport({ server: createServer(app) }),
 });
 
-// One WorldRoom per maps2 world: filterBy 'world' so joinOrCreate matches
-// players who picked the SAME world into one shared room, and spins up a
-// separate room (with that world's own grid) for each different selection.
-gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world"]);
+// One WorldRoom per (world, zone): filterBy so joinOrCreate matches players
+// who picked the SAME world and zone into one room and spins up a separate
+// room for each other pair (spec/ZONES.md; no zone = the whole-world room).
+gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world", "zone"]);
 
 gameServer
   .listen(PORT)

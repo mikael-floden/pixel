@@ -1,5 +1,7 @@
 import { Room, Client, ClientState } from "@colyseus/core";
-import { Encoder, StateView } from "@colyseus/schema";
+import { Encoder, StateView, MapSchema } from "@colyseus/schema";
+import { randomBytes } from "crypto";
+import { bus } from "../bus.js";
 
 // THE ENCODER BUFFER IS SIZED HERE, WHERE THE ROOM IS, not in index.ts: every
 // room's encoder is allocated at setState from this static, and a test that
@@ -24,6 +26,13 @@ import {
   INTEREST_LEAVE_WU,
   INTEREST_TICKS,
   INTEREST_BUCKET_WU,
+  WHOLE_WORLD,
+  zoneGrid,
+  zoneAt,
+  zoneRect,
+  zoneNeighbours,
+  distToRect,
+  nearEdge,
   MAX_INPUT_DT,
   INPUT_TIME_SLACK,
   stepMovement,
@@ -116,6 +125,7 @@ import { ChessManager, chessBoardsFor, ChessBoardCfg } from "../chess.js";
 import { monsterStatsFor, monsterRadiusFor, MonsterStats } from "../tuning.js";
 import { onLiveChange, liveTuning, sceneryHitboxOverrides } from "../live.js";
 import { AccountRecord, AccountStore, accountStore, resolveAccount } from "../account/store.js";
+import type { ZoneGrid, Rect, ZoneCfg } from "@nangijala/shared";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
@@ -134,8 +144,14 @@ interface WorldClock {
   weather: number;
   aurora: boolean;
   nextPhaseAt: number | null;
+  origin?: string; // the room that wrote it (a room skips its own publish)
 }
-const worldClocks = new Map<string, WorldClock>();
+/** The clock lives on the BUS (`clock:<world>`, spec/ZONES.md): every zone
+ *  room of a world derives phaseT from the same deadline, and a change
+ *  publishes the document to all of them. In one process with the fake bus
+ *  this is exactly the per-process registry it replaces. */
+const clockKey = (world: string) => `clock:${world}`;
+const clockWorlds = new Set<string>();
 
 /** HOW LONG A DROPPED SEAT IS HELD. Long enough to ride out a tunnel, short
  *  enough that a genuine disconnect frees the body before anyone wonders why it
@@ -145,7 +161,8 @@ const RECONNECT_GRACE_S = 45;
 
 /** Tests share one process per file; clock persistence must not leak between them. */
 export function resetWorldClocks() {
-  worldClocks.clear();
+  for (const w of clockWorlds) void bus().del(clockKey(w));
+  clockWorlds.clear();
 }
 
 /**
@@ -172,6 +189,91 @@ export function sceneryBbox(): SceneryBboxDoc | null {
     console.warn("[scenery] config/scenery-bbox.json missing — scenery blocks nothing");
   }
   return sceneryBboxCache;
+}
+
+// ZONES (spec/ZONES.md) — the wire shapes between zone rooms.
+/** Ghosts reach GHOST_BAND_WU across a border: the interest rim, so a client
+ *  standing on the line sees exactly as far into the neighbour as into home. */
+const GHOST_BAND_WU = INTEREST_LEAVE_WU;
+const EDGE_TICKS = 2; // edge snapshots at 10 Hz
+const GHOST_TTL_MS = 1000; // a ghost outlives its owner's last snapshot this long
+const HANDOFF_TTL_S = 10; // the hot state waits on the bus this long for the receiving join
+const HANDOFF_TIMEOUT_MS = 10_000; // then the sending room forgets the attempt and keeps the body
+const handoffKey = (world: string, pid: string) => `handoff:${world}:${pid}`;
+
+interface HotState {
+  key: string;
+  pid: string;
+  from: number;
+  name: string;
+  character: string;
+  accountId: string;
+  rec: AccountRecord | null;
+  mintedSecret?: string;
+  x: number;
+  y: number;
+  elev: number;
+  dir: string;
+  level: number;
+  xp: number;
+  hp: number;
+  ep: number;
+  inv: { item: string; n: number }[];
+  seq: number;
+  torch: boolean;
+  noAggro: boolean;
+  lastHitAt: number;
+  lastCombatAt: number;
+  dirty: boolean;
+}
+interface MonsterXfer {
+  kind: string; x: number; y: number; dir: string; moving: boolean; elev: number;
+  hp: number; hpMax: number; mstate: string; actionSeq: number; level: number; aggro: number;
+  areaId: string; home: number; orbitSign: number; provoked: boolean; returning: boolean;
+  targetSid: string; chaseOx: number; chaseOy: number;
+}
+type CtlMessage =
+  | { type: "handoff:done"; pid: string }
+  | { type: "monster:xfer"; id: string; m: MonsterXfer }
+  | { type: "monster:respawn"; areaId: string };
+interface EdgeSnapshot {
+  from: number;
+  t: number;
+  players: Array<{
+    id: string; name: string; character: string; x: number; y: number; dir: string; moving: boolean;
+    running: boolean; elev: number; jumping: boolean; swimming: boolean; torch: boolean; level: number;
+    hp: number; hpMax: number; dead: boolean; slow: number; action: string; actionSeq: number; hitSeq: number;
+  }>;
+  monsters: Array<{
+    id: string; kind: string; x: number; y: number; dir: string; moving: boolean; elev: number; hp: number;
+    hpMax: number; mstate: string; actionSeq: number; level: number; aggro: number; tsid: string;
+  }>;
+  drops: Array<{ id: string; item: string; x: number; y: number; elev: number }>;
+}
+
+/** games2/config/zones.json: the zone grid per world, read once. A world
+ *  without an entry runs as one room. */
+let zonesConfig: Record<string, ZoneCfg> | null = null;
+export function zonesConfigFor(world: string): ZoneCfg | null {
+  if (!zonesConfig) {
+    try {
+      const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+      const raw = JSON.parse(readFileSync(join(root, "config", "zones.json"), "utf8")) as Record<string, unknown>;
+      zonesConfig = {};
+      for (const [k, v] of Object.entries(raw)) {
+        const c = v as ZoneCfg;
+        if (c && typeof c === "object" && Number.isInteger(c.cols) && Number.isInteger(c.rows) && c.cols >= 1 && c.rows >= 1)
+          zonesConfig[k] = c;
+      }
+    } catch {
+      zonesConfig = {};
+    }
+  }
+  return zonesConfig[world] ?? null;
+}
+/** Tests: forget the cached file. */
+export function resetZonesConfig(): void {
+  zonesConfig = null;
 }
 
 export class WorldRoom extends Room<WorldState> {
@@ -257,7 +359,9 @@ export class WorldRoom extends Room<WorldState> {
     // The 8-25s interval is sized against night's own length (50s, a third
     // of the cycle) so a night still sees the same ~2-3 wild stars.
     this.starTimer = setTimeout(() => {
-      if (this.state.timeIdx === 0) this.broadcast("star", {});
+      // One room per world rolls the wild stars (zone 0, or the whole-world
+      // room); every room broadcasts them.
+      if (this.state.timeIdx === 0 && this.zoneId <= 0) this.publishEvent("star", {});
       this.scheduleWildStar();
     }, (8 + Math.random() * 17) * 1000);
   }
@@ -305,7 +409,7 @@ export class WorldRoom extends Room<WorldState> {
   /** Mirror the clock into the per-world registry so the NEXT room for this
    * world (rooms recycle constantly) resumes instead of resetting. */
   private saveClock() {
-    worldClocks.set(this.worldName, {
+    const doc: WorldClock = {
       timeIdx: this.state.timeIdx,
       phaseT: this.state.phaseT,
       frozen: this.state.frozen,
@@ -313,7 +417,26 @@ export class WorldRoom extends Room<WorldState> {
       weather: this.state.weather,
       aurora: this.state.aurora,
       nextPhaseAt: this.nextPhaseAt,
-    });
+      origin: this.roomId,
+    };
+    clockWorlds.add(this.worldName);
+    const key = clockKey(this.worldName);
+    void bus().set(key, JSON.stringify(doc));
+    void bus().publish(key, doc);
+  }
+
+  /** Another room of this world moved the clock: adopt its document. Our own
+   *  publish is skipped — applying a document one tick old would step phaseT
+   *  backwards by a tick. */
+  private applyClock(doc: WorldClock) {
+    if (!doc || doc.origin === this.roomId) return;
+    this.state.timeIdx = doc.timeIdx;
+    this.state.phaseT = doc.phaseT;
+    this.state.frozen = doc.frozen;
+    this.state.timeSpeed = doc.timeSpeed ?? (doc.frozen ? 0 : 1);
+    this.state.weather = doc.weather;
+    this.state.aurora = doc.aurora;
+    this.nextPhaseAt = doc.nextPhaseAt;
   }
 
   async onCreate(options?: {
@@ -326,6 +449,8 @@ export class WorldRoom extends Room<WorldState> {
     chessBoards?: ChessBoardCfg[]; // TEST override: boards for this room
     chessClockMs?: number; // TEST override: per-player bank (default 10 min)
     interestRadius?: number; // wu; 0 = the whole room (tests/QA only — never a client option)
+    zone?: number; // the zone this room owns (spec/ZONES.md); absent = the whole world
+    zonesCfg?: ZoneCfg; // TEST override: the zone grid for this world
   }) {
     if (typeof options?.interestRadius === "number" && isFinite(options.interestRadius)) {
       const r = Math.max(0, options.interestRadius);
@@ -347,8 +472,18 @@ export class WorldRoom extends Room<WorldState> {
       this.worldSpawn = w.spawn;
       this.worldW = w.worldW;
       this.worldH = w.worldH;
-      this.setMetadata({ world });
       this.worldName = world;
+      // ZONES: a world with a grid and a zone option becomes ONE zone room;
+      // everything else (no config, no option, tests) is the whole-world room.
+      const cfg = options?.zonesCfg ?? zonesConfigFor(world);
+      const zone = typeof options?.zone === "number" && Number.isInteger(options.zone) ? options.zone : WHOLE_WORLD;
+      if (cfg && this.terrain && zone >= 0 && zone < cfg.cols * cfg.rows) {
+        this.grid = zoneGrid(cfg, this.terrain.width, this.terrain.height, CELL_WU);
+        this.zoneId = zone;
+        this.rect = zoneRect(this.grid, zone);
+        this.idPrefix = `z${zone}:`;
+      }
+      this.setMetadata({ world, zone: this.zoneId });
       // The maps2 spawn zones for THIS world (sidecar next to world.json),
       // resolved against the grid: which cells are truly standable/swimmable
       // at each zone's elev band. No grid (open world) → no monsters.
@@ -359,6 +494,24 @@ export class WorldRoom extends Room<WorldState> {
         console.log(`[staging] world "${world}": terrain=${!!this.terrain} zones=${this.zones.length}`);
     }
     this.setState(new WorldState());
+    this.chan = {
+      events: `world:${this.worldName}:events`,
+      presence: `presence:${this.worldName}`,
+      edge: (z: number) => `zone:${this.worldName}:${z}:edge`,
+      ctl: (z: number) => `zone:${this.worldName}:${z}:ctl`,
+    };
+    // World-wide events (chat, the arrival star, level-ups) reach every room
+    // of the world over the bus and each room broadcasts them to its clients.
+    this.unsubs.push(
+      bus().subscribe(this.chan.events, (m: { type: string; data: unknown }) => {
+        if (m && typeof m.type === "string") this.broadcast(m.type, m.data);
+      }),
+    );
+    if (this.zoneId !== WHOLE_WORLD && this.grid) {
+      for (const n of zoneNeighbours(this.grid, this.zoneId))
+        this.unsubs.push(bus().subscribe(this.chan.edge(n), (m: EdgeSnapshot) => this.onEdgeSnapshot(m)));
+      this.unsubs.push(bus().subscribe(this.chan.ctl(this.zoneId), (m: CtlMessage) => this.onCtl(m)));
+    }
     // Live tuning (live/tuning/* on GitHub main, held by the live store):
     // push every change to all clients over the room's own WebSocket, and
     // hand joiners the current state (see live.ts / live/README.md).
@@ -382,7 +535,7 @@ export class WorldRoom extends Room<WorldState> {
     }
 
     this.onMessage("input", (client, message: InputMessage) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (!player) return;
       // A corpse doesn't move, but its in-flight inputs MUST still be acked:
       // un-acked seqs stay in the client's pending replay buffer and render
@@ -417,7 +570,7 @@ export class WorldRoom extends Room<WorldState> {
 
     // Torch is PLAYER state: everyone sees whose torch is lit.
     this.onMessage("torch", (client, message: { on?: boolean }) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (player) player.torch = !!message?.on;
     });
 
@@ -425,7 +578,7 @@ export class WorldRoom extends Room<WorldState> {
      *  registers its handlers; answered only for a join that actually minted
      *  one, and once — the pair is dropped from memory as it goes out. */
     this.onMessage("account:want", (client) => {
-      const p = this.state.players.get(client.sessionId);
+      const p = this.playerOf(client);
       if (!p?.mintedSecret) return;
       client.send("account", { id: p.accountId, secret: p.mintedSecret });
       p.mintedSecret = "";
@@ -448,12 +601,13 @@ export class WorldRoom extends Room<WorldState> {
     // switch could help, which is the whole situation it exists for.
     this.onMessage("noaggro", (client, message: { on?: boolean }) => {
       const on = !!message?.on;
-      if (on) this.noAggro.add(client.sessionId);
-      else this.noAggro.delete(client.sessionId);
+      const pid = this.pidOf(client);
+      if (on) this.noAggro.add(pid);
+      else this.noAggro.delete(pid);
       if (!on) return;
       const now = Date.now();
       this.state.monsters.forEach((m) => {
-        if (m.targetSid !== client.sessionId || m.provoked || m.mstate === "die") return;
+        if (m.targetSid !== pid || m.provoked || m.mstate === "die") return;
         // The SAME exit every other ended chase takes — it also clears the
         // victim's flee slow and walks the monster home if the hunt carried it
         // off its zone. Hand-clearing targetSid here would leave strays.
@@ -466,7 +620,7 @@ export class WorldRoom extends Room<WorldState> {
     // stuck recovery). Clear queued movement + any jump so they don't drift off
     // spawn; the client snaps to the teleport (its >2-cell jump threshold).
     this.onMessage("respawn", (client) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (!player) return;
       // DEAD PLAYERS COME BACK WHEN THEY ASK TO. The death sequence (fade,
       // desaturate, slow zoom onto the body, "press to continue") runs on the
@@ -491,7 +645,7 @@ export class WorldRoom extends Room<WorldState> {
     // — a test that fakes the state would not have caught the respawn timer
     // still firing underneath the new press-to-continue.
     this.onMessage("dbgkill", (client) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (!player || player.dead) return;
       // Full hp of damage through the REAL path, so every field death sets
       // (respawnAt, deadUntil, the die clip, the chat line) is set the same way.
@@ -503,7 +657,7 @@ export class WorldRoom extends Room<WorldState> {
     // while the target stays alive, in range and the player stands still.
     // {id: null} disengages (any movement input also does).
     this.onMessage("engage", (client, message: { id?: string | null }) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (!player || player.dead) return;
       const id = typeof message?.id === "string" ? message.id : "";
       if (!id) {
@@ -518,7 +672,7 @@ export class WorldRoom extends Room<WorldState> {
     // PICK UP a ground item. Range-validated server-side; the pickup clip is
     // signalled through action/actionSeq so every client sees the crouch.
     this.onMessage("pickup", (client, message: { id?: string }) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       const id = typeof message?.id === "string" ? message.id : "";
       const drop = this.state.drops.get(id);
       if (!player || player.dead || !drop) return;
@@ -547,7 +701,7 @@ export class WorldRoom extends Room<WorldState> {
     // 2026-08-05), spaced off items already lying there — the release point
     // only expresses "onto the ground", never a throw.
     this.onMessage("drop", (client, message: { slot?: number; item?: string; n?: number; wx?: number; wy?: number }) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (!player || player.dead) return;
       const now = Date.now();
       if (now < player.nextItemMsgAt) return;
@@ -587,8 +741,20 @@ export class WorldRoom extends Room<WorldState> {
     // standable spawn; it places precisely where asked (clamped to world bounds)
     // so a reported bug at a known (x,y) can be re-observed. Clears queued
     // movement + jump so they hold the mark; client snaps via its jump threshold.
+    // DEBUG: move a monster (same standing as "teleport"; the zone gates use
+    // it to walk a monster over a border without waiting for its roam).
+    this.onMessage("dbgmonster", (client, message: { id?: string; x?: number; y?: number }) => {
+      const m = typeof message?.id === "string" ? this.state.monsters.get(message.id) : undefined;
+      if (!m || m.mstate === "die") return;
+      if (typeof message.x === "number" && isFinite(message.x)) m.x = message.x;
+      if (typeof message.y === "number" && isFinite(message.y)) m.y = message.y;
+      m.trip = null;
+      m.tripActive = false;
+      m.nextMoveAt = Date.now() + 500;
+    });
+
     this.onMessage("teleport", (client, message: { x?: number; y?: number }) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (!player || player.dead) return;
       const w = this.terrain ? this.terrain.width * CELL_WU : this.worldW;
       const h = this.terrain ? this.terrain.height * CELL_WU : this.worldH;
@@ -640,7 +806,9 @@ export class WorldRoom extends Room<WorldState> {
     // Resume this world's clock if the process has seen it before (rooms are
     // disposable, the world's time is not), fast-forwarding any phases that
     // elapsed while no room was open so time flows even with nobody online.
-    const saved = worldClocks.get(this.worldName);
+    const savedRaw = await bus().get(clockKey(this.worldName));
+    const saved: WorldClock | null = savedRaw ? (JSON.parse(savedRaw) as WorldClock) : null;
+    this.unsubs.push(bus().subscribe(clockKey(this.worldName), (doc: WorldClock) => this.applyClock(doc)));
     if (saved) {
       this.state.timeIdx = saved.timeIdx;
       this.state.phaseT = saved.phaseT;
@@ -677,15 +845,15 @@ export class WorldRoom extends Room<WorldState> {
     });
 
     this.onMessage("chat", (client, message: ChatInput) => {
-      const player = this.state.players.get(client.sessionId);
+      const player = this.playerOf(client);
       if (!player) return;
       const text = sanitizeChat(message?.text);
       if (!text) return;
       const now = Date.now();
       if (now - player.lastChatAt < CHAT_MIN_INTERVAL_MS) return; // rate limit
       player.lastChatAt = now;
-      const out: ChatBroadcast = { id: client.sessionId, name: player.name, text };
-      this.broadcast("chat", out);
+      const out: ChatBroadcast = { id: this.pidOf(client), name: player.name, text };
+      this.publishEvent("chat", out);
     });
 
     // Seed the roaming monsters from the maps2 spawn zones. Only meaningful
@@ -703,19 +871,19 @@ export class WorldRoom extends Room<WorldState> {
       (fn, ms) => this.clock.setTimeout(fn, ms),
     );
     this.chess.addBoards(chessBoardsFor(this.worldName, options?.chessBoards));
-    this.onMessage("chess.sit", (client) => this.chess.sit(client.sessionId));
+    this.onMessage("chess.sit", (client) => this.chess.sit(this.pidOf(client)));
     this.onMessage("chess.dice", (client, msg: { m?: string }) => {
-      if (typeof msg?.m === "string") this.chess.throwDice(msg.m, client.sessionId);
+      if (typeof msg?.m === "string") this.chess.throwDice(msg.m, this.pidOf(client));
     });
     this.onMessage("chess.move", (client, msg: { m?: string; mv?: string }) => {
       if (typeof msg?.m === "string" && typeof msg?.mv === "string")
-        this.chess.move(msg.m, client.sessionId, msg.mv);
+        this.chess.move(msg.m, this.pidOf(client), msg.mv);
     });
     this.onMessage("chess.resign", (client, msg: { m?: string }) => {
-      if (typeof msg?.m === "string") this.chess.resign(msg.m, client.sessionId);
+      if (typeof msg?.m === "string") this.chess.resign(msg.m, this.pidOf(client));
     });
     this.onMessage("chess.close", (client, msg: { m?: string }) => {
-      if (typeof msg?.m === "string") this.chess.dismiss(msg.m, client.sessionId);
+      if (typeof msg?.m === "string") this.chess.dismiss(msg.m, this.pidOf(client));
     });
   }
 
@@ -729,7 +897,8 @@ export class WorldRoom extends Room<WorldState> {
     const now = Date.now();
     const radii = monsterRadii();
     for (const z of this.zones) {
-      const count = Math.min(this.monsterCount ?? z.zone.num, z.cells.length);
+      const cells = this.ownCells(z);
+      const count = Math.min(this.zoneShare(z, this.monsterCount ?? z.zone.num), cells.length);
       const r = monsterRadiusFor(z.zone.monster, radii.get(z.zone.monster), DEFAULT_MONSTER_RADIUS);
       const placed: Array<{ x: number; y: number }> = [];
       for (let n = 0; n < count; n++) {
@@ -740,10 +909,10 @@ export class WorldRoom extends Room<WorldState> {
         // the zone-mates already placed — a pair must not START stacked (the
         // maintainer's screenshot was two mammoths seeded onto one spot).
         // Small/crowded zones fall back to the most-spaced attempt.
-        let cell = z.cells[Math.floor(this.monsterRng() * z.cells.length)];
+        let cell = cells[Math.floor(this.monsterRng() * cells.length)];
         let bestD = -Infinity;
         for (let t = 0; t < 10; t++) {
-          const cand = z.cells[Math.floor(this.monsterRng() * z.cells.length)];
+          const cand = cells[Math.floor(this.monsterRng() * cells.length)];
           const cx = (cand.c + 0.5) * CELL_WU;
           const cy = (cand.r + 0.5) * CELL_WU;
           const d = placed.length
@@ -767,7 +936,8 @@ export class WorldRoom extends Room<WorldState> {
         m.hp = m.hpMax = stats.max_hp;
         m.level = stats.level;
         m.aggro = stats.aggro_radius_wu;
-        const mid = `${z.zone.id}#${n}`;
+        const mid = `${this.idPrefix}${z.zone.id}#${n}`;
+        m.home = this.zoneId;
         m.orbitSign = idSalt(mid) & 1 ? 1 : -1; // circling handedness varies per monster
         this.state.monsters.set(mid, m);
       }
@@ -827,6 +997,9 @@ export class WorldRoom extends Room<WorldState> {
     this.state.players.forEach((p) => all.push({ e: p, x: p.x, y: p.y }));
     this.state.monsters.forEach((m) => all.push({ e: m, x: m.x, y: m.y }));
     this.state.drops.forEach((g) => all.push({ e: g, x: g.x, y: g.y }));
+    this.state.ghosts.forEach((p) => all.push({ e: p, x: p.x, y: p.y }));
+    this.state.ghostMonsters.forEach((m) => all.push({ e: m, x: m.x, y: m.y }));
+    this.state.ghostDrops.forEach((g) => all.push({ e: g, x: g.x, y: g.y }));
     const live = new Set<object>(all.map((a) => a.e));
     const R = this.interestR;
     const L = this.interestLeave;
@@ -845,7 +1018,7 @@ export class WorldRoom extends Room<WorldState> {
     const reach = Math.ceil(L / B);
     for (const client of this.clients) {
       const view = client.view;
-      const me = this.state.players.get(client.sessionId);
+      const me = this.playerOf(client);
       if (!view || !me) continue;
       const had = this.seen.get(client.sessionId) ?? new Set<object>();
       const keep = new Set<object>([me]);
@@ -873,6 +1046,10 @@ export class WorldRoom extends Room<WorldState> {
   async onJoin(client: Client, options: JoinOptions = {}) {
     // Current live tuning straight to the joiner (updates arrive as broadcasts).
     client.send("live:update", liveTuning());
+    // A HAND-OFF from another zone room (spec/ZONES.md): the hot state comes
+    // off the bus, not the database, and the body keeps its stable id.
+    const hot = await this.takeHandoff(options);
+    if (hot) return this.joinHandedOff(client, hot);
     const player = new Player();
     player.name = (options.name || `wanderer-${client.sessionId.slice(0, 4)}`).slice(0, 24);
     player.character = options.character || "";
@@ -893,12 +1070,13 @@ export class WorldRoom extends Room<WorldState> {
     // newcomer takes over the LIVE progression (fresher than the store) and
     // the old session is disconnected.
     if (player.accountId) {
-      let oldSid = "";
-      this.state.players.forEach((p: Player, sid: string) => {
-        if (!oldSid && p.accountId === player.accountId && sid !== client.sessionId) oldSid = sid;
+      let oldPid = "";
+      this.state.players.forEach((p: Player, pid: string) => {
+        if (!oldPid && p.accountId === player.accountId && pid !== client.sessionId) oldPid = pid;
       });
-      if (oldSid) {
-        const oldPlayer = this.state.players.get(oldSid);
+      const oldSid = oldPid ? this.pidSid.get(oldPid) : undefined;
+      if (oldPid && oldSid) {
+        const oldPlayer = this.state.players.get(oldPid);
         if (oldPlayer) this.savePlayer(oldPlayer); // flush the live state the newcomer restores
         /* A KICK IS NOT A DROPPED LINK. `onLeave` holds a seat open for a
          * reconnect, and a kicked session must not hold one — the whole point
@@ -970,13 +1148,12 @@ export class WorldRoom extends Room<WorldState> {
       this.savePlayer(player); // they still earned whatever the account arrived with
       return;
     }
-    this.state.players.set(client.sessionId, player);
-    this.attachView(client, player);
+    this.adoptPlayer(client, client.sessionId, player);
     // The backpack is PRIVATE — targeted message, never schema-synced.
     client.send("inv", { items: player.inv });
     // Every arrival in Nangijala is announced by a shooting star crossing
     // the sky — the same streak for every player in the world.
-    this.broadcast("star", { name: player.name });
+    this.publishEvent("star", { name: player.name });
   }
 
   /** A DROPPED LINK IS NOT A DEPARTURE — the seat is held open (2026-09-04,
@@ -996,7 +1173,16 @@ export class WorldRoom extends Room<WorldState> {
    *  survive, and nothing is restored from the store at all. A CONSENTED leave
    *  (the player really left) is unaffected and cleans up at once. */
   async onLeave(client: Client, consented?: boolean) {
-    const player = this.state.players.get(client.sessionId);
+    const pid = this.pidOf(client);
+    if (this.handed.delete(client.sessionId)) {
+      // Handed to another zone: that room owns the body now — nothing to
+      // save, no seat to hold.
+      this.sidPid.delete(client.sessionId);
+      this.pidSid.delete(pid);
+      this.seen.delete(client.sessionId);
+      return;
+    }
+    const player = this.playerOf(client);
     // Flush first: if the grace expires we must not have lost the session.
     if (player) this.savePlayer(player);
     const wasKicked = this.kicked.delete(client.sessionId);
@@ -1008,12 +1194,15 @@ export class WorldRoom extends Room<WorldState> {
         /* the grace ran out, or the room is shutting down: fall through */
       }
     }
-    this.state.players.delete(client.sessionId);
+    this.state.players.delete(pid);
     this.seen.delete(client.sessionId);
+    this.sidPid.delete(client.sessionId);
+    this.pidSid.delete(pid);
+    void bus().hdel(this.chan.presence, pid);
     // Session ids are not reused, so a stale entry would leak for the room's
     // lifetime and silently pacify whoever inherited the id.
-    this.noAggro.delete(client.sessionId);
-    this.chess?.onPlayerLeave(client.sessionId);
+    this.noAggro.delete(pid);
+    this.chess?.onPlayerLeave(pid);
   }
 
   /** Persist one player into their account document. Called on leave, death,
@@ -1219,6 +1408,7 @@ export class WorldRoom extends Room<WorldState> {
     // player movement.
     this.stepMonsters(dt, now);
     this.stepCombat(dt, now);
+    if (this.zoneId !== WHOLE_WORLD) this.stepZones(now);
     if (++this.interestTick >= INTEREST_TICKS) {
       this.interestTick = 0;
       this.stepInterest();
@@ -1742,7 +1932,7 @@ export class WorldRoom extends Room<WorldState> {
       player.inputQueue.length = 0;
       player.moving = false;
       player.running = false;
-      this.broadcast("chat", { name: "—", text: `${player.name} was slain.` });
+      this.publishEvent("chat", { name: "—", text: `${player.name} was slain.` });
       this.savePlayer(player); // a crash between here and respawn loses nothing
     }
   }
@@ -1793,7 +1983,7 @@ export class WorldRoom extends Room<WorldState> {
     }
     if (killer.level >= LEVEL_CAP) killer.xp = Math.min(killer.xp, xpToNext(LEVEL_CAP) - 1);
     if (leveled) {
-      this.broadcast("levelup", { name: killer.name, level: killer.level });
+      this.publishEvent("levelup", { name: killer.name, level: killer.level });
       this.savePlayer(killer); // the worst thing a crash could eat is a ding
     }
   }
@@ -1871,18 +2061,20 @@ export class WorldRoom extends Room<WorldState> {
     g.y = gy;
     g.elev = terr ? resolveElevAt(terr, srcElev, gx, gy, ctx) : 0;
     g.bornAt = Date.now();
-    this.state.drops.set(`d${this.dropCounter++}`, g);
+    this.state.drops.set(`${this.idPrefix}d${this.dropCounter++}`, g);
   }
 
   /** One replacement monster in a zone, MONSTER_RESPAWN_MS after a death —
    * the zone's `num` stays the concurrent cap (RO-style repop). */
   private respawnMonster(areaId: string, now: number) {
     const z = this.zones.find((zz) => zz.zone.id === areaId);
-    if (!z || !z.cells.length) return;
+    const cells = z ? this.ownCells(z) : [];
+    if (!z || !cells.length) return;
     const m = new Monster();
     m.kind = z.zone.monster;
     m.areaId = areaId;
-    const cell = z.cells[Math.floor(this.monsterRng() * z.cells.length)];
+    m.home = this.zoneId;
+    const cell = cells[Math.floor(this.monsterRng() * cells.length)];
     m.x = (cell.c + 0.5) * CELL_WU;
     m.y = (cell.r + 0.5) * CELL_WU;
     m.elev = cell.lvl;
@@ -1893,7 +2085,7 @@ export class WorldRoom extends Room<WorldState> {
     m.hp = m.hpMax = stats.max_hp;
     m.level = stats.level;
     m.aggro = stats.aggro_radius_wu;
-    const id = `${areaId}#r${this.respawnCounter++}`;
+    const id = `${this.idPrefix}${areaId}#r${this.respawnCounter++}`;
     m.orbitSign = idSalt(id) & 1 ? 1 : -1;
     this.state.monsters.set(id, m);
   }
@@ -1928,7 +2120,7 @@ export class WorldRoom extends Room<WorldState> {
         this.lootChance === null ? stats.loot : stats.loot.map((l) => ({ ...l, chance: this.lootChance! }));
       for (const item of rollDrops(loot, idSalt(id), m.diedAt | 0)) this.spawnDrop(item, m.x, m.y, m.elev);
       this.state.monsters.delete(id);
-      this.respawnQueue.push({ areaId: m.areaId, at: now + MONSTER_RESPAWN_MS });
+      this.queueRespawn(m.areaId, m.home, now);
     }
     if (this.respawnQueue.length && this.respawnQueue.some((r) => now >= r.at)) {
       const due = this.respawnQueue.filter((r) => now >= r.at);
@@ -2104,9 +2296,386 @@ export class WorldRoom extends Room<WorldState> {
     return best ?? { x: fromX, y: fromY };
   }
 
+
+  // ------------------------------------------------------------------ ZONES
+  // spec/ZONES.md. Everything below is inert in the whole-world room except
+  // the pid keying, the presence hash and the event bus, which are the same
+  // code path in both modes on purpose.
+  private zoneId = WHOLE_WORLD;
+  private grid: ZoneGrid | null = null;
+  private rect: Rect | null = null;
+  private idPrefix = ""; // monsters and drops of a zone room carry `z<zone>:` so ids are world-unique
+  private chan = {
+    events: "",
+    presence: "",
+    edge: (_z: number) => "",
+    ctl: (_z: number) => "",
+  };
+  private unsubs: Array<() => void> = [];
+  /** session id → stable player id (the map key) and back. */
+  private sidPid = new Map<string, string>();
+  private pidSid = new Map<string, string>();
+  /** Sessions whose body was handed to another zone: their leave saves nothing. */
+  private handed = new Set<string>();
+  private ghostOwner = new Map<string, number>(); // ghost id → the zone that owns the body
+  private edgeTick = 0;
+  private ownCellsCache = new Map<string, ZoneRuntime["cells"]>();
+
+  private pidOf(client: Client): string {
+    return this.sidPid.get(client.sessionId) ?? client.sessionId;
+  }
+  private playerOf(client: Client): Player | undefined {
+    return this.state.players.get(this.pidOf(client));
+  }
+  private publishEvent(type: string, data: unknown) {
+    void bus().publish(this.chan.events, { type, data });
+  }
+
+  /** A body enters this room under its stable id: the map key, the session
+   *  link, its view, its private backpack and the world presence. */
+  private adoptPlayer(client: Client, pid: string, player: Player) {
+    player.pid = pid;
+    player.sid = client.sessionId;
+    this.sidPid.set(client.sessionId, pid);
+    this.pidSid.set(pid, client.sessionId);
+    this.state.ghosts.delete(pid); // it may have been a neighbour's ghost a moment ago
+    this.state.players.set(pid, player);
+    this.attachView(client, player);
+    // The backpack is PRIVATE — targeted message, never schema-synced.
+    client.send("inv", { items: player.inv });
+    void bus().hset(this.chan.presence, pid, JSON.stringify({ name: player.name, zone: this.zoneId }));
+  }
+
+  /** The spawn cells of a maps2 zone that lie inside THIS room's rectangle
+   *  (all of them in the whole-world room). Seeding and respawning draw from
+   *  these; roaming keeps the whole polygon and a monster that walks out is
+   *  transferred. */
+  private ownCells(z: ZoneRuntime): ZoneRuntime["cells"] {
+    if (!this.rect) return z.cells;
+    let own = this.ownCellsCache.get(z.zone.id);
+    if (!own) {
+      const r = this.rect;
+      own = z.cells.filter((c) => {
+        const x = (c.c + 0.5) * CELL_WU;
+        const y = (c.r + 0.5) * CELL_WU;
+        return x >= r.x0 && x < r.x1 && y >= r.y0 && y < r.y1;
+      });
+      this.ownCellsCache.set(z.zone.id, own);
+    }
+    return own;
+  }
+
+  /** This room's share of a zone's `num`: proportional to the cells it owns,
+   *  rounded, so a polygon straddling a border seeds its count once. */
+  private zoneShare(z: ZoneRuntime, num: number): number {
+    if (!this.rect || !z.cells.length) return num;
+    return Math.round((num * this.ownCells(z).length) / z.cells.length);
+  }
+
+  /** A respawn goes back to the room that seeded the monster (its cells are
+   *  there); the same room queues it locally. */
+  private queueRespawn(areaId: string, home: number, now: number) {
+    if (home === this.zoneId) this.respawnQueue.push({ areaId, at: now + MONSTER_RESPAWN_MS });
+    else void bus().publish(this.chan.ctl(home), { type: "monster:respawn", areaId } satisfies CtlMessage);
+  }
+
+  private stepZones(now: number) {
+    const grid = this.grid!;
+    // 1. Players that crossed into another zone are handed over; a hand-off
+    //    nobody completed is dropped after HANDOFF_TIMEOUT_MS so a failed hop
+    //    never strands a body.
+    this.state.players.forEach((p, pid) => {
+      if (p.handoff) {
+        if (now - p.handoff.at > HANDOFF_TIMEOUT_MS) p.handoff = null;
+        return;
+      }
+      if (p.dead) return;
+      const z = zoneAt(grid, p.x, p.y);
+      if (z !== this.zoneId) this.startHandoff(p, pid, z, now);
+    });
+    // 2. Monsters that walked out are transferred with their brain.
+    const xfer: Array<[string, number]> = [];
+    this.state.monsters.forEach((m, id) => {
+      if (m.mstate === "die") return;
+      const z = zoneAt(grid, m.x, m.y);
+      if (z !== this.zoneId) xfer.push([id, z]);
+    });
+    for (const [id, z] of xfer) this.transferMonster(id, z);
+    // 3. The border band goes out as ghosts, EDGE_TICKS apart.
+    if (++this.edgeTick >= EDGE_TICKS) {
+      this.edgeTick = 0;
+      this.publishEdge(now);
+    }
+    // 4. Ghosts whose owner went quiet expire.
+    const gone: Array<[MapSchema<any>, string]> = [];
+    this.state.ghosts.forEach((p, id) => {
+      if (now - p.lastSeen > GHOST_TTL_MS) gone.push([this.state.ghosts, id]);
+    });
+    this.state.ghostMonsters.forEach((m, id) => {
+      if (now - m.lastSeen > GHOST_TTL_MS) gone.push([this.state.ghostMonsters, id]);
+    });
+    this.state.ghostDrops.forEach((g, id) => {
+      if (now - g.lastSeen > GHOST_TTL_MS) gone.push([this.state.ghostDrops, id]);
+    });
+    for (const [map, id] of gone) {
+      map.delete(id);
+      this.ghostOwner.delete(id);
+    }
+  }
+
+  /** HAND-OFF, the sending side: the hot state goes to the bus under a
+   *  one-shot key, the client is told where to go, and this room keeps
+   *  stepping the body until the receiving room says it has it. */
+  private startHandoff(p: Player, pid: string, to: number, now: number) {
+    const sid = this.pidSid.get(pid);
+    const client = sid ? this.clients.find((c) => c.sessionId === sid) : undefined;
+    if (!client) return;
+    const key = randomBytes(12).toString("hex");
+    p.handoff = { to, key, at: now };
+    const hot: HotState = {
+      key,
+      pid,
+      from: this.zoneId,
+      name: p.name,
+      character: p.character,
+      accountId: p.accountId,
+      rec: p.rec,
+      mintedSecret: p.mintedSecret,
+      x: p.x,
+      y: p.y,
+      elev: p.elev,
+      dir: p.dir,
+      level: p.level,
+      xp: p.xp,
+      hp: p.hp,
+      ep: p.ep,
+      inv: p.inv.map((s) => ({ item: s.item, n: s.n })),
+      seq: p.seq,
+      torch: p.torch,
+      noAggro: this.noAggro.has(pid),
+      lastHitAt: p.lastHitAt,
+      lastCombatAt: p.lastCombatAt,
+      dirty: p.dirty,
+    };
+    void bus()
+      .set(handoffKey(this.worldName, pid), JSON.stringify(hot), HANDOFF_TTL_S)
+      .then(() => client.send("zone:go", { zone: to, pid, key }))
+      .catch((e) => {
+        console.error("[zones] hand-off write failed:", e);
+        p.handoff = null;
+      });
+  }
+
+  /** HAND-OFF, the receiving side: only a pid + key pair that matches the
+   *  bus document is honoured, and the document is consumed. */
+  private async takeHandoff(options: JoinOptions): Promise<HotState | null> {
+    if (typeof options.pid !== "string" || typeof options.handoff !== "string") return null;
+    if (!/^[A-Za-z0-9_-]{1,32}$/.test(options.pid) || !/^[0-9a-f]{24}$/.test(options.handoff)) return null;
+    const key = handoffKey(this.worldName, options.pid);
+    const raw = await bus().get(key);
+    if (!raw) return null;
+    let hot: HotState;
+    try {
+      hot = JSON.parse(raw) as HotState;
+    } catch {
+      return null;
+    }
+    if (hot.key !== options.handoff || hot.pid !== options.pid) return null;
+    await bus().del(key);
+    return hot;
+  }
+
+  private joinHandedOff(client: Client, hot: HotState) {
+    const player = new Player();
+    player.name = hot.name;
+    player.character = hot.character;
+    player.accountId = hot.accountId;
+    player.rec = hot.rec;
+    player.mintedSecret = hot.mintedSecret ?? "";
+    player.x = hot.x;
+    player.y = hot.y;
+    player.elev = hot.elev;
+    player.dir = hot.dir;
+    player.level = hot.level;
+    player.xp = hot.xp;
+    player.hpMax = hpMaxFor(player.level);
+    player.epMax = epMaxFor(player.level);
+    player.hp = Math.min(player.hpMax, Math.max(1, hot.hp));
+    player.ep = Math.min(player.epMax, Math.max(0, hot.ep));
+    player.inv = hot.inv.map((s) => ({ item: s.item, n: s.n }));
+    player.seq = hot.seq;
+    player.torch = hot.torch;
+    player.lastHitAt = hot.lastHitAt;
+    player.lastCombatAt = hot.lastCombatAt;
+    player.dirty = hot.dirty;
+    if (hot.noAggro) this.noAggro.add(hot.pid);
+    if (client.state === ClientState.LEAVING || client.state === ClientState.CLOSED) {
+      this.savePlayer(player);
+      return;
+    }
+    this.adoptPlayer(client, hot.pid, player);
+    void bus().publish(this.chan.ctl(hot.from), { type: "handoff:done", pid: hot.pid } satisfies CtlMessage);
+  }
+
+  private onCtl(m: CtlMessage) {
+    if (!m || typeof m.type !== "string") return;
+    const now = Date.now();
+    if (m.type === "handoff:done") {
+      const p = this.state.players.get(m.pid);
+      if (!p?.handoff) return;
+      const sid = this.pidSid.get(m.pid);
+      this.state.players.delete(m.pid);
+      if (sid) {
+        this.handed.add(sid);
+        this.seen.delete(sid);
+      }
+      this.noAggro.delete(m.pid);
+      this.chess?.onPlayerLeave(m.pid);
+      // The client leaves this room itself once it is bound to the new one;
+      // its onLeave finds `handed` and touches nothing.
+    } else if (m.type === "monster:xfer") {
+      if (this.state.monsters.has(m.id)) return;
+      const d = m.m;
+      const mon = new Monster();
+      mon.kind = d.kind;
+      mon.x = d.x;
+      mon.y = d.y;
+      mon.dir = d.dir;
+      mon.moving = d.moving;
+      mon.elev = d.elev;
+      mon.hp = d.hp;
+      mon.hpMax = d.hpMax;
+      mon.actionSeq = d.actionSeq;
+      mon.level = d.level;
+      mon.aggro = d.aggro;
+      mon.areaId = d.areaId;
+      mon.home = d.home;
+      mon.orbitSign = d.orbitSign;
+      mon.chaseOx = d.chaseOx;
+      mon.chaseOy = d.chaseOy;
+      // The hunt survives the border only if the victim is here too.
+      const victim = d.targetSid && this.state.players.has(d.targetSid) ? d.targetSid : "";
+      mon.targetSid = victim;
+      mon.provoked = victim ? d.provoked : false;
+      mon.mstate = victim && (d.mstate === "chase" || d.mstate === "combat") ? d.mstate : "roam";
+      mon.tsid = mon.mstate === "roam" ? "" : victim;
+      mon.returning = !victim && d.returning;
+      mon.nextMoveAt = now + 200;
+      this.state.ghostMonsters.delete(m.id);
+      this.ghostOwner.delete(m.id);
+      this.state.monsters.set(m.id, mon);
+    } else if (m.type === "monster:respawn") {
+      this.respawnQueue.push({ areaId: m.areaId, at: now + MONSTER_RESPAWN_MS });
+    }
+  }
+
+  private transferMonster(id: string, to: number) {
+    const m = this.state.monsters.get(id);
+    if (!m) return;
+    const data: MonsterXfer = {
+      kind: m.kind, x: m.x, y: m.y, dir: m.dir, moving: m.moving, elev: m.elev,
+      hp: m.hp, hpMax: m.hpMax, mstate: m.mstate, actionSeq: m.actionSeq, level: m.level, aggro: m.aggro,
+      areaId: m.areaId, home: m.home, orbitSign: m.orbitSign, provoked: m.provoked, returning: m.returning,
+      targetSid: m.targetSid, chaseOx: m.chaseOx, chaseOy: m.chaseOy,
+    };
+    void bus().publish(this.chan.ctl(to), { type: "monster:xfer", id, m: data } satisfies CtlMessage);
+    this.state.monsters.delete(id);
+    this.monsterDodgeStates.delete(id);
+  }
+
+  /** The border band, complete, to every neighbour: what is inside this rect
+   *  within GHOST_BAND_WU of an edge, plus anything of ours standing outside
+   *  it (a body mid-hand-off). A receiver keeps what lies within the band of
+   *  ITS rect. */
+  private publishEdge(now: number) {
+    const rect = this.rect!;
+    const grid = this.grid!;
+    const inBand = (x: number, y: number) => nearEdge(rect, grid, x, y, GHOST_BAND_WU) || distToRect(rect, x, y) > 0;
+    const msg: EdgeSnapshot = { from: this.zoneId, t: now, players: [], monsters: [], drops: [] };
+    this.state.players.forEach((p, pid) => {
+      if (!inBand(p.x, p.y)) return;
+      msg.players.push({
+        id: pid, name: p.name, character: p.character, x: p.x, y: p.y, dir: p.dir, moving: p.moving,
+        running: p.running, elev: p.elev, jumping: p.jumping, swimming: p.swimming, torch: p.torch,
+        level: p.level, hp: p.hp, hpMax: p.hpMax, dead: p.dead, slow: p.slow, action: p.action,
+        actionSeq: p.actionSeq, hitSeq: p.hitSeq,
+      });
+    });
+    this.state.monsters.forEach((m, id) => {
+      if (!inBand(m.x, m.y)) return;
+      msg.monsters.push({
+        id, kind: m.kind, x: m.x, y: m.y, dir: m.dir, moving: m.moving, elev: m.elev, hp: m.hp, hpMax: m.hpMax,
+        mstate: m.mstate, actionSeq: m.actionSeq, level: m.level, aggro: m.aggro, tsid: m.tsid,
+      });
+    });
+    this.state.drops.forEach((g, id) => {
+      if (!inBand(g.x, g.y)) return;
+      msg.drops.push({ id, item: g.item, x: g.x, y: g.y, elev: g.elev });
+    });
+    if (msg.players.length || msg.monsters.length || msg.drops.length || this.edgeSent) {
+      this.edgeSent = msg.players.length + msg.monsters.length + msg.drops.length > 0;
+      void bus().publish(this.chan.edge(this.zoneId), msg);
+    }
+  }
+  private edgeSent = false;
+
+  private onEdgeSnapshot(m: EdgeSnapshot) {
+    if (!m || typeof m.from !== "number" || !this.rect) return;
+    const now = Date.now();
+    const rect = this.rect;
+    const keep = new Set<string>();
+    const near = (x: number, y: number) => distToRect(rect, x, y) <= GHOST_BAND_WU;
+    for (const p of m.players ?? []) {
+      if (!near(p.x, p.y) || this.state.players.has(p.id)) continue;
+      keep.add(p.id);
+      let g = this.state.ghosts.get(p.id);
+      const fresh = !g;
+      if (!g) g = new Player();
+      g.name = p.name; g.character = p.character; g.x = p.x; g.y = p.y; g.dir = p.dir; g.moving = p.moving;
+      g.running = p.running; g.elev = p.elev; g.jumping = p.jumping; g.swimming = p.swimming; g.torch = p.torch;
+      g.level = p.level; g.hp = p.hp; g.hpMax = p.hpMax; g.dead = p.dead; g.slow = p.slow; g.action = p.action;
+      g.actionSeq = p.actionSeq; g.hitSeq = p.hitSeq; g.sid = ""; g.pid = p.id; g.lastSeen = now;
+      if (fresh) this.state.ghosts.set(p.id, g);
+      this.ghostOwner.set(p.id, m.from);
+    }
+    for (const d of m.monsters ?? []) {
+      if (!near(d.x, d.y) || this.state.monsters.has(d.id)) continue;
+      keep.add(d.id);
+      let g = this.state.ghostMonsters.get(d.id);
+      const fresh = !g;
+      if (!g) g = new Monster();
+      g.kind = d.kind; g.x = d.x; g.y = d.y; g.dir = d.dir; g.moving = d.moving; g.elev = d.elev; g.hp = d.hp;
+      g.hpMax = d.hpMax; g.mstate = d.mstate; g.actionSeq = d.actionSeq; g.level = d.level; g.aggro = d.aggro;
+      g.tsid = d.tsid; g.lastSeen = now;
+      if (fresh) this.state.ghostMonsters.set(d.id, g);
+      this.ghostOwner.set(d.id, m.from);
+    }
+    for (const d of m.drops ?? []) {
+      if (!near(d.x, d.y) || this.state.drops.has(d.id)) continue;
+      keep.add(d.id);
+      let g = this.state.ghostDrops.get(d.id);
+      const fresh = !g;
+      if (!g) g = new GroundItem();
+      g.item = d.item; g.x = d.x; g.y = d.y; g.elev = d.elev; g.lastSeen = now;
+      if (fresh) this.state.ghostDrops.set(d.id, g);
+      this.ghostOwner.set(d.id, m.from);
+    }
+    // A snapshot is that zone's whole band: what it no longer carries is gone.
+    const gone: string[] = [];
+    for (const [id, owner] of this.ghostOwner) if (owner === m.from && !keep.has(id)) gone.push(id);
+    for (const id of gone) {
+      this.state.ghosts.delete(id);
+      this.state.ghostMonsters.delete(id);
+      this.state.ghostDrops.delete(id);
+      this.ghostOwner.delete(id);
+    }
+  }
+
   onDispose() {
     if (this.starTimer) clearTimeout(this.starTimer);
     this.offLive?.();
+    for (const off of this.unsubs) off();
+    this.unsubs = [];
   }
 }
 

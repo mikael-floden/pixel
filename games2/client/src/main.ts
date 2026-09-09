@@ -1,3 +1,4 @@
+import { zoneAt, zoneGrid, CELL_WU, WHOLE_WORLD, type ZoneCfg } from "@nangijala/shared";
 import { mountFpsBadge } from "./fpsbadge";
 import Phaser from "phaser";
 import { loadManifest } from "./manifest";
@@ -313,10 +314,20 @@ async function boot() {
   // And WHICH MONSTER ART the boot batch carries (client/src/monsterBoot.ts):
   // the kinds with a spawn zone near where the player will stand; the rest
   // stream in the deferred batch. Same tiny file, same boot-time reasoning.
-  const [npcPlacement, monsterBootKinds] = await Promise.all([
+  // And THE ZONE GRID (spec/ZONES.md): the first room to join is the one
+  // owning the world's spawn; a returning player is handed to the zone of
+  // their saved spot by that room. No grid = one room for the whole map.
+  const [npcPlacement, monsterBootKinds, zonesCfg] = await Promise.all([
     loadNpcPlacement(worldName).catch(() => []),
     loadMonsterBootKinds(worldName, world?.spawn ?? null),
+    fetch(`/api/zones/${encodeURIComponent(worldName)}`, { cache: "no-cache" })
+      .then((r) => (r.ok ? (r.json() as Promise<ZoneCfg | null>) : null))
+      .catch(() => null),
   ]);
+  const zone =
+    zonesCfg && world?.spawn
+      ? zoneAt(zoneGrid(zonesCfg, world.width, world.height, CELL_WU), (world.spawn[0] + 0.5) * CELL_WU, (world.spawn[1] + 0.5) * CELL_WU)
+      : WHOLE_WORLD;
 
   // Render at the DEVICE's real pixels, not CSS pixels. The canvas backing store
   // is RS× the CSS size; the camera zoom is RS× higher to keep the SAME view.
@@ -430,6 +441,8 @@ async function boot() {
   game.registry.set("name", name);
   game.registry.set("world", world);
   game.registry.set("worldName", worldName);
+  game.registry.set("zone", zone);
+  game.registry.set("zonesCfg", zonesCfg);
 
   // Ambient-life layer (games2/ambient/, its own agent): attaches to the
   // world scene from outside and only ever ADDS display objects — zero

@@ -36,6 +36,10 @@ export class Player extends Schema {
   declare action: string; // transient one-shot: "attack" (client picks kick/punch) | "pickup"
   declare actionSeq: number; // bumps per action so clients retrigger the clip
   declare hitSeq: number; // bumps per hit TAKEN (drives the hurt flinch + damage float)
+  /** The session this body belongs to IN THIS ROOM. The map key is the stable
+   *  `pid` (spec/ZONES.md) and survives a zone hand-off; the session does not,
+   *  so a client finds itself by `sid === room.sessionId`, never by key. */
+  declare sid: string;
 
   // Server-only (not synced): queued inputs + rate-limit bookkeeping. The
   // server integrates each input's dt (client-reported, budget-bounded) so
@@ -73,9 +77,14 @@ export class Player extends Schema {
   regenAccHp = 0; // fractional regen accumulators: synced hp/ep move in whole
   regenAccEp = 0; // points only, so patches stop churning at 20Hz while healing
   inv: { item: string; n: number }[] = []; // backpack (synced via targeted "inv" messages, not schema — private)
+  // ZONES (spec/ZONES.md), server-only.
+  pid = ""; // the stable id (the map key); the first session id of this login
+  handoff: { to: number; key: string; at: number } | null = null; // a crossing in flight
+  lastSeen = 0; // ghosts only: when the owner's last edge snapshot carried it
 
   constructor() {
     super();
+    this.sid = "";
     this.x = 0;
     this.y = 0;
     this.dir = DEFAULT_DIRECTION;
@@ -128,6 +137,7 @@ defineTypes(Player, {
   action: "string",
   actionSeq: "number",
   hitSeq: "number",
+  sid: "string",
 });
 
 /**
@@ -182,6 +192,9 @@ export class Monster extends Schema {
   orbitSign = 1; // per-monster circling handedness (id-hashed at seed)
   returning = false; // walking home after a chase ended outside the zone
   diedAt = 0; // when the death started (drops + removal at diedAt + MONSTER_DIE_MS)
+  // ZONES (spec/ZONES.md), server-only.
+  home = -1; // the zone room that seeded it (its respawn goes back there)
+  lastSeen = 0; // ghosts only
 
   constructor() {
     super();
@@ -230,6 +243,7 @@ export class GroundItem extends Schema {
 
   // Server-only.
   bornAt = 0; // Date.now() — despawns at bornAt + DROP_TTL_MS
+  lastSeen = 0; // ghosts only (spec/ZONES.md)
 
   constructor() {
     super();
@@ -346,6 +360,13 @@ export class WorldState extends Schema {
   declare monsters: MapSchema<Monster>;
   declare spawnAreas: ArraySchema<MonsterArea>; // monster areas for this world (synced for the client overlay)
   declare drops: MapSchema<GroundItem>; // items on the ground (monster loot + player discards)
+  /** GHOSTS (spec/ZONES.md): the neighbouring zones' border-band entities,
+   *  mirrored here from their edge snapshots so a client near a border sees
+   *  across it through one socket. Separate maps so no server loop ever
+   *  steps, fights or saves one; the client draws them like the real maps. */
+  declare ghosts: MapSchema<Player>;
+  declare ghostMonsters: MapSchema<Monster>;
+  declare ghostDrops: MapSchema<GroundItem>;
   declare chessBoards: MapSchema<ChessBoard>;
   declare chessMatches: MapSchema<ChessMatch>;
   declare timeIdx: number; // shared time-of-day phase (server-owned)
@@ -361,6 +382,9 @@ export class WorldState extends Schema {
     this.monsters = new MapSchema<Monster>();
     this.spawnAreas = new ArraySchema<MonsterArea>();
     this.drops = new MapSchema<GroundItem>();
+    this.ghosts = new MapSchema<Player>();
+    this.ghostMonsters = new MapSchema<Monster>();
+    this.ghostDrops = new MapSchema<GroundItem>();
     this.chessBoards = new MapSchema<ChessBoard>();
     this.chessMatches = new MapSchema<ChessMatch>();
     this.timeIdx = DEFAULT_TIME_IDX;
@@ -384,6 +408,9 @@ defineTypes(WorldState, {
   monsters: { map: Monster },
   spawnAreas: { array: MonsterArea },
   drops: { map: GroundItem },
+  ghosts: { map: Player },
+  ghostMonsters: { map: Monster },
+  ghostDrops: { map: GroundItem },
   chessBoards: { map: ChessBoard },
   chessMatches: { map: ChessMatch },
   timeIdx: "number",
@@ -400,4 +427,5 @@ defineTypes(WorldState, {
 // Applied as the decorator call itself: `defineTypes` ignores a `view: true`
 // on a field (only the `schema()` builder reads it; measured, hasFilters
 // stayed false and every client received the whole room).
-for (const field of ["players", "monsters", "drops"]) view()(WorldState.prototype, field);
+for (const field of ["players", "monsters", "drops", "ghosts", "ghostMonsters", "ghostDrops"])
+  view()(WorldState.prototype, field);

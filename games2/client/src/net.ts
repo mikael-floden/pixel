@@ -9,12 +9,12 @@ import { ROOM_NAME, JoinOptions } from "@nangijala/shared";
  *   so `wss://host` on https and `ws://host` otherwise.
  * - Dev: the Colyseus server runs separately on :2567.
  */
-export function serverEndpoint(): string {
+export function serverEndpoint(route = ""): string {
   const override = import.meta.env.VITE_SERVER_URL as string | undefined;
-  if (override) return override;
+  if (override) return override + route;
   const proto = location.protocol === "https:" ? "wss" : "ws";
-  if (import.meta.env.PROD) return `${proto}://${location.host}`;
-  return `${proto}://${location.hostname}:2567`;
+  if (import.meta.env.PROD) return `${proto}://${location.host}${route}`;
+  return `${proto}://${location.hostname}:2567${route}`;
 }
 
 /** THE ACCOUNT THIS BROWSER IS.
@@ -96,13 +96,17 @@ export function forgetSeat(): void {
   reconnectionToken = null;
 }
 
+/** `route` is the zone's URL path prefix from the routing table
+ *  (spec/ZONES.md; "" today). `fresh` skips the seat reclaim: a zone hop
+ *  joins a NEW room while the old seat is still live. */
 export async function joinWorld(
   options: JoinOptions,
   room: string = ROOM_NAME,
   timeoutMs: number = JOIN_TIMEOUT_MS,
+  opts: { route?: string; fresh?: boolean } = {},
 ): Promise<Room> {
-  const client = new Client(serverEndpoint());
-  if (reconnectionToken) {
+  const client = new Client(serverEndpoint(opts.route ?? ""));
+  if (reconnectionToken && !opts.fresh) {
     const token = reconnectionToken;
     // One attempt. If the grace has expired the server answers with an error
     // and we fall through to a normal join rather than retrying a dead seat.

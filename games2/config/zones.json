@@ -1,0 +1,10 @@
+{
+  "_": "spec/ZONES.md \u2014 a world's zone grid; absent = one room for the whole map. routes: zone id or '*' \u2192 URL path prefix ('' = same origin).",
+  "the_game": {
+    "cols": 4,
+    "rows": 4,
+    "routes": {
+      "*": ""
+    }
+  }
+}

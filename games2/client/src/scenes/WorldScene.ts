@@ -87,8 +87,7 @@ import {
   dodgePersonal,
   PROVOKE_RADIUS_WU,
   DROP_TTL_MS,
-  DROP_FLASH_MS,
-} from "@nangijala/shared";
+  DROP_FLASH_MS, zoneRoute, WHOLE_WORLD, type ZoneCfg } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { indoorAmbient, indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "../indoorlight";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
@@ -1493,6 +1492,14 @@ export class WorldScene extends Phaser.Scene {
   private myCharacter!: CharacterDef;
   private myName!: string;
   private room?: Room;
+  /** MY STABLE ID (spec/ZONES.md): the key of my entry in `state.players` —
+   *  the session id of my FIRST room, kept across every zone hand-off. Found
+   *  by `player.sid === room.sessionId` on each bind, never by map key. */
+  private myId = "";
+  private zone = WHOLE_WORLD;
+  private zonesCfg: ZoneCfg | null = null;
+  private zoneSwapping = false;
+  private swapQueue: InputMessage[] = [];
   private avatars = new Map<string, Avatar>();
   // Roaming monsters (server-authoritative, all clients see the same ones).
   private monsters = new Map<string, MonsterAvatar>();
@@ -2514,7 +2521,7 @@ export class WorldScene extends Phaser.Scene {
 
   /** The local player's cell, or null before the join lands. */
   private mePos(): { x: number; y: number } | null {
-    const m = this.avatars.get(this.room?.sessionId ?? "");
+    const m = this.avatars.get(this.myId);
     if (!m) return null;
     /* CELLS MEAN `fx/fy`, NOT `sprite.x/y` — and this was reporting the wrong
      * place in every beacon. `sprite.x` is `av.lx`, the ISO-PROJECTED screen x
@@ -3427,6 +3434,8 @@ export class WorldScene extends Phaser.Scene {
     this.roomOfCellMap = null; // world.rooms — rebuilt lazily by roomOf
     this.roomLitMap = null;
     this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
+    this.zone = (this.registry.get("zone") as number | undefined) ?? WHOLE_WORLD;
+    this.zonesCfg = (this.registry.get("zonesCfg") as ZoneCfg | null | undefined) ?? null;
     this.maps3 = !!this.world && isMaps3World(this.world);
     this.geom = geometryFor(this.world);
     // The maps agent's named interiors, fetched alongside the world. Async and
@@ -3700,7 +3709,7 @@ export class WorldScene extends Phaser.Scene {
           this.pickupIntentUntil = this.time.now + 6000;
           this.engagedId = null;
           const d = this.drops.get(tgt.id)!;
-          const meNow = this.avatars.get(this.room!.sessionId);
+          const meNow = this.avatars.get(this.myId);
           if (meNow) this.walkToGrab(meNow, d.wx, d.wy);
           else this.setMoveTarget(d.wx, d.wy, true, false, undefined, false);
         } else {
@@ -4063,7 +4072,7 @@ export class WorldScene extends Phaser.Scene {
         {
           label: "indoor report",
           act: () => {
-            const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+            const me = this.room ? this.avatars.get(this.myId) : undefined;
             const cell = me ? [Math.floor(me.fx / CELL_WU), Math.floor(me.fy / CELL_WU)] : null;
             const grade = this.indoorGrade();
             const lit = this.roomHasLight();
@@ -4162,7 +4171,10 @@ export class WorldScene extends Phaser.Scene {
     try {
       this.bindRoom(
         await joinWorld(
-          { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
+          { name: this.myName, character: this.myCharacter.uid, world: this.worldName, zone: this.zone },
+          undefined,
+          undefined,
+          { route: zoneRoute(this.zonesCfg, this.zone) },
         ),
       );
       // The world is live: bring in the score + let the composer sample the
@@ -4207,7 +4219,7 @@ export class WorldScene extends Phaser.Scene {
     // Debug hooks for headless end-to-end verification.
     (window as any).__ml = {
       players: () => this.avatars.size,
-      myId: () => this.room?.sessionId,
+      myId: () => this.myId,
       liveTuning: () => liveTuningSnapshot(),
       // Live feed for the HUD Map tab (hud.ts polls per rAF): the current world
       // id + grid size (cells) and the LOCAL player's SMOOTH predicted cell —
@@ -4215,7 +4227,7 @@ export class WorldScene extends Phaser.Scene {
       // use, so the minimap dot tracks the avatar (using me()/server 20Hz state
       // instead would stutter). col=fx/CELL_WU, row=fy/CELL_WU.
       minimap: () => {
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         const w = this.world;
         const col = av ? av.fx / CELL_WU : 0;
         const row = av ? av.fy / CELL_WU : 0;
@@ -4401,7 +4413,7 @@ export class WorldScene extends Phaser.Scene {
       toggleTorch: () => this.toggleTorch(),
       indoor: () => {
         const s = this.indoorSpace;
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         return {
           indoor: this.indoorInside,
           roofLevel: s?.roofLevel ?? null,
@@ -4538,12 +4550,12 @@ export class WorldScene extends Phaser.Scene {
         indexed: this.deckIndex.size,
       }),
       myX: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         return av ? av.sprite.x : null;
       },
       myCharacter: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         return av ? av.character : null;
       },
@@ -4766,7 +4778,7 @@ export class WorldScene extends Phaser.Scene {
       footprintsList: () => this.footsteps?.list() ?? [],
       // My avatar's on-screen position (CSS px) — anchors QA screenshot crops.
       myScreen: () => {
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         if (!av) return null;
         const cam = this.cameras.main;
         return {
@@ -4799,7 +4811,7 @@ export class WorldScene extends Phaser.Scene {
         if (this.night && testZ !== undefined) this.night.fogTestZ = testZ === -1 ? null : testZ;
         if (this.night && testCol !== undefined && testRow !== undefined)
           this.night.fogTestXY = testCol === -1 ? null : [testCol, testRow];
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         return {
           strength: this.night?.fogStrength ?? 0,
           /* THE SWITCH, BESIDE THE DIAL. A probe that reports `strength` alone
@@ -4819,7 +4831,7 @@ export class WorldScene extends Phaser.Scene {
       // (roof/bridge) is lit. `lBase` is the OLD base-terrain sample — dark under
       // a roof. QA for the "character shaded on the roof in daylight" deck bug.
       litInfo: () => {
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         if (!av || !this.night) return null;
         const rendLvl = Math.max(0, av.elev / this.geom.lh); // sunk while swimming
         const litLvl = this.litLevelOf(av); // where lighting SHIPS (surface when swimming)
@@ -4843,7 +4855,7 @@ export class WorldScene extends Phaser.Scene {
       // cull must not break: standing UNDER a deck (cave slab, bridge) or
       // behind a cliff must still report a cover line.
       myCover: () => {
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         if (!av) return null;
         return {
           coverY: av.coverY ?? null,
@@ -4882,7 +4894,7 @@ export class WorldScene extends Phaser.Scene {
       // disagree with what is drawn. ASYNC and dev-only: it is a GPU readback.
       coverStats: (which?: string) => {
         const b: BodyVisual | undefined = !which || which === "me"
-          ? this.avatars.get(this.room?.sessionId ?? "")
+          ? this.avatars.get(this.myId)
           : this.monsters.get(which);
         const slot = b ? this.coverSlotOf(b) : undefined;
         if (!b || !slot || !this.coverC || !this.coverE) return Promise.resolve(null);
@@ -4923,7 +4935,7 @@ export class WorldScene extends Phaser.Scene {
       // Chase-cam probe: eased zoom vs base, and how far the camera trails
       // the avatar (scene px).
       camInfo: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         const cam = this.cameras.main;
         const cx = cam.worldView.centerX; // zoom-correct world centre
@@ -4954,7 +4966,7 @@ export class WorldScene extends Phaser.Scene {
           // ignores; `l` is what actually reaches the body, so a gate asserts
           // the effect and not the intent.
           torch: (() => {
-            const id = this.room?.sessionId;
+            const id = this.myId;
             const a = id ? this.avatars.get(id) : undefined;
             if (!a || !this.night) return null;
             const l = this.night.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, this.litLevelOf(a), false);
@@ -5120,15 +5132,15 @@ export class WorldScene extends Phaser.Scene {
         this.setOverlay(typeof on === "number" ? on : on ? 1 : 0),
       // Live gait-sync probes: my avatar's playback timeScale (rate ∝ speed)
       // and the EMA'd WORLD-units ground speed it derives from (wu/s).
-      timeScale: () => this.avatars.get(this.room?.sessionId ?? "")?.sprite.anims.timeScale ?? null,
-      worldSpeed: () => this.avatars.get(this.room?.sessionId ?? "")?.spdWu ?? null,
+      timeScale: () => this.avatars.get(this.myId)?.sprite.anims.timeScale ?? null,
+      worldSpeed: () => this.avatars.get(this.myId)?.spdWu ?? null,
       // One-call sample for the gait-sync probe (verify-gaitsync): the EASED
       // sprite ground position (scene px at zoom 1 — what the eye sees), the
       // flat WORLD position, the playing clip and its 0-based frame index.
       // Sampled per rAF; offline it gates world-ground-per-cycle and measures
       // planted-foot slip against the art offsets ("moonwalk meter").
       gaitSample: () => {
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         if (!av) return null;
         return {
           sx: av.lx,
@@ -5161,17 +5173,17 @@ export class WorldScene extends Phaser.Scene {
       // Current animation key of the local avatar's sprite — headless probe for
       // verifying state selection (jump vs gaits).
       anim: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         return av ? av.sprite.anims.getName() : null;
       },
       // Local avatar fall state — headless probe for the cliff-fall animation.
       fall: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         return av ? { falling: av.falling, elev: av.elev, fallV: av.fallV } : null;
       },
-      me: () => this.room?.state.players.get(this.room!.sessionId),
+      me: () => this.room?.state.players.get(this.myId),
       // Composer probes: engine state, the musical clock (beat/scale — what
       // beat-reactive visuals read), and a manual event trigger for QA.
       audio: () => gameAudio.debug(),
@@ -5195,9 +5207,9 @@ export class WorldScene extends Phaser.Scene {
       // Fire the thunder rumble on demand (storms are rare episodes — this
       // lets QA/the maintainer hear it without waiting for the weather).
       audioThunder: (strength = 1) => gameAudio.thunder(strength),
-      swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
-      myDispDir: () => this.avatars.get(this.room?.sessionId ?? "")?.dispDir ?? null,
-      swimT: () => this.avatars.get(this.room?.sessionId ?? "")?.swimT ?? 0,
+      swimming: () => !!this.room?.state.players.get(this.myId)?.swimming,
+      myDispDir: () => this.avatars.get(this.myId)?.dispDir ?? null,
+      swimT: () => this.avatars.get(this.myId)?.swimT ?? 0,
       // Hold-gesture/trip state — QA for the wedged-hold self-heal (a swallowed
       // pointerup must not leave holdPointerId armed forever).
       holdInfo: () => ({
@@ -5216,7 +5228,7 @@ export class WorldScene extends Phaser.Scene {
         this.holdRepathAt = 0;
       },
       swimDebug: () => {
-        const av = this.avatars.get(this.room?.sessionId ?? "");
+        const av = this.avatars.get(this.myId);
         if (!av) return null;
         const sp = av.sprite;
         const dir = av.dispDir ?? DEFAULT_DIRECTION;
@@ -5327,7 +5339,7 @@ export class WorldScene extends Phaser.Scene {
       // Draw-order probe: base + lit-copy depths for me and the campfire, so
       // the lit layer's ordering can be asserted numerically (no screenshots).
       litOrder: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         return {
           me: av ? { base: av.sprite.depth, lit: av.lit?.visible ? av.lit.depth : null } : null,
@@ -5394,7 +5406,7 @@ export class WorldScene extends Phaser.Scene {
       },
       // My sprite depth vs every occluder column near it — z-order probes.
       depthProbe: () => {
-        const id = this.room?.sessionId;
+        const id = this.myId;
         const av = id ? this.avatars.get(id) : undefined;
         if (!av) return null;
         const s = av.sprite;
@@ -5673,7 +5685,7 @@ export class WorldScene extends Phaser.Scene {
        *  the cell it fogs by and the twin's answers (snapped / smooth) beside
        *  the pass's pixel over that cell. */
       fogPieces: (radius = 8) => {
-        const me = this.avatars.get(this.room?.sessionId ?? "");
+        const me = this.avatars.get(this.myId);
         const px = me ? me.fx / CELL_WU : 0;
         const py = me ? me.fy / CELL_WU : 0;
         const out: Record<string, unknown>[] = [];
@@ -5777,7 +5789,7 @@ export class WorldScene extends Phaser.Scene {
         const list: [string, BodyVisual][] = [];
         for (const [, m] of this.monsters) list.push(["monster", m as unknown as BodyVisual]);
         for (const [, n] of this.npcs) list.push(["npc", n as unknown as BodyVisual]);
-        const me = this.avatars.get(this.room?.sessionId ?? "");
+        const me = this.avatars.get(this.myId);
         if (me) list.push(["me", me]);
         for (const [kind, b] of list) {
           if ((b as unknown as { culled?: boolean }).culled) continue;
@@ -5808,7 +5820,7 @@ export class WorldScene extends Phaser.Scene {
         return out;
       },
       fogBodies: (radius = 12) => {
-        const me = this.avatars.get(this.room?.sessionId ?? "");
+        const me = this.avatars.get(this.myId);
         const px = me ? me.fx / CELL_WU : 0;
         const py = me ? me.fy / CELL_WU : 0;
         const out: Record<string, unknown>[] = [];
@@ -5860,7 +5872,7 @@ export class WorldScene extends Phaser.Scene {
             coverY: (b as unknown as { coverY?: number }).coverY ?? null,
           });
         };
-        for (const [id, a] of this.avatars) add(id === this.room?.sessionId ? "me" : "player", id.slice(0, 6), a);
+        for (const [id, a] of this.avatars) add(id === this.myId ? "me" : "player", id.slice(0, 6), a);
         for (const [, m] of this.monsters) add("monster", m.label ?? m.kind ?? "?", m as unknown as BodyVisual);
         for (const [, n] of this.npcs) add("npc", (n as unknown as { uid?: string }).uid ?? "?", n as unknown as BodyVisual);
         return {
@@ -6790,7 +6802,7 @@ export class WorldScene extends Phaser.Scene {
       // gesture to land on a given drop, how far off it currently is, and the
       // live state of a drop being held for its grab frame.
       grabInfo: (dropId?: string) => {
-        const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+        const me = this.room ? this.avatars.get(this.myId) : undefined;
         if (!me) return null;
         const id = dropId ?? this.pendingPickupId ?? [...this.drops.keys()][0];
         const rec = id ? this.drops.get(id) : undefined;
@@ -6857,7 +6869,8 @@ export class WorldScene extends Phaser.Scene {
       toggleAggroRadius: (on?: boolean) => this.toggleAggroRadius(on),
       // Settings "disable aggro" — read with no argument, set with one.
       noAggro: (on?: boolean) => (on === undefined ? this.noAggroOn : this.toggleNoAggro(on)),
-      mySid: () => this.room?.sessionId ?? "",
+      mySid: () => this.myId,
+      zone: () => ({ zone: this.zone, hops: this.zoneHops, swapping: this.zoneSwapping, room: this.room?.roomId ?? null, ghosts: (this.room?.state as any)?.ghosts?.size ?? 0, ghostMonsters: (this.room?.state as any)?.ghostMonsters?.size ?? 0 }),
       bloodFx: () => this.bloodSeen,
       graveCrosses: () =>
         this.graveCrosses.map((gc) => ({
@@ -6975,7 +6988,7 @@ export class WorldScene extends Phaser.Scene {
         return this.engagedId;
       },
       combat: () => {
-        const p = this.room ? (this.room.state as any).players.get(this.room.sessionId) : null;
+        const p = this.room ? (this.room.state as any).players.get(this.myId) : null;
         return {
           engaged: this.engagedId,
           pendingPickup: this.pendingPickupId,
@@ -7013,7 +7026,7 @@ export class WorldScene extends Phaser.Scene {
       // on / next to" is the question), and the tile drawn under the nearest
       // cell rides along so the wiki can deep-link the instance.
       nearby: (radius = 12, groundRadius = 4) => {
-        const me = this.room?.state.players.get(this.room!.sessionId);
+        const me = this.room?.state.players.get(this.myId);
         if (!me || !this.world) return { world: this.worldName, at: null, radius, items: [] };
         const mx = me.x, my = me.y;
         type Row = { domain: string; id: string; dist: number; n: number; path?: string };
@@ -7088,7 +7101,7 @@ export class WorldScene extends Phaser.Scene {
         return this.uiLocked;
       },
       myAnim: () => {
-        const av = this.room ? this.avatars.get(this.room.sessionId) : null;
+        const av = this.room ? this.avatars.get(this.myId) : null;
         return av?.sprite.anims.getName() ?? "";
       },
       monsterAnimReady: (kind: string) => {
@@ -7107,7 +7120,7 @@ export class WorldScene extends Phaser.Scene {
   /** Wire a (re)joined room into the scene: state callbacks, messages, and
    * the dead-connection recovery. Called for the initial join and for every
    * in-place rejoin. */
-  private bindRoom(room: Room) {
+  private bindRoom(room: Room, swap = false) {
     // The state flood right after (re)bind replays every EXISTING ground drop
     // through drops.onAdd — inherited loot is scenery, not a drop happening,
     // so item.drop only fires for drops witnessed after this window.
@@ -7149,7 +7162,7 @@ export class WorldScene extends Phaser.Scene {
       // A reconnect can land in a FRESH room where the clock is back to its
       // frozen default — say so on join, or flowing time silently "stops"
       // again (maintainer hit exactly this).
-      else if (v === 0) this.chat.addLog("—", "Time is frozen (Settings → time speed).");
+      else if (v === 0 && !swap) this.chat.addLog("—", "Time is frozen (Settings → time speed).");
       firstSpeedSync = false;
     });
     let firstAuroraSync = true;
@@ -7174,7 +7187,9 @@ export class WorldScene extends Phaser.Scene {
     });
     $(room.state).players.onAdd((player: any, id: string) => {
       this.addAvatar(id, player);
-      if (id === room.sessionId) {
+      if (player.sid === room.sessionId) {
+        this.myId = id;
+        if (swap) return; // a zone hand-off: the body, its torch and its settings came with it
         this.camDetached = false;
         this.camChase.init = false; // chase-cam snaps onto the new avatar
         // Re-assert my torch to the fresh player entry (rejoins reset it).
@@ -7189,14 +7204,35 @@ export class WorldScene extends Phaser.Scene {
       this.refreshRoster();
     });
     $(room.state).players.onRemove((_player: any, id: string) => {
-      this.removeAvatar(id);
+      // The same id may live on as a neighbour zone's GHOST (spec/ZONES.md):
+      // a body that crossed the border is still drawn, from the other map.
+      if (!room.state.ghosts?.has(id)) this.removeAvatar(id);
       this.refreshRoster();
+    });
+    // GHOSTS: the neighbouring zones' border bands, drawn exactly like the
+    // real maps; an id moving between the two maps keeps its sprite.
+    $(room.state).ghosts.onAdd((p: any, id: string) => this.addAvatar(id, p));
+    $(room.state).ghosts.onRemove((_p: any, id: string) => {
+      if (!room.state.players.has(id)) this.removeAvatar(id);
     });
     // Roaming monsters — server-authoritative, so every client renders the same
     // ones at the same positions. Poll state.monsters.get(id) each frame and
     // ease like a remote player (see the monster loop in update()).
     $(room.state).monsters.onAdd((m: any, id: string) => this.addMonster(id, m));
-    $(room.state).monsters.onRemove((_m: any, id: string) => this.removeMonster(id));
+    $(room.state).monsters.onRemove((_m: any, id: string) => {
+      if (!room.state.ghostMonsters?.has(id)) this.removeMonster(id);
+    });
+    $(room.state).ghostMonsters.onAdd((m: any, id: string) => this.addMonster(id, m));
+    $(room.state).ghostMonsters.onRemove((_m: any, id: string) => {
+      if (!room.state.monsters.has(id)) this.removeMonster(id);
+    });
+    $(room.state).ghostDrops.onAdd((g: any, id: string) => this.addDrop(id, g));
+    $(room.state).ghostDrops.onRemove((_g: any, id: string) => {
+      if (!room.state.drops.has(id)) this.removeDrop(id);
+    });
+    // A ZONE HAND-OFF: the room owning my body says the next zone holds my
+    // hot state under a one-shot key.
+    room.onMessage("zone:go", (msg: { zone?: number; pid?: string; key?: string }) => void this.zoneGo(room, msg));
     $(room.state).drops.onAdd((g: any, id: string) => this.addDrop(id, g));
 
     // ---------------- CHESS: boards in the world + my matches -------------
@@ -7210,18 +7246,18 @@ export class WorldScene extends Phaser.Scene {
       this.chessWaitB.get(id)?.destroy(); this.chessWaitB.delete(id);
     });
     $(room.state).chessMatches.onAdd((m: any, id: string) => {
-      const mine = m.aSid === room.sessionId || m.bSid === room.sessionId;
+      const mine = m.aSid === this.myId || m.bSid === this.myId;
       if (!mine) return;
       const open = () => {
         if (this.chessDialog) return;
         const board = room.state.chessBoards.get(m.boardId);
-        const oppSid = m.aSid === room.sessionId ? m.bSid : m.aSid;
+        const oppSid = m.aSid === this.myId ? m.bSid : m.aSid;
         const oppName = oppSid === "npc"
           ? board?.npc || "Opponent"
           : room.state.players.get(oppSid)?.name || "Opponent";
         this.setChessLock(true);
         this.chessDialog = new ChessDialog(m as ChessMatchView, {
-          mySid: room.sessionId,
+          mySid: this.myId,
           oppName,
           send: (t, msg) => this.room?.send(t, msg),
           onClosed: () => { this.chessDialog = null; this.setChessLock(false); },
@@ -7236,9 +7272,11 @@ export class WorldScene extends Phaser.Scene {
       // still up past "over", let it be — it closes itself; but a live match
       // vanishing (opponent left before dice) must not strand a locked UI.
       if (this.chessDialog && m.phase !== "over" &&
-          (m.aSid === room.sessionId || m.bSid === room.sessionId)) this.chessDialog.close();
+          (m.aSid === this.myId || m.bSid === this.myId)) this.chessDialog.close();
     });
-    $(room.state).drops.onRemove((_g: any, id: string) => this.removeDrop(id));
+    $(room.state).drops.onRemove((_g: any, id: string) => {
+      if (!room.state.ghostDrops?.has(id)) this.removeDrop(id);
+    });
     // Spawn areas are server-computed per world and synced once — redraw the
     // debug overlay as they arrive (they land after the first iso build).
     $(room.state).spawnAreas.onAdd(() => this.drawSpawnAreas());
@@ -7319,7 +7357,7 @@ export class WorldScene extends Phaser.Scene {
     room.onMessage("chat", (msg: ChatBroadcast) => {
       this.chat.addLog(msg.name, msg.text);
       this.showBubble(msg.id, msg.text);
-      if (msg.id !== room.sessionId) gameAudio.event("ui.notify", { gainDb: -9 });
+      if (msg.id !== this.myId) gameAudio.event("ui.notify", { gainDb: -9 });
     });
     // Every arrival in Nangijala is a shooting star everyone sees at the
     // same moment; the night sky also throws wild ones (no name).
@@ -7424,6 +7462,7 @@ export class WorldScene extends Phaser.Scene {
 
   private addMonster(id: string, m: any) {
     if (!this.monstersOn) return; // Settings "monsters" — see monstersOn
+    if (this.monsters.has(id)) return; // a zone swap re-adds what is already drawn
     const def = this.monsterManifest?.monsters.find((d) => d.id === m.kind);
     // The roster's own display name ("Dewling" for forest_poring) — resolved
     // HERE, once, because updateMonsterHpBar runs per monster per frame and a
@@ -7551,6 +7590,7 @@ export class WorldScene extends Phaser.Scene {
    * all 105 items), so no manifest fetch is needed — textures lazy-load per
    * KIND the first time one drops. */
   private addDrop(id: string, g: any) {
+    if (this.drops.has(id)) return; // a zone swap re-adds what is already drawn
     const p = this.projectFlat(g.x, g.y);
     const y = p.y - Math.max(g.elev ?? 0, p.lvl) * this.geom.lh;
     if (this.time.now > this.joinQuietUntil) {
@@ -7606,7 +7646,7 @@ export class WorldScene extends Phaser.Scene {
     // let stepGroundDecor retire it on the measured grab frame. Everyone
     // else's pickups, TTL despawns and my own un-animated grabs are unchanged.
     if (id === this.pendingPickupId && !rec.grabbedAt) {
-      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const me = this.room ? this.avatars.get(this.myId) : undefined;
       const g = me && this.grabFrameFor(me);
       if (me && g) {
         rec.grabbedAt = this.time.now;
@@ -7712,7 +7752,7 @@ export class WorldScene extends Phaser.Scene {
    * The SERVER owns everything that happens after the messages land. */
   private driveCombatIntent() {
     if (this.selfDead || !this.room) return;
-    const me = this.avatars.get(this.room.sessionId);
+    const me = this.avatars.get(this.myId);
     if (!me) return;
     if (this.pendingPickupId) {
       const d = this.drops.get(this.pendingPickupId);
@@ -8455,7 +8495,7 @@ export class WorldScene extends Phaser.Scene {
     // and every lit copy at FULL alpha, whatever the hour — the mark is UI,
     // and lighting/shadow/fog never touch it (round 10). An outline has no
     // interior, so nothing bleeds through the body it surrounds.
-    const mySid = this.room?.sessionId;
+    const mySid = this.myId;
     for (const [id, mv2] of this.monsters) {
       const sm = state?.monsters?.get(id);
       const hunting =
@@ -8642,7 +8682,7 @@ export class WorldScene extends Phaser.Scene {
     gfx.clear();
     const t = this.terrain;
     if (!this.collisionOn || !t) return;
-    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    const me = this.room ? this.avatars.get(this.myId) : undefined;
     if (!me) return;
     const RANGE = 16; // cells each way — a screen's worth on a phone
     const c0 = Math.floor(me.fx / CELL_WU);
@@ -8987,7 +9027,7 @@ export class WorldScene extends Phaser.Scene {
 
   private pickupNearest() {
     if (this.selfDead || !this.room) return;
-    const me = this.avatars.get(this.room.sessionId);
+    const me = this.avatars.get(this.myId);
     if (!me) return;
     let bestId: string | null = null;
     let bestD = CELL_WU * 5; // don't sprint across the map for a mis-tap
@@ -9148,7 +9188,7 @@ export class WorldScene extends Phaser.Scene {
     // a timeout instead of leaving a phantom item lying there forever.
     for (const [id, rec] of [...this.drops]) {
       if (!rec.grabbedAt) continue;
-      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const me = this.room ? this.avatars.get(this.myId) : undefined;
       const anim = me?.sprite.anims.getName() ?? "";
       // Character frames are PER-FRAME TEXTURES keyed f:<uid>:<state>:<dir>:<n>
       // (only monsters use numbered spritesheet frames), so the index comes
@@ -9783,7 +9823,7 @@ export class WorldScene extends Phaser.Scene {
     // south-east, so any turn pops a large prop in and out of the scene. He
     // keeps whatever facing addNpc gave him, permanently.
     if (npc.def.noTurn) return;
-    const me = this.avatars.get(this.room?.sessionId ?? "");
+    const me = this.avatars.get(this.myId);
     if (me) {
       const dx = me.fx - npc.fx;
       const dy = me.fy - npc.fy;
@@ -9960,7 +10000,7 @@ export class WorldScene extends Phaser.Scene {
    * and distance (0 at centre, 1 at the edge of earshot) for the composer's
    * spatialized one-shots. The local player is always centred. */
   private avatarSpatial(id: string | undefined): { pan: number; dist: number } {
-    if (!id || id === this.room?.sessionId) return { pan: 0, dist: 0 };
+    if (!id || id === this.myId) return { pan: 0, dist: 0 };
     const av = id ? this.avatars.get(id) : undefined;
     if (!av) return { pan: 0, dist: 0.5 };
     return this.worldSpatial(av.sprite.x, av.sprite.y);
@@ -9987,7 +10027,7 @@ export class WorldScene extends Phaser.Scene {
   } {
     const none = { forest: 0, water: 0, town: 0, fire: 0, cave: 0, threat: 0 };
     const g = this.terrain;
-    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    const me = this.room ? this.avatars.get(this.myId) : undefined;
     if (!g || !me) return none;
     const cc = Math.floor(me.fx / CELL_WU);
     const cr = Math.floor(me.fy / CELL_WU);
@@ -10057,6 +10097,51 @@ export class WorldScene extends Phaser.Scene {
     };
   }
 
+  /** A ZONE HAND-OFF (spec/ZONES.md). The room owning my body wrote my hot
+   *  state to the bus under a one-shot key and named the zone: join that room
+   *  while this one stays open, bind it in SWAP mode (avatars are keyed by
+   *  stable ids and survive; only what the new view lacks is removed), replay
+   *  the inputs made meanwhile, then leave the old room. A failed hop keeps
+   *  the old room — it forgets the attempt after ten seconds and keeps the
+   *  body. */
+  private async zoneGo(from: Room, msg: { zone?: number; pid?: string; key?: string }) {
+    if (this.room !== from || this.zoneSwapping) return;
+    if (typeof msg?.zone !== "number" || typeof msg.pid !== "string" || typeof msg.key !== "string") return;
+    this.zoneSwapping = true;
+    try {
+      const next = await joinWorld(
+        { name: this.myName, character: this.myCharacter.uid, world: this.worldName, zone: msg.zone, pid: msg.pid, handoff: msg.key },
+        undefined,
+        undefined,
+        { route: zoneRoute(this.zonesCfg, msg.zone), fresh: true },
+      );
+      this.zone = msg.zone;
+      this.bindRoom(next, true);
+      const reconcile = () => {
+        const st: any = next.state;
+        for (const id of [...this.avatars.keys()])
+          if (!st.players?.has(id) && !st.ghosts?.has(id)) this.removeAvatar(id);
+        for (const id of [...this.monsters.keys()])
+          if (!st.monsters?.has(id) && !st.ghostMonsters?.has(id)) this.removeMonster(id);
+        for (const id of [...this.drops.keys()])
+          if (!st.drops?.has(id) && !st.ghostDrops?.has(id)) this.removeDrop(id);
+      };
+      if ((next.state as any)?.players?.has(msg.pid)) reconcile();
+      else next.onStateChange.once(reconcile);
+      for (const m of this.swapQueue) next.send("input", m);
+      this.swapQueue = [];
+      this.zoneSwapping = false;
+      from.leave(true);
+      this.zoneHops++;
+    } catch (e) {
+      console.warn("[zones] hand-off join failed, staying:", e);
+      this.zoneSwapping = false;
+      for (const m of this.swapQueue) from.send("input", m);
+      this.swapQueue = [];
+    }
+  }
+  private zoneHops = 0;
+
   /** The connection died: freeze input, rejoin in place (immediately when
    * visible, else the moment the tab is shown again), retry with backoff,
    * and only fall back to a full reload after repeated failures. */
@@ -10071,7 +10156,10 @@ export class WorldScene extends Phaser.Scene {
       }
       try {
         const room = await joinWorld(
-          { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
+          { name: this.myName, character: this.myCharacter.uid, world: this.worldName, zone: this.zone },
+          undefined,
+          undefined,
+          { route: zoneRoute(this.zonesCfg, this.zone) },
         );
         // Clean slate: the new room's full state re-adds every player (new
         // sessionIds), so drop all old sprites + prediction/input state.
@@ -10220,7 +10308,7 @@ export class WorldScene extends Phaser.Scene {
     const now = this.time.now;
     if (now - this.chessPromptAt < 150) return;
     this.chessPromptAt = now;
-    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    const me = this.room ? this.avatars.get(this.myId) : undefined;
     let next: { mode: "start" | "join" } | null = null;
     if (me && this.room && !this.chessDialog) {
       // The join zone is the whole ring around the TABLE (server tableDist,
@@ -10228,7 +10316,7 @@ export class WorldScene extends Phaser.Scene {
       // real players stood beside a dead board (maintainer screenshot).
       const R = CELL_WU * 1.75;
       this.room.state.chessBoards?.forEach((b: any) => {
-        if (next || b.matchId || b.waitingSid === this.room!.sessionId) return;
+        if (next || b.matchId || b.waitingSid === this.myId) return;
         const d = Math.hypot(me.fx - (b.col + 0.5) * CELL_WU, me.fy - (b.row + 0.5) * CELL_WU);
         if (d <= R) next = { mode: b.npc || b.waitingSid ? "join" : "start" };
       });
@@ -10373,6 +10461,7 @@ export class WorldScene extends Phaser.Scene {
   private refreshRoster() {}
 
   private addAvatar(id: string, player: any) {
+    if (this.avatars.has(id)) return; // a zone swap re-adds what is already drawn
     const uid: string = player.character || this.manifest.characters[0]?.uid || PLACEHOLDER_TEX;
     const key = frameKey(uid, "idle", DEFAULT_DIRECTION, 0);
     const f0 = this.projectFlat(player.x, player.y);
@@ -10563,7 +10652,7 @@ export class WorldScene extends Phaser.Scene {
     this.t3drainDrops();
     if (!this.room) return;
     const dt = delta / 1000;
-    const myId = this.room.sessionId;
+    const myId = this.myId;
     this.predictAndSend(dt);
 
     const state = this.room.state as any;
@@ -10586,7 +10675,7 @@ export class WorldScene extends Phaser.Scene {
 
     this.ps();
     this.avatars.forEach((av, id) => {
-      const player = state.players.get(id);
+      const player = state.players.get(id) ?? state.ghosts?.get(id);
       if (!player) return;
       /* THE AUTHORITATIVE POSITION JUMPED. Recorded for the beacon because
        * "the player was flying around like I don't know what" (maintainer
@@ -11143,7 +11232,7 @@ export class WorldScene extends Phaser.Scene {
       const vB = mview.bottom + MONSTER_CULL_SLACK;
       let active = 0;
       this.monsters.forEach((mv, id) => {
-        const m = monsterState.get(id);
+        const m = monsterState.get(id) ?? state.ghostMonsters?.get(id);
         if (!m) return;
         mv.fx = m.x;
         mv.fy = m.y;
@@ -11681,7 +11770,7 @@ export class WorldScene extends Phaser.Scene {
       // Local player drives the cel-shaded distance fog: its rendered elevation
       // (so the fog eases as it climbs/falls) + its cell (col,row) for the
       // horizontal distance term.
-      const meAv = this.avatars.get(this.room?.sessionId ?? "");
+      const meAv = this.avatars.get(this.myId);
       const playerZ = meAv ? Math.max(0, meAv.elev / this.geom.lh) : 0;
       const playerCol = meAv ? meAv.fx / CELL_WU : 0;
       const playerRow = meAv ? meAv.fy / CELL_WU : 0;
@@ -12149,7 +12238,7 @@ export class WorldScene extends Phaser.Scene {
     const now = this.time.now;
     if (now - this.lastPosSavedAt < 3000) return;
     this.lastPosSavedAt = now;
-    const me = this.room?.state.players?.get(this.room.sessionId);
+    const me = this.room?.state.players?.get(this.myId);
     if (me) writeLastPos(this.worldName, me.x / CELL_WU, me.y / CELL_WU);
   }
 
@@ -12189,7 +12278,7 @@ export class WorldScene extends Phaser.Scene {
       // keys); the autopilot has real findPath. Like auto-jump, the deflected
       // input is what gets predicted AND sent — the server stays untouched.
       if (this.terrain) {
-        const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+        const me = this.room ? this.avatars.get(this.myId) : undefined;
         if (me) {
           // The stick moved: whatever was being rounded is no longer the ask.
           if (this.stickTrip && (ax !== this.stickDir.ax || ay !== this.stickDir.ay)) {
@@ -12238,7 +12327,7 @@ export class WorldScene extends Phaser.Scene {
      * went through walkHeading above, so this only ever fires for the autopilot.
      * Its own memo: the two paths must not share a commitment. */
     if (this.terrain && !this.keysActive && (ax !== 0 || ay !== 0)) {
-      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const me = this.room ? this.avatars.get(this.myId) : undefined;
       if (me && bodyStalled(this.terrain, me.fx, me.fy, ax, ay, me.surfLevel)) {
         const sl = slideAlong(this.terrain, me.fx, me.fy, ax, ay, this.tapSlide, me.surfLevel);
         if (sl) {
@@ -12257,7 +12346,7 @@ export class WorldScene extends Phaser.Scene {
     // deflected vector is what gets predicted AND sent, so the server
     // integrates the same move and nothing rubber-bands.
     if ((ax !== 0 || ay !== 0) && (this.monsters.size || this.npcs.size)) {
-      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const me = this.room ? this.avatars.get(this.myId) : undefined;
       if (me) {
         // Per-monster ART radii (v2): a mammoth deflects the walker from ~4×
         // the distance a poring does, so the near-filter box must admit the
@@ -12650,7 +12739,7 @@ export class WorldScene extends Phaser.Scene {
     if (!this.trip) {
       // Arrived and the finger is resting on us: standing at the finger IS
       // the goal — don't churn a new one-step trip (and beacon) every budget.
-      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      const me = this.room ? this.avatars.get(this.myId) : undefined;
       if (me && Math.hypot(g.x - me.fx, g.y - me.fy) < CELL_WU * 0.75) return;
     }
     /* THE REPATH IS TIMED NOW, AND ITS COST WAS ALREADY BEING MEASURED.
@@ -12690,12 +12779,12 @@ export class WorldScene extends Phaser.Scene {
     // surface drawn under that same pixel — a different cell, same pixel.
     pick?: { wx: number; wy: number },
   ) {
-    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    const me = this.room ? this.avatars.get(this.myId) : undefined;
     if (!me) return;
     // world@2: route from the player's live surface elevation toward the tapped
     // surface's level, so a tap on a bridge/roof climbs onto and crosses the
     // deck instead of routing under it (undefined on flat worlds → base terrain).
-    const fromElev = this.room?.state?.players?.get(this.room.sessionId)?.elev;
+    const fromElev = this.room?.state?.players?.get(this.myId)?.elev;
     // startTrip routes with the shared findPath; the trip's destination is
     // the route's END — the tapped point pushed out of any solid's collision
     // margin, or the reachable rim when the goal is walled off. Null →
@@ -12833,7 +12922,7 @@ export class WorldScene extends Phaser.Scene {
      * input through the rock (maintainer 2026-09-09, on the cave lid: "as if
      * the player is walking around things that doesn't exist"). The surface
      * level is what tells the two floors apart — same slack as a footprint's. */
-    const mine = this.room?.state?.players?.get(this.room.sessionId)?.elev;
+    const mine = this.room?.state?.players?.get(this.myId)?.elev;
     const sameFloor = (lvl: number | undefined) =>
       mine === undefined || lvl === undefined || Math.abs(lvl - mine) <= FOOTPRINT_LEVEL_SLACK;
     this.monsters.forEach((mv, id) => {
@@ -12853,9 +12942,9 @@ export class WorldScene extends Phaser.Scene {
    * trip (marker included) when it reports done. */
   private driveAutopilot(): { ax: number; ay: number; running: boolean } {
     const idle = { ax: 0, ay: 0, running: false };
-    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    const me = this.room ? this.avatars.get(this.myId) : undefined;
     if (!me || !this.trip) return idle;
-    const myElev = this.room?.state?.players?.get(this.room.sessionId)?.elev;
+    const myElev = this.room?.state?.players?.get(this.myId)?.elev;
     // A waypoint someone is STANDING ON is unreachable — the dodge will never
     // let the walker have that spot — so it counts as arrived at from as near
     // as her personal space allows. Without this the two halves fight and the
@@ -12932,7 +13021,7 @@ export class WorldScene extends Phaser.Scene {
     if (ax === 0 && ay === 0) return;
     const now = this.time.now;
     if (now < this.jumpUntil || now < this.jumpReadyAt) return; // already airborne / cooling down
-    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    const me = this.room ? this.avatars.get(this.myId) : undefined;
     if (me && this.wouldAutoJump(me.fx, me.fy, ax, ay, me.surfLevel)) this.tryJump();
   }
 
@@ -12975,7 +13064,8 @@ export class WorldScene extends Phaser.Scene {
       msg.jump = true;
       this.jumpQueued = false;
     }
-    this.room!.send("input", msg);
+    if (this.zoneSwapping) this.swapQueue.push(msg);
+    else this.room!.send("input", msg);
     this.sendAccum = 0;
   }
 
@@ -14197,7 +14287,7 @@ export class WorldScene extends Phaser.Scene {
       this.lastGround = { x: NaN, y: NaN };
       this.night?.setRoom(this.roomMask ? this.roomMask.keys() : null, this.caveDepth, this.caveUnder);
     }
-    const av = this.avatars.get(this.room?.sessionId ?? "");
+    const av = this.avatars.get(this.myId);
     if (!g || !av || av.surfLevel === undefined) {
       // No grid / no body yet: outdoors, and forget the cache so the next real
       // frame recomputes instead of trusting a stale space.
@@ -17942,7 +18032,7 @@ export class WorldScene extends Phaser.Scene {
         frame.n = u.n;
         frame.sun = u.sun;
         frame.time = u.time;
-        const me = this.avatars.get(this.room?.sessionId ?? "");
+        const me = this.avatars.get(this.myId);
         frame.orgX = me ? Math.floor(me.fx / CELL_WU) : 0;
         frame.orgY = me ? Math.floor(me.fy / CELL_WU) : 0;
         return frame;
@@ -19152,7 +19242,7 @@ export class WorldScene extends Phaser.Scene {
     // tear down a pair of DOM nodes it does not know about.
     if (!this.selfDead) return this.endDeath();
     const cam = this.cameras.main;
-    const id = this.room?.sessionId;
+    const id = this.myId;
     const av = id ? this.avatars.get(id) : undefined;
     const t = now - d.at;
     // ONE curve for the push, the dark and the drain: ease-out, so it starts
@@ -19266,7 +19356,7 @@ export class WorldScene extends Phaser.Scene {
 
   private updateChaseCam(deltaMs: number) {
     if (this.camDetached) return;
-    const id = this.room?.sessionId;
+    const id = this.myId;
     const av = id ? this.avatars.get(id) : undefined;
     if (!av) return;
     const cam = this.cameras.main;

@@ -142,8 +142,14 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - The ground under a point is its nearest CORNER's, not its cell's.
 
 **Backend for 10k** (`spec/ZONES.md`, `docs/backend.md`)
-- ONE world, never instances (maintainer). Zones are rooms; entities belong to
-  the zone containing them; the client sees across a border through ghosts.
+- ONE world, never instances (maintainer). Zones are rooms (`config/zones.json`;
+  no entry = one room); entities belong to the zone containing them; the
+  client sees across a border through GHOSTS, which live in their own maps
+  so no server loop ever steps or fights one; a crossing is a hand-off over
+  the bus (hot state under a one-shot key, `zone:go`, a fresh join, the old
+  room lets go on `handoff:done`).
+- A player's map key is its FIRST session id and never changes across
+  hand-offs; the client finds itself by the synced `sid`, never by key.
 - A client receives only what is within `INTEREST_WU` of itself (a
   `StateView` per client, recomputed every `INTEREST_TICKS`); "unlimited" is a
   view holding everything, and only a room CREATE option grants it.
