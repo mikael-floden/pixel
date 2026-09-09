@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:45:09+00:00",
+  "generated_at": "2026-09-09T18:46:17+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 53,
+  "count": 54,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -6712,6 +6712,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:43:05+00:00"
+    },
+    {
+      "id": "rat_king",
+      "name": "Gnawlord",
+      "tier": "boss",
+      "lore": "Tails tied together by a curse, minds tied together by hunger. It thinks with a thousand small thoughts and all of them are teeth.",
+      "biome": [
+        "grey_paving_stone",
+        "dark_mud"
+      ],
+      "items": [],
+      "size": [
+        224,
+        224
+      ],
+      "template_id": "bear",
+      "scale": "big",
+      "pixellab_id": "2319ed61-52d8-4b38-8369-e2bc332aee84",
+      "version": 1,
+      "sheet": "rat_king/sheet.webp",
+      "rotations": {
+        "south": "rat_king/rotations/south.webp",
+        "south-east": "rat_king/rotations/south-east.webp",
+        "east": "rat_king/rotations/east.webp",
+        "north-east": "rat_king/rotations/north-east.webp",
+        "north": "rat_king/rotations/north.webp",
+        "north-west": "rat_king/rotations/north-west.webp",
+        "west": "rat_king/rotations/west.webp",
+        "south-west": "rat_king/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.667,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.667,
+            "bbox": [
+              24,
+              13,
+              205,
+              208
+            ],
+            "fill": 0.703,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.718,
+            "bbox": [
+              37,
+              13,
+              205,
+              209
+            ],
+            "fill": 0.656,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.709,
+            "bbox": [
+              18,
+              13,
+              186,
+              209
+            ],
+            "fill": 0.656,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.718,
+            "bbox": [
+              49,
+              11,
+              187,
+              198
+            ],
+            "fill": 0.514,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.718,
+            "bbox": [
+              52,
+              15,
+              184,
+              213
+            ],
+            "fill": 0.521,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.723,
+            "bbox": [
+              19,
+              11,
+              184,
+              203
+            ],
+            "fill": 0.631,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.708,
+            "bbox": [
+              39,
+              11,
+              193,
+              202
+            ],
+            "fill": 0.586,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.715,
+            "bbox": [
+              32,
+              15,
+              209,
+              214
+            ],
+            "fill": 0.702,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:46:17+00:00"
     },
     {
       "id": "frost_giant",
