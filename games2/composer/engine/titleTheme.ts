@@ -24,35 +24,29 @@
  */
 
 
-import { bedTrack, musicTracks } from "./contextMusic";
+import { bedTrack } from "./contextMusic";
 
-/** Find a track by NAME SUBSTRING in the fetched score manifest, and return
- *  its playable url. The names are the manifest's ids ("title", "night"), and
- *  matching on a substring is what lets the composer rename a take without
- *  the title screen going silent. */
-function byName(...needles: string[]): string | null {
-  const ids = Object.keys(musicTracks()).sort();
-  for (const n of needles) {
-    const id = ids.find((k) => k.toLowerCase().includes(n));
-    const hit = id ? bedTrack(id) : null;
-    if (hit) return hit.url;
-  }
-  return null;
+/** A track by its EXACT manifest id.
+ *
+ * NEVER SUBSTRING-MATCH HERE. This used to, because it searched a glob of
+ * `../music/*.mp3` — a namespace of exactly two files, where "night" could
+ * only ever mean night.mp3. Rewiring it onto tracks.json widened that to 51
+ * ids without narrowing the lookup, and `battle_night` sorts before `night`:
+ * the maintainer got a bare combat layer every night instead of the bed he
+ * approved ("this stupid action song is playing instead"). A lookup written
+ * for a namespace of two is not safe in a namespace of fifty. */
+function track(id: string): string | null {
+  return bedTrack(id)?.url ?? null;
 }
 
 /** The mystical night-bed URL, or null if not generated yet. This is the
  * IN-WORLD night score (api.ts ensureNightMusic) — the generated context beds
  * are audition-only until the maintainer routes them. */
 export function nightMusicUrl(): string | null {
-  const url = byName("night", "mystic", "nocturne");
-  return url;
+  return track("night");
 }
 
 /** The title/login theme URL, or null if not generated yet. */
 export function titleThemeUrl(): string | null {
-  // A file named title/theme; else the first mp3 that isn't the night bed.
-  const named = byName("title", "theme");
-  if (named) return named;
-  const first = Object.keys(musicTracks()).sort().find((k) => !/night/i.test(k));
-  return first ? (bedTrack(first)?.url ?? null) : null;
+  return track("title");
 }
