@@ -1,0 +1,141 @@
+{
+  "id": "goblin_shaman",
+  "name": "Hexgob",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It reads the future in bog-gas and finds it favorable. Its curses work about half the time, which is enough.",
+  "biome": [
+    "dark_mud",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Small fantasy goblin shaman shown full body from head to feet, green skin, a bone skull mask over its face, a feathered cloak, a gnarled staff topped with a glowing green skull held upright, and bone charms hanging from its belt.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "goblin_shaman/rotations/south.webp",
+    "south-east": "goblin_shaman/rotations/south-east.webp",
+    "east": "goblin_shaman/rotations/east.webp",
+    "north-east": "goblin_shaman/rotations/north-east.webp",
+    "north": "goblin_shaman/rotations/north.webp",
+    "north-west": "goblin_shaman/rotations/north-west.webp",
+    "west": "goblin_shaman/rotations/west.webp",
+    "south-west": "goblin_shaman/rotations/south-west.webp"
+  },
+  "sheet": "goblin_shaman/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "72e6fcb8-85ea-437c-a683-120c37d724f4",
+  "seed": 359586192,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:08:20+00:00",
+  "elapsed_s": 181.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.708,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.77,
+        "bbox": [
+          5,
+          2,
+          75,
+          84
+        ],
+        "fill": 0.741,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.789,
+        "bbox": [
+          29,
+          2,
+          64,
+          85
+        ],
+        "fill": 0.375,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.795,
+        "bbox": [
+          23,
+          4,
+          59,
+          86
+        ],
+        "fill": 0.381,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.722,
+        "bbox": [
+          14,
+          2,
+          83,
+          83
+        ],
+        "fill": 0.722,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.821,
+        "bbox": [
+          18,
+          4,
+          70,
+          86
+        ],
+        "fill": 0.551,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.747,
+        "bbox": [
+          19,
+          3,
+          78,
+          84
+        ],
+        "fill": 0.617,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.708,
+        "bbox": [
+          21,
+          2,
+          71,
+          84
+        ],
+        "fill": 0.529,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.834,
+        "bbox": [
+          11,
+          2,
+          70,
+          86
+        ],
+        "fill": 0.64,
+        "touches_edge": false
+      }
+    }
+  }
+}

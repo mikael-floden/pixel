@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-09T18:05:56+00:00",
+  "generated_at": "2026-09-09T18:08:52+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 29,
+  "count": 32,
   "candidates": [
     {
       "id": "lantern_bat",
@@ -2886,6 +2886,134 @@
       "generated_at": "2026-09-09T18:04:50+00:00"
     },
     {
+      "id": "bog_leech",
+      "name": "Leechling",
+      "tier": "mid",
+      "lore": "It waits under the mud for a warm ankle. Most people never feel it; the ones who do never stop feeling it.",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        40,
+        40
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "c993b7ea-8b9b-45f0-b46e-7fe746289fdc",
+      "version": 1,
+      "sheet": "bog_leech/sheet.webp",
+      "rotations": {
+        "south": "bog_leech/rotations/south.webp",
+        "south-east": "bog_leech/rotations/south-east.webp",
+        "east": "bog_leech/rotations/east.webp",
+        "north-east": "bog_leech/rotations/north-east.webp",
+        "north": "bog_leech/rotations/north.webp",
+        "north-west": "bog_leech/rotations/north-west.webp",
+        "west": "bog_leech/rotations/west.webp",
+        "south-west": "bog_leech/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.632,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.73,
+            "bbox": [
+              3,
+              1,
+              37,
+              38
+            ],
+            "fill": 0.786,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.676,
+            "bbox": [
+              6,
+              2,
+              37,
+              39
+            ],
+            "fill": 0.717,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.697,
+            "bbox": [
+              7,
+              2,
+              34,
+              39
+            ],
+            "fill": 0.624,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.632,
+            "bbox": [
+              5,
+              1,
+              36,
+              38
+            ],
+            "fill": 0.717,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.708,
+            "bbox": [
+              6,
+              1,
+              35,
+              39
+            ],
+            "fill": 0.689,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.635,
+            "bbox": [
+              3,
+              1,
+              34,
+              38
+            ],
+            "fill": 0.717,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.66,
+            "bbox": [
+              5,
+              2,
+              34,
+              38
+            ],
+            "fill": 0.652,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.7,
+            "bbox": [
+              5,
+              1,
+              38,
+              39
+            ],
+            "fill": 0.784,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:07:39+00:00"
+    },
+    {
       "id": "bone_colossus",
       "name": "Ossuar",
       "tier": "boss",
@@ -3783,6 +3911,262 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-09T18:05:19+00:00"
+    },
+    {
+      "id": "jelly_cube",
+      "name": "Gelatine",
+      "tier": "mid",
+      "lore": "It has eaten three adventuring parties and still wears their helmets. Cleaning dungeon floors is only a side effect.",
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "d1cb2449-393d-459b-9b52-cfbf8fa741b2",
+      "version": 1,
+      "sheet": "jelly_cube/sheet.webp",
+      "rotations": {
+        "south": "jelly_cube/rotations/south.webp",
+        "south-east": "jelly_cube/rotations/south-east.webp",
+        "east": "jelly_cube/rotations/east.webp",
+        "north-east": "jelly_cube/rotations/north-east.webp",
+        "north": "jelly_cube/rotations/north.webp",
+        "north-west": "jelly_cube/rotations/north-west.webp",
+        "west": "jelly_cube/rotations/west.webp",
+        "south-west": "jelly_cube/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.676,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.676,
+            "bbox": [
+              11,
+              3,
+              85,
+              92
+            ],
+            "fill": 0.715,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.737,
+            "bbox": [
+              28,
+              5,
+              67,
+              93
+            ],
+            "fill": 0.372,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.746,
+            "bbox": [
+              29,
+              3,
+              68,
+              93
+            ],
+            "fill": 0.381,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.704,
+            "bbox": [
+              13,
+              4,
+              83,
+              90
+            ],
+            "fill": 0.653,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.765,
+            "bbox": [
+              19,
+              4,
+              80,
+              94
+            ],
+            "fill": 0.596,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.726,
+            "bbox": [
+              16,
+              3,
+              72,
+              93
+            ],
+            "fill": 0.547,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.736,
+            "bbox": [
+              24,
+              4,
+              80,
+              93
+            ],
+            "fill": 0.541,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.777,
+            "bbox": [
+              17,
+              4,
+              78,
+              94
+            ],
+            "fill": 0.596,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:06:55+00:00"
+    },
+    {
+      "id": "goblin_shaman",
+      "name": "Hexgob",
+      "tier": "mid",
+      "lore": "It reads the future in bog-gas and finds it favorable. Its curses work about half the time, which is enough.",
+      "biome": [
+        "dark_mud",
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "72e6fcb8-85ea-437c-a683-120c37d724f4",
+      "version": 1,
+      "sheet": "goblin_shaman/sheet.webp",
+      "rotations": {
+        "south": "goblin_shaman/rotations/south.webp",
+        "south-east": "goblin_shaman/rotations/south-east.webp",
+        "east": "goblin_shaman/rotations/east.webp",
+        "north-east": "goblin_shaman/rotations/north-east.webp",
+        "north": "goblin_shaman/rotations/north.webp",
+        "north-west": "goblin_shaman/rotations/north-west.webp",
+        "west": "goblin_shaman/rotations/west.webp",
+        "south-west": "goblin_shaman/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.708,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.77,
+            "bbox": [
+              5,
+              2,
+              75,
+              84
+            ],
+            "fill": 0.741,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.789,
+            "bbox": [
+              29,
+              2,
+              64,
+              85
+            ],
+            "fill": 0.375,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.795,
+            "bbox": [
+              23,
+              4,
+              59,
+              86
+            ],
+            "fill": 0.381,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.722,
+            "bbox": [
+              14,
+              2,
+              83,
+              83
+            ],
+            "fill": 0.722,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.821,
+            "bbox": [
+              18,
+              4,
+              70,
+              86
+            ],
+            "fill": 0.551,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.747,
+            "bbox": [
+              19,
+              3,
+              78,
+              84
+            ],
+            "fill": 0.617,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.708,
+            "bbox": [
+              21,
+              2,
+              71,
+              84
+            ],
+            "fill": 0.529,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.834,
+            "bbox": [
+              11,
+              2,
+              70,
+              86
+            ],
+            "fill": 0.64,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-09T18:08:20+00:00"
     }
   ]
 }

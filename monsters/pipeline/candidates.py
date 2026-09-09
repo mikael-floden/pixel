@@ -321,6 +321,23 @@ def cmd_drop(args):
     ids = set(args.only.split(","))
     client = PixelLabClient()
     keep, retired = [], cfg.setdefault("retired", [])
+    known = {d["id"] for d in cfg["candidates"]}
+    # strays: a folder/record for a design already retired or removed from the
+    # config (a worker finished it after the design was cut) — delete both.
+    for cid in ids - known:
+        man = load_manifest(cid)
+        if man and man.get("pixellab_id"):
+            try:
+                client.delete_character(man["pixellab_id"])
+                print(f"  {cid}: deleted PixelLab {man['pixellab_id']} (stray)")
+            except PixelLabError as e:
+                print(f"  {cid}: could not delete PixelLab record: {e}")
+        if os.path.isdir(cdir(cid)):
+            shutil.rmtree(cdir(cid))
+            print(f"  {cid}: removed stray folder")
+        for r in retired:
+            if r["id"] == cid and not r.get("retired"):
+                r["retired"] = args.reason
     for design in cfg["candidates"]:
         if design["id"] not in ids:
             keep.append(design)

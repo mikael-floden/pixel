@@ -41,7 +41,7 @@
         "bundle of bright plumes"
       ],
       "prompt": "Stocky flightless fantasy bird with a barrel chest, thick scaly yellow legs ending in hooked black talons, a heavy hooked beak, a tall crest of stiff feathers in teal, crimson and gold, barred brown-and-cream wing feathers, and a long fan of iridescent rainbow tail plumes.",
-      "lore": "Too heavy to fly and too proud to care. It settles every argument with its legs, and it starts most of them.",
+      "lore": "Too heavy to fly and too proud to hide. It settles every dispute with its talons, and it looks for disputes.",
       "scale": "standard"
     },
     {
@@ -77,23 +77,8 @@
         "plated beetle"
       ],
       "prompt": "Round fantasy armored pill bug with a compact ball-shaped body of overlapping dark iron-gray plates riveted with copper studs, short stubby legs tucked beneath it, two glowing orange slit eyes at the front, small antennae, and hot orange light glowing between the plates.",
-      "lore": "It rolls downhill at anything that moves and uphill at anything that doesn't. The smiths say the plates ring in a key they can't forge.",
+      "lore": "It rolls down the scree at whatever moves. The smiths say its plates ring in a note they cannot forge.",
       "scale": "standard"
-    },
-    {
-      "id": "bog_egg",
-      "name": "Spawnling",
-      "tier": "cute",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 72,
-      "biome": [
-        "water",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Small cute fantasy frogspawn creature, a round cluster of translucent jelly eggs stuck together into one wobbling body, each egg holding a tiny black dot, two larger eggs at the front with dark pupils as eyes, a small mouth, and two stubby jelly feet.",
-      "lore": "A hundred siblings in one body, all of them curious and none of them wise. It bounces after anything shiny."
     },
     {
       "id": "silk_spider",
@@ -166,7 +151,7 @@
         "fire soulstone"
       ],
       "prompt": "Hulking fantasy fire demon lord shown full body from horns to feet, standing on thick clawed legs, with a body of black volcanic rock split by glowing orange magma cracks, a crown of jagged obsidian horns wreathed in flames, burning white-hot eyes, massive clawed hands, a molten glowing chain draped across its chest, and flames rising from its shoulders.",
-      "lore": "The mountain's first king, and its only one. Every eruption since has been him clearing his throat.",
+      "lore": "The mountain's first king and its only one. Every eruption since has been his voice.",
       "scale": "standard"
     },
     {
@@ -234,7 +219,7 @@
       ],
       "items": [],
       "prompt": "Small cute round fantasy seed creature with a smooth tan bulb body, a single green sprout with two soft leaves growing from the top of its head, large friendly black eyes, rosy pink cheeks, two tiny stubby legs and a short curling root tail.",
-      "lore": "Planted by nobody and growing anyway. It hops after anything warm and is heartbroken to be stepped on.",
+      "lore": "Planted by no one and growing anyway. It follows warmth, and it is fragile.",
       "scale": "standard"
     },
     {
@@ -251,7 +236,7 @@
         "barred feather"
       ],
       "prompt": "Small cute round fantasy owl chick covered in extremely fluffy cream and brown feathers, enormous golden eyes, a tiny orange beak, short stubby wings with barred brown feather tips, and small clawed orange feet.",
-      "lore": "All eyes and no patience. It falls out of every nest it is put in and pecks whoever picks it up.",
+      "lore": "All eyes and no patience. It falls from every nest and fights whatever finds it on the ground.",
       "scale": "standard"
     },
     {
@@ -348,7 +333,7 @@
       ],
       "items": [],
       "prompt": "Small mischievous fantasy imp with dark red skin, two small curved black horns, a wide grin of sharp white teeth, glowing orange eyes, small bat-like wings, a pointed tail with a flame at the tip, and a tiny rusty pitchfork held in both hands.",
-      "lore": "The smallest thing the volcano ever coughed up, and the loudest. It steals boots and sets them on fire out of principle.",
+      "lore": "The smallest thing the volcano ever spat out. It steals fire from camps and leaves the camps burning.",
       "scale": "standard"
     },
     {
@@ -364,7 +349,7 @@
       ],
       "items": [],
       "prompt": "Tiny round fantasy soot sprite, a fuzzy black ball of soot with two huge round white eyes, a small orange ember glowing in its middle, two stubby arms and two stubby feet, and a few loose soot flakes drifting off it.",
-      "lore": "It falls out of chimneys and never finds its way back. Step on one and the whole flue comes calling."
+      "lore": "It falls from the chimneys and never finds the way back. Where one gathers, the whole flue is close behind."
     },
     {
       "id": "pebble_crab",
@@ -382,7 +367,7 @@
         "curved pincer"
       ],
       "prompt": "Tiny fantasy hermit crab living inside a round speckled grey pebble, two small orange pincers, four thin legs, two black eyes on short stalks, and a patch of wet green algae on the pebble.",
-      "lore": "A pebble that pinches. Beachcombers learn which stones to skip the hard way."
+      "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting."
     },
     {
       "id": "moss_snail",
@@ -397,7 +382,7 @@
       ],
       "items": [],
       "prompt": "Tiny fantasy snail with a coiled brown shell capped in bright green moss and one small red mushroom, a plump olive-green body, two long eyestalks with shiny black eyes, and a glistening slime trail.",
-      "lore": "Too slow to chase anyone and too stubborn to move aside. Its shell is a garden and it defends the garden."
+      "lore": "Too slow to chase and too stubborn to yield. Its shell is a garden, and it defends the garden."
     },
     {
       "id": "bog_leech",
@@ -533,7 +518,7 @@
       ],
       "items": [],
       "prompt": "Fantasy gelatinous cube, a translucent pale green block of jelly with rounded edges, small bones, a rusty helmet and a few gold coins suspended inside it, and two faint glowing dots for eyes near the top.",
-      "lore": "It has eaten three adventuring parties and still wears their helmets. Cleaning dungeon floors is only a side effect."
+      "lore": "It has eaten three companies of adventurers and still carries their helmets. The dungeon floors it crosses come out clean."
     },
     {
       "id": "ghost_lantern",
@@ -563,7 +548,7 @@
       ],
       "items": [],
       "prompt": "Small fantasy goblin shown full body from head to feet, green warty skin, a large hooked nose, pointed ears, a patched leather cap, a ragged brown tunic, a rusty dagger in one hand and a lumpy loot sack in the other.",
-      "lore": "It steals what it can carry and screams about what it can't. The screaming is the real danger; it has friends."
+      "lore": "It takes what it can carry and runs. It is never alone; the rest of the warren is a whistle away."
     },
     {
       "id": "goblin_shaman",
@@ -578,7 +563,7 @@
       ],
       "items": [],
       "prompt": "Small fantasy goblin shaman shown full body from head to feet, green skin, a bone skull mask over its face, a feathered cloak, a gnarled staff topped with a glowing green skull held upright, and bone charms hanging from its belt.",
-      "lore": "It reads the future in bog-gas and finds it favorable. Its curses work about half the time, which is enough."
+      "lore": "It reads omens in the bog-gas and believes them. The curses it throws are old, and some of them still hold."
     },
     {
       "id": "skeleton_archer",
@@ -623,21 +608,7 @@
       ],
       "items": [],
       "prompt": "Hunched fantasy ghoul shown full body from head to feet, pale grey mottled skin stretched over a bony frame, a wide mouth of needle teeth, sunken white eyes, long clawed fingers, and rags of a burial shroud.",
-      "lore": "It eats what the graves give up and waits for more. Patience, in a ghoul, is just hunger with manners."
-    },
-    {
-      "id": "cactus_creature",
-      "name": "Pricklet",
-      "tier": "cute",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 72,
-      "biome": [
-        "light_soil"
-      ],
-      "items": [],
-      "prompt": "Small cute fantasy cactus creature with a plump green ridged body covered in fine pale spines, two stubby arm-branches, a single pink flower on its head, big round black eyes and a tiny smile, and small root feet.",
-      "lore": "It hugs anything that gets close. This is not affection and the spines are not decorative."
+      "lore": "It eats what the graves give up and waits for more. Its patience is only hunger, drawn out."
     },
     {
       "id": "ice_slime",
@@ -652,7 +623,7 @@
       ],
       "items": [],
       "prompt": "Small cute fantasy ice slime, a translucent pale blue blob with frozen bubbles and snowflakes suspended inside, two round dark eyes, a tiny frosty mouth, and a rim of frost crystals along its base.",
-      "lore": "It froze mid-wobble one winter and decided it liked it. Touch it and your hand will agree for a week."
+      "lore": "A slime that froze in the long winter and never thawed. Its touch leaves frost that lasts for days."
     },
     {
       "id": "owlbear",
@@ -685,21 +656,6 @@
       "lore": "The rest of it is somewhere else, and it wants a rest of you to match. It points before it grabs."
     },
     {
-      "id": "barrel_mimic",
-      "name": "Bungmaw",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 88,
-      "biome": [
-        "parquet_floor",
-        "light_beach"
-      ],
-      "items": [],
-      "prompt": "Fantasy barrel mimic, a stout oak barrel bound with iron hoops, its lid opened as a round mouth full of splintered wooden teeth, a red tongue, two greedy yellow eyes on the staves, and four stubby clawed legs.",
-      "lore": "It smells of ale from the inside and blood from the outside. Tavern cellars go quiet when one moves in."
-    },
-    {
       "id": "clockwork_knight",
       "name": "Gearwarden",
       "tier": "evil",
@@ -728,21 +684,6 @@
       "items": [],
       "prompt": "Fantasy cursed scarecrow shown full body from head to feet, a carved grinning pumpkin head lit from within by orange flame, a body of straw stuffed into a torn coat, a wooden cross-pole through its shoulders, and crows' feathers stuck in its sleeves.",
       "lore": "It was meant to keep the crows off. Now it keeps the farmers off, and the crows sit on it and watch."
-    },
-    {
-      "id": "pumpkin_blob",
-      "name": "Gourdling",
-      "tier": "cute",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 64,
-      "biome": [
-        "light_soil",
-        "grass"
-      ],
-      "items": [],
-      "prompt": "Small cute fantasy pumpkin creature with a round orange ribbed body, a carved grinning face glowing softly from inside, a green leafy stem on top, and small curling vine legs and arms.",
-      "lore": "It rolls out of the patch at dusk looking for a lantern to be. It bites, but only a little, and only the ankles."
     },
     {
       "id": "fire_elemental",
@@ -775,21 +716,6 @@
       "lore": "A river that stood up to see what it had been carrying. It is not angry, but it has never learned to be gentle."
     },
     {
-      "id": "wind_elemental",
-      "name": "Gustling",
-      "tier": "cute",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 72,
-      "biome": [
-        "grey_stone",
-        "snow"
-      ],
-      "items": [],
-      "prompt": "Small cute fantasy wind spirit, a round puff of pale grey cloud with two swirling white eyes, a small open mouth blowing a curl of wind, tiny cloud arms, and leaves and snowflakes caught spinning around it.",
-      "lore": "A gust that got lost from its storm. It blows out lanterns, steals hats, and cries when it is scolded."
-    },
-    {
       "id": "haunted_book",
       "name": "Tomefang",
       "tier": "mid",
@@ -816,7 +742,7 @@
       ],
       "items": [],
       "prompt": "Fantasy lich shown full body from head to feet, a skeletal figure in tattered black and purple robes trimmed with gold, a horned skull with glowing violet eyes, a jeweled crown, a gnarled staff topped with a floating violet crystal held upright, and a phylactery on a chain.",
-      "lore": "It gave up dying to finish a book. The book is finished. It has not noticed, and nobody dares to tell it."
+      "lore": "It refused death to finish its work. The work is finished. It has not stopped."
     },
     {
       "id": "marsh_hag",
@@ -846,7 +772,7 @@
       ],
       "items": [],
       "prompt": "Big fantasy bandit brute shown full body from head to feet, a crude iron mask, a broad bare chest crossed with leather straps, a spiked wooden club resting on one shoulder, ragged trousers, and heavy boots.",
-      "lore": "It never learned to count, so the toll is everything you have. Argue and it starts counting bones instead."
+      "lore": "Toll is whatever you carry. Refuse, and the club decides what you leave with."
     },
     {
       "id": "lizard_warrior",
@@ -891,7 +817,7 @@
       ],
       "items": [],
       "prompt": "Fantasy werewolf shown full body from head to feet, a broad bipedal wolf with dark grey fur, a heavy muzzle of white fangs, glowing amber eyes, massive clawed hands, torn trousers, and a thick ruff of fur at the neck.",
-      "lore": "It runs the ridge under every full moon and comes home sore, sorry and fed. The village has stopped asking where."
+      "lore": "It runs the ridge under every full moon and comes back fed. The village no longer asks what it ate."
     },
     {
       "id": "gargoyle",
@@ -906,7 +832,7 @@
       ],
       "items": [],
       "prompt": "Fantasy gargoyle shown full body from head to feet, grey weathered stone skin, a horned bestial face with a fanged snarl, glowing red eyes, bat-like wings folded tightly against its back, clawed hands, and crouching legs.",
-      "lore": "It has watched from the chapel for centuries and finally got bored. The moss on it is older than the sermon."
+      "lore": "It kept watch from the chapel eaves for centuries. When the last bell fell silent, it came down."
     },
     {
       "id": "basilisk",
@@ -936,7 +862,7 @@
       ],
       "items": [],
       "prompt": "Fantasy giant hornet standing upright shown full body from head to feet, a black-and-amber striped armored body, four translucent wings folded flat against its back, large compound eyes, sharp mandibles, and a curved stinger held under its abdomen.",
-      "lore": "The hive sends one to negotiate and the rest to collect. It negotiates by pointing the stinger."
+      "lore": "The hive sends one to speak and the rest to collect. It speaks with the stinger."
     },
     {
       "id": "flytrap",
@@ -951,7 +877,7 @@
       ],
       "items": [],
       "prompt": "Fantasy carnivorous plant monster shown full body from head to feet, a huge venus-flytrap head with red inner jaws and long interlocking teeth, a thick green stalk body, two leafy arms, and a bundle of writhing roots for legs.",
-      "lore": "It was planted to keep the flies down. It has kept the gardeners down since, and the flies are thriving."
+      "lore": "Planted to keep the pests from the garden. It has grown past pests, and past the garden."
     },
     {
       "id": "treant_sapling",
@@ -969,21 +895,6 @@
       "lore": "It follows woodcutters home to see what they do with the pieces. It has not forgiven anyone yet, but it is small."
     },
     {
-      "id": "penguin_knight",
-      "name": "Waddlance",
-      "tier": "cute",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 72,
-      "biome": [
-        "ice",
-        "snow"
-      ],
-      "items": [],
-      "prompt": "Small cute fantasy penguin knight shown full body from head to feet, black-and-white feathers, a tiny dented steel helmet with a plume, a round wooden shield, a short lance held upright, and orange webbed feet.",
-      "lore": "Sworn to a king of ice who has not spoken in years. It guards the throne room anyway, and slides when it charges."
-    },
-    {
       "id": "walrus",
       "name": "Tuskbelly",
       "tier": "mid",
@@ -996,7 +907,7 @@
       ],
       "items": [],
       "prompt": "Fat fantasy walrus with wrinkled brown-grey hide, two long icicle-white tusks, a bristly whiskered muzzle, small dark eyes, thick flippers, and frost crusted on its back.",
-      "lore": "It owns the ice shelf and rents nothing. The tusks are for arguing and it has never lost an argument."
+      "lore": "Master of the ice shelf. The tusks settle every dispute over it, and there has never been a second one."
     },
     {
       "id": "seal_pup",
@@ -1086,7 +997,7 @@
       ],
       "items": [],
       "prompt": "Massive fantasy magma golem shown full body from head to feet, a body of black volcanic rock with glowing orange magma seams, two burning white eyes, huge fists of molten rock, and a molten glowing core visible in its chest.",
-      "lore": "The mountain's fist. It punches the ground and the ground agrees to be lava for a while."
+      "lore": "The mountain's own fist. Where it strikes, the ground splits and the fire comes up."
     },
     {
       "id": "lava_toad",
@@ -1100,7 +1011,7 @@
       ],
       "items": [],
       "prompt": "Fat fantasy toad of cooled black rock with glowing orange cracks, bulging ember eyes, a wide mouth breathing a wisp of smoke, and a hot glowing throat sac.",
-      "lore": "It basks on the lava like it's a warm rock, which it is, and so is the toad. Its croak smells of sulfur."
+      "lore": "It basks in the lava as other toads bask on stone. Its croak carries sulphur and its bite carries fire."
     },
     {
       "id": "crystal_slime",
@@ -1115,7 +1026,7 @@
       ],
       "items": [],
       "prompt": "Small cute fantasy crystal slime, a translucent violet blob with sharp amethyst crystals growing out of its top, two round dark eyes, and a soft glow inside.",
-      "lore": "It eats gems and grows them back out. Miners keep them like hens and lose fingers like farmers."
+      "lore": "It eats gems and grows them back through its skin. Miners keep them like hens and lose fingers like farmers."
     },
     {
       "id": "jackal_warrior",
@@ -1204,7 +1115,7 @@
       ],
       "items": [],
       "prompt": "Fantasy acid slime, a bubbling translucent yellow-green blob with a rusted sword and half-dissolved bones inside, two dark eyes, and drips sizzling on the ground beneath it.",
-      "lore": "It ate a knight and kept the parts it couldn't digest as decoration. The rest of him is the smell."
+      "lore": "It dissolved a knight and kept what would not dissolve. The rest of him is the reek that follows it."
     },
     {
       "id": "dread_gazer",
@@ -1219,7 +1130,7 @@
       ],
       "items": [],
       "prompt": "Fantasy beholder-like eye tyrant, a floating round body of purple leathery hide with one huge central eye, a wide fanged mouth beneath it, and a crown of short thick eyestalks curled close, each ending in a smaller glowing eye.",
-      "lore": "It has an eye for every direction and a grudge for every eye. It hates being looked at, and cannot stop being seen."
+      "lore": "An eye for every direction and a hatred for every eye. It cannot bear to be seen, and cannot stop seeing."
     },
     {
       "id": "rock_mite",
@@ -1249,7 +1160,7 @@
       ],
       "items": [],
       "prompt": "Tiny cute fantasy slime, a small round green blob with two big dark eyes, a tiny smile, and a single bubble inside.",
-      "lore": "The smallest thing in the dungeon and the first thing every hero kills. It has not taken this personally yet."
+      "lore": "The smallest thing in the dungeon, and the first thing every blade meets. There are always more."
     },
     {
       "id": "frost_mite",
@@ -1267,80 +1178,6 @@
       "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason."
     },
     {
-      "id": "dust_bunny",
-      "name": "Fluffmote",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "mannequin",
-      "size": 32,
-      "biome": [
-        "parquet_floor"
-      ],
-      "items": [],
-      "prompt": "Tiny cute fantasy dust bunny, a fluffy round ball of grey dust and lint with two beady black eyes, tiny ears, and a few hairs sticking out.",
-      "lore": "Under every bed in the manor. Sweep one and the rest of them remember your name."
-    },
-    {
-      "id": "spore_puff",
-      "name": "Puffling",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "mannequin",
-      "size": 32,
-      "biome": [
-        "dark_mud",
-        "grass"
-      ],
-      "items": [],
-      "prompt": "Tiny fantasy puffball mushroom creature, a round pale tan puffball body with a small hole on top venting brown spores, two small dark eyes, and two stubby root feet.",
-      "lore": "Step near it and it sneezes. The sneeze is contagious in a way nobody has fully explained."
-    },
-    {
-      "id": "sand_flea",
-      "name": "Grithop",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 32,
-      "biome": [
-        "light_beach",
-        "light_soil"
-      ],
-      "items": [],
-      "prompt": "Tiny fantasy sand flea with a compact tan segmented body, powerful bent back legs, two big black eyes, and small antennae.",
-      "lore": "It jumps higher than the dune and lands on whatever is warmest. That is usually a face."
-    },
-    {
-      "id": "tadpole",
-      "name": "Wigglet",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 32,
-      "biome": [
-        "water",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Tiny cute fantasy tadpole with a fat round dark green body, two tiny sprouting legs, big round eyes, and a short flat tail tucked under it.",
-      "lore": "Someday it will be something with a slam. Today it is mostly ambition and eyes."
-    },
-    {
-      "id": "coin_mite",
-      "name": "Glintling",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "mannequin",
-      "size": 32,
-      "biome": [
-        "parquet_floor",
-        "grey_paving_stone"
-      ],
-      "items": [],
-      "prompt": "Tiny fantasy living gold coin standing upright with two small stick legs and arms, an embossed grinning face, and a bright glint on its edge.",
-      "lore": "It hides in purses and eats the other coins. Merchants call it the tax."
-    },
-    {
       "id": "ember_wisp",
       "name": "Emberling",
       "tier": "cute",
@@ -1356,21 +1193,6 @@
       "lore": "It wants to be a fire and only knows how to be a spark. It keeps trying, on everything."
     },
     {
-      "id": "snow_pip",
-      "name": "Snowpip",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "mannequin",
-      "size": 32,
-      "biome": [
-        "snow",
-        "ice"
-      ],
-      "items": [],
-      "prompt": "Tiny cute fantasy snow creature, a small round snowball body with two coal eyes, a tiny carrot nose, twig arms, and a little frost sparkle.",
-      "lore": "A snowman that got up before it was finished. It follows children home and melts on the doorstep, sulking."
-    },
-    {
       "id": "hill_giant",
       "name": "Hillfather",
       "tier": "boss",
@@ -1383,7 +1205,7 @@
       ],
       "items": [],
       "prompt": "Gigantic fantasy hill giant shown full body from head to feet, a huge lumpy body of tanned weathered skin, a heavy brow and broad flat nose, a beard of matted brown hair, a tunic of stitched hides, a whole uprooted tree held as a club resting on one shoulder, and enormous bare feet.",
-      "lore": "It counts sheep by eating them and counts villages by sitting on them. It has never learned larger numbers."
+      "lore": "It takes sheep by the flock and villages by the roof. It has never had to learn to count higher."
     },
     {
       "id": "spider_queen",
@@ -1413,7 +1235,7 @@
       ],
       "items": [],
       "prompt": "Gigantic fantasy slime king, a towering translucent green blob with a golden crown sunk into its top, a dozen skeletons and treasure chests suspended inside, and two enormous dark eyes above a wide gooey grin.",
-      "lore": "It ate a kingdom one adventurer at a time and inherited the crown fairly. Its subjects are all inside it."
+      "lore": "It swallowed a kingdom one adventurer at a time and took the crown with the last of them. Its subjects are all inside it."
     },
     {
       "id": "rat_king",
@@ -1473,7 +1295,7 @@
       ],
       "items": [],
       "prompt": "Gigantic fantasy wingless fire drake with a heavy four-legged body of dark red scales, glowing orange plates down its back, a broad horned head with a mouth leaking flame, thick clawed legs, and a short thick tail curled around its feet.",
-      "lore": "Too heavy to fly and too proud to admit it. It walks the lava fields and the lava makes room."
+      "lore": "A drake that never grew wings and never needed them. It walks the lava fields and the lava parts for it."
     },
     {
       "id": "abyss_knight",
@@ -1518,7 +1340,7 @@
       ],
       "items": [],
       "prompt": "Gigantic fantasy swamp titan shown full body from head to feet, a hulking body of black peat and tangled roots, reeds and moss growing on its shoulders, a face of two glowing green lamps in the mud, huge dripping arms, and legs like sunken tree trunks.",
-      "lore": "The whole fen is its bed and the village is its blanket. It turns over once a decade and takes the blanket with it."
+      "lore": "The fen itself, when the fen stands up. Villages built on it are carried off when it turns."
     },
     {
       "id": "crystal_titan",
@@ -1549,6 +1371,185 @@
       "items": [],
       "prompt": "Gigantic fantasy cave troll shown full body from head to feet, pale hairless grey skin, tiny blind white eyes, an enormous underbite with broken tusks, a hunched back covered in fungus, huge knuckle-dragging arms, and a stalactite held as a club.",
       "lore": "It has never seen the sun and hates it on principle. Anything with a torch gets the club first."
+    },
+    {
+      "id": "fawn_spirit",
+      "name": "Dapplekin",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "horse",
+      "size": 88,
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Young fantasy forest deer spirit with soft dappled fawn-brown fur, pale spots that glow faintly green, two small antler buds wrapped in moss, large dark gentle eyes, slender legs, and small white flowers growing along its back.",
+      "lore": "Born where the old stag fell. The forest watches over it, and takes offence on its behalf."
+    },
+    {
+      "id": "ember_kit",
+      "name": "Cinderkit",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "dog",
+      "size": 48,
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Small fantasy fire fox kit with dark ash-grey fur, glowing orange ember patterns along its back and tail, bright amber eyes, large ears tipped with small flames, and a fluffy tail curled around its paws.",
+      "lore": "A fox born in the ash beds. It is warm to the touch and will not be held."
+    },
+    {
+      "id": "river_otter",
+      "name": "Sleekfang",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 96,
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "items": [],
+      "prompt": "Fantasy river otter with sleek dark brown fur, a pale throat, small rounded ears, sharp white teeth, webbed paws, and a thick tapered tail curled beside its body, water beading on its coat.",
+      "lore": "Quick in the water and quicker out of it. It guards the ford and takes a toll in fingers."
+    },
+    {
+      "id": "stone_pup",
+      "name": "Cairnpup",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "dog",
+      "size": 40,
+      "biome": [
+        "grey_stone",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Small fantasy stone golem puppy with a body of rounded grey river stones held together by pale green moss, two glowing white eyes, small stone ears, and stubby stone legs.",
+      "lore": "A cairn that learned to follow. Leave it a stone and it will keep it forever."
+    },
+    {
+      "id": "marsh_heron",
+      "name": "Stiltwing",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 104,
+      "biome": [
+        "water",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Fantasy marsh heron standing tall shown full body from crest to feet, slate-grey feathers with a black crest, wings folded tightly, a long sharp yellow beak, one pale watchful eye, and long thin legs in shallow water.",
+      "lore": "It stands in the reeds for hours without a breath. Whatever moves beneath the water is already chosen."
+    },
+    {
+      "id": "turtle_hatchling",
+      "name": "Shellet",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "light_beach",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
+      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since."
+    },
+    {
+      "id": "moss_golem",
+      "name": "Mossling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 40,
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Small fantasy moss golem with a stout body of packed earth and thick green moss, two small glowing amber eyes, stubby arms and legs, and a single fern frond growing from its head.",
+      "lore": "Old earth-magic in a small measure. It tends the clearing it woke in and lets nothing be picked there."
+    },
+    {
+      "id": "sand_kit",
+      "name": "Dunekit",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "cat",
+      "size": 40,
+      "biome": [
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Small fantasy desert cat kit with pale sand-coloured fur, oversized ears, large green eyes, faint dark stripes on its legs, and a tufted tail wrapped around its paws.",
+      "lore": "Grown cats of the dunes wear the sun as armour. This one has not yet, and hides from it in the noon shade."
+    },
+    {
+      "id": "glow_grub",
+      "name": "Glowgrub",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 32,
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Small fantasy cave grub with a plump segmented pale body, soft blue bioluminescent spots along its sides, a small dark head with tiny mandibles, and short stubby legs.",
+      "lore": "The only light in the deep galleries. Miners follow it, and it leads them where it feeds."
+    },
+    {
+      "id": "ice_sprite",
+      "name": "Rimeling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 32,
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Small fantasy ice spirit with a slender body of pale translucent ice, a faceted crystal head with two glowing white eyes, thin arms, and a faint haze of frost around it.",
+      "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early."
+    },
+    {
+      "id": "briar_hare",
+      "name": "Briarhare",
+      "tier": "mid",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Small fantasy hare whose brown fur is grown through with thorny bramble stems, long ears, dark wary eyes, powerful hind legs, and a few small red berries caught in the thorns.",
+      "lore": "It bolts through the hedges where nothing else can follow. The thorns are its own, and they draw blood."
+    },
+    {
+      "id": "ash_hatchling",
+      "name": "Ashling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Small fantasy salamander hatchling with dark ash-grey scales, glowing ember-orange eyes, a short thick tail curled around it, small clawed feet, and faint heat glow between its scales.",
+      "lore": "Hatched in the cinder beds beneath the caldera. It will grow into a mouthful of flame; for now it only glows."
     }
   ],
   "retired": [
@@ -1612,6 +1613,196 @@
       "retired": "the model gives a dragonfly nymph full dragonfly wings whatever the prompt says (v1 80px clipped E/SE) — same failure as twig_dragonfly. Replaced by bog_egg, a wingless frogspawn cluster.",
       "retired_at": "2026-09-09T18:02:05+00:00",
       "versions_tried": 1
+    },
+    {
+      "id": "bog_egg",
+      "name": "Spawnling",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 72,
+      "biome": [
+        "water",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Small cute fantasy frogspawn creature, a round cluster of translucent jelly eggs stuck together into one wobbling body, each egg holding a tiny black dot, two larger eggs at the front with dark pupils as eyes, a small mouth, and two stubby jelly feet.",
+      "lore": "A hundred siblings in one body, all of them curious and none of them wise. It bounces after anything shiny.",
+      "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
+    },
+    {
+      "id": "cactus_creature",
+      "name": "Pricklet",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 72,
+      "biome": [
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Small cute fantasy cactus creature with a plump green ridged body covered in fine pale spines, two stubby arm-branches, a single pink flower on its head, big round black eyes and a tiny smile, and small root feet.",
+      "lore": "It hugs anything that gets close. This is not affection and the spines are not decorative.",
+      "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
+    },
+    {
+      "id": "barrel_mimic",
+      "name": "Bungmaw",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 88,
+      "biome": [
+        "parquet_floor",
+        "light_beach"
+      ],
+      "items": [],
+      "prompt": "Fantasy barrel mimic, a stout oak barrel bound with iron hoops, its lid opened as a round mouth full of splintered wooden teeth, a red tongue, two greedy yellow eyes on the staves, and four stubby clawed legs.",
+      "lore": "It smells of ale from the inside and blood from the outside. Tavern cellars go quiet when one moves in.",
+      "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
+    },
+    {
+      "id": "pumpkin_blob",
+      "name": "Gourdling",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "light_soil",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Small cute fantasy pumpkin creature with a round orange ribbed body, a carved grinning face glowing softly from inside, a green leafy stem on top, and small curling vine legs and arms.",
+      "lore": "It rolls out of the patch at dusk looking for a lantern to be. It bites, but only a little, and only the ankles.",
+      "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
+    },
+    {
+      "id": "wind_elemental",
+      "name": "Gustling",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 72,
+      "biome": [
+        "grey_stone",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Small cute fantasy wind spirit, a round puff of pale grey cloud with two swirling white eyes, a small open mouth blowing a curl of wind, tiny cloud arms, and leaves and snowflakes caught spinning around it.",
+      "lore": "A gust that got lost from its storm. It blows out lanterns, steals hats, and cries when it is scolded.",
+      "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
+    },
+    {
+      "id": "penguin_knight",
+      "name": "Waddlance",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 72,
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Small cute fantasy penguin knight shown full body from head to feet, black-and-white feathers, a tiny dented steel helmet with a plume, a round wooden shield, a short lance held upright, and orange webbed feet.",
+      "lore": "Sworn to a king of ice who has not spoken in years. It guards the throne room anyway, and slides when it charges.",
+      "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
+    },
+    {
+      "id": "dust_bunny",
+      "name": "Fluffmote",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 32,
+      "biome": [
+        "parquet_floor"
+      ],
+      "items": [],
+      "prompt": "Tiny cute fantasy dust bunny, a fluffy round ball of grey dust and lint with two beady black eyes, tiny ears, and a few hairs sticking out.",
+      "lore": "Under every bed in the manor. Sweep one and the rest of them remember your name.",
+      "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
+    },
+    {
+      "id": "spore_puff",
+      "name": "Puffling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 32,
+      "biome": [
+        "dark_mud",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Tiny fantasy puffball mushroom creature, a round pale tan puffball body with a small hole on top venting brown spores, two small dark eyes, and two stubby root feet.",
+      "lore": "Step near it and it sneezes. The sneeze is contagious in a way nobody has fully explained.",
+      "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
+    },
+    {
+      "id": "sand_flea",
+      "name": "Grithop",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 32,
+      "biome": [
+        "light_beach",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Tiny fantasy sand flea with a compact tan segmented body, powerful bent back legs, two big black eyes, and small antennae.",
+      "lore": "It jumps higher than the dune and lands on whatever is warmest. That is usually a face.",
+      "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
+    },
+    {
+      "id": "tadpole",
+      "name": "Wigglet",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 32,
+      "biome": [
+        "water",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Tiny cute fantasy tadpole with a fat round dark green body, two tiny sprouting legs, big round eyes, and a short flat tail tucked under it.",
+      "lore": "Someday it will be something with a slam. Today it is mostly ambition and eyes.",
+      "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
+    },
+    {
+      "id": "coin_mite",
+      "name": "Glintling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 32,
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Tiny fantasy living gold coin standing upright with two small stick legs and arms, an embossed grinning face, and a bright glint on its edge.",
+      "lore": "It hides in purses and eats the other coins. Merchants call it the tax.",
+      "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
+    },
+    {
+      "id": "snow_pip",
+      "name": "Snowpip",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 32,
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [],
+      "prompt": "Tiny cute fantasy snow creature, a small round snowball body with two coal eyes, a tiny carrot nose, twig arms, and a little frost sparkle.",
+      "lore": "A snowman that got up before it was finished. It follows children home and melts on the doorstep, sulking.",
+      "retired": "maintainer 2026-09-09: silly monsters are rejected on sight — cute must be DESIGNED, never a gag"
     }
   ]
 }

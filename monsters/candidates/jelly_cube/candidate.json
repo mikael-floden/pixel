@@ -1,0 +1,141 @@
+{
+  "id": "jelly_cube",
+  "name": "Gelatine",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It has eaten three adventuring parties and still wears their helmets. Cleaning dungeon floors is only a side effect.",
+  "biome": [
+    "parquet_floor",
+    "grey_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy gelatinous cube, a translucent pale green block of jelly with rounded edges, small bones, a rusty helmet and a few gold coins suspended inside it, and two faint glowing dots for eyes near the top.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "jelly_cube/rotations/south.webp",
+    "south-east": "jelly_cube/rotations/south-east.webp",
+    "east": "jelly_cube/rotations/east.webp",
+    "north-east": "jelly_cube/rotations/north-east.webp",
+    "north": "jelly_cube/rotations/north.webp",
+    "north-west": "jelly_cube/rotations/north-west.webp",
+    "west": "jelly_cube/rotations/west.webp",
+    "south-west": "jelly_cube/rotations/south-west.webp"
+  },
+  "sheet": "jelly_cube/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "d1cb2449-393d-459b-9b52-cfbf8fa741b2",
+  "seed": 1170653725,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:06:55+00:00",
+  "elapsed_s": 162.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.676,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.676,
+        "bbox": [
+          11,
+          3,
+          85,
+          92
+        ],
+        "fill": 0.715,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.737,
+        "bbox": [
+          28,
+          5,
+          67,
+          93
+        ],
+        "fill": 0.372,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.746,
+        "bbox": [
+          29,
+          3,
+          68,
+          93
+        ],
+        "fill": 0.381,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.704,
+        "bbox": [
+          13,
+          4,
+          83,
+          90
+        ],
+        "fill": 0.653,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.765,
+        "bbox": [
+          19,
+          4,
+          80,
+          94
+        ],
+        "fill": 0.596,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.726,
+        "bbox": [
+          16,
+          3,
+          72,
+          93
+        ],
+        "fill": 0.547,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.736,
+        "bbox": [
+          24,
+          4,
+          80,
+          93
+        ],
+        "fill": 0.541,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.777,
+        "bbox": [
+          17,
+          4,
+          78,
+          94
+        ],
+        "fill": 0.596,
+        "touches_edge": false
+      }
+    }
+  }
+}
