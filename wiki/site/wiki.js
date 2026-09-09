@@ -13021,6 +13021,13 @@ function spotlight(sel) {
   });
 }
 /* ---------------------------------------------------------------- router */
+/** The sticky crumb row's REAL height into --crumb-h, so a preview stage can
+ *  stop at the screen that is actually visible under both bars (.player-stage
+ *  max-height). Re-measured after every route: the row is rendered per page. */
+function measureCrumb() {
+  const crumb = $(".crumb-row")?.getBoundingClientRect().height;
+  if (crumb) document.documentElement.style.setProperty("--crumb-h", `${Math.ceil(crumb)}px`);
+}
 function route() {
   destroyPlayers();
   stopAllAudio();   // both players: a long audition used to survive the nav
@@ -13068,6 +13075,7 @@ function route() {
   else if (page === "bench") { if (state.admin) musicTab = "dynamic"; view = state.admin ? viewMusic() : viewHome(); }
   else view = viewHome();
   $("#content").replaceChildren(view);
+  measureCrumb();
   renderNav();
   closeMenuForNav();
   // A story card must always be able to reach the top of the viewport.
@@ -13195,6 +13203,7 @@ function initChrome() {
     // down parks the crumb row 0.2px over its bottom border — a hairline of
     // the wrong colour on a 3x screen.
     if (bar) document.documentElement.style.setProperty("--topbar-h", `${Math.ceil(bar)}px`);
+    measureCrumb();
   };
   measureBar();
   window.addEventListener("resize", measureBar);

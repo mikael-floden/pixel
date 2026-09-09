@@ -777,7 +777,19 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
      edge with no way to bring it back. `safe` falls back to start-alignment
      the moment the content overflows, so it runs RIGHT into real scroll
      space and every pixel is reachable. */
-  display: flex; align-items: center; justify-content: safe center;
+  display: flex; align-items: safe center; justify-content: safe center;
+  /* NEVER TALLER THAN THE SCREEN UNDER THE STICKY BARS (maintainer
+     2026-09-09, a 4× tree: "the tree is cut/clipped at the exact preview div
+     boundary"). It was not clipped — the stage grew to 1,139px on a 740px
+     phone, and its top slid under the sticky topbar and crumb row (118px)
+     the moment he scrolled to the roots, which is indistinguishable from a
+     clip. So the stage stops at the visible screen and the picture scrolls
+     INSIDE it, the way it already does sideways — and `safe` on this axis
+     too, or a centred taller canvas parks its crown in negative scroll
+     space nothing can reach. --topbar-h/--crumb-h are measured by
+     measureBar(); the 24px is the content padding above the stage. */
+  max-height: calc(100vh - var(--topbar-h, 56px) - var(--crumb-h, 54px) - 24px);
+  max-height: calc(100dvh - var(--topbar-h, 56px) - var(--crumb-h, 54px) - 24px);
 }
 .player-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .player-controls .frame-no { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; min-width: 52px; }

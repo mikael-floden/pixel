@@ -1590,6 +1590,32 @@ ellipses matching the game's own numbers, Commit posting `tuning/monsters`
 (never `shadow_notes`) with the on-screen values, Reset deleting rather than
 storing a fake confirmation, and no editor for the public.
 
+## The preview stage never outgrows the phone screen
+
+Maintainer 2026-09-09, a tree at 4×: *"not the entire scenery is rendered in
+the preview ... the tree is 'cut'/clipped at the exact preview div boundary."*
+Nothing was clipped. The stage grew to 1,139px on a 740px phone, and once he
+scrolled to the roots its top slid under the sticky topbar and crumb row
+(118px) — which looks exactly like a clip and cannot be told from one.
+
+- **The stage stops at the screen under the sticky bars**
+  (`.player-stage { max-height: calc(100dvh - --topbar-h - --crumb-h - 24px) }`;
+  both bar heights are measured, `measureBar()` / `measureCrumb()`, the
+  crumb row after every route because it is rendered per page). The picture
+  scrolls INSIDE the box on both axes, the way it already did sideways.
+- **`safe center` on BOTH axes.** A centred flex child taller than its
+  scroller parks half of itself in negative scroll space that nothing can
+  reach — the same bug that hid the left edge of wide pieces in August, on
+  the other axis.
+- **Not a fit-to-screen.** Fit-scaling was retired on his instruction ("I
+  want the default to review in x2 because that's what the game uses"); a 4×
+  picture three screens tall is his explicit choice, and every pixel of it
+  is reachable by a swipe in the box.
+
+Gate: `wiki/tools/check-stage.mjs` — a 360×740 phone, the tree at 4×: the
+canvas is taller than the visible screen, the stage is not, the canvas starts
+at a non-negative scroll offset and the stage's scroll height covers it.
+
 ## The animation viewer scales by the CREATURE, not the frame
 
 Sprite frames are mostly transparent padding, and the padding differs per
