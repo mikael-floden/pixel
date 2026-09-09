@@ -1,0 +1,141 @@
+{
+  "id": "hill_giant",
+  "name": "Hillfather",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It takes sheep by the flock and villages by the roof. It has never had to learn to count higher.",
+  "biome": [
+    "grass",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy hill giant shown full body from head to feet, a huge lumpy body of tanned weathered skin, a heavy brow and broad flat nose, a beard of matted brown hair, a tunic of stitched hides, a whole uprooted tree held as a club resting on one shoulder, and enormous bare feet.",
+  "size": [
+    240,
+    240
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hill_giant/rotations/south.webp",
+    "south-east": "hill_giant/rotations/south-east.webp",
+    "east": "hill_giant/rotations/east.webp",
+    "north-east": "hill_giant/rotations/north-east.webp",
+    "north": "hill_giant/rotations/north.webp",
+    "north-west": "hill_giant/rotations/north-west.webp",
+    "west": "hill_giant/rotations/west.webp",
+    "south-west": "hill_giant/rotations/south-west.webp"
+  },
+  "sheet": "hill_giant/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "98395ede-fefb-463d-b5d9-b53da1deba7e",
+  "seed": 372329230,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-09T18:44:39+00:00",
+  "elapsed_s": 169.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.641,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.641,
+        "bbox": [
+          11,
+          7,
+          191,
+          221
+        ],
+        "fill": 0.669,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.681,
+        "bbox": [
+          78,
+          12,
+          215,
+          228
+        ],
+        "fill": 0.514,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.685,
+        "bbox": [
+          24,
+          6,
+          156,
+          231
+        ],
+        "fill": 0.516,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.68,
+        "bbox": [
+          45,
+          20,
+          228,
+          224
+        ],
+        "fill": 0.648,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.7,
+        "bbox": [
+          40,
+          5,
+          182,
+          230
+        ],
+        "fill": 0.555,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.668,
+        "bbox": [
+          23,
+          13,
+          219,
+          228
+        ],
+        "fill": 0.732,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.679,
+        "bbox": [
+          51,
+          17,
+          194,
+          224
+        ],
+        "fill": 0.514,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.69,
+        "bbox": [
+          18,
+          8,
+          213,
+          230
+        ],
+        "fill": 0.752,
+        "touches_edge": false
+      }
+    }
+  }
+}
