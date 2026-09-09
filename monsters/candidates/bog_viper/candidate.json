@@ -9,7 +9,7 @@
     "water"
   ],
   "items": [],
-  "prompt": "Small fantasy bog viper coiled tightly on the mud with its head raised, dark olive scales with black diamond markings, a pale belly, yellow slit eyes, and a forked tongue.",
+  "prompt": "Small fantasy bog viper coiled tightly with its head raised, no ground beneath it, dark olive scales with black diamond markings, a pale belly, yellow slit eyes, and a forked tongue.",
   "size": [
     48,
     48
@@ -37,103 +37,103 @@
   },
   "sheet": "bog_viper/sheet.webp",
   "review": "pending",
-  "pixellab_id": "773fdded-88d8-4155-8ca4-3c938c723cb8",
-  "seed": 366552276,
-  "version": 2,
+  "pixellab_id": "8ac89e05-17f3-4389-91b6-4f89347e6a8c",
+  "seed": 1658721346,
+  "version": 3,
   "usage": null,
-  "generated_at": "2026-09-09T19:04:08+00:00",
-  "elapsed_s": 145.1,
+  "generated_at": "2026-09-09T19:07:37+00:00",
+  "elapsed_s": 163.4,
   "qa": {
     "status": "pass",
-    "min_run1": 0.672,
+    "min_run1": 0.646,
     "reasons": [],
     "directions": {
       "south": {
-        "run1": 0.721,
+        "run1": 0.742,
         "bbox": [
-          1,
           2,
-          47,
-          47
+          7,
+          46,
+          43
         ],
-        "fill": 0.898,
+        "fill": 0.688,
         "touches_edge": false
       },
       "west": {
         "run1": 0.708,
         "bbox": [
-          1,
-          2,
+          6,
+          4,
           46,
-          47
+          44
         ],
-        "fill": 0.879,
+        "fill": 0.694,
         "touches_edge": false
       },
       "east": {
-        "run1": 0.705,
+        "run1": 0.73,
         "bbox": [
-          1,
           2,
-          47,
-          47
+          4,
+          42,
+          44
         ],
-        "fill": 0.898,
+        "fill": 0.694,
         "touches_edge": false
       },
       "north": {
-        "run1": 0.672,
+        "run1": 0.646,
         "bbox": [
-          1,
-          2,
-          47,
-          47
+          4,
+          5,
+          44,
+          45
         ],
-        "fill": 0.898,
+        "fill": 0.694,
         "touches_edge": false
       },
       "south-east": {
-        "run1": 0.749,
+        "run1": 0.758,
         "bbox": [
           2,
-          1,
-          47,
-          47
+          6,
+          43,
+          43
         ],
-        "fill": 0.898,
+        "fill": 0.658,
         "touches_edge": false
       },
       "north-east": {
-        "run1": 0.723,
+        "run1": 0.734,
         "bbox": [
-          1,
-          2,
-          47,
-          47
+          3,
+          4,
+          39,
+          45
         ],
-        "fill": 0.898,
+        "fill": 0.641,
         "touches_edge": false
       },
       "north-west": {
-        "run1": 0.701,
+        "run1": 0.695,
         "bbox": [
-          2,
-          2,
-          46,
-          47
+          7,
+          4,
+          47,
+          45
         ],
-        "fill": 0.859,
+        "fill": 0.712,
         "touches_edge": false
       },
       "south-west": {
-        "run1": 0.734,
+        "run1": 0.754,
         "bbox": [
-          1,
-          2,
-          47,
-          47
+          5,
+          6,
+          46,
+          43
         ],
-        "fill": 0.898,
+        "fill": 0.658,
         "touches_edge": false
       }
     }
